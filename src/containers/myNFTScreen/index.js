@@ -1,0 +1,101 @@
+import * as React from 'react';
+import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+import styles from './styles';
+import { colors, fonts, images } from '../../res';
+import { CustomModal } from '../../components';
+
+const Tab = createMaterialTopTabNavigator();
+
+let list = [
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+]
+
+const Collection = () => {
+
+    const [visible, setVisible] = React.useState(false);
+    const [active, setActive] = React.useState(null);
+
+    return (
+        <View style={styles.trendCont} >
+            <ScrollView>
+                <View style={styles.imageListCont} >
+                    {
+                        list.map((v, i) => {
+                            return (
+                                <TouchableOpacity key={i} onPress={() => {
+                                    setActive(v)
+                                    setVisible(true)
+                                }} style={styles.listItem} >
+                                    <Image style={styles.listImage} source={v} resizeMode="cover" />
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </View>
+            </ScrollView>
+            <CustomModal
+                visible={visible}
+                close={() => setVisible(false)}
+                active={active}
+            />
+        </View>
+    )
+}
+const NFT = () => {
+    return (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+            <Text>Coming Soon</Text>
+        </View>
+    )
+}
+
+const MyNFTScreen = () => {
+    return (
+        <>
+            <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
+            <Tab.Navigator tabBarOptions={{
+                activeTintColor: colors.tabbar,
+                inactiveTintColor: colors.black,
+                tabStyle: {
+                    paddingBottom: 0
+                },
+                labelStyle: {
+                    fontSize: 15,
+                    fontFamily: fonts.SegoeUIRegular,
+                    textTransform: 'none'
+                },
+                indicatorStyle: {
+                    borderBottomColor: colors.tabbar,
+                    borderBottomWidth: 2,
+                }
+            }} >
+                <Tab.Screen name="My Collection" component={Collection} />
+                <Tab.Screen name="NFT" component={NFT} />
+            </Tab.Navigator>
+        </>
+    )
+}
+
+export default MyNFTScreen;
