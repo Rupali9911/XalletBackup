@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar, BackHandler } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import styles from './styles';
 import { colors, fonts, images } from '../../res';
-import { CustomModal } from '../../components';
-import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -31,12 +29,15 @@ let list = [
     images.one,
     images.one,
     images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
 ]
 
-const Trend = () => {
-
-    const [visible, setVisible] = React.useState(false);
-    const [active, setActive] = React.useState(null);
+const Trend = ({navigation}) => {
 
     return (
         <View style={styles.trendCont} >
@@ -47,10 +48,7 @@ const Trend = () => {
                     {
                         list.map((v, i) => {
                             return (
-                                <TouchableOpacity key={i} onPress={() => {
-                                    setActive(v)
-                                    setVisible(true)
-                                }} style={styles.listItem} >
+                                <TouchableOpacity key={i} onPress={() => navigation.navigate("DetailItem")} style={styles.listItem} >
                                     <Image style={styles.listImage} source={v} resizeMode="cover" />
                                 </TouchableOpacity>
                             )
@@ -58,11 +56,7 @@ const Trend = () => {
                     }
                 </View>
             </ScrollView>
-            <CustomModal
-                visible={visible}
-                close={() => setVisible(false)}
-                active={active}
-            />
+        
         </View>
     )
 }
@@ -97,7 +91,7 @@ const HomeScreen = () => {
                 paddingBottom: 0
             },
             labelStyle: {
-                fontSize: FS(2.2),
+                fontSize: 15,
                 fontFamily: fonts.SegoeUIRegular,
                 textTransform: 'capitalize'
             },

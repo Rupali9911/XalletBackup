@@ -4,7 +4,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 import styles from './styles';
 import { colors, fonts, images } from '../../res';
-import { CustomModal } from '../../components';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -32,10 +31,7 @@ let list = [
     images.one,
 ]
 
-const Collection = () => {
-
-    const [visible, setVisible] = React.useState(false);
-    const [active, setActive] = React.useState(null);
+const Collection = ({ navigation }) => {
 
     return (
         <View style={styles.trendCont} >
@@ -44,10 +40,7 @@ const Collection = () => {
                     {
                         list.map((v, i) => {
                             return (
-                                <TouchableOpacity key={i} onPress={() => {
-                                    setActive(v)
-                                    setVisible(true)
-                                }} style={styles.listItem} >
+                                <TouchableOpacity key={i} onPress={() => navigation.navigate("DetailItem")} style={styles.listItem} >
                                     <Image style={styles.listImage} source={v} resizeMode="cover" />
                                 </TouchableOpacity>
                             )
@@ -55,11 +48,6 @@ const Collection = () => {
                     }
                 </View>
             </ScrollView>
-            <CustomModal
-                visible={visible}
-                close={() => setVisible(false)}
-                active={active}
-            />
         </View>
     )
 }
