@@ -49,6 +49,7 @@ const ConnectScreen = () => {
                 </TouchableOpacity>
             </ScrollView>
             <Modal animationType="slide" visible={visible} >
+                <SafeAreaView style={styles.container} >
                 <View style={{
                     flex: 1,
                     backgroundColor: colors.black_opacity(0.5)
@@ -67,6 +68,7 @@ const ConnectScreen = () => {
                         }
                     />
                 </View>
+                </SafeAreaView>
             </Modal>
         </SafeAreaView>
     )

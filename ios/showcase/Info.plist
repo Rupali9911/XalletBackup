@@ -2,14 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SegoeUI.ttf</string>
+		<string>SegoeUI-Bold.ttf</string>
+		<string>SegoeUI-Italic.ttf</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>showcase</string>
+	<string>XANALIA</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.app.xanalia</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -35,8 +41,10 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Capture profile picture</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Share your location for better experience</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -51,17 +59,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SFUIDisplay-Medium.otf</string>
-		<string>SFUIDisplay-semibold.otf</string>
-		<string>SFUIText-Regular.ttf</string>
-		<string>SFUIText-Semibold.ttf</string>
-		<string>SFUIDisplay-Semibold.otf</string>
-		<string>Segoe UI Bold.ttf</string>
-		<string>Segoe UI.ttf</string>
-		<string>SegoeUI-Bold.ttf</string>
-		<string>SegoeUI-Regular.ttf</string>
-	</array>
 </dict>
 </plist>

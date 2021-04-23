@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar, BackHandler } from 'react-native';
+import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar, BackHandler, SafeAreaView} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import styles from './styles';
@@ -56,7 +56,7 @@ const Trend = ({navigation}) => {
                     }
                 </View>
             </ScrollView>
-        
+
         </View>
     )
 }
@@ -84,6 +84,8 @@ const Favorite = () => {
 
 const HomeScreen = () => {
     return (
+        <>
+        <SafeAreaView style={{flex: 1}} >
         <Tab.Navigator tabBarOptions={{
             activeTintColor: colors.tabbar,
             inactiveTintColor: colors.black,
@@ -105,6 +107,8 @@ const HomeScreen = () => {
             <Tab.Screen name="New" component={New} />
             <Tab.Screen name="Favorite" component={Favorite} />
         </Tab.Navigator>
+        </SafeAreaView>
+            </>
     )
 }
 

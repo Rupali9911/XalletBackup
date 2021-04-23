@@ -12,6 +12,8 @@ target 'showcase' do
     :hermes_enabled => false
   )
 
+  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
+
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
@@ -19,6 +21,8 @@ target 'showcase' do
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
   target 'showcaseTests' do
     inherit! :complete
