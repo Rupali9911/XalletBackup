@@ -11,16 +11,12 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		18C26EA62632C04800A0D972 /* SegoeUI-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */; };
+		18C26EAD2632C06700A0D972 /* SegoeUI-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */; };
+		18C26FD72632CE9100A0D972 /* SegoeUI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26FD62632CE9100A0D972 /* SegoeUI.ttf */; };
+		585C546AD84CF5BDA40DD6D5 /* libPods-showcase-showcaseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AF008C5C65EFC3A43B45C3 /* libPods-showcase-showcaseTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		2F5294551A8C44AD977049BD /* SFUIDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E3C83204D3684F78B47C801C /* SFUIDisplay-Medium.otf */; };
-		71E24FC2E6AA4CEB9427870B /* SFUIDisplay-semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 359EFD7DA8E3488CB160CBB8 /* SFUIDisplay-semibold.otf */; };
-		785EF077E5DB40759FE073EA /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E2B7472329D49F8812CF768 /* SFUIText-Regular.ttf */; };
-		FFB10A594E5F4AC0BA856E40 /* SFUIText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ABB83562C03F4DFCB454B216 /* SFUIText-Semibold.ttf */; };
-		26A6FCBCF0A74F4399866760 /* SFUIDisplay-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43B6DE33FB604629A94698DB /* SFUIDisplay-Semibold.otf */; };
-		565C393B098A43A48B457FF9 /* Segoe UI Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66890302055D49E3A7C77AE6 /* Segoe UI Bold.ttf */; };
-		DC444E525EE04586B1CEB341 /* Segoe UI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7795B7342000460795BF7B26 /* Segoe UI.ttf */; };
-		E50D7B01F1634ED2B0E7B29D /* SegoeUI-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E72305455C24C7D898752AB /* SegoeUI-Bold.ttf */; };
-		7C0ABDE8DD7146FFBA0231AA /* SegoeUI-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EAA4A89B6AA4A6B8C9D9C09 /* SegoeUI-Regular.ttf */; };
+		E0FF2824CCD6734AEF3848DD /* libPods-showcase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9B725AC59AA9F0676B28E8 /* libPods-showcase.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,17 +39,17 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = showcase/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = showcase/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = showcase/main.m; sourceTree = "<group>"; };
+		18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SegoeUI-Italic.ttf"; path = "../assets/fonts/SegoeUI-Italic.ttf"; sourceTree = "<group>"; };
+		18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SegoeUI-Bold.ttf"; path = "../assets/fonts/SegoeUI-Bold.ttf"; sourceTree = "<group>"; };
+		18C26FD62632CE9100A0D972 /* SegoeUI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = SegoeUI.ttf; path = ../assets/fonts/SegoeUI.ttf; sourceTree = "<group>"; };
+		29F9D3BC8E818B775326C742 /* Pods-showcase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-showcase.debug.xcconfig"; path = "Target Support Files/Pods-showcase/Pods-showcase.debug.xcconfig"; sourceTree = "<group>"; };
+		4E9B725AC59AA9F0676B28E8 /* libPods-showcase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-showcase.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = showcase/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9551B9591776EE3D68C70D44 /* Pods-showcase-showcaseTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-showcase-showcaseTests.release.xcconfig"; path = "Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests.release.xcconfig"; sourceTree = "<group>"; };
+		A3AF008C5C65EFC3A43B45C3 /* libPods-showcase-showcaseTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-showcase-showcaseTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B70BFF6B6A539E4F3B048038 /* Pods-showcase-showcaseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-showcase-showcaseTests.debug.xcconfig"; path = "Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		E3C83204D3684F78B47C801C /* SFUIDisplay-Medium.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Medium.otf"; path = "../assets/fonts/SFUIDisplay-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		359EFD7DA8E3488CB160CBB8 /* SFUIDisplay-semibold.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-semibold.otf"; path = "../assets/fonts/SFUIDisplay-semibold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		0E2B7472329D49F8812CF768 /* SFUIText-Regular.ttf */ = {isa = PBXFileReference; name = "SFUIText-Regular.ttf"; path = "../assets/fonts/SFUIText-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		ABB83562C03F4DFCB454B216 /* SFUIText-Semibold.ttf */ = {isa = PBXFileReference; name = "SFUIText-Semibold.ttf"; path = "../assets/fonts/SFUIText-Semibold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		43B6DE33FB604629A94698DB /* SFUIDisplay-Semibold.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Semibold.otf"; path = "../assets/fonts/SFUIDisplay-Semibold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		66890302055D49E3A7C77AE6 /* Segoe UI Bold.ttf */ = {isa = PBXFileReference; name = "Segoe UI Bold.ttf"; path = "../assets/fonts/Segoe UI Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		7795B7342000460795BF7B26 /* Segoe UI.ttf */ = {isa = PBXFileReference; name = "Segoe UI.ttf"; path = "../assets/fonts/Segoe UI.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9E72305455C24C7D898752AB /* SegoeUI-Bold.ttf */ = {isa = PBXFileReference; name = "SegoeUI-Bold.ttf"; path = "../assets/fonts/SegoeUI-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		3EAA4A89B6AA4A6B8C9D9C09 /* SegoeUI-Regular.ttf */ = {isa = PBXFileReference; name = "SegoeUI-Regular.ttf"; path = "../assets/fonts/SegoeUI-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F0C420A2BA8844B8DC68B67C /* Pods-showcase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-showcase.release.xcconfig"; path = "Target Support Files/Pods-showcase/Pods-showcase.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				585C546AD84CF5BDA40DD6D5 /* libPods-showcase-showcaseTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0FF2824CCD6734AEF3848DD /* libPods-showcase.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,10 +102,23 @@
 			name = showcase;
 			sourceTree = "<group>";
 		};
+		1A0E7ECE197677707E35B2CD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				29F9D3BC8E818B775326C742 /* Pods-showcase.debug.xcconfig */,
+				F0C420A2BA8844B8DC68B67C /* Pods-showcase.release.xcconfig */,
+				B70BFF6B6A539E4F3B048038 /* Pods-showcase-showcaseTests.debug.xcconfig */,
+				9551B9591776EE3D68C70D44 /* Pods-showcase-showcaseTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				4E9B725AC59AA9F0676B28E8 /* libPods-showcase.a */,
+				A3AF008C5C65EFC3A43B45C3 /* libPods-showcase-showcaseTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -128,6 +139,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				C1F2CE4A18324D46B8BE1E7D /* Resources */,
+				1A0E7ECE197677707E35B2CD /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -144,21 +156,14 @@
 			sourceTree = "<group>";
 		};
 		C1F2CE4A18324D46B8BE1E7D /* Resources */ = {
-			isa = "PBXGroup";
+			isa = PBXGroup;
 			children = (
-				E3C83204D3684F78B47C801C /* SFUIDisplay-Medium.otf */,
-				359EFD7DA8E3488CB160CBB8 /* SFUIDisplay-semibold.otf */,
-				0E2B7472329D49F8812CF768 /* SFUIText-Regular.ttf */,
-				ABB83562C03F4DFCB454B216 /* SFUIText-Semibold.ttf */,
-				43B6DE33FB604629A94698DB /* SFUIDisplay-Semibold.otf */,
-				66890302055D49E3A7C77AE6 /* Segoe UI Bold.ttf */,
-				7795B7342000460795BF7B26 /* Segoe UI.ttf */,
-				9E72305455C24C7D898752AB /* SegoeUI-Bold.ttf */,
-				3EAA4A89B6AA4A6B8C9D9C09 /* SegoeUI-Regular.ttf */,
+				18C26FD62632CE9100A0D972 /* SegoeUI.ttf */,
+				18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */,
+				18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -167,9 +172,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "showcaseTests" */;
 			buildPhases = (
+				175AB8AAC01153A5E0CC7A84 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				450D7E9BD07F092FC4DE9A42 /* [CP] Embed Pods Frameworks */,
+				AC926F2D708DFCF683EEC200 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -185,11 +193,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "showcase" */;
 			buildPhases = (
+				47E764F1243D2360398B03C7 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				2B505BD841464A7227DCF872 /* [CP] Embed Pods Frameworks */,
+				C5DE4B1804734BA67CA7642E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -250,15 +261,9 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				2F5294551A8C44AD977049BD /* SFUIDisplay-Medium.otf in Resources */,
-				71E24FC2E6AA4CEB9427870B /* SFUIDisplay-semibold.otf in Resources */,
-				785EF077E5DB40759FE073EA /* SFUIText-Regular.ttf in Resources */,
-				FFB10A594E5F4AC0BA856E40 /* SFUIText-Semibold.ttf in Resources */,
-				26A6FCBCF0A74F4399866760 /* SFUIDisplay-Semibold.otf in Resources */,
-				565C393B098A43A48B457FF9 /* Segoe UI Bold.ttf in Resources */,
-				DC444E525EE04586B1CEB341 /* Segoe UI.ttf in Resources */,
-				E50D7B01F1634ED2B0E7B29D /* SegoeUI-Bold.ttf in Resources */,
-				7C0ABDE8DD7146FFBA0231AA /* SegoeUI-Regular.ttf in Resources */,
+				18C26EA62632C04800A0D972 /* SegoeUI-Italic.ttf in Resources */,
+				18C26FD72632CE9100A0D972 /* SegoeUI.ttf in Resources */,
+				18C26EAD2632C06700A0D972 /* SegoeUI-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +283,118 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		175AB8AAC01153A5E0CC7A84 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-showcase-showcaseTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2B505BD841464A7227DCF872 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		450D7E9BD07F092FC4DE9A42 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		47E764F1243D2360398B03C7 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-showcase-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AC926F2D708DFCF683EEC200 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C5DE4B1804734BA67CA7642E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -331,8 +448,13 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B70BFF6B6A539E4F3B048038 /* Pods-showcase-showcaseTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -351,15 +473,22 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/showcase.app/showcase";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9551B9591776EE3D68C70D44 /* Pods-showcase-showcaseTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				INFOPLIST_FILE = showcaseTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -374,17 +503,24 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/showcase.app/showcase";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 29F9D3BC8E818B775326C742 /* Pods-showcase.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				ENABLE_BITCODE = NO;
+				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = showcase/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -392,11 +528,11 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
 				PRODUCT_NAME = showcase;
+				PROVISIONING_PROFILE_SPECIFIER = XANALIA_Dev;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -405,10 +541,15 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F0C420A2BA8844B8DC68B67C /* Pods-showcase.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
+				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = showcase/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -416,11 +557,11 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
 				PRODUCT_NAME = showcase;
+				PROVISIONING_PROFILE_SPECIFIER = XANALIA_Dev;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -459,9 +600,10 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -523,8 +665,9 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

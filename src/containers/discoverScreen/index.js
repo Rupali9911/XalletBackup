@@ -43,6 +43,7 @@ const DiscoverScreen = () => {
     return (
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
+            <SafeAreaView style={{flex: 1}} >
             <Tab.Navigator tabBarOptions={{
                 activeTintColor: colors.tabbar,
                 inactiveTintColor: colors.black,
@@ -64,6 +65,7 @@ const DiscoverScreen = () => {
                 <Tab.Screen name="3D Asset" component={ThreeDAsset} />
                 <Tab.Screen name="Land" component={Land} />
             </Tab.Navigator>
+            </SafeAreaView>
         </>
     )
 }

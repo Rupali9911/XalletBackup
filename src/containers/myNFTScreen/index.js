@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar,SafeAreaView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import styles from './styles';
@@ -63,6 +63,7 @@ const MyNFTScreen = () => {
     return (
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
+            <SafeAreaView style={{flex: 1}} >
             <Tab.Navigator tabBarOptions={{
                 activeTintColor: colors.tabbar,
                 inactiveTintColor: colors.black,
@@ -82,6 +83,7 @@ const MyNFTScreen = () => {
                 <Tab.Screen name="My Collection" component={Collection} />
                 <Tab.Screen name="NFT" component={NFT} />
             </Tab.Navigator>
+            </SafeAreaView>
         </>
     )
 }

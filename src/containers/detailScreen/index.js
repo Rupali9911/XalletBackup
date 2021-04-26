@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import styles from './styles';
@@ -34,6 +34,7 @@ const DetailItemScreen = ({ navigation }) => {
 
     const [like, setLike] = React.useState({});
     return (
+        <SafeAreaView style={{flex: 1}} >
         <View style={styles.modalCont} >
             <View style={styles.bgImageCont} >
                 <Image style={styles.bgImage} source={images.one} />
@@ -110,6 +111,7 @@ const DetailItemScreen = ({ navigation }) => {
                 }
             </ScrollView>
         </View>
+        </SafeAreaView>
     )
 }
 

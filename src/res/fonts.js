@@ -1,6 +1,7 @@
 const fonts = {
+    SegoeUIItalic: "SegoeUI-Italic",
     SegoeUIBold: "SegoeUI-Bold",
-    SegoeUIRegular: "SegoeUI-Regular",
+    SegoeUIRegular: "SegoeUI",
 }
 
 export default fonts;
