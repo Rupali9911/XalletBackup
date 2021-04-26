@@ -20,6 +20,10 @@ target 'showcase' do
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+
   target 'showcaseTests' do
     inherit! :complete
     # Pods for testing

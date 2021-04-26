@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import '../shim';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Image, LogBox } from 'react-native';
