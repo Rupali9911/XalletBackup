@@ -1,9 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
-import { SafeAreaView, StatusBar, ScrollView, View, Text, Image, Button, TouchableOpacity, Modal } from 'react-native';
-// import QRCodeScanner from 'react-native-qrcode-scanner';
-// import WalletConnect from "@walletconnect/client";
-// import WalletConnect from "@walletconnect/browser";
-// import QRCodeModal from "@walletconnect/qrcode-modal";
+import {  View, Text,  Button, } from 'react-native';
+
 import styles from './styles';
 import { colors, images } from '../../res';
 import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp'
@@ -33,38 +31,3 @@ export default withWalletConnect(ConnectScreen, {
         asyncStorage: AsyncStorage,
     },
 });
-
-// const ConnectScreen = () => {
-//     const connector = useWalletConnect();
-//     if (!connector.connected) {
-//         /**
-//          *  Connect! 🎉
-//          */
-//         return <Button title="Connect" onPress={() => connector.connect())} />;
-// }
-// return <Button title="Kill Session" onPress={() => connector.killSession()} />;
-// const [visible, setVisible] = React.useState(false)
-
-// const onSuccess = e => {
-
-// };
-
-// return (
-//     <WalletConnectProvider
-//         bridge="https://bridge.walletconnect.org"
-//         clientMeta={{
-//             description: 'Connect with WalletConnect',
-//             url: 'https://walletconnect.org',
-//             icons: ['https://walletconnect.org/walletconnect-logo.png'],
-//             name: 'WalletConnect',
-//         }}
-//         redirectUrl={Platform.OS === 'web' ? window.location.origin : 'dapp://'}
-//         storageOptions={{
-//             asyncStorage: AsyncStorage,
-//         }}>
-//         <>{/* awesome app here */}</>
-//     </WalletConnectProvider>
-// )
-// }
-
-// export default ConnectScreen;
