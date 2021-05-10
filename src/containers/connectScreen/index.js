@@ -5,7 +5,6 @@ import {  View, Text,  Button, } from 'react-native';
 import styles from './styles';
 import { colors, images } from '../../res';
 import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ConnectScreen() {
     const connector = useWalletConnect();

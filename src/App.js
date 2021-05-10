@@ -12,6 +12,7 @@ import DiscoverScreen from './containers/discoverScreen';
 import ARScreen from './containers/ARScreen';
 import ConnectScreen from './containers/connectScreen';
 import DetailItemScreen from './containers/detailScreen';
+import ViroARScreen from './viro';
 
 import { images, fonts } from './res';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from './common/responsiveFunction';
@@ -67,9 +68,12 @@ const App = () => {
       <Stack.Navigator mode="modal" headerMode="none" >
         <Stack.Screen name="Home" component={TabComponent} />
         <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+        <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
       </Stack.Navigator>
     </NavigationContainer >
   );
 };
 
 export default App;
+
+

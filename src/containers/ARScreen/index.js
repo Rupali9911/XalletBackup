@@ -1,19 +1,59 @@
 import * as React from 'react';
-import { SafeAreaView, StatusBar, ScrollView, View, Text, Image } from 'react-native';
+import { SafeAreaView, StatusBar, ScrollView, View, TouchableOpacity, Image } from 'react-native';
 
 import styles from './styles';
-import { colors } from '../../res';
+import { colors, fonts, images } from '../../res';
 
-const ARScreen = () => {
+let list = [
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+    images.one,
+]
+
+const ARScreen = ({ navigation }) => {
     return (
-        <SafeAreaView style={styles.container} >
+        <View style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
-            <ScrollView
-                contentInsetAdjustmentBehavior="automatic"
-                contentContainerStyle={styles.container}>
-                <Text>Coming Soon</Text>
+
+            <ScrollView>
+                <View style={styles.imageListCont} >
+                    {
+                        list.map((v, i) => {
+                            return (
+                                <TouchableOpacity key={i} onPress={() => navigation.navigate("ViroARScreen")} style={styles.listItem} >
+                                    <Image style={styles.listImage} source={v} resizeMode="cover" />
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </View>
             </ScrollView>
-        </SafeAreaView>
+
+        </View>
     )
 }
 

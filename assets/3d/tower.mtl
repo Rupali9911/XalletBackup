@@ -1,0 +1,69 @@
+#
+## Alias OBJ Material File
+# Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
+
+newmtl Granite_Light_Gray
+Ka 0.000000 0.000000 0.000000
+Kd 0.584314 0.580392 0.564706
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/Granite_Light_Gray.jpg
+
+newmtl TOL_wt_river_face
+Ka 0.000000 0.000000 0.000000
+Kd 0.549020 0.556863 0.556863
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/TOL_wt_river_face.jpg
+
+newmtl FrontColor
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.330000 0.330000 0.330000
+
+newmtl Wood_Plywood_Knots
+Ka 0.000000 0.000000 0.000000
+Kd 0.537255 0.501961 0.329412
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/Wood_Plywood_Knots.jpg
+
+newmtl old_floorboard_texture_vertical
+Ka 0.000000 0.000000 0.000000
+Kd 0.517647 0.494118 0.450980
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/old_floorboard_texture_vertical.jpg
+
+newmtl Metal_Silver
+Ka 0.000000 0.000000 0.000000
+Kd 0.768627 0.647059 0.431373
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/Metal_Silver.jpg
+
+newmtl lead_roof_texture
+Ka 0.000000 0.000000 0.000000
+Kd 0.466667 0.462745 0.415686
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/lead_roof_texture.jpg
+
+newmtl M_700px_Royal_Arms_of_England_oblong
+Ka 0.000000 0.000000 0.000000
+Kd 0.537255 0.396078 0.388235
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/M_700px_Royal_Arms_of_England_oblong.png
+
+newmtl tol_tex
+Ka 0.000000 0.000000 0.000000
+Kd 0.560784 0.549020 0.509804
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/tol_tex.jpg
+
+newmtl crazy_paving
+Ka 0.000000 0.000000 0.000000
+Kd 0.639216 0.623529 0.541176
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/crazy_paving.jpg
+
+newmtl elandria_flints
+Ka 0.000000 0.000000 0.000000
+Kd 0.345098 0.333333 0.294118
+Ks 0.330000 0.330000 0.330000
+map_Kd tower/elandria_flints.jpg
+
