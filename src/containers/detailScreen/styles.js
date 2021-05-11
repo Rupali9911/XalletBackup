@@ -10,9 +10,8 @@ const styles = StyleSheet.create({
     },
     bgImageCont: {
         position: 'absolute',
-        top: 0,
-        height: screenHeight,
-        width: screenWidth
+        height: '100%',
+        width: '100%',
     },
     bgImage: {
         flex: 1,
@@ -23,6 +22,7 @@ const styles = StyleSheet.create({
     header: {
         height: hp('6%'),
         width: '100%',
+        backgroundColor: colors.black_opacity(0.8)
     },
     backIcon: {
         width: wp('10%'),

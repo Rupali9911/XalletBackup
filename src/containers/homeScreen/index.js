@@ -1,62 +1,146 @@
 import * as React from 'react';
-import { ScrollView, View, Text, Image, TouchableOpacity, StatusBar, BackHandler, SafeAreaView} from 'react-native';
+import { View, Text, Image, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Config from "react-native-config";
+import NetInfo from "@react-native-community/netinfo";
+import Modal from 'react-native-modal';
 
+import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 import styles from './styles';
-import { colors, fonts, images } from '../../res';
+import { colors, fonts } from '../../res';
+import { Loader } from '../../components';
 
 const Tab = createMaterialTopTabNavigator();
 
-let list = [
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-    images.one,
-]
+const Trend = ({ navigation }) => {
+    const [isLoading, setLoading] = React.useState(false);
+    const [listLoading, setListLoading] = React.useState(false);
+    const [refresh, set_refresh] = React.useState(false);
+    const [NFT_LIST, SET_NFT_LIST] = React.useState([]);
 
-const Trend = ({navigation}) => {
+    const [pageCount, set_pageCount] = React.useState(1);
+
+    // state of offline/online network connection
+    const [isOffline, setOfflineStatus] = React.useState(false);
+
+    // console.log(Config.BASE_URL)
+
+    React.useEffect(() => {
+        setLoading(true);
+        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+            const offline = !(state.isConnected && state.isInternetReachable);
+            setOfflineStatus(offline);
+        });
+        getNFTlist();
+        return () => removeNetInfoSubscription();
+    }, [])
+
+    const getNFTlist = React.useCallback(async () => {
+        setListLoading(true)
+        let obj = {
+            limit: "40",
+            networkType: "testnet",
+            page: pageCount,
+            token: "piyush55",
+            type: "2D"
+        }
+        let fetch_data_body = {
+            method: 'POST',
+            body: JSON.stringify(obj),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+        fetch(`${Config.BASE_URL}/getDemuxData`, fetch_data_body)
+            .then(response => response.json())  // promise
+            .then(json => {
+                debugger;
+                console.log(json.data, 'aaaaaaaaaaaaaaaaaaaaaaa')
+                let nft_list = [...NFT_LIST, ...json.data];
+                set_refresh(!refresh)
+                SET_NFT_LIST(nft_list)
+                isOffline && setOfflineStatus(false);
+                setLoading(false)
+                setListLoading(false)
+            }).catch(err => {
+                setLoading(false)
+                alert(err.message)
+            })
+    }, [isOffline]);
+
+    const Button = ({ children, ...props }) => (
+        <TouchableOpacity style={styles.button} {...props}>
+            <Text style={styles.buttonText}>{children}</Text>
+        </TouchableOpacity>
+    );
+
+    const NoInternetModal = ({ show, onRetry, isRetrying }) => (
+        <Modal isVisible={show} style={styles.modal} animationInTiming={600}>
+            <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Connection Error</Text>
+                <Text style={styles.modalText}>
+                    Oops! Looks like your device is not connected to the Internet.
+            </Text>
+                <Button onPress={onRetry} disabled={isRetrying}>
+                    Try Again
+            </Button>
+            </View>
+        </Modal>
+    );
+
+    // console.log(NFT_LIST.length, pageCount)
 
     return (
         <View style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
+            {
+                isLoading ?
+                    <Loader /> :
+                    NFT_LIST.length !== 0 ?
+                        <FlatList
+                            data={NFT_LIST}
+                            horizontal={false}
+                            numColumns={3}
+                            extraData={refresh}
+                            renderItem={({ item }) => {
+                                let findIndex = NFT_LIST.findIndex(x => x.id === item.id);
+                                return (
+                                    <TouchableOpacity onPress={() => navigation.navigate("DetailItem", { nftList: NFT_LIST.slice(findIndex), pageCount })} style={styles.listItem} >
+                                        {
+                                            item.metaData.image ?
+                                                <Image style={styles.listImage} source={{ uri: item.metaData.image }} resizeMode="cover" />
+                                                : <View style={styles.sorryMessageCont}>
+                                                    <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                </View>
+                                        }
+                                    </TouchableOpacity>
+                                )
+                            }}
+                            onEndReached={() => {
+                                console.log('yahooo...............')
+                                set_pageCount(pageCount + 1)
+                                getNFTlist()
+                            }}
+                            renderFooter={() => {
+                                return listLoading ? <View style={styles.sorryMessageCont} >
+                                    <ActivityIndicator size="small" color={colors.themeL} />
+                                </View> : null
+                            }}
+                            onEndReachedThreshold={1}
+                            // scrollEventThrottle={150}
+                            keyExtractor={(v, i) => "item_" + i}
+                        /> :
+                        <View style={styles.sorryMessageCont} >
+                            <Text style={styles.sorryMessage} >No NFT Available</Text>
+                        </View>
+            }
 
-            <ScrollView>
-                <View style={styles.imageListCont} >
-                    {
-                        list.map((v, i) => {
-                            return (
-                                <TouchableOpacity key={i} onPress={() => navigation.navigate("DetailItem")} style={styles.listItem} >
-                                    <Image style={styles.listImage} source={v} resizeMode="cover" />
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                </View>
-            </ScrollView>
-
+            <NoInternetModal
+                show={isOffline}
+                onRetry={getNFTlist}
+                isRetrying={isLoading}
+            />
         </View>
     )
 }
@@ -84,8 +168,7 @@ const Favorite = () => {
 
 const HomeScreen = () => {
     return (
-        <>
-        <SafeAreaView style={{flex: 1}} >
+        // <SafeAreaView style={{ flex: 1 }} >
         <Tab.Navigator tabBarOptions={{
             activeTintColor: colors.tabbar,
             inactiveTintColor: colors.black,
@@ -93,7 +176,7 @@ const HomeScreen = () => {
                 paddingBottom: 0
             },
             labelStyle: {
-                fontSize: 15,
+                fontSize: FS(2),
                 fontFamily: fonts.SegoeUIRegular,
                 textTransform: 'capitalize'
             },
@@ -107,8 +190,7 @@ const HomeScreen = () => {
             <Tab.Screen name="New" component={New} />
             <Tab.Screen name="Favorite" component={Favorite} />
         </Tab.Navigator>
-        </SafeAreaView>
-            </>
+        // </SafeAreaView>
     )
 }
 
