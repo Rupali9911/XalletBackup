@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Config from "react-native-config";
 import NetInfo from "@react-native-community/netinfo";
 import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 import styles from './styles';
@@ -13,40 +14,53 @@ import { Loader } from '../../components';
 const Tab = createMaterialTopTabNavigator();
 
 const Trend = ({ navigation }) => {
-    const [isLoading, setLoading] = React.useState(false);
-    const [listLoading, setListLoading] = React.useState(false);
-    const [refresh, set_refresh] = React.useState(false);
-    const [NFT_LIST, SET_NFT_LIST] = React.useState([]);
+    const [isLoading, setLoading] = useState(false);
+    const [listLoading, setListLoading] = useState(false);
+    const [refresh, set_refresh] = useState(false);
+    const [NFT_LIST, SET_NFT_LIST] = useState([]);
+    const [ownerId, setOwnerId] = useState("");
 
-    const [pageCount, set_pageCount] = React.useState(1);
+    const [pageCount, set_pageCount] = useState(1);
 
     // state of offline/online network connection
-    const [isOffline, setOfflineStatus] = React.useState(false);
+    const [isOffline, setOfflineStatus] = useState(false);
 
-    // console.log(Config.BASE_URL)
-
-    React.useEffect(() => {
+    React.useEffect(async () => {
         setLoading(true);
         const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
             const offline = !(state.isConnected && state.isInternetReachable);
             setOfflineStatus(offline);
         });
+        const ownerId = await AsyncStorage.getItem("account_id@")
+        if (ownerId !== null) {
+            let owner_Id_parse = JSON.parse(ownerId)
+            setOwnerId(owner_Id_parse.account)
+        }
         getNFTlist();
         return () => removeNetInfoSubscription();
     }, [])
 
-    const getNFTlist = React.useCallback(async () => {
+    const getNFTlist = useCallback(async () => {
         setListLoading(true)
-        let obj = {
-            limit: "40",
-            networkType: "testnet",
+        // let obj = {
+        // limit: "40",
+        // // networkType: "mainnet",
+        // networkType: "testnet",
+        // page: pageCount,
+        // token: "piyush55",
+        // type: "2D"
+        // }
+        let body_data = {
+            type: "2d",
             page: pageCount,
-            token: "piyush55",
-            type: "2D"
+            limit: 30,
+            networkType: "mainnet",
+            owner: ownerId,
+            sort: "sell"
         }
         let fetch_data_body = {
             method: 'POST',
-            body: JSON.stringify(obj),
+            body: JSON.stringify(body_data),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -55,7 +69,7 @@ const Trend = ({ navigation }) => {
         fetch(`${Config.BASE_URL}/getDemuxData`, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
-                debugger;
+                // debugger;
                 console.log(json.data, 'aaaaaaaaaaaaaaaaaaaaaaa')
                 let nft_list = [...NFT_LIST, ...json.data];
                 set_refresh(!refresh)
@@ -89,7 +103,7 @@ const Trend = ({ navigation }) => {
         </Modal>
     );
 
-    // console.log(NFT_LIST.length, pageCount)
+    console.log(NFT_LIST.length, pageCount)
 
     return (
         <View style={styles.trendCont} >

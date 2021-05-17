@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.swmansion.reanimated.ReanimatedPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
@@ -19,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import com.facebook.react.bridge.JSIModulePackage; 
-import com.swmansion.reanimated.ReanimatedJSIModulePackage; 
+// import com.swmansion.reanimated.ReanimatedJSIModulePackage; 
 import com.viromedia.bridge.ReactViroPackage;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -46,10 +47,10 @@ public class MainApplication extends Application implements ReactApplication {
           return "index";
         }
 
-          @Override
-      protected JSIModulePackage getJSIModulePackage() {
-        return new ReanimatedJSIModulePackage(); // <- add
-      }
+      //     @Override
+      // protected JSIModulePackage getJSIModulePackage() {
+      //   // return new ReanimatedJSIModulePackage(); // <- add
+      // }
       };
 
   @Override
