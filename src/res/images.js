@@ -17,6 +17,7 @@ const images = {
         profileIcon: require('../../assets/images/profileIcon.png'),
     },
     one: require('../../assets/images/image.png'),
+    two: require('../../assets/images/obj.png'),
 }
 
 export default images;

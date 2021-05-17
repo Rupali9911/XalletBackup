@@ -19,6 +19,7 @@ import {
   ViroSpotLight,
   Viro3DObject,
   ViroAnimations,
+  ViroImage,
 } from '@akadrimer/react-viro';
 
 // import TimerMixin from 'react-timer-mixin';
@@ -81,12 +82,22 @@ var ARHitTestSample = createReactClass({
           shadowOpacity={.9}
           ref={this._setSpotLightRef}/>
 
-        <Viro3DObject
-          position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
-          source={this.props.arSceneNavigator.viroAppProps.objectSource}
-          type = "VRX" onLoadEnd={this._onLoadEnd} onLoadStart={this._onLoadStart}
-          onRotate={this._onRotate}
-          onPinch={this._onPinch} />
+        {
+          this.props.arSceneNavigator.viroAppProps.type !== 1 ?
+          <Viro3DObject
+            position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
+            source={this.props.arSceneNavigator.viroAppProps.objectSource}
+            type = "VRX" onLoadEnd={this._onLoadEnd} onLoadStart={this._onLoadStart}
+            onRotate={this._onRotate}
+            onPinch={this._onPinch} /> :
+            <ViroImage
+              position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
+              source={this.props.arSceneNavigator.viroAppProps.objectSource}
+              onLoadEnd={this._onLoadEnd} onLoadStart={this._onLoadStart}
+              onPinch={this._onPinch}
+              onRotate={this._onRotate}
+            />
+        }
 
           <ViroQuad
             rotation={[-90, 0, 0]}

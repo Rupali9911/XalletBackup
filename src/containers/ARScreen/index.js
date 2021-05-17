@@ -6,7 +6,7 @@ import { colors, fonts, images } from '../../res';
 
 let list = [
     images.one,
-    images.one,
+    images.two,
     images.one,
     images.one,
     images.one,
@@ -44,7 +44,11 @@ const ARScreen = ({ navigation }) => {
                     {
                         list.map((v, i) => {
                             return (
-                                <TouchableOpacity key={i} onPress={() => navigation.navigate("ViroARScreen")} style={styles.listItem} >
+                                <TouchableOpacity
+                                    key={i}
+                                    onPress={() => navigation.navigate("ViroARScreen", { type: i })}
+                                    style={styles.listItem}
+                                >
                                     <Image style={styles.listImage} source={v} resizeMode="cover" />
                                 </TouchableOpacity>
                             )

@@ -19,12 +19,12 @@ var InitialARScene = require('../../js/ARHitTestSample');
 
 // Array of 3d models that we use in this sample. This app switches between this these models.
 var objArray = [
+  require('../../js/res/obj.png'),
   require('../../js/res/coffee_mug/object_coffee_mug.vrx'),
-  require('../../js/res/object_flowers/object_flowers.vrx'),
   require('../../js/res/emoji_smile/emoji_smile.vrx')];
 
 export default class ViroScreen extends Component {
-  constructor() {
+  constructor(props) {
     super();
 
     this._renderTrackingText = this._renderTrackingText.bind(this);
@@ -32,11 +32,13 @@ export default class ViroScreen extends Component {
     // this._onDisplayDialog = this._onDisplayDialog.bind(this);
     this._onLoadStart = this._onLoadStart.bind(this);
     this._onLoadEnd = this._onLoadEnd.bind(this);
+    this.type = props.route.params.type;
 
     this.state = {
       viroAppProps: {
+        type: this.type,
         displayObject: false,
-        objectSource: objArray[0],
+        objectSource: this.type !== 1 ? objArray[1] : objArray[0],
         yOffset: 0,
         _onLoadEnd: this._onLoadEnd,
         _onLoadStart: this._onLoadStart,
@@ -71,7 +73,7 @@ export default class ViroScreen extends Component {
 
         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
           <TouchableHighlight style={localStyles.buttons}
-            onPress={() => this._onShowObject(0, "coffee_mug", 0)}
+            onPress={() => this._onShowObject("coffee_mug", 0)}
             underlayColor={'#00000000'} >
             <Image source={require("../../js/res/btn_mode_objects.png")} />
           </TouchableHighlight>
@@ -124,12 +126,12 @@ export default class ViroScreen extends Component {
   //   );
   // }
 
-  _onShowObject(objIndex, objUniqueName, yOffset) {
+  _onShowObject(objUniqueName, yOffset) {
     this.setState({
       viroAppProps: {
         ...this.state.viroAppProps,
         displayObject: true,
-        objectSource: objArray[objIndex],
+        objectSource: this.type !== 1 ? objArray[1] : objArray[0],
         yOffset: yOffset,
         displayObjectName: objUniqueName
       },
