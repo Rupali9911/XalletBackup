@@ -17,15 +17,15 @@ const Trend = ({ navigation }) => {
     const [isLoading, setLoading] = useState(false);
     const [listLoading, setListLoading] = useState(false);
     const [refresh, set_refresh] = useState(false);
-    const [NFT_LIST, SET_NFT_LIST] = useState([]);
+    const [nftList, set_nftList] = useState([]);
     const [ownerId, setOwnerId] = useState("");
 
-    const [pageCount, set_pageCount] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
 
     // state of offline/online network connection
     const [isOffline, setOfflineStatus] = useState(false);
 
-    React.useEffect(async () => {
+    useEffect(async () => {
         setLoading(true);
         const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
             const offline = !(state.isConnected && state.isInternetReachable);
@@ -36,28 +36,28 @@ const Trend = ({ navigation }) => {
             let owner_Id_parse = JSON.parse(ownerId)
             setOwnerId(owner_Id_parse.account)
         }
-        getNFTlist();
+        getNFTlist(pageCount);
         return () => removeNetInfoSubscription();
     }, [])
 
-    const getNFTlist = useCallback(async () => {
+    const getNFTlist = useCallback((page) => {
         setListLoading(true)
         // let obj = {
-        // limit: "40",
-        // // networkType: "mainnet",
-        // networkType: "testnet",
-        // page: pageCount,
-        // token: "piyush55",
-        // type: "2D"
+        //     limit: "50",
+        //     // networkType: "mainnet",
+        //     networkType: "testnet",
+        //     page,
+        //     token: "piyush55",
+        //     type: "2D"
         // }
         let body_data = {
             type: "2d",
-            page: pageCount,
-            limit: 30,
+            page,
+            limit: 20,
             networkType: "mainnet",
             owner: ownerId,
-            sort: "sell"
         }
+
         let fetch_data_body = {
             method: 'POST',
             body: JSON.stringify(body_data),
@@ -69,11 +69,15 @@ const Trend = ({ navigation }) => {
         fetch(`${Config.BASE_URL}/getDemuxData`, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
-                // debugger;
-                console.log(json.data, 'aaaaaaaaaaaaaaaaaaaaaaa')
-                let nft_list = [...NFT_LIST, ...json.data];
+                let new_list = [...json.data];
+                set_nftList(old_list => {
+                    let array = [...old_list, ...new_list];
+                    let jsonObject = array.map(JSON.stringify);
+                    let uniqueSet = new Set(jsonObject);
+                    let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+                    return uniqueArray;
+                })
                 set_refresh(!refresh)
-                SET_NFT_LIST(nft_list)
                 isOffline && setOfflineStatus(false);
                 setLoading(false)
                 setListLoading(false)
@@ -103,38 +107,39 @@ const Trend = ({ navigation }) => {
         </Modal>
     );
 
-    console.log(NFT_LIST.length, pageCount)
-
     return (
         <View style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
                 isLoading ?
                     <Loader /> :
-                    NFT_LIST.length !== 0 ?
+                    nftList.length !== 0 ?
                         <FlatList
-                            data={NFT_LIST}
+                            data={nftList}
                             horizontal={false}
                             numColumns={3}
                             extraData={refresh}
                             renderItem={({ item }) => {
-                                let findIndex = NFT_LIST.findIndex(x => x.id === item.id);
-                                return (
-                                    <TouchableOpacity onPress={() => navigation.navigate("DetailItem", { nftList: NFT_LIST.slice(findIndex), pageCount })} style={styles.listItem} >
-                                        {
-                                            item.metaData.image ?
-                                                <Image style={styles.listImage} source={{ uri: item.metaData.image }} resizeMode="cover" />
-                                                : <View style={styles.sorryMessageCont}>
-                                                    <Text style={{ textAlign: "center" }} >No Image to Show</Text>
-                                                </View>
-                                        }
-                                    </TouchableOpacity>
-                                )
+                                let findIndex = nftList.findIndex(x => x.id === item.id);
+                                if(item.metaData){
+                                    return (
+                                        <TouchableOpacity onPress={() => navigation.navigate("DetailItem", { nftList: nftList.slice(findIndex), pageCount })} style={styles.listItem} >
+                                            {
+                                                item.metaData.image !== undefined || item.metaData.image ?
+                                                    <Image style={styles.listImage} source={{ uri: item.metaData.image }} resizeMode="cover" />
+                                                    : <View style={styles.sorryMessageCont}>
+                                                        <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                    </View>
+                                            }
+                                        </TouchableOpacity>
+                                    )
+                                }
                             }}
-                            onEndReached={() => {
-                                console.log('yahooo...............')
-                                set_pageCount(pageCount + 1)
-                                getNFTlist()
+                            onEndReached={async () => {
+                                setPageCount(num => {
+                                    getNFTlist(num + 1)
+                                    return num + 1
+                                })
                             }}
                             renderFooter={() => {
                                 return listLoading ? <View style={styles.sorryMessageCont} >
@@ -142,7 +147,6 @@ const Trend = ({ navigation }) => {
                                 </View> : null
                             }}
                             onEndReachedThreshold={1}
-                            // scrollEventThrottle={150}
                             keyExtractor={(v, i) => "item_" + i}
                         /> :
                         <View style={styles.sorryMessageCont} >
