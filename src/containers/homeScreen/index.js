@@ -31,9 +31,9 @@ const Trend = ({ navigation }) => {
             const offline = !(state.isConnected && state.isInternetReachable);
             setOfflineStatus(offline);
         });
-        const ownerId = await AsyncStorage.getItem("account_id@")
-        if (ownerId !== null) {
-            let owner_Id_parse = JSON.parse(ownerId)
+        const owner_Id = await AsyncStorage.getItem("account_id@");
+        if (owner_Id !== null) {
+            let owner_Id_parse = JSON.parse(owner_Id)
             setOwnerId(owner_Id_parse.account)
         }
         getNFTlist(pageCount);
