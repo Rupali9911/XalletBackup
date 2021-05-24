@@ -33,12 +33,13 @@ export default class ViroScreen extends Component {
     this._onLoadStart = this._onLoadStart.bind(this);
     this._onLoadEnd = this._onLoadEnd.bind(this);
     this.type = props.route.params.type;
+    this.obj = props.route.params.obj;
 
     this.state = {
       viroAppProps: {
         type: this.type,
         displayObject: false,
-        objectSource: this.type !== 1 ? objArray[1] : objArray[0],
+        objectSource: this.obj,
         yOffset: 0,
         _onLoadEnd: this._onLoadEnd,
         _onLoadStart: this._onLoadStart,
@@ -131,7 +132,7 @@ export default class ViroScreen extends Component {
       viroAppProps: {
         ...this.state.viroAppProps,
         displayObject: true,
-        objectSource: this.type !== 1 ? objArray[1] : objArray[0],
+        objectSource: this.obj,
         yOffset: yOffset,
         displayObjectName: objUniqueName
       },
