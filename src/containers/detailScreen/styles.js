@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { colors, fonts } from '../../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp, screenHeight, screenWidth } from "../../common/responsiveFunction";
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "../../common/responsiveFunction";
 
 const styles = StyleSheet.create({
     modalCont: {

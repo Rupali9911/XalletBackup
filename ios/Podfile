@@ -28,6 +28,8 @@ target 'showcase' do
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
+  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
+
   target 'showcaseTests' do
     inherit! :complete
     # Pods for testing

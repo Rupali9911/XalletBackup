@@ -1,13 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
 import { View, Text, Button, } from 'react-native';
+import { useDispatch } from 'react-redux';
 
-import styles from './styles';
-import { colors, images } from '../../res';
+import { resetAccount, loadAccountKeySuccess } from '../../store/actions';
+
 import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp'
 
 function ConnectScreen() {
+
+    const dispatch = useDispatch();
     const connector = useWalletConnect();
+
+    React.useEffect(() => {
+        if (connector.connected) {
+            dispatch(loadAccountKeySuccess(connector._accounts[0]));
+        }
+    }, [connector.connected])
+
     if (!connector.connected) {
         /**
          *  Connect! 🎉
@@ -23,6 +33,7 @@ function ConnectScreen() {
         <Text style={{ fontSize: 14, textAlign: "center", marginVertical: 5, backgroundColor: '#ddd', borderRadius: 5, paddingHorizontal: 10, paddingVertical: 2 }} >{connector._accounts[0].substr(0, 5) + '........'}</Text>
         <Button title="Kill Session" onPress={() => {
             AsyncStorage.removeItem("account_id@")
+            dispatch(resetAccount());
             connector.killSession()
         }} />
     </View>

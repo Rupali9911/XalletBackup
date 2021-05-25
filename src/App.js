@@ -1,10 +1,17 @@
 import 'react-native-gesture-handler';
 import '../shim';
+
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Image, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import Store from './store';
+import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions';
+import { Loader } from './components';
 
 import HomeScreen from './containers/homeScreen';
 import MyNFTScreen from './containers/myNFTScreen';
@@ -59,20 +66,54 @@ const TabComponent = () => {
   )
 }
 
-const App = () => {
+const AppRoutes = () => {
+
+  const { AuthReducer } = useSelector(state => state);
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
     LogBox.ignoreAllLogs();
-  });
+
+    AsyncStorage.getItem("account_id@")
+      .then(accountKey => {
+        if (accountKey !== null) {
+          let account_key_parse = JSON.parse(accountKey)
+          dispatch(loadAccountKeySuccess(account_key_parse.account));
+        } else {
+          dispatch(loadAccountKeyFail());
+        }
+      })
+      .catch(() => {
+        dispatch(loadAccountKeyFail());
+      })
+
+  }, []);
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator mode="modal" headerMode="none" >
-        <Stack.Screen name="Home" component={TabComponent} />
-        <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-        <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
-      </Stack.Navigator>
-    </NavigationContainer >
+    <>
+      {
+        AuthReducer.accountLoading ?
+          <Loader /> :
+          < NavigationContainer >
+            <Stack.Navigator mode="modal" headerMode="none" >
+              <Stack.Screen name="Home" component={TabComponent} />
+              <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+              <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
+            </Stack.Navigator>
+          </NavigationContainer >
+
+      }
+    </>
   );
-};
+}
+
+const App = () => {
+  return (
+    <Provider store={Store}>
+      <AppRoutes />
+    </Provider>
+  )
+}
 
 export default App;
 
