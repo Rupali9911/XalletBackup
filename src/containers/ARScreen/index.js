@@ -50,8 +50,8 @@ const ARScreen = () => {
                                         <TouchableOpacity onPress={() => navigation.navigate("ViroARScreen", { obj: item.metaData.image, type: item.metaData.properties.type })}
                                             style={styles.listItem}>
                                             {
-                                                item.metaData.image !== undefined || item.metaData.image ?
-                                                    <C_Image uri={item.metaData.image} imageStyle={styles.listImage} />
+                                                item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                                                    <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
                                                     : <View style={styles.sorryMessageCont}>
                                                         <Text style={{ textAlign: "center" }} >No Image to Show</Text>
                                                     </View>
