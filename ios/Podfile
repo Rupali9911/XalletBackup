@@ -30,6 +30,10 @@ target 'showcase' do
 
   pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
+  pod 'ViroReact', :path => '../node_modules/@viro-community/react-viro/ios'
+
+  pod 'ViroKit', :path => '../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer'
+
   target 'showcaseTests' do
     inherit! :complete
     # Pods for testing
