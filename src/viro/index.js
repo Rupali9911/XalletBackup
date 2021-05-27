@@ -12,7 +12,7 @@ import {
 
 import {
   ViroARSceneNavigator
-} from '@akadrimer/react-viro';
+} from '@viro-community/react-viro';
 
 import renderIf from '../../js/helpers/renderIf';
 var InitialARScene = require('../../js/ARHitTestSample');
@@ -72,6 +72,14 @@ export default class ViroScreen extends Component {
           </View>)
         }
 
+        <View style={{ position: 'absolute', left: 20, top: 30, alignItems: 'center'}}>
+          <TouchableHighlight style={localStyles.backbutton}
+            onPress={() => this.props.navigation.goBack()}
+            underlayColor={'#00000000'} >
+            <Image source={require("../../js/res/ic_before_stroke.png")} style={{width: 20, height: 20, resizeMode: 'contain'}} />
+          </TouchableHighlight>
+        </View>
+
         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
           <TouchableHighlight style={localStyles.buttons}
             onPress={() => this._onShowObject("coffee_mug", 0)}
@@ -99,11 +107,11 @@ export default class ViroScreen extends Component {
 
   _renderTrackingText() {
     if (this.state.trackingInitialized) {
-      return (<View style={{ position: 'absolute', backgroundColor: "#ffffff22", left: 30, right: 30, top: 30, alignItems: 'center' }}>
+      return (<View style={{ position: 'absolute', backgroundColor: "#ffffff22", left: 60, right: 60, top: 33, alignItems: 'center' }}>
         <Text style={{ fontSize: 12, color: "#ffffff" }}>Tracking initialized.</Text>
       </View>);
     } else {
-      return (<View style={{ position: 'absolute', backgroundColor: "#ffffff22", left: 30, right: 30, top: 30, alignItems: 'center' }}>
+      return (<View style={{ position: 'absolute', backgroundColor: "#ffffff22", left: 60, right: 60, top: 33, alignItems: 'center' }}>
         <Text style={{ fontSize: 12, color: "#ffffff" }}>Waiting for tracking to initialize.</Text>
       </View>);
     }
@@ -160,6 +168,10 @@ var localStyles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ffffff00',
+  },
+  backButton: {
+    height: 30,
+    width: 30,
   }
 });
 

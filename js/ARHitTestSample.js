@@ -20,7 +20,7 @@ import {
   Viro3DObject,
   ViroAnimations,
   ViroImage,
-} from '@akadrimer/react-viro';
+} from '@viro-community/react-viro';
 
 // import TimerMixin from 'react-timer-mixin';
 import PropTypes from 'prop-types';
