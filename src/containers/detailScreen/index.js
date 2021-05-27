@@ -5,7 +5,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getNFTList, handleLikeDislike, pageChange } from '../../store/actions';
+import { getNFTList, handleLikeDislike, pageChange } from '../../store/actions/nftTrendList';
 import styles from './styles';
 import { images, colors } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';

@@ -2,18 +2,12 @@ import * as React from 'react';
 import { SafeAreaView, StatusBar, ScrollView, View, Text, Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
+import TwoDArt from './twoDArt';
+
 import styles from './styles';
 import { colors, fonts } from '../../res';
 
 const Tab = createMaterialTopTabNavigator();
-
-const TwoDArt = () => {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
-        </View>
-    )
-}
 
 const GIFArt = () => {
     return (

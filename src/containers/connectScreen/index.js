@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, Text, Button, } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { resetAccount, loadAccountKeySuccess } from '../../store/actions';
+import { resetAccount, loadAccountKeySuccess } from '../../store/actions/authAction';
 
 import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp'
 

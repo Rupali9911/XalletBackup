@@ -1,28 +1,17 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { FlatList, View, Text, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import NetInfo from "@react-native-community/netinfo";
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import NetInfo from "@react-native-community/netinfo";
 
 import { myNftLoadStart, myNFTList, myPageChange } from '../../store/actions/myNFTaction';
 
 import styles from './styles';
-import { colors, fonts } from '../../res';
+import { colors } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
-import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 
-const Tab = createMaterialTopTabNavigator();
+const Favorite = () => {
 
-const Collection = ({ navigation }) => {
-
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
-        </View>
-    )
-}
-const NFT = () => {
     const { MyNFTReducer, AuthReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -67,16 +56,16 @@ const NFT = () => {
                 AuthReducer.accountKey ?
                     MyNFTReducer.myNftListLoading ?
                         <Loader /> :
-                        MyNFTReducer.myList.length !== 0 ?
+                        MyNFTReducer.completeNFTList.length !== 0 ?
                             <FlatList
-                                data={MyNFTReducer.myList}
+                                data={MyNFTReducer.completeNFTList}
                                 horizontal={false}
                                 numColumns={3}
                                 renderItem={({ item }) => {
-                                    let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-                                    if (item.metaData) {
+                                    let findIndex = MyNFTReducer.completeNFTList.findIndex(x => x.id === item.id);
+                                    if (item.like == 1) {
                                         return (
-                                            <TouchableOpacity onPress={() => navigation.navigate("DetailItem", { index: findIndex })} style={styles.listItem} >
+                                            <TouchableOpacity onPress={() => null} style={styles.listItem} >
                                                 {
                                                     item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                         <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
@@ -121,33 +110,4 @@ const NFT = () => {
     )
 }
 
-const MyNFTScreen = () => {
-    return (
-        <>
-            <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
-            <SafeAreaView style={{ flex: 1 }} >
-                <Tab.Navigator tabBarOptions={{
-                    activeTintColor: colors.tabbar,
-                    inactiveTintColor: colors.black,
-                    tabStyle: {
-                        paddingBottom: 0
-                    },
-                    labelStyle: {
-                        fontSize: FS(2),
-                        fontFamily: fonts.SegoeUIRegular,
-                        textTransform: 'none'
-                    },
-                    indicatorStyle: {
-                        borderBottomColor: colors.tabbar,
-                        borderBottomWidth: 2,
-                    }
-                }} >
-                    <Tab.Screen name="NFT" component={NFT} />
-                    <Tab.Screen name="My Collection" component={Collection} />
-                </Tab.Navigator>
-            </SafeAreaView>
-        </>
-    )
-}
-
-export default MyNFTScreen;
+export default Favorite;

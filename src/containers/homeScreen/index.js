@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getNFTList, nftLoadStart, pageChange } from '../../store/actions';
+import { getNFTList, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
 
 import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
+
+import NewNFT from './newNFT';
+import Favorite from './favorite';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -43,6 +46,12 @@ const Trend = () => {
 
     }, [isOffline]);
 
+    const refreshFunc = () => {
+        dispatch(nftListReset())
+        getNFTlist(1)
+        dispatch(pageChange(1))
+    }
+
     return (
         <View style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
@@ -54,6 +63,12 @@ const Trend = () => {
                             data={ListReducer.nftList}
                             horizontal={false}
                             numColumns={3}
+                            initialNumToRender={30}
+                            onRefresh={() => {
+                                dispatch(nftLoadStart())
+                                refreshFunc()
+                            }}
+                            refreshing={ListReducer.nftListLoading}
                             renderItem={({ item }) => {
                                 let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
@@ -85,63 +100,37 @@ const Trend = () => {
 
             <NoInternetModal
                 show={isOffline}
-                onRetry={() => {
-                    getNFTlist(1)
-                    dispatch(pageChange(1))
-                }}
+                onRetry={refreshFunc}
                 isRetrying={ListReducer.nftListLoading}
             />
         </View>
     )
 }
 
-const ForYou = () => {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
-        </View>
-    )
-}
-const New = () => {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>Coming Soon</Text>
-        </View>
-    )
-}
-const Favorite = () => {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>Coming Soon</Text>
-        </View>
-    )
-}
-
 const HomeScreen = () => {
     return (
-        // <SafeAreaView style={{ flex: 1 }} >
-        <Tab.Navigator tabBarOptions={{
-            activeTintColor: colors.tabbar,
-            inactiveTintColor: colors.black,
-            tabStyle: {
-                paddingBottom: 0
-            },
-            labelStyle: {
-                fontSize: FS(2),
-                fontFamily: fonts.SegoeUIRegular,
-                textTransform: 'capitalize'
-            },
-            indicatorStyle: {
-                borderBottomColor: colors.tabbar,
-                borderBottomWidth: 2,
-            }
-        }} >
-            <Tab.Screen name="Trend" component={Trend} />
-            <Tab.Screen name="For you" component={ForYou} />
-            <Tab.Screen name="New" component={New} />
-            <Tab.Screen name="Favorite" component={Favorite} />
-        </Tab.Navigator>
-        // </SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }} >
+            <Tab.Navigator tabBarOptions={{
+                activeTintColor: colors.tabbar,
+                inactiveTintColor: colors.black,
+                tabStyle: {
+                    paddingBottom: 0
+                },
+                labelStyle: {
+                    fontSize: FS(2),
+                    fontFamily: fonts.SegoeUIRegular,
+                    textTransform: 'capitalize'
+                },
+                indicatorStyle: {
+                    borderBottomColor: colors.tabbar,
+                    borderBottomWidth: 2,
+                }
+            }} >
+                <Tab.Screen name="Trend" component={Trend} />
+                <Tab.Screen name="New" component={NewNFT} />
+                <Tab.Screen name="Favorite" component={Favorite} />
+            </Tab.Navigator>
+        </SafeAreaView>
     )
 }
 

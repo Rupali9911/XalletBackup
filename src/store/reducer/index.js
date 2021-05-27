@@ -1,11 +1,15 @@
 import { combineReducers } from 'redux';
 
-import ListReducer from './listReducer';
 import AuthReducer from './authReducer';
+import ListReducer from './listReducer';
+import NewNFTListReducer from './newListReducer';
+import MyNFTReducer from './myNFTReducer';
 
 const RootReducer = combineReducers({
+    AuthReducer,
     ListReducer,
-    AuthReducer
+    NewNFTListReducer,
+    MyNFTReducer
 });
 
 export default RootReducer;

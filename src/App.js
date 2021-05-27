@@ -10,7 +10,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Store from './store';
-import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions';
+import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
 import { Loader } from './components';
 
 import HomeScreen from './containers/homeScreen';
