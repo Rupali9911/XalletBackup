@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { getNFTList, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
+import { changeScreenName } from '../../store/actions/authAction';
 
 import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 import styles from './styles';
@@ -34,7 +35,8 @@ const Trend = () => {
             const offline = !(state.isConnected && state.isInternetReachable);
             setOfflineStatus(offline);
         });
-        getNFTlist(ListReducer.page);
+        dispatch(nftListReset())
+        getNFTlist(1);
 
         return () => removeNetInfoSubscription();
     }, [])
@@ -73,7 +75,10 @@ const Trend = () => {
                                 let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
                                     return (
-                                        <TouchableOpacity onPress={() => navigation.navigate("DetailItem", { index: findIndex })} style={styles.listItem} >
+                                        <TouchableOpacity onPress={() => {
+                                            dispatch(changeScreenName("Trend"))
+                                            navigation.navigate("DetailItem", { index: findIndex })
+                                        }} style={styles.listItem} >
                                             {
                                                 item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                     <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />

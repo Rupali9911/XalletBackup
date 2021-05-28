@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import NetInfo from "@react-native-community/netinfo";
 
-import { myNftLoadStart, myNFTList, myPageChange } from '../../store/actions/myNFTaction';
+import { myNftLoadStart, myNFTList, myPageChange, myNftListReset } from '../../store/actions/myNFTaction';
+import { changeScreenName } from '../../store/actions/authAction';
 
 import styles from './styles';
 import { colors } from '../../res';
@@ -27,13 +28,17 @@ const Favorite = () => {
         const unsubscribe = navigation.addListener('focus', () => {
             if (AuthReducer.accountKey) {
                 dispatch(myNftLoadStart())
-                getNFTlist(MyNFTReducer.myListPage)
+                dispatch(myNftListReset())
+                getNFTlist(1)
+                dispatch(myPageChange(1))
             }
         });
-
+        
         if (AuthReducer.accountKey) {
             dispatch(myNftLoadStart())
-            getNFTlist(MyNFTReducer.myListPage)
+            dispatch(myNftListReset())
+            getNFTlist(1)
+            dispatch(myPageChange(1))
         }
 
         return () => {
@@ -42,12 +47,16 @@ const Favorite = () => {
         };
     }, [])
 
-
-
     const getNFTlist = useCallback((page) => {
-        dispatch(myNFTList(page))
+        dispatch(myNFTList(page, "favorite", 1000))
         isOffline && setOfflineStatus(false);
     }, [isOffline]);
+
+    const refreshFunc = () => {
+        dispatch(myNftListReset())
+        getNFTlist(1)
+        dispatch(myPageChange(1))
+    }
 
     return (
         <View style={styles.trendCont} >
@@ -56,26 +65,33 @@ const Favorite = () => {
                 AuthReducer.accountKey ?
                     MyNFTReducer.myNftListLoading ?
                         <Loader /> :
-                        MyNFTReducer.completeNFTList.length !== 0 ?
+                        MyNFTReducer.favorite.length !== 0 ?
                             <FlatList
-                                data={MyNFTReducer.completeNFTList}
+                                data={MyNFTReducer.favorite}
                                 horizontal={false}
                                 numColumns={3}
+                                initialNumToRender={30}
+                                onRefresh={() => {
+                                    dispatch(myNftLoadStart())
+                                    refreshFunc()
+                                }}
+                                refreshing={MyNFTReducer.myNftListLoading}
                                 renderItem={({ item }) => {
-                                    let findIndex = MyNFTReducer.completeNFTList.findIndex(x => x.id === item.id);
-                                    if (item.like == 1) {
-                                        return (
-                                            <TouchableOpacity onPress={() => null} style={styles.listItem} >
-                                                {
-                                                    item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                                                        <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
-                                                        : <View style={styles.sorryMessageCont}>
-                                                            <Text style={{ textAlign: "center" }} >No Image to Show</Text>
-                                                        </View>
-                                                }
-                                            </TouchableOpacity>
-                                        )
-                                    }
+                                    let findIndex = MyNFTReducer.favorite.findIndex(x => x.id === item.id);
+                                    return (
+                                        <TouchableOpacity onPress={() => {
+                                            dispatch(changeScreenName("favourite"))
+                                            navigation.navigate("DetailItem", { index: findIndex })
+                                        }} style={styles.listItem} >
+                                            {
+                                                item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                                                    <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
+                                                    : <View style={styles.sorryMessageCont}>
+                                                        <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                    </View>
+                                            }
+                                        </TouchableOpacity>
+                                    )
                                 }}
                                 onEndReached={() => {
                                     let num = MyNFTReducer.myListPage + 1;
@@ -100,10 +116,7 @@ const Favorite = () => {
 
             <NoInternetModal
                 show={isOffline}
-                onRetry={() => {
-                    getNFTlist(1)
-                    dispatch(myPageChange(1))
-                }}
+                onRetry={refreshFunc}
                 isRetrying={MyNFTReducer.myNftListLoading}
             />
         </View>

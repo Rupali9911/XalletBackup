@@ -2,13 +2,16 @@ import {
     MY_NFT_LOAD_FAIL,
     MY_NFT_LOAD_START,
     MY_NFT_LOAD_SUCCESS,
-    MY_PAGE_CHANGE
+    MY_PAGE_CHANGE,
+    MY_NFT_LOAD_RESET,
+    FAVORITE_NFT_SUCCESS,
+    FAVORITE_LIST_UPDATE
 } from '../types';
 
 const initialState = {
     myNftListLoading: false,
     myList: [],
-    completeNFTList: [],
+    favorite: [],
     myListPage: 1
 }
 
@@ -22,10 +25,19 @@ export default function MyNFTReducer(state = initialState, action) {
             return state = { ...state, myNftListLoading: true };
 
         case MY_NFT_LOAD_SUCCESS:
-            return state = { ...state, myList: [...action.payload.myList], completeNFTList: [...action.payload.completeList], myNftListLoading: false };
+            return state = { ...state, myList: [...action.payload], myNftListLoading: false };
+
+        case FAVORITE_NFT_SUCCESS:
+            return state = { ...state, favorite: [...action.payload], myNftListLoading: false };
+
+        case FAVORITE_LIST_UPDATE:
+            return state = { ...state, favorite: [...action.payload] };
 
         case MY_NFT_LOAD_FAIL:
             return state = { ...state, myNftListLoading: false };
+
+        case MY_NFT_LOAD_RESET:
+            return state = { ...state, myList: [], favorite: [] };
 
         default:
             return state;

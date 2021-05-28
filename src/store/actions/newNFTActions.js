@@ -4,7 +4,8 @@ import {
     NEW_NFT_LOAD_START, 
     NEW_NFT_LOAD_SUCCESS, 
     NEW_NFT_LOAD_FAIL,
-    NEW_PAGE_CHANGE
+    NEW_PAGE_CHANGE,
+    NEW_NFT_LIST_RESET
 } from '../types';
 
 export const newNftLoadSuccess = (data) => ({
@@ -20,6 +21,10 @@ export const newNftLoadFail = () => ({
     type: NEW_NFT_LOAD_FAIL
 });
 
+export const newNftListReset = () => ({
+    type: NEW_NFT_LIST_RESET
+});
+
 export const newPageChange = (data) => ({
     type: NEW_PAGE_CHANGE,
     payload: data
@@ -30,8 +35,7 @@ export const newNFTList = (page) => {
 
 
         let accountKey = getState().AuthReducer.accountKey;
-        let oldNFTS = getState().NewNFTListReducer.newNftList;
-
+        
         let body_data = {
             page,
             limit: 30,
@@ -59,11 +63,7 @@ export const newNFTList = (page) => {
             .then(json => {
 
                 let new_list = [...json.data];
-                let array = [...oldNFTS, ...new_list];
-                let jsonObject = array.map(JSON.stringify);
-                let uniqueSet = new Set(jsonObject);
-                let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-                dispatch(newNftLoadSuccess(uniqueArray))
+                dispatch(newNftLoadSuccess(new_list))
 
             }).catch(err => {
                 dispatch(newNftLoadFail())

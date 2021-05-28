@@ -4,7 +4,8 @@ import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { newNftLoadStart, newNFTList, newPageChange } from '../../store/actions/newNFTActions';
+import { newNftLoadStart, newNFTList, newPageChange, newNftListReset } from '../../store/actions/newNFTActions';
+import { changeScreenName } from '../../store/actions/authAction';
 
 import styles from './styles';
 import { colors } from '../../res';
@@ -27,7 +28,8 @@ const NewNFT = () => {
             const offline = !(state.isConnected && state.isInternetReachable);
             setOfflineStatus(offline);
         });
-        getNFTlist(NewNFTListReducer.newListPage);
+        dispatch(newNftListReset())
+        getNFTlist(1);
 
         return () => removeNetInfoSubscription();
     }, [])
@@ -40,6 +42,7 @@ const NewNFT = () => {
     }, [isOffline]);
 
     const handleRefresh = () => {
+        dispatch(newNftListReset())
         getNFTlist(1)
         dispatch(newPageChange(1))
     }
@@ -65,7 +68,10 @@ const NewNFT = () => {
                                 let findIndex = NewNFTListReducer.newNftList.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
                                     return (
-                                        <TouchableOpacity onPress={() => null} style={styles.listItem} >
+                                        <TouchableOpacity onPress={() => {
+                                            dispatch(changeScreenName("newNFT"))
+                                            navigation.navigate("DetailItem", { index: findIndex })
+                                        }} style={styles.listItem} >
                                             {
                                                 item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                     <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />

@@ -1,43 +1,67 @@
 import * as React from 'react';
 import { View, Text, TouchableOpacity, FlatList, SafeAreaView, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
+
 import { getNFTList, handleLikeDislike, pageChange } from '../../store/actions/nftTrendList';
+
+import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
+
 import styles from './styles';
 import { images, colors } from '../../res';
-import { Loader, NoInternetModal, C_Image } from '../../components';
+import { Loader, C_Image } from '../../components';
 
 const DetailItemScreen = ({ route }) => {
 
-    const { ListReducer, AuthReducer } = useSelector(state => state);
+    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [isOffline, setOfflineStatus] = React.useState(false);
     const [listIndex, setListIndex] = React.useState(0);
 
     React.useEffect(() => {
+
         const { index } = route.params;
         setListIndex(index)
 
-        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-            const offline = !(state.isConnected && state.isInternetReachable);
-            setOfflineStatus(offline);
-        });
-
-        return () => removeNetInfoSubscription();
     }, [])
 
-    const getNFTlist = React.useCallback((page) => {
+    const getNFTlistData = React.useCallback((page) => {
 
-        dispatch(getNFTList(page))
-        isOffline && setOfflineStatus(false);
+        AuthReducer.screenName == "Trend" ?
+            dispatch(getNFTList(page)) :
+            AuthReducer.screenName == "newNFT" ?
+                dispatch(newNFTList(page)) :
+                AuthReducer.screenName == "favourite" ?
+                    dispatch(myNFTList(page)) : null
 
-    }, [isOffline]);
+    });
 
+    const handlePageChange = (page) => {
+        AuthReducer.screenName == "Trend" ?
+            dispatch(pageChange(page)) :
+            AuthReducer.screenName == "newNFT" ?
+                dispatch(newPageChange(page)) :
+                AuthReducer.screenName == "favourite" ?
+                    dispatch(myPageChange(page)) : null
+    }
+
+    let list = AuthReducer.screenName == "Trend" ?
+        ListReducer.nftList :
+        AuthReducer.screenName == "newNFT" ?
+            NewNFTListReducer.newNftList :
+            AuthReducer.screenName == "favourite" ?
+                MyNFTReducer.favorite : [];
+
+    let loading = AuthReducer.screenName == "Trend" ?
+        ListReducer.nftListLoading :
+        AuthReducer.screenName == "newNFT" ?
+            NewNFTListReducer.newNftListLoading :
+            AuthReducer.screenName == "favourite" ?
+                MyNFTReducer.myNftListLoading : null;
     return (
         <SafeAreaView style={{ flex: 1 }} >
             <View style={styles.modalCont} >
@@ -47,13 +71,13 @@ const DetailItemScreen = ({ route }) => {
                     </TouchableOpacity>
                 </View>
                 {
-                    ListReducer.nftListLoading ?
+                    loading ?
                         <Loader /> :
                         <FlatList
                             initialNumToRender={10}
-                            data={ListReducer.nftList.slice(listIndex)}
+                            data={list.slice(listIndex)}
                             renderItem={({ item }) => {
-                                let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
+                                let findIndex = list.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
                                     return (
                                         <View>
@@ -120,23 +144,21 @@ const DetailItemScreen = ({ route }) => {
                                 }
                             }}
                             onEndReached={() => {
-                                let num = ListReducer.page + 1;
-                                getNFTlist(num)
-                                dispatch(pageChange(num))
+                                let num = AuthReducer.screenName == "Trend" ?
+                                    ListReducer.page + 1 :
+                                    AuthReducer.screenName == "newNFT" ?
+                                        NewNFTListReducer.newListPage + 1 :
+                                        AuthReducer.screenName == "favourite" ?
+                                            MyNFTReducer.myListPage + 1 : null;
+                                getNFTlistData(num)
+                                handlePageChange(num)
                             }}
 
                             onEndReachedThreshold={1}
                             keyExtractor={(v, i) => "item_" + i}
                         />
                 }
-                <NoInternetModal
-                    show={isOffline}
-                    onRetry={() => {
-                        getNFTlist(1)
-                        dispatch(pageChange(1))
-                    }}
-                    isRetrying={ListReducer.nftListLoading}
-                />
+
             </View>
         </SafeAreaView >
     )

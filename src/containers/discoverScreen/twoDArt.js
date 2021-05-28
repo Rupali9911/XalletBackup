@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import NetInfo from "@react-native-community/netinfo";
 
 import { myNftLoadStart, myNFTList, myPageChange } from '../../store/actions/myNFTaction';
+import { twoDNftLoadStart, twoDNftListReset, twoPageChange } from '../../store/actions/twoDAction';
 
 import styles from './styles';
 import { colors } from '../../res';
@@ -12,7 +13,7 @@ import { Loader, NoInternetModal, C_Image } from '../../components';
 
 const TwoDArt = () => {
 
-    const { MyNFTReducer } = useSelector(state => state);
+    const { TwoDReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
@@ -24,34 +25,39 @@ const TwoDArt = () => {
             setOfflineStatus(offline);
         });
 
-        dispatch(myNftLoadStart())
-        getNFTlist(MyNFTReducer.myListPage)
+        dispatch(twoDNftListReset())
+        dispatch(twoDNftLoadStart())
+        getNFTlist(1)
 
         return () => {
             removeNetInfoSubscription();
         };
     }, [])
 
-
-
     const getNFTlist = useCallback((page) => {
-        dispatch(myNFTList(page))
+        dispatch(myNFTList(page, "2D", 30))
         isOffline && setOfflineStatus(false);
     }, [isOffline]);
+
+    const refreshFunc = () => {
+        dispatch(twoDNftListReset())
+        getNFTlist(1)
+        dispatch(twoPageChange(1))
+    }
 
     return (
         <View style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
-                MyNFTReducer.myNftListLoading ?
+                TwoDReducer.twoDListLoading ?
                     <Loader /> :
-                    MyNFTReducer.completeNFTList.length !== 0 ?
+                    TwoDReducer.twoDNftList.length !== 0 ?
                         <FlatList
-                            data={MyNFTReducer.completeNFTList}
+                            data={TwoDReducer.twoDNftList}
                             horizontal={false}
                             numColumns={3}
                             renderItem={({ item }) => {
-                                let findIndex = MyNFTReducer.completeNFTList.findIndex(x => x.id === item.id);
+                                let findIndex = TwoDReducer.twoDNftList.findIndex(x => x.id === item.id);
                                 return (
                                     <TouchableOpacity onPress={() => null} style={styles.listItem} >
                                         {
@@ -65,7 +71,7 @@ const TwoDArt = () => {
                                 )
                             }}
                             onEndReached={() => {
-                                let num = MyNFTReducer.myListPage + 1;
+                                let num = TwoDReducer.page + 1;
                                 getNFTlist(num)
                                 dispatch(myPageChange(num))
                             }}
@@ -79,11 +85,8 @@ const TwoDArt = () => {
 
             <NoInternetModal
                 show={isOffline}
-                onRetry={() => {
-                    getNFTlist(1)
-                    dispatch(myPageChange(1))
-                }}
-                isRetrying={MyNFTReducer.myNftListLoading}
+                onRetry={refreshFunc}
+                isRetrying={TwoDReducer.twoDListLoading}
             />
         </View>
     )

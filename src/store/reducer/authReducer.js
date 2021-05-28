@@ -1,8 +1,9 @@
-import { ACCOUNT_KEY_FAIL, ACCOUNT_KEY_SUCCESS, RESET_ACCOUNT } from '../types';
+import { ACCOUNT_KEY_FAIL, ACCOUNT_KEY_SUCCESS, RESET_ACCOUNT, HANDLE_SCREEN_NAME } from '../types';
 
 const initialState = {
     accountKey: "",
-    accountLoading: true
+    accountLoading: true,
+    screenName: "",
 }
 
 export default function AuthReducer(state = initialState, action) {
@@ -16,6 +17,9 @@ export default function AuthReducer(state = initialState, action) {
 
         case RESET_ACCOUNT:
             return state = { ...state, accountKey: "" };
+
+        case HANDLE_SCREEN_NAME:
+            return state = { ...state, screenName: action.payload };
 
         default:
             return state;
