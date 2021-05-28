@@ -1,4 +1,5 @@
 import './shim.js'
+import './global';
 import crypto from 'crypto';
 
 import {AppRegistry} from 'react-native';

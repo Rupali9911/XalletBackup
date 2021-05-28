@@ -14,7 +14,7 @@ function ConnectScreen() {
 
     React.useEffect(() => {
         if (connector.connected) {
-            dispatch(loadAccountKeySuccess(connector._accounts[0]));
+            dispatch(loadAccountKeySuccess(connector));
         }
     }, [connector.connected])
 

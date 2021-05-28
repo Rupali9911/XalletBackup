@@ -12,7 +12,8 @@ import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
 
 import styles from './styles';
 import { images, colors } from '../../res';
-import { Loader, C_Image } from '../../components';
+import { Loader, NoInternetModal, C_Image } from '../../components';
+import NftItem from './nftItem';
 
 const DetailItemScreen = ({ route }) => {
 
@@ -27,7 +28,13 @@ const DetailItemScreen = ({ route }) => {
         const { index } = route.params;
         setListIndex(index)
 
-    }, [])
+        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+            const offline = !(state.isConnected && state.isInternetReachable);
+            setOfflineStatus(offline);
+        });
+
+        return () => removeNetInfoSubscription();
+    }, []);
 
     const getNFTlistData = React.useCallback((page) => {
 
@@ -80,66 +87,7 @@ const DetailItemScreen = ({ route }) => {
                                 let findIndex = list.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
                                     return (
-                                        <View>
-                                            <View style={styles.bgImageCont} >
-                                                <C_Image uri={item.metaData.image} imageStyle={styles.bgImage} />
-                                                <View style={[styles.bgImageCont, { backgroundColor: colors.black_opacity(0.8) }]} />
-                                            </View>
-                                            <C_Image uri={item.metaData.image} imageStyle={styles.modalImage} />
-
-                                            <View style={styles.bottomModal} >
-                                                <View style={styles.modalLabelCont} >
-                                                    <Text style={styles.modalLabel} >{item.metaData.name}</Text>
-                                                    {
-                                                        AuthReducer.accountKey ?
-                                                            <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, findIndex))} >
-                                                                <Image style={styles.heartIcon} source={item.like == 1 ? images.icons.heartA : images.icons.heart} />
-                                                            </TouchableOpacity> : null
-                                                    }
-                                                </View>
-
-                                                <View style={styles.modalSectCont} >
-                                                    <View style={{ flex: 1 }} >
-                                                        <Text style={styles.modalIconLabel} >Current price</Text>
-                                                        <View style={styles.iconCont} >
-                                                            <Image style={styles.iconsImage} source={images.icons.pIcon} />
-                                                            <Text style={styles.iconLabel} >25</Text>
-                                                        </View>
-                                                    </View>
-                                                    <View style={{ flex: 0.8 }} >
-                                                        <Text style={styles.modalIconLabel} >Last price</Text>
-                                                        <View style={styles.iconCont} >
-                                                            <Image style={styles.iconsImage} source={images.icons.pIcon} />
-                                                            <Text style={styles.iconLabel} >25</Text>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.separator} />
-                                                <View style={styles.modalSectCont} >
-                                                    <View style={{ flex: 1 }} >
-                                                        <Text style={styles.modalIconLabel} >Owner</Text>
-                                                        <View style={styles.iconCont} >
-                                                            <Image style={styles.profileIcon} source={images.icons.profileIcon} />
-                                                            <Text style={[styles.iconLabel, { fontWeight: "400" }]} >Queen</Text>
-                                                        </View>
-                                                    </View>
-                                                    <View style={{ flex: 0.8 }} >
-                                                        <Text style={styles.modalIconLabel} >Artist</Text>
-                                                        <View style={styles.iconCont} >
-                                                            <Image style={styles.profileIcon} source={images.icons.profileIcon} />
-                                                            <Text style={[styles.iconLabel, { fontWeight: "400" }]} >Queen</Text>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.separator} />
-                                                <Text style={styles.description} >{item.metaData.description}</Text>
-                                                <TouchableOpacity>
-                                                    <LinearGradient colors={[colors.themeL, colors.themeR]} style={styles.modalBtn}>
-                                                        <Text style={[styles.modalLabel, { color: colors.white }]} >Buy</Text>
-                                                    </LinearGradient>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
+                                        <NftItem item={item} />
                                     )
                                 }
                             }}
