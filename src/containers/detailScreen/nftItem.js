@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  ActivityIndicator
-} from 'react-native';
+import { View, Text, TouchableOpacity, Image, Dimensions, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Config from "react-native-config";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 const Web3 = require('web3');
 
@@ -31,7 +24,9 @@ import { C_Image } from '../../components';
 
 const { width } = Dimensions.get('window');
 
-const nftItem = ({ item }) => {
+const nftItem = ({ item, index }) => {
+
+  const dispatch = useDispatch();
 
   const { AuthReducer } = useSelector(state => state);
   const [price, setPrice] = useState('');
@@ -45,11 +40,8 @@ const nftItem = ({ item }) => {
 
   const navigation = useNavigation();
   const accountKey = AuthReducer.accountKey;
-  const connector = AuthReducer.connector;
 
   const getTockendetailsApi = async () => {
-    // let oldNFTS = getState().ListReducer.nftList;
-
 
     let body_data = {
       tokenId: parseInt(item.tokenId),
@@ -98,11 +90,8 @@ const nftItem = ({ item }) => {
     let data = item;
 
     MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
-      // if (!err && data.owner_address) {
-      //   data.owner_address = res;
+
       MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
-        // console.log('====', res);
-        console.log('=========res', res)
         if (!err) {
           setPriceNFT(res[1] / 1e18);
           setPriceNFTString(res[1]);
@@ -136,7 +125,6 @@ const nftItem = ({ item }) => {
       .then(response => response.json())
       .then((res) => {
         if (res.data.length > 0) {
-          // console.log(res.data.data);
           setSellDetails(res.data);
         } else {
         }
@@ -147,12 +135,10 @@ const nftItem = ({ item }) => {
   }
 
   const handleBuyCall = (MarketPlaceContract, approvalContract, id, acc) => {
-    // console.log(acc[0], id)
+
     approvalContract.methods.balanceOf(acc[0]).call((err, res) => {
       if (!err) {
-        // console.log(parseInt(res) / Math.pow(10, 18));
         if (parseInt(res) / Math.pow(10, 18) === 0) {
-          // this.setState({ loaderFor: "" });
         } else {
           MarketPlaceContract.methods
             .buyNFT(MarketContractAddress, id, acc[0])
@@ -160,54 +146,39 @@ const nftItem = ({ item }) => {
             .then((res) => {
               lastOwnerOfNFT();
               getNFTSellDetails(item.tokenId);
-              // this.setState({
-              //   isApproved: false,
-              //   isOwner: true,
-              //   priceNFT: null,
-              //   priceNFTString: "",
-              //   loaderFor: "",
-              // });
+
             })
             .catch((err) => {
               setLoading(false);
-              // console.log("err in buyNFTItem", err);
             });
         }
       } else {
-        // console.log("err in balanceOf", err);
         setLoading(false);
       }
     });
   }
 
   const handleApprove = (MarketPlaceContract, id) => {
-    console.log('approve');
-    // this.setState({ loaderFor: "Approve" });
-    let appprovalValue =
-      "115792089237316195423570985008687907853269984665640564039457";
+
+    let appprovalValue = "115792089237316195423570985008687907853269984665640564039457";
 
     web3.eth
       .getAccounts()
       .then((acc) => {
-        // console.log("acc[0]", acc[0]);
         let approvalContract = new web3.eth.Contract(ApproveAbi, ApproveAdd);
         approvalContract.methods
           .approve(
             MarketContractAddress,
-            //this.props.metaMaskAddress,
-            // web3.utils.toWei(price, "ether")
             web3.utils.toWei(appprovalValue, "ether")
           )
           .send({ from: acc[0] })
           .then((res) => {
-            // console.log("res of approve", res);
             handleBuyCall(
               MarketPlaceContract,
               approvalContract,
               id,
               acc
             );
-            // this.setState({ loaderFor: "", isApproved: true });
           })
           .catch((err) => {
             setLoading(false);
@@ -220,8 +191,6 @@ const nftItem = ({ item }) => {
   }
 
   const buyNFTItem = () => {
-    console.log('111==========connector');
-    console.log(accountKey);
     if (accountKey) {
       let id = item.tokenId;
       let web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
@@ -235,31 +204,20 @@ const nftItem = ({ item }) => {
       setLoading(true);
       setLoaderFor('Buy');
 
-      // web3.eth
-      //   .getAccounts()
-      //   .then((acc) => {
-      //     setLoading(true);
-          // console.log('============succsss')
-          approvalContract.methods
-            .allowance(accountKey, MarketContractAddress)
-            .call((err, res) => {
-              console.log('======err', res)
-              if (parseInt(res) / Math.pow(10, 18) <= 0) {
-                handleApprove(MarketPlaceContract, id);
-              } else {
-                handleBuyCall(
-                  MarketPlaceContract,
-                  approvalContract,
-                  id,
-                  acc
-                );
-              }
-            });
-        // })
-        // .catch((err) => {
-        //   setLoading(false);
-        //   console.log("====err", err);
-        // });
+      approvalContract.methods
+        .allowance(accountKey, MarketContractAddress)
+        .call((err, res) => {
+          if (parseInt(res) / Math.pow(10, 18) <= 0) {
+            handleApprove(MarketPlaceContract, id);
+          } else {
+            handleBuyCall(
+              MarketPlaceContract,
+              approvalContract,
+              id,
+              acc
+            );
+          }
+        });
     } else {
       navigation.navigate('Connect');
     }
@@ -286,7 +244,7 @@ const nftItem = ({ item }) => {
           <Text style={styles.modalLabel} >{item.metaData.name}</Text>
           {
             AuthReducer.accountKey ?
-              <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, findIndex))} >
+              <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
                 <Image style={styles.heartIcon} source={item.like == 1 ? images.icons.heartA : images.icons.heart} />
               </TouchableOpacity> : null
           }

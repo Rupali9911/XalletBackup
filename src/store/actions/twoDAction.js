@@ -1,4 +1,3 @@
-import Config from "react-native-config";
 
 import {
     TWOD_NFT_FAIL,

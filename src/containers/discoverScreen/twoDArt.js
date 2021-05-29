@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import NetInfo from "@react-native-community/netinfo";
 
-import { myNftLoadStart, myNFTList, myPageChange } from '../../store/actions/myNFTaction';
+import { myNFTList } from '../../store/actions/myNFTaction';
 import { twoDNftLoadStart, twoDNftListReset, twoPageChange } from '../../store/actions/twoDAction';
+import { changeScreenName } from '../../store/actions/authAction';
 
 import styles from './styles';
 import { colors } from '../../res';
@@ -28,6 +29,7 @@ const TwoDArt = () => {
         dispatch(twoDNftListReset())
         dispatch(twoDNftLoadStart())
         getNFTlist(1)
+        dispatch(twoPageChange(1))
 
         return () => {
             removeNetInfoSubscription();
@@ -59,7 +61,10 @@ const TwoDArt = () => {
                             renderItem={({ item }) => {
                                 let findIndex = TwoDReducer.twoDNftList.findIndex(x => x.id === item.id);
                                 return (
-                                    <TouchableOpacity onPress={() => null} style={styles.listItem} >
+                                    <TouchableOpacity onPress={() => {
+                                        dispatch(changeScreenName("twoDArt"))
+                                        navigation.navigate("DetailItem", { index: findIndex })
+                                    }} style={styles.listItem} >
                                         {
                                             item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                 <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
@@ -73,7 +78,7 @@ const TwoDArt = () => {
                             onEndReached={() => {
                                 let num = TwoDReducer.page + 1;
                                 getNFTlist(num)
-                                dispatch(myPageChange(num))
+                                dispatch(twoPageChange(num))
                             }}
                             onEndReachedThreshold={1}
                             keyExtractor={(v, i) => "item_" + i}

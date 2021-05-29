@@ -37,6 +37,7 @@ const Trend = () => {
         });
         dispatch(nftListReset())
         getNFTlist(1);
+        dispatch(pageChange(1))
 
         return () => removeNetInfoSubscription();
     }, [])

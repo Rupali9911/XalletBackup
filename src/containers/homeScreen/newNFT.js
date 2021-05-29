@@ -30,6 +30,7 @@ const NewNFT = () => {
         });
         dispatch(newNftListReset())
         getNFTlist(1);
+        dispatch(newPageChange(1))
 
         return () => removeNetInfoSubscription();
     }, [])

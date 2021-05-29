@@ -9,7 +9,9 @@ import {
     NFT_LIST_RESET,
     NFT_LIST_UPDATE,
     NEW_NFT_LIST_UPDATE,
-    FAVORITE_LIST_UPDATE
+    FAVORITE_LIST_UPDATE,
+    TWOD_LIST_UPDATE,
+    MYLIST_LIST_UPDATE
 } from '../types';
 
 
@@ -87,7 +89,8 @@ export const handleLikeDislike = (item, index) => {
 
         let oldNFTS = screenName == "Trend" ? getState().ListReducer.nftList :
             screenName == "newNFT" ? getState().NewNFTListReducer.newNftList :
-                screenName == "favourite" ? getState().MyNFTReducer.favorite : [];
+                screenName == "favourite" ? getState().MyNFTReducer.favorite :
+                    screenName == "twoDArt" ? getState().TwoDReducer.twoDNftList : getState().MyNFTReducer.myList;
 
         var url1 = "";
         var url2 = `${Config.BASE_URL}/updateRating`;
@@ -141,7 +144,9 @@ export const handleLikeDislike = (item, index) => {
 
             screenName == "Trend" ? dispatch(nftLoadUpdate(nftUpdated)) :
                 screenName == "newNFT" ? dispatch(newNftLoadUpdate(nftUpdated)) :
-                    screenName == "favourite" ? dispatch(favoriteNFTUpdate(nftUpdated)) : null;
+                    screenName == "favourite" ? dispatch(favoriteNFTUpdate(nftUpdated)) :
+                        screenName == "twoDArt" ? dispatch(twoDNFTUpdate(nftUpdated)) :
+                            dispatch(myNFTupdate(nftUpdated));
 
         })
 
@@ -153,6 +158,11 @@ export const nftLoadUpdate = (data) => ({
     payload: data
 });
 
+export const myNFTupdate = (data) => ({
+    type: MYLIST_LIST_UPDATE,
+    payload: data
+});
+
 export const newNftLoadUpdate = (data) => ({
     type: NEW_NFT_LIST_UPDATE,
     payload: data
@@ -160,5 +170,10 @@ export const newNftLoadUpdate = (data) => ({
 
 export const favoriteNFTUpdate = (data) => ({
     type: FAVORITE_LIST_UPDATE,
+    payload: data
+});
+
+export const twoDNFTUpdate = (data) => ({
+    type: TWOD_LIST_UPDATE,
     payload: data
 });

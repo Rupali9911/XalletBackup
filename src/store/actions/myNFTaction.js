@@ -6,7 +6,8 @@ import {
     MY_PAGE_CHANGE,
     MY_NFT_LOAD_RESET,
     MY_NFT_LOAD_SUCCESS,
-    FAVORITE_NFT_SUCCESS
+    FAVORITE_NFT_SUCCESS,
+    FAVORITE_PAGE_CHANGE
 } from '../types';
 
 import { twoNftLoadSuccess } from './twoDAction';
@@ -28,13 +29,17 @@ export const myPageChange = (data) => ({
     payload: data
 });
 
+export const favoritePageChange = (data) => ({
+    type: FAVORITE_PAGE_CHANGE,
+    payload: data
+});
+
 export const myNFTList = (page, screen, limit) => {
     return (dispatch, getState) => {
 
         let accountKey = getState().AuthReducer.accountKey;
         const { myList, favorite } = getState().MyNFTReducer;
-        const { twoDNftList } = getState().TwoDReducer;
-
+        
         let body_data = {
             limit: limit,
             networkType: "mainnet",

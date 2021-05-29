@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import NetInfo from "@react-native-community/netinfo";
 
-import { myNftLoadStart, myNFTList, myPageChange, myNftListReset } from '../../store/actions/myNFTaction';
+import { myNftLoadStart, myNFTList, favoritePageChange, myNftListReset } from '../../store/actions/myNFTaction';
 import { changeScreenName } from '../../store/actions/authAction';
 
 import styles from './styles';
@@ -30,7 +30,7 @@ const Favorite = () => {
                 dispatch(myNftLoadStart())
                 dispatch(myNftListReset())
                 getNFTlist(1)
-                dispatch(myPageChange(1))
+                dispatch(favoritePageChange(1))
             }
         });
         
@@ -38,7 +38,7 @@ const Favorite = () => {
             dispatch(myNftLoadStart())
             dispatch(myNftListReset())
             getNFTlist(1)
-            dispatch(myPageChange(1))
+            dispatch(favoritePageChange(1))
         }
 
         return () => {
@@ -55,7 +55,7 @@ const Favorite = () => {
     const refreshFunc = () => {
         dispatch(myNftListReset())
         getNFTlist(1)
-        dispatch(myPageChange(1))
+        dispatch(favoritePageChange(1))
     }
 
     return (
@@ -94,9 +94,9 @@ const Favorite = () => {
                                     )
                                 }}
                                 onEndReached={() => {
-                                    let num = MyNFTReducer.myListPage + 1;
+                                    let num = MyNFTReducer.favoritePage + 1;
                                     getNFTlist(num)
-                                    dispatch(myPageChange(num))
+                                    dispatch(favoritePageChange(num))
                                 }}
                                 onEndReachedThreshold={1}
                                 keyExtractor={(v, i) => "item_" + i}

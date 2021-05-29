@@ -14,7 +14,7 @@ function ConnectScreen() {
 
     React.useEffect(() => {
         if (connector.connected) {
-            dispatch(loadAccountKeySuccess(connector));
+            dispatch(loadAccountKeySuccess(connector._accounts[0]));
         }
     }, [connector.connected])
 
@@ -27,7 +27,7 @@ function ConnectScreen() {
         </View>;
     }
     AsyncStorage.setItem("account_id@", JSON.stringify({ account: connector._accounts[0] }))
-    console.log(connector, '/////////////', connector._accounts[0])
+    // console.log(connector, '/////////////', connector._accounts[0])
     return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
         <Text style={{ fontSize: 18, textAlign: "center", marginVertical: 5 }} >Client ID</Text>
         <Text style={{ fontSize: 14, textAlign: "center", marginVertical: 5, backgroundColor: '#ddd', borderRadius: 5, paddingHorizontal: 10, paddingVertical: 2 }} >{connector._accounts[0].substr(0, 5) + '........'}</Text>

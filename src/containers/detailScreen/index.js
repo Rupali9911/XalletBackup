@@ -1,23 +1,24 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, FlatList, SafeAreaView, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, TouchableOpacity, FlatList, SafeAreaView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
 
-import { getNFTList, handleLikeDislike, pageChange } from '../../store/actions/nftTrendList';
+import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 
-import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
+import { myNFTList, myPageChange, favoritePageChange } from '../../store/actions/myNFTaction';
+
+import { twoPageChange } from '../../store/actions/twoDAction';
 
 import styles from './styles';
-import { images, colors } from '../../res';
-import { Loader, NoInternetModal, C_Image } from '../../components';
+import { images } from '../../res';
+import { Loader } from '../../components';
 import NftItem from './nftItem';
 
 const DetailItemScreen = ({ route }) => {
 
-    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer } = useSelector(state => state);
+    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, TwoDReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
@@ -28,12 +29,6 @@ const DetailItemScreen = ({ route }) => {
         const { index } = route.params;
         setListIndex(index)
 
-        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-            const offline = !(state.isConnected && state.isInternetReachable);
-            setOfflineStatus(offline);
-        });
-
-        return () => removeNetInfoSubscription();
     }, []);
 
     const getNFTlistData = React.useCallback((page) => {
@@ -43,7 +38,9 @@ const DetailItemScreen = ({ route }) => {
             AuthReducer.screenName == "newNFT" ?
                 dispatch(newNFTList(page)) :
                 AuthReducer.screenName == "favourite" ?
-                    dispatch(myNFTList(page)) : null
+                    dispatch(myNFTList(page, "favorite", 1000)) :
+                    AuthReducer.screenName == "twoDArt" ?
+                        dispatch(myNFTList(page, "2D", 30)) : null
 
     });
 
@@ -53,7 +50,9 @@ const DetailItemScreen = ({ route }) => {
             AuthReducer.screenName == "newNFT" ?
                 dispatch(newPageChange(page)) :
                 AuthReducer.screenName == "favourite" ?
-                    dispatch(myPageChange(page)) : null
+                    dispatch(favoritePageChange(page)) :
+                    AuthReducer.screenName == "twoDArt" ?
+                        dispatch(twoPageChange(page)) : null
     }
 
     let list = AuthReducer.screenName == "Trend" ?
@@ -61,14 +60,18 @@ const DetailItemScreen = ({ route }) => {
         AuthReducer.screenName == "newNFT" ?
             NewNFTListReducer.newNftList :
             AuthReducer.screenName == "favourite" ?
-                MyNFTReducer.favorite : [];
+                MyNFTReducer.favorite :
+                AuthReducer.screenName == "twoDArt" ?
+                    TwoDReducer.twoDNftList : [];
 
     let loading = AuthReducer.screenName == "Trend" ?
         ListReducer.nftListLoading :
         AuthReducer.screenName == "newNFT" ?
             NewNFTListReducer.newNftListLoading :
             AuthReducer.screenName == "favourite" ?
-                MyNFTReducer.myNftListLoading : null;
+                MyNFTReducer.myNftListLoading :
+                AuthReducer.screenName == "twoDArt" ?
+                    TwoDReducer.twoDListLoading : null;
     return (
         <SafeAreaView style={{ flex: 1 }} >
             <View style={styles.modalCont} >
@@ -87,7 +90,7 @@ const DetailItemScreen = ({ route }) => {
                                 let findIndex = list.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
                                     return (
-                                        <NftItem item={item} />
+                                        <NftItem item={item} index={findIndex} />
                                     )
                                 }
                             }}
@@ -97,7 +100,9 @@ const DetailItemScreen = ({ route }) => {
                                     AuthReducer.screenName == "newNFT" ?
                                         NewNFTListReducer.newListPage + 1 :
                                         AuthReducer.screenName == "favourite" ?
-                                            MyNFTReducer.myListPage + 1 : null;
+                                            MyNFTReducer.favoritePage + 1 :
+                                            AuthReducer.screenName == "twoDArt" ?
+                                                TwoDReducer.page + 1 : null;
                                 getNFTlistData(num)
                                 handlePageChange(num)
                             }}

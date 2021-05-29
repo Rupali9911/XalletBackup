@@ -3,14 +3,14 @@ import { ACCOUNT_KEY_FAIL, ACCOUNT_KEY_SUCCESS, RESET_ACCOUNT, HANDLE_SCREEN_NAM
 const initialState = {
     accountKey: "",
     accountLoading: true,
-    connector: null,
+    screenName: "",
 }
 
 export default function AuthReducer(state = initialState, action) {
     switch (action.type) {
 
         case ACCOUNT_KEY_SUCCESS:
-            return state = { ...state, accountKey: action.payload._accounts[0], connector: action.payload, accountLoading: false };
+            return state = { ...state, accountKey: action.payload, accountLoading: false };
 
         case ACCOUNT_KEY_FAIL:
             return state = { ...state, accountLoading: false };
