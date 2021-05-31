@@ -4,10 +4,10 @@ import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
+import { getNFTList, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
 
 import styles from './styles';
-import { colors} from '../../res';
+import { colors } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
 
 const ARScreen = () => {
@@ -19,11 +19,15 @@ const ARScreen = () => {
     const [isOffline, setOfflineStatus] = useState(false);
 
     useEffect(() => {
+        dispatch(nftLoadStart())
 
         const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
             const offline = !(state.isConnected && state.isInternetReachable);
             setOfflineStatus(offline);
         });
+        dispatch(nftListReset())
+        getNFTlist(1);
+        dispatch(pageChange(1))
 
         return () => removeNetInfoSubscription();
     }, [])
@@ -32,6 +36,12 @@ const ARScreen = () => {
         dispatch(getNFTList(page))
         isOffline && setOfflineStatus(false);
     }, [isOffline]);
+
+    const refreshFunc = () => {
+        dispatch(nftListReset())
+        getNFTlist(1)
+        dispatch(pageChange(1))
+    }
 
     return (
         <View style={styles.trendCont} >
@@ -44,6 +54,12 @@ const ARScreen = () => {
                             data={ListReducer.nftList}
                             horizontal={false}
                             numColumns={3}
+                            initialNumToRender={30}
+                            onRefresh={() => {
+                                dispatch(nftLoadStart())
+                                refreshFunc()
+                            }}
+                            refreshing={ListReducer.nftListLoading}
                             renderItem={({ item }) => {
                                 if (item.metaData) {
                                     return (
@@ -60,7 +76,7 @@ const ARScreen = () => {
                                     )
                                 }
                             }}
-                            onEndReached={async () => {
+                            onEndReached={() => {
                                 let num = ListReducer.page + 1;
                                 getNFTlist(num)
                                 dispatch(pageChange(num))
@@ -74,10 +90,7 @@ const ARScreen = () => {
             }
             <NoInternetModal
                 show={isOffline}
-                onRetry={() => {
-                    getNFTlist(1)
-                    dispatch(pageChange(1))
-                }}
+                onRetry={refreshFunc}
                 isRetrying={ListReducer.nftListLoading}
             />
         </View>

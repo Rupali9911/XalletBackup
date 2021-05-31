@@ -2,12 +2,16 @@ import Config from "react-native-config";
 
 import {
     NFT_LIST_SUCCESS,
-    NFT_LIST_UPDATE,
     LOAD_NFT_START,
     NFT_LIST_FAIL,
     PAGE_CHANGE,
     HANDLE_LIKE_DISLIKE,
-    NFT_LIST_RESET
+    NFT_LIST_RESET,
+    NFT_LIST_UPDATE,
+    NEW_NFT_LIST_UPDATE,
+    FAVORITE_LIST_UPDATE,
+    TWOD_LIST_UPDATE,
+    MYLIST_LIST_UPDATE
 } from '../types';
 
 
@@ -28,11 +32,6 @@ export const nftLoadSuccess = (data) => ({
     payload: data
 });
 
-export const nftLoadUpdate = (data) => ({
-    type: NFT_LIST_UPDATE,
-    payload: data
-});
-
 export const handleLikeDislikeSuccess = (data) => ({
     type: HANDLE_LIKE_DISLIKE,
     payload: data
@@ -47,7 +46,6 @@ export const getNFTList = (page) => {
     return (dispatch, getState) => {
 
         let accountKey = getState().AuthReducer.accountKey;
-        // let oldNFTS = getState().ListReducer.nftList;
 
         let body_data = {
             type: "2d",
@@ -74,10 +72,6 @@ export const getNFTList = (page) => {
             .then(json => {
 
                 let new_list = [...json.data];
-                // let array = [...oldNFTS, ...new_list];
-                // let jsonObject = array.map(JSON.stringify);
-                // let uniqueSet = new Set(jsonObject);
-                // let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
                 dispatch(nftLoadSuccess(new_list))
 
             }).catch(err => {
@@ -91,8 +85,12 @@ export const getNFTList = (page) => {
 export const handleLikeDislike = (item, index) => {
     return (dispatch, getState) => {
 
-        let accountKey = getState().AuthReducer.accountKey;
-        let oldNFTS = getState().ListReducer.nftList;
+        const { accountKey, screenName } = getState().AuthReducer;
+
+        let oldNFTS = screenName == "Trend" ? getState().ListReducer.nftList :
+            screenName == "newNFT" ? getState().NewNFTListReducer.newNftList :
+                screenName == "favourite" ? getState().MyNFTReducer.favorite :
+                    screenName == "twoDArt" ? getState().TwoDReducer.twoDNftList : getState().MyNFTReducer.myList;
 
         var url1 = "";
         var url2 = `${Config.BASE_URL}/updateRating`;
@@ -136,15 +134,46 @@ export const handleLikeDislike = (item, index) => {
         Promise.all([
             fetch(url1, fetch_like_body).then(res => res.json()),
             fetch(url2, fetch_rating_body).then(res => res.json())
-        ]).then(() => {
+        ]).then(([v, a]) => {
+            console.log(v, a)
             const nftUpdated = [
                 ...oldNFTS.slice(0, index),
                 item,
                 ...oldNFTS.slice(index + 1),
             ];
 
-            dispatch(nftLoadUpdate(nftUpdated))
+            screenName == "Trend" ? dispatch(nftLoadUpdate(nftUpdated)) :
+                screenName == "newNFT" ? dispatch(newNftLoadUpdate(nftUpdated)) :
+                    screenName == "favourite" ? dispatch(favoriteNFTUpdate(nftUpdated)) :
+                        screenName == "twoDArt" ? dispatch(twoDNFTUpdate(nftUpdated)) :
+                            dispatch(myNFTupdate(nftUpdated));
+
         })
 
     }
 }
+
+export const nftLoadUpdate = (data) => ({
+    type: NFT_LIST_UPDATE,
+    payload: data
+});
+
+export const myNFTupdate = (data) => ({
+    type: MYLIST_LIST_UPDATE,
+    payload: data
+});
+
+export const newNftLoadUpdate = (data) => ({
+    type: NEW_NFT_LIST_UPDATE,
+    payload: data
+});
+
+export const favoriteNFTUpdate = (data) => ({
+    type: FAVORITE_LIST_UPDATE,
+    payload: data
+});
+
+export const twoDNFTUpdate = (data) => ({
+    type: TWOD_LIST_UPDATE,
+    payload: data
+});

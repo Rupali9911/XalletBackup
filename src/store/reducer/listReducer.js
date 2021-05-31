@@ -3,8 +3,8 @@ import {
     NFT_LIST_SUCCESS,
     NFT_LIST_FAIL,
     PAGE_CHANGE,
+    NFT_LIST_RESET,
     NFT_LIST_UPDATE,
-    NFT_LIST_RESET
 } from '../types';
 
 const initialState = {
