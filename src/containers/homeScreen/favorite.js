@@ -114,11 +114,11 @@ const Favorite = () => {
 
             }
 
-            <NoInternetModal
+            {/* <NoInternetModal
                 show={isOffline}
                 onRetry={refreshFunc}
                 isRetrying={MyNFTReducer.myNftListLoading}
-            />
+            /> */}
         </View>
     )
 }

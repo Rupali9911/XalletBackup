@@ -97,11 +97,11 @@ const NewNFT = () => {
                         </View>
             }
 
-            <NoInternetModal
+            {/* <NoInternetModal
                 show={isOffline}
                 onRetry={handleRefresh}
                 isRetrying={NewNFTListReducer.newNftListLoading}
-            />
+            /> */}
         </View>
     )
 }

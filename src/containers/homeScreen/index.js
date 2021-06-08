@@ -104,11 +104,11 @@ const Trend = () => {
                         </View>
             }
 
-            <NoInternetModal
+            {/* <NoInternetModal
                 show={isOffline}
                 onRetry={refreshFunc}
                 isRetrying={ListReducer.nftListLoading}
-            />
+            /> */}
         </View>
     )
 }

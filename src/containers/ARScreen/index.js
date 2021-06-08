@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StatusBar, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { StatusBar, View, Text, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -44,7 +44,7 @@ const ARScreen = () => {
     }
 
     return (
-        <View style={styles.trendCont} >
+        <SafeAreaView style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
                 ListReducer.nftListLoading ?
@@ -88,12 +88,12 @@ const ARScreen = () => {
                             <Text style={styles.sorryMessage} >No NFT Available</Text>
                         </View>
             }
-            <NoInternetModal
+            {/* <NoInternetModal
                 show={isOffline}
                 onRetry={refreshFunc}
                 isRetrying={ListReducer.nftListLoading}
-            />
-        </View>
+            /> */}
+        </SafeAreaView>
     )
 }
 
