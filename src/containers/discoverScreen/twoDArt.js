@@ -18,28 +18,28 @@ const TwoDArt = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [isOffline, setOfflineStatus] = useState(false);
+    // const [isOffline, setOfflineStatus] = useState(false);
 
     useEffect(() => {
-        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-            const offline = !(state.isConnected && state.isInternetReachable);
-            setOfflineStatus(offline);
-        });
+        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+        //     const offline = !(state.isConnected && state.isInternetReachable);
+        //     setOfflineStatus(offline);
+        // });
 
         dispatch(twoDNftListReset())
         dispatch(twoDNftLoadStart())
         getNFTlist(1)
         dispatch(twoPageChange(1))
 
-        return () => {
-            removeNetInfoSubscription();
-        };
+        // return () => {
+        //     removeNetInfoSubscription();
+        // };
     }, [])
 
     const getNFTlist = useCallback((page) => {
         dispatch(myNFTList(page, "2D", 30))
-        isOffline && setOfflineStatus(false);
-    }, [isOffline]);
+        // isOffline && setOfflineStatus(false);
+    }, []);
 
     const refreshFunc = () => {
         dispatch(twoDNftListReset())
@@ -88,11 +88,11 @@ const TwoDArt = () => {
                         </View>
             }
 
-            <NoInternetModal
+            {/* <NoInternetModal
                 show={isOffline}
                 onRetry={refreshFunc}
                 isRetrying={TwoDReducer.twoDListLoading}
-            />
+            /> */}
         </View>
     )
 }

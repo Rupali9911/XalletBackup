@@ -18,29 +18,29 @@ const NewNFT = () => {
     const navigation = useNavigation();
 
     // state of offline/online network connection
-    const [isOffline, setOfflineStatus] = useState(false);
+    // const [isOffline, setOfflineStatus] = useState(true);
 
     useEffect(() => {
 
         dispatch(newNftLoadStart())
 
-        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-            const offline = !(state.isConnected && state.isInternetReachable);
-            setOfflineStatus(offline);
-        });
+        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+        //     const offline = !(state.isConnected && state.isInternetReachable);
+        //     setOfflineStatus(offline);
+        // });
         dispatch(newNftListReset())
         getNFTlist(1);
         dispatch(newPageChange(1))
 
-        return () => removeNetInfoSubscription();
+        // return () => removeNetInfoSubscription();
     }, [])
 
     const getNFTlist = useCallback((page) => {
 
         dispatch(newNFTList(page))
-        isOffline && setOfflineStatus(false);
+        // isOffline && setOfflineStatus(false);
 
-    }, [isOffline]);
+    }, []);
 
     const handleRefresh = () => {
         dispatch(newNftListReset())

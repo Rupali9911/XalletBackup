@@ -16,26 +16,26 @@ const ARScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [isOffline, setOfflineStatus] = useState(false);
+    // const [isOffline, setOfflineStatus] = useState(false);
 
     useEffect(() => {
         dispatch(nftLoadStart())
 
-        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-            const offline = !(state.isConnected && state.isInternetReachable);
-            setOfflineStatus(offline);
-        });
+        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+        //     const offline = !(state.isConnected && state.isInternetReachable);
+        //     setOfflineStatus(offline);
+        // });
         dispatch(nftListReset())
         getNFTlist(1);
         dispatch(pageChange(1))
 
-        return () => removeNetInfoSubscription();
+        // return () => removeNetInfoSubscription();
     }, [])
 
     const getNFTlist = useCallback((page) => {
         dispatch(getNFTList(page))
-        isOffline && setOfflineStatus(false);
-    }, [isOffline]);
+        // isOffline && setOfflineStatus(false);
+    }, []);
 
     const refreshFunc = () => {
         dispatch(nftListReset())

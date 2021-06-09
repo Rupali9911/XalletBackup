@@ -29,13 +29,13 @@ const NFT = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [isOffline, setOfflineStatus] = useState(false);
+    // const [isOffline, setOfflineStatus] = useState(false);
 
     useEffect(() => {
-        const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-            const offline = !(state.isConnected && state.isInternetReachable);
-            setOfflineStatus(offline);
-        });
+        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+        //     const offline = !(state.isConnected && state.isInternetReachable);
+        //     setOfflineStatus(offline);
+        // });
 
         const unsubscribe = navigation.addListener('focus', () => {
             if (AuthReducer.accountKey) {
@@ -54,15 +54,15 @@ const NFT = () => {
         }
 
         return () => {
-            removeNetInfoSubscription();
+            // removeNetInfoSubscription();
             unsubscribe();
         };
     }, [])
 
     const getNFTlist = useCallback((page) => {
         dispatch(myNFTList(page, "myNFT", 1000))
-        isOffline && setOfflineStatus(false);
-    }, [isOffline]);
+        // isOffline && setOfflineStatus(false);
+    }, []);
 
     const refreshFunc = () => {
         dispatch(myNftListReset())
@@ -128,11 +128,11 @@ const NFT = () => {
 
             }
 
-            <NoInternetModal
+            {/* <NoInternetModal
                 show={isOffline}
                 onRetry={refreshFunc}
                 isRetrying={MyNFTReducer.myNftListLoading}
-            />
+            /> */}
         </View>
     )
 }
