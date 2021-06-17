@@ -1,4 +1,5 @@
-import Config from "react-native-config";
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
 
 import {
     MY_NFT_LOAD_FAIL,
@@ -39,10 +40,10 @@ export const myNFTList = (page, screen, limit) => {
 
         let accountKey = getState().AuthReducer.accountKey;
         const { myList, favorite } = getState().MyNFTReducer;
-        
+
         let body_data = {
             limit: limit,
-            networkType: "mainnet",
+            networkType: networkType,
             owner: accountKey,
             page: page,
             token: "HubyJ*%qcqR0",
@@ -57,7 +58,7 @@ export const myNFTList = (page, screen, limit) => {
                 'Content-Type': 'application/json',
             }
         }
-        fetch(`${Config.BASE_URL}/getDemuxData`, fetch_data_body)
+        fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
                 let new_list = [...json.data];

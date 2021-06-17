@@ -1,4 +1,5 @@
-import Config from "react-native-config";
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
 
 import {
     NFT_LIST_SUCCESS,
@@ -51,7 +52,7 @@ export const getNFTList = (page) => {
             type: "2d",
             page,
             limit: 30,
-            networkType: "mainnet",
+            networkType: networkType,
         }
 
         if (accountKey) {
@@ -67,7 +68,7 @@ export const getNFTList = (page) => {
             }
         }
 
-        fetch(`${Config.BASE_URL}/getDemuxData`, fetch_data_body)
+        fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
 
@@ -93,23 +94,23 @@ export const handleLikeDislike = (item, index) => {
                     screenName == "twoDArt" ? getState().TwoDReducer.twoDNftList : getState().MyNFTReducer.myList;
 
         var url1 = "";
-        var url2 = `${Config.BASE_URL}/updateRating`;
+        var url2 = `${BASE_URL}/updateRating`;
         let like_body = {
-            networkType: "mainnet",
+            networkType: networkType,
             owner: accountKey,
             tokenId: item.tokenId
         }
         let rating_body = {
-            networkType: "mainnet",
+            networkType: networkType,
             tokenId: item.tokenId
         }
         if (item.like == 0) {
-            url1 = `${Config.BASE_URL}/likeNFT`;
+            url1 = `${BASE_URL}/likeNFT`;
             rating_body.rating = item.rating + 1;
             item.like = 1;
             item.rating = item.rating + 1;
         } else {
-            url1 = `${Config.BASE_URL}/unlikeNFT`
+            url1 = `${BASE_URL}/unlikeNFT`
             rating_body.rating = item.rating - 1
             item.like = 0;
             item.rating = item.rating - 1;

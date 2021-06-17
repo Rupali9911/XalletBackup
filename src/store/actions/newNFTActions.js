@@ -1,4 +1,5 @@
-import Config from "react-native-config";
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
 
 import {
     NEW_NFT_LOAD_START, 
@@ -40,7 +41,7 @@ export const newNFTList = (page) => {
             page,
             limit: 30,
             sort: "mint",
-            networkType: "mainnet",
+            networkType: networkType,
             token: "HubyJ*%qcqR0",
             type: "2D",
         }
@@ -58,7 +59,7 @@ export const newNFTList = (page) => {
             }
         }
 
-        fetch(`${Config.BASE_URL}/getDemuxData`, fetch_data_body)
+        fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
 

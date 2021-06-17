@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Dimensions, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Config from "react-native-config";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 const Web3 = require('web3');
 
+import { networkType } from "../../common/networkType";
+import { BASE_URL, PROVIDER_URL } from '../../common/constants';
 import MarketPlaceAbi from "../../web3/MarketPlaceAbi";
 import MarketContractAddress from "../../web3/MarketContractAddress";
 import ApproveAbi from "../../web3/ApproveAbi";
-import ApproveAdd from "../../web3/ApproveAdd";
-import { networkType } from "../../web3/networkType.js";
 
 import insertComma from '../../utils/insertComma';
 import { trimZeroFromTheEnd } from '../../utils/trimZeroFromValue';
@@ -29,14 +28,12 @@ const nftItem = ({ item, index }) => {
   const dispatch = useDispatch();
 
   const { AuthReducer } = useSelector(state => state);
-  const [price, setPrice] = useState('');
-  const [lastPrice, setLastPrice] = useState('');
-  const [owner, setOwner] = useState('');
-  const [priceNFT, setPriceNFT] = useState('');
+  const [lastPrice, setLastPrice] = useState('----');
+  const [owner, setOwner] = useState('----');
+  const [artist, setArtist] = useState('----');
   const [priceNFTString, setPriceNFTString] = useState('');
   const [isLoading, setLoading] = useState(false);
-  const [sellDetails, setSellDetails] = useState();
-  const [loaderFor, setLoaderFor] = useState('Buy');
+  const [loaderFor, setLoaderFor] = useState(true);
 
   const navigation = useNavigation();
   const accountKey = AuthReducer.accountKey;
@@ -45,7 +42,7 @@ const nftItem = ({ item, index }) => {
 
     let body_data = {
       tokenId: parseInt(item.tokenId),
-      networkType: 'mainnet',
+      networkType: networkType,
       type: "2d",
     }
 
@@ -62,12 +59,24 @@ const nftItem = ({ item, index }) => {
       }
     }
 
-    fetch(`${Config.BASE_URL}/getDetailNFT`, fetch_data_body)
+    fetch(`${BASE_URL}/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then((res) => {
         if (res.data.length > 0 && res.data !== "No record found") {
-          setLastPrice(res.data[0].lastPrice);
-          lastOwnerOfNFT(res.data[0]);
+          const data = res.data[0];
+
+          if (data.newprice) {
+            setPriceNFTString(data.newprice.price);
+            setOwner(data.newprice.seller);
+          } else {
+            setLoaderFor(false);
+          }
+
+          setArtist(data.returnValues.to);
+          setLastPrice(data.lastPrice);
+
+          // lastOwnerOfNFT(data);
+
         } else if (res.data.data === "No record found") {
           alert('No record found');
         }
@@ -77,147 +86,13 @@ const nftItem = ({ item, index }) => {
       });
   }
 
-  let web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
-  let MarketPlaceContract = new web3.eth.Contract(
-    MarketPlaceAbi,
-    MarketContractAddress
-  );
-
-  const lastOwnerOfNFT = (item) => {
-
-
-    let tokenId = item.tokenId;
-    let data = item;
-
-    MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
-
-      MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
-        if (!err) {
-          setPriceNFT(res[1] / 1e18);
-          setPriceNFTString(res[1]);
-          if (res[0] === '0x0000000000000000000000000000000000000000') {
-            setOwner(item.owner_address);
-          } else {
-            setOwner(res[0]);
-          }
-        }
-      })
-      // }
-    });
-  }
-
-  const getNFTSellDetails = (id) => {
-
-    let body_data = {
-      tokenId: id.toString(),
-    }
-
-    let fetch_data_body = {
-      method: 'POST',
-      body: JSON.stringify(body_data),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }
-
-    fetch(`${Config.BASE_URL}/getHistory`, fetch_data_body)
-      .then(response => response.json())
-      .then((res) => {
-        if (res.data.length > 0) {
-          setSellDetails(res.data);
-        } else {
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  const handleBuyCall = (MarketPlaceContract, approvalContract, id, acc) => {
-
-    approvalContract.methods.balanceOf(acc[0]).call((err, res) => {
-      if (!err) {
-        if (parseInt(res) / Math.pow(10, 18) === 0) {
-        } else {
-          MarketPlaceContract.methods
-            .buyNFT(MarketContractAddress, id, acc[0])
-            .send({ from: acc[0] })
-            .then((res) => {
-              lastOwnerOfNFT();
-              getNFTSellDetails(item.tokenId);
-
-            })
-            .catch((err) => {
-              setLoading(false);
-            });
-        }
-      } else {
-        setLoading(false);
-      }
-    });
-  }
-
-  const handleApprove = (MarketPlaceContract, id) => {
-
-    let appprovalValue = "115792089237316195423570985008687907853269984665640564039457";
-
-    web3.eth
-      .getAccounts()
-      .then((acc) => {
-        let approvalContract = new web3.eth.Contract(ApproveAbi, ApproveAdd);
-        approvalContract.methods
-          .approve(
-            MarketContractAddress,
-            web3.utils.toWei(appprovalValue, "ether")
-          )
-          .send({ from: acc[0] })
-          .then((res) => {
-            handleBuyCall(
-              MarketPlaceContract,
-              approvalContract,
-              id,
-              acc
-            );
-          })
-          .catch((err) => {
-            setLoading(false);
-          });
-      })
-      .catch((err) => {
-        setLoading(false);
-        // console.log("err in gettingAccount", err);
-      });
-  }
-
   const buyNFTItem = () => {
+    if (!loaderFor) {
+      return;
+    }
+
     if (accountKey) {
-      let id = item.tokenId;
-      let web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
-      let MarketPlaceContract = new web3.eth.Contract(
-        MarketPlaceAbi,
-        MarketContractAddress
-      );
 
-      let approvalContract = new web3.eth.Contract(ApproveAbi, ApproveAdd);
-
-      setLoading(true);
-      setLoaderFor('Buy');
-
-      approvalContract.methods
-        .allowance(accountKey, MarketContractAddress)
-        .call((err, res) => {
-          if (parseInt(res) / Math.pow(10, 18) <= 0) {
-            handleApprove(MarketPlaceContract, id);
-          } else {
-            handleBuyCall(
-              MarketPlaceContract,
-              approvalContract,
-              id,
-              acc
-            );
-          }
-        });
     } else {
       navigation.navigate('Connect');
     }
@@ -288,14 +163,14 @@ const nftItem = ({ item, index }) => {
             <Text style={styles.modalIconLabel} >Owner</Text>
             <View style={styles.iconCont} >
               <Image style={styles.profileIcon} source={images.icons.profileIcon} />
-              <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]} >{owner}</Text>
+              <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]}>{owner}</Text>
             </View>
           </View>
           <View style={{ flex: 0.8 }} >
             <Text style={styles.modalIconLabel} >Artist</Text>
             <View style={styles.iconCont} >
               <Image style={styles.profileIcon} source={images.icons.profileIcon} />
-              <Text style={[styles.iconLabel, { fontWeight: "400" }]} >Queen</Text>
+              <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]} >{artist}</Text>
             </View>
           </View>
         </View>
@@ -310,7 +185,11 @@ const nftItem = ({ item, index }) => {
                 onTouchEnd={buyNFTItem}
                 colors={[colors.themeL, colors.themeR]}
                 style={styles.modalBtn}>
-                <Text style={[styles.modalLabel, { color: colors.white }]} >{loaderFor}</Text>
+                <Text style={[styles.modalLabel, { color: colors.white }]} >
+                  {
+                    loaderFor ? "BUY" : "SOLD OUT"
+                  }
+                </Text>
               </LinearGradient>
           }
         </TouchableOpacity>

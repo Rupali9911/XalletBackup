@@ -1,4 +1,4 @@
-import { networkType } from "./networkType.js";
+import { networkType } from "../common/networkType.js";
 
 let add = "";
 if (networkType === "testnet") {
