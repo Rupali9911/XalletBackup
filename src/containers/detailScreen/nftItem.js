@@ -109,8 +109,9 @@ const nftItem = ({ item, index }) => {
   return (
     <View>
       <View style={styles.bgImageCont} >
-        <C_Image uri={item.metaData.image} imageStyle={styles.bgImage} />
-        <View style={[styles.bgImageCont, { backgroundColor: colors.black_opacity(0.8) }]} />
+        {/* <C_Image uri={item.metaData.image} imageStyle={styles.bgImage} /> */}
+        <Image style={{ flex: 1 }} source={{ uri: item.metaData.image }} blurRadius={30} />
+        <View style={[styles.bgImageCont, { backgroundColor: colors.black_opacity(0.4) }]} />
       </View>
       <C_Image uri={item.metaData.image} imageStyle={styles.modalImage} />
 

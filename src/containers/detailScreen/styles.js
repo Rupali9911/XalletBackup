@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     },
     modalImage: {
         width: wp('100%'),
-        height: wp('100%'),
+        height: wp('94%'),
         resizeMode: "cover",
-        marginTop: hp('3%')
+        // marginTop: hp('3%')
     },
     bottomModal: {
         width: '85%',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
     iconCont: {
         flexDirection: "row",
-        marginTop: hp('1%'),
+        marginTop: hp('0.5%'),
         marginBottom: hp('0.5%'),
         alignItems: "center"
     },
