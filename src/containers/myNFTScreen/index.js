@@ -145,6 +145,12 @@ const MyNFTScreen = () => {
                 <Tab.Navigator tabBarOptions={{
                     activeTintColor: colors.tabbar,
                     inactiveTintColor: colors.black,
+                    style: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderBottomColor: '#56D3FF',
+                        borderBottomWidth: 0.2
+                    },
                     tabStyle: {
                         paddingBottom: 0
                     },
