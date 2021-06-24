@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
     },
     trendCont: {
         backgroundColor: colors.white,
-        paddingVertical: hp('1%'),
         flex: 1
     },
     imageListCont: {

@@ -18,10 +18,10 @@ import renderIf from '../../js/helpers/renderIf';
 var InitialARScene = require('../../js/ARHitTestSample');
 
 // Array of 3d models that we use in this sample. This app switches between this these models.
-var objArray = [
-  require('../../js/res/obj.png'),
-  require('../../js/res/coffee_mug/object_coffee_mug.vrx'),
-  require('../../js/res/emoji_smile/emoji_smile.vrx')];
+// var objArray = [
+//   require('../../js/res/obj.png'),
+//   require('../../js/res/coffee_mug/object_coffee_mug.vrx'),
+//   require('../../js/res/emoji_smile/emoji_smile.vrx')];
 
 export default class ViroScreen extends Component {
   constructor(props) {
