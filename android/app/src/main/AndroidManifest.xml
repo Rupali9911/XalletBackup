@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.xanalia"
+  package="com.showcase"
   xmlns:tools="http://schemas.android.com/tools"
   >
 

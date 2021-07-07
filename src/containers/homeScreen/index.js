@@ -15,6 +15,8 @@ import { Loader, NoInternetModal, C_Image } from '../../components';
 
 import NewNFT from './newNFT';
 import Favorite from './favorite';
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -100,7 +102,7 @@ const Trend = () => {
                             keyExtractor={(v, i) => "item_" + i}
                         /> :
                         <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >No NFT Available</Text>
+                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
                         </View>
             }
 
@@ -138,9 +140,9 @@ const HomeScreen = () => {
                     borderBottomWidth: 2,
                 }
             }} >
-                <Tab.Screen name="Trend" component={Trend} />
-                <Tab.Screen name="New" component={NewNFT} />
-                <Tab.Screen name="Favorite" component={Favorite} />
+                <Tab.Screen name={langObj.common.trend} component={Trend} />
+                <Tab.Screen name={langObj.common.New} component={NewNFT} />
+                <Tab.Screen name={langObj.common.Favorite} component={Favorite} />
             </Tab.Navigator>
         </SafeAreaView>
     )

@@ -10,6 +10,8 @@ import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 import { myNFTList, myPageChange, favoritePageChange } from '../../store/actions/myNFTaction';
 
 import { twoPageChange } from '../../store/actions/twoDAction';
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 import styles from './styles';
 import { images } from '../../res';

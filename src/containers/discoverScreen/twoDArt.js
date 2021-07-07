@@ -11,6 +11,8 @@ import { changeScreenName } from '../../store/actions/authAction';
 import styles from './styles';
 import { colors } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 const TwoDArt = () => {
 
@@ -84,7 +86,7 @@ const TwoDArt = () => {
                             keyExtractor={(v, i) => "item_" + i}
                         /> :
                         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                            <Text style={styles.sorryMessage} >No NFT Available</Text>
+                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
                         </View>
             }
 

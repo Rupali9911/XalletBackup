@@ -20,6 +20,8 @@ import ARScreen from './containers/ARScreen';
 import ConnectScreen from './containers/connectScreen';
 import DetailItemScreen from './containers/detailScreen';
 import ViroARScreen from './viro';
+import getLanguage from './utils/languageSupport';
+const langObj = getLanguage();
 
 import { images, fonts } from './res';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from './common/responsiveFunction';
@@ -41,15 +43,15 @@ const TabComponent = () => {
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'Home') {
+        if (route.name === langObj.common.home) {
           iconName = focused ? images.icons.homeA : images.icons.homeD;
-        } else if (route.name === 'My NFT') {
+        } else if (route.name === langObj.common.myNFT) {
           iconName = focused ? images.icons.nftA : images.icons.nftD;
-        } else if (route.name === 'Discover') {
+        } else if (route.name === langObj.common.Discover) {
           iconName = focused ? images.icons.discoverA : images.icons.discoverD;
-        } else if (route.name === 'AR') {
+        } else if (route.name === langObj.common.AR) {
           iconName = focused ? images.icons.ARA : images.icons.ARD;
-        } else if (route.name === 'Connect') {
+        } else if (route.name === langObj.common.Connect) {
           iconName = focused ? images.icons.connectA : images.icons.connectD;
         }
 
@@ -57,11 +59,11 @@ const TabComponent = () => {
         return <Image source={iconName} resizeMode="contain" style={{ width: wp('4.5%'), height: wp('4.5%') }} />;
       },
     })} >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
-      <Tab.Screen name="My NFT" component={MyNFTScreen} />
-      <Tab.Screen name="AR" component={ARScreen} />
-      <Tab.Screen name="Connect" component={ConnectScreen} />
+      <Tab.Screen name={langObj.common.home} component={HomeScreen} />
+      <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} />
+      <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} />
+      <Tab.Screen name={langObj.common.AR} component={ARScreen} />
+      <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} />
     </Tab.Navigator>
   )
 }

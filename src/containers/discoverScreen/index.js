@@ -6,6 +6,8 @@ import TwoDArt from './twoDArt';
 
 import styles from './styles';
 import { colors, fonts } from '../../res';
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -51,7 +53,7 @@ const DiscoverScreen = () => {
                     paddingBottom: 0
                 },
                 labelStyle: {
-                    fontSize: 15,
+                    fontSize: 14,
                     fontFamily: fonts.SegoeUIRegular,
                     textTransform: 'none'
                 },
@@ -60,10 +62,10 @@ const DiscoverScreen = () => {
                     borderBottomWidth: 2,
                 }
             }} >
-                <Tab.Screen name="2D Art" component={TwoDArt} />
-                <Tab.Screen name="GIF Art" component={GIFArt} />
-                <Tab.Screen name="3D Asset" component={ThreeDAsset} />
-                <Tab.Screen name="Land" component={Land} />
+                <Tab.Screen name={langObj.common.twoDArt} component={TwoDArt} />
+                <Tab.Screen name={langObj.common.GIFArt} component={GIFArt} />
+                <Tab.Screen name={langObj.common.threeDAssets} component={ThreeDAsset} />
+                <Tab.Screen name={langObj.common.land} component={Land} />
             </Tab.Navigator>
             </SafeAreaView>
         </>

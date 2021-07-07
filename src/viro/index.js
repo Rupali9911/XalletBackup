@@ -16,6 +16,8 @@ import {
 
 import renderIf from '../../js/helpers/renderIf';
 var InitialARScene = require('../../js/ARHitTestSample');
+import getLanguage from '../utils/languageSupport';
+const langObj = getLanguage();
 
 // Array of 3d models that we use in this sample. This app switches between this these models.
 // var objArray = [
@@ -108,11 +110,11 @@ export default class ViroScreen extends Component {
   _renderTrackingText() {
     if (this.state.trackingInitialized) {
       return (<View style={{ position: 'absolute', backgroundColor: "#ffffff22", left: 60, right: 60, top: 33, alignItems: 'center' }}>
-        <Text style={{ fontSize: 12, color: "#ffffff" }}>Tracking initialized.</Text>
+        <Text style={{ fontSize: 12, color: "#ffffff" }}>{langObj.common.Trackinginitialized}</Text>
       </View>);
     } else {
       return (<View style={{ position: 'absolute', backgroundColor: "#ffffff22", left: 60, right: 60, top: 33, alignItems: 'center' }}>
-        <Text style={{ fontSize: 12, color: "#ffffff" }}>Waiting for tracking to initialize.</Text>
+        <Text style={{ fontSize: 12, color: "#ffffff" }}>{langObj.common.Trackingwait}</Text>
       </View>);
     }
   }

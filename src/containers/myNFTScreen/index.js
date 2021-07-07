@@ -12,6 +12,8 @@ import styles from './styles';
 import { colors, fonts } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
 import { responsiveFontSize as FS } from '../../common/responsiveFunction';
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -116,13 +118,13 @@ const NFT = () => {
                                 keyExtractor={(v, i) => "item_" + i}
                             /> :
                             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                                <Text style={styles.sorryMessage} >No NFT Available</Text>
+                                <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
                             </View>
                     :
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                        <Text style={styles.sorryMessage} >To See Your NFT {'\n'} Please login first</Text>
+                        <Text style={styles.sorryMessage} >{langObj.common.toseelogin}</Text>
                         <TouchableOpacity onPress={() => navigation.navigate("Connect")} style={{ backgroundColor: colors.themeL, borderRadius: 10, marginVertical: 10, paddingHorizontal: 20, paddingVertical: 5 }} >
-                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >Login</Text>
+                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >{langObj.common.signIn}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -164,8 +166,8 @@ const MyNFTScreen = () => {
                         borderBottomWidth: 2,
                     }
                 }} >
-                    <Tab.Screen name="NFT" component={NFT} />
-                    <Tab.Screen name="My Collection" component={Collection} />
+                    <Tab.Screen name={langObj.common.NFT} component={NFT} />
+                    <Tab.Screen name={langObj.common.myCollection} component={Collection} />
                 </Tab.Navigator>
             </SafeAreaView>
         </>

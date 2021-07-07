@@ -10,6 +10,8 @@ import { BASE_URL, PROVIDER_URL } from '../../common/constants';
 import MarketPlaceAbi from "../../web3/MarketPlaceAbi";
 import MarketContractAddress from "../../web3/MarketContractAddress";
 import ApproveAbi from "../../web3/ApproveAbi";
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 import insertComma from '../../utils/insertComma';
 import { trimZeroFromTheEnd } from '../../utils/trimZeroFromValue';
@@ -128,7 +130,7 @@ const nftItem = ({ item, index }) => {
 
         <View style={styles.modalSectCont} >
           <View style={{ flex: 1 }} >
-            <Text style={styles.modalIconLabel} >Current price</Text>
+            <Text style={styles.modalIconLabel} >{langObj.common.currentprice}</Text>
             <View style={styles.iconCont} >
               <Image style={styles.iconsImage} source={images.icons.pIcon} />
               <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.4 }]} >
@@ -145,13 +147,13 @@ const nftItem = ({ item, index }) => {
                       ),
                       true
                     )
-                    : "TBA"
+                    : langObj.common.tba
                 }
               </Text>
             </View>
           </View>
           <View style={{ flex: 0.8 }} >
-            <Text style={styles.modalIconLabel} >Last price</Text>
+            <Text style={styles.modalIconLabel} >{langObj.common.lastprice}</Text>
             <View style={styles.iconCont} >
               <Image style={styles.iconsImage} source={images.icons.pIcon} />
               <Text style={styles.iconLabel} >{lastPrice}</Text>
@@ -161,14 +163,14 @@ const nftItem = ({ item, index }) => {
         <View style={styles.separator} />
         <View style={styles.modalSectCont} >
           <View style={{ flex: 1 }} >
-            <Text style={styles.modalIconLabel} >Owner</Text>
+            <Text style={styles.modalIconLabel} >{langObj.common.owner}</Text>
             <View style={styles.iconCont} >
               <Image style={styles.profileIcon} source={images.icons.profileIcon} />
               <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]}>{owner}</Text>
             </View>
           </View>
           <View style={{ flex: 0.8 }} >
-            <Text style={styles.modalIconLabel} >Artist</Text>
+            <Text style={styles.modalIconLabel} >{langObj.common.artist}</Text>
             <View style={styles.iconCont} >
               <Image style={styles.profileIcon} source={images.icons.profileIcon} />
               <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]} >{artist}</Text>
@@ -188,7 +190,7 @@ const nftItem = ({ item, index }) => {
                 style={styles.modalBtn}>
                 <Text style={[styles.modalLabel, { color: colors.white }]} >
                   {
-                    loaderFor ? "BUY" : "SOLD OUT"
+                    loaderFor ? langObj.common.buy.toUpperCase() : langObj.common.notForSell.toUpperCase()
                   }
                 </Text>
               </LinearGradient>

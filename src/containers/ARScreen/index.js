@@ -9,6 +9,8 @@ import { getNFTList, nftLoadStart, pageChange, nftListReset } from '../../store/
 import styles from './styles';
 import { colors } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
+import getLanguage from '../../utils/languageSupport';
+const langObj = getLanguage();
 
 const ARScreen = () => {
 
@@ -85,7 +87,7 @@ const ARScreen = () => {
                             keyExtractor={(v, i) => "item_" + i}
                         /> :
                         <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >No NFT Available</Text>
+                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
                         </View>
             }
             {/* <NoInternetModal
