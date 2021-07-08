@@ -83,7 +83,7 @@ var ARHitTestSample = createReactClass({
         ref={this._setSpotLightRef} />
 
       {
-        this.props.arSceneNavigator.viroAppProps.type !== "2D" ?
+        this.props.arSceneNavigator.viroAppProps.type !== "2D" && this.props.arSceneNavigator.viroAppProps.type !== "2D-STYLES" ?
           <Viro3DObject
             position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
             source={this.props.arSceneNavigator.viroAppProps.objectSource}
