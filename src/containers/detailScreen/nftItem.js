@@ -3,20 +3,20 @@ import { View, Text, TouchableOpacity, Image, Dimensions, ActivityIndicator } fr
 import LinearGradient from 'react-native-linear-gradient';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-const Web3 = require('web3');
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp';
+import { rpcGetAccountBalance, rpcGetAccountNonce } from '../../rpc';
 
 import { networkType } from "../../common/networkType";
 import { BASE_URL, PROVIDER_URL } from '../../common/constants';
-import MarketPlaceAbi from "../../web3/MarketPlaceAbi";
-import MarketContractAddress from "../../web3/MarketContractAddress";
-import ApproveAbi from "../../web3/ApproveAbi";
 import getLanguage from '../../utils/languageSupport';
 const langObj = getLanguage();
 
 import insertComma from '../../utils/insertComma';
 import { trimZeroFromTheEnd } from '../../utils/trimZeroFromValue';
 import { showActualValue } from '../../utils/showActualValue';
-import { divideNo } from '../../utils/divideByEighteen';
+import { divideNo, sanitizeHex, convertStringToHex, convertAmountToRawNumber } from '../../utils';
+import { apiGetGasPrices } from '../../gas-price';
 
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import styles from './styles';
@@ -38,6 +38,7 @@ const nftItem = ({ item, index }) => {
   const [loaderFor, setLoaderFor] = useState(true);
 
   const navigation = useNavigation();
+  const connector = useWalletConnect();
   const accountKey = AuthReducer.accountKey;
 
   const getTockendetailsApi = async () => {
@@ -88,14 +89,70 @@ const nftItem = ({ item, index }) => {
       });
   }
 
-  const buyNFTItem = () => {
-    if (!loaderFor) {
-      return;
-    }
+  const checkBalance = () => {
+    // const blance = await rpcGetAccountBalance(address);
+  }
 
-    if (accountKey) {
+  const buyNFTItem = async () => {
+    setLoading(true);
+    // if (!loaderFor) {
+    //   return;
+    // }
+    console.log('========', priceNFTString);
+    if (connector._accounts[0]) {
 
+      checkBalance();
+
+      const address = connector._accounts[0];
+      const chainId = connector.chainId;
+      console.log('===address', address);
+      const from = address;
+      const to = artist;
+
+      // nonce
+      const _nonce = await rpcGetAccountNonce(address);
+      const nonce = sanitizeHex(convertStringToHex(_nonce));
+      console.log('=====nonce', nonce);
+
+      // gasPrice
+      const gasPrices = await apiGetGasPrices();
+      const _gasPrice = gasPrices.slow.price;
+      const gasPrice = sanitizeHex(convertStringToHex(convertAmountToRawNumber(_gasPrice, 9)));
+      console.log('=====gasPrice', gasPrice);
+
+      // gasLimit
+      const _gasLimit = 21000;
+      const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+      console.log('=====gasLimit', gasLimit);
+
+      // value
+      const _value = 1;
+      const value = sanitizeHex(convertStringToHex(_value));
+      console.log('=====value', value);
+
+      //data
+      const data = '0x';
+
+      const tx = {
+        from,
+        to,
+        nonce,
+        gasPrice,
+        gasLimit,
+        value,
+        data
+      };
+
+      try {
+        const result = connector.sendTransaction(tx);
+        console.log('======result', result)
+      } catch (err) {
+        console.log(err);
+      }
+
+      setLoading(false);
     } else {
+      setLoading(false);
       navigation.navigate('Connect');
     }
   }
@@ -201,4 +258,9 @@ const nftItem = ({ item, index }) => {
   )
 }
 
-export default nftItem;
+export default withWalletConnect(nftItem, {
+  redirectUrl: Platform.OS === 'web' ? window.location.origin : 'yourappscheme://',
+  storageOptions: {
+    asyncStorage: AsyncStorage,
+  },
+});

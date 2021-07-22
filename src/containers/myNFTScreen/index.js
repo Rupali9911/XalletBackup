@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { myNftLoadStart, myNFTList, myPageChange, myNftListReset } from '../../store/actions/myNFTaction';
+import { myCollectionLoadStart, myCollectionList, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 import { changeScreenName } from '../../store/actions/authAction';
 
 import styles from './styles';
@@ -17,11 +18,115 @@ const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
-const Collection = ({ navigation }) => {
+const Collection = () => {
+    const { MyCollectionReducer, AuthReducer } = useSelector(state => state);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+
+    // const [isOffline, setOfflineStatus] = useState(false);
+
+    useEffect(() => {
+        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+        //     const offline = !(state.isConnected && state.isInternetReachable);
+        //     setOfflineStatus(offline);
+        // });
+
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (AuthReducer.accountKey) {
+                dispatch(myCollectionLoadStart())
+                dispatch(myCollectionListReset())
+                getCollectionList(1)
+                dispatch(myCollectionPageChange(1))
+            }
+        });
+
+        if (AuthReducer.accountKey) {
+            dispatch(myCollectionLoadStart())
+            dispatch(myCollectionListReset())
+            getCollectionList(1)
+            dispatch(myCollectionPageChange(1))
+        }
+
+        return () => {
+            // removeNetInfoSubscription();
+            unsubscribe();
+        };
+    }, [])
+
+    const getCollectionList = useCallback((page) => {
+        dispatch(myCollectionList(page, "myCollection", 20))
+        // isOffline && setOfflineStatus(false);
+    }, []);
+
+    const refreshFunc = () => {
+        dispatch(myCollectionListReset())
+        getCollectionList(1)
+        dispatch(myCollectionPageChange(1))
+    }
 
     return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
+        <View style={styles.trendCont} >
+            <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
+            {
+                AuthReducer.accountKey ?
+                    MyCollectionReducer.myCollectionListLoading ?
+                        <Loader /> :
+                        MyCollectionReducer.myCollection.length !== 0 ?
+                            <FlatList
+                                data={MyCollectionReducer.myCollection}
+                                horizontal={false}
+                                numColumns={3}
+                                initialNumToRender={30}
+                                onRefresh={() => {
+                                    dispatch(myCollectionLoadStart())
+                                    refreshFunc()
+                                }}
+                                refreshing={MyCollectionReducer.myCollectionListLoading}
+                                renderItem={({ item }) => {
+                                    let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
+                                    if (item.metaData) {
+                                        return (
+                                            <TouchableOpacity onPress={() => {
+                                                dispatch(changeScreenName("myCollection"))
+                                                navigation.navigate("DetailItem", { index: findIndex })
+                                            }} style={styles.listItem} >
+                                                {
+                                                    item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                                                        <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
+                                                        : <View style={styles.sorryMessageCont}>
+                                                            <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                        </View>
+                                                }
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                }}
+                                onEndReached={() => {
+                                    let num = MyCollectionReducer.myCollectionPage + 1;
+                                    getCollectionList(num)
+                                    dispatch(myCollectionPage(num))
+                                }}
+                                onEndReachedThreshold={1}
+                                keyExtractor={(v, i) => "item_" + i}
+                            /> :
+                            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                                <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                            </View>
+                    :
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                        <Text style={styles.sorryMessage} >{langObj.common.toseelogin}</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate("Connect")} style={{ backgroundColor: colors.themeL, borderRadius: 10, marginVertical: 10, paddingHorizontal: 20, paddingVertical: 5 }} >
+                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >{langObj.common.signIn}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+            }
+
+            {/* <NoInternetModal
+                show={isOffline}
+                onRetry={refreshFunc}
+                isRetrying={MyNFTReducer.myNftListLoading}
+            /> */}
         </View>
     )
 }
