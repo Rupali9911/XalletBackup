@@ -14,7 +14,7 @@ const heightPercentageToDP = (heightPercent) => {
     return PixelRatio.roundToNearestPixel(screenHeight * elemHeight / 100);
 };
 
-const guidelineBaseWidth = 350;
+const guidelineBaseWidth = 375;
 const guidelineBaseHeight = 680;
 
 const scale = (size) => screenWidth / guidelineBaseWidth * size;
@@ -27,6 +27,17 @@ const responsiveFontSize = (f) => {
     return Math.sqrt(Math.pow(tempHeight, 2) + Math.pow(screenWidth, 2)) * (f / 100);
 };
 
+const SIZE = size => {
+    const newSize = size * screenWidth / guidelineBaseWidth;
+    if (Platform.OS === 'ios') {
+        return Math.round(PixelRatio.roundToNearestPixel(newSize));
+    } else if (Platform.OS === 'android') {
+        return Math.round(PixelRatio.roundToNearestPixel(newSize));
+    } else {
+        return size;
+    }
+}
+
 export {
     moderateScale,
     verticalScale,
@@ -34,5 +45,6 @@ export {
     widthPercentageToDP,
     heightPercentageToDP,
     screenWidth,
-    screenHeight
+    screenHeight,
+    SIZE
 };

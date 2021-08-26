@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { colors, fonts } from '../../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../common/responsiveFunction';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
 
 const styles = StyleSheet.create({
     container: {
@@ -36,6 +36,30 @@ const styles = StyleSheet.create({
     sorryMessage: {
         fontSize: 15,
         fontFamily: fonts.SegoeUIRegular,
+    },
+    headerTitle: {
+        fontSize: RF(2.0),
+        fontFamily: fonts.PINGfANG_SBOLD,
+    },
+    header: {
+        height: SIZE(50),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    userCircle: {
+        width: SIZE(57),
+        height: SIZE(57),
+        backgroundColor: colors.GREY1,
+        borderRadius: SIZE(57),
+        marginHorizontal: SIZE(9),
+        marginBottom: SIZE(8),
+    },
+    userText: {
+        fontSize: RF(1.1),
+        color: colors.BLACK1,
+        textAlign: 'center',
+        fontFamily: fonts.PINGfANG,
+        marginBottom: SIZE(8),
     }
 })
 

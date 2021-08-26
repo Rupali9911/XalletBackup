@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { colors, fonts } from '../../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "../../common/responsiveFunction";
+import { heightPercentageToDP as hp, widthPercentageToDP as wp, SIZE, responsiveFontSize as RF } from "../../common/responsiveFunction";
 
 const styles = StyleSheet.create({
     modalCont: {
@@ -20,9 +20,27 @@ const styles = StyleSheet.create({
         resizeMode: "cover"
     },
     header: {
-        height: hp('6%'),
-        width: '100%',
-        backgroundColor: colors.black_opacity(0.8)
+        height: SIZE(50),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    headerLeft: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    topHeaderText: {
+        fontSize: RF(1.3),
+        fontFamily: fonts.ARIAL,
+        color: colors.GREY1
+    },
+    bottomHeaderText: {
+        fontSize: RF(1.8),
+        fontFamily: fonts.PINGfANG_SBOLD,
+        color: colors.BLACK1
     },
     backIcon: {
         width: wp('10%'),
@@ -36,7 +54,7 @@ const styles = StyleSheet.create({
     },
     modalImage: {
         width: wp('100%'),
-        height: wp('94%'),
+        height: wp('100%'),
         resizeMode: "cover",
         // marginTop: hp('3%')
     },
@@ -51,7 +69,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     modalLabel: {
-        color: colors.white,
+        color: colors.black,
         fontSize: 18,
         fontWeight: "bold",
         fontFamily: fonts.SegoeUIBold
@@ -69,7 +87,7 @@ const styles = StyleSheet.create({
     modalIconLabel: {
         fontSize: 11,
         fontFamily: fonts.SegoeUIRegular,
-        color: colors.white,
+        color: colors.black,
     },
     iconCont: {
         flexDirection: "row",
@@ -91,7 +109,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: fonts.SegoeUIBold,
         fontWeight: "bold",
-        color: colors.white,
+        color: colors.black,
         marginLeft: wp('1.5%')
     },
     separator: {
@@ -110,9 +128,13 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 10,
         fontFamily: fonts.SegoeUIRegular,
-        color: colors.white,
+        color: colors.black,
         marginVertical: hp('1.5%')
-    }
+    },
+    headerTextView: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
 })
 
 export default styles;

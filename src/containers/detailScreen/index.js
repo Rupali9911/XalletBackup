@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, TouchableOpacity, FlatList, SafeAreaView, Image } from 'react-native';
+import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -14,7 +14,7 @@ import getLanguage from '../../utils/languageSupport';
 const langObj = getLanguage();
 
 import styles from './styles';
-import { images } from '../../res';
+import { images, colors } from '../../res';
 import { Loader } from '../../components';
 import NftItem from './nftItem';
 
@@ -75,12 +75,22 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "twoDArt" ?
                     TwoDReducer.twoDListLoading : null;
     return (
-        <SafeAreaView style={{ flex: 1 }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
             <View style={styles.modalCont} >
                 <View style={styles.header} >
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
-                        <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                    </TouchableOpacity>
+                    <View style={styles.headerLeft}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
+                            <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.headerTextView}>
+                        <Text style={styles.topHeaderText}>
+                            {'LALALA'}
+                        </Text>
+                        <Text style={styles.bottomHeaderText}>
+                            {'NFTs'}
+                        </Text>
+                    </View>
                 </View>
                 {
                     loading ?

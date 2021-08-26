@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp';
-import { rpcGetAccountBalance, rpcGetAccountNonce } from '../../rpc';
+import { rpcGetAccountBalance, rpcGetAccountNonce } from '../../walletconnection/rpc';
 
 import { networkType } from "../../common/networkType";
 import { BASE_URL, PROVIDER_URL } from '../../common/constants';
@@ -167,11 +167,11 @@ const nftItem = ({ item, index }) => {
 
   return (
     <View>
-      <View style={styles.bgImageCont} >
-        {/* <C_Image uri={item.metaData.image} imageStyle={styles.bgImage} /> */}
-        <Image style={{ flex: 1 }} source={{ uri: item.metaData.image }} blurRadius={30} />
+      {/* <View style={styles.bgImageCont} > */}
+      {/* <C_Image uri={item.metaData.image} imageStyle={styles.bgImage} /> */}
+      {/* <Image style={{ flex: 1 }} source={{ uri: item.metaData.image }} blurRadius={30} />
         <View style={[styles.bgImageCont, { backgroundColor: colors.black_opacity(0.4) }]} />
-      </View>
+      </View> */}
       <C_Image uri={item.metaData.image} imageStyle={styles.modalImage} />
 
       <View style={styles.bottomModal} >

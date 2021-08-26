@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getNFTList, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
 
-import { responsiveFontSize as FS } from '../../common/responsiveFunction';
+import { responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
@@ -19,6 +19,39 @@ import getLanguage from '../../utils/languageSupport';
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
+
+const USER_DATA = [
+    {
+        name: 'Name1'
+    },
+    {
+        name: 'Name2'
+    },
+    {
+        name: 'Name3'
+    },
+    {
+        name: 'Name4'
+    },
+    {
+        name: 'Name5'
+    },
+    {
+        name: 'Name6'
+    },
+    {
+        name: 'Name7'
+    },
+    {
+        name: 'Name8'
+    },
+    {
+        name: 'Name9'
+    },
+    {
+        name: 'Name10'
+    },
+];
 
 const Trend = () => {
 
@@ -115,29 +148,55 @@ const Trend = () => {
     )
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
     return (
-        <SafeAreaView style={{ flex: 1 }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>
+                    {'Home'}
+                </Text>
+            </View>
+            <View>
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}>
+                    {
+                        USER_DATA.map(item => {
+                            return (
+                                <TouchableOpacity onPress={() => navigation.navigate('')}>
+                                    <View style={styles.userCircle}>
+                                    </View>
+                                    <Text style={styles.userText}>
+                                        {'Name'}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })
+                    }
+                </ScrollView>
+            </View>
             <Tab.Navigator tabBarOptions={{
-                activeTintColor: colors.tabbar,
-                inactiveTintColor: colors.black,
+                activeTintColor: colors.BLUE4,
+                inactiveTintColor: colors.GREY1,
                 style: {
                     boxShadow: 'none',
                     elevation: 0,
-                    borderBottomColor: '#56D3FF',
-                    borderBottomWidth: 0.2
+                    borderTopColor: '#EFEFEF',
+                    borderTopWidth: 1,
+                    shadowOpacity: 0,
                 },
                 tabStyle: {
-                    paddingBottom: 0,
+                    height: SIZE(40)
                 },
                 labelStyle: {
-                    fontSize: FS(2),
+                    fontSize: RF(1.4),
                     fontFamily: fonts.SegoeUIRegular,
                     textTransform: 'capitalize'
                 },
                 indicatorStyle: {
-                    borderBottomColor: colors.tabbar,
-                    borderBottomWidth: 2,
+                    borderBottomColor: colors.BLUE4,
+                    height: 1,
+                    marginBottom: SIZE(39)
                 }
             }} >
                 <Tab.Screen name={langObj.common.trend} component={Trend} />

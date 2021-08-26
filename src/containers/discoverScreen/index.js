@@ -39,34 +39,39 @@ const DiscoverScreen = () => {
     return (
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
-            <SafeAreaView style={{flex: 1}} >
-            <Tab.Navigator tabBarOptions={{
-                activeTintColor: colors.tabbar,
-                inactiveTintColor: colors.black,
-                style: {
-                    boxShadow: 'none',
-                    elevation: 0,
-                    borderBottomColor: '#56D3FF',
-                    borderBottomWidth: 0.2
-                },
-                tabStyle: {
-                    paddingBottom: 0
-                },
-                labelStyle: {
-                    fontSize: 14,
-                    fontFamily: fonts.SegoeUIRegular,
-                    textTransform: 'none'
-                },
-                indicatorStyle: {
-                    borderBottomColor: colors.tabbar,
-                    borderBottomWidth: 2,
-                }
-            }} >
-                <Tab.Screen name={langObj.common.twoDArt} component={TwoDArt} />
-                <Tab.Screen name={langObj.common.GIFArt} component={GIFArt} />
-                <Tab.Screen name={langObj.common.threeDAssets} component={ThreeDAsset} />
-                <Tab.Screen name={langObj.common.land} component={Land} />
-            </Tab.Navigator>
+            <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>
+                        {'Explore'}
+                    </Text>
+                </View>
+                <Tab.Navigator tabBarOptions={{
+                    activeTintColor: colors.tabbar,
+                    inactiveTintColor: colors.black,
+                    style: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderBottomColor: '#56D3FF',
+                        borderBottomWidth: 0.2
+                    },
+                    tabStyle: {
+                        paddingBottom: 0
+                    },
+                    labelStyle: {
+                        fontSize: 14,
+                        fontFamily: fonts.SegoeUIRegular,
+                        textTransform: 'none'
+                    },
+                    indicatorStyle: {
+                        borderBottomColor: colors.tabbar,
+                        borderBottomWidth: 2,
+                    }
+                }} >
+                    <Tab.Screen name={langObj.common.twoDArt} component={TwoDArt} />
+                    <Tab.Screen name={langObj.common.GIFArt} component={GIFArt} />
+                    <Tab.Screen name={langObj.common.threeDAssets} component={ThreeDAsset} />
+                    <Tab.Screen name={langObj.common.land} component={Land} />
+                </Tab.Navigator>
             </SafeAreaView>
         </>
     )

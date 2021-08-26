@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { colors, fonts } from '../../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../common/responsiveFunction';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
 
 const styles = StyleSheet.create({
     container: {
@@ -36,7 +36,16 @@ const styles = StyleSheet.create({
     sorryMessage: {
         fontSize: 15,
         fontFamily: fonts.SegoeUIRegular,
-    }
+    },
+    headerTitle: {
+        fontSize: RF(2.0),
+        fontFamily: fonts.PINGfANG_SBOLD
+    },
+    header: {
+        height: SIZE(50),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 })
 
 export default styles;

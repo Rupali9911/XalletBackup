@@ -19,6 +19,14 @@ import DiscoverScreen from './containers/discoverScreen';
 import ARScreen from './containers/ARScreen';
 import ConnectScreen from './containers/connectScreen';
 import DetailItemScreen from './containers/detailScreen';
+import NewPostScreen from './containers/newPostScreen';
+import CertificateScreen from './containers/certificateScreen';
+import CertificateDetailScreen from './containers/certificateScreen/detail';
+import PayScreen from './containers/payScreen';
+import MakeBidScreen from './containers/makeBidScreen';
+import ProfileScreen from './containers/profile';
+import EditProfileScreen from './containers/edit_profile';
+import SettingScreen from './containers/setting';
 import ViroARScreen from './viro';
 import getLanguage from './utils/languageSupport';
 const langObj = getLanguage();
@@ -45,25 +53,30 @@ const TabComponent = () => {
 
         if (route.name === langObj.common.home) {
           iconName = focused ? images.icons.homeA : images.icons.homeD;
-        } else if (route.name === langObj.common.myNFT) {
-          iconName = focused ? images.icons.nftA : images.icons.nftD;
-        } else if (route.name === langObj.common.Discover) {
-          iconName = focused ? images.icons.discoverA : images.icons.discoverD;
-        } else if (route.name === langObj.common.AR) {
-          iconName = focused ? images.icons.ARA : images.icons.ARD;
-        } else if (route.name === langObj.common.Connect) {
-          iconName = focused ? images.icons.connectA : images.icons.connectD;
+        } else if (route.name === 'Create') {
+          iconName = focused ? images.icons.createA : images.icons.createD;
+        } else if (route.name === 'Explore') {
+          iconName = focused ? images.icons.exploreA : images.icons.exploreD;
+        } else if (route.name === 'Certificate') {
+          iconName = focused ? images.icons.certificateA : images.icons.certificateD;
+        } else if (route.name === 'Me') {
+          iconName = focused ? images.icons.meA : images.icons.meD;
         }
 
         // You can return any component that you like here!
-        return <Image source={iconName} resizeMode="contain" style={{ width: wp('4.5%'), height: wp('4.5%') }} />;
+        return <Image source={iconName} resizeMode="contain" style={{ width: wp('6.5%'), height: wp('4.5%') }} />;
       },
     })} >
       <Tab.Screen name={langObj.common.home} component={HomeScreen} />
-      <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} />
-      <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} />
-      <Tab.Screen name={langObj.common.AR} component={ARScreen} />
-      <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} />
+      {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
+      {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
+      <Tab.Screen name={'Explore'} component={DiscoverScreen} />
+      {/* <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} /> */}
+      <Tab.Screen name={'Create'} component={NewPostScreen} />
+      {/* <Tab.Screen name={langObj.common.AR} component={ARScreen} /> */}
+      <Tab.Screen name={'Certificate'} component={CertificateScreen} />
+      {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
+      <Tab.Screen name={'Me'} component={ProfileScreen} />
     </Tab.Navigator>
   )
 }
@@ -96,13 +109,18 @@ const AppRoutes = () => {
       {
         AuthReducer.accountLoading ?
           <Loader /> :
-          < NavigationContainer >
+          <NavigationContainer>
             <Stack.Navigator mode="modal" headerMode="none" >
               <Stack.Screen name="Home" component={TabComponent} />
               <Stack.Screen name="DetailItem" component={DetailItemScreen} />
               <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
+              <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+              <Stack.Screen name="Pay" component={PayScreen} />
+              <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+              <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+              <Stack.Screen name="Setting" component={SettingScreen} />
             </Stack.Navigator>
-          </NavigationContainer >
+          </NavigationContainer>
 
       }
     </>
