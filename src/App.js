@@ -13,20 +13,31 @@ import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
 import { Loader } from './components';
 
-import HomeScreen from './containers/homeScreen';
-import MyNFTScreen from './containers/myNFTScreen';
-import DiscoverScreen from './containers/discoverScreen';
-import ARScreen from './containers/ARScreen';
-import ConnectScreen from './containers/connectScreen';
-import DetailItemScreen from './containers/detailScreen';
-import NewPostScreen from './containers/newPostScreen';
-import CertificateScreen from './containers/certificateScreen';
-import CertificateDetailScreen from './containers/certificateScreen/detail';
-import PayScreen from './containers/payScreen';
-import MakeBidScreen from './containers/makeBidScreen';
-import ProfileScreen from './containers/profile';
-import EditProfileScreen from './containers/edit_profile';
-import SettingScreen from './containers/setting';
+import LoginScreen from './screens/login';
+import SignupScreen from './screens/signup';
+import AddPhoneScreen from './screens/add_phone';
+import AddEmailScreen from './screens/add_email';
+import OTPScreen from './screens/otp';
+import PasswordScreen from './screens/password';
+import NameScreen from './screens/add_name';
+import ChangePasswordScreen from "./screens/changePassword";
+import ForgetPasswordScreen from "./screens/forgetPassword";
+
+import HomeScreen from './screens/homeScreen';
+import MyNFTScreen from './screens/myNFTScreen';
+import DiscoverScreen from './screens/discoverScreen';
+import ARScreen from './screens/ARScreen';
+import ConnectScreen from './screens/connectScreen';
+import DetailItemScreen from './screens/detailScreen';
+import NewPostScreen from './screens/newPostScreen';
+import CertificateScreen from './screens/certificateScreen';
+import CertificateDetailScreen from './screens/certificateScreen/detail';
+import PayScreen from './screens/payScreen';
+import MakeBidScreen from './screens/makeBidScreen';
+import ProfileScreen from './screens/profile';
+import EditProfileScreen from './screens/edit_profile';
+import SettingScreen from './screens/setting';
+import WalletConnectScreen from './screens/walletconnect';
 import ViroARScreen from './viro';
 import getLanguage from './utils/languageSupport';
 const langObj = getLanguage();
@@ -110,7 +121,18 @@ const AppRoutes = () => {
         AuthReducer.accountLoading ?
           <Loader /> :
           <NavigationContainer>
-            <Stack.Navigator mode="modal" headerMode="none" >
+            <Stack.Navigator headerMode="none" >
+              <Stack.Screen name='Login' component={LoginScreen} />
+              <Stack.Screen name='Signup' component={SignupScreen} />
+              <Stack.Screen name='AddPhone' component={AddPhoneScreen} />
+              <Stack.Screen name='AddEmail' component={AddEmailScreen} />
+              <Stack.Screen name='AddName' component={NameScreen} />
+              <Stack.Screen name='OTP' component={OTPScreen} />
+              <Stack.Screen name='Password' component={PasswordScreen} />
+              <Stack.Screen name='ChangePassword' component={ChangePasswordScreen} />
+              <Stack.Screen name='ForgetPassword' component={ForgetPasswordScreen} />
+
+
               <Stack.Screen name="Home" component={TabComponent} />
               <Stack.Screen name="DetailItem" component={DetailItemScreen} />
               <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
@@ -119,6 +141,7 @@ const AppRoutes = () => {
               <Stack.Screen name="MakeBid" component={MakeBidScreen} />
               <Stack.Screen name="EditProfile" component={EditProfileScreen} />
               <Stack.Screen name="Setting" component={SettingScreen} />
+              <Stack.Screen name="WalletConnect" component={WalletConnectScreen} />
             </Stack.Navigator>
           </NavigationContainer>
 

@@ -37,6 +37,7 @@ import SaveIcon from 'src/assets/svgs/icon-save.svg';
 import ShareIcon from 'src/assets/svgs/icon-share.svg';
 import CloudUploadIcon from 'src/assets/svgs/icon-cloud-upload.svg';
 import AddEventIcon from 'src/assets/svgs/icon-add-event.svg';
+import WalletConnectIcon from 'src/assets/svgs/icon-wallet-connect.svg';
 
 import FitIcon from 'src/assets/svgs/icon-fit.svg';
 import FitRedIcon from 'src/assets/svgs/icon-fit-red.svg';
@@ -104,6 +105,7 @@ export default {
   ShareIcon,
   CloudUploadIcon,
   AddEventIcon,
+  WalletConnectIcon,
   
   FitRedIcon,
   CartRedIcon,
