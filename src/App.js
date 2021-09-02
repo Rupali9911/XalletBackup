@@ -13,16 +13,6 @@ import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
 import { Loader } from './components';
 
-import LoginScreen from './screens/login';
-import SignupScreen from './screens/signup';
-import AddPhoneScreen from './screens/add_phone';
-import AddEmailScreen from './screens/add_email';
-import OTPScreen from './screens/otp';
-import PasswordScreen from './screens/password';
-import NameScreen from './screens/add_name';
-import ChangePasswordScreen from "./screens/changePassword";
-import ForgetPasswordScreen from "./screens/forgetPassword";
-
 import HomeScreen from './screens/homeScreen';
 import MyNFTScreen from './screens/myNFTScreen';
 import DiscoverScreen from './screens/discoverScreen';
@@ -80,7 +70,6 @@ const TabComponent = () => {
     })} >
       <Tab.Screen name={langObj.common.home} component={HomeScreen} />
       {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
-      {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
       <Tab.Screen name={'Explore'} component={DiscoverScreen} />
       {/* <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} /> */}
       <Tab.Screen name={'Create'} component={NewPostScreen} />
@@ -122,7 +111,7 @@ const AppRoutes = () => {
           <Loader /> :
           <NavigationContainer>
             <Stack.Navigator headerMode="none" >
-              <Stack.Screen name='Login' component={LoginScreen} />
+              {/* <Stack.Screen name='Login' component={LoginScreen} />
               <Stack.Screen name='Signup' component={SignupScreen} />
               <Stack.Screen name='AddPhone' component={AddPhoneScreen} />
               <Stack.Screen name='AddEmail' component={AddEmailScreen} />
@@ -130,7 +119,7 @@ const AppRoutes = () => {
               <Stack.Screen name='OTP' component={OTPScreen} />
               <Stack.Screen name='Password' component={PasswordScreen} />
               <Stack.Screen name='ChangePassword' component={ChangePasswordScreen} />
-              <Stack.Screen name='ForgetPassword' component={ForgetPasswordScreen} />
+              <Stack.Screen name='ForgetPassword' component={ForgetPasswordScreen} /> */}
 
 
               <Stack.Screen name="Home" component={TabComponent} />
