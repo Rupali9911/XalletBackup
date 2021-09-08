@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { getNFTList, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
+import { getNFTList, getAllArtist, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
 
 import { responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
@@ -53,7 +53,7 @@ const USER_DATA = [
     },
 ];
 
-const Trend = () => {
+const Hot = () => {
 
     const { ListReducer } = useSelector(state => state);
     const dispatch = useDispatch();
@@ -112,7 +112,7 @@ const Trend = () => {
                                 if (item.metaData) {
                                     return (
                                         <TouchableOpacity onPress={() => {
-                                            dispatch(changeScreenName("Trend"))
+                                            dispatch(changeScreenName("Hot"))
                                             navigation.navigate("DetailItem", { index: findIndex })
                                         }} style={styles.listItem} >
                                             {
@@ -149,6 +149,14 @@ const Trend = () => {
 }
 
 const HomeScreen = ({ navigation }) => {
+
+    const { ListReducer } = useSelector(state => state);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getAllArtist());
+    }, []);
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
             <View style={styles.header}>
@@ -161,13 +169,16 @@ const HomeScreen = ({ navigation }) => {
                     horizontal
                     showsHorizontalScrollIndicator={false}>
                     {
-                        USER_DATA.map(item => {
+                        ListReducer.artistList &&
+                        ListReducer.artistList.map(item => {
+                            console.log(item.profile_image)
                             return (
                                 <TouchableOpacity onPress={() => navigation.navigate('')}>
                                     <View style={styles.userCircle}>
+                                        <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
                                     </View>
-                                    <Text style={styles.userText}>
-                                        {'Name'}
+                                    <Text numberOfLines={1} style={styles.userText}>
+                                        {item.username}
                                     </Text>
                                 </TouchableOpacity>
                             );
@@ -199,9 +210,9 @@ const HomeScreen = ({ navigation }) => {
                     marginBottom: SIZE(39)
                 }
             }} >
-                <Tab.Screen name={langObj.common.trend} component={Trend} />
-                <Tab.Screen name={langObj.common.New} component={NewNFT} />
-                <Tab.Screen name={langObj.common.Favorite} component={Favorite} />
+                <Tab.Screen name={langObj.common.hot} component={Hot} />
+                <Tab.Screen name={langObj.common.following} component={NewNFT} />
+                <Tab.Screen name={langObj.common.Discover} component={NewNFT} />
             </Tab.Navigator>
         </SafeAreaView>
     )

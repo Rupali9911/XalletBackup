@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
     userCircle: {
         width: SIZE(57),
         height: SIZE(57),
-        backgroundColor: colors.GREY1,
         borderRadius: SIZE(57),
         marginHorizontal: SIZE(9),
         marginBottom: SIZE(8),
+        overflow: 'hidden'
     },
     userText: {
         fontSize: RF(1.1),
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: fonts.PINGfANG,
         marginBottom: SIZE(8),
+        width: SIZE(57)
     }
 })
 

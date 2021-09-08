@@ -29,6 +29,7 @@ import EditProfileScreen from './screens/edit_profile';
 import SettingScreen from './screens/setting';
 import WalletConnectScreen from './screens/walletconnect';
 import ViroARScreen from './viro';
+import ExploreScreen from './screens/explore';
 import getLanguage from './utils/languageSupport';
 const langObj = getLanguage();
 
@@ -70,13 +71,13 @@ const TabComponent = () => {
     })} >
       <Tab.Screen name={langObj.common.home} component={HomeScreen} />
       {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
-      <Tab.Screen name={'Explore'} component={DiscoverScreen} />
+      <Tab.Screen name={'Explore'} component={ExploreScreen} />
       {/* <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} /> */}
       <Tab.Screen name={'Create'} component={NewPostScreen} />
       {/* <Tab.Screen name={langObj.common.AR} component={ARScreen} /> */}
       <Tab.Screen name={'Certificate'} component={CertificateScreen} />
       {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
-      <Tab.Screen name={'Me'} component={ProfileScreen} />
+      <Tab.Screen name={'Me'} component={WalletConnectScreen} />
     </Tab.Navigator>
   )
 }
@@ -111,17 +112,6 @@ const AppRoutes = () => {
           <Loader /> :
           <NavigationContainer>
             <Stack.Navigator headerMode="none" >
-              {/* <Stack.Screen name='Login' component={LoginScreen} />
-              <Stack.Screen name='Signup' component={SignupScreen} />
-              <Stack.Screen name='AddPhone' component={AddPhoneScreen} />
-              <Stack.Screen name='AddEmail' component={AddEmailScreen} />
-              <Stack.Screen name='AddName' component={NameScreen} />
-              <Stack.Screen name='OTP' component={OTPScreen} />
-              <Stack.Screen name='Password' component={PasswordScreen} />
-              <Stack.Screen name='ChangePassword' component={ChangePasswordScreen} />
-              <Stack.Screen name='ForgetPassword' component={ForgetPasswordScreen} /> */}
-
-
               <Stack.Screen name="Home" component={TabComponent} />
               <Stack.Screen name="DetailItem" component={DetailItemScreen} />
               <Stack.Screen name="ViroARScreen" component={ViroARScreen} />

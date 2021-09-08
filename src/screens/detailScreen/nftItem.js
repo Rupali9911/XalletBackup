@@ -21,9 +21,27 @@ import { apiGetGasPrices } from '../../gas-price';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import styles from './styles';
 import { images, colors } from '../../res';
-import { C_Image } from '../../components';
+import {
+  SVGS,
+  SIZE
+} from 'src/constants';
+import {
+  SpaceView,
+  RowBetweenWrap
+} from 'src/styles/common.styles';
+import {
+  SmallBoldText
+} from 'src/styles/text.styles';
+import { DetailModal, C_Image } from 'src/components';
 
 const { width } = Dimensions.get('window');
+
+const {
+  CommentIcon,
+  HeartIcon,
+  ShareIcon,
+  BookMarkIcon,
+} = SVGS;
 
 const nftItem = ({ item, index }) => {
 
@@ -36,6 +54,7 @@ const nftItem = ({ item, index }) => {
   const [priceNFTString, setPriceNFTString] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [loaderFor, setLoaderFor] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const navigation = useNavigation();
   const connector = useWalletConnect();
@@ -46,7 +65,7 @@ const nftItem = ({ item, index }) => {
     let body_data = {
       tokenId: parseInt(item.tokenId),
       networkType: networkType,
-      type: "2d",
+      type: "hot",
     }
 
     if (accountKey) {
@@ -164,7 +183,6 @@ const nftItem = ({ item, index }) => {
     getOwnerOfNFT();
   }, []);
 
-
   return (
     <View>
       {/* <View style={styles.bgImageCont} > */}
@@ -172,20 +190,65 @@ const nftItem = ({ item, index }) => {
       {/* <Image style={{ flex: 1 }} source={{ uri: item.metaData.image }} blurRadius={30} />
         <View style={[styles.bgImageCont, { backgroundColor: colors.black_opacity(0.4) }]} />
       </View> */}
-      <C_Image uri={item.metaData.image} imageStyle={styles.modalImage} />
-
-      <View style={styles.bottomModal} >
-        <View style={styles.modalLabelCont} >
-          <Text style={styles.modalLabel} >{item.metaData.name}</Text>
-          {
-            AuthReducer.accountKey ?
-              <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
-                <Image style={styles.heartIcon} source={item.like == 1 ? images.icons.heartA : images.icons.heart} />
-              </TouchableOpacity> : null
-          }
+      <View style={styles.modalSectCont}>
+        <View style={styles.iconCont}>
+          <Image style={styles.profileIcon} source={images.icons.profileIcon} />
+          <View>
+            <Text style={styles.modalIconLabel} >{langObj.common.owner}</Text>
+            <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]}>{owner}</Text>
+          </View>
         </View>
+        <View style={styles.iconCont}>
+          <Image style={styles.profileIcon} source={images.icons.profileIcon} />
+          <View>
+            <Text style={styles.modalIconLabel}>{langObj.common.artist}</Text>
+            <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]} >{artist}</Text>
+          </View>
+        </View>
+      </View>
+      <TouchableOpacity onLongPress={() => {
+        setModalVisible(true);
+      }}>
+        <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
+      </TouchableOpacity>
 
-        <View style={styles.modalSectCont} >
+      <View style={styles.bottomModal}>
+        {
+          AuthReducer.accountKey ?
+            <RowBetweenWrap>
+              <View style={styles.buttons}>
+                <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
+                  {/* <Image style={styles.heartIcon} source={item.like == 1 ? images.icons.heartA : images.icons.heart} /> */}
+                  <HeartIcon />
+                </TouchableOpacity>
+                <SpaceView mRight={SIZE(15)} />
+                <TouchableOpacity>
+                  <CommentIcon />
+                </TouchableOpacity>
+                <SpaceView mRight={SIZE(15)} />
+                <TouchableOpacity>
+                  <ShareIcon />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity>
+                <BookMarkIcon />
+              </TouchableOpacity>
+            </RowBetweenWrap>
+            : null
+        }
+        {
+          AuthReducer.accountKey ?
+            <>
+              <SmallBoldText>
+                {'3,589 likes'}
+              </SmallBoldText>
+              <SpaceView mTop={SIZE(6)} />
+            </>
+            : null
+        }
+        <Text style={styles.modalLabel} >{item.metaData.name}</Text>
+
+        {/* <View style={styles.modalSectCont} >
           <View style={{ flex: 1 }} >
             <Text style={styles.modalIconLabel} >{langObj.common.currentprice}</Text>
             <View style={styles.iconCont} >
@@ -216,27 +279,10 @@ const nftItem = ({ item, index }) => {
               <Text style={styles.iconLabel} >{lastPrice}</Text>
             </View>
           </View>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.modalSectCont} >
-          <View style={{ flex: 1 }} >
-            <Text style={styles.modalIconLabel} >{langObj.common.owner}</Text>
-            <View style={styles.iconCont} >
-              <Image style={styles.profileIcon} source={images.icons.profileIcon} />
-              <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]}>{owner}</Text>
-            </View>
-          </View>
-          <View style={{ flex: 0.8 }} >
-            <Text style={styles.modalIconLabel} >{langObj.common.artist}</Text>
-            <View style={styles.iconCont} >
-              <Image style={styles.profileIcon} source={images.icons.profileIcon} />
-              <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]} >{artist}</Text>
-            </View>
-          </View>
-        </View>
+        </View> */}
         <View style={styles.separator} />
         <Text style={styles.description} >{item.metaData.description}</Text>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           {
             isLoading ?
               <ActivityIndicator size="large" color={colors.white} />
@@ -252,8 +298,13 @@ const nftItem = ({ item, index }) => {
                 </Text>
               </LinearGradient>
           }
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
+      <DetailModal
+        imageUrl={item.thumbnailUrl}
+        isModalVisible={isModalVisible}
+        toggleModal={() => setModalVisible(false)}
+      />
     </View>
   )
 }

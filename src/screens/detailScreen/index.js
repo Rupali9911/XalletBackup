@@ -27,15 +27,13 @@ const DetailItemScreen = ({ route }) => {
     const [listIndex, setListIndex] = React.useState(0);
 
     React.useEffect(() => {
-
         const { index } = route.params;
         setListIndex(index)
-
     }, []);
 
     const getNFTlistData = React.useCallback((page) => {
 
-        AuthReducer.screenName == "Trend" ?
+        AuthReducer.screenName == "Hot" ?
             dispatch(getNFTList(page)) :
             AuthReducer.screenName == "newNFT" ?
                 dispatch(newNFTList(page)) :
@@ -47,7 +45,7 @@ const DetailItemScreen = ({ route }) => {
     });
 
     const handlePageChange = (page) => {
-        AuthReducer.screenName == "Trend" ?
+        AuthReducer.screenName == "Hot" ?
             dispatch(pageChange(page)) :
             AuthReducer.screenName == "newNFT" ?
                 dispatch(newPageChange(page)) :
@@ -57,7 +55,7 @@ const DetailItemScreen = ({ route }) => {
                         dispatch(twoPageChange(page)) : null
     }
 
-    let list = AuthReducer.screenName == "Trend" ?
+    let list = AuthReducer.screenName == "Hot" ?
         ListReducer.nftList :
         AuthReducer.screenName == "newNFT" ?
             NewNFTListReducer.newNftList :
@@ -66,7 +64,7 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "twoDArt" ?
                     TwoDReducer.twoDNftList : [];
 
-    let loading = AuthReducer.screenName == "Trend" ?
+    let loading = AuthReducer.screenName == "Hot" ?
         ListReducer.nftListLoading :
         AuthReducer.screenName == "newNFT" ?
             NewNFTListReducer.newNftListLoading :
@@ -77,21 +75,21 @@ const DetailItemScreen = ({ route }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
             <View style={styles.modalCont} >
-                <View style={styles.header} >
-                    <View style={styles.headerLeft}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
-                            <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                        </TouchableOpacity>
+                    <View style={styles.header} >
+                        <View style={styles.headerLeft}>
+                            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
+                                <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.headerTextView}>
+                            <Text style={styles.topHeaderText}>
+                                {'LALALA'}
+                            </Text>
+                            <Text style={styles.bottomHeaderText}>
+                                {'NFTs'}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.headerTextView}>
-                        <Text style={styles.topHeaderText}>
-                            {'LALALA'}
-                        </Text>
-                        <Text style={styles.bottomHeaderText}>
-                            {'NFTs'}
-                        </Text>
-                    </View>
-                </View>
                 {
                     loading ?
                         <Loader /> :
@@ -107,7 +105,7 @@ const DetailItemScreen = ({ route }) => {
                                 }
                             }}
                             onEndReached={() => {
-                                let num = AuthReducer.screenName == "Trend" ?
+                                let num = AuthReducer.screenName == "Hot" ?
                                     ListReducer.page + 1 :
                                     AuthReducer.screenName == "newNFT" ?
                                         NewNFTListReducer.newListPage + 1 :

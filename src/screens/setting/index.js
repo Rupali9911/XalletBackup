@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import EntypoIcon from "react-native-vector-icons/Entypo";
-import { useDispatch } from 'react-redux';
 // import { logoutUser } from "../../../../rn/fantoken/src/store/actions/authActions";
 
 import {
@@ -35,6 +34,12 @@ import {
     MainContent,
     SettingLabel
 } from './styled';
+import {
+    useWalletConnect,
+    withWalletConnect
+} from '@walletconnect/react-native-dapp';
+import { useDispatch } from 'react-redux';
+import { resetAccount } from '../../store/actions/authAction';
 
 const {
     LeftArrowIcon,
@@ -47,6 +52,7 @@ function Setting({
 
     const [isEnabled, onToggleEnable] = useState(false);
     const dispatch = useDispatch();
+    const connector = useWalletConnect();
 
     const pressLogout = () => {
         Alert.alert(
@@ -64,10 +70,10 @@ function Setting({
     }
 
     const pressOk = () => {
-        AsyncStorage.removeItem("@userToken");
-        AsyncStorage.removeItem("@userData");
-        navigation.navigate("Login")
-        // dispatch(logoutUser());
+        AsyncStorage.removeItem("account_id@");
+        connector.killSession();
+        dispatch(resetAccount());
+        navigation.goBack();
     }
 
     return (
@@ -137,4 +143,9 @@ function Setting({
     )
 }
 
-export default Setting;
+export default withWalletConnect(Setting, {
+    redirectUrl: Platform.OS === 'web' ? window.location.origin : 'yourappscheme://',
+    storageOptions: {
+        asyncStorage: AsyncStorage,
+    },
+});

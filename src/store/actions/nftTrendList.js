@@ -12,7 +12,8 @@ import {
     NEW_NFT_LIST_UPDATE,
     FAVORITE_LIST_UPDATE,
     TWOD_LIST_UPDATE,
-    MYLIST_LIST_UPDATE
+    MYLIST_LIST_UPDATE,
+    ALL_ARTIST_SUCCESS
 } from '../types';
 
 
@@ -43,13 +44,18 @@ export const pageChange = (data) => ({
     payload: data
 });
 
+export const getAllArtistSuccess = (data) => ({
+    type: ALL_ARTIST_SUCCESS,
+    payload: data
+})
+
 export const getNFTList = (page) => {
     return (dispatch, getState) => {
 
         let accountKey = getState().AuthReducer.accountKey;
 
         let body_data = {
-            type: "2d",
+            type: "hot",
             page,
             limit: 30,
             networkType: networkType,
@@ -80,6 +86,34 @@ export const getNFTList = (page) => {
                 alert(err.message)
             })
 
+    }
+}
+
+export const getAllArtist = () => {
+    return (dispatch) => {
+
+        let body_data = {
+            networkType: networkType,
+        }
+
+        let fetch_data_body = {
+            method: 'POST',
+            body: JSON.stringify(body_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+
+        fetch('https://api.xanalia.com/user/get-all-artist', fetch_data_body)
+            .then(response => response.json())
+            .then(json => {
+                dispatch(getAllArtistSuccess([...json.data]))
+
+            }).catch(err => {
+                // dispatch(nftLoadFail())
+                alert(err.message)
+            })
     }
 }
 
@@ -143,7 +177,7 @@ export const handleLikeDislike = (item, index) => {
                 ...oldNFTS.slice(index + 1),
             ];
 
-            screenName == "Trend" ? dispatch(nftLoadUpdate(nftUpdated)) :
+            screenName == "Hot" ? dispatch(nftLoadUpdate(nftUpdated)) :
                 screenName == "newNFT" ? dispatch(newNftLoadUpdate(nftUpdated)) :
                     screenName == "favourite" ? dispatch(favoriteNFTUpdate(nftUpdated)) :
                         screenName == "twoDArt" ? dispatch(twoDNFTUpdate(nftUpdated)) :

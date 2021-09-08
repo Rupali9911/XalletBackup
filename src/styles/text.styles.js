@@ -35,13 +35,13 @@ const GreySmallText = styled.Text`
 const SmallNormalText = styled.Text`
   font-size: ${FONT(13)}px;
   color: ${COLORS.BLACK1};
-  font-weight: 400;
+  font-family: ${FONTS.ARIAL};
 `;
 
 const SmallBoldText = styled.Text`
   font-size: ${FONT(13)}px;
   color: ${COLORS.BLACK1};
-  font-weight: 700;
+  font-family: ${FONTS.ARIAL_BOLD};
 `;
 
 const NormalText = styled.Text`

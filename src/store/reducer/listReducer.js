@@ -5,11 +5,13 @@ import {
     PAGE_CHANGE,
     NFT_LIST_RESET,
     NFT_LIST_UPDATE,
+    ALL_ARTIST_SUCCESS
 } from '../types';
 
 const initialState = {
     nftListLoading: false,
     nftList: [],
+    artistList: [],
     page: 1,
 }
 
@@ -33,6 +35,9 @@ export default function ListReducer(state = initialState, action) {
 
         case PAGE_CHANGE:
             return state = { ...state, page: action.payload };
+
+        case ALL_ARTIST_SUCCESS:
+            return stat = { ...state, artistList: action.payload };
 
         default:
             return state;

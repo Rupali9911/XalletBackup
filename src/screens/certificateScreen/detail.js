@@ -14,8 +14,16 @@ import styles from './styles';
 import { images, colors } from '../../res';
 
 import getLanguage from '../../utils/languageSupport';
-import { SIZE } from '../../common/responsiveFunction';
 import { C_Image, GroupButton } from '../../components';
+import {
+    SIZE,
+    IMAGES
+} from 'src/constants';
+
+const {
+    GIRL
+} = IMAGES;
+
 const langObj = getLanguage();
 
 const DetailScreen = ({ navigation }) => {
@@ -73,12 +81,16 @@ const DetailScreen = ({ navigation }) => {
                         justifyContent: 'space-between'
                     }}>
                         <View style={styles.moreItem}>
+                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
                         </View>
                         <View style={styles.moreItem}>
+                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
                         </View>
                         <View style={styles.moreItem}>
+                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
                         </View>
                         <View style={styles.moreItem}>
+                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
                         </View>
                     </View>
                 </View>

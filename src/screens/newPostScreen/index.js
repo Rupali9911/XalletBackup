@@ -14,7 +14,10 @@ import styles from './styles';
 import { images, colors } from '../../res';
 
 import getLanguage from '../../utils/languageSupport';
-import { SIZE } from '../../common/responsiveFunction';
+import {
+    SIZE,
+    COLORS
+} from 'src/constants';
 const langObj = getLanguage();
 
 const NewPostScreen = () => {
@@ -62,9 +65,9 @@ const NewPostScreen = () => {
                         {'Facebook'}
                     </Text>
                     <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={"#f4f3f4"}
-                        ios_backgroundColor={colors.GREY2}
+                        trackColor={{ false: "#767577", true: 'red' }}
+                        thumbColor={COLORS.WHITE1}
+                        ios_backgroundColor={COLORS.WHITE1}
                         accessibilityRole='button'
                     />
                 </View>
@@ -73,9 +76,9 @@ const NewPostScreen = () => {
                         {'Twitter'}
                     </Text>
                     <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={"#f4f3f4"}
-                        ios_backgroundColor={colors.GREY2}
+                        trackColor={{ false: "#767577", true: 'red' }}
+                        thumbColor={COLORS.WHITE1}
+                        ios_backgroundColor={COLORS.WHITE1}
                         accessibilityRole='button'
 
                     />
@@ -85,20 +88,31 @@ const NewPostScreen = () => {
                         {'Tumblr'}
                     </Text>
                     <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={"#f4f3f4"}
-                        ios_backgroundColor={colors.GREY2}
+                        trackColor={{ false: "#767577", true: 'red' }}
+                        thumbColor={COLORS.WHITE1}
+                        ios_backgroundColor={COLORS.WHITE1}
+                        accessibilityRole='button'
+                    />
+                </View>
+                <View style={styles.betweenView}>
+                    <Text style={styles.itemText}>
+                        {'Ameba'}
+                    </Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: 'red' }}
+                        thumbColor={COLORS.WHITE1}
+                        ios_backgroundColor={COLORS.WHITE1}
                         accessibilityRole='button'
                     />
                 </View>
                 <View style={styles.listItem}>
                     <Text style={styles.itemText}>
-                        {'Ameba'}
+                        {'Lorem ipsum'}
                     </Text>
                     <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={"#f4f3f4"}
-                        ios_backgroundColor={colors.GREY2}
+                        trackColor={{ false: "#767577", true: 'red' }}
+                        thumbColor={COLORS.WHITE1}
+                        ios_backgroundColor={COLORS.WHITE1}
                         accessibilityRole='button'
                     />
                 </View>

@@ -59,9 +59,10 @@ const styles = StyleSheet.create({
         // marginTop: hp('3%')
     },
     bottomModal: {
-        width: '85%',
+        width: '100%',
         alignSelf: "center",
-        paddingVertical: hp('3%')
+        paddingVertical: hp('3%'),
+        paddingHorizontal: SIZE(14)
     },
     modalLabelCont: {
         flexDirection: "row",
@@ -82,14 +83,17 @@ const styles = StyleSheet.create({
     modalSectCont: {
         width: "100%",
         flexDirection: "row",
-        paddingVertical: hp('1%')
+        paddingVertical: hp('1%'),
+        paddingHorizontal: hp('2%')
     },
     modalIconLabel: {
         fontSize: 11,
         fontFamily: fonts.SegoeUIRegular,
         color: colors.black,
+        marginLeft: wp('1.5%')
     },
     iconCont: {
+        flex: 1,
         flexDirection: "row",
         marginTop: hp('0.5%'),
         marginBottom: hp('0.5%'),
@@ -101,8 +105,8 @@ const styles = StyleSheet.create({
         borderRadius: wp('6%') / 2
     },
     profileIcon: {
-        height: wp('5%'),
-        width: wp('5%'),
+        width: SIZE(28),
+        height: SIZE(28),
         borderRadius: wp('5%') / 2
     },
     iconLabel: {
@@ -127,14 +131,19 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 10,
-        fontFamily: fonts.SegoeUIRegular,
-        color: colors.black,
+        fontFamily: fonts.PINGfANG,
+        color: '#909090',
         marginVertical: hp('1.5%')
     },
     headerTextView: {
         alignItems: 'center',
         justifyContent: 'center'
     },
+    buttons: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: SIZE(8)
+    }
 })
 
 export default styles;

@@ -94,7 +94,6 @@ const Tab = createMaterialTopTabNavigator();
 
 function Profile({
     navigation,
-    route
 }) {
 
     // const { isMe } = route.params;
@@ -195,11 +194,6 @@ function Profile({
     return (
         <Container>
             <Header>
-                <HeaderLeft>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <LeftArrowIcon />
-                    </TouchableOpacity>
-                </HeaderLeft>
                 <HeaderText>
                     {'Name'}
                 </HeaderText>

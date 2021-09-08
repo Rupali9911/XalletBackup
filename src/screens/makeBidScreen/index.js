@@ -111,8 +111,8 @@ function MakeBidScreen({
                     height: 2
                 }
             }}>
-                <Tab.Screen name='Month' component={Month} />
-                <Tab.Screen name='Year' component={Month} />
+                <Tab.Screen name='Chart' component={Month} />
+                <Tab.Screen name='History' component={Month} />
             </Tab.Navigator>
         )
     }
