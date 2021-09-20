@@ -40,7 +40,7 @@ const DetailScreen = ({ navigation }) => {
                 </Text>
             </View>
             <ScrollView>
-                <C_Image uri={''} imageStyle={styles.modalImage} />
+                <Image source={GIRL} style={styles.modalImage} />
                 <Text style={styles.nftName}>
                     {'NFT Name NFT Name'}
                 </Text>

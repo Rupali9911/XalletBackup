@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Animated, Text, TouchableWithoutFeedback, TouchableOpacity, ScrollView, View, Modal } from 'react-native';
+import { Animated, Text, TouchableWithoutFeedback, TouchableOpacity, Image, View, Modal } from 'react-native';
 // import Modal from 'react-native-modal';
 import styled from 'styled-components';
 import {
@@ -40,8 +40,6 @@ const {
 
 const ModalContainer = styled.View`
     flex: 1;
-    justify-content: center;
-    align-items: center;
 `;
 
 const MainContent = styled.View`
@@ -55,6 +53,7 @@ const ProfileIcon = styled.View`
     height: ${SIZE(28)}px;
     border-radius: ${SIZE(14)}px;
     background-color: ${COLORS.GREY2};
+    overflow: hidden;
 `;
 
 const NFTImage = styled.Image`
@@ -77,7 +76,9 @@ const ButtonItem = styled.TouchableOpacity`
 const DetailModal = ({
     isModalVisible,
     toggleModal,
-    imageUrl
+    imageUrl,
+    profileName,
+    profileImage
 }) => {
 
     return (
@@ -86,7 +87,8 @@ const DetailModal = ({
                 onRequestClose={toggleModal}
                 animationType='fade'
                 transparent={true}
-                visible={isModalVisible}>
+                visible={isModalVisible}
+                style={{ flex: 1 }}>
                 <TouchableOpacity
                     onPress={toggleModal}
                     activeOpacity={1}
@@ -105,11 +107,11 @@ const DetailModal = ({
                                     <RowWrap>
                                         <SpaceView mLeft={SIZE(10)} />
                                         <ProfileIcon>
-
+                                            <Image source={profileImage} style={{ width: '100%', height: '100%' }} />
                                         </ProfileIcon>
                                         <SpaceView mLeft={SIZE(10)} />
                                         <SmallBoldText>
-                                            {'profile name'}
+                                            {profileName}
                                         </SmallBoldText>
                                     </RowWrap>
                                     <SpaceView mTop={SIZE(10)} />

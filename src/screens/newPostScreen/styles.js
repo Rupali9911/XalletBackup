@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     betweenView: {
-        padding: wp('4%'),
+        paddingHorizontal: wp('4%'),
+        paddingVertical: SIZE(7),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

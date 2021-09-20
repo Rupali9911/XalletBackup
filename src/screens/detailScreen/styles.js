@@ -1,7 +1,11 @@
 import { StyleSheet } from 'react-native';
 
+import {
+    SIZE,
+    FONTS
+} from 'src/constants';
 import { colors, fonts } from '../../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp, SIZE, responsiveFontSize as RF } from "../../common/responsiveFunction";
+import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF } from "../../common/responsiveFunction";
 
 const styles = StyleSheet.create({
     modalCont: {
@@ -83,20 +87,20 @@ const styles = StyleSheet.create({
     modalSectCont: {
         width: "100%",
         flexDirection: "row",
-        paddingVertical: hp('1%'),
+        paddingTop: hp('1%'),
+        paddingBottom: SIZE(8.5),
         paddingHorizontal: hp('2%')
     },
     modalIconLabel: {
-        fontSize: 11,
+        fontSize: SIZE(11),
+        lineHeight: SIZE(12.89),
         fontFamily: fonts.SegoeUIRegular,
         color: colors.black,
-        marginLeft: wp('1.5%')
+        marginLeft: SIZE(9.5)
     },
     iconCont: {
         flex: 1,
         flexDirection: "row",
-        marginTop: hp('0.5%'),
-        marginBottom: hp('0.5%'),
         alignItems: "center"
     },
     iconsImage: {
@@ -105,16 +109,19 @@ const styles = StyleSheet.create({
         borderRadius: wp('6%') / 2
     },
     profileIcon: {
-        width: SIZE(28),
-        height: SIZE(28),
-        borderRadius: wp('5%') / 2
+        width: SIZE(29),
+        height: SIZE(29),
+        borderRadius: SIZE(15),
+        borderColor: '#979797',
+        borderWidth: 1
     },
     iconLabel: {
-        fontSize: 15,
-        fontFamily: fonts.SegoeUIBold,
+        fontSize: SIZE(12),
+        lineHeight: SIZE(14.06),
+        fontFamily: FONTS.ARIAL,
         fontWeight: "bold",
         color: colors.black,
-        marginLeft: wp('1.5%')
+        marginLeft: SIZE(9.5)
     },
     separator: {
         width: '100%',
@@ -142,7 +149,7 @@ const styles = StyleSheet.create({
     buttons: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: SIZE(8)
+        justifyContent: 'center',
     }
 })
 

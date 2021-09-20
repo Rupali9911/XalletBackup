@@ -105,7 +105,7 @@ const NewPostScreen = () => {
                         accessibilityRole='button'
                     />
                 </View>
-                <View style={styles.listItem}>
+                <View style={[styles.listItem, { paddingVertical: SIZE(7), }]}>
                     <Text style={styles.itemText}>
                         {'Lorem ipsum'}
                     </Text>

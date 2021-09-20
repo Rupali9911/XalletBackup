@@ -8,10 +8,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getNFTList, getAllArtist, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
 
-import { responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
+import { responsiveFontSize as RF } from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
+import {
+    SIZE,
+} from 'src/constants';
 
 import NewNFT from './newNFT';
 import Favorite from './favorite';
@@ -19,39 +22,6 @@ import getLanguage from '../../utils/languageSupport';
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
-
-const USER_DATA = [
-    {
-        name: 'Name1'
-    },
-    {
-        name: 'Name2'
-    },
-    {
-        name: 'Name3'
-    },
-    {
-        name: 'Name4'
-    },
-    {
-        name: 'Name5'
-    },
-    {
-        name: 'Name6'
-    },
-    {
-        name: 'Name7'
-    },
-    {
-        name: 'Name8'
-    },
-    {
-        name: 'Name9'
-    },
-    {
-        name: 'Name10'
-    },
-];
 
 const Hot = () => {
 
@@ -117,7 +87,10 @@ const Hot = () => {
                                         }} style={styles.listItem} >
                                             {
                                                 item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                                                    <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
+                                                    <C_Image
+                                                        uri={item.thumbnailUrl}
+                                                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                                        imageStyle={styles.listImage} />
                                                     : <View style={styles.sorryMessageCont}>
                                                         <Text style={{ textAlign: "center" }} >No Image to Show</Text>
                                                     </View>
@@ -171,7 +144,6 @@ const HomeScreen = ({ navigation }) => {
                     {
                         ListReducer.artistList &&
                         ListReducer.artistList.map(item => {
-                            console.log(item.profile_image)
                             return (
                                 <TouchableOpacity onPress={() => navigation.navigate('')}>
                                     <View style={styles.userCircle}>

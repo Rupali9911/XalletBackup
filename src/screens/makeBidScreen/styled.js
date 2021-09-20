@@ -57,8 +57,8 @@ const PriceTextInput = styled.TextInput`
 const DescriptionText = styled.Text`
     font-size: ${FONT(14)}px;
     color: #696969;
-    font-weight: 400;
     text-align: right;
+    font-family: ${FONTS.ARIAL}
 `;
 
 const GroupButtonView = styled.View`

@@ -39,7 +39,7 @@ const SmallNormalText = styled.Text`
 `;
 
 const SmallBoldText = styled.Text`
-  font-size: ${FONT(13)}px;
+  font-size: ${FONT(12)}px;
   color: ${COLORS.BLACK1};
   font-family: ${FONTS.ARIAL_BOLD};
 `;

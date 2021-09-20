@@ -55,6 +55,7 @@ export const getNFTList = (page) => {
         let accountKey = getState().AuthReducer.accountKey;
 
         let body_data = {
+            approveStatus: 'approve',
             type: "hot",
             page,
             limit: 30,

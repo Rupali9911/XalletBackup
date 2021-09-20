@@ -23,7 +23,8 @@ import styles from './styles';
 import { images, colors } from '../../res';
 import {
   SVGS,
-  SIZE
+  SIZE,
+  IMAGES
 } from 'src/constants';
 import {
   SpaceView,
@@ -33,6 +34,9 @@ import {
   SmallBoldText
 } from 'src/styles/text.styles';
 import { DetailModal, C_Image } from 'src/components';
+const Web3 = require("web3");
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
@@ -55,17 +59,82 @@ const nftItem = ({ item, index }) => {
   const [isLoading, setLoading] = useState(false);
   const [loaderFor, setLoaderFor] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [creatorImage, setCreatorImage] = useState();
+  const [ownerImage, setOwnerImage] = useState();
 
   const navigation = useNavigation();
   const connector = useWalletConnect();
   const accountKey = AuthReducer.accountKey;
 
+  let MarketPlaceAbi = "";
+  let MarketContractAddress = "";
+
+  let AwardAbi = "";
+  let AwardContractAddress = "";
+  let ApproveAbi = "";
+  let ApproveAdd = "";
+  let providerUrl = "";
+
+  useEffect(() => {
+    let params = item.tokenId.split('-');
+    let tokenId = params.length > 1 ? params[1] : params[0];
+    let chainType = params[0];
+    if (chainType === 'polygon') {
+      MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+      MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+      AwardAbi = blockChainConfig[1].awardConConfig.abi;
+      AwardContractAddress = blockChainConfig[1].awardConConfig.add;
+      ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
+      ApproveAdd = blockChainConfig[1].marketApproveConConfig.add;
+      providerUrl = blockChainConfig[1].providerUrl;
+    } else if (chainType === 'binance') {
+      MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+      MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+      AwardAbi = blockChainConfig[0].awardConConfig.abi;
+      AwardContractAddress = blockChainConfig[0].awardConConfig.add;
+      ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
+      ApproveAdd = blockChainConfig[0].marketApproveConConfig.add;
+      providerUrl = blockChainConfig[0].providerUrl;
+    }
+
+
+    let web3 = new Web3(providerUrl);
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress
+    );
+    // MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
+    //   if (!err) {
+    //     console.log('=======')
+    //     console.log(res)
+    //   }
+    // });
+    MarketPlaceContract.methods
+      .getNonCryptoOwner(tokenId)
+      .call(async (err, res) => {
+        if (res) {
+          let profileUrl = networkType === 'mainnet' ?
+            `https://api.xanalia.com/user/get-public-profile?userId=${res}` :
+            `https://testapi.xanalia.com/user/get-public-profile?userId=${res}`
+          let profile = await axios.get(profileUrl);
+          if (profile.data) {
+            setOwner(profile.data.data.username);
+            setOwnerImage(profile.data.data.profile_image);
+          }
+        } else if (!res) {
+          console.log('=======err', err);
+        } else if (err) {
+        }
+      });
+  }, []);
+
   const getTockendetailsApi = async () => {
 
     let body_data = {
-      tokenId: parseInt(item.tokenId),
+      tokenId: item.tokenId,
       networkType: networkType,
-      type: "hot",
+      type: "2D",
+      chain: "binance"
     }
 
     if (accountKey) {
@@ -87,17 +156,29 @@ const nftItem = ({ item, index }) => {
         if (res.data.length > 0 && res.data !== "No record found") {
           const data = res.data[0];
 
-          if (data.newprice) {
-            setPriceNFTString(data.newprice.price);
-            setOwner(data.newprice.seller);
-          } else {
-            setLoaderFor(false);
-          }
-
           setArtist(data.returnValues.to);
-          setLastPrice(data.lastPrice);
 
-          // lastOwnerOfNFT(data);
+          let req_data = {
+            owner: data.returnValues.to,
+            token: 'HubyJ*%qcqR0'
+          };
+
+          let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            }
+          }
+          fetch(`${BASE_URL}/getProfile`, body)
+            .then(response => response.json())
+            .then(res => {
+              if (res.data) {
+                setArtist(res.data.username);
+                setCreatorImage(res.data.profile_image);
+              }
+            })
 
         } else if (res.data.data === "No record found") {
           alert('No record found');
@@ -192,29 +273,34 @@ const nftItem = ({ item, index }) => {
       </View> */}
       <View style={styles.modalSectCont}>
         <View style={styles.iconCont}>
-          <Image style={styles.profileIcon} source={images.icons.profileIcon} />
+          <Image style={styles.profileIcon} source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
           <View>
             <Text style={styles.modalIconLabel} >{langObj.common.owner}</Text>
-            <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]}>{owner}</Text>
+            <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>{owner}</Text>
           </View>
         </View>
         <View style={styles.iconCont}>
-          <Image style={styles.profileIcon} source={images.icons.profileIcon} />
+          <Image style={styles.profileIcon} source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
           <View>
-            <Text style={styles.modalIconLabel}>{langObj.common.artist}</Text>
-            <Text numberOfLines={1} style={[styles.iconLabel, { fontWeight: "400", maxWidth: width * 0.4 }]} >{artist}</Text>
+            <Text style={styles.modalIconLabel}>{langObj.common.creator}</Text>
+            <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.3 }]} >{artist}</Text>
           </View>
         </View>
       </View>
-      <TouchableOpacity onLongPress={() => {
+      <TouchableOpacity onPress={() => {
         setModalVisible(true);
       }}>
         <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
       </TouchableOpacity>
 
-      <View style={styles.bottomModal}>
+      <View style={{
+        width: '100%',
+        alignSelf: "center",
+        paddingTop: SIZE(17),
+        paddingHorizontal: SIZE(14)
+      }}>
         {
-          AuthReducer.accountKey ?
+          !AuthReducer.accountKey ?
             <RowBetweenWrap>
               <View style={styles.buttons}>
                 <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
@@ -236,6 +322,7 @@ const nftItem = ({ item, index }) => {
             </RowBetweenWrap>
             : null
         }
+        <SpaceView mTop={SIZE(8)} />
         {
           AuthReducer.accountKey ?
             <>
@@ -302,6 +389,8 @@ const nftItem = ({ item, index }) => {
       </View>
       <DetailModal
         imageUrl={item.thumbnailUrl}
+        profileImage={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }}
+        profileName={artist}
         isModalVisible={isModalVisible}
         toggleModal={() => setModalVisible(false)}
       />

@@ -10,7 +10,8 @@ import {
     SIZE,
     SVGS,
     COLORS,
-    FONT
+    FONT,
+    FONTS
 } from 'src/constants';
 import {
     Header,
@@ -103,8 +104,9 @@ function MakeBidScreen({
                     marginTop: SIZE(-10)
                 },
                 labelStyle: {
-                    fontSize: FONT(16),
-                    textTransform: 'none'
+                    fontSize: FONT(12),
+                    textTransform: 'none',
+                    fontFamily: FONTS.ARIAL
                 },
                 indicatorStyle: {
                     backgroundColor: COLORS.BLUE4,
@@ -155,7 +157,7 @@ function MakeBidScreen({
                             </BoldText>
                         </RowWrap>
                         <BorderView />
-                        <SpaceView mTop={SIZE(2)} />
+                        <SpaceView mTop={SIZE(6)} />
                         <DescriptionText>
                             {'Current Highest bid\n223,343'}
                         </DescriptionText>

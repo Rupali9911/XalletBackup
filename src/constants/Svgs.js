@@ -40,6 +40,7 @@ import AddEventIcon from 'src/assets/svgs/icon-add-event.svg';
 import WalletConnectIcon from 'src/assets/svgs/icon-wallet-connect.svg';
 import CommentIcon from 'src/assets/svgs/icon-comment.svg';
 import BookMarkIcon from 'src/assets/svgs/icon-book-mark.svg';
+import PlayButtonIcon from 'src/assets/svgs/icon-play.svg';
 
 import FitIcon from 'src/assets/svgs/icon-fit.svg';
 import FitRedIcon from 'src/assets/svgs/icon-fit-red.svg';
@@ -110,6 +111,7 @@ export default {
   WalletConnectIcon,
   CommentIcon,
   BookMarkIcon,
+  PlayButtonIcon,
   
   FitRedIcon,
   CartRedIcon,
