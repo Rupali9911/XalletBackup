@@ -94,6 +94,7 @@ const Tab = createMaterialTopTabNavigator();
 
 function Profile({
     navigation,
+    connector
 }) {
 
     // const { isMe } = route.params;
@@ -200,7 +201,7 @@ function Profile({
                 <HeaderRight>
                     <RowWrap>
                         <SpaceView mRight={SIZE(15)} />
-                        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Setting', { connector: connector })}>
                             <SettingIcon width={SIZE(23)} height={SIZE(23)} />
                         </TouchableOpacity>
                     </RowWrap>
@@ -272,7 +273,7 @@ function Profile({
                 <SpaceView mRight={SIZE(15)} />
             </RowWrap>
             <SpaceView mTop={SIZE(16)} />
-            {renderTabView()}
+            { renderTabView() }
         </Container >
     )
 }

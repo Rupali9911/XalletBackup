@@ -24,17 +24,12 @@ const DetailItemScreen = ({ route }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [listIndex, setListIndex] = React.useState(0);
-
-    React.useEffect(() => {
-        const { index } = route.params;
-        setListIndex(index)
-    }, []);
+    const [listIndex, setListIndex] = React.useState(route.params.index);
 
     const getNFTlistData = React.useCallback((page) => {
 
         AuthReducer.screenName == "Hot" ?
-            dispatch(getNFTList(page)) :
+            dispatch(getNFTList(page, 5)) :
             AuthReducer.screenName == "newNFT" ?
                 dispatch(newNFTList(page)) :
                 AuthReducer.screenName == "favourite" ?
@@ -43,17 +38,6 @@ const DetailItemScreen = ({ route }) => {
                         dispatch(myNFTList(page, "2D", 30)) : null
 
     });
-
-    const handlePageChange = (page) => {
-        AuthReducer.screenName == "Hot" ?
-            dispatch(pageChange(page)) :
-            AuthReducer.screenName == "newNFT" ?
-                dispatch(newPageChange(page)) :
-                AuthReducer.screenName == "favourite" ?
-                    dispatch(favoritePageChange(page)) :
-                    AuthReducer.screenName == "twoDArt" ?
-                        dispatch(twoPageChange(page)) : null
-    }
 
     let list = AuthReducer.screenName == "Hot" ?
         ListReducer.nftList :
@@ -72,29 +56,31 @@ const DetailItemScreen = ({ route }) => {
                 MyNFTReducer.myNftListLoading :
                 AuthReducer.screenName == "twoDArt" ?
                     TwoDReducer.twoDListLoading : null;
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
             <View style={styles.modalCont} >
-                    <View style={styles.header} >
-                        <View style={styles.headerLeft}>
-                            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
-                                <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.headerTextView}>
-                            <Text style={styles.topHeaderText}>
-                                {'LALALA'}
-                            </Text>
-                            <Text style={styles.bottomHeaderText}>
-                                {'NFTs'}
-                            </Text>
-                        </View>
+                <View style={styles.header} >
+                    <View style={styles.headerLeft}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
+                            <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
+                        </TouchableOpacity>
                     </View>
+                    <View style={styles.headerTextView}>
+                        <Text style={styles.topHeaderText}>
+                            {'LALALA'}
+                        </Text>
+                        <Text style={styles.bottomHeaderText}>
+                            {'NFTs'}
+                        </Text>
+                    </View>
+                </View>
                 {
                     loading ?
                         <Loader /> :
+                        // <NftItem item={list.slice(listIndex)[0]} index={list.findIndex(x => x.id === list.slice(listIndex)[0].id)} />
                         <FlatList
-                            initialNumToRender={10}
+                            initialNumToRender={5}
                             data={list.slice(listIndex)}
                             renderItem={({ item }) => {
                                 let findIndex = list.findIndex(x => x.id === item.id);
@@ -114,10 +100,9 @@ const DetailItemScreen = ({ route }) => {
                                             AuthReducer.screenName == "twoDArt" ?
                                                 TwoDReducer.page + 1 : null;
                                 getNFTlistData(num)
-                                handlePageChange(num)
                             }}
 
-                            onEndReachedThreshold={1}
+                            onEndReachedThreshold={16}
                             keyExtractor={(v, i) => "item_" + i}
                         />
                 }

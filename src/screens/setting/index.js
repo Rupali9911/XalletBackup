@@ -34,10 +34,6 @@ import {
     MainContent,
     SettingLabel
 } from './styled';
-import {
-    useWalletConnect,
-    withWalletConnect
-} from '@walletconnect/react-native-dapp';
 import { useDispatch } from 'react-redux';
 import { resetAccount } from '../../store/actions/authAction';
 
@@ -47,12 +43,13 @@ const {
 } = SVGS;
 
 function Setting({
-    navigation
+    navigation,
+    route
 }) {
 
     const [isEnabled, onToggleEnable] = useState(false);
     const dispatch = useDispatch();
-    const connector = useWalletConnect();
+    const { connector } = route.params;
 
     const pressLogout = () => {
         Alert.alert(
@@ -143,9 +140,4 @@ function Setting({
     )
 }
 
-export default withWalletConnect(Setting, {
-    redirectUrl: Platform.OS === 'web' ? window.location.origin : 'yourappscheme://',
-    storageOptions: {
-        asyncStorage: AsyncStorage,
-    },
-});
+export default Setting;

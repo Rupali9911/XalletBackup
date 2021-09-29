@@ -1,5 +1,4 @@
-import { StyleSheet } from 'react-native';
-
+import { Platform, StyleSheet } from 'react-native';
 import { colors, fonts } from '../../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, SIZE, responsiveFontSize as RF } from "../../common/responsiveFunction";
 
@@ -26,9 +25,10 @@ const styles = StyleSheet.create({
         width: wp('4%')
     },
     headerText: {
-        fontSize: RF(2.0),
+        fontSize: SIZE(16),
+        lineHeight: Platform.OS === 'android' ? SIZE(19) : null,
         fontFamily: fonts.PINGfANG_SBOLD,
-        color: colors.black
+        color: colors.black,
     },
     headerRight: {
         position: 'absolute',
@@ -148,20 +148,21 @@ const styles = StyleSheet.create({
         fontSize: RF(1.9),
         fontFamily: fonts.PINGfANG_SBOLD,
         color: colors.RED1,
-        textAlign: 'right'
+        paddingBottom: Platform.OS === 'android' ? RF(0.4) : null
     },
     price: {
         fontSize: RF(2.8),
         fontFamily: fonts.ARIAL,
         color: colors.RED1,
-        textAlign: 'right'
+        textAlign: 'right',
+        lineHeight: RF(2.8),
     },
     row: {
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         marginTop: SIZE(6),
-        marginBottom: SIZE(10)
+        marginBottom: SIZE(10),
     }
 })
 

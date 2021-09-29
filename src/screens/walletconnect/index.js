@@ -39,9 +39,9 @@ const WalletConnectScreen = ({
         }
     }, [connector.connected]);
 
-    if (accountKey) {
+    if (connector.connected) {
         return (
-            <Profile navigation={navigation} />
+            <Profile navigation={navigation} connector={connector} />
         )
     }
 
@@ -71,7 +71,9 @@ const WalletConnectScreen = ({
                         {'Connect with\nyour wallet'}
                     </Text>
                 </View>
-                <TouchableOpacity onPress={() => connector.connect()}>
+                <TouchableOpacity onPress={() => {
+                    connector.connect();
+                }}>
                     <View style={[styles.successButton, { backgroundColor: '#1b8cff' }]}>
                         <Text style={styles.buttonText}>
                             {'Connect'}

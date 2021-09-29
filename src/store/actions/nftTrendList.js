@@ -49,7 +49,7 @@ export const getAllArtistSuccess = (data) => ({
     payload: data
 })
 
-export const getNFTList = (page) => {
+export const getNFTList = (page, limit) => {
     return (dispatch, getState) => {
 
         let accountKey = getState().AuthReducer.accountKey;
@@ -58,7 +58,7 @@ export const getNFTList = (page) => {
             approveStatus: 'approve',
             type: "hot",
             page,
-            limit: 30,
+            limit: limit || 30,
             networkType: networkType,
         }
 
