@@ -6,6 +6,8 @@ import NewNFTListReducer from './newListReducer';
 import MyNFTReducer from './myNFTReducer';
 import TwoDReducer from './twodReducer';
 import MyCollectionReducer from './myCollectionReducer';
+import UserReducer from './userReducer';
+import WalletReducer from './walletReducer';
 
 const RootReducer = combineReducers({
     AuthReducer,
@@ -13,7 +15,9 @@ const RootReducer = combineReducers({
     NewNFTListReducer,
     MyNFTReducer,
     TwoDReducer,
-    MyCollectionReducer
+    MyCollectionReducer,
+    UserReducer,
+    WalletReducer
 });
 
 export default RootReducer;

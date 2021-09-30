@@ -135,7 +135,7 @@ android {
         applicationId "com.showcase"
         // minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        minSdkVersion 23
+        minSdkVersion 24
         multiDexEnabled true
         versionCode 1
         versionName "1.0"

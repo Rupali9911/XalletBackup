@@ -1,0 +1,23 @@
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import Welcome from "../screens/AuthScreens/welcome";
+import Legal from "../screens/AuthScreens/legal";
+import Backup from "../screens/AuthScreens/backup";
+import RecoveryPhrase from "../screens/AuthScreens/recoveryPhrase";
+import Policy from "../screens/AuthScreens/policy";
+
+const Auth = createStackNavigator();
+
+const AuthStack = () => {
+    return (
+        <Auth.Navigator screenOptions={{headerShown: false}} headerMode="none">
+            <Auth.Screen name="welcome" component={Welcome} />
+            <Auth.Screen name="legal" component={Legal} />
+            <Auth.Screen name="backup" component={Backup} />
+            <Auth.Screen name="recoveryPhrase" component={RecoveryPhrase} />
+            <Auth.Screen name="policy" component={Policy} />
+        </Auth.Navigator>
+    )
+}
+
+export default AuthStack;

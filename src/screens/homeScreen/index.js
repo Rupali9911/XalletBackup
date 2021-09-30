@@ -11,6 +11,7 @@ import { changeScreenName } from '../../store/actions/authAction';
 import { responsiveFontSize as RF } from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
+import ImageSrc from '../../constants/Images';
 import { Loader, NoInternetModal, C_Image } from '../../components';
 import {
     SIZE,
@@ -19,6 +20,7 @@ import {
 import NewNFT from './newNFT';
 import Favorite from './favorite';
 import getLanguage from '../../utils/languageSupport';
+import CommonStyles from '../../constants/styles';
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
@@ -133,9 +135,20 @@ const HomeScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
             <View style={styles.header}>
+                <View style={styles.headerMenuContainer}>
+                    
+                </View>
                 <Text style={styles.headerTitle}>
                     {'Home'}
                 </Text>
+                <View style={styles.headerMenuContainer}>
+                    <TouchableOpacity onPress={() => {navigation.navigate('Certificate')}} hitSlop={{top: 5, right: 5, bottom: 5, left: 5}}>
+                        <Image source={ImageSrc.scanIcon} style={styles.headerMenu}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {navigation.navigate('Create')}} hitSlop={{top: 5, right: 5, bottom: 5, left: 5}}>
+                        <Image source={ImageSrc.addIcon} style={styles.headerMenu}/>
+                    </TouchableOpacity>
+                </View>
             </View>
             <View>
                 <ScrollView
@@ -143,9 +156,9 @@ const HomeScreen = ({ navigation }) => {
                     showsHorizontalScrollIndicator={false}>
                     {
                         ListReducer.artistList &&
-                        ListReducer.artistList.map(item => {
+                        ListReducer.artistList.map((item,index) => {
                             return (
-                                <TouchableOpacity onPress={() => navigation.navigate('')}>
+                                <TouchableOpacity onPress={() => navigation.navigate('')} key={`_${index}`}>
                                     <View style={styles.userCircle}>
                                         <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
                                     </View>

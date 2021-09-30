@@ -2,6 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import { colors, fonts } from '../../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
+import CommonStyles from '../../constants/styles';
+import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
     container: {
@@ -38,11 +40,14 @@ const styles = StyleSheet.create({
         fontFamily: fonts.SegoeUIRegular,
     },
     headerTitle: {
+        flex: 1,
         fontSize: RF(2.0),
         fontFamily: fonts.PINGfANG_SBOLD,
+        textAlign: 'center'
     },
     header: {
         height: SIZE(50),
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -61,6 +66,17 @@ const styles = StyleSheet.create({
         fontFamily: fonts.PINGfANG,
         marginBottom: SIZE(8),
         width: SIZE(57)
+    },
+    headerMenuContainer: {
+        flex:0.5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    },
+    headerMenu: {
+        ...CommonStyles.imageStyles(5),
+        tintColor: Colors.black,
+        marginHorizontal: wp("4%")
     }
 })
 

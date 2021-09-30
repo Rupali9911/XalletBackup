@@ -1,0 +1,249 @@
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Image, ImageBackground, Text, TextInput, Keyboard, Alert, ScrollView } from 'react-native';
+import {Button, Card, IconButton} from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import Clipboard from '@react-native-clipboard/clipboard';
+
+import AppBackground from '../../components/appBackground';
+import AppHeader from '../../components/appHeader';
+import AppButton from '../../components/appButton';
+import CommonStyles from '../../constants/styles';
+import AppLogo from '../../components/appLogo';
+import TextView from '../../components/appText';
+import { RF, hp, wp } from '../../constants/responsiveFunct';
+import HintText from '../../components/hintText';
+import ImagesSrc from '../../constants/Images';
+import Colors from '../../constants/Colors';
+import { setUserAuthData, startLoader, endLoader } from '../../store/reducer/userReducer';
+import { translate } from '../../utils';
+// import SingleSocket from '../../helpers/SingleSocket';
+// import { Events } from '../../navigations';
+import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
+
+const ethers = require('ethers');
+
+const RecoveryPhrase = ({route, navigation}) => {
+
+    const dispatch = useDispatch();
+    const { loading } = useSelector(state => state.UserReducer);
+    const {recover} = route.params;
+    const [wallet, setWallet] = useState(null);
+    const [phrase, setPhrase] = useState("");
+
+    useEffect(()=>{
+            if(!recover){
+                dispatch(startLoader()).then(async () => {
+                    var randomSeed = ethers.Wallet.createRandom();
+                    const account = {
+                        mnemonic: randomSeed.mnemonic,
+                        address: randomSeed.address,
+                        privateKey: randomSeed.privateKey
+                    }
+                    console.log(randomSeed.mnemonic);
+                    console.log(randomSeed.address);
+                    console.log(randomSeed.privateKey);
+                    setWallet(account);
+                    dispatch(endLoader());
+                });
+            }
+        },[]);
+
+    const copyToClipboard = () => {
+        Clipboard.setString(wallet.mnemonic.phrase);
+    }
+
+    const recoverWallet = () => {
+        if(phrase !== ""){
+            dispatch(startLoader()).then(async () => {
+                let mnemonic = phrase;
+                let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+                const account = {
+                    mnemonic: mnemonicWallet.mnemonic,
+                    address: mnemonicWallet.address,
+                    privateKey: mnemonicWallet.privateKey
+                }
+                console.log(mnemonicWallet.mnemonic);
+                console.log(mnemonicWallet.address);
+                console.log(mnemonicWallet.privateKey);
+                setWallet(account);
+                dispatch(setUserAuthData(account));
+            }).catch((err) => {
+                console.log('err', err.toString());
+                if (err.toString() == 'Error: invalid mnemonic' || err.toString() == 'Error: invalid checksum') {
+                    Alert.alert('Invalid Phrase');
+                }
+                dispatch(endLoader());
+            });
+        } else {
+            Alert.alert(translate("common.requirePhrase"));
+        }
+    }
+
+    return (
+        <AppBackground isBusy={loading}>
+            <AppHeader
+                showBackButton
+                title={translate("common.backup")}
+                showRightButton
+                rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20}/>}
+                />
+            <KeyboardAwareScrollView contentContainerStyle={styles.scrollContent} KeyboardShiftStyle={styles.keyboardShift}>
+                <View style={styles.container} 
+                // onStartShouldSetResponder={() => {
+                //     Keyboard.dismiss();
+                //     return false;
+                // }}
+                >
+                    <View style={styles.contentContainer}>
+                        <View style={styles.padding}>
+                            <AppLogo logoStyle={styles.logo} />
+                            <TextView style={styles.title}>{translate("common.yourPhrase")}</TextView>
+                            <HintText style={styles.hint}>{translate("common.phraseSaveInfo")}</HintText>
+                        </View>
+                        <View>
+                            {recover ?
+                                <View style={styles.inputContainer}>
+                                    <TextInput
+                                        style={styles.input}
+                                        multiline={true}
+                                        onChangeText={setPhrase}
+                                        underlineColorAndroid={Colors.transparent}
+                                    />
+                                </View>
+                                :
+                                <View style={styles.phraseContainer}>
+                                    {wallet && wallet.mnemonic.phrase.split(' ').map((item, index) => {
+                                        return <WordView word={item} index={index + 1} key={`_${index}`} />
+                                    })}
+                                </View>
+                            }
+                        </View>
+                        <View style={styles.rowPadding}>
+                            {recover ? null : wallet && <Button mode={'text'} uppercase={false} color={Colors.labelButtonColor} onPress={() => { copyToClipboard() }}>
+                                {translate("common.copy")}
+                            </Button>}
+
+                            {recover ? null : <View style={styles.alertContainer}>
+                                <View style={styles.alert}>
+                                    <IconButton icon={ImagesSrc.dangerIcon} color={Colors.alertText} size={20} />
+                                    <TextView style={styles.alertTxt}>{translate("common.phraseNote")}</TextView>
+                                </View>
+                            </View>}
+                        </View>
+                    </View>
+
+                    <View style={styles.bottomView}>
+                        <AppButton label={translate("common.next")} view={recover ? !recover : !wallet} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                            onPress={() => {
+                                if (recover) {
+                                    recoverWallet();
+                                } else {
+                                    dispatch(setUserAuthData(wallet, true));
+                                }
+
+                            }} />
+                    </View>
+
+                </View>
+            </KeyboardAwareScrollView>
+        </AppBackground>
+    );
+}
+
+const WordView = (props) => {
+    return (
+        <View style={styles.word}>
+            <TextView style={styles.wordTxt}>
+                <Text style={{color: Colors.townTxt}}>{props.index} </Text>
+                {props.word}
+            </TextView>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    bottomView: {
+        paddingHorizontal: wp("5%") 
+    },
+    logo: {
+        ...CommonStyles.imageStyles(25)
+    },
+    title: {
+        alignSelf: 'center',
+        fontSize: RF(2.7)
+    },
+    phraseContainer: {
+        // height: hp("20%"),
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        backgroundColor: Colors.white,
+        padding: wp("5%"),
+        paddingBottom: 0
+    },
+    img: {
+        ...CommonStyles.imageStyles(40),
+        ...CommonStyles.center
+    },
+    alertContainer: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    alert: {
+        flexDirection: 'row',
+        backgroundColor: Colors.alertBg,
+        padding: wp("4%"),
+        borderRadius: wp("2%"),
+        alignItems: 'center',
+    },
+    alertTxt: {
+        color: Colors.alertText,
+        flex: 1,
+        fontSize: RF(1.5)
+    },
+    word: {
+        flexDirection: 'row',
+        borderColor: Colors.borderLightColor,
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: wp("2%"),
+        paddingHorizontal: wp("3%"),
+        margin: wp("1%")
+    },
+    wordTxt: {
+        fontSize: RF(1.8),
+        color: Colors.black
+    },
+    inputContainer: {
+        padding: wp("3.5%"),
+        backgroundColor: Colors.inputBackground2
+    },
+    input: {
+        fontSize: RF(2),
+        color: Colors.black,
+        minHeight: hp("20%"),
+        textAlignVertical: 'top'
+    },
+    padding: {
+        padding: wp("5%"),
+        paddingBottom: 0
+    },
+    rowPadding: {
+        flex: 1,
+        paddingHorizontal: wp("5%")
+    },
+    scrollContent: {
+        flexGrow: 1,
+    },
+    keyboardShift: {
+        flex: 1,
+    }
+});
+
+export default RecoveryPhrase;
