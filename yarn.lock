@@ -8560,6 +8560,15 @@ react-native-fast-image@^8.3.4:
   resolved "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.5.11.tgz"
   integrity sha512-cNW4bIJg3nvKaheG8vGMfqCt5LMWX9MS5+wMudgKIHbGO51spRr4sgnlhVgwHLcZ5aeNOVJ8CPRxDIWKRq/0QA==
 
+react-native-fast-video@^5.1.7:
+  version "5.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-fast-video/-/react-native-fast-video-5.1.7.tgz#e4c0cdae7e6819baee4bf60ba2f9e26b5674e4af"
+  integrity sha512-pSRFDmEDjBedaDXj4F5jJu0s/lHJzAc6rUahIuLvoSgw8zQ7rHbCxCDiNNNMMhrMdmQ/oElfCVls7kgk6Nhdug==
+  dependencies:
+    keymirror "^0.1.1"
+    prop-types "^15.7.2"
+    shaka-player "^2.5.9"
+
 react-native-gesture-handler@^1.10.3:
   version "1.10.3"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz"
@@ -8767,15 +8776,6 @@ react-native-vector-icons@^8.1.0:
     lodash.template "^4.5.0"
     prop-types "^15.7.2"
     yargs "^16.1.1"
-
-react-native-video@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-5.1.1.tgz#89a7989efeb8d404611c06154d1da227a745d7d8"
-  integrity sha512-zee8gRUrjPWRoZSEBiMebClqu1iAuCQNLjzqpmXFrRWEoJj7azM3BPqLQWJgsnfLiYUYGySeApC/G60THM5+tw==
-  dependencies:
-    keymirror "^0.1.1"
-    prop-types "^15.7.2"
-    shaka-player "^2.5.9"
 
 react-native-view-shot@^3.1.2:
   version "3.1.2"

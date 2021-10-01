@@ -18,6 +18,7 @@ const HeaderText = styled.Text`
   color: ${props => props.color || COLORS.BLACK1};
   text-align: center;
   font-family: ${FONTS.PINGfANG_SBOLD};
+  maxWidth: ${SIZE(240)}px;
 `;
 
 const GreyBoldText = styled.Text`

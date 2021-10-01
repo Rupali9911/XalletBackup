@@ -32,7 +32,7 @@ import {
 import {
     BlurView
 } from '@react-native-community/blur';
-import Video from 'react-native-video';
+import Video from 'react-native-fast-video';
 
 const ModalContainer = styled.View`
     flex: 1;

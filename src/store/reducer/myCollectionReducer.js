@@ -11,20 +11,20 @@ const initialState = {
     myCollectionListLoading: false,
     myCollection: [],
     favorite: [],
-    myCollectionPage: 1,
+    page: 1,
 }
 
 export default function MyCollectionReducer(state = initialState, action) {
     switch (action.type) {
 
         case MY_COLLECTION_PAGE_CHANGE:
-            return state = { ...state, myCollectionPage: action.payload };
+            return state = { ...state, page: action.payload };
 
         case MY_COLLECTION_LOAD_START:
             return state = { ...state, myCollectionListLoading: true };
 
         case MY_COLLECTION_LOAD_SUCCESS:
-            return state = { ...state, myCollection: [...action.payload], myCollectionListLoading: false };
+            return state = { ...state, myCollection: [...state.myCollection, ...action.payload], myCollectionListLoading: false };
 
         case MY_COLLECTION_LIST_UPDATE:
             return state = { ...state, myCollection: [...action.payload] };

@@ -35,19 +35,14 @@ export const favoritePageChange = (data) => ({
     payload: data
 });
 
-export const myNFTList = (page, screen, limit) => {
+export const myNFTList = (page, ownerId) => {
     return (dispatch, getState) => {
-
-        let accountKey = getState().AuthReducer.accountKey;
-        const { myList, favorite } = getState().MyNFTReducer;
-
         let body_data = {
-            limit: limit,
+            limit: 15,
             networkType: networkType,
-            owner: accountKey,
+            userId: ownerId,
             page: page,
-            token: "HubyJ*%qcqR0",
-            type: "2D"
+            nftType: 'mynft'
         }
 
         let fetch_data_body = {
@@ -58,38 +53,39 @@ export const myNFTList = (page, screen, limit) => {
                 'Content-Type': 'application/json',
             }
         }
-        fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
+        fetch(`https://api.xanalia.com/user/get-user-collection`, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
                 let new_list = [...json.data];
-                if (screen == "favorite") {
+                if (new_list.length === 0) {
+                    let data = {
+                        limit: 15,
+                        networkType: networkType,
+                        owner: ownerId,
+                        page: page,
+                        nftType: 'mynft'
+                    }
 
-                    var favoriteList = new_list.filter(e => e.like == 1);
-
-                    let nftCompleteList = [...favorite, ...favoriteList];
-                    let jsonObject_C = nftCompleteList.map(JSON.stringify);
-                    let uniqueSet_C = new Set(jsonObject_C);
-                    let uniqueArray_C = Array.from(uniqueSet_C).map(JSON.parse);
-                    dispatch(favoriteNftSuccess(uniqueArray_C))
-
-                } else if (screen == "2D") {
-
-                    dispatch(twoNftLoadSuccess(new_list))
-
-                } else {
-                    var results = new_list.filter(e => {
-                        if (e.hasOwnProperty("returnValues")) {
-                            return e.returnValues.to === accountKey
+                    let data_body = {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
                         }
-                    });
-                    let array = [...myList, ...results];
-                    let jsonObject = array.map(JSON.stringify);
-                    let uniqueSet = new Set(jsonObject);
-                    let uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-                    dispatch(myNftLoadSuccess(uniqueArray))
-
+                    }
+                    fetch(`https://api.xanalia.com/xanalia/mydata`, data_body)
+                        .then(response => response.json())  // promise
+                        .then(json => {
+                            let list = [...json.data];
+                            dispatch(myNftLoadSuccess(list));
+                        }).catch(err => {
+                            dispatch(myNftLoadFail())
+                            alert(err.message)
+                        })
+                } else {
+                    dispatch(myNftLoadSuccess(new_list));
                 }
-
             }).catch(err => {
                 dispatch(myNftLoadFail())
                 alert(err.message)

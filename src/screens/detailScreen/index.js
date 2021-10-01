@@ -9,6 +9,8 @@ import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 
 import { myNFTList, myPageChange, favoritePageChange } from '../../store/actions/myNFTaction';
 
+import { myCollectionList } from '../../store/actions/myCollection';
+
 import { twoPageChange } from '../../store/actions/twoDAction';
 import getLanguage from '../../utils/languageSupport';
 const langObj = getLanguage();
@@ -23,11 +25,12 @@ const { width } = Dimensions.get('window');
 
 const DetailItemScreen = ({ route }) => {
 
-    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, TwoDReducer } = useSelector(state => state);
+    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, MyCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
     const [listIndex, setListIndex] = React.useState(route.params.index);
+    const [owner, setOwner] = React.useState(route.params.owner);
 
     const getNFTlistData = React.useCallback((page) => {
 
@@ -35,10 +38,10 @@ const DetailItemScreen = ({ route }) => {
             dispatch(getNFTList(page, 5)) :
             AuthReducer.screenName == "newNFT" ?
                 dispatch(newNFTList(page)) :
-                AuthReducer.screenName == "favourite" ?
-                    dispatch(myNFTList(page, "favorite", 1000)) :
-                    AuthReducer.screenName == "twoDArt" ?
-                        dispatch(myNFTList(page, "2D", 30)) : null
+                AuthReducer.screenName == "myNFT" ?
+                    dispatch(myNFTList(page, owner)) :
+                    AuthReducer.screenName == "myCollection" ?
+                        dispatch(myCollectionList(page, owner)) : null
 
     });
 
@@ -46,19 +49,19 @@ const DetailItemScreen = ({ route }) => {
         ListReducer.nftList :
         AuthReducer.screenName == "newNFT" ?
             NewNFTListReducer.newNftList :
-            AuthReducer.screenName == "favourite" ?
-                MyNFTReducer.favorite :
-                AuthReducer.screenName == "twoDArt" ?
-                    TwoDReducer.twoDNftList : [];
+            AuthReducer.screenName == "myNFT" ?
+                MyNFTReducer.myList :
+                AuthReducer.screenName == "myCollection" ?
+                    MyCollectionReducer.myCollection : [];
 
     let loading = AuthReducer.screenName == "Hot" ?
         ListReducer.nftListLoading :
         AuthReducer.screenName == "newNFT" ?
             NewNFTListReducer.newNftListLoading :
-            AuthReducer.screenName == "favourite" ?
+            AuthReducer.screenName == "myNFT" ?
                 MyNFTReducer.myNftListLoading :
-                AuthReducer.screenName == "twoDArt" ?
-                    TwoDReducer.twoDListLoading : null;
+                AuthReducer.screenName == "myCollection" ?
+                    MyCollectionReducer.myCollectionListLoading : null;
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
@@ -98,10 +101,10 @@ const DetailItemScreen = ({ route }) => {
                                     ListReducer.page + 1 :
                                     AuthReducer.screenName == "newNFT" ?
                                         NewNFTListReducer.newListPage + 1 :
-                                        AuthReducer.screenName == "favourite" ?
-                                            MyNFTReducer.favoritePage + 1 :
+                                        AuthReducer.screenName == "myNFT" ?
+                                            MyNFTReducer.page + 1 :
                                             AuthReducer.screenName == "twoDArt" ?
-                                                TwoDReducer.page + 1 : null;
+                                                MyCollectionReducer.page + 1 : null;
                                 getNFTlistData(num)
                             }}
 

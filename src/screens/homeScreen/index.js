@@ -127,10 +127,10 @@ const Hot = () => {
 const HomeScreen = ({ navigation }) => {
 
     const { ListReducer } = useSelector(state => state);
-    const {wallet, isCreate} = useSelector(state => state.UserReducer);
+    const { wallet, isCreate } = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
 
-    const[modalVisible, setModalVisible] = useState(isCreate);
+    const [modalVisible, setModalVisible] = useState(isCreate);
     const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
     const [isNotificationVisible, setNotificationVisible] = useState(false);
 
@@ -165,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
                             ListReducer.artistList &&
                             ListReducer.artistList.map((item, index) => {
                                 return (
-                                    <TouchableOpacity onPress={() => navigation.navigate('')} key={`_${index}`}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('ArtistDetail', { data: item })} key={`_${index}`}>
                                         <View style={styles.userCircle}>
                                             <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
                                         </View>
@@ -207,7 +207,7 @@ const HomeScreen = ({ navigation }) => {
                     <Tab.Screen name={langObj.common.Discover} component={Favorite} />
                 </Tab.Navigator>
             </SafeAreaView>
-            <AppModal visible={modalVisible} onRequestClose={()=>setModalVisible(false)}>
+            <AppModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
                 {isSuccessVisible ?
                     <SuccessModal
                         onClose={() => setModalVisible(false)}
@@ -219,7 +219,7 @@ const HomeScreen = ({ navigation }) => {
                     />
                     : null}
 
-                {isNotificationVisible ? 
+                {isNotificationVisible ?
                     <NotificationActionModal
                         onClose={() => setModalVisible(false)}
                         onDonePress={() => {

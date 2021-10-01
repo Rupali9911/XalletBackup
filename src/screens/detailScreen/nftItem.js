@@ -21,7 +21,8 @@ import {
 import { C_Image } from 'src/components';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
-import Video from 'react-native-video';
+import Video from 'react-native-fast-video';
+import { handleLikeDislike } from '../../store/actions/nftTrendList';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -233,7 +234,9 @@ const nftItem = ({ item, index }) => {
             <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
             :
             <View style={styles.modalImage}>
+              <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
               <Video
+                key={tokenId}
                 ref={refVideo}
                 source={{ uri: item.metaData.image }}
                 repeat
@@ -241,7 +244,14 @@ const nftItem = ({ item, index }) => {
                 paused={!isPlay}
                 resizeMode={'cover'}
                 onLoad={() => refVideo.current.seek(0)}
-                style={{ flex: 1 }} />
+                style={{
+                  flex: 1,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }} />
               {
                 !isPlay &&
                 <View style={{
@@ -275,39 +285,29 @@ const nftItem = ({ item, index }) => {
         paddingTop: SIZE(17),
         paddingHorizontal: SIZE(14)
       }}>
-        {
-          AuthReducer.accountKey ?
-            <RowBetweenWrap>
-              <View style={styles.buttons}>
-                <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
-                  <HeartIcon />
-                </TouchableOpacity>
-                <SpaceView mRight={SIZE(15)} />
-                <TouchableOpacity>
-                  <CommentIcon />
-                </TouchableOpacity>
-                <SpaceView mRight={SIZE(15)} />
-                <TouchableOpacity>
-                  <ShareIcon />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity>
-                <BookMarkIcon />
-              </TouchableOpacity>
-            </RowBetweenWrap>
-            : null
-        }
+        <RowBetweenWrap>
+          <View style={styles.buttons}>
+            <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
+              <HeartIcon />
+            </TouchableOpacity>
+            <SpaceView mRight={SIZE(15)} />
+            <TouchableOpacity>
+              <CommentIcon />
+            </TouchableOpacity>
+            <SpaceView mRight={SIZE(15)} />
+            <TouchableOpacity>
+              <ShareIcon />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity>
+            <BookMarkIcon />
+          </TouchableOpacity>
+        </RowBetweenWrap>
         <SpaceView mTop={SIZE(8)} />
-        {
-          AuthReducer.accountKey ?
-            <>
-              <SmallBoldText>
-                {'3,589 likes'}
-              </SmallBoldText>
-              <SpaceView mTop={SIZE(6)} />
-            </>
-            : null
-        }
+        <SmallBoldText>
+          {'3,589 likes'}
+        </SmallBoldText>
+        <SpaceView mTop={SIZE(6)} />
         <Text style={styles.modalLabel} >{item.metaData.name}</Text>
         <View style={styles.separator} />
         <Text style={styles.description} >{item.metaData.description}</Text>

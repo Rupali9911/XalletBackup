@@ -28,7 +28,7 @@ import MakeBidScreen from './screens/makeBidScreen';
 import ProfileScreen from './screens/profile';
 import EditProfileScreen from './screens/edit_profile';
 import SettingScreen from './screens/setting';
-import WalletConnectScreen from './screens/walletconnect';
+import ArtistDetail from './screens/ArtistDetail';
 import ExploreScreen from './screens/explore';
 import Wallet from './screens/wallet';
 import TokenDetail from './screens/wallet/tokenDetail';
@@ -48,9 +48,9 @@ import AuthStack from './navigations/authStack';
 import Colors from './constants/Colors';
 
 export const regionLanguage = RNLocalize.getLocales()
-    .map((a) => a.languageCode)
-    .values()
-    .next().value;
+  .map((a) => a.languageCode)
+  .values()
+  .next().value;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -150,7 +150,7 @@ const AppRoutes = () => {
         AuthReducer.accountLoading ?
           <Loader /> :
           <NavigationContainer>
-            {wallet ? 
+            {wallet ?
               <Stack.Navigator headerMode="none" >
                 <Stack.Screen name="Home" component={TabComponent} />
                 <Stack.Screen name="DetailItem" component={DetailItemScreen} />
@@ -164,8 +164,9 @@ const AppRoutes = () => {
                 <Stack.Screen name="scanToConnect" component={ScanToConnect} />
                 <Stack.Screen name='Create' component={NewPostScreen} />
                 <Stack.Screen name='Certificate' component={CertificateScreen} />
+                <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
               </Stack.Navigator>
-            :
+              :
               <Stack.Navigator headerMode="none">
                 <Stack.Screen name="Authentication" component={AuthStack} />
               </Stack.Navigator>
