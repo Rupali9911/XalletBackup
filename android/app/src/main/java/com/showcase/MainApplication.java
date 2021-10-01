@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
 import com.reactnativecommunity.art.ARTPackage;
 import com.swmansion.reanimated.ReanimatedPackage;

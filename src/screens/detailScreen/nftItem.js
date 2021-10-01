@@ -1,26 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, Image, Dimensions, ActivityIndicator, Platform } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp';
-import { rpcGetAccountBalance, rpcGetAccountNonce } from '../../walletconnection/rpc';
-
 import { networkType } from "../../common/networkType";
-import { BASE_URL, PROVIDER_URL } from '../../common/constants';
+import { BASE_URL } from '../../common/constants';
 import getLanguage from '../../utils/languageSupport';
-const langObj = getLanguage();
-
-import insertComma from '../../utils/insertComma';
-import { trimZeroFromTheEnd } from '../../utils/trimZeroFromValue';
-import { showActualValue } from '../../utils/showActualValue';
-import { divideNo, sanitizeHex, convertStringToHex, convertAmountToRawNumber } from '../../utils';
-import { apiGetGasPrices } from '../../gas-price';
-
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import styles from './styles';
-import { images, colors } from '../../res';
 import {
   SVGS,
   SIZE,
@@ -33,13 +18,14 @@ import {
 import {
   SmallBoldText
 } from 'src/styles/text.styles';
-import { DetailModal, C_Image } from 'src/components';
-const Web3 = require("web3");
+import { C_Image } from 'src/components';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
 import Video from 'react-native-video';
 
 const { width } = Dimensions.get('window');
+const langObj = getLanguage();
+const Web3 = require("web3");
 
 const {
   CommentIcon,
@@ -56,16 +42,12 @@ const nftItem = ({ item, index }) => {
   const { AuthReducer } = useSelector(state => state);
   const [owner, setOwner] = useState('----');
   const [artist, setArtist] = useState('----');
-  const [priceNFTString, setPriceNFTString] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false);
   const [creatorImage, setCreatorImage] = useState();
   const [ownerImage, setOwnerImage] = useState();
   const [isPlay, setPlay] = useState(false);
   const refVideo = useRef(null);
 
   const navigation = useNavigation();
-  const connector = useWalletConnect();
   const accountKey = AuthReducer.accountKey;
 
   let MarketPlaceAbi = "";
@@ -76,8 +58,6 @@ const nftItem = ({ item, index }) => {
   let ApproveAbi = "";
   let ApproveAdd = "";
   let providerUrl = "";
-
-  // console.log('=========item.tokenId', item.tokenId, '===', item.metaData.name);
 
   let params = item.tokenId.toString().split('-');
   let tokenId = params.length > 1 ? params[1] : params[0];
@@ -111,7 +91,6 @@ const nftItem = ({ item, index }) => {
       .getNonCryptoOwner(tokenId)
       .call(async (err, res) => {
         if (res) {
-          console.log('=====res', res)
           let profileUrl = networkType === 'mainnet' ?
             `https://api.xanalia.com/user/get-public-profile?userId=${res}` :
             `https://testapi.xanalia.com/user/get-public-profile?userId=${res}`
@@ -128,7 +107,6 @@ const nftItem = ({ item, index }) => {
   }, []);
 
   const lastOwnerOfNFT = () => {
-    console.log('======tokenId', tokenId);
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
@@ -136,10 +114,8 @@ const nftItem = ({ item, index }) => {
     );
 
     MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
-      console.log('======res', res);
       let ownerAddress = res;
       MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
-        console.log('=======res[0]', res[0])
         if (res[0] !== '0x0000000000000000000000000000000000000000') {
           setOwner(res[0]);
         } else {
@@ -210,74 +186,6 @@ const nftItem = ({ item, index }) => {
       });
   }
 
-  const checkBalance = () => {
-    // const blance = await rpcGetAccountBalance(address);
-  }
-
-  const buyNFTItem = async () => {
-    setLoading(true);
-    // if (!loaderFor) {
-    //   return;
-    // }
-    console.log('========', priceNFTString);
-    if (connector._accounts[0]) {
-
-      checkBalance();
-
-      const address = connector._accounts[0];
-      const chainId = connector.chainId;
-      console.log('===address', address);
-      const from = address;
-      const to = artist;
-
-      // nonce
-      const _nonce = await rpcGetAccountNonce(address);
-      const nonce = sanitizeHex(convertStringToHex(_nonce));
-      console.log('=====nonce', nonce);
-
-      // gasPrice
-      const gasPrices = await apiGetGasPrices();
-      const _gasPrice = gasPrices.slow.price;
-      const gasPrice = sanitizeHex(convertStringToHex(convertAmountToRawNumber(_gasPrice, 9)));
-      console.log('=====gasPrice', gasPrice);
-
-      // gasLimit
-      const _gasLimit = 21000;
-      const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
-      console.log('=====gasLimit', gasLimit);
-
-      // value
-      const _value = 1;
-      const value = sanitizeHex(convertStringToHex(_value));
-      console.log('=====value', value);
-
-      //data
-      const data = '0x';
-
-      const tx = {
-        from,
-        to,
-        nonce,
-        gasPrice,
-        gasLimit,
-        value,
-        data
-      };
-
-      try {
-        const result = connector.sendTransaction(tx);
-        console.log('======result', result)
-      } catch (err) {
-        console.log(err);
-      }
-
-      setLoading(false);
-    } else {
-      setLoading(false);
-      navigation.navigate('Connect');
-    }
-  }
-
   useEffect(() => {
     async function getOwnerOfNFT() {
       await getTockendetailsApi();
@@ -319,8 +227,7 @@ const nftItem = ({ item, index }) => {
       </View>
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => setPlay(!isPlay)}
-        onLongPress={() => { setPlay(false); setModalVisible(true); }}>
+        onPress={() => setPlay(!isPlay)}>
         {
           fileType !== 'mp4' ?
             <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
@@ -328,20 +235,12 @@ const nftItem = ({ item, index }) => {
             <View style={styles.modalImage}>
               <Video
                 ref={refVideo}
-                // bufferConfig={{
-                //   minBufferMs: 0,
-                //   maxBufferMs: 0,
-                //   bufferForPlaybackMs: 0,
-                //   bufferForPlaybackAfterRebufferMs: 0
-                // }}
-                source={{ uri: item.metaData.image }}   // Can be a URL or a local file.
+                source={{ uri: item.metaData.image }}
                 repeat
                 playInBackground={false}
                 paused={!isPlay}
-                resizeMode={'cover'}                                   // Store reference
+                resizeMode={'cover'}
                 onLoad={() => refVideo.current.seek(0)}
-                // onBuffer={this.onBuffer}                // Callback when remote video is buffering
-                // onError={this.videoError}               // Callback when video cannot be loaded
                 style={{ flex: 1 }} />
               {
                 !isPlay &&
@@ -413,21 +312,8 @@ const nftItem = ({ item, index }) => {
         <View style={styles.separator} />
         <Text style={styles.description} >{item.metaData.description}</Text>
       </View>
-      <DetailModal
-        fileType={fileType}
-        imageUrl={fileType !== 'mp4' ? item.thumbnailUrl : item.metaData.image}
-        profileImage={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }}
-        profileName={artist}
-        isModalVisible={isModalVisible}
-        toggleModal={() => setModalVisible(false)}
-      />
     </View>
   )
 }
 
-export default withWalletConnect(nftItem, {
-  redirectUrl: Platform.OS === 'web' ? window.location.origin : 'yourappscheme://',
-  storageOptions: {
-    asyncStorage: AsyncStorage,
-  },
-});
+export default nftItem;

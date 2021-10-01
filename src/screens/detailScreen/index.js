@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text } from 'react-native';
+import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -17,6 +17,9 @@ import styles from './styles';
 import { images, colors } from '../../res';
 import { Loader } from '../../components';
 import NftItem from './nftItem';
+import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
+
+const { width } = Dimensions.get('window');
 
 const DetailItemScreen = ({ route }) => {
 
@@ -78,7 +81,7 @@ const DetailItemScreen = ({ route }) => {
                 {
                     loading ?
                         <Loader /> :
-                        // <NftItem item={list.slice(listIndex)[0]} index={list.findIndex(x => x.id === list.slice(listIndex)[0].id)} />
+                        // <NftItem item={list.slice(listIndex)[0]} index={list.findIndex(x => x.id === item.id)} />
                         <FlatList
                             initialNumToRender={5}
                             data={list.slice(listIndex)}
@@ -106,9 +109,8 @@ const DetailItemScreen = ({ route }) => {
                             keyExtractor={(v, i) => "item_" + i}
                         />
                 }
-
             </View>
-        </SafeAreaView >
+        </SafeAreaView>
     )
 }
 

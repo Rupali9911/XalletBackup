@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
@@ -11,7 +11,7 @@ import { changeScreenName } from '../../store/actions/authAction';
 import { responsiveFontSize as RF } from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
-import { Loader, NoInternetModal, C_Image } from '../../components';
+import { Loader, DetailModal, C_Image } from '../../components';
 import {
     SIZE,
 } from 'src/constants';
@@ -26,42 +26,30 @@ const Tab = createMaterialTopTabNavigator();
 const Hot = () => {
 
     const { ListReducer } = useSelector(state => state);
+    const [modalData, setModalData] = useState();
+    const [isModalVisible, setModalVisible] = useState(false);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    // state of offline/online network connection
-    // const [isOffline, setOfflineStatus] = useState(false);
-
     useEffect(() => {
-
-        dispatch(nftLoadStart())
-
-        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-        //     const offline = !(state.isConnected && state.isInternetReachable);
-        //     setOfflineStatus(offline);
-        // });
-        dispatch(nftListReset())
+        dispatch(nftLoadStart());
+        dispatch(nftListReset());
         getNFTlist(1);
-        dispatch(pageChange(1))
-
-        // return () => removeNetInfoSubscription();
+        dispatch(pageChange(1));
     }, [])
 
-    const getNFTlist = useCallback((page) => {
-
-        dispatch(getNFTList(page))
-        // isOffline && setOfflineStatus(false);
-
+    const getNFTlist = useCallback((page, limit) => {
+        dispatch(getNFTList(page, limit));
     }, []);
 
     const refreshFunc = () => {
-        dispatch(nftListReset())
-        getNFTlist(1)
-        dispatch(pageChange(1))
+        dispatch(nftListReset());
+        getNFTlist(1);
+        dispatch(pageChange(1));
     }
 
     return (
-        <View style={styles.trendCont} >
+        <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
                 ListReducer.nftListLoading ?
@@ -71,7 +59,7 @@ const Hot = () => {
                             data={ListReducer.nftList}
                             horizontal={false}
                             numColumns={3}
-                            initialNumToRender={30}
+                            initialNumToRender={15}
                             onRefresh={() => {
                                 dispatch(nftLoadStart())
                                 refreshFunc()
@@ -81,10 +69,16 @@ const Hot = () => {
                                 let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
                                     return (
-                                        <TouchableOpacity onPress={() => {
-                                            dispatch(changeScreenName("Hot"))
-                                            navigation.navigate("DetailItem", { index: findIndex })
-                                        }} style={styles.listItem} >
+                                        <TouchableOpacity
+                                            onLongPress={() => {
+                                                setModalData(item);
+                                                setModalVisible(true);
+                                            }}
+                                            onPress={() => {
+                                                dispatch(changeScreenName("Hot"));
+                                                navigation.navigate("DetailItem", { index: findIndex });
+                                            }}
+                                            style={styles.listItem}>
                                             {
                                                 item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                     <C_Image
@@ -101,22 +95,25 @@ const Hot = () => {
                             }}
                             onEndReached={() => {
                                 let num = ListReducer.page + 1;
-                                getNFTlist(num)
-                                dispatch(pageChange(num))
+                                getNFTlist(num);
+                                dispatch(pageChange(num));
                             }}
                             onEndReachedThreshold={1}
                             keyExtractor={(v, i) => "item_" + i}
-                        /> :
+                        />
+                        :
                         <View style={styles.sorryMessageCont} >
                             <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
                         </View>
             }
-
-            {/* <NoInternetModal
-                show={isOffline}
-                onRetry={refreshFunc}
-                isRetrying={ListReducer.nftListLoading}
-            /> */}
+            {
+                modalData &&
+                <DetailModal
+                    data={modalData}
+                    isModalVisible={isModalVisible}
+                    toggleModal={() => setModalVisible(false)}
+                />
+            }
         </View>
     )
 }
@@ -143,11 +140,15 @@ const HomeScreen = ({ navigation }) => {
                     showsHorizontalScrollIndicator={false}>
                     {
                         ListReducer.artistList &&
-                        ListReducer.artistList.map(item => {
+                        ListReducer.artistList.map((item, index) => {
                             return (
-                                <TouchableOpacity onPress={() => navigation.navigate('')}>
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() => navigation.navigate('')}>
                                     <View style={styles.userCircle}>
-                                        <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
+                                        <Image
+                                            source={{ uri: item.profile_image }}
+                                            style={{ width: '100%', height: '100%' }} />
                                     </View>
                                     <Text numberOfLines={1} style={styles.userText}>
                                         {item.username}
@@ -184,7 +185,7 @@ const HomeScreen = ({ navigation }) => {
             }} >
                 <Tab.Screen name={langObj.common.hot} component={Hot} />
                 <Tab.Screen name={langObj.common.following} component={NewNFT} />
-                <Tab.Screen name={langObj.common.Discover} component={NewNFT} />
+                <Tab.Screen name={langObj.common.Discover} component={Favorite} />
             </Tab.Navigator>
         </SafeAreaView>
     )

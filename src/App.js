@@ -16,8 +16,6 @@ import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
 import MyNFTScreen from './screens/myNFTScreen';
 import DiscoverScreen from './screens/discoverScreen';
-import ARScreen from './screens/ARScreen';
-import ConnectScreen from './screens/connectScreen';
 import DetailItemScreen from './screens/detailScreen';
 import NewPostScreen from './screens/newPostScreen';
 import CertificateScreen from './screens/certificateScreen';
@@ -28,7 +26,6 @@ import ProfileScreen from './screens/profile';
 import EditProfileScreen from './screens/edit_profile';
 import SettingScreen from './screens/setting';
 import WalletConnectScreen from './screens/walletconnect';
-import ViroARScreen from './viro';
 import ExploreScreen from './screens/explore';
 import getLanguage from './utils/languageSupport';
 const langObj = getLanguage();
@@ -94,7 +91,8 @@ const AppRoutes = () => {
       .then(accountKey => {
         if (accountKey !== null) {
           let account_key_parse = JSON.parse(accountKey)
-          dispatch(loadAccountKeySuccess(account_key_parse.account));
+          // dispatch(loadAccountKeySuccess(account_key_parse.account));
+          dispatch(loadAccountKeySuccess());
         } else {
           dispatch(loadAccountKeyFail());
         }
@@ -114,7 +112,6 @@ const AppRoutes = () => {
             <Stack.Navigator headerMode="none" >
               <Stack.Screen name="Home" component={TabComponent} />
               <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-              <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
               <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
               <Stack.Screen name="Pay" component={PayScreen} />
               <Stack.Screen name="MakeBid" component={MakeBidScreen} />

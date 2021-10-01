@@ -12,13 +12,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 import { colors } from '../../res';
-import {
-    useWalletConnect,
-    withWalletConnect
-} from '@walletconnect/react-native-dapp';
 import Profile from '../profile';
 import { useSelector, useDispatch } from 'react-redux';
-import { loadAccountKeySuccess } from '../../store/actions/authAction';
 
 const {
     WalletConnectIcon
@@ -27,23 +22,6 @@ const {
 const WalletConnectScreen = ({
     navigation
 }) => {
-    const connector = useWalletConnect();
-    const dispatch = useDispatch();
-    const { AuthReducer } = useSelector(state => state);
-    const accountKey = AuthReducer.accountKey;
-
-    useEffect(() => {
-        if (connector.connected) {
-            dispatch(loadAccountKeySuccess(connector._accounts[0]));
-            AsyncStorage.setItem("account_id@", JSON.stringify({ account: connector._accounts[0] }));
-        }
-    }, [connector.connected]);
-
-    if (connector.connected) {
-        return (
-            <Profile navigation={navigation} connector={connector} />
-        )
-    }
 
     return (
         <LinearGradient
@@ -72,7 +50,6 @@ const WalletConnectScreen = ({
                     </Text>
                 </View>
                 <TouchableOpacity onPress={() => {
-                    connector.connect();
                 }}>
                     <View style={[styles.successButton, { backgroundColor: '#1b8cff' }]}>
                         <Text style={styles.buttonText}>
@@ -113,9 +90,4 @@ const WalletConnectScreen = ({
     )
 }
 
-export default withWalletConnect(WalletConnectScreen, {
-    redirectUrl: Platform.OS === 'web' ? window.location.origin : 'yourappscheme://',
-    storageOptions: {
-        asyncStorage: AsyncStorage,
-    },
-});
+export default WalletConnectScreen;

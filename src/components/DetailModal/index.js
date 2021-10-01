@@ -1,5 +1,9 @@
-import React from 'react';
-import { Animated, Text, TouchableWithoutFeedback, TouchableOpacity, View, Platform, } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import Modal from 'react-native-modal';
 import styled from 'styled-components';
 import FastImage from 'react-native-fast-image';
@@ -10,9 +14,11 @@ import {
     SIZE,
     WIDTH,
     FONT,
-    FONTS
+    FONTS,
+    IMAGES
 } from 'src/constants';
-
+import { BASE_URL } from '../../common/constants';
+import { networkType } from "../../common/networkType";
 import {
     RowWrap,
     SpaceView,
@@ -76,11 +82,72 @@ const Image = createImageProgress(FastImage);
 const DetailModal = ({
     isModalVisible,
     toggleModal,
-    imageUrl,
-    profileName,
-    profileImage,
-    fileType
+    data
 }) => {
+
+    const [artist, setArtist] = useState('');
+    const [profileImage, setCreatorImage] = useState();
+    const fileType = data.metaData.image.split('.')[data.metaData.image.split('.').length - 1];
+    const imageUrl = fileType !== 'mp4' ? data.thumbnailUrl : data.metaData.image;
+
+    useEffect(() => {
+        let params = data.tokenId.toString().split('-');
+        let chainType = params.length > 1 ? params[0] : 'binance';
+
+        let body_data = {
+            tokenId: data.tokenId,
+            networkType: networkType,
+            type: "2D",
+            chain: chainType
+        }
+
+        let fetch_data_body = {
+            method: 'POST',
+            body: JSON.stringify(body_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+
+        fetch(`${BASE_URL}/getDetailNFT`, fetch_data_body)
+            .then(response => response.json())
+            .then((res) => {
+                if (res.data.length > 0 && res.data !== "No record found") {
+                    const data = res.data[0];
+
+                    setArtist(data.returnValues.to);
+
+                    let req_data = {
+                        owner: data.returnValues.to,
+                        token: 'HubyJ*%qcqR0'
+                    };
+
+                    let body = {
+                        method: 'POST',
+                        body: JSON.stringify(req_data),
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        }
+                    }
+                    fetch(`${BASE_URL}/getProfile`, body)
+                        .then(response => response.json())
+                        .then(res => {
+                            if (res.data) {
+                                res.data.username && setArtist(res.data.username);
+                                setCreatorImage(res.data.profile_image);
+                            }
+                        })
+
+                } else if (res.data.data === "No record found") {
+                    alert('No record found');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
     return (
         <ModalContainer>
@@ -111,11 +178,11 @@ const DetailModal = ({
                                     <RowWrap>
                                         <SpaceView mLeft={SIZE(10)} />
                                         <ProfileIcon>
-                                            <Image source={profileImage} style={{ width: '100%', height: '100%' }} />
+                                            <Image source={profileImage ? { uri: profileImage } : IMAGES.DEFAULTPROFILE} style={{ width: '100%', height: '100%' }} />
                                         </ProfileIcon>
                                         <SpaceView mLeft={SIZE(10)} />
                                         <CreatorName numberOfLines={1}>
-                                            {profileName}
+                                            {artist}
                                         </CreatorName>
                                         <SpaceView mRight={SIZE(10)} />
                                     </RowWrap>
