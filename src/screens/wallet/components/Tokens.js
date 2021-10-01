@@ -97,7 +97,7 @@ const Tokens = (props) => {
                 }
                 ListEmptyComponent={() => {
                     return (
-                        <TextView style={styles.noData} >{translate("common.noData")}</TextView>
+                        <TextView style={styles.noData} >{translate("wallet.common.noData")}</TextView>
                     );
                 }}
             />

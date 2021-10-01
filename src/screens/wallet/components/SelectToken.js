@@ -71,7 +71,7 @@ const SelectToken = (props) => {
                         </TouchableOpacity>
                         <TextInput 
                             style={styles.inputStyle}
-                            placeholder={`Search - ${isSend?translate('common.send'):translate('common.receive')}`}
+                            placeholder={`Search - ${isSend?translate('wallet.common.send'):translate('wallet.common.receive')}`}
                             placeholderTextColor={Colors.separatorLight}
                             value={searchTxt}
                             onChangeText={setSearchTxt}
@@ -96,7 +96,7 @@ const SelectToken = (props) => {
                         ItemSeparatorComponent={() => <Separator style={styles.separator} />}
                         ListEmptyComponent={() => {
                             return (
-                                <TextView style={styles.noData} >{translate("common.noData")}</TextView>
+                                <TextView style={styles.noData} >{translate("wallet.common.noData")}</TextView>
                             );
                         }}/>
 

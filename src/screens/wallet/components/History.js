@@ -19,20 +19,20 @@ const ListItems = (props) => {
     return (
         <TouchableOpacity disabled onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
-                <Image style={styles.profileImage} source={item.type == 'IN'?ImagesSrc.received:ImagesSrc.sent} />
+                <Image style={styles.profileImage} source={item.direction == 'in'?ImagesSrc.received:ImagesSrc.sent} />
             </View>
             <View style={styles.centerCont} >
-                <Text style={styles.tokenName} >{item.type == 'IN'?'Received':'Sent'}</Text>
+                <Text style={styles.tokenName} >{item.direction == 'in'?'Received':'Sent'}</Text>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.townTxt} numberOfLines={1}>{item.type == 'IN'?`From: ${item.from}`:`To: ${item.to}`}</Text>
+                    <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`From: ${item.from}`:`To: ${item.to}`}</Text>
                     {/* <Text style={styles.percentTxt} >{item.percent}</Text> */}
                 </View>
                 
             </View>
             <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }} >
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
-                <Text style={[styles.priceTxt, {color: item.type == 'IN'? Colors.receiveColor : Colors.sendColor}]} >
-                    {item.type == 'IN'?'+':'-'}{item.value}
+                <Text style={[styles.priceTxt, {color: item.direction == 'in'? Colors.receiveColor : Colors.sendColor}]} >
+                    {item.direction == 'in'?'+':'-'}{item.value}
                 </Text>
             </View>
         </TouchableOpacity>
@@ -41,7 +41,7 @@ const ListItems = (props) => {
 
 const History = (props) => {
 
-    const {ethTransactions} = useSelector(state => state.WalletReducer);
+    const {ethTransactions, bnbTransactions, maticTransactions} = useSelector(state => state.WalletReducer);
 
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
@@ -64,6 +64,10 @@ const History = (props) => {
     const getTransactions = () => {
         if(coin.type == "ETH"){
             return ethTransactions;
+        } else if(coin.type == "BNB"){
+            return bnbTransactions;
+        } else if(coin.type == "Matic"){
+            return maticTransactions;
         }
         return [];
     }
@@ -72,7 +76,7 @@ const History = (props) => {
         <View style={[styles.scene]} >
             <FlatList
                 data={getTransactions()}
-                contentContainerStyle={{flex: 1}}
+                // contentContainerStyle={{flex: 1}}
                 renderItem={({ item }) => {
                     return (
                         <ListItems item={item}/>
@@ -93,8 +97,8 @@ const History = (props) => {
                     return (
                         <View style={styles.emptyView}>
                             <Image source={ImagesSrc.transaction} style={styles.emptyImage}/>
-                            <TextView style={styles.noData} >{translate("common.transactionsHint")}</TextView>
-                            <Button mode={'text'} uppercase={false} color={Colors.buttonTxtColor2}>{translate("common.buy")} {coin.type}</Button>
+                            <TextView style={styles.noData} >{translate("wallet.common.transactionsHint")}</TextView>
+                            <Button mode={'text'} uppercase={false} color={Colors.buttonTxtColor2}>{translate("wallet.common.buy")} {coin.type}</Button>
                         </View>
                     );
                 }}

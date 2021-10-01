@@ -19,7 +19,7 @@ export const AddressField = (props) => {
 
     return (
         <View style={[styles.inputMainCont]} >
-            <Text style={styles.inputLeft} >{"Wallet address"}</Text>
+            <Text style={styles.inputLeft} >{translate("wallet.common.walletAddress")}</Text>
             <TextInput
                 style={[styles.inputCont, styles.paymentField]}
                 placeholder=""
@@ -38,7 +38,7 @@ export const PaymentField = (props) => {
 
     return (
         <View style={[styles.inputMainCont]} >
-            <Text style={styles.inputLeft} >{"Amount"}</Text>
+            <Text style={styles.inputLeft} >{translate("wallet.common.amount")}</Text>
             <TextInput
                 style={[styles.inputCont, styles.paymentField]}
                 keyboardType='decimal-pad'
@@ -215,7 +215,7 @@ const Send = ({route, navigation}) => {
         <AppBackground isBusy={loading}>
             <AppHeader
                 showBackButton={true}
-                title={translate("common.send")}
+                title={translate("wallet.common.send")}
             />
 
             <View style={styles.container}>
@@ -257,21 +257,21 @@ const Send = ({route, navigation}) => {
                             }}/>
                     </View>
                 </View>
-                <AppButton label={translate("common.send")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                <AppButton label={translate("wallet.common.send")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => {
                         if(address !== '' && amount > 0){
                             if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
                                 if (verifyAddress(address)) {
                                     transferAmount();
                                 } else {
-                                    Alert.alert(translate("common.invalidAddress"));
+                                    Alert.alert(translate("wallet.common.invalidAddress"));
                                 }
                             }
                             else {
-                                Alert.alert(translate("common.insufficientFunds"));
+                                Alert.alert(translate("wallet.common.insufficientFunds"));
                             }  
                         }else{
-                            Alert.alert(translate("common.requireSendField"));
+                            Alert.alert(translate("wallet.common.requireSendField"));
                         }
                     }} />
             </View>

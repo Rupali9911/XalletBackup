@@ -15,7 +15,7 @@ import HintText from '../../components/hintText';
 import ImagesSrc from '../../constants/Images';
 import Colors from '../../constants/Colors';
 import { setUserAuthData, startLoader, endLoader } from '../../store/reducer/userReducer';
-import { translate } from '../../utils';
+import { translate } from '../../walletUtils';
 // import SingleSocket from '../../helpers/SingleSocket';
 // import { Events } from '../../navigations';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -75,7 +75,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                 dispatch(endLoader());
             });
         } else {
-            Alert.alert(translate("common.requirePhrase"));
+            Alert.alert(translate("wallet.common.requirePhrase"));
         }
     }
 
@@ -83,7 +83,7 @@ const RecoveryPhrase = ({route, navigation}) => {
         <AppBackground isBusy={loading}>
             <AppHeader
                 showBackButton
-                title={translate("common.backup")}
+                title={translate("wallet.common.backup")}
                 showRightButton
                 rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20}/>}
                 />
@@ -97,8 +97,8 @@ const RecoveryPhrase = ({route, navigation}) => {
                     <View style={styles.contentContainer}>
                         <View style={styles.padding}>
                             <AppLogo logoStyle={styles.logo} />
-                            <TextView style={styles.title}>{translate("common.yourPhrase")}</TextView>
-                            <HintText style={styles.hint}>{translate("common.phraseSaveInfo")}</HintText>
+                            <TextView style={styles.title}>{translate("wallet.common.yourPhrase")}</TextView>
+                            <HintText style={styles.hint}>{translate("wallet.common.phraseSaveInfo")}</HintText>
                         </View>
                         <View>
                             {recover ?
@@ -120,20 +120,20 @@ const RecoveryPhrase = ({route, navigation}) => {
                         </View>
                         <View style={styles.rowPadding}>
                             {recover ? null : wallet && <Button mode={'text'} uppercase={false} color={Colors.labelButtonColor} onPress={() => { copyToClipboard() }}>
-                                {translate("common.copy")}
+                                {translate("wallet.common.copy")}
                             </Button>}
 
                             {recover ? null : <View style={styles.alertContainer}>
                                 <View style={styles.alert}>
                                     <IconButton icon={ImagesSrc.dangerIcon} color={Colors.alertText} size={20} />
-                                    <TextView style={styles.alertTxt}>{translate("common.phraseNote")}</TextView>
+                                    <TextView style={styles.alertTxt}>{translate("wallet.common.phraseNote")}</TextView>
                                 </View>
                             </View>}
                         </View>
                     </View>
 
                     <View style={styles.bottomView}>
-                        <AppButton label={translate("common.next")} view={recover ? !recover : !wallet} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                        <AppButton label={translate("wallet.common.next")} view={recover ? !recover : !wallet} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                             onPress={() => {
                                 if (recover) {
                                     recoverWallet();

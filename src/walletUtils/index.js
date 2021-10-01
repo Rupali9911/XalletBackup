@@ -1,6 +1,6 @@
 import i18n from 'i18n-js';
 import memoize from 'lodash.memoize';
-import {store} from '../store';
+import store from '../store';
 import ImagesSrc from '../constants/Images';
 
 export const IsTestNet = true;

@@ -10,7 +10,7 @@ import ImagesSrc from '../constants/Images';
 import CommonStyles from '../constants/styles';
 import TextView from './appText';
 import AppButton from './appButton';
-import { translate } from '../utils';
+import { translate } from '../walletUtils';
 
 const NotificationActionModalContent = (props) => {
 
@@ -20,9 +20,9 @@ const NotificationActionModalContent = (props) => {
                 props.onClose && props.onClose();
             }}/>
             <Image style={styles.img} source={ImagesSrc.notificationAction} />
-            <TextView style={styles.title}>{translate("common.yourPhrase")}</TextView>
-            <TextView style={styles.hint}>{translate("common.notificationHint")}</TextView>
-            <AppButton label={translate("common.enable")} containerStyle={styles.button} labelStyle={CommonStyles.buttonLabel} 
+            <TextView style={styles.title}>{translate("wallet.common.yourPhrase")}</TextView>
+            <TextView style={styles.hint}>{translate("wallet.common.notificationHint")}</TextView>
+            <AppButton label={translate("wallet.common.enable")} containerStyle={styles.button} labelStyle={CommonStyles.buttonLabel} 
                 onPress={()=>{
                     props.onDonePress && props.onDonePress();
                 }}/>

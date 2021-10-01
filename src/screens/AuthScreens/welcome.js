@@ -10,14 +10,14 @@ import Checkbox from '../../components/checkbox';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
 import { RF } from '../../constants/responsiveFunct';
-import { translate, setI18nConfig } from '../../utils';
+import { translate, setI18nConfig } from '../../walletUtils';
 import { useSelector } from 'react-redux';
 
 const Welcome = ({ route, navigation }) => {
 
-    // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-    // setI18nConfig(selectedLanguageItem.language_name);
+    setI18nConfig(selectedLanguageItem.language_name);
 
     const [openPicker, setOpenPicker] = useState(false);
     const [isCheck, setCheck] = useState(false);
@@ -32,12 +32,12 @@ const Welcome = ({ route, navigation }) => {
 
                 <View style={styles.contentContainer}>
                     <AppLogo logoStyle={styles.logo}/>
-                    <TextView style={styles.title}>{translate("common.welcomeTxt")}</TextView>
+                    <TextView style={styles.title}>{translate("wallet.common.welcomeTxt")}</TextView>
                 </View>
 
                 <View style={styles.bottomView}>
                     <AppButton 
-                        label={translate("common.createWallet")} 
+                        label={translate("wallet.common.createWallet")} 
                         containerStyle={CommonStyles.button} 
                         labelStyle={CommonStyles.buttonLabel} 
                         onPress={()=>{
@@ -46,7 +46,7 @@ const Welcome = ({ route, navigation }) => {
                         }}
                         />
                     <AppButton 
-                        label={translate("common.haveWallet")} 
+                        label={translate("wallet.common.haveWallet")} 
                         containerStyle={CommonStyles.outlineButton} 
                         labelStyle={CommonStyles.outlineButtonLabel} 
                         onPress={()=>{

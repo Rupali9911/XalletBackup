@@ -27,7 +27,8 @@ import History from './components/History';
 import { balance } from './functions';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
-import { getTransactions } from '../../store/reducer/walletReducer';
+import { getTransactions, addAllEthTransactions, addAllBnbTransactions, addAllMaticTransactions } from '../../store/reducer/walletReducer';
+import Web3 from 'web3';
 
 const TokenDetail = ({ route, navigation }) => {
 
@@ -126,37 +127,68 @@ const TokenDetail = ({ route, navigation }) => {
         let totalValue = 0;
         if(item.type == 'ETH'){
             let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
-            console.log('Ethereum value',value);
+            // console.log('Ethereum value',value);
             totalValue = value;
         }else if(item.type == 'BNB'){
             let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-            console.log('BSC value',value);
+            // console.log('BSC value',value);
             totalValue = value;
         }else if(item.type == 'Matic'){
             let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-            console.log('Polygon value',value);
+            // console.log('Polygon value',value);
             totalValue = value;
         }
         return totalValue;
     }
 
     const getTransactionsByType = (address, type) => {
-        fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions?addr=${address}&type=${type}`,{
-            method: 'GET',
-            headers: {
-                Accept: '*/*',
-                'content-type': 'application/json'
-            },
-        }).then((response) => {
-            console.log('response',response);
-            return ""
-        })
-        .then((res) => {
-            console.log('res');
-            setLoading(false);
-        }).catch((err) => {
-            console.log('err',err);
-            setLoading(false);
+        return new Promise((resolve, reject) => {
+            fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions?addr=${address}&type=${type=='ethereum'?'eth':type}`)
+            .then((response) => {
+                // console.log('response', response);
+                return response.json();
+            })
+            .then((res) => {
+                console.log('res',res);
+                setLoading(false);
+                if(res.success){
+                    if (type == 'eth') {
+                        const array = [];
+                        res.data.map(_item => {
+                            array.push({
+                                ..._item,
+                                value: Web3.utils.fromWei(trx.value, 'ether'),
+                                type: _item.from == wallet.address ? 'OUT' : _item.to == wallet.address ? 'IN' : ''
+                            });
+                        });
+                        dispatch(addAllEthTransactions(array));
+                    } else if (type == 'bsc') {
+                        const _array = [];
+                        res.data.map(_item => {
+                            _array.push({
+                                ..._item,
+                                type: _item.from == wallet.address ? 'OUT' : _item.to == wallet.address ? 'IN' : ''
+                            });
+                        });
+                        console.log('_array',_array);
+                        dispatch(addAllBnbTransactions(_array));
+                    } else if (type == 'polygon') {
+                        const __array = [];
+                        res.data.map(_item => {
+                            __array.push({
+                                ..._item,
+                                type: _item.from == wallet.address ? 'OUT' : _item.to == wallet.address ? 'IN' : ''
+                            });
+                        });
+                        dispatch(addAllMaticTransactions(__array));
+                    }
+                }
+                resolve();
+            }).catch((err) => {
+                console.log('err', err);
+                setLoading(false);
+                reject();
+            });
         });
     }
 
@@ -192,9 +224,9 @@ const TokenDetail = ({ route, navigation }) => {
                     }
 
                     <View style={[styles.headerBtns, styles.headerBottomCont]} >
-                        <HeaderBtns onPress={() => { navigation.navigate("send", {item, type: item.type}) }} image={ImagesSrc.send} label={translate("common.send")} />
-                        <HeaderBtns onPress={() => navigation.navigate("receive", {item})} image={ImagesSrc.receive} label={translate("common.receive")} />
-                        <HeaderBtns onPress={() => { }} image={ImagesSrc.topup} label={translate("common.buy")} />
+                        <HeaderBtns onPress={() => { navigation.navigate("send", {item, type: item.type}) }} image={ImagesSrc.send} label={translate("wallet.common.send")} />
+                        <HeaderBtns onPress={() => navigation.navigate("receive", {item})} image={ImagesSrc.receive} label={translate("wallet.common.receive")} />
+                        <HeaderBtns onPress={() => { }} image={ImagesSrc.topup} label={translate("wallet.common.buy")} />
                     </View>
                 </View>
             </GradientBackground>

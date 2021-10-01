@@ -74,14 +74,14 @@ const QRScreen = () => {
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet.address);
-        Alert.alert(translate("common.copied"));
+        Alert.alert(translate("wallet.common.copied"));
     }
 
     return (
         <View style={[styles.scene]} >
             <View style={styles.QRContainer}>
                 <ViewShot ref={(ref) => qrRef = ref} options={{ result: 'data-uri' }}>
-                    <TouchableOpacity disabled style={styles.qrCodeImage} onPress={() => navigation.navigate("Pay", { title: translate("common.received"), label: `${translate("common.received")} !` })} >
+                    <TouchableOpacity disabled style={styles.qrCodeImage} onPress={() => navigation.navigate("Pay", { title: translate("wallet.common.received"), label: `${translate("wallet.common.received")} !` })} >
                         {/* <Image style={styles.qrCodeImage} source={ImagesSrc.qr} /> */}
                         <QRCode
                             size={wp("40%")}
@@ -100,7 +100,7 @@ const QRScreen = () => {
                 <View style={[styles.actionBtns]} >
                     <HeaderBtns
                         image={ImagesSrc.send}
-                        label={translate("common.copy")}
+                        label={translate("wallet.common.copy")}
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
@@ -108,7 +108,7 @@ const QRScreen = () => {
                     />
                     <HeaderBtns
                         image={ImagesSrc.receive}
-                        label={translate("common.setAmount")}
+                        label={translate("wallet.common.setAmount")}
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
@@ -116,7 +116,7 @@ const QRScreen = () => {
                     />
                     <HeaderBtns
                         image={ImagesSrc.topup}
-                        label={translate("common.share")}
+                        label={translate("wallet.common.share")}
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
@@ -124,18 +124,18 @@ const QRScreen = () => {
                     />
                 </View>
                 <TextView style={styles.alert}>
-                    {translate("common.sendAlert",{token: `${item.tokenName} (${item.type})`})}{"\n"}{translate("common.sendAlert2")}
+                    {translate("wallet.common.sendAlert",{token: `${item.tokenName} (${item.type})`})}{"\n"}{translate("wallet.common.sendAlert2")}
                 </TextView>
             </View>
             {
                 showShare &&
-                <AppButton label={translate("common.share")} containerStyle={[CommonStyles.button, styles.shareBtn]} labelStyle={CommonStyles.buttonLabel}
+                <AppButton label={translate("wallet.common.share")} containerStyle={[CommonStyles.button, styles.shareBtn]} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => onSharing()} />
             }
             <AppModal visible={modalVisible} src={ImagesSrc.setAmountBg}>
                 <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
                     <View style={styles.setAmountContainer}>
-                        <TextView style={styles.title}>{translate("common.enterAmount")}</TextView>
+                        <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
                         <TextInput 
                             style={styles.amountInput} 
                             onChangeText={(e) => {
@@ -162,14 +162,14 @@ const QRScreen = () => {
                                 onPress={()=>{
                                     setModalVisible(false)
                                     setPrice("")
-                                }}>{translate("common.cancel")}</Button>
+                                }}>{translate("wallet.common.cancel")}</Button>
                             <VerticalSeparator />
                             <Button
                                 color={Colors.headerIcon2}
                                 style={styles.optionButton}
                                 labelStyle={styles.optionLabel}
                                 uppercase={false}
-                                onPress={()=>setModalVisible(false)}>{translate("common.confirm")}</Button>
+                                onPress={()=>setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
@@ -207,8 +207,8 @@ function Receive({ route, navigation }) {
     const [title, setTitle] = useState("");
     const [index, setIndex] = useState(0);
     const [routes] = useState([
-        { key: 'QR', title: translate("common.qr") },
-        { key: 'Scan', title: translate("common.scan") },
+        { key: 'QR', title: translate("wallet.common.qr") },
+        { key: 'Scan', title: translate("wallet.common.scan") },
     ]);
 
     const renderScene = SceneMap({
@@ -238,7 +238,7 @@ function Receive({ route, navigation }) {
         <AppBackground>
             <AppHeader
                 showBackButton={true}
-                title={index == 0 ? translate("common.receive") : translate("common.scan")}
+                title={index == 0 ? translate("wallet.common.receive") : translate("wallet.common.scan")}
             />
 
             <TabView

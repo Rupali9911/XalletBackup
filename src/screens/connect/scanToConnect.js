@@ -52,7 +52,7 @@ function ScanToConnect({ route, navigation }) {
                 containerStyle={styles.header}
                 showBackButton={true}
                 isWhite={true}
-                title={translate("common.connect")}
+                title={translate("wallet.common.connect")}
             />
 
             <QRCodeScanner
@@ -66,7 +66,7 @@ function ScanToConnect({ route, navigation }) {
             />
 
             <GradientBackground containerStyle={styles.bottomContainerStyle} >
-                <TextView style={styles.scanText}>{translate("common.scanTxt")}</TextView>
+                <TextView style={styles.scanText}>{translate("wallet.common.scanTxt")}</TextView>
             </GradientBackground>
 
         </AppBackground>

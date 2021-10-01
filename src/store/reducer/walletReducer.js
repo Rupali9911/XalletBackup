@@ -2,6 +2,9 @@ import {
     ADD_ETH_TRANSACTION,
     ADD_BNB_TRANSACTION,
     ADD_MATIC_TRANSACTION,
+    ADD_ALL_ETH_TRANSACTIONS,
+    ADD_ALL_BNB_TRANSACTIONS,
+    ADD_ALL_MATIC_TRANSACTIONS,
     UPDATE_BALANCES
 } from '../types';
 
@@ -29,6 +32,12 @@ export default walletReducer = (state = initialState, action) => {
                 }
             }
 
+        case ADD_ALL_ETH_TRANSACTIONS:
+            return {
+                ...state,
+                ethTransactions: [...action.payload]
+            };
+
         case ADD_BNB_TRANSACTION:
             let isBnbExist = state.bnbTransactions.findIndex((_item) => _item.hash == action.payload.hash);
             if (isBnbExist == -1) {
@@ -41,6 +50,12 @@ export default walletReducer = (state = initialState, action) => {
                     ...state
                 }
             }
+
+        case ADD_ALL_BNB_TRANSACTIONS:
+            return {
+                ...state,
+                bnbTransactions: [...action.payload]
+            };
 
         case ADD_MATIC_TRANSACTION:
             let isMaticExist = state.maticTransactions.findIndex((_item) => _item.hash == action.payload.hash);
@@ -55,6 +70,12 @@ export default walletReducer = (state = initialState, action) => {
                     ...state
                 }
             }
+
+        case ADD_ALL_MATIC_TRANSACTIONS:
+            return {
+                ...state,
+                maticTransactions: [...action.payload]
+            };
 
         case UPDATE_BALANCES:
             return {
@@ -73,13 +94,28 @@ export const addEthTransaction = (data) => ({
     payload: data
 });
 
+export const addAllEthTransactions = (data) => ({
+    type: ADD_ALL_ETH_TRANSACTIONS,
+    payload: data
+});
+
 export const addBnbTransaction = (data) => ({
     type: ADD_BNB_TRANSACTION,
     payload: data
 });
 
+export const addAllBnbTransactions = (data) => ({
+    type: ADD_ALL_BNB_TRANSACTIONS,
+    payload: data
+});
+
 export const addMaticTransaction = (data) => ({
     type: ADD_MATIC_TRANSACTION,
+    payload: data
+});
+
+export const addAllMaticTransactions = (data) => ({
+    type: ADD_ALL_MATIC_TRANSACTIONS,
     payload: data
 });
 
@@ -90,15 +126,27 @@ export const updateBalances = (data) => ({
 
 export const getTransactions = (address, type) => (dispatch) =>
     new Promise((resolve, reject) => {
-        fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions?addr=${address}&type=${type}`).then((response) => {
-            console.log('response',response);
+        const data = {
+            addr: address,
+            type: type
+        }
+        let fetch_request_param = {
+            method: 'GET',
+            body: JSON.stringify(data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+        fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions`, fetch_request_param).then((response) => {
+            console.log('response', response);
             return ""
         })
-        .then((res) => {
-            console.log('res');
-            resolve();
-        }).catch((err) => {
-            console.log('err',err);
-            reject();
-        })
+            .then((res) => {
+                console.log('res');
+                resolve();
+            }).catch((err) => {
+                console.log('err', err);
+                reject();
+            })
     });

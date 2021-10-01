@@ -54,10 +54,10 @@ const Connect = ({route, navigation}) => {
     return (
         <AppBackground>
             <AppHeader 
-                title={translate("common.connect")}
+                title={translate("wallet.common.connect")}
                 titleStyle={styles.screenTitle}/>
             <View style={styles.container}>
-                <TextView style={styles.heading}>{translate("common.connectInfo")}</TextView>
+                <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}</TextView>
                 
                 <View style={styles.list}>
                     <FlatList 
@@ -68,7 +68,7 @@ const Connect = ({route, navigation}) => {
                         />
                 </View>
 
-                <AppButton label={translate("common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
+                <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
                     onPress={() => {
                         navigation.navigate("scanToConnect");
                     }} />

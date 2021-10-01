@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Subject } from 'rxjs';
+import * as RNLocalize from "react-native-localize";
 
 import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
@@ -40,12 +41,19 @@ import Connect from './screens/connect';
 import ScanToConnect from './screens/connect/scanToConnect';
 import getLanguage from './utils/languageSupport';
 const langObj = getLanguage();
+import { setI18nConfig, languageArray } from "./walletUtils";
+import { getAllLanguages, setAppLanguage } from "./store/reducer/languageReducer";
 
 import ImageSrc from './constants/Images';
 import { images, fonts } from './res';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from './common/responsiveFunction';
 import AuthStack from './navigations/authStack';
 import Colors from './constants/Colors';
+
+export const regionLanguage = RNLocalize.getLocales()
+    .map((a) => a.languageCode)
+    .values()
+    .next().value;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -104,9 +112,12 @@ const AppRoutes = () => {
 
   const { AuthReducer } = useSelector(state => state);
   const { wallet } = useSelector(state => state.UserReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  setI18nConfig(selectedLanguageItem.language_name);
+
+  React.useEffect(async () => {
     LogBox.ignoreAllLogs();
 
     AsyncStorage.getItem("account_id@")
@@ -121,6 +132,17 @@ const AppRoutes = () => {
       .catch(() => {
         dispatch(loadAccountKeyFail());
       })
+
+    const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
+    if (languageData) {
+      console.log('languageData', languageData);
+      dispatch(setAppLanguage(JSON.parse(languageData)));
+    } else {
+      let item = languageArray.find(item => item.language_name == regionLanguage);
+      dispatch(setAppLanguage(item));
+    }
+
+    // dispatch(loadFromAsync());
 
   }, []);
 

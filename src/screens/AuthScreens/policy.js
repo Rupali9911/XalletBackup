@@ -40,12 +40,12 @@ const AnTerms = {
 
 const Policy = ({route, navigation}) => {
 
-    // const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+    const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
     const {isPolicy} = route.params;
 
-    // const [content, setContent] = useState(isPolicy?policy[selectedLanguageItem.language_name]:terms[selectedLanguageItem.language_name]);
-    const [content, setContent] = useState(isPolicy?policy['en']:terms['en']);
+    const [content, setContent] = useState(isPolicy?policy[selectedLanguageItem.language_name]:terms[selectedLanguageItem.language_name]);
+    // const [content, setContent] = useState(isPolicy?policy['en']:terms['en']);
     const [loading, setLoading] = useState(true);
     // console.log('selectedLanguageItem',selectedLanguageItem);
     return(
@@ -56,7 +56,7 @@ const Policy = ({route, navigation}) => {
                     <WebView
                         style={styles.webview}
                         originWhitelist={['*']}
-                        source={isPolicy?AnPolicy['en']:AnTerms['en']}
+                        source={isPolicy?AnPolicy[selectedLanguageItem.language_name]:AnTerms[selectedLanguageItem.language_name]}
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
                         onLoadStart={()=>setLoading(true)}

@@ -6,17 +6,17 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
-// import { setAppLanguage } from '../store/reducer/languageReducer';
+import { setAppLanguage } from '../store/reducer/languageReducer';
 import CommonStyles from '../constants/styles';
 import Fonts from '../constants/Fonts';
 import Colors from '../constants/Colors';
 import Images from '../constants/Images';
 import { RF, wp } from '../constants/responsiveFunct';
-import { languageArray } from '../utils';
+import { languageArray } from '../walletUtils';
 
 function LanguageSel (props)  {
     const dispatch = useDispatch();
-    // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('en');
@@ -46,7 +46,7 @@ function LanguageSel (props)  {
                 if(value !== selectedLanguageItem.language_name){
                     let item = languageArray.find(item => item.language_name == value);
                     console.log('language update');
-                    // dispatch(setAppLanguage(item));
+                    dispatch(setAppLanguage(item));
                 }
             }}
             style={styles.pickerStyle}

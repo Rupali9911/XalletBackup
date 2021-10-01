@@ -11,7 +11,7 @@ import TextView from '../../components/appText';
 import { RF } from '../../constants/responsiveFunct';
 import HintText from '../../components/hintText';
 import ButtonGroup from '../../components/buttonGroup';
-import { translate } from '../../utils';
+import { translate } from '../../walletUtils';
 
 const Legal = ({route, navigation}) => {
 
@@ -20,7 +20,7 @@ const Legal = ({route, navigation}) => {
 
     return (
         <AppBackground >
-            <AppHeader showBackButton title={translate("common.legal")}/>
+            <AppHeader showBackButton title={translate("wallet.common.legal")}/>
             <View style={CommonStyles.screenContainer} onStartShouldSetResponder={() => {
                 setOpenPicker(!openPicker)
                 return true;
@@ -28,23 +28,23 @@ const Legal = ({route, navigation}) => {
 
                 <View style={styles.contentContainer}>
                     <AppLogo logoStyle={styles.logo}/>
-                    <TextView style={styles.title}>{translate("common.legal")}</TextView>
-                    <HintText style={styles.hint}>{translate("common.legalHint")}</HintText>
+                    <TextView style={styles.title}>{translate("wallet.common.legal")}</TextView>
+                    <HintText style={styles.hint}>{translate("wallet.common.legalHint")}</HintText>
                     <ButtonGroup buttons={[
                         {
-                            text: translate("common.privacyPolicy"),
+                            text: translate("wallet.common.privacyPolicy"),
                             onPress: () => navigation.navigate("policy",{isPolicy: true})
                         },
                         {
-                            text: translate("common.termsServices"),
+                            text: translate("wallet.common.termsServices"),
                             onPress: () => navigation.navigate("policy",{isPolicy: false})
                         }
                     ]}/>
                 </View>
 
                 <View style={styles.bottomView}>
-                    <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("common.termDeclaration")}/>
-                    <AppButton label={translate("common.next")} view={!isCheck} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel} 
+                    <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("wallet.common.termDeclaration")}/>
+                    <AppButton label={translate("wallet.common.next")} view={!isCheck} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel} 
                         onPress={()=>{
                             if(isCheck){
                                 navigation.navigate("backup");

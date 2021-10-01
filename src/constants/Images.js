@@ -56,5 +56,6 @@ export default {
     sent: require("../../assets/images/upload.png"),
 
     addIcon: require("../../assets/images/Add.png"),
-    scanIcon: require("../../assets/images/scanIcon.png")
+    scanIcon: require("../../assets/images/scanIcon.png"),
+    closeIcon: require("../../assets/images/close.png")
 };

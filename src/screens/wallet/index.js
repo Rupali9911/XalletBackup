@@ -197,15 +197,15 @@ const Wallet = ({route, navigation}) => {
         let totalValue = 0;
         if(network.name == 'Ethereum'){
             let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
-            console.log('Ethereum value',value);
+            // console.log('Ethereum value',value);
             totalValue = value;
         }else if(network.name == 'BSC'){
             let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-            console.log('BSC value',value);
+            // console.log('BSC value',value);
             totalValue = value;
         }else if(network.name == 'Polygon'){
             let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-            console.log('Polygon value',value);
+            // console.log('Polygon value',value);
             totalValue = value;
         }
         return totalValue;
@@ -290,8 +290,8 @@ const Wallet = ({route, navigation}) => {
 
                     <View style={styles.header}>
                         <ToggleButtons
-                            labelLeft={translate("common.tokens")}
-                            labelRight={translate("common.nfts")} />
+                            labelLeft={translate("wallet.common.tokens")}
+                            labelRight={translate("wallet.common.nfts")} />
                         
                         <TouchableOpacity style={styles.networkIcon} hitSlop={{top:10,bottom:10,right:10,left:10}}
                             onPress={()=>setPickerVisible(true)}>
@@ -301,19 +301,19 @@ const Wallet = ({route, navigation}) => {
 
                     <View style={styles.balanceContainer}>
                         <PriceText price={setBalanceField()} isWhite containerStyle={styles.priceCont} />
-                        <TextView style={styles.balanceLabel}>{translate("common.mainWallet")}</TextView>
+                        <TextView style={styles.balanceLabel}>{translate("wallet.common.mainWallet")}</TextView>
                     </View>
                     
                     <View style={[styles.headerBtns, styles.headerBottomCont]} >
-                        <HeaderBtns image={ImagesSrc.send} label={translate("common.send")}
+                        <HeaderBtns image={ImagesSrc.send} label={translate("wallet.common.send")}
                             onPress={() => {
                                 setIsSend(true); setSelectTokenVisible(true)
                             }} />
-                        <HeaderBtns image={ImagesSrc.receive} label={translate("common.receive")}
+                        <HeaderBtns image={ImagesSrc.receive} label={translate("wallet.common.receive")}
                             onPress={() => {
                                 setIsSend(false); setSelectTokenVisible(true)
                             }} />
-                        <HeaderBtns onPress={() => {}} image={ImagesSrc.topup} label={translate("common.buy")} />
+                        <HeaderBtns onPress={() => {}} image={ImagesSrc.topup} label={translate("wallet.common.buy")} />
                     </View>
                 </View>
             </GradientBackground>

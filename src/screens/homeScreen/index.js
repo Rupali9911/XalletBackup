@@ -7,12 +7,16 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { getNFTList, getAllArtist, nftLoadStart, pageChange, nftListReset } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
+import { updateCreateState } from '../../store/reducer/userReducer';
 
 import { responsiveFontSize as RF } from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import ImageSrc from '../../constants/Images';
 import { Loader, NoInternetModal, C_Image } from '../../components';
+import AppModal from '../../components/appModal';
+import SuccessModal from '../../components/successModal';
+import NotificationActionModal from '../../components/notificationActionModal';
 import {
     SIZE,
 } from 'src/constants';
@@ -126,80 +130,108 @@ const Hot = () => {
 const HomeScreen = ({ navigation }) => {
 
     const { ListReducer } = useSelector(state => state);
+    const {wallet, isCreate} = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
+
+    const[modalVisible, setModalVisible] = useState(isCreate);
+    const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
+    const [isNotificationVisible, setNotificationVisible] = useState(false);
 
     useEffect(() => {
         dispatch(getAllArtist());
     }, []);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
-            <View style={styles.header}>
-                <View style={styles.headerMenuContainer}>
-                    
+        <>
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} >
+                <View style={styles.header}>
+                    <View style={styles.headerMenuContainer}>
+
+                    </View>
+                    <Text style={styles.headerTitle}>
+                        {'Home'}
+                    </Text>
+                    <View style={styles.headerMenuContainer}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('Certificate') }} hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                            <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { navigation.navigate('Create') }} hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                            <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <Text style={styles.headerTitle}>
-                    {'Home'}
-                </Text>
-                <View style={styles.headerMenuContainer}>
-                    <TouchableOpacity onPress={() => {navigation.navigate('Certificate')}} hitSlop={{top: 5, right: 5, bottom: 5, left: 5}}>
-                        <Image source={ImageSrc.scanIcon} style={styles.headerMenu}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {navigation.navigate('Create')}} hitSlop={{top: 5, right: 5, bottom: 5, left: 5}}>
-                        <Image source={ImageSrc.addIcon} style={styles.headerMenu}/>
-                    </TouchableOpacity>
+                <View>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}>
+                        {
+                            ListReducer.artistList &&
+                            ListReducer.artistList.map((item, index) => {
+                                return (
+                                    <TouchableOpacity onPress={() => navigation.navigate('')} key={`_${index}`}>
+                                        <View style={styles.userCircle}>
+                                            <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
+                                        </View>
+                                        <Text numberOfLines={1} style={styles.userText}>
+                                            {item.username}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })
+                        }
+                    </ScrollView>
                 </View>
-            </View>
-            <View>
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}>
-                    {
-                        ListReducer.artistList &&
-                        ListReducer.artistList.map((item,index) => {
-                            return (
-                                <TouchableOpacity onPress={() => navigation.navigate('')} key={`_${index}`}>
-                                    <View style={styles.userCircle}>
-                                        <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
-                                    </View>
-                                    <Text numberOfLines={1} style={styles.userText}>
-                                        {item.username}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })
+                <Tab.Navigator tabBarOptions={{
+                    activeTintColor: colors.BLUE4,
+                    inactiveTintColor: colors.GREY1,
+                    style: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderTopColor: '#EFEFEF',
+                        borderTopWidth: 1,
+                        shadowOpacity: 0,
+                    },
+                    tabStyle: {
+                        height: SIZE(40)
+                    },
+                    labelStyle: {
+                        fontSize: RF(1.4),
+                        fontFamily: fonts.SegoeUIRegular,
+                        textTransform: 'capitalize'
+                    },
+                    indicatorStyle: {
+                        borderBottomColor: colors.BLUE4,
+                        height: 1,
+                        marginBottom: SIZE(39)
                     }
-                </ScrollView>
-            </View>
-            <Tab.Navigator tabBarOptions={{
-                activeTintColor: colors.BLUE4,
-                inactiveTintColor: colors.GREY1,
-                style: {
-                    boxShadow: 'none',
-                    elevation: 0,
-                    borderTopColor: '#EFEFEF',
-                    borderTopWidth: 1,
-                    shadowOpacity: 0,
-                },
-                tabStyle: {
-                    height: SIZE(40)
-                },
-                labelStyle: {
-                    fontSize: RF(1.4),
-                    fontFamily: fonts.SegoeUIRegular,
-                    textTransform: 'capitalize'
-                },
-                indicatorStyle: {
-                    borderBottomColor: colors.BLUE4,
-                    height: 1,
-                    marginBottom: SIZE(39)
-                }
-            }} >
-                <Tab.Screen name={langObj.common.hot} component={Hot} />
-                <Tab.Screen name={langObj.common.following} component={NewNFT} />
-                <Tab.Screen name={langObj.common.Discover} component={NewNFT} />
-            </Tab.Navigator>
-        </SafeAreaView>
+                }} >
+                    <Tab.Screen name={langObj.common.hot} component={Hot} />
+                    <Tab.Screen name={langObj.common.following} component={NewNFT} />
+                    <Tab.Screen name={langObj.common.Discover} component={NewNFT} />
+                </Tab.Navigator>
+            </SafeAreaView>
+            <AppModal visible={modalVisible} onRequestClose={()=>setModalVisible(false)}>
+                {isSuccessVisible ?
+                    <SuccessModal
+                        onClose={() => setModalVisible(false)}
+                        onDonePress={() => {
+                            setSuccessVisible(false);
+                            setNotificationVisible(true);
+                            dispatch(updateCreateState());
+                        }}
+                    />
+                    : null}
+
+                {isNotificationVisible ? 
+                    <NotificationActionModal
+                        onClose={() => setModalVisible(false)}
+                        onDonePress={() => {
+                            setModalVisible(false);
+                        }}
+                    />
+                    : null}
+            </AppModal>
+        </>
     )
 }
 
