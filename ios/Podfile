@@ -22,15 +22,11 @@ target 'showcase' do
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
-  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
-
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
-  pod 'ViroReact', :path => '../node_modules/@viro-community/react-viro/ios'
-
-  pod 'ViroKit', :path => '../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer'
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
   target 'showcaseTests' do
     inherit! :complete

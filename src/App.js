@@ -19,8 +19,6 @@ import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
 import MyNFTScreen from './screens/myNFTScreen';
 import DiscoverScreen from './screens/discoverScreen';
-import ARScreen from './screens/ARScreen';
-import ConnectScreen from './screens/connectScreen';
 import DetailItemScreen from './screens/detailScreen';
 import NewPostScreen from './screens/newPostScreen';
 import CertificateScreen from './screens/certificateScreen';
@@ -31,7 +29,6 @@ import ProfileScreen from './screens/profile';
 import EditProfileScreen from './screens/edit_profile';
 import SettingScreen from './screens/setting';
 import WalletConnectScreen from './screens/walletconnect';
-import ViroARScreen from './viro';
 import ExploreScreen from './screens/explore';
 import Wallet from './screens/wallet';
 import TokenDetail from './screens/wallet/tokenDetail';
@@ -103,7 +100,7 @@ const TabComponent = () => {
       {/* <Tab.Screen name={'Certificate'} component={CertificateScreen} /> */}
       <Tab.Screen name={'Connect'} component={Connect} />
       {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
-      <Tab.Screen name={'Me'} component={WalletConnectScreen} />
+      <Tab.Screen name={'Me'} component={ProfileScreen} />
     </Tab.Navigator>
   )
 }
@@ -124,7 +121,8 @@ const AppRoutes = () => {
       .then(accountKey => {
         if (accountKey !== null) {
           let account_key_parse = JSON.parse(accountKey)
-          dispatch(loadAccountKeySuccess(account_key_parse.account));
+          // dispatch(loadAccountKeySuccess(account_key_parse.account));
+          dispatch(loadAccountKeySuccess());
         } else {
           dispatch(loadAccountKeyFail());
         }
@@ -142,7 +140,7 @@ const AppRoutes = () => {
       dispatch(setAppLanguage(item));
     }
 
-    // dispatch(loadFromAsync());
+    dispatch(loadFromAsync());
 
   }, []);
 
@@ -156,13 +154,10 @@ const AppRoutes = () => {
               <Stack.Navigator headerMode="none" >
                 <Stack.Screen name="Home" component={TabComponent} />
                 <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-                <Stack.Screen name="ViroARScreen" component={ViroARScreen} />
                 <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
                 <Stack.Screen name="Pay" component={PayScreen} />
                 <Stack.Screen name="MakeBid" component={MakeBidScreen} />
                 <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-                <Stack.Screen name="Setting" component={SettingScreen} />
-                <Stack.Screen name="WalletConnect" component={WalletConnectScreen} />
                 <Stack.Screen name="tokenDetail" component={TokenDetail} />
                 <Stack.Screen name="receive" component={Receive} />
                 <Stack.Screen name="send" component={Send} />

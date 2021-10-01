@@ -1,26 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, Dimensions, ActivityIndicator } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, Image, Dimensions, ActivityIndicator, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWalletConnect, withWalletConnect } from '@walletconnect/react-native-dapp';
-import { rpcGetAccountBalance, rpcGetAccountNonce } from '../../walletconnection/rpc';
-
 import { networkType } from "../../common/networkType";
-import { BASE_URL, PROVIDER_URL } from '../../common/constants';
+import { BASE_URL } from '../../common/constants';
 import getLanguage from '../../utils/languageSupport';
-const langObj = getLanguage();
-
-import insertComma from '../../utils/insertComma';
-import { trimZeroFromTheEnd } from '../../utils/trimZeroFromValue';
-import { showActualValue } from '../../utils/showActualValue';
-import { divideNo, sanitizeHex, convertStringToHex, convertAmountToRawNumber } from '../../utils';
-import { apiGetGasPrices } from '../../gas-price';
-
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import styles from './styles';
-import { images, colors } from '../../res';
 import {
   SVGS,
   SIZE,
@@ -33,18 +18,21 @@ import {
 import {
   SmallBoldText
 } from 'src/styles/text.styles';
-import { DetailModal, C_Image } from 'src/components';
-const Web3 = require("web3");
+import { C_Image } from 'src/components';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
+import Video from 'react-native-video';
 
 const { width } = Dimensions.get('window');
+const langObj = getLanguage();
+const Web3 = require("web3");
 
 const {
   CommentIcon,
   HeartIcon,
   ShareIcon,
   BookMarkIcon,
+  PlayButtonIcon
 } = SVGS;
 
 const nftItem = ({ item, index }) => {
@@ -52,18 +40,14 @@ const nftItem = ({ item, index }) => {
   const dispatch = useDispatch();
 
   const { AuthReducer } = useSelector(state => state);
-  const [lastPrice, setLastPrice] = useState('----');
   const [owner, setOwner] = useState('----');
   const [artist, setArtist] = useState('----');
-  const [priceNFTString, setPriceNFTString] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [loaderFor, setLoaderFor] = useState(true);
-  const [isModalVisible, setModalVisible] = useState(false);
   const [creatorImage, setCreatorImage] = useState();
   const [ownerImage, setOwnerImage] = useState();
+  const [isPlay, setPlay] = useState(false);
+  const refVideo = useRef(null);
 
   const navigation = useNavigation();
-  const connector = useWalletConnect();
   const accountKey = AuthReducer.accountKey;
 
   let MarketPlaceAbi = "";
@@ -75,40 +59,34 @@ const nftItem = ({ item, index }) => {
   let ApproveAdd = "";
   let providerUrl = "";
 
+  let params = item.tokenId.toString().split('-');
+  let tokenId = params.length > 1 ? params[1] : params[0];
+  let chainType = params.length > 1 ? params[0] : 'binance';
+  if (chainType === 'polygon') {
+    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+    AwardAbi = blockChainConfig[1].awardConConfig.abi;
+    AwardContractAddress = blockChainConfig[1].awardConConfig.add;
+    ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
+    ApproveAdd = blockChainConfig[1].marketApproveConConfig.add;
+    providerUrl = blockChainConfig[1].providerUrl;
+  } else if (chainType === 'binance') {
+    MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+    AwardAbi = blockChainConfig[0].awardConConfig.abi;
+    AwardContractAddress = blockChainConfig[0].awardConConfig.add;
+    ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
+    ApproveAdd = blockChainConfig[0].marketApproveConConfig.add;
+    providerUrl = blockChainConfig[0].providerUrl;
+  }
+
   useEffect(() => {
-    let params = item.tokenId.split('-');
-    let tokenId = params.length > 1 ? params[1] : params[0];
-    let chainType = params[0];
-    if (chainType === 'polygon') {
-      MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
-      MarketContractAddress = blockChainConfig[1].marketConConfig.add;
-      AwardAbi = blockChainConfig[1].awardConConfig.abi;
-      AwardContractAddress = blockChainConfig[1].awardConConfig.add;
-      ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
-      ApproveAdd = blockChainConfig[1].marketApproveConConfig.add;
-      providerUrl = blockChainConfig[1].providerUrl;
-    } else if (chainType === 'binance') {
-      MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
-      MarketContractAddress = blockChainConfig[0].marketConConfig.add;
-      AwardAbi = blockChainConfig[0].awardConConfig.abi;
-      AwardContractAddress = blockChainConfig[0].awardConConfig.add;
-      ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
-      ApproveAdd = blockChainConfig[0].marketApproveConConfig.add;
-      providerUrl = blockChainConfig[0].providerUrl;
-    }
-
-
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress
     );
-    // MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
-    //   if (!err) {
-    //     console.log('=======')
-    //     console.log(res)
-    //   }
-    // });
+
     MarketPlaceContract.methods
       .getNonCryptoOwner(tokenId)
       .call(async (err, res) => {
@@ -122,11 +100,30 @@ const nftItem = ({ item, index }) => {
             setOwnerImage(profile.data.data.profile_image);
           }
         } else if (!res) {
-          console.log('=======err', err);
+          lastOwnerOfNFT();
         } else if (err) {
         }
       });
   }, []);
+
+  const lastOwnerOfNFT = () => {
+    let web3 = new Web3(providerUrl);
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress
+    );
+
+    MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
+      let ownerAddress = res;
+      MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
+        if (res[0] !== '0x0000000000000000000000000000000000000000') {
+          setOwner(res[0]);
+        } else {
+          setOwner(ownerAddress);
+        }
+      });
+    })
+  }
 
   const getTockendetailsApi = async () => {
 
@@ -134,7 +131,7 @@ const nftItem = ({ item, index }) => {
       tokenId: item.tokenId,
       networkType: networkType,
       type: "2D",
-      chain: "binance"
+      chain: chainType
     }
 
     if (accountKey) {
@@ -175,7 +172,7 @@ const nftItem = ({ item, index }) => {
             .then(response => response.json())
             .then(res => {
               if (res.data) {
-                setArtist(res.data.username);
+                res.data.username && setArtist(res.data.username);
                 setCreatorImage(res.data.profile_image);
               }
             })
@@ -189,74 +186,6 @@ const nftItem = ({ item, index }) => {
       });
   }
 
-  const checkBalance = () => {
-    // const blance = await rpcGetAccountBalance(address);
-  }
-
-  const buyNFTItem = async () => {
-    setLoading(true);
-    // if (!loaderFor) {
-    //   return;
-    // }
-    console.log('========', priceNFTString);
-    if (connector._accounts[0]) {
-
-      checkBalance();
-
-      const address = connector._accounts[0];
-      const chainId = connector.chainId;
-      console.log('===address', address);
-      const from = address;
-      const to = artist;
-
-      // nonce
-      const _nonce = await rpcGetAccountNonce(address);
-      const nonce = sanitizeHex(convertStringToHex(_nonce));
-      console.log('=====nonce', nonce);
-
-      // gasPrice
-      const gasPrices = await apiGetGasPrices();
-      const _gasPrice = gasPrices.slow.price;
-      const gasPrice = sanitizeHex(convertStringToHex(convertAmountToRawNumber(_gasPrice, 9)));
-      console.log('=====gasPrice', gasPrice);
-
-      // gasLimit
-      const _gasLimit = 21000;
-      const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
-      console.log('=====gasLimit', gasLimit);
-
-      // value
-      const _value = 1;
-      const value = sanitizeHex(convertStringToHex(_value));
-      console.log('=====value', value);
-
-      //data
-      const data = '0x';
-
-      const tx = {
-        from,
-        to,
-        nonce,
-        gasPrice,
-        gasLimit,
-        value,
-        data
-      };
-
-      try {
-        const result = connector.sendTransaction(tx);
-        console.log('======result', result)
-      } catch (err) {
-        console.log(err);
-      }
-
-      setLoading(false);
-    } else {
-      setLoading(false);
-      navigation.navigate('Connect');
-    }
-  }
-
   useEffect(() => {
     async function getOwnerOfNFT() {
       await getTockendetailsApi();
@@ -264,33 +193,80 @@ const nftItem = ({ item, index }) => {
     getOwnerOfNFT();
   }, []);
 
+  const fileType = item.metaData.image.split('.')[item.metaData.image.split('.').length - 1];
+
   return (
     <View>
-      {/* <View style={styles.bgImageCont} > */}
-      {/* <C_Image uri={item.metaData.image} imageStyle={styles.bgImage} /> */}
-      {/* <Image style={{ flex: 1 }} source={{ uri: item.metaData.image }} blurRadius={30} />
-        <View style={[styles.bgImageCont, { backgroundColor: colors.black_opacity(0.4) }]} />
-      </View> */}
       <View style={styles.modalSectCont}>
         <View style={styles.iconCont}>
-          <Image style={styles.profileIcon} source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
+          <Image
+            style={styles.profileIcon}
+            source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
           <View>
-            <Text style={styles.modalIconLabel} >{langObj.common.owner}</Text>
-            <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>{owner}</Text>
+            <Text style={styles.modalIconLabel} >
+              {langObj.common.owner}
+            </Text>
+            <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
+              {owner}
+            </Text>
           </View>
         </View>
         <View style={styles.iconCont}>
-          <Image style={styles.profileIcon} source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
+          <Image
+            style={styles.profileIcon}
+            source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
           <View>
-            <Text style={styles.modalIconLabel}>{langObj.common.creator}</Text>
-            <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.3 }]} >{artist}</Text>
+            <Text style={styles.modalIconLabel}>
+              {langObj.common.creator}
+            </Text>
+            <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: Platform.OS === 'ios' ? (width * 0.35) : (width * 0.4) }]} >
+              {artist}
+            </Text>
           </View>
         </View>
       </View>
-      <TouchableOpacity onPress={() => {
-        setModalVisible(true);
-      }}>
-        <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => setPlay(!isPlay)}>
+        {
+          fileType !== 'mp4' ?
+            <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
+            :
+            <View style={styles.modalImage}>
+              <Video
+                ref={refVideo}
+                source={{ uri: item.metaData.image }}
+                repeat
+                playInBackground={false}
+                paused={!isPlay}
+                resizeMode={'cover'}
+                onLoad={() => refVideo.current.seek(0)}
+                style={{ flex: 1 }} />
+              {
+                !isPlay &&
+                <View style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <View style={{
+                    width: SIZE(100),
+                    height: SIZE(100),
+                    backgroundColor: '#00000030',
+                    borderRadius: SIZE(100),
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                  </View>
+                </View>
+              }
+            </View>
+        }
       </TouchableOpacity>
 
       <View style={{
@@ -300,11 +276,10 @@ const nftItem = ({ item, index }) => {
         paddingHorizontal: SIZE(14)
       }}>
         {
-          !AuthReducer.accountKey ?
+          AuthReducer.accountKey ?
             <RowBetweenWrap>
               <View style={styles.buttons}>
                 <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
-                  {/* <Image style={styles.heartIcon} source={item.like == 1 ? images.icons.heartA : images.icons.heart} /> */}
                   <HeartIcon />
                 </TouchableOpacity>
                 <SpaceView mRight={SIZE(15)} />
@@ -334,73 +309,11 @@ const nftItem = ({ item, index }) => {
             : null
         }
         <Text style={styles.modalLabel} >{item.metaData.name}</Text>
-
-        {/* <View style={styles.modalSectCont} >
-          <View style={{ flex: 1 }} >
-            <Text style={styles.modalIconLabel} >{langObj.common.currentprice}</Text>
-            <View style={styles.iconCont} >
-              <Image style={styles.iconsImage} source={images.icons.pIcon} />
-              <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.4 }]} >
-                {
-                  priceNFTString !== "0" ?
-                    insertComma(
-                      trimZeroFromTheEnd(
-                        showActualValue(
-                          divideNo(priceNFTString),
-                          18,
-                          "string"
-                        ),
-                        true
-                      ),
-                      true
-                    )
-                    : langObj.common.tba
-                }
-              </Text>
-            </View>
-          </View>
-          <View style={{ flex: 0.8 }} >
-            <Text style={styles.modalIconLabel} >{langObj.common.lastprice}</Text>
-            <View style={styles.iconCont} >
-              <Image style={styles.iconsImage} source={images.icons.pIcon} />
-              <Text style={styles.iconLabel} >{lastPrice}</Text>
-            </View>
-          </View>
-        </View> */}
         <View style={styles.separator} />
         <Text style={styles.description} >{item.metaData.description}</Text>
-        {/* <TouchableOpacity>
-          {
-            isLoading ?
-              <ActivityIndicator size="large" color={colors.white} />
-              :
-              <LinearGradient
-                onTouchEnd={buyNFTItem}
-                colors={[colors.themeL, colors.themeR]}
-                style={styles.modalBtn}>
-                <Text style={[styles.modalLabel, { color: colors.white }]} >
-                  {
-                    loaderFor ? langObj.common.buy.toUpperCase() : langObj.common.notForSell.toUpperCase()
-                  }
-                </Text>
-              </LinearGradient>
-          }
-        </TouchableOpacity> */}
       </View>
-      <DetailModal
-        imageUrl={item.thumbnailUrl}
-        profileImage={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }}
-        profileName={artist}
-        isModalVisible={isModalVisible}
-        toggleModal={() => setModalVisible(false)}
-      />
     </View>
   )
 }
 
-export default withWalletConnect(nftItem, {
-  redirectUrl: Platform.OS === 'web' ? window.location.origin : 'yourappscheme://',
-  storageOptions: {
-    asyncStorage: AsyncStorage,
-  },
-});
+export default nftItem;
