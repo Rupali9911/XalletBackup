@@ -34,7 +34,7 @@ export default {
   GRADIENTDARK: "#3F4BAA",
   SUCCESSBUTTON: "#FEB902",
 
-  // color from Xana Wallet
+  // color from XANALIA
   white: '#ffffff',
   black: '#000000',
   danger: "#F32013",

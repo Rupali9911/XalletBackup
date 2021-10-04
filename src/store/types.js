@@ -48,7 +48,7 @@ export const MY_COLLECTION_PAGE_CHANGE = "MY_COLLECTION_PAGE_CHANGE";
 export const MY_COLLECTION_LIST_UPDATE = "MY_COLLECTION_LIST_UPDATE";
 
 
-//#region Xana Wallet types
+//#region XANALIA types
 export const AUTH_LOADING_START = "AUTH_LOADING_START";
 export const AUTH_LOADING_END = "AUTH_LOADING_END";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";

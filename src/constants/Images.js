@@ -6,7 +6,7 @@ export default {
     DEFAULTPROFILE: require(`src/assets/pngs/default_profile_img.png`),
 
 
-    // Xana Wallet images
+    // XANALIA images
     appIcon: require("../../assets/images/logo.png"),
     downArrow: require("../../assets/images/down_arrow.png"),
     checkIcon: require("../../assets/images/check.png"),
