@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: SIZE(10),
         borderTopWidth: SIZE(4),
         borderBottomWidth: SIZE(4),
-        borderBottomColor: '#F9FAF9',
-        borderTopColor: '#F9FAF9',
+        borderBottomColor: '#ffffff',
+        borderTopColor: '#ffffff',
         paddingVertical: SIZE(13)
     },
     personType: {
@@ -92,19 +92,22 @@ const styles = StyleSheet.create({
         width: SIZE(30),
         height: SIZE(30),
         borderRadius: SIZE(30),
-        marginRight: SIZE(10)
+        marginRight: SIZE(10),
+        borderColor: '#979797',
+        borderWidth: 1
     },
     personTypeText: {
         fontSize: RF(1.3),
         fontFamily: fonts.ARIAL,
         color: colors.GREY1,
-        lineHeight: SIZE(12.89)
+        lineHeight: SIZE(12.89),
     },
     personName: {
         fontSize: RF(1.4),
         fontFamily: fonts.ARIAL_BOLD,
         color: colors.black,
-        lineHeight: SIZE(14.06)
+        lineHeight: SIZE(14.06),
+        maxWidth: SIZE(130),
     },
     description: {
         fontSize: RF(1.4),

@@ -228,7 +228,23 @@ const nftItem = ({ item, index }) => {
       </View>
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => setPlay(!isPlay)}>
+        onPress={() => {
+          console.log('=====', item)
+          isPlay ? setPlay(!isPlay)
+            :
+            navigation.navigate('CertificateDetail', {
+              name: item.metaData.name,
+              description: item.metaData.description,
+              owner: owner,
+              ownerImage: ownerImage,
+              creator: artist,
+              creatorImage: creatorImage,
+              thumbnailUrl: item.thumbnailUrl,
+              video: item.metaData.image,
+              fileType: fileType,
+              price: item.price
+            });
+        }}>
         {
           fileType !== 'mp4' ?
             <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
@@ -271,7 +287,9 @@ const nftItem = ({ item, index }) => {
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                    <TouchableOpacity onPress={() => setPlay(true)}>
+                      <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                    </TouchableOpacity>
                   </View>
                 </View>
               }

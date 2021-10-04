@@ -34,7 +34,7 @@ const CertificateScreen = ({ navigation }) => {
                 <Text style={styles.scanText}>
                     {'Ready to Scan'}
                 </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('CertificateDetail')}>
+                <TouchableOpacity>
                     <Image style={styles.scanImage} source={images.icons.scan} resizeMode="contain" />
                 </TouchableOpacity>
                 <Text style={styles.objectText}>
