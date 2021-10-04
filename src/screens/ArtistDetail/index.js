@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import {
+    ActivityIndicator,
     View,
     TouchableOpacity,
     FlatList,
@@ -64,6 +65,7 @@ import {
     responsiveFontSize as RF
 } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
+import { colors } from '../../res';
 const langObj = getLanguage();
 
 const {
@@ -100,11 +102,18 @@ const Created = ({ route }) => {
         dispatch(myPageChange(1));
     }
 
+    const renderFooter = () => {
+        if (!MyNFTReducer.myNftListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                MyNFTReducer.myNftListLoading ?
+                MyNFTReducer.page === 1 && MyNFTReducer.myNftListLoading ?
                     <Loader /> :
                     MyNFTReducer.myList.length !== 0 ?
                         <FlatList
@@ -116,7 +125,7 @@ const Created = ({ route }) => {
                                 dispatch(myNftLoadStart())
                                 refreshFunc()
                             }}
-                            refreshing={MyNFTReducer.myNftListLoading}
+                            refreshing={MyNFTReducer.page === 1 && MyNFTReducer.myNftListLoading}
                             renderItem={({ item }) => {
                                 let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
@@ -153,6 +162,7 @@ const Created = ({ route }) => {
                                 getNFTlist(num);
                                 dispatch(myPageChange(num));
                             }}
+                            ListFooterComponent={renderFooter}
                             onEndReachedThreshold={11}
                             keyExtractor={(v, i) => "item_" + i}
                         />
@@ -199,11 +209,18 @@ const Collection = ({ route }) => {
         dispatch(myCollectionPageChange(1));
     }
 
+    const renderFooter = () => {
+        if (!MyCollectionReducer.myCollectionListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                MyCollectionReducer.myCollectionListLoading ?
+                MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
                     MyCollectionReducer.myCollection.length !== 0 ?
                         <FlatList
@@ -215,7 +232,7 @@ const Collection = ({ route }) => {
                                 dispatch(myNftLoadStart())
                                 refreshFunc()
                             }}
-                            refreshing={MyCollectionReducer.myCollectionListLoading}
+                            refreshing={MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading}
                             renderItem={({ item }) => {
                                 let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
@@ -252,6 +269,7 @@ const Collection = ({ route }) => {
                                 getNFTlist(num);
                                 dispatch(myCollectionPageChange(num));
                             }}
+                            ListFooterComponent={renderFooter}
                             onEndReachedThreshold={11}
                             keyExtractor={(v, i) => "item_" + i}
                         />

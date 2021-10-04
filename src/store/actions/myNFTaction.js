@@ -37,6 +37,8 @@ export const favoritePageChange = (data) => ({
 
 export const myNFTList = (page, ownerId) => {
     return (dispatch, getState) => {
+
+        dispatch(myNftLoadStart());
         let body_data = {
             limit: 15,
             networkType: networkType,

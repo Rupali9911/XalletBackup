@@ -51,6 +51,8 @@ export const getAllArtistSuccess = (data) => ({
 
 export const getNFTList = (page, limit) => {
     return (dispatch, getState) => {
+        
+        dispatch(nftLoadStart());
 
         let accountKey = getState().AuthReducer.accountKey;
 
@@ -79,7 +81,6 @@ export const getNFTList = (page, limit) => {
             .then(response => response.json())
             .then(json => {
 
-                console.log('=======getDemuxData', json.data.length);
                 let new_list = [...json.data];
                 dispatch(nftLoadSuccess(new_list))
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions } from 'react-native';
+import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -11,7 +11,6 @@ import { myNFTList, myPageChange, favoritePageChange } from '../../store/actions
 
 import { myCollectionList } from '../../store/actions/myCollection';
 
-import { twoPageChange } from '../../store/actions/twoDAction';
 import getLanguage from '../../utils/languageSupport';
 const langObj = getLanguage();
 
@@ -19,7 +18,6 @@ import styles from './styles';
 import { images, colors } from '../../res';
 import { Loader } from '../../components';
 import NftItem from './nftItem';
-import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 
 const { width } = Dimensions.get('window');
 
@@ -63,6 +61,22 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionListLoading : null;
 
+    let page = AuthReducer.screenName == "Hot" ?
+        ListReducer.page :
+        AuthReducer.screenName == "newNFT" ?
+            NewNFTListReducer.newListPage :
+            AuthReducer.screenName == "myNFT" ?
+                MyNFTReducer.page :
+                AuthReducer.screenName == "myCollection" ?
+                    MyCollectionReducer.page : 1;
+
+    const renderFooter = () => {
+        if (loading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
             <View style={styles.modalCont} >
@@ -82,7 +96,7 @@ const DetailItemScreen = ({ route }) => {
                     </View>
                 </View>
                 {
-                    loading ?
+                    page === 1 && loading ?
                         <Loader /> :
                         // <NftItem item={list.slice(listIndex)[0]} index={list.findIndex(x => x.id === item.id)} />
                         <FlatList
@@ -107,8 +121,8 @@ const DetailItemScreen = ({ route }) => {
                                                 MyCollectionReducer.page + 1 : null;
                                 getNFTlistData(num)
                             }}
-
-                            onEndReachedThreshold={16}
+                            ListFooterComponent={renderFooter}
+                            onEndReachedThreshold={0.4}
                             keyExtractor={(v, i) => "item_" + i}
                         />
                 }

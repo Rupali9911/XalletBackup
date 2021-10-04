@@ -34,7 +34,6 @@ export const newPageChange = (data) => ({
 export const newNFTList = (page) => {
     return (dispatch, getState) => {
 
-
         let accountKey = getState().AuthReducer.accountKey;
         
         let body_data = {

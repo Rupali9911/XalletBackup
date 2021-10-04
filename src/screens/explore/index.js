@@ -1,53 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { twoPageChange } from '../../store/actions/twoDAction';
 import {
-    TouchableOpacity,
+    ActivityIndicator,
     FlatList,
 } from 'react-native';
 import {
-    SIZE,
     SVGS,
-    COLORS,
-    FONT
 } from 'src/constants';
 import {
     Header,
-    SpaceView,
-    BorderView,
     Container,
-    RowWrap
 } from 'src/styles/common.styles';
 import {
     HeaderText,
-    BoldText,
 } from 'src/styles/text.styles';
-import {
-    MainContent,
-    PriceTextInput,
-    UserText,
-    PriceLabel,
-    DescriptionText,
-    GroupButtonView,
-    GrouponButton,
-    GroupText,
-    TimeLeftText
-} from './styled';
-import { FlexWrap, HeaderLeft } from '../../styles/common.styles';
-import {
-    Chart,
-    Line,
-    Area,
-    HorizontalAxis,
-    VerticalAxis
-} from 'react-native-responsive-linechart';
-import {
-    KeyboardAwareScrollView
-} from 'react-native-keyboard-aware-scroll-view';
 import NftItem from '../detailScreen/nftItem';
-import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
+import { getNFTList, pageChange, nftLoadStart } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
 import { Loader } from '../../components';
+import { colors } from '../../res';
 
 const {
     LeftArrowIcon
@@ -74,6 +45,13 @@ function ExploreScreen({
         dispatch(pageChange(page))
     }
 
+    const renderFooter = () => {
+        if (!ListReducer.nftListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
     let list = ListReducer.nftList;
 
     let loading = ListReducer.nftListLoading;
@@ -86,7 +64,7 @@ function ExploreScreen({
                 </HeaderText>
             </Header>
             {
-                loading ?
+                ListReducer.page === 1 && loading ?
                     <Loader /> :
                     <FlatList
                         initialNumToRender={10}
@@ -111,7 +89,7 @@ function ExploreScreen({
                             getNFTlistData(num)
                             handlePageChange(num)
                         }}
-
+                        ListFooterComponent={renderFooter}
                         onEndReachedThreshold={1}
                         keyExtractor={(v, i) => "item_" + i}
                     />

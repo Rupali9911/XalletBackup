@@ -28,6 +28,8 @@ export const myCollectionPageChange = (data) => ({
 
 export const myCollectionList = (page, ownerId) => {
     return (dispatch, getState) => {
+        
+        dispatch(myCollectionLoadStart());
         let body_data = {
             limit: 15,
             networkType: networkType,

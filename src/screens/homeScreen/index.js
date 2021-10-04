@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
@@ -54,11 +54,18 @@ const Hot = () => {
         dispatch(pageChange(1));
     }
 
+    const renderFooter = () => {
+        if (!ListReducer.nftListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
-                ListReducer.nftListLoading ?
+                ListReducer.page === 1 && ListReducer.nftListLoading ?
                     <Loader /> :
                     ListReducer.nftList.length !== 0 ?
                         <FlatList
@@ -71,7 +78,7 @@ const Hot = () => {
                                 refreshFunc()
                             }}
                             scrollEnabled={!isModalVisible}
-                            refreshing={ListReducer.nftListLoading}
+                            refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
                             renderItem={({ item }) => {
                                 let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
                                 if (item.metaData) {
@@ -105,8 +112,9 @@ const Hot = () => {
                                 getNFTlist(num);
                                 dispatch(pageChange(num));
                             }}
-                            onEndReachedThreshold={1}
+                            onEndReachedThreshold={0.4}
                             keyExtractor={(v, i) => "item_" + i}
+                            ListFooterComponent={renderFooter}
                         />
                         :
                         <View style={styles.sorryMessageCont} >
