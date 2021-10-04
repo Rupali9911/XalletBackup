@@ -107,8 +107,7 @@ const TabComponent = () => {
 
 const AppRoutes = () => {
 
-  const { AuthReducer } = useSelector(state => state);
-  const { wallet } = useSelector(state => state.UserReducer);
+  const { wallet, loading } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
@@ -116,20 +115,6 @@ const AppRoutes = () => {
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-
-    AsyncStorage.getItem("account_id@")
-      .then(accountKey => {
-        if (accountKey !== null) {
-          let account_key_parse = JSON.parse(accountKey)
-          // dispatch(loadAccountKeySuccess(account_key_parse.account));
-          dispatch(loadAccountKeySuccess());
-        } else {
-          dispatch(loadAccountKeyFail());
-        }
-      })
-      .catch(() => {
-        dispatch(loadAccountKeyFail());
-      })
 
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (languageData) {
@@ -147,7 +132,7 @@ const AppRoutes = () => {
   return (
     <>
       {
-        AuthReducer.accountLoading ?
+        loading ?
           <Loader /> :
           <NavigationContainer>
             {wallet ?

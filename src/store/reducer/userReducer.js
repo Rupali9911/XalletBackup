@@ -6,7 +6,7 @@ import {
 } from '../types';
 
 const initialState = {
-  loading: false,
+  loading: true,
   wallet: null,
   isCreate: false
 };
