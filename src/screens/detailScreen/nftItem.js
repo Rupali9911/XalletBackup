@@ -229,7 +229,6 @@ const nftItem = ({ item, index }) => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
-          console.log('=====', item)
           isPlay ? setPlay(!isPlay)
             :
             navigation.navigate('CertificateDetail', {

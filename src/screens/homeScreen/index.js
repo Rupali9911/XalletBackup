@@ -70,6 +70,7 @@ const Hot = () => {
                                 dispatch(nftLoadStart())
                                 refreshFunc()
                             }}
+                            scrollEnabled={!isModalVisible}
                             refreshing={ListReducer.nftListLoading}
                             renderItem={({ item }) => {
                                 let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
