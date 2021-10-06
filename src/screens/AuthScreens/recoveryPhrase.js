@@ -29,8 +29,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
     const { loading } = useSelector(state => state.UserReducer);
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
-    const [phrase, setPhrase] = useState("");
-    // const [phrase, setPhrase] = useState("portion kit problem trash scan basket coyote soda crew trash enable knee");
+    // const [phrase, setPhrase] = useState("");
+    const [phrase, setPhrase] = useState("portion kit problem trash scan basket coyote soda crew trash enable knee");
 
     useEffect(() => {
         if (!recover) {

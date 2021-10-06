@@ -33,8 +33,8 @@ import {
     BlurView
 } from '@react-native-community/blur';
 import Video from 'react-native-fast-video';
-import { translate } from '../walletUtils';
-import { alertWithSingleBtn } from '../utils';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 
 const ModalContainer = styled.View`
     flex: 1;
