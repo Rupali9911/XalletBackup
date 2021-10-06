@@ -7,6 +7,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { myNFTList } from '../../store/actions/myNFTaction';
 import { twoDNftLoadStart, twoDNftListReset, twoPageChange } from '../../store/actions/twoDAction';
 import { changeScreenName } from '../../store/actions/authAction';
+import { translate } from '../../walletUtils';
 
 import styles from './styles';
 import { colors } from '../../res';
@@ -20,22 +21,13 @@ const TwoDArt = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    // const [isOffline, setOfflineStatus] = useState(false);
-
     useEffect(() => {
-        // const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
-        //     const offline = !(state.isConnected && state.isInternetReachable);
-        //     setOfflineStatus(offline);
-        // });
 
         dispatch(twoDNftListReset())
         dispatch(twoDNftLoadStart())
         getNFTlist(1)
         dispatch(twoPageChange(1))
 
-        // return () => {
-        //     removeNetInfoSubscription();
-        // };
     }, [])
 
     const getNFTlist = useCallback((page) => {
@@ -71,7 +63,7 @@ const TwoDArt = () => {
                                             item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                 <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
                                                 : <View style={styles.sorryMessageCont}>
-                                                    <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                    <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
                                                 </View>
                                         }
                                     </TouchableOpacity>
@@ -90,11 +82,6 @@ const TwoDArt = () => {
                         </View>
             }
 
-            {/* <NoInternetModal
-                show={isOffline}
-                onRetry={refreshFunc}
-                isRetrying={TwoDReducer.twoDListLoading}
-            /> */}
         </View>
     )
 }

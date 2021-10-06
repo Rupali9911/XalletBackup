@@ -66,6 +66,8 @@ import {
 } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const {
@@ -149,7 +151,7 @@ const Created = ({ route }) => {
                                                         imageStyle={styles.listImage} />
                                                     : <View style={styles.sorryMessageCont}>
                                                         <Text style={{ textAlign: "center" }} >
-                                                            No Image to Show
+                                                            {translate("wallet.common.error.noImage")}
                                                         </Text>
                                                     </View>
                                             }
@@ -256,7 +258,7 @@ const Collection = ({ route }) => {
                                                         imageStyle={styles.listImage} />
                                                     : <View style={styles.sorryMessageCont}>
                                                         <Text style={{ textAlign: "center" }} >
-                                                            No Image to Show
+                                                            {translate("wallet.common.error.noImage")}
                                                         </Text>
                                                     </View>
                                             }
@@ -323,8 +325,18 @@ function ArtistDetail({
                     height: 2
                 }
             }}>
-                <Tab.Screen name='Created' component={Created} initialParams={{ id: data._id }} />
-                <Tab.Screen name='Collection' component={Collection} initialParams={{ id: data._id }} />
+                <Tab.Screen
+                    name='Created'
+                    component={Created}
+                    options={{ tabBarLabel: translate("wallet.common.created") }}
+                    initialParams={{ id: data._id }}
+                />
+                <Tab.Screen
+                    name='Collection'
+                    component={Collection}
+                    options={{ tabBarLabel: translate("common.collected") }}
+                    initialParams={{ id: data._id }}
+                />
             </Tab.Navigator>
         )
     }
@@ -362,7 +374,7 @@ function ArtistDetail({
                                         {'0'}
                                     </BoldText>
                                     <SmallText>
-                                        {'Post'}
+                                        {translate("wallet.common.post")}
                                     </SmallText>
                                 </CenterWrap>
                                 <SpaceView mLeft={SIZE(41)} />
@@ -372,7 +384,7 @@ function ArtistDetail({
                                     {data.followers}
                                 </BoldText>
                                 <SmallText>
-                                    {'Follower'}
+                                    {translate("common.followers")}
                                 </SmallText>
                             </CenterWrap>
                             <RowWrap>
@@ -382,7 +394,7 @@ function ArtistDetail({
                                         {data.following}
                                     </BoldText>
                                     <SmallText>
-                                        {'Following'}
+                                        {translate("common.following")}
                                     </SmallText>
                                 </CenterWrap>
                             </RowWrap>
@@ -408,7 +420,7 @@ function ArtistDetail({
                 <SpaceView mLeft={SIZE(15)} />
                 <EditButton>
                     <EditButtonText>
-                        {'Follow'}
+                        {translate("common.follow")}
                     </EditButtonText>
                 </EditButton>
                 <SpaceView mRight={SIZE(15)} />

@@ -25,6 +25,8 @@ import NewNFT from './newNFT';
 import Favorite from './favorite';
 import getLanguage from '../../utils/languageSupport';
 import CommonStyles from '../../constants/styles';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
@@ -100,7 +102,7 @@ const Hot = () => {
                                                         type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
                                                         imageStyle={styles.listImage} />
                                                     : <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                        <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
                                                     </View>
                                             }
                                         </TouchableOpacity>
@@ -155,7 +157,7 @@ const HomeScreen = ({ navigation }) => {
 
                     </View>
                     <Text style={styles.headerTitle}>
-                        {'Home'}
+                        {translate("common.home")}
                     </Text>
                     <View style={styles.headerMenuContainer}>
                         <TouchableOpacity onPress={() => { navigation.navigate('Certificate') }} hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
@@ -211,9 +213,18 @@ const HomeScreen = ({ navigation }) => {
                         marginBottom: SIZE(39)
                     }
                 }} >
-                    <Tab.Screen name={langObj.common.hot} component={Hot} />
-                    <Tab.Screen name={langObj.common.following} component={NewNFT} />
-                    <Tab.Screen name={langObj.common.Discover} component={Favorite} />
+                    <Tab.Screen
+                        name={langObj.common.hot}
+                        component={Hot}
+                    />
+                    <Tab.Screen
+                        name={langObj.common.following}
+                        component={NewNFT}
+                    />
+                    <Tab.Screen
+                        name={langObj.common.Discover}
+                        component={Favorite}
+                    />
                 </Tab.Navigator>
             </SafeAreaView>
             <AppModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}>

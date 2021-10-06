@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, ImageBackground, Text, TextInput, Keyboard, Alert, ScrollView } from 'react-native';
-import {Button, Card, IconButton} from 'react-native-paper';
+import { Button, Card, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -16,44 +16,46 @@ import ImagesSrc from '../../constants/Images';
 import Colors from '../../constants/Colors';
 import { setUserAuthData, startLoader, endLoader } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 // import SingleSocket from '../../helpers/SingleSocket';
 // import { Events } from '../../navigations';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 
 const ethers = require('ethers');
 
-const RecoveryPhrase = ({route, navigation}) => {
+const RecoveryPhrase = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
     const { loading } = useSelector(state => state.UserReducer);
-    const {recover} = route.params;
+    const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
     const [phrase, setPhrase] = useState("");
+    // const [phrase, setPhrase] = useState("portion kit problem trash scan basket coyote soda crew trash enable knee");
 
-    useEffect(()=>{
-            if(!recover){
-                dispatch(startLoader()).then(async () => {
-                    var randomSeed = ethers.Wallet.createRandom();
-                    const account = {
-                        mnemonic: randomSeed.mnemonic,
-                        address: randomSeed.address,
-                        privateKey: randomSeed.privateKey
-                    }
-                    console.log(randomSeed.mnemonic);
-                    console.log(randomSeed.address);
-                    console.log(randomSeed.privateKey);
-                    setWallet(account);
-                    dispatch(endLoader());
-                });
-            }
-        },[]);
+    useEffect(() => {
+        if (!recover) {
+            dispatch(startLoader()).then(async () => {
+                var randomSeed = ethers.Wallet.createRandom();
+                const account = {
+                    mnemonic: randomSeed.mnemonic,
+                    address: randomSeed.address,
+                    privateKey: randomSeed.privateKey
+                }
+                console.log(randomSeed.mnemonic);
+                console.log(randomSeed.address);
+                console.log(randomSeed.privateKey);
+                setWallet(account);
+                dispatch(endLoader());
+            });
+        }
+    }, []);
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet.mnemonic.phrase);
     }
 
     const recoverWallet = () => {
-        if(phrase !== ""){
+        if (phrase !== "") {
             dispatch(startLoader()).then(async () => {
                 let mnemonic = phrase;
                 let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
@@ -70,12 +72,20 @@ const RecoveryPhrase = ({route, navigation}) => {
             }).catch((err) => {
                 console.log('err', err.toString());
                 if (err.toString() == 'Error: invalid mnemonic' || err.toString() == 'Error: invalid checksum') {
-                    Alert.alert('Invalid Phrase');
+
+                    alertWithSingleBtn(
+                        translate('common.error'),
+                        translate('wallet.common.error.invalidPhrase')
+                    )
+
                 }
                 dispatch(endLoader());
             });
         } else {
-            Alert.alert(translate("wallet.common.requirePhrase"));
+            alertWithSingleBtn(
+                translate('common.error'),
+                translate("wallet.common.requirePhrase")
+            )
         }
     }
 
@@ -85,15 +95,10 @@ const RecoveryPhrase = ({route, navigation}) => {
                 showBackButton
                 title={translate("wallet.common.backup")}
                 showRightButton
-                rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20}/>}
-                />
+                rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20} />}
+            />
             <KeyboardAwareScrollView contentContainerStyle={styles.scrollContent} KeyboardShiftStyle={styles.keyboardShift}>
-                <View style={styles.container} 
-                // onStartShouldSetResponder={() => {
-                //     Keyboard.dismiss();
-                //     return false;
-                // }}
-                >
+                <View style={styles.container} >
                     <View style={styles.contentContainer}>
                         <View style={styles.padding}>
                             <AppLogo logoStyle={styles.logo} />
@@ -154,7 +159,7 @@ const WordView = (props) => {
     return (
         <View style={styles.word}>
             <TextView style={styles.wordTxt}>
-                <Text style={{color: Colors.townTxt}}>{props.index} </Text>
+                <Text style={{ color: Colors.townTxt }}>{props.index} </Text>
                 {props.word}
             </TextView>
         </View>
@@ -169,7 +174,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bottomView: {
-        paddingHorizontal: wp("5%") 
+        paddingHorizontal: wp("5%")
     },
     logo: {
         ...CommonStyles.imageStyles(25)

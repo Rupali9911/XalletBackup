@@ -14,6 +14,7 @@ import styles from './styles';
 import { colors } from '../../res';
 import Profile from '../profile';
 import { useSelector, useDispatch } from 'react-redux';
+import { translate } from '../../walletUtils';
 
 const {
     WalletConnectIcon
@@ -30,7 +31,7 @@ const WalletConnectScreen = ({
             <SafeAreaView>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>
-                        {'Connect wallet'}
+                        {translate("wallet.common.connectwallet")}
                     </Text>
                 </View>
             </SafeAreaView>
@@ -46,14 +47,14 @@ const WalletConnectScreen = ({
                 </Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>
-                        {'Connect with\nyour wallet'}
+                        {translate("wallet.common.connectwith")+'\n'+translate("wallet.common.yourwallet")}
                     </Text>
                 </View>
                 <TouchableOpacity onPress={() => {
                 }}>
                     <View style={[styles.successButton, { backgroundColor: '#1b8cff' }]}>
                         <Text style={styles.buttonText}>
-                            {'Connect'}
+                            {translate("common.connectWallet")}
                         </Text>
                     </View>
                 </TouchableOpacity>

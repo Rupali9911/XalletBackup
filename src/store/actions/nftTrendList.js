@@ -15,7 +15,8 @@ import {
     MYLIST_LIST_UPDATE,
     ALL_ARTIST_SUCCESS
 } from '../types';
-
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 export const nftLoadStart = () => ({
     type: LOAD_NFT_START
@@ -86,7 +87,10 @@ export const getNFTList = (page, limit) => {
 
             }).catch(err => {
                 dispatch(nftLoadFail())
-                alert(err.message)
+                alertWithSingleBtn(
+                    translate('common.error'),
+                    err.message
+                )
             })
 
     }
@@ -115,7 +119,10 @@ export const getAllArtist = () => {
 
             }).catch(err => {
                 // dispatch(nftLoadFail())
-                alert(err.message)
+                alertWithSingleBtn(
+                    translate('common.error'),
+                    err.message
+                )
             })
     }
 }

@@ -13,6 +13,7 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -74,7 +75,7 @@ const QRScreen = () => {
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet.address);
-        Alert.alert(translate("wallet.common.copied"));
+        alertWithSingleBtn(translate('common.error'), translate("wallet.common.copied"))
     }
 
     return (

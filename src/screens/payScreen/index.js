@@ -12,6 +12,7 @@ import { images, colors } from '../../res';
 
 import getLanguage from '../../utils/languageSupport';
 import { SIZE } from '../../common/responsiveFunction';
+import { translate } from '../../walletUtils';
 
 const PayScreen = ({
     navigation
@@ -23,7 +24,7 @@ const PayScreen = ({
             <SafeAreaView>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>
-                        {'Purchased'}
+                        {translate("wallet.common.purchased")}
                     </Text>
                 </View>
             </SafeAreaView>
@@ -45,7 +46,7 @@ const PayScreen = ({
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <View style={styles.successButton}>
                         <Text style={styles.buttonText}>
-                            {'OK'}
+                            {translate("wallet.common.ok")}
                         </Text>
                     </View>
                 </TouchableOpacity>

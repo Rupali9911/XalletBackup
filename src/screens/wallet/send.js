@@ -5,6 +5,7 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate, amountValidation, environment } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import TextView from '../../components/appText';
@@ -193,16 +194,19 @@ const Send = ({route, navigation}) => {
     }
 
     const showErrorAlert = (msg) => {
-        Alert.alert(msg);
+        alertWithSingleBtn(
+            translate('common.error'),
+            msg
+        )
     }
 
     const showSuccessAlert = () => {
         Alert.alert(
-            translate("common.transferInProgress", {token: `${amount} ${type}`}),
+            translate("wallet.common.transferInProgress", {token: `${amount} ${type}`}),
             '',
             [
                 {
-                    text: 'OK',
+                    text: translate('wallet.common.ok'),
                     onPress: () => {
                         navigation.popToTop();
                     }
@@ -264,14 +268,14 @@ const Send = ({route, navigation}) => {
                                 if (verifyAddress(address)) {
                                     transferAmount();
                                 } else {
-                                    Alert.alert(translate("wallet.common.invalidAddress"));
+                                    showErrorAlert(translate("wallet.common.invalidAddress"));
                                 }
                             }
                             else {
-                                Alert.alert(translate("wallet.common.insufficientFunds"));
+                                showErrorAlert(translate("wallet.common.insufficientFunds"));
                             }  
                         }else{
-                            Alert.alert(translate("wallet.common.requireSendField"));
+                            showErrorAlert(translate("wallet.common.requireSendField"));
                         }
                     }} />
             </View>

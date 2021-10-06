@@ -36,6 +36,7 @@ import {
 } from './styled';
 import { useDispatch } from 'react-redux';
 import { resetAccount } from '../../store/actions/authAction';
+import { translate } from '../../walletUtils';
 
 const {
     LeftArrowIcon,
@@ -53,14 +54,14 @@ function Setting({
 
     const pressLogout = () => {
         Alert.alert(
-            "Log Out",
-            "Are you sure you want to Logout?",
+            translate("common.Logout"),
+            translate("wallet.common.logOutQ"),
             [
                 {
-                    text: "Cancel",
+                    text: translate("common.cancel"),
                     onPress: () => null,
                 },
-                { text: "Okay", onPress: pressOk }
+                { text: translate("wallet.common.ok"), onPress: pressOk }
             ]
         );
 
@@ -82,14 +83,14 @@ function Setting({
                     </TouchableOpacity>
                 </HeaderLeft>
                 <HeaderText>
-                    {'Setting'}
+                    {translate("wallet.common.setting")}
                 </HeaderText>
             </Header>
             <SpaceView mTop={SIZE(10)} />
             <RowWrap>
                 <SpaceView mLeft={SIZE(14)} />
                 <GreyBoldText>
-                    {'Profile Settings'}
+                    {translate("wallet.common.profileSettings")}
                 </GreyBoldText>
             </RowWrap>
             <SpaceView mTop={SIZE(10)} />
@@ -97,7 +98,7 @@ function Setting({
                 <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.navigate("ChangePassword")}>
                     <RowBetweenWrap>
                         <NormalText>
-                            {'Change Password'}
+                            {translate("common.changePassword")}
                         </NormalText>
                         <RightArrowGreyIcon />
                     </RowBetweenWrap>
@@ -107,7 +108,7 @@ function Setting({
                 <TouchableOpacity style={{ flex: 1 }} onPress={pressLogout}>
                     <RowBetweenWrap>
                         <NormalText>
-                            {'Log Out'}
+                            {translate("common.Logout")}
                         </NormalText>
                         {/* <EntypoIcon name="log-out" size={FONT(16)} style={{ marginHorizontal: SIZE(10) }} /> */}
                     </RowBetweenWrap>
@@ -117,7 +118,7 @@ function Setting({
             <MainContent>
                 <TouchableOpacity onPress={() => navigation.navigate('ApplyToken')}>
                     <NormalText>
-                        {'Apply Token'}
+                        {translate("wallet.common.applyToken")}
                     </NormalText>
                     <GreySmallText>
                         {'message thumnailmessage thumnail'}
@@ -128,7 +129,7 @@ function Setting({
             <MainContent>
                 <TouchableOpacity onPress={() => navigation.navigate('CreateEvent')}>
                     <NormalText>
-                        {'Create Event'}
+                        {translate("wallet.common.createEvent")}
                     </NormalText>
                     <GreySmallText>
                         {'message thumnailmessage thumnail'}

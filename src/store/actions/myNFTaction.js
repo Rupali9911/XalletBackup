@@ -10,7 +10,8 @@ import {
     FAVORITE_NFT_SUCCESS,
     FAVORITE_PAGE_CHANGE
 } from '../types';
-
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 import { twoNftLoadSuccess } from './twoDAction';
 
 export const myNftLoadStart = () => ({
@@ -83,14 +84,20 @@ export const myNFTList = (page, ownerId) => {
                             dispatch(myNftLoadSuccess(list));
                         }).catch(err => {
                             dispatch(myNftLoadFail())
-                            alert(err.message)
+                            alertWithSingleBtn(
+                                translate('common.error'),
+                                err.message
+                            )
                         })
                 } else {
                     dispatch(myNftLoadSuccess(new_list));
                 }
             }).catch(err => {
                 dispatch(myNftLoadFail())
-                alert(err.message)
+                alertWithSingleBtn(
+                    translate('common.error'),
+                    err.message
+                )
             })
     }
 }

@@ -19,6 +19,7 @@ import { getNFTList, pageChange, nftLoadStart } from '../../store/actions/nftTre
 import { changeScreenName } from '../../store/actions/authAction';
 import { Loader } from '../../components';
 import { colors } from '../../res';
+import { translate } from '../../walletUtils';
 
 const {
     LeftArrowIcon
@@ -60,7 +61,7 @@ function ExploreScreen({
         <Container>
             <Header>
                 <HeaderText>
-                    {'Explore'}
+                    {translate("wallet.common.explore")}
                 </HeaderText>
             </Header>
             {

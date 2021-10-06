@@ -23,6 +23,8 @@ import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
 import Video from 'react-native-fast-video';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -179,7 +181,10 @@ const nftItem = ({ item, index }) => {
             })
 
         } else if (res.data.data === "No record found") {
-          alert('No record found');
+          alertWithSingleBtn(
+            translate('common.error'),
+            translate('common.norecordfound')
+          )
         }
       })
       .catch((err) => {
@@ -322,7 +327,7 @@ const nftItem = ({ item, index }) => {
         </RowBetweenWrap>
         <SpaceView mTop={SIZE(8)} />
         <SmallBoldText>
-          {'3,589 likes'}
+          {`13,589 ${translate("common.Likes")}`}
         </SmallBoldText>
         <SpaceView mTop={SIZE(6)} />
         <Text style={styles.modalLabel} >{item.metaData.name}</Text>

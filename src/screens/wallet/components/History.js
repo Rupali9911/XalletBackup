@@ -22,9 +22,9 @@ const ListItems = (props) => {
                 <Image style={styles.profileImage} source={item.direction == 'in'?ImagesSrc.received:ImagesSrc.sent} />
             </View>
             <View style={styles.centerCont} >
-                <Text style={styles.tokenName} >{item.direction == 'in'?'Received':'Sent'}</Text>
+                <Text style={styles.tokenName} >{item.direction == 'in'? translate("wallet.common.received"):  translate("wallet.common.sent")}</Text>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`From: ${item.from}`:`To: ${item.to}`}</Text>
+                    <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?` ${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text>
                     {/* <Text style={styles.percentTxt} >{item.percent}</Text> */}
                 </View>
                 

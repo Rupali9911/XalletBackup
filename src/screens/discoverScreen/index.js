@@ -7,6 +7,8 @@ import TwoDArt from './twoDArt';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import getLanguage from '../../utils/languageSupport';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
@@ -14,7 +16,7 @@ const Tab = createMaterialTopTabNavigator();
 const GIFArt = () => {
     return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
+            <Text>{translate("wallet.common.comingSoon")}</Text>
         </View>
     )
 }
@@ -22,7 +24,7 @@ const GIFArt = () => {
 const ThreeDAsset = () => {
     return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
+            <Text>{translate("wallet.common.comingSoon")}</Text>
         </View>
     )
 }
@@ -30,7 +32,7 @@ const ThreeDAsset = () => {
 const Land = () => {
     return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-            <Text>Coming Soon</Text>
+            <Text>{translate("wallet.common.comingSoon")}</Text>
         </View>
     )
 }
@@ -42,7 +44,7 @@ const DiscoverScreen = () => {
             <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>
-                        {'Explore'}
+                        {translate("wallet.common.explore")}
                     </Text>
                 </View>
                 <Tab.Navigator tabBarOptions={{
@@ -67,10 +69,22 @@ const DiscoverScreen = () => {
                         borderBottomWidth: 2,
                     }
                 }} >
-                    <Tab.Screen name={langObj.common.twoDArt} component={TwoDArt} />
-                    <Tab.Screen name={langObj.common.GIFArt} component={GIFArt} />
-                    <Tab.Screen name={langObj.common.threeDAssets} component={ThreeDAsset} />
-                    <Tab.Screen name={langObj.common.land} component={Land} />
+                    <Tab.Screen
+                        name={langObj.common.twoDArt}
+                        component={TwoDArt}
+                    />
+                    <Tab.Screen
+                        name={langObj.common.GIFArt}
+                        component={GIFArt}
+                    />
+                    <Tab.Screen
+                        name={langObj.common.threeDAssets}
+                        component={ThreeDAsset}
+                    />
+                    <Tab.Screen
+                        name={langObj.common.land}
+                        component={Land}
+                    />
                 </Tab.Navigator>
             </SafeAreaView>
         </>

@@ -115,7 +115,8 @@ const AppRoutes = () => {
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-
+    AsyncStorage.removeItem('@wallet');
+    dispatch(getAllLanguages())
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (languageData) {
       console.log('languageData', languageData);

@@ -29,6 +29,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { getTransactions, addAllEthTransactions, addAllBnbTransactions, addAllMaticTransactions } from '../../store/reducer/walletReducer';
 import Web3 from 'web3';
+import { translate } from '../../walletUtils';
 
 const TokenDetail = ({ route, navigation }) => {
 

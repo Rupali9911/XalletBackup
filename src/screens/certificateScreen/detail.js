@@ -21,6 +21,7 @@ import {
     IMAGES
 } from 'src/constants';
 import Video from 'react-native-fast-video';
+import { translate } from '../../walletUtils';
 
 const {
     PlayButtonIcon
@@ -54,7 +55,7 @@ const DetailScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.headerText}>
-                    {'Detail'}
+                    {translate("wallet.common.detail")}
                 </Text>
             </View>
             <ScrollView>
@@ -117,7 +118,7 @@ const DetailScreen = ({ navigation, route }) => {
                         <Image style={styles.iconsImage} source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
                         <View>
                             <Text style={styles.personTypeText}>
-                                {'Owner'}
+                                {translate("common.owner")}
                             </Text>
                             <Text numberOfLines={1} style={styles.personName}>
                                 {owner}
@@ -128,7 +129,7 @@ const DetailScreen = ({ navigation, route }) => {
                         <Image style={styles.iconsImage} source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
                         <View>
                             <Text style={styles.personTypeText}>
-                                {'Creator'}
+                                {translate("common.creator")}
                             </Text>
                             <Text numberOfLines={1} style={styles.personName}>
                                 {creator}
@@ -139,29 +140,7 @@ const DetailScreen = ({ navigation, route }) => {
                 <Text style={styles.description}>
                     {description}
                 </Text>
-                {/* <View style={styles.moreView}>
-                    <Text style={styles.moreTitle}>
-                        {'More from this creator'}
-                    </Text>
-                    <View style={{
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-between'
-                    }}>
-                        <View style={styles.moreItem}>
-                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
-                        </View>
-                        <View style={styles.moreItem}>
-                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
-                        </View>
-                        <View style={styles.moreItem}>
-                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
-                        </View>
-                        <View style={styles.moreItem}>
-                            <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
-                        </View>
-                    </View>
-                </View> */}
+               
                 <View style={styles.bottomView}>
                     <Text style={styles.count}>
                         {'# 1 / 1'}
@@ -175,8 +154,8 @@ const DetailScreen = ({ navigation, route }) => {
                         </Text>
                     </View>
                     <GroupButton
-                        leftText={'Buy'}
-                        rightText={'Offer Other price'}
+                        leftText={translate("common.buy")}
+                        rightText={translate("wallet.common.offerPrice")}
                         onLeftPress={() => navigation.navigate('WalletConnect')}
                         onRightPress={() => navigation.navigate('MakeBid')}
                     />
