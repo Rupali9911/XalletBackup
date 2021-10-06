@@ -71,10 +71,19 @@ const DetailItemScreen = ({ route }) => {
                     MyCollectionReducer.page : 1;
 
     const renderFooter = () => {
-        if (loading) return null;
+        if (!loading) return null;
         return (
             <ActivityIndicator size='small' color={colors.themeR} />
         )
+    }
+
+    const renderItem = ({ item }) => {
+        let findIndex = list.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            return (
+                <NftItem item={item} index={findIndex} />
+            )
+        }
     }
 
     return (
@@ -102,24 +111,19 @@ const DetailItemScreen = ({ route }) => {
                         <FlatList
                             initialNumToRender={5}
                             data={list.slice(listIndex)}
-                            renderItem={({ item }) => {
-                                let findIndex = list.findIndex(x => x.id === item.id);
-                                if (item.metaData) {
-                                    return (
-                                        <NftItem item={item} index={findIndex} />
-                                    )
-                                }
-                            }}
+                            renderItem={renderItem}
                             onEndReached={() => {
-                                let num = AuthReducer.screenName == "Hot" ?
-                                    ListReducer.page + 1 :
-                                    AuthReducer.screenName == "newNFT" ?
-                                        NewNFTListReducer.newListPage + 1 :
-                                        AuthReducer.screenName == "myNFT" ?
-                                            MyNFTReducer.page + 1 :
-                                            AuthReducer.screenName == "twoDArt" ?
-                                                MyCollectionReducer.page + 1 : null;
-                                getNFTlistData(num)
+                                if (!loading) {
+                                    let num = AuthReducer.screenName == "Hot" ?
+                                        ListReducer.page + 1 :
+                                        AuthReducer.screenName == "newNFT" ?
+                                            NewNFTListReducer.newListPage + 1 :
+                                            AuthReducer.screenName == "myNFT" ?
+                                                MyNFTReducer.page + 1 :
+                                                AuthReducer.screenName == "twoDArt" ?
+                                                    MyCollectionReducer.page + 1 : null;
+                                    getNFTlistData(num)
+                                }
                             }}
                             ListFooterComponent={renderFooter}
                             onEndReachedThreshold={0.4}

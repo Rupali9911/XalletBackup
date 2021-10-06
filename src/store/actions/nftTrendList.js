@@ -51,7 +51,7 @@ export const getAllArtistSuccess = (data) => ({
 
 export const getNFTList = (page, limit) => {
     return (dispatch, getState) => {
-        
+
         dispatch(nftLoadStart());
 
         let accountKey = getState().AuthReducer.accountKey;
@@ -173,7 +173,6 @@ export const handleLikeDislike = (item, index) => {
             fetch(url1, fetch_like_body).then(res => res.json()),
             fetch(url2, fetch_rating_body).then(res => res.json())
         ]).then(([v, a]) => {
-            console.log(v, a)
             const nftUpdated = [
                 ...oldNFTS.slice(0, index),
                 item,

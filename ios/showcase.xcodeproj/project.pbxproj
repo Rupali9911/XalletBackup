@@ -11,6 +11,9 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		187DEFB1270C5F05007DBD3D /* SegoeUI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26FD62632CE9100A0D972 /* SegoeUI.ttf */; };
+		187DEFB4270C6093007DBD3D /* SegoeUI-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */; };
+		187DEFB7270C60B1007DBD3D /* SegoeUI-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */; };
 		585C546AD84CF5BDA40DD6D5 /* libPods-showcase-showcaseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AF008C5C65EFC3A43B45C3 /* libPods-showcase-showcaseTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		E0FF2824CCD6734AEF3848DD /* libPods-showcase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9B725AC59AA9F0676B28E8 /* libPods-showcase.a */; };
@@ -310,6 +313,9 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				187DEFB1270C5F05007DBD3D /* SegoeUI.ttf in Resources */,
+				187DEFB4270C6093007DBD3D /* SegoeUI-Bold.ttf in Resources */,
+				187DEFB7270C60B1007DBD3D /* SegoeUI-Italic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

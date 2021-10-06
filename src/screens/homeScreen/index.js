@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import NetInfo from "@react-native-community/netinfo";
@@ -61,6 +61,35 @@ const Hot = () => {
         )
     }
 
+    const renderItem = ({ item }) => {
+        let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            return (
+                <TouchableOpacity
+                    onLongPress={() => {
+                        setModalData(item);
+                        setModalVisible(true);
+                    }}
+                    onPress={() => {
+                        dispatch(changeScreenName("Hot"));
+                        navigation.navigate("DetailItem", { index: findIndex });
+                    }}
+                    style={styles.listItem}>
+                    {
+                        item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                            <C_Image
+                                uri={item.thumbnailUrl}
+                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                imageStyle={styles.listImage} />
+                            : <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                            </View>
+                    }
+                </TouchableOpacity>
+            )
+        }
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
@@ -79,40 +108,15 @@ const Hot = () => {
                             }}
                             scrollEnabled={!isModalVisible}
                             refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
-                            renderItem={({ item }) => {
-                                let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
-                                if (item.metaData) {
-                                    return (
-                                        <TouchableOpacity
-                                            onLongPress={() => {
-                                                setModalData(item);
-                                                setModalVisible(true);
-                                            }}
-                                            onPress={() => {
-                                                dispatch(changeScreenName("Hot"));
-                                                navigation.navigate("DetailItem", { index: findIndex });
-                                            }}
-                                            style={styles.listItem}>
-                                            {
-                                                item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                                                    <C_Image
-                                                        uri={item.thumbnailUrl}
-                                                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                                        imageStyle={styles.listImage} />
-                                                    : <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }} >No Image to Show</Text>
-                                                    </View>
-                                            }
-                                        </TouchableOpacity>
-                                    )
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!ListReducer.nftListLoading) {
+                                    let num = ListReducer.page + 1;
+                                    getNFTlist(num);
+                                    dispatch(pageChange(num));
                                 }
                             }}
-                            onEndReached={() => {
-                                let num = ListReducer.page + 1;
-                                getNFTlist(num);
-                                dispatch(pageChange(num));
-                            }}
-                            onEndReachedThreshold={0.4}
+                            onEndReachedThreshold={16}
                             keyExtractor={(v, i) => "item_" + i}
                             ListFooterComponent={renderFooter}
                         />

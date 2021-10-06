@@ -109,6 +109,38 @@ const Created = ({ route }) => {
         )
     }
 
+    const renderItem = ({ item }) => {
+        let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            const image = item.metaData.thumbnft || item.thumbnailUrl
+            return (
+                <TouchableOpacity
+                    onLongPress={() => {
+                        setModalData(item);
+                        setModalVisible(true);
+                    }}
+                    onPress={() => {
+                        dispatch(changeScreenName("myNFT"));
+                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                    }}
+                    style={styles.listItem}>
+                    {
+                        image ?
+                            <C_Image
+                                uri={image}
+                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                imageStyle={styles.listImage} />
+                            : <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }} >
+                                    No Image to Show
+                                </Text>
+                            </View>
+                    }
+                </TouchableOpacity>
+            )
+        }
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
@@ -126,44 +158,16 @@ const Created = ({ route }) => {
                                 refreshFunc()
                             }}
                             refreshing={MyNFTReducer.page === 1 && MyNFTReducer.myNftListLoading}
-                            renderItem={({ item }) => {
-                                let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-                                if (item.metaData) {
-                                    const image = item.metaData.thumbnft || item.thumbnailUrl
-                                    return (
-                                        <TouchableOpacity
-                                            onLongPress={() => {
-                                                setModalData(item);
-                                                setModalVisible(true);
-                                            }}
-                                            onPress={() => {
-                                                dispatch(changeScreenName("myNFT"));
-                                                navigation.navigate("DetailItem", { index: findIndex, owner: id });
-                                            }}
-                                            style={styles.listItem}>
-                                            {
-                                                image ?
-                                                    <C_Image
-                                                        uri={image}
-                                                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                                        imageStyle={styles.listImage} />
-                                                    : <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }} >
-                                                            No Image to Show
-                                                        </Text>
-                                                    </View>
-                                            }
-                                        </TouchableOpacity>
-                                    )
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!MyNFTReducer.myNftListLoading) {
+                                    let num = MyNFTReducer.page + 1;
+                                    getNFTlist(num);
+                                    dispatch(myPageChange(num));
                                 }
                             }}
-                            onEndReached={() => {
-                                let num = MyNFTReducer.page + 1;
-                                getNFTlist(num);
-                                dispatch(myPageChange(num));
-                            }}
                             ListFooterComponent={renderFooter}
-                            onEndReachedThreshold={11}
+                            onEndReachedThreshold={0.5}
                             keyExtractor={(v, i) => "item_" + i}
                         />
                         :
@@ -216,6 +220,38 @@ const Collection = ({ route }) => {
         )
     }
 
+    const renderItem = ({ item }) => {
+        let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            const image = item.metaData.thumbnft || item.thumbnailUrl;
+            return (
+                <TouchableOpacity
+                    onLongPress={() => {
+                        setModalData(item);
+                        setModalVisible(true);
+                    }}
+                    onPress={() => {
+                        dispatch(changeScreenName("myCollection"));
+                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                    }}
+                    style={styles.listItem}>
+                    {
+                        image ?
+                            <C_Image
+                                uri={image}
+                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                imageStyle={styles.listImage} />
+                            : <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }} >
+                                    No Image to Show
+                                </Text>
+                            </View>
+                    }
+                </TouchableOpacity>
+            )
+        }
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
@@ -233,44 +269,16 @@ const Collection = ({ route }) => {
                                 refreshFunc()
                             }}
                             refreshing={MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading}
-                            renderItem={({ item }) => {
-                                let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
-                                if (item.metaData) {
-                                    const image = item.metaData.thumbnft || item.thumbnailUrl;
-                                    return (
-                                        <TouchableOpacity
-                                            onLongPress={() => {
-                                                setModalData(item);
-                                                setModalVisible(true);
-                                            }}
-                                            onPress={() => {
-                                                dispatch(changeScreenName("myCollection"));
-                                                navigation.navigate("DetailItem", { index: findIndex, owner: id });
-                                            }}
-                                            style={styles.listItem}>
-                                            {
-                                                image ?
-                                                    <C_Image
-                                                        uri={image}
-                                                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                                        imageStyle={styles.listImage} />
-                                                    : <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }} >
-                                                            No Image to Show
-                                                        </Text>
-                                                    </View>
-                                            }
-                                        </TouchableOpacity>
-                                    )
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!MyCollectionReducer.myCollectionListLoading) {
+                                    let num = MyCollectionReducer.page + 1;
+                                    getNFTlist(num);
+                                    dispatch(myCollectionPageChange(num));
                                 }
                             }}
-                            onEndReached={() => {
-                                let num = MyCollectionReducer.page + 1;
-                                getNFTlist(num);
-                                dispatch(myCollectionPageChange(num));
-                            }}
                             ListFooterComponent={renderFooter}
-                            onEndReachedThreshold={11}
+                            onEndReachedThreshold={1}
                             keyExtractor={(v, i) => "item_" + i}
                         />
                         :

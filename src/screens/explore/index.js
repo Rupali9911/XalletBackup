@@ -56,6 +56,15 @@ function ExploreScreen({
 
     let loading = ListReducer.nftListLoading;
 
+    const renderItem = ({ item }) => {
+        let findIndex = list.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            return (
+                <NftItem item={item} index={findIndex} />
+            )
+        }
+    }
+
     return (
         <Container>
             <Header>
@@ -69,25 +78,20 @@ function ExploreScreen({
                     <FlatList
                         initialNumToRender={10}
                         data={list.slice(listIndex)}
-                        renderItem={({ item }) => {
-                            let findIndex = list.findIndex(x => x.id === item.id);
-                            if (item.metaData) {
-                                return (
-                                    <NftItem item={item} index={findIndex} />
-                                )
-                            }
-                        }}
+                        renderItem={renderItem}
                         onEndReached={() => {
-                            let num = AuthReducer.screenName == "Hot" ?
-                                ListReducer.page + 1 :
-                                AuthReducer.screenName == "newNFT" ?
-                                    NewNFTListReducer.newListPage + 1 :
-                                    AuthReducer.screenName == "favourite" ?
-                                        MyNFTReducer.favoritePage + 1 :
-                                        AuthReducer.screenName == "twoDArt" ?
-                                            TwoDReducer.page + 1 : null;
-                            getNFTlistData(num)
-                            handlePageChange(num)
+                            if (!ListReducer.nftListLoading) {
+                                let num = AuthReducer.screenName == "Hot" ?
+                                    ListReducer.page + 1 :
+                                    AuthReducer.screenName == "newNFT" ?
+                                        NewNFTListReducer.newListPage + 1 :
+                                        AuthReducer.screenName == "favourite" ?
+                                            MyNFTReducer.favoritePage + 1 :
+                                            AuthReducer.screenName == "twoDArt" ?
+                                                TwoDReducer.page + 1 : null;
+                                getNFTlistData(num)
+                                handlePageChange(num)
+                            }
                         }}
                         ListFooterComponent={renderFooter}
                         onEndReachedThreshold={1}
