@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
 
 function Checkbox(props) {
     const [isCheck, setCheck] = useState(props.isCheck);
-    const iconsize = props.iconSize || wp("5%")
+    const iconsize = props.iconSize || wp("7.5%")
 
     useEffect(()=>{
         setCheck(props.isCheck);
@@ -19,9 +19,9 @@ function Checkbox(props) {
                 // setCheck(!isCheck)
                 props.onChecked && props.onChecked(!isCheck);
             }}>
-                <Image style={[styles.logoSize, props.logoStyle]} resizeMode="contain" source={isCheck ? ImagesSrc.checkIcon : ImagesSrc.unCheckIcon} />
+                <Image style={[{width: iconsize, height: iconsize},props.logoStyle]} resizeMode="contain" source={isCheck ? ImagesSrc.checkIcon : ImagesSrc.unCheckIcon} />
             </TouchableOpacity>
-            <TextView style={[styles.label, props.labelStyle]}>{props.label}</TextView>
+            {props.label && <TextView style={[styles.label, props.labelStyle]}>{props.label}</TextView>}
         </View>
     )
 }
@@ -31,14 +31,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "center",
         alignItems: "center",
-        alignSelf: 'baseline'
+        // alignSelf: 'baseline',
+        marginRight: 5
     },
     label: {
         flex: 1,
         fontSize: RF(1.6),
         marginVertical: hp("1%"),
         marginHorizontal: hp("1%"),
-        color: Colors.themeColor
+        color: Colors.themeColor,
     },
     logoSize: {
         width: wp("7.5%"),

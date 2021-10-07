@@ -40,6 +40,7 @@ export default {
   danger: "#F32013",
   disabled: "#cccccc",
   blackOpacity: (opacity) => `rgba(0,0,0,${opacity})`,
+  whiteOpacity: (opacity) => `rgba(255,255,255,${opacity})`,
 
   appLabel: "#4C4C4C", // splash screen
 
@@ -49,6 +50,7 @@ export default {
   inputBackground: '#FAFAFA',
   themeColor: "#008FFF",
   borderLightColor: "#EAEAEA",
+  borderLightColor2: "#EFEFEF",
 
   phoneCode: "#484848",
 

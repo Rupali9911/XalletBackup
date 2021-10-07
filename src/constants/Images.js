@@ -55,7 +55,31 @@ export default {
     received: require("../../assets/images/download.png"),
     sent: require("../../assets/images/upload.png"),
 
-    addIcon: require("../../assets/images/Add.png"),
+    addIcon: require("../../assets/images/add.png"),
     scanIcon: require("../../assets/images/scanIcon.png"),
-    closeIcon: require("../../assets/images/close.png")
+    closeIcon: require("../../assets/images/close.png"),
+    cancelIcon: require("../../assets/images/cancel.png"),
+
+    // payment method
+    walletPay: require("../../assets/images/walletPay.png"),
+    goldPay: require("../../assets/images/goldPay.png"),
+    cardPay: require("../../assets/images/cardPay.png"),
+    goldcoin: require("../../assets/images/goldcoin.png"),
+    itemDelete: require("../../assets/images/itemDelete.png"),
+
+    cardTypeIcon: {
+        "visa": require("../../assets/images/visa.png"),
+        "mastercard": require("../../assets/images/mastercard.png"),
+        "american-express": require("../../assets/images/american-express.png"),
+        "diners-club": require("../../assets/images/diners-club.png"),
+        "discover": require("../../assets/images/discover.png"),
+        "jcb": require("../../assets/images/jcb.png"),
+        "unionpay": require("../../assets/images/unionpay.png"),
+        "maestro": require("../../assets/images/maestro.png"),
+        "mir": require("../../assets/images/mir.png"),
+        "elo": require("../../assets/images/elo.png"),
+        "hiper": require("../../assets/images/hipercard.png"),
+        "hipercard": require("../../assets/images/hipercard.png"),
+        "unknown": require("../../assets/images/unknown.png")
+    },
 };

@@ -4,11 +4,13 @@ import {
   AUTH_SUCCESS, AUTH_LOADING_START, AUTH_LOADING_END, UPDATE_CREATE
   
 } from '../types';
+import { getSig } from '../../screens/wallet/functions';
 
 const initialState = {
-  loading: true,
+  loading: false,
   wallet: null,
-  isCreate: false
+  isCreate: false,
+  data: null
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -28,7 +30,8 @@ export default UserReducer = (state = initialState, action) => {
         case AUTH_SUCCESS:
             return {
                 ...state,
-                wallet: action.payload.data,
+                wallet: action.payload.wallet,
+                data: action.payload.data,
                 isCreate: action.payload.isCreate,
                 loading: false
             };
@@ -75,11 +78,14 @@ export const loadFromAsync = () => (dispatch) =>
     new Promise(async (resolve, reject) => {
         dispatch(startLoading());
         const wallet = await AsyncStorage.getItem('@wallet',(err)=>console.log(err));
-        if(wallet){
-            dispatch(setUserData({data: JSON.parse(wallet), isCreate: false}));
+        const userData = await AsyncStorage.getItem('@userData',(err)=>console.log(err));
+        
+        if(wallet && userData){
+            dispatch(setUserData({data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false}));
         }else{
             dispatch(endLoading());
         }
+        resolve();
     });
 
 export const setUserAuthData = (data,isCreate = false) => (dispatch) =>
@@ -94,3 +100,68 @@ new Promise((resolve, reject) => {
     dispatch({type: UPDATE_CREATE});
     resolve();
 });
+
+export const getAddressNonce = (wallet) => (dispatch) =>
+    new Promise((resolve, reject) => {
+        const url = "https://testapi.xanalia.com/auth/get-address-nonce";
+        const params = {
+            publicAddress: wallet.address
+        }
+
+        const request = {
+            method: 'POST',
+            body: JSON.stringify(params),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+
+        console.log('request',request);
+        dispatch(startLoading());
+        fetch(url, request).then((res) => res.json())
+            .then((response) => {
+                console.log('response', response);
+                if(response.success){
+
+                    const _params = {
+                        nonce: response.data,
+                        signature: `${getSig(response.data, wallet.privateKey)}`
+                    }
+
+                    const verifyReuqest = {
+                        method: 'POST',
+                        body: JSON.stringify(_params),
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        }
+                    }
+
+                    fetch('https://testapi.xanalia.com/auth/verify-signature', verifyReuqest).then((_res) => _res.json())
+                        .then(async (_response) => {
+                            console.log('_response', _response);
+                            if(_response.success){
+                                const items = [['@wallet', JSON.stringify(wallet)], ['@userData', JSON.stringify(_response.data)]]
+                                await AsyncStorage.multiSet(items, (err) => console.log(err));
+                                dispatch(setUserData({ data: _response.data, wallet,  isCreate: true }));
+                                resolve();
+                            }else{
+                                dispatch(endLoading());
+                                reject(_response);
+                            }
+                        }).catch((err) => {
+                            dispatch(endLoading());
+                            reject(err);
+                        });
+
+                }else{
+                    dispatch(endLoading());
+                    reject(response);
+                }
+            }).catch((err) => {
+                console.log('getAddressNonce err', err);
+                dispatch(endLoading());
+                reject(err);
+            });
+    });

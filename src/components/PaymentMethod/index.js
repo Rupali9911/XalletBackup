@@ -1,0 +1,184 @@
+import React, { useState } from 'react';
+import {
+    Image,
+    TouchableOpacity,
+    View,
+    Modal,
+    StyleSheet,
+    SafeAreaView,
+    Text,
+} from 'react-native';
+import Colors from '../../constants/Colors';
+import ImagesSrc from '../../constants/Images';
+import CommonStyles from '../../constants/styles';
+import Fonts from '../../constants/Fonts';
+import { RF, wp, hp } from '../../constants/responsiveFunct';
+import ButtonGroup from '../buttonGroup';
+import { translate } from '../../walletUtils';
+import Separator from '../separator';
+import AppButton from '../appButton';
+import { useNavigation } from '@react-navigation/native';
+import NotEnoughGold from './alertGoldModal';
+
+const PaymentMethod = (props) => {
+
+    const navigation = useNavigation();
+
+    const { visible, onRequestClose } = props;
+    const [opacity, setOpacity] = useState(0.88);
+    const [selectedMethod, setSelectedMethod] = useState(null);
+    const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
+
+    return (
+        <Modal
+            visible={visible}
+            animationType={'slide'}
+            transparent
+            onShow={() => setOpacity(0.88)}
+            onRequestClose={() => {
+                // setOpacity(0);
+                onRequestClose();
+            }}>
+            <View style={[styles.container, { backgroundColor: Colors.whiteOpacity(opacity) }]}>
+                <TouchableOpacity style={styles.emptyArea} onPress={() => {
+                    // setOpacity(0);
+                    onRequestClose();
+                }} />
+                <View style={styles.contentContainer}>
+                    <TouchableOpacity onPress={() => {
+                        // setOpacity(0);
+                        onRequestClose();
+                    }}>
+                        <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Select your payment method</Text>
+                    <ButtonGroup buttons={[
+                        {
+                            text: "Pay through credit card",
+                            icon: ImagesSrc.cardPay,
+                            onPress: () => {setSelectedMethod(0)}
+                        },
+                        {
+                            text: "Pay through wallet",
+                            icon: ImagesSrc.walletPay,
+                            onPress: () => {setSelectedMethod(1)}
+                        },
+                        {
+                            text: "Pay by Gold (In-app）",
+                            icon: ImagesSrc.goldPay,
+                            onPress: () => {setSelectedMethod(2)}
+                        }
+                    ]} 
+                    style={styles.optionContainer}
+                    selectable
+                    selectedIndex={selectedMethod}
+                    separatorColor={Colors.white}
+                    />
+
+                    <Separator style={styles.separator}/>
+
+                    <View style={styles.totalContainer}>
+                        <Text style={styles.totalLabel}>Total Amount</Text>
+                        <Text style={styles.value}>$ 1,300</Text>
+                    </View>
+
+                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin}/> 1,300</Text>}
+
+                    <AppButton
+                        label={translate("wallet.common.next")}
+                        containerStyle={CommonStyles.button}
+                        labelStyle={CommonStyles.buttonLabel}
+                        onPress={() => {
+                            if(selectedMethod == 0){
+                                onRequestClose();
+                                navigation.navigate('AddCard')
+                            } else if(selectedMethod == 2) {
+                                setNotEnoughGoldVisible(true);
+                            }
+                        }}
+                    />
+
+                </View>
+                <SafeAreaView style={{ backgroundColor: Colors.white }} />
+            </View>
+            <NotEnoughGold
+                visible={notEnoughGoldVisible}
+                onNavigate={() => {
+                    onRequestClose();
+                    setNotEnoughGoldVisible(false);
+                }}
+                onRequestClose={() => {
+                    setNotEnoughGoldVisible(false)
+                }}
+            />
+        </Modal>
+    );
+}
+
+const styles = StyleSheet.create({
+    modal: {
+        flex: 1
+    },
+    container: {
+        flex: 1,
+    },
+    emptyArea: {
+        flex: 1
+    },
+    contentContainer: {
+        backgroundColor: Colors.white,
+        padding: "4%",
+        borderTopLeftRadius: wp("4%"),
+        borderTopRightRadius: wp("4%"),
+        shadowColor: Colors.black,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        
+        elevation: 5,
+    },
+    closeIcon: {
+        alignSelf: 'flex-end',
+        ...CommonStyles.imageStyles(5)
+    },
+    title: {
+        fontFamily: Fonts.ARIAL_BOLD,
+        fontSize: RF(2),
+        alignSelf: 'center',
+        marginVertical: wp("3%")
+    },
+    optionContainer: {
+        backgroundColor: Colors.WHITE3,
+        borderRadius: wp("1%")
+    },
+    totalContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: hp("1%")
+    },
+    separator: {
+        width: wp("100%"), 
+        marginVertical: hp("2%")
+    },
+    totalLabel: {
+        fontSize: RF(1.9),
+        fontFamily: Fonts.ARIAL
+    },
+    value: {
+        fontSize: RF(2.3),
+        fontFamily: Fonts.ARIAL_BOLD,
+        color: Colors.themeColor
+    },
+    goldValue: {
+        fontSize: RF(2.3),
+        fontFamily: Fonts.ARIAL_BOLD,
+        color: Colors.themeColor,
+        alignSelf: 'flex-end',
+        marginBottom: hp("1%")
+    }
+});
+
+export default PaymentMethod;

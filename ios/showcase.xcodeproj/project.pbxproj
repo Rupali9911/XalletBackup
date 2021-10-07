@@ -11,6 +11,14 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1835A897270AE55D00F26038 /* SegoeUI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26FD62632CE9100A0D972 /* SegoeUI.ttf */; };
+		1835A898270AE55D00F26038 /* SegoeUI-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */; };
+		1835A899270AE55D00F26038 /* SegoeUI-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */; };
+		1835A89A270AE55D00F26038 /* Arial-BoldMT.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0896252208344F20A424C6C4 /* Arial-BoldMT.ttf */; };
+		1835A89B270AE55D00F26038 /* Arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DBD37692F53493E83192DCB /* Arial.ttf */; };
+		1835A89C270AE55D00F26038 /* Metropolis-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D5711B1E38CF4D06B7B52C64 /* Metropolis-Bold.otf */; };
+		1835A89D270AE55D00F26038 /* PingFangSC-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E61E32BD63194F2BB45EAB5C /* PingFangSC-Regular.ttf */; };
+		1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E69E31E04B349798F0EB5CD /* PingFangSC-Semibold.ttf */; };
 		585C546AD84CF5BDA40DD6D5 /* libPods-showcase-showcaseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AF008C5C65EFC3A43B45C3 /* libPods-showcase-showcaseTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		E0FF2824CCD6734AEF3848DD /* libPods-showcase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9B725AC59AA9F0676B28E8 /* libPods-showcase.a */; };
@@ -225,7 +233,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				450D7E9BD07F092FC4DE9A42 /* [CP] Embed Pods Frameworks */,
 				AC926F2D708DFCF683EEC200 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -248,7 +255,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				2B505BD841464A7227DCF872 /* [CP] Embed Pods Frameworks */,
 				C5DE4B1804734BA67CA7642E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -308,6 +314,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1835A897270AE55D00F26038 /* SegoeUI.ttf in Resources */,
+				1835A898270AE55D00F26038 /* SegoeUI-Bold.ttf in Resources */,
+				1835A899270AE55D00F26038 /* SegoeUI-Italic.ttf in Resources */,
+				1835A89A270AE55D00F26038 /* Arial-BoldMT.ttf in Resources */,
+				1835A89B270AE55D00F26038 /* Arial.ttf in Resources */,
+				1835A89C270AE55D00F26038 /* Metropolis-Bold.otf in Resources */,
+				1835A89D270AE55D00F26038 /* PingFangSC-Regular.ttf in Resources */,
+				1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -350,40 +364,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2B505BD841464A7227DCF872 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		450D7E9BD07F092FC4DE9A42 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		47E764F1243D2360398B03C7 /* [CP] Check Pods Manifest.lock */ = {

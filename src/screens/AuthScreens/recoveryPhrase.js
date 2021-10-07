@@ -14,7 +14,7 @@ import { RF, hp, wp } from '../../constants/responsiveFunct';
 import HintText from '../../components/hintText';
 import ImagesSrc from '../../constants/Images';
 import Colors from '../../constants/Colors';
-import { setUserAuthData, startLoader, endLoader } from '../../store/reducer/userReducer';
+import { setUserAuthData, startLoader, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 // import SingleSocket from '../../helpers/SingleSocket';
@@ -29,8 +29,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
     const { loading } = useSelector(state => state.UserReducer);
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
-    // const [phrase, setPhrase] = useState("");
-    const [phrase, setPhrase] = useState("portion kit problem trash scan basket coyote soda crew trash enable knee");
+    const [phrase, setPhrase] = useState("");
 
     useEffect(() => {
         if (!recover) {
@@ -68,7 +67,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 console.log(mnemonicWallet.address);
                 console.log(mnemonicWallet.privateKey);
                 setWallet(account);
-                dispatch(setUserAuthData(account));
+                // dispatch(setUserAuthData(account));
+                dispatch(getAddressNonce(account));
             }).catch((err) => {
                 console.log('err', err.toString());
                 if (err.toString() == 'Error: invalid mnemonic' || err.toString() == 'Error: invalid checksum') {
@@ -143,7 +143,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                 if (recover) {
                                     recoverWallet();
                                 } else {
-                                    dispatch(setUserAuthData(wallet, true));
+                                    // dispatch(setUserAuthData(wallet, true));
+                                    dispatch(getAddressNonce(wallet));
                                 }
 
                             }} />

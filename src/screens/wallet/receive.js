@@ -75,7 +75,7 @@ const QRScreen = () => {
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet.address);
-        alertWithSingleBtn(translate('common.error'), translate("wallet.common.copied"))
+        alertWithSingleBtn(translate("wallet.common.copied"))
     }
 
     return (

@@ -1,0 +1,448 @@
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import Config from 'react-native-config';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Heading, ZipcodeInput } from './screenComponents';
+import { hp, wp, RF } from '../../constants/responsiveFunct';
+import CommonStyles from '../../constants/styles';
+import Colors from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
+import {translate} from '../../walletUtils';
+import { CardNumberInput, DateInput, CvvInput } from '../../components/cardInput';
+import Checkbox from '../../components/checkbox';
+import { LabelInput, CityInput } from './screenComponents';
+import CountryPicker from '../../components/countryPicker';
+import StatePicker from '../../components/statePicker';
+import { alertWithSingleBtn } from '../../common/function';
+import AppBackground from '../../components/appBackground';
+import AppHeader from '../../components/appHeader';
+import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
+import AppButton from '../../components/appButton';
+
+function AddCard({ route, navigation }) {
+
+    const dispatch = useDispatch();
+    const {data} = useSelector(state => state.AuthReducer);
+    // const { loading } = useSelector(state => state.PayReducer);
+
+    const [cardNumber, setCardNumber] = useState("");
+    const [expDate, setExpDate] = useState("");
+    const [cvv, setCvv] = useState("");
+    const [cardType, setCardType] = useState(null);
+    const [cardHolderName, setCardHolderName] = useState("");
+    const [country, setCountry] = useState("");
+    const [state, setState] = useState("");
+    const [email, setEmail] = useState("");
+    const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
+    const [zipcode, setZipcode] = useState("");
+    const [isDefault, setDefault]= useState(false);
+
+    const isValidCardNumber = () => {
+        if(cardNumber.length == 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.reuiredCardNumber")
+            );
+            return false;
+        }else if(cardNumber.length < 16){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.reuiredCardNumber")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidName = () => {
+        if(cardHolderName.trim().length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.nameRequired")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidDate = () => {
+        const exp = expDate.split('/');
+        if(exp.length != 2){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.inValidExpiryDate")
+            );
+            return false;
+        }else if(exp[1].length !== 2){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.inValidExpiryDate")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidCvv = () => {
+        if(cvv.length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.inValidCvv")
+            );
+            return false;
+        }else if(cardType.code.size !== cvv.length){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.inValidCvv")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidEmail = () => {
+        var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(email.length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.emailRequired")
+            );
+            return false;
+        }else if(!filter.test(email)){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.invalidEmail")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidAddress = () => {
+        if(address.trim().length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.requireAddress")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidCountry = () => {
+        if(!country){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.requireCountry")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidState = () => {
+        console.log('State', state)
+        if(state === null || state.trim().length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.requireState")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidCity = () => {
+        if(city.trim().length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.requireCity")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const isValidZipcode = () => {
+        if(zipcode.trim().length <= 0){
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.requireZipcode")
+            );
+            return false;
+        }
+        return true;
+    }
+
+    const validateInputs = () => {
+        if(
+            isValidCardNumber() &&
+            isValidName() &&
+            isValidDate() &&
+            isValidCvv() &&
+            isValidEmail() &&
+            isValidAddress() &&
+            isValidCountry() &&
+            isValidState() &&
+            isValidCity() &&
+            isValidZipcode()
+        ){
+            getCardToken();
+        }
+    }
+
+    const getCardToken = () => {
+        const body = {
+            "card[number]": cardNumber,
+            "card[exp_month]": expDate.split('/')[0],
+            "card[exp_year]": expDate.split('/')[1],
+            "card[cvc]": cvv,
+            "card[name]": cardHolderName,
+            "card[address_line1]": address,
+            "card[address_line2]": "",
+            "card[address_city]": city,
+            "card[address_state]": state,
+            "card[address_zip]": zipcode,
+            "card[address_country]": country.name,
+        }
+
+        // StripeApiRequest(`${Config.STRIPE_API_URL}tokens`,body).then((response)=>{
+        //     console.log(response);
+        //     if(response.id){
+        //         addCustomerCard(response.id);
+        //     }else if(response.error){
+        //         console.log("error_code",response.error.code)
+        //         alertWithSingleBtn(
+        //             translate("common.alert"),
+        //             translate(`common.stripeError.${response.error.code}`)
+        //         )
+        //     }
+        // }).catch((err)=>{
+        //     console.log(err);
+        //     if(err.error){
+        //         console.log("error_code1",response.error.code)
+        //     }
+        // });
+    }
+
+    const addCustomerCard = (tokenId) => {
+        const params = {
+            "tokenId": tokenId,
+            "email": email,
+            "userName": cardHolderName,
+            "addressLine1": address,
+            "addressLine2": address,
+            "city": city,
+            "state": state,
+            "zip": zipcode,
+            "country": country.name,
+            "defaultCard": isDefault
+        }
+
+        // dispatch(AddCustomerCard(params, data.token)).then((response)=>{
+        //     console.log('response',response);
+        //     if(response.success){
+        //         alertWithSingleBtn(
+        //             translate("common.alert"),
+        //             translate(response.msg_key)
+        //         )
+        //         navigation.goBack();
+        //     }else{
+        //         alertWithSingleBtn(
+        //             translate("common.alert"),
+        //             response.msg_key?translate(response.msg_key):response.msg
+        //         )
+        //     }
+        // }).catch((err)=>{
+        //     console.log('err',err);
+        // });
+
+    }
+
+    return (
+        <AppBackground>
+            <AppHeader
+                showBackButton={true}
+                title={translate("wallet.common.topup.addCardDetails")}
+            />
+            <KeyboardAwareScrollView style={[CommonStyles.screenContainer]} contentContainerStyle = {{paddingBottom: wp("10%")}}>
+
+            <Text style={styles.cardHint} >{translate("wallet.common.topup.cardDetailWarning")}</Text>
+
+                <CardNumberInput
+                    style={styles.inputCont}
+                    // containerStyle={}
+                    onSubmitEditing={() => null}
+                    value={cardNumber}
+                    onChangeText={e => setCardNumber(e)}
+                    placeholder={'0000 1111 2222 3333'}
+                    onCardType={(type) => setCardType(type)}
+                />
+
+                <LabelInput
+                    label={translate("wallet.common.topup.cardHolderName")}
+                    value={cardHolderName}
+                    onChangeText={setCardHolderName}
+                />
+
+                <View style={styles.rowContainer}>
+                    <DateInput
+                        onChangeText={e => setExpDate(e)}
+                        value={expDate}
+                        style={styles.dateContainer} />
+
+                    <CvvInput
+                        onChangeText={e => setCvv(e)}
+                        value={cvv}
+                        style={styles.dateContainer}
+                        length={cardType?cardType.code.size:0} />
+                </View>
+
+                <View style={styles.checkBoxContainer}>
+                    <Checkbox
+                        label={translate("wallet.common.topup.markAsDefault")}
+                        labelStyle={styles.checkBoxLabel}
+                        onChecked={(check) => setDefault(check)}
+                        isCheck={isDefault}
+                    />
+                </View>
+
+                <Heading title={translate("wallet.common.topup.billingAddress")}/>
+
+                <LabelInput
+                    label={translate("wallet.common.topup.email")}
+                    value={email}
+                    onChangeText={setEmail}
+                />
+
+                <LabelInput
+                    label={translate("wallet.common.topup.address")}
+                    value={address}
+                    onChangeText={setAddress}
+                />
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.pickerContainer}>
+                        <Text style={styles.labelStyle}>{translate("wallet.common.topup.country")}</Text>
+                        <CountryPicker onSetCountry={setCountry}/>
+                    </View>
+
+                    <View style={styles.pickerContainer}>
+                        <Text style={styles.labelStyle}>{translate("wallet.common.topup.state")}</Text>
+                        <StatePicker country={country.code} onSetState={setState}/>
+                    </View>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <CityInput
+                        label={translate("wallet.common.topup.city")}
+                        value={city}
+                        onChangeText={setCity}
+                        containerStyle={styles.rowItem}
+                    />
+                    <ZipcodeInput
+                        label={translate("wallet.common.topup.zipcode")}
+                        value={zipcode}
+                        onChangeText={setZipcode}
+                        containerStyle={styles.rowItem}
+                    />
+                </View>
+
+            </KeyboardAwareScrollView>
+
+            <View style={styles.buttonContainer}>
+                <AppButton label={translate("wallet.common.topup.next")} containerStyle={[CommonStyles.button, styles.button]} labelStyle={[CommonStyles.buttonLabel, { fontWeight: 'bold' }]} onPress={() => {
+                    // getCardToken();
+                    // validateInputs();
+                    navigation.navigate("Cards",{});
+                }} />
+            </View>
+
+        </AppBackground>
+
+    )
+}
+
+const styles = StyleSheet.create({
+    inputCont: {
+        marginTop: hp("8%")
+    },
+    content: {
+        paddingHorizontal: wp('7%'),
+        paddingTop: hp("5%"),
+        paddingBottom: hp("1%")
+    },
+    priceBtnsCont: {
+        borderWidth: 1,
+        height: hp('4.5%'),
+        ...CommonStyles.center,
+        borderColor: Colors.scanActive,
+        paddingHorizontal: wp("3%"),
+        marginHorizontal: wp('0.5%'),
+        borderRadius: wp('1%')
+    },
+    priceBtnsTxt: {
+        ...CommonStyles.text(Fonts.ARIAL, Colors.scanActive, RF(1.7))
+    },
+    cardCont: {
+        borderWidth: 1,
+        borderColor: Colors.scanActive,
+        borderRadius: wp("2%"),
+        width: wp("85%"),
+        alignSelf: "center",
+        paddingTop: hp("6%"),
+        paddingBottom: hp("4%"),
+        paddingLeft: wp("30%"),
+        paddingRight: wp('5%'),
+        marginVertical: hp("1%")
+    },
+    cardTitle: {
+        ...CommonStyles.text(Fonts.ARIAL_BOLD, Colors.black, RF(1.8))
+    },
+    cardDes: {
+        ...CommonStyles.text(Fonts.ARIAL, Colors.cardDes, RF(1.45))
+    },
+    cardHint: {
+        ...CommonStyles.text(Fonts.ARIAL, Colors.cardDes, RF(1.8)),
+        alignSelf: 'center',
+        width: wp("80%"),
+        textAlign: 'center'
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    dateContainer: {
+        width: wp("40%"),
+    },
+    checkBoxContainer: {
+        width: "100%",
+        alignSelf: 'center'
+    },
+    checkBoxLabel: {
+        fontWeight: 'normal'
+    },
+    labelInputContainer: {
+        marginTop: hp("1%")
+    },
+    placeholderStyle: {
+        width: wp('85%'),
+        fontSize: RF(1.6),
+        alignSelf: "center"
+    },
+    pickerContainer: {
+        width: wp("39%"),
+        marginTop: hp("1%")
+    },
+    rowItem: {
+        width: wp("39%"),
+    },
+    buttonContainer: {
+        padding: wp("5%"),
+        paddingVertical: 0
+    }
+})
+
+export default AddCard;

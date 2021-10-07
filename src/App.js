@@ -46,6 +46,9 @@ import { images, fonts } from './res';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from './common/responsiveFunction';
 import AuthStack from './navigations/authStack';
 import Colors from './constants/Colors';
+import AddCard from './screens/PaymentScreen/addCard';
+import Cards from './screens/PaymentScreen/cards';
+import BuyGold from './screens/PaymentScreen/buyGold';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -107,15 +110,16 @@ const TabComponent = () => {
 
 const AppRoutes = () => {
 
-  const { wallet, loading } = useSelector(state => state.UserReducer);
+  const { wallet } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = React.useState(true);
 
   setI18nConfig(selectedLanguageItem.language_name);
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-    AsyncStorage.removeItem('@wallet');
     dispatch(getAllLanguages())
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (languageData) {
@@ -126,7 +130,9 @@ const AppRoutes = () => {
       dispatch(setAppLanguage(item));
     }
 
-    dispatch(loadFromAsync());
+    dispatch(loadFromAsync()).then(() => {
+      setLoading(false);
+    });
 
   }, []);
 
@@ -151,6 +157,9 @@ const AppRoutes = () => {
                 <Stack.Screen name='Create' component={NewPostScreen} />
                 <Stack.Screen name='Certificate' component={CertificateScreen} />
                 <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
+                <Stack.Screen name='AddCard' component={AddCard} />
+                <Stack.Screen name='Cards' component={Cards} />
+                <Stack.Screen name='BuyGold' component={BuyGold} />
               </Stack.Navigator>
               :
               <Stack.Navigator headerMode="none">
