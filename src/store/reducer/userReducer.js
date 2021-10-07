@@ -44,7 +44,7 @@ export default UserReducer = (state = initialState, action) => {
     }
 }
 
-const startLoading = () => ({
+export const startLoading = () => ({
   type: AUTH_LOADING_START,
 });
 

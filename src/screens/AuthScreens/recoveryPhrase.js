@@ -7,6 +7,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import AppButton from '../../components/appButton';
+import FetchingIndicator from '../../components/fetchingIndicator';
 import CommonStyles from '../../constants/styles';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
@@ -14,11 +15,9 @@ import { RF, hp, wp } from '../../constants/responsiveFunct';
 import HintText from '../../components/hintText';
 import ImagesSrc from '../../constants/Images';
 import Colors from '../../constants/Colors';
-import { setUserAuthData, startLoader, endLoader } from '../../store/reducer/userReducer';
+import { setUserAuthData } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
-// import SingleSocket from '../../helpers/SingleSocket';
-// import { Events } from '../../navigations';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 
 const ethers = require('ethers');
@@ -26,29 +25,32 @@ const ethers = require('ethers');
 const RecoveryPhrase = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const { loading } = useSelector(state => state.UserReducer);
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
-    // const [phrase, setPhrase] = useState("");
-    const [phrase, setPhrase] = useState("portion kit problem trash scan basket coyote soda crew trash enable knee");
+    const [loading, setLoading] = useState(false);
+    const [phrase, setPhrase] = useState("");
+    // const [phrase, setPhrase] = useState("portion kit problem trash scan basket coyote soda crew trash enable knee");
 
     useEffect(() => {
         if (!recover) {
-            dispatch(startLoader()).then(async () => {
-                var randomSeed = ethers.Wallet.createRandom();
-                const account = {
-                    mnemonic: randomSeed.mnemonic,
-                    address: randomSeed.address,
-                    privateKey: randomSeed.privateKey
-                }
-                console.log(randomSeed.mnemonic);
-                console.log(randomSeed.address);
-                console.log(randomSeed.privateKey);
-                setWallet(account);
-                dispatch(endLoader());
-            });
+            setLoading(true)
+            getPhraseData()
         }
     }, []);
+
+    const getPhraseData = async () => {
+        var randomSeed = await ethers.Wallet.createRandom();
+        const account = {
+            mnemonic: randomSeed.mnemonic,
+            address: randomSeed.address,
+            privateKey: randomSeed.privateKey
+        }
+        console.log(randomSeed.mnemonic);
+        console.log(randomSeed.address);
+        console.log(randomSeed.privateKey);
+        setWallet(account)
+        setLoading(false);
+    }
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet.mnemonic.phrase);
@@ -56,31 +58,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
 
     const recoverWallet = () => {
         if (phrase !== "") {
-            dispatch(startLoader()).then(async () => {
-                let mnemonic = phrase;
-                let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
-                const account = {
-                    mnemonic: mnemonicWallet.mnemonic,
-                    address: mnemonicWallet.address,
-                    privateKey: mnemonicWallet.privateKey
-                }
-                console.log(mnemonicWallet.mnemonic);
-                console.log(mnemonicWallet.address);
-                console.log(mnemonicWallet.privateKey);
-                setWallet(account);
-                dispatch(setUserAuthData(account));
-            }).catch((err) => {
-                console.log('err', err.toString());
-                if (err.toString() == 'Error: invalid mnemonic' || err.toString() == 'Error: invalid checksum') {
-
-                    alertWithSingleBtn(
-                        translate('common.error'),
-                        translate('wallet.common.error.invalidPhrase')
-                    )
-
-                }
-                dispatch(endLoader());
-            });
+            setLoading(true)
+            recoverWalletFunct();
         } else {
             alertWithSingleBtn(
                 translate('common.error'),
@@ -89,8 +68,28 @@ const RecoveryPhrase = ({ route, navigation }) => {
         }
     }
 
+    const recoverWalletFunct = async () => {
+        let mnemonic = phrase;
+        let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+        const account = {
+            mnemonic: mnemonicWallet.mnemonic,
+            address: mnemonicWallet.address,
+            privateKey: mnemonicWallet.privateKey
+        }
+        console.log(mnemonicWallet.mnemonic);
+        console.log(mnemonicWallet.address);
+        console.log(mnemonicWallet.privateKey);
+        setWallet(account);
+        dispatch(setUserAuthData(account));
+        setLoading(false);
+    };
+
     return (
-        <AppBackground isBusy={loading}>
+        <AppBackground>
+            {
+                loading ?
+                    <FetchingIndicator /> : null
+            }
             <AppHeader
                 showBackButton
                 title={translate("wallet.common.backup")}
@@ -117,9 +116,10 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                 </View>
                                 :
                                 <View style={styles.phraseContainer}>
-                                    {wallet && wallet.mnemonic.phrase.split(' ').map((item, index) => {
-                                        return <WordView word={item} index={index + 1} key={`_${index}`} />
-                                    })}
+                                    {wallet ?
+                                        wallet.mnemonic.phrase.split(' ').map((item, index) => {
+                                            return <WordView word={item} index={index + 1} key={`_${index}`} />
+                                        }) : null}
                                 </View>
                             }
                         </View>
@@ -143,7 +143,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                 if (recover) {
                                     recoverWallet();
                                 } else {
-                                    dispatch(setUserAuthData(wallet, true));
+                                    navigation.navigate("verifyPhrase", { wallet })
+                                    // dispatch(setUserAuthData(wallet, true));
                                 }
 
                             }} />

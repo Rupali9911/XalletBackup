@@ -10,19 +10,20 @@ import ImagesSrc from '../constants/Images';
 import CommonStyles from '../constants/styles';
 
 const ButtonGroup = (props) => {
-    const {buttons} = props;
+    const { buttons } = props;
     return (
         <View style={[styles.container, props.style]} >
-            <FlatList 
+            <FlatList
                 data={buttons || []}
                 renderItem={({ item, index }) => <TouchableOpacity onPress={item.onPress}
                     style={[styles.itemContainer, item.containerStyle]}>
                     <TextView style={[styles.labelStyle, item.labelStyle]}>{item.text}</TextView>
-                    <Image style={styles.icon} source={ImagesSrc.leftArrow}/>
+                    <Image style={styles.icon} source={ImagesSrc.leftArrow} />
                 </TouchableOpacity>
                 }
-                ItemSeparatorComponent={()=> <Separator />}
-                />
+                ItemSeparatorComponent={() => <Separator />}
+                keyExtractor={item => item.text}
+            />
         </View>
     )
 }
