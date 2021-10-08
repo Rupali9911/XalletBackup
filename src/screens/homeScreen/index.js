@@ -120,7 +120,7 @@ const Hot = () => {
                         />
                         :
                         <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
             {
@@ -216,14 +216,17 @@ const HomeScreen = ({ navigation }) => {
                     <Tab.Screen
                         name={langObj.common.hot}
                         component={Hot}
-                    />
+                        options={{ tabBarLabel: translate("common.hot") }}
+                        />
                     <Tab.Screen
                         name={langObj.common.following}
                         component={NewNFT}
-                    />
+                        options={{ tabBarLabel: translate("common.following") }}
+                        />
                     <Tab.Screen
                         name={langObj.common.Discover}
                         component={Favorite}
+                        options={{ tabBarLabel: translate("common.Discover") }}
                     />
                 </Tab.Navigator>
             </SafeAreaView>

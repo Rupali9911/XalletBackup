@@ -81,7 +81,6 @@ const VerifyPhrase = ({ route, navigation }) => {
                 <FetchingIndicator />
             }
             <AppHeader
-                showBackButton
                 title={translate("wallet.common.backup")}
                 showRightButton
                 rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20} />}
@@ -91,8 +90,8 @@ const VerifyPhrase = ({ route, navigation }) => {
                     <View style={styles.contentContainer}>
                         <View style={styles.padding}>
                             <AppLogo logoStyle={styles.logo} />
-                            <TextView style={styles.title}>Verify Recovery Phase</TextView>
-                            <HintText style={styles.hint} >Tap the words to put them next to each{'\n'}other in the correct order</HintText>
+                            <TextView style={styles.title}>{translate("wallet.common.verifyPhrase")}</TextView>
+                            <HintText style={styles.hint} >{translate("wallet.common.verifyHint1") + '\n' + translate("wallet.common.verifyHint2")}</HintText>
                         </View>
 
                         <View style={styles.phraseMainCont} >
@@ -138,7 +137,7 @@ const VerifyPhrase = ({ route, navigation }) => {
             </KeyboardAwareScrollView>
             <View style={styles.bottomView}>
                 <AppButton
-                    label="Continue"
+                    label={translate("wallet.common.next")}
                     view={message.status === "success" ? false : true}
                     containerStyle={CommonStyles.button}
                     labelStyle={CommonStyles.buttonLabel}

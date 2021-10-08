@@ -619,6 +619,11 @@
             "topup": {
                 "addCardDetails": "카드 세부 정보 추가"
             },
+            "verifyPhrase": "복구 단계 확인",
+            "paste": "붙여넣기",
+            "verifyHint1": "단어를 탭하여 각 단어 옆에 두기",
+            "verifyHint2": "다른 하나는 올바른 순서로",
+            "me": "저",
             "Like": "같이",
             "sendMessage": "메시지로 보내기",
             "Comment": "주석",
@@ -662,7 +667,8 @@
             "createWallet": "새 지갑 만들기",
             "haveWallet": "나는 이미 지갑을 가지고 있다",
             "legal": "합법적 인",
-            "legalHint": "XANA 지갑 서비스 약관 및 개인 정보 보호 정책을 검토하십시오",
+            "legalHint1": "서비스 약관 및 개인 정보 보호 를 주의 깊게 읽으십시오.",
+            "legalHint2": "자날리아 정책",
             "privacyPolicy": "개인 정보 정책",
             "termsServices": "서비스 약관",
             "termDeclaration": "서비스 약관 및 개인 정보 보호 정책에 동의합니다",

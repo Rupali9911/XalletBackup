@@ -22,12 +22,12 @@ import { translate } from '../../walletUtils';
 
 const langObj = getLanguage();
 
-const NewPostScreen = () => {
+const NewPostScreen = ({navigation}) => {
     return (
         <SafeAreaView style={styles.mainContainer}>
             <View style={styles.header} >
                 <View style={styles.headerLeft}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.goBack()} >
                         <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
                     </TouchableOpacity>
                 </View>

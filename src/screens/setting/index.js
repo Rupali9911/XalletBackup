@@ -61,7 +61,7 @@ function Setting({
                     text: translate("common.cancel"),
                     onPress: () => null,
                 },
-                { text: translate("wallet.common.ok"), onPress: pressOk }
+                { text: "OK", onPress: pressOk }
             ]
         );
 

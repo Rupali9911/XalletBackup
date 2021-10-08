@@ -46,6 +46,7 @@ import { images, fonts } from './res';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from './common/responsiveFunction';
 import AuthStack from './navigations/authStack';
 import Colors from './constants/Colors';
+import { translate } from './walletUtils';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -90,17 +91,37 @@ const TabComponent = () => {
         return <Image source={iconName} resizeMode="contain" style={{ width: wp('6.5%'), height: wp('4.5%'), tintColor: color }} />;
       },
     })} >
-      <Tab.Screen name={langObj.common.home} component={HomeScreen} />
+      <Tab.Screen
+        name={langObj.common.home}
+        component={HomeScreen}
+        options={{ tabBarLabel: translate("common.collected") }}
+      />
       {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
-      <Tab.Screen name={'Explore'} component={ExploreScreen} />
+      <Tab.Screen
+        name={'Explore'}
+        component={ExploreScreen}
+        options={{ tabBarLabel: translate("wallet.common.explore") }}
+      />
       {/* <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} /> */}
       {/* <Tab.Screen name={'Create'} component={NewPostScreen} /> */}
-      <Tab.Screen name={'Wallet'} component={Wallet} />
+      <Tab.Screen
+        name={'Wallet'}
+        options={{ tabBarLabel: translate("wallet.common.wallet") }}
+        component={Wallet}
+      />
       {/* <Tab.Screen name={langObj.common.AR} component={ARScreen} /> */}
       {/* <Tab.Screen name={'Certificate'} component={CertificateScreen} /> */}
-      <Tab.Screen name={'Connect'} component={Connect} />
+      <Tab.Screen
+        name={'Connect'}
+        options={{ tabBarLabel: translate("common.connectWallet") }}
+        component={Connect}
+      />
       {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
-      <Tab.Screen name={'Me'} component={ProfileScreen} />
+      <Tab.Screen
+        options={{ tabBarLabel: translate("wallet.common.me") }}
+        name={'Me'}
+        component={ProfileScreen}
+      />
     </Tab.Navigator>
   )
 }
@@ -115,7 +136,7 @@ const AppRoutes = () => {
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-    AsyncStorage.removeItem('@wallet');
+    // AsyncStorage.removeIstem('@wallet');
     dispatch(getAllLanguages())
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (languageData) {

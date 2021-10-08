@@ -619,6 +619,11 @@
             "topup": {
                 "addCardDetails": "添加卡詳細信息"
             },
+            "verifyPhrase": "驗證恢復階段",
+            "paste": "糊",
+            "verifyHint1": "點擊單詞，將它們放在每個單詞旁邊",
+            "verifyHint2": "其他在正確的順序",
+            "me": "我",
             "Like": "喜歡",
             "sendMessage": "以消息發送",
             "Comment": "評論",
@@ -662,7 +667,8 @@
             "createWallet": "創建一個新錢包",
             "haveWallet": "我已經有錢包了",
             "legal": "合法的",
-            "legalHint": "請查看 XANA 錢包服務條款和隱私政策",
+            "legalHint1": "仔細閱讀服務條款和隱私",
+            "legalHint2": "薩納利亞政策",
             "privacyPolicy": "隱私政策",
             "termsServices": "服務條款",
             "termDeclaration": "我同意服務條款和隱私政策",

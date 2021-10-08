@@ -210,7 +210,7 @@ const nftItem = ({ item, index }) => {
             source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
           <View>
             <Text style={styles.modalIconLabel} >
-              {langObj.common.owner}
+              {translate("common.owner")}
             </Text>
             <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
               {owner}
@@ -223,7 +223,7 @@ const nftItem = ({ item, index }) => {
             source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
           <View>
             <Text style={styles.modalIconLabel}>
-              {langObj.common.creator}
+              {translate("common.creator")}
             </Text>
             <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: Platform.OS === 'ios' ? (width * 0.35) : (width * 0.4) }]} >
               {artist}

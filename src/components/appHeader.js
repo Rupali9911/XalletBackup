@@ -19,7 +19,7 @@ function AppHeader(props) {
                     props.showBackButton &&
                     <TouchableOpacity style={styles.backContainer} onPress={() => props.onPressBack ? props.onPressBack() : navigation.goBack()} >
                         {
-                            <Image style={[styles.backIcon,{tintColor: props.isWhite ? Colors.white : null}]} source={ImagesSrc.backArrow} />
+                            <Image style={[styles.backIcon]} source={ImagesSrc.backArrow} />
                         }
                     </TouchableOpacity>
                 }
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     backContainer: {
         ...CommonStyles.center,
-        flex: 1,
+        flex: 1
     },
     backIcon: {
         ...CommonStyles.imageStyles(5)

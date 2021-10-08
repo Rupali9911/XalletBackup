@@ -148,7 +148,7 @@ const confirmationAlert = (title, message, leftText, rightText, onOkPress, onCan
         onPress: () => onCancelPress
       },
       {
-        text: rightText ? rightText : translate("wallet.common.ok"),
+        text: rightText ? rightText : "OK",
         onPress: onOkPress
       }
     ]
@@ -161,7 +161,7 @@ const alertWithSingleBtn = (title, message, onOkPress, btnTxt) => {
     message,
     [
       {
-        text: btnTxt ? btnTxt : translate("wallet.common.ok"),
+        text: btnTxt ? btnTxt : "OK",
         onPress: onOkPress
       }
     ]
