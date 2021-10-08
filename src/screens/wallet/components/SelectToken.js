@@ -71,7 +71,7 @@ const SelectToken = (props) => {
                         </TouchableOpacity>
                         <TextInput 
                             style={styles.inputStyle}
-                            placeholder={`Search - ${isSend?translate('wallet.common.send'):translate('wallet.common.receive')}`}
+                            placeholder={`${translate("common.search")} - ${isSend?translate('wallet.common.send'):translate('wallet.common.receive')}`}
                             placeholderTextColor={Colors.separatorLight}
                             value={searchTxt}
                             onChangeText={setSearchTxt}

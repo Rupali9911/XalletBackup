@@ -1,9 +1,17 @@
 const Web3 = require('web3');
+var Accounts = require('web3-eth-accounts');
 const EthereumTx = require('ethereumjs-tx').Transaction;
 // import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
 import { environment } from '../../../walletUtils';
+
+export const getSig = (message, privateKey) => {
+  var accounts = new Accounts("");
+  let wlt = accounts.privateKeyToAccount(privateKey);
+  let sigMsg = wlt.sign(message, privateKey);
+  return sigMsg.signature;
+}
 
 export const filterTransaction = (pubKey, trx) => {
   if(trx == null) return null;

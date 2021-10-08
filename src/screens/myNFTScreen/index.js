@@ -14,6 +14,8 @@ import { colors, fonts } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
 import { responsiveFontSize as FS } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
@@ -94,7 +96,7 @@ const Collection = () => {
                                                     item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                         <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
                                                         : <View style={styles.sorryMessageCont}>
-                                                            <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                            <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
                                                         </View>
                                                 }
                                             </TouchableOpacity>
@@ -207,7 +209,7 @@ const NFT = () => {
                                                     item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                                         <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
                                                         : <View style={styles.sorryMessageCont}>
-                                                            <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                                            <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
                                                         </View>
                                                 }
                                             </TouchableOpacity>

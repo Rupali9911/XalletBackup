@@ -46,7 +46,7 @@ import {
     NumberOfPersonText,
     DotView
 } from './styled';
-
+import { translate } from '../../walletUtils';
 
 const {
     GIRL
@@ -186,8 +186,16 @@ function Profile({
                     height: 2
                 }
             }}>
-                <Tab.Screen name='My NFTs' component={Following} />
-                <Tab.Screen name='My Collection' component={Recommend} />
+                <Tab.Screen
+                    name='My NFTs'
+                    options={{ tabBarLabel: translate("wallet.common.myNFTs") }}
+                    component={Following}
+                />
+                <Tab.Screen
+                    name='My Collection'
+                    options={{ tabBarLabel: translate("common.myCollection") }}
+                    component={Recommend}
+                />
             </Tab.Navigator>
         )
     }
@@ -196,7 +204,7 @@ function Profile({
         <Container>
             <Header>
                 <HeaderText>
-                    {'Name'}
+                    {/* {'Name'} */}
                 </HeaderText>
                 <HeaderRight>
                     <RowWrap>
@@ -227,7 +235,7 @@ function Profile({
                                         {'0'}
                                     </BoldText>
                                     <SmallText>
-                                        {'Post'}
+                                        {translate("wallet.common.post")}
                                     </SmallText>
                                 </CenterWrap>
                                 <SpaceView mLeft={SIZE(41)} />
@@ -237,7 +245,7 @@ function Profile({
                                     {'0'}
                                 </BoldText>
                                 <SmallText>
-                                    {'Follower'}
+                                    {translate("common.followers")}
                                 </SmallText>
                             </CenterWrap>
                             <RowWrap>
@@ -247,7 +255,7 @@ function Profile({
                                         {'0'}
                                     </BoldText>
                                     <SmallText>
-                                        {'Following'}
+                                        {translate("common.following")}
                                     </SmallText>
                                 </CenterWrap>
                             </RowWrap>
@@ -267,13 +275,13 @@ function Profile({
                 <SpaceView mLeft={SIZE(15)} />
                 <EditButton onPress={() => navigation.navigate('EditProfile')}>
                     <EditButtonText>
-                        {'Edit'}
+                        {translate("wallet.common.edit")}
                     </EditButtonText>
                 </EditButton>
                 <SpaceView mRight={SIZE(15)} />
             </RowWrap>
             <SpaceView mTop={SIZE(16)} />
-            { renderTabView() }
+            {renderTabView()}
         </Container >
     )
 }

@@ -18,23 +18,25 @@ import {
     SIZE,
     COLORS
 } from 'src/constants';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
-const NewPostScreen = () => {
+const NewPostScreen = ({route, navigation}) => {
     return (
         <SafeAreaView style={styles.mainContainer}>
             <View style={styles.header} >
                 <View style={styles.headerLeft}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.headerText}>
-                    {'New Post'}
+                    {translate("wallet.common.newPost")}
                 </Text>
                 <View style={styles.headerRight}>
                     <Text style={styles.headerRightText}>
-                        {'Share'}
+                        {translate("wallet.common.share")}
                     </Text>
                 </View>
             </View>
@@ -44,25 +46,25 @@ const NewPostScreen = () => {
                         <View style={styles.captionView}>
                         </View>
                         <TextInput style={styles.captionTitle}
-                            placeholder={'Write a caption'}
+                            placeholder={translate("wallet.common.writeCaption")}
                         />
                     </View>
                 </View>
                 <View style={styles.listItem}>
                     <Text style={styles.itemText}>
-                        {'Tag People'}
+                        {translate("wallet.common.tagPeople")}
                     </Text>
                     <Image style={styles.headerIcon} source={images.icons.forward} resizeMode="contain" />
                 </View>
                 <View style={styles.listItem}>
                     <Text style={styles.itemText}>
-                        {'Add Location'}
+                        {translate("wallet.common.addLocation")}
                     </Text>
                     <Image style={styles.headerIcon} source={images.icons.forward} resizeMode="contain" />
                 </View>
                 <View style={styles.betweenView}>
                     <Text style={styles.itemText}>
-                        {'Facebook'}
+                        {translate("common.facebook")}
                     </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: 'red' }}
@@ -73,7 +75,7 @@ const NewPostScreen = () => {
                 </View>
                 <View style={styles.betweenView}>
                     <Text style={styles.itemText}>
-                        {'Twitter'}
+                        {translate("common.twitter")}
                     </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: 'red' }}
@@ -85,7 +87,7 @@ const NewPostScreen = () => {
                 </View>
                 <View style={styles.betweenView}>
                     <Text style={styles.itemText}>
-                        {'Tumblr'}
+                        {translate("wallet.common.tumblr")}
                     </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: 'red' }}
@@ -119,7 +121,7 @@ const NewPostScreen = () => {
                 <View style={styles.listItem}>
                     <View style={[styles.rowWrap, { alignItems: 'center', marginBottom: SIZE(28) }]}>
                         <Text style={styles.advancedText}>
-                            {'Advanced Settings'}
+                            {translate("wallet.common.advancedSettings")}
                         </Text>
                         <Image
                             style={{ width: SIZE(5), height: SIZE(9), marginLeft: SIZE(8) }}

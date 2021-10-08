@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     backContainer: {
         ...CommonStyles.center,
-        flex: 1,
+        flex: 1
     },
     backIcon: {
         ...CommonStyles.imageStyles(5)

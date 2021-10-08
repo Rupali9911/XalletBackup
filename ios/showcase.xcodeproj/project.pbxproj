@@ -11,9 +11,15 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		187DEFB1270C5F05007DBD3D /* SegoeUI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26FD62632CE9100A0D972 /* SegoeUI.ttf */; };
-		187DEFB4270C6093007DBD3D /* SegoeUI-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */; };
-		187DEFB7270C60B1007DBD3D /* SegoeUI-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */; };
+		1835A897270AE55D00F26038 /* SegoeUI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26FD62632CE9100A0D972 /* SegoeUI.ttf */; };
+		1835A898270AE55D00F26038 /* SegoeUI-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */; };
+		1835A899270AE55D00F26038 /* SegoeUI-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */; };
+		1835A89A270AE55D00F26038 /* Arial-BoldMT.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0896252208344F20A424C6C4 /* Arial-BoldMT.ttf */; };
+		1835A89B270AE55D00F26038 /* Arial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DBD37692F53493E83192DCB /* Arial.ttf */; };
+		1835A89C270AE55D00F26038 /* Metropolis-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D5711B1E38CF4D06B7B52C64 /* Metropolis-Bold.otf */; };
+		1835A89D270AE55D00F26038 /* PingFangSC-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E61E32BD63194F2BB45EAB5C /* PingFangSC-Regular.ttf */; };
+		1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E69E31E04B349798F0EB5CD /* PingFangSC-Semibold.ttf */; };
+		1848960227100BBD00840834 /* Fix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1848960127100BBD00840834 /* Fix.swift */; };
 		585C546AD84CF5BDA40DD6D5 /* libPods-showcase-showcaseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AF008C5C65EFC3A43B45C3 /* libPods-showcase-showcaseTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		E0FF2824CCD6734AEF3848DD /* libPods-showcase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9B725AC59AA9F0676B28E8 /* libPods-showcase.a */; };
@@ -43,6 +49,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = showcase/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = showcase/main.m; sourceTree = "<group>"; };
 		180EDEAC232940A88A629437 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
+		1848960027100BBC00840834 /* showcase-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "showcase-Bridging-Header.h"; sourceTree = "<group>"; };
+		1848960127100BBD00840834 /* Fix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fix.swift; sourceTree = "<group>"; };
 		18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SegoeUI-Italic.ttf"; path = "../assets/fonts/SegoeUI-Italic.ttf"; sourceTree = "<group>"; };
 		18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SegoeUI-Bold.ttf"; path = "../assets/fonts/SegoeUI-Bold.ttf"; sourceTree = "<group>"; };
 		18C26FD62632CE9100A0D972 /* SegoeUI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = SegoeUI.ttf; path = ../assets/fonts/SegoeUI.ttf; sourceTree = "<group>"; };
@@ -159,6 +167,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1848960127100BBD00840834 /* Fix.swift */,
 				13B07FAE1A68108700A75B9A /* showcase */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* showcaseTests */,
@@ -166,6 +175,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				C1F2CE4A18324D46B8BE1E7D /* Resources */,
 				1A0E7ECE197677707E35B2CD /* Pods */,
+				1848960027100BBC00840834 /* showcase-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -228,7 +238,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				450D7E9BD07F092FC4DE9A42 /* [CP] Embed Pods Frameworks */,
 				AC926F2D708DFCF683EEC200 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -251,7 +260,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				2B505BD841464A7227DCF872 /* [CP] Embed Pods Frameworks */,
 				C5DE4B1804734BA67CA7642E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -276,7 +284,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1210;
 					};
 				};
 			};
@@ -311,6 +319,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1835A897270AE55D00F26038 /* SegoeUI.ttf in Resources */,
+				1835A898270AE55D00F26038 /* SegoeUI-Bold.ttf in Resources */,
+				1835A899270AE55D00F26038 /* SegoeUI-Italic.ttf in Resources */,
+				1835A89A270AE55D00F26038 /* Arial-BoldMT.ttf in Resources */,
+				1835A89B270AE55D00F26038 /* Arial.ttf in Resources */,
+				1835A89C270AE55D00F26038 /* Metropolis-Bold.otf in Resources */,
+				1835A89D270AE55D00F26038 /* PingFangSC-Regular.ttf in Resources */,
+				1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				187DEFB1270C5F05007DBD3D /* SegoeUI.ttf in Resources */,
@@ -356,40 +372,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2B505BD841464A7227DCF872 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase/Pods-showcase-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		450D7E9BD07F092FC4DE9A42 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-showcase-showcaseTests/Pods-showcase-showcaseTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		47E764F1243D2360398B03C7 /* [CP] Check Pods Manifest.lock */ = {
@@ -483,6 +465,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				1848960227100BBD00840834 /* Fix.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,6 +485,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B70BFF6B6A539E4F3B048038 /* Pods-showcase-showcaseTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -535,6 +519,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9551B9591776EE3D68C70D44 /* Pods-showcase-showcaseTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -586,6 +571,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = XANALIA_AppStore;
+				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -617,6 +603,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = XANALIA_AppStore;
+				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -676,11 +663,7 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
-					"\"$(inherited)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -734,11 +717,7 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
-					"\"$(inherited)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

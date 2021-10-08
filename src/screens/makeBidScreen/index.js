@@ -46,6 +46,7 @@ import {
 import {
     KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
+import { translate } from '../../walletUtils';
 
 const {
     LeftArrowIcon
@@ -113,8 +114,16 @@ function MakeBidScreen({
                     height: 2
                 }
             }}>
-                <Tab.Screen name='Chart' component={Month} />
-                <Tab.Screen name='History' component={Month} />
+                <Tab.Screen
+                    options={{ tabBarLabel: translate("wallet.common.chart") }}
+                    name='Chart'
+                    component={Month}
+                />
+                <Tab.Screen
+                    options={{ tabBarLabel: translate("wallet.common.history") }}
+                    name='History'
+                    component={Month}
+                />
             </Tab.Navigator>
         )
     }
@@ -128,14 +137,14 @@ function MakeBidScreen({
                     </TouchableOpacity>
                 </HeaderLeft>
                 <HeaderText>
-                    {'Make a bid'}
+                    {translate("wallet.common.makeBid")}
                 </HeaderText>
             </Header>
             <KeyboardAwareScrollView flex={1}>
                 <FlexWrap>
                     <SpaceView mTop={SIZE(40)} />
                     <UserText>
-                        {'Time Left'}
+                        {translate("wallet.common.timeLeft")}
                     </UserText>
                     <SpaceView mTop={SIZE(3)} />
                     <TimeLeftText>
@@ -145,7 +154,7 @@ function MakeBidScreen({
                     <MainContent>
                         <RowWrap>
                             <PriceLabel>
-                                {'金額'}
+                                {translate("common.Amount")}
                             </PriceLabel>
                             <PriceTextInput
                                 keyboardType={'number-pad'}
@@ -159,7 +168,7 @@ function MakeBidScreen({
                         <BorderView />
                         <SpaceView mTop={SIZE(6)} />
                         <DescriptionText>
-                            {'Current Highest bid\n223,343'}
+                            {translate("wallet.common.currentHighestbid") + '\n223,343'}
                         </DescriptionText>
                         <SpaceView mTop={SIZE(33)} />
                         <View style={{ height: SIZE(330), backgroundColor: COLORS.WHITE1 }}>
@@ -171,7 +180,7 @@ function MakeBidScreen({
                                 onPress={() => navigation.navigate('Pay')}
                                 color={COLORS.BLUE2}>
                                 <GroupText>
-                                    {'Bid Now'}
+                                    {translate("wallet.common.bidNow")}
                                 </GroupText>
                             </GrouponButton>
                         </GroupButtonView>

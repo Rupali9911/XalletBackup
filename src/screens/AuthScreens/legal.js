@@ -8,48 +8,47 @@ import CommonStyles from '../../constants/styles';
 import Checkbox from '../../components/checkbox';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
-import { RF } from '../../constants/responsiveFunct';
+import { RF, hp } from '../../constants/responsiveFunct';
 import HintText from '../../components/hintText';
 import ButtonGroup from '../../components/buttonGroup';
 import { translate } from '../../walletUtils';
 
-const Legal = ({route, navigation}) => {
+const Legal = ({ route, navigation }) => {
 
     const [openPicker, setOpenPicker] = useState(false);
     const [isCheck, setCheck] = useState(false);
-
+   
     return (
         <AppBackground >
-            <AppHeader showBackButton title={translate("wallet.common.legal")}/>
+            <AppHeader showBackButton title={translate("wallet.common.legal")} />
             <View style={CommonStyles.screenContainer} onStartShouldSetResponder={() => {
                 setOpenPicker(!openPicker)
                 return true;
             }}>
 
                 <View style={styles.contentContainer}>
-                    <AppLogo logoStyle={styles.logo}/>
-                    <TextView style={styles.title}>{translate("wallet.common.legal")}</TextView>
-                    <HintText style={styles.hint}>{translate("wallet.common.legalHint")}</HintText>
+                    <AppLogo logoStyle={styles.logo} />
+                    <HintText style={styles.hint}>{translate("wallet.common.legalHint1") + '\n' + translate("wallet.common.legalHint2")}</HintText>
                     <ButtonGroup buttons={[
                         {
                             text: translate("wallet.common.privacyPolicy"),
-                            onPress: () => navigation.navigate("policy",{isPolicy: true})
+                            onPress: () => navigation.navigate("policy", { isPolicy: true })
                         },
                         {
                             text: translate("wallet.common.termsServices"),
-                            onPress: () => navigation.navigate("policy",{isPolicy: false})
+                            onPress: () => navigation.navigate("policy", { isPolicy: false })
                         }
-                    ]}/>
+                    ]} />
                 </View>
 
                 <View style={styles.bottomView}>
-                    <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("wallet.common.termDeclaration")}/>
-                    <AppButton label={translate("wallet.common.next")} view={!isCheck} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel} 
-                        onPress={()=>{
-                            if(isCheck){
+                    <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("wallet.common.termDeclaration")} />
+                    <AppButton label={translate("wallet.common.next")} view={!isCheck} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                        onPress={() => {
+                            if (isCheck) {
                                 navigation.navigate("backup");
                             }
-                        }}/>
+                        }} />
                 </View>
 
             </View>
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-    },  
+    },
     bottomView: {
 
     },
@@ -74,6 +73,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontSize: RF(2.7)
     },
+    hint: {
+        marginTop: hp("3%")
+    }
 });
 
 export default Legal;

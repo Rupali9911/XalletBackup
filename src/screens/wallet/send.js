@@ -5,6 +5,7 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate, amountValidation, environment } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import TextView from '../../components/appText';
@@ -14,6 +15,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import {transfer} from './functions';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
+const ScanScreen = () => {
+    const navigation = useNavigation();
+    const [price, setPrice] = useState("");
+    return (
+        <View style={[styles.scene]} >
+            {/* <AppButton
+                onPress={() => {
+                    if (price.trim().length > 0) {
+                        navigation.navigate("ReceiveScan", { price })
+                    } else {
+                            alertWithSingleBtn(
+                                translate('common.alert'),
+                                translate("common.error.amountAlert"),
+                            );
+                    }
+                }}
+                label={translate("common.scan")}
+                containerStyle={[CommonStyles.button, styles.shareBtn]}
+                labelStyle={CommonStyles.buttonLabel}
+            /> */}
+        </View>
+    )
+};
 
 export const AddressField = (props) => {
 
@@ -66,6 +92,99 @@ const Send = ({route, navigation}) => {
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState("");
     const [amount, setAmount] = useState('');
+
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+        { key: 'Send', title: translate("wallet.common.send") },
+        { key: 'Scan', title: translate("wallet.common.scan") },
+    ]);
+
+    const SendScreen = () => {
+        return(
+            <View style={styles.container}>
+                <View style={styles.contentContainer}>
+                    <View style={styles.balanceContainer}>
+                        <View style={styles.profileCont} >
+                            <Image style={styles.profileImage} source={item.icon} />
+                        </View>
+
+                        <NumberFormat
+                            value={getTokenValue()}
+                            displayType={'text'}
+                            decimalScale={2}
+                            thousandSeparator={true}
+                            renderText={(formattedValue) => <TextView style={styles.priceCont}>{formattedValue}</TextView>} />
+
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <AddressField 
+                            onChangeText={setAddress}
+                            onSubmitEditing={(txt) => {
+                                // verifyAddress(txt);
+                            }}/>
+                        
+                    </View>
+                    
+                    <View style={styles.inputContainer}>
+                        <PaymentField 
+                            type={type} 
+                            value={amount}
+                            onChangeText={(e) => {
+                                let value = amountValidation(e, amount);
+                                if(value){
+                                    setAmount(value);
+                                }else {
+                                    setAmount('');
+                                }
+                                
+                            }}/>
+                    </View>
+                </View>
+                <AppButton label={translate("wallet.common.send")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                    onPress={() => {
+                        if(address !== '' && amount > 0){
+                            if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
+                                if (verifyAddress(address)) {
+                                    transferAmount();
+                                } else {
+                                    showErrorAlert(translate("wallet.common.invalidAddress"));
+                                }
+                            }
+                            else {
+                                showErrorAlert(translate("wallet.common.insufficientFunds"));
+                            }  
+                        }else{
+                            showErrorAlert(translate("wallet.common.requireSendField"));
+                        }
+                    }} />
+            </View>
+        )
+    }
+   
+
+    const renderScene = SceneMap({
+        Send: SendScreen,
+        Scan: ScanScreen,
+    });
+    
+    const renderTabBar = (props) => {
+        return (
+            <TabBar
+                {...props}
+                renderLabel={({ route, focused, color }) => (
+                    <Text style={{ color, ...styles.tabLabel }}>
+                        {route.title}
+                    </Text>
+                )}
+                contentContainerStyle={{ height: 45 }}
+                indicatorStyle={{ backgroundColor: Colors.scanActive }}
+                style={styles.tabItem}
+                inactiveColor={Colors.sectionLabel}
+                activeColor={Colors.scanActive}
+            />
+        )
+    }
+
 
     const getTokenValue = () => {
         let totalValue = 0;
@@ -193,16 +312,19 @@ const Send = ({route, navigation}) => {
     }
 
     const showErrorAlert = (msg) => {
-        Alert.alert(msg);
+        alertWithSingleBtn(
+            translate('common.error'),
+            msg
+        )
     }
 
     const showSuccessAlert = () => {
         Alert.alert(
-            translate("common.transferInProgress", {token: `${amount} ${type}`}),
+            translate("wallet.common.transferInProgress", {token: `${amount} ${type}`}),
             '',
             [
                 {
-                    text: 'OK',
+                    text: translate('wallet.common.ok'),
                     onPress: () => {
                         navigation.popToTop();
                     }
@@ -211,6 +333,8 @@ const Send = ({route, navigation}) => {
         );
     }
 
+    
+
     return (
         <AppBackground isBusy={loading}>
             <AppHeader
@@ -218,63 +342,13 @@ const Send = ({route, navigation}) => {
                 title={translate("wallet.common.send")}
             />
 
-            <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                    <View style={styles.balanceContainer}>
-                        <View style={styles.profileCont} >
-                            <Image style={styles.profileImage} source={item.icon} />
-                        </View>
-
-                        <NumberFormat
-                            value={getTokenValue()}
-                            displayType={'text'}
-                            decimalScale={2}
-                            thousandSeparator={true}
-                            renderText={(formattedValue) => <TextView style={styles.priceCont}>{formattedValue}</TextView>} />
-
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <AddressField 
-                            onChangeText={setAddress}
-                            onSubmitEditing={(txt) => {
-                                // verifyAddress(txt);
-                            }}/>
-                        
-                    </View>
-                    
-                    <View style={styles.inputContainer}>
-                        <PaymentField 
-                            type={type} 
-                            value={amount}
-                            onChangeText={(e) => {
-                                let value = amountValidation(e, amount);
-                                if(value){
-                                    setAmount(value);
-                                }else {
-                                    setAmount('');
-                                }
-                                
-                            }}/>
-                    </View>
-                </View>
-                <AppButton label={translate("wallet.common.send")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
-                    onPress={() => {
-                        if(address !== '' && amount > 0){
-                            if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
-                                if (verifyAddress(address)) {
-                                    transferAmount();
-                                } else {
-                                    Alert.alert(translate("wallet.common.invalidAddress"));
-                                }
-                            }
-                            else {
-                                Alert.alert(translate("wallet.common.insufficientFunds"));
-                            }  
-                        }else{
-                            Alert.alert(translate("wallet.common.requireSendField"));
-                        }
-                    }} />
-            </View>
+            <TabView
+                renderTabBar={renderTabBar}
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                style={styles.tabItem}
+            />
 
         </AppBackground>
 
@@ -285,6 +359,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: wp("5%")
+    },
+    scene: {
+        flex: 1,
+    },
+    tabItem: {
+        backgroundColor: Colors.white,
+        shadowColor: Colors.white
+    },
+    tabLabel: {
+        fontFamily: Fonts.ARIAL,
+        fontSize: RF(1.8),
+        fontWeight: "normal",
     },
     contentContainer: {
         flex: 1,

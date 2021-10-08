@@ -1,5 +1,7 @@
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 import {
     MY_COLLECTION_LOAD_FAIL,
@@ -28,7 +30,7 @@ export const myCollectionPageChange = (data) => ({
 
 export const myCollectionList = (page, ownerId) => {
     return (dispatch, getState) => {
-        
+
         dispatch(myCollectionLoadStart());
         let body_data = {
             limit: 15,
@@ -53,7 +55,10 @@ export const myCollectionList = (page, ownerId) => {
                 dispatch(myCollectionLoadSuccess(new_list));
             }).catch(err => {
                 dispatch(myCollectionLoadFail())
-                alert(err.message)
+                alertWithSingleBtn(
+                    translate('common.error'),
+                    err.message
+                )
             })
     }
 }

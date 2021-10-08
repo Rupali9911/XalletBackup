@@ -11,6 +11,8 @@ import styles from './styles';
 import { colors } from '../../res';
 import { Loader, DetailModal, C_Image } from '../../components';
 import getLanguage from '../../utils/languageSupport';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const Favorite = () => {
@@ -75,7 +77,7 @@ const Favorite = () => {
                                                     <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
                                                     :
                                                     <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }}>No Image to Show</Text>
+                                                        <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
                                                     </View>
                                             }
                                         </TouchableOpacity>

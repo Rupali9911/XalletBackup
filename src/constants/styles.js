@@ -24,7 +24,7 @@ const CommonStyles = StyleSheet.create({
     imageStyles: (size) => ({
         height: wp(`${size}%`),
         width: wp(`${size}%`),
-        resizeMode: "contain"
+        resizeMode: 'contain'
     }),
     circle: (size) => ({
         height: wp(`${size}%`),

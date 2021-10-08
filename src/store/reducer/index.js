@@ -9,6 +9,7 @@ import MyCollectionReducer from './myCollectionReducer';
 import UserReducer from './userReducer';
 import WalletReducer from './walletReducer';
 import LanguageReducer from './languageReducer';
+import PaymentReducer from './paymentReducer';
 
 const RootReducer = combineReducers({
     AuthReducer,
@@ -19,7 +20,8 @@ const RootReducer = combineReducers({
     MyCollectionReducer,
     UserReducer,
     WalletReducer,
-    LanguageReducer
+    LanguageReducer,
+    PaymentReducer
 });
 
 export default RootReducer;

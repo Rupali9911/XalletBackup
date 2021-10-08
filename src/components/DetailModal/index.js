@@ -33,6 +33,8 @@ import {
     BlurView
 } from '@react-native-community/blur';
 import Video from 'react-native-fast-video';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
 
 const ModalContainer = styled.View`
     flex: 1;
@@ -141,7 +143,10 @@ const DetailModal = ({
                         })
 
                 } else if (res.data.data === "No record found") {
-                    alert('No record found');
+                    alertWithSingleBtn(
+                        translate('common.error'),
+                        translate('common.norecordfound')
+                    )
                 }
             })
             .catch((err) => {
@@ -216,19 +221,19 @@ const DetailModal = ({
                                 <ButtonList>
                                     <ButtonItem onPress={toggleModal}>
                                         <NormalText>
-                                            {'Like'}
+                                            {translate('wallet.common.Like')}
                                         </NormalText>
                                     </ButtonItem>
                                     <BorderView />
                                     <ButtonItem onPress={toggleModal}>
                                         <NormalText>
-                                            {'Comment'}
+                                            {translate('wallet.common.Comment')}
                                         </NormalText>
                                     </ButtonItem>
                                     <BorderView />
                                     <ButtonItem onPress={toggleModal}>
                                         <NormalText>
-                                            {'Send as Message'}
+                                            {translate('wallet.common.sendMessage')}
                                         </NormalText>
                                     </ButtonItem>
                                 </ButtonList>

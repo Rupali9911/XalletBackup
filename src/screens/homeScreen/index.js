@@ -25,6 +25,8 @@ import NewNFT from './newNFT';
 import Favorite from './favorite';
 import getLanguage from '../../utils/languageSupport';
 import CommonStyles from '../../constants/styles';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
@@ -122,7 +124,7 @@ const Hot = () => {
                         />
                         :
                         <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
             {
@@ -159,7 +161,7 @@ const HomeScreen = ({ navigation }) => {
 
                     </View>
                     <Text style={styles.headerTitle}>
-                        {'Home'}
+                        {translate("common.home")}
                     </Text>
                     <View style={styles.headerMenuContainer}>
                         <TouchableOpacity onPress={() => { navigation.navigate('Certificate') }} hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
@@ -215,9 +217,21 @@ const HomeScreen = ({ navigation }) => {
                         marginBottom: SIZE(39)
                     }
                 }} >
-                    <Tab.Screen name={langObj.common.hot} component={Hot} />
-                    <Tab.Screen name={langObj.common.following} component={NewNFT} />
-                    <Tab.Screen name={langObj.common.Discover} component={Favorite} />
+                    <Tab.Screen
+                        name={langObj.common.hot}
+                        component={Hot}
+                        options={{ tabBarLabel: translate("common.hot") }}
+                        />
+                    <Tab.Screen
+                        name={langObj.common.following}
+                        component={NewNFT}
+                        options={{ tabBarLabel: translate("common.following") }}
+                        />
+                    <Tab.Screen
+                        name={langObj.common.Discover}
+                        component={Favorite}
+                        options={{ tabBarLabel: translate("common.Discover") }}
+                    />
                 </Tab.Navigator>
             </SafeAreaView>
             <AppModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}>

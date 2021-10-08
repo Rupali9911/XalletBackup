@@ -43,7 +43,7 @@ var accounts = new Accounts("")
 
 const Wallet = ({route, navigation}) => {
 
-    const {wallet, isCreate} = useSelector(state => state.UserReducer);
+    const {wallet, isCreate, data} = useSelector(state => state.UserReducer);
     const {ethBalance,bnbBalance,maticBalance} = useSelector(state => state.WalletReducer);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();

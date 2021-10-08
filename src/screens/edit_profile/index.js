@@ -38,6 +38,7 @@ import {
 import {
     KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
+import { translate } from '../../walletUtils';
 
 const {
     LeftArrowIcon,
@@ -59,12 +60,12 @@ function Profile({
                     </TouchableOpacity>
                 </HeaderLeft>
                 <HeaderText>
-                    {'Edit Profile'}
+                    {translate("common.editprofile")}
                 </HeaderText>
                 <HeaderRight>
                     <TouchableOpacity>
                         <DoneText>
-                            {'Done'}
+                            {translate("wallet.common.done")}
                         </DoneText>
                     </TouchableOpacity>
                 </HeaderRight>
@@ -78,7 +79,7 @@ function Profile({
                     <SpaceView mTop={SIZE(7)} />
                     <TouchableOpacity onPress={() => { }}>
                         <ChangeAvatar>
-                            {'Change profile photo'}
+                            {translate("wallet.common.changeprofilephoto")}
                         </ChangeAvatar>
                     </TouchableOpacity>
                     <SpaceView mTop={SIZE(17)} />
@@ -88,7 +89,7 @@ function Profile({
                     <RowWrap>
                         <SpaceView mLeft={SIZE(19)} />
                         <NormalText>
-                            {'Name'}
+                            {translate("common.name")}
                         </NormalText>
                     </RowWrap>
                     <EditableInput
@@ -98,7 +99,7 @@ function Profile({
                     <RowWrap>
                         <SpaceView mLeft={SIZE(19)} />
                         <NormalText>
-                            {'Username'}
+                            {translate("common.UserName")}
                         </NormalText>
                     </RowWrap>
                     <EditableInput
@@ -108,7 +109,7 @@ function Profile({
                     <RowWrap>
                         <SpaceView mLeft={SIZE(19)} />
                         <NormalText>
-                            {'Website'}
+                            {translate("common.website")}
                         </NormalText>
                     </RowWrap>
                     <EditableInput
@@ -118,7 +119,7 @@ function Profile({
                     <RowWrap>
                         <SpaceView mLeft={SIZE(19)} />
                         <NormalText>
-                            {'Bio'}
+                            {translate("common.bio")}
                         </NormalText>
                     </RowWrap>
                     <EditableInput

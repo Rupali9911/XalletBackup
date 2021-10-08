@@ -66,6 +66,8 @@ import {
 } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const {
@@ -269,7 +271,41 @@ const Collection = ({ route }) => {
                                 refreshFunc()
                             }}
                             refreshing={MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading}
+<<<<<<< HEAD
                             renderItem={renderItem}
+=======
+                            renderItem={({ item }) => {
+                                let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
+                                if (item.metaData) {
+                                    const image = item.metaData.thumbnft || item.thumbnailUrl;
+                                    return (
+                                        <TouchableOpacity
+                                            onLongPress={() => {
+                                                setModalData(item);
+                                                setModalVisible(true);
+                                            }}
+                                            onPress={() => {
+                                                dispatch(changeScreenName("myCollection"));
+                                                navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                                            }}
+                                            style={styles.listItem}>
+                                            {
+                                                image ?
+                                                    <C_Image
+                                                        uri={image}
+                                                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                                        imageStyle={styles.listImage} />
+                                                    : <View style={styles.sorryMessageCont}>
+                                                        <Text style={{ textAlign: "center" }} >
+                                                            {translate("wallet.common.error.noImage")}
+                                                        </Text>
+                                                    </View>
+                                            }
+                                        </TouchableOpacity>
+                                    )
+                                }
+                            }}
+>>>>>>> b6f89daabec5713e2709a19e7d1c19eae60ed50d
                             onEndReached={() => {
                                 if (!MyCollectionReducer.myCollectionListLoading) {
                                     let num = MyCollectionReducer.page + 1;
@@ -331,8 +367,18 @@ function ArtistDetail({
                     height: 2
                 }
             }}>
-                <Tab.Screen name='Created' component={Created} initialParams={{ id: data._id }} />
-                <Tab.Screen name='Collection' component={Collection} initialParams={{ id: data._id }} />
+                <Tab.Screen
+                    name='Created'
+                    component={Created}
+                    options={{ tabBarLabel: translate("wallet.common.created") }}
+                    initialParams={{ id: data._id }}
+                />
+                <Tab.Screen
+                    name='Collection'
+                    component={Collection}
+                    options={{ tabBarLabel: translate("common.collected") }}
+                    initialParams={{ id: data._id }}
+                />
             </Tab.Navigator>
         )
     }
@@ -370,7 +416,7 @@ function ArtistDetail({
                                         {'0'}
                                     </BoldText>
                                     <SmallText>
-                                        {'Post'}
+                                        {translate("wallet.common.post")}
                                     </SmallText>
                                 </CenterWrap>
                                 <SpaceView mLeft={SIZE(41)} />
@@ -380,7 +426,7 @@ function ArtistDetail({
                                     {data.followers}
                                 </BoldText>
                                 <SmallText>
-                                    {'Follower'}
+                                    {translate("common.followers")}
                                 </SmallText>
                             </CenterWrap>
                             <RowWrap>
@@ -390,7 +436,7 @@ function ArtistDetail({
                                         {data.following}
                                     </BoldText>
                                     <SmallText>
-                                        {'Following'}
+                                        {translate("common.following")}
                                     </SmallText>
                                 </CenterWrap>
                             </RowWrap>
@@ -416,7 +462,7 @@ function ArtistDetail({
                 <SpaceView mLeft={SIZE(15)} />
                 <EditButton>
                     <EditButtonText>
-                        {'Follow'}
+                        {translate("common.follow")}
                     </EditButtonText>
                 </EditButton>
                 <SpaceView mRight={SIZE(15)} />

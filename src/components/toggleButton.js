@@ -32,7 +32,7 @@ const ToggleButtons = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: "50%",
+        width: "60%",
         flexDirection: 'row',
         marginVertical: hp("2%"),
         alignSelf: 'center'

@@ -8,6 +8,8 @@ import {
     NEW_PAGE_CHANGE,
     NEW_NFT_LIST_RESET
 } from '../types';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 export const newNftLoadSuccess = (data) => ({
     type: NEW_NFT_LOAD_SUCCESS,
@@ -67,7 +69,10 @@ export const newNFTList = (page) => {
 
             }).catch(err => {
                 dispatch(newNftLoadFail())
-                alert(err.message)
+                alertWithSingleBtn(
+                    translate('common.error'),
+                    err.message
+                )
             })
     }
 }
