@@ -19,11 +19,13 @@ import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import AppButton from '../../components/appButton';
+import { StripeApiRequest } from '../../helpers/ApiRequest';
+import { addCard } from '../../store/reducer/paymentReducer';
 
 function AddCard({ route, navigation }) {
 
     const dispatch = useDispatch();
-    const {data} = useSelector(state => state.AuthReducer);
+    const {data} = useSelector(state => state.UserReducer);
     // const { loading } = useSelector(state => state.PayReducer);
 
     const [cardNumber, setCardNumber] = useState("");
@@ -42,14 +44,14 @@ function AddCard({ route, navigation }) {
     const isValidCardNumber = () => {
         if(cardNumber.length == 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.reuiredCardNumber")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.reuiredCardNumber")
             );
             return false;
         }else if(cardNumber.length < 16){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.reuiredCardNumber")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.reuiredCardNumber")
             );
             return false;
         }
@@ -59,8 +61,8 @@ function AddCard({ route, navigation }) {
     const isValidName = () => {
         if(cardHolderName.trim().length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.nameRequired")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.nameRequired")
             );
             return false;
         }
@@ -71,14 +73,14 @@ function AddCard({ route, navigation }) {
         const exp = expDate.split('/');
         if(exp.length != 2){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.inValidExpiryDate")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.inValidExpiryDate")
             );
             return false;
         }else if(exp[1].length !== 2){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.inValidExpiryDate")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.inValidExpiryDate")
             );
             return false;
         }
@@ -88,14 +90,14 @@ function AddCard({ route, navigation }) {
     const isValidCvv = () => {
         if(cvv.length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.inValidCvv")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.inValidCvv")
             );
             return false;
         }else if(cardType.code.size !== cvv.length){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.inValidCvv")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.inValidCvv")
             );
             return false;
         }
@@ -106,14 +108,14 @@ function AddCard({ route, navigation }) {
         var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if(email.length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.emailRequired")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.emailRequired")
             );
             return false;
         }else if(!filter.test(email)){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.invalidEmail")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.invalidEmail")
             );
             return false;
         }
@@ -123,8 +125,8 @@ function AddCard({ route, navigation }) {
     const isValidAddress = () => {
         if(address.trim().length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.requireAddress")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.requireAddress")
             );
             return false;
         }
@@ -134,8 +136,8 @@ function AddCard({ route, navigation }) {
     const isValidCountry = () => {
         if(!country){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.requireCountry")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.requireCountry")
             );
             return false;
         }
@@ -146,8 +148,8 @@ function AddCard({ route, navigation }) {
         console.log('State', state)
         if(state === null || state.trim().length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.requireState")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.requireState")
             );
             return false;
         }
@@ -157,8 +159,8 @@ function AddCard({ route, navigation }) {
     const isValidCity = () => {
         if(city.trim().length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.requireCity")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.requireCity")
             );
             return false;
         }
@@ -168,8 +170,8 @@ function AddCard({ route, navigation }) {
     const isValidZipcode = () => {
         if(zipcode.trim().length <= 0){
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.requireZipcode")
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.requireZipcode")
             );
             return false;
         }
@@ -208,23 +210,23 @@ function AddCard({ route, navigation }) {
             "card[address_country]": country.name,
         }
 
-        // StripeApiRequest(`${Config.STRIPE_API_URL}tokens`,body).then((response)=>{
-        //     console.log(response);
-        //     if(response.id){
-        //         addCustomerCard(response.id);
-        //     }else if(response.error){
-        //         console.log("error_code",response.error.code)
-        //         alertWithSingleBtn(
-        //             translate("common.alert"),
-        //             translate(`common.stripeError.${response.error.code}`)
-        //         )
-        //     }
-        // }).catch((err)=>{
-        //     console.log(err);
-        //     if(err.error){
-        //         console.log("error_code1",response.error.code)
-        //     }
-        // });
+        StripeApiRequest(`tokens`,body).then((response)=>{
+            console.log(response);
+            if(response.id){
+                addCustomerCard(response.id);
+            }else if(response.error){
+                console.log("error_code",response.error.code)
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate(`wallet.common.stripeError.${response.error.code}`)
+                )
+            }
+        }).catch((err)=>{
+            console.log(err);
+            if(err.error){
+                console.log("error_code1",response.error.code)
+            }
+        });
     }
 
     const addCustomerCard = (tokenId) => {
@@ -233,31 +235,34 @@ function AddCard({ route, navigation }) {
             "email": email,
             "userName": cardHolderName,
             "addressLine1": address,
-            "addressLine2": address,
+            "addressLine2": "",
             "city": city,
             "state": state,
             "zip": zipcode,
-            "country": country.name,
-            "defaultCard": isDefault
+            "country": country.name
         }
 
-        // dispatch(AddCustomerCard(params, data.token)).then((response)=>{
-        //     console.log('response',response);
-        //     if(response.success){
-        //         alertWithSingleBtn(
-        //             translate("common.alert"),
-        //             translate(response.msg_key)
-        //         )
-        //         navigation.goBack();
-        //     }else{
-        //         alertWithSingleBtn(
-        //             translate("common.alert"),
-        //             response.msg_key?translate(response.msg_key):response.msg
-        //         )
-        //     }
-        // }).catch((err)=>{
-        //     console.log('err',err);
-        // });
+        dispatch(addCard(data.token, params)).then((response)=>{
+            console.log('response',response);
+            if(response.success){
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    response.msg_key?translate(response.msg_key):response.data.message
+                )
+                navigation.goBack();
+            }else{
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    response.error_code?translate(response.error_code):response.msg
+                )
+            }
+        }).catch((err)=>{
+            console.log('err',err);
+            alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                err.error_code?translate(`common.${err.error_code}`):''
+            )
+        });
 
     }
 
@@ -300,14 +305,14 @@ function AddCard({ route, navigation }) {
                         length={cardType?cardType.code.size:0} />
                 </View>
 
-                <View style={styles.checkBoxContainer}>
+                {/* <View style={styles.checkBoxContainer}>
                     <Checkbox
                         label={translate("wallet.common.topup.markAsDefault")}
                         labelStyle={styles.checkBoxLabel}
                         onChecked={(check) => setDefault(check)}
                         isCheck={isDefault}
                     />
-                </View>
+                </View> */}
 
                 <Heading title={translate("wallet.common.topup.billingAddress")}/>
 
@@ -355,8 +360,7 @@ function AddCard({ route, navigation }) {
             <View style={styles.buttonContainer}>
                 <AppButton label={translate("wallet.common.topup.next")} containerStyle={[CommonStyles.button, styles.button]} labelStyle={[CommonStyles.buttonLabel, { fontWeight: 'bold' }]} onPress={() => {
                     // getCardToken();
-                    // validateInputs();
-                    navigation.navigate("Cards",{});
+                    validateInputs();
                 }} />
             </View>
 

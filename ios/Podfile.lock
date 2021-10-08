@@ -348,6 +348,15 @@ PODS:
   - SDWebImageWebPCoder (0.8.4):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
+  - Stripe (21.8.1):
+    - Stripe/Stripe3DS2 (= 21.8.1)
+    - StripeCore (= 21.8.1)
+  - stripe-react-native (0.2.2):
+    - React
+    - Stripe (~> 21.8.1)
+  - Stripe/Stripe3DS2 (21.8.1):
+    - StripeCore (= 21.8.1)
+  - StripeCore (21.8.1)
   - TcpSockets (3.3.2):
     - React
   - Yoga (1.14.0)
@@ -408,6 +417,7 @@ DEPENDENCIES:
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - TcpSockets (from `../node_modules/react-native-tcp`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -417,6 +427,8 @@ SPEC REPOS:
     - libwebp
     - SDWebImage
     - SDWebImageWebPCoder
+    - Stripe
+    - StripeCore
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -525,6 +537,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  stripe-react-native:
+    :path: "../node_modules/@stripe/stripe-react-native"
   TcpSockets:
     :path: "../node_modules/react-native-tcp"
   Yoga:
@@ -588,9 +602,12 @@ SPEC CHECKSUMS:
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
+  Stripe: 57c6997c64042a3f5aedae9b76e331942f8b75d2
+  stripe-react-native: ae53a97cc9ab084cc6228f2250da56b0e53da276
+  StripeCore: a6e50d58119a0c7601773b56f274db2d394dcdac
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: 47e073de060c0517e9642994e95fdffe35d5186c
+PODFILE CHECKSUM: 5717c0bf595cf205574a7ee6c54eeca16862cb22
 
 COCOAPODS: 1.10.1

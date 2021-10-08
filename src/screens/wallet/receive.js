@@ -207,10 +207,10 @@ function Receive({ route, navigation }) {
 
     const [title, setTitle] = useState("");
     const [index, setIndex] = useState(0);
-    const [routes] = useState([
-        { key: 'QR', title: translate("wallet.common.qr") },
-        { key: 'Scan', title: translate("wallet.common.scan") },
-    ]);
+    // const [routes] = useState([
+    //     { key: 'QR', title: translate("wallet.common.qr") },
+    //     { key: 'Scan', title: translate("wallet.common.scan") },
+    // ]);
 
     const renderScene = SceneMap({
         QR: QRScreen,
@@ -242,13 +242,15 @@ function Receive({ route, navigation }) {
                 title={index == 0 ? translate("wallet.common.receive") : translate("wallet.common.scan")}
             />
 
-            <TabView
+            <QRScreen />
+
+            {/* <TabView
                 renderTabBar={renderTabBar}
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 style={styles.tabItem}
-            />
+            /> */}
 
         </AppBackground>
 

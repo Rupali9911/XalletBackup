@@ -82,3 +82,10 @@ export const UPDATE_BALANCES = "UPDATE_BALANCES";
     //#endregion
 
 //#endregion
+
+//#region Payment
+
+export const SET_PAYMENT_OBJECT = "SET_PAYMENT_OBJECT";
+export const SET_ALL_CARDS = "SET_ALL_CARDS";
+
+//#endregion

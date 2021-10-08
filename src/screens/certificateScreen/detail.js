@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
     View,
     TouchableOpacity,
@@ -24,6 +24,8 @@ import Video from 'react-native-fast-video';
 import { translate } from '../../walletUtils';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllCards, setPaymentObject } from '../../store/reducer/paymentReducer';
 
 const {
     PlayButtonIcon,
@@ -35,9 +37,14 @@ const langObj = getLanguage();
 
 const DetailScreen = ({ route, navigation }) => {
 
+    const dispatch = useDispatch();
+    const {paymentObject} = useSelector(state => state.PaymentReducer);
+    const {data} = useSelector(state => state.UserReducer);
+
     const refVideo = useRef(null);
     const [isPlay, setPlay] = useState(false);
     const {
+        id,
         name,
         description,
         owner,
@@ -47,10 +54,23 @@ const DetailScreen = ({ route, navigation }) => {
         thumbnailUrl,
         video,
         fileType,
-        price
+        price,
+        chain
     } = route.params;
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPaymentNow, setShowPaymentNow] = useState(false);
+
+    useEffect(()=>{
+        if(data.token){
+            dispatch(getAllCards(data.token));
+        }
+    },[]);
+
+    useEffect(() => {
+        if(paymentObject){
+            setShowPaymentNow(true);
+        }
+    },[paymentObject]);
 
     return (
         <>
@@ -194,8 +214,11 @@ const DetailScreen = ({ route, navigation }) => {
                     </View>
                 </ScrollView>
             </SafeAreaView>
-            <PaymentMethod visible={showPaymentMethod} onRequestClose={() => setShowPaymentMethod(false)} />
-            <PaymentNow visible={showPaymentNow} onRequestClose={() => setShowPaymentNow(false)}/>
+            <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} onRequestClose={() => setShowPaymentMethod(false)} />
+            <PaymentNow visible={showPaymentNow} price={price ? price : 0} chain={chain} NftId={id} onRequestClose={() => {
+                dispatch(setPaymentObject(null));
+                setShowPaymentNow(false)
+            }}/>
         </>
     )
 }

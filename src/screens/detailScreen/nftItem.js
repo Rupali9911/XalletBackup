@@ -153,6 +153,7 @@ const nftItem = ({ item, index }) => {
     fetch(`${BASE_URL}/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then((res) => {
+        console.log('res',res);
         if (res.data.length > 0 && res.data !== "No record found") {
           const data = res.data[0];
 
@@ -210,7 +211,7 @@ const nftItem = ({ item, index }) => {
             source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
           <View>
             <Text style={styles.modalIconLabel} >
-              {langObj.common.owner}
+              {translate("common.owner")}
             </Text>
             <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
               {owner}
@@ -223,7 +224,7 @@ const nftItem = ({ item, index }) => {
             source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
           <View>
             <Text style={styles.modalIconLabel}>
-              {langObj.common.creator}
+              {translate("common.creator")}
             </Text>
             <Text numberOfLines={1} style={[styles.iconLabel, { maxWidth: Platform.OS === 'ios' ? (width * 0.35) : (width * 0.4) }]} >
               {artist}
@@ -237,6 +238,7 @@ const nftItem = ({ item, index }) => {
           isPlay ? setPlay(!isPlay)
             :
             navigation.navigate('CertificateDetail', {
+              id: item.newtokenId,
               name: item.metaData.name,
               description: item.metaData.description,
               owner: owner,
@@ -246,7 +248,8 @@ const nftItem = ({ item, index }) => {
               thumbnailUrl: item.thumbnailUrl,
               video: item.metaData.image,
               fileType: fileType,
-              price: item.price
+              price: item.price,
+              chain: item.chain
             });
         }}>
         {

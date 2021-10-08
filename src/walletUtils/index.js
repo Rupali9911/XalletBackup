@@ -47,7 +47,7 @@ export const environment = {
     secretAccessKey: 'uHQulCaltW7hhIfrGaoVEjs+S8iiHcFVuL8rRPMr',
   },
   stripeKey: {
-    p_key: 'pk_test_51JKHYdIBLEGUTX489GlduEZkiPoFCXFO268NsFMBGWp4eMipXgOH2ezillGByIzuWPfMwznUoGYwFn0yOcvCfsog00vaTmbNN0'
+    p_key: 'pk_test_51Jbha5Ee7q061aolrboDAHMlO4Y6eYpoHZtARZwQcFXUIu0fxFFzHjFKSTQNUnfrYO6owRxHzfECLULhV7RXZ7Zr00oa6Um1Zb'
   },
   ethRpc: IsTestNet ? test_ethRpc : ethRpc,
   bnbRpc: IsTestNet ? test_bnbRpc : bnbRpc,

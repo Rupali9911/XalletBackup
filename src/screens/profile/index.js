@@ -204,7 +204,7 @@ function Profile({
         <Container>
             <Header>
                 <HeaderText>
-                    {'Name'}
+                    {/* {'Name'} */}
                 </HeaderText>
                 <HeaderRight>
                     <RowWrap>

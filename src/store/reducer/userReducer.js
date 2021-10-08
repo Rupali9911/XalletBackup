@@ -47,7 +47,7 @@ export default UserReducer = (state = initialState, action) => {
     }
 }
 
-const startLoading = () => ({
+export const startLoading = () => ({
   type: AUTH_LOADING_START,
 });
 
@@ -101,7 +101,7 @@ new Promise((resolve, reject) => {
     resolve();
 });
 
-export const getAddressNonce = (wallet) => (dispatch) =>
+export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
     new Promise((resolve, reject) => {
         const url = "https://testapi.xanalia.com/auth/get-address-nonce";
         const params = {
@@ -144,7 +144,7 @@ export const getAddressNonce = (wallet) => (dispatch) =>
                             if(_response.success){
                                 const items = [['@wallet', JSON.stringify(wallet)], ['@userData', JSON.stringify(_response.data)]]
                                 await AsyncStorage.multiSet(items, (err) => console.log(err));
-                                dispatch(setUserData({ data: _response.data, wallet,  isCreate: true }));
+                                dispatch(setUserData({ data: _response.data, wallet,  isCreate }));
                                 resolve();
                             }else{
                                 dispatch(endLoading());

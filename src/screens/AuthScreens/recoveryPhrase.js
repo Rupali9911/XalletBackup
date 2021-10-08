@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, ImageBackground, Text, TextInput, Keyboard, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, ImageBackground, Text, TextInput, TouchableOpacity, Keyboard, Alert, ScrollView } from 'react-native';
 import { Button, Card, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -7,6 +7,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import AppButton from '../../components/appButton';
+import FetchingIndicator from '../../components/fetchingIndicator';
 import CommonStyles from '../../constants/styles';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
@@ -17,8 +18,6 @@ import Colors from '../../constants/Colors';
 import { setUserAuthData, startLoader, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
-// import SingleSocket from '../../helpers/SingleSocket';
-// import { Events } from '../../navigations';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 
 const ethers = require('ethers');
@@ -26,28 +25,33 @@ const ethers = require('ethers');
 const RecoveryPhrase = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const { loading } = useSelector(state => state.UserReducer);
+    const {loading} = useSelector(state => state.UserReducer);
+
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
     const [phrase, setPhrase] = useState("");
 
     useEffect(() => {
         if (!recover) {
-            dispatch(startLoader()).then(async () => {
-                var randomSeed = ethers.Wallet.createRandom();
-                const account = {
-                    mnemonic: randomSeed.mnemonic,
-                    address: randomSeed.address,
-                    privateKey: randomSeed.privateKey
-                }
-                console.log(randomSeed.mnemonic);
-                console.log(randomSeed.address);
-                console.log(randomSeed.privateKey);
-                setWallet(account);
-                dispatch(endLoader());
-            });
+            getPhraseData()
         }
     }, []);
+
+    const getPhraseData = async () => {
+        dispatch(startLoader()).then(async () => {
+            var randomSeed = ethers.Wallet.createRandom();
+            const account = {
+                mnemonic: randomSeed.mnemonic,
+                address: randomSeed.address,
+                privateKey: randomSeed.privateKey
+            }
+            console.log(randomSeed.mnemonic);
+            console.log(randomSeed.address);
+            console.log(randomSeed.privateKey);
+            setWallet(account);
+            dispatch(endLoader());
+        });
+    }
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet.mnemonic.phrase);
@@ -68,7 +72,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 console.log(mnemonicWallet.privateKey);
                 setWallet(account);
                 // dispatch(setUserAuthData(account));
-                dispatch(getAddressNonce(account));
+                dispatch(getAddressNonce(account, false));
             }).catch((err) => {
                 console.log('err', err.toString());
                 if (err.toString() == 'Error: invalid mnemonic' || err.toString() == 'Error: invalid checksum') {
@@ -87,6 +91,11 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 translate("wallet.common.requirePhrase")
             )
         }
+    }
+
+    const pastePhrase = async () => {
+        const text = await Clipboard.getString();
+        setPhrase(text);
     }
 
     return (
@@ -111,15 +120,20 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                     <TextInput
                                         style={styles.input}
                                         multiline={true}
+                                        value={phrase}
                                         onChangeText={setPhrase}
                                         underlineColorAndroid={Colors.transparent}
                                     />
+                                    <TouchableOpacity onPress={() => pastePhrase()} style={{position: "absolute", right: 0, bottom: 0, paddingHorizontal: wp('3%'), paddingVertical: hp('1%')}} >
+                                        <Text style={{color: Colors.themeColor}} >{translate("wallet.common.paste")}</Text>
+                                    </TouchableOpacity>
                                 </View>
                                 :
                                 <View style={styles.phraseContainer}>
-                                    {wallet && wallet.mnemonic.phrase.split(' ').map((item, index) => {
-                                        return <WordView word={item} index={index + 1} key={`_${index}`} />
-                                    })}
+                                    {wallet ?
+                                        wallet.mnemonic.phrase.split(' ').map((item, index) => {
+                                            return <WordView word={item} index={index + 1} key={`_${index}`} />
+                                        }) : null}
                                 </View>
                             }
                         </View>
@@ -144,7 +158,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                     recoverWallet();
                                 } else {
                                     // dispatch(setUserAuthData(wallet, true));
-                                    dispatch(getAddressNonce(wallet));
+                                    navigation.navigate("verifyPhrase", { wallet })
                                 }
 
                             }} />

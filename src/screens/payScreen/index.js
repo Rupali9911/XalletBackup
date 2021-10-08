@@ -45,9 +45,7 @@ const PayScreen = ({
                 </View>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <View style={styles.successButton}>
-                        <Text style={styles.buttonText}>
-                            {translate("wallet.common.ok")}
-                        </Text>
+                        <Text style={styles.buttonText}>OK</Text>
                     </View>
                 </TouchableOpacity>
             </View>

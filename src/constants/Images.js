@@ -67,6 +67,8 @@ export default {
     goldcoin: require("../../assets/images/goldcoin.png"),
     itemDelete: require("../../assets/images/itemDelete.png"),
 
+    edit: require("../../assets/images/edit.png"),
+
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),
         "mastercard": require("../../assets/images/mastercard.png"),

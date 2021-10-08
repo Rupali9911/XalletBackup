@@ -19,12 +19,14 @@ import Separator from '../separator';
 import AppButton from '../appButton';
 import { useNavigation } from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
+import { useSelector } from 'react-redux';
 
 const PaymentMethod = (props) => {
 
     const navigation = useNavigation();
+    const {myCards} = useSelector(state => state.PaymentReducer);
 
-    const { visible, onRequestClose } = props;
+    const { visible, onRequestClose, price } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
@@ -51,20 +53,20 @@ const PaymentMethod = (props) => {
                     }}>
                         <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} />
                     </TouchableOpacity>
-                    <Text style={styles.title}>Select your payment method</Text>
+                    <Text style={styles.title}>{translate("wallet.common.selectPaymentMethod")}</Text>
                     <ButtonGroup buttons={[
                         {
-                            text: "Pay through credit card",
+                            text: translate("wallet.common.payByCreditCard"),
                             icon: ImagesSrc.cardPay,
                             onPress: () => {setSelectedMethod(0)}
                         },
                         {
-                            text: "Pay through wallet",
+                            text: translate("wallet.common.payByWallet"),
                             icon: ImagesSrc.walletPay,
                             onPress: () => {setSelectedMethod(1)}
                         },
                         {
-                            text: "Pay by Gold (In-app）",
+                            text: translate("wallet.common.payByGold"),
                             icon: ImagesSrc.goldPay,
                             onPress: () => {setSelectedMethod(2)}
                         }
@@ -78,11 +80,11 @@ const PaymentMethod = (props) => {
                     <Separator style={styles.separator}/>
 
                     <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>Total Amount</Text>
-                        <Text style={styles.value}>$ 1,300</Text>
+                        <Text style={styles.totalLabel}>{translate("wallet.common.totalAmount")}</Text>
+                        <Text style={styles.value}>$ {price}</Text>
                     </View>
 
-                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin}/> 1,300</Text>}
+                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin}/> {price}</Text>}
 
                     <AppButton
                         label={translate("wallet.common.next")}
@@ -91,7 +93,12 @@ const PaymentMethod = (props) => {
                         onPress={() => {
                             if(selectedMethod == 0){
                                 onRequestClose();
-                                navigation.navigate('AddCard')
+                                if(myCards.length > 0){
+                                    navigation.navigate('Cards',{price});
+                                }else{
+                                    navigation.navigate('Cards',{price});
+                                    navigation.navigate('AddCard',{})
+                                }
                             } else if(selectedMethod == 2) {
                                 setNotEnoughGoldVisible(true);
                             }

@@ -17,6 +17,9 @@ import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import AppButton from '../../components/appButton';
+import Separator from '../../components/separator';
+import { setPaymentObject, getAllCards, deleteCard } from '../../store/reducer/paymentReducer';
+import { Button } from 'react-native-paper';
 
 const PriceBtns = (props) => {
     return (
@@ -28,96 +31,58 @@ const PriceBtns = (props) => {
 
 const Cards = ({ route, navigation }) => {
 
-    const { data } = useSelector(state => state.AuthReducer);
-    // const { loading } = useSelector(state => state.PayReducer);
+    const { data } = useSelector(state => state.UserReducer);
+    const { paymentObject, myCards } = useSelector(state => state.PaymentReducer);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
 
-    const [cards, setCards] = useState([
-        {
-            "id": "card_1JhSqxIBLEGUTX48P0VWmStl",
-            "object": "card",
-            "address_city": "New York",
-            "address_country": "United States of America",
-            "address_line1": "US",
-            "address_line1_check": "pass",
-            "address_line2": "US",
-            "address_state": "New York",
-            "address_zip": "12345",
-            "address_zip_check": "pass",
-            "brand": "Visa",
-            "country": "US",
-            "customer": "cus_KMBDtHC2mzDtU3",
-            "cvc_check": "pass",
-            "dynamic_last4": null,
-            "exp_month": 2,
-            "exp_year": 2022,
-            "fingerprint": "moSD3wU6Bcdgqtak",
-            "funding": "credit",
-            "last4": "4242",
-            "metadata": {},
-            "name": "Robert",
-            "tokenization_method": null
-        }
-    ]);
+    const [cards, setCards] = useState([]);
     const [defaultCard, _setDefaultCard] = useState(route.params.defaultCard);
+
+    const {price} = route.params;
 
     useEffect(()=>{
         if(isFocused){
-            // getAllMyCards();
-            // getDefaultCard();
+            getAllMyCards();
+            //_setDefaultCard(cards[0]);
         }
     },[isFocused]);
 
-    const getAllMyCards = () => {
-        // dispatch(GetAllCards(data.token)).then((response)=>{
-        //     if(response.success){
-        //         console.log('response for GetAllCards', response, response.data.data)
-        //         if (response.data && response.data.data && response.data.data.length  === 0) {
-        //             _setDefaultCard(null)
-        //         }
-        //         setCards(response.data.data);
-        //     }
-        // }).catch((err)=>{
-        //     console.log('err',err);
-        // });
-    }
+    useEffect(()=> {
+        if(paymentObject){
+            _setDefaultCard(paymentObject.item);
+        }
+    },[paymentObject]);
 
-    const getDefaultCard = () => {
-        // dispatch(GetDefaultCard(data.token)).then((response)=>{
-        //     console.log('response for GetDefaultCard',response.data)
-        //     if(response.success){
-        //         _setDefaultCard(response.data);
-        //     }else{
-        //         _setDefaultCard(null);
-        //     }
-        // }).catch((err)=>{
-        //     console.log('err',err);
-        // });
+    const getAllMyCards = () => {
+        dispatch(getAllCards(data.token)).then((cards) => {
+            if(cards.length <= 0){
+            }
+        });
     }
 
     const deleteCardById = (id) => {
         const params = {
-            cardId: id
-        }
+            customerCardId: id
+          }
         console.log('params',params);
-        // dispatch(deleteCard(params, data.token)).then((response)=>{
-        //     console.log('delete response',response);
-        //     if(response.success){
-        //         alertWithSingleBtn(
-        //             translate("common.alert"),
-        //             response.msg_key?translate(response.msg_key):response.msg
-        //         )
-        //         getAllMyCards();
-        //     }else{
-        //         alertWithSingleBtn(
-        //             translate("common.alert"),
-        //             response.msg_key?translate(response.msg_key):response.msg
-        //         )
-        //     }
-        // }).catch((err)=>{
-        //     console.log(err);
-        // })
+        dispatch(deleteCard(data.token, params)).then((response)=>{
+            console.log('delete response',response);
+            if(response.success){
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    response.msg_key?translate(response.msg_key):response.msg
+                )
+                getAllMyCards();
+            }else{
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    response.msg_key?translate(response.msg_key):response.msg
+                )
+            }
+        }).catch((err)=>{
+            console.log(err);
+        })
     }
 
     return (
@@ -127,6 +92,7 @@ const Cards = ({ route, navigation }) => {
                 title={translate("wallet.common.topup.yourCards")}
                 showRightButton
                 rightButtonComponent={<Image source={ImagesSrc.addIcon} style={[CommonStyles.imageStyles(5), {tintColor: Colors.themeColor}]}/>}
+                onPressRight={() => {navigation.navigate("AddCard")}}
             />
             <KeyboardAwareScrollView>
 
@@ -138,7 +104,7 @@ const Cards = ({ route, navigation }) => {
 
                 <FlatList
                     style={styles.cardList}
-                    data={cards}
+                    data={myCards}
                     renderItem={({item, index}) => {
                         return (
                             <CardItem
@@ -152,6 +118,7 @@ const Cards = ({ route, navigation }) => {
                                     // }).catch((err) => {
                                     //     console.log('err', err);
                                     // });
+                                    _setDefaultCard(item);
                                 }}
                                 onDelete = {(card)=>{
                                     confirmationAlert(
@@ -166,17 +133,45 @@ const Cards = ({ route, navigation }) => {
                             />
                         );
                     }}
+                    keyExtractor={(item,index) => `${item.id}`}
                     ItemSeparatorComponent={()=>{
                         return (
                             <View style={styles.separator}/>
                         );
                     }}
+                    ListEmptyComponent={() => <View style={{marginTop: hp("5%")}}>
+                        <Button mode={'text'} uppercase={false} color={Colors.themeColor} labelStyle={{fontSize: RF(2), fontFamily: Fonts.ARIAL}} onPress={() => navigation.navigate("AddCard")}>
+                            {translate("wallet.common.topup.addYourCard")}
+                        </Button>
+                    </View>}
                     />
 
             </KeyboardAwareScrollView>
 
+            <Separator style={styles.separator} />
+
+            <View style={styles.totalContainer}>
+                <Text style={styles.totalLabel}>{translate("wallet.common.totalAmount")}</Text>
+                <Text style={styles.value}>$ {price}</Text>
+            </View>
+
             <View style={styles.buttonContainer}>
-                <AppButton label={translate("wallet.common.topup.addYourCard")} containerStyle={[CommonStyles.outlineButton, styles.button]} labelStyle={CommonStyles.outlineButtonLabel} onPress={() => navigation.navigate("AddCard")} />
+                <AppButton
+                    label={translate("wallet.common.next")}
+                    containerStyle={CommonStyles.button}
+                    labelStyle={CommonStyles.buttonLabel}
+                    onPress={() => {
+                        // navigation.navigate("AddCard")
+                        if(defaultCard){
+                            dispatch(setPaymentObject({
+                                item: defaultCard,
+                                type: 'card'
+                            }));
+                            navigation.goBack();
+                        }
+                    }}
+                    view={myCards.length == 0}
+                />
             </View>
 
         </AppBackground>
@@ -294,8 +289,27 @@ const styles = StyleSheet.create({
         height: hp("3%")
     },
     buttonContainer: {
-        padding: wp("5%"),
+        paddingHorizontal: wp("5%"),
         paddingBottom: 0
+    },
+    totalContainer: {
+        paddingHorizontal: wp("5%"),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: hp("2%")
+    },
+    separator: {
+        width: wp("100%"), 
+        marginVertical: hp("2%")
+    },
+    totalLabel: {
+        fontSize: RF(1.9),
+        fontFamily: Fonts.ARIAL
+    },
+    value: {
+        fontSize: RF(2.3),
+        fontFamily: Fonts.ARIAL_BOLD,
+        color: Colors.themeColor
     }
 })
 

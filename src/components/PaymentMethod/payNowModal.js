@@ -14,20 +14,80 @@ import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
 import { RF, wp, hp } from '../../constants/responsiveFunct';
 import ButtonGroup from '../buttonGroup';
-import { translate } from '../../walletUtils';
+import { translate, CARD_MASK } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
 import { useNavigation } from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
+import { useSelector, useDispatch } from 'react-redux';
+import NumberFormat from 'react-number-format';
+import { formatWithMask } from 'react-native-mask-input';
+import { getPaymentIntent } from '../../store/reducer/paymentReducer';
+import {useStripe} from '@stripe/stripe-react-native';
 
 const PaymentNow = (props) => {
 
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const {paymentObject} = useSelector(state => state.PaymentReducer);
+    const {data} = useSelector(state => state.UserReducer);
 
-    const { visible, onRequestClose } = props;
+    const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+    const { visible, onRequestClose, NftId, price, chain } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
+
+    const getTitle = () => {
+        let title = "";
+        if(paymentObject && paymentObject.type == 'card'){
+            title = translate("wallet.common.payByCreditCard")
+        }
+        return title;
+    }
+
+    const _getPaymentIntent = () => {
+
+        const params = {
+            cardId: paymentObject.item.id,
+            nftId: NftId,
+            chainType: chain || "binance"
+        }
+
+        dispatch(getPaymentIntent(data.token, params)).then(res => {
+            console.log('res',res);
+        }).catch((err) => {
+            console.log('err',err);
+        });
+    }
+
+    const initializePaymentSheet = async (_data) => {
+        const {
+            paymentIntent,
+            ephemeralKey,
+            customer,
+        } = _data;
+
+        const { error } = await initPaymentSheet({
+            customerId: customer,
+            customerEphemeralKeySecret: ephemeralKey,
+            paymentIntentClientSecret: paymentIntent,
+        });
+        if (!error) {
+            setLoading(true);
+        }
+    };
+
+    const openPaymentSheet = async () => {
+        const { error } = await presentPaymentSheet({ clientSecret });
+
+        if (error) {
+            Alert.alert(`Error code: ${error.code}`, error.message);
+        } else {
+            Alert.alert('Success', 'Your order is confirmed!');
+        }
+    };
 
     return (
         <Modal
@@ -45,55 +105,62 @@ const PaymentNow = (props) => {
                     onRequestClose();
                 }} />
                 <View style={styles.contentContainer}>
-                    <TouchableOpacity onPress={() => {
+                    <TouchableOpacity style={{alignSelf: 'flex-end'}} onPress={() => {
                         // setOpacity(0);
                         onRequestClose();
                     }}>
                         <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} />
                     </TouchableOpacity>
-                    <Text style={styles.title}>Select your payment method</Text>
-                    <ButtonGroup buttons={[
-                        {
-                            text: "Pay through credit card",
-                            icon: ImagesSrc.cardPay,
-                            onPress: () => {setSelectedMethod(0)}
-                        },
-                        {
-                            text: "Pay through wallet",
-                            icon: ImagesSrc.walletPay,
-                            onPress: () => {setSelectedMethod(1)}
-                        },
-                        {
-                            text: "Pay by Gold (In-app）",
-                            icon: ImagesSrc.goldPay,
-                            onPress: () => {setSelectedMethod(2)}
-                        }
-                    ]} 
-                    style={styles.optionContainer}
-                    selectable
-                    selectedIndex={selectedMethod}
-                    separatorColor={Colors.white}
-                    />
+                    <Text style={styles.title}>{getTitle()}</Text>
+
+                    <Text style={styles.balance}>{translate("wallet.common.balanceAmount")}</Text>
+                    
+                    <View style={styles.valueContainer}>
+                        <Text style={styles.symbol} >$</Text>
+                        <NumberFormat
+                            value={price || 0}
+                            displayType={'text'}
+                            decimalScale={4}
+                            thousandSeparator={true}
+                            renderText={formattedValue => <Text numberOfLines={1} style={styles.amount}>{formattedValue}</Text>} // <--- Don't forget this!
+                        />
+                    </View>
+                    
+
+                    <Separator style={styles.separator}/>
+
+                    <View style={styles.totalContainer}>
+                        <Text style={styles.totalLabel}>{translate("wallet.common.topup.creditCard")}</Text>
+                        {paymentObject && <Text style={styles.cardNumber}>
+                            {formatWithMask({
+                                text: `424242424242${paymentObject.item.last4}`,
+                                mask: CARD_MASK
+                            }).obfuscated}
+                        </Text>}
+                        <TouchableOpacity style={styles.editContainer} onPress={() => {
+                            navigation.navigate("Cards",{})
+                            onRequestClose();
+                        }}>
+                            <Image source={ImagesSrc.edit} style={CommonStyles.imageStyles(3)}/>
+                        </TouchableOpacity>
+                    </View>
 
                     <Separator style={styles.separator}/>
 
                     <View style={styles.totalContainer}>
                         <Text style={styles.totalLabel}>Total Amount</Text>
-                        <Text style={styles.value}>$ 1,300</Text>
+                        <Text style={styles.value}>$ {price}</Text>
                     </View>
 
-                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin}/> 1,300</Text>}
+                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin}/> {price}</Text>}
 
                     <AppButton
                         label={translate("wallet.common.next")}
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
-                            if(selectedMethod == 0){
-                                onRequestClose();
-                                navigation.navigate('AddCard')
-                            } else if(selectedMethod == 2) {
-                                setNotEnoughGoldVisible(true);
+                            if(NftId && paymentObject){
+                                _getPaymentIntent();
                             }
                         }}
                     />
@@ -145,10 +212,11 @@ const styles = StyleSheet.create({
         ...CommonStyles.imageStyles(5)
     },
     title: {
-        fontFamily: Fonts.ARIAL_BOLD,
+        fontFamily: Fonts.ARIAL,
         fontSize: RF(2),
         alignSelf: 'center',
-        marginVertical: wp("3%")
+        marginVertical: wp("3%"),
+        marginBottom: hp("3%")        
     },
     optionContainer: {
         backgroundColor: Colors.WHITE3,
@@ -157,11 +225,13 @@ const styles = StyleSheet.create({
     totalContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: hp("1%")
+        alignItems: 'center',
+        // marginBottom: hp("1%"),
+        marginVertical: hp("2.5%")
     },
     separator: {
         width: wp("100%"), 
-        marginVertical: hp("2%")
+        // marginVertical: hp("2%")
     },
     totalLabel: {
         fontSize: RF(1.9),
@@ -178,6 +248,38 @@ const styles = StyleSheet.create({
         color: Colors.themeColor,
         alignSelf: 'flex-end',
         marginBottom: hp("1%")
+    },
+    balance: {
+        fontSize: RF(1.8),
+        fontFamily: Fonts.ARIAL,
+        marginVertical: hp("1.5%"),
+        alignSelf: 'center'
+    },
+    amount: {
+        fontSize: RF(4.2),
+        fontFamily: Fonts.ARIAL,
+        color: Colors.themeColor,
+    },
+    valueContainer: {
+        flexDirection: 'row',
+        alignSelf: 'center',
+        marginBottom: hp("3%"),
+    },
+    symbol: {
+        fontSize: RF(2),
+        fontFamily: Fonts.ARIAL,
+        color: Colors.themeColor,
+        marginTop: hp("0.5%")
+    },
+    cardNumber: {
+        color: Colors.themeColor,
+        fontSize: RF(1.8),
+        fontFamily: Fonts.ARIAL
+    },
+    editContainer: {
+        position: 'absolute',
+        right: -5,
+        top: -15
     }
 });
 

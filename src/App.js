@@ -10,6 +10,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Subject } from 'rxjs';
 import * as RNLocalize from "react-native-localize";
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
@@ -38,7 +39,7 @@ import Connect from './screens/connect';
 import ScanToConnect from './screens/connect/scanToConnect';
 import getLanguage from './utils/languageSupport';
 const langObj = getLanguage();
-import { setI18nConfig, languageArray } from "./walletUtils";
+import { setI18nConfig, languageArray, environment } from "./walletUtils";
 import { getAllLanguages, setAppLanguage } from "./store/reducer/languageReducer";
 
 import ImageSrc from './constants/Images';
@@ -49,6 +50,8 @@ import Colors from './constants/Colors';
 import AddCard from './screens/PaymentScreen/addCard';
 import Cards from './screens/PaymentScreen/cards';
 import BuyGold from './screens/PaymentScreen/buyGold';
+import { translate } from './walletUtils';
+import { screenWidth } from './constants/responsiveFunct';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -93,17 +96,37 @@ const TabComponent = () => {
         return <Image source={iconName} resizeMode="contain" style={{ width: wp('6.5%'), height: wp('4.5%'), tintColor: color }} />;
       },
     })} >
-      <Tab.Screen name={langObj.common.home} component={HomeScreen} />
+      <Tab.Screen
+        name={langObj.common.home}
+        component={HomeScreen}
+        options={{ tabBarLabel: translate("common.collected") }}
+      />
       {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
-      <Tab.Screen name={'Explore'} component={ExploreScreen} />
+      <Tab.Screen
+        name={'Explore'}
+        component={ExploreScreen}
+        options={{ tabBarLabel: translate("wallet.common.explore") }}
+      />
       {/* <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} /> */}
       {/* <Tab.Screen name={'Create'} component={NewPostScreen} /> */}
-      <Tab.Screen name={'Wallet'} component={Wallet} />
+      <Tab.Screen
+        name={'Wallet'}
+        options={{ tabBarLabel: translate("wallet.common.wallet") }}
+        component={Wallet}
+      />
       {/* <Tab.Screen name={langObj.common.AR} component={ARScreen} /> */}
       {/* <Tab.Screen name={'Certificate'} component={CertificateScreen} /> */}
-      <Tab.Screen name={'Connect'} component={Connect} />
+      <Tab.Screen
+        name={'Connect'}
+        options={{ tabBarLabel: translate("common.connectWallet") }}
+        component={Connect}
+      />
       {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
-      <Tab.Screen name={'Me'} component={ProfileScreen} />
+      <Tab.Screen
+        options={{ tabBarLabel: translate("wallet.common.me") }}
+        name={'Me'}
+        component={ProfileScreen}
+      />
     </Tab.Navigator>
   )
 }
@@ -143,7 +166,7 @@ const AppRoutes = () => {
           <Loader /> :
           <NavigationContainer>
             {wallet ?
-              <Stack.Navigator headerMode="none" >
+              <Stack.Navigator headerMode="none" screenOptions={{gestureResponseDistance: {horizontal: screenWidth*70/100}}}>
                 <Stack.Screen name="Home" component={TabComponent} />
                 <Stack.Screen name="DetailItem" component={DetailItemScreen} />
                 <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
@@ -178,7 +201,13 @@ export const Events = new Subject();
 const App = () => {
   return (
     <Provider store={Store}>
-      <AppRoutes />
+      <StripeProvider
+        publishableKey={environment.stripeKey.p_key}
+        urlScheme="xanalia" // required for 3D Secure and bank redirects
+        merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
+      >
+        <AppRoutes />
+      </StripeProvider>
     </Provider>
   )
 }

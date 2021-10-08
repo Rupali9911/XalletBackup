@@ -5,6 +5,7 @@ import Legal from "../screens/AuthScreens/legal";
 import Backup from "../screens/AuthScreens/backup";
 import RecoveryPhrase from "../screens/AuthScreens/recoveryPhrase";
 import Policy from "../screens/AuthScreens/policy";
+import VerifyPhrase from "../screens/AuthScreens/verifyPhrase";
 
 const Auth = createStackNavigator();
 
@@ -16,6 +17,7 @@ const AuthStack = () => {
             <Auth.Screen name="backup" component={Backup} />
             <Auth.Screen name="recoveryPhrase" component={RecoveryPhrase} />
             <Auth.Screen name="policy" component={Policy} />
+            <Auth.Screen name="verifyPhrase" component={VerifyPhrase} />
         </Auth.Navigator>
     )
 }
