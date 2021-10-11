@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
 
@@ -28,6 +29,7 @@ const DetailItemScreen = ({ route }) => {
     const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, MyCollectionReducer, AwardsNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const isFocusedHistory = useIsFocused();
 
     const [listIndex, setListIndex] = React.useState(route.params.index);
     const [owner, setOwner] = React.useState(route.params.owner);
@@ -45,7 +47,7 @@ const DetailItemScreen = ({ route }) => {
                         AuthReducer.screenName == "awards" ?
                             dispatch(getAwardsNftList(page, 24, owner)) : null
 
-    });
+    }, [isFocusedHistory]);
 
     const getPage = React.useCallback((page) => {
 

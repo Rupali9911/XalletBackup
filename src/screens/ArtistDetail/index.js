@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '../../common/constants';
 import {
     ActivityIndicator,
     View,
@@ -147,7 +148,7 @@ const Created = ({ route }) => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                MyNFTReducer.page === 1 && MyNFTReducer.myNftListLoading ?
+                MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
                     <Loader /> :
                     MyNFTReducer.myList.length !== 0 ?
                         <FlatList
@@ -159,11 +160,11 @@ const Created = ({ route }) => {
                                 dispatch(myNftLoadStart())
                                 refreshFunc()
                             }}
-                            refreshing={MyNFTReducer.page === 1 && MyNFTReducer.myNftListLoading}
+                            refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
                             renderItem={renderItem}
                             onEndReached={() => {
-                                if (!MyNFTReducer.myNftListLoading) {
-                                    let num = MyNFTReducer.page + 1;
+                                if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
+                                    let num = MyNFTReducer.myListPage + 1;
                                     getNFTlist(num);
                                     dispatch(myPageChange(num));
                                 }
@@ -258,7 +259,7 @@ const Collection = ({ route }) => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading ?
+                MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
                     MyCollectionReducer.myCollection.length !== 0 ?
                         <FlatList
@@ -270,11 +271,11 @@ const Collection = ({ route }) => {
                                 dispatch(myNftLoadStart())
                                 refreshFunc()
                             }}
-                            refreshing={MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading}
+                            refreshing={MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading}
                             renderItem={renderItem}
                             onEndReached={() => {
-                                if (!MyCollectionReducer.myCollectionListLoading) {
-                                    let num = MyCollectionReducer.page + 1;
+                                if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollection.length !== MyCollectionReducer.myCollectionTotalCount) {
+                                    let num = MyCollectionReducer.myCollectionPage + 1;
                                     getNFTlist(num);
                                     dispatch(myCollectionPageChange(num));
                                 }
@@ -307,9 +308,40 @@ function ArtistDetail({
     route
 }) {
 
-    const { data } = route.params;
+    const [data, setData] = useState(route.params.data);
+
+    useEffect(() => {
+        if (data.id) {
+            getProfile();
+        }
+    }, [data._id]);
+
+    const getProfile = () => {
+        let req_data = {
+            owner: route.params.data.id,
+            token: 'HubyJ*%qcqR0'
+        };
+
+        let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+        fetch(`${BASE_URL}/getProfile`, body)
+            .then(response => response.json())
+            .then(res => {
+                if (res.data) {
+                    console.log(res.data._id)
+                    setData(res.data);
+                }
+            });
+    }
 
     const renderTabView = () => {
+        if (!data._id) return null;
         return (
             <Tab.Navigator tabBarOptions={{
                 activeTintColor: COLORS.BLUE4,
@@ -389,7 +421,7 @@ function ArtistDetail({
                             </RowWrap>
                             <CenterWrap>
                                 <BoldText>
-                                    {data.followers}
+                                    {data.followers || 0}
                                 </BoldText>
                                 <SmallText>
                                     {translate("common.followers")}
@@ -399,7 +431,7 @@ function ArtistDetail({
                                 <SpaceView mLeft={SIZE(27)} />
                                 <CenterWrap>
                                     <BoldText>
-                                        {data.following}
+                                        {data.following || 0}
                                     </BoldText>
                                     <SmallText>
                                         {translate("common.following")}
@@ -417,7 +449,7 @@ function ArtistDetail({
                 <SmallBoldText>
                     {data.username}
                 </SmallBoldText>
-                <ScrollView style={{ height: SIZE(70) }}>
+                <ScrollView style={{ maxHeight: SIZE(70) }}>
                     <SmallNormalText>
                         {data.about}
                     </SmallNormalText>
