@@ -183,8 +183,6 @@ const HomeScreen = ({ navigation }) => {
                                     <TouchableOpacity onPress={() => navigation.navigate('ArtistDetail', { data: item })} key={`_${index}`}>
                                         <View style={styles.userCircle}>
                                             <C_Image
-                                                source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
-                                            <C_Image
                                                 uri={item.profile_image}
                                                 type={item.profile_image}
                                                 imageStyle={{ width: '100%', height: '100%' }} />
