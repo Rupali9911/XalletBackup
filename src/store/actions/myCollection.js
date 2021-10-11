@@ -33,7 +33,7 @@ export const myCollectionList = (page, ownerId) => {
 
         dispatch(myCollectionLoadStart());
         let body_data = {
-            limit: 15,
+            limit: 24,
             networkType: networkType,
             userId: ownerId,
             page: page,
@@ -51,8 +51,7 @@ export const myCollectionList = (page, ownerId) => {
         fetch(`https://api.xanalia.com/user/get-user-collection`, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
-                let new_list = [...json.data];
-                dispatch(myCollectionLoadSuccess(new_list));
+                dispatch(myCollectionLoadSuccess(json));
             }).catch(err => {
                 dispatch(myCollectionLoadFail())
                 alertWithSingleBtn(

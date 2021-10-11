@@ -41,7 +41,7 @@ export const myNFTList = (page, ownerId) => {
 
         dispatch(myNftLoadStart());
         let body_data = {
-            limit: 15,
+            limit: 24,
             networkType: networkType,
             userId: ownerId,
             page: page,
@@ -62,7 +62,7 @@ export const myNFTList = (page, ownerId) => {
                 let new_list = [...json.data];
                 if (new_list.length === 0) {
                     let data = {
-                        limit: 15,
+                        limit: 24,
                         networkType: networkType,
                         owner: ownerId,
                         page: page,
@@ -80,8 +80,8 @@ export const myNFTList = (page, ownerId) => {
                     fetch(`https://api.xanalia.com/xanalia/mydata`, data_body)
                         .then(response => response.json())  // promise
                         .then(json => {
-                            let list = [...json.data];
-                            dispatch(myNftLoadSuccess(list));
+                            // console.log('=======json', json.count)
+                            dispatch(myNftLoadSuccess(json));
                         }).catch(err => {
                             dispatch(myNftLoadFail())
                             alertWithSingleBtn(
@@ -90,7 +90,7 @@ export const myNFTList = (page, ownerId) => {
                             )
                         })
                 } else {
-                    dispatch(myNftLoadSuccess(new_list));
+                    dispatch(myNftLoadSuccess(json));
                 }
             }).catch(err => {
                 dispatch(myNftLoadFail())

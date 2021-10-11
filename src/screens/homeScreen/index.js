@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StatusBar, FlatList, SafeAreaView, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -23,6 +22,7 @@ import {
 
 import NewNFT from './newNFT';
 import Favorite from './favorite';
+import AwardsNFT from './awards';
 import getLanguage from '../../utils/languageSupport';
 import CommonStyles from '../../constants/styles';
 import { translate } from '../../walletUtils';
@@ -112,13 +112,13 @@ const Hot = () => {
                             refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
                             renderItem={renderItem}
                             onEndReached={() => {
-                                if (!ListReducer.nftListLoading) {
+                                if (!ListReducer.nftListLoading && ListReducer.nftList.length !== ListReducer.totalCount) {
                                     let num = ListReducer.page + 1;
                                     getNFTlist(num);
                                     dispatch(pageChange(num));
                                 }
                             }}
-                            onEndReachedThreshold={16}
+                            onEndReachedThreshold={0.4}
                             keyExtractor={(v, i) => "item_" + i}
                             ListFooterComponent={renderFooter}
                         />
@@ -182,7 +182,10 @@ const HomeScreen = ({ navigation }) => {
                                 return (
                                     <TouchableOpacity onPress={() => navigation.navigate('ArtistDetail', { data: item })} key={`_${index}`}>
                                         <View style={styles.userCircle}>
-                                            <Image source={{ uri: item.profile_image }} style={{ width: '100%', height: '100%' }} />
+                                            <C_Image
+                                                uri={item.profile_image}
+                                                type={item.profile_image}
+                                                imageStyle={{ width: '100%', height: '100%' }} />
                                         </View>
                                         <Text numberOfLines={1} style={styles.userText}>
                                             {item.username}
@@ -218,15 +221,18 @@ const HomeScreen = ({ navigation }) => {
                     }
                 }} >
                     <Tab.Screen
+                        name={'Awards 2021'}
+                        component={AwardsNFT} />
+                    <Tab.Screen
                         name={langObj.common.hot}
                         component={Hot}
                         options={{ tabBarLabel: translate("common.hot") }}
-                        />
+                    />
                     <Tab.Screen
                         name={langObj.common.following}
                         component={NewNFT}
                         options={{ tabBarLabel: translate("common.following") }}
-                        />
+                    />
                     <Tab.Screen
                         name={langObj.common.Discover}
                         component={Favorite}

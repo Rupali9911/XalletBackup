@@ -13,6 +13,7 @@ const initialState = {
     nftList: [],
     artistList: [],
     page: 1,
+    totalCount: 0,
 }
 
 export default function ListReducer(state = initialState, action) {
@@ -22,10 +23,10 @@ export default function ListReducer(state = initialState, action) {
             return state = { ...state, nftListLoading: true };
 
         case NFT_LIST_SUCCESS:
-            return state = { ...state, nftList: [...state.nftList, ...action.payload], nftListLoading: false };
+            return state = { ...state, nftList: [...state.nftList, ...action.payload.data], totalCount: action.payload.count , nftListLoading: false };
 
         case NFT_LIST_UPDATE:
-            return state = { ...state, nftList: [...action.payload] };
+            return state = { ...state, nftList: [...action.payload.data] };
 
         case NFT_LIST_RESET:
             return state = { ...state, nftList: [] };

@@ -10,7 +10,7 @@ const UserImageView = styled.View`
     width: ${SIZE(76)}px;
     height: ${SIZE(76)}px;
     border-radius: ${SIZE(76)}px;
-    background-color: ${COLORS.GREY1};
+    overflow: hidden;
 `;
 
 const FollowButton = styled.TouchableOpacity`
@@ -39,7 +39,7 @@ const EditButton = styled.TouchableOpacity`
 `;
 
 const EditButtonText = styled.Text`
-    color: ${COLORS.BLACK1};
+color: ${COLORS.BLACK1};
     font-size: ${FONT(12)}px;
     font-weight: 700;
 `;

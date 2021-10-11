@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
+import { ActivityIndicator, View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,7 +24,6 @@ const Favorite = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-
         dispatch(newNftLoadStart());
         dispatch(newNftListReset());
         getNFTlist(1);
@@ -41,11 +40,48 @@ const Favorite = () => {
         dispatch(newPageChange(1));
     }
 
+    const renderItem = ({ item }) => {
+        let findIndex = NewNFTListReducer.newNftList.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            return (
+                <TouchableOpacity
+                    onLongPress={() => {
+                        setModalData(item);
+                        setModalVisible(true);
+                    }}
+                    onPress={() => {
+                        dispatch(changeScreenName("newNFT"));
+                        navigation.navigate("DetailItem", { index: findIndex });
+                    }}
+                    style={styles.listItem}>
+                    {
+                        item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                            <C_Image
+                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                uri={item.thumbnailUrl}
+                                imageStyle={styles.listImage} />
+                            :
+                            <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
+                            </View>
+                    }
+                </TouchableOpacity>
+            )
+        }
+    }
+
+    const renderFooter = () => {
+        if (!NewNFTListReducer.newNftListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
-                NewNFTListReducer.newNftListLoading ?
+                NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading ?
                     <Loader /> :
                     NewNFTListReducer.newNftList.length !== 0 ?
                         <FlatList
@@ -57,40 +93,19 @@ const Favorite = () => {
                                 dispatch(newNftLoadStart());
                                 handleRefresh();
                             }}
-                            refreshing={NewNFTListReducer.newNftListLoading}
-                            renderItem={({ item }) => {
-                                let findIndex = NewNFTListReducer.newNftList.findIndex(x => x.id === item.id);
-                                if (item.metaData) {
-                                    return (
-                                        <TouchableOpacity
-                                            onLongPress={() => {
-                                                setModalData(item);
-                                                setModalVisible(true);
-                                            }}
-                                            onPress={() => {
-                                                dispatch(changeScreenName("newNFT"));
-                                                navigation.navigate("DetailItem", { index: findIndex });
-                                            }}
-                                            style={styles.listItem}>
-                                            {
-                                                item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                                                    <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
-                                                    :
-                                                    <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
-                                                    </View>
-                                            }
-                                        </TouchableOpacity>
-                                    )
+                            scrollEnabled={!isModalVisible}
+                            refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newNftList.length) {
+                                    let num = NewNFTListReducer.newListPage + 1;
+                                    getNFTlist(num);
+                                    dispatch(newPageChange(num));
                                 }
                             }}
-                            onEndReached={() => {
-                                let num = NewNFTListReducer.newListPage + 1;
-                                getNFTlist(num);
-                                dispatch(newPageChange(num));
-                            }}
-                            onEndReachedThreshold={1}
+                            onEndReachedThreshold={0.4}
                             keyExtractor={(v, i) => "item_" + i}
+                            ListFooterComponent={renderFooter}
                         /> :
                         <View style={styles.sorryMessageCont} >
                             <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>

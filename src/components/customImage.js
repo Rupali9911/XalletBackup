@@ -4,7 +4,7 @@ import * as Progress from 'react-native-progress';
 import FastImage from 'react-native-fast-image';
 import { createImageProgress } from 'react-native-image-progress';
 
-import { SVGS, SIZE } from 'src/constants';
+import { SVGS, SIZE, IMAGES } from 'src/constants';
 import { colors } from '../res';
 
 const {
@@ -24,14 +24,14 @@ const C_Image = (props) => {
                     unfilledColor: 'rgba(200, 200, 200, 0.2)'
                 }}
                 style={props.imageStyle}
-                source={{
+                source={props.uri ? {
                     uri: props.uri,
                     priority: FastImage.priority.normal,
-                }}
+                } : IMAGES.DEFAULTPROFILE}
                 resizeMode={FastImage.resizeMode.cover}
             />
             {
-                props.type === 'mp4' ?
+                props.type === 'mp4' || props.type === 'mov' ?
                     <View style={{
                         position: 'absolute',
                         top: 0,
