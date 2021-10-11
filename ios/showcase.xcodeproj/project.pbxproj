@@ -329,9 +329,6 @@
 				1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				187DEFB1270C5F05007DBD3D /* SegoeUI.ttf in Resources */,
-				187DEFB4270C6093007DBD3D /* SegoeUI-Bold.ttf in Resources */,
-				187DEFB7270C60B1007DBD3D /* SegoeUI-Italic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
