@@ -431,6 +431,7 @@
         "toseelogin": "Please Login to view your NFT.",
         "currentprice": "Current price",
         "lastprice": "Last Price",
-        "noNFT": "No NFT Available"
+        "noNFT": "No NFT Available",
+        "awards": "award"
     }
 }

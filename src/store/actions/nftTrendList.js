@@ -61,7 +61,7 @@ export const getNFTList = (page, limit) => {
             approveStatus: 'approve',
             type: "hot",
             page,
-            limit: limit || 15,
+            limit: limit || 24,
             networkType: networkType,
         }
 
@@ -81,9 +81,7 @@ export const getNFTList = (page, limit) => {
         fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
-
-                let new_list = [...json.data];
-                dispatch(nftLoadSuccess(new_list))
+                dispatch(nftLoadSuccess(json))
 
             }).catch(err => {
                 dispatch(nftLoadFail())

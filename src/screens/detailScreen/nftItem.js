@@ -253,7 +253,7 @@ const nftItem = ({ item, index }) => {
             });
         }}>
         {
-          fileType !== 'mp4' ?
+          fileType !== 'mp4' && fileType !== 'mov' ?
             <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
             :
             <View style={styles.modalImage}>

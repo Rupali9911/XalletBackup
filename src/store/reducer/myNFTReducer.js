@@ -15,14 +15,14 @@ const initialState = {
     myList: [],
     favorite: [],
     myListPage: 1,
-    page: 1,
+    myNftTotalCount: 0,
 }
 
 export default function MyNFTReducer(state = initialState, action) {
     switch (action.type) {
 
         case MY_PAGE_CHANGE:
-            return state = { ...state, page: action.payload };
+            return state = { ...state, myListPage: action.payload };
 
         case FAVORITE_PAGE_CHANGE:
             return state = { ...state, favoritePage: action.payload };
@@ -31,13 +31,13 @@ export default function MyNFTReducer(state = initialState, action) {
             return state = { ...state, myNftListLoading: true };
 
         case MY_NFT_LOAD_SUCCESS:
-            return state = { ...state, myList: [...state.myList, ...action.payload], myNftListLoading: false };
+            return state = { ...state, myList: [...state.myList, ...action.payload.data], myNftTotalCount: action.payload.count, myNftListLoading: false };
 
         case FAVORITE_NFT_SUCCESS:
             return state = { ...state, favorite: [...action.payload], myNftListLoading: false };
 
         case FAVORITE_LIST_UPDATE:
-            return state = { ...state, favorite: [...action.payload] };
+            return state = { ...state, favorite: [...action.payload.data] };
 
         case MYLIST_LIST_UPDATE:
             return state = { ...state, myList: [...action.payload] };

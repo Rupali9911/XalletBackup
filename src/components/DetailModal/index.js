@@ -194,7 +194,7 @@ const DetailModal = ({
                                     <SpaceView mTop={SIZE(10)} />
                                     <ImageView>
                                         {
-                                            fileType !== 'mp4' ?
+                                            fileType !== 'mp4' && fileType !== 'mov' ?
                                                 <Image
                                                     indicator={Progress.Pie}
                                                     source={{

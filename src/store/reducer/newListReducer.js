@@ -10,7 +10,8 @@ import {
 const initialState = {
     newNftListLoading: false,
     newNftList: [],
-    newListPage: 1
+    newListPage: 1,
+    newTotalCount: 0
 }
 
 export default function NewNFTListReducer(state = initialState, action) {
@@ -20,7 +21,7 @@ export default function NewNFTListReducer(state = initialState, action) {
             return state = { ...state, newNftListLoading: true };
 
         case NEW_NFT_LOAD_SUCCESS:
-            return state = { ...state, newNftList: [...state.newNftList, ...action.payload], newNftListLoading: false };
+            return state = { ...state, newNftList: [...state.newNftList, ...action.payload.data], newTotalCount: action.payload.count, newNftListLoading: false };
 
         case NEW_NFT_LOAD_FAIL:
             return state = { ...state, newNftListLoading: false };
@@ -29,7 +30,7 @@ export default function NewNFTListReducer(state = initialState, action) {
             return state = { ...state, newNftList: [] };
 
         case NEW_NFT_LIST_UPDATE:
-            return state = { ...state, newNftList: [...action.payload] };
+            return state = { ...state, newNftList: [...action.payload.data] };
 
         case NEW_PAGE_CHANGE:
             return state = { ...state, newListPage: action.payload };

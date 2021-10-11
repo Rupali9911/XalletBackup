@@ -2,8 +2,8 @@ import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 
 import {
-    NEW_NFT_LOAD_START, 
-    NEW_NFT_LOAD_SUCCESS, 
+    NEW_NFT_LOAD_START,
+    NEW_NFT_LOAD_SUCCESS,
     NEW_NFT_LOAD_FAIL,
     NEW_PAGE_CHANGE,
     NEW_NFT_LIST_RESET
@@ -33,14 +33,16 @@ export const newPageChange = (data) => ({
     payload: data
 });
 
-export const newNFTList = (page) => {
+export const newNFTList = (page, limit) => {
     return (dispatch, getState) => {
 
+        dispatch(newNftLoadStart());
+
         let accountKey = getState().AuthReducer.accountKey;
-        
+
         let body_data = {
             page,
-            limit: 30,
+            limit: limit || 24,
             sort: "mint",
             networkType: networkType,
             token: "HubyJ*%qcqR0",
@@ -64,8 +66,7 @@ export const newNFTList = (page) => {
             .then(response => response.json())
             .then(json => {
 
-                let new_list = [...json.data];
-                dispatch(newNftLoadSuccess(new_list))
+                dispatch(newNftLoadSuccess(json))
 
             }).catch(err => {
                 dispatch(newNftLoadFail())

@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
 import {
+    ActivityIndicator,
+    View,
     TouchableOpacity,
-    Image,
-    FlatList
+    FlatList,
+    ScrollView,
+    StyleSheet,
+    Text,
+    StatusBar
 } from 'react-native';
 import {
     Header,
-    HeaderLeft,
     HeaderRight,
     Container,
-    ModelView,
     RowBetweenWrap,
     CenterWrap,
     RowWrap,
@@ -31,64 +36,265 @@ import {
 } from 'src/constants';
 import {
     UserImageView,
-    FollowButton,
-    FollowButtonText,
     EditButton,
     EditButtonText,
     DescriptionView,
     SmallText,
-    ImageView,
-    DetailView,
-    Title,
-    PriceView,
-    PriceText,
-    PriceTypeText,
-    NumberOfPersonText,
-    DotView
 } from './styled';
-import { translate } from '../../walletUtils';
-
-const {
-    GIRL
-} = IMAGES;
+import {
+    Loader,
+    C_Image,
+    DetailModal
+} from 'src/components';
+import {
+    myNFTList,
+    myNftLoadStart,
+    myPageChange,
+    myNftListReset,
+} from '../../store/actions/myNFTaction';
+import {
+    myCollectionList,
+    myCollectionLoadStart,
+    myCollectionPageChange,
+    myCollectionListReset,
+} from '../../store/actions/myCollection';
+import { changeScreenName } from '../../store/actions/authAction';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+    responsiveFontSize as RF
+} from '../../common/responsiveFunction';
+import getLanguage from '../../utils/languageSupport';
+import { colors } from '../../res';
+import { useFocusEffect } from '@react-navigation/native';
+const langObj = getLanguage();
 
 const {
     LeftArrowIcon,
     SettingIcon
 } = SVGS;
 
-const USER_DATA = [
-    {
-        name: 'Name1'
-    },
-    {
-        name: 'Name2'
-    },
-    {
-        name: 'Name3'
-    },
-    {
-        name: 'Name4'
-    },
-    {
-        name: 'Name5'
-    },
-    {
-        name: 'Name6'
-    },
-    {
-        name: 'Name7'
-    },
-    {
-        name: 'Name8'
-    },
-    {
-        name: 'Name9'
-    },
-    {
-        name: 'Name10'
-    },
-];
+const Created = ({ route }) => {
+
+    const { id } = route.params;
+    const { MyNFTReducer } = useSelector(state => state);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const [modalData, setModalData] = useState();
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        dispatch(myNftLoadStart());
+        dispatch(myNftListReset());
+        getNFTlist(1);
+        dispatch(myPageChange(1));
+    }, [])
+
+    const getNFTlist = useCallback((page) => {
+        dispatch(myNFTList(page, id));
+    }, []);
+
+    const refreshFunc = () => {
+        dispatch(myNftListReset());
+        getNFTlist(1);
+        dispatch(myPageChange(1));
+    }
+
+    const renderFooter = () => {
+        if (!MyNFTReducer.myNftListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
+    const renderItem = ({ item }) => {
+        let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            const image = item.metaData.thumbnft || item.thumbnailUrl
+            return (
+                <TouchableOpacity
+                    onLongPress={() => {
+                        setModalData(item);
+                        setModalVisible(true);
+                    }}
+                    onPress={() => {
+                        dispatch(changeScreenName("myNFT"));
+                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                    }}
+                    style={styles.listItem}>
+                    {
+                        image ?
+                            <C_Image
+                                uri={image}
+                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                imageStyle={styles.listImage} />
+                            : <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }} >
+                                    No Image to Show
+                                </Text>
+                            </View>
+                    }
+                </TouchableOpacity>
+            )
+        }
+    }
+
+    return (
+        <View style={styles.trendCont}>
+            <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
+            {
+                MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
+                    <Loader /> :
+                    // MyNFTReducer.myList.length !== 0 ?
+                    //     <FlatList
+                    //         data={MyNFTReducer.myList}
+                    //         horizontal={false}
+                    //         numColumns={3}
+                    //         initialNumToRender={15}
+                    //         onRefresh={() => {
+                    //             dispatch(myNftLoadStart())
+                    //             refreshFunc()
+                    //         }}
+                    //         refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
+                    //         renderItem={renderItem}
+                    //         onEndReached={() => {
+                    //             if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
+                    //                 let num = MyNFTReducer.myListPage + 1;
+                    //                 getNFTlist(num);
+                    //                 dispatch(myPageChange(num));
+                    //             }
+                    //         }}
+                    //         ListFooterComponent={renderFooter}
+                    //         onEndReachedThreshold={0.5}
+                    //         keyExtractor={(v, i) => "item_" + i}
+                    //     />
+                    //     :
+                    <View style={styles.sorryMessageCont} >
+                        <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                    </View>
+            }
+            {
+                modalData &&
+                <DetailModal
+                    data={modalData}
+                    isModalVisible={isModalVisible}
+                    toggleModal={() => setModalVisible(false)}
+                />
+            }
+        </View>
+    )
+}
+
+const Collection = ({ route }) => {
+
+    const { id } = route.params;
+    const { MyCollectionReducer } = useSelector(state => state);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const [modalData, setModalData] = useState();
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        dispatch(myCollectionLoadStart());
+        dispatch(myCollectionListReset());
+        getNFTlist(1);
+        dispatch(myCollectionPageChange(1));
+    }, [])
+
+    const getNFTlist = useCallback((page) => {
+        dispatch(myCollectionList(page, id));
+    }, []);
+
+    const refreshFunc = () => {
+        dispatch(myCollectionListReset());
+        getNFTlist(1);
+        dispatch(myCollectionPageChange(1));
+    }
+
+    const renderFooter = () => {
+        if (!MyCollectionReducer.myCollectionListLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
+    }
+
+    const renderItem = ({ item }) => {
+        let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
+        if (item.metaData) {
+            const image = item.metaData.thumbnft || item.thumbnailUrl;
+            return (
+                <TouchableOpacity
+                    onLongPress={() => {
+                        setModalData(item);
+                        setModalVisible(true);
+                    }}
+                    onPress={() => {
+                        dispatch(changeScreenName("myCollection"));
+                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                    }}
+                    style={styles.listItem}>
+                    {
+                        image ?
+                            <C_Image
+                                uri={image}
+                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                imageStyle={styles.listImage} />
+                            : <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }} >
+                                    No Image to Show
+                                </Text>
+                            </View>
+                    }
+                </TouchableOpacity>
+            )
+        }
+    }
+
+    return (
+        <View style={styles.trendCont}>
+            <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
+            {
+                MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
+                    <Loader /> :
+                    // MyCollectionReducer.myCollection.length !== 0 ?
+                    //     <FlatList
+                    //         data={MyCollectionReducer.myCollection}
+                    //         horizontal={false}
+                    //         numColumns={3}
+                    //         initialNumToRender={15}
+                    //         onRefresh={() => {
+                    //             dispatch(myNftLoadStart())
+                    //             refreshFunc()
+                    //         }}
+                    //         refreshing={MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading}
+                    //         renderItem={renderItem}
+                    //         onEndReached={() => {
+                    //             if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollectionTotalCount !== MyCollectionReducer.myCollection.length) {
+                    //                 let num = MyCollectionReducer.myCollectionPage + 1;
+                    //                 getNFTlist(num);
+                    //                 dispatch(myCollectionPageChange(num));
+                    //             }
+                    //         }}
+                    //         ListFooterComponent={renderFooter}
+                    //         onEndReachedThreshold={1}
+                    //         keyExtractor={(v, i) => "item_" + i}
+                    //     />
+                    //     :
+                    <View style={styles.sorryMessageCont} >
+                        <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                    </View>
+            }
+            {
+                modalData &&
+                <DetailModal
+                    data={modalData}
+                    isModalVisible={isModalVisible}
+                    toggleModal={() => setModalVisible(false)}
+                />
+            }
+        </View>
+    )
+}
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -97,70 +303,8 @@ function Profile({
     connector
 }) {
 
-    // const { isMe } = route.params;
-
-    const renderGirl = ({ item, index }) => {
-        return (
-            <ModelView onPress={() => navigation.navigate('Artist')}>
-                <ImageView>
-                    <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
-                </ImageView>
-                <DetailView>
-                    <Title>
-                        {'ROCK MANS\nロックトークン'}
-                    </Title>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <PriceView>
-                                <PriceTypeText>
-                                    {'￥'}
-                                </PriceTypeText>
-                                <PriceText>
-                                    {'829'}
-                                </PriceText>
-                            </PriceView>
-                            <NumberOfPersonText>
-                                {'132人保有'}
-                            </NumberOfPersonText>
-                        </RowWrap>
-                        <RowWrap>
-                            <DotView />
-                            <SpaceView mRight={SIZE(4)} />
-                            <DotView />
-                            <SpaceView mRight={SIZE(2)} />
-                            <DotView />
-                            <SpaceView mRight={SIZE(4)} />
-                        </RowWrap>
-                    </RowBetweenWrap>
-                </DetailView>
-            </ModelView>
-        )
-    }
-
-
-    const Following = () => {
-        return (
-            <FlatList
-                data={USER_DATA}
-                renderItem={renderGirl}
-                keyExtractor={(item, index) => 'key' + index}
-                numColumns={3}
-                contentContainerStyle={{ paddingVertical: SIZE(4), backgroundColor: COLORS.WHITE1 }}
-            />
-        )
-    }
-
-    const Recommend = () => {
-        return (
-            <FlatList
-                data={USER_DATA}
-                renderItem={renderGirl}
-                keyExtractor={(item, index) => 'key' + index}
-                numColumns={3}
-                contentContainerStyle={{ paddingVertical: SIZE(4), backgroundColor: COLORS.WHITE1 }}
-            />
-        )
-    }
+    const { UserReducer, MyNFTReducer, MyCollectionReducer } = useSelector(state => state);
+    const id = UserReducer.wallet.address;
 
     const renderTabView = () => {
         return (
@@ -186,25 +330,23 @@ function Profile({
                     height: 2
                 }
             }}>
-                <Tab.Screen
-                    name='My NFTs'
+                <Tab.Screen name='My NFTs'
                     options={{ tabBarLabel: translate("wallet.common.myNFTs") }}
-                    component={Following}
-                />
-                <Tab.Screen
-                    name='My Collection'
+                    component={Created}
+                    initialParams={{ id: id }} />
+                <Tab.Screen name='My Collection'
                     options={{ tabBarLabel: translate("common.myCollection") }}
-                    component={Recommend}
-                />
-            </Tab.Navigator>
+                    component={Collection}
+                    initialParams={{ id: id }} />
+            </Tab.Navigator >
         )
     }
 
     return (
         <Container>
             <Header>
-                <HeaderText>
-                    {/* {'Name'} */}
+                <HeaderText numberOfLines={1}>
+                    {id}
                 </HeaderText>
                 <HeaderRight>
                     <RowWrap>
@@ -218,14 +360,15 @@ function Profile({
             <RowWrap>
                 <SpaceView mLeft={SIZE(14)} />
                 <RowBetweenWrap flex={1}>
-                    <CenterWrap>
-                        <UserImageView>
-                        </UserImageView>
-                        <SpaceView mTop={SIZE(12)} />
-                        <SmallBoldText>
-                            {'Queens layer'}
-                        </SmallBoldText>
-                    </CenterWrap>
+                    <UserImageView>
+                        <C_Image
+                            uri={null}
+                            imageStyle={{
+                                width: '100%',
+                                height: '100%'
+                            }}
+                        />
+                    </UserImageView>
                     <CenterWrap>
                         <SpaceView mTop={SIZE(-14)} />
                         <RowBetweenWrap>
@@ -266,9 +409,15 @@ function Profile({
                 <SpaceView mRight={SIZE(7)} />
             </RowWrap>
             <DescriptionView>
-                <SmallNormalText>
-                    {'Lorem ipsum dolor sit ametLorem ipsum dolor sit amet asdfasdfas'}
-                </SmallNormalText>
+                <SpaceView mTop={SIZE(12)} />
+                <SmallBoldText>
+                    {id}
+                </SmallBoldText>
+                <ScrollView style={{ maxHeight: SIZE(70) }}>
+                    <SmallNormalText>
+                        {''}
+                    </SmallNormalText>
+                </ScrollView>
             </DescriptionView>
             <SpaceView mTop={SIZE(14)} />
             <RowWrap>
@@ -287,3 +436,27 @@ function Profile({
 }
 
 export default Profile;
+
+const styles = StyleSheet.create({
+    listItem: {
+        height: (wp('100%') / 3) - wp('0.5%'),
+        marginVertical: wp("0.3"),
+        marginHorizontal: wp("0.3"),
+        width: (wp('100%') / 3) - wp('0.5%'),
+    },
+    listImage: {
+        height: '100%',
+        position: "absolute",
+        top: 0,
+        width: "100%"
+    },
+    sorryMessageCont: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    trendCont: {
+        backgroundColor: 'white',
+        flex: 1,
+    },
+})

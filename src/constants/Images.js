@@ -55,7 +55,7 @@ export default {
     received: require("../../assets/images/download.png"),
     sent: require("../../assets/images/upload.png"),
 
-    addIcon: require("../../assets/images/add.png"),
+    addIcon: require("../../assets/images/Add.png"),
     scanIcon: require("../../assets/images/scanIcon.png"),
     closeIcon: require("../../assets/images/close.png"),
     cancelIcon: require("../../assets/images/cancel.png"),

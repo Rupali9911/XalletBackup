@@ -245,7 +245,7 @@ const Collection = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                    No Image to Show
+                                    {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }
@@ -271,41 +271,7 @@ const Collection = ({ route }) => {
                                 refreshFunc()
                             }}
                             refreshing={MyCollectionReducer.page === 1 && MyCollectionReducer.myCollectionListLoading}
-<<<<<<< HEAD
                             renderItem={renderItem}
-=======
-                            renderItem={({ item }) => {
-                                let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
-                                if (item.metaData) {
-                                    const image = item.metaData.thumbnft || item.thumbnailUrl;
-                                    return (
-                                        <TouchableOpacity
-                                            onLongPress={() => {
-                                                setModalData(item);
-                                                setModalVisible(true);
-                                            }}
-                                            onPress={() => {
-                                                dispatch(changeScreenName("myCollection"));
-                                                navigation.navigate("DetailItem", { index: findIndex, owner: id });
-                                            }}
-                                            style={styles.listItem}>
-                                            {
-                                                image ?
-                                                    <C_Image
-                                                        uri={image}
-                                                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                                        imageStyle={styles.listImage} />
-                                                    : <View style={styles.sorryMessageCont}>
-                                                        <Text style={{ textAlign: "center" }} >
-                                                            {translate("wallet.common.error.noImage")}
-                                                        </Text>
-                                                    </View>
-                                            }
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            }}
->>>>>>> b6f89daabec5713e2709a19e7d1c19eae60ed50d
                             onEndReached={() => {
                                 if (!MyCollectionReducer.myCollectionListLoading) {
                                     let num = MyCollectionReducer.page + 1;
