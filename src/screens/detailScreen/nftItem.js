@@ -153,7 +153,7 @@ const nftItem = ({ item, index }) => {
       }
     }
 
-    fetch(`${BASE_URL}/getDetailNFT`, fetch_data_body)
+    fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then((res) => {
         if (res.data.length > 0 && res.data !== "No record found") {
@@ -174,7 +174,7 @@ const nftItem = ({ item, index }) => {
               'Content-Type': 'application/json',
             }
           }
-          fetch(`${BASE_URL}/getProfile`, body)
+          fetch(`${BASE_URL}/xanalia/getProfile`, body)
             .then(response => response.json())
             .then(res => {
               if (res.data) {

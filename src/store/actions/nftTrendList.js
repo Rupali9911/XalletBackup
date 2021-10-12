@@ -78,7 +78,7 @@ export const getNFTList = (page, limit) => {
             }
         }
 
-        fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
+        fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
                 dispatch(nftLoadSuccess(json))
@@ -136,7 +136,7 @@ export const handleLikeDislike = (item, index) => {
                     screenName == "twoDArt" ? getState().TwoDReducer.twoDNftList : getState().MyNFTReducer.myList;
 
         var url1 = "";
-        var url2 = `${BASE_URL}/updateRating`;
+        var url2 = `${BASE_URL}/xanalia/updateRating`;
         let like_body = {
             networkType: networkType,
             owner: accountKey,
@@ -147,12 +147,12 @@ export const handleLikeDislike = (item, index) => {
             tokenId: item.tokenId
         }
         if (item.like == 0) {
-            url1 = `${BASE_URL}/likeNFT`;
+            url1 = `${BASE_URL}/xanalia/likeNFT`;
             rating_body.rating = item.rating + 1;
             item.like = 1;
             item.rating = item.rating + 1;
         } else {
-            url1 = `${BASE_URL}/unlikeNFT`
+            url1 = `${BASE_URL}/xanalia/unlikeNFT`
             rating_body.rating = item.rating - 1
             item.like = 0;
             item.rating = item.rating - 1;

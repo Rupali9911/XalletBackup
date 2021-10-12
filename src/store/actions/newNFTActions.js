@@ -62,7 +62,7 @@ export const newNFTList = (page, limit) => {
             }
         }
 
-        fetch(`${BASE_URL}/getDemuxData`, fetch_data_body)
+        fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
 

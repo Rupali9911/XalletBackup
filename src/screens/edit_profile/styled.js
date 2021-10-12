@@ -36,9 +36,19 @@ const EditableInput = styled.TextInput`
     font-family: ${FONTS.ARIAL};
 `;
 
+const MultiLineEditableInput = styled.TextInput`
+    width: 100%;
+    border-bottom-width: 0.8px;
+    border-color: ${COLORS.WHITE3};
+    padding-bottom: ${SIZE(12)}px;
+    font-size: ${FONT(14)}px;
+    font-family: ${FONTS.ARIAL};
+`;
+
 export {
     Avatar,
     ChangeAvatar,
     DoneText,
-    EditableInput
+    EditableInput,
+    MultiLineEditableInput
 }

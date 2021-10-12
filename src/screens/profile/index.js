@@ -304,7 +304,7 @@ function Profile({
     connector
 }) {
 
-    const { UserReducer, MyNFTReducer, MyCollectionReducer } = useSelector(state => state);
+    const { UserReducer } = useSelector(state => state);
     const id = UserReducer.wallet.address;
 
     const renderTabView = () => {
