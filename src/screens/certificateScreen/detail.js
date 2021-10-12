@@ -38,8 +38,8 @@ const langObj = getLanguage();
 const DetailScreen = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const {paymentObject} = useSelector(state => state.PaymentReducer);
-    const {data} = useSelector(state => state.UserReducer);
+    const { paymentObject } = useSelector(state => state.PaymentReducer);
+    const { data } = useSelector(state => state.UserReducer);
 
     const refVideo = useRef(null);
     const [isPlay, setPlay] = useState(false);
@@ -60,17 +60,17 @@ const DetailScreen = ({ route, navigation }) => {
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPaymentNow, setShowPaymentNow] = useState(false);
 
-    useEffect(()=>{
-        if(data.token){
+    useEffect(() => {
+        if (data.token) {
             dispatch(getAllCards(data.token));
         }
-    },[]);
+    }, []);
 
     useEffect(() => {
-        if(paymentObject){
+        if (paymentObject) {
             setShowPaymentNow(true);
         }
-    },[paymentObject]);
+    }, [paymentObject]);
 
     return (
         <>
@@ -167,7 +167,7 @@ const DetailScreen = ({ route, navigation }) => {
                     <Text style={styles.description}>
                         {description}
                     </Text>
-                    <View style={styles.moreView}>
+                    {/* <View style={styles.moreView}>
                         <Text style={styles.moreTitle}>
                             {'More from this creator'}
                         </Text>
@@ -189,36 +189,36 @@ const DetailScreen = ({ route, navigation }) => {
                                 <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
                             </View>
                         </View>
-                    </View>
-                    <View style={styles.bottomView}>
-                        <Text style={styles.count}>
-                            {'# 1 / 1'}
-                        </Text>
-                        <View style={styles.row}>
-                            <Text style={styles.priceUnit}>
-                                {'￥'}
-                            </Text>
-                            <Text style={styles.price}>
-                                {price ? price : 0}
-                            </Text>
-                        </View>
-                        <GroupButton
-                            leftText={translate("common.buy")}
-                            rightText={translate("wallet.common.offerPrice")}
-                            onLeftPress={() => {
-                                // navigation.navigate('WalletConnect')
-                                setShowPaymentMethod(true)
-                            }}
-                            onRightPress={() => navigation.navigate('MakeBid')}
-                        />
-                    </View>
+                    </View> */}
                 </ScrollView>
+                <View style={styles.bottomView}>
+                    <Text style={styles.count}>
+                        {'# 1 / 1'}
+                    </Text>
+                    <View style={styles.row}>
+                        <Text style={styles.priceUnit}>
+                            {'￥'}
+                        </Text>
+                        <Text style={styles.price}>
+                            {price ? price : 0}
+                        </Text>
+                    </View>
+                    <GroupButton
+                        leftText={translate("common.buy")}
+                        rightText={translate("wallet.common.offerPrice")}
+                        onLeftPress={() => {
+                            // navigation.navigate('WalletConnect')
+                            setShowPaymentMethod(true)
+                        }}
+                        onRightPress={() => navigation.navigate('MakeBid')}
+                    />
+                </View>
             </SafeAreaView>
             <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} onRequestClose={() => setShowPaymentMethod(false)} />
             <PaymentNow visible={showPaymentNow} price={price ? price : 0} chain={chain} NftId={id} onRequestClose={() => {
                 dispatch(setPaymentObject(null));
                 setShowPaymentNow(false)
-            }}/>
+            }} />
         </>
     )
 }
