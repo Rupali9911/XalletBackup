@@ -158,7 +158,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                     recoverWallet();
                                 } else {
                                     // dispatch(setUserAuthData(wallet, true));
-                                    navigation.navigate("verifyPhrase", { wallet })
+                                    navigation.replace("verifyPhrase", { wallet })
                                 }
 
                             }} />

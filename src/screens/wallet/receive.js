@@ -31,7 +31,7 @@ import Separator from '../../components/separator';
 // import { PaymentField } from './screenComponents';
 // import { alertWithSingleBtn } from "./commonFunction";
 
-const QRScreen = () => {
+const QRScreen = (index) => {
 
     const navigation = useNavigation();
     const route = useRoute();
@@ -121,7 +121,7 @@ const QRScreen = () => {
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
-                        onPress={() => {}}
+                        onPress={onSharing}
                     />
                 </View>
                 <TextView style={styles.alert}>
@@ -133,7 +133,7 @@ const QRScreen = () => {
                 <AppButton label={translate("wallet.common.share")} containerStyle={[CommonStyles.button, styles.shareBtn]} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => onSharing()} />
             }
-            <AppModal visible={modalVisible} src={ImagesSrc.setAmountBg}>
+            <AppModal visible={modalVisible}>
                 <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
                     <View style={styles.setAmountContainer}>
                         <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
@@ -242,7 +242,7 @@ function Receive({ route, navigation }) {
                 title={index == 0 ? translate("wallet.common.receive") : translate("wallet.common.scan")}
             />
 
-            <QRScreen />
+            <QRScreen index={index} />
 
             {/* <TabView
                 renderTabBar={renderTabBar}

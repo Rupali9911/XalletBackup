@@ -14,33 +14,33 @@ import ButtonGroup from '../../components/buttonGroup';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
 
-const Backup = ({route, navigation}) => {
+const Backup = ({ route, navigation }) => {
 
     const [openPicker, setOpenPicker] = useState(false);
     const [isCheck, setCheck] = useState(false);
 
     return (
         <AppBackground >
-            <AppHeader showBackButton title={translate("wallet.common.backup")}/>
+            <AppHeader showBackButton title={translate("wallet.common.backup")} />
             <View style={CommonStyles.screenContainer} onStartShouldSetResponder={() => {
                 setOpenPicker(!openPicker)
                 return true;
             }}>
 
                 <View style={styles.contentContainer}>
-                    <AppLogo logoStyle={styles.logo}/>
+                    <AppLogo logoStyle={styles.logo} />
                     <TextView style={styles.title}>{translate("wallet.common.backupTxt")} !</TextView>
                     <HintText style={styles.hint}>{translate("wallet.common.phraseHint")}</HintText>
                     <View style={styles.imgContainer}>
                         <ImageBackground style={styles.img} source={ImagesSrc.backupImg}>
-                            <Image source={ImagesSrc.backupLoaderImg}/>
+                            <Image source={ImagesSrc.backupLoaderImg} style={{ ...CommonStyles.imageStyles(18) }} />
                         </ImageBackground>
 
                     </View>
                 </View>
 
                 <View style={styles.bottomView}>
-                    <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("wallet.common.phraseAlert")}/>
+                    <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("wallet.common.phraseAlert")} />
                     <AppButton label={translate("wallet.common.next")} view={!isCheck} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
                             navigation.navigate("recoveryPhrase", { hide: false });
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-    },  
+    },
     bottomView: {
 
     },
