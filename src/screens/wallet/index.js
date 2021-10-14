@@ -69,6 +69,7 @@ const Wallet = ({route, navigation}) => {
             setLoading(true);
             getBalances(wallet.address);
         }
+        console.log('data',data);
     },[isFocused]);
 
     useEffect(() => {
