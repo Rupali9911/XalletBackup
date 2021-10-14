@@ -44,6 +44,7 @@ const nftItem = ({ item, index }) => {
 
   const { AuthReducer } = useSelector(state => state);
   const [owner, setOwner] = useState('----');
+  const [ownerId, setOwnerId] = useState('');
   const [artist, setArtist] = useState('----');
   const [creatorImage, setCreatorImage] = useState();
   const [ownerImage, setOwnerImage] = useState();
@@ -89,16 +90,18 @@ const nftItem = ({ item, index }) => {
       MarketPlaceAbi,
       MarketContractAddress
     );
-
     MarketPlaceContract.methods
       .getNonCryptoOwner(tokenId)
       .call(async (err, res) => {
         if (res) {
+          // console.log('owner',res,tokenId);
           let profileUrl = networkType === 'mainnet' ?
             `https://api.xanalia.com/user/get-public-profile?userId=${res}` :
             `https://testapi.xanalia.com/user/get-public-profile?userId=${res}`
-          let profile = await axios.get(profileUrl);
+          setOwnerId(res);
+            let profile = await axios.get(profileUrl);
           if (profile.data) {
+            console.log('owner',res,tokenId,profile.data.data.username);
             setOwner(profile.data.data.username);
             setOwnerImage(profile.data.data.profile_image);
           }
@@ -120,6 +123,7 @@ const nftItem = ({ item, index }) => {
       let ownerAddress = res;
       MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
         if (res[0] !== '0x0000000000000000000000000000000000000000') {
+          console.log('owner',res,tokenId,res[0]);
           setOwner(res[0]);
         } else {
           setOwner(ownerAddress);
@@ -149,11 +153,11 @@ const nftItem = ({ item, index }) => {
         'Content-Type': 'application/json',
       }
     }
-
+    // console.log('body_data',body_data);
     fetch(`${BASE_URL}/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then((res) => {
-        console.log('res',res);
+        // console.log('res',res);
         if (res.data.length > 0 && res.data !== "No record found") {
           const data = res.data[0];
 
@@ -249,7 +253,9 @@ const nftItem = ({ item, index }) => {
               video: item.metaData.image,
               fileType: fileType,
               price: item.price,
-              chain: item.chain
+              chain: item.chain,
+              ownerId: ownerId,
+              tokenId: item.tokenId
             });
         }}>
         {

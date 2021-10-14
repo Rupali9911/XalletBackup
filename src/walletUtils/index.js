@@ -3,7 +3,7 @@ import memoize from 'lodash.memoize';
 import store from '../store';
 import ImagesSrc from '../constants/Images';
 
-export const IsTestNet = true;
+export const IsTestNet = false;
 
 const numFormatter = (price) => {
     let num = parseFloat(price);
@@ -40,6 +40,14 @@ export const ethRpc = "https://mainnet.infura.io/v3/d9d12a4cf6ec4ea786890cd8c5dc
 export const bnbRpc = "https://bsc-dataseed.binance.org/";
 export const polRpc = "https://rpc-mainnet.matic.quiknode.pro";
 
+export const _webSocketLinkEth = "wss://kovan.infura.io/ws/v3/e2fddb9deb984ba0b9e9daa116d1702a";
+export const _webSocketLinkBsc = "wss://sparkling-lively-thunder.bsc.quiknode.pro/07fd71e94b68817b6a596dc947910035f41d7382/";
+export const _webSocketLinkPolygon = "wss://ws-matic-mumbai.chainstacklabs.com/";
+
+export const webSocketLinkEth = "wss://mainnet.infura.io/ws/v3/e2fddb9deb984ba0b9e9daa116d1702a";
+export const webSocketLinkBsc = "wss://sparkling-lively-thunder.bsc.quiknode.pro/07fd71e94b68817b6a596dc947910035f41d7382/";
+export const webSocketLinkPolygon = "wss://ws-matic-mainnet.chainstacklabs.com";
+
 export const environment = {
   s3BucketConfig: {
     region: 'ap-southeast-1',
@@ -52,6 +60,10 @@ export const environment = {
   ethRpc: IsTestNet ? test_ethRpc : ethRpc,
   bnbRpc: IsTestNet ? test_bnbRpc : bnbRpc,
   polRpc: IsTestNet ? test_polRpc : polRpc,
+
+  wsEth: IsTestNet ? _webSocketLinkEth : webSocketLinkEth,
+  wsBsc: IsTestNet ? _webSocketLinkBsc : webSocketLinkBsc,
+  wsPolygon: IsTestNet ? _webSocketLinkPolygon : webSocketLinkPolygon,
 
   usdcCont: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
   usdcAbi: [

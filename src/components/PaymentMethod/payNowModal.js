@@ -7,6 +7,7 @@ import {
     StyleSheet,
     SafeAreaView,
     Text,
+    Alert,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
@@ -14,7 +15,7 @@ import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
 import { RF, wp, hp } from '../../constants/responsiveFunct';
 import ButtonGroup from '../buttonGroup';
-import { translate, CARD_MASK } from '../../walletUtils';
+import { translate, CARD_MASK, environment } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
 import { useNavigation } from '@react-navigation/native';
@@ -22,8 +23,11 @@ import NotEnoughGold from './alertGoldModal';
 import { useSelector, useDispatch } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import { formatWithMask } from 'react-native-mask-input';
-import { getPaymentIntent } from '../../store/reducer/paymentReducer';
-import {useStripe} from '@stripe/stripe-react-native';
+import { getPaymentIntent, getTransactionHash, updateTransactionSuccess } from '../../store/reducer/paymentReducer';
+import {useStripe, useConfirmPayment} from '@stripe/stripe-react-native';
+import { StripeApiRequest, ApiRequest, STRIPE_API_URL } from '../../helpers/ApiRequest';
+import WebView from 'react-native-webview';
+import { alertWithSingleBtn } from '../../common/function';
 
 const PaymentNow = (props) => {
 
@@ -32,12 +36,16 @@ const PaymentNow = (props) => {
     const {paymentObject} = useSelector(state => state.PaymentReducer);
     const {data} = useSelector(state => state.UserReducer);
 
-    const { initPaymentSheet, presentPaymentSheet } = useStripe();
+    const { initPaymentSheet, presentPaymentSheet, handleCardAction, 
+        confirmPayment 
+    } = useStripe();
 
-    const { visible, onRequestClose, NftId, price, chain } = props;
+    const { visible, onRequestClose, NftId, price, chain, ownerId, onPaymentDone } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [redirectURL, setRedirectURL] = useState('');
 
     const getTitle = () => {
         let title = "";
@@ -55,10 +63,150 @@ const PaymentNow = (props) => {
             chainType: chain || "binance"
         }
 
-        dispatch(getPaymentIntent(data.token, params)).then(res => {
+        dispatch(getPaymentIntent(data.token, params)).then(async (res) => {
             console.log('res',res);
+            if(res.success){
+                // const {error, paymentIntent} = await confirmPayment(res.data.client_secret, {
+                //     type: 'Card',
+                //     billingDetails: {
+                //         email: "Robert@mailinator.com",
+                //         name: "Robert",
+                //         addressPostalCode: "123456",
+                //         addressCity: "Mumbai",
+                //         addressCountry: "India",
+                //         addressLine1: "Mumbai",
+                //         addressLine2: "",
+                //         addressState: "Maharashtra"
+                //     }
+                // });
+
+                // if(error){
+                //     console.log('error',error);
+                // }else{
+                //     console.log('paymentIntent',paymentIntent);
+                // }
+
+                _confirmPayment(res.data.id, res.data.client_secret);
+                // initializePaymentSheet({
+                //     paymentIntent: res.data.client_secret,
+                //     customer: res.data.customer
+                // });
+            }else{
+                if(res.error){
+                    // alertWithSingleBtn(translate(`common.${res.error.code}`));
+                    alertWithSingleBtn(res.message);
+                }else{
+                    alertWithSingleBtn(res.data);
+                }
+                setLoading(false);
+            }
         }).catch((err) => {
             console.log('err',err);
+            setLoading(false);
+        });
+    }
+
+    const _confirmPayment = (paymentIntentId, clientSecret) => {
+
+        const params = {
+            // return_url: "https://testnet.xanalia.com/",
+            expected_payment_method_type: "card",
+            use_stripe_sdk: true,
+            webauthn_uvpa_available: false,
+            spc_eligible: false,
+            key: "pk_test_51Jbha5Ee7q061aolrboDAHMlO4Y6eYpoHZtARZwQcFXUIu0fxFFzHjFKSTQNUnfrYO6owRxHzfECLULhV7RXZ7Zr00oa6Um1Zb",
+            client_secret: clientSecret
+        }
+
+        StripeApiRequest(`payment_intents/${paymentIntentId}/confirm`, params).then((response) => {
+            console.log('response',JSON.stringify(response));
+            if(response){
+                if(response.status === 'requires_action'){
+                    manageOnRequireAction(response.client_secret);
+                    // setRedirectURL(response.next_action.use_stripe_sdk.stripe_js);
+                }else{
+                    chargePayment(response.id, response.client_secret);
+                }
+            }else{
+                setLoading(false);
+            }
+        }).catch((err) => {
+            console.log('err',err);
+            setLoading(false);
+        });
+    }
+
+    const chargePayment = (paymentIntentId, clientSecret) => {
+
+        const url = `payment_intents/${paymentIntentId}?key=${environment.stripeKey.p_key}&is_stripe_sdk=true&client_secret=${clientSecret}`
+        console.log('url',url);
+        StripeApiRequest(url, null, 'GET').then((_response) => {
+            console.log('_response',_response);
+            if(_response.status === 'requires_action'){
+                manageOnRequireAction(clientSecret);
+            }else{
+                checkPaymentStatus(paymentIntentId);
+            }
+        }).catch((err) => {
+            console.log('err',err);
+            setLoading(false);
+        });
+    }
+
+    const manageOnRequireAction = async (payment_intent_client_secret) => {
+        const { error, paymentIntent } = await handleCardAction(payment_intent_client_secret);
+        if (error) {
+            Alert.alert(`Error code: ${error.code}`, error.message);
+            setLoading(false);
+        } else if (paymentIntent) {
+            console.log('paymentIntent',paymentIntent);
+            checkPaymentStatus(paymentIntent.id);
+        }
+    }
+
+    const checkPaymentStatus = (paymentIntentId) => {
+
+        const params = {
+            "nftId": NftId,
+            "paymentIntentId": paymentIntentId,
+            "chainType": chain || "binance"
+          }
+
+        dispatch(getTransactionHash(data.token, params)).then((_hash_res) => {
+            console.log('_hash_res',_hash_res);
+            if(_hash_res.success){
+                transactionSuccess(_hash_res.data.transaction_hash);
+            }else{
+                setLoading(false);
+            }
+        }).catch((err)=>{
+            console.log('err',err);
+            setLoading(false);
+        });
+    }
+
+    const transactionSuccess = (trans_hash) => {
+        const params = {
+            transactionHash: trans_hash,
+            locale: "en",
+            chainType: chain,
+            previousOwnerId: ownerId
+          }
+
+        dispatch(updateTransactionSuccess(data.token, params)).then((success_res) => {
+            console.log('success_res',success_res);
+            if(success_res.success){
+                alertWithSingleBtn(translate('common.tansactionSuccessFull'));
+                onPaymentDone();
+                setLoading(false);
+            }else{
+                alertWithSingleBtn(success_res.data);
+                onPaymentDone();
+                setLoading(false);
+            }
+        }).catch((err)=>{
+            console.log('err',err);
+            setLoading(false);
         });
     }
 
@@ -71,19 +219,28 @@ const PaymentNow = (props) => {
 
         const { error } = await initPaymentSheet({
             customerId: customer,
-            customerEphemeralKeySecret: ephemeralKey,
+            // customerEphemeralKeySecret: ephemeralKey,
             paymentIntentClientSecret: paymentIntent,
         });
         if (!error) {
             setLoading(true);
+            openPaymentSheet(paymentIntent);
         }
     };
 
-    const openPaymentSheet = async () => {
+    const openPaymentSheet = async (clientSecret) => {
+        console.log('clientSecret',clientSecret);
         const { error } = await presentPaymentSheet({ clientSecret });
-
+        console.log('error',error);
         if (error) {
-            Alert.alert(`Error code: ${error.code}`, error.message);
+            // Alert.alert(`Error code: ${error.code}`, error.message);
+            const { error, paymentIntent } = await handleCardAction(clientSecret);
+            if (error) {
+                Alert.alert(`Error code: ${error.code}`, error.message);
+            } else if (paymentIntent) {
+                console.log('paymentIntent', paymentIntent);
+                checkPaymentStatus(paymentIntent.id);
+            }
         } else {
             Alert.alert('Success', 'Your order is confirmed!');
         }
@@ -138,7 +295,7 @@ const PaymentNow = (props) => {
                             }).obfuscated}
                         </Text>}
                         <TouchableOpacity style={styles.editContainer} onPress={() => {
-                            navigation.navigate("Cards",{})
+                            navigation.navigate("Cards",{price})
                             onRequestClose();
                         }}>
                             <Image source={ImagesSrc.edit} style={CommonStyles.imageStyles(3)}/>
@@ -160,9 +317,12 @@ const PaymentNow = (props) => {
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
                             if(NftId && paymentObject){
+                                setLoading(true);
                                 _getPaymentIntent();
                             }
                         }}
+                        loading={loading}
+                        view={loading}
                     />
 
                 </View>
@@ -178,6 +338,7 @@ const PaymentNow = (props) => {
                     setNotEnoughGoldVisible(false)
                 }}
             />
+
         </Modal>
     );
 }

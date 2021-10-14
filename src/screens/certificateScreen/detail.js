@@ -22,24 +22,28 @@ import {
 } from 'src/constants';
 import Video from 'react-native-fast-video';
 import { translate } from '../../walletUtils';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllCards, setPaymentObject } from '../../store/reducer/paymentReducer';
+import { networkType } from '../../common/networkType';
 
 const {
     PlayButtonIcon,
     GIRL
 } = SVGS;
 
-
+const Web3 = require("web3");
 const langObj = getLanguage();
+
+let walletAddressForNonCrypto = "";
 
 const DetailScreen = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const {paymentObject} = useSelector(state => state.PaymentReducer);
-    const {data} = useSelector(state => state.UserReducer);
+    const { paymentObject } = useSelector(state => state.PaymentReducer);
+    const { data, wallet } = useSelector(state => state.UserReducer);
 
     const refVideo = useRef(null);
     const [isPlay, setPlay] = useState(false);
@@ -55,22 +59,328 @@ const DetailScreen = ({ route, navigation }) => {
         video,
         fileType,
         price,
-        chain
+        chain,
+        ownerId,
+        tokenId
     } = route.params;
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPaymentNow, setShowPaymentNow] = useState(false);
+    const [isContractOwner, setIsContractOwner] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
+    const [isNFTOnAuction, setIsNFTOnAuction] = useState(false);
+    const [singleNFT, setSingleNFT] = useState({});
+    const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
+    const [nonCryptoOwner, setNonCryptoOwner] = useState(false);
+    const [nftStatus, setNftStatus] = useState('');
+    const [lastBidAmount, setLastBidAmount] = useState("");
+    const [priceNFT, setPriceNFT] = useState("");
+    const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState("");
+    const [auctionETime, setAuctionETime] = useState('');
+    const [connectedWithTo, setConnectedWithTo] = useState('');
 
-    useEffect(()=>{
-        if(data.token){
-            dispatch(getAllCards(data.token));
-        }
-    },[]);
+    //#region SmartContract
+    let MarketPlaceAbi = "";
+    let MarketContractAddress = "";
+
+    let AwardAbi = "";
+    let AwardContractAddress = "";
+    let ApproveAbi = "";
+    let ApproveAdd = "";
+    let providerUrl = "";
+
+    walletAddressForNonCrypto =
+        networkType === "testnet"
+            ? chain === "binance"
+                ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
+                : "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
+            : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e";
+
+    let params = tokenId.toString().split('-');
+    let _tokenId = params.length > 1 ? params[1] : params[0];
+    let chainType = params.length > 1 ? params[0] : 'binance';
+    if (chainType === 'polygon') {
+        MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+        AwardAbi = blockChainConfig[1].awardConConfig.abi;
+        AwardContractAddress = blockChainConfig[1].awardConConfig.add;
+        ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
+        ApproveAdd = blockChainConfig[1].marketApproveConConfig.add;
+        providerUrl = blockChainConfig[1].providerUrl;
+    } else if (chainType === 'binance') {
+        MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+        AwardAbi = blockChainConfig[0].awardConConfig.abi;
+        AwardContractAddress = blockChainConfig[0].awardConConfig.add;
+        ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
+        ApproveAdd = blockChainConfig[0].marketApproveConConfig.add;
+        providerUrl = blockChainConfig[0].providerUrl;
+    }
+    //#endregion
 
     useEffect(() => {
-        if(paymentObject){
+        console.log('tokenId', tokenId);
+        checkNFTOnAuction();
+        getNonCryptoNFTOwner();
+        if (data.token) {
+            dispatch(getAllCards(data.token));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (paymentObject) {
             setShowPaymentNow(true);
         }
-    },[paymentObject]);
+    }, [paymentObject]);
+
+    const checkNFTOnAuction = () => {
+        const setAuctionVariables = (
+            auctionInitiatorAdd = "",
+            auctionETime = "",
+            lastBidAmount = "",
+            isNFTOnAuction = false
+        ) => {
+            setIsNFTOnAuction(isNFTOnAuction);
+            setAuctionInitiatorAdd(auctionInitiatorAdd);
+            setAuctionETime(auctionETime);
+            setLastBidAmount(lastBidAmount);
+        };
+
+        let web3 = new Web3(providerUrl);
+        let MarketPlaceContract = new web3.eth.Contract(
+            MarketPlaceAbi,
+            MarketContractAddress
+        );
+        MarketPlaceContract.methods
+            .getSellDetail(_tokenId)
+            .call((err, res) => {
+                console.log('res',res);
+                if (!err) {
+                    if (parseInt(res[5]) * 1000 > 0) {
+                        setAuctionVariables(
+                            res[0],
+                            parseInt(res[2]) * 1000,
+                            divideNo(res[1]),
+                            true
+                        );
+                    } else {
+                        setAuctionVariables();
+                    }
+                } else {
+                    setAuctionVariables();
+                }
+            });
+    }
+
+    const getNonCryptoNFTOwner = () => {
+        // let tokenId = "317";
+        let web3 = new Web3(providerUrl);
+        let MarketPlaceContract = new web3.eth.Contract(
+            MarketPlaceAbi,
+            MarketContractAddress
+        );
+        MarketPlaceContract.methods
+            .getNonCryptoOwner(_tokenId)
+            .call(async (err, res) => {
+                if (res) {
+                    setNonCryptoOwnerId(res);
+                    lastOwnerOfNFTNonCrypto();
+                } else if (!res) {
+                    lastOwnerOfNFT();
+                } else if (err) {
+                }
+            });
+    }
+
+    const lastOwnerOfNFTNonCrypto = () => {
+        let _data = singleNFT;
+        let web3 = new Web3(providerUrl);
+        let MarketPlaceContract = new web3.eth.Contract(
+            MarketPlaceAbi,
+            MarketContractAddress
+        );
+        MarketPlaceContract.methods.ownerOf(_tokenId).call((err, res) => {
+            if (!err) {
+                _data.owner_address = res;
+                MarketPlaceContract.methods.getSellDetail(_tokenId).call((err, res) => {
+                    console.log('MarketPlaceContract_res', res, err, _tokenId, MarketContractAddress);
+                    // return ;
+                    if (!err) {
+                        let priceOfNft = res[1] / 1e18;
+                        if (wallet.address) {
+                            // if (priceOfNft === 0) {
+                            if (res[0] === "0x0000000000000000000000000000000000000000") {
+                                setPriceNFT(priceOfNft);
+                                setIsContractOwner(res[0].toLowerCase() ===
+                                    wallet.address.toLowerCase() ||
+                                    (res[0].toLowerCase() ===
+                                        walletAddressForNonCrypto.toLowerCase() &&
+                                        nonCryptoOwnerId.toLowerCase() ===
+                                        data.user._id)
+                                    ? true
+                                    : false);
+                                setIsOwner((_data.owner_address.toLowerCase() ===
+                                    wallet.address.toLowerCase() &&
+                                    res[1] !== "") ||
+                                    (data &&
+                                        _data.owner_address.toLowerCase() ===
+                                        walletAddressForNonCrypto.toLowerCase() &&
+                                        res[1] !== "" &&
+                                        nonCryptoOwnerId.toLowerCase() ===
+                                        data.user._id)
+                                    ? true
+                                    : false);
+                            } else if (
+                                res[0] !== "0x0000000000000000000000000000000000000000"
+                            ) {
+                                setIsOwner((res[0].toLowerCase() ===
+                                    wallet.address.toLowerCase() &&
+                                    res[1] !== "") ||
+                                    (data &&
+                                        res[0].toLowerCase() ===
+                                        walletAddressForNonCrypto.toLowerCase() &&
+                                        res[1] !== "" &&
+                                        nonCryptoOwnerId.toLowerCase() ===
+                                        data.user._id)
+                                    ? true
+                                    : false);
+                                setIsContractOwner(res[0].toLowerCase() ===
+                                    wallet.address.toLowerCase() ||
+                                    (res[0].toLowerCase() ===
+                                        walletAddressForNonCrypto.toLowerCase() &&
+                                        data &&
+                                        nonCryptoOwnerId.toLowerCase() ===
+                                        data.user._id)
+                                    ? true
+                                    : false);
+                                setPriceNFT(priceOfNft);
+                            }
+                        } else {
+                            if (res[0] === "0x0000000000000000000000000000000000000000") {
+                                setIsContractOwner(false);
+                                setPriceNFT(priceOfNft);
+                            } else if (
+                                res[0] !== "0x0000000000000000000000000000000000000000"
+                            ) {
+                                setPriceNFT(priceOfNft);
+                                setIsContractOwner(false);
+                            }
+                        }
+                    }
+                });
+            } else {
+                //console.log("err getAuthor", err);
+            }
+        });
+    }
+
+    const lastOwnerOfNFT = () => {
+        let _data = singleNFT;
+        let web3 = new Web3(providerUrl);
+        let MarketPlaceContract = new web3.eth.Contract(
+            MarketPlaceAbi,
+            MarketContractAddress
+        );
+        MarketPlaceContract.methods.ownerOf(_tokenId).call((err, res) => {
+            if (!err) {
+                _data.owner_address = res;
+                MarketPlaceContract.methods.getSellDetail(_tokenId).call((err, res) => {
+                    console.log('MarketPlaceContract_res', res, err, _tokenId);
+                    if (!err) {
+                        let priceOfNft = res[1] / 1e18;
+                        if (wallet.address) {
+                            if (res[0] === "0x0000000000000000000000000000000000000000") {
+                                setPriceNFT(priceOfNft);
+                                setIsContractOwner(res[0].toLowerCase() ===
+                                    wallet.address.toLowerCase()
+                                    ? true
+                                    : false);
+                                setIsOwner(_data.owner_address.toLowerCase() ===
+                                    wallet.address.toLowerCase() && res[1] !== ""
+                                    ? true
+                                    : false);
+                            } else if (
+                                res[0] !== "0x0000000000000000000000000000000000000000"
+                            ) {
+                                setIsOwner(res[0].toLowerCase() ===
+                                    wallet.address.toLowerCase() && res[1] !== ""
+                                    ? true
+                                    : false);
+                                setIsContractOwner(res[0].toLowerCase() ===
+                                wallet.address.toLowerCase()
+                                    ? true
+                                    : false);
+                                setPriceNFT(priceOfNft);
+                            }
+                        } else {
+                            // if (priceOfNft === 0) {
+                            if (res[0] === "0x0000000000000000000000000000000000000000") {
+                                setIsContractOwner(false);
+                                setPriceNFT(priceOfNft);
+                            } else if (
+                                res[0] !== "0x0000000000000000000000000000000000000000"
+                            ) {
+                                setIsContractOwner(false);
+                                setPriceNFT(priceOfNft);
+                            }
+                        }
+                    }
+                });
+            } else {
+                //console.log("err getAuthor", err);
+            }
+        });
+    }
+
+    const bidingTimeEnded = () => {
+        return new Date().getTime() > new Date(auctionETime).getTime();
+    }
+
+    const setNFTStatus = () => {
+        _nftStatus = '';
+        if (isContractOwner) {
+            if (isNFTOnAuction && lastBidAmount !== "0.000000000000000000") {
+                // setNftStatus(undefined);
+                console.log('set NftStatus 1');
+                _nftStatus = undefined;
+            } else {
+                // setNftStatus('onSell')
+                console.log('set NftStatus 2');
+                _nftStatus = 'onSell';
+            }
+        } else if (isOwner) {
+            // setNftStatus('sell')
+            console.log('set NftStatus 3');
+            _nftStatus = 'sell';
+        } else if (priceNFT || (isNFTOnAuction && auctionInitiatorAdd.toLowerCase() !== wallet.address.toLowerCase())) {
+            if (isNFTOnAuction && auctionInitiatorAdd.toLowerCase() !== wallet.address.toLowerCase() && bidingTimeEnded() !== true) {
+                // setNftStatus(undefined);
+                console.log('set NftStatus 4');
+                _nftStatus = undefined;
+            } else if (priceNFT && !isNFTOnAuction) {
+                if (wallet.address) {
+                    // setNftStatus('buy')
+                    console.log('set NftStatus 5');
+                    _nftStatus = 'buy';
+                } else if (connectedWithTo === "paymentCard") {
+
+                } else {
+                    // setNftStatus('buy');
+                    console.log('set NftStatus 6');
+                    _nftStatus = 'buy';
+                }
+            } else {
+                // setNftStatus(undefined);
+                console.log('set NftStatus 7');
+                _nftStatus = undefined;
+            }
+        } else {
+            // setNftStatus('notOnSell');
+            console.log('set NftStatus 8');
+            _nftStatus = 'notOnSell';
+        }
+        console.log('_nftStatus',_nftStatus,priceNFT,isContractOwner,isOwner,isNFTOnAuction);
+        return _nftStatus;
+    }
 
     return (
         <>
@@ -203,22 +513,45 @@ const DetailScreen = ({ route, navigation }) => {
                             </Text>
                         </View>
                         <GroupButton
-                            leftText={translate("common.buy")}
+                            leftText={
+                                setNFTStatus() === 'onSell' ? translate("common.cancelSell")
+                                    : setNFTStatus() === 'sell' ? translate("common.sell")
+                                        : setNFTStatus() === 'buy' ? translate("common.buy")
+                                            : setNFTStatus() === 'notOnSell' ? translate("common.soonOnSell")
+                                                : translate("common.buy")
+                            }
                             rightText={translate("wallet.common.offerPrice")}
+                            leftDisabled={setNFTStatus() === ''}
                             onLeftPress={() => {
                                 // navigation.navigate('WalletConnect')
-                                setShowPaymentMethod(true)
+                                // if(price && price > 0){
+                                    if(setNFTStatus() === 'buy'){
+                                        setShowPaymentMethod(true);
+                                    }
+                                // }
                             }}
+                            leftHide={setNFTStatus() === undefined}
                             onRightPress={() => navigation.navigate('MakeBid')}
                         />
                     </View>
                 </ScrollView>
             </SafeAreaView>
             <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} onRequestClose={() => setShowPaymentMethod(false)} />
-            <PaymentNow visible={showPaymentNow} price={price ? price : 0} chain={chain} NftId={id} onRequestClose={() => {
-                dispatch(setPaymentObject(null));
-                setShowPaymentNow(false)
-            }}/>
+            <PaymentNow
+                visible={showPaymentNow}
+                price={price ? price : 0}
+                chain={chain}
+                NftId={_tokenId}
+                ownerId={ownerId}
+                onRequestClose={() => {
+                    dispatch(setPaymentObject(null));
+                    setShowPaymentNow(false)
+                }} 
+                onPaymentDone={() => {
+                    dispatch(setPaymentObject(null));
+                    getNonCryptoNFTOwner();
+                    setShowPaymentNow(false);
+                }}/>
         </>
     )
 }

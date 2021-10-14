@@ -11,24 +11,31 @@ const groupButton = ({
     leftText,
     rightText,
     onLeftPress,
-    onRightPress
+    onRightPress,
+    leftDisabled,
+    rightDisabled,
+    leftHide,
+    rightHide
 }) => {
+    console.log('leftDisabled',leftDisabled);
     return (
         <View style={styles.mainContainer}>
-            <TouchableOpacity
+            {leftHide?null:<TouchableOpacity
                 onPress={onLeftPress}
-                style={styles.leftButton}>
+                style={styles.leftButton}
+                disabled={leftDisabled}>
                 <Text style={styles.buttonText}>
                     {leftText}
                 </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </TouchableOpacity>}
+            {rightHide?null:<TouchableOpacity
                 onPress={onRightPress}
-                style={styles.rightButton}>
+                style={styles.rightButton}
+                disabled={rightDisabled}>
                 <Text style={styles.buttonText}>
                     {rightText}
                 </Text>
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     )
 }
