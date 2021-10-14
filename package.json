@@ -76,6 +76,7 @@
     "react-native-svg-transformer": "^0.14.3",
     "react-native-tab-view": "2.11.0",
     "react-native-tcp": "^3.3.2",
+    "react-native-toast-message": "^1.6.0",
     "react-native-udp": "^2.7.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-view-shot": "^3.1.2",
