@@ -24,6 +24,9 @@ import {
     SVGS,
 } from 'src/constants';
 import {
+    C_Image,
+} from 'src/components';
+import {
     Avatar,
     ChangeAvatar,
     DoneText,
@@ -68,7 +71,7 @@ function Profile({
     const [youtube, setYoutube] = useState(UserReducer.data.user.youtube);
     const [instagram, setInstagram] = useState(UserReducer.data.user.instagram);
     const [about, setAbout] = useState(UserReducer.data.user.about);
-    const [photo, setPhoto] = useState(UserReducer.data.user.photo);
+    const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
     const actionSheetRef = useRef(null);
     const dispatch = useDispatch();
 
@@ -98,7 +101,6 @@ function Profile({
         } else if (index === OPEN_GALLERY) {
             launchImageLibrary(options, (response) => {
                 if (response.assets) {
-                    console.log(response.assets[0])
                     setPhoto(response.assets[0]);
                 }
             });
@@ -109,13 +111,16 @@ function Profile({
 
         setLoading(true);
 
+        axios.defaults.headers.common['Authorization'] = `Bearer ${UserReducer.data.token}`;
+
         if (photo) {
             let formData = new FormData();
-            formData.append('file', { uri: photo.uri, name: photo.fileName, type: photo.type });
+            formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
 
             axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
             await axios.post(`${BASE_URL}/user/update-profile-image`, formData)
                 .then(res => {
+                    dispatch(upateUserData(res.data.data));
                 })
                 .catch(err => {
                     alert(err.message);
@@ -143,7 +148,7 @@ function Profile({
 
         await axios.post(`${BASE_URL}/user/update-user-profile`, req_body)
             .then(res => {
-                dispatch(upateUserData(data));
+                dispatch(upateUserData(res.data.data));
                 navigation.goBack();
             })
             .catch(err => {
@@ -177,7 +182,10 @@ function Profile({
                     <CenterWrap>
                         <SpaceView mTop={SIZE(10)} />
                         <Avatar>
-                            <Image source={photo && { uri: photo.uri } || DEFAULTPROFILE} style={{ width: '100%', height: '100%' }} />
+                            <C_Image
+                                uri={photo.uri}
+                                imageStyle={{ width: '100%', height: '100%' }}
+                            />
                         </Avatar>
                         <SpaceView mTop={SIZE(7)} />
                         <TouchableOpacity onPress={onPhoto}>

@@ -334,7 +334,6 @@ function ArtistDetail({
             .then(response => response.json())
             .then(res => {
                 if (res.data) {
-                    console.log(res.data._id)
                     setData(res.data);
                 }
             });

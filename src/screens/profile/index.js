@@ -67,7 +67,6 @@ import {
 } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
-import { useFocusEffect } from '@react-navigation/native';
 const langObj = getLanguage();
 
 const {
@@ -305,7 +304,8 @@ function Profile({
 }) {
 
     const { UserReducer } = useSelector(state => state);
-    const id = UserReducer.wallet.address;
+
+    const id = UserReducer.data.user.username || UserReducer.wallet.address;
 
     const renderTabView = () => {
         return (
@@ -363,7 +363,7 @@ function Profile({
                 <RowBetweenWrap flex={1}>
                     <UserImageView>
                         <C_Image
-                            uri={null}
+                            uri={UserReducer.data.user.profile_image}
                             imageStyle={{
                                 width: '100%',
                                 height: '100%'

@@ -8,6 +8,7 @@ import {
     UPDATE_PROFILE
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
+import { BASE_URL } from '../../common/constants';
 
 const initialState = {
     loading: false,
@@ -47,10 +48,10 @@ export default UserReducer = (state = initialState, action) => {
 
         case UPDATE_PROFILE:
             let _data = state.data;
-            _data.user = action.payload.data;
+            _data.user = action.payload;
             return {
                 ...state,
-                data: _data
+                data: { ..._data }
             }
         default:
             return state;
@@ -97,6 +98,27 @@ export const loadFromAsync = () => (dispatch) =>
 
         if (wallet && userData) {
             dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
+            const _wallet = JSON.parse(wallet);
+            let req_data = {
+                owner: _wallet.address,
+                token: 'HubyJ*%qcqR0'
+            };
+
+            let body = {
+                method: 'POST',
+                body: JSON.stringify(req_data),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            }
+            fetch(`${BASE_URL}/xanalia/getProfile`, body)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.data) {
+                        dispatch(upateUserData(res.data));
+                    }
+                });
         } else {
             dispatch(endLoading());
         }
