@@ -134,7 +134,7 @@ const Created = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                    No Image to Show
+                                {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }

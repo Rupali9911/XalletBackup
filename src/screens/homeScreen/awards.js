@@ -66,7 +66,7 @@ const Awards = () => {
                                 imageStyle={styles.listImage} />
                             :
                             <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }}>No Image to Show</Text>
+                                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
                             </View>
                     }
                 </TouchableOpacity>

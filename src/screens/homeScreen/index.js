@@ -8,7 +8,7 @@ import { getNFTList, getAllArtist, nftLoadStart, pageChange, nftListReset } from
 import { changeScreenName } from '../../store/actions/authAction';
 import { updateCreateState } from '../../store/reducer/userReducer';
 
-import { responsiveFontSize as RF } from '../../common/responsiveFunction';
+import { responsiveFontSize as RF , widthPercentageToDP as wp} from '../../common/responsiveFunction';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import ImageSrc from '../../constants/Images';
@@ -84,7 +84,7 @@ const Hot = () => {
                                 type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }} >No Image to Show</Text>
+                                <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
                             </View>
                     }
                 </TouchableOpacity>
@@ -207,7 +207,8 @@ const HomeScreen = ({ navigation }) => {
                         shadowOpacity: 0,
                     },
                     tabStyle: {
-                        height: SIZE(40)
+                        height: SIZE(40),
+                        paddingHorizontal: wp('1%')
                     },
                     labelStyle: {
                         fontSize: RF(1.4),
