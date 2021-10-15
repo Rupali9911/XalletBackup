@@ -112,13 +112,13 @@ const Collection = () => {
                                 keyExtractor={(v, i) => "item_" + i}
                             /> :
                             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                                <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                                <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                             </View>
                     :
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                        <Text style={styles.sorryMessage} >{langObj.common.toseelogin}</Text>
+                        <Text style={styles.sorryMessage} >{translate("common.toseelogin")}</Text>
                         <TouchableOpacity onPress={() => navigation.navigate("Connect")} style={{ backgroundColor: colors.themeL, borderRadius: 10, marginVertical: 10, paddingHorizontal: 20, paddingVertical: 5 }} >
-                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >{langObj.common.signIn}</Text>
+                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >{translate("common.signIn")}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -225,13 +225,13 @@ const NFT = () => {
                                 keyExtractor={(v, i) => "item_" + i}
                             /> :
                             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                                <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                                <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                             </View>
                     :
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                        <Text style={styles.sorryMessage} >{langObj.common.toseelogin}</Text>
+                        <Text style={styles.sorryMessage} >{translate("common.toseelogin")}</Text>
                         <TouchableOpacity onPress={() => navigation.navigate("Connect")} style={{ backgroundColor: colors.themeL, borderRadius: 10, marginVertical: 10, paddingHorizontal: 20, paddingVertical: 5 }} >
-                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >{langObj.common.signIn}</Text>
+                            <Text style={[styles.sorryMessage, { color: "#fff" }]} >{translate("common.signIn")}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -273,8 +273,16 @@ const MyNFTScreen = () => {
                         borderBottomWidth: 2,
                     }
                 }} >
-                    <Tab.Screen name={langObj.common.NFT} component={NFT} />
-                    <Tab.Screen name={langObj.common.myCollection} component={Collection} />
+                    <Tab.Screen
+                        name={langObj.common.NFT}
+                        options={{ tabBarLabel: translate("common.NFT") }}
+                        component={NFT}
+                    />
+                    <Tab.Screen
+                        name={langObj.common.myCollection}
+                        options={{ tabBarLabel: translate("common.myCollection") }}
+                        component={Collection}
+                    />
                 </Tab.Navigator>
             </SafeAreaView>
         </>

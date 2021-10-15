@@ -78,7 +78,7 @@ const TwoDArt = () => {
                             keyExtractor={(v, i) => "item_" + i}
                         /> :
                         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
 

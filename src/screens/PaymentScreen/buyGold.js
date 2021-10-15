@@ -68,7 +68,7 @@ const BuyGold = ({route, navigation}) => {
         <AppBackground isBusy={loading}>
             <AppHeader
                 showBackButton={true}
-                title={"Buy Gold"}
+                title={translate("wallet.common.buyGold")}
             />
 
             <View style={styles.container}>
@@ -126,10 +126,10 @@ const BuyGold = ({route, navigation}) => {
 
                 <View>
                     <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>Total Amount</Text>
+                        <Text style={styles.totalLabel}>{translate("wallet.common.totalAmount")}</Text>
                         <Text style={styles.value}>$ 1,300</Text>
                     </View>
-                    <AppButton label={"Buy Gold"} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                    <AppButton label={translate("wallet.common.buyGold")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
                             if (address !== '' && amount > 0) {
 

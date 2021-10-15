@@ -108,7 +108,7 @@ const Favorite = () => {
                             ListFooterComponent={renderFooter}
                         /> :
                         <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
             {

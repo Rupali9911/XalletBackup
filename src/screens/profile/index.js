@@ -171,7 +171,7 @@ const Created = ({ route }) => {
                     //     />
                     //     :
                     <View style={styles.sorryMessageCont} >
-                        <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                     </View>
             }
             {
@@ -282,7 +282,7 @@ const Collection = ({ route }) => {
                     //     />
                     //     :
                     <View style={styles.sorryMessageCont} >
-                        <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                     </View>
             }
             {

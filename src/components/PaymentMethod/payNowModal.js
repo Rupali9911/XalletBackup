@@ -148,7 +148,7 @@ const PaymentNow = (props) => {
                     <Separator style={styles.separator}/>
 
                     <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>Total Amount</Text>
+                        <Text style={styles.totalLabel}>{translate("wallet.common.totalAmount")}</Text>
                         <Text style={styles.value}>$ {price}</Text>
                     </View>
 
