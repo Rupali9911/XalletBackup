@@ -639,6 +639,8 @@
                 "requireCity": "請輸入城市",
                 "requireZipcode": "請輸入郵政編碼"
             },
+            "errorCode754": "錯誤代碼 ： 754.請聯繫客戶支援中心",
+            "failed": "失敗",
             "creatorHint": "更多來自這個創造者",
             "buyGold": "購買黃金",
             "buyGoldErr1": "沒有足夠的黃金！",

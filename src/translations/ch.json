@@ -639,6 +639,8 @@
                 "requireCity": "请输入城市",
                 "requireZipcode": "请输入邮政编码"
             },
+            "errorCode754": "错误代码 ： 754.请联系客户支持中心",
+            "failed": "失败",
             "creatorHint": "更多来自这个创造者",
             "invalidOrder": "无效订单。再试一次！",
             "buyGold": "购买黄金", 

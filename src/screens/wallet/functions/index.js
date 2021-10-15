@@ -4,7 +4,7 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 // import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
-import { environment } from '../../../walletUtils';
+import { environment, translate } from '../../../walletUtils';
 
 export const getSig = (message, privateKey) => {
   var accounts = new Accounts("");
@@ -258,9 +258,9 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr,
           return;
         } else if (err && err.message) {
           console.log(err);
-          reject({ success: false, msg: "failed" });
+          reject({ success: false, msg: translate("wallet.common.failed") });
         } else {
-          reject({ success: false, msg: 'Error Code : 754. Please contact customer support center', error_code: 754 });
+          reject({ success: false, msg: translate("wallet.common.errorCode754"), error_code: 754 });
         }
       })
 

@@ -640,6 +640,8 @@
                 "requireZipcode": "Please enter zipcode"
             },
             "invalidOrder": "Invalid order. Try again!",
+            "failed": "failed",
+            "errorCode754": "Error Code : 754. Please contact customer support center",
             "creatorHint": "More from this creator",
             "selectLanguage": "Select Language",
             "phraseCopy": "Phrase Copied",

@@ -640,6 +640,8 @@
                 "requireZipcode": "우편번호를 입력하세요"
             },
             "creatorHint": "이 크리에이터의 더 많은 것",
+            "errorCode754": "오류 코드 : 754. 고객 지원 센터에 문의하십시오.",
+            "failed": "실패",
             "buyGold": "골드 구매",
             "buyGoldErr1": "금이 충분하지 않습니다!",
             "buyGoldErr2": "인앱으로 골드 구매",
