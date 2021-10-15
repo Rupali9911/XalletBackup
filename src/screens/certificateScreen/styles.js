@@ -135,11 +135,9 @@ const styles = StyleSheet.create({
         marginBottom: wp('1%'),
     },
     bottomView: {
-        flex: 1,
         alignItems: 'stretch',
         paddingHorizontal: SIZE(14),
-        marginTop: SIZE(58),
-        marginBottom: SIZE(20)
+        marginBottom: SIZE(10)
     },
     count: {
         fontSize: RF(1.4),

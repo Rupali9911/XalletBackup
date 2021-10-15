@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     backIcon: {
-        ...CommonStyles.imageStyles(5)
+        ...CommonStyles.imageStyles(5),
     }
 })
 

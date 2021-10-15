@@ -18,7 +18,7 @@ const AppModal = (props) => {
             transparent
             onRequestClose={onRequestClose}
             >
-            <ImageBackground source={src?src:ImagesSrc.modalBg} style={styles.container}>
+            <ImageBackground source={src} style={styles.container}>
                 {props.children}
             </ImageBackground>
         </Modal>

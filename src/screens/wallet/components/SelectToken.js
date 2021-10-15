@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, StyleSheet, Image, TextInput, TouchableOpacity, FlatList, Platform } from 'react-native';
+import { Modal, View, StyleSheet, Image, TextInput, TouchableOpacity, FlatList, Platform, SafeAreaView } from 'react-native';
 import Colors from '../../../constants/Colors';
 import { hp, wp, RF } from '../../../constants/responsiveFunct';
 import ImagesSrc from '../../../constants/Images';
@@ -63,7 +63,7 @@ const SelectToken = (props) => {
             transparent
             animationType={'slide'}
             onRequestClose={onRequestClose}>
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.contentContainer}>
                     <View style={styles.actionView}>
                         <TouchableOpacity hitSlop={{ top: 15, left: 15, right: 15, bottom: 15 }} onPress={onRequestClose}>
@@ -102,7 +102,7 @@ const SelectToken = (props) => {
                         }} />
 
                 </View>
-            </View>
+            </SafeAreaView>
         </Modal>
     );
 }
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
         backgroundColor: Colors.white,
-        marginTop: hp("5%"),
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10
     },

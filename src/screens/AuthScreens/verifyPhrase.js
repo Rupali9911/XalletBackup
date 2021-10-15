@@ -86,6 +86,7 @@ const VerifyPhrase = ({ route, navigation }) => {
                 <FetchingIndicator />
             }
             <AppHeader
+                showBackButton
                 title={translate("wallet.common.backup")}
                 showBackButton
                 showRightButton

@@ -12,7 +12,7 @@ import TextView from '../../components/appText';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import {transfer} from './functions';
+import { transfer } from './functions';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -52,7 +52,7 @@ export const AddressField = (props) => {
                 placeholderTextColor={Colors.topUpPlaceholder}
                 returnKeyType="done"
                 value={props.value}
-                onChangeText={props.onChangeText}
+                onChangeText={val => props.onChangeText(val)}
                 onSubmitEditing={props.onSubmitEditing}
                 editable={props.editable}
             />
@@ -81,17 +81,15 @@ export const PaymentField = (props) => {
     )
 }
 
-const Send = ({route, navigation}) => {
+const Send = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const {wallet} = useSelector(state => state.UserReducer);
-    const {ethBalance,bnbBalance,maticBalance} = useSelector(state => state.WalletReducer);
+    const { wallet } = useSelector(state => state.UserReducer);
+    const { ethBalance, bnbBalance, maticBalance } = useSelector(state => state.WalletReducer);
 
-    const {item,type} = route.params;
+    const { item, type } = route.params;
 
     const [loading, setLoading] = useState(false);
-    const [address, setAddress] = useState("");
-    const [amount, setAmount] = useState('');
 
     const [index, setIndex] = useState(0);
     const [routes] = useState([
@@ -100,7 +98,9 @@ const Send = ({route, navigation}) => {
     ]);
 
     const SendScreen = () => {
-        return(
+        const [address, setAddress] = useState("");
+        const [amount, setAmount] = useState('');
+        return (
             <View style={styles.container}>
                 <View style={styles.contentContainer}>
                     <View style={styles.balanceContainer}>
@@ -117,32 +117,32 @@ const Send = ({route, navigation}) => {
 
                     </View>
                     <View style={styles.inputContainer}>
-                        <AddressField 
+                        <AddressField
                             onChangeText={setAddress}
                             onSubmitEditing={(txt) => {
                                 // verifyAddress(txt);
-                            }}/>
-                        
+                            }} />
+
                     </View>
-                    
+
                     <View style={styles.inputContainer}>
-                        <PaymentField 
-                            type={type} 
+                        <PaymentField
+                            type={type}
                             value={amount}
                             onChangeText={(e) => {
                                 let value = amountValidation(e, amount);
-                                if(value){
+                                if (value) {
                                     setAmount(value);
-                                }else {
+                                } else {
                                     setAmount('');
                                 }
-                                
-                            }}/>
+
+                            }} />
                     </View>
                 </View>
                 <AppButton label={translate("wallet.common.send")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => {
-                        if(address !== '' && amount > 0){
+                        if (address !== '' && amount > 0) {
                             if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
                                 if (verifyAddress(address)) {
                                     transferAmount();
@@ -152,21 +152,21 @@ const Send = ({route, navigation}) => {
                             }
                             else {
                                 showErrorAlert(translate("wallet.common.insufficientFunds"));
-                            }  
-                        }else{
+                            }
+                        } else {
                             showErrorAlert(translate("wallet.common.requireSendField"));
                         }
                     }} />
             </View>
         )
     }
-   
+
 
     const renderScene = SceneMap({
         Send: SendScreen,
         Scan: ScanScreen,
     });
-    
+
     const renderTabBar = (props) => {
         return (
             <TabBar
@@ -188,17 +188,17 @@ const Send = ({route, navigation}) => {
 
     const getTokenValue = () => {
         let totalValue = 0;
-        if(item.type == 'ETH'){
+        if (item.type == 'ETH') {
             let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
-            console.log('Ethereum value',value);
+            console.log('Ethereum value', value);
             totalValue = value;
-        }else if(item.type == 'BNB'){
+        } else if (item.type == 'BNB') {
             let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-            console.log('BSC value',value);
+            console.log('BSC value', value);
             totalValue = value;
-        }else if(item.type == 'Matic'){
+        } else if (item.type == 'Matic') {
             let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-            console.log('Polygon value',value);
+            console.log('Polygon value', value);
             totalValue = value;
         }
         return totalValue;
@@ -206,102 +206,102 @@ const Send = ({route, navigation}) => {
 
     const transferAmount = async () => {
         const publicAddress = wallet.address;
-        const privKey = wallet.privateKey;        
+        const privKey = wallet.privateKey;
         const toAddress = address;
         setLoading(true);
-        switch(type){
+        switch (type) {
             case 'ETH':
                 // let ethBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
                     console.log("ethBalance", ethBalance);
-                    if(ethBalance.success){
+                    if (ethBalance.success) {
                         showSuccessAlert();
                     }
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'USDT':
                 // let usdtBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
                     console.log("usdtBalance", usdtBalance);
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'BNB':
                 // let bnbBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
                     console.log("bnbBalance", bnbBalance);
-                    if(bnbBalance.success){
+                    if (bnbBalance.success) {
                         showSuccessAlert();
                     }
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'BUSD':
                 // let busdBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
                     console.log("busdBalance", busdBalance);
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'ALIA':
                 // let aliaBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
                     console.log("aliaBalance", aliaBalance);
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'Matic':
                 // let maticBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
                     console.log("maticBalance", maticBalance);
-                    if(maticBalance.success){
+                    if (maticBalance.success) {
                         showSuccessAlert();
                     }
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'USDC':
                 // let usdcBalance = await 
-                transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance)=>{
+                transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
                     console.log("usdcBalance", usdcBalance);
                     setLoading(false);
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             default:
         }
@@ -320,7 +320,7 @@ const Send = ({route, navigation}) => {
 
     const showSuccessAlert = () => {
         Alert.alert(
-            translate("wallet.common.transferInProgress", {token: `${amount} ${type}`}),
+            translate("wallet.common.transferInProgress", { token: `${amount} ${type}` }),
             '',
             [
                 {
@@ -333,12 +333,12 @@ const Send = ({route, navigation}) => {
         );
     }
 
-    
+
 
     return (
         <AppBackground isBusy={loading}>
             <AppHeader
-                showBackButton={true}
+                showBackButton
                 title={translate("wallet.common.send")}
             />
 

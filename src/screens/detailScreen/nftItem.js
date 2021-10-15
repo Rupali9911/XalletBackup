@@ -45,9 +45,13 @@ const nftItem = ({ item, index }) => {
   const { AuthReducer } = useSelector(state => state);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
-  const [artist, setArtist] = useState('----');
-  const [creatorImage, setCreatorImage] = useState();
+
   const [ownerImage, setOwnerImage] = useState();
+  const [ownerData, setOwnerData] = useState();
+>>>>>>> c353413bf702464f01d5f25d0bc31a52b311928f
+  const [artist, setArtist] = useState('----');
+  const [artistData, setArtistData] = useState();
+  const [creatorImage, setCreatorImage] = useState();
   const [isPlay, setPlay] = useState(false);
   const refVideo = useRef(null);
 
@@ -101,7 +105,7 @@ const nftItem = ({ item, index }) => {
           setOwnerId(res);
             let profile = await axios.get(profileUrl);
           if (profile.data) {
-            console.log('owner',res,tokenId,profile.data.data.username);
+            setOwnerData(profile.data.data);
             setOwner(profile.data.data.username);
             setOwnerImage(profile.data.data.profile_image);
           }
@@ -153,11 +157,10 @@ const nftItem = ({ item, index }) => {
         'Content-Type': 'application/json',
       }
     }
-    // console.log('body_data',body_data);
-    fetch(`${BASE_URL}/getDetailNFT`, fetch_data_body)
+
+    fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then((res) => {
-        // console.log('res',res);
         if (res.data.length > 0 && res.data !== "No record found") {
           const data = res.data[0];
 
@@ -176,10 +179,11 @@ const nftItem = ({ item, index }) => {
               'Content-Type': 'application/json',
             }
           }
-          fetch(`${BASE_URL}/getProfile`, body)
+          fetch(`${BASE_URL}/xanalia/getProfile`, body)
             .then(response => response.json())
             .then(res => {
               if (res.data) {
+                setArtistData(res.data);
                 res.data.username && setArtist(res.data.username);
                 setCreatorImage(res.data.profile_image);
               }
@@ -206,10 +210,36 @@ const nftItem = ({ item, index }) => {
 
   const fileType = item.metaData.image.split('.')[item.metaData.image.split('.').length - 1];
 
+  const onProfile = (isOwner) => {
+    if (isOwner) {
+      if (ownerData) {
+        navigation.navigate('ArtistDetail', { data: ownerData });
+      } else {
+        navigation.navigate('ArtistDetail', {
+          data: {
+            id: owner,
+          }
+        });
+      }
+    } else {
+      if (artistData) {
+        navigation.navigate('ArtistDetail', { data: artistData });
+      } else {
+        navigation.navigate('ArtistDetail', {
+          data: {
+            id: artist,
+          }
+        });
+      }
+    }
+  }
+
   return (
     <View>
       <View style={styles.modalSectCont}>
-        <View style={styles.iconCont}>
+        <TouchableOpacity
+          onPress={() => onProfile(true)}
+          style={styles.iconCont}>
           <Image
             style={styles.profileIcon}
             source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
@@ -221,8 +251,10 @@ const nftItem = ({ item, index }) => {
               {owner}
             </Text>
           </View>
-        </View>
-        <View style={styles.iconCont}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => onProfile(false)}
+          style={styles.iconCont}>
           <Image
             style={styles.profileIcon}
             source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
@@ -234,7 +266,7 @@ const nftItem = ({ item, index }) => {
               {artist}
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
       <TouchableOpacity
         activeOpacity={1}

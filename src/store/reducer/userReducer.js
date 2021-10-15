@@ -1,16 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-  AUTH_SUCCESS, AUTH_LOADING_START, AUTH_LOADING_END, UPDATE_CREATE
-  
+    AUTH_SUCCESS,
+    AUTH_LOADING_START,
+    AUTH_LOADING_END,
+    UPDATE_CREATE,
+    UPDATE_PROFILE
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 
 const initialState = {
-  loading: false,
-  wallet: null,
-  isCreate: false,
-  data: null
+    loading: false,
+    wallet: null,
+    isCreate: false,
+    data: null
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -42,17 +45,24 @@ export default UserReducer = (state = initialState, action) => {
                 isCreate: false
             };
 
+        case UPDATE_PROFILE:
+            let _data = state.data;
+            _data.user = action.payload.data;
+            return {
+                ...state,
+                data: _data
+            }
         default:
             return state;
     }
 }
 
 export const startLoading = () => ({
-  type: AUTH_LOADING_START,
+    type: AUTH_LOADING_START,
 });
 
 const endLoading = () => ({
-  type: AUTH_LOADING_END,
+    type: AUTH_LOADING_END,
 });
 
 const setUserData = (data) => ({
@@ -60,12 +70,17 @@ const setUserData = (data) => ({
     payload: data
 });
 
-export const startLoader = () => (dispatch) => 
+export const upateUserData = (data) => ({
+    type: UPDATE_PROFILE,
+    payload: data
+})
+
+export const startLoader = () => (dispatch) =>
     new Promise((resolve, reject) => {
         dispatch(startLoading());
-        setTimeout(()=>{
+        setTimeout(() => {
             resolve();
-        },500);
+        }, 500);
     });
 
 export const endLoader = () => (dispatch) =>
@@ -74,32 +89,32 @@ export const endLoader = () => (dispatch) =>
         resolve();
     });
 
-export const loadFromAsync = () => (dispatch) => 
+export const loadFromAsync = () => (dispatch) =>
     new Promise(async (resolve, reject) => {
         dispatch(startLoading());
-        const wallet = await AsyncStorage.getItem('@wallet',(err)=>console.log(err));
-        const userData = await AsyncStorage.getItem('@userData',(err)=>console.log(err));
-        
-        if(wallet && userData){
-            dispatch(setUserData({data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false}));
-        }else{
+        const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
+        const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
+
+        if (wallet && userData) {
+            dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
+        } else {
             dispatch(endLoading());
         }
         resolve();
     });
 
-export const setUserAuthData = (data,isCreate = false) => (dispatch) =>
+export const setUserAuthData = (data, isCreate = false) => (dispatch) =>
     new Promise(async (resolve, reject) => {
         dispatch(startLoading());
-        await AsyncStorage.setItem('@wallet',JSON.stringify(data),(err)=>console.log(err));
-        dispatch(setUserData({data, isCreate}));
+        await AsyncStorage.setItem('@wallet', JSON.stringify(data), (err) => console.log(err));
+        dispatch(setUserData({ data, isCreate }));
     });
 
-export const updateCreateState = () => (dispatch) => 
-new Promise((resolve, reject) => {
-    dispatch({type: UPDATE_CREATE});
-    resolve();
-});
+export const updateCreateState = () => (dispatch) =>
+    new Promise((resolve, reject) => {
+        dispatch({ type: UPDATE_CREATE });
+        resolve();
+    });
 
 export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
     new Promise((resolve, reject) => {
@@ -117,12 +132,12 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
             }
         }
 
-        console.log('request',request);
+        console.log('request', request);
         dispatch(startLoading());
         fetch(url, request).then((res) => res.json())
             .then((response) => {
                 console.log('response', response);
-                if(response.success){
+                if (response.success) {
 
                     const _params = {
                         nonce: response.data,
@@ -141,12 +156,12 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                     fetch('https://testapi.xanalia.com/auth/verify-signature', verifyReuqest).then((_res) => _res.json())
                         .then(async (_response) => {
                             console.log('_response', _response);
-                            if(_response.success){
+                            if (_response.success) {
                                 const items = [['@wallet', JSON.stringify(wallet)], ['@userData', JSON.stringify(_response.data)]]
                                 await AsyncStorage.multiSet(items, (err) => console.log(err));
-                                dispatch(setUserData({ data: _response.data, wallet,  isCreate }));
+                                dispatch(setUserData({ data: _response.data, wallet, isCreate }));
                                 resolve();
-                            }else{
+                            } else {
                                 dispatch(endLoading());
                                 reject(_response);
                             }
@@ -155,7 +170,7 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                             reject(err);
                         });
 
-                }else{
+                } else {
                     dispatch(endLoading());
                     reject(response);
                 }

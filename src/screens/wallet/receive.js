@@ -25,7 +25,10 @@ import { Button } from 'react-native-paper';
 import VerticalSeparator from '../../components/verticalSeparator';
 import Separator from '../../components/separator';
 
-const QRScreen = () => {
+// import { PaymentField } from './screenComponents';
+// import { alertWithSingleBtn } from "./commonFunction";
+
+const QRScreen = (index) => {
 
     const navigation = useNavigation();
     const route = useRoute();
@@ -115,7 +118,7 @@ const QRScreen = () => {
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
-                        onPress={() => { }}
+                        onPress={onSharing}
                     />
                 </View>
                 <TextView style={styles.alert}>
@@ -192,7 +195,7 @@ function Receive({ route, navigation }) {
                 title={translate("wallet.common.receive")}
             />
 
-            <QRScreen />
+            <QRScreen index={index} />
 
         </AppBackground>
 
