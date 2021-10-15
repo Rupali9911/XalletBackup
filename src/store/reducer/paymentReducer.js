@@ -106,13 +106,53 @@ export const getPaymentIntent = (token, data) => (dispatch) =>
         ApiRequest(`${BASE_URL}stripe/payment-intent`, 'POST', data, headers)
             .then((response) => {
                 console.log('response', response);
-                if (response.success) {
+                // if (response.success) {
                     resolve(response);
-                } else {
-                    reject();
-                }
+                // } else {
+                //     reject(response);
+                // }
             }).catch((err) => {
                 console.log('err', err);
                 reject();
             });
     });
+
+export const getTransactionHash = (token, data) => (dispatch) => 
+new Promise((resolve, reject) => {
+    let headers = {
+        'Authorization': `Bearer ${token}`
+    }
+    console.log('headers', headers);
+    ApiRequest(`${BASE_URL}stripe/confirm-payment-intent`, 'POST', data, headers)
+        .then((response) => {
+            console.log('response', response);
+            // if (response.success) {
+                resolve(response);
+            // } else {
+            //     reject();
+            // }
+        }).catch((err) => {
+            console.log('err', err);
+            reject();
+        });
+});
+
+export const updateTransactionSuccess = (token, data) => (dispatch) => 
+new Promise((resolve, reject) => {
+    let headers = {
+        'Authorization': `Bearer ${token}`
+    }
+    console.log('headers', headers);
+    ApiRequest(`${BASE_URL}stripe/transaction-success`, 'POST', data, headers)
+        .then((response) => {
+            console.log('response', response);
+            // if (response.success) {
+                resolve(response);
+            // } else {
+            //     reject();
+            // }
+        }).catch((err) => {
+            console.log('err', err);
+            reject();
+        });
+});

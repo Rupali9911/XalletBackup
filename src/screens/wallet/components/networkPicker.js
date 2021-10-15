@@ -32,7 +32,7 @@ const networks = [
 
 const NetworkPicker = (props) => {
 
-    const {visible, onRequestClose, network, onItemSelect} = props;
+    const { visible, onRequestClose, network, onItemSelect } = props;
 
     return (
         <Modal
@@ -40,11 +40,12 @@ const NetworkPicker = (props) => {
             transparent
             onRequestClose={onRequestClose}>
             <View style={styles.container}>
-                <TouchableOpacity style={styles.emptyView} onPress={onRequestClose}/>
+                <TouchableOpacity style={styles.emptyView} onPress={onRequestClose} />
                 <View style={styles.contentContainer}>
                     <FlatList
                         data={networks}
-                        renderItem={({item, index}) => {
+                        keyExtractor={(item, index) => `_${index}`}
+                        renderItem={({ item, index }) => {
                             const isCheck = network ? network.name === item.name : false;
                             return <TouchableOpacity style={styles.listItem} onPress={() => onItemSelect(item)}>
                                 <TextView style={styles.text}>{item.name}</TextView>
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     listItem: {
         flexDirection: 'row',
         paddingVertical: hp("1%"),
-        alignItems: 'center' 
+        alignItems: 'center'
     },
     text: {
         flex: 1,

@@ -22,7 +22,7 @@ const SuccessModalContent = (props) => {
             <Image style={styles.img} source={ImagesSrc.success} />
             <TextView style={styles.title}>{translate("wallet.common.success")} !</TextView>
             <TextView style={styles.hint}>{translate("wallet.common.walletSuccess")}</TextView>
-            <AppButton label={translate("wallet.common.ok")} containerStyle={styles.button} labelStyle={CommonStyles.buttonLabel}
+            <AppButton label="OK" containerStyle={styles.button} labelStyle={CommonStyles.buttonLabel}
                 onPress={() => {
                     props.onDonePress && props.onDonePress();
                 }} />

@@ -56,10 +56,10 @@ const NotEnoughGold = (props) => {
                                 <Image source={ImagesSrc.goldcoin} style={styles.img} />
                             </View>
 
-                            <Text style={styles.title}>Not enough gold! {"\n"} Buy gold by In-App</Text>
+                            <Text style={styles.title}>{translate("wallet.common.buyGoldErr1") + "\n" + translate("wallet.common.buyGoldErr2")}</Text>
 
                             <AppButton
-                                label={"Buy Gold"}
+                                label={translate("wallet.common.buyGold")}
                                 containerStyle={[CommonStyles.button, styles.button]}
                                 labelStyle={[CommonStyles.buttonLabel, { color: Colors.themeColor, fontFamily: Fonts.ARIAL_BOLD, fontSize: RF(1.6) }]}
                                 onPress={() => {

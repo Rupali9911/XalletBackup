@@ -44,6 +44,8 @@ const nftItem = ({ item, index }) => {
 
   const { AuthReducer } = useSelector(state => state);
   const [owner, setOwner] = useState('----');
+  const [ownerId, setOwnerId] = useState('');
+
   const [ownerImage, setOwnerImage] = useState();
   const [ownerData, setOwnerData] = useState();
   const [artist, setArtist] = useState('----');
@@ -91,15 +93,16 @@ const nftItem = ({ item, index }) => {
       MarketPlaceAbi,
       MarketContractAddress
     );
-
     MarketPlaceContract.methods
       .getNonCryptoOwner(tokenId)
       .call(async (err, res) => {
         if (res) {
+          // console.log('owner',res,tokenId);
           let profileUrl = networkType === 'mainnet' ?
             `https://api.xanalia.com/user/get-public-profile?userId=${res}` :
             `https://testapi.xanalia.com/user/get-public-profile?userId=${res}`
-          let profile = await axios.get(profileUrl);
+          setOwnerId(res);
+            let profile = await axios.get(profileUrl);
           if (profile.data) {
             setOwnerData(profile.data.data);
             setOwner(profile.data.data.username);
@@ -123,6 +126,7 @@ const nftItem = ({ item, index }) => {
       let ownerAddress = res;
       MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
         if (res[0] !== '0x0000000000000000000000000000000000000000') {
+          console.log('owner',res,tokenId,res[0]);
           setOwner(res[0]);
         } else {
           setOwner(ownerAddress);
@@ -280,7 +284,9 @@ const nftItem = ({ item, index }) => {
               video: item.metaData.image,
               fileType: fileType,
               price: item.price,
-              chain: item.chain
+              chain: item.chain,
+              ownerId: ownerId,
+              tokenId: item.tokenId
             });
         }}>
         {
