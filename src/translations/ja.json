@@ -791,9 +791,9 @@
             "alert": "確認",
             "legalHint1": "XANAウォレットの利用規約と",
             "legalHint2": "プライバシーポリシーをご確認ください。",
-            "verifyPhrase": "回復フェーズの確認",
-            "verifyHint1": "単語をタップして、それぞれの横に置きます",
-            "verifyHint2": "その他は正しい順序で",
+            "verifyPhrase": "復元フレーズの検証",
+            "verifyHint1": "正しい順番に並ぶように、単語を",
+            "verifyHint2": "順番にタップしてください。",
             "addCreditCard": "クレジットカードを追加",
             "stripeError": {
                 "invalid_cvc": "セキュリティコードが正しくありません。",

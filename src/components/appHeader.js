@@ -16,12 +16,12 @@ function AppHeader(props) {
         <View style={[styles.container, props.containerStyle]} >
             <View style={{ flex: 0.2 }} >
                 {
-                    props.showBackButton &&
-                    <TouchableOpacity style={styles.backContainer} onPress={() => props.onPressBack ? props.onPressBack() : navigation.goBack()} >
-                        {
-                            <Image style={[styles.backIcon,{tintColor: props.isWhite ? Colors.white : null}]} source={ImagesSrc.backArrow} />
-                        }
-                    </TouchableOpacity>
+                    props.showBackButton ?
+                        <TouchableOpacity style={styles.backContainer} onPress={() => props.onPressBack ? props.onPressBack() : navigation.goBack()} >
+                            {
+                                <Image style={[styles.backIcon, { tintColor: props.isWhite ? Colors.white : Colors.black }]} source={ImagesSrc.backArrow} />
+                            }
+                        </TouchableOpacity> : null
                 }
             </View>
             <View style={{ flex: 1, ...CommonStyles.center }} >

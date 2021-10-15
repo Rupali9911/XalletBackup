@@ -87,6 +87,7 @@ const VerifyPhrase = ({ route, navigation }) => {
             }
             <AppHeader
                 title={translate("wallet.common.backup")}
+                showBackButton
                 showRightButton
                 rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20} />}
             />
