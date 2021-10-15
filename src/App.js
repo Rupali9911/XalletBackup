@@ -24,11 +24,12 @@ import DetailItemScreen from './screens/detailScreen';
 import NewPostScreen from './screens/newPostScreen';
 import CertificateScreen from './screens/certificateScreen';
 import CertificateDetailScreen from './screens/certificateScreen/detail';
+import ChangePassword from './screens/changePassword';
 import PayScreen from './screens/payScreen';
 import MakeBidScreen from './screens/makeBidScreen';
 import ProfileScreen from './screens/profile';
 import EditProfileScreen from './screens/edit_profile';
-import SettingScreen from './screens/setting';
+import Setting from './screens/setting';
 import ArtistDetail from './screens/ArtistDetail';
 import ExploreScreen from './screens/explore';
 import Wallet from './screens/wallet';
@@ -118,7 +119,7 @@ const TabComponent = () => {
       {/* <Tab.Screen name={'Certificate'} component={CertificateScreen} /> */}
       <Tab.Screen
         name={'Connect'}
-        options={{ tabBarLabel: translate("common.connectWallet") }}
+        options={{ tabBarLabel: translate("wallet.common.connect") }}
         component={Connect}
       />
       {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
@@ -143,8 +144,8 @@ const AppRoutes = () => {
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-    AsyncStorage.removeItem('@wallet')
     dispatch(getAllLanguages())
+    AsyncStorage.removeItem('@wallet')
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (languageData) {
       console.log('languageData', languageData);
@@ -184,6 +185,8 @@ const AppRoutes = () => {
                 <Stack.Screen name='AddCard' component={AddCard} />
                 <Stack.Screen name='Cards' component={Cards} />
                 <Stack.Screen name='BuyGold' component={BuyGold} />
+                <Stack.Screen name='Setting' component={Setting} />
+                <Stack.Screen name='ChangePassword' component={ChangePassword} />
               </Stack.Navigator>
               :
               <Stack.Navigator headerMode="none">
@@ -214,5 +217,3 @@ const App = () => {
 }
 
 export default App;
-
-
