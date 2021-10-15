@@ -10,9 +10,9 @@ import { tokens, translate } from '../../../walletUtils';
 import Separator from '../../../components/separator';
 
 const ListItems = (props) => {
-    const {item} = props;
+    const { item } = props;
     return (
-        <TouchableOpacity onPress={()=>props.onPress && props.onPress(item)} style={styles.listCont} >
+        <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
                 <Image style={styles.profileImage} source={item.icon} />
             </View>
@@ -22,7 +22,7 @@ const ListItems = (props) => {
                     <TextView style={styles.townTxt} >{item.amount}</TextView>
                     <TextView style={styles.percentTxt} >{item.percent}</TextView>
                 </View> */}
-                
+
             </View>
             <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }} >
                 <TextView style={styles.priceTxt}>
@@ -34,7 +34,7 @@ const ListItems = (props) => {
 }
 
 const SelectToken = (props) => {
-    const {visible, onRequestClose, network, isSend} = props;
+    const { visible, onRequestClose, network, isSend } = props;
 
     const [balance_Data, setBalanceData] = useState([]);
     const [searchTxt, setSearchTxt] = useState('');
@@ -43,8 +43,8 @@ const SelectToken = (props) => {
         setBalanceData(tokens);
     }, []);
 
-    useEffect(()=>{
-        if(props.values){
+    useEffect(() => {
+        if (props.values) {
             let array = tokens;
             array[0].tokenValue = `${props.values.ETH}`;
             array[1].tokenValue = `${props.values.BNB}`;
@@ -55,7 +55,7 @@ const SelectToken = (props) => {
             // array[6].tokenValue = `${props.values.ALIA}`;
             setBalanceData(array);
         }
-    },[props.values]);
+    }, [props.values]);
 
     return (
         <Modal
@@ -66,39 +66,40 @@ const SelectToken = (props) => {
             <View style={styles.container}>
                 <View style={styles.contentContainer}>
                     <View style={styles.actionView}>
-                        <TouchableOpacity hitSlop={{top:15,left:15,right:15,bottom:15}} onPress={onRequestClose}>
+                        <TouchableOpacity hitSlop={{ top: 15, left: 15, right: 15, bottom: 15 }} onPress={onRequestClose}>
                             <Image source={ImagesSrc.backArrow} style={CommonStyles.whiteBackIcon} />
                         </TouchableOpacity>
-                        <TextInput 
+                        <TextInput
                             style={styles.inputStyle}
-                            placeholder={`${translate("common.search")} - ${isSend?translate('wallet.common.send'):translate('wallet.common.receive')}`}
+                            placeholder={`${translate("common.search")} - ${isSend ? translate('wallet.common.send') : translate('wallet.common.receive')}`}
                             placeholderTextColor={Colors.separatorLight}
                             value={searchTxt}
                             onChangeText={setSearchTxt}
-                            />
+                        />
                     </View>
 
-                    <FlatList 
+                    <FlatList
                         data={balance_Data.filter((_) => {
-                            if(searchTxt !== ''){
-                                console.log(searchTxt.toLowerCase(),_.tokenName.toLowerCase());
+                            if (searchTxt !== '') {
+                                console.log(searchTxt.toLowerCase(), _.tokenName.toLowerCase());
                                 return (_.network == network.name && _.tokenName.includes(searchTxt))
-                            }else{
+                            } else {
                                 return _.network == network.name
                             }
                         })}
                         renderItem={({ item }) => {
                             return (
-                                <ListItems item={item} onPress={props.onTokenPress}/>
+                                <ListItems item={item} onPress={props.onTokenPress} />
                             )
                         }
                         }
+                        keyExtractor={(item, index) => `_${index}`}
                         ItemSeparatorComponent={() => <Separator style={styles.separator} />}
                         ListEmptyComponent={() => {
                             return (
                                 <TextView style={styles.noData} >{translate("wallet.common.noData")}</TextView>
                             );
-                        }}/>
+                        }} />
 
                 </View>
             </View>

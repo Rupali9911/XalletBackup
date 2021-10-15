@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, TextInput, Alert } from "react-native";
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { StyleSheet, View, Text, Modal, Image, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from "react-native-view-shot";
 import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { BlurView } from "@react-native-community/blur";
 
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -16,28 +16,23 @@ import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
-import PriceText from '../../components/priceText';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import TextView from '../../components/appText';
 import { HeaderBtns } from './components/HeaderButtons';
 import ImagesSrc from '../../constants/Images';
-import AppModal from '../../components/appModal';
 import { Button } from 'react-native-paper';
 import VerticalSeparator from '../../components/verticalSeparator';
 import Separator from '../../components/separator';
-
-// import { PaymentField } from './screenComponents';
-// import { alertWithSingleBtn } from "./commonFunction";
 
 const QRScreen = () => {
 
     const navigation = useNavigation();
     const route = useRoute();
 
-    const {item} = route.params;
+    const { item } = route.params;
 
-    console.log('item',item);
+    console.log('item', item);
 
     const { wallet } = useSelector((state) => state.UserReducer);
 
@@ -92,8 +87,8 @@ const QRScreen = () => {
                     </TouchableOpacity>
                     <TextView style={styles.codeValue}>{wallet.address}</TextView>
                     <TextView style={styles.qrLabel}>{""}</TextView>
-                    {price!=="" && <TextView style={styles.price}>{price}</TextView>}
-                    {price!=="" && <TextView style={styles.valueLabel}>BTC</TextView>}
+                    {price !== "" && <TextView style={styles.price}>{price}</TextView>}
+                    {price !== "" && <TextView style={styles.valueLabel}>BTC</TextView>}
                 </ViewShot>
             </View>
             <View style={styles.actionContainer}>
@@ -112,7 +107,7 @@ const QRScreen = () => {
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
-                        onPress={() => {setModalVisible(true)}}
+                        onPress={() => { setModalVisible(true) }}
                     />
                     <HeaderBtns
                         image={ImagesSrc.topup}
@@ -120,11 +115,11 @@ const QRScreen = () => {
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
-                        onPress={() => {}}
+                        onPress={() => { }}
                     />
                 </View>
                 <TextView style={styles.alert}>
-                    {translate("wallet.common.sendAlert",{token: `${item.tokenName} (${item.type})`})}{"\n"}{translate("wallet.common.sendAlert2")}
+                    {translate("wallet.common.sendAlert", { token: `${item.tokenName} (${item.type})` })}{"\n"}{translate("wallet.common.sendAlert2")}
                 </TextView>
             </View>
             {
@@ -132,124 +127,72 @@ const QRScreen = () => {
                 <AppButton label={translate("wallet.common.share")} containerStyle={[CommonStyles.button, styles.shareBtn]} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => onSharing()} />
             }
-            <AppModal visible={modalVisible} src={ImagesSrc.setAmountBg}>
-                <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
-                    <View style={styles.setAmountContainer}>
-                        <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
-                        <TextInput 
-                            style={styles.amountInput} 
-                            onChangeText={(e) => {
-                                const reg = /^\d+(\.\d{0,8})?$/
-                                if (e.length > 0 && reg.test(e)) {
-                                    setPrice(e)
-                                } else if (e.length == 1 && e === '.') {
-                                    setPrice('0.')
-                                } else if (e.length == 0) {
-                                    setPrice(e)
-                                }
-                            }}
-                            value={price}
-                            maxLength={10}
-                            keyboardType={'numeric'}
+            <Modal
+                visible={modalVisible}
+                transparent
+            >
+                <BlurView
+                    style={styles.absolute}
+                    blurType="light"
+                    blurAmount={10}
+                >
+                    <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
+                        <View style={styles.setAmountContainer}>
+                            <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
+                            <TextInput
+                                style={styles.amountInput}
+                                onChangeText={(e) => {
+                                    const reg = /^\d+(\.\d{0,8})?$/
+                                    if (e.length > 0 && reg.test(e)) {
+                                        setPrice(e)
+                                    } else if (e.length == 1 && e === '.') {
+                                        setPrice('0.')
+                                    } else if (e.length == 0) {
+                                        setPrice(e)
+                                    }
+                                }}
+                                value={price}
+                                maxLength={10}
+                                keyboardType={'numeric'}
                             />
-                        <Separator style={styles.separator}/>
-                        <View style={styles.optionContainer}>
-                            <Button
-                                color={Colors.headerIcon2}
-                                style={styles.optionButton}
-                                labelStyle={styles.optionLabel}
-                                uppercase={false}
-                                onPress={()=>{
-                                    setModalVisible(false)
-                                    setPrice("")
-                                }}>{translate("wallet.common.cancel")}</Button>
-                            <VerticalSeparator />
-                            <Button
-                                color={Colors.headerIcon2}
-                                style={styles.optionButton}
-                                labelStyle={styles.optionLabel}
-                                uppercase={false}
-                                onPress={()=>setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
+                            <Separator style={styles.separator} />
+                            <View style={styles.optionContainer}>
+                                <Button
+                                    color={Colors.headerIcon2}
+                                    style={styles.optionButton}
+                                    labelStyle={styles.optionLabel}
+                                    uppercase={false}
+                                    onPress={() => {
+                                        setModalVisible(false)
+                                        setPrice("")
+                                    }}>{translate("wallet.common.cancel")}</Button>
+                                <VerticalSeparator />
+                                <Button
+                                    color={Colors.headerIcon2}
+                                    style={styles.optionButton}
+                                    labelStyle={styles.optionLabel}
+                                    uppercase={false}
+                                    onPress={() => setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
+                            </View>
                         </View>
-                    </View>
-                </KeyboardAwareScrollView>
-            </AppModal>
-        </View>
-    )
-};
+                    </KeyboardAwareScrollView>
+                </BlurView>
+            </Modal>
 
-const ScanScreen = () => {
-    const navigation = useNavigation();
-    const [price, setPrice] = useState("");
-    return (
-        <View style={[styles.scene]} >
-            {/* <AppButton
-                onPress={() => {
-                    if (price.trim().length > 0) {
-                        navigation.navigate("ReceiveScan", { price })
-                    } else {
-                            alertWithSingleBtn(
-                                translate('common.alert'),
-                                translate("common.error.amountAlert"),
-                            );
-                    }
-                }}
-                label={translate("common.scan")}
-                containerStyle={[CommonStyles.button, styles.shareBtn]}
-                labelStyle={CommonStyles.buttonLabel}
-            /> */}
         </View>
     )
 };
 
 function Receive({ route, navigation }) {
 
-    const [title, setTitle] = useState("");
-    const [index, setIndex] = useState(0);
-    // const [routes] = useState([
-    //     { key: 'QR', title: translate("wallet.common.qr") },
-    //     { key: 'Scan', title: translate("wallet.common.scan") },
-    // ]);
-
-    const renderScene = SceneMap({
-        QR: QRScreen,
-        Scan: ScanScreen,
-    });
-
-    const renderTabBar = (props) => {
-        return (
-            <TabBar
-                {...props}
-                renderLabel={({ route, focused, color }) => (
-                    <Text style={{ color, ...styles.tabLabel }}>
-                        {route.title}
-                    </Text>
-                )}
-                contentContainerStyle={{ height: 45 }}
-                indicatorStyle={{ backgroundColor: Colors.scanActive }}
-                style={styles.tabItem}
-                inactiveColor={Colors.sectionLabel}
-                activeColor={Colors.scanActive}
-            />
-        )
-    }
-
     return (
         <AppBackground>
             <AppHeader
                 showBackButton={true}
-                title={index == 0 ? translate("wallet.common.receive") : translate("wallet.common.scan")}
+                title={translate("wallet.common.receive")}
             />
 
             <QRScreen />
-
-            {/* <TabView
-                renderTabBar={renderTabBar}
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                style={styles.tabItem}
-            /> */}
 
         </AppBackground>
 
@@ -259,15 +202,6 @@ function Receive({ route, navigation }) {
 const styles = StyleSheet.create({
     scene: {
         flex: 1,
-    },
-    tabItem: {
-        backgroundColor: Colors.white,
-        shadowColor: Colors.white
-    },
-    tabLabel: {
-        fontFamily: Fonts.ARIAL,
-        fontSize: RF(1.8),
-        fontWeight: "normal",
     },
     inputCont: {
         marginTop: hp("3%")
@@ -308,7 +242,7 @@ const styles = StyleSheet.create({
         paddingBottom: hp('2%'),
     },
     QRContainer: {
-        flex:1
+        flex: 1
     },
     actionContainer: {
 
@@ -344,6 +278,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: hp("2%"),
         marginBottom: hp("1%")
+    },
+    absolute: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        backgroundColor: "rgba(95, 148, 255, 0.6)"
     },
     amountInput: {
         backgroundColor: Colors.white,
