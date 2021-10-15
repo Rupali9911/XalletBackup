@@ -477,7 +477,7 @@ const DetailScreen = ({ route, navigation }) => {
                     <Text style={styles.description}>
                         {description}
                     </Text>
-                    <View style={styles.moreView}>
+                    {/* <View style={styles.moreView}>
                         <Text style={styles.moreTitle}>
                             {translate("wallet.common.creatorHint")}
                         </Text>
@@ -499,42 +499,42 @@ const DetailScreen = ({ route, navigation }) => {
                                 <Image source={GIRL} style={{ width: '100%', height: '100%' }} />
                             </View>
                         </View>
-                    </View>
-                    <View style={styles.bottomView}>
-                        <Text style={styles.count}>
-                            {'# 1 / 1'}
-                        </Text>
-                        <View style={styles.row}>
-                            <Text style={styles.priceUnit}>
-                                {'￥'}
-                            </Text>
-                            <Text style={styles.price}>
-                                {price ? price : 0}
-                            </Text>
-                        </View>
-                        <GroupButton
-                            leftText={
-                                setNFTStatus() === 'onSell' ? translate("common.cancelSell")
-                                    : setNFTStatus() === 'sell' ? translate("common.sell")
-                                        : setNFTStatus() === 'buy' ? translate("common.buy")
-                                            : setNFTStatus() === 'notOnSell' ? translate("common.soonOnSell")
-                                                : translate("common.buy")
-                            }
-                            rightText={translate("wallet.common.offerPrice")}
-                            leftDisabled={setNFTStatus() === ''}
-                            onLeftPress={() => {
-                                // navigation.navigate('WalletConnect')
-                                // if(price && price > 0){
-                                if (setNFTStatus() === 'buy') {
-                                    setShowPaymentMethod(true);
-                                }
-                                // }
-                            }}
-                            leftHide={setNFTStatus() === undefined}
-                            onRightPress={() => navigation.navigate('MakeBid')}
-                        />
-                    </View>
+                    </View> */}
                 </ScrollView>
+                <View style={styles.bottomView}>
+                    <Text style={styles.count}>
+                        {'# 1 / 1'}
+                    </Text>
+                    <View style={styles.row}>
+                        <Text style={styles.priceUnit}>
+                            {'￥'}
+                        </Text>
+                        <Text style={styles.price}>
+                            {price ? price : 0}
+                        </Text>
+                    </View>
+                    <GroupButton
+                        leftText={
+                            setNFTStatus() === 'onSell' ? translate("common.cancelSell")
+                                : setNFTStatus() === 'sell' ? translate("common.sell")
+                                    : setNFTStatus() === 'buy' ? translate("common.buy")
+                                        : setNFTStatus() === 'notOnSell' ? translate("common.soonOnSell")
+                                            : translate("common.buy")
+                        }
+                        rightText={translate("wallet.common.offerPrice")}
+                        leftDisabled={setNFTStatus() === ''}
+                        onLeftPress={() => {
+                            // navigation.navigate('WalletConnect')
+                            // if(price && price > 0){
+                            if (setNFTStatus() === 'buy') {
+                                setShowPaymentMethod(true);
+                            }
+                            // }
+                        }}
+                        leftHide={setNFTStatus() === undefined}
+                        onRightPress={() => navigation.navigate('MakeBid')}
+                    />
+                </View>
             </SafeAreaView>
             <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} onRequestClose={() => setShowPaymentMethod(false)} />
             <PaymentNow
