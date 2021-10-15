@@ -48,7 +48,6 @@ const nftItem = ({ item, index }) => {
 
   const [ownerImage, setOwnerImage] = useState();
   const [ownerData, setOwnerData] = useState();
->>>>>>> c353413bf702464f01d5f25d0bc31a52b311928f
   const [artist, setArtist] = useState('----');
   const [artistData, setArtistData] = useState();
   const [creatorImage, setCreatorImage] = useState();

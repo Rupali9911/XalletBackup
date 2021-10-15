@@ -571,7 +571,7 @@
         "cantChangePwd": "パスワードを変更されることができません。",
         "emailverified": "メール認証を完了しました。",
         "Loggedout": "ログアウトに成功しました",
-        "soonOnSell": "SOLD OUT",
+        "soonOnSell": "売り切れ",
         "Networkchange": "ネットワークが正常に変更されました。",
         "emailinvalid": "認証コードの入力に誤りがあります",
         "Doyouwanttoconfirmyourrating": "評価を確定しますか？",

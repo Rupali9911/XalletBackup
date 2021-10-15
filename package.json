@@ -1,6 +1,6 @@
 {
   "name": "xanalia",
-  "version": "0.0.1",
+  "version": "1.10.29",
   "private": true,
   "scripts": {
     "android": "npx rn-nodeify --install --hack && npx react-native run-android",

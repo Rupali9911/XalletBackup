@@ -153,7 +153,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods
             .getSellDetail(_tokenId)
             .call((err, res) => {
-                console.log('res',res);
+                console.log('res', res);
                 if (!err) {
                     if (parseInt(res[5]) * 1000 > 0) {
                         setAuctionVariables(
@@ -306,7 +306,7 @@ const DetailScreen = ({ route, navigation }) => {
                                     ? true
                                     : false);
                                 setIsContractOwner(res[0].toLowerCase() ===
-                                wallet.address.toLowerCase()
+                                    wallet.address.toLowerCase()
                                     ? true
                                     : false);
                                 setPriceNFT(priceOfNft);
@@ -378,7 +378,7 @@ const DetailScreen = ({ route, navigation }) => {
             console.log('set NftStatus 8');
             _nftStatus = 'notOnSell';
         }
-        console.log('_nftStatus',_nftStatus,priceNFT,isContractOwner,isOwner,isNFTOnAuction);
+        console.log('_nftStatus', _nftStatus, priceNFT, isContractOwner, isOwner, isNFTOnAuction);
         return _nftStatus;
     }
 
@@ -479,7 +479,7 @@ const DetailScreen = ({ route, navigation }) => {
                     </Text>
                     <View style={styles.moreView}>
                         <Text style={styles.moreTitle}>
-                            {'More from this creator'}
+                            {translate("wallet.common.creatorHint")}
                         </Text>
                         <View style={{
                             flexDirection: 'row',
@@ -525,9 +525,9 @@ const DetailScreen = ({ route, navigation }) => {
                             onLeftPress={() => {
                                 // navigation.navigate('WalletConnect')
                                 // if(price && price > 0){
-                                    if(setNFTStatus() === 'buy'){
-                                        setShowPaymentMethod(true);
-                                    }
+                                if (setNFTStatus() === 'buy') {
+                                    setShowPaymentMethod(true);
+                                }
                                 // }
                             }}
                             leftHide={setNFTStatus() === undefined}
@@ -546,12 +546,12 @@ const DetailScreen = ({ route, navigation }) => {
                 onRequestClose={() => {
                     dispatch(setPaymentObject(null));
                     setShowPaymentNow(false)
-                }} 
+                }}
                 onPaymentDone={() => {
                     dispatch(setPaymentObject(null));
                     getNonCryptoNFTOwner();
                     setShowPaymentNow(false);
-                }}/>
+                }} />
         </>
     )
 }

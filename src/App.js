@@ -184,7 +184,6 @@ const AppRoutes = () => {
                 <Stack.Screen name='Certificate' component={CertificateScreen} />
                 <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
                 <Stack.Screen name='AddCard' component={AddCard} />
-                <Stack.Screen name='Setting' component={SettingScreen} />
                 <Stack.Screen name='Cards' component={Cards} />
                 <Stack.Screen name='BuyGold' component={BuyGold} />
                 <Stack.Screen name='Setting' component={Setting} />

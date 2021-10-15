@@ -28,7 +28,7 @@ import Separator from '../../components/separator';
 // import { PaymentField } from './screenComponents';
 // import { alertWithSingleBtn } from "./commonFunction";
 
-const QRScreen = (index) => {
+const QRScreen = () => {
 
     const navigation = useNavigation();
     const route = useRoute();
@@ -195,7 +195,7 @@ function Receive({ route, navigation }) {
                 title={translate("wallet.common.receive")}
             />
 
-            <QRScreen index={index} />
+            <QRScreen />
 
         </AppBackground>
 
