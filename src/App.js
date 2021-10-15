@@ -158,6 +158,7 @@ const AppRoutes = () => {
     dispatch(loadFromAsync()).then(() => {
       setLoading(false);
     });
+    // setLoading(false);
 
   }, []);
 

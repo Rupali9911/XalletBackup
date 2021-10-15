@@ -13,7 +13,7 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import GradientBackground from '../../components/gradientBackground';
 import NumberFormat from 'react-number-format';
 import CommonStyles from '../../constants/styles';
-import { translate, environment } from '../../walletUtils';
+import { translate, environment, IsTestNet } from '../../walletUtils';
 import PriceText from '../../components/priceText';
 import { HeaderBtns } from './components/HeaderButtons';
 import ImagesSrc from '../../constants/Images';
@@ -29,6 +29,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { getTransactions, addAllEthTransactions, addAllBnbTransactions, addAllMaticTransactions } from '../../store/reducer/walletReducer';
 import Web3 from 'web3';
+import { BASE_URL } from '../../helpers/ApiRequest';
 
 const TokenDetail = ({ route, navigation }) => {
 
@@ -143,7 +144,7 @@ const TokenDetail = ({ route, navigation }) => {
 
     const getTransactionsByType = (address, type) => {
         return new Promise((resolve, reject) => {
-            fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions?addr=${address}&type=${type=='ethereum'?'eth':type}`)
+            fetch(`${BASE_URL}xanawallet/fetch-transactions?addr=${address}&type=${type=='ethereum'?'eth':type}&networkType=${IsTestNet?'testnet':'mainnet'}`)
             .then((response) => {
                 // console.log('response', response);
                 return response.json();

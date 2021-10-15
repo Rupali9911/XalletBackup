@@ -49,13 +49,13 @@ export const watchBalanceUpdate = (updateBalance, type) => {
   let rpcUrl;
 
   if(type == 'eth'){
-    webSocketLink = "wss://kovan.infura.io/ws/v3/e2fddb9deb984ba0b9e9daa116d1702a";
+    webSocketLink = environment.wsEth;
     rpcUrl = environment.ethRpc;
   }else if(type == 'bsc'){
-    webSocketLink = "wss://sparkling-lively-thunder.bsc.quiknode.pro/07fd71e94b68817b6a596dc947910035f41d7382/";
+    webSocketLink = environment.wsBsc;
     rpcUrl = environment.bnbRpc;
   }else if(type == 'polygon'){
-    webSocketLink = "wss://ws-matic-mumbai.chainstacklabs.com/";
+    webSocketLink = environment.wsPolygon;
     rpcUrl = environment.polRpc;
   }
 

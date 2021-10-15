@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, ActivityIndicator } from 'react-native';
 
 import { RF } from '../constants/responsiveFunct';
 import Colors from "../constants/Colors";
@@ -12,7 +12,12 @@ const AppButton = (props) => {
 
     return (
         <ButtonInputContainer onPress={props.onPress} containerStyle={[styles.container, props.containerStyle, props.view && styles.inActive]} view={props.view}>
-            <Text style={[styles.label, props.labelStyle]} >{props.label}</Text>
+            {props.loading ? 
+                <ActivityIndicator color={Colors.white}/>
+             :
+                <Text style={[styles.label, props.labelStyle]} >{props.label}</Text>
+            }
+            
         </ButtonInputContainer>
     )
 }
