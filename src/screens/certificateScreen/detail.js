@@ -14,6 +14,7 @@ import styles from './styles';
 import { images, colors } from '../../res';
 
 import getLanguage from '../../utils/languageSupport';
+import { divideNo } from '../../utils';
 import { C_Image, GroupButton } from '../../components';
 import {
     SVGS,
