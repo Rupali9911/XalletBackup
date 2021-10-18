@@ -6,7 +6,6 @@ import {
   FlatList,
   Image,
   Linking,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -167,11 +166,7 @@ const HomeScreen = ({navigation}) => {
     dispatch(getAllArtist());
   }, []);
   const openPhoneSettings = useCallback(async () => {
-    if (Platform.OS === 'android') {
-      await Linking.openSettings();
-    } else {
-      await Linking.openURL('app-settings:');
-    }
+    await Linking.openSettings();
   }, []);
 
   return (
