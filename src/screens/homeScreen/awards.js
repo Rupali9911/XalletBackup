@@ -10,6 +10,8 @@ import styles from './styles';
 import { colors } from '../../res';
 import { Loader, DetailModal, C_Image } from '../../components';
 import getLanguage from '../../utils/languageSupport';
+import { translate } from '../../walletUtils';
+
 const langObj = getLanguage();
 
 const Awards = () => {
@@ -66,7 +68,7 @@ const Awards = () => {
                                 imageStyle={styles.listImage} />
                             :
                             <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }}>No Image to Show</Text>
+                                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
                             </View>
                     }
                 </TouchableOpacity>
@@ -105,7 +107,7 @@ const Awards = () => {
                             ListFooterComponent={renderFooter}
                         /> :
                         <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
             {

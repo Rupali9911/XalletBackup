@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Platform } from 'react-native';
 import NumberFormat from 'react-number-format';
 import { useSelector, useDispatch } from 'react-redux';
 import MaskInput, { formatWithMask, Masks } from 'react-native-mask-input';
@@ -183,7 +183,7 @@ export const Heading = (props) => {
 export const CardItem = (props) => {
     const {details, isCheck, onSelect, onDelete} = props;
     return (
-        <View style={{overflow: 'visible'}}>
+        <View style={styles.cardItemContainer}>
             <View style={styles.cardItem} removeClippedSubviews={true}>
                 <Checkbox isCheck={isCheck} onChecked={onSelect} iconSize={wp("5%")}/>
                 <View style={styles.itemCardType}>
@@ -340,8 +340,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         padding: wp("1%"),
         position: 'absolute',
-        right: -wp("2.4%"),
-        top: -wp("2.4%"),
+        right: wp("5%"),
+        top: -wp("1%"),
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -350,11 +350,19 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.18,
         shadowRadius: 0.5,
 
-        elevation: 1,
+        // elevation: 1,
     },
     deleteIcon: {
-        width: wp("4%"),
-        height: wp("4%")
+        width: Platform.select({ios: wp("3.5%"), android: wp("3.5%")}),
+        height: Platform.select({ios: wp("3.5%"), android: wp("3.5%")}),
+    },
+    input: {
+        color: Colors.black
+    },
+    cardItemContainer: {
+        overflow: 'visible',
+        paddingVertical: wp("1.5%"),
+        paddingHorizontal: wp("7.5%")
     }
 });
 

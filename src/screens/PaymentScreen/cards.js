@@ -254,9 +254,9 @@ const styles = StyleSheet.create({
         width: wp("39%"),
     },
     cardList: {
-        width: wp("90%"),
-        paddingHorizontal: wp("2.5%"),
-        paddingVertical: wp("2%"),
+        width: wp("100%"),
+        // paddingHorizontal: wp("2.5%"),
+        // paddingVertical: wp("2%"),
         alignSelf: 'center'
     },
     cardItem: {

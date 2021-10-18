@@ -93,6 +93,7 @@ export const StripeApiRequest = (url, body, method="POST") => {
         formBody = formBody.join("&");
         requestOptions.body = formBody;
     }
+    console.log('requestOptions',requestOptions);
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
             console.log("Connection type", state.type, state.isConnected);

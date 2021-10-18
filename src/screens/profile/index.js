@@ -67,7 +67,6 @@ import {
 } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
-import { useFocusEffect } from '@react-navigation/native';
 const langObj = getLanguage();
 
 const {
@@ -131,7 +130,7 @@ const Created = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                    No Image to Show
+                                {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }
@@ -171,7 +170,7 @@ const Created = ({ route }) => {
                     //     />
                     //     :
                     <View style={styles.sorryMessageCont} >
-                        <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                     </View>
             }
             {
@@ -242,7 +241,7 @@ const Collection = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                    No Image to Show
+                                {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }
@@ -282,7 +281,7 @@ const Collection = ({ route }) => {
                     //     />
                     //     :
                     <View style={styles.sorryMessageCont} >
-                        <Text style={styles.sorryMessage} >{langObj.common.noNFT}</Text>
+                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                     </View>
             }
             {
@@ -305,7 +304,8 @@ function Profile({
 }) {
 
     const { UserReducer } = useSelector(state => state);
-    const id = UserReducer.wallet.address;
+
+    const id = UserReducer.data.user.username || UserReducer.wallet.address;
 
     const renderTabView = () => {
         return (
@@ -363,7 +363,7 @@ function Profile({
                 <RowBetweenWrap flex={1}>
                     <UserImageView>
                         <C_Image
-                            uri={null}
+                            uri={UserReducer.data.user.profile_image}
                             imageStyle={{
                                 width: '100%',
                                 height: '100%'

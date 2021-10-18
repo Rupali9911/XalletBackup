@@ -123,8 +123,8 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 android {
     ndkVersion rootProject.ext.ndkVersion
 
-    // compileSdkVersion rootProject.ext.compileSdkVersion
-    compileSdkVersion 30
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    // compileSdkVersion 28
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -138,7 +138,7 @@ android {
         minSdkVersion 24
         multiDexEnabled true
         versionCode 1
-        versionName "1.0"
+        versionName "1.10.22"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {

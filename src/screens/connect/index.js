@@ -65,6 +65,7 @@ const Connect = ({route, navigation}) => {
                         renderItem={({item, index})=>{
                             return <ListItems item={item}/>
                         }}
+                        keyExtractor={(v, i) => "item_" + i}
                         />
                 </View>
 

@@ -63,14 +63,19 @@ const VerifyPhrase = ({ route, navigation }) => {
     const checkingOrder = (phraseArr) => {
         let convertStringToArray = wallet.mnemonic.phrase.split(" ");
         let walletListConvert = convertStringToArray.slice(0, phraseArr.length)
+
         if (phraseArr.length == 0) {
             setMessage({ status: "", message: "" })
-        }
-        if (JSON.stringify(walletListConvert) !== JSON.stringify(phraseArr)) {
-            setMessage({ status: "error", message: "Invalid order. Try again!" })
-        }
-        if (JSON.stringify(walletListConvert) === JSON.stringify(phraseArr) && phraseArr.length === convertStringToArray.length) {
-            setMessage({ status: "success", message: "Well done!" })
+            return;
+        } else if (walletListConvert.join(" ") !== phraseArr.join(" ")) {
+            setMessage({ status: "error", message: translate("wallet.common.invalidOrder") })
+            return;
+        } if (JSON.stringify(walletListConvert) === JSON.stringify(phraseArr) && phraseArr.length === convertStringToArray.length) {
+            setMessage({ status: "success" })
+            return;
+        } else {
+            setMessage({ status: "", message: "" })
+            return;
         }
     }
 
@@ -83,6 +88,7 @@ const VerifyPhrase = ({ route, navigation }) => {
             <AppHeader
                 showBackButton
                 title={translate("wallet.common.backup")}
+                showBackButton
                 showRightButton
                 rightButtonComponent={<IconButton icon={ImagesSrc.infoIcon} color={Colors.labelButtonColor} size={20} />}
             />
@@ -111,7 +117,7 @@ const VerifyPhrase = ({ route, navigation }) => {
                                 }
                             </View>
                             <View style={styles.bottomMessageCont} >
-                                <Text style={{ marginTop: hp('1%'), textAlign: "center", color: message.status == "success" ? Colors.badgeGreen : Colors.danger }} >{message.message}</Text>
+                                <Text style={{ marginTop: hp('1%'), textAlign: "center", color: Colors.danger }} >{message.message}</Text>
                             </View>
                         </View>
 
@@ -143,11 +149,11 @@ const VerifyPhrase = ({ route, navigation }) => {
                     containerStyle={CommonStyles.button}
                     labelStyle={CommonStyles.buttonLabel}
                     onPress={() => {
-                        if(wallet){
+                        if (wallet) {
                             setLoading(true);
-                            dispatch(getAddressNonce(wallet,true)).then(()=>{
+                            dispatch(getAddressNonce(wallet, true)).then(() => {
                                 setLoading(false);
-                            }).catch((err)=>{
+                            }).catch((err) => {
                                 setLoading(false);
                             });
                         }

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Image, ImageBackground, Text, TextInput, TouchableOpacity, Keyboard, Alert, ScrollView } from 'react-native';
 import { Button, Card, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from 'react-native-toast-message';
 
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -19,17 +20,28 @@ import { setUserAuthData, startLoader, endLoader, getAddressNonce } from '../../
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
+import { colors } from '../../res';
 
 const ethers = require('ethers');
+
+const toastConfig = {
+    my_custom_type: ({ text1, props, ...rest }) => (
+        <View style={{ paddingHorizontal: wp("20%"), borderRadius: wp('10%'), paddingVertical: hp("2%"), backgroundColor: colors.GREY5 }}>
+            <Text style={{ color: colors.white, fontWeight: "bold" }} >{text1}</Text>
+        </View>
+    )
+}
 
 const RecoveryPhrase = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const {loading} = useSelector(state => state.UserReducer);
+    const { loading } = useSelector(state => state.UserReducer);
 
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
     const [phrase, setPhrase] = useState("");
+    // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
+    const toastRef = useRef(null);
 
     useEffect(() => {
         if (!recover) {
@@ -54,6 +66,13 @@ const RecoveryPhrase = ({ route, navigation }) => {
     }
 
     const copyToClipboard = () => {
+        toastRef.current.show({
+            type: 'my_custom_type',
+            text1: translate("wallet.common.phraseCopy"),
+            topOffset: hp("10%"),
+            visibilityTime: 500,
+            autoHide: true,
+        });
         Clipboard.setString(wallet.mnemonic.phrase);
     }
 
@@ -124,8 +143,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
                                         onChangeText={setPhrase}
                                         underlineColorAndroid={Colors.transparent}
                                     />
-                                    <TouchableOpacity onPress={() => pastePhrase()} style={{position: "absolute", right: 0, bottom: 0, paddingHorizontal: wp('3%'), paddingVertical: hp('1%')}} >
-                                        <Text style={{color: Colors.themeColor}} >{translate("wallet.common.paste")}</Text>
+                                    <TouchableOpacity onPress={() => pastePhrase()} style={{ position: "absolute", right: 0, bottom: 0, paddingHorizontal: wp('3%'), paddingVertical: hp('1%') }} >
+                                        <Text style={{ color: Colors.themeColor }} >{translate("wallet.common.paste")}</Text>
                                     </TouchableOpacity>
                                 </View>
                                 :
@@ -166,6 +185,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
 
                 </View>
             </KeyboardAwareScrollView>
+            <Toast config={toastConfig} ref={toastRef} />
         </AppBackground>
     );
 }
