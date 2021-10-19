@@ -155,6 +155,7 @@ const VerifyPhrase = ({ route, navigation }) => {
                                 setLoading(false);
                             }).catch((err) => {
                                 setLoading(false);
+                                alertWithSingleBtn(translate("wallet.common.tryAgain"));
                             });
                         }
                     }}
