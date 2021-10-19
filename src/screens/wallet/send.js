@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
+import ImagesSrc from '../../constants/Images';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate, amountValidation, environment } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
@@ -16,27 +17,44 @@ import {transfer} from './functions';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import QRCodeScanner from 'react-native-qrcode-scanner';
 
 const ScanScreen = () => {
     const navigation = useNavigation();
     const [price, setPrice] = useState("");
+
+    const onSuccess = (e) => {
+        let scannerType = rightSelect ? 'BarCode' : 'QR';
+        // processScanResult(e,scannerType).then((user)=>{
+        //     // navigation.navigate('Paid')
+        //     if(user){
+        //         receiveMoney(user);
+        //     }
+        // }).catch(()=>{
+        //     alertWithSingleBtn(
+        //         translate("common.error.invalidCode"),
+        //         translate("common.error.scanCodeAlert"),
+        //         () => {
+        //             refScanner && refScanner.reactivate();
+        //         }
+        //     );
+        // });
+    };
+
     return (
         <View style={[styles.scene]} >
-            {/* <AppButton
-                onPress={() => {
-                    if (price.trim().length > 0) {
-                        navigation.navigate("ReceiveScan", { price })
-                    } else {
-                            alertWithSingleBtn(
-                                translate('common.alert'),
-                                translate("common.error.amountAlert"),
-                            );
-                    }
-                }}
-                label={translate("common.scan")}
-                containerStyle={[CommonStyles.button, styles.shareBtn]}
-                labelStyle={CommonStyles.buttonLabel}
-            /> */}
+            <QRCodeScanner
+                ref={(scanner) => refScanner = scanner}
+                onRead={onSuccess}
+                showMarker={true}
+                customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
+                    <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
+                </TouchableOpacity>}
+                containerStyle={{flex: 1}}
+                cameraStyle={styles.qrCameraStyle}
+                topViewStyle={{flex: 0}}
+                bottomViewStyle={{flex: 0}}
+            />
         </View>
     )
 };
@@ -336,7 +354,7 @@ const Send = ({route, navigation}) => {
     
 
     return (
-        <AppBackground isBusy={loading}>
+        <AppBackground isBusy={loading} hideBottomSafeArea={index==1}>
             <AppHeader
                 showBackButton={true}
                 title={translate("wallet.common.send")}
@@ -437,6 +455,15 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.borderColorInput,
         alignSelf: "center",
         flexDirection: 'row'
+    },
+    qrCameraStyle: {
+        height: "100%",
+        flex: 1,
+    },
+    scanStyle: {
+        width: wp("30%"),
+        height: wp("70%"),
+        resizeMode: "contain",
     },
 })
 

@@ -72,7 +72,11 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 console.log(mnemonicWallet.privateKey);
                 setWallet(account);
                 // dispatch(setUserAuthData(account));
-                dispatch(getAddressNonce(account, false));
+                dispatch(getAddressNonce(account, false))
+                    .then(() => { })
+                    .catch((err) => {
+                        alertWithSingleBtn(translate("wallet.common.tryAgain"));
+                    });
             }).catch((err) => {
                 console.log('err', err.toString());
                 if (err.toString() == 'Error: invalid mnemonic' || err.toString() == 'Error: invalid checksum') {
