@@ -1,48 +1,46 @@
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  FlatList,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  ActivityIndicator,
-  Linking,
-} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector, useDispatch} from 'react-redux';
-
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-  getNFTList,
-  getAllArtist,
-  nftLoadStart,
-  pageChange,
-  nftListReset,
-} from '../../store/actions/nftTrendList';
-import {changeScreenName} from '../../store/actions/authAction';
-import {updateCreateState} from '../../store/reducer/userReducer';
-
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Linking,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   responsiveFontSize as RF,
-  widthPercentageToDP as wp,
   SIZE,
+  widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import styles from './styles';
-import {colors, fonts} from '../../res';
-import ImageSrc from '../../constants/Images';
-import {Loader, DetailModal, C_Image} from '../../components';
+import {C_Image, DetailModal, Loader} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModal from '../../components/successModal';
-
+import ImageSrc from '../../constants/Images';
+import {colors, fonts} from '../../res';
+import {changeScreenName} from '../../store/actions/authAction';
+import {
+  getAllArtist,
+  getNFTList,
+  nftListReset,
+  nftLoadStart,
+  pageChange,
+} from '../../store/actions/nftTrendList';
+import {updateCreateState} from '../../store/reducer/userReducer';
 import getLanguage from '../../utils/languageSupport';
 import {translate} from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
+import styles from './styles';
 
 const langObj = getLanguage();
 
@@ -172,13 +170,13 @@ const HomeScreen = ({navigation}) => {
     dispatch(getAllArtist());
   }, []);
 
-  const openPhoneSettings = useCallback(async () => {
-    if (Platform.OS === 'android') {
-      await Linking.openSettings();
+  const openPhoneSettings = () => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:');
     } else {
-      await Linking.openURL('app-settings:');
+      Linking.openSettings();
     }
-  }, []);
+  };
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -227,49 +225,51 @@ const HomeScreen = ({navigation}) => {
               })}
           </ScrollView>
         </View>
-        <Tab.Navigator
-          tabBarOptions={{
-            activeTintColor: colors.BLUE4,
-            inactiveTintColor: colors.GREY1,
-            style: {
-              boxShadow: 'none',
-              elevation: 0,
-              borderTopColor: '#EFEFEF',
-              borderTopWidth: 1,
-              shadowOpacity: 0,
-            },
-            tabStyle: {
-              height: SIZE(40),
-              paddingHorizontal: wp('1%'),
-            },
-            labelStyle: {
-              fontSize: RF(1.4),
-              fontFamily: fonts.SegoeUIRegular,
-              textTransform: 'capitalize',
-            },
-            indicatorStyle: {
-              borderBottomColor: colors.BLUE4,
-              height: 1,
-              marginBottom: SIZE(39),
-            },
-          }}>
-          <Tab.Screen name={'Awards 2021'} component={AwardsNFT} />
-          <Tab.Screen
-            name={langObj.common.hot}
-            component={Hot}
-            options={{tabBarLabel: translate('common.hot')}}
-          />
-          <Tab.Screen
-            name={langObj.common.following}
-            component={NewNFT}
-            options={{tabBarLabel: translate('common.following')}}
-          />
-          <Tab.Screen
-            name={langObj.common.Discover}
-            component={Favorite}
-            options={{tabBarLabel: translate('common.Discover')}}
-          />
-        </Tab.Navigator>
+        {isCreate ? null : (
+          <Tab.Navigator
+            tabBarOptions={{
+              activeTintColor: colors.BLUE4,
+              inactiveTintColor: colors.GREY1,
+              style: {
+                boxShadow: 'none',
+                elevation: 0,
+                borderTopColor: '#EFEFEF',
+                borderTopWidth: 1,
+                shadowOpacity: 0,
+              },
+              tabStyle: {
+                height: SIZE(40),
+                paddingHorizontal: wp('1%'),
+              },
+              labelStyle: {
+                fontSize: RF(1.4),
+                fontFamily: fonts.SegoeUIRegular,
+                textTransform: 'capitalize',
+              },
+              indicatorStyle: {
+                borderBottomColor: colors.BLUE4,
+                height: 1,
+                marginBottom: SIZE(39),
+              },
+            }}>
+            <Tab.Screen name={'Awards 2021'} component={AwardsNFT} />
+            <Tab.Screen
+              name={langObj.common.hot}
+              component={Hot}
+              options={{tabBarLabel: translate('common.hot')}}
+            />
+            <Tab.Screen
+              name={langObj.common.following}
+              component={NewNFT}
+              options={{tabBarLabel: translate('common.following')}}
+            />
+            <Tab.Screen
+              name={langObj.common.Discover}
+              component={Favorite}
+              options={{tabBarLabel: translate('common.Discover')}}
+            />
+          </Tab.Navigator>
+        )}
       </SafeAreaView>
       <AppModal
         visible={modalVisible}
@@ -284,7 +284,6 @@ const HomeScreen = ({navigation}) => {
             }}
           />
         ) : null}
-
         {isNotificationVisible ? (
           <NotificationActionModal
             onClose={() => setModalVisible(false)}
