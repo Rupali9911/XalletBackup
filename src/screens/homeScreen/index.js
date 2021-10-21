@@ -171,11 +171,7 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const openPhoneSettings = () => {
-    if (Platform.OS === 'ios') {
-      Linking.openURL('app-settings:');
-    } else {
       Linking.openSettings();
-    }
   };
   return (
     <>
