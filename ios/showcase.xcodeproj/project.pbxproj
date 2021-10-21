@@ -484,7 +484,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = UU2MB56ZR2;
@@ -518,7 +518,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
@@ -549,7 +549,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UU2MB56ZR2;
@@ -568,7 +568,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
 				PRODUCT_NAME = showcase;
-				PROVISIONING_PROFILE_SPECIFIER = XANALIA_AppStore;
+				PROVISIONING_PROFILE_SPECIFIER = XANALIA_Dev_New;
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -582,7 +582,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UU2MB56ZR2;
@@ -601,7 +601,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
 				PRODUCT_NAME = showcase;
-				PROVISIONING_PROFILE_SPECIFIER = XANALIA_AppStore;
+				PROVISIONING_PROFILE_SPECIFIER = XANALIA_Dev_New;
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

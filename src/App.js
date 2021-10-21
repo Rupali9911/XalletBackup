@@ -162,6 +162,7 @@ const AppRoutes = () => {
       console.log('languageData', languageData);
       dispatch(setAppLanguage(JSON.parse(languageData)));
     } else {
+      console.log('regionLanguage', regionLanguage)
       let item = languageArray.find(item => item.language_name == regionLanguage);
       dispatch(setAppLanguage(item));
     }
