@@ -10,6 +10,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSi
 import { images, colors } from '../../res';
 import Colors from '../../constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setPasscode as SPasscode, endLoader  } from "../../store/reducer/userReducer";
 
 function PasscodeScreen({
     route,
@@ -41,7 +42,6 @@ function PasscodeScreen({
     const addItem = (v) => {
 
         let active = status ? "passcode" : passcode.length === 6 ? "reEnter" : "passcode";
-        // debugger
         let pass = active == "passcode" ? [...passcode] : [...reEnterpasscode];
         if (pass.length < 7) {
             pass.push(v)
@@ -59,7 +59,14 @@ function PasscodeScreen({
                             setpasscode([])
                         }
                     }else{
-
+                        if(pass.join("") == oldPasscode){
+                            dispatch(SPasscode(""));
+                            setTimeout(() => {
+                                dispatch(endLoader());
+                            }, 1000)
+                        }else{
+                            setpasscode([])
+                        }
                     }
 
                 } else {
@@ -103,7 +110,7 @@ function PasscodeScreen({
                             let active = status ? passcode : passcode.length === 6 ? reEnterpasscode : passcode;
 
                             return (
-                                <View style={[styles.circle, { backgroundColor: active[i] ? colors.themeR : colors.white }]} />
+                                <View key={i} style={[styles.circle, { backgroundColor: active[i] ? colors.themeR : colors.white }]} />
                             )
                         })
                     }
@@ -116,16 +123,16 @@ function PasscodeScreen({
                 <View style={{ ...styles.keypadCont }} >
 
                     {
-                        numberArr.map(v => {
+                        numberArr.map((v, i) => {
                             if (v === "") {
                                 return (
-                                    <TouchableOpacity onPress={() => removeItem()} style={styles.keypadItem} >
+                                    <TouchableOpacity key={i} onPress={() => removeItem()} style={styles.keypadItem} >
                                         <Icon name="backspace-outline" size={RF(2.5)} />
                                     </TouchableOpacity>
                                 )
                             }
                             return (
-                                <TouchableOpacity onPress={() => addItem(v)} style={styles.keypadItem} >
+                                <TouchableOpacity key={i} onPress={() => addItem(v)} style={styles.keypadItem} >
                                     <Text style={styles.keypadFont}>{v}</Text>
                                 </TouchableOpacity>
                             )

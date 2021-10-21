@@ -5,7 +5,8 @@ import {
     AUTH_LOADING_START,
     AUTH_LOADING_END,
     UPDATE_CREATE,
-    UPDATE_PROFILE
+    UPDATE_PROFILE,
+    SET_PASSCODE
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
@@ -14,7 +15,8 @@ const initialState = {
     loading: false,
     wallet: null,
     isCreate: false,
-    data: null
+    data: null,
+    passcode: ""
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -29,6 +31,13 @@ export default UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
+            };
+
+        case SET_PASSCODE:
+            return {
+                ...state,
+                passcode: action.payload,
+                loading: true
             };
 
         case AUTH_SUCCESS:
@@ -76,6 +85,11 @@ export const upateUserData = (data) => ({
     payload: data
 })
 
+export const setPasscode = (data) => ({
+    type: SET_PASSCODE,
+    payload: data
+})
+
 export const startLoader = () => (dispatch) =>
     new Promise((resolve, reject) => {
         dispatch(startLoading());
@@ -95,7 +109,7 @@ export const loadFromAsync = () => (dispatch) =>
         dispatch(startLoading());
         const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
         const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
-
+console.log(wallet, userData)
         if (wallet && userData) {
             dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
             const _wallet = JSON.parse(wallet);
