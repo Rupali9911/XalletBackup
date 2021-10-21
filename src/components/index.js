@@ -9,3 +9,4 @@ export { default as Loader } from './loader';
 export { default as NoInternetModal } from './noInternetModal';
 export { default as C_Image } from './customImage';
 export { default as GroupButton } from './groupButton';
+export { default as AppHeader } from './appHeader';

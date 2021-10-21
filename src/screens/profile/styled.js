@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import { StyleSheet } from "react-native";
 import {
     COLORS,
     SIZE,

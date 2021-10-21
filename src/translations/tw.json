@@ -639,6 +639,11 @@
                 "requireCity": "請輸入城市",
                 "requireZipcode": "請輸入郵政編碼"
             },
+            "enterPasscode": "輸入新的密碼",
+            "enterPasscode1": "輸入密碼",
+            "enterPasscode2": "請重新輸入密碼",
+            "passcode": "密碼",
+            "settingRight": "其他/設置",
             "errorCode754": "錯誤代碼 ： 754.請聯繫客戶支援中心",
             "failed": "失敗",
             "creatorHint": "更多來自這個創造者",
@@ -665,7 +670,8 @@
             "phraseHint": "可以使用在下一步中找到的 12 個詞來恢復錢包。",
             "phraseAlert": "我明白，如果我忘記了要恢復的 12 個字，我將無法使用我的錢包。",
             "yourPhrase": "恢復短語",
-            "phraseSaveInfo": "以正確的順序寫下或粘貼複製的恢復短語",
+            "phraseSaveInfo": "按正確順序記下或存儲 12 字恢復短語",
+            "phraseSaveInfo1": "按正確順序（包括空格）鍵入或粘貼 12 個單詞的恢復短語",
             "phraseNote": "不應與任何人分享恢復短語。",
             "success": "成功",
             "walletSuccess": "您的錢包已成功創建",
@@ -805,7 +811,7 @@
             },
             "confirmDeleteCard": "您確定要移除這張卡嗎？",
             "balanceAmount": "餘額",
-            "paste": "糊"
+            "paste": "粘貼"
         },
         "backendmessage": {
             "error": {},

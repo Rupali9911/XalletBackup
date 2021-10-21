@@ -4,17 +4,22 @@ import { useNavigation } from "@react-navigation/native";
 
 import Colors from '../constants/Colors';
 import CommonStyles from '../constants/styles';
-import { screenWidth, hp, RF } from '../constants/responsiveFunct';
-import Fonts from "../constants/Fonts";
+import { screenWidth, hp, RF, wp } from '../constants/responsiveFunct';
 import ImagesSrc from "../constants/Images";
 import TextView from "./appText";
+import {
+    FONT,
+    FONTS,
+    COLORS
+} from '../constants';
 
 function AppHeader(props) {
     const navigation = useNavigation();
 
     return (
         <View style={[styles.container, props.containerStyle]} >
-            <View style={{ flex: 0.2 }} >
+
+            <View style={{ flex: 1, justifyContent: "center" }} >
                 {
                     props.showBackButton ?
                         <TouchableOpacity style={styles.backContainer} onPress={() => props.onPressBack ? props.onPressBack() : navigation.goBack()} >
@@ -24,22 +29,20 @@ function AppHeader(props) {
                         </TouchableOpacity> : null
                 }
             </View>
-            <View style={{ flex: 1, ...CommonStyles.center }} >
+            {
+                props.titleComponent ?
+                    props.titleComponent
+                    :
+                    <TextView style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</TextView>
+            }
+            <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center"}} >
                 {
-                    props.titleComponent ?
-                        props.titleComponent
-                        :
-                        <TextView style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</TextView>
-                }
-            </View>
-            <View style={{ flex: 0.2 }} >
-                {
-                    props.showRightButton &&
-                    <TouchableOpacity style={styles.backContainer} onPress={props.onPressRight} >
-                        {
-                            props.rightButtonComponent
-                        }
-                    </TouchableOpacity>
+                    props.showRightButton ?
+                        <TouchableOpacity style={styles.backContainer} onPress={props.onPressRight} >
+                            {
+                                props.rightButtonComponent
+                            }
+                        </TouchableOpacity> : null
                 }
             </View>
         </View>
@@ -49,18 +52,19 @@ function AppHeader(props) {
 const styles = StyleSheet.create({
     container: {
         height: hp('7%'),
-        width: screenWidth,
         flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
         zIndex: 5,
+        marginHorizontal: wp("3%"),
     },
     title: {
-        fontSize: RF(2),
-        fontFamily: Fonts.ARIAL,
-        fontWeight: 'bold'
+        fontSize: FONT(16),
+        fontFamily: FONTS.PINGfANG_SBOLD,
+        textAlign: "center",
+        color: COLORS.BLACK1
     },
     backContainer: {
-        ...CommonStyles.center,
-        flex: 1
     },
     backIcon: {
         ...CommonStyles.imageStyles(5),

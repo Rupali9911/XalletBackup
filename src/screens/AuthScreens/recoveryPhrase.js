@@ -39,8 +39,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
 
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
-    const [phrase, setPhrase] = useState("");
-    // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
+    // const [phrase, setPhrase] = useState("");
+    const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
     const toastRef = useRef(null);
 
     useEffect(() => {
@@ -131,7 +131,12 @@ const RecoveryPhrase = ({ route, navigation }) => {
                         <View style={styles.padding}>
                             <AppLogo logoStyle={styles.logo} />
                             <TextView style={styles.title}>{translate("wallet.common.yourPhrase")}</TextView>
-                            <HintText style={styles.hint}>{translate("wallet.common.phraseSaveInfo")}</HintText>
+                            {
+                                recover ?
+                                    <HintText style={styles.hint}>{translate("wallet.common.phraseSaveInfo1")}</HintText>
+                                    :
+                                    <HintText style={styles.hint}>{translate("wallet.common.phraseSaveInfo")}</HintText>
+                            }
                         </View>
                         <View>
                             {recover ?

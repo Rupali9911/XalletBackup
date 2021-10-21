@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import '../shim';
 
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Image, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,9 +15,10 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
 import { loadFromAsync } from "./store/reducer/userReducer";
-
 import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
+import SecurityScreen from './screens/security';
+import PasscodeScreen from './screens/security/passcode';
 import MyNFTScreen from './screens/myNFTScreen';
 import DiscoverScreen from './screens/discoverScreen';
 import DetailItemScreen from './screens/detailScreen';
@@ -139,6 +140,7 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = React.useState(true);
+  const [passcode, setPasscode] = React.useState("");
 
   setI18nConfig(selectedLanguageItem.language_name);
 
@@ -146,6 +148,15 @@ const AppRoutes = () => {
     LogBox.ignoreAllLogs();
     dispatch(getAllLanguages())
     // AsyncStorage.removeItem('@wallet')
+    // let pass = await AsyncStorage.getItem("@passcode");
+    // if (pass) {
+    //   setPasscode(pass)
+    //   setLoading(false);
+    // } else {
+      dispatch(loadFromAsync()).then(() => {
+        setLoading(false);
+      });
+    // }
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (languageData) {
       console.log('languageData', languageData);
@@ -154,45 +165,49 @@ const AppRoutes = () => {
       let item = languageArray.find(item => item.language_name == regionLanguage);
       dispatch(setAppLanguage(item));
     }
-
-    dispatch(loadFromAsync()).then(() => {
-      setLoading(false);
-    });
     // setLoading(false);
 
-  }, []);
-
+  }, [wallet]);
   return (
     <>
       {
         loading ?
           <Loader /> :
           <NavigationContainer>
-            {wallet ?
-              <Stack.Navigator headerMode="none" screenOptions={{gestureResponseDistance: {horizontal: screenWidth*70/100}}}>
-                <Stack.Screen name="Home" component={TabComponent} />
-                <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-                <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
-                <Stack.Screen name="Pay" component={PayScreen} />
-                <Stack.Screen name="MakeBid" component={MakeBidScreen} />
-                <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-                <Stack.Screen name="tokenDetail" component={TokenDetail} />
-                <Stack.Screen name="receive" component={Receive} />
-                <Stack.Screen name="send" component={Send} />
-                <Stack.Screen name="scanToConnect" component={ScanToConnect} />
-                <Stack.Screen name='Create' component={NewPostScreen} />
-                <Stack.Screen name='Certificate' component={CertificateScreen} />
-                <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
-                <Stack.Screen name='AddCard' component={AddCard} />
-                <Stack.Screen name='Cards' component={Cards} />
-                <Stack.Screen name='BuyGold' component={BuyGold} />
-                <Stack.Screen name='Setting' component={Setting} />
-                <Stack.Screen name='ChangePassword' component={ChangePassword} />
-              </Stack.Navigator>
-              :
-              <Stack.Navigator headerMode="none">
-                <Stack.Screen name="Authentication" component={AuthStack} />
-              </Stack.Navigator>
+            {
+            // passcode ?
+            //   < Stack.Navigator headerMode="none" >
+            //     <Stack.Screen  initialParams={{ updateToggle: () => setPasscode(""), screen: "Auth"}} name='PasscodeScreen' component={PasscodeScreen} />
+            //   </Stack.Navigator>
+            //   :
+              wallet
+                ?
+                <Stack.Navigator headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
+                  <Stack.Screen name="Home" component={TabComponent} />
+                  <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+                  <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+                  <Stack.Screen name="Pay" component={PayScreen} />
+                  <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+                  <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                  <Stack.Screen name="tokenDetail" component={TokenDetail} />
+                  <Stack.Screen name="receive" component={Receive} />
+                  <Stack.Screen name="send" component={Send} />
+                  <Stack.Screen name="scanToConnect" component={ScanToConnect} />
+                  <Stack.Screen name='Create' component={NewPostScreen} />
+                  <Stack.Screen name='Certificate' component={CertificateScreen} />
+                  <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
+                  <Stack.Screen name='AddCard' component={AddCard} />
+                  <Stack.Screen name='Cards' component={Cards} />
+                  <Stack.Screen name='BuyGold' component={BuyGold} />
+                  <Stack.Screen name='Setting' component={Setting} />
+                  <Stack.Screen name='ChangePassword' component={ChangePassword} />
+                  <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
+                  <Stack.Screen name='PasscodeScreen' component={PasscodeScreen} />
+                </Stack.Navigator>
+                :
+                <Stack.Navigator headerMode="none">
+                  <Stack.Screen name="Authentication" component={AuthStack} />
+                </Stack.Navigator>
             }
           </NavigationContainer>
 

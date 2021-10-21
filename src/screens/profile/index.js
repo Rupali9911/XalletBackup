@@ -41,12 +41,14 @@ import {
     EditButtonText,
     DescriptionView,
     SmallText,
+    // styles
 } from './styled';
 import {
     Loader,
     C_Image,
-    DetailModal
-} from 'src/components';
+    DetailModal,
+    AppHeader
+} from '../../components';
 import {
     myNFTList,
     myNftLoadStart,
@@ -66,7 +68,7 @@ import {
     responsiveFontSize as RF
 } from '../../common/responsiveFunction';
 import getLanguage from '../../utils/languageSupport';
-import { colors } from '../../res';
+import { colors, fonts } from '../../res';
 const langObj = getLanguage();
 
 const {
@@ -130,7 +132,7 @@ const Created = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                {translate("wallet.common.error.noImage")}
+                                    {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }
@@ -241,7 +243,7 @@ const Collection = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                {translate("wallet.common.error.noImage")}
+                                    {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }
@@ -345,19 +347,26 @@ function Profile({
 
     return (
         <Container>
-            <Header>
+            <AppHeader
+                title={translate("wallet.common.myPage")}
+                showRightButton
+                rightButtonComponent={ <Text style={styles.headerTitle} >{translate("wallet.common.settingRight")}</Text>}
+                onPressRight={() => navigation.navigate('Setting', { connector: connector })}
+            />
+            {/* <Header>
                 <HeaderText numberOfLines={1}>
-                    {id}
+                    {translate("wallet.common.myPage")}
                 </HeaderText>
                 <HeaderRight>
                     <RowWrap>
                         <SpaceView mRight={SIZE(15)} />
                         <TouchableOpacity onPress={() => navigation.navigate('Setting', { connector: connector })}>
+                          <Text style={styles.headerTitle} >Others/Settings</Text>
                             <SettingIcon width={SIZE(23)} height={SIZE(23)} />
                         </TouchableOpacity>
                     </RowWrap>
                 </HeaderRight>
-            </Header>
+            </Header> */}
             <RowWrap>
                 <SpaceView mLeft={SIZE(14)} />
                 <RowBetweenWrap flex={1}>
@@ -459,5 +468,12 @@ const styles = StyleSheet.create({
     trendCont: {
         backgroundColor: 'white',
         flex: 1,
+    },
+    headerTitle: {
+        fontSize: RF(2),
+        height: SIZE(30),
+        fontFamily: fonts.PINGfANG_SBOLD,
+        flex: 1, 
+        textAlignVertical: "center"
     },
 })
