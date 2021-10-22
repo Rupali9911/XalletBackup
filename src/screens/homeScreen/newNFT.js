@@ -56,15 +56,17 @@ const NewNFT = () => {
                     }}
                     style={styles.listItem}>
                     {
-                        item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                            <C_Image
-                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                uri={item.thumbnailUrl}
-                                imageStyle={styles.listImage} />
-                            :
-                            <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
-                            </View>
+                        item.metaData.image && (
+                            item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                                <C_Image
+                                    type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                    uri={item.thumbnailUrl}
+                                    imageStyle={styles.listImage} />
+                                :
+                                <View style={styles.sorryMessageCont}>
+                                    <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
+                                </View>
+                        )
                     }
                 </TouchableOpacity>
             )
