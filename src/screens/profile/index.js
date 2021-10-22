@@ -471,9 +471,6 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: RF(2),
-        height: SIZE(30),
         fontFamily: fonts.PINGfANG_SBOLD,
-        flex: 1, 
-        textAlignVertical: "center"
     },
 })
