@@ -20,11 +20,12 @@ import AppButton from '../appButton';
 import { useNavigation } from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
 import { useSelector } from 'react-redux';
+import { BlurView } from "@react-native-community/blur";
 
 const PaymentMethod = (props) => {
 
     const navigation = useNavigation();
-    const {myCards} = useSelector(state => state.PaymentReducer);
+    const { myCards } = useSelector(state => state.PaymentReducer);
 
     const { visible, onRequestClose, price } = props;
     const [opacity, setOpacity] = useState(0.88);
@@ -41,7 +42,14 @@ const PaymentMethod = (props) => {
                 // setOpacity(0);
                 onRequestClose();
             }}>
-            <View style={[styles.container, { backgroundColor: Colors.whiteOpacity(opacity) }]}>
+            <View style={[styles.container]}>
+                <BlurView
+                    style={styles.absolute}
+                    blurType="light"
+                    blurAmount={10}
+                >
+                </BlurView>
+
                 <TouchableOpacity style={styles.emptyArea} onPress={() => {
                     // setOpacity(0);
                     onRequestClose();
@@ -58,48 +66,48 @@ const PaymentMethod = (props) => {
                         {
                             text: translate("wallet.common.payByCreditCard"),
                             icon: ImagesSrc.cardPay,
-                            onPress: () => {setSelectedMethod(0)}
+                            onPress: () => { setSelectedMethod(0) }
                         },
                         {
                             text: translate("wallet.common.payByWallet"),
                             icon: ImagesSrc.walletPay,
-                            onPress: () => {setSelectedMethod(1)}
+                            onPress: () => { setSelectedMethod(1) }
                         },
                         {
                             text: translate("wallet.common.payByGold"),
                             icon: ImagesSrc.goldPay,
-                            onPress: () => {setSelectedMethod(2)}
+                            onPress: () => { setSelectedMethod(2) }
                         }
-                    ]} 
-                    style={styles.optionContainer}
-                    selectable
-                    selectedIndex={selectedMethod}
-                    separatorColor={Colors.white}
+                    ]}
+                        style={styles.optionContainer}
+                        selectable
+                        selectedIndex={selectedMethod}
+                        separatorColor={Colors.white}
                     />
 
-                    <Separator style={styles.separator}/>
+                    <Separator style={styles.separator} />
 
                     <View style={styles.totalContainer}>
                         <Text style={styles.totalLabel}>{translate("wallet.common.totalAmount")}</Text>
                         <Text style={styles.value}>$ {price}</Text>
                     </View>
 
-                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin}/> {price}</Text>}
+                    {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin} /> {price}</Text>}
 
                     <AppButton
                         label={translate("wallet.common.next")}
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
-                            if(selectedMethod == 0){
+                            if (selectedMethod == 0) {
                                 onRequestClose();
-                                if(myCards.length > 0){
-                                    navigation.navigate('Cards',{price});
-                                }else{
-                                    navigation.navigate('Cards',{price});
-                                    navigation.navigate('AddCard',{})
+                                if (myCards.length > 0) {
+                                    navigation.navigate('Cards', { price });
+                                } else {
+                                    navigation.navigate('Cards', { price });
+                                    navigation.navigate('AddCard', {})
                                 }
-                            } else if(selectedMethod == 2) {
+                            } else if (selectedMethod == 2) {
                                 setNotEnoughGoldVisible(true);
                             }
                         }}
@@ -129,6 +137,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    absolute: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        backgroundColor: "rgba(95, 148, 255, 0.6)"
+    },
     emptyArea: {
         flex: 1
     },
@@ -144,7 +160,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        
+
         elevation: 5,
     },
     closeIcon: {
@@ -167,7 +183,7 @@ const styles = StyleSheet.create({
         marginBottom: hp("1%")
     },
     separator: {
-        width: wp("100%"), 
+        width: wp("100%"),
         marginVertical: hp("2%")
     },
     totalLabel: {

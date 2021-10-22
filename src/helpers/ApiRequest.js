@@ -5,7 +5,7 @@ import { translate, environment } from '../walletUtils';
 import { alertWithSingleBtn } from '../common/function';
 
 var isAlert = false;
-export const STRIPE_API_URL= "https://api.stripe.com/v1/";
+export const STRIPE_API_URL = "https://api.stripe.com/v1/";
 export const BASE_URL = "https://testapi.xanalia.com/";
 
 export const ApiRequest = async (url, method, body, headers) => {
@@ -44,11 +44,18 @@ export const ApiRequest = async (url, method, body, headers) => {
                         resolve(response);
                     })
                     .catch(error => {
-                        reject(error)
+                        reject()
+                        alertWithSingleBtn(
+                            translate("common.alert"),
+                            translate("common.error.apiFailed"),
+                            () => {
+                                console.log(e);
+                            }
+                        );
                         // alert(error)
                     });
             } else {
-                if(!isAlert){
+                if (!isAlert) {
                     isAlert = true;
                     alertWithSingleBtn(
                         translate("common.alert"),
@@ -57,25 +64,25 @@ export const ApiRequest = async (url, method, body, headers) => {
                             isAlert = false;
                             reject();
                         }
-                      );
-                }else{
+                    );
+                } else {
                     reject();
                 }
             }
-          }).catch(err => {
+        }).catch(err => {
             reject();
-                alertWithSingleBtn(
-                    translate("common.alert"),
-                    translate("common.error.apiFailed"),
-                    () => {
-                        console.log(e);
-                    }
-                );
-          });
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.apiFailed"),
+                () => {
+                    console.log(e);
+                }
+            );
+        });
     })
 };
 
-export const StripeApiRequest = (url, body, method="POST") => {
+export const StripeApiRequest = (url, body, method = "POST") => {
     const requestOptions = {
         method,
         headers: {
@@ -93,7 +100,7 @@ export const StripeApiRequest = (url, body, method="POST") => {
         formBody = formBody.join("&");
         requestOptions.body = formBody;
     }
-    console.log('requestOptions',requestOptions);
+    console.log('requestOptions', requestOptions);
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
             console.log("Connection type", state.type, state.isConnected);
@@ -117,11 +124,17 @@ export const StripeApiRequest = (url, body, method="POST") => {
                         resolve(response)
                     })
                     .catch(error => {
-                        reject(error)
-                        // alert(error)
+                        reject();
+                        alertWithSingleBtn(
+                            translate("common.alert"),
+                            translate("wallet.common.error.networkFailed"),
+                            () => {
+                                console.log(e);
+                            }
+                        );
                     });
             } else {
-                if(!isAlert){
+                if (!isAlert) {
                     isAlert = true;
                     alertWithSingleBtn(
                         translate("common.alert"),
@@ -130,20 +143,20 @@ export const StripeApiRequest = (url, body, method="POST") => {
                             isAlert = false;
                             reject();
                         }
-                      );
-                }else{
+                    );
+                } else {
                     reject();
                 }
             }
-          }).catch(err => {
+        }).catch(err => {
             reject();
-                alertWithSingleBtn(
-                    translate("common.alert"),
-                    translate("common.error.apiFailed"),
-                    () => {
-                        console.log(e);
-                    }
-                );
-          });
+            alertWithSingleBtn(
+                translate("common.alert"),
+                translate("common.error.apiFailed"),
+                () => {
+                    console.log(e);
+                }
+            );
+        });
     })
 }

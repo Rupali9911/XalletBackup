@@ -10,6 +10,8 @@ import {
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../common/function';
 
 const initialState = {
     loading: false,
@@ -132,7 +134,16 @@ console.log(wallet, userData)
                     if (res.data) {
                         dispatch(upateUserData(res.data));
                     }
-                });
+                })
+                .catch(e => {
+                    alertWithSingleBtn(
+                        translate("common.alert"),
+                        translate("wallet.common.error.networkFailed"),
+                        () => {
+                            console.log(e);
+                        }
+                    );
+                })
         } else {
             dispatch(endLoading());
         }

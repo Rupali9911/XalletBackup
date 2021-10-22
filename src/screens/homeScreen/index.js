@@ -36,7 +36,7 @@ import {
 } from '../../store/actions/nftTrendList';
 import {updateCreateState} from '../../store/reducer/userReducer';
 import getLanguage from '../../utils/languageSupport';
-import {translate} from '../../walletUtils';
+import {translate, setI18nConfig} from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
@@ -52,12 +52,15 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
     dispatch(nftListReset());
     getNFTlist(1);
     dispatch(pageChange(1));
+
+    setI18nConfig(selectedLanguageItem.language_name);
   }, []);
 
   const getNFTlist = useCallback((page, limit) => {

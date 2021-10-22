@@ -614,6 +614,7 @@
         "common": {
             "error": {
                 "invalidPhrase": "无效短语",
+                "networkFailed": "網路請求失敗",
                 "noImage": "無圖像顯示",
                 "fieldRequired": "這是必填欄!",
                 "emailRequired": "電子郵件為必填項!",
@@ -795,6 +796,8 @@
             "payByWallet": "通過錢包支付",
             "payByGold": "金幣支付（應用內）",
             "totalAmount": "總金額",
+            "totalAmountToPay": "支付總額",
+
             "me": "我",
             "alert": "Xanalia",
             "legalHint1": "仔細閱讀服務條款和隱私",

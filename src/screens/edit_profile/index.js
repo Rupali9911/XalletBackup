@@ -44,6 +44,7 @@ import { BASE_URL } from '../../common/constants';
 import AppBackground from '../../components/appBackground';
 import { useSelector, useDispatch } from 'react-redux';
 import { upateUserData } from '../../store/reducer/userReducer';
+import { alertWithSingleBtn } from '../../utils';
 
 const {
     LeftArrowIcon,
@@ -123,7 +124,13 @@ function Profile({
                     dispatch(upateUserData(res.data.data));
                 })
                 .catch(err => {
-                    alert(err.message);
+                    alertWithSingleBtn(
+                        translate("common.alert"),
+                        translate("wallet.common.error.networkFailed"),
+                        () => {
+                            console.log(e);
+                        }
+                    );
                     return;
                 });
         }
@@ -152,7 +159,13 @@ function Profile({
                 navigation.goBack();
             })
             .catch(err => {
-                alert(err.message);
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    translate("wallet.common.error.networkFailed"),
+                    () => {
+                        console.log(e);
+                    }
+                );
             })
 
         setLoading(false);

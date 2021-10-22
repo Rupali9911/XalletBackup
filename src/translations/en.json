@@ -614,6 +614,7 @@
         "common": {
             "error": {
                 "invalidPhrase": "Invalid Phrase",
+                "networkFailed": "Network request failed",
                 "noImage": "No Image to Show",
                 "fieldRequired": "This field is required!",
                 "emailRequired": "Email field is required!",
@@ -640,6 +641,7 @@
                 "requireZipcode": "Please enter zipcode"
             },
             "settingRight": "Others/Settings",
+
             "passcode": "Passcode",
             "enterPasscode": "Enter a new passcode",
             "enterPasscode1": "Enter a passcode",
@@ -795,6 +797,7 @@
             "payByWallet": "Pay through wallet",
             "payByGold": "Pay by Gold (In-app）",
             "totalAmount": "Total Amount",
+            "totalAmountToPay": "Total Amount to pay",
             "me": "Me",
             "alert": "Xanalia",
             "legalHint1": "Carefully read the Terms of Service and Privacy",

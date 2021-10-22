@@ -105,6 +105,14 @@ const RecoveryPhrase = ({ route, navigation }) => {
                         translate('wallet.common.error.invalidPhrase')
                     )
 
+                }else{
+                    alertWithSingleBtn(
+                        translate("common.alert"),
+                        translate("wallet.common.error.networkFailed"),
+                        () => {
+                            console.log(e);
+                        }
+                    );
                 }
                 dispatch(endLoader());
             });
