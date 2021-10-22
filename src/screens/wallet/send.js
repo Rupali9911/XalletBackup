@@ -235,7 +235,7 @@ const Send = ({ route, navigation }) => {
         { key: 'Send', title: translate("wallet.common.send") },
         { key: 'Scan', title: translate("wallet.common.scan") },
     ]);
-    console.log('========')
+    
     const SendScreen = () => {
         const [address, setAddress] = useState("");
         const [amount, setAmount] = useState('');

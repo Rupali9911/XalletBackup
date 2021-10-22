@@ -307,7 +307,7 @@ function Profile({
 
     const { UserReducer } = useSelector(state => state);
 
-    const id = UserReducer.data.user.username || UserReducer.wallet.address;
+    const id = UserReducer.data.user.name || UserReducer.wallet.address;
 
     const renderTabView = () => {
         return (

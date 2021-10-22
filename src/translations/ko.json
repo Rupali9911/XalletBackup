@@ -814,7 +814,8 @@
             },
             "confirmDeleteCard": "이 카드를 삭제하시겠습니까?",
             "balanceAmount": "잔액",
-            "paste": "붙여 넣기"
+            "paste": "붙여 넣기",
+            "myPage": "나의 페이지"
         },
         "backendmessage": {
             "error": {},

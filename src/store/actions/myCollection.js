@@ -32,12 +32,20 @@ export const myCollectionList = (page, ownerId) => {
     return (dispatch, getState) => {
 
         dispatch(myCollectionLoadStart());
+
+        const { data } = getState().UserReducer;
+        let user = data.user;
+
         let body_data = {
             limit: 24,
             networkType: networkType,
             userId: ownerId,
             page: page,
             nftType: 'mycollection'
+        }
+
+        if (user) {
+            body_data.owner = user._id;
         }
 
         let fetch_data_body = {

@@ -393,7 +393,7 @@
         "created": "出品NFT",
         "collected": "ホーム",
         "unfollow": "フォロー中",
-        "editprofile": "プロファイルを編集",
+        "editprofile": "プロフィール設定",
         "website": " ウェブサイト",
         "ViewonPolygonScan": "ポリゴンスキャンで表示",
         "desclength": "作品説明は500文字以下にしないといけない。",
@@ -761,7 +761,7 @@
             "offerPrice": "その他の価格を提供",
             "explore": "検索",
             "comingSoon": "もうすぐです",
-            "done": "終わり",
+            "done": "完了",
             "changeprofilephoto": "プロフィール写真を変更する",
             "chart": "チャート",
             "history": "歴史",
@@ -813,7 +813,8 @@
             },
             "confirmDeleteCard": "このカードを削除したいでしょうか？",
             "balanceAmount": "残高",
-            "paste": "貼り付け"
+            "paste": "貼り付け",
+            "myPage": "マイページ"
         },
         "backendmessage": {
             "error": {},

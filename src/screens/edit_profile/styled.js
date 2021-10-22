@@ -38,6 +38,7 @@ const EditableInput = styled.TextInput`
 
 const MultiLineEditableInput = styled.TextInput`
     width: 100%;
+    maxHeight: ${SIZE(100)}px;
     border-bottom-width: 0.8px;
     border-color: ${COLORS.WHITE3};
     padding-bottom: ${SIZE(12)}px;

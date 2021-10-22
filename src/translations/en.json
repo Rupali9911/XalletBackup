@@ -814,7 +814,8 @@
             },
             "confirmDeleteCard": "Are you sure you want to remove this card?",
             "balanceAmount": "Balance Amount",
-            "paste": "Paste"
+            "paste": "Paste",
+            "myPage": "My Page"
         },
         "backendmessage": {
             "error": {},

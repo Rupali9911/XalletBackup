@@ -28,7 +28,7 @@ export default function MyCollectionReducer(state = initialState, action) {
             return state = { ...state, myCollection: [...state.myCollection, ...action.payload.data], myCollectionTotalCount: action.payload.count, myCollectionListLoading: false };
 
         case MY_COLLECTION_LIST_UPDATE:
-            return state = { ...state, myCollection: [...action.payload.data] };
+            return state = { ...state, myCollection: [...action.payload] };
 
         case MY_COLLECTION_LOAD_FAIL:
             return state = { ...state, myCollectionListLoading: false };

@@ -62,7 +62,9 @@ const DetailScreen = ({ route, navigation }) => {
         price,
         chain,
         ownerId,
-        tokenId
+        tokenId,
+        ownerData,
+        artistData
     } = route.params;
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPaymentNow, setShowPaymentNow] = useState(false);
@@ -383,6 +385,30 @@ const DetailScreen = ({ route, navigation }) => {
         return _nftStatus;
     }
 
+    const onProfile = (isOwner) => {
+        if (isOwner) {
+            if (ownerData) {
+                navigation.navigate('ArtistDetail', { data: ownerData });
+            } else {
+                navigation.navigate('ArtistDetail', {
+                    data: {
+                        id: owner,
+                    }
+                });
+            }
+        } else {
+            if (artistData) {
+                navigation.navigate('ArtistDetail', { data: artistData });
+            } else {
+                navigation.navigate('ArtistDetail', {
+                    data: {
+                        id: creator,
+                    }
+                });
+            }
+        }
+    }
+
     return (
         <>
             <SafeAreaView style={styles.mainContainer}>
@@ -452,7 +478,9 @@ const DetailScreen = ({ route, navigation }) => {
                         {name}
                     </Text>
                     <View style={styles.person}>
-                        <View style={styles.personType}>
+                        <TouchableOpacity
+                            onPress={() => onProfile(true)}
+                            style={styles.personType}>
                             <Image style={styles.iconsImage} source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
                             <View>
                                 <Text style={styles.personTypeText}>
@@ -462,8 +490,10 @@ const DetailScreen = ({ route, navigation }) => {
                                     {owner}
                                 </Text>
                             </View>
-                        </View>
-                        <View style={styles.personType}>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => onProfile(false)}
+                            style={styles.personType}>
                             <Image style={styles.iconsImage} source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
                             <View>
                                 <Text style={styles.personTypeText}>
@@ -473,7 +503,7 @@ const DetailScreen = ({ route, navigation }) => {
                                     {creator}
                                 </Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                     <Text style={styles.description}>
                         {description}
