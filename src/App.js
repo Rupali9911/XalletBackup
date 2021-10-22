@@ -183,8 +183,7 @@ const AppRoutes = () => {
                 < Stack.Navigator headerMode="none" >
                   <Stack.Screen initialParams={{ updateToggle: null, screen: "Auth" }} name='PasscodeScreen' component={PasscodeScreen} />
                 </Stack.Navigator>
-                // :  wallet ?
-                :
+                :  wallet ?
                   <Stack.Navigator headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
                     <Stack.Screen name="Home" component={TabComponent} />
                     <Stack.Screen name="DetailItem" component={DetailItemScreen} />
@@ -207,10 +206,10 @@ const AppRoutes = () => {
                     <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
                     <Stack.Screen name='PasscodeScreen' component={PasscodeScreen} />
                   </Stack.Navigator>
-                  // :
-                  // <Stack.Navigator headerMode="none">
-                  //   <Stack.Screen name="Authentication" component={AuthStack} />
-                  // </Stack.Navigator>
+                  :
+                  <Stack.Navigator headerMode="none">
+                    <Stack.Screen name="Authentication" component={AuthStack} />
+                  </Stack.Navigator>
             }
           </NavigationContainer>
 

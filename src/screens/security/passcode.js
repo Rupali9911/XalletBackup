@@ -44,7 +44,7 @@ function PasscodeScreen({
         let active = status ? "passcode" : passcode.length === 6 ? "reEnter" : "passcode";
         let pass = active == "passcode" ? [...passcode] : [...reEnterpasscode];
         if (pass.length < 7) {
-            pass.push(v)
+            pass.push(String(v));
             if (pass.length > 6) return;
             active == "passcode" ? setpasscode(pass) : setReenterpasscode(pass)
 
