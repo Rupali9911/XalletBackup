@@ -14,25 +14,29 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import GradientBackground from '../../components/gradientBackground';
 import NumberFormat from 'react-number-format';
 import CommonStyles from '../../constants/styles';
-import {translate, environment} from '../../walletUtils';
+import {translate, environment, tokens} from '../../walletUtils';
 import PriceText from '../../components/priceText';
-import { HeaderBtns } from './components/HeaderButtons';
+import { HeaderBtns } from '../wallet/components/HeaderButtons';
 import ImagesSrc from '../../constants/Images';
 import { wp, hp, RF } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import ToggleButtons from '../../components/toggleButton';
-import Tokens from './components/Tokens';
+import Tokens from '../wallet/components/Tokens';
 import { useSelector, useDispatch } from 'react-redux';
-import { balance, watchEtherTransfers, watchAllTransactions, watchBalanceUpdate, watchBnBBalance } from './functions';
+import { balance, watchEtherTransfers, watchAllTransactions, watchBalanceUpdate, watchBnBBalance } from '../wallet/functions';
 import SingleSocket from '../../helpers/SingleSocket';
 import { Events } from '../../App';
 import AppHeader from '../../components/appHeader';
-import NetworkPicker from './components/networkPicker';
+import NetworkPicker from '../wallet/components/networkPicker';
 import { updateCreateState } from '../../store/reducer/userReducer';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import Web3 from 'web3';
-import SelectToken from './components/SelectToken';
+import SelectToken from '../wallet/components/SelectToken';
 import { addTransaction, addEthTransaction, addBnbTransaction, addMaticTransaction, updateBalances } from '../../store/reducer/walletReducer';
+import Fonts from '../../constants/Fonts';
+import Separator from '../../components/separator';
+import AppButton from '../../components/appButton';
+import { setPaymentObject } from '../../store/reducer/paymentReducer';
 
 const ethers = require('ethers');
 
@@ -41,48 +45,32 @@ const singleSocket = new SingleSocket();
 var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts("")
 
-const Wallet = ({route, navigation}) => {
+const WalletPay = ({route, navigation}) => {
 
     const {wallet, isCreate, data} = useSelector(state => state.UserReducer);
-    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance} = useSelector(state => state.WalletReducer);
+    const {paymentObject} = useSelector(state => state.PaymentReducer);
+    const {ethBalance,bnbBalance,maticBalance} = useSelector(state => state.WalletReducer);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
 
+    const {chainType} = route.params
+
     const [loading, setLoading] = useState(false);
-    const[modalVisible, setModalVisible] = useState(isCreate);
-    const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
-    const [isNotificationVisible, setNotificationVisible] = useState(false);
     const [balances, setBalances] = useState(null);
     const [totalValue, setTotalValue] = useState(0);
     const [walletAccount, setWalletAccount] = useState();
     const [pickerVisible, setPickerVisible] = useState(false);
     const [selectTokenVisible, setSelectTokenVisible] = useState(false);
     const [isSend, setIsSend] = useState(false);
-    const [network, setNetwork] = useState({name: "BSC",icon: ImagesSrc.bnb});
-
-    let subscribeEth;
-    let subscribeBnb;
-    let subscribeMatic;
+    const [network, setNetwork] = useState(chainType === 'polygon' ? {name: "Polygon",icon: ImagesSrc.matic} : {name: "BSC",icon: ImagesSrc.bnb});
+    const [selectedObject, setSelectedObject] = useState(null);
 
     useEffect(()=>{
         if(wallet && !isCreate && isFocused){
             setLoading(true);
             getBalances(wallet.address);
-        }else{
-            subscribeEth && subscribeEth.unsubscribe((error, success) => {
-                if(success)
-                    console.log('Successfully unsubscribed!');
-            });
-            subscribeBnb && subscribeBnb.unsubscribe((error, success) => {
-                if(success)
-                    console.log('Successfully unsubscribed!');
-            });
-            subscribeMatic && subscribeMatic.unsubscribe((error, success) => {
-                if(success)
-                    console.log('Successfully unsubscribed!');
-            });
         }
-        console.log('data',data,wallet);
+        console.log('data',data);
     },[isFocused]);
 
     useEffect(() => {
@@ -104,89 +92,6 @@ const Wallet = ({route, navigation}) => {
             socketSubscribe.unsubscribe();
         }
     },[]);
-
-    useEffect(()=>{
-            // const ethSubscription = watchEtherTransfers(wallet.address, 'eth', (trx) => {
-            //     let transaction = {
-            //         ...trx,
-            //         value: Web3.utils.fromWei(trx.value, 'ether'),
-            //         type: trx.from == wallet.address ? 'OUT' : trx.to == wallet.address ? 'IN' : ''
-            //     }
-            //     dispatch(addEthTransaction(transaction));
-            // });
-
-            // const bnbSubscription = watchEtherTransfers(wallet.address, 'bnb', (trx) => {
-            //     let transaction = {
-            //         ...trx,
-            //         value: Web3.utils.fromWei(trx.value, 'ether'),
-            //         type: trx.from == wallet.address ? 'OUT' : trx.to == wallet.address ? 'IN' : ''
-            //     }
-            //     dispatch(addBnbTransaction(transaction));
-            // });
-
-            // const polygonSubscription = watchEtherTransfers(wallet.address, 'matic', (trx) => {
-            //     let transaction = {
-            //         ...trx,
-            //         value: Web3.utils.fromWei(trx.value, 'ether'),
-            //         type: trx.from == wallet.address ? 'OUT' : trx.to == wallet.address ? 'IN' : ''
-            //     }
-            //     getBalances(wallet.address);
-            //     dispatch(addMaticTransaction(transaction));
-            // });
-
-            // const subscribeAll = watchAllTransactions(wallet.address);
-        if (network.name == 'Ethereum' && subscribeEth == null) {
-            subscribeEth = watchBalanceUpdate(() => {
-                getBalances(wallet.address);
-            }, 'eth');
-        } else if (network.name == 'BSC' && subscribeBnb == null) {
-            subscribeBnb = watchBalanceUpdate(() => {
-                getBalances(wallet.address);
-            }, 'bsc');
-            // watchBnBBalance();
-        } else if (network.name == 'Polygon' && subscribeMatic == null) {
-            subscribeMatic = watchBalanceUpdate(() => {
-                getBalances(wallet.address);
-            }, 'polygon');
-        } else {
-            subscribeEth && subscribeEth.unsubscribe((error, success) => {
-                if(success){
-                    console.log('ETH Successfully unsubscribed!');
-                    subscribeEth == null;
-                }
-            });
-            subscribeBnb && subscribeBnb.unsubscribe((error, success) => {
-                if(success){
-                    console.log('BNB Successfully unsubscribed!');
-                    subscribeBnb == null;
-                }
-            });
-            subscribeMatic && subscribeMatic.unsubscribe((error, success) => {
-                if(success){
-                    console.log('Matic Successfully unsubscribed!');
-                    subscribeMatic == null;
-                }
-            });
-        }
-
-            return () => {
-                // ethSubscription.unsubscribe();
-                // bnbSubscription.unsubscribe();
-                // polygonSubscription.unsubscribe();
-                subscribeEth && subscribeEth.unsubscribe((error, success) => {
-                    if(success)
-                        console.log('Successfully unsubscribed!');
-                });
-                subscribeBnb && subscribeBnb.unsubscribe((error, success) => {
-                    if(success)
-                        console.log('Successfully unsubscribed!');
-                });
-                subscribeMatic && subscribeMatic.unsubscribe((error, success) => {
-                    if(success)
-                        console.log('Successfully unsubscribed!');
-                });
-            }
-    },[network]);
 
     useEffect(()=>{
         console.log('update Total',network);
@@ -214,19 +119,11 @@ const Wallet = ({route, navigation}) => {
             // console.log('Ethereum value',value);
             totalValue = value;
         }else if(network.name == 'BSC'){
-            // for mainnet
-            // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA) 
-            
-            //for testing
-            let value = parseFloat(bnbBalance)//+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+            let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
             // console.log('BSC value',value);
             totalValue = value;
         }else if(network.name == 'Polygon'){
-            //for mainnet
-            // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-            
-            //for testing
-            let value = parseFloat(maticBalance)//+ parseFloat(balances.USDC)
+            let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
             // console.log('Polygon value',value);
             totalValue = value;
         }
@@ -282,7 +179,6 @@ const Wallet = ({route, navigation}) => {
             ];
 
             Promise.all(balanceRequests).then((responses) => {
-                // console.log('balances',responses);
                 let balances = {
                     ETH: responses[0],
                     BNB: responses[1],
@@ -298,6 +194,10 @@ const Wallet = ({route, navigation}) => {
                 setBalances(balances);
                 setLoading(false);
                 resolve();
+                setSelectedObject({
+                    ...tokens[0],
+                    tokenValue: responses[1]
+                });
             }).catch((err) => {
                 console.log('err', err);
                 setLoading(false);
@@ -316,12 +216,12 @@ const Wallet = ({route, navigation}) => {
                 <View style={styles.gradient}>
 
                     <View style={styles.header}>
-                        <ToggleButtons
-                            labelLeft={translate("wallet.common.tokens")}
-                            labelRight={translate("wallet.common.nfts")} />
+                        <TextView style={styles.title}>{translate("wallet.common.pay")}</TextView>
                         
                         <TouchableOpacity style={styles.networkIcon} hitSlop={{top:10,bottom:10,right:10,left:10}}
-                            onPress={()=>setPickerVisible(true)}>
+                            onPress={()=> {
+                                // setPickerVisible(true)
+                                }}>
                             <Image source={network.icon} style={[CommonStyles.imageStyles(6)]} />
                         </TouchableOpacity>
                     </View>
@@ -332,13 +232,9 @@ const Wallet = ({route, navigation}) => {
                     </View>
                     
                     <View style={[styles.headerBtns, styles.headerBottomCont]} >
-                        <HeaderBtns image={ImagesSrc.send} label={translate("wallet.common.send")}
-                            onPress={() => {
-                                setIsSend(true); setSelectTokenVisible(true)
-                            }} />
                         <HeaderBtns image={ImagesSrc.receive} label={translate("wallet.common.receive")}
                             onPress={() => {
-                                setIsSend(false); setSelectTokenVisible(true)
+                                // setIsSend(false); setSelectTokenVisible(true)
                             }} />
                         <HeaderBtns onPress={() => {}} image={ImagesSrc.topup} label={translate("wallet.common.buy")} />
                     </View>
@@ -349,36 +245,36 @@ const Wallet = ({route, navigation}) => {
                 values={balances}
                 network={network}
                 onTokenPress={(item) => {
-                    navigation.navigate("tokenDetail", { item });
+                    setSelectedObject(item);
                 }}
                 onRefresh={onRefreshToken}
             />
 
-            <AppModal visible={modalVisible} onRequestClose={()=>setModalVisible(false)}>
-                {isSuccessVisible ?
-                    <SuccessModal
-                        onClose={() => setModalVisible(false)}
-                        onDonePress={() => {
-                            setSuccessVisible(false);
-                            setNotificationVisible(true);
-                            dispatch(updateCreateState());
-                        }}
-                    />
-                    : null}
+            <Separator style={styles.separator} />
 
-                {isNotificationVisible ? 
-                    <NotificationActionModal
-                        onClose={() => setModalVisible(false)}
-                        onDonePress={() => {
-                            setModalVisible(false);
-                            if(wallet){
-                                setLoading(true);
-                                getBalances(wallet.address);
-                            }
-                        }}
-                    />
-                    : null}
-            </AppModal>
+            {selectedObject && <View style={styles.totalContainer}>
+                <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
+                <Text style={styles.value}>{selectedObject.type} {selectedObject.tokenValue}</Text>
+            </View>}
+
+            <View style={styles.buttonContainer}>
+                <AppButton
+                    label={translate("wallet.common.next")}
+                    containerStyle={CommonStyles.button}
+                    labelStyle={CommonStyles.buttonLabel}
+                    onPress={() => {
+                        // navigation.navigate("AddCard")
+                        if(selectedObject && selectedObject.tokenValue !== '0'){
+                            navigation.goBack();
+                            dispatch(setPaymentObject({
+                                item: selectedObject,
+                                type: 'wallet'
+                            }));
+                        }
+                    }}
+                    view={paymentObject}
+                />
+            </View>
 
             <NetworkPicker 
                 visible={pickerVisible} 
@@ -387,22 +283,6 @@ const Wallet = ({route, navigation}) => {
                 onItemSelect={(item) => {
                     setNetwork(item);
                     setPickerVisible(false);
-                }}/>
-            
-            <SelectToken 
-                visible={selectTokenVisible} 
-                onRequestClose={setSelectTokenVisible}
-                values={balances}
-                network={network}
-                isSend={isSend}
-                onTokenPress={(item) => {
-                    setSelectTokenVisible(false);
-                    if(isSend){
-                        navigation.navigate("send", { item, type: item.type });
-                    } else {
-                        navigation.navigate("receive", { item, type: item.type });
-                    }
-                    
                 }}/>
 
         </AppBackground>
@@ -419,7 +299,7 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     headerBottomCont: {
-        width: wp("70%"),
+        width: wp("50%"),
         alignSelf: "center",
         paddingTop: hp('1%'),
         paddingBottom: hp('2%'),
@@ -436,13 +316,41 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingVertical: hp("2%")
     },
     networkIcon: {
         position: 'absolute',
         marginRight: wp("4%"),
         right: 0
+    },
+    buttonContainer: {
+        paddingHorizontal: wp("5%"),
+        paddingBottom: 0
+    },
+    totalContainer: {
+        paddingHorizontal: wp("5%"),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: hp("2%")
+    },
+    separator: {
+        width: wp("100%"), 
+        marginVertical: hp("2%")
+    },
+    totalLabel: {
+        fontSize: RF(1.9),
+        fontFamily: Fonts.ARIAL
+    },
+    value: {
+        fontSize: RF(1.9),
+        fontFamily: Fonts.ARIAL_BOLD,
+        color: Colors.themeColor
+    },
+    title: {
+        color: Colors.white,
+        fontSize: RF(1.9)
     }
 });
 
-export default Wallet;
+export default WalletPay;

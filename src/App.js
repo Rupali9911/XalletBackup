@@ -54,6 +54,7 @@ import Cards from './screens/PaymentScreen/cards';
 import BuyGold from './screens/PaymentScreen/buyGold';
 import { translate } from './walletUtils';
 import { screenWidth } from './constants/responsiveFunct';
+import WalletPay from './screens/PaymentScreen/walletPay';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)

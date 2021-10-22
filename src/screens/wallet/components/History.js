@@ -41,7 +41,7 @@ const ListItems = (props) => {
 
 const History = (props) => {
 
-    const {ethTransactions, bnbTransactions, maticTransactions} = useSelector(state => state.WalletReducer);
+    const {ethTransactions, bnbTransactions, maticTransactions, tnftTransactions, talTransactions} = useSelector(state => state.WalletReducer);
 
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
@@ -68,6 +68,10 @@ const History = (props) => {
             return bnbTransactions;
         } else if(coin.type == "Matic"){
             return maticTransactions;
+        } else if(coin.type == "TNFT"){
+            return tnftTransactions;
+        } else if(coin.type == "TAL"){
+            return talTransactions
         }
         return [];
     }

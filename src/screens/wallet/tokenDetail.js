@@ -35,7 +35,7 @@ const TokenDetail = ({ route, navigation }) => {
 
     const {} = route.params;
     const { wallet } = useSelector(state => state.UserReducer);
-    const {ethBalance,bnbBalance,maticBalance} = useSelector(state => state.WalletReducer);
+    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance} = useSelector(state => state.WalletReducer);
     const dispatch = useDispatch();
 
     const isFocused = useIsFocused();
@@ -138,6 +138,14 @@ const TokenDetail = ({ route, navigation }) => {
             let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
             // console.log('Polygon value',value);
             totalValue = value;
+        }else if(item.type == 'TNFT'){
+            let value = parseFloat(tnftBalance) //+ parseFloat(balances.USDC)
+            // console.log('Polygon value',value);
+            totalValue = value;
+        }else if(item.type == 'TAL'){
+            let value = parseFloat(talBalance) //+ parseFloat(balances.USDC)
+            // console.log('Polygon value',value);
+            totalValue = value;
         }
         return totalValue;
     }
@@ -192,7 +200,6 @@ const TokenDetail = ({ route, navigation }) => {
             });
         });
     }
-
     return (
         <AppBackground hideSafeArea lightStatus isBusy={loading}>
             <GradientBackground>

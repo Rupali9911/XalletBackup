@@ -53,9 +53,11 @@ const Tokens = (props) => {
     useEffect(()=>{
         if(props.values){
             let array = tokens;
-            array[0].tokenValue = `${props.values.ETH}`;
-            array[1].tokenValue = `${props.values.BNB}`;
+            array[0].tokenValue = `${props.values.BNB}`;
+            array[1].tokenValue = `${props.values.ETH}`;
             array[2].tokenValue = `${props.values.Matic}`;
+            array[3].tokenValue = `${props.values.TNFT}`;
+            array[4].tokenValue = `${props.values.TAL}`;
             // array[3].tokenValue = `${props.values.BUSD}`;
             // array[4].tokenValue = `${props.values.USDC}`;
             // array[5].tokenValue = `${props.values.USDT}`;
@@ -78,7 +80,7 @@ const Tokens = (props) => {
     return (
         <View style={[styles.scene]} >
             <FlatList
-                data={balance_Data.filter((_) => _.network == network.name)}
+                data={network ? balance_Data.filter((_) => _.network == network.name) : balance_Data}
                 renderItem={({ item }) => {
                     return (
                         <ListItems item={item} onPress={props.onTokenPress}/>
