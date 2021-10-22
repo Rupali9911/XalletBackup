@@ -614,6 +614,7 @@
         "common": {
             "error": {
                 "invalidPhrase": "無効なフレーズ",
+                "networkFailed": "ネットワーク要求に失敗しました",
                 "noImage": "表示する画像がありません",
                 "fieldRequired": "この項目は必須です!",
                 "emailRequired": "メールフィールドは必須です!",
@@ -795,6 +796,7 @@
             "payByWallet": "ウォレットで支払う",
             "payByGold": "ゴールドで支払う（アプリ内）",
             "totalAmount": "合計金額",
+            "totalAmountToPay": "支払額合計",
             "me": "設定",
             "alert": "確認",
             "legalHint1": "XANAウォレットの利用規約と",

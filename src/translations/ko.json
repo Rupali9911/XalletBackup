@@ -612,6 +612,7 @@
         "common": {
             "error": {
                 "invalidPhrase": "잘못된 구문",
+                "networkFailed": "네트워크 요청 실패",
                 "noImage": "표시할 이미지 없음",
                 "fieldRequired": "이 필드는 필수입니다!",
                 "emailRequired": "이메일 입력란이 필요합니다!",
@@ -793,6 +794,8 @@
             "payByWallet": "지갑을 통해 지불",
             "payByGold": "골드로 지불(인앱)",
             "totalAmount": "총액",
+            "totalAmountToPay": "지불할 총 금액",
+
             "me": "저",
             "alert": "Xanalia",
             "legalHint1": "서비스 약관 및 개인 정보 보호 를 주의 깊게 읽으십시오.",
