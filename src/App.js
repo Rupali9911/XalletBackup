@@ -206,6 +206,7 @@ const AppRoutes = () => {
                     <Stack.Screen name='ChangePassword' component={ChangePassword} />
                     <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
                     <Stack.Screen name='PasscodeScreen' component={PasscodeScreen} />
+                    <Stack.Screen name='WalletPay' component={WalletPay} />
                   </Stack.Navigator>
                   :
                   <Stack.Navigator headerMode="none">

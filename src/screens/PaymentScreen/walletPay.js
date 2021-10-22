@@ -66,6 +66,7 @@ const WalletPay = ({route, navigation}) => {
     const [selectedObject, setSelectedObject] = useState(null);
 
     useEffect(()=>{
+        console.log('useEffect')
         if(wallet && !isCreate && isFocused){
             setLoading(true);
             getBalances(wallet.address);
@@ -217,7 +218,7 @@ const WalletPay = ({route, navigation}) => {
 
                     <View style={styles.header}>
                         <TextView style={styles.title}>{translate("wallet.common.pay")}</TextView>
-                        
+
                         <TouchableOpacity style={styles.networkIcon} hitSlop={{top:10,bottom:10,right:10,left:10}}
                             onPress={()=> {
                                 // setPickerVisible(true)
@@ -230,7 +231,7 @@ const WalletPay = ({route, navigation}) => {
                         <PriceText price={setBalanceField()} isWhite containerStyle={styles.priceCont} />
                         <TextView style={styles.balanceLabel}>{translate("wallet.common.mainWallet")}</TextView>
                     </View>
-                    
+
                     <View style={[styles.headerBtns, styles.headerBottomCont]} >
                         <HeaderBtns image={ImagesSrc.receive} label={translate("wallet.common.receive")}
                             onPress={() => {
@@ -276,8 +277,8 @@ const WalletPay = ({route, navigation}) => {
                 />
             </View>
 
-            <NetworkPicker 
-                visible={pickerVisible} 
+            <NetworkPicker
+                visible={pickerVisible}
                 onRequestClose={setPickerVisible}
                 network={network}
                 onItemSelect={(item) => {
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
     gradient: {
     },
     priceCont:{
-        
+
     },
     headerBtns: {
         flexDirection: "row"
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
         marginBottom: hp("2%")
     },
     separator: {
-        width: wp("100%"), 
+        width: wp("100%"),
         marginVertical: hp("2%")
     },
     totalLabel: {
