@@ -311,8 +311,6 @@
         "NFTID": "NFT ID",
         "BidingEndTime": "입찰 종료 시간 ",
         "addNewItem": "새 항목 추가 ",
-        "firstName": "이름",
-        "lastName": "성 ",
         "address": "주소 ",
         "phoneNumber": "전화 번호",
         "signup": "가입하기",
@@ -812,7 +810,10 @@
             "confirmDeleteCard": "이 카드를 삭제하시겠습니까?",
             "balanceAmount": "잔액",
             "paste": "붙여 넣기",
-            "myPage": "나의 페이지"
+            "myPage": "나의 페이지",
+            "firstName": "이름",
+            "lastName": "성",
+            "aboutMe": "나에 대해서"
         },
         "backendmessage": {
             "error": {},

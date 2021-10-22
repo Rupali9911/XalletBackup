@@ -311,8 +311,6 @@
         "NFTID": "NFT ID",
         "BidingEndTime": "投标结束时间 ",
         "addNewItem": "添加新项目",
-        "firstName": "名 ",
-        "lastName": "姓 ",
         "address": "地址 ",
         "phoneNumber": "电话号码 ",
         "signup": "报名 ",
@@ -812,7 +810,10 @@
             "confirmDeleteCard": "您确定要移除这张卡吗？",
             "balanceAmount": "余额",
             "paste": "粘贴",
-            "myPage": "我的页面"
+            "myPage": "我的页面",
+            "firstName": "名 ",
+            "lastName": "姓 ",
+            "aboutMe": "关于我"
         },
         "backendmessage": {
             "error": {},

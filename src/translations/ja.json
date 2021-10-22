@@ -311,8 +311,8 @@
         "NFTID": "NFT ID",
         "BidingEndTime": "入札期限",
         "addNewItem": "新アイテムを作成してください",
-        "firstName": "名",
-        "lastName": "姓",
+        "firstName": "お名前（名",
+        "lastName": "お名前（姓",
         "address": "住所",
         "phoneNumber": "電話番号",
         "signup": "サインアップ",
@@ -812,7 +812,10 @@
             "confirmDeleteCard": "このカードを削除したいでしょうか？",
             "balanceAmount": "残高",
             "paste": "貼り付け",
-            "myPage": "マイページ"
+            "myPage": "マイページ",
+            "firstName": "お名前（名)",
+            "lastName": "お名前（姓)",
+            "aboutMe": "その他 / 基本情報"
         },
         "backendmessage": {
             "error": {},

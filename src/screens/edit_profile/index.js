@@ -169,7 +169,7 @@ function Profile({
                         </TouchableOpacity>
                     </HeaderLeft>
                     <HeaderText>
-                        {translate("common.editprofile")}
+                        {translate("wallet.common.profileSettings")}
                     </HeaderText>
                     <HeaderRight>
                         <TouchableOpacity onPress={onSave}>
@@ -225,25 +225,25 @@ function Profile({
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {translate("common.firstName")}
+                                {translate("wallet.common.firstName")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={firstName}
                             onChangeText={setFirstName}
-                            placeholder={translate("common.firstName")} />
+                            placeholder={translate("wallet.common.firstName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {translate("common.lastName")}
+                                {translate("wallet.common.lastName")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={lastName}
                             onChangeText={setLastName}
-                            placeholder={translate("common.lastName")} />
+                            placeholder={translate("wallet.common.lastName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
@@ -346,7 +346,7 @@ function Profile({
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {translate("common.About")}
+                                {translate("wallet.common.aboutMe")}
                             </NormalText>
                         </RowWrap>
                     </RowBetweenWrap>
@@ -357,7 +357,7 @@ function Profile({
                             value={about}
                             onChangeText={setAbout}
                             multiline
-                            placeholder={translate("common.About")} />
+                            placeholder={translate("wallet.common.aboutMe")} />
                     </RowWrap>
 
                     <ActionSheet

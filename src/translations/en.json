@@ -311,8 +311,6 @@
         "NFTID": "NFT ID",
         "BidingEndTime": "Biding End Time",
         "addNewItem": "Add New Item",
-        "firstName": "First Name",
-        "lastName": "Last Name",
         "address": "Address",
         "phoneNumber": "Phone Number",
         "signup": "Sign Up",
@@ -812,7 +810,10 @@
             "confirmDeleteCard": "Are you sure you want to remove this card?",
             "balanceAmount": "Balance Amount",
             "paste": "Paste",
-            "myPage": "My Page"
+            "myPage": "My Page",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "aboutMe": "About Me"
         },
         "backendmessage": {
             "error": {},
