@@ -38,7 +38,8 @@ export const newNFTList = (page, limit) => {
 
         dispatch(newNftLoadStart());
 
-        let accountKey = getState().AuthReducer.accountKey;
+        const { data } = getState().UserReducer;
+        let user = data.user;
 
         let body_data = {
             page,
@@ -50,8 +51,8 @@ export const newNFTList = (page, limit) => {
             approveStaus: "approve"
         }
 
-        if (accountKey) {
-            body_data.owner = accountKey;
+        if (user) {
+            body_data.owner = user._id;
         }
 
         let fetch_data_body = {

@@ -811,7 +811,8 @@
             },
             "confirmDeleteCard": "您确定要移除这张卡吗？",
             "balanceAmount": "余额",
-            "paste": "粘贴"
+            "paste": "粘贴",
+            "myPage": "我的页面"
         },
         "backendmessage": {
             "error": {},

@@ -13,6 +13,7 @@ import HintText from '../../components/hintText';
 import ButtonGroup from '../../components/buttonGroup';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
+import { SIZE } from 'src/constants';
 
 const Backup = ({ route, navigation }) => {
 
@@ -33,7 +34,7 @@ const Backup = ({ route, navigation }) => {
                     <HintText style={styles.hint}>{translate("wallet.common.phraseHint")}</HintText>
                     <View style={styles.imgContainer}>
                         <ImageBackground style={styles.img} source={ImagesSrc.backupImg}>
-                            <Image source={ImagesSrc.backupLoaderImg} style={{ ...CommonStyles.imageStyles(18) }} />
+                            <Image source={ImagesSrc.backupLoaderImg} style={{ ...CommonStyles.imageStyles(16.8), marginRight: SIZE(5) }} />
                         </ImageBackground>
 
                     </View>

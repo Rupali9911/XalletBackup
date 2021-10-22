@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import {
     TouchableOpacity,
-    Image,
+    View,
+    SafeAreaView,
 } from 'react-native';
 import {
     Header,
@@ -58,18 +59,18 @@ function Profile({
 
     const { UserReducer } = useSelector(state => state);
     const [loading, setLoading] = useState(false);
-    const [username, setUserName] = useState(UserReducer.data.user.username);
+    const [username, setUserName] = useState(UserReducer.data.user.name || UserReducer.data.user.username);
     const [title, setTitle] = useState(UserReducer.data.user.title);
     const [firstName, setFirstName] = useState(UserReducer.data.user.firstName);
     const [lastName, setLastName] = useState(UserReducer.data.user.lastName);
     const [address, setAddress] = useState(UserReducer.data.user.address);
     const [phoneNumber, setPhoneNumber] = useState(UserReducer.data.user.phoneNumber);
     const [email, setEmail] = useState(UserReducer.data.user.email);
-    const [website, setWebsite] = useState(UserReducer.data.user.website);
-    const [facebook, setFacebook] = useState(UserReducer.data.user.facebook);
-    const [twitter, setTwitter] = useState(UserReducer.data.user.twitter);
-    const [youtube, setYoutube] = useState(UserReducer.data.user.youtube);
-    const [instagram, setInstagram] = useState(UserReducer.data.user.instagram);
+    const [website, setWebsite] = useState(UserReducer.data.user.links && UserReducer.data.user.links.website);
+    const [facebook, setFacebook] = useState(UserReducer.data.user.links && UserReducer.data.user.links.facebook);
+    const [twitter, setTwitter] = useState(UserReducer.data.user.links && UserReducer.data.user.links.twitter);
+    const [youtube, setYoutube] = useState(UserReducer.data.user.links && UserReducer.data.user.links.youtube);
+    const [instagram, setInstagram] = useState(UserReducer.data.user.links && UserReducer.data.user.links.instagram);
     const [about, setAbout] = useState(UserReducer.data.user.about);
     const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
     const actionSheetRef = useRef(null);
@@ -160,7 +161,7 @@ function Profile({
 
     return (
         <AppBackground hideSafeArea lightStatus isBusy={loading}>
-            <Container>
+            <SafeAreaView style={{ flex: 1 }}>
                 <Header>
                     <HeaderLeft>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -178,7 +179,7 @@ function Profile({
                         </TouchableOpacity>
                     </HeaderRight>
                 </Header>
-                <KeyboardAwareScrollView>
+                <KeyboardAwareScrollView flex={1}>
                     <CenterWrap>
                         <SpaceView mTop={SIZE(10)} />
                         <Avatar>
@@ -212,73 +213,73 @@ function Profile({
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Artist Name'}
+                                {translate("common.artistname")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={title}
                             onChangeText={setTitle}
-                            placeholder={'Artist Name'} />
+                            placeholder={translate("common.artistname")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'First Name'}
+                                {translate("common.firstName")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={firstName}
                             onChangeText={setFirstName}
-                            placeholder={'First Name'} />
+                            placeholder={translate("common.firstName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Last Name'}
+                                {translate("common.lastName")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={lastName}
                             onChangeText={setLastName}
-                            placeholder={'Last Name'} />
+                            placeholder={translate("common.lastName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Address'}
+                                {translate("common.address")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={address}
                             onChangeText={setAddress}
-                            placeholder={'Address'} />
+                            placeholder={translate("common.address")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'PhoneNumber'}
+                                {translate("common.phoneNumber")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={phoneNumber}
                             onChangeText={setPhoneNumber}
-                            placeholder={'PhoneNumber'} />
+                            placeholder={translate("common.phoneNumber")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Email Address'}
+                                {translate("common.email")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={email}
                             onChangeText={setEmail}
-                            placeholder={'Email Address'} />
+                            placeholder={translate("common.email")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
@@ -296,56 +297,56 @@ function Profile({
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Facebook'}
+                                {translate("common.facebook")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={facebook}
                             onChangeText={setFacebook}
-                            placeholder={'Facebook'} />
+                            placeholder={translate("common.facebook")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Twitter'}
+                                {translate("common.twitter")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={twitter}
                             onChangeText={setTwitter}
-                            placeholder={'Twitter'} />
+                            placeholder={translate("common.twitter")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'YouTube'}
+                                {translate("common.youtube")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={youtube}
                             onChangeText={setYoutube}
-                            placeholder={'YouTube'} />
+                            placeholder={translate("common.youtube")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'Instagram'}
+                                {translate("common.instagram")}
                             </NormalText>
                         </RowWrap>
                         <EditableInput
                             value={instagram}
                             onChangeText={setInstagram}
-                            placeholder={'Instagram'} />
+                            placeholder={translate("common.instagram")} />
                     </RowBetweenWrap>
                     <SpaceView mTop={SIZE(12)} />
                     <RowBetweenWrap>
                         <RowWrap>
                             <SpaceView mLeft={SIZE(19)} />
                             <NormalText>
-                                {'About me'}
+                                {translate("common.About")}
                             </NormalText>
                         </RowWrap>
                     </RowBetweenWrap>
@@ -356,18 +357,19 @@ function Profile({
                             value={about}
                             onChangeText={setAbout}
                             multiline
-                            placeholder={'About me'} />
+                            placeholder={translate("common.About")} />
                     </RowWrap>
-                </KeyboardAwareScrollView>
 
-                <ActionSheet
-                    ref={actionSheetRef}
-                    title={'Choose Photo'}
-                    options={['Take Photo...', 'Choose Photo from Gallery...', 'Cancel']}
-                    cancelButtonIndex={2}
-                    onPress={selectActionSheet}
-                />
-            </Container></AppBackground>
+                    <ActionSheet
+                        ref={actionSheetRef}
+                        title={'Choose Photo'}
+                        options={['Take Photo...', 'Choose Photo from Gallery...', 'Cancel']}
+                        cancelButtonIndex={2}
+                        onPress={selectActionSheet}
+                    />
+                </KeyboardAwareScrollView>
+            </SafeAreaView>
+        </AppBackground>
     )
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Alert, FlatList, TouchableOpacity } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Colors from '../../constants/Colors';
@@ -15,6 +15,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import Separator from '../../components/separator';
+import IAP from 'react-native-iap';
+
+const productIds = ['com.xanalia.point500']
 
 export const PaymentField = (props) => {
 
@@ -41,9 +44,23 @@ const BuyGold = ({route, navigation}) => {
 
     const dispatch = useDispatch();
     const {wallet} = useSelector(state => state.UserReducer);
+    const [user, setUser] = useState({
+        name: 'Jonas',
+        subscription: undefined
+    });
+    const [products, setProducts] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [amount, setAmount] = useState('');
+
+    useEffect(() => {
+        IAP.getProducts(productIds).then(res => {
+            // setProducts(res);
+        })
+        .catch(err => {
+            console.log(err)
+        });
+    }, [])
 
     const showErrorAlert = (msg) => {
         Alert.alert(msg);

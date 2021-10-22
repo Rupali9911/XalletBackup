@@ -15,7 +15,7 @@ const initialState = {
     loading: false,
     wallet: null,
     isCreate: false,
-    data: null,
+    data: {},
     passcode: ""
 };
 

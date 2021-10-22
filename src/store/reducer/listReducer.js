@@ -26,7 +26,7 @@ export default function ListReducer(state = initialState, action) {
             return state = { ...state, nftList: [...state.nftList, ...action.payload.data], totalCount: action.payload.count , nftListLoading: false };
 
         case NFT_LIST_UPDATE:
-            return state = { ...state, nftList: [...action.payload.data] };
+            return state = { ...state, nftList: [...action.payload] };
 
         case NFT_LIST_RESET:
             return state = { ...state, nftList: [] };
