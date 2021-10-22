@@ -170,7 +170,7 @@ const Cards = ({ route, navigation }) => {
                             navigation.goBack();
                         }
                     }}
-                    view={myCards.length == 0}
+                    view={myCards.length == 0 || !defaultCard}
                 />
             </View>
 
