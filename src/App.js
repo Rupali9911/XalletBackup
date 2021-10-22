@@ -136,11 +136,11 @@ const TabComponent = () => {
 
 const AppRoutes = () => {
 
-  const { wallet, passcode, loading } = useSelector(state => state.UserReducer);
+  const { wallet, passcode } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
-  // const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
 
   setI18nConfig(selectedLanguageItem.language_name);
 
@@ -166,7 +166,7 @@ const AppRoutes = () => {
       let item = languageArray.find(item => item.language_name == regionLanguage);
       dispatch(setAppLanguage(item));
     }
-    // setLoading(false);
+    setLoading(false);
 
   }, []);
 
