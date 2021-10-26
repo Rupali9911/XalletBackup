@@ -17,6 +17,9 @@ import Fonts from '../../constants/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
+import { openSettings } from 'react-native-permissions';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
 
 const listData = [
     {
@@ -34,9 +37,9 @@ const listData = [
 ];
 
 const ListItems = (props) => {
-    const {item} = props;
+    const { item } = props;
     return (
-        <TouchableOpacity onPress={()=>props.onPress && props.onPress(item)} style={styles.listCont} >
+        <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
                 <Image style={styles.profileImage} source={item.icon} />
             </View>
@@ -50,29 +53,47 @@ const ListItems = (props) => {
     )
 }
 
-const Connect = ({route, navigation}) => {
+const Connect = ({ route, navigation }) => {
+
+    const onCheckPermission = async () => {
+        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        if (!isGranted) {
+            confirmationAlert(
+                'This feature requires camera access',
+                'To enable access, tap Settings and turn on Camera.',
+                'Cancel',
+                'Settings',
+                () => openSettings(),
+                () => null
+            )
+        } else {
+            navigation.navigate("scanToConnect");
+        }
+    }
+
     return (
         <AppBackground>
-            <AppHeader 
+            <AppHeader
                 title={translate("wallet.common.connect")}
-                titleStyle={styles.screenTitle}/>
+                titleStyle={styles.screenTitle} />
             <View style={styles.container}>
                 <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}</TextView>
-                
+
                 <View style={styles.list}>
-                    <FlatList 
+                    <FlatList
                         data={listData}
-                        renderItem={({item, index})=>{
-                            return <ListItems item={item}/>
+                        renderItem={({ item, index }) => {
+                            return <ListItems item={item} />
                         }}
                         keyExtractor={(v, i) => "item_" + i}
-                        />
+                    />
                 </View>
 
-                <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
-                    onPress={() => {
-                        navigation.navigate("scanToConnect");
-                    }} />
+                <AppButton
+                    label={translate("wallet.common.newConnection")}
+                    containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
+                    onPress={onCheckPermission}
+                />
             </View>
         </AppBackground>
     );

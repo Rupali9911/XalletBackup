@@ -44,8 +44,8 @@ function ScanToConnect({ route, navigation }) {
     };
 
     return (
-        <AppBackground 
-            safeAreaColor={Colors.black}  
+        <AppBackground
+            safeAreaColor={Colors.black}
             lightStatus>
 
             <AppHeader
@@ -56,10 +56,10 @@ function ScanToConnect({ route, navigation }) {
             />
 
             <QRCodeScanner
-                ref={(scanner)=>refScanner=scanner}
+                ref={(scanner) => refScanner = scanner}
                 onRead={onSuccess}
                 showMarker={true}
-                customMarker={<TouchableOpacity disabled style={{zIndex: 1000, bottom: hp('15%')}} >
+                customMarker={<TouchableOpacity disabled style={{ zIndex: 1000, bottom: hp('15%') }} >
                     <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
                 </TouchableOpacity>}
                 cameraStyle={styles.qrCameraStyle}
