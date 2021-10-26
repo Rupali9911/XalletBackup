@@ -350,7 +350,8 @@ function Profile({
             <AppHeader
                 title={translate("wallet.common.myPage")}
                 showRightButton
-                rightButtonComponent={ <Text style={styles.headerTitle} >{translate("wallet.common.settingRight")}</Text>}
+                // rightButtonComponent={ <Text style={styles.headerTitle} >{translate("wallet.common.settingRight")}</Text>}
+                rightButtonComponent={ <SettingIcon width={SIZE(23)} height={SIZE(23)} />}
                 onPressRight={() => navigation.navigate('Setting', { connector: connector })}
             />
             {/* <Header>
