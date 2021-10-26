@@ -140,6 +140,7 @@ android {
         versionCode 1
         versionName "1.10.22"
         missingDimensionStrategy 'react-native-camera', 'general'
+        missingDimensionStrategy 'store', 'play'
     }
     splits {
         abi {

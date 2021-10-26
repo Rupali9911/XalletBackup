@@ -40,6 +40,7 @@ function AddCard({ route, navigation }) {
     const [city, setCity] = useState("");
     const [zipcode, setZipcode] = useState("");
     const [isDefault, setDefault]= useState(false);
+    const [loading, setLoading] = useState(false);
 
     const isValidCardNumber = () => {
         if(cardNumber.length == 0){
@@ -196,6 +197,7 @@ function AddCard({ route, navigation }) {
     }
 
     const getCardToken = () => {
+        setLoading(true);
         const body = {
             "card[number]": cardNumber,
             "card[exp_month]": expDate.split('/')[0],
@@ -220,12 +222,14 @@ function AddCard({ route, navigation }) {
                     translate("wallet.common.alert"),
                     translate(`wallet.common.stripeError.${response.error.code}`)
                 )
+                setLoading(false);
             }
         }).catch((err)=>{
             console.log(err);
             if(err.error){
                 console.log("error_code1",response.error.code)
             }
+            setLoading(false);
         });
     }
 
@@ -244,12 +248,13 @@ function AddCard({ route, navigation }) {
 
         dispatch(addCard(data.token, params)).then((response)=>{
             console.log('response',response);
+            setLoading(false);
             if(response.success){
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
-                    response.msg_key?translate(response.msg_key):response.data.message
+                    response.msg_key?translate(response.msg_key):response.data.message,
+                    () => navigation.goBack()
                 )
-                navigation.goBack();
             }else{
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
@@ -267,7 +272,7 @@ function AddCard({ route, navigation }) {
     }
 
     return (
-        <AppBackground>
+        <AppBackground isBusy={loading}>
             <AppHeader
                 showBackButton={true}
                 title={translate("wallet.common.topup.addCardDetails")}

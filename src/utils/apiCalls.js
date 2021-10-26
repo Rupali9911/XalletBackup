@@ -1,3 +1,6 @@
+import { alertWithSingleBtn } from '../utils';
+import { translate } from '../walletUtils';
+
 export const ApiCalls = async (url, method, body, headers) => {
 
     const requestOptions = {
@@ -30,8 +33,13 @@ export const ApiCalls = async (url, method, body, headers) => {
                 resolve({ response })
             })
             .catch(error => {
-                reject(error)
-                alert(error)
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    translate("wallet.common.error.networkFailed"),
+                    () => {
+                        console.log(e);
+                    }
+                );
             });
 
     })

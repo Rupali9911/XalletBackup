@@ -62,7 +62,9 @@ const DetailScreen = ({ route, navigation }) => {
         price,
         chain,
         ownerId,
-        tokenId
+        tokenId,
+        ownerData,
+        artistData
     } = route.params;
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPaymentNow, setShowPaymentNow] = useState(false);
@@ -78,6 +80,7 @@ const DetailScreen = ({ route, navigation }) => {
     const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState("");
     const [auctionETime, setAuctionETime] = useState('');
     const [connectedWithTo, setConnectedWithTo] = useState('');
+    const [buyLoading, setBuyLoading] = useState(false);
 
     //#region SmartContract
     let MarketPlaceAbi = "";
@@ -120,6 +123,7 @@ const DetailScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         console.log('tokenId', tokenId);
+        setBuyLoading(true);
         checkNFTOnAuction();
         getNonCryptoNFTOwner();
         if (data.token) {
@@ -154,7 +158,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods
             .getSellDetail(_tokenId)
             .call((err, res) => {
-                console.log('res', res);
+                console.log('checkNFTOnAuction_res',res);
                 if (!err) {
                     if (parseInt(res[5]) * 1000 > 0) {
                         setAuctionVariables(
@@ -202,6 +206,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods.ownerOf(_tokenId).call((err, res) => {
             if (!err) {
                 _data.owner_address = res;
+                console.log('owner_address', res, _tokenId);
                 MarketPlaceContract.methods.getSellDetail(_tokenId).call((err, res) => {
                     console.log('MarketPlaceContract_res', res, err, _tokenId, MarketContractAddress);
                     // return ;
@@ -267,9 +272,11 @@ const DetailScreen = ({ route, navigation }) => {
                             }
                         }
                     }
+                    setBuyLoading(false);
                 });
             } else {
                 //console.log("err getAuthor", err);
+                setBuyLoading(false);
             }
         });
     }
@@ -284,6 +291,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods.ownerOf(_tokenId).call((err, res) => {
             if (!err) {
                 _data.owner_address = res;
+                console.log('owner_address', res);
                 MarketPlaceContract.methods.getSellDetail(_tokenId).call((err, res) => {
                     console.log('MarketPlaceContract_res', res, err, _tokenId);
                     if (!err) {
@@ -325,9 +333,11 @@ const DetailScreen = ({ route, navigation }) => {
                             }
                         }
                     }
+                    setBuyLoading(false);
                 });
             } else {
                 //console.log("err getAuthor", err);
+                setBuyLoading(false);
             }
         });
     }
@@ -381,6 +391,30 @@ const DetailScreen = ({ route, navigation }) => {
         }
         console.log('_nftStatus', _nftStatus, priceNFT, isContractOwner, isOwner, isNFTOnAuction);
         return _nftStatus;
+    }
+
+    const onProfile = (isOwner) => {
+        if (isOwner) {
+            if (ownerData) {
+                navigation.navigate('ArtistDetail', { data: ownerData });
+            } else {
+                navigation.navigate('ArtistDetail', {
+                    data: {
+                        id: owner,
+                    }
+                });
+            }
+        } else {
+            if (artistData) {
+                navigation.navigate('ArtistDetail', { data: artistData });
+            } else {
+                navigation.navigate('ArtistDetail', {
+                    data: {
+                        id: creator,
+                    }
+                });
+            }
+        }
     }
 
     return (
@@ -452,7 +486,9 @@ const DetailScreen = ({ route, navigation }) => {
                         {name}
                     </Text>
                     <View style={styles.person}>
-                        <View style={styles.personType}>
+                        <TouchableOpacity
+                            onPress={() => onProfile(true)}
+                            style={styles.personType}>
                             <Image style={styles.iconsImage} source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }} />
                             <View>
                                 <Text style={styles.personTypeText}>
@@ -462,8 +498,10 @@ const DetailScreen = ({ route, navigation }) => {
                                     {owner}
                                 </Text>
                             </View>
-                        </View>
-                        <View style={styles.personType}>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => onProfile(false)}
+                            style={styles.personType}>
                             <Image style={styles.iconsImage} source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }} />
                             <View>
                                 <Text style={styles.personTypeText}>
@@ -473,7 +511,7 @@ const DetailScreen = ({ route, navigation }) => {
                                     {creator}
                                 </Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                     <Text style={styles.description}>
                         {description}
@@ -515,41 +553,46 @@ const DetailScreen = ({ route, navigation }) => {
                         </Text>
                     </View>
                     <GroupButton
-                        leftText={
-                            setNFTStatus() === 'onSell' ? translate("common.cancelSell")
-                                : setNFTStatus() === 'sell' ? translate("common.sell")
-                                    : setNFTStatus() === 'buy' ? translate("common.buy")
-                                        : setNFTStatus() === 'notOnSell' ? translate("common.soonOnSell")
-                                            : translate("common.buy")
-                        }
-                        rightText={translate("wallet.common.offerPrice")}
-                        leftDisabled={setNFTStatus() === ''}
-                        onLeftPress={() => {
-                            // navigation.navigate('WalletConnect')
-                            // if(price && price > 0){
-                            if (setNFTStatus() === 'buy') {
-                                setShowPaymentMethod(true);
+                            leftText={
+                                setNFTStatus() === 'onSell' ? translate("common.cancelSell")
+                                    : setNFTStatus() === 'sell' ? translate("common.sell")
+                                        : setNFTStatus() === 'buy' ? translate("common.buy")
+                                            : setNFTStatus() === 'notOnSell' ? translate("common.soonOnSell")
+                                                : translate("common.buy")
                             }
-                            // }
-                        }}
-                        leftHide={setNFTStatus() === undefined}
-                        onRightPress={() => navigation.navigate('MakeBid')}
-                    />
+                            rightText={translate("wallet.common.offerPrice")}
+                            leftDisabled={setNFTStatus() === ''}
+                            leftLoading={buyLoading}
+                            onLeftPress={() => {
+                                console.log('priceOfNft',priceNFT);
+                                if(buyLoading)return;
+                                // navigation.navigate('WalletConnect')
+                                // if(price && price > 0){
+                                    if(setNFTStatus() === 'buy'){
+                                        setShowPaymentMethod(true);
+                                    }
+                                // }
+                            }}
+                            leftHide={setNFTStatus() === undefined}
+                            onRightPress={() => navigation.navigate('MakeBid')}
+                        />
                 </View>
             </SafeAreaView>
-            <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} onRequestClose={() => setShowPaymentMethod(false)} />
+            <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} chain={chain} onRequestClose={() => setShowPaymentMethod(false)} />
             <PaymentNow
                 visible={showPaymentNow}
                 price={price ? price : 0}
                 chain={chain}
                 NftId={_tokenId}
                 ownerId={ownerId}
+                lastBidAmount={priceNFT}
                 onRequestClose={() => {
                     dispatch(setPaymentObject(null));
                     setShowPaymentNow(false)
                 }}
                 onPaymentDone={() => {
                     dispatch(setPaymentObject(null));
+                    setBuyLoading(true);
                     getNonCryptoNFTOwner();
                     setShowPaymentNow(false);
                 }} />

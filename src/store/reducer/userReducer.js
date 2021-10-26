@@ -5,16 +5,20 @@ import {
     AUTH_LOADING_START,
     AUTH_LOADING_END,
     UPDATE_CREATE,
-    UPDATE_PROFILE
+    UPDATE_PROFILE,
+    SET_PASSCODE
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../common/function';
 
 const initialState = {
     loading: false,
     wallet: null,
     isCreate: false,
-    data: null
+    data: {},
+    passcode: ""
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -29,6 +33,13 @@ export default UserReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
+            };
+
+        case SET_PASSCODE:
+            return {
+                ...state,
+                passcode: action.payload,
+                loading: true
             };
 
         case AUTH_SUCCESS:
@@ -76,6 +87,11 @@ export const upateUserData = (data) => ({
     payload: data
 })
 
+export const setPasscode = (data) => ({
+    type: SET_PASSCODE,
+    payload: data
+})
+
 export const startLoader = () => (dispatch) =>
     new Promise((resolve, reject) => {
         dispatch(startLoading());
@@ -90,40 +106,47 @@ export const endLoader = () => (dispatch) =>
         resolve();
     });
 
-export const loadFromAsync = () => (dispatch) =>
-    new Promise(async (resolve, reject) => {
-        dispatch(startLoading());
-        const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
-        const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
+export const loadFromAsync = () => async (dispatch) => {
+    const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
+    const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
+    // console.log(wallet, userData)
+    if (wallet && userData) {
+        dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
+        const _wallet = JSON.parse(wallet);
+        let req_data = {
+            owner: _wallet.address,
+            token: 'HubyJ*%qcqR0'
+        };
 
-        if (wallet && userData) {
-            dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
-            const _wallet = JSON.parse(wallet);
-            let req_data = {
-                owner: _wallet.address,
-                token: 'HubyJ*%qcqR0'
-            };
-
-            let body = {
-                method: 'POST',
-                body: JSON.stringify(req_data),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
+        let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
             }
-            fetch(`${BASE_URL}/xanalia/getProfile`, body)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.data) {
-                        dispatch(upateUserData(res.data));
-                    }
-                });
-        } else {
-            dispatch(endLoading());
         }
-        resolve();
-    });
+        fetch(`${BASE_URL}/xanalia/getProfile`, body)
+            .then(response => response.json())
+            .then(res => {
+                if (res.data) {
+                    dispatch(upateUserData(res.data));
+                }
+            })
+            .catch(e => {
+                dispatch(endLoading());
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    translate("wallet.common.error.networkFailed"),
+                    () => {
+                        console.log(e);
+                    }
+                );
+            })
+    } else {
+        dispatch(endLoading());
+    }
+}
 
 export const setUserAuthData = (data, isCreate = false) => (dispatch) =>
     new Promise(async (resolve, reject) => {

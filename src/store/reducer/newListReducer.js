@@ -30,7 +30,7 @@ export default function NewNFTListReducer(state = initialState, action) {
             return state = { ...state, newNftList: [] };
 
         case NEW_NFT_LIST_UPDATE:
-            return state = { ...state, newNftList: [...action.payload.data] };
+            return state = { ...state, newNftList: [...action.payload] };
 
         case NEW_PAGE_CHANGE:
             return state = { ...state, newListPage: action.payload };

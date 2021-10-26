@@ -46,8 +46,8 @@ const SelectToken = (props) => {
     useEffect(() => {
         if (props.values) {
             let array = tokens;
-            array[0].tokenValue = `${props.values.ETH}`;
-            array[1].tokenValue = `${props.values.BNB}`;
+            array[0].tokenValue = `${props.values.BNB}`;
+            array[1].tokenValue = `${props.values.ETH}`;
             array[2].tokenValue = `${props.values.Matic}`;
             // array[3].tokenValue = `${props.values.BUSD}`;
             // array[4].tokenValue = `${props.values.USDC}`;

@@ -18,6 +18,7 @@ import { translate } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
 import { useNavigation } from '@react-navigation/native';
+import { BlurView } from "@react-native-community/blur";
 
 const NotEnoughGold = (props) => {
 
@@ -38,39 +39,47 @@ const NotEnoughGold = (props) => {
                 onRequestClose();
             }}>
             <View style={[styles.container, { backgroundColor: Colors.whiteOpacity(opacity) }]}>
-                <TouchableOpacity style={styles.emptyArea} onPress={() => {
-                    // setOpacity(0);
-                    onRequestClose();
-                }}>
-                    <View style={styles.contentContainer}>
-                        <TouchableOpacity onPress={() => {
-                            // setOpacity(0);
-                            onRequestClose();
-                        }}>
-                            <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} resizeMode={'contain'}/>
-                        </TouchableOpacity>
+                <BlurView
+                    style={styles.absolute}
+                    blurType="light"
+                    blurAmount={10}
+                >
+                    <TouchableOpacity style={styles.emptyArea} onPress={() => {
+                        // setOpacity(0);
+                        onRequestClose();
+                    }}>
+                        <View style={styles.contentContainer}>
+                            <TouchableOpacity onPress={() => {
+                                // setOpacity(0);
+                                onRequestClose();
+                            }}>
+                                <Image style={styles.closeIcon} source={ImagesSrc.closeIcon} resizeMode={'contain'} />
+                            </TouchableOpacity>
 
-                        <View style={styles.centerAlign}>
+                            <View style={styles.centerAlign}>
 
-                            <View style={styles.imgContainer}>
-                                <Image source={ImagesSrc.goldcoin} style={styles.img} />
-                            </View>
+                                <View style={styles.imgContainer}>
+                                    <Image source={ImagesSrc.goldcoin1} style={styles.img} />
+                                </View>
 
-                            <Text style={styles.title}>{translate("wallet.common.buyGoldErr1") + "\n" + translate("wallet.common.buyGoldErr2")}</Text>
+                                <Text style={[styles.title, {fontSize: RF(2.4)}]}>{translate("wallet.common.buyGoldErr1")}</Text>
+                                <Text style={[styles.title, {fontSize: RF(1.6), color: Colors.modalHintText}]}>{translate("wallet.common.buyGoldErr2")}</Text>
 
-                            <AppButton
-                                label={translate("wallet.common.buyGold")}
-                                containerStyle={[CommonStyles.button, styles.button]}
-                                labelStyle={[CommonStyles.buttonLabel, { color: Colors.themeColor, fontFamily: Fonts.ARIAL_BOLD, fontSize: RF(1.6) }]}
-                                onPress={() => {
+                                <AppButton
+                                    label={translate("wallet.common.buyGold")}
+                                    containerStyle={[CommonStyles.button, styles.button]}
+                                    labelStyle={[CommonStyles.buttonLabel, { color: Colors.white, fontFamily: Fonts.ARIAL_BOLD, fontSize: RF(1.6) }]}
+                                    onPress={() => {
                                         props.onNavigate();
                                         navigation.navigate('BuyGold')
-                                }}
-                            />
-                        </View>
+                                    }}
+                                />
+                            </View>
 
-                    </View>
-                </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
+                </BlurView>
+
             </View>
         </Modal>
     );
@@ -83,6 +92,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    absolute: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        backgroundColor: "rgba(95, 148, 255, 0.6)"
+    },
     emptyArea: {
         flex: 1,
         justifyContent: 'center',
@@ -94,7 +111,7 @@ const styles = StyleSheet.create({
         paddingBottom: hp("3%")
     },
     contentContainer: {
-        backgroundColor: Colors.themeColor,
+        backgroundColor: Colors.white,
         padding: "4%",
         margin: wp("7%"),
         borderRadius: wp("4%"),
@@ -105,13 +122,12 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        
+
         elevation: 5,
     },
     closeIcon: {
         alignSelf: 'flex-end',
-        ...CommonStyles.imageStyles(5),
-        tintColor: Colors.white
+        ...CommonStyles.imageStyles(7),
     },
     title: {
         width: "70%",
@@ -120,22 +136,22 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignSelf: 'center',
         marginVertical: wp("3%"),
-        color: Colors.white
+        color: Colors.BLACK1
     },
     button: {
         width: "70%",
-        backgroundColor: Colors.white
+        marginTop: hp("5%")
     },
     imgContainer: {
-        backgroundColor: Colors.white,
         padding: wp("5%"),
         alignSelf: 'center',
         borderRadius: wp("25%") / 2,
         marginBottom: hp("3%")
     },
     img: {
-        width: wp("10%"),
-        height: wp("10%"),
+        width: wp("30%"),
+        height: wp("30%"),
+        resizeMode: "contain"
     }
 });
 

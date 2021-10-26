@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import '../shim';
 
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Image, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -14,10 +14,11 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
-import { loadFromAsync } from "./store/reducer/userReducer";
-
+import { loadFromAsync, setPasscode, startLoading } from "./store/reducer/userReducer";
 import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
+import SecurityScreen from './screens/security';
+import PasscodeScreen from './screens/security/passcode';
 import MyNFTScreen from './screens/myNFTScreen';
 import DiscoverScreen from './screens/discoverScreen';
 import DetailItemScreen from './screens/detailScreen';
@@ -53,6 +54,7 @@ import Cards from './screens/PaymentScreen/cards';
 import BuyGold from './screens/PaymentScreen/buyGold';
 import { translate } from './walletUtils';
 import { screenWidth } from './constants/responsiveFunct';
+import WalletPay from './screens/PaymentScreen/walletPay';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -134,19 +136,27 @@ const TabComponent = () => {
 
 const AppRoutes = () => {
 
-  const { wallet } = useSelector(state => state.UserReducer);
+  const { wallet, passcode, loading } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = React.useState(true);
 
   setI18nConfig(selectedLanguageItem.language_name);
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
+    dispatch(startLoading());
+
     dispatch(getAllLanguages())
     // AsyncStorage.removeItem('@wallet')
+    let pass = await AsyncStorage.getItem("@passcode");
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
+    if (pass) {
+      dispatch(setPasscode(pass))
+      dispatch(loadFromAsync())
+    } else {
+      dispatch(loadFromAsync())
+    }
     if (languageData) {
       console.log('languageData', languageData);
       dispatch(setAppLanguage(JSON.parse(languageData)));
@@ -156,44 +166,47 @@ const AppRoutes = () => {
       dispatch(setAppLanguage(item));
     }
 
-    dispatch(loadFromAsync()).then(() => {
-      setLoading(false);
-    });
-    // setLoading(false);
-
   }, []);
 
+
+  let initialRoute = passcode ? "PasscodeScreen" : "Home"
+
+  console.log(loading, "initialRoute", initialRoute)
   return (
     <>
       {
         loading ?
           <Loader /> :
           <NavigationContainer>
-            {wallet ?
-              <Stack.Navigator headerMode="none" screenOptions={{gestureResponseDistance: {horizontal: screenWidth*70/100}}}>
-                <Stack.Screen name="Home" component={TabComponent} />
-                <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-                <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
-                <Stack.Screen name="Pay" component={PayScreen} />
-                <Stack.Screen name="MakeBid" component={MakeBidScreen} />
-                <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-                <Stack.Screen name="tokenDetail" component={TokenDetail} />
-                <Stack.Screen name="receive" component={Receive} />
-                <Stack.Screen name="send" component={Send} />
-                <Stack.Screen name="scanToConnect" component={ScanToConnect} />
-                <Stack.Screen name='Create' component={NewPostScreen} />
-                <Stack.Screen name='Certificate' component={CertificateScreen} />
-                <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
-                <Stack.Screen name='AddCard' component={AddCard} />
-                <Stack.Screen name='Cards' component={Cards} />
-                <Stack.Screen name='BuyGold' component={BuyGold} />
-                <Stack.Screen name='Setting' component={Setting} />
-                <Stack.Screen name='ChangePassword' component={ChangePassword} />
-              </Stack.Navigator>
-              :
-              <Stack.Navigator headerMode="none">
-                <Stack.Screen name="Authentication" component={AuthStack} />
-              </Stack.Navigator>
+            {
+              wallet ?
+                  <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
+                    <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
+                    <Stack.Screen name="Home" component={TabComponent} />
+                    <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+                    <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+                    <Stack.Screen name="Pay" component={PayScreen} />
+                    <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+                    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                    <Stack.Screen name="tokenDetail" component={TokenDetail} />
+                    <Stack.Screen name="receive" component={Receive} />
+                    <Stack.Screen name="send" component={Send} />
+                    <Stack.Screen name="scanToConnect" component={ScanToConnect} />
+                    <Stack.Screen name='Create' component={NewPostScreen} />
+                    <Stack.Screen name='Certificate' component={CertificateScreen} />
+                    <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
+                    <Stack.Screen name='AddCard' component={AddCard} />
+                    <Stack.Screen name='Cards' component={Cards} />
+                    <Stack.Screen name='BuyGold' component={BuyGold} />
+                    <Stack.Screen name='Setting' component={Setting} />
+                    <Stack.Screen name='ChangePassword' component={ChangePassword} />
+                    <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
+                    <Stack.Screen name='WalletPay' component={WalletPay} />
+                  </Stack.Navigator>
+                  :
+                  <Stack.Navigator headerMode="none">
+                    <Stack.Screen name="Authentication" component={AuthStack} />
+                  </Stack.Navigator>
             }
           </NavigationContainer>
 

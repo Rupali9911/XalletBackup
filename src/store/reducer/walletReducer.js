@@ -14,7 +14,11 @@ const initialState = {
     bnbTransactions: [],
     bnbBalance: "0",
     maticTransactions: [],
-    maticBalance: "0"
+    maticBalance: "0",
+    tnftTransactions: [],
+    tnftBalance: "0",
+    talTransactions: [],
+    talBalance: "0"
 }
 
 export default walletReducer = (state = initialState, action) => {
@@ -82,7 +86,9 @@ export default walletReducer = (state = initialState, action) => {
                 ...state,
                 ethBalance: action.payload.ETH,
                 bnbBalance: action.payload.BNB,
-                maticBalance: action.payload.Matic
+                maticBalance: action.payload.Matic,
+                tnftBalance: action.payload.TNFT, // for testnet only
+                talBalance: action.payload.TAL, // for testnet only
             }
         default:
             return state;

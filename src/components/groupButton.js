@@ -3,9 +3,11 @@ import {
     View,
     TouchableOpacity,
     Text,
+    ActivityIndicator,
 } from 'react-native';
 import { colors, fonts } from '../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, SIZE, responsiveFontSize as RF } from "../common/responsiveFunction";
+import Colors from '../constants/Colors';
 
 const groupButton = ({
     leftText,
@@ -15,18 +17,20 @@ const groupButton = ({
     leftDisabled,
     rightDisabled,
     leftHide,
-    rightHide
+    rightHide,
+    leftLoading,
+    rightLoading
 }) => {
-    console.log('leftDisabled',leftDisabled);
+    console.log('leftDisabled',leftLoading);
     return (
         <View style={styles.mainContainer}>
             {leftHide?null:<TouchableOpacity
                 onPress={onLeftPress}
                 style={styles.leftButton}
                 disabled={leftDisabled}>
-                <Text style={styles.buttonText}>
+                {leftLoading ? <ActivityIndicator color={Colors.white}/> : <Text style={styles.buttonText}>
                     {leftText}
-                </Text>
+                </Text>}
             </TouchableOpacity>}
             {rightHide?null:<TouchableOpacity
                 onPress={onRightPress}

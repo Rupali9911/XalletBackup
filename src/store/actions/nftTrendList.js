@@ -10,9 +10,8 @@ import {
     NFT_LIST_RESET,
     NFT_LIST_UPDATE,
     NEW_NFT_LIST_UPDATE,
-    FAVORITE_LIST_UPDATE,
-    TWOD_LIST_UPDATE,
     MYLIST_LIST_UPDATE,
+    MY_COLLECTION_LIST_UPDATE,
     ALL_ARTIST_SUCCESS
 } from '../types';
 import { alertWithSingleBtn } from '../../utils';
@@ -55,7 +54,8 @@ export const getNFTList = (page, limit) => {
 
         dispatch(nftLoadStart());
 
-        let accountKey = getState().AuthReducer.accountKey;
+        const { data } = getState().UserReducer;
+        let user = data.user;
 
         let body_data = {
             approveStatus: 'approve',
@@ -65,8 +65,8 @@ export const getNFTList = (page, limit) => {
             networkType: networkType,
         }
 
-        if (accountKey) {
-            body_data.owner = accountKey;
+        if (user) {
+            body_data.owner = user._id;
         }
 
         let fetch_data_body = {
@@ -128,20 +128,23 @@ export const getAllArtist = () => {
 export const handleLikeDislike = (item, index) => {
     return (dispatch, getState) => {
 
-        const { accountKey, screenName } = getState().AuthReducer;
+        const { screenName } = getState().AuthReducer;
+        const { data } = getState().UserReducer;
 
-        let oldNFTS = screenName == "Trend" ? getState().ListReducer.nftList :
+        let oldNFTS = screenName == "Hot" ? getState().ListReducer.nftList :
             screenName == "newNFT" ? getState().NewNFTListReducer.newNftList :
-                screenName == "favourite" ? getState().MyNFTReducer.favorite :
-                    screenName == "twoDArt" ? getState().TwoDReducer.twoDNftList : getState().MyNFTReducer.myList;
+                screenName == "myNFT" ? getState().MyNFTReducer.myList :
+                    screenName == "myCollection" ? getState().MyCollectionReducer.myCollection :
+                        screenName == "awards" ? getState().AwardsNFTReducer.awardsNftList : [];
 
         var url1 = "";
         var url2 = `${BASE_URL}/xanalia/updateRating`;
         let like_body = {
             networkType: networkType,
-            owner: accountKey,
+            owner: data.user._id,
             tokenId: item.tokenId
         }
+        
         let rating_body = {
             networkType: networkType,
             tokenId: item.tokenId
@@ -178,6 +181,7 @@ export const handleLikeDislike = (item, index) => {
             fetch(url1, fetch_like_body).then(res => res.json()),
             fetch(url2, fetch_rating_body).then(res => res.json())
         ]).then(([v, a]) => {
+
             const nftUpdated = [
                 ...oldNFTS.slice(0, index),
                 item,
@@ -186,10 +190,12 @@ export const handleLikeDislike = (item, index) => {
 
             screenName == "Hot" ? dispatch(nftLoadUpdate(nftUpdated)) :
                 screenName == "newNFT" ? dispatch(newNftLoadUpdate(nftUpdated)) :
-                    screenName == "favourite" ? dispatch(favoriteNFTUpdate(nftUpdated)) :
-                        screenName == "twoDArt" ? dispatch(twoDNFTUpdate(nftUpdated)) :
+                    screenName == "myNFT" ? dispatch(myNFTUpdate(nftUpdated)) :
+                        screenName == "myCollection" ? dispatch(myCollectionNFTUpdate(nftUpdated)) :
                             dispatch(myNFTupdate(nftUpdated));
 
+        }).catch(err => {
+            alert(err.message);
         })
 
     }
@@ -210,12 +216,12 @@ export const newNftLoadUpdate = (data) => ({
     payload: data
 });
 
-export const favoriteNFTUpdate = (data) => ({
-    type: FAVORITE_LIST_UPDATE,
+export const myNFTUpdate = (data) => ({
+    type: MYLIST_LIST_UPDATE,
     payload: data
 });
 
-export const twoDNFTUpdate = (data) => ({
-    type: TWOD_LIST_UPDATE,
+export const myCollectionNFTUpdate = (data) => ({
+    type: MY_COLLECTION_LIST_UPDATE,
     payload: data
 });

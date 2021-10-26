@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Alert, FlatList, TouchableOpacity } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Colors from '../../constants/Colors';
@@ -15,12 +15,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import Separator from '../../components/separator';
+import IAP from 'react-native-iap';
+
+const productIds = ['com.xanalia.point500']
 
 export const PaymentField = (props) => {
 
     return (
-        <View style={[styles.inputMainCont]} >
-            <Text style={styles.inputLeft} >{translate("common.price")}</Text>
+        <View style={[styles.inputMainCont, { paddingHorizontal: props.coin ? wp("3%") : 0}]} >
+            {
+                props.coin ?
+                    props.coin :
+                    <Text style={styles.inputLeft} >{translate("common.price")}</Text>
+
+            }
             <TextInput
                 style={[styles.inputCont, styles.paymentField]}
                 keyboardType='decimal-pad'
@@ -32,18 +40,36 @@ export const PaymentField = (props) => {
                 onSubmitEditing={props.onSubmitEditing}
                 editable={props.editable}
             />
-            <Text style={styles.inputRight} >{"$"}</Text>
+            {
+                props.coin ?
+                    null :
+                    <Text style={styles.inputRight} >{"$"}</Text>
+            }
         </View>
     )
 }
 
-const BuyGold = ({route, navigation}) => {
+const BuyGold = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
     const {wallet} = useSelector(state => state.UserReducer);
+    const [user, setUser] = useState({
+        name: 'Jonas',
+        subscription: undefined
+    });
+    const [products, setProducts] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [amount, setAmount] = useState('');
+
+    useEffect(() => {
+        IAP.getProducts(productIds).then(res => {
+            // setProducts(res);
+        })
+        .catch(err => {
+            console.log(err)
+        });
+    }, [])
 
     const showErrorAlert = (msg) => {
         Alert.alert(msg);
@@ -51,7 +77,7 @@ const BuyGold = ({route, navigation}) => {
 
     const showSuccessAlert = () => {
         Alert.alert(
-            translate("common.transferInProgress", {token: `${amount} ${type}`}),
+            translate("common.transferInProgress", { token: `${amount} ${type}` }),
             '',
             [
                 {
@@ -74,7 +100,7 @@ const BuyGold = ({route, navigation}) => {
             <View style={styles.container}>
                 <View style={styles.contentContainer}>
                     <View style={styles.balanceContainer}>
-                        <Image source={ImagesSrc.goldcoin} style={styles.balanceIcon}/>
+                        <Image source={ImagesSrc.goldcoin} style={styles.balanceIcon} />
                         <NumberFormat
                             value={"1000"}
                             displayType={'text'}
@@ -83,62 +109,65 @@ const BuyGold = ({route, navigation}) => {
                             renderText={(formattedValue) => <TextView style={styles.priceCont}>{formattedValue}</TextView>} />
 
                     </View>
-                    
+
                     <View style={styles.inputContainer}>
-                        <PaymentField 
-                            type={null} 
+                        <PaymentField
+                        coin={
+                            <Image source={ImagesSrc.goldcoin} style={styles.coinStyle} />
+                        }
+                            type={null}
                             value={amount}
                             onChangeText={(e) => {
                                 let value = amountValidation(e, amount);
-                                if(value){
+                                if (value) {
                                     setAmount(value);
-                                }else {
+                                } else {
                                     setAmount('');
                                 }
-                                
-                            }}/>
+
+                            }} />
                     </View>
 
-                    <FlatList 
-                        data = {[500,1000,5000,10000,50000,100000]}
-                        renderItem = {({item, index}) => {
-                            const isSelected = item == amount ? true : false ;
+                    <FlatList
+                        data={[500, 1000, 5000, 10000, 50000, 100000]}
+                        renderItem={({ item, index }) => {
+                            const isSelected = item == amount ? true : false;
                             return (
-                                <TouchableOpacity style={[styles.listValueContainer, isSelected && {backgroundColor: Colors.themeColor}]} onPress={() => {setAmount(`${item}`)}}>
-                                    <Image source={ImagesSrc.goldcoin} style={styles.coinStyle}/>
-                                    <NumberFormat 
+                                <TouchableOpacity style={[styles.listValueContainer, isSelected && { backgroundColor: Colors.themeColor }]} onPress={() => { setAmount(`${item}`) }}>
+                                    <Image source={ImagesSrc.goldcoin} style={styles.coinStyle} />
+                                    <NumberFormat
                                         value={item}
                                         displayType={'text'}
                                         decimalScale={2}
                                         thousandSeparator={true}
-                                        renderText={(formattedValue) => <Text style={[styles.listValue, isSelected && {color: Colors.white}]}>{formattedValue}</Text>} />
-                                    
+                                        renderText={(formattedValue) => <Text style={[styles.listValue, isSelected && { color: Colors.white }]}>{formattedValue}</Text>} />
+
                                 </TouchableOpacity>
                             );
                         }}
-                        ItemSeparatorComponent={() => <View style={{height: hp("2%")}}/>}
+                        ItemSeparatorComponent={() => <View style={{ height: hp("2%") }} />}
                         keyExtractor={(item, index) => `_${index}`}
-                        />
+                    />
 
                 </View>
 
-                <Separator style={styles.separator}/>
+                <Separator style={styles.separator} />
 
                 <View>
                     <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>{translate("wallet.common.totalAmount")}</Text>
+                        <Text style={styles.totalLabel}>{translate("wallet.common.totalAmountToPay")}</Text>
                         <Text style={styles.value}>$ 1,300</Text>
                     </View>
                     <AppButton label={translate("wallet.common.buyGold")} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
-                            if (address !== '' && amount > 0) {
+                            if (amount > 0) {
 
                             } else {
                                 Alert.alert(translate("wallet.common.requireSendField"));
                             }
                         }} />
                 </View>
-                
+
             </View>
 
         </AppBackground>
@@ -193,7 +222,8 @@ const styles = StyleSheet.create({
     balanceIcon: {
         width: wp("3.5%"),
         height: wp("3.5%"),
-        marginRight: 5
+        marginRight: 5,
+        resizeMode: "contain"
     },
     profileCont: {
         ...CommonStyles.circle("15")
@@ -237,7 +267,7 @@ const styles = StyleSheet.create({
         marginBottom: hp("1%")
     },
     separator: {
-        width: wp("100%"), 
+        width: wp("100%"),
         marginVertical: hp("2%")
     },
     totalLabel: {
@@ -261,7 +291,8 @@ const styles = StyleSheet.create({
     },
     coinStyle: {
         width: wp("5%"),
-        height: wp("5%")
+        height: wp("5%") ,
+        resizeMode: "contain"
     },
     listValue: {
         fontFamily: Fonts.ARIAL_BOLD,

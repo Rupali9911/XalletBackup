@@ -40,12 +40,20 @@ export const myNFTList = (page, ownerId) => {
     return (dispatch, getState) => {
 
         dispatch(myNftLoadStart());
+
+        const { data } = getState().UserReducer;
+        let user = data.user;
+
         let body_data = {
             limit: 24,
             networkType: networkType,
             userId: ownerId,
             page: page,
             nftType: 'mynft'
+        }
+
+        if (user) {
+            body_data.owner = user._id;
         }
 
         let fetch_data_body = {
@@ -80,7 +88,6 @@ export const myNFTList = (page, ownerId) => {
                     fetch(`https://api.xanalia.com/xanalia/mydata`, data_body)
                         .then(response => response.json())  // promise
                         .then(json => {
-                            // console.log('=======json', json.count)
                             dispatch(myNftLoadSuccess(json));
                         }).catch(err => {
                             dispatch(myNftLoadFail())

@@ -432,6 +432,7 @@
         "currentprice": "Current price",
         "lastprice": "Last Price",
         "noNFT": "No NFT Available",
-        "awards": "award"
+        "awards": "award",
+        "myPage": "My Page"
     }
 }

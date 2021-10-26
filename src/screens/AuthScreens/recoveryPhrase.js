@@ -221,7 +221,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                     </TouchableOpacity>
                   </View>
                   {keyboard.keyboardShown && (
-                    <View style={{position: 'absolute',bottom: 8}}>
+                    <View style={{position: 'absolute', bottom: 8}}>
                       <FlatList
                         data={suggestions}
                         horizontal

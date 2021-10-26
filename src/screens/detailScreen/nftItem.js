@@ -33,6 +33,7 @@ const Web3 = require("web3");
 const {
   CommentIcon,
   HeartIcon,
+  HeartActiveIcon,
   ShareIcon,
   BookMarkIcon,
   PlayButtonIcon
@@ -102,7 +103,7 @@ const nftItem = ({ item, index }) => {
             `https://api.xanalia.com/user/get-public-profile?userId=${res}` :
             `https://testapi.xanalia.com/user/get-public-profile?userId=${res}`
           setOwnerId(res);
-            let profile = await axios.get(profileUrl);
+          let profile = await axios.get(profileUrl);
           if (profile.data) {
             setOwnerData(profile.data.data);
             setOwner(profile.data.data.username);
@@ -126,7 +127,7 @@ const nftItem = ({ item, index }) => {
       let ownerAddress = res;
       MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
         if (res[0] !== '0x0000000000000000000000000000000000000000') {
-          console.log('owner',res,tokenId,res[0]);
+          console.log('owner', res, tokenId, res[0]);
           setOwner(res[0]);
         } else {
           setOwner(ownerAddress);
@@ -144,8 +145,8 @@ const nftItem = ({ item, index }) => {
       chain: chainType
     }
 
-    if (accountKey) {
-      body_data.owner = accountKey;
+    if (user) {
+      body_data.owner = user._id;
     }
 
     let fetch_data_body = {
@@ -286,7 +287,9 @@ const nftItem = ({ item, index }) => {
               price: item.price,
               chain: item.chain,
               ownerId: ownerId,
-              tokenId: item.tokenId
+              tokenId: item.tokenId,
+              ownerData: ownerData,
+              artistData: artistData
             });
         }}>
         {
@@ -349,8 +352,14 @@ const nftItem = ({ item, index }) => {
       }}>
         <RowBetweenWrap>
           <View style={styles.buttons}>
-            <TouchableOpacity onPress={() => dispatch(handleLikeDislike(item, index))} >
-              <HeartIcon />
+            <TouchableOpacity onPress={() => {
+              dispatch(handleLikeDislike(item, index));
+            }}>
+              {
+                item.like == 0
+                  ? <HeartIcon /> :
+                  <HeartActiveIcon />
+              }
             </TouchableOpacity>
             <SpaceView mRight={SIZE(15)} />
             <TouchableOpacity>

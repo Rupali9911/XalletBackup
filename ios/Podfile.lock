@@ -329,6 +329,8 @@ PODS:
     - SDWebImageWebPCoder (~> 0.8.4)
   - RNGestureHandler (1.10.3):
     - React-Core
+  - RNIap (8.0.0-rc.3):
+    - React-Core
   - RNLocalize (2.1.5):
     - React-Core
   - RNOS (1.2.6):
@@ -415,6 +417,7 @@ DEPENDENCIES:
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNIap (from `../node_modules/react-native-iap`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNOS (from `../node_modules/react-native-os`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -531,6 +534,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fast-image"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNIap:
+    :path: "../node_modules/react-native-iap"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
   RNOS:
@@ -604,6 +609,7 @@ SPEC CHECKSUMS:
   RNDeviceInfo: 1a8db52003ad76c066ed739259079efe5d2e7853
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
+  RNIap: cca3ab7c0e7b1bb6506135ebf381e03a241daaf2
   RNLocalize: 13a971fd888f2933504a745983f781dc52feeab6
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNPermissions: 067727df624665d4a6c8e2cffcc172ba608b96ed

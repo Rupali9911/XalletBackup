@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 
 import { colors, fonts } from '../../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
-import CommonStyles from '../../constants/styles';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
