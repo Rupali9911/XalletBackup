@@ -14,7 +14,7 @@ import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 
 const initialState = {
-    loading: false,
+    loading: true,
     wallet: null,
     isCreate: false,
     data: {},
@@ -109,12 +109,15 @@ export const endLoader = () => (dispatch) =>
 export const loadFromAsync = () => (dispatch) =>
     new Promise(async (resolve, reject) => {
         dispatch(startLoading());
+
         const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
         const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
-console.log(wallet, userData)
         if (wallet && userData) {
+
             dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
+
             const _wallet = JSON.parse(wallet);
+
             let req_data = {
                 owner: _wallet.address,
                 token: 'HubyJ*%qcqR0'
@@ -179,11 +182,9 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
             }
         }
 
-        console.log('request', request);
         dispatch(startLoading());
         fetch(url, request).then((res) => res.json())
             .then((response) => {
-                console.log('response', response);
                 if (response.success) {
 
                     const _params = {
@@ -202,7 +203,6 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
 
                     fetch('https://testapi.xanalia.com/auth/verify-signature', verifyReuqest).then((_res) => _res.json())
                         .then(async (_response) => {
-                            console.log('_response', _response);
                             if (_response.success) {
                                 const items = [['@wallet', JSON.stringify(wallet)], ['@userData', JSON.stringify(_response.data)]]
                                 await AsyncStorage.multiSet(items, (err) => console.log(err));
@@ -222,7 +222,6 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                     reject(response);
                 }
             }).catch((err) => {
-                console.log('getAddressNonce err', err);
                 dispatch(endLoading());
                 reject(err);
             });

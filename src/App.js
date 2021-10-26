@@ -139,38 +139,31 @@ const AppRoutes = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
-  // const [loading, setLoading] = React.useState(true);
-
   setI18nConfig(selectedLanguageItem.language_name);
 
   React.useEffect(async () => {
+
     LogBox.ignoreAllLogs();
-    dispatch(getAllLanguages())
-    // AsyncStorage.removeItem('@wallet')
+    dispatch(getAllLanguages());
+
     let pass = await AsyncStorage.getItem("@passcode");
+    
     if (pass) {
       dispatch(setPasscode(pass))
       dispatch(loadFromAsync())
-      // setLoading(false);
     } else {
       dispatch(loadFromAsync())
-      // setLoading(false);
     }
+
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
+
     if (languageData) {
-      console.log('languageData', languageData);
       dispatch(setAppLanguage(JSON.parse(languageData)));
     } else {
-      console.log('regionLanguage', regionLanguage)
       let item = languageArray.find(item => item.language_name == regionLanguage);
       dispatch(setAppLanguage(item));
     }
-    // setLoading(false);
-
   }, []);
-
-  console.log(passcode !== "" ,  "passcode")
-  console.log(wallet, "wallet")
 
   return (
     <>
@@ -180,7 +173,7 @@ const AppRoutes = () => {
           <NavigationContainer>
             {
               passcode ?
-                < Stack.Navigator headerMode="none" >
+                <Stack.Navigator headerMode="none" >
                   <Stack.Screen initialParams={{ updateToggle: null, screen: "Auth" }} name='PasscodeScreen' component={PasscodeScreen} />
                 </Stack.Navigator>
                 :  wallet ?
