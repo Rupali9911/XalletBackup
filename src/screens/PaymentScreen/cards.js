@@ -70,13 +70,13 @@ const Cards = ({ route, navigation }) => {
             console.log('delete response',response);
             if(response.success){
                 alertWithSingleBtn(
-                    translate("common.alert"),
+                    translate("wallet.common.alert"),
                     response.msg_key?translate(response.msg_key):response.msg
                 )
                 getAllMyCards();
             }else{
                 alertWithSingleBtn(
-                    translate("common.alert"),
+                    translate("wallet.common.alert"),
                     response.msg_key?translate(response.msg_key):response.msg
                 )
             }

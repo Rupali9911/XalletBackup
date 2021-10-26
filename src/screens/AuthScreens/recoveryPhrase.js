@@ -107,7 +107,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
 
                 }else{
                     alertWithSingleBtn(
-                        translate("common.alert"),
+                        translate("wallet.common.alert"),
                         translate("wallet.common.error.networkFailed"),
                         () => {
                             console.log(e);

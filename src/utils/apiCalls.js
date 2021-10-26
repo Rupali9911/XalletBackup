@@ -34,7 +34,7 @@ export const ApiCalls = async (url, method, body, headers) => {
             })
             .catch(error => {
                 alertWithSingleBtn(
-                    translate("common.alert"),
+                    translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed"),
                     () => {
                         console.log(e);
