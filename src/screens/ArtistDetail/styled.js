@@ -32,13 +32,15 @@ const EditButton = styled.TouchableOpacity`
     flex: 1;
     height: ${SIZE(30)}px;
     border-radius: ${SIZE(2)}px;
-    background-color: ${COLORS.BLUE2};
+    background-color: ${props => props.isFollowing ? 'white' : COLORS.BLUE2};
+    border-width: 1px;
+    border-color: ${props => props.isFollowing ? '#DADCDA' : COLORS.BLUE2};
     align-items: center;
     justify-content: center;
 `;
 
 const EditButtonText = styled.Text`
-    color: ${COLORS.WHITE1};
+    color: ${props => props.isFollowing ? COLORS.BLACK1 : COLORS.WHITE1};
     font-size: ${FONT(12)}px;
     font-weight: 700;
 `;

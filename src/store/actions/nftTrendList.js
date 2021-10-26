@@ -1,5 +1,6 @@
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
+import axios from 'axios';
 
 import {
     NFT_LIST_SUCCESS,
@@ -198,6 +199,23 @@ export const handleLikeDislike = (item, index) => {
             alert(err.message);
         })
 
+    }
+}
+
+export const handleFollow = (followingUserId, isFollowing) => {
+    return (dispatch, getState) => {
+        const { data } = getState().UserReducer;
+
+        let url = isFollowing ? `${BASE_URL}/user/unFollow-user` : `${BASE_URL}/user/follow-user`;
+        let req_body = {
+            followingUserId: followingUserId
+        };
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        axios.post(url, req_body)
+            .catch(err => {
+                alert(err.response.message);
+            });
     }
 }
 

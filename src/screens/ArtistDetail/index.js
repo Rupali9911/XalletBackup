@@ -60,6 +60,7 @@ import {
     myCollectionListReset,
 } from '../../store/actions/myCollection';
 import { changeScreenName } from '../../store/actions/authAction';
+import { handleFollow } from '../../store/actions/nftTrendList';
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
@@ -68,6 +69,7 @@ import {
 import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
+import axios from 'axios';
 
 const langObj = getLanguage();
 
@@ -135,7 +137,7 @@ const Created = ({ route }) => {
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
-                                {translate("wallet.common.error.noImage")}
+                                    {translate("wallet.common.error.noImage")}
                                 </Text>
                             </View>
                     }
@@ -309,10 +311,16 @@ function ArtistDetail({
 }) {
 
     const [data, setData] = useState(route.params.data);
+    const [isFollowing, setFollowing] = useState(false);
+    const { UserReducer } = useSelector(state => state);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (data.id) {
             getProfile();
+            getIsFollowing(data.id);
+        } else {
+            getIsFollowing(data._id);
         }
     }, [data._id]);
 
@@ -336,6 +344,17 @@ function ArtistDetail({
                 if (res.data) {
                     setData(res.data);
                 }
+            });
+    }
+
+    const getIsFollowing = (id) => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${UserReducer.data.token}`;
+        axios.get(`${BASE_URL}/user/get-is-following?userId=${id}`)
+            .then(res => {
+                setFollowing(res.data.isFollowing);
+            })
+            .catch(err => {
+                alert(err.response.message);
             });
     }
 
@@ -378,6 +397,11 @@ function ArtistDetail({
                 />
             </Tab.Navigator>
         )
+    }
+
+    const onFollow = async () => {
+        await dispatch(handleFollow(data._id, isFollowing));
+        setFollowing(!isFollowing);
     }
 
     return (
@@ -457,9 +481,9 @@ function ArtistDetail({
             <SpaceView mTop={SIZE(14)} />
             <RowWrap>
                 <SpaceView mLeft={SIZE(15)} />
-                <EditButton>
-                    <EditButtonText>
-                        {translate("common.follow")}
+                <EditButton isFollowing={isFollowing} onPress={onFollow}>
+                    <EditButtonText isFollowing={isFollowing}>
+                        {isFollowing ? translate("common.unfollow") : translate("common.follow")}
                     </EditButtonText>
                 </EditButton>
                 <SpaceView mRight={SIZE(15)} />
