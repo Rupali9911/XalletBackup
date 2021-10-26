@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: FONT(16),
+        lineHeight: FONT(17),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
         color: COLORS.BLACK1

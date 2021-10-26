@@ -472,5 +472,6 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: RF(2),
         fontFamily: fonts.PINGfANG_SBOLD,
+        lineHeight: RF(2.1)
     },
 })
