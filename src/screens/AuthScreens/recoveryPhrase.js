@@ -35,10 +35,10 @@ const toastConfig = {
 const RecoveryPhrase = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
-    const { loading } = useSelector(state => state.UserReducer);
 
     const { recover } = route.params;
     const [wallet, setWallet] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [phrase, setPhrase] = useState("");
     // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
     const toastRef = useRef(null);
@@ -50,7 +50,6 @@ const RecoveryPhrase = ({ route, navigation }) => {
     }, []);
 
     const getPhraseData = async () => {
-        dispatch(startLoader()).then(async () => {
             var randomSeed = ethers.Wallet.createRandom();
             const account = {
                 mnemonic: randomSeed.mnemonic,
@@ -61,8 +60,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
             console.log(randomSeed.address);
             console.log(randomSeed.privateKey);
             setWallet(account);
-            dispatch(endLoader());
-        });
+            setLoading(false)
     }
 
     const copyToClipboard = () => {
@@ -105,7 +103,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
                         translate('wallet.common.error.invalidPhrase')
                     )
 
-                }else{
+                } else {
                     alertWithSingleBtn(
                         translate("common.alert"),
                         translate("wallet.common.error.networkFailed"),
@@ -114,9 +112,11 @@ const RecoveryPhrase = ({ route, navigation }) => {
                         }
                     );
                 }
-                dispatch(endLoader());
+                setLoading(false)
+
             });
         } else {
+            setLoading(false)
             alertWithSingleBtn(
                 translate('common.error'),
                 translate("wallet.common.requirePhrase")

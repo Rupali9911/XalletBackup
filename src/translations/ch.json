@@ -613,6 +613,8 @@
     "wallet": {
         "common": {
             "error": {
+                "passcodeError1": "密码不匹配。请再试一次！",
+                "passcodeError2": "密码不匹配。请再试一次！",
                 "invalidPhrase": "无效短语",
                 "noImage": "无图像显示",
                 "fieldRequired": "这是必填栏!",

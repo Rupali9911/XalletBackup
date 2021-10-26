@@ -106,49 +106,47 @@ export const endLoader = () => (dispatch) =>
         resolve();
     });
 
-export const loadFromAsync = () => (dispatch) =>
-    new Promise(async (resolve, reject) => {
-        dispatch(startLoading());
-        const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
-        const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
-console.log(wallet, userData)
-        if (wallet && userData) {
-            dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
-            const _wallet = JSON.parse(wallet);
-            let req_data = {
-                owner: _wallet.address,
-                token: 'HubyJ*%qcqR0'
-            };
+export const loadFromAsync = () => async (dispatch) => {
+    const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
+    const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
+    // console.log(wallet, userData)
+    if (wallet && userData) {
+        dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
+        const _wallet = JSON.parse(wallet);
+        let req_data = {
+            owner: _wallet.address,
+            token: 'HubyJ*%qcqR0'
+        };
 
-            let body = {
-                method: 'POST',
-                body: JSON.stringify(req_data),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
+        let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
             }
-            fetch(`${BASE_URL}/xanalia/getProfile`, body)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.data) {
-                        dispatch(upateUserData(res.data));
-                    }
-                })
-                .catch(e => {
-                    alertWithSingleBtn(
-                        translate("common.alert"),
-                        translate("wallet.common.error.networkFailed"),
-                        () => {
-                            console.log(e);
-                        }
-                    );
-                })
-        } else {
-            dispatch(endLoading());
         }
-        resolve();
-    });
+        fetch(`${BASE_URL}/xanalia/getProfile`, body)
+            .then(response => response.json())
+            .then(res => {
+                if (res.data) {
+                    dispatch(upateUserData(res.data));
+                }
+            })
+            .catch(e => {
+                dispatch(endLoading());
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    translate("wallet.common.error.networkFailed"),
+                    () => {
+                        console.log(e);
+                    }
+                );
+            })
+    } else {
+        dispatch(endLoading());
+    }
+}
 
 export const setUserAuthData = (data, isCreate = false) => (dispatch) =>
     new Promise(async (resolve, reject) => {

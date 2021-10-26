@@ -613,6 +613,8 @@
     "wallet": {
         "common": {
             "error": {
+                "passcodeError1": "암호가 일치하지 않았습니다. 다시 시도하십시오!",
+                "passcodeError2": "암호가 일치하지 않았습니다. 다시 시도하십시오!",
                 "invalidPhrase": "잘못된 구문",
                 "noImage": "표시할 이미지 없음",
                 "fieldRequired": "이 필드는 필수입니다!",

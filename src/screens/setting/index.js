@@ -52,7 +52,7 @@ function Setting({
 
             <View style={{ width: "100%", backgroundColor: "#fff" }}>
                 <AppHeader
-                    title={translate("wallet.common.setting")}
+                    title={translate("wallet.common.settingRight")}
                     showBackButton
                 />
 

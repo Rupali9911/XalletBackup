@@ -613,6 +613,8 @@
     "wallet": {
         "common": {
             "error": {
+                "passcodeError1": "パスコードが一致しませんでした。もう一度お試しください。",
+                "passcodeError2": "パスコードが一致しませんでした。もう一度お試しください。",
                 "invalidPhrase": "復元フレーズに誤りがあります、再入力ください。",
                 "noImage": "表示する画像がありません",
                 "fieldRequired": "この項目は必須です!",
