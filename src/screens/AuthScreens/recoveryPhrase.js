@@ -207,7 +207,6 @@ const RecoveryPhrase = ({route, navigation}) => {
                         setPhrase(val);
                         setTimeout(() => {
                           const newWord = val.split(' ').splice(-1);
-                          console.log(newWord, 'JOONA');
                           if (newWord != '') {
                             getSuggestions(newWord);
                             setShowSuggestions(true);
@@ -218,6 +217,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                         }, 100);
                       }}
                       underlineColorAndroid={Colors.transparent}
+                      onBlur={() => setShowSuggestions(false)}
                     />
                     <TouchableOpacity
                       onPress={() => pastePhrase()}
@@ -237,7 +237,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                     <View
                       style={{
                         position: 'absolute',
-                        bottom: hp('1.25%'),
+                        bottom: Platform.OS === 'ios' ? 0 : hp('1.25%'),
                       }}>
                       <FlatList
                         data={suggestions}

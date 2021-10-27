@@ -148,7 +148,7 @@ const AppRoutes = () => {
     dispatch(startMainLoading());
 
     dispatch(getAllLanguages())
-    AsyncStorage.removeItem('@wallet')
+    // AsyncStorage.removeItem('@wallet')
     let pass = await AsyncStorage.getItem("@passcode");
     const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (pass) {
