@@ -613,6 +613,8 @@
     "wallet": {
         "common": {
             "error": {
+                "passcodeError1": "Passcodes did not match. Please try again!",
+                "passcodeError2": "Passcode did not match. Please try again!",
                 "invalidPhrase": "Invalid Phrase",
                 "noImage": "No Image to Show",
                 "fieldRequired": "This field is required!",

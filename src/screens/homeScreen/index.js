@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   responsiveFontSize as RF,
@@ -41,6 +42,7 @@ import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
+import messaging from '@react-native-firebase/messaging';
 
 const langObj = getLanguage();
 
@@ -176,6 +178,15 @@ const HomeScreen = ({navigation}) => {
   const openPhoneSettings = () => {
       Linking.openSettings();
   };
+  const checkPermissions = async () => {
+    PushNotification.checkPermissions(async ({alert}) => {
+      if (!alert) {
+        setNotificationVisible(true);
+      } else {
+        setModalVisible(false);
+      }
+    });
+  };
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -278,7 +289,7 @@ const HomeScreen = ({navigation}) => {
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setSuccessVisible(false);
-              setNotificationVisible(true);
+              checkPermissions();
               dispatch(updateCreateState());
             }}
           />
