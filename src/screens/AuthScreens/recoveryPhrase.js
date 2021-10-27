@@ -217,6 +217,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                         }, 100);
                       }}
                       underlineColorAndroid={Colors.transparent}
+                      onBlur={() => setShowSuggestions(false)}
                     />
                     <TouchableOpacity
                       onPress={() => pastePhrase()}
