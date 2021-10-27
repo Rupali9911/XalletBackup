@@ -29,6 +29,7 @@ import {
   endLoader,
   getAddressNonce,
   startLoader,
+  setPasscode
 } from '../../store/reducer/userReducer';
 import {alertWithSingleBtn} from '../../utils';
 import {translate} from '../../walletUtils';
@@ -108,6 +109,7 @@ const RecoveryPhrase = ({route, navigation}) => {
           console.log(mnemonicWallet.privateKey);
           setWallet(account);
           // dispatch(setUserAuthData(account));
+          dispatch(setPasscode(""))
           dispatch(getAddressNonce(account, false))
             .then(() => {})
             .catch(err => {

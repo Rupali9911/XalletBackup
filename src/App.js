@@ -14,7 +14,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
-import { loadFromAsync, setPasscode, startLoading } from "./store/reducer/userReducer";
+import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
 import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
 import SecurityScreen from './screens/security';
@@ -136,7 +136,7 @@ const TabComponent = () => {
 
 const AppRoutes = () => {
 
-  const { wallet, passcode, loading } = useSelector(state => state.UserReducer);
+  const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
@@ -145,7 +145,7 @@ const AppRoutes = () => {
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-    dispatch(startLoading());
+    dispatch(startMainLoading());
 
     dispatch(getAllLanguages())
     // AsyncStorage.removeItem('@wallet')
@@ -171,18 +171,17 @@ const AppRoutes = () => {
 
   let initialRoute = passcode ? "PasscodeScreen" : "Home"
 
-  console.log(loading, "initialRoute", initialRoute)
   return (
     <>
       {
-        loading ?
+        mainLoader ?
           <Loader /> :
           <NavigationContainer>
             {
               wallet ?
                   <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
-                    <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
                     <Stack.Screen name="Home" component={TabComponent} />
+                    <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
                     <Stack.Screen name="DetailItem" component={DetailItemScreen} />
                     <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
                     <Stack.Screen name="Pay" component={PayScreen} />
