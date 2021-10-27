@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   FlatList,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -29,7 +30,7 @@ import {
   endLoader,
   getAddressNonce,
   startLoader,
-  setPasscode
+  setPasscode,
 } from '../../store/reducer/userReducer';
 import {alertWithSingleBtn} from '../../utils';
 import {translate} from '../../walletUtils';
@@ -58,6 +59,7 @@ const RecoveryPhrase = ({route, navigation}) => {
   const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
   // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
   const toastRef = useRef(null);
@@ -97,7 +99,7 @@ const RecoveryPhrase = ({route, navigation}) => {
     if (phrase !== '') {
       dispatch(startLoader())
         .then(async () => {
-          let mnemonic = phrase;
+          let mnemonic = phrase.trim();
           let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
           const account = {
             mnemonic: mnemonicWallet.mnemonic,
@@ -109,7 +111,7 @@ const RecoveryPhrase = ({route, navigation}) => {
           console.log(mnemonicWallet.privateKey);
           setWallet(account);
           // dispatch(setUserAuthData(account));
-          dispatch(setPasscode(""))
+          dispatch(setPasscode(''));
           dispatch(getAddressNonce(account, false))
             .then(() => {})
             .catch(err => {
@@ -145,7 +147,7 @@ const RecoveryPhrase = ({route, navigation}) => {
     setTimeout(async () => {
       const response = await axios.get(`https://api.datamuse.com/sug?s=${val}`);
       setSuggestions(response.data);
-    }, 200);
+    }, 100);
   };
   const setPhraseText = val => {
     if (userTyping) {
@@ -163,6 +165,7 @@ const RecoveryPhrase = ({route, navigation}) => {
       setPhrase(newPhrase);
     }
     setUserTyping(false);
+    setShowSuggestions(false);
   };
   return (
     <AppBackground isBusy={loading}>
@@ -201,10 +204,18 @@ const RecoveryPhrase = ({route, navigation}) => {
                       multiline={true}
                       value={phrase}
                       onChangeText={val => {
-                        const newWord = phrase.split(' ').splice(-1);
-                        getSuggestions(newWord);
                         setPhrase(val);
-                        setUserTyping(true);
+                        setTimeout(() => {
+                          const newWord = val.split(' ').splice(-1);
+                          console.log(newWord, 'JOONA');
+                          if (newWord != '') {
+                            getSuggestions(newWord);
+                            setShowSuggestions(true);
+                            setUserTyping(true);
+                          } else {
+                            setShowSuggestions(false);
+                          }
+                        }, 100);
                       }}
                       underlineColorAndroid={Colors.transparent}
                     />
@@ -222,8 +233,12 @@ const RecoveryPhrase = ({route, navigation}) => {
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  {keyboard.keyboardShown && (
-                    <View style={{position: 'absolute', bottom: 8}}>
+                  {keyboard.keyboardShown && showSuggestions && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        bottom: hp('1.25%'),
+                      }}>
                       <FlatList
                         data={suggestions}
                         horizontal
