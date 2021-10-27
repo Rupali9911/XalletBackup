@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import {useDispatch, useSelector} from 'react-redux';
+import { openSettings } from 'react-native-permissions';
 import {
   responsiveFontSize as RF,
   SIZE,
@@ -176,7 +177,8 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const openPhoneSettings = () => {
-      Linking.openSettings();
+      // Linking.openSettings();
+      openSettings();
   };
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({alert}) => {
