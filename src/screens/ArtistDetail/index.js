@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -70,6 +71,7 @@ import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
 import axios from 'axios';
+import AppBackground from '../../components/appBackground';
 
 const langObj = getLanguage();
 
@@ -152,7 +154,7 @@ const Created = ({ route }) => {
             {
                 MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
                     <Loader /> :
-                    MyNFTReducer.myList.length !== 0 ?
+                    MyNFTReducer.myNftTotalCount !== 0 ?
                         <FlatList
                             data={MyNFTReducer.myList}
                             horizontal={false}
@@ -263,7 +265,7 @@ const Collection = ({ route }) => {
             {
                 MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
-                    MyCollectionReducer.myCollection.length !== 0 ?
+                    MyCollectionReducer.myCollectionTotalCount !== 0 ?
                         <FlatList
                             data={MyCollectionReducer.myCollection}
                             horizontal={false}
@@ -310,23 +312,19 @@ function ArtistDetail({
     route
 }) {
 
-    const [data, setData] = useState(route.params.data);
+    const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [isFollowing, setFollowing] = useState(false);
     const { UserReducer } = useSelector(state => state);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (data.id) {
-            getProfile();
-            getIsFollowing(data.id);
-        } else {
-            getIsFollowing(data._id);
-        }
-    }, [data._id]);
+        getProfile();
+    }, []);
 
     const getProfile = () => {
         let req_data = {
-            owner: route.params.data.id,
+            owner: route.params.id,
             token: 'HubyJ*%qcqR0'
         };
 
@@ -344,6 +342,10 @@ function ArtistDetail({
                 if (res.data) {
                     setData(res.data);
                 }
+                getIsFollowing(route.params.id);
+            })
+            .catch(err => {
+                getIsFollowing(route.params.id);
             });
     }
 
@@ -352,14 +354,15 @@ function ArtistDetail({
         axios.get(`${BASE_URL}/user/get-is-following?userId=${id}`)
             .then(res => {
                 setFollowing(res.data.isFollowing);
+                setLoading(false);
             })
             .catch(err => {
-                alert(err.response.message);
+                setLoading(false);
             });
     }
 
     const renderTabView = () => {
-        if (!data._id) return null;
+        if (_.isEmpty(data)) return null;
         return (
             <Tab.Navigator tabBarOptions={{
                 activeTintColor: COLORS.BLUE4,
@@ -387,13 +390,13 @@ function ArtistDetail({
                     name='Created'
                     component={Created}
                     options={{ tabBarLabel: translate("wallet.common.created") }}
-                    initialParams={{ id: data._id }}
+                    initialParams={{ id: data.role === 'crypto' ? data.username : data._id }}
                 />
                 <Tab.Screen
                     name='Collection'
                     component={Collection}
                     options={{ tabBarLabel: translate("common.collected") }}
-                    initialParams={{ id: data._id }}
+                    initialParams={{ id: data.role === 'crypto' ? data.username : data._id }}
                 />
             </Tab.Navigator>
         )
@@ -405,7 +408,7 @@ function ArtistDetail({
     }
 
     return (
-        <Container>
+        <AppBackground isBusy={loading}>
             <Header>
                 <HeaderLeft>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -413,7 +416,7 @@ function ArtistDetail({
                     </TouchableOpacity>
                 </HeaderLeft>
                 <HeaderText numberOfLines={1}>
-                    {data.username}
+                    {data.title || data.username}
                 </HeaderText>
             </Header>
             <RowWrap>
@@ -470,7 +473,7 @@ function ArtistDetail({
             <DescriptionView>
                 <SpaceView mTop={SIZE(12)} />
                 <SmallBoldText>
-                    {data.username}
+                    {data.title || data.username}
                 </SmallBoldText>
                 <ScrollView style={{ maxHeight: SIZE(70) }}>
                     <SmallNormalText>
@@ -490,7 +493,7 @@ function ArtistDetail({
             </RowWrap>
             <SpaceView mTop={SIZE(16)} />
             {renderTabView()}
-        </Container >
+        </AppBackground>
     )
 }
 

@@ -111,7 +111,7 @@ export const getAllArtist = () => {
             }
         }
 
-        fetch('https://api.xanalia.com/user/get-all-artist', fetch_data_body)
+        fetch(`${BASE_URL}/user/get-all-artist`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
                 dispatch(getAllArtistSuccess([...json.data]))

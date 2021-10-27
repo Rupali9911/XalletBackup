@@ -46,9 +46,9 @@ const nftItem = ({ item, index }) => {
   const { AuthReducer } = useSelector(state => state);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
-
   const [ownerImage, setOwnerImage] = useState();
   const [ownerData, setOwnerData] = useState();
+  const [artistId, setArtistId] = useState();
   const [artist, setArtist] = useState('----');
   const [artistData, setArtistData] = useState();
   const [creatorImage, setCreatorImage] = useState();
@@ -98,23 +98,35 @@ const nftItem = ({ item, index }) => {
       .getNonCryptoOwner(tokenId)
       .call(async (err, res) => {
         if (res) {
-          // console.log('owner',res,tokenId);
-          let profileUrl = networkType === 'mainnet' ?
-            `https://api.xanalia.com/user/get-public-profile?userId=${res}` :
-            `https://testapi.xanalia.com/user/get-public-profile?userId=${res}`
-          setOwnerId(res);
-          let profile = await axios.get(profileUrl);
-          if (profile.data) {
-            setOwnerData(profile.data.data);
-            setOwner(profile.data.data.username);
-            setOwnerImage(profile.data.data.profile_image);
-          }
+          const userId = res.toLowerCase();
+          setOwnerId(userId);
+          getPublicProfile(userId, false);
         } else if (!res) {
           lastOwnerOfNFT();
         } else if (err) {
         }
       });
   }, []);
+
+  const getPublicProfile = async (id, type) => {
+
+    const userId = id.toLowerCase();
+
+    let profileUrl = type ?
+      `${BASE_URL}/user/get-public-profile?publicAddress=${userId}` :
+      `${BASE_URL}/user/get-public-profile?userId=${userId}`;
+
+    setOwnerId(userId);
+
+    let profile = await axios.get(profileUrl);
+    if (profile.data) {
+      setOwnerData(profile.data.data);
+      setOwner(profile.data.data.username);
+      setOwnerImage(profile.data.data.profile_image);
+    } else {
+      setOwner(userId);
+    }
+  }
 
   const lastOwnerOfNFT = () => {
     let web3 = new Web3(providerUrl);
@@ -127,10 +139,9 @@ const nftItem = ({ item, index }) => {
       let ownerAddress = res;
       MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
         if (res[0] !== '0x0000000000000000000000000000000000000000') {
-          console.log('owner', res, tokenId, res[0]);
-          setOwner(res[0]);
+          getPublicProfile(res[0], true);
         } else {
-          setOwner(ownerAddress);
+          getPublicProfile(ownerAddress, true);
         }
       });
     })
@@ -143,10 +154,6 @@ const nftItem = ({ item, index }) => {
       networkType: networkType,
       type: "2D",
       chain: chainType
-    }
-
-    if (user) {
-      body_data.owner = user._id;
     }
 
     let fetch_data_body = {
@@ -164,12 +171,12 @@ const nftItem = ({ item, index }) => {
         if (res.data.length > 0 && res.data !== "No record found") {
           const data = res.data[0];
 
-          setArtist(data.returnValues.to);
-
           let req_data = {
-            owner: data.returnValues.to,
+            owner: data.returnValues.to.toLowerCase(),
             token: 'HubyJ*%qcqR0'
           };
+
+          setArtistId(data.returnValues.to.toLowerCase());
 
           let body = {
             method: 'POST',
@@ -184,7 +191,7 @@ const nftItem = ({ item, index }) => {
             .then(res => {
               if (res.data) {
                 setArtistData(res.data);
-                res.data.username && setArtist(res.data.username);
+                setArtist(res.data.title || res.data.username);
                 setCreatorImage(res.data.profile_image);
               }
             })
@@ -212,25 +219,9 @@ const nftItem = ({ item, index }) => {
 
   const onProfile = (isOwner) => {
     if (isOwner) {
-      if (ownerData) {
-        navigation.navigate('ArtistDetail', { data: ownerData });
-      } else {
-        navigation.navigate('ArtistDetail', {
-          data: {
-            id: owner,
-          }
-        });
-      }
+      navigation.navigate('ArtistDetail', { id: ownerId, });
     } else {
-      if (artistData) {
-        navigation.navigate('ArtistDetail', { data: artistData });
-      } else {
-        navigation.navigate('ArtistDetail', {
-          data: {
-            id: artist,
-          }
-        });
-      }
+      navigation.navigate('ArtistDetail', { id: artistId });
     }
   }
 

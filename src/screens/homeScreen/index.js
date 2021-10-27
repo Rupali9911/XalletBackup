@@ -206,9 +206,10 @@ const HomeScreen = ({ navigation }) => {
               ListReducer.artistList.map((item, index) => {
                 return (
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('ArtistDetail', { data: item })
-                    }
+                    onPress={() => {
+                      const id = item.role === 'crypto' ? item.username : item._id;
+                      navigation.navigate('ArtistDetail', { id: id });
+                    }}
                     key={`_${index}`}>
                     <View style={styles.userCircle}>
                       <C_Image
