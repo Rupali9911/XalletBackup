@@ -71,10 +71,16 @@ const Connect = ({ route, navigation }) => {
         }
     }
 
+    const renderApps = ({ item, index }) => {
+        return <ListItems item={item} />
+    }
+
+    const keyExtractor = (item, index) => { return `_${index}` }
+
     return (
         <AppBackground>
             <AppHeader
-                title={translate("wallet.common.connect")}
+                title={translate("wallet.common.walletConnect")}
                 titleStyle={styles.screenTitle} />
             <View style={styles.container}>
                 <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}</TextView>
@@ -82,18 +88,13 @@ const Connect = ({ route, navigation }) => {
                 <View style={styles.list}>
                     <FlatList
                         data={listData}
-                        renderItem={({ item, index }) => {
-                            return <ListItems item={item} />
-                        }}
-                        keyExtractor={(v, i) => "item_" + i}
+                        renderItem={renderApps}
+                        keyExtractor={keyExtractor}
                     />
                 </View>
 
-                <AppButton
-                    label={translate("wallet.common.newConnection")}
-                    containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
-                    onPress={onCheckPermission}
-                />
+                <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
+                    onPress={onCheckPermission} />
             </View>
         </AppBackground>
     );

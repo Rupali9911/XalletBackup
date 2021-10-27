@@ -27,7 +27,7 @@ const PaymentMethod = (props) => {
     const navigation = useNavigation();
     const { myCards } = useSelector(state => state.PaymentReducer);
 
-    const { visible, onRequestClose, price } = props;
+    const { visible, onRequestClose, price, chain } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
@@ -109,6 +109,9 @@ const PaymentMethod = (props) => {
                                 }
                             } else if (selectedMethod == 2) {
                                 setNotEnoughGoldVisible(true);
+                            } else if (selectedMethod == 1) {
+                                onRequestClose();
+                                navigation.navigate('WalletPay', { price, chainType: chain || "binance" });
                             }
                         }}
                     />

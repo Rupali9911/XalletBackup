@@ -14,7 +14,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
 import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
-import { loadFromAsync, setPasscode } from "./store/reducer/userReducer";
+import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
 import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
 import SecurityScreen from './screens/security';
@@ -54,6 +54,7 @@ import Cards from './screens/PaymentScreen/cards';
 import BuyGold from './screens/PaymentScreen/buyGold';
 import { translate } from './walletUtils';
 import { screenWidth } from './constants/responsiveFunct';
+import WalletPay from './screens/PaymentScreen/walletPay';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -135,7 +136,7 @@ const TabComponent = () => {
 
 const AppRoutes = () => {
 
-  const { wallet, passcode, loading } = useSelector(state => state.UserReducer);
+  const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
@@ -144,41 +145,41 @@ const AppRoutes = () => {
   React.useEffect(async () => {
 
     LogBox.ignoreAllLogs();
-    dispatch(getAllLanguages());
+    dispatch(startMainLoading());
 
+    dispatch(getAllLanguages())
+    // AsyncStorage.removeItem('@wallet')
     let pass = await AsyncStorage.getItem("@passcode");
-    
+    const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
     if (pass) {
       dispatch(setPasscode(pass))
       dispatch(loadFromAsync())
     } else {
       dispatch(loadFromAsync())
     }
-
-    const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
-
     if (languageData) {
       dispatch(setAppLanguage(JSON.parse(languageData)));
     } else {
       let item = languageArray.find(item => item.language_name == regionLanguage);
       dispatch(setAppLanguage(item));
     }
+
   }, []);
+
+
+  let initialRoute = passcode ? "PasscodeScreen" : "Home"
 
   return (
     <>
       {
-        loading ?
+        mainLoader ?
           <Loader /> :
           <NavigationContainer>
             {
-              passcode ?
-                <Stack.Navigator headerMode="none" >
-                  <Stack.Screen initialParams={{ updateToggle: null, screen: "Auth" }} name='PasscodeScreen' component={PasscodeScreen} />
-                </Stack.Navigator>
-                :  wallet ?
-                  <Stack.Navigator headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
+              wallet ?
+                  <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
                     <Stack.Screen name="Home" component={TabComponent} />
+                    <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
                     <Stack.Screen name="DetailItem" component={DetailItemScreen} />
                     <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
                     <Stack.Screen name="Pay" component={PayScreen} />
@@ -197,7 +198,7 @@ const AppRoutes = () => {
                     <Stack.Screen name='Setting' component={Setting} />
                     <Stack.Screen name='ChangePassword' component={ChangePassword} />
                     <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
-                    <Stack.Screen name='PasscodeScreen' component={PasscodeScreen} />
+                    <Stack.Screen name='WalletPay' component={WalletPay} />
                   </Stack.Navigator>
                   :
                   <Stack.Navigator headerMode="none">

@@ -4,6 +4,8 @@ import {
     AUTH_SUCCESS,
     AUTH_LOADING_START,
     AUTH_LOADING_END,
+    MAIN_LOADING_END,
+    MAIN_LOADING_START,
     UPDATE_CREATE,
     UPDATE_PROFILE,
     SET_PASSCODE
@@ -14,7 +16,8 @@ import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 
 const initialState = {
-    loading: true,
+    loading: false,
+    mainLoader: false,
     wallet: null,
     isCreate: false,
     data: {},
@@ -23,6 +26,17 @@ const initialState = {
 
 export default UserReducer = (state = initialState, action) => {
     switch (action.type) {
+        case MAIN_LOADING_START:
+            return {
+                ...state,
+                mainLoader: true,
+            };
+
+        case MAIN_LOADING_END:
+            return {
+                ...state,
+                mainLoader: false,
+            };
         case AUTH_LOADING_START:
             return {
                 ...state,
@@ -76,6 +90,13 @@ export const startLoading = () => ({
 const endLoading = () => ({
     type: AUTH_LOADING_END,
 });
+export const startMainLoading = () => ({
+    type: MAIN_LOADING_START,
+});
+
+export const endMainLoading = () => ({
+    type: MAIN_LOADING_END,
+});
 
 const setUserData = (data) => ({
     type: AUTH_SUCCESS,
@@ -106,52 +127,49 @@ export const endLoader = () => (dispatch) =>
         resolve();
     });
 
-export const loadFromAsync = () => (dispatch) =>
-    new Promise(async (resolve, reject) => {
-        dispatch(startLoading());
+export const loadFromAsync = () => async (dispatch) => {
+    const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
+    const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
+    // console.log(wallet, userData)
+    if (wallet && userData) {
+        dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
+        const _wallet = JSON.parse(wallet);
+        let req_data = {
+            owner: _wallet.address,
+            token: 'HubyJ*%qcqR0'
+        };
 
-        const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
-        const userData = await AsyncStorage.getItem('@userData', (err) => console.log(err));
-        if (wallet && userData) {
-
-            dispatch(setUserData({ data: JSON.parse(userData), wallet: JSON.parse(wallet), isCreate: false }));
-
-            const _wallet = JSON.parse(wallet);
-
-            let req_data = {
-                owner: _wallet.address,
-                token: 'HubyJ*%qcqR0'
-            };
-
-            let body = {
-                method: 'POST',
-                body: JSON.stringify(req_data),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
+        let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
             }
-            fetch(`${BASE_URL}/xanalia/getProfile`, body)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.data) {
-                        dispatch(upateUserData(res.data));
-                    }
-                })
-                .catch(e => {
-                    alertWithSingleBtn(
-                        translate("wallet.common.alert"),
-                        translate("wallet.common.error.networkFailed"),
-                        () => {
-                            console.log(e);
-                        }
-                    );
-                })
-        } else {
-            dispatch(endLoading());
         }
-        resolve();
-    });
+        fetch(`${BASE_URL}/xanalia/getProfile`, body)
+            .then(response => response.json())
+            .then(res => {
+                if (res.data) {
+                    dispatch(upateUserData(res.data));
+                }
+                dispatch(endMainLoading());
+
+            })
+            .catch(e => {
+                dispatch(endMainLoading());
+                alertWithSingleBtn(
+                    translate("common.alert"),
+                    translate("wallet.common.error.networkFailed"),
+                    () => {
+                        console.log(e);
+                    }
+                );
+            })
+    } else {
+        dispatch(endMainLoading());
+    }
+}
 
 export const setUserAuthData = (data, isCreate = false) => (dispatch) =>
     new Promise(async (resolve, reject) => {

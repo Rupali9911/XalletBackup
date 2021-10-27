@@ -90,8 +90,8 @@ const QRScreen = () => {
                     </TouchableOpacity>
                     <TextView style={styles.codeValue}>{wallet.address}</TextView>
                     <TextView style={styles.qrLabel}>{""}</TextView>
-                    {price !== "" && <TextView style={styles.price}>{price}</TextView>}
-                    {price !== "" && <TextView style={styles.valueLabel}>BTC</TextView>}
+                    {price!=="" && <TextView style={styles.price}>{price}</TextView>}
+                    {price!=="" && <TextView style={styles.valueLabel}>{item.type}</TextView>}
                 </ViewShot>
             </View>
             <View style={styles.actionContainer}>

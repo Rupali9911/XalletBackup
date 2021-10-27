@@ -142,7 +142,7 @@ new Promise((resolve, reject) => {
     let headers = {
         'Authorization': `Bearer ${token}`
     }
-    console.log('headers', headers);
+    console.log('headers', headers, data);
     ApiRequest(`${BASE_URL}stripe/transaction-success`, 'POST', data, headers)
         .then((response) => {
             console.log('response', response);

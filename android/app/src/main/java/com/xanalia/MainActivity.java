@@ -1,4 +1,4 @@
-package com.showcase;
+package com.xanalia;
 
 import com.facebook.react.ReactActivity;
 
