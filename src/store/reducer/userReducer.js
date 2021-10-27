@@ -4,6 +4,8 @@ import {
     AUTH_SUCCESS,
     AUTH_LOADING_START,
     AUTH_LOADING_END,
+    MAIN_LOADING_END,
+    MAIN_LOADING_START,
     UPDATE_CREATE,
     UPDATE_PROFILE,
     SET_PASSCODE
@@ -15,6 +17,7 @@ import { alertWithSingleBtn } from '../../common/function';
 
 const initialState = {
     loading: false,
+    mainLoader: false,
     wallet: null,
     isCreate: false,
     data: {},
@@ -23,6 +26,17 @@ const initialState = {
 
 export default UserReducer = (state = initialState, action) => {
     switch (action.type) {
+        case MAIN_LOADING_START:
+            return {
+                ...state,
+                mainLoader: true,
+            };
+
+        case MAIN_LOADING_END:
+            return {
+                ...state,
+                mainLoader: false,
+            };
         case AUTH_LOADING_START:
             return {
                 ...state,
@@ -75,6 +89,13 @@ export const startLoading = () => ({
 
 const endLoading = () => ({
     type: AUTH_LOADING_END,
+});
+export const startMainLoading = () => ({
+    type: MAIN_LOADING_START,
+});
+
+export const endMainLoading = () => ({
+    type: MAIN_LOADING_END,
 });
 
 const setUserData = (data) => ({
@@ -132,9 +153,11 @@ export const loadFromAsync = () => async (dispatch) => {
                 if (res.data) {
                     dispatch(upateUserData(res.data));
                 }
+                dispatch(endMainLoading());
+
             })
             .catch(e => {
-                dispatch(endLoading());
+                dispatch(endMainLoading());
                 alertWithSingleBtn(
                     translate("common.alert"),
                     translate("wallet.common.error.networkFailed"),
@@ -144,7 +167,7 @@ export const loadFromAsync = () => async (dispatch) => {
                 );
             })
     } else {
-        dispatch(endLoading());
+        dispatch(endMainLoading());
     }
 }
 
