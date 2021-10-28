@@ -5,8 +5,6 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Linking,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -14,9 +12,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {openSettings} from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import {useDispatch, useSelector} from 'react-redux';
-import { openSettings } from 'react-native-permissions';
 import {
   responsiveFontSize as RF,
   SIZE,
@@ -38,12 +36,11 @@ import {
 } from '../../store/actions/nftTrendList';
 import {updateCreateState} from '../../store/reducer/userReducer';
 import getLanguage from '../../utils/languageSupport';
-import {translate, setI18nConfig} from '../../walletUtils';
+import {setI18nConfig, translate} from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
-import messaging from '@react-native-firebase/messaging';
 
 const langObj = getLanguage();
 
@@ -55,7 +52,7 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
@@ -165,11 +162,13 @@ const Hot = () => {
 
 const HomeScreen = ({navigation}) => {
   const {ListReducer} = useSelector(state => state);
-  const {wallet, isCreate} = useSelector(state => state.UserReducer);
+  const {wallet, isCreate, showSuccess} = useSelector(
+    state => state.UserReducer,
+  );
   const dispatch = useDispatch();
 
-  const [modalVisible, setModalVisible] = useState(isCreate);
-  const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
+  const [modalVisible, setModalVisible] = useState(showSuccess);
+  const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
 
   useEffect(() => {
@@ -177,8 +176,8 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const openPhoneSettings = () => {
-      // Linking.openSettings();
-      openSettings();
+    // Linking.openSettings();
+    openSettings();
   };
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({alert}) => {
@@ -237,7 +236,7 @@ const HomeScreen = ({navigation}) => {
               })}
           </ScrollView>
         </View>
-        {isCreate ? null : (
+        {showSuccess ? null : (
           <Tab.Navigator
             tabBarOptions={{
               activeTintColor: colors.BLUE4,

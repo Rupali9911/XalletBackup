@@ -825,7 +825,8 @@
             "total": "全部的",
             "firstName": "名",
             "lastName": "姓",
-            "aboutMe": "关于我"
+            "aboutMe": "关于我",
+            "walletImported": "您的錢包已成功導入。"
         },
         "backendmessage": {
             "error": {},

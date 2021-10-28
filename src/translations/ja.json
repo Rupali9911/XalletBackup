@@ -825,7 +825,8 @@
             "total": "合計",
             "firstName": "お名前（名)",
             "lastName": "お名前（姓)",
-            "aboutMe": "その他 / 基本情報"
+            "aboutMe": "その他 / 基本情報",
+            "walletImported": "ウォレットが正常にインポートされました。"
         },
         "backendmessage": {
             "error": {},

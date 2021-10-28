@@ -825,7 +825,8 @@
             "total": "Total",
             "firstName": "First Name",
             "lastName": "Last Name",
-            "aboutMe": "About Me"
+            "aboutMe": "About Me",
+            "walletImported": "Your wallet was successfully imported."
         },
         "backendmessage": {
             "error": {},

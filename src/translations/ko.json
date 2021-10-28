@@ -825,7 +825,8 @@
             "total": "총",
             "firstName": "이름",
             "lastName": "성",
-            "aboutMe": "나에 대해서"
+            "aboutMe": "나에 대해서",
+            "walletImported": "지갑을 성공적으로 가져왔습니다."
         },
         "backendmessage": {
             "error": {},
