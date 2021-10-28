@@ -140,10 +140,10 @@ const AppRoutes = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
-
   setI18nConfig(selectedLanguageItem.language_name);
 
   React.useEffect(async () => {
+
     LogBox.ignoreAllLogs();
     dispatch(startMainLoading());
 
@@ -158,10 +158,8 @@ const AppRoutes = () => {
       dispatch(loadFromAsync())
     }
     if (languageData) {
-      console.log('languageData', languageData);
       dispatch(setAppLanguage(JSON.parse(languageData)));
     } else {
-      console.log('regionLanguage', regionLanguage)
       let item = languageArray.find(item => item.language_name == regionLanguage);
       dispatch(setAppLanguage(item));
     }

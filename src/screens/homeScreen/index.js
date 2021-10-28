@@ -1,6 +1,6 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -15,19 +15,20 @@ import {
   View,
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { openSettings } from 'react-native-permissions';
 import {
   responsiveFontSize as RF,
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {C_Image, DetailModal, Loader} from '../../components';
+import { C_Image, DetailModal, Loader } from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModal from '../../components/successModal';
 import ImageSrc from '../../constants/Images';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import { colors, fonts } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
 import {
   getAllArtist,
   getNFTList,
@@ -35,9 +36,9 @@ import {
   nftLoadStart,
   pageChange,
 } from '../../store/actions/nftTrendList';
-import {updateCreateState} from '../../store/reducer/userReducer';
+import { updateCreateState } from '../../store/reducer/userReducer';
 import getLanguage from '../../utils/languageSupport';
-import {translate, setI18nConfig} from '../../walletUtils';
+import { translate, setI18nConfig } from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
@@ -49,7 +50,7 @@ const langObj = getLanguage();
 const Tab = createMaterialTopTabNavigator();
 
 const Hot = () => {
-  const {ListReducer} = useSelector(state => state);
+  const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -80,7 +81,7 @@ const Hot = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       return (
@@ -91,24 +92,25 @@ const Hot = () => {
           }}
           onPress={() => {
             dispatch(changeScreenName('Hot'));
-            navigation.navigate('DetailItem', {index: findIndex});
+            navigation.navigate('DetailItem', { index: findIndex });
           }}
           style={styles.listItem}>
-          {item.thumbnailUrl !== undefined || item.thumbnailUrl ? (
-            <C_Image
-              type={
-                item.metaData.image.split('.')[
-                  item.metaData.image.split('.').length - 1
-                ]
-              }
-              uri={item.thumbnailUrl}
-              imageStyle={styles.listImage}
-            />
-          ) : (
-            <View style={styles.sorryMessageCont}>
-              <Text style={{textAlign: 'center'}}>No Image to Show</Text>
-            </View>
-          )}
+          {
+            item.metaData.image ? (
+              item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                <C_Image
+                  type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                  uri={item.thumbnailUrl}
+                  imageStyle={styles.listImage} />
+                :
+                <View style={styles.sorryMessageCont}>
+                  <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
+                </View>
+            ) :
+              <View style={styles.sorryMessageCont}>
+                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
+              </View>
+          }
         </TouchableOpacity>
       );
     }
@@ -162,9 +164,9 @@ const Hot = () => {
   );
 };
 
-const HomeScreen = ({navigation}) => {
-  const {ListReducer} = useSelector(state => state);
-  const {wallet, isCreate} = useSelector(state => state.UserReducer);
+const HomeScreen = ({ navigation }) => {
+  const { ListReducer } = useSelector(state => state);
+  const { wallet, isCreate } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
 
   const [modalVisible, setModalVisible] = useState(isCreate);
@@ -176,10 +178,11 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   const openPhoneSettings = () => {
-      Linking.openSettings();
+    // Linking.openSettings();
+    openSettings();
   };
   const checkPermissions = async () => {
-    PushNotification.checkPermissions(async ({alert}) => {
+    PushNotification.checkPermissions(async ({ alert }) => {
       if (!alert) {
         setNotificationVisible(true);
       } else {
@@ -189,7 +192,7 @@ const HomeScreen = ({navigation}) => {
   };
   return (
     <>
-      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={styles.header}>
           <View style={styles.headerMenuContainer}></View>
           <Text style={styles.headerTitle}>{translate('common.home')}</Text>
@@ -198,14 +201,14 @@ const HomeScreen = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Certificate');
               }}
-              hitSlop={{top: 5, right: 5, bottom: 5, left: 5}}>
+              hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
               <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Create');
               }}
-              hitSlop={{top: 5, right: 5, bottom: 5, left: 5}}>
+              hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
               <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
             </TouchableOpacity>
           </View>
@@ -216,15 +219,16 @@ const HomeScreen = ({navigation}) => {
               ListReducer.artistList.map((item, index) => {
                 return (
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('ArtistDetail', {data: item})
-                    }
+                    onPress={() => {
+                      const id = item.role === 'crypto' ? item.username : item._id;
+                      navigation.navigate('ArtistDetail', { id: id });
+                    }}
                     key={`_${index}`}>
                     <View style={styles.userCircle}>
                       <C_Image
                         uri={item.profile_image}
                         type={item.profile_image}
-                        imageStyle={{width: '100%', height: '100%'}}
+                        imageStyle={{ width: '100%', height: '100%' }}
                       />
                     </View>
                     <Text numberOfLines={1} style={styles.userText}>
@@ -266,17 +270,17 @@ const HomeScreen = ({navigation}) => {
             <Tab.Screen
               name={langObj.common.hot}
               component={Hot}
-              options={{tabBarLabel: translate('common.hot')}}
+              options={{ tabBarLabel: translate('common.hot') }}
             />
             <Tab.Screen
               name={langObj.common.following}
               component={NewNFT}
-              options={{tabBarLabel: translate('common.following')}}
+              options={{ tabBarLabel: translate('common.following') }}
             />
             <Tab.Screen
               name={langObj.common.Discover}
               component={Favorite}
-              options={{tabBarLabel: translate('common.Discover')}}
+              options={{ tabBarLabel: translate('common.Discover') }}
             />
           </Tab.Navigator>
         )}

@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: fonts.PINGfANG,
         marginBottom: SIZE(8),
-        width: SIZE(57)
     },
     headerMenuContainer: {
         flex:0.5,

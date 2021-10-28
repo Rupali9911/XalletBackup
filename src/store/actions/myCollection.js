@@ -39,13 +39,18 @@ export const myCollectionList = (page, ownerId) => {
         let body_data = {
             limit: 24,
             networkType: networkType,
-            userId: ownerId,
             page: page,
             nftType: 'mycollection'
         }
 
+        if (ownerId.length > 24) {
+            body_data.owner = ownerId.toUpperCase();
+        } else {
+            body_data.userId = ownerId;
+        }
+
         if (user) {
-            body_data.owner = user._id;
+            body_data.loggedIn = user._id;
         }
 
         let fetch_data_body = {
@@ -56,7 +61,12 @@ export const myCollectionList = (page, ownerId) => {
                 'Content-Type': 'application/json',
             }
         }
-        fetch(`https://api.xanalia.com/user/get-user-collection`, fetch_data_body)
+        
+        const url = ownerId.length > 24 ?
+            `${BASE_URL}/xanalia/mydata` :
+            `${BASE_URL}/user/get-user-collection`;
+
+        fetch(url, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
                 dispatch(myCollectionLoadSuccess(json));

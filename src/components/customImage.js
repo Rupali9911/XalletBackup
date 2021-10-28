@@ -31,7 +31,7 @@ const C_Image = (props) => {
                 resizeMode={FastImage.resizeMode.cover}
             />
             {
-                props.type === 'mp4' || props.type === 'mov' ?
+                props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' ?
                     <View style={{
                         position: 'absolute',
                         top: 0,

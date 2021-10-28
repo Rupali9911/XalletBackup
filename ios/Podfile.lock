@@ -11,7 +11,56 @@ PODS:
     - React-Core (= 0.64.2)
     - React-jsi (= 0.64.2)
     - ReactCommon/turbomodule/core (= 0.64.2)
+  - Firebase/CoreOnly (8.8.0):
+    - FirebaseCore (= 8.8.0)
+  - Firebase/Messaging (8.8.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.8.0)
+  - FirebaseCore (8.8.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+  - FirebaseCoreDiagnostics (8.8.0):
+    - GoogleDataTransport (~> 9.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInstallations (8.8.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseMessaging (8.8.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleDataTransport (~> 9.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Reachability (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
+    - nanopb (~> 2.30908.0)
   - glog (0.3.5)
+  - GoogleDataTransport (9.1.0):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.5.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.5.2):
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/Logger (7.5.2):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/Network (7.5.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.5.2)"
+  - GoogleUtilities/Reachability (7.5.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.5.2):
+    - GoogleUtilities/Logger
   - libwebp (1.2.0):
     - libwebp/demux (= 1.2.0)
     - libwebp/mux (= 1.2.0)
@@ -21,8 +70,14 @@ PODS:
   - libwebp/mux (1.2.0):
     - libwebp/demux
   - libwebp/webp (1.2.0)
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
   - Permission-Camera (2.2.2):
     - RNPermissions
+  - PromisesObjC (2.0.0)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
     - DoubleConversion
@@ -226,16 +281,16 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
-  - react-native-config (1.4.4):
-    - react-native-config/App (= 1.4.4)
-  - react-native-config/App (1.4.4):
+  - react-native-config (1.4.5):
+    - react-native-config/App (= 1.4.5)
+  - react-native-config/App (1.4.5):
     - React-Core
   - react-native-fast-video (5.1.7):
     - React-Core
     - react-native-fast-video/Video (= 5.1.7)
   - react-native-fast-video/Video (5.1.7):
     - React-Core
-  - react-native-image-picker (4.1.1):
+  - react-native-image-picker (4.1.2):
     - React-Core
   - react-native-netinfo (6.0.2):
     - React-Core
@@ -247,7 +302,7 @@ PODS:
     - React
   - react-native-view-shot (3.1.2):
     - React
-  - react-native-webview (11.14.0):
+  - react-native-webview (11.14.1):
     - React-Core
   - React-perflogger (0.64.2)
   - React-RCTActionSheet (0.64.2):
@@ -315,18 +370,27 @@ PODS:
     - React-perflogger (= 0.64.2)
   - ReactNativeART (1.2.0):
     - React
-  - RNCAsyncStorage (1.15.8):
+  - RNCAsyncStorage (1.15.9):
     - React-Core
-  - RNCClipboard (1.8.4):
+  - RNCClipboard (1.9.0):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
+  - RNCPushNotificationIOS (1.10.1):
+    - React-Core
   - RNDeviceInfo (8.4.1):
     - React-Core
   - RNFastImage (8.5.11):
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNFBApp (12.9.3):
+    - Firebase/CoreOnly (= 8.8.0)
+    - React-Core
+  - RNFBMessaging (12.9.3):
+    - Firebase/Messaging (= 8.8.0)
+    - React-Core
+    - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNIap (8.0.0-rc.3):
@@ -342,7 +406,7 @@ PODS:
   - RNScreens (3.8.0):
     - React-Core
     - React-RCTImage
-  - RNShare (7.1.1):
+  - RNShare (7.2.0):
     - React-Core
   - RNSVG (12.1.1):
     - React
@@ -354,15 +418,19 @@ PODS:
   - SDWebImageWebPCoder (0.8.4):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Stripe (21.8.1):
-    - Stripe/Stripe3DS2 (= 21.8.1)
-    - StripeCore (= 21.8.1)
-  - stripe-react-native (0.2.2):
-    - React
-    - Stripe (~> 21.8.1)
-  - Stripe/Stripe3DS2 (21.8.1):
-    - StripeCore (= 21.8.1)
-  - StripeCore (21.8.1)
+  - Stripe (21.9.0):
+    - Stripe/Stripe3DS2 (= 21.9.0)
+    - StripeCore (= 21.9.0)
+    - StripeUICore (= 21.9.0)
+  - stripe-react-native (0.2.3):
+    - React-Core
+    - Stripe (~> 21.9.0)
+  - Stripe/Stripe3DS2 (21.9.0):
+    - StripeCore (= 21.9.0)
+    - StripeUICore (= 21.9.0)
+  - StripeCore (21.9.0)
+  - StripeUICore (21.9.0):
+    - StripeCore (= 21.9.0)
   - TcpSockets (3.3.2):
     - React
   - Yoga (1.14.0)
@@ -414,8 +482,11 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
   - RNLocalize (from `../node_modules/react-native-localize`)
@@ -433,11 +504,21 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - Firebase
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - GoogleDataTransport
+    - GoogleUtilities
     - libwebp
+    - nanopb
+    - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
     - Stripe
     - StripeCore
+    - StripeUICore
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -528,10 +609,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFBApp:
+    :path: "../node_modules/@react-native-firebase/app"
+  RNFBMessaging:
+    :path: "../node_modules/@react-native-firebase/messaging"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
@@ -564,10 +651,19 @@ SPEC CHECKSUMS:
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
-  FBReactNativeSpec: 1fe37cd5545a12b3c6633eaab0809518511b69f9
+  FBReactNativeSpec: 57d449ebb08587da2b8a4d72d99c0be9cc3f1ce0
+  Firebase: 629510f1a9ddb235f3a7c5c8ceb23ba887f0f814
+  FirebaseCore: 98b29e3828f0a53651c363937a7f7d92a19f1ba2
+  FirebaseCoreDiagnostics: fe77f42da6329d6d83d21fd9d621a6b704413bfc
+  FirebaseInstallations: 2563cb18a723ef9c6ef18318a49519b75dce613c
+  FirebaseMessaging: 419b5c9d84f294a753c6501d8cfb9ced1ce37304
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
+  GoogleUtilities: 8de2a97a17e15b6b98e38e8770e2d129a57c0040
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
-  Permission-Camera: 375576c57ea625c88137d2cc52ba6dfeb21db036
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  Permission-Camera: 5d2aaf95592660b6dcb5e8d1d90ed5d0156cad02
+  PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
   RCTTypeSafety: c1f31d19349c6b53085766359caac425926fafaa
@@ -580,16 +676,16 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 80c46bd381fd06e418e0d4f53672dc1d1945c4c3
   React-jsinspector: cc614ec18a9ca96fd275100c16d74d62ee11f0ae
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-camera: 210a872c84d3aa0982a9223047ef9e743ed694fa
-  react-native-config: 72d948053a442779b3178fddd571e37f118ef606
-  react-native-fast-video: 76ab3e12510bdb438e9d9e973286af451a38c1ab
-  react-native-image-picker: 7c37cd600a9b7338ced8609cc3ad108ebe6c444f
-  react-native-netinfo: 8917788f12f8c422d16a56f840a1b06faa56e2b6
-  react-native-randombytes: 5fc412efe7b5c55b9002c0004d75fe5fabcaa507
-  react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
-  react-native-udp: ccbd878f0f3b968217fc7e3d5eb5839fcaab8b6c
-  react-native-view-shot: 08c46c9e8e92f6681e8f2ffa55ac3d06e7e99070
-  react-native-webview: a785c756d3968f09653b1c081e6f1cb9149a94ac
+  react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
+  react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
+  react-native-fast-video: 2b3203e05780cbaf23694c64e0194ab66fb8825d
+  react-native-image-picker: 9c8a2687b69300ad9e95cec5d38f35ab9d32467d
+  react-native-netinfo: 92e6e4476eb8bf6fc2d7c0a6ca0a1406f663d73a
+  react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
+  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
+  react-native-udp: ff9d13e523f2b58e6bc5d4d32321ac60671b5dc9
+  react-native-view-shot: 4475fde003fe8a210053d1f98fb9e06c1d834e1c
+  react-native-webview: db22ab831b8c5f7697957a67f7a7ac1cecfed18d
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa
@@ -602,28 +698,32 @@ SPEC CHECKSUMS:
   React-RCTVibration: 24600e3b1aaa77126989bc58b6747509a1ba14f3
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
-  ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
-  RNCAsyncStorage: 0f655864a81214d1c5a9bf0faf79d86dc25c383e
-  RNCClipboard: 5df122bc31f95f2b37de9bbadc1dbef5a79cb1b0
-  RNCMaskedView: f127cd9652acfa31b91dcff613e07ba18b774db6
-  RNDeviceInfo: 1a8db52003ad76c066ed739259079efe5d2e7853
+  ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
+  RNCAsyncStorage: 26f25150da507524a7815f2ada06ca0967f65633
+  RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
+  RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
+  RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
+  RNDeviceInfo: 55175b0bd852c1c5d70d76efc04ed77799cef638
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
+  RNFBApp: 729c0666395b1953198dc4a1ec6deb8fbe1c302e
+  RNFBMessaging: 8415ec196e5c1196caa26ec0742cdb48ed4d0f97
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNIap: cca3ab7c0e7b1bb6506135ebf381e03a241daaf2
-  RNLocalize: 13a971fd888f2933504a745983f781dc52feeab6
+  RNIap: 99db2202f36f612761d5c56f8a9df2f532e654af
+  RNLocalize: 74b82db20cc3895ccc25af992c644879bcec2815
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
-  RNPermissions: 067727df624665d4a6c8e2cffcc172ba608b96ed
+  RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
-  RNShare: a22398d8d02336133e28bf8b6e0b47b31abade41
+  RNShare: 70356a1bb406bc46ae03196a5d3048c702bb71a7
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
-  Stripe: 57c6997c64042a3f5aedae9b76e331942f8b75d2
-  stripe-react-native: ad8425aa1e4b4a82be91f2245dbd864c002bd6c7
-  StripeCore: a6e50d58119a0c7601773b56f274db2d394dcdac
-  TcpSockets: 8d839b9b14f6f344d98e4642ded13ab3112b462d
+  Stripe: 41c3d261501e1dc84755b1bdabdaae50ebf92b53
+  stripe-react-native: 980f3d19f52a7dc4b373c6c20d30ebd760bc39e5
+  StripeCore: 2ea9531e863ef20f191a0d61f00dedb7f061baef
+  StripeUICore: a0f9e40520823d34c63baec0782fc4a0c7fb7484
+  TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
 PODFILE CHECKSUM: 5717c0bf595cf205574a7ee6c54eeca16862cb22

@@ -47,13 +47,18 @@ export const myNFTList = (page, ownerId) => {
         let body_data = {
             limit: 24,
             networkType: networkType,
-            userId: ownerId,
             page: page,
             nftType: 'mynft'
         }
 
+        if (ownerId.length > 24) {
+            body_data.owner = ownerId.toUpperCase();
+        } else {
+            body_data.userId = ownerId;
+        }
+
         if (user) {
-            body_data.owner = user._id;
+            body_data.loggedIn = user._id;
         }
 
         let fetch_data_body = {
@@ -64,41 +69,15 @@ export const myNFTList = (page, ownerId) => {
                 'Content-Type': 'application/json',
             }
         }
-        fetch(`https://api.xanalia.com/user/get-user-collection`, fetch_data_body)
+
+        const url = ownerId.length > 24 ?
+            `${BASE_URL}/xanalia/mydata` :
+            `${BASE_URL}/user/get-user-collection`;
+
+        fetch(url, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
-                let new_list = [...json.data];
-                if (new_list.length === 0) {
-                    let data = {
-                        limit: 24,
-                        networkType: networkType,
-                        owner: ownerId,
-                        page: page,
-                        nftType: 'mynft'
-                    }
-
-                    let data_body = {
-                        method: 'POST',
-                        body: JSON.stringify(data),
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                        }
-                    }
-                    fetch(`https://api.xanalia.com/xanalia/mydata`, data_body)
-                        .then(response => response.json())  // promise
-                        .then(json => {
-                            dispatch(myNftLoadSuccess(json));
-                        }).catch(err => {
-                            dispatch(myNftLoadFail())
-                            alertWithSingleBtn(
-                                translate('common.error'),
-                                err.message
-                            )
-                        })
-                } else {
-                    dispatch(myNftLoadSuccess(json));
-                }
+                dispatch(myNftLoadSuccess(json));
             }).catch(err => {
                 dispatch(myNftLoadFail())
                 alertWithSingleBtn(

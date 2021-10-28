@@ -56,7 +56,7 @@ const NewNFT = () => {
                     }}
                     style={styles.listItem}>
                     {
-                        item.metaData.image && (
+                        item.metaData.image ? (
                             item.thumbnailUrl !== undefined || item.thumbnailUrl ?
                                 <C_Image
                                     type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
@@ -66,7 +66,10 @@ const NewNFT = () => {
                                 <View style={styles.sorryMessageCont}>
                                     <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
                                 </View>
-                        )
+                        ) :
+                            <View style={styles.sorryMessageCont}>
+                                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
+                            </View>
                     }
                 </TouchableOpacity>
             )

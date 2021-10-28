@@ -17,6 +17,9 @@ import Fonts from '../../constants/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
+import { openSettings } from 'react-native-permissions';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
 
 const listData = [
     {
@@ -34,9 +37,9 @@ const listData = [
 ];
 
 const ListItems = (props) => {
-    const {item} = props;
+    const { item } = props;
     return (
-        <TouchableOpacity onPress={()=>props.onPress && props.onPress(item)} style={styles.listCont} >
+        <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
                 <Image style={styles.profileImage} source={item.icon} />
             </View>
@@ -50,36 +53,48 @@ const ListItems = (props) => {
     )
 }
 
-const Connect = ({route, navigation}) => {
+const Connect = ({ route, navigation }) => {
 
-    const navigateToScan = () => {
-        navigation.navigate("scanToConnect");
+    const onCheckPermission = async () => {
+        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        if (!isGranted) {
+            confirmationAlert(
+                'This feature requires camera access',
+                'To enable access, tap Settings and turn on Camera.',
+                'Cancel',
+                'Settings',
+                () => openSettings(),
+                () => null
+            )
+        } else {
+            navigation.navigate("scanToConnect");
+        }
     }
 
-    const renderApps = ({item, index}) => {
-        return <ListItems item={item}/>
+    const renderApps = ({ item, index }) => {
+        return <ListItems item={item} />
     }
 
-    const keyExtractor = (item, index) => {return `_${index}`}
+    const keyExtractor = (item, index) => { return `_${index}` }
 
     return (
         <AppBackground>
-            <AppHeader 
+            <AppHeader
                 title={translate("wallet.common.walletConnect")}
-                titleStyle={styles.screenTitle}/>
+                titleStyle={styles.screenTitle} />
             <View style={styles.container}>
                 <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}</TextView>
-                
+
                 <View style={styles.list}>
-                    <FlatList 
+                    <FlatList
                         data={listData}
                         renderItem={renderApps}
                         keyExtractor={keyExtractor}
-                        />
+                    />
                 </View>
 
                 <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
-                    onPress={navigateToScan} />
+                    onPress={onCheckPermission} />
             </View>
         </AppBackground>
     );

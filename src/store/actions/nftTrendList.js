@@ -1,5 +1,6 @@
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
+import axios from 'axios';
 
 import {
     NFT_LIST_SUCCESS,
@@ -110,7 +111,7 @@ export const getAllArtist = () => {
             }
         }
 
-        fetch('https://api.xanalia.com/user/get-all-artist', fetch_data_body)
+        fetch(`${BASE_URL}/user/get-all-artist`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
                 dispatch(getAllArtistSuccess([...json.data]))
@@ -201,6 +202,23 @@ export const handleLikeDislike = (item, index) => {
             )
         })
 
+    }
+}
+
+export const handleFollow = (followingUserId, isFollowing) => {
+    return (dispatch, getState) => {
+        const { data } = getState().UserReducer;
+
+        let url = isFollowing ? `${BASE_URL}/user/unFollow-user` : `${BASE_URL}/user/follow-user`;
+        let req_body = {
+            followingUserId: followingUserId
+        };
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        axios.post(url, req_body)
+            .catch(err => {
+                alert(err.response.message);
+            });
     }
 }
 

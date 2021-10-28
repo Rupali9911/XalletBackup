@@ -200,11 +200,9 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
             }
         }
 
-        console.log('request', request);
         dispatch(startLoading());
         fetch(url, request).then((res) => res.json())
             .then((response) => {
-                console.log('response', response);
                 if (response.success) {
 
                     const _params = {
@@ -223,7 +221,6 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
 
                     fetch('https://testapi.xanalia.com/auth/verify-signature', verifyReuqest).then((_res) => _res.json())
                         .then(async (_response) => {
-                            console.log('_response', _response);
                             if (_response.success) {
                                 const items = [['@wallet', JSON.stringify(wallet)], ['@userData', JSON.stringify(_response.data)]]
                                 await AsyncStorage.multiSet(items, (err) => console.log(err));
@@ -243,7 +240,6 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                     reject(response);
                 }
             }).catch((err) => {
-                console.log('getAddressNonce err', err);
                 dispatch(endLoading());
                 reject(err);
             });

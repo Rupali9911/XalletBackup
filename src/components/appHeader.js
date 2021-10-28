@@ -56,10 +56,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         zIndex: 5,
-        marginHorizontal: wp("3%"),
+        paddingHorizontal: wp("3%"),
     },
     title: {
         fontSize: FONT(16),
+        lineHeight: FONT(17),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
         color: COLORS.BLACK1
