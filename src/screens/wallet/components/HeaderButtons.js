@@ -17,7 +17,7 @@ export const HeaderBtns = (props) => {
             <View style={[styles.iconContainer,props.bgColor && {backgroundColor: props.bgColor}]}>
                 <Image source={props.image} style={[styles.headerBottomIcons,props.iconColor && {tintColor: props.iconColor}]} />
             </View>
-            <Text style={[styles.headerBtnsText, styles.headerBottomText, props.labelColor && {color: props.labelColor}]} >{props.label}</Text>
+            <Text style={[styles.headerBtnsText, styles.headerBottomText, props.labelColor && {color: props.labelColor}, props.labelStyle]} >{props.label}</Text>
         </TouchableOpacity>
     )
 }

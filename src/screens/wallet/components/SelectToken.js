@@ -79,6 +79,7 @@ const SelectToken = (props) => {
                     </View>
 
                     <FlatList
+                        contentContainerStyle={{ paddingVertical: hp("1.8%") }}
                         data={balance_Data.filter((_) => {
                             if (searchTxt !== '') {
                                 console.log(searchTxt.toLowerCase(), _.tokenName.toLowerCase());
@@ -94,7 +95,9 @@ const SelectToken = (props) => {
                         }
                         }
                         keyExtractor={(item, index) => `_${index}`}
-                        ItemSeparatorComponent={() => <Separator style={styles.separator} />}
+                        ItemSeparatorComponent={() => <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                            <Separator style={styles.separator} />
+                        </View>}
                         ListEmptyComponent={() => {
                             return (
                                 <TextView style={styles.noData} >{translate("wallet.common.noData")}</TextView>
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
     },
     listCont: {
         paddingHorizontal: wp("4%"),
-        paddingVertical: hp('1.8%'),
+        paddingVertical: hp('1%'),
         flexDirection: "row",
         alignItems: 'center',
     },

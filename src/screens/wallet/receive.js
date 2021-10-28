@@ -102,19 +102,22 @@ const QRScreen = () => {
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
+                        labelStyle={styles.btnLabel}
                         onPress={() => copyToClipboard()}
-                    />
+                        />
                     <HeaderBtns
                         image={ImagesSrc.receive}
                         label={translate("wallet.common.setAmount")}
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
+                        labelStyle={styles.btnLabel}
                         bgColor={Colors.headerIconBg2}
                         onPress={() => { setModalVisible(true) }}
-                    />
+                        />
                     <HeaderBtns
                         image={ImagesSrc.topup}
                         label={translate("wallet.common.share")}
+                        labelStyle={styles.btnLabel}
                         labelColor={Colors.headerIcon2}
                         iconColor={Colors.headerIcon2}
                         bgColor={Colors.headerIconBg2}
@@ -229,12 +232,15 @@ const styles = StyleSheet.create({
     shareBtn: {
         backgroundColor: Colors.scanActive
     },
+    btnLabel: {
+        fontSize: RF(1.8)
+    },
     codeValue: {
         width: "80%",
         alignSelf: 'center',
         marginVertical: hp("4%"),
         color: Colors.codeColor,
-        fontSize: RF(1.4),
+        fontSize: RF(2),
         textAlign: 'center'
     },
     actionBtns: {
@@ -251,12 +257,12 @@ const styles = StyleSheet.create({
 
     },
     alert: {
-        maxWidth: "80%",
+        maxWidth: "90%",
         alignSelf: 'center',
         textAlign: 'center',
         marginVertical: hp("3%"),
         color: 'red',
-        fontSize: RF(1.5)
+        fontSize: RF(1.7)
     },
     price: {
         alignSelf: 'center',
