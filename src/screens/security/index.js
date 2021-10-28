@@ -16,10 +16,16 @@ import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ListItem = (props) => {
+
+    const {isBackup} = useSelector(state => state.UserReducer);
+
     return (
         <TouchableOpacity disabled={props.disableView} onPress={props.onPress} style={styles.itemCont} >
             <View style={styles.centerProfileCont} >
-                <Text style={styles.listLabel} >{props.label}</Text>
+                <View>
+                    <Text style={styles.listLabel} >{props.label}</Text>
+                    {props.subLabel && <Text style={[styles.listSubLabel,{color: isBackup?Colors.badgeGreen:Colors.alert}]}>{isBackup?translate("wallet.common.backupSuccess"):translate("wallet.common.notBackedUp")}</Text>}
+                </View>
                 {
                     props.rightText ?
                         <Text style={styles.listLabel} >{props.rightText}</Text>
@@ -44,6 +50,8 @@ function SecurityScreen({
 }) {
 
     const dispatch = useDispatch();
+    const {wallet} = useSelector(state => state.UserReducer);
+
     const [toggle, setToggle] = useState(false);
 
     useEffect(async () => {
@@ -83,6 +91,12 @@ function SecurityScreen({
                                 navigation.navigate("PasscodeScreen", { updateToggle: () => setToggle(!toggle), screen: "security" })
                             }}
                         />}
+                    />
+
+                    <ListItem
+                        onPress={() => {navigation.navigate("recoveryPhrase", { wallet })}}
+                        label={translate("wallet.common.backupPhrase")}
+                        subLabel={true}
                     />
 
                 </View>

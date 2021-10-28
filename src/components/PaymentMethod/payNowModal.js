@@ -194,7 +194,7 @@ const PaymentNow = (props) => {
         const params = {
             transactionHash: trans_hash,
             locale: "en",
-            chainType: chain,
+            chainType: chain || "binance",
             previousOwnerId: ownerId
           }
 

@@ -13,6 +13,7 @@ import Colors from '../../../constants/Colors';
 import { translate } from '../../../utils';
 import { Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const ListItems = (props) => {
     const {item} = props;
@@ -22,18 +23,29 @@ const ListItems = (props) => {
                 <Image style={styles.profileImage} source={item.direction == 'in'?ImagesSrc.received:ImagesSrc.sent} />
             </View>
             <View style={styles.centerCont} >
-                <Text style={styles.tokenName} >{item.direction == 'in'? translate("wallet.common.received"):  translate("wallet.common.sent")}</Text>
+                <View style={styles.firstRow}>
+                    <Text style={styles.tokenName} >{item.direction == 'in'? translate("wallet.common.received"):  translate("wallet.common.sent")}</Text>
+                </View>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?` ${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text>
-                    {/* <Text style={styles.percentTxt} >{item.percent}</Text> */}
+                    {/* <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text> */}
+                    <Text style={styles.townTxt} >{moment.unix(item.timeStamp).format("YYYY-MM-DD HH:mm:ss")}</Text>
                 </View>
                 
             </View>
             <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }} >
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
-                <Text style={[styles.priceTxt, {color: item.direction == 'in'? Colors.receiveColor : Colors.sendColor}]} >
+                <NumberFormat
+                    value={item.value}
+                    displayType={'text'}
+                    decimalScale={8}
+                    thousandSeparator={true}
+                    renderText={formattedValue => <Text style={[styles.priceTxt, {color: item.direction == 'in'? Colors.receiveColor : Colors.sendColor}]} >
+                    {item.direction == 'in'?'+':'-'}{formattedValue}
+                </Text>} // <--- Don't forget this!
+                />
+                {/* <Text style={[styles.priceTxt, {color: item.direction == 'in'? Colors.receiveColor : Colors.sendColor}]} >
                     {item.direction == 'in'?'+':'-'}{item.value}
-                </Text>
+                </Text> */}
             </View>
         </TouchableOpacity>
     )
@@ -138,7 +150,7 @@ const styles = StyleSheet.create({
         fontSize: RF(1.7),
         fontFamily: Fonts.ARIAL,
         color: Colors.townTxt,
-        marginVertical: hp("0.5%")
+        marginVertical: hp("0.2%")
     },
     percentTxt: {
         fontSize: RF(1.4),
@@ -156,7 +168,8 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.ARIAL,
         fontSize: RF(2.3),
         color: Colors.tokenLabel,
-        marginTop: hp('1%'),
+        marginRight: wp("3%"),
+        // marginTop: hp('1%'),
     },
     separator: {
         backgroundColor: Colors.separatorThird,
@@ -201,7 +214,7 @@ const styles = StyleSheet.create({
     detailsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: hp("1%")
+        // marginTop: hp("0.7%")
     },
     emptyView: {
         flex: 1,
@@ -213,6 +226,11 @@ const styles = StyleSheet.create({
         height: wp("25%"),
         alignSelf: 'center',
         marginVertical: hp("4%")
+    },
+    firstRow: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        paddingTop: hp("1%")
     }
 })
 

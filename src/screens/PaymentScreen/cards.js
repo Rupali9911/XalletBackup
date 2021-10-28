@@ -38,6 +38,7 @@ const Cards = ({ route, navigation }) => {
 
     const [cards, setCards] = useState([]);
     const [defaultCard, _setDefaultCard] = useState(route.params.defaultCard);
+    const [loading, setLoading] = useState(false);
 
     const {price} = route.params;
 
@@ -55,9 +56,14 @@ const Cards = ({ route, navigation }) => {
     },[paymentObject]);
 
     const getAllMyCards = () => {
+        // setLoading(true);
         dispatch(getAllCards(data.token)).then((cards) => {
             if(cards.length <= 0){
             }
+            setLoading(false);
+        }).catch((err) => {
+            console.log('err',err);
+            setLoading(false);
         });
     }
 
@@ -66,6 +72,7 @@ const Cards = ({ route, navigation }) => {
             customerCardId: id
           }
         console.log('params',params);
+        // setLoading(true);
         dispatch(deleteCard(data.token, params)).then((response)=>{
             console.log('delete response',response);
             if(response.success){
@@ -75,6 +82,7 @@ const Cards = ({ route, navigation }) => {
                 )
                 getAllMyCards();
             }else{
+                setLoading(false);
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
                     response.msg_key?translate(response.msg_key):response.msg
@@ -82,11 +90,12 @@ const Cards = ({ route, navigation }) => {
             }
         }).catch((err)=>{
             console.log(err);
+            setLoading(false);
         })
     }
 
     return (
-        <AppBackground>
+        <AppBackground isBusy={loading}>
             <AppHeader
                 showBackButton={true}
                 title={translate("wallet.common.topup.yourCards")}

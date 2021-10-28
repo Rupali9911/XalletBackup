@@ -640,7 +640,9 @@
                 "requireState": "Please select State",
                 "requireCity": "Please enter city",
                 "requireZipcode": "Please enter zipcode",
-                "networkFailed": "Network request failed"
+                "networkFailed": "Network request failed",
+                "passcodeError1": "Passcodes did not match. Please try again!",
+                "passcodeError2": "Passcode did not match. Please try again!"
             },
             "welcomeTxt": "Welcome",
             "info": "Info",
@@ -828,7 +830,18 @@
             "total": "Total",
             "firstName": "First Name",
             "lastName": "Last Name",
-            "aboutMe": "About Me"
+            "aboutMe": "About Me",
+            "editprofile": "Edit Profile",
+            "rescan": "Rescan",
+            "connectInfo2": "",
+            "insufficientToken": "You don't have sufficient {{token}} token to perform this transaction",
+            "info": "Info",
+            "needCameraPermission": "Need camera permission",
+            "cameraNotAuth": "Camera not authorized",
+            "doItLater": "Do it later",
+            "backupPhrase": "Backup Recovery Phrase",
+            "notBackedUp": "Recovery phrase not safe",
+            "backupSuccess": "Recovery phrase safe"
         },
         "backendmessage": {
             "error": {},

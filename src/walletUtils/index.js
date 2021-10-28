@@ -32,7 +32,7 @@ export const amountValidation = (e, currentValue = '') => {
 }
 
 export const test_ethRpc = "https://kovan.infura.io/v3/d9d12a4cf6ec4ea786890cd8c5dcc599";
-export const test_bnbRpc = "https://data-seed-prebsc-2-s1.binance.org:8545/";
+export const test_bnbRpc = "https://data-seed-prebsc-2-s2.binance.org:8545/";
 // export const test_bnbRpc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 export const test_polRpc = "https://matic-mumbai.chainstacklabs.com";
 
@@ -7670,48 +7670,48 @@ export function setI18nConfig(tag) {
   i18n.locale = languageTag;
 }
 
-export const processScanResult = (scanResult, scannerType = 'QR') => {
-  return new Promise((resolve, reject) => {
-    if (scannerType == 'QR' && (scanResult.type == 'QR_CODE' || scanResult.type == 'org.iso.QRCode')) {
-      try {
-        console.log('Result of scanner', scanResult)
-        let data = JSON.parse(scanResult.data);
-        if (data.uid){
-            let user = {
-                id: data.uid,
-                userName: data.un
-            }
-            if (data.price) {
-                user['price'] = data.price;
-            }
-            resolve(user);
-        }else{
-            reject();
-        }
-      } catch (err) {
-        err && console.log('err', err);
-        reject();
-      }
-    } else if(scannerType == 'BarCode' && (scanResult.type == 'CODE_128' || scanResult.type == 'org.iso.Code128')){
-      console.log('Result of scanner', scanResult)
-      if (scanResult.data.includes('||')) {
-        let data = scanResult.data.split('||');
-        let user = {
-          id: data[1],
-          userName: data[0]
-        }
-        if (data.length >= 3) {
-          user['price'] = data[2]
-        }
-        resolve(user);
-      } else {
-        reject();
-      }
-    } else {
-      reject(true);
-    }
-  });
-}
+// export const processScanResult = (scanResult, scannerType = 'QR') => {
+//   return new Promise((resolve, reject) => {
+//     if (scannerType == 'QR' && (scanResult.type == 'QR_CODE' || scanResult.type == 'org.iso.QRCode')) {
+//       try {
+//         console.log('Result of scanner', scanResult)
+//         let data = JSON.parse(scanResult.data);
+//         if (data.uid){
+//             let user = {
+//                 id: data.uid,
+//                 userName: data.un
+//             }
+//             if (data.price) {
+//                 user['price'] = data.price;
+//             }
+//             resolve(user);
+//         }else{
+//             reject();
+//         }
+//       } catch (err) {
+//         err && console.log('err', err);
+//         reject();
+//       }
+//     } else if(scannerType == 'BarCode' && (scanResult.type == 'CODE_128' || scanResult.type == 'org.iso.Code128')){
+//       console.log('Result of scanner', scanResult)
+//       if (scanResult.data.includes('||')) {
+//         let data = scanResult.data.split('||');
+//         let user = {
+//           id: data[1],
+//           userName: data[0]
+//         }
+//         if (data.length >= 3) {
+//           user['price'] = data[2]
+//         }
+//         resolve(user);
+//       } else {
+//         reject();
+//       }
+//     } else {
+//       reject(true);
+//     }
+//   });
+// }
 
 export const getLocation = (x0, y0, radius) => {
   // Convert radius from meters to degrees
@@ -7822,6 +7822,36 @@ export const tokens = [
   //     network: 'BSC'
   // }
 ]
+
+export const processScanResult = (event) => {
+  return new Promise((resolve,reject) => {
+    if(event && event.type== 'QR_CODE'){
+      if(event.data){
+        let walletAddress;
+        let amount = '';
+        if(event.data.includes(':')){
+          walletAddress = event.data.split(':')[1];
+        }else if(event.data.includes(' ')){
+          let result = event.data.split(' ');
+          walletAddress = result[0];
+          amount = result[1];
+        }else {
+          walletAddress = event.data;
+        }
+
+        resolve({
+          walletAddress,
+          amount
+        });
+
+      }else{
+        reject();
+      }
+    }else{
+      reject();
+    }
+  });
+}
 
 export {
     numFormatter

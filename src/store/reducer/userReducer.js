@@ -8,7 +8,8 @@ import {
     MAIN_LOADING_START,
     UPDATE_CREATE,
     UPDATE_PROFILE,
-    SET_PASSCODE
+    SET_PASSCODE,
+    UPDATE_BACKUP
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
@@ -21,7 +22,8 @@ const initialState = {
     wallet: null,
     isCreate: false,
     data: {},
-    passcode: ""
+    passcode: "",
+    isBackup: false
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -78,6 +80,12 @@ export default UserReducer = (state = initialState, action) => {
                 ...state,
                 data: { ..._data }
             }
+
+        case UPDATE_BACKUP:
+            return {
+                ...state,
+                isBackup: action.payload
+            };
         default:
             return state;
     }
@@ -126,6 +134,11 @@ export const endLoader = () => (dispatch) =>
         dispatch(endLoading());
         resolve();
     });
+
+export const setBackupStatus = (data) => ({
+    type: UPDATE_BACKUP,
+    payload: data
+});
 
 export const loadFromAsync = () => async (dispatch) => {
     const wallet = await AsyncStorage.getItem('@wallet', (err) => console.log(err));
@@ -190,7 +203,7 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
         const params = {
             publicAddress: wallet.address
         }
-
+        console.log('params',params);
         const request = {
             method: 'POST',
             body: JSON.stringify(params),

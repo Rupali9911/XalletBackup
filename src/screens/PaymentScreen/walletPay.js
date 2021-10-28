@@ -49,7 +49,7 @@ const WalletPay = ({route, navigation}) => {
 
     const {wallet, isCreate, data} = useSelector(state => state.UserReducer);
     const {paymentObject} = useSelector(state => state.PaymentReducer);
-    const {ethBalance,bnbBalance,maticBalance} = useSelector(state => state.WalletReducer);
+    const {ethBalance,bnbBalance,maticBalance, tnftBalance, talBalance} = useSelector(state => state.WalletReducer);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
 
@@ -129,6 +129,23 @@ const WalletPay = ({route, navigation}) => {
             totalValue = value;
         }
         return totalValue;
+    }
+
+    const IsActiveToPay = () => {
+        let tnft = parseFloat(`${tnftBalance}`);
+        let tal = parseFloat(`${talBalance}`);
+        if(paymentObject){
+            if(chainType === 'polygon' && tal > 0){
+                return true;
+            } else if(chainType === 'binance' && tnft > 0){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            return false;
+        }
+        
     }
 
     const ping = async (public_key) => {
@@ -254,8 +271,11 @@ const WalletPay = ({route, navigation}) => {
             <Separator style={styles.separator} />
 
             {selectedObject && <View style={styles.totalContainer}>
-                <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
-                <Text style={styles.value}>{selectedObject.type} {selectedObject.tokenValue}</Text>
+                <View style={styles.payObject}>
+                    <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
+                    <Text style={styles.value}>{selectedObject.type} {selectedObject.tokenValue}</Text>
+                </View>
+                <TextView style={styles.alertMsg}>{translate("wallet.common.insufficientToken",{token: chainType === 'polygon'?'TAL':'TNFT'})}</TextView>
             </View>}
 
             <View style={styles.buttonContainer}>
@@ -273,7 +293,7 @@ const WalletPay = ({route, navigation}) => {
                             }));
                         }
                     }}
-                    view={paymentObject}
+                    view={!IsActiveToPay()}
                 />
             </View>
 
@@ -331,9 +351,11 @@ const styles = StyleSheet.create({
     },
     totalContainer: {
         paddingHorizontal: wp("5%"),
+        marginBottom: hp("2%")
+    },
+    payObject: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: hp("2%")
     },
     separator: {
         width: wp("100%"),
@@ -351,6 +373,11 @@ const styles = StyleSheet.create({
     title: {
         color: Colors.white,
         fontSize: RF(1.9)
+    },
+    alertMsg: {
+        color: Colors.alert,
+        fontSize: RF(1.5),
+        marginVertical: hp("1%")
     }
 });
 

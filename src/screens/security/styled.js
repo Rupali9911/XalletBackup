@@ -88,6 +88,11 @@ const styles = StyleSheet.create({
         fontSize: RF(2.2),
         textAlign: "center",
         marginTop: hp('15%')
+    },
+    listSubLabel: {
+        fontFamily: fonts.ARIAL,
+        fontSize: RF(1.6),
+        color: Colors.blackShadeOne,
     }
 })
 

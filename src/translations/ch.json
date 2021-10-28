@@ -640,7 +640,9 @@
                 "requireState": "请选择州",
                 "requireCity": "请输入城市",
                 "requireZipcode": "请输入邮政编码",
-                "networkFailed": "网络请求失败"
+                "networkFailed": "网络请求失败",
+                "passcodeError1": "密码不匹配。请再试一次！",
+                "passcodeError2": "密码不匹配。请再试一次！"
             },
             "needCameraPermission": "需要相机许可",
             "cameraNotAuth": "未经授权的摄像机",
@@ -828,7 +830,18 @@
             "total": "全部的",
             "firstName": "名",
             "lastName": "姓",
-            "aboutMe": "关于我"
+            "aboutMe": "关于我",
+            "editprofile": "编辑个人资料",
+            "rescan": "重新扫描",
+            "connectInfo2": "",
+            "insufficientToken": "您没有足够的 {{token}} 令牌来执行此交易",
+            "info": "信息",
+            "needCameraPermission": "需要相机许可",
+            "cameraNotAuth": "未经授权的摄像机",
+            "doItLater": "稍后再做",
+            "backupPhrase": "备份恢复短语",
+            "notBackedUp": "恢复短语不安全",
+            "backupSuccess": "恢复短语安全"
         },
         "backendmessage": {
             "error": {},

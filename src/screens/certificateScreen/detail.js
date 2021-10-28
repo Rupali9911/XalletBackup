@@ -186,6 +186,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods
             .getNonCryptoOwner(_tokenId)
             .call(async (err, res) => {
+                console.log('getNonCryptoOwner_res',res);
                 if (res) {
                     setNonCryptoOwnerId(res);
                     lastOwnerOfNFTNonCrypto();
@@ -225,7 +226,7 @@ const DetailScreen = ({ route, navigation }) => {
                                     ? true
                                     : false);
                                 setIsOwner((_data.owner_address.toLowerCase() ===
-                                    wallet.address.toLowerCase() &&
+                                    data.user._id.toLowerCase() &&
                                     res[1] !== "") ||
                                     (data &&
                                         _data.owner_address.toLowerCase() ===
@@ -584,7 +585,7 @@ const DetailScreen = ({ route, navigation }) => {
                 price={price ? price : 0}
                 chain={chain}
                 NftId={_tokenId}
-                ownerId={ownerId}
+                ownerId={nonCryptoOwnerId}
                 lastBidAmount={priceNFT}
                 onRequestClose={() => {
                     dispatch(setPaymentObject(null));

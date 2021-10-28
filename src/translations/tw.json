@@ -640,7 +640,9 @@
                 "requireState": "請選擇州",
                 "requireCity": "請輸入城市",
                 "requireZipcode": "請輸入郵政編碼",
-                "networkFailed": "網路請求失敗"
+                "networkFailed": "網路請求失敗",
+                "passcodeError1": "密碼不匹配。請再試一次！",
+                "passcodeError2": "密碼不匹配。請再試一次！"
             },
             "needCameraPermission": "需要相機許可",
             "cameraNotAuth": "未經授權的攝像機",
@@ -828,7 +830,18 @@
             "total": "全部的",
             "firstName": "名",
             "lastName": "姓",
-            "aboutMe": "关于我"
+            "aboutMe": "关于我",
+            "editprofile": "编辑个人资料",
+            "rescan": "重新掃描",
+            "connectInfo2": "",
+            "insufficientToken": "您沒有足夠的 {{token}} 令牌來執行此交易",
+            "info": "資訊",
+            "needCameraPermission": "需要相機許可",
+            "cameraNotAuth": "未經授權的攝像機",
+            "doItLater": "稍後再做",
+            "backupPhrase": "備份恢復短語",
+            "notBackedUp": "恢復短語不安全",
+            "backupSuccess": "恢復短語安全"
         },
         "backendmessage": {
             "error": {},

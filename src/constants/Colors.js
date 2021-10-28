@@ -40,6 +40,7 @@ export default {
   black: '#000000',
   danger: '#F32013',
   disabled: '#cccccc',
+  alert: "#ff0000",
   blackOpacity: opacity => `rgba(0,0,0,${opacity})`,
   whiteOpacity: opacity => `rgba(255,255,255,${opacity})`,
 

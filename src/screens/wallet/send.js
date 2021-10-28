@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
-import { translate, amountValidation, environment } from '../../walletUtils';
+import { translate, amountValidation, environment, processScanResult } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -19,45 +19,23 @@ import Web3 from 'web3';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
-const ScanScreen = () => {
-    const navigation = useNavigation();
-    const [price, setPrice] = useState("");
+const verifyAddress = (address) => {
+    return new Promise((resolve, reject) => {
+        const isVerified = Web3.utils.isAddress(address)
+        if(isVerified){
+            resolve();
+        }else{
+            reject();
+        }
+    });
+}
 
-    const onSuccess = (e) => {
-        let scannerType = rightSelect ? 'BarCode' : 'QR';
-        // processScanResult(e,scannerType).then((user)=>{
-        //     // navigation.navigate('Paid')
-        //     if(user){
-        //         receiveMoney(user);
-        //     }
-        // }).catch(()=>{
-        //     alertWithSingleBtn(
-        //         translate("common.error.invalidCode"),
-        //         translate("common.error.scanCodeAlert"),
-        //         () => {
-        //             refScanner && refScanner.reactivate();
-        //         }
-        //     );
-        // });
-    };
-
-    return (
-        <View style={[styles.scene]} >
-            <QRCodeScanner
-                ref={(scanner) => refScanner = scanner}
-                onRead={onSuccess}
-                showMarker={true}
-                customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
-                    <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
-                </TouchableOpacity>}
-                containerStyle={{flex: 1}}
-                cameraStyle={styles.qrCameraStyle}
-                topViewStyle={{flex: 0}}
-                bottomViewStyle={{flex: 0}}
-            />
-        </View>
+const showErrorAlert = (msg) => {
+    alertWithSingleBtn(
+        translate('common.error'),
+        msg
     )
-};
+}
 
 export const AddressField = (props) => {
 
@@ -76,131 +54,6 @@ export const AddressField = (props) => {
             />
         </View>
     )
-}
-
-
-const getTokenValue = (item) => {
-    const { ethBalance, bnbBalance, maticBalance } = useSelector(state => state.WalletReducer);
-    let totalValue = 0;
-    if (item.type == 'ETH') {
-        let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
-        console.log('Ethereum value', value);
-        totalValue = value;
-    } else if (item.type == 'BNB') {
-        let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-        console.log('BSC value', value);
-        totalValue = value;
-    } else if (item.type == 'Matic') {
-        let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-        console.log('Polygon value', value);
-        totalValue = value;
-    }
-    return totalValue;
-}
-
-const transferAmount = async () => {
-
-    const { wallet } = useSelector(state => state.UserReducer);
-    const publicAddress = wallet.address;
-    const privKey = wallet.privateKey;
-    const toAddress = address;
-    setLoading(true);
-    switch (type) {
-        case 'ETH':
-            // let ethBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
-                console.log("ethBalance", ethBalance);
-                if (ethBalance.success) {
-                    showSuccessAlert();
-                }
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'USDT':
-            // let usdtBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
-                console.log("usdtBalance", usdtBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'BNB':
-            // let bnbBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
-                console.log("bnbBalance", bnbBalance);
-                if (bnbBalance.success) {
-                    showSuccessAlert();
-                }
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'BUSD':
-            // let busdBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
-                console.log("busdBalance", busdBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'ALIA':
-            // let aliaBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
-                console.log("aliaBalance", aliaBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'Matic':
-            // let maticBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
-                console.log("maticBalance", maticBalance);
-                if (maticBalance.success) {
-                    showSuccessAlert();
-                }
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'USDC':
-            // let usdcBalance = await 
-            transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
-                console.log("usdcBalance", usdcBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        default:
-    }
 }
 
 export const PaymentField = (props) => {
@@ -224,17 +77,87 @@ export const PaymentField = (props) => {
     )
 }
 
+const ScanScreen = (props) => {
+    const navigation = useNavigation();
+    const [renderScanner, setRenderScanner] = useState(false);
+    let refScanner = null;
+
+    const {loading, jumpTo, setResult, setLoading, position} = props;
+
+    useEffect(()=>{
+        if(position == 1){
+            setRenderScanner(true);
+            refScanner && refScanner.reactivate();
+        }
+    },[position]);
+
+    const onSuccess = (e) => {
+        console.log('e',e);
+        processScanResult(e).then((result)=>{
+            if(result.walletAddress){
+                verifyAddress(result.walletAddress).then(()=>{
+                    setResult(result.walletAddress,result.amount);
+                    jumpTo('Send');
+                }).catch(()=>{
+                    alertWithSingleBtn(
+                        translate("wallet.common.error.invalidCode"),
+                        translate("wallet.common.error.scanCodeAlert"),
+                        () => {
+                            refScanner && refScanner.reactivate();
+                        }
+                    );
+                });
+            }
+        }).catch(()=>{
+            alertWithSingleBtn(
+                translate("wallet.common.error.invalidCode"),
+                translate("wallet.common.error.scanCodeAlert"),
+                () => {
+                    refScanner && refScanner.reactivate();
+                }
+            );
+        });
+    };
+    console.log('position',position);
+    return (
+        <View style={[styles.scene]} >
+            {renderScanner ? <QRCodeScanner
+                ref={(scanner) => refScanner = scanner}
+                onRead={onSuccess}
+                showMarker={true}
+                customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
+                    <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
+                </TouchableOpacity>}
+                containerStyle={{flex: 1}}
+                cameraStyle={styles.qrCameraStyle}
+                topViewStyle={{flex: 0}}
+                bottomViewStyle={{flex: 0}}
+            /> : null}
+            {/* {
+                <TouchableOpacity style={styles.rescan}>
+                    <TextView style={{color:Colors.white}}>Rescan</TextView>
+                </TouchableOpacity>
+            } */}
+        </View>
+    )
+};
+
 const SendScreen = (props) => {
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const {wallet} = useSelector(state => state.UserReducer);
     const {ethBalance,bnbBalance,maticBalance} = useSelector(state => state.WalletReducer);
-    const [address, setAddress] = useState("");
-    const [amount, setAmount] = useState('');
+    const [address, setAddress] = useState(props.address);
+    const [amount, setAmount] = useState(props.amount);
     const [transfering, setTransfering] = useState(false);
 
     const {item, type, setLoading, loading} = props;
+
+    useEffect(()=>{
+        setAddress(props.address);
+        setAmount(props.amount);
+    },[props.address,props.amount]);
 
     const getTokenValue = () => {
         let totalValue = 0;
@@ -386,31 +309,13 @@ const SendScreen = (props) => {
         }
     }
 
-    const verifyAddress = (address) => {
-        return new Promise((resolve, reject) => {
-            const isVerified = Web3.utils.isAddress(address)
-            if(isVerified){
-                resolve();
-            }else{
-                reject();
-            }
-        });
-    }
-
-    const showErrorAlert = (msg) => {
-        alertWithSingleBtn(
-            translate('common.error'),
-            msg
-        )
-    }
-
     const showSuccessAlert = () => {
         Alert.alert(
             translate("wallet.common.transferInProgress", { token: `${amount} ${type}` }),
             '',
             [
                 {
-                    text: translate('wallet.common.ok'),
+                    text: 'OK',
                     onPress: () => {
                         navigation.popToTop();
                     }
@@ -430,7 +335,7 @@ const SendScreen = (props) => {
                     <NumberFormat
                         value={getTokenValue()}
                         displayType={'text'}
-                        decimalScale={2}
+                        decimalScale={4}
                         thousandSeparator={true}
                         renderText={(formattedValue) => <TextView style={styles.priceCont}>{formattedValue}</TextView>} />
 
@@ -440,7 +345,8 @@ const SendScreen = (props) => {
                         onChangeText={setAddress}
                         onSubmitEditing={(txt) => {
                             // verifyAddress(txt);
-                        }}/>
+                        }}
+                        value={address}/>
                     
                 </View>
                 
@@ -487,6 +393,8 @@ const Send = ({route, navigation}) => {
     const {item,type} = route.params;
 
     const [loading, setLoading] = useState(false);
+    const [sendToAddress, setSendToAddress] = useState(null);
+    const [amountToSend, setAmountToSend] = useState('');
 
     const [index, setIndex] = useState(0);
     const [routes] = useState([
@@ -494,17 +402,22 @@ const Send = ({route, navigation}) => {
         { key: 'Scan', title: translate("wallet.common.scan") },
     ]);
 
+    const setResult = (address,amount) => {
+        setAmountToSend(amount);
+        setSendToAddress(address);
+    }
+
     const renderScene = SceneMap({
         Send: SendScreen,
         Scan: ScanScreen,
     });
 
-    const _renderScene = ({ route }) => {
+    const _renderScene = ({ route, jumpTo, position }) => {
         switch (route.key) {
           case 'Send':
-            return <SendScreen setLoading={setLoading} item={item} type={type} loading={loading}/>;
+            return <SendScreen setLoading={setLoading} item={item} type={type} loading={loading} address={sendToAddress} amount={amountToSend}/>;
           case 'Scan':
-            return <ScanScreen />;
+            return <ScanScreen setLoading={setLoading} position={index} loading={loading} setResult={setResult} jumpTo={jumpTo}/>;
           default:
             return null;
         }
@@ -640,6 +553,17 @@ const styles = StyleSheet.create({
         height: wp("70%"),
         resizeMode: "contain",
     },
+    rescan: {
+        position: 'absolute', 
+        borderRadius: hp("2.5%"), 
+        borderWidth: 2, 
+        alignSelf: 'center',
+        bottom: 20,
+        borderColor: Colors.themeColor, 
+        paddingHorizontal: wp("4%"), 
+        paddingVertical: hp("1%"), 
+        backgroundColor: Colors.themeColor
+    }
 })
 
 export default Send;

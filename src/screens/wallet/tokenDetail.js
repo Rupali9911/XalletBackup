@@ -170,6 +170,7 @@ const TokenDetail = ({ route, navigation }) => {
                                 type: _item.from == wallet.address ? 'OUT' : _item.to == wallet.address ? 'IN' : ''
                             });
                         });
+                        array.reverse();
                         dispatch(addAllEthTransactions(array));
                     } else if (type == 'bsc') {
                         const _array = [];
@@ -179,6 +180,7 @@ const TokenDetail = ({ route, navigation }) => {
                                 type: _item.from == wallet.address ? 'OUT' : _item.to == wallet.address ? 'IN' : ''
                             });
                         });
+                        _array.reverse();
                         console.log('_array',_array);
                         dispatch(addAllBnbTransactions(_array));
                     } else if (type == 'polygon') {
@@ -189,6 +191,7 @@ const TokenDetail = ({ route, navigation }) => {
                                 type: _item.from == wallet.address ? 'OUT' : _item.to == wallet.address ? 'IN' : ''
                             });
                         });
+                        __array.reverse();
                         dispatch(addAllMaticTransactions(__array));
                     }
                 }

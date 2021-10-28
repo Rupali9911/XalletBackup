@@ -55,6 +55,8 @@ import BuyGold from './screens/PaymentScreen/buyGold';
 import { translate } from './walletUtils';
 import { screenWidth } from './constants/responsiveFunct';
 import WalletPay from './screens/PaymentScreen/walletPay';
+import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
+import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -199,6 +201,8 @@ const AppRoutes = () => {
                     <Stack.Screen name='ChangePassword' component={ChangePassword} />
                     <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
                     <Stack.Screen name='WalletPay' component={WalletPay} />
+                    <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
+                    <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
                   </Stack.Navigator>
                   :
                   <Stack.Navigator headerMode="none">
