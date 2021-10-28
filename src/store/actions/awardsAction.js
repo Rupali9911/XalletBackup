@@ -1,5 +1,7 @@
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 import {
     AWARDS_NFT_FAIL,
@@ -69,7 +71,13 @@ export const getAwardsNftList = (page, limit) => {
 
             }).catch(err => {
                 dispatch(awardsNftLoadFail())
-                alert(err.message)
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate("wallet.common.error.networkFailed"),
+                    () => {
+                        console.log();
+                    }
+                );
             })
     }
 }

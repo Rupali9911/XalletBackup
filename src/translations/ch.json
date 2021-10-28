@@ -642,6 +642,9 @@
                 "requireZipcode": "请输入邮政编码",
                 "networkFailed": "网络请求失败"
             },
+            "needCameraPermission": "需要相机许可",
+            "cameraNotAuth": "未经授权的摄像机",
+            "info": "信息",
             "welcomeTxt": "欢迎",
             "createWallet": "创建一个新钱包",
             "haveWallet": "我已经有钱包了",

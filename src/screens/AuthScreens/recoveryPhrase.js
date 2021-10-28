@@ -57,7 +57,7 @@ const RecoveryPhrase = ({route, navigation}) => {
   const {recover} = route.params;
   const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  // const [suggestions, setSuggestions] = useState([]);
   const [userTyping, setUserTyping] = useState(false);
   // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
   const toastRef = useRef(null);

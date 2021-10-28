@@ -159,7 +159,7 @@ export const loadFromAsync = () => async (dispatch) => {
             .catch(e => {
                 dispatch(endMainLoading());
                 alertWithSingleBtn(
-                    translate("common.alert"),
+                    translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed"),
                     () => {
                         console.log(e);

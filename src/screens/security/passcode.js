@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setPasscode as SPasscode, endMainLoading, startMainLoading } from "../../store/reducer/userReducer";
 import { CommonActions, NavigationAction } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import { AppHeader } from '../../components';
 
 const toastConfig = {
     my_custom_type: ({ text1, props, ...rest }) => (
@@ -82,7 +83,7 @@ function PasscodeScreen({
                         if (pass.join("") == oldPasscode) {
                             dispatch(startMainLoading());
                             dispatch(SPasscode(""));
-                           
+
                             setTimeout(() => {
                                 dispatch(endMainLoading());
                             }, 1000)
@@ -139,6 +140,10 @@ function PasscodeScreen({
                 loading ?
                     <Loader /> :
                     <>
+                        <AppHeader
+                            title={""}
+                            showBackButton={screen == "security" ? true : false}
+                        />
                         <View style={{ flex: 1 }} >
 
                             <Text style={styles.label}>{label}</Text>

@@ -46,8 +46,8 @@ export const ApiRequest = async (url, method, body, headers) => {
                     .catch(error => {
                         reject()
                         alertWithSingleBtn(
-                            translate("common.alert"),
-                            translate("common.error.apiFailed"),
+                            translate("wallet.common.alert"),
+                            translate("wallet.common.error.apiFailed"),
                             () => {
                                 console.log(e);
                             }
@@ -58,8 +58,8 @@ export const ApiRequest = async (url, method, body, headers) => {
                 if (!isAlert) {
                     isAlert = true;
                     alertWithSingleBtn(
-                        translate("common.alert"),
-                        translate("common.error.networkError"),
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkError"),
                         () => {
                             isAlert = false;
                             reject();
@@ -72,8 +72,8 @@ export const ApiRequest = async (url, method, body, headers) => {
         }).catch(err => {
             reject();
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.apiFailed"),
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.apiFailed"),
                 () => {
                     console.log(e);
                 }
@@ -126,7 +126,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                     .catch(error => {
                         reject();
                         alertWithSingleBtn(
-                            translate("common.alert"),
+                            translate("wallet.common.alert"),
                             translate("wallet.common.error.networkFailed"),
                             () => {
                                 console.log(e);
@@ -137,8 +137,8 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                 if (!isAlert) {
                     isAlert = true;
                     alertWithSingleBtn(
-                        translate("common.alert"),
-                        translate("common.error.networkError"),
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkError"),
                         () => {
                             isAlert = false;
                             reject();
@@ -151,8 +151,8 @@ export const StripeApiRequest = (url, body, method = "POST") => {
         }).catch(err => {
             reject();
             alertWithSingleBtn(
-                translate("common.alert"),
-                translate("common.error.apiFailed"),
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.apiFailed"),
                 () => {
                     console.log(e);
                 }

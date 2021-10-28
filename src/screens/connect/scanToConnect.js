@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { StyleSheet, Image, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, Image, TouchableOpacity, Text, View } from "react-native";
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 import { ScanBottomView } from './components/scanBottomView';
@@ -44,8 +44,8 @@ function ScanToConnect({ route, navigation }) {
     };
 
     return (
-        <AppBackground 
-            safeAreaColor={Colors.black}  
+        <AppBackground
+            containerStyle={{ backgroundColor: Colors.black }}
             lightStatus>
 
             <AppHeader
@@ -56,10 +56,31 @@ function ScanToConnect({ route, navigation }) {
             />
 
             <QRCodeScanner
-                ref={(scanner)=>refScanner=scanner}
+                ref={(scanner) => refScanner = scanner}
+                permissionDialogTitle={translate("wallet.common.info")}
+                permissionDialogMessage={translate("wallet.common.needCameraPermission")}
                 onRead={onSuccess}
+                notAuthorizedView={<View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: "red"
+                    }}
+                >
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 16,
+                            color: "#fff"
+                        }}
+                    >
+                        {translate("wallet.common.cameraNotAuth")}
+                    </Text>
+                </View>
+                }
                 showMarker={true}
-                customMarker={<TouchableOpacity disabled style={{zIndex: 1000, bottom: hp('15%')}} >
+                customMarker={<TouchableOpacity disabled style={{ zIndex: 1000, bottom: hp('15%') }} >
                     <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
                 </TouchableOpacity>}
                 cameraStyle={styles.qrCameraStyle}

@@ -642,6 +642,9 @@
                 "requireZipcode": "우편번호를 입력하세요",
                 "networkFailed": "네트워크 요청 실패"
             },
+            "needCameraPermission": "카메라 사용 권한 필요",
+            "cameraNotAuth": "카메라가 승인되지 않음",
+            "info": "정보",
             "welcomeTxt": "어서 오십시오",
             "createWallet": "새 지갑 만들기",
             "haveWallet": "나는 이미 지갑을 가지고 있다",

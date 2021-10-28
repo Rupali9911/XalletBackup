@@ -643,6 +643,9 @@
                 "networkFailed": "Network request failed"
             },
             "welcomeTxt": "Welcome",
+            "info": "Info",
+            "cameraNotAuth": "Camera not authorized",
+            "needCameraPermission": "Need camera permission",
             "createWallet": "Create a new wallet",
             "haveWallet": "I already have a wallet",
             "legal": "Legal ",

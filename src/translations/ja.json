@@ -642,6 +642,9 @@
                 "requireZipcode": "郵便番号を入力してください",
                 "networkFailed": "ネットワーク要求に失敗しました"
             },
+            "needCameraPermission": "カメラの許可が必要",
+            "info": "情報",
+            "cameraNotAuth": "カメラが承認されていません",
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",
             "haveWallet": "既にウォレットを持っている方",

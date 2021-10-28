@@ -86,8 +86,8 @@ export const getNFTList = (page, limit) => {
             }).catch(err => {
                 dispatch(nftLoadFail())
                 alertWithSingleBtn(
-                    translate('common.error'),
-                    err.message
+                    translate('wallet.common.alert'),
+                    translate("wallet.common.error.networkFailed")
                 )
             })
 
@@ -118,8 +118,8 @@ export const getAllArtist = () => {
             }).catch(err => {
                 // dispatch(nftLoadFail())
                 alertWithSingleBtn(
-                    translate('common.error'),
-                    err.message
+                    translate('wallet.common.alert'),
+                    translate("wallet.common.error.networkFailed")
                 )
             })
     }
@@ -195,7 +195,10 @@ export const handleLikeDislike = (item, index) => {
                             dispatch(myNFTupdate(nftUpdated));
 
         }).catch(err => {
-            alert(err.message);
+            alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate("wallet.common.error.networkFailed")
+            )
         })
 
     }

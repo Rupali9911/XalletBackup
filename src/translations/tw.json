@@ -642,6 +642,9 @@
                 "requireZipcode": "請輸入郵政編碼",
                 "networkFailed": "網路請求失敗"
             },
+            "needCameraPermission": "需要相機許可",
+            "cameraNotAuth": "未經授權的攝像機",
+            "info": "資訊",
             "welcomeTxt": "歡迎",
             "createWallet": "創建一個新錢包",
             "haveWallet": "我已經有錢包了",
