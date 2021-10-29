@@ -157,15 +157,15 @@ const RecoveryPhrase = ({ route, navigation }) => {
     if (userTyping) {
       var myString = phrase;
       myString = myString.substring(0, myString.lastIndexOf(' '));
-      if (myString.lastIndexOf(' ') == -1) {
-        const newPhrase = `${val}`;
+      if (myString.lastIndexOf(' ') == -1 && myString.length < 1) {
+        const newPhrase = `${val} `;
         setPhrase(newPhrase);
       } else {
-        const newPhrase = myString + ` ${val}`;
+        const newPhrase = myString + ` ${val} `;
         setPhrase(newPhrase);
       }
     } else {
-      const newPhrase = phrase.trim() + ` ${val}`;
+      const newPhrase = phrase.trim() + ` ${val} `;
       setPhrase(newPhrase);
     }
     setUserTyping(false);

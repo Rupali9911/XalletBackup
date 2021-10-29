@@ -59,12 +59,13 @@ export default UserReducer = (state = initialState, action) => {
                 loading: true
             };
 
-        case AUTH_SUCCESS:
+            case AUTH_SUCCESS:
             return {
                 ...state,
                 wallet: action.payload.wallet,
                 data: action.payload.data,
                 isCreate: action.payload.isCreate,
+                showSuccess: action.payload.showSuccess,
                 loading: false
             };
 
@@ -91,8 +92,6 @@ export default UserReducer = (state = initialState, action) => {
             return state;
     }
 }
-
-
 
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
@@ -155,6 +154,7 @@ export const loadFromAsync = () => async dispatch => {
         data: JSON.parse(userData),
         wallet: JSON.parse(wallet),
         isCreate: false,
+        showSuccess: false,
       }),
     );
     const _wallet = JSON.parse(wallet);
@@ -260,7 +260,14 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                   ['@userData', JSON.stringify(_response.data)],
                 ];
                 await AsyncStorage.multiSet(items, err => console.log(err));
-                dispatch(setUserData({data: _response.data, wallet, isCreate}));
+                dispatch(
+                  setUserData({
+                    data: _response.data,
+                    wallet,
+                    isCreate,
+                    showSuccess: true,
+                  }),
+                );
                 resolve();
               } else {
                 dispatch(endLoading());
