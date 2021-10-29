@@ -841,7 +841,8 @@
             "doItLater": "稍後再做",
             "backupPhrase": "備份恢復短語",
             "notBackedUp": "恢復短語不安全",
-            "backupSuccess": "恢復短語安全"
+            "backupSuccess": "恢復短語安全",
+            "walletImported": "您的錢包已成功導入。"
         },
         "backendmessage": {
             "error": {},

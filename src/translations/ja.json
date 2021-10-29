@@ -841,7 +841,8 @@
             "doItLater": "後でやる",
             "backupPhrase": "バックアップ回復フレーズ",
             "notBackedUp": "安全ではない回復フレーズ",
-            "backupSuccess": "安全な回復フレーズ"
+            "backupSuccess": "安全な回復フレーズ",
+            "walletImported": "ウォレットが正常にインポートされました。"
         },
         "backendmessage": {
             "error": {},

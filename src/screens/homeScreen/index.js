@@ -5,8 +5,6 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Linking,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -14,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {openSettings} from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import { useDispatch, useSelector } from 'react-redux';
 import { openSettings } from 'react-native-permissions';
@@ -43,7 +42,6 @@ import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
-import messaging from '@react-native-firebase/messaging';
 
 const langObj = getLanguage();
 
@@ -55,7 +53,7 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
@@ -164,13 +162,16 @@ const Hot = () => {
   );
 };
 
-const HomeScreen = ({ navigation }) => {
-  const { ListReducer } = useSelector(state => state);
-  const { wallet, isCreate } = useSelector(state => state.UserReducer);
+
+const HomeScreen = ({navigation}) => {
+  const {ListReducer} = useSelector(state => state);
+  const {wallet, isCreate, showSuccess} = useSelector(
+    state => state.UserReducer,
+  );
   const dispatch = useDispatch();
 
-  const [modalVisible, setModalVisible] = useState(isCreate);
-  const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
+  const [modalVisible, setModalVisible] = useState(showSuccess);
+  const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
 
   useEffect(() => {
@@ -239,7 +240,7 @@ const HomeScreen = ({ navigation }) => {
               })}
           </ScrollView>
         </View>
-        {isCreate ? null : (
+        {showSuccess ? null : (
           <Tab.Navigator
             tabBarOptions={{
               activeTintColor: colors.BLUE4,

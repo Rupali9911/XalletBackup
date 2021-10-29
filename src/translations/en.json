@@ -841,7 +841,8 @@
             "doItLater": "Do it later",
             "backupPhrase": "Backup Recovery Phrase",
             "notBackedUp": "Recovery phrase not safe",
-            "backupSuccess": "Recovery phrase safe"
+            "backupSuccess": "Recovery phrase safe",
+            "walletImported": "Your wallet was successfully imported."
         },
         "backendmessage": {
             "error": {},
