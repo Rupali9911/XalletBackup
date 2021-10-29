@@ -56,6 +56,130 @@ export const AddressField = (props) => {
     )
 }
 
+const getTokenValue = (item) => {
+    const { ethBalance, bnbBalance, maticBalance } = useSelector(state => state.WalletReducer);
+    let totalValue = 0;
+    if (item.type == 'ETH') {
+        let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
+        console.log('Ethereum value', value);
+        totalValue = value;
+    } else if (item.type == 'BNB') {
+        let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+        console.log('BSC value', value);
+        totalValue = value;
+    } else if (item.type == 'Matic') {
+        let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
+        console.log('Polygon value', value);
+        totalValue = value;
+    }
+    return totalValue;
+}
+
+const transferAmount = async () => {
+
+    const { wallet } = useSelector(state => state.UserReducer);
+    const publicAddress = wallet.address;
+    const privKey = wallet.privateKey;
+    const toAddress = address;
+    setLoading(true);
+    switch (type) {
+        case 'ETH':
+            // let ethBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
+                console.log("ethBalance", ethBalance);
+                if (ethBalance.success) {
+                    showSuccessAlert();
+                }
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        case 'USDT':
+            // let usdtBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
+                console.log("usdtBalance", usdtBalance);
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        case 'BNB':
+            // let bnbBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
+                console.log("bnbBalance", bnbBalance);
+                if (bnbBalance.success) {
+                    showSuccessAlert();
+                }
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        case 'BUSD':
+            // let busdBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
+                console.log("busdBalance", busdBalance);
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        case 'ALIA':
+            // let aliaBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
+                console.log("aliaBalance", aliaBalance);
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        case 'Matic':
+            // let maticBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
+                console.log("maticBalance", maticBalance);
+                if (maticBalance.success) {
+                    showSuccessAlert();
+                }
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        case 'USDC':
+            // let usdcBalance = await
+            transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
+                console.log("usdcBalance", usdcBalance);
+                setLoading(false);
+            }).catch((err) => {
+                console.log("err", err);
+                setLoading(false);
+                showErrorAlert(err.msg);
+            });
+
+            return;
+        default:
+    }
+}
+
 export const PaymentField = (props) => {
 
     return (
@@ -179,12 +303,12 @@ const SendScreen = (props) => {
 
     const transferAmount = async () => {
         const publicAddress = wallet.address;
-        const privKey = wallet.privateKey;        
+        const privKey = wallet.privateKey;
         const toAddress = address;
         setLoading(true);
         switch(type){
             case 'ETH':
-                // let ethBalance = await 
+                // let ethBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance)=>{
                     console.log("ethBalance", ethBalance);
                     if(ethBalance.success){
@@ -196,10 +320,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'USDT':
-                // let usdtBalance = await 
+                // let usdtBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance)=>{
                     console.log("usdtBalance", usdtBalance);
                     setLoading(false);
@@ -208,10 +332,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'BNB':
-                // let bnbBalance = await 
+                // let bnbBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance)=>{
                     console.log("bnbBalance", bnbBalance);
                     if(bnbBalance.success){
@@ -223,10 +347,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'BUSD':
-                // let busdBalance = await 
+                // let busdBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance)=>{
                     console.log("busdBalance", busdBalance);
                     setLoading(false);
@@ -235,10 +359,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'ALIA':
-                // let aliaBalance = await 
+                // let aliaBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance)=>{
                     console.log("aliaBalance", aliaBalance);
                     setLoading(false);
@@ -247,10 +371,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'Matic':
-                // let maticBalance = await 
+                // let maticBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance)=>{
                     console.log("maticBalance", maticBalance);
                     if(maticBalance.success){
@@ -262,10 +386,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'USDC':
-                // let usdcBalance = await 
+                // let usdcBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance)=>{
                     console.log("usdcBalance", usdcBalance);
                     setLoading(false);
@@ -274,10 +398,10 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-                
+
                 return;
             case 'TNFT':
-                // let aliaBalance = await 
+                // let aliaBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "alia", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance)=>{
                     console.log("tnftBalance", tnftBalance);
                     setLoading(false);
@@ -291,7 +415,7 @@ const SendScreen = (props) => {
                 });
 
             case 'TAL':
-                // let aliaBalance = await 
+                // let aliaBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "alia", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
                     console.log("talBalance", talBalance);
                     setLoading(false);
@@ -304,7 +428,7 @@ const SendScreen = (props) => {
                     showErrorAlert(err.msg);
                 });
 
-            
+
             default:
         }
     }
@@ -341,18 +465,18 @@ const SendScreen = (props) => {
 
                 </View>
                 <View style={styles.inputContainer}>
-                    <AddressField 
+                    <AddressField
                         onChangeText={setAddress}
                         onSubmitEditing={(txt) => {
                             // verifyAddress(txt);
                         }}
                         value={address}/>
-                    
-                </View>
-                
+                        }}/>
+     </View>
+
                 <View style={styles.inputContainer}>
-                    <PaymentField 
-                        type={type} 
+                    <PaymentField
+                        type={type}
                         value={amount}
                         onChangeText={(e) => {
                             let value = amountValidation(e, amount);
@@ -361,7 +485,7 @@ const SendScreen = (props) => {
                             }else {
                                 setAmount('');
                             }
-                            
+
                         }}/>
                 </View>
             </View>
@@ -379,7 +503,7 @@ const SendScreen = (props) => {
                         }
                         else {
                             showErrorAlert(translate("wallet.common.insufficientFunds"));
-                        }  
+                        }
                     }else{
                         showErrorAlert(translate("wallet.common.requireSendField"));
                     }
@@ -422,7 +546,7 @@ const Send = ({route, navigation}) => {
             return null;
         }
       };
-    
+
     const renderTabBar = (props) => {
         return (
             <TabBar
@@ -518,7 +642,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp("1%")
     },
     inputLeft: {
-        ...CommonStyles.text(Fonts.ARIAL, Colors.inputLeftPayment, RF(1.4))
+        ...CommonStyles.text(Fonts.ARIAL, Colors.GREY1, RF(1.8))
     },
     paymentField: {
         textAlign: "right",
@@ -527,8 +651,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     inputRight: {
-        ...CommonStyles.text(Fonts.ARIAL, Colors.topUpfieldRight, RF(1.8)),
-        marginTop: hp('0.5%')
+        ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.8)),
+        // marginTop: hp('0.5%'),
+        alignSelf: 'center',
     },
     inputBottom: {
         ...CommonStyles.text(Fonts.ARIAL, Colors.inputBottomPayment, RF(1.6)),
@@ -540,9 +665,10 @@ const styles = StyleSheet.create({
         paddingVertical: hp("1%"),
         borderWidth: 0,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.borderColorInput,
+        borderBottomColor: Colors.GREY1,
         alignSelf: "center",
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     qrCameraStyle: {
         height: "100%",
@@ -554,14 +680,14 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
     },
     rescan: {
-        position: 'absolute', 
-        borderRadius: hp("2.5%"), 
-        borderWidth: 2, 
+        position: 'absolute',
+        borderRadius: hp("2.5%"),
+        borderWidth: 2,
         alignSelf: 'center',
         bottom: 20,
-        borderColor: Colors.themeColor, 
-        paddingHorizontal: wp("4%"), 
-        paddingVertical: hp("1%"), 
+        borderColor: Colors.themeColor,
+        paddingHorizontal: wp("4%"),
+        paddingVertical: hp("1%"),
         backgroundColor: Colors.themeColor
     }
 })
