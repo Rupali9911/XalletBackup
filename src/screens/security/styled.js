@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     },
     listSubLabel: {
         fontFamily: fonts.ARIAL,
-        fontSize: RF(1.6),
+        fontSize: RF(1.4),
         color: Colors.blackShadeOne,
     }
 })

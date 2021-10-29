@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {ImageBackground, Modal, StyleSheet} from 'react-native';
+import {ImageBackground, Modal, StyleSheet, View} from 'react-native';
+import {BlurView} from '@react-native-community/blur';
 import Colors from '../constants/Colors';
 import {wp} from '../constants/responsiveFunct';
 
@@ -8,9 +9,14 @@ const AppModal = props => {
   const {visible, onRequestClose, src} = props;
   return (
     <Modal visible={visible} transparent onRequestClose={onRequestClose}>
-      <ImageBackground source={src} style={styles.container}>
-        {props.children}
-      </ImageBackground>
+      <BlurView
+        blurType="light"
+        style={{flex: 1}}
+        blurAmount={5}>
+        <View style={styles.container}>
+          {props.children}
+        </View>
+      </BlurView>
     </Modal>
   );
 };

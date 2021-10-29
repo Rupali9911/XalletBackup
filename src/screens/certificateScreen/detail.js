@@ -29,6 +29,8 @@ import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllCards, setPaymentObject } from '../../store/reducer/paymentReducer';
 import { networkType } from '../../common/networkType';
+import AppModal from '../../components/appModal';
+import SuccessModalContent from '../../components/successModal';
 
 const {
     PlayButtonIcon,
@@ -73,6 +75,7 @@ const DetailScreen = ({ route, navigation }) => {
     const [singleNFT, setSingleNFT] = useState({});
     const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
     const [nonCryptoOwner, setNonCryptoOwner] = useState(false);
+    const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [nftStatus, setNftStatus] = useState('');
     const [lastBidAmount, setLastBidAmount] = useState("");
     const [priceNFT, setPriceNFT] = useState("");
@@ -583,7 +586,21 @@ const DetailScreen = ({ route, navigation }) => {
                     setBuyLoading(true);
                     getNonCryptoNFTOwner();
                     setShowPaymentNow(false);
+                    setSuccessModalVisible(true);
                 }} />
+            
+            <AppModal
+                visible={successModalVisible}
+                onRequestClose={() => setSuccessModalVisible(false)}>
+                <SuccessModalContent
+                    onClose={() => setSuccessModalVisible(false)}
+                    onDonePress={() => {
+                        setSuccessModalVisible(false);
+                    }}
+                    sucessMsg={translate("wallet.common.purchasedSuccess")}
+                />
+            </AppModal>
+
         </>
     )
 }

@@ -21,6 +21,7 @@ import { useNavigation } from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
 import { useSelector } from 'react-redux';
 import { BlurView } from "@react-native-community/blur";
+import { IconButton } from 'react-native-paper';
 
 const PaymentMethod = (props) => {
 
@@ -59,7 +60,13 @@ const PaymentMethod = (props) => {
                         // setOpacity(0);
                         onRequestClose();
                     }}>
-                        <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} />
+                        {/* <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} /> */}
+                        <IconButton
+                            icon={'close'}
+                            color={Colors.headerIcon2}
+                            size={17}
+                            style={styles.closeIcon}
+                        />
                     </TouchableOpacity>
                     <Text style={styles.title}>{translate("wallet.common.selectPaymentMethod")}</Text>
                     <ButtonGroup buttons={[
@@ -168,7 +175,8 @@ const styles = StyleSheet.create({
     },
     closeIcon: {
         alignSelf: 'flex-end',
-        ...CommonStyles.imageStyles(5)
+        backgroundColor: Colors.iconBg,
+        margin: 0
     },
     title: {
         fontFamily: Fonts.ARIAL_BOLD,

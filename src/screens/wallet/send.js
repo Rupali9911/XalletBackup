@@ -470,9 +470,8 @@ const SendScreen = (props) => {
                         onSubmitEditing={(txt) => {
                             // verifyAddress(txt);
                         }}
-                        value={address}/>
-                        }}/>
-     </View>
+                        value={address} />
+                </View>
 
                 <View style={styles.inputContainer}>
                     <PaymentField
@@ -485,7 +484,6 @@ const SendScreen = (props) => {
                             }else {
                                 setAmount('');
                             }
-
                         }}/>
                 </View>
             </View>
