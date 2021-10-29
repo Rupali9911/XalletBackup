@@ -640,7 +640,9 @@
                 "requireState": "주를 선택하십시오",
                 "requireCity": "도시를 입력하세요",
                 "requireZipcode": "우편번호를 입력하세요",
-                "networkFailed": "네트워크 요청 실패"
+                "networkFailed": "네트워크 요청 실패",
+                "passcodeError1": "암호가 일치하지 않았습니다. 다시 시도하십시오!",
+                "passcodeError2": "암호가 일치하지 않았습니다. 다시 시도하십시오!"
             },
             "needCameraPermission": "카메라 사용 권한 필요",
             "cameraNotAuth": "카메라가 승인되지 않음",
@@ -828,7 +830,19 @@
             "total": "총",
             "firstName": "이름",
             "lastName": "성",
-            "aboutMe": "나에 대해서"
+            "aboutMe": "나에 대해서",
+            "editprofile": "프로필 수정",
+            "rescan": "다시 스캔",
+            "connectInfo2": "",
+            "insufficientToken": "이 거래를 수행하기에 충분한 {{token}} 토큰이 없습니다",
+            "info": "정보",
+            "needCameraPermission": "카메라 사용 권한 필요",
+            "cameraNotAuth": "카메라가 승인되지 않음",
+            "doItLater": "나중에 해",
+            "backupPhrase": "백업 복구 문구",
+            "notBackedUp": "안전하지 않은 복구 문구",
+            "backupSuccess": "복구 문구 안전",
+            "walletImported": "지갑을 성공적으로 가져왔습니다."
         },
         "backendmessage": {
             "error": {},

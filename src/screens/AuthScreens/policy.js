@@ -57,6 +57,7 @@ const Policy = ({route, navigation}) => {
                         style={styles.webview}
                         originWhitelist={['*']}
                         source={isPolicy?AnPolicy[selectedLanguageItem.language_name]:AnTerms[selectedLanguageItem.language_name]}
+                        decelerationRate='normal'
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
                         onLoadStart={()=>setLoading(true)}
@@ -68,6 +69,7 @@ const Policy = ({route, navigation}) => {
                     style={styles.webview}
                     originWhitelist={['*']}
                     source={content}
+                    decelerationRate='normal'
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
                     onLoadStart={()=>setLoading(true)}

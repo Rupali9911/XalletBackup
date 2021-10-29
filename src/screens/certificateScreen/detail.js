@@ -63,8 +63,7 @@ const DetailScreen = ({ route, navigation }) => {
         chain,
         ownerId,
         tokenId,
-        ownerData,
-        artistData
+        artistId
     } = route.params;
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
     const [showPaymentNow, setShowPaymentNow] = useState(false);
@@ -158,7 +157,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods
             .getSellDetail(_tokenId)
             .call((err, res) => {
-                console.log('checkNFTOnAuction_res',res);
+                console.log('checkNFTOnAuction_res', res);
                 if (!err) {
                     if (parseInt(res[5]) * 1000 > 0) {
                         setAuctionVariables(
@@ -186,6 +185,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods
             .getNonCryptoOwner(_tokenId)
             .call(async (err, res) => {
+                console.log('getNonCryptoOwner_res',res);
                 if (res) {
                     setNonCryptoOwnerId(res);
                     lastOwnerOfNFTNonCrypto();
@@ -225,7 +225,7 @@ const DetailScreen = ({ route, navigation }) => {
                                     ? true
                                     : false);
                                 setIsOwner((_data.owner_address.toLowerCase() ===
-                                    wallet.address.toLowerCase() &&
+                                    data.user._id.toLowerCase() &&
                                     res[1] !== "") ||
                                     (data &&
                                         _data.owner_address.toLowerCase() ===
@@ -393,27 +393,11 @@ const DetailScreen = ({ route, navigation }) => {
         return _nftStatus;
     }
 
-    const onProfile = (isOwner) => {
+    const onProfile = () => {
         if (isOwner) {
-            if (ownerData) {
-                navigation.navigate('ArtistDetail', { data: ownerData });
-            } else {
-                navigation.navigate('ArtistDetail', {
-                    data: {
-                        id: owner,
-                    }
-                });
-            }
+            navigation.navigate('ArtistDetail', { id: ownerId });
         } else {
-            if (artistData) {
-                navigation.navigate('ArtistDetail', { data: artistData });
-            } else {
-                navigation.navigate('ArtistDetail', {
-                    data: {
-                        id: creator,
-                    }
-                });
-            }
+            navigation.navigate('ArtistDetail', { id: artistId });
         }
     }
 
@@ -435,11 +419,11 @@ const DetailScreen = ({ route, navigation }) => {
                         activeOpacity={1}
                         onPress={() => setPlay(!isPlay)}>
                         {
-                            fileType !== 'mp4' ?
-                                <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
+                            fileType !== 'mp4' || fileType !== 'MP4' || fileType !== 'mov' || fileType !== 'MOV' ?
+                                <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain />
                                 :
                                 <View style={styles.modalImage}>
-                                    <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
+                                    <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain />
                                     <Video
                                         ref={refVideo}
                                         source={{ uri: video }}
@@ -552,7 +536,9 @@ const DetailScreen = ({ route, navigation }) => {
                             {price ? price : 0}
                         </Text>
                     </View>
-                    <GroupButton
+                    {
+                        setNFTStatus() !== undefined &&
+                        <GroupButton
                             leftText={
                                 setNFTStatus() === 'onSell' ? translate("common.cancelSell")
                                     : setNFTStatus() === 'sell' ? translate("common.sell")
@@ -564,18 +550,20 @@ const DetailScreen = ({ route, navigation }) => {
                             leftDisabled={setNFTStatus() === ''}
                             leftLoading={buyLoading}
                             onLeftPress={() => {
-                                console.log('priceOfNft',priceNFT);
-                                if(buyLoading)return;
+                                console.log('priceOfNft', priceNFT);
+                                if (buyLoading) return;
                                 // navigation.navigate('WalletConnect')
                                 // if(price && price > 0){
-                                    if(setNFTStatus() === 'buy'){
-                                        setShowPaymentMethod(true);
-                                    }
+                                if (setNFTStatus() === 'buy') {
+                                    setShowPaymentMethod(true);
+                                }
                                 // }
                             }}
                             leftHide={setNFTStatus() === undefined}
+                            rightHide
                             onRightPress={() => navigation.navigate('MakeBid')}
                         />
+                    }
                 </View>
             </SafeAreaView>
             <PaymentMethod visible={showPaymentMethod} price={price ? price : 0} chain={chain} onRequestClose={() => setShowPaymentMethod(false)} />
@@ -584,7 +572,7 @@ const DetailScreen = ({ route, navigation }) => {
                 price={price ? price : 0}
                 chain={chain}
                 NftId={_tokenId}
-                ownerId={ownerId}
+                ownerId={nonCryptoOwnerId}
                 lastBidAmount={priceNFT}
                 onRequestClose={() => {
                     dispatch(setPaymentObject(null));

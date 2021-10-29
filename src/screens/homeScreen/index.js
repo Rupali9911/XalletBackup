@@ -6,8 +6,6 @@ import {
   FlatList,
   AppState,
   Image,
-  Linking,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -57,7 +55,7 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
@@ -166,13 +164,16 @@ const Hot = () => {
   );
 };
 
-const HomeScreen = ({ navigation }) => {
-  const { ListReducer } = useSelector(state => state);
-  const { wallet, isCreate } = useSelector(state => state.UserReducer);
+
+const HomeScreen = ({navigation}) => {
+  const {ListReducer} = useSelector(state => state);
+  const {wallet, isCreate, showSuccess} = useSelector(
+    state => state.UserReducer,
+  );
   const dispatch = useDispatch();
 
-  const [modalVisible, setModalVisible] = useState(isCreate);
-  const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
+  const [modalVisible, setModalVisible] = useState(showSuccess);
+  const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [appState, setAppState] = useState("");
 
@@ -253,7 +254,7 @@ const HomeScreen = ({ navigation }) => {
               })}
           </ScrollView>
         </View>
-        {isCreate ? null : (
+        {showSuccess ? null : (
           <Tab.Navigator
             tabBarOptions={{
               activeTintColor: colors.BLUE4,

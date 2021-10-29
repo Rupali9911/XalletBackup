@@ -83,8 +83,8 @@ const Connect = ({ route, navigation }) => {
                 title={translate("wallet.common.walletConnect")}
                 titleStyle={styles.screenTitle} />
             <View style={styles.container}>
-                <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}</TextView>
-
+                <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}{"\n"}{translate("wallet.common.connectInfo2")}</TextView>
+                
                 <View style={styles.list}>
                     <FlatList
                         data={listData}

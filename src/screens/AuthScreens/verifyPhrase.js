@@ -15,7 +15,7 @@ import { RF, hp, wp } from '../../constants/responsiveFunct';
 import HintText from '../../components/hintText';
 import ImagesSrc from '../../constants/Images';
 import Colors from '../../constants/Colors';
-import { setUserAuthData, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
+import { setUserAuthData, endLoader, getAddressNonce, setBackupStatus } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 // import SingleSocket from '../../helpers/SingleSocket';
@@ -29,6 +29,9 @@ const VerifyPhrase = ({ route, navigation }) => {
 
     const dispatch = useDispatch();
     const { wallet } = route.params;
+
+    const { data } = useSelector(state => state.UserReducer);
+
     const [loading, setLoading] = useState(false);
     const [phrase, setPhrase] = useState([]);
     const [covertWallet, setConvertWallet] = useState([]);
@@ -149,15 +152,22 @@ const VerifyPhrase = ({ route, navigation }) => {
                     containerStyle={CommonStyles.button}
                     labelStyle={CommonStyles.buttonLabel}
                     onPress={() => {
-                        if (wallet) {
-                            setLoading(true);
-                            dispatch(getAddressNonce(wallet, true)).then(() => {
-                                setLoading(false);
-                            }).catch((err) => {
-                                setLoading(false);
-                                alertWithSingleBtn(translate("wallet.common.tryAgain"));
-                            });
+                        if (data && data.user) {
+                            dispatch(setBackupStatus(true));
+                            navigation.goBack();
+                        } else {
+                            if (wallet) {
+                                setLoading(true);
+                                dispatch(getAddressNonce(wallet, true)).then(() => {
+                                    setLoading(false);
+                                    dispatch(setBackupStatus(true));
+                                }).catch((err) => {
+                                    setLoading(false);
+                                    alertWithSingleBtn(translate("wallet.common.tryAgain"));
+                                });
+                            }
                         }
+                        
                     }}
                 />
             </View>

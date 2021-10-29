@@ -28,7 +28,7 @@ const C_Image = (props) => {
                     uri: props.uri,
                     priority: FastImage.priority.normal,
                 } : IMAGES.DEFAULTPROFILE}
-                resizeMode={FastImage.resizeMode.cover}
+                resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
             />
             {
                 props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' ?

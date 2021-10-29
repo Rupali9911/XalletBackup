@@ -640,7 +640,9 @@
                 "requireState": "Please select State",
                 "requireCity": "Please enter city",
                 "requireZipcode": "Please enter zipcode",
-                "networkFailed": "Network request failed"
+                "networkFailed": "Network request failed",
+                "passcodeError1": "Passcodes did not match. Please try again!",
+                "passcodeError2": "Passcode did not match. Please try again!"
             },
             "welcomeTxt": "Welcome",
             "info": "Info",
@@ -651,7 +653,7 @@
             "legal": "Legal ",
             "privacyPolicy": "Privacy policy",
             "termsServices": "Terms of services",
-            "termDeclaration": "I agree to the terms of service and privacy policy of XANA wallet",
+            "termDeclaration": "I agree to the terms of service and privacy policy of Xanalia",
             "backupTxt": "Backup your wallet now",
             "phraseHint": "In the next step you will see 12 words that allow you recover a wallet",
             "phraseAlert": "I understand that if I loss my recovery words. I will not be able to access my wallet",
@@ -828,7 +830,19 @@
             "total": "Total",
             "firstName": "First Name",
             "lastName": "Last Name",
-            "aboutMe": "About Me"
+            "aboutMe": "About Me",
+            "editprofile": "Edit Profile",
+            "rescan": "Rescan",
+            "connectInfo2": "",
+            "insufficientToken": "You don't have sufficient {{token}} token to perform this transaction",
+            "info": "Info",
+            "needCameraPermission": "Need camera permission",
+            "cameraNotAuth": "Camera not authorized",
+            "doItLater": "Do it later",
+            "backupPhrase": "Backup Recovery Phrase",
+            "notBackedUp": "Recovery phrase not safe",
+            "backupSuccess": "Recovery phrase safe",
+            "walletImported": "Your wallet was successfully imported."
         },
         "backendmessage": {
             "error": {},
