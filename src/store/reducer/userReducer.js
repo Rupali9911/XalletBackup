@@ -72,7 +72,8 @@ export default UserReducer = (state = initialState, action) => {
         case UPDATE_CREATE:
             return {
                 ...state,
-                isCreate: false
+                isCreate: false,
+                showSuccess: false
             };
 
         case UPDATE_PROFILE:
