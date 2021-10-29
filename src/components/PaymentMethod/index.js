@@ -46,7 +46,7 @@ const PaymentMethod = (props) => {
                 <BlurView
                     style={styles.absolute}
                     blurType="light"
-                    blurAmount={10}
+                    blurAmount={5}
                 >
                 </BlurView>
 
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         left: 0,
         bottom: 0,
         right: 0,
-        backgroundColor: "rgba(95, 148, 255, 0.6)"
+        backgroundColor: "rgba(95, 148, 255, 0.7)"
     },
     emptyArea: {
         flex: 1
