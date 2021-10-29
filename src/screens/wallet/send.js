@@ -471,8 +471,7 @@ const SendScreen = (props) => {
                             // verifyAddress(txt);
                         }}
                         value={address}/>
-                        }}/>
-     </View>
+                </View>
 
                 <View style={styles.inputContainer}>
                     <PaymentField
