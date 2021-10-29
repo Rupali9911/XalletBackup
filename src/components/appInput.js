@@ -24,7 +24,7 @@ const AppInput = (props) => {
                     returnKeyType={props.returnKeyType}
                     secureTextEntry={props.secureTextEntry}
                     underlineColorAndroid={Colors.transparent}
-                    placeholderTextColor={Colors.titleColor}
+                    placeholderTextColor={props.placeholderTextColor ? props.placeholderTextColor : Colors.titleColor}
                     style={[styles.input, props.inputStyle]}
                     onSubmitEditing={props.onSubmitEditing}
                     editable={props.editable}

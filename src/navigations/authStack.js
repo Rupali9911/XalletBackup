@@ -6,6 +6,7 @@ import Backup from "../screens/AuthScreens/backup";
 import RecoveryPhrase from "../screens/AuthScreens/recoveryPhrase";
 import Policy from "../screens/AuthScreens/policy";
 import VerifyPhrase from "../screens/AuthScreens/verifyPhrase";
+import ImportWalletScreen from "../screens/AuthScreens/importWallet";
 
 const Auth = createStackNavigator();
 
@@ -18,6 +19,7 @@ const AuthStack = () => {
             <Auth.Screen name="recoveryPhrase" component={RecoveryPhrase} />
             <Auth.Screen name="policy" component={Policy} />
             <Auth.Screen name="verifyPhrase" component={VerifyPhrase} />
+            <Auth.Screen name="importWallet" component={ImportWalletScreen} />
         </Auth.Navigator>
     )
 }

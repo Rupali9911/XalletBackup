@@ -59,6 +59,7 @@ export default {
   tabLabel: '#666666',
   greyButtonLabel: '#8E8E8E',
   lightBorder: '#DBDBDB',
+  lightBorder1: '#BFBFBF',
   lightBackground: '#E6E7E7',
   hintText: '#66666C',
   buttonTxtColor: '#313849',
