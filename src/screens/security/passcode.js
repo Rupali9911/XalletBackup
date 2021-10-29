@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SafeAreaView, View, ScrollView, TouchableOpacity, Text, Image } from "react-native";
+import { SafeAreaView, View, ScrollView, TouchableOpacity, Text, Image, BackHandler } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import ToggleSwitch from 'toggle-switch-react-native';
 import DeviceInfo from "react-native-device-info";
@@ -43,14 +43,33 @@ function PasscodeScreen({
     numberArr.push(0)
     numberArr.push("")
 
+    const goBackFunc = () => {
+        navigation.goBack()
+        return true
+    }
+
     useEffect(async () => {
         let pass = await AsyncStorage.getItem("@passcode");
+        if (screen == "active" && pass) {
+            BackHandler.addEventListener('hardwareBackPress', () => { return true; });
+
+        } else {
+            BackHandler.removeEventListener('hardwareBackPress', () => { return false; })
+        }
+
+        if (screen == "security") {
+            BackHandler.addEventListener('hardwareBackPress', goBackFunc);
+        }
 
         if (pass) {
             setStatus(true)
             setoldPasscode(pass)
         }
         setLoading(false)
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', () => { return true; })
+            BackHandler.removeEventListener('hardwareBackPress', goBackFunc)
+        }
     }, [])
 
     const addItem = (v) => {
@@ -79,7 +98,21 @@ function PasscodeScreen({
                             });
                             setpasscode([])
                         }
-                    } else {
+                    } else if (screen === "active") {
+                        if (pass.join("") == oldPasscode) {
+                            navigation.goBack();
+                        } else {
+                            toastRef.current.show({
+                                type: 'my_custom_type',
+                                text1: translate("wallet.common.error.passcodeError2"),
+                                topOffset: hp("10%"),
+                                visibilityTime: 500,
+                                autoHide: true,
+                            });
+                            setpasscode([])
+                        }
+                    }
+                    else {
                         if (pass.join("") == oldPasscode) {
                             dispatch(startMainLoading());
                             dispatch(SPasscode(""));

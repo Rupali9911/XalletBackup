@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  AppState,
   Image,
   Linking,
   Platform,
@@ -44,6 +45,7 @@ import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
 import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const langObj = getLanguage();
 
@@ -172,9 +174,21 @@ const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(isCreate);
   const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
+  const [appState, setAppState] = useState("");
+
+  const appStateChange = async (nextAppState) => {
+    console.log(nextAppState)
+    let pass = await AsyncStorage.getItem("@passcode");
+
+    if (nextAppState === "active" && pass) {
+      navigation.navigate("PasscodeScreen", { updateToggle: () => null, screen: "active" })
+    }
+  }
 
   useEffect(() => {
+    AppState.addEventListener('change', appStateChange);
     dispatch(getAllArtist());
+
   }, []);
 
   const openPhoneSettings = () => {

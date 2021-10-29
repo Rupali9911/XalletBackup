@@ -21,7 +21,7 @@ const initialState = {
     wallet: null,
     isCreate: false,
     data: {},
-    passcode: ""
+    passcode: "",
 };
 
 export default UserReducer = (state = initialState, action) => {
