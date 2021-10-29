@@ -134,7 +134,7 @@ const WalletPay = ({route, navigation}) => {
     const IsActiveToPay = () => {
         let tnft = parseFloat(`${tnftBalance}`);
         let tal = parseFloat(`${talBalance}`);
-        if(paymentObject){
+        if(selectedObject){
             if(chainType === 'polygon' && tal > 0){
                 return true;
             } else if(chainType === 'binance' && tnft > 0){
@@ -275,7 +275,7 @@ const WalletPay = ({route, navigation}) => {
                     <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
                     <Text style={styles.value}>{selectedObject.type} {selectedObject.tokenValue}</Text>
                 </View>
-                <TextView style={styles.alertMsg}>{translate("wallet.common.insufficientToken",{token: chainType === 'polygon'?'TAL':'TNFT'})}</TextView>
+                {!IsActiveToPay() && <TextView style={styles.alertMsg}>{translate("wallet.common.insufficientToken",{token: chainType === 'polygon'?'TAL':'TNFT'})}</TextView>}
             </View>}
 
             <View style={styles.buttonContainer}>

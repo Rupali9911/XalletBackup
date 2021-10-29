@@ -87,7 +87,8 @@ export default UserReducer = (state = initialState, action) => {
         case UPDATE_BACKUP:
             return {
                 ...state,
-                isBackup: action.payload
+                isBackup: action.payload,
+                loading: false
             };
         default:
             return state;
@@ -124,7 +125,7 @@ export const setPasscode = data => ({
   payload: data,
 });
 
-export const setBackupStatus = (data) => ({
+export const setBackup = (data) => ({
     type: UPDATE_BACKUP,
     payload: data
 });
@@ -145,9 +146,8 @@ export const endLoader = () => dispatch =>
 
 export const loadFromAsync = () => async dispatch => {
   const wallet = await AsyncStorage.getItem('@wallet', err => console.log(err));
-  const userData = await AsyncStorage.getItem('@userData', err =>
-    console.log(err),
-  );
+  const userData = await AsyncStorage.getItem('@userData', err => console.log(err));
+  const backedUp = await AsyncStorage.getItem('@BackedUp', (err) => console.log(err));
   // console.log(wallet, userData)
   if (wallet && userData) {
     dispatch(
@@ -158,6 +158,7 @@ export const loadFromAsync = () => async dispatch => {
         showSuccess: false,
       }),
     );
+    dispatch(setBackup(JSON.parse(backedUp)));
     const _wallet = JSON.parse(wallet);
     let req_data = {
       owner: _wallet.address,
@@ -289,4 +290,11 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
         dispatch(endLoading());
         reject(err);
       });
+  });
+
+export const setBackupStatus = (data) => (dispatch) =>
+  new Promise(async (resolve, reject) => {
+    dispatch(startLoading());
+    await AsyncStorage.setItem('@BackedUp', JSON.stringify(data), (err) => console.log(err));
+    dispatch(setBackup(true));
   });
