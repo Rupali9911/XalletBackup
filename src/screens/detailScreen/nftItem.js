@@ -278,6 +278,7 @@ const nftItem = ({ item, index }) => {
               price: item.price,
               chain: item.chain,
               ownerId: ownerId,
+              artistId: artistId,
               tokenId: item.tokenId,
               ownerData: ownerData,
               artistData: artistData

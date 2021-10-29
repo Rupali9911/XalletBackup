@@ -10,7 +10,6 @@ import {
     UPDATE_PROFILE,
     SET_PASSCODE,
     UPDATE_BACKUP,
-  UPDATE_PROFILE,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL} from '../../common/constants';

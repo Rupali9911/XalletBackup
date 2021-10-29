@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     modalImage: {
         width: wp('100%'),
         height: wp('100%'),
-        resizeMode: "cover",
+        resizeMode: "contain",
         backgroundColor: colors.GREY2
         // marginTop: hp('3%')
     },

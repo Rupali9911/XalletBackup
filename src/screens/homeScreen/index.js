@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {openSettings} from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import { useDispatch, useSelector } from 'react-redux';
 import { openSettings } from 'react-native-permissions';
