@@ -311,7 +311,7 @@ const RecoveryPhrase = ({route, navigation}) => {
           </View>
           <View style={styles.bottomView}>
             <AppButton
-              label={translate('wallet.common.next')}
+              label={recover ? translate("wallet.common.import") : translate("wallet.common.next")}
               view={recover ? !recover : !wallet}
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}

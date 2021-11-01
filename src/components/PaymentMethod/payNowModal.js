@@ -30,6 +30,7 @@ import WebView from 'react-native-webview';
 import { alertWithSingleBtn } from '../../common/function';
 import { approvebnb, buyNft, checkAllowance } from '../../screens/wallet/functions';
 import { BlurView } from "@react-native-community/blur";
+import { IconButton } from 'react-native-paper';
 
 const PaymentNow = (props) => {
 
@@ -320,14 +321,22 @@ const PaymentNow = (props) => {
                         // setOpacity(0);
                         onRequestClose();
                     }}>
-                        <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} />
+                        {/* <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} /> */}
+                        <IconButton
+                            icon={'close'}
+                            color={Colors.headerIcon2}
+                            size={17}
+                            style={styles.closeIcon}
+                        />
                     </TouchableOpacity>
                     <Text style={styles.title}>{getTitle()}</Text>
 
-                    <Text style={styles.balance}>{translate("wallet.common.balanceAmount")}</Text>
+                    {paymentObject && paymentObject.type == 'wallet' ? <View style={styles.profileCont}>
+                        <Image style={styles.profileImage} source={paymentObject.item.icon} />
+                    </View> : <Text style={styles.balance}>{translate("wallet.common.balanceAmount")}</Text>}
 
-                    <View style={styles.valueContainer}>
-                        <Text style={styles.symbol} >{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type} ` : '$'}</Text>
+                    <View style={[styles.valueContainer,{alignItems: paymentObject && paymentObject.type == 'card'?'flex-start':'baseline'}]}>
+                        {paymentObject && paymentObject.type == 'card' && <Text style={styles.symbol} >{'$'} </Text>}
                         <NumberFormat
                             value={paymentObject && paymentObject.type == 'wallet' ? paymentObject.item.tokenValue : price || 0}
                             displayType={'text'}
@@ -335,13 +344,13 @@ const PaymentNow = (props) => {
                             thousandSeparator={true}
                             renderText={formattedValue => <Text numberOfLines={1} style={styles.amount}>{formattedValue}</Text>} // <--- Don't forget this!
                         />
+                        {paymentObject && paymentObject.type !== 'card' && <Text style={styles.symbol} >{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type} ` : 'GOLD'}</Text>}
                     </View>
-
 
                     {paymentObject && paymentObject.type == 'card' && <Separator style={styles.separator} />}
 
                     {paymentObject && paymentObject.type == 'card' && <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>{translate("wallet.common.topup.creditCard")}</Text>
+                        <Text style={[styles.totalLabel,{textTransform: 'uppercase'}]}>{translate("wallet.common.topup.creditCard")}</Text>
                         {paymentObject && <Text style={styles.cardNumber}>
                             {formatWithMask({
                                 text: `424242424242${paymentObject.item.last4}`,
@@ -359,8 +368,8 @@ const PaymentNow = (props) => {
                     <Separator style={styles.separator} />
 
                     <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>{translate("wallet.common.total")}</Text>
-                        <Text style={styles.value}>$ {price}</Text>
+                        <Text style={styles.totalLabel}>{(paymentObject && paymentObject.type == 'card') ? translate("wallet.common.total") : translate("wallet.common.priceIn",{type: paymentObject && paymentObject.type == 'wallet' ? paymentObject.item.type : 'GOLD'})}</Text>
+                        <Text style={styles.value}>{paymentObject && paymentObject.type == 'card' ? '$' : paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type}` : ''} {price}</Text>
                     </View>
 
                     {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin} /> {price}</Text>}
@@ -437,7 +446,8 @@ const styles = StyleSheet.create({
     },
     closeIcon: {
         alignSelf: 'flex-end',
-        ...CommonStyles.imageStyles(5)
+        backgroundColor: Colors.iconBg,
+        margin: 0
     },
     title: {
         fontFamily: Fonts.ARIAL,
@@ -463,7 +473,7 @@ const styles = StyleSheet.create({
     },
     totalLabel: {
         fontSize: RF(1.9),
-        fontFamily: Fonts.ARIAL
+        fontFamily: Fonts.ARIAL,
     },
     value: {
         fontSize: RF(2.3),
@@ -487,17 +497,18 @@ const styles = StyleSheet.create({
         fontSize: RF(4.2),
         fontFamily: Fonts.ARIAL,
         color: Colors.themeColor,
+        lineHeight: RF(4.2),
     },
     valueContainer: {
         flexDirection: 'row',
         alignSelf: 'center',
+        marginTop: hp("1%"),
         marginBottom: hp("3%"),
     },
     symbol: {
         fontSize: RF(2),
         fontFamily: Fonts.ARIAL,
         color: Colors.themeColor,
-        marginTop: hp("0.5%")
     },
     cardNumber: {
         color: Colors.themeColor,
@@ -508,7 +519,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: -5,
         top: -15
-    }
+    },
+    profileCont: {
+        ...CommonStyles.circle("13.5"),
+        alignSelf: 'center'
+    },
+    profileImage: {
+        ...CommonStyles.imageStyles(13.5),
+    },
 });
 
 export default PaymentNow;
