@@ -842,7 +842,10 @@
             "backupPhrase": "バックアップ回復フレーズ",
             "notBackedUp": "安全ではない回復フレーズ",
             "backupSuccess": "安全な回復フレーズ",
-            "walletImported": "ウォレットが正常にインポートされました。"
+            "walletImported": "ウォレットが正常にインポートされました。",
+            "choosePhoto": "写真を選択",
+            "choosePhotoFromGallery": "－ギャラリーから選択...",
+            "takePhoto": "写真を撮る..."
         },
         "backendmessage": {
             "error": {},

@@ -375,8 +375,8 @@ function Profile({
 
                     <ActionSheet
                         ref={actionSheetRef}
-                        title={'Choose Photo'}
-                        options={['Take Photo...', 'Choose Photo from Gallery...', 'Cancel']}
+                        title={translate("wallet.common.choosePhoto")}
+                        options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
                         cancelButtonIndex={2}
                         onPress={selectActionSheet}
                     />

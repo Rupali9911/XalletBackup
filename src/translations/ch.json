@@ -842,7 +842,10 @@
             "backupPhrase": "备份恢复短语",
             "notBackedUp": "恢复短语不安全",
             "backupSuccess": "恢复短语安全",
-            "walletImported": "您的钱包已成功导入。"
+            "walletImported": "您的钱包已成功导入。",
+            "choosePhoto": "选择照片",
+            "choosePhotoFromGallery": "从图库中选择照片...",
+            "takePhoto": "拍照..."
         },
         "backendmessage": {
             "error": {},
