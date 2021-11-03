@@ -1,22 +1,21 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
 import LanguageSelector from '../../components/languageSelector';
-import {RF} from '../../constants/responsiveFunct';
+import { RF } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {setI18nConfig, translate} from '../../walletUtils';
+import { setI18nConfig, translate } from '../../walletUtils';
 
-const Welcome = ({route, navigation}) => {
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+const Welcome = ({ navigation }) => {
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   setI18nConfig(selectedLanguageItem.language_name);
 
   const [openPicker, setOpenPicker] = useState(false);
-  const [isCheck, setCheck] = useState(false);
 
   return (
     <AppBackground>
@@ -34,13 +33,12 @@ const Welcome = ({route, navigation}) => {
           </TextView>
         </View>
 
-        <View style={styles.bottomView}>
+        <View>
           <AppButton
             label={translate('wallet.common.createWallet')}
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
-              console.log('legal');
               navigation.navigate('legal');
             }}
           />
@@ -49,7 +47,7 @@ const Welcome = ({route, navigation}) => {
             containerStyle={CommonStyles.outlineButton}
             labelStyle={CommonStyles.outlineButtonLabel}
             onPress={() => {
-              navigation.navigate('recoveryPhrase', {recover: true});
+              navigation.navigate('recoveryPhrase', { recover: true });
             }}
           />
         </View>
@@ -59,13 +57,9 @@ const Welcome = ({route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   contentContainer: {
     flex: 1,
   },
-  bottomView: {},
   logo: {
     ...CommonStyles.imageStyles(25),
   },

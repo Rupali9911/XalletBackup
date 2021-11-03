@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import {
-    View, StyleSheet, Platform
-} from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import TextView from '../../components/appText';
 import WebView from 'react-native-webview';
 import AppHeader from '../../components/appHeader';
 import { useSelector } from 'react-redux';
@@ -22,13 +19,13 @@ const terms = {
     ch: require('../../walletUtils/terms_ch.html'),
     tw: require('../../walletUtils/terms_tw.html'),
 };
-const AnPolicy = { 
-    en: {uri: 'file:///android_asset/policy.html'},
-    ja: {uri: 'file:///android_asset/policy_ja.html'},
-    ko: {uri: 'file:///android_asset/policy_ko.html'},
-    ch: {uri: 'file:///android_asset/policy_ch.html'},
-    tw: {uri: 'file:///android_asset/policy_tw.html'},
-     
+const AnPolicy = {
+    en: { uri: 'file:///android_asset/policy.html' },
+    ja: { uri: 'file:///android_asset/policy_ja.html' },
+    ko: { uri: 'file:///android_asset/policy_ko.html' },
+    ch: { uri: 'file:///android_asset/policy_ch.html' },
+    tw: { uri: 'file:///android_asset/policy_tw.html' },
+
 };
 const AnTerms = {
     en: { uri: 'file:///android_asset/terms.html' },
@@ -38,30 +35,32 @@ const AnTerms = {
     tw: { uri: 'file:///android_asset/terms_tw.html' },
 };
 
-const Policy = ({route, navigation}) => {
+const Policy = ({ route }) => {
 
-    const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-    const {isPolicy} = route.params;
+    const { isPolicy } = route.params;
 
-    const [content, setContent] = useState(isPolicy?policy[selectedLanguageItem.language_name]:terms[selectedLanguageItem.language_name]);
-    // const [content, setContent] = useState(isPolicy?policy['en']:terms['en']);
     const [loading, setLoading] = useState(true);
-    // console.log('selectedLanguageItem',selectedLanguageItem);
-    return(
+
+    let content = isPolicy ?
+        policy[selectedLanguageItem.language_name] :
+        terms[selectedLanguageItem.language_name];
+
+    return (
         <AppBackground isBusy={loading}>
-            <AppHeader showBackButton title={''}/>
+            <AppHeader showBackButton title={''} />
             {Platform.OS === 'android'
                 ? (
                     <WebView
                         style={styles.webview}
                         originWhitelist={['*']}
-                        source={isPolicy?AnPolicy[selectedLanguageItem.language_name]:AnTerms[selectedLanguageItem.language_name]}
+                        source={isPolicy ? AnPolicy[selectedLanguageItem.language_name] : AnTerms[selectedLanguageItem.language_name]}
                         decelerationRate='normal'
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
-                        onLoadStart={()=>setLoading(true)}
-                        onLoadEnd={()=>setLoading(false)}
+                        onLoadStart={() => setLoading(true)}
+                        onLoadEnd={() => setLoading(false)}
                     />
                 )
                 :
@@ -72,8 +71,8 @@ const Policy = ({route, navigation}) => {
                     decelerationRate='normal'
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
-                    onLoadStart={()=>setLoading(true)}
-                    onLoadEnd={()=>setLoading(false)}
+                    onLoadStart={() => setLoading(true)}
+                    onLoadEnd={() => setLoading(false)}
                 />
             }
         </AppBackground>

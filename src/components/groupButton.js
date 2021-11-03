@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-    View,
-    TouchableOpacity,
-    Text,
-    ActivityIndicator,
-} from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { colors, fonts } from '../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp, SIZE, responsiveFontSize as RF } from "../common/responsiveFunction";
-import Colors from '../constants/Colors';
+import { SIZE, responsiveFontSize as RF } from "../common/responsiveFunction";
 
 const groupButton = ({
     leftText,
@@ -21,18 +15,17 @@ const groupButton = ({
     leftLoading,
     rightLoading
 }) => {
-    console.log('leftDisabled',leftLoading);
     return (
         <View style={styles.mainContainer}>
-            {leftHide?null:<TouchableOpacity
+            {leftHide ? null : <TouchableOpacity
                 onPress={onLeftPress}
                 style={styles.leftButton}
                 disabled={leftDisabled}>
-                {leftLoading ? <ActivityIndicator color={Colors.white}/> : <Text style={styles.buttonText}>
+                {leftLoading ? <ActivityIndicator color={colors.white} /> : <Text style={styles.buttonText}>
                     {leftText}
                 </Text>}
             </TouchableOpacity>}
-            {rightHide?null:<TouchableOpacity
+            {rightHide ? null : <TouchableOpacity
                 onPress={onRightPress}
                 style={styles.rightButton}
                 disabled={rightDisabled}>

@@ -11,6 +11,7 @@ import UserReducer from './userReducer';
 import WalletReducer from './walletReducer';
 import LanguageReducer from './languageReducer';
 import PaymentReducer from './paymentReducer';
+import AsyncReducer from './asyncStorageReducer';
 
 const RootReducer = combineReducers({
     AuthReducer,
@@ -23,7 +24,8 @@ const RootReducer = combineReducers({
     UserReducer,
     WalletReducer,
     LanguageReducer,
-    PaymentReducer
+    PaymentReducer,
+    AsyncReducer
 });
 
 export default RootReducer;

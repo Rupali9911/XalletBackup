@@ -11,7 +11,7 @@ const FetchingIndicator = () => {
         <Modal
             visible={true}
             transparent
-            onRequestClose={()=>console.log('close')}>
+            onRequestClose={() => null}>
             <View style={styles.loaderCont} >
                 <View style={styles.cardLoader} >
                     <ActivityIndicator size="large" color={Colors.themeColor} />
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
         top: 0,
         zIndex: 1,
         backgroundColor: Colors.blackOpacity(0.3),
-        width: screenWidth, 
-        height: screenHeight 
+        width: screenWidth,
+        height: screenHeight
     },
     cardLoader: {
         ...CommonStyles.center,

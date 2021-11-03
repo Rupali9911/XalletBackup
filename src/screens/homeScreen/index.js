@@ -1,51 +1,26 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  AppState,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, FlatList, AppState, Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import { useDispatch, useSelector } from 'react-redux';
 import { openSettings } from 'react-native-permissions';
-import {
-  responsiveFontSize as RF,
-  SIZE,
-  widthPercentageToDP as wp,
-} from '../../common/responsiveFunction';
-import { C_Image, DetailModal, Loader } from '../../components';
+import { responsiveFontSize as RF, heightPercentageToDP as hp, SIZE, widthPercentageToDP as wp } from '../../common/responsiveFunction';
+import { C_Image, DetailModal, Loader, AppHeader } from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModal from '../../components/successModal';
 import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
-import {
-  getAllArtist,
-  getNFTList,
-  nftListReset,
-  nftLoadStart,
-  pageChange,
-} from '../../store/actions/nftTrendList';
+import { getAllArtist, getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
 import { updateCreateState } from '../../store/reducer/userReducer';
-import getLanguage from '../../utils/languageSupport';
 import { translate, setI18nConfig } from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
-import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -55,7 +30,7 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
@@ -165,22 +140,17 @@ const Hot = () => {
 };
 
 
-const HomeScreen = ({navigation}) => {
-  const {ListReducer} = useSelector(state => state);
-  const {wallet, isCreate, showSuccess} = useSelector(
-    state => state.UserReducer,
-  );
+const HomeScreen = ({ navigation }) => {
+  const { artistList, artistLoading } = useSelector(state => state.ListReducer);
+  const { showSuccess } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
 
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
-  const [appState, setAppState] = useState("");
 
   const appStateChange = async (nextAppState) => {
-    console.log(nextAppState)
     let pass = await AsyncStorage.getItem("@passcode");
-
     if (nextAppState === "active" && pass) {
       navigation.navigate("PasscodeScreen", { updateToggle: () => null, screen: "active" })
     }
@@ -189,13 +159,8 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     AppState.addEventListener('change', appStateChange);
     dispatch(getAllArtist());
-
   }, []);
 
-  const openPhoneSettings = () => {
-    // Linking.openSettings();
-    openSettings();
-  };
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
       if (!alert) {
@@ -205,54 +170,62 @@ const HomeScreen = ({navigation}) => {
       }
     });
   };
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={styles.header}>
-          <View style={styles.headerMenuContainer}></View>
-          <Text style={styles.headerTitle}>{translate('common.home')}</Text>
-          <View style={styles.headerMenuContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Certificate');
-              }}
-              hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Create');
-              }}
-              hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
-            </TouchableOpacity>
-          </View>
-        </View>
+
+        <AppHeader
+          title={translate("common.home")}
+          showRightComponent={(
+            <View style={styles.headerMenuContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Certificate')}
+                hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Create')}
+                hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+
         <View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {ListReducer.artistList &&
-              ListReducer.artistList.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      const id = item.role === 'crypto' ? item.username : item._id;
-                      navigation.navigate('ArtistDetail', { id: id });
-                    }}
-                    key={`_${index}`}>
-                    <View style={styles.userCircle}>
-                      <C_Image
-                        uri={item.profile_image}
-                        type={item.profile_image}
-                        imageStyle={{ width: '100%', height: '100%' }}
-                      />
-                    </View>
-                    <Text numberOfLines={1} style={styles.userText}>
-                      {item.username}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-          </ScrollView>
+          {
+            artistLoading ?
+              <View style={{ width: "100%", height: hp("12%"), justifyContent: "center", alignItems: "center" }} >
+                <ActivityIndicator size="small" color={colors.themeR} />
+              </View> :
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {artistList &&
+                  artistList.length !== 0 ?
+                  artistList.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => {
+                          const id = item.role === 'crypto' ? item.username : item._id;
+                          navigation.navigate('ArtistDetail', { id: id });
+                        }}
+                        key={`_${index}`}>
+                        <View style={styles.userCircle}>
+                          <C_Image
+                            uri={item.profile_image}
+                            type={item.profile_image}
+                            imageStyle={{ width: '100%', height: '100%' }}
+                          />
+                        </View>
+                        <Text numberOfLines={1} style={styles.userText}>
+                          {item.username}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  }) : null
+                }
+              </ScrollView>
+          }
         </View>
         {showSuccess ? null : (
           <Tab.Navigator
@@ -283,19 +256,16 @@ const HomeScreen = ({navigation}) => {
             }}>
             <Tab.Screen name={'Awards 2021'} component={AwardsNFT} />
             <Tab.Screen
-              name={langObj.common.hot}
+              name={translate('common.hot')}
               component={Hot}
-              options={{ tabBarLabel: translate('common.hot') }}
             />
             <Tab.Screen
-              name={langObj.common.following}
+              name={translate('common.following')}
               component={NewNFT}
-              options={{ tabBarLabel: translate('common.following') }}
             />
             <Tab.Screen
-              name={langObj.common.Discover}
+              name={translate('common.Discover')}
               component={Favorite}
-              options={{ tabBarLabel: translate('common.Discover') }}
             />
           </Tab.Navigator>
         )}
@@ -318,7 +288,7 @@ const HomeScreen = ({navigation}) => {
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);
-              openPhoneSettings();
+              openSettings();
             }}
           />
         ) : null}

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, ImageBackground } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
-import LanguageSelector from '../../components/languageSelector';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import Checkbox from '../../components/checkbox';
@@ -10,11 +9,10 @@ import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
 import { hp, RF } from '../../constants/responsiveFunct';
 import HintText from '../../components/hintText';
-import ButtonGroup from '../../components/buttonGroup';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
 import { SIZE } from 'src/constants';
-import { setUserAuthData, startLoader, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
+import { startLoader, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
 import { useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -23,10 +21,10 @@ import { alertWithSingleBtn } from '../../common/function';
 
 const ethers = require('ethers');
 
-const Backup = ({ route, navigation }) => {
+const Backup = ({ navigation }) => {
 
     const dispatch = useDispatch();
-    const {loading} = useSelector(state => state.UserReducer);
+    const { loading } = useSelector(state => state.UserReducer);
 
     const [openPicker, setOpenPicker] = useState(false);
     const [isCheck, setCheck] = useState(false);
@@ -56,8 +54,7 @@ const Backup = ({ route, navigation }) => {
         dispatch(getAddressNonce(wallet, false))
             .then(() => { })
             .catch((err) => {
-                console.log('err',err);
-                alertWithSingleBtn(translate("wallet.common.tryAgain"));
+                alertWithSingleBtn(translate('common.alert'), translate("wallet.common.tryAgain"));
             });
     }
 

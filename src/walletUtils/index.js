@@ -7611,35 +7611,30 @@ export const languageArray = [
     {
       language_id: 1,
       language_name: 'en',
-    //   icon: Icons.icon_flag_america,
       language_display: 'English (United States)',
       isSelected: true,
     },
     {
       language_id: 2,
       language_name: 'ko',
-    //   icon: Icons.icon_flag_korea,
       language_display: '한국어',
       isSelected: true,
     },
     {
       language_id: 3,
       language_name: 'ja',
-    //   icon: Icons.icon_flag_japan,
       language_display: '日本語',
       isSelected: true,
     },
     {
       language_id: 4,
       language_name: 'tw',
-    //   icon: Icons.icon_flag_taiwan,
       language_display: '中文（繁体）',
       isSelected: true,
     },
     {
       language_id: 5,
       language_name: 'ch',
-    //   icon: Icons.icon_flag_china,
       language_display: '中文（简体）',
       isSelected: true,
     },
@@ -7670,54 +7665,10 @@ export function setI18nConfig(tag) {
   i18n.locale = languageTag;
 }
 
-// export const processScanResult = (scanResult, scannerType = 'QR') => {
-//   return new Promise((resolve, reject) => {
-//     if (scannerType == 'QR' && (scanResult.type == 'QR_CODE' || scanResult.type == 'org.iso.QRCode')) {
-//       try {
-//         console.log('Result of scanner', scanResult)
-//         let data = JSON.parse(scanResult.data);
-//         if (data.uid){
-//             let user = {
-//                 id: data.uid,
-//                 userName: data.un
-//             }
-//             if (data.price) {
-//                 user['price'] = data.price;
-//             }
-//             resolve(user);
-//         }else{
-//             reject();
-//         }
-//       } catch (err) {
-//         err && console.log('err', err);
-//         reject();
-//       }
-//     } else if(scannerType == 'BarCode' && (scanResult.type == 'CODE_128' || scanResult.type == 'org.iso.Code128')){
-//       console.log('Result of scanner', scanResult)
-//       if (scanResult.data.includes('||')) {
-//         let data = scanResult.data.split('||');
-//         let user = {
-//           id: data[1],
-//           userName: data[0]
-//         }
-//         if (data.length >= 3) {
-//           user['price'] = data[2]
-//         }
-//         resolve(user);
-//       } else {
-//         reject();
-//       }
-//     } else {
-//       reject(true);
-//     }
-//   });
-// }
-
 export const getLocation = (x0, y0, radius) => {
   // Convert radius from meters to degrees
   let radiusInDegrees = radius / 111000;
 
-  console.log(Math.random());
   let u = Math.random();
   let v = Math.random();
   let w = radiusInDegrees * Math.sqrt(u);
@@ -7730,7 +7681,6 @@ export const getLocation = (x0, y0, radius) => {
 
   let foundLongitude = new_x + x0;
   let foundLatitude = y + y0;
-  console.log("Longitude: " + foundLongitude + "  Latitude: " + foundLatitude );
   return {
     latitude: foundLatitude,
     longitude: foundLongitude
@@ -7785,42 +7735,6 @@ export const tokens = [
     tokenValue: "0",
     network: 'Polygon'
   }
-  // {
-  //     type: 'BUSD',
-  //     tokenName: "BUSD",
-  //     icon: ImagesSrc.busd,
-  //     amount: "$387.41",
-  //     percent: "+10.49%",
-  //     tokenValue: "0",
-  //     network: 'BSC'
-  // },
-  // {
-  //     type: 'USDC',
-  //     tokenName: "USDC",
-  //     icon: ImagesSrc.usdc,
-  //     amount: "$387.41",
-  //     percent: "+10.49%",
-  //     tokenValue: "0",
-  //     network: 'Polygon'
-  // },
-  // {
-  //     type: 'USDT',
-  //     tokenName: "Tether",
-  //     icon: ImagesSrc.usdt,
-  //     amount: "$45,840.61",
-  //     percent: "+0.80%",
-  //     tokenValue: `0`,
-  //     network: 'Ethereum'
-  // },
-  // {
-  //     type: 'ALIA',
-  //     tokenName: "ALIA",
-  //     icon: ImagesSrc.alia,
-  //     amount: "$387.41",
-  //     percent: "+10.49%",
-  //     tokenValue: "0",
-  //     network: 'BSC'
-  // }
 ]
 
 export const processScanResult = (event) => {

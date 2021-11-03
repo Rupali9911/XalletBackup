@@ -2,8 +2,8 @@ import 'react-native-gesture-handler';
 import '../shim';
 
 import * as React from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { Image, LogBox, AppState } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { Image, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider, useSelector, useDispatch } from 'react-redux';
@@ -13,14 +13,12 @@ import * as RNLocalize from "react-native-localize";
 import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
-import { loadAccountKeyFail, loadAccountKeySuccess } from './store/actions/authAction';
 import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
+import { addAsyncAction } from "./store/reducer/asyncStorageReducer";
 import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
 import SecurityScreen from './screens/security';
 import PasscodeScreen from './screens/security/passcode';
-import MyNFTScreen from './screens/myNFTScreen';
-import DiscoverScreen from './screens/discoverScreen';
 import DetailItemScreen from './screens/detailScreen';
 import NewPostScreen from './screens/newPostScreen';
 import CertificateScreen from './screens/certificateScreen';
@@ -39,8 +37,6 @@ import Receive from './screens/wallet/receive';
 import Send from './screens/wallet/send';
 import Connect from './screens/connect';
 import ScanToConnect from './screens/connect/scanToConnect';
-import getLanguage from './utils/languageSupport';
-const langObj = getLanguage();
 import { setI18nConfig, languageArray, environment } from "./walletUtils";
 import { getAllLanguages, setAppLanguage } from "./store/reducer/languageReducer";
 
@@ -78,10 +74,10 @@ const TabComponent = () => {
       },
       activeTintColor: Colors.themeColor
     }} screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
+      tabBarIcon: ({ focused, color }) => {
         let iconName;
 
-        if (route.name === langObj.common.home) {
+        if (route.name === "Home") {
           iconName = focused ? images.icons.homeA : images.icons.homeD;
         } else if (route.name === 'Create') {
           iconName = focused ? images.icons.createA : images.icons.createD;
@@ -102,31 +98,25 @@ const TabComponent = () => {
       },
     })} >
       <Tab.Screen
-        name={langObj.common.home}
+        name={"Home"}
         component={HomeScreen}
         options={{ tabBarLabel: translate("common.collected") }}
       />
-      {/* <Tab.Screen name={langObj.common.Discover} component={DiscoverScreen} /> */}
       <Tab.Screen
         name={'Explore'}
         component={ExploreScreen}
         options={{ tabBarLabel: translate("wallet.common.explore") }}
       />
-      {/* <Tab.Screen name={langObj.common.myNFT} component={MyNFTScreen} /> */}
-      {/* <Tab.Screen name={'Create'} component={NewPostScreen} /> */}
       <Tab.Screen
         name={'Wallet'}
         options={{ tabBarLabel: translate("wallet.common.wallet") }}
         component={Wallet}
       />
-      {/* <Tab.Screen name={langObj.common.AR} component={ARScreen} /> */}
-      {/* <Tab.Screen name={'Certificate'} component={CertificateScreen} /> */}
       <Tab.Screen
         name={'Connect'}
         options={{ tabBarLabel: translate("wallet.common.connect") }}
         component={Connect}
       />
-      {/* <Tab.Screen name={langObj.common.Connect} component={ConnectScreen} /> */}
       <Tab.Screen
         options={{ tabBarLabel: translate("wallet.common.me") }}
         name={'Me'}
@@ -149,22 +139,37 @@ const AppRoutes = () => {
     LogBox.ignoreAllLogs();
     dispatch(startMainLoading());
 
+    AsyncStorage.getAllKeys((err, keys) => {
+      if (keys.length !== 0) {
+        AsyncStorage.multiGet(keys, (err, values) => {
+          let asyncData = {};
+          values.map((result) => {
+            let name = result[0].replace(/[^a-zA-Z ]/g, "")
+            let value = JSON.parse(result[1]);
+            asyncData[name] = value;
+
+            if (name == "passcode") {
+              dispatch(setPasscode(pass))
+            }
+            if (name == "language") {
+              dispatch(setAppLanguage(value));
+            } else {
+              let item = languageArray.find(item => item.language_name == regionLanguage);
+              dispatch(setAppLanguage(item));
+            }
+          });
+          dispatch(addAsyncAction(asyncData))
+          dispatch(loadFromAsync())
+
+        });
+      } else {
+        let item = languageArray.find(item => item.language_name == regionLanguage);
+        dispatch(loadFromAsync())
+        dispatch(setAppLanguage(item));
+      }
+    });
+
     dispatch(getAllLanguages())
-    // AsyncStorage.removeItem('@wallet')
-    let pass = await AsyncStorage.getItem("@passcode");
-    const languageData = await AsyncStorage.getItem('@language', (err) => console.log(err));
-    if (pass) {
-      dispatch(setPasscode(pass))
-      dispatch(loadFromAsync())
-    } else {
-      dispatch(loadFromAsync())
-    }
-    if (languageData) {
-      dispatch(setAppLanguage(JSON.parse(languageData)));
-    } else {
-      let item = languageArray.find(item => item.language_name == regionLanguage);
-      dispatch(setAppLanguage(item));
-    }
 
   }, []);
 
@@ -179,35 +184,35 @@ const AppRoutes = () => {
           <NavigationContainer>
             {
               wallet ?
-                  <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
-                    <Stack.Screen name="Home" component={TabComponent} />
-                    <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
-                    <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-                    <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
-                    <Stack.Screen name="Pay" component={PayScreen} />
-                    <Stack.Screen name="MakeBid" component={MakeBidScreen} />
-                    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-                    <Stack.Screen name="tokenDetail" component={TokenDetail} />
-                    <Stack.Screen name="receive" component={Receive} />
-                    <Stack.Screen name="send" component={Send} />
-                    <Stack.Screen name="scanToConnect" component={ScanToConnect} />
-                    <Stack.Screen name='Create' component={NewPostScreen} />
-                    <Stack.Screen name='Certificate' component={CertificateScreen} />
-                    <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
-                    <Stack.Screen name='AddCard' component={AddCard} />
-                    <Stack.Screen name='Cards' component={Cards} />
-                    <Stack.Screen name='BuyGold' component={BuyGold} />
-                    <Stack.Screen name='Setting' component={Setting} />
-                    <Stack.Screen name='ChangePassword' component={ChangePassword} />
-                    <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
-                    <Stack.Screen name='WalletPay' component={WalletPay} />
-                    <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
-                    <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
-                  </Stack.Navigator>
-                  :
-                  <Stack.Navigator headerMode="none">
-                    <Stack.Screen name="Authentication" component={AuthStack} />
-                  </Stack.Navigator>
+                <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
+                  <Stack.Screen name="Home" component={TabComponent} />
+                  <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
+                  <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+                  <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+                  <Stack.Screen name="Pay" component={PayScreen} />
+                  <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+                  <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                  <Stack.Screen name="tokenDetail" component={TokenDetail} />
+                  <Stack.Screen name="receive" component={Receive} />
+                  <Stack.Screen name="send" component={Send} />
+                  <Stack.Screen name="scanToConnect" component={ScanToConnect} />
+                  <Stack.Screen name='Create' component={NewPostScreen} />
+                  <Stack.Screen name='Certificate' component={CertificateScreen} />
+                  <Stack.Screen name='ArtistDetail' component={ArtistDetail} />
+                  <Stack.Screen name='AddCard' component={AddCard} />
+                  <Stack.Screen name='Cards' component={Cards} />
+                  <Stack.Screen name='BuyGold' component={BuyGold} />
+                  <Stack.Screen name='Setting' component={Setting} />
+                  <Stack.Screen name='ChangePassword' component={ChangePassword} />
+                  <Stack.Screen name='SecurityScreen' component={SecurityScreen} />
+                  <Stack.Screen name='WalletPay' component={WalletPay} />
+                  <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
+                  <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
+                </Stack.Navigator>
+                :
+                <Stack.Navigator headerMode="none">
+                  <Stack.Screen name="Authentication" component={AuthStack} />
+                </Stack.Navigator>
             }
           </NavigationContainer>
 

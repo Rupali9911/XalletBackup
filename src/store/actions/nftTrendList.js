@@ -13,7 +13,9 @@ import {
     NEW_NFT_LIST_UPDATE,
     MYLIST_LIST_UPDATE,
     MY_COLLECTION_LIST_UPDATE,
-    ALL_ARTIST_SUCCESS
+    ALL_ARTIST_SUCCESS,
+    ARTIST_LOADING_START,
+    ARTIST_LOADING_END
 } from '../types';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
@@ -44,11 +46,6 @@ export const pageChange = (data) => ({
     type: PAGE_CHANGE,
     payload: data
 });
-
-export const getAllArtistSuccess = (data) => ({
-    type: ALL_ARTIST_SUCCESS,
-    payload: data
-})
 
 export const getNFTList = (page, limit) => {
     return (dispatch, getState) => {
@@ -95,12 +92,27 @@ export const getNFTList = (page, limit) => {
     }
 }
 
+const artistLoadingStart = () => ({
+    type: ARTIST_LOADING_START
+})
+
+const artistLoadingEnd = () => ({
+    type: ARTIST_LOADING_END
+})
+
+export const getAllArtistSuccess = (data) => ({
+    type: ALL_ARTIST_SUCCESS,
+    payload: data
+})
+
 export const getAllArtist = () => {
     return (dispatch) => {
 
         let body_data = {
             networkType: networkType,
         }
+
+        dispatch(artistLoadingStart())
 
         let fetch_data_body = {
             method: 'POST',
@@ -115,9 +127,8 @@ export const getAllArtist = () => {
             .then(response => response.json())
             .then(json => {
                 dispatch(getAllArtistSuccess([...json.data]))
-
             }).catch(err => {
-                // dispatch(nftLoadFail())
+                dispatch(artistLoadingEnd())
                 alertWithSingleBtn(
                     translate('wallet.common.alert'),
                     translate("wallet.common.error.networkFailed")

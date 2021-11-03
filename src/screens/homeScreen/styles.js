@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         marginBottom: SIZE(8),
     },
     headerMenuContainer: {
-        flex:0.5,
+        flex:1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',

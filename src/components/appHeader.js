@@ -1,17 +1,13 @@
 import React from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from '../constants/Colors';
 import CommonStyles from '../constants/styles';
-import { screenWidth, hp, RF, wp } from '../constants/responsiveFunct';
+import { hp, RF, wp } from '../constants/responsiveFunct';
 import ImagesSrc from "../constants/Images";
 import TextView from "./appText";
-import {
-    FONT,
-    FONTS,
-    COLORS
-} from '../constants';
+import { FONTS, COLORS } from '../constants';
 
 function AppHeader(props) {
     const navigation = useNavigation();
@@ -35,14 +31,16 @@ function AppHeader(props) {
                     :
                     <TextView style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</TextView>
             }
-            <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center"}} >
+            <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }} >
                 {
                     props.showRightButton ?
                         <TouchableOpacity style={styles.backContainer} onPress={props.onPressRight} >
                             {
                                 props.rightButtonComponent
                             }
-                        </TouchableOpacity> : null
+                        </TouchableOpacity> :
+                        props.showRightComponent ?
+                            props.showRightComponent : null
                 }
             </View>
         </View>
@@ -59,8 +57,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp("3%"),
     },
     title: {
-        fontSize: FONT(16),
-        lineHeight: FONT(17),
+        fontSize: RF(2.0),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
         color: COLORS.BLACK1

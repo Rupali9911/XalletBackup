@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    StyleSheet,
-    Image,
-    View
-} from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { setAppLanguage } from '../store/reducer/languageReducer';
@@ -14,7 +10,7 @@ import Images from '../constants/Images';
 import { RF, wp } from '../constants/responsiveFunct';
 import { languageArray } from '../walletUtils';
 
-function LanguageSel (props)  {
+function LanguageSel(props) {
     const dispatch = useDispatch();
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
@@ -22,19 +18,19 @@ function LanguageSel (props)  {
     const [value, setValue] = useState('en');
 
     const items = [];
-    languageArray.map((item)=>{
+    languageArray.map((item) => {
         items.push({
             label: item.language_display,
             value: item.language_name
         });
     });
 
-    useEffect(()=>{
+    useEffect(() => {
         setOpen(false);
-    },[props.open]);
+    }, [props.open]);
 
-    const arrow = <Image style={styles.arrow} source={Images.downArrow}/>
-    return(
+    const arrow = <Image style={styles.arrow} source={Images.downArrow} />
+    return (
         <DropDownPicker
             open={open}
             value={value}
@@ -43,9 +39,8 @@ function LanguageSel (props)  {
             setOpen={setOpen}
             setValue={setValue}
             onChangeValue={(value) => {
-                if(value !== selectedLanguageItem.language_name){
+                if (value !== selectedLanguageItem.language_name) {
                     let item = languageArray.find(item => item.language_name == value);
-                    console.log('language update');
                     dispatch(setAppLanguage(item));
                 }
             }}
@@ -53,8 +48,8 @@ function LanguageSel (props)  {
             dropDownContainerStyle={styles.dropDownContainer}
             textStyle={styles.title}
             labelStyle={styles.label}
-            ArrowUpIconComponent={({style}) => arrow}
-            ArrowDownIconComponent={({style}) => arrow}
+            ArrowUpIconComponent={() => arrow}
+            ArrowDownIconComponent={() => arrow}
         />
     );
 }
@@ -79,10 +74,9 @@ const styles = StyleSheet.create({
     label: {
         ...CommonStyles.text(Fonts.ARIAL_BOLD, Colors.titleColor, RF(1.6)),
         fontWeight: "700",
-        // marginHorizontal: wp('2%'),
-         textAlign: 'center',
+        textAlign: 'center',
     },
-    arrow:{
+    arrow: {
         height: wp("2%"),
         width: wp("3%"),
     }

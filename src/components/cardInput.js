@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { TextInput, StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import MaskInput, {Masks} from 'react-native-mask-input';
 import CreditCardType from 'credit-card-type';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-import { RF, wp, hp } from '../constants/responsiveFunct';
+import { RF, hp } from '../constants/responsiveFunct';
 import Colors from "../constants/Colors";
 import Fonts from "../constants/Fonts";
 import CommonStyles from "../constants/styles";
@@ -31,7 +31,6 @@ const CardNumberInput = (props) => {
                     onChangeText={(masked, unmasked, obfuscated) => {
                         if(unmasked.length>0){
                             const cardType = CreditCardType(unmasked);
-                            console.log('cardType',cardType);
                             if(cardType.length>0){
                                 setCardIcon(ImagesSrc.cardTypeIcon[cardType[0].type]);
                                 props.onCardType && props.onCardType(cardType[0]);
@@ -65,7 +64,6 @@ const DateInput = (props) => {
                     value={props.value}
                     onChangeText={(masked, unmasked, obfuscated) => {
                         let month = masked.split('/');
-                        console.log('month',month);
                         if(month[0] == '' || parseInt(month[0])<=12){
                             props.onChangeText && props.onChangeText(masked);
                         }
@@ -93,7 +91,6 @@ const CvvInput = (props) => {
         for(let i = 0; i < props.length; i++){
             mask.push([/\d/]);
         }
-        console.log('mask',mask);
         return mask;
     }
 
