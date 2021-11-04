@@ -55,7 +55,7 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
@@ -165,9 +165,9 @@ const Hot = () => {
 };
 
 
-const HomeScreen = ({navigation}) => {
-  const {ListReducer} = useSelector(state => state);
-  const {wallet, isCreate, showSuccess} = useSelector(
+const HomeScreen = ({ navigation }) => {
+  const { ListReducer } = useSelector(state => state);
+  const { wallet, isCreate, showSuccess } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -217,14 +217,14 @@ const HomeScreen = ({navigation}) => {
                 navigation.navigate('Certificate');
               }}
               hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
+              <Image source={ImageSrc.scanIcon} style={[styles.headerMenu, { marginRight: SIZE(10) }]} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Create');
               }}
               hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
+              <Image source={ImageSrc.addIcon} style={[styles.headerMenu, { marginLeft: SIZE(10) }]} />
             </TouchableOpacity>
           </View>
         </View>
