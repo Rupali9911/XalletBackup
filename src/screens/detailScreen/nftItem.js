@@ -137,13 +137,15 @@ const nftItem = ({ item, index }) => {
 
     MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
       let ownerAddress = res;
-      MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
-        if (res[0] !== '0x0000000000000000000000000000000000000000') {
-          getPublicProfile(res[0], true);
-        } else {
-          getPublicProfile(ownerAddress, true);
-        }
-      });
+      if (!err) {
+        MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
+          if (res[0] !== '0x0000000000000000000000000000000000000000') {
+            getPublicProfile(res[0], true);
+          } else {
+            getPublicProfile(ownerAddress, true);
+          }
+        });
+      }
     })
   }
 
