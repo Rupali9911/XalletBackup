@@ -4,7 +4,7 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 // import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
-import { binanceNftAbi, binanceNftDex, environment } from '../../../walletUtils';
+import { binanceNftAbi, binanceNftDex, environment, translate } from '../../../walletUtils';
 
 export const getSig = (message, privateKey) => {
   var accounts = new Accounts("");

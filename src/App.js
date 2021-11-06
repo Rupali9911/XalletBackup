@@ -37,7 +37,7 @@ import Receive from './screens/wallet/receive';
 import Send from './screens/wallet/send';
 import Connect from './screens/connect';
 import ScanToConnect from './screens/connect/scanToConnect';
-import { setI18nConfig, languageArray, environment } from "./walletUtils";
+import { languageArray, environment } from "./walletUtils";
 import { getAllLanguages, setAppLanguage } from "./store/reducer/languageReducer";
 
 import ImageSrc from './constants/Images';
@@ -63,6 +63,13 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const TabComponent = () => {
+
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+
+  React.useEffect(() => {
+
+  }, [selectedLanguageItem.language_name])
+
   return (
     <Tab.Navigator tabBarOptions={{
       labelStyle: {
@@ -132,13 +139,13 @@ const AppRoutes = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
-  setI18nConfig(selectedLanguageItem.language_name);
-
-  React.useEffect(async () => {
+  React.useEffect(() => {
 
     LogBox.ignoreAllLogs();
-    dispatch(startMainLoading());
+    dispatch(getAllLanguages())
 
+    dispatch(startMainLoading());
+    AsyncStorage.clear()
     AsyncStorage.getAllKeys((err, keys) => {
       if (keys.length !== 0) {
         AsyncStorage.multiGet(keys, (err, values) => {
@@ -149,27 +156,24 @@ const AppRoutes = () => {
             asyncData[name] = value;
 
             if (name == "passcode") {
-              dispatch(setPasscode(pass))
+              dispatch(setPasscode(value))
             }
             if (name == "language") {
               dispatch(setAppLanguage(value));
-            } else {
-              let item = languageArray.find(item => item.language_name == regionLanguage);
-              dispatch(setAppLanguage(item));
             }
           });
+
           dispatch(addAsyncAction(asyncData))
           dispatch(loadFromAsync())
 
         });
       } else {
+
         let item = languageArray.find(item => item.language_name == regionLanguage);
-        dispatch(loadFromAsync())
         dispatch(setAppLanguage(item));
+        dispatch(loadFromAsync())
       }
     });
-
-    dispatch(getAllLanguages())
 
   }, []);
 
@@ -186,7 +190,7 @@ const AppRoutes = () => {
               wallet ?
                 <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
                   <Stack.Screen name="Home" component={TabComponent} />
-                  <Stack.Screen name='PasscodeScreen' initialParams={{ updateToggle: null, screen: "Auth" }} component={PasscodeScreen} />
+                  <Stack.Screen name='PasscodeScreen' initialParams={{ screen: "Auth" }} component={PasscodeScreen} />
                   <Stack.Screen name="DetailItem" component={DetailItemScreen} />
                   <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
                   <Stack.Screen name="Pay" component={PayScreen} />

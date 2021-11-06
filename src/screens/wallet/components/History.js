@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import NumberFormat from 'react-number-format';
@@ -6,11 +6,10 @@ import NumberFormat from 'react-number-format';
 import TextView from '../../../components/appText';
 import ImagesSrc from '../../../constants/Images';
 import CommonStyles from '../../../constants/styles';
-import Separator from '../../../components/separator';
 import { wp, hp, RF } from '../../../constants/responsiveFunct';
 import Fonts from '../../../constants/Fonts';
 import Colors from '../../../constants/Colors';
-import { translate } from '../../../utils';
+import { translate } from '../../../walletUtils';
 import { Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import moment from 'moment';

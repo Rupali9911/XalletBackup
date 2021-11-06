@@ -9,6 +9,7 @@ import {
   SET_CHINA_LANGUAGE,
   SET_TAIWAN_LANGUAGE
 } from '../types';
+import { setI18nConfig } from "../../walletUtils";
 
 const initialState = {
   loading: false,
@@ -110,6 +111,7 @@ export const getAllLanguages = () => (dispatch) =>
 export const setAppLanguage = (data) => (dispatch) => {
   AsyncStorage.setItem('@language', JSON.stringify(data));
   dispatch(setSelectedLanguage(data));
+  setI18nConfig(data.language_name);
 }
 
 const setSelectedLanguage = (data) => ({

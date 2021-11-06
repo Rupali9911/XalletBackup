@@ -6,21 +6,21 @@ import ImagesSrc from '../constants/Images';
 export const IsTestNet = true;
 
 const numFormatter = (price) => {
-    let num = parseFloat(price);
-    if(num > 999 && num < 1000000){
-        return (num/1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million
-    }else if(num > 1000000){
-        return (num/1000000).toFixed(1) + 'M'; // convert to M for number from > 1 million
-    }else if(num <= 999){
-        return num; // if value < 1000, nothing to do
-    }
+  let num = parseFloat(price);
+  if (num > 999 && num < 1000000) {
+    return (num / 1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million
+  } else if (num > 1000000) {
+    return (num / 1000000).toFixed(1) + 'M'; // convert to M for number from > 1 million
+  } else if (num <= 999) {
+    return num; // if value < 1000, nothing to do
+  }
 }
 
 export const amountValidation = (e, currentValue = '') => {
   const reg = /^\d+(\.\d{0,8})?$/
-  
+
   let value = currentValue;
-  
+
   if (e.length > 0 && reg.test(e)) {
     value = e
   } else if (e.length == 1 && e === '.') {
@@ -73,7 +73,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "name",
     "outputs": [
@@ -96,7 +96,7 @@ export const polygonNftAbi = [
     ],
     "name": "cancelSell",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -135,7 +135,7 @@ export const polygonNftAbi = [
     ],
     "name": "approve",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -155,7 +155,7 @@ export const polygonNftAbi = [
     ],
     "name": "transferFromAdmin",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -179,7 +179,7 @@ export const polygonNftAbi = [
     ],
     "name": "updatePrice",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -211,7 +211,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "totalSupply",
     "outputs": [
@@ -238,7 +238,7 @@ export const polygonNftAbi = [
     ],
     "name": "updateTokenURI",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -281,7 +281,7 @@ export const polygonNftAbi = [
     ],
     "name": "transferFrom",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -313,7 +313,7 @@ export const polygonNftAbi = [
     ],
     "name": "setOnAuction",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -364,7 +364,7 @@ export const polygonNftAbi = [
     ],
     "name": "sellNFTNonCrypto",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -388,7 +388,7 @@ export const polygonNftAbi = [
     ],
     "name": "safeTransferFrom",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -397,7 +397,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "platform",
     "outputs": [
@@ -428,7 +428,7 @@ export const polygonNftAbi = [
     ],
     "name": "updateBidder",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -452,7 +452,7 @@ export const polygonNftAbi = [
     ],
     "name": "buyNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -499,7 +499,7 @@ export const polygonNftAbi = [
     ],
     "name": "placeBid",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -569,7 +569,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "allTokens",
     "outputs": [
@@ -604,11 +604,11 @@ export const polygonNftAbi = [
   {
     "constant": false,
     "inputs": [
-      
+
     ],
     "name": "renounceOwnership",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -617,7 +617,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "nonCryptoNFTVault",
     "outputs": [
@@ -671,7 +671,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "owner",
     "outputs": [
@@ -687,7 +687,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "isOwner",
     "outputs": [
@@ -703,7 +703,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "symbol",
     "outputs": [
@@ -726,7 +726,7 @@ export const polygonNftAbi = [
     ],
     "name": "addMinter",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -735,11 +735,11 @@ export const polygonNftAbi = [
   {
     "constant": false,
     "inputs": [
-      
+
     ],
     "name": "renounceMinter",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -810,7 +810,7 @@ export const polygonNftAbi = [
     ],
     "name": "claimAuction",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -849,7 +849,7 @@ export const polygonNftAbi = [
     ],
     "name": "setApprovalForAll",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -896,7 +896,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "adminDiscount",
     "outputs": [
@@ -951,7 +951,7 @@ export const polygonNftAbi = [
     ],
     "name": "MintAndSellNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -983,7 +983,7 @@ export const polygonNftAbi = [
     ],
     "name": "sellNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1011,7 +1011,7 @@ export const polygonNftAbi = [
     ],
     "name": "safeTransferFrom",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1101,7 +1101,7 @@ export const polygonNftAbi = [
     ],
     "name": "MintAndAuctionNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1129,7 +1129,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "onSell",
     "outputs": [
@@ -1229,7 +1229,7 @@ export const polygonNftAbi = [
     ],
     "name": "setAdminDiscount",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1245,7 +1245,7 @@ export const polygonNftAbi = [
     ],
     "name": "transferOwnership",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1254,7 +1254,7 @@ export const polygonNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "authorVault",
     "outputs": [
@@ -1269,7 +1269,7 @@ export const polygonNftAbi = [
   },
   {
     "inputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1857,7 +1857,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "name",
     "outputs": [
@@ -1880,7 +1880,7 @@ export const binanceNftAbi = [
     ],
     "name": "cancelSell",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1919,7 +1919,7 @@ export const binanceNftAbi = [
     ],
     "name": "approve",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1939,7 +1939,7 @@ export const binanceNftAbi = [
     ],
     "name": "transferFromAdmin",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1963,7 +1963,7 @@ export const binanceNftAbi = [
     ],
     "name": "updatePrice",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -1972,7 +1972,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "totalSupply",
     "outputs": [
@@ -1999,7 +1999,7 @@ export const binanceNftAbi = [
     ],
     "name": "updateTokenURI",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2042,7 +2042,7 @@ export const binanceNftAbi = [
     ],
     "name": "transferFrom",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2074,7 +2074,7 @@ export const binanceNftAbi = [
     ],
     "name": "setOnAuction",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2144,7 +2144,7 @@ export const binanceNftAbi = [
     ],
     "name": "sellNFTNonCrypto",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2187,7 +2187,7 @@ export const binanceNftAbi = [
     ],
     "name": "safeTransferFrom",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2203,7 +2203,7 @@ export const binanceNftAbi = [
     ],
     "name": "burn",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2219,7 +2219,7 @@ export const binanceNftAbi = [
     ],
     "name": "setDex",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2228,7 +2228,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "platform",
     "outputs": [
@@ -2259,7 +2259,7 @@ export const binanceNftAbi = [
     ],
     "name": "buyNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2306,7 +2306,7 @@ export const binanceNftAbi = [
     ],
     "name": "placeBid",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2376,7 +2376,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "allTokens",
     "outputs": [
@@ -2411,11 +2411,11 @@ export const binanceNftAbi = [
   {
     "constant": false,
     "inputs": [
-      
+
     ],
     "name": "renounceOwnership",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2424,7 +2424,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "nonCryptoNFTVault",
     "outputs": [
@@ -2478,7 +2478,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "owner",
     "outputs": [
@@ -2494,7 +2494,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "isOwner",
     "outputs": [
@@ -2510,7 +2510,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "symbol",
     "outputs": [
@@ -2533,7 +2533,7 @@ export const binanceNftAbi = [
     ],
     "name": "addMinter",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2542,11 +2542,11 @@ export const binanceNftAbi = [
   {
     "constant": false,
     "inputs": [
-      
+
     ],
     "name": "renounceMinter",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2617,7 +2617,7 @@ export const binanceNftAbi = [
     ],
     "name": "claimAuction",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2656,7 +2656,7 @@ export const binanceNftAbi = [
     ],
     "name": "setApprovalForAll",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2742,7 +2742,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "adminDiscount",
     "outputs": [
@@ -2797,7 +2797,7 @@ export const binanceNftAbi = [
     ],
     "name": "MintAndSellNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2829,7 +2829,7 @@ export const binanceNftAbi = [
     ],
     "name": "sellNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2857,7 +2857,7 @@ export const binanceNftAbi = [
     ],
     "name": "safeTransferFrom",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2947,7 +2947,7 @@ export const binanceNftAbi = [
     ],
     "name": "MintAndAuctionNFT",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -2975,7 +2975,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "onSell",
     "outputs": [
@@ -3063,7 +3063,7 @@ export const binanceNftAbi = [
     ],
     "name": "setAdminDiscount",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -3079,7 +3079,7 @@ export const binanceNftAbi = [
     ],
     "name": "transferOwnership",
     "outputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -3088,7 +3088,7 @@ export const binanceNftAbi = [
   {
     "constant": true,
     "inputs": [
-      
+
     ],
     "name": "authorVault",
     "outputs": [
@@ -3103,7 +3103,7 @@ export const binanceNftAbi = [
   },
   {
     "inputs": [
-      
+
     ],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -6994,7 +6994,7 @@ export const environment = {
     {
       "constant": true,
       "inputs": [
-        
+
       ],
       "name": "name",
       "outputs": [
@@ -7033,7 +7033,7 @@ export const environment = {
     {
       "constant": true,
       "inputs": [
-        
+
       ],
       "name": "totalSupply",
       "outputs": [
@@ -7076,7 +7076,7 @@ export const environment = {
     {
       "constant": true,
       "inputs": [
-        
+
       ],
       "name": "decimals",
       "outputs": [
@@ -7115,11 +7115,11 @@ export const environment = {
     {
       "constant": false,
       "inputs": [
-        
+
       ],
       "name": "unpause",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7170,7 +7170,7 @@ export const environment = {
     {
       "constant": true,
       "inputs": [
-        
+
       ],
       "name": "paused",
       "outputs": [
@@ -7186,11 +7186,11 @@ export const environment = {
     {
       "constant": false,
       "inputs": [
-        
+
       ],
       "name": "renouncePauser",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7218,11 +7218,11 @@ export const environment = {
     {
       "constant": false,
       "inputs": [
-        
+
       ],
       "name": "renounceOwnership",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7238,7 +7238,7 @@ export const environment = {
       ],
       "name": "addPauser",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7247,11 +7247,11 @@ export const environment = {
     {
       "constant": false,
       "inputs": [
-        
+
       ],
       "name": "pause",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7260,7 +7260,7 @@ export const environment = {
     {
       "constant": true,
       "inputs": [
-        
+
       ],
       "name": "owner",
       "outputs": [
@@ -7276,7 +7276,7 @@ export const environment = {
     {
       "constant": true,
       "inputs": [
-        
+
       ],
       "name": "symbol",
       "outputs": [
@@ -7299,7 +7299,7 @@ export const environment = {
       ],
       "name": "addMinter",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7308,11 +7308,11 @@ export const environment = {
     {
       "constant": false,
       "inputs": [
-        
+
       ],
       "name": "renounceMinter",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7332,7 +7332,7 @@ export const environment = {
       ],
       "name": "burn",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7429,11 +7429,11 @@ export const environment = {
     {
       "constant": false,
       "inputs": [
-        
+
       ],
       "name": "init",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7449,7 +7449,7 @@ export const environment = {
       ],
       "name": "transferOwnership",
       "outputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7457,7 +7457,7 @@ export const environment = {
     },
     {
       "inputs": [
-        
+
       ],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -7608,37 +7608,37 @@ export const environment = {
 };
 
 export const languageArray = [
-    {
-      language_id: 1,
-      language_name: 'en',
-      language_display: 'English (United States)',
-      isSelected: true,
-    },
-    {
-      language_id: 2,
-      language_name: 'ko',
-      language_display: '한국어',
-      isSelected: true,
-    },
-    {
-      language_id: 3,
-      language_name: 'ja',
-      language_display: '日本語',
-      isSelected: true,
-    },
-    {
-      language_id: 4,
-      language_name: 'tw',
-      language_display: '中文（繁体）',
-      isSelected: true,
-    },
-    {
-      language_id: 5,
-      language_name: 'ch',
-      language_display: '中文（简体）',
-      isSelected: true,
-    },
-  ];
+  {
+    language_id: 1,
+    language_name: 'en',
+    language_display: 'English (United States)',
+    isSelected: true,
+  },
+  {
+    language_id: 2,
+    language_name: 'ko',
+    language_display: '한국어',
+    isSelected: true,
+  },
+  {
+    language_id: 3,
+    language_name: 'ja',
+    language_display: '日本語',
+    isSelected: true,
+  },
+  {
+    language_id: 4,
+    language_name: 'tw',
+    language_display: '中文（繁体）',
+    isSelected: true,
+  },
+  {
+    language_id: 5,
+    language_name: 'ch',
+    language_display: '中文（简体）',
+    isSelected: true,
+  },
+];
 
 export const translate = memoize(
   (key, config) => i18n.t(key, config),
@@ -7646,6 +7646,7 @@ export const translate = memoize(
 );
 
 export function setI18nConfig(tag) {
+  
   const translationGetters = {
     en: () => store.getState().LanguageReducer.en,
     ja: () => store.getState().LanguageReducer.ja,
@@ -7653,15 +7654,14 @@ export function setI18nConfig(tag) {
     ch: () => store.getState().LanguageReducer.ch,
     tw: () => store.getState().LanguageReducer.tw,
   }
-
-  const fallback = {languageTag: tag || 'en'};
-  const {languageTag} =
-    // RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) ||
-    fallback;
+  const fallback = { languageTag: tag || 'en' };
+  const { languageTag } = fallback;
+  // RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) ||
+  // fallback;
 
   translate.cache.clear();
 
-  i18n.translations = {[languageTag]: translationGetters[languageTag]()};
+  i18n.translations = { [languageTag]: translationGetters[languageTag]() };
   i18n.locale = languageTag;
 }
 
@@ -7687,17 +7687,17 @@ export const getLocation = (x0, y0, radius) => {
   };
 }
 
-export const CARD_MASK = [[/\d/],[/\d/],[/\d/],[/\d/],' ',[/\d/],[/\d/],[/\d/],[/\d/],' ',[/\d/],[/\d/],[/\d/],[/\d/],' ',/\d/,/\d/,/\d/,/\d/,]
+export const CARD_MASK = [[/\d/], [/\d/], [/\d/], [/\d/], ' ', [/\d/], [/\d/], [/\d/], [/\d/], ' ', [/\d/], [/\d/], [/\d/], [/\d/], ' ', /\d/, /\d/, /\d/, /\d/,]
 
 export const tokens = [
   {
-      type: 'BNB',
-      tokenName: "BNB",
-      icon: ImagesSrc.bnb,
-      amount: "$387.41",
-      percent: "+10.49%",
-      tokenValue: "0",
-      network: 'BSC'
+    type: 'BNB',
+    tokenName: "BNB",
+    icon: ImagesSrc.bnb,
+    amount: "$387.41",
+    percent: "+10.49%",
+    tokenValue: "0",
+    network: 'BSC'
   },
   {
     type: 'ETH',
@@ -7707,15 +7707,15 @@ export const tokens = [
     percent: "+2.21%",
     tokenValue: `0`,
     network: 'Ethereum'
-},
+  },
   {
-      type: 'Matic',
-      tokenName: "Matic",
-      icon: ImagesSrc.matic,
-      amount: "$387.41",
-      percent: "+10.49%",
-      tokenValue: "0",
-      network: 'Polygon'
+    type: 'Matic',
+    tokenName: "Matic",
+    icon: ImagesSrc.matic,
+    amount: "$387.41",
+    percent: "+10.49%",
+    tokenValue: "0",
+    network: 'Polygon'
   },
   {
     type: 'TNFT',
@@ -7738,18 +7738,18 @@ export const tokens = [
 ]
 
 export const processScanResult = (event) => {
-  return new Promise((resolve,reject) => {
-    if(event && event.type== 'QR_CODE'){
-      if(event.data){
+  return new Promise((resolve, reject) => {
+    if (event && event.type == 'QR_CODE') {
+      if (event.data) {
         let walletAddress;
         let amount = '';
-        if(event.data.includes(':')){
+        if (event.data.includes(':')) {
           walletAddress = event.data.split(':')[1];
-        }else if(event.data.includes(' ')){
+        } else if (event.data.includes(' ')) {
           let result = event.data.split(' ');
           walletAddress = result[0];
           amount = result[1];
-        }else {
+        } else {
           walletAddress = event.data;
         }
 
@@ -7758,15 +7758,15 @@ export const processScanResult = (event) => {
           amount
         });
 
-      }else{
+      } else {
         reject();
       }
-    }else{
+    } else {
       reject();
     }
   });
 }
 
 export {
-    numFormatter
+  numFormatter
 }

@@ -15,7 +15,7 @@ import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import { getAllArtist, getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
 import { updateCreateState } from '../../store/reducer/userReducer';
-import { translate, setI18nConfig } from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
@@ -38,7 +38,6 @@ const Hot = () => {
     getNFTlist(1);
     dispatch(pageChange(1));
 
-    setI18nConfig(selectedLanguageItem.language_name);
   }, []);
 
   const getNFTlist = useCallback((page, limit) => {
@@ -144,15 +143,17 @@ const HomeScreen = ({ navigation }) => {
   const { artistList, artistLoading } = useSelector(state => state.ListReducer);
   const { showSuccess } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
+  const { passcode } = useSelector(state => state.AsyncReducer);
 
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
 
-  const appStateChange = async (nextAppState) => {
-    let pass = await AsyncStorage.getItem("@passcode");
+  const appStateChange = (nextAppState) => {
+    var pass = passcode;
+    console.log(pass)
     if (nextAppState === "active" && pass) {
-      navigation.navigate("PasscodeScreen", { updateToggle: () => null, screen: "active" })
+      navigation.navigate("PasscodeScreen", { screen: "active" })
     }
   }
 

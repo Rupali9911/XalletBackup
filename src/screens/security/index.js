@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { SafeAreaView, View, ScrollView, TouchableOpacity, Text, Image } from "react-native";
+import { useSelector } from 'react-redux';
+import { SafeAreaView, View, ScrollView, TouchableOpacity, Text } from "react-native";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import ToggleSwitch from 'toggle-switch-react-native';
-import DeviceInfo from "react-native-device-info";
 import styles from "./styled";
-import { translate, languageArray } from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import { AppHeader } from '../../components';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF } from '../../common/responsiveFunction';
-import { images, colors } from '../../res';
+import { responsiveFontSize as RF } from '../../common/responsiveFunction';
 import Colors from '../../constants/Colors';
-import Modal from "react-native-modal";
-import { setAppLanguage } from '../../store/reducer/languageReducer';
-import { CommonActions } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ListItem = (props) => {
 
-    const {isBackup} = useSelector(state => state.UserReducer);
+    const { isBackup } = useSelector(state => state.UserReducer);
 
     return (
         <TouchableOpacity disabled={props.disableView} onPress={props.onPress} style={styles.itemCont} >
             <View style={styles.centerProfileCont} >
                 <View>
                     <Text style={styles.listLabel} >{props.label}</Text>
-                    {props.subLabel && <Text style={[styles.listSubLabel,{color: isBackup?Colors.badgeGreen:Colors.alert}]}>{isBackup?translate("wallet.common.backupSuccess"):translate("wallet.common.notBackedUp")}</Text>}
+                    {props.subLabel && <Text style={[styles.listSubLabel, { color: isBackup ? Colors.badgeGreen : Colors.alert }]}>{isBackup ? translate("wallet.common.backupSuccess") : translate("wallet.common.notBackedUp")}</Text>}
                 </View>
                 {
                     props.rightText ?
@@ -49,20 +43,14 @@ function SecurityScreen({
     navigation
 }) {
 
-    const dispatch = useDispatch();
-    const {wallet} = useSelector(state => state.UserReducer);
+    const { wallet } = useSelector(state => state.UserReducer);
+    const { passcode } = useSelector(state => state.AsyncReducer);
 
     const [toggle, setToggle] = useState(false);
 
-    useEffect(async () => {
-        let pass = await AsyncStorage.getItem("@passcode");
-
-        if (pass) {
-            setToggle(true)
-        } else {
-            setToggle(false)
-        }
-    }, [])
+    useEffect(() => {
+        setToggle(passcode ? true : false)
+    }, [passcode])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -86,15 +74,15 @@ function SecurityScreen({
                         rightComponent={<ToggleSwitch
                             isOn={toggle}
                             onColor={Colors.themeColor}
-                            offColor={colors.GREY4}
+                            offColor={Colors.GREY4}
                             onToggle={isOn => {
-                                navigation.navigate("PasscodeScreen", { updateToggle: () => setToggle(!toggle), screen: "security" })
+                                navigation.navigate("PasscodeScreen", { screen: "security" })
                             }}
                         />}
                     />
 
                     <ListItem
-                        onPress={() => {navigation.navigate("recoveryPhrase", { wallet })}}
+                        onPress={() => { navigation.navigate("recoveryPhrase", { wallet }) }}
                         label={translate("wallet.common.backupPhrase")}
                         subLabel={true}
                     />

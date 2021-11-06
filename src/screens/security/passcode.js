@@ -1,20 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SafeAreaView, View, ScrollView, TouchableOpacity, Text, Image, BackHandler } from "react-native";
+import { SafeAreaView, View, TouchableOpacity, Text, BackHandler } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import ToggleSwitch from 'toggle-switch-react-native';
-import DeviceInfo from "react-native-device-info";
-import { Loader } from '../../components';
+import { Loader, AppHeader } from '../../components';
 import styles from "./styled";
-import { translate, languageArray } from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF } from '../../common/responsiveFunction';
-import { images, colors } from '../../res';
-import Colors from '../../constants/Colors';
+import { colors } from '../../res';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setPasscode as SPasscode, endMainLoading, startMainLoading } from "../../store/reducer/userReducer";
-import { CommonActions, NavigationAction } from '@react-navigation/native';
+import { updateAsyncPasscodeAction } from "../../store/reducer/asyncStorageReducer";
 import Toast from 'react-native-toast-message';
-import { AppHeader } from '../../components';
 
 const toastConfig = {
     my_custom_type: ({ text1, props, ...rest }) => (
@@ -24,12 +20,21 @@ const toastConfig = {
     )
 }
 
+const toastConfigSetting = (label) => ({
+    type: 'my_custom_type',
+    text1: label,
+    topOffset: hp("10%"),
+    visibilityTime: 500,
+    autoHide: true,
+})
+
 function PasscodeScreen({
     route,
     navigation
 }) {
 
-    const { updateToggle, screen } = route.params;
+    const { screen } = route.params;
+    const { passcode: asyncPasscode } = useSelector(state => state.AsyncReducer);
 
     const [loading, setLoading] = useState(true)
     const [passcode, setpasscode] = useState([])
@@ -48,9 +53,8 @@ function PasscodeScreen({
         return true
     }
 
-    useEffect(async () => {
-        let pass = await AsyncStorage.getItem("@passcode");
-        if (screen == "active" && pass) {
+    useEffect(() => {
+        if (screen == "active" && asyncPasscode) {
             BackHandler.addEventListener('hardwareBackPress', () => { return true; });
 
         } else {
@@ -61,9 +65,9 @@ function PasscodeScreen({
             BackHandler.addEventListener('hardwareBackPress', goBackFunc);
         }
 
-        if (pass) {
+        if (asyncPasscode) {
             setStatus(true)
-            setoldPasscode(pass)
+            setoldPasscode(asyncPasscode)
         }
         setLoading(false)
         return () => {
@@ -85,34 +89,25 @@ function PasscodeScreen({
                 if (status) {
                     if (screen == "security") {
                         if (pass.join("") == oldPasscode) {
-                            updateToggle();
+                            dispatch(updateAsyncPasscodeAction(""))
                             AsyncStorage.removeItem("@passcode")
                             navigation.goBack();
                         } else {
-                            toastRef.current.show({
-                                type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError2"),
-                                topOffset: hp("10%"),
-                                visibilityTime: 500,
-                                autoHide: true,
-                            });
+                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError2")));
                             setpasscode([])
                         }
-                    } else if (screen === "active") {
+                    }
+                    else if (screen === "active") {
+                        // this will run when application close and reOpen
                         if (pass.join("") == oldPasscode) {
                             navigation.goBack();
                         } else {
-                            toastRef.current.show({
-                                type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError2"),
-                                topOffset: hp("10%"),
-                                visibilityTime: 500,
-                                autoHide: true,
-                            });
+                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError2")));
                             setpasscode([])
                         }
                     }
                     else {
+                        // this will run when application kill and restart
                         if (pass.join("") == oldPasscode) {
                             dispatch(startMainLoading());
                             dispatch(SPasscode(""));
@@ -121,13 +116,7 @@ function PasscodeScreen({
                                 dispatch(endMainLoading());
                             }, 1000)
                         } else {
-                            toastRef.current.show({
-                                type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError2"),
-                                topOffset: hp("10%"),
-                                visibilityTime: 500,
-                                autoHide: true,
-                            });
+                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError2")));
                             setpasscode([])
                         }
                     }
@@ -136,16 +125,11 @@ function PasscodeScreen({
                     if (active === "reEnter") {
                         if (passcode.join("") == pass.join("")) {
                             AsyncStorage.setItem("@passcode", pass.join(""))
-                            updateToggle();
+                            dispatch(updateAsyncPasscodeAction(pass.join("")))
+                            dispatch(SPasscode(""));
                             navigation.goBack();
                         } else {
-                            toastRef.current.show({
-                                type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError1"),
-                                topOffset: hp("10%"),
-                                visibilityTime: 500,
-                                autoHide: true,
-                            });
+                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError1")));
                             setReenterpasscode([])
                         }
                     }
@@ -162,11 +146,9 @@ function PasscodeScreen({
         pass.pop()
         active == "passcode" ? setpasscode(pass) : setReenterpasscode(pass)
 
-
     }
 
     let label = status ? translate("wallet.common.enterPasscode1") : passcode.length === 6 ? translate("wallet.common.enterPasscode2") : translate("wallet.common.enterPasscode")
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             {
@@ -183,7 +165,6 @@ function PasscodeScreen({
                             <View style={styles.circleCont} >
                                 {
                                     [...Array(6).keys()].map((v, i) => {
-
                                         let active = status ? passcode : passcode.length === 6 ? reEnterpasscode : passcode;
 
                                         return (

@@ -6,7 +6,7 @@ import Colors from '../constants/Colors';
 import ImagesSrc from '../constants/Images';
 import {hp, RF, wp} from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
-import {translate} from '../utils';
+import {translate} from '../walletUtils';
 import AppButton from './appButton';
 import TextView from './appText';
 

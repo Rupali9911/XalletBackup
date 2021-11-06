@@ -10,7 +10,7 @@ import ButtonInputContainer from '../../components/buttonInputContainer';
 import TextView from '../../components/appText';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { setI18nConfig, translate } from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import Colors from "../../constants/Colors";
 import Fonts from '../../constants/Fonts';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';

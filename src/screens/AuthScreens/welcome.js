@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import AppBackground from '../../components/appBackground';
@@ -8,12 +8,14 @@ import TextView from '../../components/appText';
 import LanguageSelector from '../../components/languageSelector';
 import { RF } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { setI18nConfig, translate } from '../../walletUtils';
+import { translate } from '../../walletUtils';
 
 const Welcome = ({ navigation }) => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-  setI18nConfig(selectedLanguageItem.language_name);
+  useEffect(() => {
+
+  }, [selectedLanguageItem.language_name])
 
   const [openPicker, setOpenPicker] = useState(false);
 

@@ -15,7 +15,7 @@ function LanguageSel(props) {
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('en');
+    const [value, setValue] = useState(selectedLanguageItem.language_name);
 
     const items = [];
     languageArray.map((item) => {
