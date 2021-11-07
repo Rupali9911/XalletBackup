@@ -79,6 +79,7 @@ export const getNFTList = (page, limit) => {
         fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
+                
                 dispatch(nftLoadSuccess(json))
 
             }).catch(err => {

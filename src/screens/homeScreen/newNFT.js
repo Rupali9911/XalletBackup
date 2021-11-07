@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,10 +9,8 @@ import { changeScreenName } from '../../store/actions/authAction';
 import styles from './styles';
 import { colors } from '../../res';
 import { Loader, DetailModal, C_Image } from '../../components';
-import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 
-const langObj = getLanguage();
 
 const NewNFT = () => {
 
@@ -76,6 +73,9 @@ const NewNFT = () => {
         }
     }
 
+  const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newNftList]);
+
+
     const renderFooter = () => {
         if (!NewNFTListReducer.newNftListLoading) return null;
         return (
@@ -101,7 +101,7 @@ const NewNFT = () => {
                             }}
                             scrollEnabled={!isModalVisible}
                             refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
-                            renderItem={renderItem}
+                            renderItem={memoizedValue}
                             onEndReached={() => {
                                 if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newNftList.length) {
                                     let num = NewNFTListReducer.newListPage + 1;

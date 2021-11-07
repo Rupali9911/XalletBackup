@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,10 +9,7 @@ import { changeScreenName } from '../../store/actions/authAction';
 import styles from './styles';
 import { colors } from '../../res';
 import { Loader, DetailModal, C_Image } from '../../components';
-import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
-
-const langObj = getLanguage();
 
 const Awards = () => {
 
@@ -81,6 +78,8 @@ const Awards = () => {
         }
     }
 
+    const memoizedValue = useMemo(() => renderItem, [AwardsNFTReducer.awardsNftList]);
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
@@ -99,7 +98,7 @@ const Awards = () => {
                             }}
                             scrollEnabled={!isModalVisible}
                             refreshing={AwardsNFTReducer.awardsNftPage === 1 && AwardsNFTReducer.awardsNftLoading}
-                            renderItem={renderItem}
+                            renderItem={memoizedValue}
                             onEndReached={() => {
                                 if (!AwardsNFTReducer.awardsNftLoading && AwardsNFTReducer.awardsTotalCount !== AwardsNFTReducer.awardsNftList.length) {
                                     let num = AwardsNFTReducer.awardsNftPage + 1;

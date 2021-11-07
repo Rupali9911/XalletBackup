@@ -44,11 +44,11 @@ const RecoveryPhrase = ({ route, navigation }) => {
   const { loading } = useSelector(state => state.UserReducer);
   const { recover } = route.params;
   const [wallet, setWallet] = useState(route.params.wallet);
-  // const [phrase, setPhrase] = useState('');
+  const [phrase, setPhrase] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-  const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
+  // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
   // const [phrase, setPhrase] = useState("tongue grit volume hope rely weird run mixture identify charge then camp");
   const toastRef = useRef(null);
 

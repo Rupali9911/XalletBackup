@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator, FlatList, AppState, Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
@@ -20,7 +20,6 @@ import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -30,7 +29,6 @@ const Hot = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     dispatch(nftLoadStart());
@@ -90,6 +88,8 @@ const Hot = () => {
     }
   };
 
+  const memoizedValue = useMemo(() => renderItem, [ListReducer.nftList]);
+
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -107,7 +107,7 @@ const Hot = () => {
           }}
           scrollEnabled={!isModalVisible}
           refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
-          renderItem={renderItem}
+          renderItem={memoizedValue}
           onEndReached={() => {
             if (
               !ListReducer.nftListLoading &&

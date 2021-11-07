@@ -9,12 +9,14 @@ import LanguageSelector from '../../components/languageSelector';
 import { RF } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { translate } from '../../walletUtils';
+import FastImage from 'react-native-fast-image';
 
 const Welcome = ({ navigation }) => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
-
+    FastImage.clearMemoryCache();
+    FastImage.clearDiskCache()
   }, [selectedLanguageItem.language_name])
 
   const [openPicker, setOpenPicker] = useState(false);

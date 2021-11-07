@@ -1,54 +1,39 @@
-import React from 'react';
-import { View } from 'react-native';
-import * as Progress from 'react-native-progress';
+import React, { useState } from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { createImageProgress } from 'react-native-image-progress';
 
 import { SVGS, SIZE, IMAGES } from 'src/constants';
-import { colors } from '../res';
+import Colors from '../constants/Colors';
 
 const {
     PlayButtonIcon
 } = SVGS;
-const Image = createImageProgress(FastImage);
 
 const C_Image = (props) => {
+
+    let [loadImage, setLoadImage] = useState(false);
+
     return (
         <>
-            <Image
-                indicator={Progress.Pie}
-                indicatorProps={{
-                    size: 50,
-                    borderWidth: 0,
-                    color: colors.themeL,
-                    unfilledColor: 'rgba(200, 200, 200, 0.2)'
-                }}
+            {
+                loadImage && <View style={[styles.imageCont, { backgroundColor: Colors.GREY8 }]}>
+                    <ActivityIndicator size="small" color={Colors.themeColor} />
+                </View>
+            }
+            <FastImage
                 style={props.imageStyle}
+                onLoadStart={() => setLoadImage(true)}
+                onLoadEnd={() => setLoadImage(false)}
                 source={props.uri ? {
                     uri: props.uri,
-                    priority: FastImage.priority.normal,
+                    priority: FastImage.priority.high,
                 } : IMAGES.DEFAULTPROFILE}
                 resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
             />
             {
                 props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' ?
-                    <View style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <View style={{
-                            width: SIZE(40),
-                            height: SIZE(40),
-                            backgroundColor: '#00000030',
-                            borderRadius: SIZE(40),
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
+                    <View style={styles.imageCont}>
+                        <View style={styles.playCont}>
                             <PlayButtonIcon width={SIZE(40)} height={SIZE(40)} />
                         </View>
                     </View>
@@ -57,5 +42,25 @@ const C_Image = (props) => {
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    imageCont: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    playCont: {
+        width: SIZE(40),
+        height: SIZE(40),
+        backgroundColor: '#00000030',
+        borderRadius: SIZE(40),
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+})
 
 export default C_Image;

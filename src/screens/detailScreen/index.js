@@ -118,7 +118,6 @@ const DetailItemScreen = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = list.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            console.log(item)
             return (
                 <NftItem item={item} index={findIndex} />
             )

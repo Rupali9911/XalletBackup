@@ -41,7 +41,6 @@ export const getAwardsNftList = (page, limit) => {
 
         const { data } = getState().UserReducer;
         let user = data.user;
-
         let body_data = {
             approveStatus: "approve",
             page,
@@ -67,9 +66,11 @@ export const getAwardsNftList = (page, limit) => {
         fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
+
                 dispatch(awardsNftLoadSuccess(json));
 
             }).catch(err => {
+
                 dispatch(awardsNftLoadFail())
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),

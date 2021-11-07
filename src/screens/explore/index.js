@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     ActivityIndicator,
-    FlatList,
+    FlatList
 } from 'react-native';
 import {
-    SVGS,
-} from 'src/constants';
-import {
     Header,
-    Container,
+    Container
 } from 'src/styles/common.styles';
 import {
-    HeaderText,
+    HeaderText
 } from 'src/styles/text.styles';
 import NftItem from '../detailScreen/nftItem';
-import { getNFTList, pageChange, nftLoadStart } from '../../store/actions/nftTrendList';
+import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
 import { Loader } from '../../components';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
-
-const {
-    LeftArrowIcon
-} = SVGS;
 
 function ExploreScreen({
     navigation

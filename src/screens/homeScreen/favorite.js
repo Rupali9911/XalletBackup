@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -82,6 +81,8 @@ const Favorite = () => {
         )
     }
 
+    const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newNftList]);
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
@@ -100,7 +101,7 @@ const Favorite = () => {
                             }}
                             scrollEnabled={!isModalVisible}
                             refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
-                            renderItem={renderItem}
+                            renderItem={memoizedValue}
                             onEndReached={() => {
                                 if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newNftList.length) {
                                     let num = NewNFTListReducer.newListPage + 1;

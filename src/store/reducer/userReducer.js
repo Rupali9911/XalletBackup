@@ -148,8 +148,6 @@ export const loadFromAsync = () => (dispatch, getState) => {
 
   const { wallet, userData, BackedUp } = getState().AsyncReducer;
 
-console.log(wallet, userData)
-
   if (wallet && userData) {
     dispatch(
       setUserData({
