@@ -145,7 +145,7 @@ const AppRoutes = () => {
     dispatch(getAllLanguages())
 
     dispatch(startMainLoading());
-    AsyncStorage.clear()
+    // AsyncStorage.clear()
     AsyncStorage.getAllKeys((err, keys) => {
       if (keys.length !== 0) {
         AsyncStorage.multiGet(keys, (err, values) => {
