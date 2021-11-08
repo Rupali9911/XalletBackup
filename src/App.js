@@ -147,7 +147,7 @@ const AppRoutes = () => {
   React.useEffect(async () => {
 
     LogBox.ignoreAllLogs();
-    dispatch(startMainLoading());
+    // dispatch(startMainLoading());
 
     dispatch(getAllLanguages())
     // AsyncStorage.removeItem('@wallet')
@@ -157,7 +157,7 @@ const AppRoutes = () => {
       dispatch(setPasscode(pass))
       dispatch(loadFromAsync())
     } else {
-      dispatch(loadFromAsync())
+      // dispatch(loadFromAsync())
     }
     if (languageData) {
       dispatch(setAppLanguage(JSON.parse(languageData)));

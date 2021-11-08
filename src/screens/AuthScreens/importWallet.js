@@ -21,6 +21,7 @@ import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
 import HintText from '../../components/hintText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
+import SelectButtongroup from '../../components/selectButtonGroup';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import {hp, RF, wp} from '../../constants/responsiveFunct';
@@ -52,40 +53,18 @@ const toastConfig = {
   ),
 };
 
-const RecoveryPhrase = ({route, navigation}) => {
+const ImportWallet = ({route, navigation}) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
   const {loading} = useSelector(state => state.UserReducer);
-  const {recover} = route.params;
-  const [wallet, setWallet] = useState(route.params.wallet);
+  const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-  // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
+  const [inputType, setInputType] = useState(0);
+
   const toastRef = useRef(null);
-
-  // useEffect(() => {
-  //   if (!recover) {
-  //     getPhraseData();
-  //   }
-  // }, []);
-
-  // const getPhraseData = async () => {
-  //   dispatch(startLoader()).then(async () => {
-  //     var randomSeed = ethers.Wallet.createRandom();
-  //     const account = {
-  //       mnemonic: randomSeed.mnemonic,
-  //       address: randomSeed.address,
-  //       privateKey: randomSeed.privateKey,
-  //     };
-  //     console.log(randomSeed.mnemonic);
-  //     console.log(randomSeed.address);
-  //     console.log(randomSeed.privateKey);
-  //     setWallet(account);
-  //     dispatch(endLoader());
-  //   });
-  // };
 
   const copyToClipboard = () => {
     toastRef.current.show({
@@ -97,7 +76,7 @@ const RecoveryPhrase = ({route, navigation}) => {
     });
     Clipboard.setString(wallet.mnemonic.phrase);
   };
-  const recoverWallet = () => {
+  const recoverWalletByPhrase = () => {
     if (phrase !== '') {
       dispatch(startLoader())
         .then(async () => {
@@ -143,6 +122,48 @@ const RecoveryPhrase = ({route, navigation}) => {
     }
   };
 
+  const recoverWalletByPrivateKey = () => {
+    if (phrase !== '') {
+      dispatch(startLoader())
+        .then(async () => {
+          let private_key = phrase.trim();
+          let mnemonicWallet = new ethers.Wallet(private_key);
+          console.log('mnemonicWallet',mnemonicWallet);
+          const account = {
+            mnemonic: mnemonicWallet.mnemonic,
+            address: mnemonicWallet.address,
+            privateKey: mnemonicWallet.privateKey,
+          };
+          console.log(mnemonicWallet.mnemonic);
+          console.log(mnemonicWallet.address);
+          console.log(mnemonicWallet.privateKey);
+          setWallet(account);
+          // dispatch(setUserAuthData(account));
+          dispatch(setPasscode(''));
+          dispatch(getAddressNonce(account, false))
+            .then(() => {
+              dispatch(setBackupStatus(true));
+            })
+            .catch(err => {
+              alertWithSingleBtn(translate('wallet.common.tryAgain'));
+            });
+        })
+        .catch(err => {
+          console.log('recoverWalletByPrivateKey err', err.toString());
+          alertWithSingleBtn(
+            translate('wallet.common.verification'),
+            translate('wallet.common.error.invalidPrivateKey'),
+          );
+          dispatch(endLoader());
+        });
+    } else {
+      // alertWithSingleBtn(
+      //   translate('common.error'),
+      //   translate('wallet.common.requirePhrase'),
+      // );
+    }
+  }
+
   const pastePhrase = async () => {
     const text = await Clipboard.getString();
     setPhrase(text);
@@ -173,18 +194,7 @@ const RecoveryPhrase = ({route, navigation}) => {
   };
   return (
     <AppBackground isBusy={loading}>
-      <AppHeader
-        showBackButton
-        title={translate('wallet.common.backup')}
-        showRightButton
-        rightButtonComponent={
-          <IconButton
-            icon={ImagesSrc.infoIcon}
-            color={Colors.labelButtonColor}
-            size={20}
-          />
-        }
-      />
+      <AppHeader showBackButton/>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
         KeyboardShiftStyle={styles.keyboardShift}>
@@ -193,134 +203,87 @@ const RecoveryPhrase = ({route, navigation}) => {
             <View style={styles.padding}>
               <AppLogo logoStyle={styles.logo} />
               <TextView style={styles.title}>
-                {translate('wallet.common.yourPhrase')}
+                {translate('wallet.common.importWallet')}
               </TextView>
-              <HintText style={styles.hint}>
-                {recover ? translate('wallet.common.recoveryPhraseInfo') : translate('wallet.common.phraseSaveInfo')}
-              </HintText>
             </View>
             <View>
-              {recover ? (
-                <View>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.input}
-                      multiline={true}
-                      value={phrase}
-                      onChangeText={val => {
-                        setPhrase(val);
-                        setTimeout(() => {
-                          const newWord = val.split(' ').splice(-1);
-                          if (newWord != '') {
-                            getSuggestions(newWord);
-                            setShowSuggestions(true);
-                            setUserTyping(true);
-                          } else {
-                            setShowSuggestions(false);
-                          }
-                        }, 100);
-                      }}
-                      underlineColorAndroid={Colors.transparent}
-                      onBlur={() => setShowSuggestions(false)}
-                    />
-                    <TouchableOpacity
-                      onPress={() => pastePhrase()}
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: 0,
-                        paddingHorizontal: wp('3%'),
-                        paddingVertical: hp('1%'),
-                      }}>
-                      <Text style={{color: Colors.themeColor}}>
-                        {translate('wallet.common.paste')}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  {keyboard.keyboardShown && showSuggestions && (
-                    <View
-                      style={{
-                        position: 'absolute',
-                        bottom: Platform.OS === 'ios' ? 0 : hp('1.25%'),
-                      }}>
-                      <FlatList
-                        data={suggestions}
-                        horizontal
-                        keyboardShouldPersistTaps="always"
-                        renderItem={({item, index}) => (
-                          <TouchableOpacity
-                            style={styles.suggestionContainer}
-                            onPress={() => setPhraseText(item.word)}>
-                            <Text style={styles.suggestionText}>
-                              {item.word}
-                            </Text>
-                          </TouchableOpacity>
-                        )}
-                        keyExtractor={(item, index) => `_${index}`}
-                        showsHorizontalScrollIndicator={false}
-                      />
-                    </View>
-                  )}
-                </View>
-              ) : (
-                <View style={styles.phraseContainer}>
-                  {wallet
-                    ? wallet.mnemonic.phrase.split(' ').map((item, index) => {
-                        return (
-                          <WordView
-                            word={item}
-                            index={index + 1}
-                            key={`_${index}`}
-                          />
-                        );
-                      })
-                    : null}
-                </View>
-              )}
-            </View>
-            <View style={styles.rowPadding}>
-              {recover
-                ? null
-                : wallet && (
-                    <Button
-                      mode={'text'}
-                      uppercase={false}
-                      color={Colors.labelButtonColor}
-                      onPress={() => {
-                        copyToClipboard();
-                      }}>
-                      {translate('wallet.common.copy')}
-                    </Button>
-                  )}
-
-              {recover ? null : (
-                <View style={styles.alertContainer}>
-                  <View style={styles.alert}>
-                    <IconButton
-                      icon={ImagesSrc.dangerIcon}
-                      color={Colors.alertText}
-                      size={20}
-                    />
-                    <TextView style={styles.alertTxt}>
-                      {translate('wallet.common.phraseNote')}
-                    </TextView>
-                  </View>
+              <View style={{ flexDirection: 'row' }}>
+                <SelectButtongroup buttons={['Phrase','Private Key']} onButtonPress={(item, index) => {
+                  setInputType(index);
+                }}/>
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  multiline={true}
+                  value={phrase}
+                  onChangeText={val => {
+                    setPhrase(val);
+                    setTimeout(() => {
+                      const newWord = val.split(' ').splice(-1);
+                      if (newWord != '') {
+                        getSuggestions(newWord);
+                        setShowSuggestions(true);
+                        setUserTyping(true);
+                      } else {
+                        setShowSuggestions(false);
+                      }
+                    }, 100);
+                  }}
+                  underlineColorAndroid={Colors.transparent}
+                  onBlur={() => setShowSuggestions(false)}
+                />
+                <TouchableOpacity
+                  onPress={() => pastePhrase()}
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    bottom: 0,
+                    paddingHorizontal: wp('3%'),
+                    paddingVertical: hp('1%'),
+                  }}>
+                  <Text style={{ color: Colors.themeColor }}>
+                    {translate('wallet.common.paste')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {keyboard.keyboardShown && showSuggestions && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: Platform.OS === 'ios' ? 0 : hp('1.25%'),
+                  }}>
+                  <FlatList
+                    data={suggestions}
+                    horizontal
+                    keyboardShouldPersistTaps="always"
+                    renderItem={({ item, index }) => (
+                      <TouchableOpacity
+                        style={styles.suggestionContainer}
+                        onPress={() => setPhraseText(item.word)}>
+                        <Text style={styles.suggestionText}>
+                          {item.word}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(item, index) => `_${index}`}
+                    showsHorizontalScrollIndicator={false}
+                  />
                 </View>
               )}
             </View>
           </View>
           <View style={styles.bottomView}>
             <AppButton
-              label={recover ? translate("wallet.common.import") : translate("wallet.common.next")}
-              view={recover ? !recover : !wallet}
+              label={translate("wallet.common.next")}
+              view={!phrase}
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
-                if (recover) {
-                  recoverWallet();
-                } else {
-                  // dispatch(setUserAuthData(wallet, true));
-                  navigation.replace('verifyPhrase', {wallet});
+                if (inputType == 0) {
+                  recoverWalletByPhrase();
+                } else if (inputType == 1) {
+                  recoverWalletByPrivateKey();
                 }
               }}
             />
@@ -404,7 +367,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     padding: wp('3.5%'),
-    backgroundColor: Colors.inputBackground2,
+    backgroundColor: Colors.inputBackground,
+    marginHorizontal: hp("2%"),
+    borderRadius: 5,
+    borderColor: Colors.borderLightColor3,
+    borderWidth: 0.5
   },
   input: {
     fontSize: RF(2),
@@ -439,4 +406,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RecoveryPhrase;
+export default ImportWallet;

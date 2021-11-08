@@ -613,8 +613,6 @@
     "wallet": {
         "common": {
             "error": {
-                "passcodeError1": "密碼不匹配。請再試一次！",
-                "passcodeError2": "密碼不匹配。請再試一次！",
                 "invalidPhrase": "无效短语",
                 "noImage": "無圖像顯示",
                 "fieldRequired": "這是必填欄!",
@@ -642,11 +640,10 @@
                 "requireZipcode": "請輸入郵政編碼",
                 "networkFailed": "網路請求失敗",
                 "passcodeError1": "密碼不匹配。請再試一次！",
-                "passcodeError2": "密碼不匹配。請再試一次！"
+                "passcodeError2": "密碼不匹配。請再試一次！",
+                "passcodeError3": "",
+                "invalidPrivateKey": "無效的私鑰"
             },
-            "needCameraPermission": "需要相機許可",
-            "cameraNotAuth": "未經授權的攝像機",
-            "info": "資訊",
             "welcomeTxt": "歡迎",
             "createWallet": "創建一個新錢包",
             "haveWallet": "我已經有錢包了",
@@ -695,7 +692,7 @@
             "amount": "數量",
             "walletAddress": "錢包地址",
             "noData": "沒有數據顯示",
-            "invalidAddress": "請輸入有效的錢包地址。",
+            "invalidAddress": "您輸入的錢包地址無效，請再次檢查",
             "requireSendField": "請輸入錢包地址和金額",
             "transactionsHint": "交易會出現在這裡",
             "copied": "複製到剪貼板",
@@ -840,9 +837,24 @@
             "cameraNotAuth": "未經授權的攝像機",
             "doItLater": "稍後再做",
             "backupPhrase": "備份恢復短語",
-            "notBackedUp": "恢復短語不安全",
-            "backupSuccess": "恢復短語安全",
-            "walletImported": "您的錢包已成功導入。"
+            "notBackedUp": "恢復短語未備份",
+            "backupSuccess": "已備份秘密恢復短語",
+            "walletImported": "您的錢包已成功導入。",
+            "importWallet": "進口錢包",
+            "createAccount": "創建新帳戶",
+            "nameYWallet": "說出你的錢包",
+            "walletName": "錢包名稱",
+            "phrase": "短語",
+            "privateKey": "私人鑰匙",
+            "priceIn": "價格在 {{type}}",
+            "purchasedSuccess": "您已成功購買",
+            "paymentDetails": "付款詳情",
+            "network": "網絡",
+            "transactionHash": "交易哈希",
+            "takePhoto": "拍照...",
+            "choosePhotoFromGallery": "從圖庫中選擇照片...",
+            "choosePhoto": "選擇照片",
+            "recoveryPhraseInfo": "以正確的順序輸入並粘貼由一個空格分隔的 12 個恢復短語"
         },
         "backendmessage": {
             "error": {},

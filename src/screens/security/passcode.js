@@ -91,7 +91,7 @@ function PasscodeScreen({
                         } else {
                             toastRef.current.show({
                                 type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError2"),
+                                text1: `${translate("wallet.common.error.passcodeError2")}${"\n"}${translate("wallet.common.error.passcodeError3")}`,
                                 topOffset: hp("10%"),
                                 visibilityTime: 500,
                                 autoHide: true,
@@ -104,7 +104,7 @@ function PasscodeScreen({
                         } else {
                             toastRef.current.show({
                                 type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError2"),
+                                text1: `${translate("wallet.common.error.passcodeError2")}${"\n"}${translate("wallet.common.error.passcodeError3")}`,
                                 topOffset: hp("10%"),
                                 visibilityTime: 500,
                                 autoHide: true,
@@ -123,7 +123,7 @@ function PasscodeScreen({
                         } else {
                             toastRef.current.show({
                                 type: 'my_custom_type',
-                                text1: translate("wallet.common.error.passcodeError2"),
+                                text1: `${translate("wallet.common.error.passcodeError2")}${"\n"}${translate("wallet.common.error.passcodeError3")}`,
                                 topOffset: hp("10%"),
                                 visibilityTime: 500,
                                 autoHide: true,
