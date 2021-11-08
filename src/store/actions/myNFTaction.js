@@ -82,7 +82,7 @@ export const myNFTList = (page, ownerId) => {
                 dispatch(myNftLoadFail())
                 alertWithSingleBtn(
                     translate('common.error'),
-                    err.message
+                    translate("wallet.common.error.networkFailed")
                 )
             })
     }

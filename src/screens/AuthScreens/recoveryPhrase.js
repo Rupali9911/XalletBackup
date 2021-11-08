@@ -83,7 +83,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
               dispatch(setBackupStatus(true));
             })
             .catch(err => {
-              alertWithSingleBtn(translate('common.alert'), translate('wallet.common.tryAgain'));
+              alertWithSingleBtn(translate('wallet.common.alert'), translate('wallet.common.tryAgain'));
             });
         })
         .catch(err => {

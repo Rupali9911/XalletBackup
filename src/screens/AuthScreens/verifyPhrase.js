@@ -182,7 +182,7 @@ const VerifyPhrase = ({ route, navigation }) => {
                   })
                   .catch(err => {
                     setLoading(false);
-                    alertWithSingleBtn(translate('common.alert'), translate('wallet.common.tryAgain'));
+                    alertWithSingleBtn(translate('wallet.common.alert'), translate('wallet.common.tryAgain'));
                   });
               }
             }

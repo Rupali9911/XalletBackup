@@ -74,7 +74,7 @@ export const myCollectionList = (page, ownerId) => {
                 dispatch(myCollectionLoadFail())
                 alertWithSingleBtn(
                     translate('common.error'),
-                    err.message
+                    translate("wallet.common.error.networkFailed")
                 )
             })
     }

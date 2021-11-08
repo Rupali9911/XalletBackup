@@ -54,7 +54,7 @@ const Backup = ({ navigation }) => {
         dispatch(getAddressNonce(wallet, false))
             .then(() => { })
             .catch((err) => {
-                alertWithSingleBtn(translate('common.alert'), translate("wallet.common.tryAgain"));
+                alertWithSingleBtn(translate('wallet.common.alert'), translate("wallet.common.tryAgain"));
             });
     }
 
