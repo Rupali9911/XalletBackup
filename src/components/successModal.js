@@ -39,7 +39,7 @@ const SuccessModalContent = props => {
             {translate('wallet.common.success')} !
           </TextView>
           <TextView style={styles.hint}>
-            {translate('wallet.common.walletImported')}
+            {props.sucessMsg?props.sucessMsg:translate('wallet.common.walletImported')}
           </TextView>
         </>
       )}

@@ -484,7 +484,6 @@ const SendScreen = (props) => {
                             }else {
                                 setAmount('');
                             }
-
                         }}/>
                 </View>
             </View>
