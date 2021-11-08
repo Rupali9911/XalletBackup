@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         fontFamily: fonts.PINGfANG_SBOLD
     },
     header: {
-        height: SIZE(50),
+        height: SIZE(45),
         alignItems: 'center',
         justifyContent: 'center',
     },

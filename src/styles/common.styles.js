@@ -12,7 +12,7 @@ import {
 } from 'src/constants';
 
 const Header = styled.View`
-  height: ${SIZE(55)}px;
+  height: ${SIZE(50)}px;
   align-items: center;
   justify-content: center;
   background-color: ${props => props.backgroundColor || COLORS.WHITE1};

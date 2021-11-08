@@ -269,6 +269,7 @@ const HomeScreen = ({ navigation }) => {
               tabStyle: {
                 height: SIZE(40),
                 paddingHorizontal: wp('1%'),
+                justifyContent: 'center',
               },
               labelStyle: {
                 fontSize: RF(1.4),
