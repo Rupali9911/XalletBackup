@@ -51,7 +51,7 @@ export default function transactionsDetail({route}) {
         <NumberFormat
           value={transactionInfo.value}
           displayType={'text'}
-          decimalScale={4}
+          decimalScale={8}
           thousandSeparator={true}
           renderText={formattedValue => (
             <TextView style={styles.priceCont}>

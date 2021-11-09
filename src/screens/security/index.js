@@ -81,7 +81,7 @@ function SecurityScreen({
                         />}
                     />
 
-                    <ListItem
+                    {wallet.mnemonic && <ListItem
                         onPress={() => {
                             if(wallet.mnemonic){
                                 navigation.navigate("recoveryPhrase", { wallet })
@@ -89,7 +89,7 @@ function SecurityScreen({
                         }}
                         label={translate("wallet.common.backupPhrase")}
                         subLabel={true}
-                    />
+                    />}
 
                 </View>
 

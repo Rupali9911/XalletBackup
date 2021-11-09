@@ -76,7 +76,7 @@ const TabComponent = () => {
       labelStyle: {
         fontSize: 12,
         fontFamily: fonts.SegoeUIRegular,
-        paddingVertical: hp('2%')
+        paddingTop: hp('2%')
       },
       tabStyle: {
         paddingTop: hp('2%')
