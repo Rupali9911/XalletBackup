@@ -50,7 +50,7 @@ const DescriptionView = styled.View`
 
 const SmallText = styled.Text`
     font-size: ${FONT(11)}px;
-    color: ${COLORS.BLACK1};
+    color: #484848;
     font-weight: 400;
 `;
 

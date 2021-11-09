@@ -34,16 +34,18 @@ const EditableInput = styled.TextInput`
     border-color: ${COLORS.WHITE3};
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
+    padding-right: ${SIZE(10)}px;
 `;
 
 const MultiLineEditableInput = styled.TextInput`
-    width: 100%;
+    flex: 1;
     maxHeight: ${SIZE(100)}px;
     border-bottom-width: 0.8px;
     border-color: ${COLORS.WHITE3};
     padding-bottom: ${SIZE(12)}px;
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
+    padding-right: ${SIZE(19)}px;
 `;
 
 export {

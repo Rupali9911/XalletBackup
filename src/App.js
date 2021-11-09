@@ -73,16 +73,13 @@ const TabComponent = () => {
 
   return (
     <Tab.Navigator tabBarOptions={{
-      style: {
-        height: hp('10.5%')
-      },
       labelStyle: {
         fontSize: 12,
         fontFamily: fonts.SegoeUIRegular,
+        paddingVertical: hp('2%')
       },
       tabStyle: {
-        paddingVertical: hp('0.6%'),
-        paddingTop: hp('1%')
+        paddingTop: hp('2%')
       },
       activeTintColor: Colors.themeColor
     }} screenOptions={({ route }) => ({

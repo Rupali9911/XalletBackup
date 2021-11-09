@@ -350,6 +350,7 @@ function Profile({
             <AppHeader
                 title={translate("wallet.common.myPage")}
                 showRightButton
+                showBackButton
                 rightButtonComponent={ <SettingIcon width={SIZE(23)} height={SIZE(23)} />}
                 onPressRight={() => navigation.navigate('Setting', { connector: connector })}
             />

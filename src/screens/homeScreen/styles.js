@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     headerMenu: {
         ...CommonStyles.imageStyles(5),
         tintColor: Colors.black,
-        marginHorizontal: wp("4%")
+        marginHorizontal: wp("3%")
     }
 })
 
