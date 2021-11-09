@@ -140,7 +140,6 @@ const TabComponent = () => {
 const AppRoutes = () => {
 
   const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -158,7 +157,7 @@ const AppRoutes = () => {
             let name = result[0].replace(/[^a-zA-Z ]/g, "")
             let value = JSON.parse(result[1]);
             asyncData[name] = value;
-
+            
             if (name == "passcode") {
               dispatch(setPasscode(value))
             }
@@ -166,13 +165,13 @@ const AppRoutes = () => {
               dispatch(setAppLanguage(value));
             }
           });
-
+          
           dispatch(addAsyncAction(asyncData))
           dispatch(loadFromAsync())
-
+          
         });
       } else {
-
+        
         let item = languageArray.find(item => item.language_name == regionLanguage);
         dispatch(setAppLanguage(item));
         dispatch(loadFromAsync())
