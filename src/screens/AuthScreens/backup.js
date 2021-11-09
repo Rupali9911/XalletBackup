@@ -51,7 +51,7 @@ const Backup = ({ navigation }) => {
     }
 
     const saveWallet = () => {
-        dispatch(getAddressNonce(wallet, false))
+        dispatch(getAddressNonce(wallet, false, true))
             .then(() => { })
             .catch((err) => {
                 alertWithSingleBtn(translate('wallet.common.alert'), translate("wallet.common.tryAgain"));

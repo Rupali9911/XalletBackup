@@ -53,6 +53,7 @@ import { screenWidth } from './constants/responsiveFunct';
 import WalletPay from './screens/PaymentScreen/walletPay';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
+import transactionsDetail from './screens/wallet/transactionsDetail';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -201,6 +202,7 @@ const AppRoutes = () => {
                   <Stack.Screen name="EditProfile" component={EditProfileScreen} />
                   <Stack.Screen name="tokenDetail" component={TokenDetail} />
                   <Stack.Screen name="receive" component={Receive} />
+                   <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
                   <Stack.Screen name="send" component={Send} />
                   <Stack.Screen name="scanToConnect" component={ScanToConnect} />
                   <Stack.Screen name='Create' component={NewPostScreen} />

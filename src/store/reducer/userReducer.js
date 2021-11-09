@@ -93,7 +93,7 @@ export default UserReducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
@@ -207,12 +207,13 @@ export const updateCreateState = () => dispatch =>
     resolve();
   });
 
-export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
+export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
   new Promise((resolve, reject) => {
-    const url = "https://testapi.xanalia.com/auth/get-address-nonce";
+    const url = 'https://testapi.xanalia.com/auth/get-address-nonce';
     const params = {
-      publicAddress: wallet.address
-    }
+      publicAddress: wallet.address,
+    };
+    
     const request = {
       method: 'POST',
       body: JSON.stringify(params),
@@ -257,7 +258,7 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                     data: _response.data,
                     wallet,
                     isCreate,
-                    showSuccess: true,
+                    showSuccess: isLater ? false : true,
                   }),
                 );
                 resolve();

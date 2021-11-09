@@ -78,7 +78,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
           console.log(mnemonicWallet.privateKey);
           setWallet(account);
           dispatch(setPasscode(''));
-          dispatch(getAddressNonce(account, false))
+          dispatch(getAddressNonce(account, false, false))
             .then(() => {
               dispatch(setBackupStatus(true));
             })
@@ -113,10 +113,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
   };
 
   const getSuggestions = async val => {
-    setTimeout(async () => {
-      const response = await axios.get(`https://api.datamuse.com/sug?s=${val}`);
-      setSuggestions(response.data);
-    }, 100);
+    const response = await axios.get(`https://api.datamuse.com/sug?s=${val}`);
+    setSuggestions(response.data);
   };
 
   const setPhraseText = val => {
@@ -175,16 +173,14 @@ const RecoveryPhrase = ({ route, navigation }) => {
                       value={phrase}
                       onChangeText={val => {
                         setPhrase(val);
-                        setTimeout(() => {
-                          const newWord = val.split(' ').splice(-1);
-                          if (newWord != '') {
-                            getSuggestions(newWord);
-                            setShowSuggestions(true);
-                            setUserTyping(true);
-                          } else {
-                            setShowSuggestions(false);
-                          }
-                        }, 100);
+                        const newWord = val.split(' ').splice(-1);
+                        if (newWord != '') {
+                          getSuggestions(newWord);
+                          setShowSuggestions(true);
+                          setUserTyping(true);
+                        } else {
+                          setShowSuggestions(false);
+                        }
                       }}
                       underlineColorAndroid={Colors.transparent}
                       onBlur={() => setShowSuggestions(false)}
@@ -282,10 +278,20 @@ const RecoveryPhrase = ({ route, navigation }) => {
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
-                if (recover) {
-                  recoverWallet();
+                var reg = new RegExp('/ss+/g');
+                if (reg.test(phrase.trim())) {
+                  alertWithSingleBtn(
+                    translate('wallet.common.verification'),
+                    translate('wallet.common.error.invalidPhrase'),
+                  );
+                  console.log('LOOOOOOOOSE');
                 } else {
-                  navigation.replace('verifyPhrase', { wallet });
+                  if (recover) {
+                    recoverWallet();
+                  } else {
+                    // dispatch(setUserAuthData(wallet, true));
+                    navigation.replace('verifyPhrase', {wallet});
+                  }
                 }
               }}
             />
