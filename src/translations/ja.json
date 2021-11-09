@@ -624,7 +624,7 @@
                 "passwordRequired": "パスワードを入力してください",
                 "confirmPasswordRequired": "パスワードの確認フィールドは必須です！",
                 "passwordNotMatch": "パスワードが一致しません！",
-                "invalidCode": "無効なコード",
+                "invalidCode": "確認",
                 "scanCodeAlert": "このコードは無効のようです。 別のコードをスキャンしてみてください。",
                 "amountAlert": "金額を入力ください",
                 "transactionFailed": "トランザクション失敗",
@@ -842,7 +842,10 @@
             "backupPhrase": "バックアップ回復フレーズ",
             "notBackedUp": "安全ではない回復フレーズ",
             "backupSuccess": "安全な回復フレーズ",
-            "walletImported": "ウォレットが正常にインポートされました。"
+            "walletImported": "ウォレットが正常にインポートされました。",
+            "paymentDetails": "支払詳細",
+            "network": "通信網",
+            "transactionHash": "トランザクションハッシュ"
         },
         "backendmessage": {
             "error": {},

@@ -842,7 +842,10 @@
             "backupPhrase": "백업 복구 문구",
             "notBackedUp": "안전하지 않은 복구 문구",
             "backupSuccess": "복구 문구 안전",
-            "walletImported": "지갑을 성공적으로 가져왔습니다."
+            "walletImported": "지갑을 성공적으로 가져왔습니다.",
+            "paymentDetails": "지불 세부 사항",
+            "network": "회로망",
+            "transactionHash": "트랜잭션 해시"
         },
         "backendmessage": {
             "error": {},

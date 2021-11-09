@@ -842,7 +842,10 @@
             "backupPhrase": "備份恢復短語",
             "notBackedUp": "恢復短語不安全",
             "backupSuccess": "恢復短語安全",
-            "walletImported": "您的錢包已成功導入。"
+            "walletImported": "您的錢包已成功導入。",
+            "paymentDetails": "付款詳情",
+            "network": "網絡",
+            "transactionHash": "交易哈希"
         },
         "backendmessage": {
             "error": {},

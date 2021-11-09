@@ -177,7 +177,7 @@ const VerifyPhrase = ({route, navigation}) => {
             } else {
               if (wallet) {
                 setLoading(true);
-                dispatch(getAddressNonce(wallet, true))
+                dispatch(getAddressNonce(wallet, true, false))
                   .then(() => {
                     setLoading(false);
                     dispatch(setBackupStatus(true));

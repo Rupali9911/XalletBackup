@@ -842,7 +842,10 @@
             "backupPhrase": "Backup Recovery Phrase",
             "notBackedUp": "Recovery phrase not safe",
             "backupSuccess": "Recovery phrase safe",
-            "walletImported": "Your wallet was successfully imported."
+            "walletImported": "Your wallet was successfully imported.",
+            "paymentDetails": "Payment Details",
+            "network": "Network",
+            "transactionHash": "Transaction Hash"
         },
         "backendmessage": {
             "error": {},

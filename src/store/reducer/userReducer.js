@@ -1,15 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-    AUTH_SUCCESS,
-    AUTH_LOADING_START,
-    AUTH_LOADING_END,
-    MAIN_LOADING_END,
-    MAIN_LOADING_START,
-    UPDATE_CREATE,
-    UPDATE_PROFILE,
-    SET_PASSCODE,
-    UPDATE_BACKUP,
+  AUTH_SUCCESS,
+  AUTH_LOADING_START,
+  AUTH_LOADING_END,
+  MAIN_LOADING_END,
+  MAIN_LOADING_START,
+  UPDATE_CREATE,
+  UPDATE_PROFILE,
+  SET_PASSCODE,
+  UPDATE_BACKUP,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL} from '../../common/constants';
@@ -17,82 +17,82 @@ import {translate} from '../../walletUtils';
 import {alertWithSingleBtn} from '../../common/function';
 
 const initialState = {
-    loading: false,
-    mainLoader: false,
-    wallet: null,
-    isCreate: false,
-    data: {},
-    passcode: "",
-    isBackup: false,
-    showSuccess: false,
+  loading: false,
+  mainLoader: false,
+  wallet: null,
+  isCreate: false,
+  data: {},
+  passcode: '',
+  isBackup: false,
+  showSuccess: false,
 };
 
 export default UserReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case MAIN_LOADING_START:
-            return {
-                ...state,
-                mainLoader: true,
-            };
+  switch (action.type) {
+    case MAIN_LOADING_START:
+      return {
+        ...state,
+        mainLoader: true,
+      };
 
-        case MAIN_LOADING_END:
-            return {
-                ...state,
-                mainLoader: false,
-            };
-        case AUTH_LOADING_START:
-            return {
-                ...state,
-                loading: true,
-            };
+    case MAIN_LOADING_END:
+      return {
+        ...state,
+        mainLoader: false,
+      };
+    case AUTH_LOADING_START:
+      return {
+        ...state,
+        loading: true,
+      };
 
-        case AUTH_LOADING_END:
-            return {
-                ...state,
-                loading: false,
-            };
+    case AUTH_LOADING_END:
+      return {
+        ...state,
+        loading: false,
+      };
 
-        case SET_PASSCODE:
-            return {
-                ...state,
-                passcode: action.payload,
-                loading: true
-            };
+    case SET_PASSCODE:
+      return {
+        ...state,
+        passcode: action.payload,
+        loading: true,
+      };
 
-            case AUTH_SUCCESS:
-            return {
-                ...state,
-                wallet: action.payload.wallet,
-                data: action.payload.data,
-                isCreate: action.payload.isCreate,
-                showSuccess: action.payload.showSuccess,
-                loading: false
-            };
+    case AUTH_SUCCESS:
+      return {
+        ...state,
+        wallet: action.payload.wallet,
+        data: action.payload.data,
+        isCreate: action.payload.isCreate,
+        showSuccess: action.payload.showSuccess,
+        loading: false,
+      };
 
-        case UPDATE_CREATE:
-            return {
-                ...state,
-                isCreate: false,
-                showSuccess: false
-            };
+    case UPDATE_CREATE:
+      return {
+        ...state,
+        isCreate: false,
+        showSuccess: false,
+      };
 
-        case UPDATE_PROFILE:
-            let _data = state.data;
-            _data.user = action.payload;
-            return {
-                ...state,
-                data: { ..._data }
-            }
+    case UPDATE_PROFILE:
+      let _data = state.data;
+      _data.user = action.payload;
+      return {
+        ...state,
+        data: {..._data},
+      };
 
-        case UPDATE_BACKUP:
-            return {
-                ...state,
-                isBackup: action.payload
-            };
-        default:
-            return state;
-    }
-}
+    case UPDATE_BACKUP:
+      return {
+        ...state,
+        isBackup: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
@@ -124,9 +124,9 @@ export const setPasscode = data => ({
   payload: data,
 });
 
-export const setBackupStatus = (data) => ({
-    type: UPDATE_BACKUP,
-    payload: data
+export const setBackupStatus = data => ({
+  type: UPDATE_BACKUP,
+  payload: data,
 });
 
 export const startLoader = () => dispatch =>
@@ -212,14 +212,14 @@ export const updateCreateState = () => dispatch =>
     resolve();
   });
 
-export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
-    new Promise((resolve, reject) => {
-        const url = "https://testapi.xanalia.com/auth/get-address-nonce";
-        const params = {
-            publicAddress: wallet.address
-        }
-        console.log('params',params);
-        const request = {
+export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
+  new Promise((resolve, reject) => {
+    const url = 'https://testapi.xanalia.com/auth/get-address-nonce';
+    const params = {
+      publicAddress: wallet.address,
+    };
+    console.log('params', params);
+    const request = {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -266,7 +266,7 @@ export const getAddressNonce = (wallet, isCreate) => (dispatch) =>
                     data: _response.data,
                     wallet,
                     isCreate,
-                    showSuccess: true,
+                    showSuccess: isLater ? false : true,
                   }),
                 );
                 resolve();
