@@ -12,7 +12,6 @@ import {
 } from '../types';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
-import { twoNftLoadSuccess } from './twoDAction';
 
 export const myNftLoadStart = () => ({
     type: MY_NFT_LOAD_START

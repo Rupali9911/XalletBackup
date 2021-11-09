@@ -10,7 +10,7 @@ const initialState = {
 }
 
 export default UserReducer = (state = initialState, action) => {
-    switch(action.type){
+    switch (action.type) {
         case SET_PAYMENT_OBJECT:
             return {
                 ...state,
@@ -36,123 +36,99 @@ export const setAllCards = (data) => ({
     payload: data
 });
 
-export const getAllCards = (token) => (dispatch) => 
+export const getAllCards = (token) => (dispatch) =>
     new Promise((resolve, reject) => {
         let headers = {
             'Authorization': `Bearer ${token}`
         }
-        console.log('headers',headers);
-        ApiRequest(`https://testapi.xanalia.com/stripe/get-all-user-card?limit=10`,'GET', null, headers)
+        ApiRequest(`https://testapi.xanalia.com/stripe/get-all-user-card?limit=10`, 'GET', null, headers)
             .then((response) => {
-                console.log('response',response);
-                if(response.success){
+                if (response.success) {
                     dispatch(setAllCards(response.data.data));
                     resolve(response.data.data);
-                }else{
+                } else {
                     reject();
                 }
             }).catch((err) => {
-                console.log('err',err);
                 reject();
             });
     });
 
-export const addCard = (token, data) => (dispatch) => 
-new Promise((resolve, reject) => {
-    let headers = {
-        'Authorization': `Bearer ${token}`
-    }
-    console.log('headers',headers);
-    ApiRequest(`${BASE_URL}stripe/save-user-card`,'POST', data, headers)
-        .then((response) => {
-            console.log('response',response);
-            if(response.success){
-                resolve(response);
-            }else{
-                reject(response);
-            }
-        }).catch((err) => {
-            console.log('err',err);
-            reject(err);
-        });
-});
+export const addCard = (token, data) => (dispatch) =>
+    new Promise((resolve, reject) => {
+        let headers = {
+            'Authorization': `Bearer ${token}`
+        }
+        ApiRequest(`${BASE_URL}stripe/save-user-card`, 'POST', data, headers)
+            .then((response) => {
+                if (response.success) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+    });
 
-export const deleteCard = (token, data) => (dispatch) => 
-new Promise((resolve, reject) => {
-    let headers = {
-        'Authorization': `Bearer ${token}`
-    }
-    console.log('headers',headers);
-    ApiRequest(`${BASE_URL}stripe/delete-user-card`,'POST', data, headers)
-        .then((response) => {
-            console.log('response',response);
-            if(response.success){
-                resolve(response);
-            }else{
+export const deleteCard = (token, data) => (dispatch) =>
+    new Promise((resolve, reject) => {
+        let headers = {
+            'Authorization': `Bearer ${token}`
+        }
+        ApiRequest(`${BASE_URL}stripe/delete-user-card`, 'POST', data, headers)
+            .then((response) => {
+                if (response.success) {
+                    resolve(response);
+                } else {
+                    reject();
+                }
+            }).catch((err) => {
                 reject();
-            }
-        }).catch((err) => {
-            console.log('err',err);
-            reject();
-        });
-});
+            });
+    });
 
 export const getPaymentIntent = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
         let headers = {
             'Authorization': `Bearer ${token}`
         }
-        console.log('headers', headers);
         ApiRequest(`${BASE_URL}stripe/payment-intent`, 'POST', data, headers)
             .then((response) => {
-                console.log('response', response);
-                // if (response.success) {
-                    resolve(response);
-                // } else {
-                //     reject(response);
-                // }
+
+                resolve(response);
+
             }).catch((err) => {
-                console.log('err', err);
                 reject();
             });
     });
 
-export const getTransactionHash = (token, data) => (dispatch) => 
-new Promise((resolve, reject) => {
-    let headers = {
-        'Authorization': `Bearer ${token}`
-    }
-    console.log('headers', headers);
-    ApiRequest(`${BASE_URL}stripe/confirm-payment-intent`, 'POST', data, headers)
-        .then((response) => {
-            console.log('response', response);
-            // if (response.success) {
-                resolve(response);
-            // } else {
-            //     reject();
-            // }
-        }).catch((err) => {
-            console.log('err', err);
-            reject();
-        });
-});
+export const getTransactionHash = (token, data) => (dispatch) =>
+    new Promise((resolve, reject) => {
+        let headers = {
+            'Authorization': `Bearer ${token}`
+        }
+        ApiRequest(`${BASE_URL}stripe/confirm-payment-intent`, 'POST', data, headers)
+            .then((response) => {
 
-export const updateTransactionSuccess = (token, data) => (dispatch) => 
-new Promise((resolve, reject) => {
-    let headers = {
-        'Authorization': `Bearer ${token}`
-    }
-    console.log('headers', headers, data);
-    ApiRequest(`${BASE_URL}stripe/transaction-success`, 'POST', data, headers)
-        .then((response) => {
-            console.log('response', response);
-            // if (response.success) {
                 resolve(response);
-            // } else {
-            //     reject();
-            // }
-        }).catch((err) => {
-            console.log('err', err);
-            reject();
-        });
-});
+
+            }).catch((err) => {
+                reject();
+            });
+    });
+
+export const updateTransactionSuccess = (token, data) => (dispatch) =>
+    new Promise((resolve, reject) => {
+        let headers = {
+            'Authorization': `Bearer ${token}`
+        }
+        ApiRequest(`${BASE_URL}stripe/transaction-success`, 'POST', data, headers)
+            .then((response) => {
+
+                resolve(response);
+
+            }).catch((err) => {
+                reject();
+            });
+    });

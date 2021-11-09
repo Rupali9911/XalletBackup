@@ -75,9 +75,6 @@ export const getAwardsNftList = (page, limit) => {
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed"),
-                    () => {
-                        console.log();
-                    }
                 );
             })
     }

@@ -63,7 +63,6 @@ export default walletReducer = (state = initialState, action) => {
 
         case ADD_MATIC_TRANSACTION:
             let isMaticExist = state.maticTransactions.findIndex((_item) => _item.hash == action.payload.hash);
-            console.log(action.payload);
             if (isMaticExist == -1) {
                 return {
                     ...state,
@@ -145,14 +144,11 @@ export const getTransactions = (address, type) => (dispatch) =>
             }
         }
         fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions`, fetch_request_param).then((response) => {
-            console.log('response', response);
             return ""
         })
             .then((res) => {
-                console.log('res');
                 resolve();
             }).catch((err) => {
-                console.log('err', err);
                 reject();
             })
     });

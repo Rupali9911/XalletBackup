@@ -72,9 +72,6 @@ export const newNFTList = (page) => {
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed"),
-                    () => {
-                        console.log(err);
-                    }
                 );
             })
     }
