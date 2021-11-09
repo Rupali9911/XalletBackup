@@ -843,7 +843,10 @@
             "backupPhrase": "백업 복구 문구",
             "notBackedUp": "안전하지 않은 복구 문구",
             "backupSuccess": "복구 문구 안전",
-            "walletImported": "지갑을 성공적으로 가져왔습니다."
+            "walletImported": "지갑을 성공적으로 가져왔습니다.",
+            "choosePhoto": "사진을 선택",
+            "choosePhotoFromGallery": "갤러리에서 사진 선택...",
+            "takePhoto": "사진을 찍다..."
         },
         "backendmessage": {
             "error": {},

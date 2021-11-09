@@ -151,7 +151,6 @@ const HomeScreen = ({ navigation }) => {
 
   const appStateChange = (nextAppState) => {
     var pass = passcode;
-    console.log(pass)
     if (nextAppState === "active" && pass) {
       navigation.navigate("PasscodeScreen", { screen: "active" })
     }
@@ -243,6 +242,7 @@ const HomeScreen = ({ navigation }) => {
               tabStyle: {
                 height: SIZE(40),
                 paddingHorizontal: wp('1%'),
+                justifyContent: 'center',
               },
               labelStyle: {
                 fontSize: RF(1.4),

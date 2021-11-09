@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         resizeMode: "cover"
     },
     header: {
-        height: SIZE(50),
+        height: SIZE(45),
         justifyContent: 'center',
         alignItems: 'center'
     },

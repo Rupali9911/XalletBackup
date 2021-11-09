@@ -843,7 +843,10 @@
             "backupPhrase": "Backup Recovery Phrase",
             "notBackedUp": "Recovery phrase not safe",
             "backupSuccess": "Recovery phrase safe",
-            "walletImported": "Your wallet was successfully imported."
+            "walletImported": "Your wallet was successfully imported.",
+            "choosePhoto": "Choose Photo",
+            "choosePhotoFromGallery": "Choose Photo from Gallery...",
+            "takePhoto": "Take Photo..."
         },
         "backendmessage": {
             "error": {},
