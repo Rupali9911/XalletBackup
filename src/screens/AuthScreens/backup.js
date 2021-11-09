@@ -69,7 +69,7 @@ const Backup = ({ navigation }) => {
                 <View style={styles.contentContainer}>
                     <AppLogo logoStyle={styles.logo} />
                     <TextView style={styles.title}>{translate("wallet.common.backupTxt")} !</TextView>
-                    <HintText style={styles.hint}>{translate("wallet.common.phraseHint")}</HintText>
+                    <HintText >{translate("wallet.common.phraseHint")}</HintText>
                     <View style={styles.imgContainer}>
                         <ImageBackground style={styles.img} source={ImagesSrc.backupImg}>
                             <Image source={ImagesSrc.backupLoaderImg} style={{ ...CommonStyles.imageStyles(16.8), marginRight: SIZE(5) }} />
@@ -78,7 +78,7 @@ const Backup = ({ navigation }) => {
                     </View>
                 </View>
 
-                <View style={styles.bottomView}>
+                <View>
                     <Checkbox isCheck={isCheck} onChecked={setCheck} label={translate("wallet.common.phraseAlert")} />
                     <AppButton label={translate("wallet.common.next")} view={!isCheck} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
@@ -101,14 +101,8 @@ const Backup = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     contentContainer: {
         flex: 1,
-    },
-    bottomView: {
-
     },
     logo: {
         ...CommonStyles.imageStyles(25)
