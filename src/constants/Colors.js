@@ -51,8 +51,10 @@ export default {
   borderColor: '#979797',
   inputBackground: '#FAFAFA',
   themeColor: '#008FFF',
+  accentColor2: '#3995FF',
   borderLightColor: '#EAEAEA',
   borderLightColor2: '#EFEFEF',
+  borderLightColor3: '#BFBFBF',
 
   phoneCode: '#484848',
 

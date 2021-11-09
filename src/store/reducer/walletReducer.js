@@ -5,7 +5,10 @@ import {
     ADD_ALL_ETH_TRANSACTIONS,
     ADD_ALL_BNB_TRANSACTIONS,
     ADD_ALL_MATIC_TRANSACTIONS,
-    UPDATE_BALANCES
+    UPDATE_BALANCES,
+    UPDATE_ETH_BALANCES,
+    UPDATE_BSC_BALANCES,
+    UPDATE_POLY_BALANCES
 } from '../types';
 
 const initialState = {
@@ -89,6 +92,27 @@ export default walletReducer = (state = initialState, action) => {
                 tnftBalance: action.payload.TNFT, // for testnet only
                 talBalance: action.payload.TAL, // for testnet only
             }
+
+        case UPDATE_ETH_BALANCES:
+            return {
+                ...state,
+                ethBalance: action.payload.ETH,
+            }
+
+        case UPDATE_BSC_BALANCES:
+            return {
+                ...state,
+                bnbBalance: action.payload.BNB,
+                tnftBalance: action.payload.TNFT, // for testnet only
+            }
+
+        case UPDATE_POLY_BALANCES:
+            return {
+                ...state,
+                maticBalance: action.payload.Matic,
+                talBalance: action.payload.TAL, // for testnet only
+            }
+
         default:
             return state;
     }
@@ -126,6 +150,21 @@ export const addAllMaticTransactions = (data) => ({
 
 export const updateBalances = (data) => ({
     type: UPDATE_BALANCES,
+    payload: data
+});
+
+export const updateEthereumBalances = (data) => ({
+    type: UPDATE_ETH_BALANCES,
+    payload: data
+});
+
+export const updateBSCBalances = (data) => ({
+    type: UPDATE_BSC_BALANCES,
+    payload: data
+});
+
+export const updatePolygonBalances = (data) => ({
+    type: UPDATE_POLY_BALANCES,
     payload: data
 });
 

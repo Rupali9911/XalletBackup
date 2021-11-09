@@ -162,7 +162,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 {translate('wallet.common.yourPhrase')}
               </TextView>
               <HintText style={styles.hint}>
-                {translate('wallet.common.phraseSaveInfo')}
+                {recover ? translate('wallet.common.recoveryPhraseInfo') : translate('wallet.common.phraseSaveInfo')}
               </HintText>
             </View>
             <View>

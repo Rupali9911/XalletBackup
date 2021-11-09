@@ -32,7 +32,7 @@ import { updateCreateState } from '../../store/reducer/userReducer';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import Web3 from 'web3';
 import SelectToken from './components/SelectToken';
-import { addTransaction, addEthTransaction, addBnbTransaction, addMaticTransaction, updateBalances } from '../../store/reducer/walletReducer';
+import { addTransaction, addEthTransaction, addBnbTransaction, addMaticTransaction, updateBalances, updateEthereumBalances, updateBSCBalances } from '../../store/reducer/walletReducer';
 
 const ethers = require('ethers');
 
@@ -86,9 +86,9 @@ const Wallet = ({route, navigation}) => {
     },[isFocused]);
 
     useEffect(() => {
-        singleSocket.connectSocket().then(() => {
-            ping(wallet.address);
-        });
+        // singleSocket.connectSocket().then(() => {
+        //     ping(wallet.address);
+        // });
 
         const socketSubscribe = Events.asObservable().subscribe({
             next: (data) => {
@@ -265,6 +265,85 @@ const Wallet = ({route, navigation}) => {
             }
         }
         singleSocket.onSendMessage(data);
+    }
+
+    const getEthereumBalances = (pubKey) => {
+        return new Promise((resolve, reject) => {
+            let balanceRequests = [
+                balance(pubKey, "", "", environment.ethRpc, "eth"),
+                // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
+            ];
+
+            Promise.all(balanceRequests).then((responses) => {
+                // console.log('balances',responses);
+                let balances = {
+                    ETH: responses[0]
+                    // USDT: responses[1],
+                };
+                dispatch(updateEthereumBalances(balances));
+                setLoading(false);
+                resolve();
+            }).catch((err) => {
+                console.log('err', err);
+                setLoading(false);
+                reject();
+            });
+        });
+    }
+
+    const getBSCBalances = (pubKey) => {
+        return new Promise((resolve, reject) => {
+            let balanceRequests = [
+                balance(pubKey, "", "", environment.bnbRpc, "bnb"),
+                balance(pubKey, environment.tnftCont, environment.tnftAbi, environment.bnbRpc, "alia"),
+                // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+                // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
+            ];
+
+            Promise.all(balanceRequests).then((responses) => {
+                // console.log('balances',responses);
+                let balances = {
+                    BNB: responses[0],
+                    TNFT: responses[1],
+                    // BUSD: responses[2],
+                    // ALIA: responses[3],
+                };
+                dispatch(updateBSCBalances(balances));
+                setLoading(false);
+                resolve();
+            }).catch((err) => {
+                console.log('err', err);
+                setLoading(false);
+                reject();
+            });
+        });
+    }
+
+    const getPolygonBalances = (pubKey) => {
+        return new Promise((resolve, reject) => {
+            let balanceRequests = [
+                balance(pubKey, "", "", environment.polRpc, "matic"),
+                balance(pubKey, environment.talCont, environment.tnftAbi, environment.polRpc, "alia"),
+                // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
+            ];
+
+            Promise.all(balanceRequests).then((responses) => {
+                // console.log('balances',responses);
+                let balances = {
+                    Matic: responses[0],
+                    TAL: responses[1],
+                    // USDC: responses[2],
+                };
+                dispatch(updateBalances(balances));
+                setBalances(balances);
+                setLoading(false);
+                resolve();
+            }).catch((err) => {
+                console.log('err', err);
+                setLoading(false);
+                reject();
+            });
+        });
     }
 
     const getBalances = (pubKey) => {

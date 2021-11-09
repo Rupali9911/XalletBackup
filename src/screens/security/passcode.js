@@ -149,6 +149,7 @@ function PasscodeScreen({
     }
 
     let label = status ? translate("wallet.common.enterPasscode1") : passcode.length === 6 ? translate("wallet.common.enterPasscode2") : translate("wallet.common.enterPasscode")
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             {
@@ -165,6 +166,7 @@ function PasscodeScreen({
                             <View style={styles.circleCont} >
                                 {
                                     [...Array(6).keys()].map((v, i) => {
+
                                         let active = status ? passcode : passcode.length === 6 ? reEnterpasscode : passcode;
 
                                         return (

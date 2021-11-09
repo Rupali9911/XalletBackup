@@ -82,7 +82,11 @@ function SecurityScreen({
                     />
 
                     <ListItem
-                        onPress={() => { navigation.navigate("recoveryPhrase", { wallet }) }}
+                        onPress={() => {
+                            if(wallet.mnemonic){
+                                navigation.navigate("recoveryPhrase", { wallet })
+                            }
+                        }}
                         label={translate("wallet.common.backupPhrase")}
                         subLabel={true}
                     />

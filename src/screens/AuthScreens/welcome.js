@@ -54,6 +54,14 @@ const Welcome = ({ navigation }) => {
               navigation.navigate('recoveryPhrase', { recover: true });
             }}
           />
+          <AppButton
+            label={translate('wallet.common.importWallet')}
+            containerStyle={CommonStyles.outlineButton}
+            labelStyle={CommonStyles.outlineButtonLabel}
+            onPress={() => {
+              navigation.navigate('importWallet');
+            }}
+          />
         </View>
       </View>
     </AppBackground>
