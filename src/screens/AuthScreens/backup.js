@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import
+    React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, ImageBackground } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -88,7 +89,7 @@ const Backup = ({ navigation }) => {
                     <Button
                         uppercase={false}
                         color={Colors.themeColor}
-                        disabled={!isCheck}
+                        // disabled={!isCheck}
                         style={{ marginBottom: hp("1%") }}
                         onPress={saveWallet}>
                         {translate("wallet.common.doItLater")}
