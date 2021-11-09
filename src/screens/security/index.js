@@ -12,7 +12,7 @@ import Colors from '../../constants/Colors';
 const ListItem = (props) => {
 
     const { isBackup } = useSelector(state => state.UserReducer);
-
+    console.log('isBackup ------>',isBackup)
     return (
         <TouchableOpacity disabled={props.disableView} onPress={props.onPress} style={styles.itemCont} >
             <View style={styles.centerProfileCont} >
