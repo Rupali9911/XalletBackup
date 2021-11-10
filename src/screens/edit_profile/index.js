@@ -46,6 +46,7 @@ import AppBackground from '../../components/appBackground';
 import { useSelector, useDispatch } from 'react-redux';
 import { upateUserData } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn } from '../../utils';
+import { signOut } from '../../store/reducer/userReducer';
 
 const {
     LeftArrowIcon,
@@ -125,11 +126,22 @@ function Profile({
                     dispatch(upateUserData(res.data.data));
                 })
                 .catch(err => {
+                    if (err.response.status === 401) {
+                        alertWithSingleBtn(
+                            translate("wallet.common.alert"),
+                            translate("common.sessionexpired"),
+                            () => {
+                                console.log(err);
+                            }
+                        );
+                        dispatch(signOut());
+                        return;
+                    }
                     alertWithSingleBtn(
                         translate("wallet.common.alert"),
                         translate("wallet.common.error.networkFailed"),
                         () => {
-                            console.log(e);
+                            console.log(err);
                         }
                     );
                     return;
@@ -164,7 +176,7 @@ function Profile({
                     translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed"),
                     () => {
-                        console.log(e);
+                        console.log(err);
                     }
                 );
             })
@@ -230,7 +242,7 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
-                            value={title}
+                            value={title || firstName + ' ' + lastName}
                             onChangeText={setTitle}
                             placeholder={translate("common.artistname")} />
                     </RowBetweenWrap>
@@ -305,54 +317,6 @@ function Profile({
                             value={website}
                             onChangeText={setWebsite}
                             placeholder={translate("common.website")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.facebook")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={facebook}
-                            onChangeText={setFacebook}
-                            placeholder={translate("common.facebook")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.twitter")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={twitter}
-                            onChangeText={setTwitter}
-                            placeholder={translate("common.twitter")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.youtube")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={youtube}
-                            onChangeText={setYoutube}
-                            placeholder={translate("common.youtube")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.instagram")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={instagram}
-                            onChangeText={setInstagram}
-                            placeholder={translate("common.instagram")} />
                     </RowBetweenWrap>
                     <SpaceView mTop={SIZE(12)} />
                     <RowBetweenWrap>
