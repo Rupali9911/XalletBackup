@@ -19,7 +19,7 @@ import Fonts from '../../../constants/Fonts';
 import ImagesSrc from '../../../constants/Images';
 import {hp, RF, wp} from '../../../constants/responsiveFunct';
 import CommonStyles from '../../../constants/styles';
-import {translate} from '../../../utils';
+import { translate } from '../../../walletUtils';
 
 const ListItems = props => {
   const {item} = props;
@@ -40,15 +40,15 @@ const ListItems = props => {
               ? translate('wallet.common.received')
               : translate('wallet.common.sent')}
           </Text>
-        </View>
-        <View style={styles.detailsContainer}>
-          {/* <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text> */}
           <Text style={styles.townTxt}>
             {moment.unix(item.timeStamp).format('YYYY-MM-DD HH:mm:ss')}
           </Text>
         </View>
+        {/* <View style={styles.detailsContainer}>
+          <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text>
+        </View> */}
       </View>
-      <View style={{...CommonStyles.center, alignItems: 'flex-end'}}>
+      <View style={{flex:1, ...CommonStyles.center, alignItems: 'flex-end'}}>
         {/* <Text style={styles.townTxt} >{item.type}</Text> */}
         <NumberFormat
           value={item.value}
@@ -57,6 +57,7 @@ const ListItems = props => {
           thousandSeparator={true}
           renderText={formattedValue => (
             <Text
+              numberOfLines={1}
               style={[
                 styles.priceTxt,
                 {
@@ -131,9 +132,9 @@ const History = props => {
           return (
             <ListItems
               item={item}
-              onPress={item =>
+              onPress={_item =>
                 navigation.navigate('transactionsDetail', {
-                  data: item,
+                  data: _item,
                   coin: coin,
                 })
               }
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.7),
     fontFamily: Fonts.ARIAL,
     color: Colors.townTxt,
-    marginVertical: hp('0.2%'),
+    // marginVertical: hp('0.2%'),
   },
   percentTxt: {
     fontSize: RF(1.4),
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
   },
   centerCont: {
     height: '100%',
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: wp('4%'),
     // justifyContent: "center",
   },
@@ -276,9 +277,10 @@ const styles = StyleSheet.create({
     marginVertical: hp('4%'),
   },
   firstRow: {
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'baseline',
-    paddingTop: hp('1%'),
+    alignItems: 'center',
+    // paddingTop: hp('1%'),
   },
 });
 

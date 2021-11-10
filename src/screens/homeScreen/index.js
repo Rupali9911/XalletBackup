@@ -171,12 +171,12 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.headerMenuContainer}>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Certificate')}
-                hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Create')}
-                hitSlop={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>
             </View>

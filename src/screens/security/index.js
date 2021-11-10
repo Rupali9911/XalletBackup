@@ -12,7 +12,7 @@ import Colors from '../../constants/Colors';
 const ListItem = (props) => {
 
     const { isBackup } = useSelector(state => state.UserReducer);
-
+    console.log('isBackup ------>',isBackup)
     return (
         <TouchableOpacity disabled={props.disableView} onPress={props.onPress} style={styles.itemCont} >
             <View style={styles.centerProfileCont} >
@@ -81,7 +81,7 @@ function SecurityScreen({
                         />}
                     />
 
-                    <ListItem
+                    {wallet.mnemonic && <ListItem
                         onPress={() => {
                             if(wallet.mnemonic){
                                 navigation.navigate("recoveryPhrase", { wallet })
@@ -89,7 +89,7 @@ function SecurityScreen({
                         }}
                         label={translate("wallet.common.backupPhrase")}
                         subLabel={true}
-                    />
+                    />}
 
                 </View>
 

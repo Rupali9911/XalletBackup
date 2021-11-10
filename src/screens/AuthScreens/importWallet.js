@@ -208,7 +208,7 @@ const ImportWallet = ({route, navigation}) => {
             </View>
             <View>
               <View style={{ flexDirection: 'row' }}>
-                <SelectButtongroup buttons={['Phrase','Private Key']} onButtonPress={(item, index) => {
+                <SelectButtongroup buttons={[translate("wallet.common.phrase"),translate("wallet.common.privateKey")]} onButtonPress={(item, index) => {
                   setInputType(index);
                 }}/>
               </View>
