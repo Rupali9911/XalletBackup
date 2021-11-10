@@ -42,6 +42,7 @@ import {
     EditButtonText,
     DescriptionView,
     SmallText,
+    WebsiteLink
 } from './styled';
 import {
     Loader,
@@ -80,6 +81,7 @@ const {
 } = IMAGES;
 
 const {
+    ConnectSmIcon,
     LeftArrowIcon,
 } = SVGS;
 
@@ -407,6 +409,8 @@ function ArtistDetail({
         setFollowing(!isFollowing);
     }
 
+    console.log('=====data', data);
+
     return (
         <AppBackground isBusy={loading}>
             <Header>
@@ -475,11 +479,25 @@ function ArtistDetail({
                 <SmallBoldText>
                     {data.title || data.username}
                 </SmallBoldText>
-                <ScrollView style={{ maxHeight: SIZE(70) }}>
-                    <SmallNormalText>
-                        {data.about}
-                    </SmallNormalText>
-                </ScrollView>
+                <SpaceView mTop={SIZE(8)} />
+                {
+                    data.about &&
+                    <ScrollView style={{ maxHeight: SIZE(70) }}>
+                        <SmallNormalText>
+                            {data.about}
+                        </SmallNormalText>
+                    </ScrollView>
+                }
+                <SpaceView mTop={SIZE(8)} />
+                {
+                    !_.isEmpty(data.links) && !_.isEmpty(data.links.website) &&
+                    <RowWrap>
+                        <ConnectSmIcon />
+                        <WebsiteLink>
+                            {data.links.website}
+                        </WebsiteLink>
+                    </RowWrap>
+                }
             </DescriptionView>
             <SpaceView mTop={SIZE(14)} />
             <RowWrap>
