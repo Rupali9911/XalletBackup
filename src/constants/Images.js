@@ -69,6 +69,7 @@ export default {
     itemDelete: require("../../assets/images/itemDelete.png"),
 
     edit: require("../../assets/images/edit.png"),
+    imagePlaceholder: require("../../assets/images/cropped-placeholder.png"),
 
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),

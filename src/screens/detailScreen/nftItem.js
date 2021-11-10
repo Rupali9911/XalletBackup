@@ -227,6 +227,8 @@ const nftItem = ({ item, index }) => {
     }
   }
 
+  let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
+
   return (
     <View>
       <View style={styles.modalSectCont}>
@@ -288,7 +290,7 @@ const nftItem = ({ item, index }) => {
         }}>
         {
           fileType !== 'mp4' && fileType !== 'mov' ?
-            <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
+            <C_Image uri={imageUri} imageStyle={styles.modalImage} />
             :
             <View style={styles.modalImage}>
               <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
