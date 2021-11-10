@@ -89,7 +89,6 @@ const Backup = ({ navigation }) => {
                     <Button
                         uppercase={false}
                         color={Colors.themeColor}
-                        // disabled={!isCheck}
                         style={{ marginBottom: hp("1%") }}
                         onPress={saveWallet}>
                         {translate("wallet.common.doItLater")}
