@@ -854,7 +854,11 @@
             "takePhoto": "写真を撮る...",
             "choosePhotoFromGallery": "－ギャラリーから選択...",
             "choosePhoto": "写真を選択",
-            "recoveryPhraseInfo": "単一のスペースで区切られた12個の復元フレーズを正しい順番で、入力及び貼り付けください"
+            "recoveryPhraseInfo": "単一のスペースで区切られた12個の復元フレーズを正しい順番で、入力及び貼り付けください",
+            "backupRestorePhrase":"Restore Phraseをバックアップして、ウォレットを使用します。",
+            "restorePhraseIsImportant":"Restore Phraseは、デバイスの紛失や盗難が発生した場合にウォレットと資金を回収するために使用されるため、非常に重要です。",
+            "later":"後で",
+            "backupNow":"今すぐバックアップ"
         },
         "backendmessage": {
             "error": {},

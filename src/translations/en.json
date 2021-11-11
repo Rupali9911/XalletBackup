@@ -854,7 +854,11 @@
             "takePhoto": "Take Photo...",
             "choosePhotoFromGallery": "Choose Photo from Gallery...",
             "choosePhoto": "Choose Photo",
-            "recoveryPhraseInfo": "Enter and paste 12 recovery phrases separated by a single space in the correct order"
+            "recoveryPhraseInfo": "Enter and paste 12 recovery phrases separated by a single space in the correct order",
+            "backupRestorePhrase":"Back up the Restore Phrase to put the wallet into use.",
+            "restorePhraseIsImportant":"The Restore Phrase is very important because it is used to recover the wallet and funds if the device is lost or stolen.",
+            "later":"Later",
+            "backupNow":"Back Up Now"
         },
         "backendmessage": {
             "error": {},
