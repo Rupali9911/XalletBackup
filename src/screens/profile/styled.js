@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { StyleSheet } from "react-native";
 import {
-    COLORS,
-    SIZE,
-    FONT
+	COLORS,
+	SIZE,
+	FONT
 } from 'src/constants';
 
 const UserImageView = styled.View`
@@ -105,20 +105,28 @@ const DotView = styled.View`
   margin-top: ${SIZE(4)}px;
 `;
 
+const WebsiteLink = styled.Text`
+	color: ${COLORS.BLUE2};
+	font-size: ${FONT(12)}px;
+	font-weight: 400;
+	margin-left: ${SIZE(10)}px;
+`;
+
 export {
-    UserImageView,
-    FollowButton,
-    FollowButtonText,
-    EditButton,
-    EditButtonText,
-    DescriptionView,
-    SmallText,
-    ImageView,
-    DetailView,
-    Title,
-    PriceView,
-    PriceText,
-    PriceTypeText,
-    NumberOfPersonText,
-    DotView
+	UserImageView,
+	FollowButton,
+	FollowButtonText,
+	EditButton,
+	EditButtonText,
+	DescriptionView,
+	SmallText,
+	ImageView,
+	DetailView,
+	Title,
+	PriceView,
+	PriceText,
+	PriceTypeText,
+	NumberOfPersonText,
+	DotView,
+	WebsiteLink
 }
