@@ -39,7 +39,7 @@ export default function transactionsDetail({route}) {
     }
   };
   return (
-    <AppBackground hideSafeArea lightStatus>
+    <AppBackground>
       <AppHeader
         showBackButton
         title={translate('wallet.common.paymentDetails')}
