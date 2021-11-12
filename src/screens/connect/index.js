@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     FlatList,
-    Image
+    Image,
+    Platform
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import TextView from '../../components/appText';
@@ -53,21 +54,40 @@ const ListItems = (props) => {
     )
 }
 
+let flag = false;
+
 const Connect = ({ route, navigation }) => {
 
     const onCheckPermission = async () => {
         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-        if (!isGranted) {
-            confirmationAlert(
-                'This feature requires camera access',
-                'To enable access, tap Settings and turn on Camera.',
-                'Cancel',
-                'Settings',
-                () => openSettings(),
-                () => null
-            )
+
+        if (Platform.OS === 'android') {
+            if (!isGranted && flag) {
+                confirmationAlert(
+                    'This feature requires camera access',
+                    'To enable access, tap Settings and turn on Camera.',
+                    'Cancel',
+                    'Settings',
+                    () => openSettings(),
+                    () => null
+                )
+            } else {
+                flag = true;
+                navigation.navigate("scanToConnect");
+            }
         } else {
-            navigation.navigate("scanToConnect");
+            if (!isGranted) {
+                confirmationAlert(
+                    'This feature requires camera access',
+                    'To enable access, tap Settings and turn on Camera.',
+                    'Cancel',
+                    'Settings',
+                    () => openSettings(),
+                    () => null
+                )
+            } else {
+                navigation.navigate("scanToConnect");
+            }
         }
     }
 
@@ -84,7 +104,7 @@ const Connect = ({ route, navigation }) => {
                 titleStyle={styles.screenTitle} />
             <View style={styles.container}>
                 <TextView style={styles.heading}>{translate("wallet.common.connectInfo")}{"\n"}{translate("wallet.common.connectInfo2")}</TextView>
-                
+
                 <View style={styles.list}>
                     <FlatList
                         data={listData}
