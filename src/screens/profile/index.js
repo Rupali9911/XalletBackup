@@ -386,6 +386,7 @@ function Profile({
                                 width: '100%',
                                 height: '100%'
                             }}
+                            imageType="profile"
                         />
                     </UserImageView>
                     <CenterWrap>
