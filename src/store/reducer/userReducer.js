@@ -10,6 +10,7 @@ import {
   UPDATE_PROFILE,
   SET_PASSCODE,
   UPDATE_BACKUP,
+  LOG_OUT
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
@@ -90,6 +91,12 @@ export default UserReducer = (state = initialState, action) => {
         isBackup: action.payload,
         loading: false
       };
+
+    case LOG_OUT:
+      return {
+        ...state,
+        wallet: null
+      }
     default:
       return state;
   }
@@ -128,6 +135,10 @@ export const setPasscode = data => ({
 export const setBackup = (data) => ({
   type: UPDATE_BACKUP,
   payload: data
+});
+
+export const logout = () => ({
+  type: LOG_OUT,
 });
 
 export const startLoader = () => dispatch =>
@@ -213,7 +224,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
     const params = {
       publicAddress: wallet.address,
     };
-    
+
     const request = {
       method: 'POST',
       body: JSON.stringify(params),
@@ -288,3 +299,10 @@ export const setBackupStatus = (data) => (dispatch) =>
     AsyncStorage.setItem('@BackedUp', JSON.stringify(data));
     dispatch(setBackup(true));
   });
+
+export const signOut = () => {
+  return (dispatch, getState) => {
+    AsyncStorage.removeItem('@wallet');
+    dispatch(logout());
+  }
+}

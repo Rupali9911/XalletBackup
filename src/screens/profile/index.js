@@ -41,6 +41,7 @@ import {
     EditButtonText,
     DescriptionView,
     SmallText,
+    WebsiteLink
     // styles
 } from './styled';
 import {
@@ -72,7 +73,7 @@ import { colors, fonts } from '../../res';
 const langObj = getLanguage();
 
 const {
-    LeftArrowIcon,
+    ConnectSmIcon,
     SettingIcon
 } = SVGS;
 
@@ -308,6 +309,13 @@ function Profile({
     const { UserReducer } = useSelector(state => state);
 
     const id = UserReducer.data.user.name || UserReducer.wallet.address;
+    const {
+        about,
+        title,
+        firstName,
+        lastName,
+        links
+    } = UserReducer.data.user;
 
     const renderTabView = () => {
         return (
@@ -351,7 +359,7 @@ function Profile({
                 title={translate("wallet.common.myPage")}
                 showRightButton
                 showBackButton
-                rightButtonComponent={ <SettingIcon width={SIZE(23)} height={SIZE(23)} />}
+                rightButtonComponent={<SettingIcon width={SIZE(23)} height={SIZE(23)} />}
                 onPressRight={() => navigation.navigate('Setting', { connector: connector })}
             />
             {/* <Header>
@@ -378,6 +386,7 @@ function Profile({
                                 width: '100%',
                                 height: '100%'
                             }}
+                            imageType="profile"
                         />
                     </UserImageView>
                     <CenterWrap>
@@ -422,13 +431,27 @@ function Profile({
             <DescriptionView>
                 <SpaceView mTop={SIZE(12)} />
                 <SmallBoldText>
-                    {id}
+                    {title || firstName + ' ' + lastName}
                 </SmallBoldText>
-                <ScrollView style={{ maxHeight: SIZE(70) }}>
-                    <SmallNormalText>
-                        {''}
-                    </SmallNormalText>
-                </ScrollView>
+                <SpaceView mTop={SIZE(8)} />
+                {
+                    about &&
+                    <ScrollView style={{ maxHeight: SIZE(70) }}>
+                        <SmallNormalText>
+                            {about}
+                        </SmallNormalText>
+                    </ScrollView>
+                }
+                <SpaceView mTop={SIZE(8)} />
+                {
+                    links &&
+                    <RowWrap>
+                        <ConnectSmIcon />
+                        <WebsiteLink>
+                            {links.website}
+                        </WebsiteLink>
+                    </RowWrap>
+                }
             </DescriptionView>
             <SpaceView mTop={SIZE(14)} />
             <RowWrap>

@@ -27,7 +27,7 @@ const C_Image = (props) => {
                 source={props.uri ? {
                     uri: props.uri,
                     priority: FastImage.priority.high,
-                } : IMAGES.DEFAULTPROFILE}
+                } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
                 resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
             />
             {

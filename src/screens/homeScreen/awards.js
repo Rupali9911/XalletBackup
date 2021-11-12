@@ -46,6 +46,8 @@ const Awards = () => {
     const renderItem = ({ item }) => {
         let findIndex = AwardsNFTReducer.awardsNftList.findIndex(x => x.id === item.id);
         if (item.metaData) {
+            let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
+
             return (
                 <TouchableOpacity
                     onLongPress={() => {
@@ -57,22 +59,11 @@ const Awards = () => {
                         navigation.navigate("DetailItem", { index: findIndex });
                     }}
                     style={styles.listItem}>
-                    {
-                        item.metaData.image ? (
-                            item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                                <C_Image
-                                    type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                    uri={item.thumbnailUrl}
-                                    imageStyle={styles.listImage} />
-                                :
-                                <View style={styles.sorryMessageCont}>
-                                    <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
-                                </View>
-                        ) :
-                            <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }}>{translate("wallet.common.error.noImage")}</Text>
-                            </View>
-                    }
+                    <C_Image
+                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                        uri={imageUri}
+                        imageStyle={styles.listImage} />
+
                 </TouchableOpacity>
             )
         }

@@ -106,6 +106,13 @@ const DotView = styled.View`
   margin-top: ${SIZE(4)}px;
 `;
 
+const WebsiteLink = styled.Text`
+	color: ${COLORS.BLUE2};
+	font-size: ${FONT(12)}px;
+	font-weight: 400;
+	margin-left: ${SIZE(10)}px;
+`;
+
 export {
     UserImageView,
     FollowButton,
@@ -121,5 +128,6 @@ export {
     PriceText,
     PriceTypeText,
     NumberOfPersonText,
-    DotView
+    DotView,
+    WebsiteLink
 }
