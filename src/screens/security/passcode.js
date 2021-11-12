@@ -93,7 +93,7 @@ function PasscodeScreen({
                             AsyncStorage.removeItem("@passcode")
                             navigation.goBack();
                         } else {
-                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError2")));
+                            toastRef.current.show(toastConfigSetting(`${translate("wallet.common.error.passcodeError2")}${"\n"}${translate("wallet.common.error.passcodeError3")}`));
                             setpasscode([])
                         }
                     }
@@ -102,7 +102,7 @@ function PasscodeScreen({
                         if (pass.join("") == oldPasscode) {
                             navigation.goBack();
                         } else {
-                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError2")));
+                            toastRef.current.show(toastConfigSetting(`${translate("wallet.common.error.passcodeError2")}${"\n"}${translate("wallet.common.error.passcodeError3")}`));
                             setpasscode([])
                         }
                     }
@@ -116,7 +116,7 @@ function PasscodeScreen({
                                 dispatch(endMainLoading());
                             }, 1000)
                         } else {
-                            toastRef.current.show(toastConfigSetting(translate("wallet.common.error.passcodeError2")));
+                            toastRef.current.show(toastConfigSetting(`${translate("wallet.common.error.passcodeError2")}${"\n"}${translate("wallet.common.error.passcodeError3")}`));
                             setpasscode([])
                         }
                     }

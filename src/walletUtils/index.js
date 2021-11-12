@@ -7777,7 +7777,7 @@ export const tokens = [
 
 export const processScanResult = (event) => {
   return new Promise((resolve, reject) => {
-    if (event && event.type == 'QR_CODE') {
+    if (event && (event.type == 'QR_CODE' || event.type == 'org.iso.QRCode')) {
       if (event.data) {
         let walletAddress;
         let amount = '';

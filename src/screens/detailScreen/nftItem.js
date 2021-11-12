@@ -90,22 +90,24 @@ const nftItem = ({ item, index }) => {
 
   useEffect(() => {
     let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress
-    );
-    MarketPlaceContract.methods
-      .getNonCryptoOwner(tokenId)
-      .call(async (err, res) => {
-        if (res) {
-          const userId = res.toLowerCase();
-          setOwnerId(userId);
-          getPublicProfile(userId, false);
-        } else if (!res) {
-          lastOwnerOfNFT();
-        } else if (err) {
-        }
-      });
+    if(MarketPlaceAbi && MarketContractAddress){
+      let MarketPlaceContract = new web3.eth.Contract(
+        MarketPlaceAbi,
+        MarketContractAddress
+      );
+      MarketPlaceContract.methods
+        .getNonCryptoOwner(tokenId)
+        .call(async (err, res) => {
+          if (res) {
+            const userId = res.toLowerCase();
+            setOwnerId(userId);
+            getPublicProfile(userId, false);
+          } else if (!res) {
+            lastOwnerOfNFT();
+          } else if (err) {
+          }
+        });
+    }
   }, []);
 
   const getPublicProfile = async (id, type) => {

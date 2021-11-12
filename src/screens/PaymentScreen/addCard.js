@@ -263,6 +263,7 @@ function AddCard({ route, navigation }) {
             }
         }).catch((err)=>{
             console.log('err',err);
+            setLoading(false);
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 err.error_code?translate(`common.${err.error_code}`):''
