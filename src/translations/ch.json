@@ -854,7 +854,11 @@
             "takePhoto": "拍照...",
             "choosePhotoFromGallery": "从图库中选择照片...",
             "choosePhoto": "选择照片",
-            "recoveryPhraseInfo": "以正确的顺序输入并粘贴由一个空格分隔的 12 个恢复短语"
+            "recoveryPhraseInfo": "以正确的顺序输入并粘贴由一个空格分隔的 12 个恢复短语",
+            "backupRestorePhrase":"备份恢复短语以使用钱包。",
+            "restorePhraseIsImportant":"恢复短语非常重要，因为它用于在设备丢失或被盗时恢复钱包和资金。",
+            "later":"之后",
+            "backupNow":"立即备份"
         },
         "backendmessage": {
             "error": {},

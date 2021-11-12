@@ -14,6 +14,7 @@ import SuccessModal from '../../components/successModal';
 import ToggleButtons from '../../components/toggleButton';
 import {COLORS} from '../../constants';
 import Colors from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
 import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
@@ -39,12 +40,15 @@ var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
 const Wallet = ({route, navigation}) => {
-  const {wallet, isCreate, data} = useSelector(state => state.UserReducer);
+  const {wallet, isCreate, data, isBackup} = useSelector(
+    state => state.UserReducer,
+  );
+
   const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance} =
     useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-
+  const [isBackedUp, setIsBackedUp] = useState(isBackup);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(isCreate);
   const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
@@ -99,6 +103,15 @@ const Wallet = ({route, navigation}) => {
 
     return () => {
       socketSubscribe.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeBlur = navigation.addListener('blur', () => {
+      setIsBackedUp(isBackup);
+    });
+    return () => {
+      unsubscribeBlur();
     };
   }, []);
 
@@ -420,7 +433,6 @@ const Wallet = ({route, navigation}) => {
   const onRefreshToken = () => {
     return getBalances(wallet.address);
   };
-
   return (
     <AppBackground hideSafeArea lightStatus isBusy={loading}>
       <GradientBackground>
@@ -478,29 +490,36 @@ const Wallet = ({route, navigation}) => {
           </View>
         </View>
       </GradientBackground>
-      <View style={styles.backupContainer}>
-        <Text style={styles.backupTitle}>
-          Back up the Restore Phrase to put the wallet into use.
-        </Text>
-        <Text style={styles.backupSubTitle}>
-          The Restore Phrase is very important because it is used to recover the
-          wallet and funds if the device is lost or stolen.
-        </Text>
-        <View style={styles.rowContainer}>
-          <AppButton
-            label={'Later'}
-            containerStyle={styles.outlinedButton}
-            labelStyle={CommonStyles.outlineButtonLabel}
-            onPress={() => {}}
-          />
-          <AppButton
-            label={'Back Up Now'}
-            containerStyle={styles.button}
-            labelStyle={CommonStyles.buttonLabel}
-            onPress={() => {}}
-          />
+      {!isBackedUp && (
+        <View style={styles.backupContainer}>
+          <Text style={styles.backupTitle}>
+            {translate('wallet.common.backupRestorePhrase')}
+          </Text>
+          <Text style={styles.backupSubTitle}>
+            {translate('wallet.common.restorePhraseIsImportant')}
+          </Text>
+          <View style={styles.rowContainer}>
+            <AppButton
+              label={translate('wallet.common.later')}
+              containerStyle={styles.outlinedButton}
+              labelStyle={[
+                CommonStyles.outlineButtonLabel,
+                CommonStyles.text(Fonts.ARIAL, Colors.greyButtonLabel, RF(1.7)),
+              ]}
+              onPress={() => setIsBackedUp(true)}
+            />
+            <AppButton
+              label={translate('wallet.common.backupNow')}
+              containerStyle={styles.button}
+              labelStyle={[
+                CommonStyles.buttonLabel,
+                CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.7)),
+              ]}
+              onPress={() => navigation.navigate('SecurityScreen')}
+            />
+          </View>
         </View>
-      </View>
+      )}
       <Tokens
         values={balances}
         network={network}
@@ -602,14 +621,14 @@ const styles = StyleSheet.create({
   },
   backupTitle: {
     color: Colors.black,
-    fontSize: RF(2.20),
+    fontSize: RF(2.2),
     textAlign: 'center',
   },
   backupSubTitle: {
     color: Colors.tabLabel,
     fontSize: RF(1.5),
     textAlign: 'center',
-    marginTop: hp('2%')
+    marginTop: hp('2%'),
   },
   rowContainer: {
     flexDirection: 'row',
