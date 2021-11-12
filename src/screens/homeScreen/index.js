@@ -148,7 +148,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     AppState.addEventListener('change', appStateChange);
-    dispatch(getAllArtist());
+    // dispatch(getAllArtist());
   }, []);
 
   const checkPermissions = async () => {

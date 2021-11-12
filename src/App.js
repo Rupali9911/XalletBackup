@@ -54,6 +54,8 @@ import WalletPay from './screens/PaymentScreen/walletPay';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
 import transactionsDetail from './screens/wallet/transactionsDetail';
+import { getAllArtist } from './store/actions/nftTrendList';
+import { awardsNftLoadStart, getAwardsNftList, awardsNftPageChange, awardsNftListReset } from './store/actions/awardsAction';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -66,7 +68,6 @@ const Stack = createStackNavigator();
 const TabComponent = () => {
 
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-
   React.useEffect(() => {
 
   }, [selectedLanguageItem.language_name])
@@ -138,6 +139,7 @@ const TabComponent = () => {
 const AppRoutes = () => {
 
   const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
+  const { artistLoading } = useSelector(state => state.ListReducer);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -155,7 +157,7 @@ const AppRoutes = () => {
             let name = result[0].replace(/[^a-zA-Z ]/g, "")
             let value = JSON.parse(result[1]);
             asyncData[name] = value;
-            
+
             if (name == "passcode") {
               dispatch(setPasscode(value))
             }
@@ -163,13 +165,19 @@ const AppRoutes = () => {
               dispatch(setAppLanguage(value));
             }
           });
-          
+
           dispatch(addAsyncAction(asyncData))
           dispatch(loadFromAsync())
-          
+
+          dispatch(getAllArtist());
+          dispatch(awardsNftLoadStart());
+          dispatch(awardsNftListReset());
+          dispatch(getAwardsNftList(1));
+          dispatch(awardsNftPageChange(1));
+
         });
       } else {
-        
+
         let item = languageArray.find(item => item.language_name == regionLanguage);
         dispatch(setAppLanguage(item));
         dispatch(loadFromAsync())
@@ -184,7 +192,7 @@ const AppRoutes = () => {
   return (
     <>
       {
-        mainLoader ?
+        mainLoader || artistLoading ?
           <Loader /> :
           <NavigationContainer>
             {
@@ -199,7 +207,7 @@ const AppRoutes = () => {
                   <Stack.Screen name="EditProfile" component={EditProfileScreen} />
                   <Stack.Screen name="tokenDetail" component={TokenDetail} />
                   <Stack.Screen name="receive" component={Receive} />
-                   <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
+                  <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
                   <Stack.Screen name="send" component={Send} />
                   <Stack.Screen name="scanToConnect" component={ScanToConnect} />
                   <Stack.Screen name='Create' component={NewPostScreen} />
