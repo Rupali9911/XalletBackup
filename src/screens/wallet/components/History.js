@@ -40,13 +40,13 @@ const ListItems = props => {
               ? translate('wallet.common.received')
               : translate('wallet.common.sent')}
           </Text>
+        </View>
+        <View style={styles.detailsContainer}>
+          {/* <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text> */}
           <Text style={styles.townTxt}>
             {moment.unix(item.timeStamp).format('YYYY-MM-DD HH:mm:ss')}
           </Text>
         </View>
-        {/* <View style={styles.detailsContainer}>
-          <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text>
-        </View> */}
       </View>
       <View style={{flex:1, ...CommonStyles.center, alignItems: 'flex-end'}}>
         {/* <Text style={styles.townTxt} >{item.type}</Text> */}

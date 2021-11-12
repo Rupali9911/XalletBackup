@@ -20,11 +20,7 @@ import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import SingleSocket from '../../helpers/SingleSocket';
 import {updateCreateState} from '../../store/reducer/userReducer';
-import {
-  updateBalances,
-  updateBSCBalances,
-  updateEthereumBalances,
-} from '../../store/reducer/walletReducer';
+import {updateBalances, updateEthereumBalances, updateBSCBalances, updatePolygonBalances} from '../../store/reducer/walletReducer';
 import {environment, translate} from '../../walletUtils';
 import {HeaderBtns} from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
@@ -40,14 +36,12 @@ var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
 const Wallet = ({route, navigation}) => {
-  const {wallet, isCreate, data, isBackup} = useSelector(
-    state => state.UserReducer,
-  );
+  const {wallet, isCreate, data, isBackup} = useSelector(state => state.UserReducer);
+  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance} = useSelector(state => state.WalletReducer);
 
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance} =
-    useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
+
   const [isBackedUp, setIsBackedUp] = useState(isBackup);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(isCreate);
@@ -116,35 +110,7 @@ const Wallet = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    // const ethSubscription = watchEtherTransfers(wallet.address, 'eth', (trx) => {
-    //     let transaction = {
-    //         ...trx,
-    //         value: Web3.utils.fromWei(trx.value, 'ether'),
-    //         type: trx.from == wallet.address ? 'OUT' : trx.to == wallet.address ? 'IN' : ''
-    //     }
-    //     dispatch(addEthTransaction(transaction));
-    // });
-
-    // const bnbSubscription = watchEtherTransfers(wallet.address, 'bnb', (trx) => {
-    //     let transaction = {
-    //         ...trx,
-    //         value: Web3.utils.fromWei(trx.value, 'ether'),
-    //         type: trx.from == wallet.address ? 'OUT' : trx.to == wallet.address ? 'IN' : ''
-    //     }
-    //     dispatch(addBnbTransaction(transaction));
-    // });
-
-    // const polygonSubscription = watchEtherTransfers(wallet.address, 'matic', (trx) => {
-    //     let transaction = {
-    //         ...trx,
-    //         value: Web3.utils.fromWei(trx.value, 'ether'),
-    //         type: trx.from == wallet.address ? 'OUT' : trx.to == wallet.address ? 'IN' : ''
-    //     }
-    //     getBalances(wallet.address);
-    //     dispatch(addMaticTransaction(transaction));
-    // });
-
-    // const subscribeAll = watchAllTransactions(wallet.address);
+    setLoading(true);
     if (network.name == 'Ethereum' && subscribeEth == null) {
       subscribeEth = watchBalanceUpdate(() => {
         getBalances(wallet.address);
@@ -364,7 +330,7 @@ const Wallet = ({route, navigation}) => {
             TAL: responses[1],
             // USDC: responses[2],
           };
-          dispatch(updateBalances(balances));
+          dispatch(updatePolygonBalances(balances));
           setBalances(balances);
           setLoading(false);
           resolve();
@@ -378,56 +344,50 @@ const Wallet = ({route, navigation}) => {
   };
 
   const getBalances = pubKey => {
-    return new Promise((resolve, reject) => {
-      let balanceRequests = [
-        balance(pubKey, '', '', environment.ethRpc, 'eth'),
-        balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
-        balance(pubKey, '', '', environment.polRpc, 'matic'),
-        balance(
-          pubKey,
-          environment.tnftCont,
-          environment.tnftAbi,
-          environment.bnbRpc,
-          'alia',
-        ),
-        balance(
-          pubKey,
-          environment.talCont,
-          environment.tnftAbi,
-          environment.polRpc,
-          'alia',
-        ),
-        // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
-        // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
-        // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
-        // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
-      ];
+    if(network.name == 'BSC'){
+        return getBSCBalances(pubKey);
+    }else if(network.name == 'Ethereum'){
+        return getEthereumBalances(pubKey);
+    }else if(network.name == 'Polygon'){
+        return getPolygonBalances(pubKey);
+    }else {
+        return new Promise((resolve, reject) => {
+            let balanceRequests = [
+                balance(pubKey, "", "", environment.ethRpc, "eth"),
+                balance(pubKey, "", "", environment.bnbRpc, "bnb"),
+                balance(pubKey, "", "", environment.polRpc, "matic"),
+                balance(pubKey, environment.tnftCont, environment.tnftAbi, environment.bnbRpc, "alia"),
+                balance(pubKey, environment.talCont, environment.tnftAbi, environment.polRpc, "alia"),
+                // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
+                // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+                // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
+                // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
+            ];
 
-      Promise.all(balanceRequests)
-        .then(responses => {
-          // console.log('balances',responses);
-          let balances = {
-            ETH: responses[0],
-            BNB: responses[1],
-            Matic: responses[2],
-            TNFT: responses[3],
-            TAL: responses[4],
-            // USDT: responses[3],
-            // BUSD: responses[4],
-            // ALIA: responses[5],
-            // USDC: responses[6],
-          };
-          dispatch(updateBalances(balances));
-          setBalances(balances);
-          setLoading(false);
-          resolve();
-        })
-        .catch(err => {
-          console.log('err', err);
-          setLoading(false);
-          reject();
+            Promise.all(balanceRequests).then((responses) => {
+                // console.log('balances',responses);
+                let balances = {
+                    ETH: responses[0],
+                    BNB: responses[1],
+                    Matic: responses[2],
+                    TNFT: responses[3],
+                    TAL: responses[4],
+                    // USDT: responses[3],
+                    // BUSD: responses[4],
+                    // ALIA: responses[5],
+                    // USDC: responses[6],
+                };
+                dispatch(updateBalances(balances));
+                setBalances(balances);
+                setLoading(false);
+                resolve();
+            }).catch((err) => {
+                console.log('err', err);
+                setLoading(false);
+                reject();
+            });
         });
-    });
+    }
   };
 
   const onRefreshToken = () => {

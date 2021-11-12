@@ -8,6 +8,7 @@ import TextView from '../../../components/appText';
 import Fonts from '../../../constants/Fonts';
 import { tokens, translate } from '../../../walletUtils';
 import Separator from '../../../components/separator';
+import NumberFormat from 'react-number-format';
 
 const ListItems = (props) => {
     const { item } = props;
@@ -24,10 +25,16 @@ const ListItems = (props) => {
                 </View> */}
 
             </View>
-            <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }} >
-                <TextView style={styles.priceTxt}>
-                    {item.tokenValue} {item.type}
-                </TextView>
+            <View style={{flex:1, ...CommonStyles.center, alignItems: 'flex-end' }} >
+                <NumberFormat
+                    value={parseFloat(`${item.tokenValue}`)}
+                    displayType={'text'}
+                    decimalScale={4}
+                    thousandSeparator={true}
+                    renderText={formattedValue => <TextView numberOfLines={1} style={styles.priceTxt}>
+                    {formattedValue} {item.type}
+                </TextView>} // <--- Don't forget this!
+                />
             </View>
         </TouchableOpacity>
     )
@@ -164,7 +171,7 @@ const styles = StyleSheet.create({
     },
     centerCont: {
         height: '100%',
-        flex: 1,
+        // flex: 1,
         paddingHorizontal: wp("4%"),
         justifyContent: "center",
     },

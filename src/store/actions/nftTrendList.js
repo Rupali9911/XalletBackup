@@ -52,21 +52,22 @@ export const getNFTList = (page, limit) => {
 
         dispatch(nftLoadStart());
 
-        const { data } = getState().UserReducer;
+        const { data, wallet } = getState().UserReducer;
         let user = data.user;
 
         let body_data = {
-            approveStatus: 'approve',
+            approveStaus: 'approve',
             type: "hot",
             page,
-            limit: limit || 24,
+            limit: limit || 28,
             networkType: networkType,
+            token: "HubyJ*%qcqR0"
         }
 
         if (user) {
-            body_data.owner = user._id;
+            body_data.owner = wallet.address || user._id;
         }
-
+        console.log('body_data',body_data);
         let fetch_data_body = {
             method: 'POST',
             body: JSON.stringify(body_data),
@@ -79,7 +80,7 @@ export const getNFTList = (page, limit) => {
         fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
-                
+                console.log('json',json)
                 dispatch(nftLoadSuccess(json))
 
             }).catch(err => {

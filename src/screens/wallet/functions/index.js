@@ -484,3 +484,11 @@ export const approvebnb = async (publicKey, privateKey, chainType) => {
     }
   })
 }
+
+export const getBalanceInDollar = () => {
+    let routerContract = web3.eth.contract(environment.tnftCont, environment.binanceNftAbi)
+    let oneToken = web3.toWei(1, 'Ether')
+    let price = routerContract.functions._dollarPrice(oneToken, [tokenAddress, BUSD]).call()
+    let normalizedPrice = web3.fromWei(price[1], 'Ether')
+    return normalizedPrice
+}

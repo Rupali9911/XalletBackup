@@ -11,6 +11,7 @@ import { wp, hp, RF } from '../../../constants/responsiveFunct';
 import Fonts from '../../../constants/Fonts';
 import Colors from '../../../constants/Colors';
 import { translate, tokens } from '../../../walletUtils';
+import { useSelector } from 'react-redux';
 
 const ListItems = (props) => {
     const {item} = props;
@@ -30,7 +31,7 @@ const ListItems = (props) => {
             <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }} >
                 <Text style={styles.townTxt} >{item.network}</Text>
                 <NumberFormat
-                    value={item.tokenValue}
+                    value={parseFloat(`${item.tokenValue}`)}
                     displayType={'text'}
                     decimalScale={4}
                     thousandSeparator={true}
@@ -42,29 +43,51 @@ const ListItems = (props) => {
 }
 
 const Tokens = (props) => {
-    const [balance_Data, setBalanceData] = useState([]);
+    const [balance_Data, setBalanceData] = useState(tokens);
     const [isRefreshing, setRefreshing] = useState(false);
     const {network} = props;
 
-    useEffect(() => {
-        setBalanceData(tokens);
-    }, []);
+    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance} = useSelector(state => state.WalletReducer);
+
+    // useEffect(() => {
+    //     setBalanceData(tokens);
+    // }, []);
 
     useEffect(()=>{
-        if(props.values){
-            let array = tokens;
-            array[0].tokenValue = `${props.values.BNB}`;
-            array[1].tokenValue = `${props.values.ETH}`;
-            array[2].tokenValue = `${props.values.Matic}`;
-            array[3].tokenValue = `${props.values.TNFT}`;
-            array[4].tokenValue = `${props.values.TAL}`;
-            // array[3].tokenValue = `${props.values.BUSD}`;
-            // array[4].tokenValue = `${props.values.USDC}`;
+        let array = tokens;
+        if(network.name == 'Ethereum'){
+            array[1].tokenValue = `${ethBalance}`;
             // array[5].tokenValue = `${props.values.USDT}`;
+        } else if(network.name == 'BSC'){
+            array[0].tokenValue = `${bnbBalance}`;
+            array[3].tokenValue = `${tnftBalance}`;
+            console.log(array[3]);    
+            // array[3].tokenValue = `${props.values.BUSD}`;
             // array[6].tokenValue = `${props.values.ALIA}`;
-            setBalanceData(array);
+        } else if(network.name == 'Polygon'){
+            array[2].tokenValue = `${maticBalance}`;
+            array[4].tokenValue = `${talBalance}`;
+            // array[4].tokenValue = `${props.values.USDC}`;
         }
-    },[props.values]);
+        setBalanceData(array);
+        console.log('value update',array);
+    },[network,ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance]);
+
+    // useEffect(()=>{
+    //     if(props.values){
+    //         let array = tokens;
+    //         array[0].tokenValue = `${props.values.BNB}`;
+    //         array[1].tokenValue = `${props.values.ETH}`;
+    //         array[2].tokenValue = `${props.values.Matic}`;
+    //         array[3].tokenValue = `${props.values.TNFT}`;
+    //         array[4].tokenValue = `${props.values.TAL}`;
+    //         // array[3].tokenValue = `${props.values.BUSD}`;
+    //         // array[4].tokenValue = `${props.values.USDC}`;
+    //         // array[5].tokenValue = `${props.values.USDT}`;
+    //         // array[6].tokenValue = `${props.values.ALIA}`;
+    //         setBalanceData(array);
+    //     }
+    // },[props.values]);
 
     const navigation = useNavigation();
 
@@ -77,16 +100,17 @@ const Tokens = (props) => {
         });
     }
 
+    const renderItems = ({item,index}) => {
+        return (
+            <ListItems item={item} onPress={props.onTokenPress}/>
+        );
+    }
+
     return (
         <View style={[styles.scene]} >
             <FlatList
                 data={network ? balance_Data.filter((_) => _.network == network.name) : balance_Data}
-                renderItem={({ item }) => {
-                    return (
-                        <ListItems item={item} onPress={props.onTokenPress}/>
-                    )
-                }
-                }
+                renderItem={renderItems}
                 keyExtractor={(item, index) => `_${index}`}
                 // ItemSeparatorComponent={() => <Separator style={styles.separator} />}
                 refreshControl={

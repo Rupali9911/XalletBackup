@@ -42,7 +42,7 @@ export const getAwardsNftList = (page, limit) => {
         const { data } = getState().UserReducer;
         let user = data.user;
         let body_data = {
-            approveStatus: "approve",
+            approveStaus: "approve",
             page,
             limit: limit || 24,
             networkType: networkType,

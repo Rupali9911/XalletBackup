@@ -148,30 +148,30 @@ const Created = ({ route }) => {
             {
                 MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
                     <Loader /> :
-                    // MyNFTReducer.myList.length !== 0 ?
-                    //     <FlatList
-                    //         data={MyNFTReducer.myList}
-                    //         horizontal={false}
-                    //         numColumns={3}
-                    //         initialNumToRender={15}
-                    //         onRefresh={() => {
-                    //             dispatch(myNftLoadStart())
-                    //             refreshFunc()
-                    //         }}
-                    //         refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
-                    //         renderItem={renderItem}
-                    //         onEndReached={() => {
-                    //             if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
-                    //                 let num = MyNFTReducer.myListPage + 1;
-                    //                 getNFTlist(num);
-                    //                 dispatch(myPageChange(num));
-                    //             }
-                    //         }}
-                    //         ListFooterComponent={renderFooter}
-                    //         onEndReachedThreshold={0.5}
-                    //         keyExtractor={(v, i) => "item_" + i}
-                    //     />
-                    //     :
+                    MyNFTReducer.myList.length !== 0 ?
+                        <FlatList
+                            data={MyNFTReducer.myList}
+                            horizontal={false}
+                            numColumns={3}
+                            initialNumToRender={15}
+                            onRefresh={() => {
+                                dispatch(myNftLoadStart())
+                                refreshFunc()
+                            }}
+                            refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
+                                    let num = MyNFTReducer.myListPage + 1;
+                                    getNFTlist(num);
+                                    dispatch(myPageChange(num));
+                                }
+                            }}
+                            ListFooterComponent={renderFooter}
+                            onEndReachedThreshold={0.5}
+                            keyExtractor={(v, i) => "item_" + i}
+                        />
+                        :
                     <View style={styles.sorryMessageCont} >
                         <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                     </View>
@@ -259,30 +259,30 @@ const Collection = ({ route }) => {
             {
                 MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
-                    // MyCollectionReducer.myCollection.length !== 0 ?
-                    //     <FlatList
-                    //         data={MyCollectionReducer.myCollection}
-                    //         horizontal={false}
-                    //         numColumns={3}
-                    //         initialNumToRender={15}
-                    //         onRefresh={() => {
-                    //             dispatch(myNftLoadStart())
-                    //             refreshFunc()
-                    //         }}
-                    //         refreshing={MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading}
-                    //         renderItem={renderItem}
-                    //         onEndReached={() => {
-                    //             if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollectionTotalCount !== MyCollectionReducer.myCollection.length) {
-                    //                 let num = MyCollectionReducer.myCollectionPage + 1;
-                    //                 getNFTlist(num);
-                    //                 dispatch(myCollectionPageChange(num));
-                    //             }
-                    //         }}
-                    //         ListFooterComponent={renderFooter}
-                    //         onEndReachedThreshold={1}
-                    //         keyExtractor={(v, i) => "item_" + i}
-                    //     />
-                    //     :
+                    MyCollectionReducer.myCollection.length !== 0 ?
+                        <FlatList
+                            data={MyCollectionReducer.myCollection}
+                            horizontal={false}
+                            numColumns={3}
+                            initialNumToRender={15}
+                            onRefresh={() => {
+                                dispatch(myNftLoadStart())
+                                refreshFunc()
+                            }}
+                            refreshing={MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading}
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollectionTotalCount !== MyCollectionReducer.myCollection.length) {
+                                    let num = MyCollectionReducer.myCollectionPage + 1;
+                                    getNFTlist(num);
+                                    dispatch(myCollectionPageChange(num));
+                                }
+                            }}
+                            ListFooterComponent={renderFooter}
+                            onEndReachedThreshold={1}
+                            keyExtractor={(v, i) => "item_" + i}
+                        />
+                        :
                     <View style={styles.sorryMessageCont} >
                         <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                     </View>

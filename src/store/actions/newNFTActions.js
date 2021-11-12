@@ -38,13 +38,13 @@ export const newNFTList = (page, limit) => {
 
         dispatch(newNftLoadStart());
 
-        const { data } = getState().UserReducer;
+        const { data, wallet } = getState().UserReducer;
         let user = data.user;
 
         let body_data = {
             page,
             limit: limit || 24,
-            sort: "sell",
+            // sort: "sell",
             networkType: networkType,
             token: "HubyJ*%qcqR0",
             type: "2D",
@@ -52,7 +52,7 @@ export const newNFTList = (page, limit) => {
         }
 
         if (user) {
-            body_data.owner = user._id;
+            body_data.owner = wallet.address || user._id;
         }
 
         let fetch_data_body = {
