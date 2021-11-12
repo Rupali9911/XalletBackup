@@ -65,7 +65,6 @@ function ScanToConnect({ route, navigation }) {
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: "red"
                     }}
                 >
                     <Text

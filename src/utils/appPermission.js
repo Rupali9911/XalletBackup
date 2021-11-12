@@ -1,5 +1,5 @@
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {Platform} from 'react-native';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { Platform } from 'react-native';
 
 const PLATFORM_CAMERA_PERMISSIONS = {
   ios: PERMISSIONS.IOS.CAMERA,
@@ -25,9 +25,10 @@ class AppPermission {
     try {
       const result = await check(permissions);
       console.log('AppPermission checkPermission result:', result);
-      if (result === RESULTS.DENIED) return true;
+      if (Platform.OS === 'ios')
+        if (result === RESULTS.DENIED) return true;
       if (result === RESULTS.GRANTED) return true;
-      else return false;
+      return false;
     } catch (error) {
       console.log('AppPermission checkPermission error:', error);
       return false;
@@ -50,4 +51,4 @@ class AppPermission {
 }
 
 const Permission = new AppPermission();
-export {Permission, PERMISSION_TYPE};
+export { Permission, PERMISSION_TYPE };

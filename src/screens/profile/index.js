@@ -320,8 +320,8 @@ function Profile({
     const renderTabView = () => {
         return (
             <Tab.Navigator tabBarOptions={{
-                activeTintColor: COLORS.BLUE4,
-                inactiveTintColor: COLORS.GREY1,
+                activeTintColor: COLORS.BLUE2,
+                inactiveTintColor: COLORS.BLACK5,
                 style: {
                     boxShadow: 'none',
                     elevation: 0,
