@@ -125,9 +125,12 @@ const DetailScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         console.log('tokenId', tokenId);
-        setBuyLoading(true);
-        checkNFTOnAuction();
-        getNonCryptoNFTOwner();
+        if (MarketPlaceAbi && MarketContractAddress) {
+            setBuyLoading(true);
+            checkNFTOnAuction();
+            getNonCryptoNFTOwner();
+        }
+        
         if (data.token) {
             dispatch(getAllCards(data.token));
         }
