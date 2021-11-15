@@ -11,7 +11,8 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    StatusBar
+    StatusBar,
+    Linking
 } from 'react-native';
 import {
     Header,
@@ -172,9 +173,9 @@ const Created = ({ route }) => {
                             keyExtractor={(v, i) => "item_" + i}
                         />
                         :
-                    <View style={styles.sorryMessageCont} >
-                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
-                    </View>
+                        <View style={styles.sorryMessageCont} >
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
+                        </View>
             }
             {
                 modalData &&
@@ -283,9 +284,9 @@ const Collection = ({ route }) => {
                             keyExtractor={(v, i) => "item_" + i}
                         />
                         :
-                    <View style={styles.sorryMessageCont} >
-                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
-                    </View>
+                        <View style={styles.sorryMessageCont} >
+                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
+                        </View>
             }
             {
                 modalData &&
@@ -445,12 +446,16 @@ function Profile({
                 <SpaceView mTop={SIZE(8)} />
                 {
                     links &&
-                    <RowWrap>
-                        <ConnectSmIcon />
-                        <WebsiteLink>
-                            {links.website}
-                        </WebsiteLink>
-                    </RowWrap>
+                    <TouchableOpacity onPress={() => {
+                        Linking.openURL(links.website);
+                    }}>
+                        <RowWrap>
+                            <ConnectSmIcon />
+                            <WebsiteLink>
+                                {links.website}
+                            </WebsiteLink>
+                        </RowWrap>
+                    </TouchableOpacity>
                 }
             </DescriptionView>
             <SpaceView mTop={SIZE(14)} />
