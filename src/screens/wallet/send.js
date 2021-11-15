@@ -18,6 +18,11 @@ import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
+import { openSettings } from 'react-native-permissions';
+
+let flag = true;
 
 const verifyAddress = (address) => {
     return new Promise((resolve, reject) => {
@@ -575,7 +580,7 @@ const Send = ({ route, navigation }) => {
 
     return (
         <AppBackground isBusy={loading} hideBottomSafeArea={index == 1}>
-            <KeyboardAvoidingView behavior="height" style={{flexGrow: 1}}  >
+            <KeyboardAvoidingView behavior="height" style={{ flexGrow: 1 }}  >
                 <AppHeader
                     showBackButton
                     title={translate("wallet.common.send")}
@@ -585,7 +590,22 @@ const Send = ({ route, navigation }) => {
                     renderTabBar={renderTabBar}
                     navigationState={{ index, routes }}
                     renderScene={_renderScene}
-                    onIndexChange={setIndex}
+                    onIndexChange={async (index) => {
+                        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+
+                        if (!isGranted) {
+                            confirmationAlert(
+                                'This feature requires camera access',
+                                'To enable access, tap Settings and turn on Camera.',
+                                'Cancel',
+                                'Settings',
+                                () => openSettings(),
+                                () => null
+                            )
+                        } else {
+                            setIndex(index);
+                        }
+                    }}
                     style={styles.tabItem}
                 />
             </KeyboardAvoidingView>
