@@ -35,9 +35,7 @@ import {
 } from '../../store/reducer/userReducer';
 import {alertWithSingleBtn} from '../../utils';
 import {translate} from '../../walletUtils';
-
 const ethers = require('ethers');
-
 const toastConfig = {
   my_custom_type: ({text1, props, ...rest}) => (
     <View
@@ -51,7 +49,6 @@ const toastConfig = {
     </View>
   ),
 };
-
 const RecoveryPhrase = ({route, navigation}) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
@@ -123,17 +120,14 @@ const RecoveryPhrase = ({route, navigation}) => {
       );
     }
   };
-
   const pastePhrase = async () => {
     const text = await Clipboard.getString();
     setPhrase(text);
   };
-
   const getSuggestions = async val => {
     const response = await axios.get(`https://api.datamuse.com/sug?s=${val}`);
     setSuggestions(response.data);
   };
-
   const setPhraseText = val => {
     if (userTyping) {
       var myString = phrase;
@@ -190,6 +184,8 @@ const RecoveryPhrase = ({route, navigation}) => {
                       style={styles.input}
                       multiline={true}
                       value={phrase}
+                      autoCorrect={false}
+                      keyboardType='visible-password'
                       onChangeText={val => {
                         setPhrase(val);
                         const newWord = val.split(' ').splice(-1);
@@ -305,7 +301,6 @@ const RecoveryPhrase = ({route, navigation}) => {
                     translate('wallet.common.verification'),
                     translate('wallet.common.error.invalidPhrase'),
                   );
-                  console.log('LOOOOOOOOSE');
                 } else {
                   if (recover) {
                     recoverWallet();
@@ -323,7 +318,6 @@ const RecoveryPhrase = ({route, navigation}) => {
     </AppBackground>
   );
 };
-
 const WordView = props => {
   return (
     <View style={styles.word}>
@@ -334,7 +328,6 @@ const WordView = props => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -425,5 +418,4 @@ const styles = StyleSheet.create({
     margin: wp('1%'),
   },
 });
-
 export default RecoveryPhrase;

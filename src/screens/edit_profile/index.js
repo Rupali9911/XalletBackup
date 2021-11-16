@@ -45,7 +45,7 @@ import { BASE_URL } from '../../common/constants';
 import AppBackground from '../../components/appBackground';
 import { useSelector, useDispatch } from 'react-redux';
 import { upateUserData } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
+import { alertWithSingleBtn, validateEmail, validURL } from '../../utils';
 import { signOut } from '../../store/reducer/userReducer';
 
 const {
@@ -111,6 +111,16 @@ function Profile({
     }
 
     const onSave = async () => {
+        
+        if (!validateEmail(email)) {
+            alert('Email is not validated');
+            return;
+        }
+
+        if (!validURL(website)) {
+            alert('Website is not validated');
+            return;
+        }
 
         setLoading(true);
 

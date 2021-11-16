@@ -97,6 +97,11 @@ function Setting({navigation}) {
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber()}`}
             label={translate('wallet.common.version')}
           />
+          {/* <ListItem
+            onPress={() => {}}
+            rightText={``}
+            label={translate('common.Logout')}
+          /> */}
         </View>
       </ScrollView>
       <Modal
