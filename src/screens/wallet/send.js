@@ -181,7 +181,6 @@ const transferAmount = async () => {
 }
 
 export const PaymentField = (props) => {
-
     return (
         <View style={[styles.inputMainCont]} >
             <Text style={styles.inputLeft} >{translate("wallet.common.amount")}</Text>
