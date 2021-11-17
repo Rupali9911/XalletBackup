@@ -192,7 +192,7 @@ const AppRoutes = () => {
   return (
     <>
       {
-        mainLoader || artistLoading ?
+        mainLoader ?
           <AppSplash /> :
           <NavigationContainer>
             {
