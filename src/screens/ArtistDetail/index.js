@@ -409,8 +409,6 @@ function ArtistDetail({
         setFollowing(!isFollowing);
     }
 
-    console.log('=====data', data);
-
     return (
         <AppBackground isBusy={loading}>
             <Header>
