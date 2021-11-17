@@ -111,7 +111,7 @@ function Profile({
     }
 
     const onSave = async () => {
-        
+
         if (!validateEmail(email)) {
             alert('Email is not validated');
             return;
@@ -126,7 +126,7 @@ function Profile({
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${UserReducer.data.token}`;
 
-        if (photo) {
+        if (photo.uri !== UserReducer.data.user.profile_image) {
             let formData = new FormData();
             formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
 
