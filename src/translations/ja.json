@@ -852,7 +852,7 @@
             "network": "ネットワーク",
             "transactionHash": "TXID",
             "takePhoto": "写真を撮る...",
-            "choosePhotoFromGallery": "－ギャラリーから選択...",
+            "choosePhotoFromGallery": "画像フォルダから選択...",
             "choosePhoto": "写真を選択",
             "recoveryPhraseInfo": "単一のスペースで区切られた12個の復元フレーズを正しい順番で、入力及び貼り付けください",
             "backupRestorePhrase":"Restore Phraseをバックアップして、ウォレットを使用します。",
