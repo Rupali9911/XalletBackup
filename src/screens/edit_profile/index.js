@@ -62,7 +62,7 @@ function Profile({
     const { UserReducer } = useSelector(state => state);
     const [loading, setLoading] = useState(false);
     const [username, setUserName] = useState(UserReducer.data.user.name || UserReducer.data.user.username);
-    const [title, setTitle] = useState(UserReducer.data.user.title);
+    const [title, setTitle] = useState(UserReducer.data.user.title || UserReducer.data.user.firstName + ' ' + UserReducer.data.user.lastName);
     const [firstName, setFirstName] = useState(UserReducer.data.user.firstName);
     const [lastName, setLastName] = useState(UserReducer.data.user.lastName);
     const [address, setAddress] = useState(UserReducer.data.user.address);
@@ -252,7 +252,7 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
-                            value={title || firstName + ' ' + lastName}
+                            value={title}
                             onChangeText={setTitle}
                             placeholder={translate("common.artistname")} />
                     </RowBetweenWrap>
