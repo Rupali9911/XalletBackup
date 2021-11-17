@@ -15,7 +15,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import Store from './store';
 import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
 import { addAsyncAction } from "./store/reducer/asyncStorageReducer";
-import { Loader } from './components';
+import { AppSplash } from './components';
 import HomeScreen from './screens/homeScreen';
 import SecurityScreen from './screens/security';
 import PasscodeScreen from './screens/security/passcode';
@@ -193,7 +193,7 @@ const AppRoutes = () => {
     <>
       {
         mainLoader || artistLoading ?
-          <Loader /> :
+          <AppSplash /> :
           <NavigationContainer>
             {
               wallet ?
