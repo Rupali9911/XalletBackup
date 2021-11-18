@@ -195,7 +195,7 @@ function Profile({
     }
 
     return (
-        <AppBackground hideSafeArea lightStatus isBusy={loading}>
+        <AppBackground isBusy={loading}>
             <SafeAreaView style={{ flex: 1 }}>
                 <Header>
                     <HeaderLeft>
