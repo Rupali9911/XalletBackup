@@ -16,6 +16,7 @@ import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
+import { setConnectedApps } from './walletReducer';
 
 const initialState = {
   loading: false,
@@ -141,6 +142,10 @@ export const logout = () => ({
   type: LOG_OUT,
 });
 
+export const _logout = () => ({
+  type: 'USER_LOGGED_OUT',
+});
+
 export const startLoader = () => dispatch =>
   new Promise((resolve, reject) => {
     dispatch(startLoading());
@@ -155,9 +160,9 @@ export const endLoader = () => dispatch =>
     resolve();
   });
 
-export const loadFromAsync = () => (dispatch, getState) => {
+export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
-  const { wallet, userData, BackedUp } = getState().AsyncReducer;
+  const { wallet, userData, BackedUp, apps } = asyncData;
 
   if (wallet && userData) {
     dispatch(
@@ -169,6 +174,7 @@ export const loadFromAsync = () => (dispatch, getState) => {
       }),
     );
     dispatch(setBackup(BackedUp));
+    dispatch(setConnectedApps(apps));
     const _wallet = wallet;
     let req_data = {
       owner: _wallet.address,

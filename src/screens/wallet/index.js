@@ -81,9 +81,9 @@ const Wallet = ({route, navigation}) => {
   }, [isFocused]);
 
   useEffect(() => {
-    // singleSocket.connectSocket().then(() => {
-    //     ping(wallet.address);
-    // });
+    singleSocket.connectSocket().then(() => {
+        ping(wallet.address);
+    });
 
     const socketSubscribe = Events.asObservable().subscribe({
       next: data => {

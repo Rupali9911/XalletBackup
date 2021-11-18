@@ -65,6 +65,11 @@ export const regionLanguage = RNLocalize.getLocales()
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+const deepLinkData = {
+  url: "xanalia://",
+  param: "0165782121489"
+}
+
 const TabComponent = () => {
 
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
@@ -126,6 +131,7 @@ const TabComponent = () => {
         name={'Connect'}
         options={{ tabBarLabel: translate("wallet.common.connect") }}
         component={Connect}
+        initialParams={{}}
       />
       <Tab.Screen
         options={{ tabBarLabel: translate("wallet.common.me") }}
@@ -150,6 +156,7 @@ const AppRoutes = () => {
     dispatch(startMainLoading());
     // AsyncStorage.clear()
     AsyncStorage.getAllKeys((err, keys) => {
+      console.log('keys',keys);
       if (keys.length !== 0) {
         AsyncStorage.multiGet(keys, (err, values) => {
           let asyncData = {};
@@ -166,9 +173,8 @@ const AppRoutes = () => {
             }
           });
 
-          dispatch(addAsyncAction(asyncData))
-          dispatch(loadFromAsync())
-
+          // dispatch(addAsyncAction(asyncData))
+          dispatch(loadFromAsync(asyncData))
           dispatch(getAllArtist());
           dispatch(awardsNftLoadStart());
           dispatch(awardsNftListReset());
@@ -180,7 +186,7 @@ const AppRoutes = () => {
 
         let item = languageArray.find(item => item.language_name == regionLanguage);
         dispatch(setAppLanguage(item));
-        dispatch(loadFromAsync())
+        // dispatch(loadFromAsync())
       }
     });
 
@@ -189,12 +195,28 @@ const AppRoutes = () => {
 
   let initialRoute = passcode ? "PasscodeScreen" : "Home"
 
+  const linking = {
+    prefixes: ['xanaliaapp://'],
+    config: {
+      screens: {
+        Home: {
+          path:'/connect',
+          screens: {
+            Connect: {
+              path: '/:appId'
+            }
+          }
+        },
+      },
+    },
+  };
+
   return (
     <>
       {
         mainLoader || artistLoading ?
           <Loader /> :
-          <NavigationContainer>
+          <NavigationContainer linking={linking}>
             {
               wallet ?
                 <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>

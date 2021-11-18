@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
@@ -20,7 +21,9 @@ import {AppHeader} from '../../components';
 import Colors from '../../constants/Colors';
 import {colors} from '../../res';
 import {setAppLanguage} from '../../store/reducer/languageReducer';
+import { _logout } from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
+import {confirmationAlert} from '../../common/function';
 import styles from './styled';
 
 const ListItem = props => {
@@ -97,11 +100,24 @@ function Setting({navigation}) {
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber()}`}
             label={translate('wallet.common.version')}
           />
-          {/* <ListItem
-            onPress={() => {}}
+          <ListItem
+            onPress={() => {
+              confirmationAlert(
+                translate('common.Logout'),
+                translate('wallet.common.logOutQ'),
+                null,
+                '',
+                () => {
+                  AsyncStorage.clear((err)=>console.log(err)).then(()=>{
+                    dispatch(_logout());
+                  });
+                },
+                () => null
+              );
+            }}
             rightText={``}
             label={translate('common.Logout')}
-          /> */}
+          />
         </View>
       </ScrollView>
       <Modal

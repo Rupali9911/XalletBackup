@@ -111,3 +111,6 @@ export const SET_PAYMENT_OBJECT = "SET_PAYMENT_OBJECT";
 export const SET_ALL_CARDS = "SET_ALL_CARDS";
 
 //#endregion
+
+export const SET_CONNECTED_APPS = "SET_CONNECTED_APPS";
+export const SET_SOCKET_OPEN = "SET_SOCKET_OPEN";

@@ -28,7 +28,7 @@ export default class SingleSocket extends Component {
     this.connectSocket();
   }
 
-  async connectSocket() {
+  async connectSocket(onOpen,onClose) {
     return new Promise((resolve,reject) => {
       console.log('webSocketBridge', this.webSocketBridge);
       this.webSocketBridge = new WebSocket(
@@ -36,6 +36,7 @@ export default class SingleSocket extends Component {
       );
       this.webSocketBridge.onopen = (e) => {
         console.log('socket opened');
+        onOpen && onOpen();
         resolve();
       };
       this.webSocketBridge.onmessage = (e) => {
@@ -46,6 +47,7 @@ export default class SingleSocket extends Component {
       };
       this.webSocketBridge.onclose = (e) => {
         console.log('socket closed');
+        onClose && onClose();
       }
     });
   }
