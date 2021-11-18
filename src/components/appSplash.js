@@ -6,8 +6,8 @@ import {
 
 const appSplash = () => {
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <Image source={require('../../assets/images/splash.png')} style={{ flex: 1 }} />
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+            <Image source={require('../../assets/images/splash.png')} style={{ flex: 1, resizeMode: 'contain' }} />
         </SafeAreaView>
     )
 }
