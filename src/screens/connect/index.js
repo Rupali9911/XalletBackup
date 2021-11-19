@@ -78,8 +78,6 @@ const ListItems = (props) => {
     )
 }
 
-let flag = false;
-
 const Connect = ({ route, navigation }) => {
 
     const {appId} = route.params;
@@ -94,33 +92,17 @@ const Connect = ({ route, navigation }) => {
     const onCheckPermission = async () => {
         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-        if (Platform.OS === 'android') {
-            if (!isGranted && flag) {
-                confirmationAlert(
-                    'This feature requires camera access',
-                    'To enable access, tap Settings and turn on Camera.',
-                    'Cancel',
-                    'Settings',
-                    () => openSettings(),
-                    () => null
-                )
-            } else {
-                flag = true;
-                navigation.navigate("scanToConnect");
-            }
+        if (!isGranted) {
+            confirmationAlert(
+                'This feature requires camera access',
+                'To enable access, tap Settings and turn on Camera.',
+                'Cancel',
+                'Settings',
+                () => openSettings(),
+                () => null
+            )
         } else {
-            if (!isGranted) {
-                confirmationAlert(
-                    'This feature requires camera access',
-                    'To enable access, tap Settings and turn on Camera.',
-                    'Cancel',
-                    'Settings',
-                    () => openSettings(),
-                    () => null
-                )
-            } else {
-                navigation.navigate("scanToConnect");
-            }
+            navigation.navigate("scanToConnect");
         }
     }
 

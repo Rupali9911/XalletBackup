@@ -401,9 +401,9 @@ const DetailScreen = ({ route, navigation }) => {
 
     const onProfile = () => {
         if (isOwner) {
-            navigation.navigate('ArtistDetail', { id: ownerId });
+            navigation.push('ArtistDetail', { id: ownerId });
         } else {
-            navigation.navigate('ArtistDetail', { id: artistId });
+            navigation.push('ArtistDetail', { id: artistId });
         }
     }
 

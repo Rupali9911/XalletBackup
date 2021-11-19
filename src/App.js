@@ -15,7 +15,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import Store from './store';
 import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
 import { addAsyncAction } from "./store/reducer/asyncStorageReducer";
-import { Loader } from './components';
+import { AppSplash } from './components';
 import HomeScreen from './screens/homeScreen';
 import SecurityScreen from './screens/security';
 import PasscodeScreen from './screens/security/passcode';
@@ -55,6 +55,7 @@ import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import { getAllArtist } from './store/actions/nftTrendList';
+import NetInfo from "@react-native-community/netinfo";
 import { awardsNftLoadStart, getAwardsNftList, awardsNftPageChange, awardsNftListReset } from './store/actions/awardsAction';
 import { setRequestAppId } from './store/reducer/walletReducer';
 
@@ -146,14 +147,12 @@ const TabComponent = () => {
 const AppRoutes = () => {
 
   const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
-  const { artistLoading } = useSelector(state => state.ListReducer);
   const dispatch = useDispatch();
   const navigatorRef = React.useRef(null);
 
   React.useEffect(() => {
-
+    dispatch(getAllLanguages());
     LogBox.ignoreAllLogs();
-    dispatch(getAllLanguages())
 
     dispatch(startMainLoading());
     // AsyncStorage.clear()
@@ -175,14 +174,29 @@ const AppRoutes = () => {
             }
           });
 
-          // dispatch(addAsyncAction(asyncData))
-          dispatch(loadFromAsync(asyncData))
-          dispatch(getAllArtist());
-          dispatch(awardsNftLoadStart());
-          dispatch(awardsNftListReset());
-          dispatch(getAwardsNftList(1));
-          dispatch(awardsNftPageChange(1));
+          const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+            const offline = !state.isConnected;
 
+            if (state.isInternetReachable) {
+              if (offline) {
+                alert(translate("wallet.common.error.networkError"));
+              } else {
+
+                dispatch(addAsyncAction(asyncData))
+                dispatch(loadFromAsync())
+
+                dispatch(getAllArtist());
+                dispatch(awardsNftLoadStart());
+                dispatch(awardsNftListReset());
+                dispatch(getAwardsNftList(1));
+                dispatch(awardsNftPageChange(1));
+              }
+            }
+          });
+
+          return () => {
+            removeNetInfoSubscription();
+          };
         });
       } else {
         let item = languageArray.find(item => item.language_name == regionLanguage);
@@ -254,9 +268,9 @@ const AppRoutes = () => {
   return (
     <>
       {
-        mainLoader || artistLoading ?
-          <Loader /> :
-          <NavigationContainer ref={navigatorRef} linking={linking}>
+        mainLoader ?
+          <AppSplash /> :
+              <NavigationContainer ref={navigatorRef} linking={linking}>
             {
               wallet ?
                 <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>

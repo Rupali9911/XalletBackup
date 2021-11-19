@@ -215,7 +215,7 @@ const TokenDetail = ({route, navigation}) => {
     });
   };
   return (
-    <AppBackground hideSafeArea lightStatus isBusy={loading}>
+    <AppBackground isBusy={loading}>
       <GradientBackground>
         <View style={styles.gradient}>
           <AppHeader showBackButton isWhite title={item.tokenName} />
