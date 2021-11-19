@@ -2,8 +2,8 @@ import 'react-native-gesture-handler';
 import '../shim';
 
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { Image, LogBox } from 'react-native';
+import { NavigationContainer, CommonActions, TabActions } from '@react-navigation/native';
+import { Image, Linking, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider, useSelector, useDispatch } from 'react-redux';
@@ -56,6 +56,7 @@ import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import { getAllArtist } from './store/actions/nftTrendList';
 import { awardsNftLoadStart, getAwardsNftList, awardsNftPageChange, awardsNftListReset } from './store/actions/awardsAction';
+import { setRequestAppId } from './store/reducer/walletReducer';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -64,6 +65,11 @@ export const regionLanguage = RNLocalize.getLocales()
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+const deepLinkData = {
+  url: "xanalia://",
+  param: "0165782121489"
+}
 
 const TabComponent = () => {
 
@@ -126,6 +132,7 @@ const TabComponent = () => {
         name={'Connect'}
         options={{ tabBarLabel: translate("wallet.common.connect") }}
         component={Connect}
+        initialParams={{}}
       />
       <Tab.Screen
         options={{ tabBarLabel: translate("wallet.common.me") }}
@@ -141,6 +148,7 @@ const AppRoutes = () => {
   const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
   const { artistLoading } = useSelector(state => state.ListReducer);
   const dispatch = useDispatch();
+  const navigatorRef = React.useRef(null);
 
   React.useEffect(() => {
 
@@ -150,6 +158,7 @@ const AppRoutes = () => {
     dispatch(startMainLoading());
     // AsyncStorage.clear()
     AsyncStorage.getAllKeys((err, keys) => {
+      console.log('keys',keys);
       if (keys.length !== 0) {
         AsyncStorage.multiGet(keys, (err, values) => {
           let asyncData = {};
@@ -166,9 +175,8 @@ const AppRoutes = () => {
             }
           });
 
-          dispatch(addAsyncAction(asyncData))
-          dispatch(loadFromAsync())
-
+          // dispatch(addAsyncAction(asyncData))
+          dispatch(loadFromAsync(asyncData))
           dispatch(getAllArtist());
           dispatch(awardsNftLoadStart());
           dispatch(awardsNftListReset());
@@ -180,21 +188,76 @@ const AppRoutes = () => {
 
         let item = languageArray.find(item => item.language_name == regionLanguage);
         dispatch(setAppLanguage(item));
-        dispatch(loadFromAsync())
+        // dispatch(loadFromAsync())
       }
     });
+
+    Linking.addEventListener('url',({url}) => {
+      console.log('e',url);
+      if(url && url.includes('xanaliaapp://connect')){
+        let id = url.substring(url.lastIndexOf('/')+1);
+        if(wallet){
+          setTimeout(()=>{
+            navigatorRef.current?.navigate('Connect',{appId: id});
+          },500);
+        }else{
+          dispatch(setRequestAppId(id));
+        }
+      }
+    });
+
+    // Linking.getInitialURL().then((url)=>{
+    //   console.log('url',url);
+    //   if(url && url.includes('xanaliaapp://connect')){
+    //     let id = url.substring(url.lastIndexOf('/')+1);
+    //     if(wallet){
+    //       setTimeout(()=>{
+    //         navigatorRef.current?.navigate('Connect',{appId: id});
+    //       },500);
+    //     }else{
+    //       dispatch(setRequestAppId(id));
+    //     }
+    //   }
+    // });
 
   }, []);
 
 
   let initialRoute = passcode ? "PasscodeScreen" : "Home"
 
+  const linking = {
+    prefixes: ['xanaliaapp://'],
+    config: {
+      screens: {
+        Home: {
+          path:'/connect',
+          screens: {
+            Connect: {
+              path: '/:appId'
+            }
+          }
+        },
+      },
+    },
+    getStateFromPath: (path, options) => {
+      console.log('path',path);
+      let id = path.substring(path.lastIndexOf('/')+1);
+      dispatch(setRequestAppId(id));
+      // Return a state object here
+      // You can also reuse the default logic by importing `getStateFromPath` from `@react-navigation/native`
+    },
+    // getPathFromState(state, config) {
+    //   // Return a path string here
+    //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
+    // },
+  };
+
   return (
     <>
       {
         mainLoader || artistLoading ?
           <Loader /> :
-          <NavigationContainer>
+          <NavigationContainer ref={navigatorRef} linking={linking}>
             {
               wallet ?
                 <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>
