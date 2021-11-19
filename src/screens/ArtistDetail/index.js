@@ -130,7 +130,7 @@ const Created = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myNFT"));
-                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                        navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
                     {
