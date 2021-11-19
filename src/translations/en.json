@@ -864,7 +864,10 @@
             "accept": "Accept",
             "reject": "Reject",
             "connectionRequest": "{{name}} wants to connect with your wallet!",
-            "noAppConnect": "No app connected to show"
+            "noAppConnect": "No app connected to show",
+            "paymentComplete": "Complete",
+            "paymentFailed": "Payment Failed",
+            "remittanceFailure": "Remittance Failure"
         },
         "backendmessage": {
             "error": {},

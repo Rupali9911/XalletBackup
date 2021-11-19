@@ -864,7 +864,10 @@
             "accept": "承認",
             "reject": "拒絶",
             "connectionRequest": "{{name}}があなたのウォレットに接続したいと思っています！",
-            "noAppConnect": "表示に接続されているアプリがありません"
+            "noAppConnect": "表示に接続されているアプリがありません",
+            "paymentComplete": "完了",
+            "paymentFailed": "入金失敗",
+            "remittanceFailure": "送金失敗"
         },
         "backendmessage": {
             "error": {},
