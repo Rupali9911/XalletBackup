@@ -256,7 +256,27 @@ const ScanScreen = (props) => {
             {renderScanner ? <QRCodeScanner
                 ref={(scanner) => refScanner = scanner}
                 onRead={onSuccess}
+                permissionDialogTitle={translate("wallet.common.info")}
+                permissionDialogMessage={translate("wallet.common.needCameraPermission")}
                 showMarker={true}
+                notAuthorizedView={<View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 16,
+                            color: "#fff"
+                        }}
+                    >
+                        {translate("wallet.common.cameraNotAuth")}
+                    </Text>
+                </View>
+                }
                 customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
                     <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
                 </TouchableOpacity>}

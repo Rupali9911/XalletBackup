@@ -142,6 +142,7 @@ const HomeScreen = ({ navigation }) => {
 
   const appStateChange = (nextAppState) => {
     var pass = passcode;
+    console.log(pass, nextAppState)
     if (nextAppState === "active" && pass) {
       navigation.navigate("PasscodeScreen", { screen: "active" })
     }
