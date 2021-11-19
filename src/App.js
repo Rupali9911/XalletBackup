@@ -219,20 +219,6 @@ const AppRoutes = () => {
       }
     });
 
-    // Linking.getInitialURL().then((url)=>{
-    //   console.log('url',url);
-    //   if(url && url.includes('xanaliaapp://connect')){
-    //     let id = url.substring(url.lastIndexOf('/')+1);
-    //     if(wallet){
-    //       setTimeout(()=>{
-    //         navigatorRef.current?.navigate('Connect',{appId: id});
-    //       },500);
-    //     }else{
-    //       dispatch(setRequestAppId(id));
-    //     }
-    //   }
-    // });
-
   }, []);
 
 
