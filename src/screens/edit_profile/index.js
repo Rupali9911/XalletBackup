@@ -62,7 +62,7 @@ function Profile({
     const { UserReducer } = useSelector(state => state);
     const [loading, setLoading] = useState(false);
     const [username, setUserName] = useState(UserReducer.data.user.name || UserReducer.data.user.username);
-    const [title, setTitle] = useState(UserReducer.data.user.title);
+    const [title, setTitle] = useState(UserReducer.data.user.title || UserReducer.data.user.firstName + ' ' + UserReducer.data.user.lastName);
     const [firstName, setFirstName] = useState(UserReducer.data.user.firstName);
     const [lastName, setLastName] = useState(UserReducer.data.user.lastName);
     const [address, setAddress] = useState(UserReducer.data.user.address);
@@ -111,7 +111,7 @@ function Profile({
     }
 
     const onSave = async () => {
-        
+
         if (!validateEmail(email)) {
             alert('Email is not validated');
             return;
@@ -126,7 +126,7 @@ function Profile({
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${UserReducer.data.token}`;
 
-        if (photo) {
+        if (photo.uri !== UserReducer.data.user.profile_image) {
             let formData = new FormData();
             formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
 
@@ -195,7 +195,7 @@ function Profile({
     }
 
     return (
-        <AppBackground hideSafeArea lightStatus isBusy={loading}>
+        <AppBackground isBusy={loading}>
             <SafeAreaView style={{ flex: 1 }}>
                 <Header>
                     <HeaderLeft>
@@ -252,7 +252,7 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
-                            value={title || firstName + ' ' + lastName}
+                            value={title}
                             onChangeText={setTitle}
                             placeholder={translate("common.artistname")} />
                     </RowBetweenWrap>

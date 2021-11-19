@@ -230,7 +230,7 @@ export const handleFollow = (followingUserId, isFollowing) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
         axios.post(url, req_body)
             .catch(err => {
-                alert(err.response.message);
+                alert(err.response.data.message);
             });
     }
 }

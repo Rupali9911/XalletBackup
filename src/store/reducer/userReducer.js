@@ -22,7 +22,7 @@ import { setConnectedApps } from './walletReducer';
 
 const initialState = {
   loading: false,
-  mainLoader: false,
+  mainLoader: true,
   wallet: null,
   isCreate: false,
   data: {},
