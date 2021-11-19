@@ -837,7 +837,7 @@
             "cameraNotAuth": "カメラが承認されていません",
             "doItLater": "後でやる",
             "backupPhrase": "復元フレーズ",
-            "notBackedUp": "復元フレーズがバックアップ出来ていません",
+            "notBackedUp": "復元フレーズのバックアップが未完了です（デバイスの紛失や盗難等、 ウォレット内の資金の復元に必要なため、非常に重要です）",
             "backupSuccess": "復元フレーズがバックアップされました",
             "walletImported": "ウォレットが正常にインポートされました。",
             "importWallet": "ウォレットのインポート",
