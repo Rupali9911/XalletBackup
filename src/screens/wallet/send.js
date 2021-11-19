@@ -595,17 +595,21 @@ const Send = ({ route, navigation }) => {
                     navigationState={{ index, routes }}
                     renderScene={_renderScene}
                     onIndexChange={async (index) => {
-                        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-
-                        if (!isGranted) {
-                            confirmationAlert(
-                                'This feature requires camera access',
-                                'To enable access, tap Settings and turn on Camera.',
-                                'Cancel',
-                                'Settings',
-                                () => openSettings(),
-                                () => null
-                            )
+                        if (index) {
+                            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+    
+                            if (!isGranted) {
+                                confirmationAlert(
+                                    'This feature requires camera access',
+                                    'To enable access, tap Settings and turn on Camera.',
+                                    'Cancel',
+                                    'Settings',
+                                    () => openSettings(),
+                                    () => null
+                                )
+                            } else {
+                                setIndex(index);
+                            }
                         } else {
                             setIndex(index);
                         }

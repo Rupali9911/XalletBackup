@@ -452,7 +452,7 @@ function Profile({
                         <RowWrap>
                             <ConnectSmIcon />
                             <WebsiteLink>
-                                {links.website}
+                                {links.website.split('/')[2]}
                             </WebsiteLink>
                         </RowWrap>
                     </TouchableOpacity>
