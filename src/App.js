@@ -55,6 +55,7 @@ import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import { getAllArtist } from './store/actions/nftTrendList';
+import NetInfo from "@react-native-community/netinfo";
 import { awardsNftLoadStart, getAwardsNftList, awardsNftPageChange, awardsNftListReset } from './store/actions/awardsAction';
 
 export const regionLanguage = RNLocalize.getLocales()
@@ -139,13 +140,11 @@ const TabComponent = () => {
 const AppRoutes = () => {
 
   const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
-  const { artistLoading } = useSelector(state => state.ListReducer);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-
+    dispatch(getAllLanguages());
     LogBox.ignoreAllLogs();
-    dispatch(getAllLanguages())
 
     dispatch(startMainLoading());
     // AsyncStorage.clear()
@@ -166,15 +165,29 @@ const AppRoutes = () => {
             }
           });
 
-          dispatch(addAsyncAction(asyncData))
-          dispatch(loadFromAsync())
+          const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+            const offline = !state.isConnected;
 
-          dispatch(getAllArtist());
-          dispatch(awardsNftLoadStart());
-          dispatch(awardsNftListReset());
-          dispatch(getAwardsNftList(1));
-          dispatch(awardsNftPageChange(1));
+            if (state.isInternetReachable) {
+              if (offline) {
+                alert(translate("wallet.common.error.networkError"));
+              } else {
 
+                dispatch(addAsyncAction(asyncData))
+                dispatch(loadFromAsync())
+
+                dispatch(getAllArtist());
+                dispatch(awardsNftLoadStart());
+                dispatch(awardsNftListReset());
+                dispatch(getAwardsNftList(1));
+                dispatch(awardsNftPageChange(1));
+              }
+            }
+          });
+
+          return () => {
+            removeNetInfoSubscription();
+          };
         });
       } else {
 

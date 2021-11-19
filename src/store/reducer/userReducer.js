@@ -19,7 +19,7 @@ import { alertWithSingleBtn } from '../../common/function';
 
 const initialState = {
   loading: false,
-  mainLoader: false,
+  mainLoader: true,
   wallet: null,
   isCreate: false,
   data: {},
