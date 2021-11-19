@@ -21,6 +21,8 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import { openSettings } from 'react-native-permissions';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SIZE } from '../../constants';
 
 let flag = true;
 
@@ -463,7 +465,7 @@ const SendScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <ScrollView >
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.contentContainer}>
                     <View style={styles.balanceContainer}>
                         <View style={styles.profileCont} >
@@ -501,26 +503,28 @@ const SendScreen = (props) => {
                             }} />
                     </View>
                 </View>
-            </ScrollView>
-            <AppButton label={translate("wallet.common.send")} view={loading} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
-                onPress={() => {
-                    if (address && address !== '' && amount > 0) {
-                        if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
-                            setLoading(true);
-                            verifyAddress(address).then(() => {
-                                transferAmount();
-                            }).catch(() => {
-                                showErrorAlert(translate("wallet.common.invalidAddress"));
-                                setLoading(false);
-                            });
-                        }
-                        else {
-                            showErrorAlert(translate("wallet.common.insufficientFunds"));
-                        }
-                    } else {
-                        showErrorAlert(translate("wallet.common.requireSendField"));
-                    }
-                }} />
+                <View style={{ height: SIZE(300), justifyContent: 'flex-end' }}>
+                    <AppButton label={translate("wallet.common.send")} view={loading} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                        onPress={() => {
+                            if (address && address !== '' && amount > 0) {
+                                if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
+                                    setLoading(true);
+                                    verifyAddress(address).then(() => {
+                                        transferAmount();
+                                    }).catch(() => {
+                                        showErrorAlert(translate("wallet.common.invalidAddress"));
+                                        setLoading(false);
+                                    });
+                                }
+                                else {
+                                    showErrorAlert(translate("wallet.common.insufficientFunds"));
+                                }
+                            } else {
+                                showErrorAlert(translate("wallet.common.requireSendField"));
+                            }
+                        }} />
+                </View>
+            </KeyboardAwareScrollView>
         </View>
     )
 }
