@@ -185,10 +185,8 @@ export const endLoader = () => dispatch =>
   });
 
 export const loadFromAsync = (asyncData) => (dispatch, getState) => {
-
-  const { wallet, userData, BackedUp, apps } = asyncData;
-
-  if (wallet && userData) {
+  if (asyncData && asyncData.wallet && asyncData.userData) {
+      const { wallet, userData, BackedUp, apps } = asyncData;
     dispatch(
       setUserData({
         data: userData,
@@ -220,16 +218,19 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
         if (res.data) {
           dispatch(upateUserData(res.data));
         }
+        console.log('endMainLoading1')
         dispatch(endMainLoading());
       })
       .catch(e => {
-        dispatch(endMainLoading());
+          console.log('endMainLoading2')
+          dispatch(endMainLoading());
         alertWithSingleBtn(
           translate('wallet.common.alert'),
           translate('wallet.common.error.networkFailed')
         );
       });
-  } else {
+  } else{
+      console.log('endMainLoading3')
     dispatch(endMainLoading());
   }
 };
