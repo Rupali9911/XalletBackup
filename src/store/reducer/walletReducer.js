@@ -30,7 +30,7 @@ const initialState = {
     talBalance: "0",
     connectedApps: [],
     socketOpen: false,
-    requestAppId: null 
+    requestAppId: null
 }
 
 export default walletReducer = (state = initialState, action) => {
@@ -209,6 +209,7 @@ export const setRequestAppId = (data) => ({
     type: SET_REQUEST_APP_ID,
     payload: data
 });
+
 
 export const getTransactions = (address, type) => (dispatch) =>
     new Promise((resolve, reject) => {
