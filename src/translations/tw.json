@@ -864,7 +864,10 @@
             "accept": "接受",
             "reject": "拒絕",
             "connectionRequest": "{{name}} 想連接你的錢包！",
-            "noAppConnect": "未連接應用程序以顯示"
+            "noAppConnect": "未連接應用程序以顯示",
+            "paymentComplete": "完全的",
+            "paymentFailed": "支付失敗",
+            "remittanceFailure": "匯款失敗"
         },
         "backendmessage": {
             "error": {},

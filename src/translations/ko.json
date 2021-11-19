@@ -864,7 +864,10 @@
             "accept": "수용하다",
             "reject": "거부하다",
             "connectionRequest": "{{name}}이(가) 지갑과 연결하려고 합니다!",
-            "noAppConnect": "표시할 앱이 연결되지 않았습니다."
+            "noAppConnect": "표시할 앱이 연결되지 않았습니다.",
+            "paymentComplete": "완벽한",
+            "paymentFailed": "결제 실패",
+            "remittanceFailure": "송금 실패"
         },
         "backendmessage": {
             "error": {},
