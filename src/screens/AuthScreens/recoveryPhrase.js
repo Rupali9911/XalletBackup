@@ -185,7 +185,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                       multiline={true}
                       value={phrase}
                       autoCorrect={false}
-                      keyboardType='visible-password'
+                      keyboardType= {Platform.OS === 'ios' ? 'default' : 'visible-password'}
                       onChangeText={val => {
                         setPhrase(val);
                         const newWord = val.split(' ').splice(-1);
@@ -401,10 +401,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('5%'),
   },
   scrollContent: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   keyboardShift: {
-    flex: 1,
+    flex: 1
   },
   suggestionText: {
     fontSize: RF(1.8),

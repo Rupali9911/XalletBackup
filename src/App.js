@@ -185,7 +185,6 @@ const AppRoutes = () => {
 
         });
       } else {
-
         let item = languageArray.find(item => item.language_name == regionLanguage);
         dispatch(setAppLanguage(item));
         // dispatch(loadFromAsync())

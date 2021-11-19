@@ -34,13 +34,12 @@ const singleSocket = SingleSocket.getInstance();
 const ListItems = (props) => {
     const { item, socketOpen } = props;
 
-    const [details, setDetails] = useState(null); 
+    const [details, setDetails] = useState(null);
 
     useEffect(()=>{
         if(socketOpen){
             getAppDetail(item);
         }
-        
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
               console.log('data', data);
