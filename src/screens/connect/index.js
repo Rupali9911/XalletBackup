@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppModal from '../../components/appModal';
 import ApproveModalContent from '../../components/approveAppModal';
 import { alertWithSingleBtn } from '../../utils';
-import { setConnectedApps, setConnectedAppsToLocal, setSocketOpenStatus } from '../../store/reducer/walletReducer';
+import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
 
 const singleSocket = SingleSocket.getInstance();
 
@@ -85,7 +85,7 @@ const Connect = ({ route, navigation }) => {
 
     const {appId} = route.params;
     const dispatch = useDispatch();
-    const {wallet, data,} = useSelector(state => state.UserReducer);
+    const {wallet, data, passcode} = useSelector(state => state.UserReducer);
     const {connectedApps,socketOpen} = useSelector(state => state.WalletReducer);
 
     const [isSocketConnected, setSocketConnected] = useState(false);
@@ -141,43 +141,54 @@ const Connect = ({ route, navigation }) => {
         dispatch(setSocketOpenStatus(false));
     }
 
+    // useEffect(()=>{
+    //     if(passcode){
+    //         navigation.navigate('PasscodeScreen',{screen: "security"});
+    //     }
+    // },[]);
+
     useEffect(() => {
-        singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
-            if(appId){
+        if(socketOpen){
+            if(appId && !passcode){
                 connectApp(appId);
             }
-        });
-    
-        const socketSubscribe = Events.asObservable().subscribe({
-          next: data => {
-            console.log('data', data);
-            const response = JSON.parse(data);
-            if (response.type == 'newconnectionrequest') {
-                setRequestedAppData(response.data);
-                setApproveModal(true);
-            }else if(response.type == 'success' && typeof(response.data) == 'string'){
-                alertWithSingleBtn('',response.data);
-            }else if(response.type == 'connected'){
-                alertWithSingleBtn('',response.data);
-                let ids = response.data.split(':');
-                if(ids.length > 1){
-                    if(connectedApps.includes(ids[1])){
-                    }else{
-                        let array = [...connectedApps, ids[1]];
-                        dispatch(setConnectedAppsToLocal(array));
-                    }
+        }else{
+            singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
+                if(appId && !passcode){
+                    connectApp(appId);
                 }
-            }
-          },
-        });
-    
+            });
+        }
+        const socketSubscribe = Events.asObservable().subscribe({
+            next: data => {
+              console.log('data', data);
+              const response = JSON.parse(data);
+              if (response.type == 'newconnectionrequest') {
+                  setRequestedAppData(response.data);
+                  setApproveModal(true);
+              }else if(response.type == 'success' && typeof(response.data) == 'string'){
+                  alertWithSingleBtn('',response.data);
+              }else if(response.type == 'connected'){
+                  alertWithSingleBtn('',response.data);
+                  let ids = response.data.split(':');
+                  if(ids.length > 1){
+                      if(connectedApps.includes(ids[1])){
+                      }else{
+                          let array = [...connectedApps, ids[1]];
+                          dispatch(setConnectedAppsToLocal(array));
+                      }
+                  }
+              }
+            },
+          });
         return () => {
-          socketSubscribe.unsubscribe();
-        };
-      }, []);
+            socketSubscribe && socketSubscribe.unsubscribe();
+          };
+      }, [appId]);
 
     const connectApp = (appId) => {
         console.log('connecting', appId);
+        dispatch(setRequestAppId(null));
         let data = {
             type: 'connect',
             data: {

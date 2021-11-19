@@ -2,8 +2,8 @@ import 'react-native-gesture-handler';
 import '../shim';
 
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { Image, LogBox } from 'react-native';
+import { NavigationContainer, CommonActions, TabActions } from '@react-navigation/native';
+import { Image, Linking, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider, useSelector, useDispatch } from 'react-redux';
@@ -56,6 +56,7 @@ import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import { getAllArtist } from './store/actions/nftTrendList';
 import { awardsNftLoadStart, getAwardsNftList, awardsNftPageChange, awardsNftListReset } from './store/actions/awardsAction';
+import { setRequestAppId } from './store/reducer/walletReducer';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map((a) => a.languageCode)
@@ -147,6 +148,7 @@ const AppRoutes = () => {
   const { wallet, passcode, mainLoader } = useSelector(state => state.UserReducer);
   const { artistLoading } = useSelector(state => state.ListReducer);
   const dispatch = useDispatch();
+  const navigatorRef = React.useRef(null);
 
   React.useEffect(() => {
 
@@ -190,6 +192,34 @@ const AppRoutes = () => {
       }
     });
 
+    Linking.addEventListener('url',({url}) => {
+      console.log('e',url);
+      if(url && url.includes('xanaliaapp://connect')){
+        let id = url.substring(url.lastIndexOf('/')+1);
+        if(wallet){
+          setTimeout(()=>{
+            navigatorRef.current?.navigate('Connect',{appId: id});
+          },500);
+        }else{
+          dispatch(setRequestAppId(id));
+        }
+      }
+    });
+
+    // Linking.getInitialURL().then((url)=>{
+    //   console.log('url',url);
+    //   if(url && url.includes('xanaliaapp://connect')){
+    //     let id = url.substring(url.lastIndexOf('/')+1);
+    //     if(wallet){
+    //       setTimeout(()=>{
+    //         navigatorRef.current?.navigate('Connect',{appId: id});
+    //       },500);
+    //     }else{
+    //       dispatch(setRequestAppId(id));
+    //     }
+    //   }
+    // });
+
   }, []);
 
 
@@ -209,6 +239,17 @@ const AppRoutes = () => {
         },
       },
     },
+    getStateFromPath: (path, options) => {
+      console.log('path',path);
+      let id = path.substring(path.lastIndexOf('/')+1);
+      dispatch(setRequestAppId(id));
+      // Return a state object here
+      // You can also reuse the default logic by importing `getStateFromPath` from `@react-navigation/native`
+    },
+    // getPathFromState(state, config) {
+    //   // Return a path string here
+    //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
+    // },
   };
 
   return (
@@ -216,7 +257,7 @@ const AppRoutes = () => {
       {
         mainLoader || artistLoading ?
           <Loader /> :
-          <NavigationContainer linking={linking}>
+          <NavigationContainer ref={navigatorRef} linking={linking}>
             {
               wallet ?
                 <Stack.Navigator initialRouteName={initialRoute} headerMode="none" screenOptions={{ gestureResponseDistance: { horizontal: screenWidth * 70 / 100 } }}>

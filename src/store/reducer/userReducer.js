@@ -174,7 +174,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
       }),
     );
     dispatch(setBackup(BackedUp));
-    dispatch(setConnectedApps(apps));
+    apps && dispatch(setConnectedApps(apps));
     const _wallet = wallet;
     let req_data = {
       owner: _wallet.address,

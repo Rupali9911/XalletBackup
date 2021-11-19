@@ -13,7 +13,8 @@ import {
     UPDATE_BSC_BALANCES,
     UPDATE_POLY_BALANCES,
     SET_CONNECTED_APPS,
-    SET_SOCKET_OPEN
+    SET_SOCKET_OPEN,
+    SET_REQUEST_APP_ID
 } from '../types';
 
 const initialState = {
@@ -28,7 +29,8 @@ const initialState = {
     talTransactions: [],
     talBalance: "0",
     connectedApps: [],
-    socketOpen: false
+    socketOpen: false,
+    requestAppId: null 
 }
 
 export default walletReducer = (state = initialState, action) => {
@@ -132,6 +134,12 @@ export default walletReducer = (state = initialState, action) => {
                 socketOpen: action.payload
             }
 
+        case SET_REQUEST_APP_ID:
+            return {
+                ...state,
+                requestAppId: action.payload
+            }
+
         default:
             return state;
     }
@@ -194,6 +202,11 @@ export const setConnectedApps = (data) => ({
 
 export const setSocketOpenStatus = (data) => ({
     type: SET_SOCKET_OPEN,
+    payload: data
+});
+
+export const setRequestAppId = (data) => ({
+    type: SET_REQUEST_APP_ID,
     payload: data
 });
 
