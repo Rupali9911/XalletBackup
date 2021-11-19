@@ -30,7 +30,6 @@ const C_Image = (props) => {
                                         source={{ uri: props.uri }}
                                         paused={true}
                                         resizeMode={'cover'}
-                                        onLoad={() => refVideo.current.seek(0)}
                                         style={props.imageStyle} />
                 :
                 <FastImage

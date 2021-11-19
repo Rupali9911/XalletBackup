@@ -13,7 +13,7 @@ import * as RNLocalize from "react-native-localize";
 import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
-import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
+import { loadFromAsync, setPasscodeAsync, startMainLoading } from "./store/reducer/userReducer";
 import { addAsyncAction } from "./store/reducer/asyncStorageReducer";
 import { Loader } from './components';
 import HomeScreen from './screens/homeScreen';
@@ -168,7 +168,7 @@ const AppRoutes = () => {
             asyncData[name] = value;
 
             if (name == "passcode") {
-              dispatch(setPasscode(value))
+              dispatch(setPasscodeAsync(value))
             }
             if (name == "language") {
               dispatch(setAppLanguage(value));

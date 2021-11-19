@@ -64,14 +64,13 @@ const ListItem = props => {
 };
 
 function SecurityScreen({ navigation }) {
-  const { wallet } = useSelector(state => state.UserReducer);
-  const { passcode } = useSelector(state => state.AsyncReducer);
+  const { wallet , passcodeAsync} = useSelector(state => state.UserReducer);
 
   const [toggle, setToggle] = useState(false);
 
   useEffect(() => {
-    setToggle(passcode ? true : false);
-  }, [passcode]);
+    setToggle(passcodeAsync ? true : false);
+  }, [passcodeAsync]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
