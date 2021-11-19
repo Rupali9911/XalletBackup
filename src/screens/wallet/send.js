@@ -47,7 +47,7 @@ const showErrorAlert = (msg) => {
 export const AddressField = (props) => {
 
     return (
-        <View style={[styles.inputMainCont]} >
+        <View style={styles.inputMainCont} >
             <Text style={styles.inputLeft} >{translate("wallet.common.walletAddress")}</Text>
             <TextInput
                 style={[styles.inputCont, styles.paymentField]}
@@ -192,18 +192,20 @@ export const PaymentField = (props) => {
     return (
         <View style={[styles.inputMainCont]} >
             <Text style={styles.inputLeft} >{translate("wallet.common.amount")}</Text>
-            <TextInput
-                style={[styles.inputCont, styles.paymentField, { fontSize: RF(2) }]}
-                keyboardType='decimal-pad'
-                placeholder="0"
-                placeholderTextColor={Colors.topUpPlaceholder}
-                returnKeyType="done"
-                value={props.value}
-                onChangeText={props.onChangeText}
-                onSubmitEditing={props.onSubmitEditing}
-                editable={props.editable}
-            />
-            <Text style={styles.inputRight} >{props.type}</Text>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <TextInput
+                    style={[styles.inputCont, styles.paymentField, { fontSize: RF(2) }]}
+                    keyboardType='decimal-pad'
+                    placeholder="0"
+                    placeholderTextColor={Colors.topUpPlaceholder}
+                    returnKeyType="done"
+                    value={props.value}
+                    onChangeText={props.onChangeText}
+                    onSubmitEditing={props.onSubmitEditing}
+                    editable={props.editable}
+                />
+                <Text style={styles.inputRight} >{props.type}</Text>
+            </View>
         </View>
     )
 }
@@ -597,7 +599,7 @@ const Send = ({ route, navigation }) => {
                     onIndexChange={async (index) => {
                         if (index) {
                             const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-    
+
                             if (!isGranted) {
                                 confirmationAlert(
                                     'This feature requires camera access',
@@ -684,7 +686,6 @@ const styles = StyleSheet.create({
         ...CommonStyles.text(Fonts.ARIAL, Colors.GREY1, RF(1.6))
     },
     paymentField: {
-        textAlign: "right",
         paddingHorizontal: wp("1.5%"),
         ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.6)),
         flex: 1,
@@ -705,9 +706,6 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         borderBottomWidth: 1,
         borderBottomColor: Colors.GREY1,
-        justifyContent: "center",
-        flexDirection: 'row',
-        alignItems: 'center'
     },
     qrCameraStyle: {
         height: "100%",
