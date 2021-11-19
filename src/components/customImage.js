@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
-import { SVGS, SIZE, IMAGES } from 'src/constants';
+import { SVGS, SIZE, IMAGES } from '../constants';
 import Colors from '../constants/Colors';
 
 const {
@@ -12,6 +12,7 @@ const {
 const C_Image = (props) => {
 
     let [loadImage, setLoadImage] = useState(false);
+    let [brokenUrl, setBrokenUrl] = useState(false);
 
     return (
         <>
@@ -24,10 +25,14 @@ const C_Image = (props) => {
                 style={props.imageStyle}
                 onLoadStart={() => setLoadImage(true)}
                 onLoadEnd={() => setLoadImage(false)}
-                source={props.uri ? {
-                    uri: props.uri,
-                    priority: FastImage.priority.high,
-                } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
+                onError={({ nativeEvent: { error } }) => setBrokenUrl(true)}
+                source={props.uri ?
+                    brokenUrl ?
+                        IMAGES.brokenIcon :
+                        {
+                            uri: props.uri,
+                            priority: FastImage.priority.high,
+                        } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
                 resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
             />
             {
