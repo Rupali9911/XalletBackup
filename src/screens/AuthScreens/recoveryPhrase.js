@@ -185,7 +185,6 @@ const RecoveryPhrase = ({route, navigation}) => {
                       multiline={true}
                       value={phrase}
                       autoCorrect={false}
-                      keyboardType='visible-password'
                       onChangeText={val => {
                         setPhrase(val);
                         const newWord = val.split(' ').splice(-1);
