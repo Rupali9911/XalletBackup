@@ -13,7 +13,7 @@ import * as RNLocalize from "react-native-localize";
 import { StripeProvider } from '@stripe/stripe-react-native';
 
 import Store from './store';
-import { loadFromAsync, setPasscode, startMainLoading } from "./store/reducer/userReducer";
+import { loadFromAsync, setPasscodeAsync, startMainLoading } from "./store/reducer/userReducer";
 import { addAsyncAction } from "./store/reducer/asyncStorageReducer";
 import { AppSplash } from './components';
 import HomeScreen from './screens/homeScreen';
@@ -167,7 +167,7 @@ const AppRoutes = () => {
             asyncData[name] = value;
 
             if (name == "passcode") {
-              dispatch(setPasscode(value))
+              dispatch(setPasscodeAsync(value))
             }
             if (name == "language") {
               dispatch(setAppLanguage(value));
@@ -217,20 +217,6 @@ const AppRoutes = () => {
         }
       }
     });
-
-    // Linking.getInitialURL().then((url)=>{
-    //   console.log('url',url);
-    //   if(url && url.includes('xanaliaapp://connect')){
-    //     let id = url.substring(url.lastIndexOf('/')+1);
-    //     if(wallet){
-    //       setTimeout(()=>{
-    //         navigatorRef.current?.navigate('Connect',{appId: id});
-    //       },500);
-    //     }else{
-    //       dispatch(setRequestAppId(id));
-    //     }
-    //   }
-    // });
 
   }, []);
 

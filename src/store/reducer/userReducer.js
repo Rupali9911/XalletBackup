@@ -9,7 +9,9 @@ import {
   UPDATE_CREATE,
   UPDATE_PROFILE,
   SET_PASSCODE,
+  SET_PASSCODE_ASYNC,
   UPDATE_BACKUP,
+  UPDATE_ASYNC_PASSCODE,
   LOG_OUT
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
@@ -25,6 +27,7 @@ const initialState = {
   isCreate: false,
   data: {},
   passcode: "",
+  passcodeAsync: "",
   isBackup: false,
   showSuccess: false,
 };
@@ -59,6 +62,18 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         passcode: action.payload,
         loading: true
+      };
+    case SET_PASSCODE_ASYNC:
+      return {
+        ...state,
+        passcode: action.payload,
+        passcodeAsync: action.payload,
+        loading: true
+      };
+    case UPDATE_ASYNC_PASSCODE:
+      return {
+        ...state,
+        passcodeAsync: action.payload,
       };
 
     case AUTH_SUCCESS:
@@ -131,6 +146,15 @@ export const upateUserData = data => ({
 export const setPasscode = data => ({
   type: SET_PASSCODE,
   payload: data,
+});
+export const setPasscodeAsync = data => ({
+  type: SET_PASSCODE_ASYNC,
+  payload: data,
+});
+
+export const updateAsyncPasscodeAction = (payload) => ({
+  type: UPDATE_ASYNC_PASSCODE,
+  payload
 });
 
 export const setBackup = (data) => ({

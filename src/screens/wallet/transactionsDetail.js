@@ -19,52 +19,65 @@ export default function transactionsDetail({route}) {
   const coin = route?.params?.coin;
   const copyAddress = () => {
     Clipboard.setString(
-      transactionInfo.direction == 'in'
-        ? transactionInfo.from
-        : transactionInfo.to,
-    );
-    alertWithSingleBtn(translate('wallet.common.copied'));
-  };
-  const copyTransactionHash = () => {
-    Clipboard.setString(transactionInfo.hash);
-    alertWithSingleBtn(translate('wallet.common.copied'));
-  };
-  const openURL = () => {
-    if (coin.network == 'BSC') {
-      Linking.openURL(`${environment.bscScanURL}${transactionInfo.hash}`);
-    } else if (coin.network == 'Polygon') {
-      Linking.openURL(`${environment.polygonScanURL}${transactionInfo.hash}`);
-    } else if (coin.network == 'Ethereum') {
-      Linking.openURL(`${environment.ethereumScanURL}${transactionInfo.hash}`);
-    }
-  };
-  return (
+      transactionInfo?.direction == 'in'
+      ? transactionInfo?.from
+      : transactionInfo?.to,
+      );
+      alertWithSingleBtn(translate('wallet.common.copied'));
+    };
+    const copyTransactionHash = () => {
+      Clipboard.setString(transactionInfo?.hash);
+      alertWithSingleBtn(translate('wallet.common.copied'));
+    };
+    const openURL = () => {
+      if (coin?.network == 'BSC') {
+        Linking.openURL(`${environment.bscScanURL}${transactionInfo?.hash}`);
+      } else if (coin?.network == 'Polygon') {
+        Linking.openURL(`${environment.polygonScanURL}${transactionInfo?.hash}`);
+      } else if (coin?.network == 'Ethereum') {
+        Linking.openURL(`${environment.ethereumScanURL}${transactionInfo?.hash}`);
+      }
+    };
+    {console.log(transactionInfo)}
+    return (
     <AppBackground>
       <AppHeader
         showBackButton
-        title={translate('wallet.common.paymentDetails')}
+        title={
+          transactionInfo?.direction == 'in'
+            ? translate('wallet.common.paymentDetails')
+            : translate('wallet.common.remittanceDetails')
+        }
       />
       <View style={styles.balanceContainer}>
         <TextView style={styles.balanceLabel}>
-          {translate('wallet.common.amount')}
+          {transactionInfo?.direction == 'in'
+            ? translate('wallet.common.amount')
+            : translate('wallet.common.remittanceQuantity')}
         </TextView>
         <NumberFormat
-          value={transactionInfo.value}
+          value={transactionInfo?.value}
           displayType={'text'}
           decimalScale={8}
           thousandSeparator={true}
           renderText={formattedValue => (
             <TextView style={styles.priceCont}>
-              {formattedValue} {coin.type}
+              {formattedValue} {coin?.type}
             </TextView>
           )}
         />
         <View style={styles.directionContainer}>
-          <Image style={styles.checkImage} source={check} />
-          <TextView style={styles.recieveText}>
-            {transactionInfo.direction == 'in'
-              ? translate('wallet.common.received')
-              : translate('wallet.common.sent')}
+          {transactionInfo?.txreceipt_status === "1" && (
+            <Image style={styles.checkImage} source={check} />
+          )}
+          <TextView
+            style={[
+              styles.recieveText,
+              transactionInfo?.txreceipt_status === "0" && {color: Colors.RED2},
+            ]}>
+            {transactionInfo?.txreceipt_status == "1"
+              ? translate('wallet.common.paymentComplete')
+              : transactionInfo?.direction == 'in' ? translate('wallet.common.paymentFailed'):translate('wallet.common.remittanceFailure')}
           </TextView>
         </View>
       </View>
@@ -73,17 +86,17 @@ export default function transactionsDetail({route}) {
           <TextView style={styles.rowText}>
             {translate('wallet.common.network')}
           </TextView>
-          <TextView style={styles.rowText}>{coin.network}</TextView>
+          <TextView style={styles.rowText}>{coin?.network}</TextView>
         </View>
         <View style={styles.rowContainer}>
           <TextView style={styles.rowText}>
             {translate('wallet.common.topup.address')}
           </TextView>
           <View style={styles.hashContainer}>
-            <TextView style={styles.rowKeyText}>
-              {transactionInfo.direction == 'in'
-                ? transactionInfo.from
-                : transactionInfo.to}
+            <TextView style={styles.rowKeyText} numberOfLines={2}>
+              {transactionInfo?.direction == 'in'
+                ? transactionInfo?.from
+                : transactionInfo?.to}
             </TextView>
             <TouchableOpacity onPress={copyAddress}>
               <Image style={styles.copyImage} source={copy} />
@@ -95,8 +108,11 @@ export default function transactionsDetail({route}) {
             {translate('wallet.common.transactionHash')}
           </TextView>
           <View style={styles.hashContainer}>
-            <TextView style={styles.rowKeyText} onPress={openURL}>
-              {transactionInfo.hash}
+            <TextView
+              style={styles.rowKeyText}
+              onPress={openURL}
+              numberOfLines={2}>
+              {transactionInfo?.hash}
             </TextView>
             <TouchableOpacity onPress={copyTransactionHash}>
               <Image style={styles.copyImage} source={copy} />
@@ -107,7 +123,7 @@ export default function transactionsDetail({route}) {
           <TextView style={styles.rowText}>{translate('common.date')}</TextView>
           <TextView style={styles.rowText}>
             {moment
-              .unix(transactionInfo.timeStamp)
+              .unix(transactionInfo?.timeStamp)
               .format('YYYY-MM-DD HH:mm:ss')}
           </TextView>
         </View>
@@ -145,25 +161,28 @@ const styles = StyleSheet.create({
     marginLeft: wp('3%'),
   },
   transactionInfoContainer: {
-    backgroundColor: Colors.WHITE3,
-    paddingVertical: hp('5%'),
-    paddingHorizontal: wp('2.5%'),
+    paddingHorizontal: wp('3%'),
+    marginVertical: hp('1%'),
   },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: hp('1%'),
+    marginVertical: hp('0.5%'),
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp('4%'),
+    backgroundColor: Colors.buttonGroupBackground,
+    borderRadius: 4,
   },
   rowText: {
     color: Colors.black,
     fontSize: RF(1.95),
-    maxWidth: wp('55%'),
+    maxWidth: wp('52.5%'),
   },
   rowKeyText: {
     color: Colors.black,
-    fontSize: RF(1.45),
-    maxWidth: wp('55%'),
+    fontSize: RF(1.4),
+    maxWidth: wp('54%'),
     textAlign: 'right',
   },
   hashContainer: {
@@ -173,6 +192,6 @@ const styles = StyleSheet.create({
   },
   copyImage: {
     ...CommonStyles.imageStyles(4.5),
-    marginLeft: wp('2%'),
+    marginLeft: wp('3%'),
   },
 });

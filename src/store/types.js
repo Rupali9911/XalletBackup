@@ -70,6 +70,7 @@ export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const UPDATE_CREATE = "UPDATE_CREATE";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const SET_PASSCODE = "SET_PASSCODE";
+export const SET_PASSCODE_ASYNC = "SET_PASSCODE_ASYNC";
 export const UPDATE_BACKUP = "UPDATE_BACKUP";
 export const LOG_OUT = "LOG_OUT";
 
