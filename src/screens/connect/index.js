@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -21,31 +21,56 @@ import { translate } from '../../walletUtils';
 import { openSettings } from 'react-native-permissions';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
+import SingleSocket from '../../helpers/SingleSocket';
+import { Events } from '../../App';
+import { useDispatch, useSelector } from 'react-redux';
+import AppModal from '../../components/appModal';
+import ApproveModalContent from '../../components/approveAppModal';
+import { alertWithSingleBtn } from '../../utils';
+import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
 
-const listData = [
-    {
-        text: "App A",
-        icon: ImagesSrc.group1
-    },
-    {
-        text: "App B",
-        icon: ImagesSrc.group3
-    },
-    {
-        text: "App C",
-        icon: ImagesSrc.group2
-    }
-];
+const singleSocket = SingleSocket.getInstance();
 
 const ListItems = (props) => {
-    const { item } = props;
+    const { item, socketOpen } = props;
+
+    const [details, setDetails] = useState(null); 
+
+    useEffect(()=>{
+        if(socketOpen){
+            getAppDetail(item);
+        }
+        
+        const socketSubscribe = Events.asObservable().subscribe({
+            next: data => {
+              console.log('data', data);
+              const response = JSON.parse(data);
+              if(response.type == 'success'){
+                  setDetails(response.data);
+              }
+            },
+          });
+
+    },[socketOpen]);
+
+    const getAppDetail = (appId) => {
+        let _data = {
+            type: "app",
+            data: {
+                appId: appId
+            }
+        }
+
+        singleSocket && singleSocket.onSendMessage(_data);
+    }
+
     return (
         <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
-                <Image style={styles.profileImage} source={item.icon} />
+                <Image style={styles.profileImage} source={{uri: details?.icon}} />
             </View>
             <View style={styles.centerCont} >
-                <Text style={styles.tokenName} >{item.text}</Text>
+                <Text style={styles.tokenName} >{details?.name}</Text>
             </View>
             <View style={{ ...CommonStyles.center }} >
                 <Image style={styles.actionIcon} source={ImagesSrc.deleteIcon} />
@@ -55,6 +80,15 @@ const ListItems = (props) => {
 }
 
 const Connect = ({ route, navigation }) => {
+
+    const {appId} = route.params;
+    const dispatch = useDispatch();
+    const {wallet, data, passcode} = useSelector(state => state.UserReducer);
+    const {connectedApps,socketOpen} = useSelector(state => state.WalletReducer);
+
+    const [isSocketConnected, setSocketConnected] = useState(false);
+    const [approveModal, setApproveModal] = useState(false);
+    const [requestedAppData, setRequestedAppData] = useState(null);
 
     const onCheckPermission = async () => {
         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
@@ -74,10 +108,95 @@ const Connect = ({ route, navigation }) => {
     }
 
     const renderApps = ({ item, index }) => {
-        return <ListItems item={item} />
+        return <ListItems item={item} socketOpen={socketOpen}/>
     }
 
     const keyExtractor = (item, index) => { return `_${index}` }
+
+    console.log('appId',appId);
+
+    const onSocketOpen = () => {
+        dispatch(setSocketOpenStatus(true));
+    }
+
+    const onSocketClose = () => {
+        dispatch(setSocketOpenStatus(false));
+    }
+
+    // useEffect(()=>{
+    //     if(passcode){
+    //         navigation.navigate('PasscodeScreen',{screen: "security"});
+    //     }
+    // },[]);
+
+    useEffect(() => {
+        if(socketOpen){
+            if(appId && !passcode){
+                connectApp(appId);
+            }
+        }else{
+            singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
+                if(appId && !passcode){
+                    connectApp(appId);
+                }
+            });
+        }
+        const socketSubscribe = Events.asObservable().subscribe({
+            next: data => {
+              console.log('data', data);
+              const response = JSON.parse(data);
+              if (response.type == 'newconnectionrequest') {
+                  setRequestedAppData(response.data);
+                  setApproveModal(true);
+              }else if(response.type == 'success' && typeof(response.data) == 'string'){
+                  alertWithSingleBtn('',response.data);
+              }else if(response.type == 'connected'){
+                  alertWithSingleBtn('',response.data);
+                  let ids = response.data.split(':');
+                  if(ids.length > 1){
+                      if(connectedApps.includes(ids[1])){
+                      }else{
+                          let array = [...connectedApps, ids[1]];
+                          dispatch(setConnectedAppsToLocal(array));
+                      }
+                  }
+              }
+            },
+          });
+        return () => {
+            socketSubscribe && socketSubscribe.unsubscribe();
+          };
+      }, [appId]);
+
+    const connectApp = (appId) => {
+        console.log('connecting', appId);
+        dispatch(setRequestAppId(null));
+        let data = {
+            type: 'connect',
+            data: {
+                type: "wallet",
+                data: {
+                    walletId: wallet.address,
+                    publicKey: wallet.address,
+                    appId: appId
+                }
+            },
+        };
+        singleSocket.onSendMessage(data);
+    };
+
+    const approveRejectApp = (appId, flag) => {
+        let data = {
+            type: "approve",
+            data: {
+                appId: appId,
+                walletId: wallet.address,
+                flag: flag,
+                publicKey: wallet.address
+            }
+        }
+        singleSocket.onSendMessage(data);
+    }
 
     return (
         <AppBackground>
@@ -89,15 +208,41 @@ const Connect = ({ route, navigation }) => {
 
                 <View style={styles.list}>
                     <FlatList
-                        data={listData}
+                        data={connectedApps}
                         renderItem={renderApps}
                         keyExtractor={keyExtractor}
+                        ListEmptyComponent={() => {
+                            return (
+                              <View style={styles.emptyView}>
+                                <Image source={ImagesSrc.noApp} style={styles.emptyImage} />
+                                <TextView style={styles.noData}>
+                                  {translate('wallet.common.noAppConnect')}
+                                </TextView>
+                              </View>
+                            );
+                          }}
                     />
                 </View>
 
                 <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
                     onPress={onCheckPermission} />
             </View>
+            <AppModal
+                visible={approveModal}
+                onRequestClose={() => setApproveModal(false)}>
+                <ApproveModalContent
+                    onClose={() => setApproveModal(false)}
+                    appData={requestedAppData}
+                    onAcceptPress={(appId) => {
+                        approveRejectApp(appId, true);
+                        setApproveModal(false);
+                    }}
+                    onRejectPress={(appId) => {
+                        approveRejectApp(appId, false);
+                        setApproveModal(false);
+                    }}
+                />
+            </AppModal>
         </AppBackground>
     );
 }
@@ -214,7 +359,18 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: Colors.buttonBackground,
         borderRadius: 10
-    }
+    },
+    emptyView: {
+        flex: 1,
+        alignItems: 'center',
+        paddingVertical: hp('5%'),
+      },
+      emptyImage: {
+        width: wp('25%'),
+        height: wp('25%'),
+        alignSelf: 'center',
+        marginVertical: hp('4%'),
+      },
 });
 
 export default Connect;

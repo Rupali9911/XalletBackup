@@ -87,4 +87,5 @@ export default {
         "hipercard": require("../../assets/images/hipercard.png"),
         "unknown": require("../../assets/images/unknown.png")
     },
+    noApp: require("../../assets/images/noApp.png")
 };
