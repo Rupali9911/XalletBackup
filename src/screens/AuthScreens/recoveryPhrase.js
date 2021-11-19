@@ -185,7 +185,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                       multiline={true}
                       value={phrase}
                       autoCorrect={false}
-                      keyboardType='visible-password'
+                      keyboardType="visible-password"
                       onChangeText={val => {
                         setPhrase(val);
                         const newWord = val.split(' ').splice(-1);
@@ -219,6 +219,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                       style={{
                         position: 'absolute',
                         bottom: Platform.OS === 'ios' ? 0 : hp('1.25%'),
+                        backgroundColor: Colors.inputBackground2,
                       }}>
                       <FlatList
                         data={suggestions}
