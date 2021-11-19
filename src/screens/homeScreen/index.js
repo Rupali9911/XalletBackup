@@ -132,6 +132,7 @@ const Hot = () => {
 const HomeScreen = ({ navigation }) => {
   const { artistList, artistLoading } = useSelector(state => state.ListReducer);
   const { showSuccess } = useSelector(state => state.UserReducer);
+  const {requestAppId} = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
   const { passcode } = useSelector(state => state.AsyncReducer);
 
@@ -149,7 +150,12 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     AppState.addEventListener('change', appStateChange);
     // dispatch(getAllArtist());
-  }, []);
+
+    if(requestAppId){
+      navigation.navigate("Connect", { appId: requestAppId });
+    }
+
+  }, [requestAppId]);
 
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
