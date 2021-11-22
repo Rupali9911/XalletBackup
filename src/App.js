@@ -80,79 +80,70 @@ const deepLinkData = {
 };
 
 const TabComponent = () => {
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+    React.useEffect(() => {}, [selectedLanguageItem.language_name])
 
-  return (
-    <Tab.Navigator
-      tabBarOptions={{
-        labelStyle: {
-          fontSize: 12,
-          fontFamily: fonts.SegoeUIRegular,
-          paddingTop: hp('0.75%'),
-        },
-        tabStyle: {
-          paddingVertical: hp('1%'),
-        },
-        activeTintColor: Colors.themeColor,
-      }}
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color}) => {
-          let iconName;
+    return (
+        <Tab.Navigator tabBarOptions={{
+            labelStyle: {
+                fontSize: 12,
+                fontFamily: fonts.SegoeUIRegular,
+                paddingTop: hp('0.75%')
+            },
+            tabStyle: {
+                paddingVertical: hp('1%'),
+            },
+            activeTintColor: Colors.themeColor
+        }} screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color }) => {
+                let iconName;
 
-          if (route.name === 'Home') {
-            iconName = focused ? images.icons.homeA : images.icons.homeD;
-          } else if (route.name === 'Create') {
-            iconName = focused ? images.icons.createA : images.icons.createD;
-          } else if (route.name === 'Explore') {
-            iconName = focused ? images.icons.exploreA : images.icons.exploreD;
-          } else if (route.name === 'Certificate') {
-            iconName = focused
-              ? images.icons.certificateA
-              : images.icons.certificateD;
-          } else if (route.name === 'Me') {
-            iconName = focused ? images.icons.meA : images.icons.meD;
-          } else if (route.name === 'Wallet') {
-            iconName = focused ? ImageSrc.walletActive : ImageSrc.wallet;
-          } else if (route.name === 'Connect') {
-            iconName = ImageSrc.connect;
-          }
+                if (route.name === "Home") {
+                    iconName = focused ? images.icons.homeA : images.icons.homeD;
+                } else if (route.name === 'Create') {
+                    iconName = focused ? images.icons.createA : images.icons.createD;
+                } else if (route.name === 'Explore') {
+                    iconName = focused ? images.icons.exploreA : images.icons.exploreD;
+                } else if (route.name === 'Certificate') {
+                    iconName = focused ? images.icons.certificateA : images.icons.certificateD;
+                } else if (route.name === 'Me') {
+                    iconName = focused ? images.icons.meA : images.icons.meD;
+                } else if (route.name === 'Wallet') {
+                    iconName = focused ? ImageSrc.walletActive : ImageSrc.wallet;
+                } else if (route.name === 'Connect') {
+                    iconName = focused ? ImageSrc.connectA: ImageSrc.connect;
+                }
 
-          // You can return any component that you like here!
-          return (
-            <Image
-              source={iconName}
-              resizeMode="contain"
-              style={{width: wp('6.5%'), height: wp('4.5%'), tintColor: color}}
+                // You can return any component that you like here!
+                return <Image source={iconName} resizeMode="contain" style={{ width: wp('6.5%'), height: wp('4.5%') }} />;
+            },
+        })} >
+            <Tab.Screen
+                name={"Home"}
+                component={HomeScreen}
+                options={{ tabBarLabel: translate("common.collected") }}
             />
-          );
-        },
-      })}>
-      <Tab.Screen
-        name={'Home'}
-        component={HomeScreen}
-        options={{tabBarLabel: translate('common.collected')}}
-      />
-      <Tab.Screen
-        name={'Explore'}
-        component={ExploreScreen}
-        options={{tabBarLabel: translate('wallet.common.explore')}}
-      />
-      <Tab.Screen
-        name={'Wallet'}
-        options={{tabBarLabel: translate('wallet.common.wallet')}}
-        component={Wallet}
-      />
-      <Tab.Screen
-        name={'Connect'}
-        options={{tabBarLabel: translate('wallet.common.connect')}}
-        component={Connect}
-      />
-      <Tab.Screen
-        options={{tabBarLabel: translate('wallet.common.me')}}
-        name={'Me'}
-        component={ProfileScreen}
-      />
+            <Tab.Screen
+                name={'Explore'}
+                component={ExploreScreen}
+                options={{ tabBarLabel: translate("wallet.common.explore") }}
+            />
+            <Tab.Screen
+                name={'Wallet'}
+                options={{ tabBarLabel: translate("wallet.common.wallet") }}
+                component={Wallet}
+            />
+            <Tab.Screen
+                name={'Connect'}
+                options={{ tabBarLabel: translate("wallet.common.connect") }}
+                component={Connect}
+                initialParams={{}}
+            />
+            <Tab.Screen
+                options={{ tabBarLabel: translate("wallet.common.me") }}
+                name={'Me'}
+                component={ProfileScreen}
+            />
     </Tab.Navigator>
   );
 };
