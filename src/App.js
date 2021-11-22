@@ -107,11 +107,11 @@ const TabComponent = () => {
                 } else if (route.name === 'Wallet') {
                     iconName = focused ? ImageSrc.walletActive : ImageSrc.wallet;
                 } else if (route.name === 'Connect') {
-                    iconName = ImageSrc.connect;
+                    iconName = focused ? ImageSrc.connectA: ImageSrc.connect;
                 }
 
                 // You can return any component that you like here!
-                return <Image source={iconName} resizeMode="contain" style={{ width: wp('6.5%'), height: wp('4.5%'), tintColor: color }} />;
+                return <Image source={iconName} resizeMode="contain" style={{ width: wp('6.5%'), height: wp('4.5%') }} />;
             },
         })} >
             <Tab.Screen

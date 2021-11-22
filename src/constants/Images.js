@@ -30,6 +30,7 @@ export default {
     store: require("../../assets/images/store.png"),
     dex: require("../../assets/images/dex.png"),
     connect: require("../../assets/images/connect.png"),
+    connectA: require("../../assets/images/connectActive.png"),
     setting: require("../../assets/images/setting.png"),
 
     //token type icons
