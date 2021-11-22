@@ -80,7 +80,7 @@ const TabComponent = () => {
         paddingTop: hp('0.75%')
       },
       tabStyle: {
-        paddingTop: hp('2%')
+        paddingVertical: hp('1%')
       },
       activeTintColor: Colors.themeColor
     }} screenOptions={({ route }) => ({

@@ -252,6 +252,7 @@ const ImportWallet = ({route, navigation}) => {
                   style={{
                     position: 'absolute',
                     bottom: Platform.OS === 'ios' ? 0 : hp('1.25%'),
+                    backgroundColor: Colors.inputBackground,
                   }}>
                   <FlatList
                     data={suggestions}

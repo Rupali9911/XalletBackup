@@ -486,7 +486,7 @@ const Wallet = ({route, navigation}) => {
               containerStyle={styles.outlinedButton}
               labelStyle={[
                 CommonStyles.outlineButtonLabel,
-                CommonStyles.text(Fonts.ARIAL, Colors.greyButtonLabel, RF(1.7)),
+                CommonStyles.text(Fonts.ARIAL, Colors.greyButtonLabel, RF(1.65)),
               ]}
               onPress={() => setIsBackedUp(true)}
             />
@@ -495,7 +495,7 @@ const Wallet = ({route, navigation}) => {
               containerStyle={styles.button}
               labelStyle={[
                 CommonStyles.buttonLabel,
-                CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.7)),
+                CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.65)),
               ]}
               onPress={() => navigation.navigate('SecurityScreen')}
             />
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   backupContainer: {
     backgroundColor: COLORS.buttonGroupBackground,
     paddingVertical: hp('3%'),
-    paddingHorizontal: wp('5%'),
+    paddingHorizontal: wp('4%'),
     borderRadius: 5,
     width: wp('92.5%'),
     alignSelf: 'center',
@@ -630,12 +630,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   button: {
-    width: '47.5%',
+    width: '48%',
     ...CommonStyles.button,
     marginTop: hp('3%'),
   },
   outlinedButton: {
-    width: '47.5%',
+    width: '48%',
     ...CommonStyles.outlineButton,
     marginTop: hp('3%'),
   },
