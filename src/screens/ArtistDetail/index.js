@@ -121,7 +121,8 @@ const Created = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            const image = item.metaData.thumbnft || item.thumbnailUrl
+            const image = item.metaData.image || item.thumbnailUrl;
+            const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
             return (
                 <TouchableOpacity
                     onLongPress={() => {
@@ -137,7 +138,7 @@ const Created = ({ route }) => {
                         image ?
                             <C_Image
                                 uri={image}
-                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                type={fileType}
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
@@ -232,7 +233,8 @@ const Collection = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            const image = item.metaData.thumbnft || item.thumbnailUrl;
+            const image = item.metaData.image || item.thumbnailUrl;
+            const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
             return (
                 <TouchableOpacity
                     onLongPress={() => {
@@ -248,7 +250,7 @@ const Collection = ({ route }) => {
                         image ?
                             <C_Image
                                 uri={image}
-                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                                type={fileType}
                                 imageStyle={styles.listImage} />
                             : <View style={styles.sorryMessageCont}>
                                 <Text style={{ textAlign: "center" }} >
