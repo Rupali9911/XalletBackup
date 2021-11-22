@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         marginVertical: '1%'
     },
     keypadFont: {
-        fontSize: RF(2),
+        fontSize: RF(2.5),
         fontWeight: "bold",
         color: "#000",
         textAlign: "center"
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#eee"
     },
     label: {
-        fontSize: RF(2.2),
+        fontSize: RF(2.5),
         textAlign: "center",
         marginTop: hp('15%')
     },

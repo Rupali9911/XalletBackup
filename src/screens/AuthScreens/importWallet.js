@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, IconButton} from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import {useDispatch, useSelector} from 'react-redux';
 import AppBackground from '../../components/appBackground';
@@ -19,11 +18,9 @@ import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
-import HintText from '../../components/hintText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import SelectButtongroup from '../../components/selectButtonGroup';
 import Colors from '../../constants/Colors';
-import ImagesSrc from '../../constants/Images';
 import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {colors} from '../../res';
@@ -128,7 +125,7 @@ const ImportWallet = ({route, navigation}) => {
         .then(async () => {
           let private_key = phrase.trim();
           let mnemonicWallet = new ethers.Wallet(private_key);
-          console.log('mnemonicWallet',mnemonicWallet);
+          console.log('mnemonicWallet', mnemonicWallet);
           const account = {
             mnemonic: mnemonicWallet.mnemonic,
             address: mnemonicWallet.address,
@@ -162,7 +159,7 @@ const ImportWallet = ({route, navigation}) => {
       //   translate('wallet.common.requirePhrase'),
       // );
     }
-  }
+  };
 
   const pastePhrase = async () => {
     const text = await Clipboard.getString();
@@ -194,7 +191,7 @@ const ImportWallet = ({route, navigation}) => {
   };
   return (
     <AppBackground isBusy={loading}>
-      <AppHeader showBackButton/>
+      <AppHeader showBackButton />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
         KeyboardShiftStyle={styles.keyboardShift}>
@@ -207,16 +204,26 @@ const ImportWallet = ({route, navigation}) => {
               </TextView>
             </View>
             <View>
-              <View style={{ flexDirection: 'row' }}>
-                <SelectButtongroup buttons={[translate("wallet.common.phrase"),translate("wallet.common.privateKey")]} onButtonPress={(item, index) => {
-                  setInputType(index);
-                }}/>
+              <View style={{flexDirection: 'row'}}>
+                <SelectButtongroup
+                  buttons={[
+                    translate('wallet.common.phrase'),
+                    translate('wallet.common.privateKey'),
+                  ]}
+                  onButtonPress={(item, index) => {
+                    setInputType(index);
+                  }}
+                />
               </View>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
                   multiline={true}
                   value={phrase}
+                  autoCorrect={false}
+                  keyboardType={
+                    Platform.OS === 'ios' ? 'default' : 'visible-password'
+                  }
                   onChangeText={val => {
                     setPhrase(val);
                     setTimeout(() => {
@@ -242,7 +249,7 @@ const ImportWallet = ({route, navigation}) => {
                     paddingHorizontal: wp('3%'),
                     paddingVertical: hp('1%'),
                   }}>
-                  <Text style={{ color: Colors.themeColor }}>
+                  <Text style={{color: Colors.themeColor}}>
                     {translate('wallet.common.paste')}
                   </Text>
                 </TouchableOpacity>
@@ -251,19 +258,18 @@ const ImportWallet = ({route, navigation}) => {
                 <View
                   style={{
                     position: 'absolute',
-                    bottom: Platform.OS === 'ios' ? 0 : hp('1.25%'),
+                    bottom: Platform.OS === 'ios' ? 0 : hp('-1.45%'),
+                    backgroundColor: Colors.inputBackground,
                   }}>
                   <FlatList
                     data={suggestions}
                     horizontal
                     keyboardShouldPersistTaps="always"
-                    renderItem={({ item, index }) => (
+                    renderItem={({item, index}) => (
                       <TouchableOpacity
                         style={styles.suggestionContainer}
                         onPress={() => setPhraseText(item.word)}>
-                        <Text style={styles.suggestionText}>
-                          {item.word}
-                        </Text>
+                        <Text style={styles.suggestionText}>{item.word}</Text>
                       </TouchableOpacity>
                     )}
                     keyExtractor={(item, index) => `_${index}`}
@@ -275,7 +281,7 @@ const ImportWallet = ({route, navigation}) => {
           </View>
           <View style={styles.bottomView}>
             <AppButton
-              label={translate("wallet.common.next")}
+              label={translate('wallet.common.next')}
               view={!phrase}
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
@@ -315,6 +321,7 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     paddingHorizontal: wp('5%'),
+    marginTop: hp('1%'),
   },
   logo: {
     ...CommonStyles.imageStyles(25),
@@ -368,10 +375,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     padding: wp('3.5%'),
     backgroundColor: Colors.inputBackground,
-    marginHorizontal: hp("2%"),
+    marginHorizontal: hp('2%'),
     borderRadius: 5,
     borderColor: Colors.borderLightColor3,
-    borderWidth: 0.5
+    borderWidth: 0.5,
   },
   input: {
     fontSize: RF(2),

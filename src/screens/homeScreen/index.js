@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
-import { ActivityIndicator, FlatList, AppState, Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, AppState, Image, SafeAreaView, Platform, PermissionsAndroid, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import { useDispatch, useSelector } from 'react-redux';
 import { openSettings } from 'react-native-permissions';
@@ -132,16 +132,16 @@ const Hot = () => {
 const HomeScreen = ({ navigation }) => {
   const { artistList, artistLoading } = useSelector(state => state.ListReducer);
   const { showSuccess } = useSelector(state => state.UserReducer);
-  const {requestAppId} = useSelector(state => state.WalletReducer);
+  const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
-  const { passcode } = useSelector(state => state.AsyncReducer);
+  const { passcodeAsync } = useSelector(state => state.UserReducer);
 
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
 
   const appStateChange = (nextAppState) => {
-    var pass = passcode;
+    var pass = passcodeAsync;
     console.log(pass, nextAppState)
     if (nextAppState === "active" && pass) {
       navigation.navigate("PasscodeScreen", { screen: "active" })
@@ -152,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
     AppState.addEventListener('change', appStateChange);
     // dispatch(getAllArtist());
 
-    if(requestAppId){
+    if (requestAppId) {
       navigation.navigate("Connect", { appId: requestAppId });
     }
 
