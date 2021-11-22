@@ -70,6 +70,7 @@ export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const UPDATE_CREATE = "UPDATE_CREATE";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const SET_PASSCODE = "SET_PASSCODE";
+export const SET_PASSCODE_ASYNC = "SET_PASSCODE_ASYNC";
 export const UPDATE_BACKUP = "UPDATE_BACKUP";
 export const LOG_OUT = "LOG_OUT";
 
@@ -111,3 +112,7 @@ export const SET_PAYMENT_OBJECT = "SET_PAYMENT_OBJECT";
 export const SET_ALL_CARDS = "SET_ALL_CARDS";
 
 //#endregion
+
+export const SET_CONNECTED_APPS = "SET_CONNECTED_APPS";
+export const SET_SOCKET_OPEN = "SET_SOCKET_OPEN";
+export const SET_REQUEST_APP_ID = "SET_REQUEST_APP_ID";

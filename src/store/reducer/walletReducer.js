@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { reject } from 'lodash';
+import { resolve } from 'path-browserify';
 import {
     ADD_ETH_TRANSACTION,
     ADD_BNB_TRANSACTION,
@@ -8,7 +11,10 @@ import {
     UPDATE_BALANCES,
     UPDATE_ETH_BALANCES,
     UPDATE_BSC_BALANCES,
-    UPDATE_POLY_BALANCES
+    UPDATE_POLY_BALANCES,
+    SET_CONNECTED_APPS,
+    SET_SOCKET_OPEN,
+    SET_REQUEST_APP_ID
 } from '../types';
 
 const initialState = {
@@ -21,7 +27,10 @@ const initialState = {
     tnftTransactions: [],
     tnftBalance: "0",
     talTransactions: [],
-    talBalance: "0"
+    talBalance: "0",
+    connectedApps: [],
+    socketOpen: false,
+    requestAppId: null
 }
 
 export default walletReducer = (state = initialState, action) => {
@@ -113,6 +122,24 @@ export default walletReducer = (state = initialState, action) => {
                 talBalance: action.payload.TAL, // for testnet only
             }
 
+        case SET_CONNECTED_APPS:
+            return {
+                ...state,
+                connectedApps: action.payload
+            }
+
+        case SET_SOCKET_OPEN:
+            return {
+                ...state,
+                socketOpen: action.payload
+            }
+
+        case SET_REQUEST_APP_ID:
+            return {
+                ...state,
+                requestAppId: action.payload
+            }
+
         default:
             return state;
     }
@@ -168,6 +195,22 @@ export const updatePolygonBalances = (data) => ({
     payload: data
 });
 
+export const setConnectedApps = (data) => ({
+    type: SET_CONNECTED_APPS,
+    payload: data
+});
+
+export const setSocketOpenStatus = (data) => ({
+    type: SET_SOCKET_OPEN,
+    payload: data
+});
+
+export const setRequestAppId = (data) => ({
+    type: SET_REQUEST_APP_ID,
+    payload: data
+});
+
+
 export const getTransactions = (address, type) => (dispatch) =>
     new Promise((resolve, reject) => {
         const data = {
@@ -190,4 +233,11 @@ export const getTransactions = (address, type) => (dispatch) =>
             }).catch((err) => {
                 reject();
             })
+    });
+
+export const setConnectedAppsToLocal = (data) => (dispatch) =>
+    new Promise(async(resolve, reject) => {
+        await AsyncStorage.setItem('@apps',JSON.stringify(data),(err)=>console.log(err));
+        dispatch(setConnectedApps(data));
+        resolve();
     });

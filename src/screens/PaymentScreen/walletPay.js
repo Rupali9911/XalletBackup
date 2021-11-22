@@ -331,7 +331,7 @@ const WalletPay = ({route, navigation}) => {
     }
 
     return (
-        <AppBackground hideSafeArea lightStatus isBusy={loading}>
+        <AppBackground isBusy={loading}>
             <GradientBackground>
                 <View style={styles.gradient}>
 

@@ -8,8 +8,7 @@ import { translate } from '../../walletUtils';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF } from '../../common/responsiveFunction';
 import { colors } from '../../res';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setPasscode as SPasscode, endMainLoading, startMainLoading } from "../../store/reducer/userReducer";
-import { updateAsyncPasscodeAction } from "../../store/reducer/asyncStorageReducer";
+import { setPasscode as SPasscode, endMainLoading, startMainLoading, updateAsyncPasscodeAction } from "../../store/reducer/userReducer";
 import Toast from 'react-native-toast-message';
 
 const toastConfig = {
@@ -34,7 +33,7 @@ function PasscodeScreen({
 }) {
 
     const { screen } = route.params;
-    const { passcode: asyncPasscode } = useSelector(state => state.AsyncReducer);
+    const { passcodeAsync } = useSelector(state => state.UserReducer);
 
     const [loading, setLoading] = useState(true)
     const [passcode, setpasscode] = useState([])
@@ -54,7 +53,7 @@ function PasscodeScreen({
     }
 
     useEffect(() => {
-        if (screen == "active" && asyncPasscode) {
+        if (screen == "active" && passcodeAsync) {
             BackHandler.addEventListener('hardwareBackPress', () => { return true; });
 
         } else {
@@ -65,9 +64,9 @@ function PasscodeScreen({
             BackHandler.addEventListener('hardwareBackPress', goBackFunc);
         }
 
-        if (asyncPasscode) {
+        if (passcodeAsync) {
             setStatus(true)
-            setoldPasscode(asyncPasscode)
+            setoldPasscode(passcodeAsync)
         }
         setLoading(false)
         return () => {

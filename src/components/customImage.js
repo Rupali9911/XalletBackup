@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import Video from 'react-native-fast-video';
 
-import { SVGS, SIZE, IMAGES } from 'src/constants';
+import { SVGS, SIZE, IMAGES } from '../constants';
 import Colors from '../constants/Colors';
 
 const {
@@ -12,6 +13,9 @@ const {
 const C_Image = (props) => {
 
     let [loadImage, setLoadImage] = useState(false);
+    let [brokenUrl, setBrokenUrl] = useState(false);
+
+    const checkVideoUrl = props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV';
 
     return (
         <>
@@ -19,19 +23,53 @@ const C_Image = (props) => {
                 loadImage && <View style={[styles.imageCont, { backgroundColor: Colors.GREY8 }]}>
                     <ActivityIndicator size="small" color={Colors.themeColor} />
                 </View>
-            }
+            }{
+                Platform.OS == "ios" ?
+                checkVideoUrl ?
+                <Video
+                                        source={{ uri: props.uri }}
+                                        paused={true}
+                                        resizeMode={'cover'}
+                                        style={props.imageStyle} />
+                :
+                <FastImage
+                style={props.imageStyle}
+                onLoadStart={() => setLoadImage(true)}
+                onLoadEnd={() => setLoadImage(false)}
+                onError={({ nativeEvent }) => {
+                    console.log(nativeEvent, "errror", props.uri)
+                    setBrokenUrl(true)
+                }}
+                source={props.uri ?
+                    brokenUrl ?
+                        IMAGES.brokenIcon :
+                        {
+                            uri: props.uri,
+                            priority: FastImage.priority.high,
+                        } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
+                resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
+            />
+                :
             <FastImage
                 style={props.imageStyle}
                 onLoadStart={() => setLoadImage(true)}
                 onLoadEnd={() => setLoadImage(false)}
-                source={props.uri ? {
-                    uri: props.uri,
-                    priority: FastImage.priority.high,
-                } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
+                onError={({ nativeEvent }) => {
+                    console.log(nativeEvent, "errror", props.uri)
+                    setBrokenUrl(true)
+                }}
+                source={props.uri ?
+                    brokenUrl ?
+                        IMAGES.brokenIcon :
+                        {
+                            uri: props.uri,
+                            priority: FastImage.priority.high,
+                        } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
                 resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
             />
+            }
             {
-                props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' ?
+                checkVideoUrl ?
                     <View style={styles.imageCont}>
                         <View style={styles.playCont}>
                             <PlayButtonIcon width={SIZE(40)} height={SIZE(40)} />

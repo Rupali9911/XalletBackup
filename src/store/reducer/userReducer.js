@@ -9,21 +9,25 @@ import {
   UPDATE_CREATE,
   UPDATE_PROFILE,
   SET_PASSCODE,
+  SET_PASSCODE_ASYNC,
   UPDATE_BACKUP,
+  UPDATE_ASYNC_PASSCODE,
   LOG_OUT
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
+import { setConnectedApps } from './walletReducer';
 
 const initialState = {
   loading: false,
-  mainLoader: false,
+  mainLoader: true,
   wallet: null,
   isCreate: false,
   data: {},
   passcode: "",
+  passcodeAsync: "",
   isBackup: false,
   showSuccess: false,
 };
@@ -58,6 +62,18 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         passcode: action.payload,
         loading: true
+      };
+    case SET_PASSCODE_ASYNC:
+      return {
+        ...state,
+        passcode: action.payload,
+        passcodeAsync: action.payload,
+        loading: true
+      };
+    case UPDATE_ASYNC_PASSCODE:
+      return {
+        ...state,
+        passcodeAsync: action.payload,
       };
 
     case AUTH_SUCCESS:
@@ -131,6 +147,15 @@ export const setPasscode = data => ({
   type: SET_PASSCODE,
   payload: data,
 });
+export const setPasscodeAsync = data => ({
+  type: SET_PASSCODE_ASYNC,
+  payload: data,
+});
+
+export const updateAsyncPasscodeAction = (payload) => ({
+  type: UPDATE_ASYNC_PASSCODE,
+  payload
+});
 
 export const setBackup = (data) => ({
   type: UPDATE_BACKUP,
@@ -139,6 +164,10 @@ export const setBackup = (data) => ({
 
 export const logout = () => ({
   type: LOG_OUT,
+});
+
+export const _logout = () => ({
+  type: 'USER_LOGGED_OUT',
 });
 
 export const startLoader = () => dispatch =>
@@ -155,11 +184,9 @@ export const endLoader = () => dispatch =>
     resolve();
   });
 
-export const loadFromAsync = () => (dispatch, getState) => {
-
-  const { wallet, userData, BackedUp } = getState().AsyncReducer;
-
-  if (wallet && userData) {
+export const loadFromAsync = (asyncData) => (dispatch, getState) => {
+  if (asyncData && asyncData.wallet && asyncData.userData) {
+      const { wallet, userData, BackedUp, apps } = asyncData;
     dispatch(
       setUserData({
         data: userData,
@@ -169,6 +196,8 @@ export const loadFromAsync = () => (dispatch, getState) => {
       }),
     );
     dispatch(setBackup(BackedUp));
+    apps && dispatch(setConnectedApps(apps));
+
     const _wallet = wallet;
     let req_data = {
       owner: _wallet.address,
@@ -189,16 +218,19 @@ export const loadFromAsync = () => (dispatch, getState) => {
         if (res.data) {
           dispatch(upateUserData(res.data));
         }
+        console.log('endMainLoading1')
         dispatch(endMainLoading());
       })
       .catch(e => {
-        dispatch(endMainLoading());
+          console.log('endMainLoading2')
+          dispatch(endMainLoading());
         alertWithSingleBtn(
           translate('wallet.common.alert'),
           translate('wallet.common.error.networkFailed')
         );
       });
-  } else {
+  } else{
+      console.log('endMainLoading3')
     dispatch(endMainLoading());
   }
 };

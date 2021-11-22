@@ -70,6 +70,7 @@ export default {
 
     edit: require("../../assets/images/edit.png"),
     imagePlaceholder: require("../../assets/images/cropped-placeholder.png"),
+    brokenIcon: require("../../assets/images/brokenIcon.png"),
 
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),
@@ -86,4 +87,5 @@ export default {
         "hipercard": require("../../assets/images/hipercard.png"),
         "unknown": require("../../assets/images/unknown.png")
     },
+    noApp: require("../../assets/images/noApp.png")
 };

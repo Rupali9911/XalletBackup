@@ -125,9 +125,12 @@ const DetailScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         console.log('tokenId', tokenId);
-        setBuyLoading(true);
-        checkNFTOnAuction();
-        getNonCryptoNFTOwner();
+        if (MarketPlaceAbi && MarketContractAddress) {
+            setBuyLoading(true);
+            checkNFTOnAuction();
+            getNonCryptoNFTOwner();
+        }
+        
         if (data.token) {
             dispatch(getAllCards(data.token));
         }
@@ -398,9 +401,9 @@ const DetailScreen = ({ route, navigation }) => {
 
     const onProfile = () => {
         if (isOwner) {
-            navigation.navigate('ArtistDetail', { id: ownerId });
+            navigation.push('ArtistDetail', { id: ownerId });
         } else {
-            navigation.navigate('ArtistDetail', { id: artistId });
+            navigation.push('ArtistDetail', { id: artistId });
         }
     }
 

@@ -130,7 +130,7 @@ const Created = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myNFT"));
-                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                        navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
                     {
@@ -408,8 +408,6 @@ function ArtistDetail({
         await dispatch(handleFollow(data._id, isFollowing));
         setFollowing(!isFollowing);
     }
-
-    console.log('=====data', data);
 
     return (
         <AppBackground isBusy={loading}>

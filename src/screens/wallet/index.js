@@ -89,9 +89,9 @@ const Wallet = ({route, navigation}) => {
   }, [isFocused]);
 
   useEffect(() => {
-    // singleSocket.connectSocket().then(() => {
-    //     ping(wallet.address);
-    // });
+    singleSocket.connectSocket().then(() => {
+        ping(wallet.address);
+    });
 
     const socketSubscribe = Events.asObservable().subscribe({
       next: data => {
@@ -416,7 +416,7 @@ const Wallet = ({route, navigation}) => {
     return getBalances(wallet.address);
   };
   return (
-    <AppBackground hideSafeArea lightStatus isBusy={loading}>
+    <AppBackground isBusy={loading}>
       <GradientBackground>
         <View style={styles.gradient}>
           <View style={styles.header}>
