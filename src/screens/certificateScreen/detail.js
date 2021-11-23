@@ -13,7 +13,6 @@ import {
 import styles from './styles';
 import { images, colors } from '../../res';
 
-import getLanguage from '../../utils/languageSupport';
 import { divideNo } from '../../utils';
 import { C_Image, GroupButton } from '../../components';
 import {
@@ -38,7 +37,6 @@ const {
 } = SVGS;
 
 const Web3 = require("web3");
-const langObj = getLanguage();
 
 let walletAddressForNonCrypto = "";
 
@@ -130,7 +128,7 @@ const DetailScreen = ({ route, navigation }) => {
             checkNFTOnAuction();
             getNonCryptoNFTOwner();
         }
-        
+
         if (data.token) {
             dispatch(getAllCards(data.token));
         }
@@ -191,7 +189,7 @@ const DetailScreen = ({ route, navigation }) => {
         MarketPlaceContract.methods
             .getNonCryptoOwner(_tokenId)
             .call(async (err, res) => {
-                console.log('getNonCryptoOwner_res',res);
+                console.log('getNonCryptoOwner_res', res);
                 if (res) {
                     setNonCryptoOwnerId(res);
                     lastOwnerOfNFTNonCrypto();
@@ -406,7 +404,7 @@ const DetailScreen = ({ route, navigation }) => {
             navigation.push('ArtistDetail', { id: artistId });
         }
     }
-
+    console.log(fileType !== 'mp4', fileType !== 'MP4', fileType !== 'mov', fileType !== 'MOV', "aaaaaaaaa")
     return (
         <>
             <SafeAreaView style={styles.mainContainer}>
@@ -425,11 +423,9 @@ const DetailScreen = ({ route, navigation }) => {
                         activeOpacity={1}
                         onPress={() => setPlay(!isPlay)}>
                         {
-                            fileType !== 'mp4' || fileType !== 'MP4' || fileType !== 'mov' || fileType !== 'MOV' ?
-                                <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain />
-                                :
-                                <View style={styles.modalImage}>
-                                    <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain />
+                            fileType === 'mp4' || fileType === 'MP4' || fileType === 'mov' || fileType === 'MOV' ?
+                                <View style={{ ...styles.modalImage }}>
+                                    {/* <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain /> */}
                                     <Video
                                         ref={refVideo}
                                         source={{ uri: video }}
@@ -470,6 +466,8 @@ const DetailScreen = ({ route, navigation }) => {
                                         </View>
                                     }
                                 </View>
+                                :
+                                <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain />
                         }
                     </TouchableOpacity>
                     <Text style={styles.nftName}>
@@ -591,7 +589,7 @@ const DetailScreen = ({ route, navigation }) => {
                     setShowPaymentNow(false);
                     setSuccessModalVisible(true);
                 }} />
-            
+
             <AppModal
                 visible={successModalVisible}
                 onRequestClose={() => setSuccessModalVisible(false)}>
