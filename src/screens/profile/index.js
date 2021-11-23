@@ -65,8 +65,6 @@ import {
 import { colors, fonts } from '../../res';
 import { useIsFocused } from '@react-navigation/native';
 
-const langObj = getLanguage();
-
 const {
     ConnectSmIcon,
     SettingIcon
