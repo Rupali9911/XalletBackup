@@ -53,13 +53,14 @@ const Hot = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
       return (
         <TouchableOpacity
           onLongPress={() => {
+            item.index = index;
             setModalData(item);
             setModalVisible(true);
           }}
@@ -119,6 +120,7 @@ const Hot = () => {
       )}
       {modalData && (
         <DetailModal
+          index={modalData.index}
           data={modalData}
           isModalVisible={isModalVisible}
           toggleModal={() => setModalVisible(false)}

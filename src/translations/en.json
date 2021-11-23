@@ -772,6 +772,7 @@
             "connectionError": "Connection Error",
             "connectError": "Oops! Looks like your device is not connected to the Internet.",
             "Like": "Like",
+            "Dislike": "Dislike",
             "Comment": "Comment",
             "sendMessage": "Send as Message",
             "selectPaymentMethod": "Select your payment method",

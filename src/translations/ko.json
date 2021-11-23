@@ -772,6 +772,7 @@
             "connectionError": "연결 오류",
             "connectError": "이런! 기기가 인터넷에 연결되어 있지 않은 것처럼 보입니다.",
             "Like": "같이",
+            "Dislike": "싫어함",
             "Comment": "주석",
             "sendMessage": "메시지로 보내기",
             "selectPaymentMethod": "결제 수단 선택",

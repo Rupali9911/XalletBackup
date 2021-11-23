@@ -772,6 +772,7 @@
             "connectionError": "接続エラー",
             "connectError": "おっと！デバイスがインターネットに接続されていないようです。",
             "Like": "という感じで",
+            "Dislike": "嫌い",
             "Comment": "コメント",
             "sendMessage": "メッセージとして送信",
             "selectPaymentMethod": "お支払い方法を選択してください",

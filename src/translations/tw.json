@@ -772,6 +772,7 @@
             "connectionError": "連接錯誤",
             "connectError": "哎呀！看起來您的設備沒有連接到互聯網。",
             "Like": "喜歡",
+            "Dislike": "不喜欢",
             "Comment": "評論",
             "sendMessage": "以消息發送",
             "selectPaymentMethod": "選擇您的付款方式",
