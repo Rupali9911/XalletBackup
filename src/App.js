@@ -50,13 +50,6 @@ import Send from './screens/wallet/send';
 import TokenDetail from './screens/wallet/tokenDetail';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import Store from './store';
-import {
-  awardsNftListReset,
-  awardsNftLoadStart,
-  awardsNftPageChange,
-  getAwardsNftList,
-} from './store/actions/awardsAction';
-import {getAllArtist} from './store/actions/nftTrendList';
 import {getAllLanguages, setAppLanguage} from './store/reducer/languageReducer';
 import {
   loadFromAsync,
@@ -187,12 +180,6 @@ const AppRoutes = () => {
                 alert(translate('wallet.common.error.networkError'));
               } else {
                 dispatch(loadFromAsync(asyncData));
-
-                dispatch(getAllArtist());
-                dispatch(awardsNftLoadStart());
-                dispatch(awardsNftListReset());
-                dispatch(getAwardsNftList(1));
-                dispatch(awardsNftPageChange(1));
               }
             }
           });

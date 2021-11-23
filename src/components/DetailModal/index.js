@@ -1,19 +1,21 @@
-import {BlurView} from '@react-native-community/blur';
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import { BlurView } from '@react-native-community/blur';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-fast-video';
-import {createImageProgress} from 'react-native-image-progress';
+import { createImageProgress } from 'react-native-image-progress';
 import Modal from 'react-native-modal';
 import * as Progress from 'react-native-progress';
-import {COLORS, FONT, FONTS, IMAGES, SIZE, WIDTH} from 'src/constants';
-import {BorderView, RowWrap, SpaceView} from 'src/styles/common.styles';
-import {NormalText} from 'src/styles/text.styles';
+import { COLORS, FONT, FONTS, IMAGES, SIZE, WIDTH } from 'src/constants';
+import { BorderView, RowWrap, SpaceView } from 'src/styles/common.styles';
+import { NormalText } from 'src/styles/text.styles';
 import styled from 'styled-components';
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {alertWithSingleBtn} from '../../utils';
-import {translate} from '../../walletUtils';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
+import { handleLikeDislike } from '../../store/actions/nftTrendList';
+import { useSelector, useDispatch } from 'react-redux';
 
 const ModalContainer = styled.View`
   flex: 1;
@@ -60,7 +62,9 @@ const CreatorName = styled.Text`
 
 const Image = createImageProgress(FastImage);
 
-const DetailModal = ({isModalVisible, toggleModal, data}) => {
+const DetailModal = ({ isModalVisible, toggleModal, data, index }) => {
+
+  const dispatch = useDispatch();
   const [artist, setArtist] = useState('');
   const [profileImage, setCreatorImage] = useState();
   const fileType =
@@ -128,6 +132,11 @@ const DetailModal = ({isModalVisible, toggleModal, data}) => {
       });
   }, []);
 
+  const onToggleLike = async () => {
+    dispatch(handleLikeDislike(data, index));
+    toggleModal();
+  }
+
   return (
     <ModalContainer>
       <Modal
@@ -136,7 +145,7 @@ const DetailModal = ({isModalVisible, toggleModal, data}) => {
         animationOut="fadeOut"
         transparent={true}
         visible={isModalVisible}
-        style={{margin: 0}}>
+        style={{ margin: 0 }}>
         <BlurView
           blurType="light"
           style={{
@@ -160,10 +169,10 @@ const DetailModal = ({isModalVisible, toggleModal, data}) => {
                       <Image
                         source={
                           profileImage
-                            ? {uri: profileImage}
+                            ? { uri: profileImage }
                             : IMAGES.DEFAULTPROFILE
                         }
-                        style={{width: '100%', height: '100%'}}
+                        style={{ width: '100%', height: '100%' }}
                       />
                     </ProfileIcon>
                     <SpaceView mLeft={SIZE(10)} />
@@ -180,26 +189,28 @@ const DetailModal = ({isModalVisible, toggleModal, data}) => {
                           priority: FastImage.priority.normal,
                         }}
                         resizeMode={FastImage.resizeMode.cover}
-                        style={{width: '100%', height: '100%'}}
+                        style={{ width: '100%', height: '100%' }}
                       />
                     ) : (
                       <Video
-                        source={{uri: imageUrl}} // Can be a URL or a local file.
+                        source={{ uri: imageUrl }} // Can be a URL or a local file.
                         repeat
                         playInBackground={false}
                         paused={!isModalVisible}
                         resizeMode={'cover'} // Store reference
                         // onBuffer={this.onBuffer}                // Callback when remote video is buffering
                         // onError={this.videoError}               // Callback when video cannot be loaded
-                        style={{width: '100%', height: '100%'}}
+                        style={{ width: '100%', height: '100%' }}
                       />
                     )}
                   </ImageView>
                 </MainContent>
                 <SpaceView mTop={SIZE(20)} />
                 <ButtonList>
-                  <ButtonItem onPress={toggleModal}>
-                    <NormalText>{translate('wallet.common.Like')}</NormalText>
+                  <ButtonItem onPress={onToggleLike}>
+                    <NormalText>
+                      {data.like === 0 ? translate('wallet.common.Like') : translate('wallet.common.Dislike') }
+                    </NormalText>
                   </ButtonItem>
                   <BorderView />
                   <ButtonItem onPress={toggleModal}>

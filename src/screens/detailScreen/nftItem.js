@@ -90,7 +90,7 @@ const nftItem = ({ item, index }) => {
 
   useEffect(() => {
     let web3 = new Web3(providerUrl);
-    if(MarketPlaceAbi && MarketContractAddress){
+    if (MarketPlaceAbi && MarketContractAddress) {
       let MarketPlaceContract = new web3.eth.Contract(
         MarketPlaceAbi,
         MarketContractAddress
@@ -219,7 +219,8 @@ const nftItem = ({ item, index }) => {
     getOwnerOfNFT();
   }, []);
 
-  const fileType = item.metaData.image.split('.')[item.metaData.image.split('.').length - 1];
+  const image = item.metaData.image || item.thumbnailUrl;
+  const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
 
   const onProfile = (isOwner) => {
     if (isOwner) {

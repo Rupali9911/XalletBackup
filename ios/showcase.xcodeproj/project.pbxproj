@@ -572,7 +572,7 @@
 				CODE_SIGN_ENTITLEMENTS = showcase/showcase.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
@@ -656,7 +656,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.12.03;
+				MARKETING_VERSION = 1.11.26;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -684,7 +684,7 @@
 				CODE_SIGN_ENTITLEMENTS = showcase/showcase.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
@@ -768,7 +768,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.12.03;
+				MARKETING_VERSION = 1.11.26;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",

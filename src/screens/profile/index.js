@@ -63,6 +63,9 @@ import {
     responsiveFontSize as RF
 } from '../../common/responsiveFunction';
 import { colors, fonts } from '../../res';
+import { useIsFocused } from '@react-navigation/native';
+
+const langObj = getLanguage();
 
 const {
     ConnectSmIcon,
@@ -70,6 +73,8 @@ const {
 } = SVGS;
 
 const Created = ({ route }) => {
+
+    const isFocusedHistory = useIsFocused();
 
     const { id } = route.params;
     const { MyNFTReducer } = useSelector(state => state);
@@ -83,7 +88,7 @@ const Created = ({ route }) => {
         dispatch(myNftListReset());
         getNFTlist(1);
         dispatch(myPageChange(1));
-    }, [])
+    }, [isFocusedHistory])
 
     const getNFTlist = useCallback((page) => {
         dispatch(myNFTList(page, id));
@@ -182,6 +187,8 @@ const Created = ({ route }) => {
 
 const Collection = ({ route }) => {
 
+    const isFocusedHistory = useIsFocused();
+
     const { id } = route.params;
     const { MyCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
@@ -194,7 +201,7 @@ const Collection = ({ route }) => {
         dispatch(myCollectionListReset());
         getNFTlist(1);
         dispatch(myCollectionPageChange(1));
-    }, [])
+    }, [isFocusedHistory])
 
     const getNFTlist = useCallback((page) => {
         dispatch(myCollectionList(page, id));
@@ -298,7 +305,15 @@ function Profile({
     connector
 }) {
 
+    const isFocusedHistory = useIsFocused();
+    const dispatch = useDispatch();
+
     const { UserReducer } = useSelector(state => state);
+
+    useEffect(() => {
+        dispatch(myCollectionListReset());
+        dispatch(myNftListReset());
+    }, [isFocusedHistory]);
 
     const id = UserReducer.data.user.name || UserReducer.wallet.address;
     const {
@@ -400,12 +415,12 @@ function Profile({
                 {
                     links &&
                     <TouchableOpacity onPress={() => {
-                        Linking.openURL(links.website);
+                        links.website.includes('://') ? Linking.openURL(links.website) : Linking.openURL(`https://${links.website}`);
                     }}>
                         <RowWrap>
                             <ConnectSmIcon />
                             <WebsiteLink>
-                                {links.website.split('/')[2]}
+                                {links.website.includes('://') ? links.website.split('/')[2] : links.website}
                             </WebsiteLink>
                         </RowWrap>
                     </TouchableOpacity>

@@ -62,7 +62,7 @@ function Profile({
     const { UserReducer } = useSelector(state => state);
     const [loading, setLoading] = useState(false);
     const [username, setUserName] = useState(UserReducer.data.user.name || UserReducer.data.user.username);
-    const [title, setTitle] = useState(UserReducer.data.user.title || UserReducer.data.user.firstName + ' ' + UserReducer.data.user.lastName);
+    const [title, setTitle] = useState(UserReducer.data.user.title);
     const [firstName, setFirstName] = useState(UserReducer.data.user.firstName);
     const [lastName, setLastName] = useState(UserReducer.data.user.lastName);
     const [address, setAddress] = useState(UserReducer.data.user.address);
@@ -220,6 +220,7 @@ function Profile({
                         <Avatar>
                             <C_Image
                                 uri={photo.uri}
+                                imageType="profile"
                                 imageStyle={{ width: '100%', height: '100%' }}
                             />
                         </Avatar>
@@ -242,6 +243,7 @@ function Profile({
                         <EditableInput
                             value={username}
                             onChangeText={setUserName}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("common.UserName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -254,6 +256,7 @@ function Profile({
                         <EditableInput
                             value={title}
                             onChangeText={setTitle}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("common.artistname")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -266,6 +269,7 @@ function Profile({
                         <EditableInput
                             value={firstName}
                             onChangeText={setFirstName}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("wallet.common.firstName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -278,6 +282,7 @@ function Profile({
                         <EditableInput
                             value={lastName}
                             onChangeText={setLastName}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("wallet.common.lastName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -290,6 +295,7 @@ function Profile({
                         <EditableInput
                             value={address}
                             onChangeText={setAddress}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("common.address")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -300,8 +306,10 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            keyboardType='numeric'
                             value={phoneNumber}
                             onChangeText={setPhoneNumber}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("common.phoneNumber")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -314,6 +322,7 @@ function Profile({
                         <EditableInput
                             value={email}
                             onChangeText={setEmail}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("common.email")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -326,6 +335,7 @@ function Profile({
                         <EditableInput
                             value={website}
                             onChangeText={setWebsite}
+                            placeholderTextColor={'grey'}
                             placeholder={translate("common.website")} />
                     </RowBetweenWrap>
                     <SpaceView mTop={SIZE(12)} />
@@ -344,6 +354,7 @@ function Profile({
                             value={about}
                             onChangeText={setAbout}
                             multiline
+                            placeholderTextColor={'grey'}
                             placeholder={translate("wallet.common.aboutMe")} />
                     </RowWrap>
 
