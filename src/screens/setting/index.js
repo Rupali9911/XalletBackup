@@ -21,7 +21,7 @@ import {AppHeader} from '../../components';
 import Colors from '../../constants/Colors';
 import {colors} from '../../res';
 import {setAppLanguage} from '../../store/reducer/languageReducer';
-import { _logout } from '../../store/reducer/userReducer';
+import { endMainLoading, _logout } from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
 import {confirmationAlert} from '../../common/function';
 import styles from './styled';
@@ -103,13 +103,14 @@ function Setting({navigation}) {
           <ListItem
             onPress={() => {
               confirmationAlert(
-                translate('common.Logout'),
+                translate('wallet.common.verification'),
                 translate('wallet.common.logOutQ'),
-                null,
+                translate('wallet.common.cancel'),
                 '',
                 () => {
                   AsyncStorage.clear((err)=>console.log(err)).then(()=>{
                     dispatch(_logout());
+                    dispatch(endMainLoading());
                   });
                 },
                 () => null

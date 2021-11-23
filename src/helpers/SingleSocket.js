@@ -66,6 +66,12 @@ export default class SingleSocket extends Component {
     }
   }
 
+  closeConnection = () => {
+    if (this.webSocketBridge !== null) {
+      this.webSocketBridge.close();
+    }
+  }
+
   render(){
     return null;
   }

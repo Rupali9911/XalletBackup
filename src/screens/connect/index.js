@@ -64,16 +64,16 @@ const ListItems = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
+        <TouchableOpacity disabled onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
                 <Image style={styles.profileImage} source={{uri: details?.icon}} />
             </View>
             <View style={styles.centerCont} >
                 <Text style={styles.tokenName} >{details?.name}</Text>
             </View>
-            <View style={{ ...CommonStyles.center }} >
+            <TouchableOpacity style={{ ...CommonStyles.center }} onPress={() => props.onDisconnect && props.onDisconnect(item, details?.name)}>
                 <Image style={styles.actionIcon} source={ImagesSrc.deleteIcon} />
-            </View>
+            </TouchableOpacity>
         </TouchableOpacity>
     )
 }
@@ -107,7 +107,7 @@ const Connect = ({ route, navigation }) => {
     }
 
     const renderApps = ({ item, index }) => {
-        return <ListItems item={item} socketOpen={socketOpen}/>
+        return <ListItems item={item} socketOpen={socketOpen} onDisconnect={disconnectApp}/>
     }
 
     const keyExtractor = (item, index) => { return `_${index}` }
@@ -195,6 +195,27 @@ const Connect = ({ route, navigation }) => {
             }
         }
         singleSocket.onSendMessage(data);
+    }
+
+    const disconnectApp = (id, name) => {
+        confirmationAlert(
+            translate('wallet.common.verification'),
+            translate('wallet.common.askDisconnect',{appName: name}),
+            translate('wallet.common.cancel'),
+            '',
+            () => {
+                let data = {
+                    type: "remove",
+                    data: { 
+                        appId: id,
+                        walletId: wallet.address
+                    }
+                }
+                console.log('data',data);
+                singleSocket.onSendMessage(data);
+            },
+            () => null
+          );
     }
 
     return (
