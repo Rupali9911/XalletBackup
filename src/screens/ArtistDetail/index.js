@@ -243,7 +243,7 @@ const Collection = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myCollection"));
-                        navigation.navigate("DetailItem", { index: findIndex, owner: id });
+                        navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
                     {
