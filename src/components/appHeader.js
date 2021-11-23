@@ -1,12 +1,11 @@
 import React from "react";
-import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from '../constants/Colors';
 import CommonStyles from '../constants/styles';
 import { hp, RF, wp } from '../constants/responsiveFunct';
 import ImagesSrc from "../constants/Images";
-import TextView from "./appText";
 import { FONTS, COLORS } from '../constants';
 
 function AppHeader(props) {
@@ -14,7 +13,6 @@ function AppHeader(props) {
 
     return (
         <View style={[styles.container, props.containerStyle]} >
-
             <View style={{ flex: 1, justifyContent: "center" }} >
                 {
                     props.showBackButton ?
@@ -29,7 +27,7 @@ function AppHeader(props) {
                 props.titleComponent ?
                     props.titleComponent
                     :
-                    <TextView style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</TextView>
+                    <Text style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
             }
             <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }} >
                 {
@@ -50,16 +48,15 @@ function AppHeader(props) {
 const styles = StyleSheet.create({
     container: {
         height: hp('7%'),
+        width: "100%",
         flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 5,
         paddingHorizontal: wp("3%"),
     },
     title: {
         fontSize: RF(2.0),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
+        textAlignVertical: "center",
         color: COLORS.BLACK1
     },
     backContainer: {
