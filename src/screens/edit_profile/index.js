@@ -62,7 +62,7 @@ function Profile({
     const { UserReducer } = useSelector(state => state);
     const [loading, setLoading] = useState(false);
     const [username, setUserName] = useState(UserReducer.data.user.name || UserReducer.data.user.username);
-    const [title, setTitle] = useState(UserReducer.data.user.title || UserReducer.data.user.firstName + ' ' + UserReducer.data.user.lastName);
+    const [title, setTitle] = useState(UserReducer.data.user.title);
     const [firstName, setFirstName] = useState(UserReducer.data.user.firstName);
     const [lastName, setLastName] = useState(UserReducer.data.user.lastName);
     const [address, setAddress] = useState(UserReducer.data.user.address);
