@@ -868,7 +868,9 @@
             "noAppConnect": "표시할 앱이 연결되지 않았습니다.",
             "paymentComplete": "완벽한",
             "paymentFailed": "결제 실패",
-            "remittanceFailure": "송금 실패"
+            "remittanceFailure": "송금 실패",
+            "Dislike": "싫어함",
+            "askDisconnect": "이 {{appName}} 앱을 삭제하시겠습니까?"
         },
         "backendmessage": {
             "error": {},

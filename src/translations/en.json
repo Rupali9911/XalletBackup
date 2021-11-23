@@ -868,7 +868,9 @@
             "noAppConnect": "No app connected to show",
             "paymentComplete": "Complete",
             "paymentFailed": "Payment Failed",
-            "remittanceFailure": "Remittance Failure"
+            "remittanceFailure": "Remittance Failure",
+            "Dislike": "Dislike",
+            "askDisconnect": "Are you sure you want to remove this {{appName}} app?"
         },
         "backendmessage": {
             "error": {},

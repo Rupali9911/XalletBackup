@@ -868,7 +868,9 @@
             "noAppConnect": "未連接應用程序以顯示",
             "paymentComplete": "完全的",
             "paymentFailed": "支付失敗",
-            "remittanceFailure": "匯款失敗"
+            "remittanceFailure": "匯款失敗",
+            "Dislike": "不喜欢",
+            "askDisconnect": "您確定要刪除此 {{appName}} 應用嗎？"
         },
         "backendmessage": {
             "error": {},
