@@ -150,7 +150,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     AppState.addEventListener('change', appStateChange);
-    // dispatch(getAllArtist());
+    dispatch(getAllArtist());
 
     if (requestAppId) {
       navigation.navigate("Connect", { appId: requestAppId });

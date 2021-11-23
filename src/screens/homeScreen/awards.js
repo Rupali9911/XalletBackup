@@ -19,12 +19,12 @@ const Awards = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    // useEffect(() => {
-    //     dispatch(awardsNftLoadStart());
-    //     dispatch(awardsNftListReset());
-    //     getNFTlist(1);
-    //     dispatch(awardsNftPageChange(1));
-    // }, [])
+    useEffect(() => {
+        dispatch(awardsNftLoadStart());
+        dispatch(awardsNftListReset());
+        getNFTlist(1);
+        dispatch(awardsNftPageChange(1));
+    }, [])
 
     const getNFTlist = useCallback((page, limit) => {
         dispatch(getAwardsNftList(page, limit));
