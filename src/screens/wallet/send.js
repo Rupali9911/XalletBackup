@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image, Alert, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, Image, Alert, KeyboardAvoidingView } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -22,7 +22,8 @@ import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import { openSettings } from 'react-native-permissions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SIZE } from '../../constants';
+
+const { height } = Dimensions.get('window');
 
 let flag = true;
 
@@ -524,8 +525,12 @@ const SendScreen = (props) => {
                             }} />
                     </View>
                 </View>
-                <View style={{ height: SIZE(300), justifyContent: 'flex-end' }}>
-                    <AppButton label={translate("wallet.common.send")} view={loading} containerStyle={CommonStyles.button} labelStyle={CommonStyles.buttonLabel}
+                <View style={{ height: height / 2.7, justifyContent: 'flex-end' }}>
+                    <AppButton
+                        label={translate("wallet.common.send")}
+                        view={loading}
+                        containerStyle={CommonStyles.button}
+                        labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
                             if (address && address !== '' && amount > 0) {
                                 if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
