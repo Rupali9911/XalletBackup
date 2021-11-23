@@ -461,12 +461,12 @@ function Profile({
                 {
                     links &&
                     <TouchableOpacity onPress={() => {
-                        Linking.openURL(links.website);
+                        links.website.includes('://') ? Linking.openURL(links.website) : Linking.openURL(`https://${links.website}`);
                     }}>
                         <RowWrap>
                             <ConnectSmIcon />
                             <WebsiteLink>
-                                {links.website.split('/')[2]}
+                                {links.website.includes('://') ? links.website.split('/')[2] : links.website}
                             </WebsiteLink>
                         </RowWrap>
                     </TouchableOpacity>
