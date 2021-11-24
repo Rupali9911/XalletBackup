@@ -22,8 +22,8 @@ import SingleSocket from '../../helpers/SingleSocket';
 import {updateCreateState} from '../../store/reducer/userReducer';
 import {
   updateBalances,
-  updateEthereumBalances,
   updateBSCBalances,
+  updateEthereumBalances,
   updatePolygonBalances,
 } from '../../store/reducer/walletReducer';
 import {environment, translate} from '../../walletUtils';
@@ -90,7 +90,7 @@ const Wallet = ({route, navigation}) => {
 
   useEffect(() => {
     singleSocket.connectSocket().then(() => {
-        ping(wallet.address);
+      ping(wallet.address);
     });
 
     const socketSubscribe = Events.asObservable().subscribe({
@@ -176,19 +176,15 @@ const Wallet = ({route, navigation}) => {
   }, [network]);
 
   useEffect(() => {
-    console.log('update Total', network);
     if (balances) {
       if (network.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-        console.log('value', value);
         setTotalValue(value);
       } else if (network.name == 'BSC') {
         let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-        console.log('value', value);
         setTotalValue(value);
       } else if (network.name == 'Polygon') {
         let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-        console.log('value', value);
         setTotalValue(value);
       }
     }
@@ -198,7 +194,6 @@ const Wallet = ({route, navigation}) => {
     let totalValue = 0;
     if (network.name == 'Ethereum') {
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-      // console.log('Ethereum value',value);
       totalValue = value;
     } else if (network.name == 'BSC') {
       // for mainnet
@@ -206,7 +201,6 @@ const Wallet = ({route, navigation}) => {
 
       //for testing
       let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-      // console.log('BSC value',value);
       totalValue = value;
     } else if (network.name == 'Polygon') {
       //for mainnet
@@ -214,7 +208,6 @@ const Wallet = ({route, navigation}) => {
 
       //for testing
       let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-      // console.log('Polygon value',value);
       totalValue = value;
     }
     return totalValue;
@@ -263,7 +256,6 @@ const Wallet = ({route, navigation}) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('balances',responses);
           let balances = {
             ETH: responses[0],
             // USDT: responses[1],
@@ -297,7 +289,6 @@ const Wallet = ({route, navigation}) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('balances',responses);
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
@@ -332,7 +323,6 @@ const Wallet = ({route, navigation}) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('balances',responses);
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
@@ -386,7 +376,6 @@ const Wallet = ({route, navigation}) => {
 
         Promise.all(balanceRequests)
           .then(responses => {
-            // console.log('balances',responses);
             let balances = {
               ETH: responses[0],
               BNB: responses[1],
@@ -486,7 +475,11 @@ const Wallet = ({route, navigation}) => {
               containerStyle={styles.outlinedButton}
               labelStyle={[
                 CommonStyles.outlineButtonLabel,
-                CommonStyles.text(Fonts.ARIAL, Colors.greyButtonLabel, RF(1.65)),
+                CommonStyles.text(
+                  Fonts.ARIAL,
+                  Colors.greyButtonLabel,
+                  RF(1.65),
+                ),
               ]}
               onPress={() => setIsBackedUp(true)}
             />
