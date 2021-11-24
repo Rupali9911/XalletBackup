@@ -21,7 +21,9 @@ import {
 import { C_Image } from 'src/components';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
-import Video from 'react-native-fast-video';
+// import Video from 'react-native-fast-video';
+import Video from 'react-native-video';
+
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';

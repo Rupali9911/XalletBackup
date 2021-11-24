@@ -120,18 +120,10 @@ const Created = ({ route }) => {
                         navigation.navigate("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
-                    {
-                        image ?
-                            <C_Image
-                                uri={image}
-                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                imageStyle={styles.listImage} />
-                            : <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }} >
-                                    {translate("wallet.common.error.noImage")}
-                                </Text>
-                            </View>
-                    }
+                    <C_Image
+                        uri={image}
+                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                        imageStyle={styles.listImage} />
                 </TouchableOpacity>
             )
         }
@@ -233,18 +225,11 @@ const Collection = ({ route }) => {
                         navigation.navigate("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
-                    {
-                        image ?
-                            <C_Image
-                                uri={image}
-                                type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                                imageStyle={styles.listImage} />
-                            : <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }} >
-                                    {translate("wallet.common.error.noImage")}
-                                </Text>
-                            </View>
-                    }
+                    <C_Image
+                        uri={image}
+                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
+                        imageStyle={styles.listImage} />
+
                 </TouchableOpacity>
             )
         }

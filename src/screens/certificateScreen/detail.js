@@ -20,7 +20,9 @@ import {
     SIZE,
     IMAGES
 } from 'src/constants';
-import Video from 'react-native-fast-video';
+// import Video from 'react-native-fast-video';
+import Video from 'react-native-video';
+
 import { translate } from '../../walletUtils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import PaymentMethod from '../../components/PaymentMethod';
@@ -404,7 +406,6 @@ const DetailScreen = ({ route, navigation }) => {
             navigation.push('ArtistDetail', { id: artistId });
         }
     }
-    console.log(fileType !== 'mp4', fileType !== 'MP4', fileType !== 'mov', fileType !== 'MOV', "aaaaaaaaa")
     return (
         <>
             <SafeAreaView style={styles.mainContainer}>

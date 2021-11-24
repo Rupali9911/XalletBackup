@@ -2,7 +2,9 @@ import { BlurView } from '@react-native-community/blur';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import Video from 'react-native-fast-video';
+// import Video from 'react-native-fast-video';
+import Video from 'react-native-video';
+
 import { createImageProgress } from 'react-native-image-progress';
 import Modal from 'react-native-modal';
 import * as Progress from 'react-native-progress';
