@@ -66,7 +66,7 @@ const Hot = () => {
           }}
           onPress={() => {
             dispatch(changeScreenName('Hot'));
-            navigation.navigate('DetailItem', { index: findIndex });
+            navigation.push('DetailItem', { index: findIndex });
           }}
           style={styles.listItem}>
           <C_Image

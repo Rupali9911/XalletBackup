@@ -871,6 +871,7 @@
             "remittanceFailure": "송금 실패",
             "Dislike": "싫어함",
             "askDisconnect": "이 {{appName}} 앱을 삭제하시겠습니까?"
+            "emailValidation": "이메일이 확인되지 않았습니다.",
         },
         "backendmessage": {
             "error": {},

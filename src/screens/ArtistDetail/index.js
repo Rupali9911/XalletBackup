@@ -344,6 +344,7 @@ function ArtistDetail({
             .then(response => response.json())
             .then(res => {
                 if (res.data) {
+                    console.log('======', res.data)
                     setData(res.data);
                 }
                 getIsFollowing(route.params.id);
@@ -408,6 +409,11 @@ function ArtistDetail({
 
     const onFollow = async () => {
         await dispatch(handleFollow(data._id, isFollowing));
+        if (!isFollowing) {
+            data.followers = data.followers + 1;
+        } else {
+            data.followers = data.followers - 1;
+        }
         setFollowing(!isFollowing);
     }
 
@@ -482,7 +488,7 @@ function ArtistDetail({
                 </SmallBoldText>
                 <SpaceView mTop={SIZE(8)} />
                 {
-                    data.about &&
+                    data.about !== "" &&
                     <ScrollView style={{ maxHeight: SIZE(70) }}>
                         <SmallNormalText>
                             {data.about}

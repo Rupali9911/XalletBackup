@@ -112,15 +112,21 @@ function Profile({
 
     const onSave = async () => {
 
-        if (!validateEmail(email)) {
-            alert('Email is not validated');
+        if (email && !validateEmail(email)) {
+            alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                translate("wallet.common.emailValidation"),
+                () => {
+                    console.log(err);
+                }
+            );
             return;
         }
 
-        if (!validURL(website)) {
-            alert('Website is not validated');
-            return;
-        }
+        // if (website && !validURL(website)) {
+        //     alert('Website is not validated');
+        //     return;
+        // }
 
         setLoading(true);
 
