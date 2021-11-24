@@ -186,10 +186,9 @@ export const endLoader = () => dispatch =>
 
 export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
-  const { wallet, userData, BackedUp, apps } = asyncData;
-
-  if (wallet && userData) {
-    dispatch(
+    if (asyncData && asyncData.wallet && asyncData.userData) {
+      const { wallet, userData, BackedUp, apps } = asyncData;
+        dispatch(
       setUserData({
         data: userData,
         wallet: wallet,
