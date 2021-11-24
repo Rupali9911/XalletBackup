@@ -36,6 +36,7 @@ const C_Image = (props) => {
                         <Video
                             source={{ uri: props.uri }}
                             resizeMode={'cover'}
+                            paused={true}
                             onError={(e) => console.log("error", e)}
                             style={props.imageStyle} />
                     // <FastImage
