@@ -868,7 +868,8 @@
             "noAppConnect": "未连接应用程序以显示",
             "paymentComplete": "完全的",
             "paymentFailed": "支付失败",
-            "remittanceFailure": "汇款失败"
+            "remittanceFailure": "汇款失败",
+            "emailValidation": "电子邮件未经验证"
         },
         "backendmessage": {
             "error": {},

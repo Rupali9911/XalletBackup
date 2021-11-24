@@ -868,7 +868,8 @@
             "noAppConnect": "No app connected to show",
             "paymentComplete": "Complete",
             "paymentFailed": "Payment Failed",
-            "remittanceFailure": "Remittance Failure"
+            "remittanceFailure": "Remittance Failure",
+            "emailValidation": "Email is not validated"
         },
         "backendmessage": {
             "error": {},
