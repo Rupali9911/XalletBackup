@@ -869,8 +869,7 @@
             "paymentComplete": "完了",
             "paymentFailed": "入金失敗",
             "remittanceFailure": "送金失敗",
-            "Dislike": "嫌い",
-            "askDisconnect": "この{{appName}}アプリを削除してもよろしいですか？"
+            "Dislike": "嫌い"
         },
         "backendmessage": {
             "error": {},
