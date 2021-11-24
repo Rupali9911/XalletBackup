@@ -112,12 +112,12 @@ function Profile({
 
     const onSave = async () => {
 
-        if (!validateEmail(email)) {
+        if (email && !validateEmail(email)) {
             alert('Email is not validated');
             return;
         }
 
-        if (!validURL(website)) {
+        if (website && !validURL(website)) {
             alert('Website is not validated');
             return;
         }
