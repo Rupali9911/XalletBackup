@@ -869,7 +869,6 @@
             "paymentComplete": "完全的",
             "paymentFailed": "支付失败",
             "remittanceFailure": "汇款失败",
-            "Dislike": "不喜欢",
             "askDisconnect": "您确定要删除此 {{appName}} 应用吗？",
             "emailValidation": "电子邮件未经验证"
         },

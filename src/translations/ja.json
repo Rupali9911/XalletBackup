@@ -869,7 +869,6 @@
             "paymentComplete": "完了",
             "paymentFailed": "入金失敗",
             "remittanceFailure": "送金失敗",
-            "Dislike": "嫌い",
             "askDisconnect": "この{{appName}}アプリを削除してもよろしいですか？",
             "emailValidation": "入力されたメールアドレスは有効ではありません。"
         },
