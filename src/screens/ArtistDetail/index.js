@@ -408,6 +408,11 @@ function ArtistDetail({
 
     const onFollow = async () => {
         await dispatch(handleFollow(data._id, isFollowing));
+        if (!isFollowing) {
+            data.followers = data.followers + 1;
+        } else {
+            data.followers = data.followers - 1;
+        }
         setFollowing(!isFollowing);
     }
 
