@@ -17,6 +17,7 @@ import { changeScreenName } from '../../store/actions/authAction';
 import { Loader } from '../../components';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
+import AppSearch from '../../components/appSearch';
 
 function ExploreScreen({
     navigation
@@ -66,6 +67,7 @@ function ExploreScreen({
                     {translate("wallet.common.explore")}
                 </HeaderText>
             </Header>
+            <AppSearch />
             {
                 ListReducer.page === 1 && loading ?
                     <Loader /> :

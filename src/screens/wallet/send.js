@@ -192,7 +192,7 @@ export const PaymentField = (props) => {
     return (
         <View style={[styles.inputMainCont]} >
             <Text style={styles.inputLeft} >{translate("wallet.common.amount")}</Text>
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex:1, flexDirection: 'row', alignItems: 'center' }}>
                 <TextInput
                     style={[styles.inputCont, styles.paymentField, { fontSize: RF(2) }]}
                     keyboardType='decimal-pad'
@@ -704,7 +704,8 @@ const styles = StyleSheet.create({
         ...CommonStyles.imageStyles(13),
     },
     inputCont: {
-        paddingHorizontal: wp("1%")
+        paddingHorizontal: wp("1%"),
+        height: hp('5%')
     },
     inputLeft: {
         ...CommonStyles.text(Fonts.ARIAL, Colors.GREY1, RF(1.6))
@@ -726,7 +727,7 @@ const styles = StyleSheet.create({
     },
     inputMainCont: {
         width: "100%",
-        height: hp("7%"),
+        // height: hp("7%"),
         borderWidth: 0,
         borderBottomWidth: 1,
         borderBottomColor: Colors.GREY1,
