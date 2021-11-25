@@ -49,7 +49,7 @@ const Awards = () => {
     if (!AwardsNFTReducer.awardsNftLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
-  
+
   const renderItem = ({item}) => {
     let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
       x => x.id === item.id,
