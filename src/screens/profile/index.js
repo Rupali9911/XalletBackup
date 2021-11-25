@@ -319,7 +319,8 @@ function Profile({
         title,
         firstName,
         lastName,
-        links
+        links,
+        username
     } = UserReducer.data.user;
 
     const renderTabView = () => {
@@ -398,7 +399,7 @@ function Profile({
             <DescriptionView>
                 <SpaceView mTop={SIZE(12)} />
                 <SmallBoldText>
-                    {title || firstName + ' ' + lastName}
+                    {title || ((firstName || lastName) && firstName + ' ' + lastName) || username}
                 </SmallBoldText>
                 <SpaceView mTop={SIZE(8)} />
                 {

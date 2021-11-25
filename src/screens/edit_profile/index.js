@@ -247,6 +247,7 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            editable={false}
                             value={username}
                             onChangeText={setUserName}
                             placeholderTextColor={'grey'}

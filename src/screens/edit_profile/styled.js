@@ -35,6 +35,7 @@ const EditableInput = styled.TextInput`
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
     padding-right: ${SIZE(10)}px;
+    color: ${COLORS.BLACK1};
 `;
 
 const MultiLineEditableInput = styled.TextInput`
