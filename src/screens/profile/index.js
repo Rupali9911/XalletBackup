@@ -313,7 +313,7 @@ function Profile({
         dispatch(myNftListReset());
     }, [isFocusedHistory]);
 
-    const id = UserReducer.data.user.name || UserReducer.wallet.address;
+    const id = UserReducer.data.user.username || UserReducer.wallet.address;
     const {
         about,
         title,

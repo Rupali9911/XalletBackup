@@ -136,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
   const { showSuccess } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
-  const { passcodeAsync } = useSelector(state => state.UserReducer);
+  const { passcodeAsync, data } = useSelector(state => state.UserReducer);
 
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
@@ -169,7 +169,7 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
-
+console.log('data',data);
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

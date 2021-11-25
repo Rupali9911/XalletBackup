@@ -119,59 +119,60 @@ const Wallet = ({route, navigation}) => {
 
   useEffect(() => {
     setLoading(true);
-    if (network.name == 'Ethereum' && subscribeEth == null) {
-      subscribeEth = watchBalanceUpdate(() => {
-        getBalances(wallet.address);
-      }, 'eth');
-    } else if (network.name == 'BSC' && subscribeBnb == null) {
-      subscribeBnb = watchBalanceUpdate(() => {
-        getBalances(wallet.address);
-      }, 'bsc');
-      // watchBnBBalance();
-    } else if (network.name == 'Polygon' && subscribeMatic == null) {
-      subscribeMatic = watchBalanceUpdate(() => {
-        getBalances(wallet.address);
-      }, 'polygon');
-    } else {
-      subscribeEth &&
-        subscribeEth.unsubscribe((error, success) => {
-          if (success) {
-            console.log('ETH Successfully unsubscribed!');
-            subscribeEth == null;
-          }
-        });
-      subscribeBnb &&
-        subscribeBnb.unsubscribe((error, success) => {
-          if (success) {
-            console.log('BNB Successfully unsubscribed!');
-            subscribeBnb == null;
-          }
-        });
-      subscribeMatic &&
-        subscribeMatic.unsubscribe((error, success) => {
-          if (success) {
-            console.log('Matic Successfully unsubscribed!');
-            subscribeMatic == null;
-          }
-        });
-    }
+    getBalances(wallet.address);
+    // if (network.name == 'Ethereum' && subscribeEth == null) {
+    //   subscribeEth = watchBalanceUpdate(() => {
+    //     getBalances(wallet.address);
+    //   }, 'eth');
+    // } else if (network.name == 'BSC' && subscribeBnb == null) {
+    //   subscribeBnb = watchBalanceUpdate(() => {
+    //     getBalances(wallet.address);
+    //   }, 'bsc');
+    //   // watchBnBBalance();
+    // } else if (network.name == 'Polygon' && subscribeMatic == null) {
+    //   subscribeMatic = watchBalanceUpdate(() => {
+    //     getBalances(wallet.address);
+    //   }, 'polygon');
+    // } else {
+    //   subscribeEth &&
+    //     subscribeEth.unsubscribe((error, success) => {
+    //       if (success) {
+    //         console.log('ETH Successfully unsubscribed!');
+    //         subscribeEth == null;
+    //       }
+    //     });
+    //   subscribeBnb &&
+    //     subscribeBnb.unsubscribe((error, success) => {
+    //       if (success) {
+    //         console.log('BNB Successfully unsubscribed!');
+    //         subscribeBnb == null;
+    //       }
+    //     });
+    //   subscribeMatic &&
+    //     subscribeMatic.unsubscribe((error, success) => {
+    //       if (success) {
+    //         console.log('Matic Successfully unsubscribed!');
+    //         subscribeMatic == null;
+    //       }
+    //     });
+    // }
 
     return () => {
       // ethSubscription.unsubscribe();
       // bnbSubscription.unsubscribe();
       // polygonSubscription.unsubscribe();
-      subscribeEth &&
-        subscribeEth.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeBnb &&
-        subscribeBnb.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeMatic &&
-        subscribeMatic.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
+      // subscribeEth &&
+      //   subscribeEth.unsubscribe((error, success) => {
+      //     if (success) console.log('Successfully unsubscribed!');
+      //   });
+      // subscribeBnb &&
+      //   subscribeBnb.unsubscribe((error, success) => {
+      //     if (success) console.log('Successfully unsubscribed!');
+      //   });
+      // subscribeMatic &&
+      //   subscribeMatic.unsubscribe((error, success) => {
+      //     if (success) console.log('Successfully unsubscribed!');
+      //   });
     };
   }, [network]);
 

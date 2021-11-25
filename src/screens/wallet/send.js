@@ -5,7 +5,7 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
-import { translate, amountValidation, environment, processScanResult } from '../../walletUtils';
+import { translate, amountValidation, environment, processScanResult, SCAN_WALLET } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -226,7 +226,7 @@ const ScanScreen = (props) => {
 
     const onSuccess = (e) => {
         console.log('e', e);
-        processScanResult(e).then((result) => {
+        processScanResult(e,SCAN_WALLET).then((result) => {
             if (result.walletAddress) {
                 verifyAddress(result.walletAddress).then(() => {
                     setResult(result.walletAddress, result.amount);

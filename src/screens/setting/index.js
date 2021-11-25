@@ -108,9 +108,11 @@ function Setting({navigation}) {
                 translate('wallet.common.cancel'),
                 '',
                 () => {
-                  AsyncStorage.clear((err)=>console.log(err)).then(()=>{
+                  const _selectedLanguageItem = selectedLanguageItem;
+                  AsyncStorage.multiRemove(['@passcode','@wallet','@BackedUp','@apps'],(err)=>console.log(err)).then(()=>{
                     dispatch(_logout());
                     dispatch(endMainLoading());
+                    dispatch(setAppLanguage(_selectedLanguageItem));
                   });
                 },
                 () => null

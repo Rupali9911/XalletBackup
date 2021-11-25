@@ -73,6 +73,8 @@ export const myNFTList = (page, ownerId) => {
             `${BASE_URL}/xanalia/mydata` :
             `${BASE_URL}/user/get-user-collection`;
 
+            console.log(url, fetch_data_body);
+
         fetch(url, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
