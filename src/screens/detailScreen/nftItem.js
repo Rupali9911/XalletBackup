@@ -226,9 +226,11 @@ const nftItem = ({ item, index }) => {
 
   const onProfile = (isOwner) => {
     if (isOwner) {
-      navigation.push('ArtistDetail', { id: ownerId, });
+      if (ownerId)
+        navigation.push('ArtistDetail', { id: ownerId, });
     } else {
-      navigation.push('ArtistDetail', { id: artistId });
+      if (artistId)
+        navigation.push('ArtistDetail', { id: artistId });
     }
   }
 

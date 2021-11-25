@@ -870,7 +870,8 @@
             "paymentFailed": "Payment Failed",
             "remittanceFailure": "Remittance Failure",
             "Dislike": "Dislike",
-            "askDisconnect": "Are you sure you want to remove this {{appName}} app?"
+            "askDisconnect": "Are you sure you want to remove this {{appName}} app?",
+            "emailValidation": "Email is not validated"
         },
         "backendmessage": {
             "error": {},
