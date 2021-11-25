@@ -20,6 +20,7 @@ import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
+import NetInfo from '@react-native-community/netinfo';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -141,6 +142,7 @@ const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
+  const [online, setOnline] = useState(false);
 
   const appStateChange = (nextAppState) => {
     var pass = passcodeAsync;
@@ -151,12 +153,31 @@ const HomeScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
+    const removeNetInfoSubscription = NetInfo.addEventListener(state => {
+      const offline = !state.isConnected;
+
+      if (state.isInternetReachable) {
+        if (offline) {
+          alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('wallet.common.error.networkError')
+          );
+        } else {
+          setOnline(true);
+          dispatch(getAllArtist());
+        }
+      }
+    });
+
     AppState.addEventListener('change', appStateChange);
-    dispatch(getAllArtist());
 
     if (requestAppId) {
       navigation.navigate("Connect", { appId: requestAppId });
     }
+
+    return () => {
+      removeNetInfoSubscription();
+    };
 
   }, [requestAppId]);
 
@@ -194,7 +215,7 @@ const HomeScreen = ({ navigation }) => {
 
         <View>
           {
-            artistLoading ?
+            online && artistLoading ?
               <View style={{ width: "100%", height: hp("12%"), justifyContent: "center", alignItems: "center" }} >
                 <ActivityIndicator size="small" color={colors.themeR} />
               </View> :
@@ -227,7 +248,7 @@ const HomeScreen = ({ navigation }) => {
               </ScrollView>
           }
         </View>
-        {showSuccess ? null : (
+        {online && (showSuccess ? null : (
           <Tab.Navigator
             tabBarOptions={{
               activeTintColor: colors.BLUE4,
@@ -269,7 +290,7 @@ const HomeScreen = ({ navigation }) => {
               component={Favorite}
             />
           </Tab.Navigator>
-        )}
+        ))}
       </SafeAreaView>
       <AppModal
         visible={modalVisible}

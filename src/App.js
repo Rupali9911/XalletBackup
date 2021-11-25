@@ -1,26 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {StripeProvider} from '@stripe/stripe-react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import {Image, Linking, LogBox} from 'react-native';
+import { Image, Linking, LogBox } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
-import {Provider, useDispatch, useSelector} from 'react-redux';
-import {Subject} from 'rxjs';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Subject } from 'rxjs';
 import '../shim';
 import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
 } from './common/responsiveFunction';
-import {AppSplash} from './components';
+import { AppSplash } from './components';
 import Colors from './constants/Colors';
 import ImageSrc from './constants/Images';
-import {screenWidth} from './constants/responsiveFunct';
+import { screenWidth } from './constants/responsiveFunct';
 import AuthStack from './navigations/authStack';
-import {fonts, images} from './res';
+import { fonts, images } from './res';
 import ArtistDetail from './screens/ArtistDetail';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
@@ -50,31 +50,31 @@ import Send from './screens/wallet/send';
 import TokenDetail from './screens/wallet/tokenDetail';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import Store from './store';
-import {getAllLanguages, setAppLanguage} from './store/reducer/languageReducer';
+import { getAllLanguages, setAppLanguage } from './store/reducer/languageReducer';
 import {
-  loadFromAsync,
-  setPasscodeAsync,
-  startMainLoading,
+    loadFromAsync,
+    setPasscodeAsync,
+    startMainLoading,
 } from './store/reducer/userReducer';
-import {setRequestAppId} from './store/reducer/walletReducer';
-import {environment, languageArray, translate} from './walletUtils';
+import { setRequestAppId } from './store/reducer/walletReducer';
+import { environment, languageArray, translate } from './walletUtils';
 
 export const regionLanguage = RNLocalize.getLocales()
-  .map(a => a.languageCode)
-  .values()
-  .next().value;
+    .map(a => a.languageCode)
+    .values()
+    .next().value;
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const deepLinkData = {
-  url: 'xanalia://',
-  param: '0165782121489',
+    url: 'xanalia://',
+    param: '0165782121489',
 };
 
 const TabComponent = () => {
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-    React.useEffect(() => {}, [selectedLanguageItem.language_name])
+    React.useEffect(() => { }, [selectedLanguageItem.language_name])
 
     return (
         <Tab.Navigator tabBarOptions={{
@@ -104,7 +104,7 @@ const TabComponent = () => {
                 } else if (route.name === 'Wallet') {
                     iconName = focused ? ImageSrc.walletActive : ImageSrc.wallet;
                 } else if (route.name === 'Connect') {
-                    iconName = focused ? ImageSrc.connectA: ImageSrc.connect;
+                    iconName = focused ? ImageSrc.connectA : ImageSrc.connect;
                 }
 
                 // You can return any component that you like here!
@@ -137,183 +137,168 @@ const TabComponent = () => {
                 name={'Me'}
                 component={ProfileScreen}
             />
-    </Tab.Navigator>
-  );
+        </Tab.Navigator>
+    );
 };
 
 const AppRoutes = () => {
-  const {wallet, passcode, mainLoader} = useSelector(
-    state => state.UserReducer,
-  );
-  const dispatch = useDispatch();
-  const navigatorRef = React.useRef(null);
+    const { wallet, passcode, mainLoader } = useSelector(
+        state => state.UserReducer,
+    );
+    const dispatch = useDispatch();
+    const navigatorRef = React.useRef(null);
 
-  React.useEffect(() => {
-    dispatch(getAllLanguages());
-    LogBox.ignoreAllLogs();
+    React.useEffect(() => {
+        dispatch(getAllLanguages());
+        LogBox.ignoreAllLogs();
 
-    dispatch(startMainLoading());
-    // AsyncStorage.clear()
-    AsyncStorage.getAllKeys((err, keys) => {
-      console.log('keys', keys);
-      if (keys.length !== 0) {
-        AsyncStorage.multiGet(keys, (err, values) => {
-          let asyncData = {};
-          values.map(result => {
-            let name = result[0].replace(/[^a-zA-Z ]/g, '');
-            let value = JSON.parse(result[1]);
-            asyncData[name] = value;
+        dispatch(startMainLoading());
+        // AsyncStorage.clear()
+        AsyncStorage.getAllKeys((err, keys) => {
+            console.log('keys', keys);
+            if (keys.length !== 0) {
+                AsyncStorage.multiGet(keys, (err, values) => {
+                    let asyncData = {};
+                    values.map(result => {
+                        let name = result[0].replace(/[^a-zA-Z ]/g, '');
+                        let value = JSON.parse(result[1]);
+                        asyncData[name] = value;
 
-            if (name == 'passcode') {
-              dispatch(setPasscodeAsync(value));
+                        if (name == 'passcode') {
+                            dispatch(setPasscodeAsync(value));
+                        }
+                        if (name == 'language') {
+                            dispatch(setAppLanguage(value));
+                        }
+                    });
+                    dispatch(loadFromAsync(asyncData));
+                });
+            } else {
+                let item = languageArray.find(
+                    item => item.language_name == regionLanguage,
+                );
+                dispatch(setAppLanguage(item));
+                dispatch(loadFromAsync());
             }
-            if (name == 'language') {
-              dispatch(setAppLanguage(value));
-            }
-          });
-
-          const removeNetInfoSubscription = NetInfo.addEventListener(state => {
-            const offline = !state.isConnected;
-
-            if (state.isInternetReachable) {
-              if (offline) {
-                alert(translate('wallet.common.error.networkError'));
-              } else {
-                dispatch(loadFromAsync(asyncData));
-              }
-            }
-          });
-
-          return () => {
-            removeNetInfoSubscription();
-          };
         });
-      } else {
-        let item = languageArray.find(
-          item => item.language_name == regionLanguage,
-        );
-        dispatch(setAppLanguage(item));
-        dispatch(loadFromAsync());
-      }
-    });
 
-    Linking.addEventListener('url', ({url}) => {
-      console.log('e', url);
-      if (url && url.includes('xanaliaapp://connect')) {
-        let id = url.substring(url.lastIndexOf('/') + 1);
-        if (wallet) {
-          setTimeout(() => {
-            navigatorRef.current?.navigate('Connect', {appId: id});
-          }, 500);
-        } else {
-          dispatch(setRequestAppId(id));
-        }
-      }
-    });
-  }, []);
+        Linking.addEventListener('url', ({ url }) => {
+            console.log('e', url);
+            if (url && url.includes('xanaliaapp://connect')) {
+                let id = url.substring(url.lastIndexOf('/') + 1);
+                if (wallet) {
+                    setTimeout(() => {
+                        navigatorRef.current?.navigate('Connect', { appId: id });
+                    }, 500);
+                } else {
+                    dispatch(setRequestAppId(id));
+                }
+            }
+        });
+    }, []);
 
-  let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
+    let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
 
-  const linking = {
-    prefixes: ['xanaliaapp://'],
-    config: {
-      screens: {
-        Home: {
-          path: '/connect',
-          screens: {
-            Connect: {
-              path: '/:appId',
+    const linking = {
+        prefixes: ['xanaliaapp://'],
+        config: {
+            screens: {
+                Home: {
+                    path: '/connect',
+                    screens: {
+                        Connect: {
+                            path: '/:appId',
+                        },
+                    },
+                },
             },
-          },
         },
-      },
-    },
-    getStateFromPath: (path, options) => {
-      console.log('path', path);
-      let id = path.substring(path.lastIndexOf('/') + 1);
-      dispatch(setRequestAppId(id));
-      // Return a state object here
-      // You can also reuse the default logic by importing `getStateFromPath` from `@react-navigation/native`
-    },
-    // getPathFromState(state, config) {
-    //   // Return a path string here
-    //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
-    // },
-  };
+        getStateFromPath: (path, options) => {
+            console.log('path', path);
+            let id = path.substring(path.lastIndexOf('/') + 1);
+            dispatch(setRequestAppId(id));
+            // Return a state object here
+            // You can also reuse the default logic by importing `getStateFromPath` from `@react-navigation/native`
+        },
+        // getPathFromState(state, config) {
+        //   // Return a path string here
+        //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
+        // },
+    };
 
-  return (
-    <>
-      {mainLoader ? (
-        <AppSplash />
-      ) : (
-        <NavigationContainer ref={navigatorRef} linking={linking}>
-          {wallet ? (
-            <Stack.Navigator
-              initialRouteName={initialRoute}
-              headerMode="none"
-              screenOptions={{
-                gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
-              }}>
-              <Stack.Screen name="Home" component={TabComponent} />
-              <Stack.Screen
-                name="PasscodeScreen"
-                initialParams={{screen: 'Auth'}}
-                component={PasscodeScreen}
-              />
-              <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-              <Stack.Screen
-                name="CertificateDetail"
-                component={CertificateDetailScreen}
-              />
-              <Stack.Screen name="Pay" component={PayScreen} />
-              <Stack.Screen name="MakeBid" component={MakeBidScreen} />
-              <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-              <Stack.Screen name="tokenDetail" component={TokenDetail} />
-              <Stack.Screen name="receive" component={Receive} />
-              <Stack.Screen
-                name="transactionsDetail"
-                component={transactionsDetail}
-              />
-              <Stack.Screen name="send" component={Send} />
-              <Stack.Screen name="scanToConnect" component={ScanToConnect} />
-              <Stack.Screen name="Create" component={NewPostScreen} />
-              <Stack.Screen name="Certificate" component={CertificateScreen} />
-              <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
-              <Stack.Screen name="AddCard" component={AddCard} />
-              <Stack.Screen name="Cards" component={Cards} />
-              <Stack.Screen name="BuyGold" component={BuyGold} />
-              <Stack.Screen name="Setting" component={Setting} />
-              <Stack.Screen name="ChangePassword" component={ChangePassword} />
-              <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
-              <Stack.Screen name="WalletPay" component={WalletPay} />
-              <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
-              <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
-            </Stack.Navigator>
-          ) : (
-            <Stack.Navigator headerMode="none">
-              <Stack.Screen name="Authentication" component={AuthStack} />
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
-      )}
-    </>
-  );
+    return (
+        <>
+            {mainLoader ? (
+                <AppSplash />
+            ) : (
+                <NavigationContainer ref={navigatorRef} linking={linking}>
+                    {wallet ? (
+                        <Stack.Navigator
+                            initialRouteName={initialRoute}
+                            headerMode="none"
+                            screenOptions={{
+                                gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
+                            }}>
+                            <Stack.Screen name="Home" component={TabComponent} />
+                            <Stack.Screen
+                                name="PasscodeScreen"
+                                initialParams={{ screen: 'Auth' }}
+                                component={PasscodeScreen}
+                            />
+                            <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+                            <Stack.Screen
+                                name="CertificateDetail"
+                                component={CertificateDetailScreen}
+                            />
+                            <Stack.Screen name="Pay" component={PayScreen} />
+                            <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+                            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                            <Stack.Screen name="tokenDetail" component={TokenDetail} />
+                            <Stack.Screen name="receive" component={Receive} />
+                            <Stack.Screen
+                                name="transactionsDetail"
+                                component={transactionsDetail}
+                            />
+                            <Stack.Screen name="send" component={Send} />
+                            <Stack.Screen name="scanToConnect" component={ScanToConnect} />
+                            <Stack.Screen name="Create" component={NewPostScreen} />
+                            <Stack.Screen name="Certificate" component={CertificateScreen} />
+                            <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
+                            <Stack.Screen name="AddCard" component={AddCard} />
+                            <Stack.Screen name="Cards" component={Cards} />
+                            <Stack.Screen name="BuyGold" component={BuyGold} />
+                            <Stack.Screen name="Setting" component={Setting} />
+                            <Stack.Screen name="ChangePassword" component={ChangePassword} />
+                            <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
+                            <Stack.Screen name="WalletPay" component={WalletPay} />
+                            <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
+                            <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
+                        </Stack.Navigator>
+                    ) : (
+                        <Stack.Navigator headerMode="none">
+                            <Stack.Screen name="Authentication" component={AuthStack} />
+                        </Stack.Navigator>
+                    )}
+                </NavigationContainer>
+            )}
+        </>
+    );
 };
 
 export const Events = new Subject();
 
 const App = () => {
-  return (
-    <Provider store={Store}>
-      <StripeProvider
-        publishableKey={environment.stripeKey.p_key}
-        urlScheme="xanalia" // required for 3D Secure and bank redirects
-        merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
-      >
-        <AppRoutes />
-      </StripeProvider>
-    </Provider>
-  );
+    return (
+        <Provider store={Store}>
+            <StripeProvider
+                publishableKey={environment.stripeKey.p_key}
+                urlScheme="xanalia" // required for 3D Secure and bank redirects
+                merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
+            >
+                <AppRoutes />
+            </StripeProvider>
+        </Provider>
+    );
 };
 
 export default App;

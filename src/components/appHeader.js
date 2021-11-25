@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "row",
         paddingHorizontal: wp("3%"),
+        alignItems: 'center'
     },
     title: {
         fontSize: RF(2.0),
