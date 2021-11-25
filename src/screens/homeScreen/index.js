@@ -297,7 +297,10 @@ const HomeScreen = ({ navigation }) => {
         onRequestClose={() => setModalVisible(false)}>
         {isSuccessVisible ? (
           <SuccessModal
-            onClose={() => setModalVisible(false)}
+            onClose={() => {
+              setModalVisible(false);
+              dispatch(updateCreateState());
+            }}
             onDonePress={() => {
               setSuccessVisible(false);
               checkPermissions();
