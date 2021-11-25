@@ -188,13 +188,23 @@ function Profile({
                 navigation.goBack();
             })
             .catch(err => {
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.networkFailed"),
-                    () => {
-                        console.log(err);
-                    }
-                );
+                if (err.response.data.data === 'email already taken') {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("common.emailexists"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                } else {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkFailed"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                }
             })
 
         setLoading(false);
