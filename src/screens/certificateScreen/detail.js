@@ -20,8 +20,8 @@ import {
     SIZE,
     IMAGES
 } from 'src/constants';
-// import Video from 'react-native-fast-video';
-import Video from 'react-native-video';
+import Video from 'react-native-fast-video';
+// import Video from 'react-native-video';
 
 import { translate } from '../../walletUtils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image';
-// import Video from 'react-native-fast-video';
-import Video from 'react-native-video';
+import Video from 'react-native-fast-video';
+// import Video from 'react-native-video';
 
 import { SVGS, SIZE, IMAGES } from '../constants';
 import Colors from '../constants/Colors';
