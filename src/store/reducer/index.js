@@ -12,6 +12,7 @@ import WalletReducer from './walletReducer';
 import LanguageReducer from './languageReducer';
 import PaymentReducer from './paymentReducer';
 import AsyncReducer from './asyncStorageReducer';
+import PermissionReducer from './cameraPermission';
 
 const RootReducer = combineReducers({
     AuthReducer,
@@ -25,7 +26,8 @@ const RootReducer = combineReducers({
     WalletReducer,
     LanguageReducer,
     PaymentReducer,
-    AsyncReducer
+    AsyncReducer,
+    PermissionReducer
 });
 
 const _rootReducer = (state, action) => {

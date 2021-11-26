@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Image, Text, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from '../constants/Colors';
@@ -10,6 +10,11 @@ import { FONTS, COLORS } from '../constants';
 
 function AppHeader(props) {
     const navigation = useNavigation();
+
+    let labelStyle = Platform.OS === "android" ? {
+        flex: 1,
+        textAlignVertical: "center",
+    } : {}
 
     return (
         <View style={[styles.container, props.containerStyle]} >
@@ -23,12 +28,14 @@ function AppHeader(props) {
                         </TouchableOpacity> : null
                 }
             </View>
-            {
-                props.titleComponent ?
-                    props.titleComponent
-                    :
-                    <Text style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
-            }
+            <View style={{ height: "100%", justifyContent: "center" }} >
+                {
+                    props.titleComponent ?
+                        props.titleComponent
+                        :
+                        <Text style={[styles.title, labelStyle, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
+                }
+            </View>
             <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }} >
                 {
                     props.showRightButton ?
@@ -57,7 +64,6 @@ const styles = StyleSheet.create({
         fontSize: RF(2.0),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
-        textAlignVertical: "center",
         color: COLORS.BLACK1
     },
     backContainer: {
