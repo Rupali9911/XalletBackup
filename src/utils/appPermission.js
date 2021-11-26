@@ -35,8 +35,8 @@ class AppPermission {
   };
 
   requestPermission = async type => {
-    console.log('AppPermission requestPermission permissions:', permissions);
     const permissions = REQUEST_PERMISSION_TYPE[type][Platform.OS];
+    console.log('AppPermission requestPermission permissions:', permissions);
     try {
       const result = await request(permissions);
       console.log('AppPermission requestPermission result:', result);

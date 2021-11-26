@@ -77,6 +77,8 @@ PODS:
   - nanopb/encode (2.30908.0)
   - Permission-Camera (2.2.2):
     - RNPermissions
+  - Permission-Notifications (2.2.2):
+    - RNPermissions
   - PromisesObjC (2.0.0)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
@@ -290,9 +292,9 @@ PODS:
     - react-native-fast-video/Video (= 5.1.7)
   - react-native-fast-video/Video (5.1.7):
     - React-Core
-  - react-native-image-picker (4.1.2):
+  - react-native-image-picker (4.3.0):
     - React-Core
-  - react-native-netinfo (6.0.4):
+  - react-native-netinfo (6.2.1):
     - React-Core
   - react-native-randombytes (3.6.1):
     - React-Core
@@ -302,7 +304,7 @@ PODS:
     - React
   - react-native-view-shot (3.1.2):
     - React
-  - react-native-webview (11.14.1):
+  - react-native-webview (11.14.3):
     - React-Core
   - React-perflogger (0.64.2)
   - React-RCTActionSheet (0.64.2):
@@ -370,7 +372,7 @@ PODS:
     - React-perflogger (= 0.64.2)
   - ReactNativeART (1.2.0):
     - React
-  - RNCAsyncStorage (1.15.9):
+  - RNCAsyncStorage (1.15.13):
     - React-Core
   - RNCClipboard (1.9.0):
     - React-Core
@@ -378,7 +380,7 @@ PODS:
     - React
   - RNCPushNotificationIOS (1.10.1):
     - React-Core
-  - RNDeviceInfo (8.4.2):
+  - RNDeviceInfo (8.4.8):
     - React-Core
   - RNFastImage (8.5.11):
     - React-Core
@@ -393,7 +395,7 @@ PODS:
     - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNIap (8.0.0-rc.3):
+  - RNIap (8.0.0-rc.4):
     - React-Core
   - RNLocalize (2.1.5):
     - React-Core
@@ -403,10 +405,10 @@ PODS:
     - React-Core
   - RNReanimated (1.13.3):
     - React-Core
-  - RNScreens (3.8.0):
+  - RNScreens (3.9.0):
     - React-Core
     - React-RCTImage
-  - RNShare (7.2.0):
+  - RNShare (7.3.0):
     - React-Core
   - RNSVG (12.1.1):
     - React
@@ -442,6 +444,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera.podspec`)
+  - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -533,6 +536,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   Permission-Camera:
     :path: "../node_modules/react-native-permissions/ios/Camera.podspec"
+  Permission-Notifications:
+    :path: "../node_modules/react-native-permissions/ios/Notifications.podspec"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -651,7 +656,7 @@ SPEC CHECKSUMS:
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
-  FBReactNativeSpec: 52b8e1f2d369f7134a46324dd558cba151b9d4f6
+  FBReactNativeSpec: a1897a0e5725ee8599d359585f826c55826792ff
   Firebase: 629510f1a9ddb235f3a7c5c8ceb23ba887f0f814
   FirebaseCore: 98b29e3828f0a53651c363937a7f7d92a19f1ba2
   FirebaseCoreDiagnostics: 5daa63f1c1409d981a2d5007daa100b36eac6a34
@@ -663,6 +668,7 @@ SPEC CHECKSUMS:
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   Permission-Camera: 375576c57ea625c88137d2cc52ba6dfeb21db036
+  Permission-Notifications: 1e154e50f5b3bbd0bd2b688621e8f23a7a6cacfd
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
@@ -679,13 +685,13 @@ SPEC CHECKSUMS:
   react-native-camera: 210a872c84d3aa0982a9223047ef9e743ed694fa
   react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
   react-native-fast-video: 76ab3e12510bdb438e9d9e973286af451a38c1ab
-  react-native-image-picker: f45729c43d4f854508ab25c0d0f0f711a2a8a267
-  react-native-netinfo: 78bb0c4bf96177a14ea1bba951de9ad27419965b
+  react-native-image-picker: 1dbc397ab78be161bf08bc4f3ad9c39bec12be11
+  react-native-netinfo: 877946c7b4eb85a639cf1ea31333dadc2be999a1
   react-native-randombytes: 5fc412efe7b5c55b9002c0004d75fe5fabcaa507
   react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
   react-native-udp: ccbd878f0f3b968217fc7e3d5eb5839fcaab8b6c
   react-native-view-shot: 08c46c9e8e92f6681e8f2ffa55ac3d06e7e99070
-  react-native-webview: 16054e7a26009b7d5944a18e19f450e26bd4c969
+  react-native-webview: 1bd31adaa34e9c360271373ce66cc67a956c13ff
   React-perflogger: 25373e382fed75ce768a443822f07098a15ab737
   React-RCTActionSheet: af7796ba49ffe4ca92e7277a5d992d37203f7da5
   React-RCTAnimation: 6a2e76ab50c6f25b428d81b76a5a45351c4d77aa
@@ -699,22 +705,22 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
-  RNCAsyncStorage: d599364c12b1ddb042cc2d7ab6f8258962b83097
+  RNCAsyncStorage: 08fc8807fc5a05c9d8787999205d2c8531028ec0
   RNCClipboard: f49f3de56b40d0f4104680dabadc7a1f063f4fd4
   RNCMaskedView: f127cd9652acfa31b91dcff613e07ba18b774db6
   RNCPushNotificationIOS: 089da3b657e1e3d464f38195fd2e3069608ef5af
-  RNDeviceInfo: bd05cd9501c2eef0300b391b1296f1515cecca25
+  RNDeviceInfo: 417b2ef4456c13a9d50ad8c57895eea837b735a8
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFBApp: 729c0666395b1953198dc4a1ec6deb8fbe1c302e
   RNFBMessaging: 8415ec196e5c1196caa26ec0742cdb48ed4d0f97
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNIap: cca3ab7c0e7b1bb6506135ebf381e03a241daaf2
+  RNIap: a7cf82d559c7465a1d76afb8dea0a80a8ce81654
   RNLocalize: 13a971fd888f2933504a745983f781dc52feeab6
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNPermissions: 067727df624665d4a6c8e2cffcc172ba608b96ed
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
-  RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
-  RNShare: 70356a1bb406bc46ae03196a5d3048c702bb71a7
+  RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
+  RNShare: 3013bd25beed9c5ea93961c0783a44c30ac72e9b
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
@@ -726,6 +732,6 @@ SPEC CHECKSUMS:
   TcpSockets: 8d839b9b14f6f344d98e4642ded13ab3112b462d
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: 5717c0bf595cf205574a7ee6c54eeca16862cb22
+PODFILE CHECKSUM: cd43d2cb598a48f62f6f294ce1d48821c9a46188
 
 COCOAPODS: 1.11.2

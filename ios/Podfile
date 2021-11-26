@@ -11,22 +11,18 @@ target 'showcase' do
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
   )
+  permissions_path = '../node_modules/react-native-permissions/ios'
 
-  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
+  # pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
 
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
-  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
 
-  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
-  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
-  pod 'react-native-config', :path => '../node_modules/react-native-config'
 
-  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
-  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
   target 'showcaseTests' do
     inherit! :complete
