@@ -870,7 +870,8 @@
             "paymentFailed": "入金失敗",
             "remittanceFailure": "送金失敗",
             "askDisconnect": "この{{appName}}アプリを削除してもよろしいですか？",
-            "emailValidation": "入力されたメールアドレスは有効ではありません。"
+            "emailValidation": "入力されたメールアドレスは有効ではありません。",
+            "searchHint": "NFT、コレクション、アーティストを検索"
         },
         "backendmessage": {
             "error": {},

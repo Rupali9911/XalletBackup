@@ -870,7 +870,8 @@
             "paymentFailed": "支付失敗",
             "remittanceFailure": "匯款失敗",
             "askDisconnect": "您確定要刪除此 {{appName}} 應用嗎？",
-            "emailValidation": "电子邮件未经验证"
+            "emailValidation": "电子邮件未经验证",
+            "searchHint": "搜索 NFT、收藏或藝術家"
         },
         "backendmessage": {
             "error": {},
