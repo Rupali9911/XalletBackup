@@ -14,19 +14,12 @@ target 'showcase' do
 
   pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
 
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
-  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
 
-  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
-  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
-  pod 'react-native-config', :path => '../node_modules/react-native-config'
 
-  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
-  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
   target 'showcaseTests' do
     inherit! :complete

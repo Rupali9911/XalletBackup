@@ -23,12 +23,14 @@ function AppHeader(props) {
                         </TouchableOpacity> : null
                 }
             </View>
-            {
-                props.titleComponent ?
-                    props.titleComponent
-                    :
-                    <Text style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
-            }
+            <View style={{ height: "100%", justifyContent: "center"}} >
+                {
+                    props.titleComponent ?
+                        props.titleComponent
+                        :
+                        <Text style={[styles.title, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
+                }
+            </View>
             <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }} >
                 {
                     props.showRightButton ?
@@ -56,7 +58,6 @@ const styles = StyleSheet.create({
         fontSize: RF(2.0),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
-        textAlignVertical: "center",
         color: COLORS.BLACK1
     },
     backContainer: {
