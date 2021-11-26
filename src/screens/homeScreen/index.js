@@ -15,12 +15,15 @@ import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import { getAllArtist, getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
 import { updateCreateState } from '../../store/reducer/userReducer';
+import { setCameraPermission } from '../../store/reducer/cameraPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
 import styles from './styles';
 import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -144,11 +147,25 @@ const HomeScreen = ({ navigation }) => {
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
 
-  const appStateChange = (nextAppState) => {
+  const appStateChange = async (nextAppState) => {
+    const languageCheck = await AsyncStorage.getItem("languageCheck");
+    let parseLanguageCheck = JSON.parse(languageCheck);
     var pass = passcodeAsync;
-    console.log(pass, nextAppState)
-    if (nextAppState === "active" && pass) {
-      navigation.navigate("PasscodeScreen", { screen: "active" })
+    console.log(pass, nextAppState, parseLanguageCheck)
+    if (nextAppState === "active") {
+
+      if (parseLanguageCheck) {
+        if (parseLanguageCheck.cameraPermission) {
+          const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+          dispatch(setCameraPermission(granted))
+          AsyncStorage.removeItem("languageCheck");
+          return;
+        }
+      }
+
+      if (pass) {
+        navigation.navigate("PasscodeScreen", { screen: "active" })
+      }
     }
   }
 

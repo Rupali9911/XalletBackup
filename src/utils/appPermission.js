@@ -25,7 +25,7 @@ class AppPermission {
     try {
       const result = await check(permissions);
       console.log('AppPermission checkPermission result:', result);
-      if (result === RESULTS.DENIED) return true;
+      if (result === RESULTS.DENIED) return false;
       if (result === RESULTS.GRANTED) return true;
       return false;
     } catch (error) {
@@ -34,9 +34,9 @@ class AppPermission {
     }
   };
 
-  requestPermission = async permissions => {
+  requestPermission = async type => {
     console.log('AppPermission requestPermission permissions:', permissions);
-
+    const permissions = REQUEST_PERMISSION_TYPE[type][Platform.OS];
     try {
       const result = await request(permissions);
       console.log('AppPermission requestPermission result:', result);

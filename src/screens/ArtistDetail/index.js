@@ -34,7 +34,8 @@ import {
     SIZE,
     IMAGES,
     SVGS,
-    FONT
+    FONT,
+    FONTS
 } from 'src/constants';
 import {
     UserImageView,
@@ -123,6 +124,26 @@ const Created = ({ route }) => {
         if (item.metaData) {
             const image = item.metaData.image || item.thumbnailUrl;
             const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
+            if (!image) {
+                console.log(fileType, image, item.metaData.image, item.thumbnailUrl, item, "aaaaaaaaaaaaa")
+                return (
+                    <TouchableOpacity
+                        onLongPress={() => {
+                            setModalData(item);
+                            setModalVisible(true);
+                        }}
+                        onPress={() => {
+                            dispatch(changeScreenName("myNFT"));
+                            navigation.push("DetailItem", { index: findIndex, owner: id });
+                        }}
+                        style={styles.listItem}>
+                        <C_Image
+                            uri={image}
+                            type={fileType}
+                            imageStyle={styles.listImage} />
+                    </TouchableOpacity>
+                )
+            }
             return (
                 <TouchableOpacity
                     onLongPress={() => {
@@ -134,20 +155,13 @@ const Created = ({ route }) => {
                         navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
-                    {
-                        image ?
-                            <C_Image
-                                uri={image}
-                                type={fileType}
-                                imageStyle={styles.listImage} />
-                            : <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }} >
-                                    {translate("wallet.common.error.noImage")}
-                                </Text>
-                            </View>
-                    }
+                    <C_Image
+                        uri={image}
+                        type={fileType}
+                        imageStyle={styles.listImage} />
                 </TouchableOpacity>
             )
+
         }
     }
 
@@ -246,18 +260,11 @@ const Collection = ({ route }) => {
                         navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
                     style={styles.listItem}>
-                    {
-                        image ?
-                            <C_Image
-                                uri={image}
-                                type={fileType}
-                                imageStyle={styles.listImage} />
-                            : <View style={styles.sorryMessageCont}>
-                                <Text style={{ textAlign: "center" }} >
-                                    {translate("wallet.common.error.noImage")}
-                                </Text>
-                            </View>
-                    }
+                    <C_Image
+                        uri={image}
+                        type={fileType}
+                        imageStyle={styles.listImage} />
+
                 </TouchableOpacity>
             )
         }
@@ -429,58 +436,35 @@ function ArtistDetail({
                     {data.title || data.username}
                 </HeaderText>
             </Header>
-            <RowWrap>
-                <SpaceView mLeft={SIZE(14)} />
-                <RowBetweenWrap flex={1}>
-                    <UserImageView>
-                        <C_Image
-                            uri={data.profile_image}
-                            imageStyle={{
-                                width: '100%',
-                                height: '100%'
-                            }}
-                            imageType="profile"
-                        />
-                    </UserImageView>
-                    <CenterWrap>
-                        <SpaceView mTop={SIZE(-14)} />
-                        <RowBetweenWrap>
-                            <RowWrap>
-                                <CenterWrap>
-                                    <BoldText>
-                                        {'0'}
-                                    </BoldText>
-                                    <SmallText>
-                                        {translate("wallet.common.post")}
-                                    </SmallText>
-                                </CenterWrap>
-                                <SpaceView mLeft={SIZE(41)} />
-                            </RowWrap>
-                            <CenterWrap>
-                                <BoldText>
-                                    {data.followers || 0}
-                                </BoldText>
-                                <SmallText>
-                                    {translate("common.followers")}
-                                </SmallText>
-                            </CenterWrap>
-                            <RowWrap>
-                                <SpaceView mLeft={SIZE(27)} />
-                                <CenterWrap>
-                                    <BoldText>
-                                        {data.following || 0}
-                                    </BoldText>
-                                    <SmallText>
-                                        {translate("common.following")}
-                                    </SmallText>
-                                </CenterWrap>
-                            </RowWrap>
-                        </RowBetweenWrap>
-                        <SpaceView mTop={SIZE(32)} />
-                    </CenterWrap>
-                </RowBetweenWrap>
-                <SpaceView mRight={SIZE(7)} />
-            </RowWrap>
+            <View style={{ width: "100%", paddingHorizontal: SIZE(14), flexDirection: "row" }} >
+                <UserImageView>
+                    <C_Image
+                        uri={data.profile_image}
+                        imageStyle={{
+                            width: '100%',
+                            height: '100%'
+                        }}
+                        imageType="profile"
+                    />
+                </UserImageView>
+                <View style={{ flex: 1, alignItems: "flex-end" }} >
+                    <View style={{ flexDirection: "row", width: wp("50"), justifyContent: "space-around" }} >
+                        <View style={{ alignItems: "center" }} >
+                            <Text style={styles.countLabel1} >{'0'}</Text>
+                            <SmallText>{translate("wallet.common.post")}</SmallText>
+                        </View>
+                        <View style={{ alignItems: "center" }} >
+                            <Text style={styles.countLabel1} >{data.followers || 0}</Text>
+                            <SmallText>{translate("common.followers")}</SmallText>
+                        </View>
+                        <View style={{ alignItems: "center" }} >
+                            <Text style={styles.countLabel1} >{data.following || 0}</Text>
+                            <SmallText>{translate("common.following")}</SmallText>
+                        </View>
+                    </View>
+                </View>
+            </View>
+
             <DescriptionView>
                 <SpaceView mTop={SIZE(12)} />
                 <SmallBoldText>
@@ -546,4 +530,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         flex: 1,
     },
+    countLabel1: {
+        fontSize: FONT(16),
+        color: COLORS.BLACK1,
+        fontFamily: FONTS.PINGfANG_SBOLD
+    }
 })

@@ -22,6 +22,8 @@ import { C_Image } from 'src/components';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
 import Video from 'react-native-fast-video';
+// import Video from 'react-native-video';
+
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
@@ -294,11 +296,8 @@ const nftItem = ({ item, index }) => {
             });
         }}>
         {
-          fileType !== 'mp4' && fileType !== 'mov' ?
-            <C_Image uri={imageUri} imageStyle={styles.modalImage} />
-            :
+          fileType === 'mp4' || fileType === 'MP4' || fileType === 'mov' || fileType === 'MOV' ?
             <View style={styles.modalImage}>
-              <C_Image uri={item.thumbnailUrl} imageStyle={styles.modalImage} />
               <Video
                 key={tokenId}
                 ref={refVideo}
@@ -342,6 +341,8 @@ const nftItem = ({ item, index }) => {
                 </View>
               }
             </View>
+            :
+            <C_Image uri={imageUri} imageStyle={styles.modalImage} />
         }
       </TouchableOpacity>
 

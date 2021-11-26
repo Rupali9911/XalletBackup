@@ -33,7 +33,17 @@
         }
 
         .mail {
-            color: #1155cc;
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            font-family: arial, sans-serif;
+            color: #069;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .mail:focus:focus {
+            outline: none;
         }
 
         .list-cont {
@@ -94,7 +104,7 @@
             &#45817;&#49324;&#51032; &#44060;&#51064; &#51221;&#48372; &#48372;&#54840; &#51221;&#52293;&#50640;
             &#45824;&#54620; &#47928;&#51032; &#49324;&#54637;&#51060;&#45208; &#51656;&#47928;&#51060;
             &#51080;&#45796;&#47732;, 
-            <a class="mail" href="mailto:contact@xanalia.com">contact@xanalia.com</a>
+            <button class="mail" onclick="mailButtonClick('mailto:contact@xanalia.com')">contact@xanalia.com</button>
             &#47196; &#50672;&#46973; &#51452;&#49884;&#44592;
             &#48148;&#46989;&#45768;&#45796;. &#45817;&#49324;&#51032; &#49828;&#53356;&#47549;&#53944; &#51648;&#44049;
             &#47784;&#48148;&#51068; &#50545;&#51012; &#45796;&#50868;&#47196;&#46300; &#54620; &#44221;&#50864;
@@ -272,7 +282,7 @@
             &#51656;&#47928;&#51060;&#45208; &#51032;&#44204;&#51012; &#44592;&#45796;&#47532;&#44256;
             &#51080;&#49845;&#45768;&#45796;. &#47928;&#51032;&#49884; &#44480;&#54616;&#51032; &#51060;&#47700;&#51068;
             &#51452;&#49548;&#47484; &#51060;&#50857;&#54644;&#51452;&#49901;&#49884;&#50724;. <br />
-            <a class="mail" href="mailto:support@xanalia.com">support@xanalia.com</a>
+            <button class="mail" onclick="mailButtonClick('mailto:support@xanalia.com')">support@xanalia.com</button>
         </p>
         <p class="paragraph mt-0">
             &#44060;&#51064; &#51221;&#48372; &#48372;&#54840; &#51221;&#52293;&#51012;
@@ -284,6 +294,11 @@
 
 
     <!-- Optional JavaScript -->
+    <script>
+        function mailButtonClick(v) {
+            window.ReactNativeWebView.postMessage(v)
+        }
+    </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

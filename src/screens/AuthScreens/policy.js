@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Linking } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import WebView from 'react-native-webview';
 import AppHeader from '../../components/appHeader';
@@ -57,6 +57,7 @@ const Policy = ({ route }) => {
                         originWhitelist={['*']}
                         source={isPolicy ? AnPolicy[selectedLanguageItem.language_name] : AnTerms[selectedLanguageItem.language_name]}
                         decelerationRate='normal'
+                        onMessage={(event) => Linking.openURL(event.nativeEvent.data)}
                         javaScriptEnabled={true}
                         domStorageEnabled={true}
                         onLoadStart={() => setLoading(true)}
@@ -68,6 +69,7 @@ const Policy = ({ route }) => {
                     style={styles.webview}
                     originWhitelist={['*']}
                     source={content}
+                    onMessage={(event) => Linking.openURL(event.nativeEvent.data)}
                     decelerationRate='normal'
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
