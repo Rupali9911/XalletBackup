@@ -11,8 +11,11 @@ target 'showcase' do
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
   )
+  permissions_path = '../node_modules/react-native-permissions/ios'
 
-  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
+  # pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
 
 
 
