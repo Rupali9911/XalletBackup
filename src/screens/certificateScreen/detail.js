@@ -76,7 +76,6 @@ const DetailScreen = ({ route, navigation }) => {
     const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
     const [nonCryptoOwner, setNonCryptoOwner] = useState(false);
     const [successModalVisible, setSuccessModalVisible] = useState(false);
-    const [nftStatus, setNftStatus] = useState('');
     const [lastBidAmount, setLastBidAmount] = useState("");
     const [priceNFT, setPriceNFT] = useState("");
     const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState("");
@@ -353,7 +352,7 @@ const DetailScreen = ({ route, navigation }) => {
     }
 
     const setNFTStatus = () => {
-        _nftStatus = '';
+        let _nftStatus = '';
         if (isContractOwner) {
             if (isNFTOnAuction && lastBidAmount !== "0.000000000000000000") {
                 // setNftStatus(undefined);

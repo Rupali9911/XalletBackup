@@ -33,29 +33,29 @@ const C_Image = (props) => {
                             resizeMode={'cover'}
                             style={props.imageStyle} />
                         :
-                        <Video
-                            source={{ uri: props.uri }}
-                            resizeMode={'cover'}
-                            paused={true}
-                            onError={(e) => console.log("error", e)}
-                            style={props.imageStyle} />
-                    // <FastImage
-                    //     style={props.imageStyle}
-                    //     onLoadStart={() => setLoadImage(true)}
-                    //     onLoadEnd={() => setLoadImage(false)}
-                    //     onError={({ nativeEvent }) => {
-                    //         console.log(nativeEvent, "errror", props.uri)
-                    //         setBrokenUrl(true)
-                    //     }}
-                    //     source={props.uri ?
-                    //         brokenUrl ?
-                    //             IMAGES.brokenIcon :
-                    //             {
-                    //                 uri: props.uri,
-                    //                 priority: FastImage.priority.high,
-                    //             } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
-                    //     resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
-                    // />
+                        // <Video
+                        //     source={{ uri: props.uri }}
+                        //     resizeMode={'cover'}
+                        //     paused={true}
+                        //     onError={(e) => console.log("error", e)}
+                        //     style={props.imageStyle} />
+                        <FastImage
+                            style={props.imageStyle}
+                            onLoadStart={() => setLoadImage(true)}
+                            onLoadEnd={() => setLoadImage(false)}
+                            onError={({ nativeEvent }) => {
+                                console.log(nativeEvent, "errror", props.uri)
+                                setBrokenUrl(true)
+                            }}
+                            source={props.uri ?
+                                brokenUrl ?
+                                    IMAGES.brokenIcon :
+                                    {
+                                        uri: props.uri,
+                                        priority: FastImage.priority.high,
+                                    } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
+                            resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
+                        />
                     :
                     <FastImage
                         style={props.imageStyle}
