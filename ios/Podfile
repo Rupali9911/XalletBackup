@@ -18,12 +18,6 @@ target 'showcase' do
   # pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
 
 
-
-
-
-
-
-
   target 'showcaseTests' do
     inherit! :complete
     # Pods for testing
