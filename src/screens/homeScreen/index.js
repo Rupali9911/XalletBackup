@@ -168,7 +168,6 @@ const HomeScreen = ({navigation}) => {
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
 
-<<<<<<< HEAD
   const appStateChange = async (nextAppState) => {
     const languageCheck = await AsyncStorage.getItem("languageCheck");
     let parseLanguageCheck = JSON.parse(languageCheck);
@@ -188,13 +187,6 @@ const HomeScreen = ({navigation}) => {
       if (pass) {
         navigation.navigate("PasscodeScreen", { screen: "active" })
       }
-=======
-  const appStateChange = nextAppState => {
-    var pass = passcodeAsync;
-    console.log(pass, nextAppState);
-    if (nextAppState === 'active' && pass) {
-      navigation.navigate('PasscodeScreen', {screen: 'active'});
->>>>>>> e2ce2fd674a7d721c23c15fec10b5fd092d7d985
     }
   };
 
