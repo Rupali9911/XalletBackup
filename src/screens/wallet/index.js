@@ -116,6 +116,9 @@ const Wallet = ({route, navigation}) => {
       unsubscribeBlur();
     };
   }, []);
+  useEffect(() => {
+    setIsBackedUp(isBackup);
+  }, [isFocused]);
 
   useEffect(() => {
     setLoading(true);
@@ -479,7 +482,7 @@ const Wallet = ({route, navigation}) => {
                 CommonStyles.text(
                   Fonts.ARIAL,
                   Colors.greyButtonLabel,
-                  RF(1.65),
+                  RF(1.55),
                 ),
               ]}
               onPress={() => setIsBackedUp(true)}
@@ -489,7 +492,7 @@ const Wallet = ({route, navigation}) => {
               containerStyle={styles.button}
               labelStyle={[
                 CommonStyles.buttonLabel,
-                CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.65)),
+                CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.55)),
               ]}
               onPress={() => navigation.navigate('SecurityScreen')}
             />
@@ -609,12 +612,12 @@ const styles = StyleSheet.create({
   },
   backupTitle: {
     color: Colors.black,
-    fontSize: RF(2.2),
+    fontSize: RF(2.1),
     textAlign: 'center',
   },
   backupSubTitle: {
     color: Colors.tabLabel,
-    fontSize: RF(1.4),
+    fontSize: RF(1.25),
     textAlign: 'center',
     marginTop: hp('2%'),
   },

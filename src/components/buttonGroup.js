@@ -45,7 +45,7 @@ const SelectableButton = (props) => {
         <TouchableOpacity onPress={item.onPress}
             style={[styles.itemContainer, item.containerStyle]}>
             <Icon name={isCheck ? 'radio-button-checked' : 'radio-button-unchecked'} size={wp("5%")}/>
-            <Image style={styles.selectableIcon} source={item.icon} />
+            <Image style={styles.selectableIcon} source={item.icon} resizeMode='contain'/>
             <TextView style={[styles.labelStyle, item.labelStyle]}>{item.text}</TextView>
         </TouchableOpacity>
     );
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         tintColor: Colors.arrowColor
     },
     selectableIcon: {
-        ...CommonStyles.imageStyles(8),
+        ...CommonStyles.imageStyles(7.5),
         marginHorizontal: wp("4%"),
     },
     checkIconSize: {

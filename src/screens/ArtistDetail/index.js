@@ -488,12 +488,13 @@ function ArtistDetail({
                 </SmallBoldText>
                 <SpaceView mTop={SIZE(8)} />
                 {
-                    data.about !== "" &&
+                    data.about !== "" ?
                     <ScrollView style={{ maxHeight: SIZE(70) }}>
                         <SmallNormalText>
                             {data.about}
                         </SmallNormalText>
                     </ScrollView>
+                    : null
                 }
                 <SpaceView mTop={SIZE(8)} />
                 {

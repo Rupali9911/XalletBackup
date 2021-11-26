@@ -338,12 +338,12 @@ const WalletPay = ({route, navigation}) => {
                     <View style={styles.header}>
                         <TextView style={styles.title}>{translate("wallet.common.pay")}</TextView>
 
-                        <TouchableOpacity style={styles.networkIcon} hitSlop={{top:10,bottom:10,right:10,left:10}}
+                        {/* <TouchableOpacity style={styles.networkIcon} hitSlop={{top:10,bottom:10,right:10,left:10}}
                             onPress={()=> {
                                 // setPickerVisible(true)
                                 }}>
                             <Image source={network.icon} style={[CommonStyles.imageStyles(6)]} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
 
                     <View style={styles.balanceContainer}>
