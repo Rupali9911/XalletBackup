@@ -10,6 +10,7 @@ import {
 } from '../types';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
+import { ApiRequest } from '../../helpers/ApiRequest';
 
 export const newNftLoadSuccess = (data) => ({
     type: NEW_NFT_LOAD_SUCCESS,
@@ -79,3 +80,20 @@ export const newNFTList = (page, limit) => {
             })
     }
 }
+
+export const searchNFT = (searchTxt) => (dispatch) => 
+    new Promise((resolve, reject) => {
+        let data = {
+            page: 1,
+            limit: 5,
+            searchValue: searchTxt,
+            networkType: "testnet"
+        }
+
+        ApiRequest(`${BASE_URL}/xanalia/search-nft-type/`,'POST',data,null).then((response) => {
+            resolve(response);
+        }).catch((err) => {
+            reject(err);
+        });
+
+    });
