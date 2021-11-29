@@ -36,21 +36,20 @@ const ListItems = (props) => {
 
     const [details, setDetails] = useState(null);
 
-    useEffect(()=>{
-        if(socketOpen){
+    useEffect(() => {
+        if (socketOpen) {
             getAppDetail(item);
         }
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-              console.log('data', data);
-              const response = JSON.parse(data);
-              if(response.type == 'success'){
-                  setDetails(response.data);
-              }
+                const response = JSON.parse(data);
+                if (response.type == 'success'  && typeof (response.data) == 'object' && response.data.type == 'app') {
+                    setDetails(response.data);
+                }
             },
-          });
+        });
 
-    },[socketOpen]);
+    }, [socketOpen]);
 
     const getAppDetail = (appId) => {
         let _data = {
@@ -66,7 +65,7 @@ const ListItems = (props) => {
     return (
         <TouchableOpacity disabled onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
-                <Image style={styles.profileImage} source={{uri: details?.icon}} />
+                <Image style={styles.profileImage} source={{ uri: details?.icon }} />
             </View>
             <View style={styles.centerCont} >
                 <Text style={styles.tokenName} >{details?.name}</Text>
@@ -80,14 +79,15 @@ const ListItems = (props) => {
 
 const Connect = ({ route, navigation }) => {
 
-    const {appId} = route.params;
+    const { appId } = route.params;
     const dispatch = useDispatch();
-    const {wallet, data, passcode} = useSelector(state => state.UserReducer);
-    const {connectedApps,socketOpen} = useSelector(state => state.WalletReducer);
+    const { wallet, data, passcode } = useSelector(state => state.UserReducer);
+    const { socketOpen } = useSelector(state => state.WalletReducer);
 
     const [isSocketConnected, setSocketConnected] = useState(false);
     const [approveModal, setApproveModal] = useState(false);
     const [requestedAppData, setRequestedAppData] = useState(null);
+    const [connectedApps, setConnectedApps] = useState([]);
 
     const onCheckPermission = async () => {
         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
@@ -107,12 +107,12 @@ const Connect = ({ route, navigation }) => {
     }
 
     const renderApps = ({ item, index }) => {
-        return <ListItems item={item} socketOpen={socketOpen} onDisconnect={disconnectApp}/>
+        return <ListItems item={item} socketOpen={socketOpen} onDisconnect={disconnectApp} />
     }
 
     const keyExtractor = (item, index) => { return `_${index}` }
 
-    console.log('appId',appId);
+    console.log('appId', appId);
 
     const onSocketOpen = () => {
         dispatch(setSocketOpenStatus(true));
@@ -129,43 +129,57 @@ const Connect = ({ route, navigation }) => {
     // },[]);
 
     useEffect(() => {
-        if(socketOpen){
-            if(appId && !passcode){
+        if (socketOpen) {
+            if (appId && !passcode) {
                 connectApp(appId);
             }
-        }else{
+            getAppId();
+        } else {
             singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
-                if(appId && !passcode){
+                if (appId && !passcode) {
                     connectApp(appId);
                 }
+                getAppId();
             });
         }
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-              console.log('data', data);
-              const response = JSON.parse(data);
-              if (response.type == 'newconnectionrequest') {
-                  setRequestedAppData(response.data);
-                  setApproveModal(true);
-              }else if(response.type == 'success' && typeof(response.data) == 'string'){
-                  alertWithSingleBtn('',response.data);
-              }else if(response.type == 'connected'){
-                  alertWithSingleBtn('',response.data);
-                  let ids = response.data.split(':');
-                  if(ids.length > 1){
-                      if(connectedApps.includes(ids[1])){
-                      }else{
-                          let array = [...connectedApps, ids[1]];
-                          dispatch(setConnectedAppsToLocal(array));
-                      }
-                  }
-              }
+                console.log('data', data);
+                const response = JSON.parse(data);
+                if (response.type == 'newconnectionrequest') {
+                    setRequestedAppData(response.data);
+                    setApproveModal(true);
+                } else if (response.type == 'success' && typeof (response.data) == 'string') {
+                    alertWithSingleBtn('', response.data);
+                    if(response.data.includes('removed')){
+                        setConnectedApps([]);
+                    }
+                } else if (response.type == 'success' && typeof (response.data) == 'object' && response.data.type == 'wallet') {
+                    if(response.data.isConnected == 'true' && response.data.isAppApproved == 'true'){
+                        setConnectedApps([response.data.appId]);
+                    }else{
+                        setConnectedApps([]);
+                    }
+                } else if (response.type == 'connected') {
+                    alertWithSingleBtn('', response.data);
+                    let ids = response.data.split(':');
+                    if (ids.length > 1) {
+                        if (connectedApps.includes(ids[1])) {
+                        } else {
+                            // let array = [...connectedApps, ids[1]];
+                            // dispatch(setConnectedAppsToLocal(array));
+                            getAppId();
+                        }
+                    }
+                } else if (response.type == 'error') {
+                    alertWithSingleBtn('', response.data);
+                }
             },
-          });
+        });
         return () => {
             socketSubscribe && socketSubscribe.unsubscribe();
-          };
-      }, [appId]);
+        };
+    }, [appId]);
 
     const connectApp = (appId) => {
         console.log('connecting', appId);
@@ -195,27 +209,40 @@ const Connect = ({ route, navigation }) => {
             }
         }
         singleSocket.onSendMessage(data);
+        navigation.setParams({
+            appId: null,
+          });
     }
 
     const disconnectApp = (id, name) => {
         confirmationAlert(
             translate('wallet.common.verification'),
-            translate('wallet.common.askDisconnect',{appName: name}),
+            translate('wallet.common.askDisconnect', { appName: name }),
             translate('wallet.common.cancel'),
             '',
             () => {
                 let data = {
                     type: "remove",
-                    data: { 
+                    data: {
                         appId: id,
                         walletId: wallet.address
                     }
                 }
-                console.log('data',data);
+                console.log('data', data);
                 singleSocket.onSendMessage(data);
             },
             () => null
-          );
+        );
+    }
+
+    const getAppId = () => {
+        const data = {
+            type: "wallet",
+            data: {
+                walletId: wallet.address
+            }
+        }
+        singleSocket.onSendMessage(data);
     }
 
     return (
@@ -233,14 +260,14 @@ const Connect = ({ route, navigation }) => {
                         keyExtractor={keyExtractor}
                         ListEmptyComponent={() => {
                             return (
-                              <View style={styles.emptyView}>
-                                <Image source={ImagesSrc.noApp} style={styles.emptyImage} />
-                                <TextView style={styles.noData}>
-                                  {translate('wallet.common.noAppConnect')}
-                                </TextView>
-                              </View>
+                                <View style={styles.emptyView}>
+                                    <Image source={ImagesSrc.noApp} style={styles.emptyImage} />
+                                    <TextView style={styles.noData}>
+                                        {translate('wallet.common.noAppConnect')}
+                                    </TextView>
+                                </View>
                             );
-                          }}
+                        }}
                     />
                 </View>
 
@@ -384,13 +411,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingVertical: hp('5%'),
-      },
-      emptyImage: {
+    },
+    emptyImage: {
         width: wp('25%'),
         height: wp('25%'),
         alignSelf: 'center',
         marginVertical: hp('4%'),
-      },
+    },
 });
 
 export default Connect;

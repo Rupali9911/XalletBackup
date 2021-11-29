@@ -869,8 +869,10 @@
             "paymentComplete": "완벽한",
             "paymentFailed": "결제 실패",
             "remittanceFailure": "송금 실패",
+            "Dislike": "싫어함",
             "askDisconnect": "이 {{appName}} 앱을 삭제하시겠습니까?",
-            "emailValidation": "이메일이 확인되지 않았습니다."
+            "emailValidation": "이메일이 확인되지 않았습니다.",
+            "searchHint": "NFT, 컬렉션 또는 아티스트 검색"
         },
         "backendmessage": {
             "error": {},

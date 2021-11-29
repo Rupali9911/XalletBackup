@@ -4,6 +4,8 @@ import store from '../store';
 import ImagesSrc from '../constants/Images';
 
 export const IsTestNet = true;
+export const SCAN_WALLET = 'SCAN_WALLET';
+export const SCAN_APP = 'SCAN_APP';
 
 const numFormatter = (price) => {
   let num = parseFloat(price);
@@ -7680,6 +7682,7 @@ export function setI18nConfig(tag) {
   translate.cache.clear();
 
   i18n.translations = { [languageTag]: translationGetters[languageTag]() };
+  console.log('translations',i18n.translations);
   i18n.locale = languageTag;
 }
 
@@ -7775,26 +7778,31 @@ export const tokens = [
   }
 ]
 
-export const processScanResult = (event) => {
+export const processScanResult = (event,scanFor) => {
   return new Promise((resolve, reject) => {
     if (event && (event.type == 'QR_CODE' || event.type == 'org.iso.QRCode')) {
       if (event.data) {
-        let walletAddress;
-        let amount = '';
-        if (event.data.includes(':')) {
-          walletAddress = event.data.split(':')[1];
-        } else if (event.data.includes(' ')) {
-          let result = event.data.split(' ');
-          walletAddress = result[0];
-          amount = result[1];
-        } else {
-          walletAddress = event.data;
-        }
+        if (scanFor == SCAN_WALLET) {
+          let walletAddress;
+          let amount = '';
+          if (event.data.includes(':')) {
+            walletAddress = event.data.split(':')[1];
+          } else if (event.data.includes(' ')) {
+            let result = event.data.split(' ');
+            walletAddress = result[0];
+            amount = result[1];
+          } else {
+            walletAddress = event.data;
+          }
 
-        resolve({
-          walletAddress,
-          amount,
-        });
+          resolve({
+            walletAddress,
+            amount,
+          });
+        } else if (scanFor == SCAN_APP) {
+          resolve(event.data);
+        }
+        
       } else {
         reject();
       }

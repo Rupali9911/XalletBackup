@@ -43,6 +43,7 @@ import ActionSheet from 'react-native-actionsheet';
 import axios from 'axios';
 import { BASE_URL } from '../../common/constants';
 import AppBackground from '../../components/appBackground';
+import { AppHeader } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { upateUserData } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn, validateEmail, validURL } from '../../utils';
@@ -213,23 +214,18 @@ function Profile({
     return (
         <AppBackground isBusy={loading}>
             <SafeAreaView style={{ flex: 1 }}>
-                <Header>
-                    <HeaderLeft>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <LeftArrowIcon />
-                        </TouchableOpacity>
-                    </HeaderLeft>
-                    <HeaderText>
-                        {translate("wallet.common.profileSettings")}
-                    </HeaderText>
-                    <HeaderRight>
+                <AppHeader
+                    title={translate("wallet.common.profileSettings")}
+                    showBackButton
+                    showRightComponent={(
                         <TouchableOpacity onPress={onSave}>
                             <DoneText>
                                 {translate("wallet.common.done")}
                             </DoneText>
                         </TouchableOpacity>
-                    </HeaderRight>
-                </Header>
+                    )}
+                />
+                
                 <KeyboardAwareScrollView flex={1}>
                     <CenterWrap>
                         <SpaceView mTop={SIZE(10)} />

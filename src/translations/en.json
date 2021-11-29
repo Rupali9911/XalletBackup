@@ -870,7 +870,8 @@
             "paymentFailed": "Payment Failed",
             "remittanceFailure": "Remittance Failure",
             "askDisconnect": "Are you sure you want to remove this {{appName}} app?",
-            "emailValidation": "Email is not validated"
+            "emailValidation": "Email is not validated",
+            "searchHint": "Search NFTs, Collections, and Artists"
         },
         "backendmessage": {
             "error": {},

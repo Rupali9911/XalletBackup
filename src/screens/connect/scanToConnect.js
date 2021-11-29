@@ -12,7 +12,7 @@ import Separator from '../../components/separator';
 import GradientBackground from '../../components/gradientBackground';
 import Colors from '../../constants/Colors';
 import { wp, hp, RF } from '../../constants/responsiveFunct';
-import { translate } from '../../walletUtils';
+import { processScanResult, SCAN_APP, translate } from '../../walletUtils';
 import TextView from '../../components/appText';
 import ImagesSrc from '../../constants/Images';
 
@@ -26,21 +26,19 @@ function ScanToConnect({ route, navigation }) {
     let refScanner = useRef(null);
 
     const onSuccess = (e) => {
-        let scannerType = rightSelect ? 'BarCode' : 'QR';
-        // processScanResult(e,scannerType).then((user)=>{
-        //     // navigation.navigate('Paid')
-        //     if(user){
-        //         receiveMoney(user);
-        //     }
-        // }).catch(()=>{
-        //     alertWithSingleBtn(
-        //         translate("common.error.invalidCode"),
-        //         translate("common.error.scanCodeAlert"),
-        //         () => {
-        //             refScanner && refScanner.reactivate();
-        //         }
-        //     );
-        // });
+        processScanResult(e,SCAN_APP).then((appId)=>{
+            if(typeof(appId) == 'string'){
+                navigation.navigate('Connect',{appId});
+            }
+        }).catch(()=>{
+            alertWithSingleBtn(
+                translate("common.error.invalidCode"),
+                translate("common.error.scanCodeAlert"),
+                () => {
+                    refScanner && refScanner.reactivate();
+                }
+            );
+        });
     };
 
     return (

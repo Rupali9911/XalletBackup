@@ -17,7 +17,7 @@ const ApproveModalContent = props => {
 
     return (
         <View style={styles.container}>
-            <IconButton
+            {/* <IconButton
                 icon={'close'}
                 color={Colors.headerIcon2}
                 size={20}
@@ -25,7 +25,7 @@ const ApproveModalContent = props => {
                 onPress={() => {
                     props.onClose && props.onClose();
                 }}
-            />
+            /> */}
             
             <Image style={styles.img} source={{uri: appData?.icon ? appData.icon : 'http://www.newdesignfile.com/postpic/2011/03/ios-7-icon-template_108214.png'}} />
 

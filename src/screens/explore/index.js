@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     ActivityIndicator,
-    FlatList
+    FlatList,
+    View,
+    StyleSheet
 } from 'react-native';
 import {
     Header,
@@ -17,6 +19,8 @@ import { changeScreenName } from '../../store/actions/authAction';
 import { Loader } from '../../components';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
+import AppSearch from '../../components/appSearch';
+import { hp } from '../../constants/responsiveFunct';
 
 function ExploreScreen({
     navigation
@@ -66,34 +70,49 @@ function ExploreScreen({
                     {translate("wallet.common.explore")}
                 </HeaderText>
             </Header>
-            {
-                ListReducer.page === 1 && loading ?
-                    <Loader /> :
-                    <FlatList
-                        initialNumToRender={10}
-                        data={list.slice(listIndex)}
-                        renderItem={renderItem}
-                        onEndReached={() => {
-                            if (!ListReducer.nftListLoading) {
-                                let num = AuthReducer.screenName == "Hot" ?
-                                    ListReducer.page + 1 :
-                                    AuthReducer.screenName == "newNFT" ?
-                                        NewNFTListReducer.newListPage + 1 :
-                                        AuthReducer.screenName == "favourite" ?
-                                            MyNFTReducer.favoritePage + 1 :
-                                            AuthReducer.screenName == "twoDArt" ?
-                                                TwoDReducer.page + 1 : null;
-                                getNFTlistData(num)
-                                handlePageChange(num)
-                            }
-                        }}
-                        ListFooterComponent={renderFooter}
-                        onEndReachedThreshold={1}
-                        keyExtractor={(v, i) => "item_" + i}
-                    />
-            }
+            <View>
+                <View style={styles.listContainer}>
+                    {
+                        ListReducer.page === 1 && loading ?
+                            <View style={styles.loaderContainer}><Loader /></View> :
+                            <FlatList
+                                initialNumToRender={10}
+                                data={list.slice(listIndex)}
+                                renderItem={renderItem}
+                                onEndReached={() => {
+                                    if (!ListReducer.nftListLoading) {
+                                        let num = AuthReducer.screenName == "Hot" ?
+                                            ListReducer.page + 1 :
+                                            AuthReducer.screenName == "newNFT" ?
+                                                NewNFTListReducer.newListPage + 1 :
+                                                AuthReducer.screenName == "favourite" ?
+                                                    MyNFTReducer.favoritePage + 1 :
+                                                    AuthReducer.screenName == "twoDArt" ?
+                                                        TwoDReducer.page + 1 : null;
+                                        getNFTlistData(num)
+                                        handlePageChange(num)
+                                    }
+                                }}
+                                ListFooterComponent={renderFooter}
+                                onEndReachedThreshold={1}
+                                keyExtractor={(v, i) => "item_" + i}
+                            />
+                    }
+                </View>
+                <AppSearch />
+            </View>
         </Container>
     )
 }
 
 export default ExploreScreen;
+
+const styles = StyleSheet.create({
+    listContainer: {
+        marginTop: hp("6%"),
+    },
+    loaderContainer: {
+        paddingTop: hp("2%"),
+        justifyContent: 'center'
+    }
+});

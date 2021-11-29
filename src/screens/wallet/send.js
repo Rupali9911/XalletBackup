@@ -5,12 +5,13 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
-import { translate, amountValidation, environment, processScanResult } from '../../walletUtils';
+import { translate, amountValidation, environment, processScanResult, SCAN_WALLET } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import TextView from '../../components/appText';
 import AppButton from '../../components/appButton';
+import FetchingIndicator from '../../components/fetchingIndicator';
 import CommonStyles from '../../constants/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { transfer } from './functions';
@@ -22,6 +23,8 @@ import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import { openSettings } from 'react-native-permissions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setCameraPermission } from '../../store/reducer/cameraPermission';
 
 const { height } = Dimensions.get('window');
 
@@ -192,7 +195,7 @@ export const PaymentField = (props) => {
     return (
         <View style={[styles.inputMainCont]} >
             <Text style={styles.inputLeft} >{translate("wallet.common.amount")}</Text>
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex:1, flexDirection: 'row', alignItems: 'center' }}>
                 <TextInput
                     style={[styles.inputCont, styles.paymentField, { fontSize: RF(2) }]}
                     keyboardType='decimal-pad'
@@ -212,21 +215,36 @@ export const PaymentField = (props) => {
 
 const ScanScreen = (props) => {
     const navigation = useNavigation();
-    const [renderScanner, setRenderScanner] = useState(false);
     let refScanner = null;
+    const { camera } = useSelector(state => state.PermissionReducer);
+    const dispatch = useDispatch();
+    const [screenLoading, setScreenLoading] = useState(false);
 
     const { loading, jumpTo, setResult, setLoading, position } = props;
 
     useEffect(() => {
         if (position == 1) {
-            setRenderScanner(true);
+            setScreenLoading(true)
+            checkCameraPermission()
             refScanner && refScanner.reactivate();
         }
-    }, [position]);
+    }, [position, camera]);
+
+    const checkCameraPermission = async () => {
+        const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        if (!granted) {
+            AsyncStorage.setItem("languageCheck", JSON.stringify({ cameraPermission: true }))
+            const requestPer = await Permission.requestPermission(PERMISSION_TYPE.camera);
+            setScreenLoading(false)
+            return
+        }
+        setScreenLoading(false)
+        dispatch(setCameraPermission(granted))
+    }
 
     const onSuccess = (e) => {
         console.log('e', e);
-        processScanResult(e).then((result) => {
+        processScanResult(e,SCAN_WALLET).then((result) => {
             if (result.walletAddress) {
                 verifyAddress(result.walletAddress).then(() => {
                     setResult(result.walletAddress, result.amount);
@@ -251,41 +269,44 @@ const ScanScreen = (props) => {
             );
         });
     };
-    console.log('position', position);
     return (
         <View style={[styles.scene]} >
-            {renderScanner ? <QRCodeScanner
-                ref={(scanner) => refScanner = scanner}
-                onRead={onSuccess}
-                permissionDialogTitle={translate("wallet.common.info")}
-                permissionDialogMessage={translate("wallet.common.needCameraPermission")}
-                showMarker={true}
-                notAuthorizedView={<View
-                    style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            color: "#fff"
-                        }}
-                    >
-                        {translate("wallet.common.cameraNotAuth")}
-                    </Text>
-                </View>
-                }
-                customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
-                    <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
-                </TouchableOpacity>}
-                containerStyle={{ flex: 1 }}
-                cameraStyle={styles.qrCameraStyle}
-                topViewStyle={{ flex: 0 }}
-                bottomViewStyle={{ flex: 0 }}
-            /> : null}
+
+            {
+                screenLoading ?
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                        <FetchingIndicator />
+                    </View> :
+                    camera ? <QRCodeScanner
+                        ref={(scanner) => refScanner = scanner}
+                        onRead={onSuccess}
+                        permissionDialogTitle={translate("wallet.common.info")}
+                        permissionDialogMessage={translate("wallet.common.needCameraPermission")}
+                        showMarker={true}
+                        notAuthorizedView={<View
+                            style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Text style={styles.cameraNotAuth} >
+                                {translate("wallet.common.cameraNotAuth")}
+                            </Text>
+                        </View>
+                        }
+                        customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
+                            <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
+                        </TouchableOpacity>}
+                        containerStyle={{ flex: 1 }}
+                        cameraStyle={styles.qrCameraStyle}
+                        topViewStyle={{ flex: 0 }}
+                        bottomViewStyle={{ flex: 0 }}
+                    /> :
+                        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                            <Text style={styles.cameraNotAuth} >{translate("wallet.common.cameraNotAuth")}</Text>
+                        </View>
+            }
             {/* {
                 <TouchableOpacity style={styles.rescan}>
                     <TextView style={{color:Colors.white}}>Rescan</TextView>
@@ -620,26 +641,27 @@ const Send = ({ route, navigation }) => {
                     renderTabBar={renderTabBar}
                     navigationState={{ index, routes }}
                     renderScene={_renderScene}
-                    onIndexChange={async (index) => {
-                        if (index) {
-                            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+                    onIndexChange={index => setIndex(index)}
+                    // {
+                    //     if (index) {
+                    //         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-                            if (!isGranted) {
-                                confirmationAlert(
-                                    'This feature requires camera access',
-                                    'To enable access, tap Settings and turn on Camera.',
-                                    'Cancel',
-                                    'Settings',
-                                    () => openSettings(),
-                                    () => null
-                                )
-                            } else {
-                                setIndex(index);
-                            }
-                        } else {
-                            setIndex(index);
-                        }
-                    }}
+                    //         if (!isGranted) {
+                    //             confirmationAlert(
+                    //                 'This feature requires camera access',
+                    //                 'To enable access, tap Settings and turn on Camera.',
+                    //                 'Cancel',
+                    //                 'Settings',
+                    //                 () => openSettings(),
+                    //                 () => null
+                    //             )
+                    //         } else {
+                    //             setIndex(index);
+                    //         }
+                    //     } else {
+                    //         setIndex(index);
+                    //     }
+                    // }}
                     style={styles.tabItem}
                 />
             </KeyboardAvoidingView>
@@ -704,7 +726,8 @@ const styles = StyleSheet.create({
         ...CommonStyles.imageStyles(13),
     },
     inputCont: {
-        paddingHorizontal: wp("1%")
+        paddingHorizontal: wp("1%"),
+        height: hp('5%')
     },
     inputLeft: {
         ...CommonStyles.text(Fonts.ARIAL, Colors.GREY1, RF(1.6))
@@ -726,7 +749,7 @@ const styles = StyleSheet.create({
     },
     inputMainCont: {
         width: "100%",
-        height: hp("7%"),
+        // height: hp("7%"),
         borderWidth: 0,
         borderBottomWidth: 1,
         borderBottomColor: Colors.GREY1,
@@ -750,6 +773,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp("4%"),
         paddingVertical: hp("1%"),
         backgroundColor: Colors.themeColor
+    },
+    cameraNotAuth: {
+        textAlign: 'center',
+        fontSize: 16,
     }
 })
 

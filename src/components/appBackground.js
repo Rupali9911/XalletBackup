@@ -11,6 +11,7 @@ import Colors from '../constants/Colors';
 import FetchingIndicator from './fetchingIndicator';
 
 const AppBackground = (props) => {
+    console.log(props.isBusy, "////////")
     return(
         <>
             {props.hideSafeArea?null:<SafeAreaView style={[styles.safeArea, props.safeAreaColor && {backgroundColor: props.safeAreaColor}]}/>}
