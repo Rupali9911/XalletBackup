@@ -118,7 +118,7 @@ function Profile({
                 translate("wallet.common.alert"),
                 translate("wallet.common.emailValidation"),
                 () => {
-                    console.log(err);
+                    console.log();
                 }
             );
             return;
@@ -189,6 +189,17 @@ function Profile({
                 navigation.goBack();
             })
             .catch(err => {
+                if (err.response.status === 401) {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("common.sessionexpired"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                    dispatch(signOut());
+                    return;
+                }
                 if (err.response.data.data === 'email already taken') {
                     alertWithSingleBtn(
                         translate("wallet.common.alert"),
