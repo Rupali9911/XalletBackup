@@ -184,9 +184,9 @@ const HomeScreen = ({navigation}) => {
         }
       }
 
-      if (pass) {
-        navigation.navigate("PasscodeScreen", { screen: "active" })
-      }
+      // if (pass) {
+      //   navigation.navigate("PasscodeScreen", { screen: "active" })
+      // }
     }
   };
 
@@ -206,7 +206,7 @@ const HomeScreen = ({navigation}) => {
         }
       }
     });
-
+    
     AppState.addEventListener('change', appStateChange);
 
     if (requestAppId) {
@@ -227,7 +227,7 @@ const HomeScreen = ({navigation}) => {
       }
     });
   };
-  console.log('data', data);
+  // console.log('data', data);
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>

@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import { Image, Linking, LogBox } from 'react-native';
+import { Image, Linking, LogBox, AppState } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from './common/responsiveFunction';
-import { AppSplash } from './components';
+import { AppSplash, Loader } from './components';
 import Colors from './constants/Colors';
 import ImageSrc from './constants/Images';
 import { screenWidth } from './constants/responsiveFunct';
@@ -74,7 +74,10 @@ const deepLinkData = {
 
 const TabComponent = () => {
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-    React.useEffect(() => { }, [selectedLanguageItem.language_name])
+
+    React.useEffect(() => {
+
+    }, [selectedLanguageItem.language_name])
 
     return (
         <Tab.Navigator tabBarOptions={{
@@ -142,45 +145,15 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-    const { wallet, passcode, mainLoader } = useSelector(
+    const { wallet, passcode, mainLoader, showSplash } = useSelector(
         state => state.UserReducer,
     );
     const dispatch = useDispatch();
     const navigatorRef = React.useRef(null);
+    let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
 
     React.useEffect(() => {
-        dispatch(getAllLanguages());
         LogBox.ignoreAllLogs();
-
-        dispatch(startMainLoading());
-        // AsyncStorage.clear()
-        AsyncStorage.getAllKeys((err, keys) => {
-            console.log('keys', keys);
-            if (keys.length !== 0) {
-                AsyncStorage.multiGet(keys, (err, values) => {
-                    let asyncData = {};
-                    values.map(result => {
-                        let name = result[0].replace(/[^a-zA-Z ]/g, '');
-                        let value = JSON.parse(result[1]);
-                        asyncData[name] = value;
-
-                        if (name == 'passcode') {
-                            dispatch(setPasscodeAsync(value));
-                        }
-                        if (name == 'language') {
-                            dispatch(setAppLanguage(value));
-                        }
-                    });
-                    dispatch(loadFromAsync(asyncData));
-                });
-            } else {
-                let item = languageArray.find(
-                    item => item.language_name == regionLanguage,
-                );
-                dispatch(setAppLanguage(item));
-                dispatch(loadFromAsync());
-            }
-        });
 
         Linking.addEventListener('url', ({ url }) => {
             console.log('e', url);
@@ -196,8 +169,6 @@ const AppRoutes = () => {
             }
         });
     }, []);
-
-    let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
 
     const linking = {
         prefixes: ['xanaliaapp://'],
@@ -228,58 +199,62 @@ const AppRoutes = () => {
 
     return (
         <>
-            {mainLoader ? (
+            {showSplash ? (
                 <AppSplash />
             ) : (
-                <NavigationContainer ref={navigatorRef} linking={linking}>
-                    {wallet ? (
-                        <Stack.Navigator
-                            initialRouteName={initialRoute}
-                            headerMode="none"
-                            screenOptions={{
-                                gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
-                            }}>
-                            <Stack.Screen name="Home" component={TabComponent} />
-                            <Stack.Screen
-                                name="PasscodeScreen"
-                                initialParams={{ screen: 'Auth' }}
-                                component={PasscodeScreen}
-                            />
-                            <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-                            <Stack.Screen
-                                name="CertificateDetail"
-                                component={CertificateDetailScreen}
-                            />
-                            <Stack.Screen name="Pay" component={PayScreen} />
-                            <Stack.Screen name="MakeBid" component={MakeBidScreen} />
-                            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-                            <Stack.Screen name="tokenDetail" component={TokenDetail} />
-                            <Stack.Screen name="receive" component={Receive} />
-                            <Stack.Screen
-                                name="transactionsDetail"
-                                component={transactionsDetail}
-                            />
-                            <Stack.Screen name="send" component={Send} />
-                            <Stack.Screen name="scanToConnect" component={ScanToConnect} />
-                            <Stack.Screen name="Create" component={NewPostScreen} />
-                            <Stack.Screen name="Certificate" component={CertificateScreen} />
-                            <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
-                            <Stack.Screen name="AddCard" component={AddCard} />
-                            <Stack.Screen name="Cards" component={Cards} />
-                            <Stack.Screen name="BuyGold" component={BuyGold} />
-                            <Stack.Screen name="Setting" component={Setting} />
-                            <Stack.Screen name="ChangePassword" component={ChangePassword} />
-                            <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
-                            <Stack.Screen name="WalletPay" component={WalletPay} />
-                            <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
-                            <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
-                        </Stack.Navigator>
-                    ) : (
-                        <Stack.Navigator headerMode="none">
-                            <Stack.Screen name="Authentication" component={AuthStack} />
-                        </Stack.Navigator>
-                    )}
-                </NavigationContainer>
+                mainLoader ?
+                    <Loader />
+                    :
+                    <NavigationContainer ref={navigatorRef} linking={linking}>
+                        {wallet ? (
+
+                            <Stack.Navigator
+                                initialRouteName={initialRoute}
+                                headerMode="none"
+                                screenOptions={{
+                                    gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
+                                }}>
+                                <Stack.Screen name="Home" component={TabComponent} />
+                                <Stack.Screen
+                                    name="PasscodeScreen"
+                                    initialParams={{ screen: 'Auth' }}
+                                    component={PasscodeScreen}
+                                />
+                                <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+                                <Stack.Screen
+                                    name="CertificateDetail"
+                                    component={CertificateDetailScreen}
+                                />
+                                <Stack.Screen name="Pay" component={PayScreen} />
+                                <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+                                <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                                <Stack.Screen name="tokenDetail" component={TokenDetail} />
+                                <Stack.Screen name="receive" component={Receive} />
+                                <Stack.Screen
+                                    name="transactionsDetail"
+                                    component={transactionsDetail}
+                                />
+                                <Stack.Screen name="send" component={Send} />
+                                <Stack.Screen name="scanToConnect" component={ScanToConnect} />
+                                <Stack.Screen name="Create" component={NewPostScreen} />
+                                <Stack.Screen name="Certificate" component={CertificateScreen} />
+                                <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
+                                <Stack.Screen name="AddCard" component={AddCard} />
+                                <Stack.Screen name="Cards" component={Cards} />
+                                <Stack.Screen name="BuyGold" component={BuyGold} />
+                                <Stack.Screen name="Setting" component={Setting} />
+                                <Stack.Screen name="ChangePassword" component={ChangePassword} />
+                                <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
+                                <Stack.Screen name="WalletPay" component={WalletPay} />
+                                <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
+                                <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
+                            </Stack.Navigator>
+                        ) : (
+                            <Stack.Navigator headerMode="none">
+                                <Stack.Screen name="Authentication" component={AuthStack} />
+                            </Stack.Navigator>
+                        )}
+                    </NavigationContainer>
             )}
         </>
     );
