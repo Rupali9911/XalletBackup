@@ -187,7 +187,7 @@ export const CardItem = (props) => {
             <View style={styles.cardItem} removeClippedSubviews={true}>
                 <Checkbox isCheck={isCheck} onChecked={onSelect} iconSize={wp("5%")}/>
                 <View style={styles.itemCardType}>
-                    <Image source={ImagesSrc.cardTypeIcon[details.brand.replace(' ', '-').toLowerCase()]} />
+                    <Image source={ImagesSrc.cardTypeIcon[details.brand.replace(' ', '-').toLowerCase()]} resizeMode={'contain'}/>
                 </View>
                 <Text style={styles.number}>
                     {formatWithMask({
