@@ -170,9 +170,11 @@ const HomeScreen = ({navigation}) => {
 
   const appStateChange = async (nextAppState) => {
     const languageCheck = await AsyncStorage.getItem("languageCheck");
+    const asyncPassCalled = await AsyncStorage.getItem("@asyncPassCalled");
+    const asyncPassCalledParse = JSON.parse(asyncPassCalled);
     let parseLanguageCheck = JSON.parse(languageCheck);
     var pass = passcodeAsync;
-    console.log(pass, nextAppState, parseLanguageCheck)
+    console.log(pass, nextAppState, parseLanguageCheck, "///////", parseLanguageCheck)
     if (nextAppState === "active") {
 
       if (parseLanguageCheck) {
@@ -184,8 +186,10 @@ const HomeScreen = ({navigation}) => {
         }
       }
 
-      if (pass) {
+      if (pass && !asyncPassCalledParse) {
         navigation.navigate("PasscodeScreen", { screen: "active" })
+      }else{
+        AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(false));
       }
     }
   };
@@ -206,7 +210,7 @@ const HomeScreen = ({navigation}) => {
         }
       }
     });
-
+    
     AppState.addEventListener('change', appStateChange);
 
     if (requestAppId) {
@@ -227,7 +231,7 @@ const HomeScreen = ({navigation}) => {
       }
     });
   };
-  console.log('data', data);
+  // console.log('data', data);
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
