@@ -5,10 +5,6 @@ import {
     SafeAreaView,
 } from 'react-native';
 import {
-    Header,
-    HeaderLeft,
-    HeaderRight,
-    Container,
     RowBetweenWrap,
     CenterWrap,
     RowWrap,
@@ -16,7 +12,6 @@ import {
     BorderView
 } from 'src/styles/common.styles';
 import {
-    HeaderText,
     NormalText,
 } from 'src/styles/text.styles';
 import {
@@ -48,13 +43,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { upateUserData } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn, validateEmail, validURL } from '../../utils';
 import { signOut } from '../../store/reducer/userReducer';
-
-const {
-    LeftArrowIcon,
-} = SVGS;
-const {
-    DEFAULTPROFILE
-} = IMAGES;
+import { hp } from '../../constants/responsiveFunct';
 
 function Profile({
     navigation,
@@ -77,6 +66,14 @@ function Profile({
     const [about, setAbout] = useState(UserReducer.data.user.about);
     const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
     const actionSheetRef = useRef(null);
+    const refInput1 = useRef(null);
+    const refInput2 = useRef(null);
+    const refInput3 = useRef(null);
+    const refInput4 = useRef(null);
+    const refInput5 = useRef(null);
+    const refInput6 = useRef(null);
+    const refInput7 = useRef(null);
+    const refInput8 = useRef(null);
     const dispatch = useDispatch();
 
     const OPEN_CAMERA = 0;
@@ -236,8 +233,8 @@ function Profile({
                         </TouchableOpacity>
                     )}
                 />
-                
-                <KeyboardAwareScrollView flex={1}>
+
+                <KeyboardAwareScrollView extraScrollHeight={hp('7%')}>
                     <CenterWrap>
                         <SpaceView mTop={SIZE(10)} />
                         <Avatar>
@@ -268,6 +265,8 @@ function Profile({
                             value={username}
                             onChangeText={setUserName}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput1.current.focus()}
                             placeholder={translate("common.UserName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -278,9 +277,12 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput1}
                             value={title}
                             onChangeText={setTitle}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput2.current.focus()}
                             placeholder={translate("common.artistname")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -291,9 +293,12 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput2}
                             value={firstName}
                             onChangeText={setFirstName}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput3.current.focus()}
                             placeholder={translate("wallet.common.firstName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -304,9 +309,12 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput3}
                             value={lastName}
                             onChangeText={setLastName}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput4.current.focus()}
                             placeholder={translate("wallet.common.lastName")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -317,9 +325,12 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput4}
                             value={address}
                             onChangeText={setAddress}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput5.current.focus()}
                             placeholder={translate("common.address")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -330,10 +341,13 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput5}
                             keyboardType='numeric'
                             value={phoneNumber}
                             onChangeText={setPhoneNumber}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput6.current.focus()}
                             placeholder={translate("common.phoneNumber")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -344,9 +358,12 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput6}
                             value={email}
                             onChangeText={setEmail}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput7.current.focus()}
                             placeholder={translate("common.email")} />
                     </RowBetweenWrap>
                     <RowBetweenWrap>
@@ -357,9 +374,12 @@ function Profile({
                             </NormalText>
                         </RowWrap>
                         <EditableInput
+                            ref={refInput7}
                             value={website}
                             onChangeText={setWebsite}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput8.current.focus()}
                             placeholder={translate("common.website")} />
                     </RowBetweenWrap>
                     <SpaceView mTop={SIZE(12)} />
@@ -375,21 +395,23 @@ function Profile({
                     <RowWrap>
                         <SpaceView mLeft={SIZE(19)} />
                         <MultiLineEditableInput
+                            ref={refInput8}
                             value={about}
                             onChangeText={setAbout}
                             multiline
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
                             placeholder={translate("wallet.common.aboutMe")} />
                     </RowWrap>
-
-                    <ActionSheet
-                        ref={actionSheetRef}
-                        title={translate("wallet.common.choosePhoto")}
-                        options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
-                        cancelButtonIndex={2}
-                        onPress={selectActionSheet}
-                    />
                 </KeyboardAwareScrollView>
+
+                <ActionSheet
+                    ref={actionSheetRef}
+                    title={translate("wallet.common.choosePhoto")}
+                    options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
+                    cancelButtonIndex={2}
+                    onPress={selectActionSheet}
+                />
             </SafeAreaView>
         </AppBackground>
     )
