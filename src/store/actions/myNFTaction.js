@@ -78,7 +78,7 @@ export const myNFTList = (page, ownerId) => {
         fetch(url, fetch_data_body)
             .then(response => response.json())  // promise
             .then(json => {
-                console.log('json',json);
+                // console.log('json',json);
                 dispatch(myNftLoadSuccess(json));
             }).catch(err => {
                 dispatch(myNftLoadFail())

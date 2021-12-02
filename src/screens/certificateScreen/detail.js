@@ -558,9 +558,11 @@ const DetailScreen = ({ route, navigation }) => {
                                 if (buyLoading) return;
                                 // navigation.navigate('WalletConnect')
                                 // if(price && price > 0){
-                                // if (setNFTStatus() === 'buy') {
+                                if (setNFTStatus() === 'buy') {
                                     setShowPaymentMethod(true);
-                                // }
+                                }else if (setNFTStatus() === 'sell'){
+                                    navigation.navigate('sellNft');
+                                }
                                 // }
                             }}
                             leftHide={setNFTStatus() === undefined}

@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {FAB, Portal, Provider} from 'react-native-paper';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {openSettings} from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import {useDispatch, useSelector} from 'react-redux';
@@ -30,7 +32,7 @@ import SuccessModal from '../../components/successModal';
 import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
-import { getAllArtist, getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
+import { getAllArtist, getNFTList, nftListReset, nftLoadStart, pageChange, setSortBy } from '../../store/actions/nftTrendList';
 import { updateCreateState } from '../../store/reducer/userReducer';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
 import { translate } from '../../walletUtils';
@@ -40,6 +42,7 @@ import NewNFT from './newNFT';
 import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import Colors from '../../constants/Colors';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -51,14 +54,16 @@ const Hot = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log('update sort',ListReducer);
     dispatch(nftLoadStart());
     dispatch(nftListReset());
-    getNFTlist(1);
+    getNFTlist(1,null,ListReducer.sort);
     dispatch(pageChange(1));
-  }, []);
+  }, [ListReducer.sort]);
 
-  const getNFTlist = useCallback((page, limit) => {
-    dispatch(getNFTList(page, limit));
+  const getNFTlist = useCallback((page, limit, _sort) => {
+    console.log('_sort',_sort);
+    dispatch(getNFTList(page, limit, _sort));
   }, []);
 
   const refreshFunc = () => {
@@ -157,7 +162,7 @@ const Hot = () => {
 };
 
 const HomeScreen = ({navigation}) => {
-  const {artistList, artistLoading} = useSelector(state => state.ListReducer);
+  const {artistList, artistLoading, sort} = useSelector(state => state.ListReducer);
   const {showSuccess} = useSelector(state => state.UserReducer);
   const {requestAppId} = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
@@ -167,6 +172,9 @@ const HomeScreen = ({navigation}) => {
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  
+  const onStateChange = ({ open }) => setOpenState(open);
 
   const appStateChange = async (nextAppState) => {
     const languageCheck = await AsyncStorage.getItem("languageCheck");
@@ -231,9 +239,9 @@ const HomeScreen = ({navigation}) => {
       }
     });
   };
-  // console.log('data', data);
+  console.log('data', data, sort);
   return (
-    <>
+    <Provider>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <AppHeader
           title={translate('common.home')}
@@ -362,7 +370,56 @@ const HomeScreen = ({navigation}) => {
           />
         ) : null}
       </AppModal>
-    </>
+        <FAB.Group 
+          open={openState}
+          icon={openState ? 'close' : (props) => <FontAwesome5 name={'sort-amount-down'} color={props.color} size={props.size}/>}
+          fabStyle={{backgroundColor: Colors.themeColor}}
+          actions={[
+            { 
+              icon: 'sort-variant', 
+              label: translate("common.mostFavourite"),
+              style: styles.fabItemStyle,
+              onPress: () => dispatch(setSortBy(null)) 
+            },
+            {
+              icon: 'sort-variant',
+              label: translate("common.recentlyListed"),
+              style: styles.fabItemStyle,
+              onPress: () => dispatch(setSortBy('sell')),
+            },
+            {
+              icon: 'sort-variant',
+              label: translate("common.recentlyCreated"),
+              style: styles.fabItemStyle,
+              onPress: () => dispatch(setSortBy('mint')),
+            },
+            {
+              icon: 'sort-variant',
+              label: translate("common.priceLowToHigh"),
+              style: styles.fabItemStyle,
+              onPress: () => dispatch(setSortBy('pricelow')),
+            },
+            {
+              icon: 'sort-variant',
+              label: translate("common.priceHighToLow"),
+              style: styles.fabItemStyle,
+              onPress: () => dispatch(setSortBy('pricehigh')),
+            },
+            {
+              icon: 'sort-variant',
+              label: translate("common.onAuction"),
+              style: styles.fabItemStyle,
+              onPress: () => dispatch(setSortBy('onAuction')),
+            },
+          ]}
+          onStateChange={onStateChange}
+          onPress={() => {
+            if (openState) {
+              // do something if the speed dial is open
+            }
+          }}
+          />
+    </Provider>
   );
 };
 

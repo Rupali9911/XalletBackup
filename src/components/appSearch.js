@@ -4,6 +4,7 @@ import { View, StyleSheet, TextInput, FlatList, ActivityIndicator, Text, Image, 
 import {Searchbar} from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 import Images from '../constants/Images';
 import { hp, RF, wp } from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
@@ -172,10 +173,11 @@ const styles = StyleSheet.create({
         borderRadius: hp("3%"),
         marginHorizontal: wp("2"),
         width: wp("96%"),
-        height: hp("5.5%")
+        height: hp("5.9%")
     },
     inputStyle: {
         fontSize: RF(1.8),
+        fontFamily: Fonts.PINGfANG,
         color: Colors.BLACK1,
     },
     listContainer: {

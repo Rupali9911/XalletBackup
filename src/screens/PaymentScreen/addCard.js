@@ -21,12 +21,14 @@ import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import AppButton from '../../components/appButton';
 import { StripeApiRequest } from '../../helpers/ApiRequest';
 import { addCard } from '../../store/reducer/paymentReducer';
+import { StackActions } from '@react-navigation/routers';
 
 function AddCard({ route, navigation }) {
 
     const dispatch = useDispatch();
     const {data} = useSelector(state => state.UserReducer);
     // const { loading } = useSelector(state => state.PayReducer);
+    const { myCards } = useSelector(state => state.PaymentReducer);
 
     const [cardNumber, setCardNumber] = useState("");
     const [expDate, setExpDate] = useState("");
@@ -253,7 +255,14 @@ function AddCard({ route, navigation }) {
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
                     response.msg_key?translate(response.msg_key):response.data.message,
-                    () => navigation.goBack()
+                    () => {
+                        // navigation.goBack()
+                        if(myCards.length<1){
+                            navigation.dispatch(StackActions.replace('Cards', {price : route?.parmas?.price}));
+                        }else{
+                            navigation.goBack();
+                        }
+                    }
                 )
             }else{
                 alertWithSingleBtn(
