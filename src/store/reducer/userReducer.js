@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   AUTH_SUCCESS,
+  HIDE_SPLASH,
   AUTH_LOADING_START,
   AUTH_LOADING_END,
   MAIN_LOADING_END,
@@ -23,6 +24,7 @@ import { setConnectedApps } from './walletReducer';
 const initialState = {
   loading: false,
   mainLoader: true,
+  showSplash: true,
   wallet: null,
   isCreate: false,
   data: {},
@@ -38,6 +40,11 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         mainLoader: true,
+      };
+    case HIDE_SPLASH:
+      return {
+        ...state,
+        showSplash: false,
       };
 
     case MAIN_LOADING_END:
@@ -120,6 +127,9 @@ export default UserReducer = (state = initialState, action) => {
 
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
+});
+export const hideSplash = () => ({
+  type: HIDE_SPLASH
 });
 
 const endLoading = () => ({
@@ -220,15 +230,19 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
           dispatch(upateUserData(res.data));
         }
         dispatch(endMainLoading());
+        dispatch(hideSplash());
       })
       .catch(e => {
+        dispatch(hideSplash());
         dispatch(endMainLoading());
+
         alertWithSingleBtn(
           translate('wallet.common.alert'),
           translate('wallet.common.error.networkFailed')
         );
       });
   } else {
+    dispatch(hideSplash());
     dispatch(endMainLoading());
   }
 };

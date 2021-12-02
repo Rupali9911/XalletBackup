@@ -64,6 +64,7 @@ export const AWARDS_PAGE_CHANGE = "AWARDS_PAGE_CHANGE";
 
 
 //#region XANALIA types
+export const HIDE_SPLASH = "HIDE_SPLASH";
 export const AUTH_LOADING_START = "AUTH_LOADING_START";
 export const AUTH_LOADING_END = "AUTH_LOADING_END";
 export const MAIN_LOADING_START = "MAIN_LOADING_START";
@@ -97,6 +98,7 @@ export const UPDATE_POLY_BALANCES = "UPDATE_POLY_BALANCES";
 
     //#region Language action Types
 
+    export const UPDATE_ALL_LANGUAGES = 'UPDATE_ALL_LANGUAGES';
     export const SET_LANGUAGE_SELECTED = 'SET_LANGUAGE_SELECTED';
     export const SET_ENGLISH_LANGUAGE = 'SET_ENGLISH_LANGUAGE';
     export const SET_JAPAN_LANGUAGE = 'SET_JAPAN_LANGUAGE';
