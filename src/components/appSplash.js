@@ -6,9 +6,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { hideSplash, loadFromAsync,
+import {
+    hideSplash, loadFromAsync,
     setPasscodeAsync,
-    startMainLoading, } from '../store/reducer/userReducer';
+    startMainLoading,
+} from '../store/reducer/userReducer';
 import { getAllLanguages, setAppLanguage } from '../store/reducer/languageReducer';
 import { languageArray } from '../walletUtils';
 import * as RNLocalize from 'react-native-localize';
@@ -23,7 +25,7 @@ const appSplash = () => {
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        
+
         loadAllData()
 
     }, []);
@@ -36,7 +38,7 @@ const appSplash = () => {
             if (keys.length !== 0) {
                 AsyncStorage.multiGet(keys, (err, values) => {
                     let asyncData = {};
-                     values.map(result => {
+                    values.map(result => {
                         let name = result[0].replace(/[^a-zA-Z ]/g, '');
                         let value = JSON.parse(result[1]);
                         asyncData[name] = value;
@@ -50,12 +52,15 @@ const appSplash = () => {
                     });
                     dispatch(loadFromAsync(asyncData));
                 });
+                AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
+
             } else {
                 let item = languageArray.find(
                     item => item.language_name == regionLanguage,
                 );
                 dispatch(setAppLanguage(item));
                 dispatch(loadFromAsync());
+                AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
             }
         });
     }
