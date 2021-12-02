@@ -10,3 +10,4 @@ export { default as C_Image } from './customImage';
 export { default as GroupButton } from './groupButton';
 export { default as AppHeader } from './appHeader';
 export { default as AppSplash } from './appSplash';
+export { default as LimitableInput } from './limitableInput';

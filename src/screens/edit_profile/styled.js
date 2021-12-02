@@ -50,10 +50,27 @@ const MultiLineEditableInput = styled.TextInput`
     color: ${COLORS.BLACK1};
 `;
 
+const LimitView = styled.View`
+    width: 100%;
+    height: ${SIZE(36)}px;
+    background-color: ${COLORS.RED1};
+    align-items: center;
+    justify-content: center;
+`;
+
+const WhiteText = styled.Text`
+    font-size: ${FONT(14)}px;
+    font-family: ${FONTS.ARIAL};
+    color: ${COLORS.WHITE1};
+    margin-top: ${SIZE(4)}px;
+`;
+
 export {
     Avatar,
     ChangeAvatar,
     DoneText,
     EditableInput,
-    MultiLineEditableInput
+    MultiLineEditableInput,
+    LimitView,
+    WhiteText
 }

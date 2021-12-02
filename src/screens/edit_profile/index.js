@@ -21,13 +21,16 @@ import {
 } from 'src/constants';
 import {
     C_Image,
+    LimitableInput,
 } from 'src/components';
 import {
     Avatar,
     ChangeAvatar,
     DoneText,
     EditableInput,
-    MultiLineEditableInput
+    MultiLineEditableInput,
+    LimitView,
+    WhiteText,
 } from './styled';
 import {
     KeyboardAwareScrollView
@@ -268,119 +271,42 @@ function Profile({
                             onSubmitEditing={() => refInput1.current.focus()}
                             placeholder={translate("common.UserName")} />
                     </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.artistname")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput1}
-                            value={title}
-                            onChangeText={setTitle}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput2.current.focus()}
-                            placeholder={translate("common.artistname")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("wallet.common.firstName")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput2}
-                            value={firstName}
-                            onChangeText={setFirstName}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput3.current.focus()}
-                            placeholder={translate("wallet.common.firstName")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("wallet.common.lastName")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput3}
-                            value={lastName}
-                            onChangeText={setLastName}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput4.current.focus()}
-                            placeholder={translate("wallet.common.lastName")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.address")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput4}
-                            value={address}
-                            onChangeText={setAddress}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput5.current.focus()}
-                            placeholder={translate("common.address")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.phoneNumber")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput5}
-                            keyboardType='numeric'
-                            value={phoneNumber}
-                            onChangeText={setPhoneNumber}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput6.current.focus()}
-                            placeholder={translate("common.phoneNumber")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.email")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput6}
-                            value={email}
-                            onChangeText={setEmail}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput7.current.focus()}
-                            placeholder={translate("common.email")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.website")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            ref={refInput7}
-                            value={website}
-                            onChangeText={setWebsite}
-                            placeholderTextColor={'grey'}
-                            returnKeyType="next"
-                            onSubmitEditing={() => refInput8.current.focus()}
-                            placeholder={translate("common.website")} />
-                    </RowBetweenWrap>
+                    <LimitableInput
+                        value={title}
+                        onChangeText={setTitle}
+                        limit={50}
+                        placeholder={translate("common.artistname")} />
+                    <LimitableInput
+                        value={firstName}
+                        onChangeText={setFirstName}
+                        limit={50}
+                        placeholder={translate("wallet.common.firstName")} />
+                    <LimitableInput
+                        value={lastName}
+                        onChangeText={setLastName}
+                        limit={50}
+                        placeholder={translate("wallet.common.lastName")} />
+                    <LimitableInput
+                        value={address}
+                        onChangeText={setAddress}
+                        limit={50}
+                        placeholder={translate("common.address")} />
+                    <LimitableInput
+                        keyboardType='numeric'
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
+                        limit={20}
+                        placeholder={translate("common.phoneNumber")} />
+                    <LimitableInput
+                        value={email}
+                        onChangeText={setEmail}
+                        limit={20}
+                        placeholder={translate("common.email")} />
+                    <LimitableInput
+                        value={website}
+                        onChangeText={setWebsite}
+                        limit={50}
+                        placeholder={translate("common.website")} />
                     <SpaceView mTop={SIZE(12)} />
                     <RowBetweenWrap>
                         <RowWrap>
@@ -394,14 +320,19 @@ function Profile({
                     <RowWrap>
                         <SpaceView mLeft={SIZE(19)} />
                         <MultiLineEditableInput
-                            ref={refInput8}
                             value={about}
                             onChangeText={setAbout}
                             multiline
                             placeholderTextColor={'grey'}
-                            returnKeyType="next"
                             placeholder={translate("wallet.common.aboutMe")} />
                     </RowWrap>
+                    {about?.length > 200 && (
+                        <LimitView>
+                            <WhiteText>
+                                {translate('wallet.common.limitInputLength', { number: 200 })}
+                            </WhiteText>
+                        </LimitView>
+                    )}
                 </KeyboardAwareScrollView>
 
                 <ActionSheet

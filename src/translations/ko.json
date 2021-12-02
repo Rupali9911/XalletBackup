@@ -872,7 +872,8 @@
             "Dislike": "싫어함",
             "askDisconnect": "이 {{appName}} 앱을 삭제하시겠습니까?",
             "emailValidation": "이메일이 확인되지 않았습니다.",
-            "searchHint": "NFT, 컬렉션 또는 아티스트 검색"
+            "searchHint": "NFT, 컬렉션 또는 아티스트 검색",
+            "limitInputLength": "{{number}}자를 넘지 않아야 합니다."
         },
         "backendmessage": {
             "error": {},

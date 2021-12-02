@@ -871,7 +871,8 @@
             "remittanceFailure": "Remittance Failure",
             "askDisconnect": "Are you sure you want to remove this {{appName}} app?",
             "emailValidation": "Email is not validated",
-            "searchHint": "Search NFTs, Collections, and Artists"
+            "searchHint": "Search NFTs, Collections, and Artists",
+            "limitInputLength": "You should not exceed more than {{number}} chars."
         },
         "backendmessage": {
             "error": {},
