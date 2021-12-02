@@ -12,34 +12,26 @@ import {
 } from 'react-native';
 import styles from './styles';
 import { images, colors } from '../../res';
+import { AppHeader } from '../../components';
 
-import getLanguage from '../../utils/languageSupport';
 import {
     SIZE,
     COLORS
 } from 'src/constants';
 import { translate } from '../../walletUtils';
 
-const langObj = getLanguage();
-
 const NewPostScreen = ({route, navigation}) => {
     return (
         <SafeAreaView style={styles.mainContainer}>
-            <View style={styles.header} >
-                <View style={styles.headerLeft}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                    </TouchableOpacity>
-                </View>
-                <Text style={styles.headerText}>
-                    {translate("wallet.common.newPost")}
-                </Text>
-                <View style={styles.headerRight}>
-                    <Text style={styles.headerRightText}>
-                        {translate("wallet.common.share")}
-                    </Text>
-                </View>
-            </View>
+            <AppHeader
+                    title={translate("wallet.common.newPost")}
+                    showBackButton
+                    showRightButton
+                    onPressRight={() => null}
+                    rightButtonComponent={<Text style={styles.headerRightText}>
+                    {translate("wallet.common.share")}
+                </Text>}
+                />
             <ScrollView>
                 <View style={styles.listItem}>
                     <View style={styles.rowWrap}>

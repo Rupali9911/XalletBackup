@@ -9,6 +9,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 import { images, colors } from '../../res';
+import { AppHeader } from '../../components';
 
 import getLanguage from '../../utils/languageSupport';
 import { SIZE } from '../../common/responsiveFunction';
@@ -22,11 +23,10 @@ const PayScreen = ({
             flex={1}
             colors={[colors.GRADIENTLIGHT, colors.GRADIENTDARK]}>
             <SafeAreaView>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>
-                        {translate("wallet.common.purchased")}
-                    </Text>
-                </View>
+                <AppHeader
+                    titleStyle={styles.headerText}
+                    title={translate("wallet.common.purchased")}
+                />
             </SafeAreaView>
             <View style={styles.cardContainer}>
                 <View style={styles.profileImage}>

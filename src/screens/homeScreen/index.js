@@ -174,7 +174,6 @@ const HomeScreen = ({navigation}) => {
     const asyncPassCalledParse = JSON.parse(asyncPassCalled);
     let parseLanguageCheck = JSON.parse(languageCheck);
     var pass = passcodeAsync;
-    console.log(pass, nextAppState, parseLanguageCheck, "///////", parseLanguageCheck)
     if (nextAppState === "active") {
 
       if (parseLanguageCheck) {
@@ -231,7 +230,6 @@ const HomeScreen = ({navigation}) => {
       }
     });
   };
-  // console.log('data', data);
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>

@@ -14,7 +14,7 @@ import styles from './styles';
 import { images, colors } from '../../res';
 
 import { divideNo } from '../../utils';
-import { C_Image, GroupButton } from '../../components';
+import { C_Image, GroupButton, AppHeader } from '../../components';
 import {
     SVGS,
     SIZE,
@@ -408,16 +408,10 @@ const DetailScreen = ({ route, navigation }) => {
     return (
         <>
             <SafeAreaView style={styles.mainContainer}>
-                <View style={styles.header}>
-                    <View style={styles.headerLeft}>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={styles.headerText}>
-                        {translate("wallet.common.detail")}
-                    </Text>
-                </View>
+                <AppHeader
+                    showBackButton
+                    title={translate("wallet.common.detail")}
+                />
                 <ScrollView>
                     <TouchableOpacity
                         activeOpacity={1}
@@ -559,7 +553,7 @@ const DetailScreen = ({ route, navigation }) => {
                                 // navigation.navigate('WalletConnect')
                                 // if(price && price > 0){
                                 // if (setNFTStatus() === 'buy') {
-                                    setShowPaymentMethod(true);
+                                setShowPaymentMethod(true);
                                 // }
                                 // }
                             }}

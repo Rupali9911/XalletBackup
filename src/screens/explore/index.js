@@ -16,7 +16,7 @@ import {
 import NftItem from '../detailScreen/nftItem';
 import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
-import { Loader } from '../../components';
+import { Loader, AppHeader } from '../../components';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
 import AppSearch from '../../components/appSearch';
@@ -65,11 +65,10 @@ function ExploreScreen({
 
     return (
         <Container>
-            <Header>
-                <HeaderText>
-                    {translate("wallet.common.explore")}
-                </HeaderText>
-            </Header>
+            <AppHeader
+                title={translate("wallet.common.explore")}
+            />
+           
             <View>
                 <View style={styles.listContainer}>
                     {

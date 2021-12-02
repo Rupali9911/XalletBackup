@@ -18,7 +18,7 @@ function AppHeader(props) {
 
     return (
         <View style={[styles.container, props.containerStyle]} >
-            <View style={{ flex: 1, justifyContent: "center" }} >
+            <View style={{ flex: 1 }} >
                 {
                     props.showBackButton ?
                         <TouchableOpacity style={styles.backContainer} onPress={() => props.onPressBack ? props.onPressBack() : navigation.goBack()} >
@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
         color: COLORS.BLACK1
     },
     backContainer: {
+        flex: 1,
+        justifyContent: "center"
     },
     backIcon: {
         ...CommonStyles.imageStyles(5),

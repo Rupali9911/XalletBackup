@@ -14,15 +14,10 @@ import { myCollectionList, myCollectionPageChange } from '../../store/actions/my
 
 import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
 
-import getLanguage from '../../utils/languageSupport';
-const langObj = getLanguage();
-
 import styles from './styles';
 import { images, colors } from '../../res';
-import { Loader } from '../../components';
+import { Loader, AppHeader } from '../../components';
 import NftItem from './nftItem';
-
-const { width } = Dimensions.get('window');
 
 const DetailItemScreen = ({ route }) => {
 
@@ -127,21 +122,18 @@ const DetailItemScreen = ({ route }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
             <View style={styles.modalCont} >
-                <View style={styles.header} >
-                    <View style={styles.headerLeft}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
-                            <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.headerTextView}>
+                <AppHeader
+                    showBackButton
+                    titleComponent={<View style={styles.headerTextView}>
                         <Text style={styles.topHeaderText}>
                             {'LALALA'}
                         </Text>
                         <Text style={styles.bottomHeaderText}>
                             {'NFTs'}
                         </Text>
-                    </View>
-                </View>
+                    </View>}
+                />
+                
                 {
                     page === 1 && loading ?
                         <Loader /> :
