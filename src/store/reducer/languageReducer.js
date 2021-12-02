@@ -7,7 +7,8 @@ import {
   SET_JAPAN_LANGUAGE,
   SET_KOREA_LANGUAGE,
   SET_CHINA_LANGUAGE,
-  SET_TAIWAN_LANGUAGE
+  SET_TAIWAN_LANGUAGE,
+  UPDATE_ALL_LANGUAGES
 } from '../types';
 import { setI18nConfig } from "../../walletUtils";
 
@@ -27,6 +28,16 @@ const initialState = {
 
 export default LanguageReducer = (state = initialState, action) => {
   switch (action.type) {
+
+    case UPDATE_ALL_LANGUAGES:
+      return {
+        ...state,
+        en: action.payload[0],
+        ja: action.payload[1],
+        ko: action.payload[2],
+        ch: action.payload[3],
+        tw: action.payload[4]
+      };
 
     case SET_LANGUAGE_SELECTED:
       return {
@@ -95,14 +106,16 @@ export const getAllLanguages = () => (dispatch) =>
           return o;
         });
       }
+
+      dispatch(updateAllLanguages(languages))
       // console.log('Languages',JSON.stringify(languages))
-      batch(() => {
-        dispatch(setEnglishLanguage(languages[0]));
-        dispatch(setJapanLanguage(languages[1]));
-        dispatch(setKoreaLanguage(languages[2]));
-        dispatch(setChinaLanguage(languages[3]));
-        dispatch(setTaiwanLanguage(languages[4]));
-      });
+      // batch(() => {
+      //   dispatch(setEnglishLanguage(languages[0]));
+      //   dispatch(setJapanLanguage(languages[1]));
+      //   dispatch(setKoreaLanguage(languages[2]));
+      //   dispatch(setChinaLanguage(languages[3]));
+      //   dispatch(setTaiwanLanguage(languages[4]));
+      // });
     }).catch((error) => {
       console.log(error);
     });
@@ -113,6 +126,11 @@ export const setAppLanguage = (data) => (dispatch) => {
   dispatch(setSelectedLanguage(data));
   setI18nConfig(data.language_name);
 }
+
+const updateAllLanguages = (data) => ({
+  type: UPDATE_ALL_LANGUAGES,
+  payload: data
+})
 
 const setSelectedLanguage = (data) => ({
   type: SET_LANGUAGE_SELECTED,
