@@ -31,8 +31,9 @@ const DetailItemScreen = ({ route }) => {
     const navigation = useNavigation();
     const isFocusedHistory = useIsFocused();
 
-    const [listIndex, setListIndex] = React.useState(route.params.index);
+    const [listIndex, setListIndex] = React.useState(route.params.index || 0);
     const [owner, setOwner] = React.useState(route.params.owner);
+    const [list, setList] = React.useState([]);
 
     const getNFTlistData = React.useCallback((page) => {
 
@@ -47,7 +48,7 @@ const DetailItemScreen = ({ route }) => {
                         AuthReducer.screenName == "awards" ?
                             dispatch(getAwardsNftList(page, 24, owner)) : null
 
-    }, [isFocusedHistory]);
+    }, []);
 
     const getPage = React.useCallback((page) => {
 
@@ -64,17 +65,6 @@ const DetailItemScreen = ({ route }) => {
 
     });
 
-    let list = AuthReducer.screenName == "Hot" ?
-        ListReducer.nftList :
-        AuthReducer.screenName == "newNFT" ?
-            NewNFTListReducer.newNftList :
-            AuthReducer.screenName == "myNFT" ?
-                MyNFTReducer.myList :
-                AuthReducer.screenName == "myCollection" ?
-                    MyCollectionReducer.myCollection :
-                    AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftList : [];
-
     let loading = AuthReducer.screenName == "Hot" ?
         ListReducer.nftListLoading :
         AuthReducer.screenName == "newNFT" ?
@@ -84,7 +74,7 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionListLoading :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftLoading : null;
+                        AwardsNFTReducer.awardsNftLoading : true;
 
     let page = AuthReducer.screenName == "Hot" ?
         ListReducer.page :
@@ -107,6 +97,21 @@ const DetailItemScreen = ({ route }) => {
                     MyCollectionReducer.myCollectionTotalCount :
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsTotalCount : 1;
+
+    React.useEffect(() => {
+        const data = AuthReducer.screenName == "Hot" ?
+            ListReducer.nftList :
+            AuthReducer.screenName == "newNFT" ?
+                NewNFTListReducer.newNftList :
+                AuthReducer.screenName == "myNFT" ?
+                    MyNFTReducer.myList :
+                    AuthReducer.screenName == "myCollection" ?
+                        MyCollectionReducer.myCollection :
+                        AuthReducer.screenName == "awards" ?
+                            AwardsNFTReducer.awardsNftList : [];
+        data.slice(route.params.index);
+        setList(data);
+    }, []);
 
     const renderFooter = () => {
         if (!loading) return null;
@@ -147,7 +152,7 @@ const DetailItemScreen = ({ route }) => {
                         <Loader /> :
                         <FlatList
                             initialNumToRender={5}
-                            data={list.slice(listIndex)}
+                            data={list}
                             renderItem={renderItem}
                             onEndReached={() => {
                                 if (!loading && totalCount !== list.length) {

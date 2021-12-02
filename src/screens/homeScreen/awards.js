@@ -68,7 +68,7 @@ const Awards = () => {
           }}
           onPress={() => {
             dispatch(changeScreenName('awards'));
-            navigation.navigate('DetailItem', {index: findIndex});
+            navigation.push('DetailItem', {index: findIndex});
           }}
           style={styles.listItem}>
           <C_Image

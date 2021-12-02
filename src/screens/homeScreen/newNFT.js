@@ -51,7 +51,7 @@ const NewNFT = () => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("newNFT"));
-                        navigation.navigate("DetailItem", { index: findIndex });
+                        navigation.push("DetailItem", { index: findIndex });
                     }}
                     style={styles.listItem}>
                     <C_Image
