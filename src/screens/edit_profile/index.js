@@ -179,7 +179,6 @@ function Profile({
             youtube,
         }
         axios.defaults.headers.post['Content-Type'] = 'application/json';
-
         await axios.post(`${BASE_URL}/user/update-user-profile`, req_body)
             .then(res => {
                 dispatch(upateUserData(res.data.data));
