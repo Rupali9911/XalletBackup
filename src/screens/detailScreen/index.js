@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
 
 import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
 
@@ -13,9 +12,6 @@ import { myNFTList, myPageChange, favoritePageChange } from '../../store/actions
 import { myCollectionList, myCollectionPageChange } from '../../store/actions/myCollection';
 
 import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
-
-import getLanguage from '../../utils/languageSupport';
-const langObj = getLanguage();
 
 import styles from './styles';
 import { images, colors } from '../../res';
@@ -29,11 +25,9 @@ const DetailItemScreen = ({ route }) => {
     const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, MyCollectionReducer, AwardsNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const isFocusedHistory = useIsFocused();
 
     const [listIndex, setListIndex] = React.useState(route.params.index || 0);
     const [owner, setOwner] = React.useState(route.params.owner);
-    const [list, setList] = React.useState([]);
 
     const getNFTlistData = React.useCallback((page) => {
 
@@ -74,7 +68,7 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionListLoading :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftLoading : true;
+                        AwardsNFTReducer.awardsNftLoading : false;
 
     let page = AuthReducer.screenName == "Hot" ?
         ListReducer.page :
@@ -98,7 +92,7 @@ const DetailItemScreen = ({ route }) => {
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsTotalCount : 1;
 
-    React.useEffect(() => {
+    const list = React.useMemo(() => {
         const data = AuthReducer.screenName == "Hot" ?
             ListReducer.nftList :
             AuthReducer.screenName == "newNFT" ?
@@ -109,8 +103,7 @@ const DetailItemScreen = ({ route }) => {
                         MyCollectionReducer.myCollection :
                         AuthReducer.screenName == "awards" ?
                             AwardsNFTReducer.awardsNftList : [];
-        data.slice(route.params.index);
-        setList(data);
+        return data.slice(route.params.index);
     }, []);
 
     const renderFooter = () => {
@@ -130,7 +123,7 @@ const DetailItemScreen = ({ route }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
             <View style={styles.modalCont} >
                 <View style={styles.header} >
                     <View style={styles.headerLeft}>
