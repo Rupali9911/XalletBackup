@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState, useRef } from 'react';
 import {
     TouchableOpacity,
@@ -303,6 +304,7 @@ function Profile({
                         limit={20}
                         placeholder={translate("common.email")} />
                     <LimitableInput
+                        editable={_.isEmpty(UserReducer.data.user.links && UserReducer.data.user.links.website)}
                         value={website}
                         onChangeText={setWebsite}
                         limit={50}
