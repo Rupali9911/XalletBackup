@@ -76,6 +76,13 @@ const styles = StyleSheet.create({
         ...CommonStyles.imageStyles(5),
         tintColor: Colors.black,
         marginHorizontal: wp("3%")
+    },
+    filterfab: {
+        backgroundColor: Colors.black,
+        alignSelf: 'baseline'
+    },
+    fabItemStyle: {
+        backgroundColor: Colors.white
     }
 })
 

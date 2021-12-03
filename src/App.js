@@ -47,6 +47,7 @@ import Receive from './screens/wallet/receive';
 import Send from './screens/wallet/send';
 import TokenDetail from './screens/wallet/tokenDetail';
 import transactionsDetail from './screens/wallet/transactionsDetail';
+import SellNFT from './screens/sellNft/index';
 import Store from './store';
 
 import { setRequestAppId } from './store/reducer/walletReducer';
@@ -241,6 +242,7 @@ const AppRoutes = () => {
                                 <Stack.Screen name="WalletPay" component={WalletPay} />
                                 <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
                                 <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
+                                <Stack.Screen name="sellNft" component={SellNFT} />
                             </Stack.Navigator>
                         ) : (
                             <Stack.Navigator headerMode="none">

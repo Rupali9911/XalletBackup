@@ -34,7 +34,7 @@ export const awardsNftLoadSuccess = (data) => ({
 });
 
 
-export const getAwardsNftList = (page, limit) => {
+export const getAwardsNftList = (page, limit, sort) => {
     return (dispatch, getState) => {
 
         dispatch(awardsNftLoadStart());
@@ -50,10 +50,14 @@ export const getAwardsNftList = (page, limit) => {
             type: "awards2021",
         }
 
+        if(sort){
+            body_data.sort = sort
+        }
+
         if (user) {
             body_data.owner = user._id;
         }
-
+        console.log('body_data',body_data);
         let fetch_data_body = {
             method: 'POST',
             body: JSON.stringify(body_data),

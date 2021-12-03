@@ -22,7 +22,8 @@ import {translate} from '../../walletUtils';
 import styles from './styles';
 
 const Awards = () => {
-  const {AwardsNFTReducer} = useSelector(state => state);
+  const {AwardsNFTReducer,ListReducer} = useSelector(state => state);
+  const {sort} = useSelector(state => state.ListReducer);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -31,12 +32,13 @@ const Awards = () => {
   useEffect(() => {
     dispatch(awardsNftLoadStart());
     dispatch(awardsNftListReset());
-    getNFTlist(1);
+    getNFTlist(1,null,sort);
     dispatch(awardsNftPageChange(1));
-  }, []);
+  }, [sort]);
 
-  const getNFTlist = useCallback((page, limit) => {
-    dispatch(getAwardsNftList(page, limit));
+  const getNFTlist = useCallback((page, limit, _sort) => {
+    console.log('__sort',_sort);
+    dispatch(getAwardsNftList(page, limit, _sort));
   }, []);
 
   const handleRefresh = () => {

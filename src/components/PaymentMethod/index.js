@@ -111,8 +111,8 @@ const PaymentMethod = (props) => {
                                 if (myCards.length > 0) {
                                     navigation.navigate('Cards', { price });
                                 } else {
-                                    navigation.navigate('Cards', { price });
-                                    navigation.navigate('AddCard', {})
+                                    // navigation.navigate('Cards', { price });
+                                    navigation.navigate('AddCard', { price })
                                 }
                             } else if (selectedMethod == 2) {
                                 setNotEnoughGoldVisible(true);
