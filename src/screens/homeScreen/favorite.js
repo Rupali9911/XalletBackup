@@ -17,6 +17,7 @@ const langObj = getLanguage();
 const Favorite = () => {
 
     const { NewNFTListReducer } = useSelector(state => state);
+    const { sort } = useSelector(state => state.ListReducer);
     const [modalData, setModalData] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
     const dispatch = useDispatch();
@@ -25,17 +26,18 @@ const Favorite = () => {
     useEffect(() => {
         dispatch(newNftLoadStart());
         dispatch(newNftListReset());
-        getNFTlist(1);
+        getNFTlist(1,null,sort);
         dispatch(newPageChange(1));
-    }, [])
+    }, [sort])
 
-    const getNFTlist = useCallback((page, limit) => {
-        dispatch(newNFTList(page, limit));
+    const getNFTlist = useCallback((page, limit, _sort) => {
+        console.log('____sort',_sort);
+        dispatch(newNFTList(page, limit, _sort));
     }, []);
 
     const handleRefresh = () => {
         dispatch(newNftListReset());
-        getNFTlist(1);
+        getNFTlist(1,null,sort);
         dispatch(newPageChange(1));
     }
 
@@ -52,7 +54,7 @@ const Favorite = () => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("newNFT"));
-                        navigation.navigate("DetailItem", { index: findIndex });
+                        navigation.push("DetailItem", { index: findIndex });
                     }}
                     style={styles.listItem}>
                     <C_Image

@@ -5,10 +5,6 @@ import {
     SafeAreaView,
 } from 'react-native';
 import {
-    Header,
-    HeaderLeft,
-    HeaderRight,
-    Container,
     RowBetweenWrap,
     CenterWrap,
     RowWrap,
@@ -16,7 +12,6 @@ import {
     BorderView
 } from 'src/styles/common.styles';
 import {
-    HeaderText,
     NormalText,
 } from 'src/styles/text.styles';
 import {
@@ -26,13 +21,16 @@ import {
 } from 'src/constants';
 import {
     C_Image,
+    LimitableInput,
 } from 'src/components';
 import {
     Avatar,
     ChangeAvatar,
     DoneText,
     EditableInput,
-    MultiLineEditableInput
+    MultiLineEditableInput,
+    LimitView,
+    WhiteText,
 } from './styled';
 import {
     KeyboardAwareScrollView
@@ -48,13 +46,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { upateUserData } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn, validateEmail, validURL } from '../../utils';
 import { signOut } from '../../store/reducer/userReducer';
-
-const {
-    LeftArrowIcon,
-} = SVGS;
-const {
-    DEFAULTPROFILE
-} = IMAGES;
+import { hp } from '../../constants/responsiveFunct';
 
 function Profile({
     navigation,
@@ -77,6 +69,14 @@ function Profile({
     const [about, setAbout] = useState(UserReducer.data.user.about);
     const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
     const actionSheetRef = useRef(null);
+    const refInput1 = useRef(null);
+    const refInput2 = useRef(null);
+    const refInput3 = useRef(null);
+    const refInput4 = useRef(null);
+    const refInput5 = useRef(null);
+    const refInput6 = useRef(null);
+    const refInput7 = useRef(null);
+    const refInput8 = useRef(null);
     const dispatch = useDispatch();
 
     const OPEN_CAMERA = 0;
@@ -118,7 +118,7 @@ function Profile({
                 translate("wallet.common.alert"),
                 translate("wallet.common.emailValidation"),
                 () => {
-                    console.log(err);
+                    console.log();
                 }
             );
             return;
@@ -182,20 +182,40 @@ function Profile({
             youtube,
         }
         axios.defaults.headers.post['Content-Type'] = 'application/json';
-
         await axios.post(`${BASE_URL}/user/update-user-profile`, req_body)
             .then(res => {
                 dispatch(upateUserData(res.data.data));
                 navigation.goBack();
             })
             .catch(err => {
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.networkFailed"),
-                    () => {
-                        console.log(err);
-                    }
-                );
+                if (err.response.status === 401) {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("common.sessionexpired"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                    dispatch(signOut());
+                    return;
+                }
+                if (err.response.data.data === 'email already taken') {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("common.emailexists"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                } else {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkFailed"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                }
             })
 
         setLoading(false);
@@ -215,8 +235,8 @@ function Profile({
                         </TouchableOpacity>
                     )}
                 />
-                
-                <KeyboardAwareScrollView flex={1}>
+
+                <KeyboardAwareScrollView extraScrollHeight={hp('7%')}>
                     <CenterWrap>
                         <SpaceView mTop={SIZE(10)} />
                         <Avatar>
@@ -247,100 +267,46 @@ function Profile({
                             value={username}
                             onChangeText={setUserName}
                             placeholderTextColor={'grey'}
+                            returnKeyType="next"
+                            onSubmitEditing={() => refInput1.current.focus()}
                             placeholder={translate("common.UserName")} />
                     </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.artistname")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={title}
-                            onChangeText={setTitle}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("common.artistname")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("wallet.common.firstName")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={firstName}
-                            onChangeText={setFirstName}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("wallet.common.firstName")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("wallet.common.lastName")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={lastName}
-                            onChangeText={setLastName}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("wallet.common.lastName")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.address")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={address}
-                            onChangeText={setAddress}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("common.address")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.phoneNumber")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            keyboardType='numeric'
-                            value={phoneNumber}
-                            onChangeText={setPhoneNumber}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("common.phoneNumber")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.email")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={email}
-                            onChangeText={setEmail}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("common.email")} />
-                    </RowBetweenWrap>
-                    <RowBetweenWrap>
-                        <RowWrap>
-                            <SpaceView mLeft={SIZE(19)} />
-                            <NormalText>
-                                {translate("common.website")}
-                            </NormalText>
-                        </RowWrap>
-                        <EditableInput
-                            value={website}
-                            onChangeText={setWebsite}
-                            placeholderTextColor={'grey'}
-                            placeholder={translate("common.website")} />
-                    </RowBetweenWrap>
+                    <LimitableInput
+                        value={title}
+                        onChangeText={setTitle}
+                        limit={50}
+                        placeholder={translate("common.artistname")} />
+                    <LimitableInput
+                        value={firstName}
+                        onChangeText={setFirstName}
+                        limit={50}
+                        placeholder={translate("wallet.common.firstName")} />
+                    <LimitableInput
+                        value={lastName}
+                        onChangeText={setLastName}
+                        limit={50}
+                        placeholder={translate("wallet.common.lastName")} />
+                    <LimitableInput
+                        value={address}
+                        onChangeText={setAddress}
+                        limit={50}
+                        placeholder={translate("common.address")} />
+                    <LimitableInput
+                        keyboardType='numeric'
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
+                        limit={20}
+                        placeholder={translate("common.phoneNumber")} />
+                    <LimitableInput
+                        value={email}
+                        onChangeText={setEmail}
+                        limit={20}
+                        placeholder={translate("common.email")} />
+                    <LimitableInput
+                        value={website}
+                        onChangeText={setWebsite}
+                        limit={50}
+                        placeholder={translate("common.website")} />
                     <SpaceView mTop={SIZE(12)} />
                     <RowBetweenWrap>
                         <RowWrap>
@@ -360,15 +326,22 @@ function Profile({
                             placeholderTextColor={'grey'}
                             placeholder={translate("wallet.common.aboutMe")} />
                     </RowWrap>
-
-                    <ActionSheet
-                        ref={actionSheetRef}
-                        title={translate("wallet.common.choosePhoto")}
-                        options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
-                        cancelButtonIndex={2}
-                        onPress={selectActionSheet}
-                    />
+                    {about?.length > 200 && (
+                        <LimitView>
+                            <WhiteText>
+                                {translate('wallet.common.limitInputLength', { number: 200 })}
+                            </WhiteText>
+                        </LimitView>
+                    )}
                 </KeyboardAwareScrollView>
+
+                <ActionSheet
+                    ref={actionSheetRef}
+                    title={translate("wallet.common.choosePhoto")}
+                    options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
+                    cancelButtonIndex={2}
+                    onPress={selectActionSheet}
+                />
             </SafeAreaView>
         </AppBackground>
     )

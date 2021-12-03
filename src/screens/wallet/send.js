@@ -195,7 +195,7 @@ export const PaymentField = (props) => {
     return (
         <View style={[styles.inputMainCont]} >
             <Text style={styles.inputLeft} >{translate("wallet.common.amount")}</Text>
-            <View style={{ flex:1, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                 <TextInput
                     style={[styles.inputCont, styles.paymentField, { fontSize: RF(2) }]}
                     keyboardType='decimal-pad'
@@ -244,7 +244,7 @@ const ScanScreen = (props) => {
 
     const onSuccess = (e) => {
         console.log('e', e);
-        processScanResult(e,SCAN_WALLET).then((result) => {
+        processScanResult(e, SCAN_WALLET).then((result) => {
             if (result.walletAddress) {
                 verifyAddress(result.walletAddress).then(() => {
                     setResult(result.walletAddress, result.amount);
@@ -641,27 +641,26 @@ const Send = ({ route, navigation }) => {
                     renderTabBar={renderTabBar}
                     navigationState={{ index, routes }}
                     renderScene={_renderScene}
-                    onIndexChange={index => setIndex(index)}
-                    // {
-                    //     if (index) {
-                    //         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+                    onIndexChange={async index => {
+                        if (index) {
+                            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-                    //         if (!isGranted) {
-                    //             confirmationAlert(
-                    //                 'This feature requires camera access',
-                    //                 'To enable access, tap Settings and turn on Camera.',
-                    //                 'Cancel',
-                    //                 'Settings',
-                    //                 () => openSettings(),
-                    //                 () => null
-                    //             )
-                    //         } else {
-                    //             setIndex(index);
-                    //         }
-                    //     } else {
-                    //         setIndex(index);
-                    //     }
-                    // }}
+                            if (!isGranted) {
+                                confirmationAlert(
+                                    'This feature requires camera access',
+                                    'To enable access, tap Settings and turn on Camera.',
+                                    'Cancel',
+                                    'Settings',
+                                    () => openSettings(),
+                                    () => null
+                                )
+                            } else {
+                                setIndex(index);
+                            }
+                        } else {
+                            setIndex(index);
+                        }
+                    }}
                     style={styles.tabItem}
                 />
             </KeyboardAvoidingView>

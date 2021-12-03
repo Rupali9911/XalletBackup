@@ -23,8 +23,8 @@ import { setConnectedApps } from './walletReducer';
 
 const initialState = {
   loading: false,
-  mainLoader: true,
   showSplash: true,
+  mainLoader: false,
   wallet: null,
   isCreate: false,
   data: {},
@@ -282,6 +282,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
     fetch(url, request)
       .then(res => res.json())
       .then(response => {
+        console.log('response',response);
         if (response.success) {
           const _params = {
             nonce: response.data,
@@ -323,6 +324,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
               }
             })
             .catch(err => {
+              console.log('error 2',err);
               dispatch(endLoading());
               reject(err);
             });
@@ -332,6 +334,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
         }
       })
       .catch(err => {
+        console.log('error',err);
         dispatch(endLoading());
         reject(err);
       });

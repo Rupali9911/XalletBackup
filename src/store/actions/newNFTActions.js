@@ -34,7 +34,7 @@ export const newPageChange = (data) => ({
     payload: data
 });
 
-export const newNFTList = (page, limit) => {
+export const newNFTList = (page, limit, sort) => {
     return (dispatch, getState) => {
 
         dispatch(newNftLoadStart());
@@ -45,17 +45,20 @@ export const newNFTList = (page, limit) => {
         let body_data = {
             page,
             limit: limit || 24,
-            sort: "sell",
             networkType: networkType,
             token: "HubyJ*%qcqR0",
             type: "2D",
             approveStaus: "approve"
         }
 
+        if(sort){
+            body_data.sort = sort
+        }
+
         if (user) {
             body_data.owner = wallet.address || user._id;
         }
-
+        console.log('body_data',body_data);
         let fetch_data_body = {
             method: 'POST',
             body: JSON.stringify(body_data),

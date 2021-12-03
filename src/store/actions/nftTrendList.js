@@ -15,7 +15,8 @@ import {
     MY_COLLECTION_LIST_UPDATE,
     ALL_ARTIST_SUCCESS,
     ARTIST_LOADING_START,
-    ARTIST_LOADING_END
+    ARTIST_LOADING_END,
+    SET_SORT_ORDER
 } from '../types';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
@@ -47,7 +48,7 @@ export const pageChange = (data) => ({
     payload: data
 });
 
-export const getNFTList = (page, limit) => {
+export const getNFTList = (page, limit, sort) => {
     return (dispatch, getState) => {
 
         dispatch(nftLoadStart());
@@ -62,6 +63,9 @@ export const getNFTList = (page, limit) => {
             limit: limit || 28,
             networkType: networkType,
             token: "HubyJ*%qcqR0"
+        }
+        if(sort){
+            body_data.sort = sort
         }
 
         if (user) {
@@ -80,7 +84,7 @@ export const getNFTList = (page, limit) => {
         fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
-                console.log('json',json)
+                // console.log('json',json)
                 dispatch(nftLoadSuccess(json))
 
             }).catch(err => {
@@ -106,6 +110,11 @@ export const getAllArtistSuccess = (data) => ({
     type: ALL_ARTIST_SUCCESS,
     payload: data
 })
+
+export const setSortBy = (data) => ({
+    type: SET_SORT_ORDER,
+    payload: data
+});
 
 export const getAllArtist = () => {
     return (dispatch) => {

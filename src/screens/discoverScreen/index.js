@@ -6,6 +6,7 @@ import TwoDArt from './twoDArt';
 
 import styles from './styles';
 import { colors, fonts } from '../../res';
+import { AppHeader } from '../../components';
 import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 
@@ -42,11 +43,10 @@ const DiscoverScreen = () => {
         <>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>
-                        {translate("wallet.common.explore")}
-                    </Text>
-                </View>
+                <AppHeader
+                    title={translate("wallet.common.explore")}
+                />
+
                 <Tab.Navigator tabBarOptions={{
                     activeTintColor: colors.tabbar,
                     inactiveTintColor: colors.black,

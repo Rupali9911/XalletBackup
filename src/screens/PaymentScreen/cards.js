@@ -72,7 +72,7 @@ const Cards = ({ route, navigation }) => {
             customerCardId: id
           }
         console.log('params',params);
-        // setLoading(true);
+        setLoading(true);
         dispatch(deleteCard(data.token, params)).then((response)=>{
             console.log('delete response',response);
             if(response.success){

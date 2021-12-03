@@ -334,17 +334,10 @@ const WalletPay = ({route, navigation}) => {
         <AppBackground isBusy={loading}>
             <GradientBackground>
                 <View style={styles.gradient}>
-
-                    <View style={styles.header}>
-                        <TextView style={styles.title}>{translate("wallet.common.pay")}</TextView>
-
-                        {/* <TouchableOpacity style={styles.networkIcon} hitSlop={{top:10,bottom:10,right:10,left:10}}
-                            onPress={()=> {
-                                // setPickerVisible(true)
-                                }}>
-                            <Image source={network.icon} style={[CommonStyles.imageStyles(6)]} />
-                        </TouchableOpacity> */}
-                    </View>
+                <AppHeader
+                    title={translate("wallet.common.pay")}
+                    titleStyle={styles.title}
+                />
 
                     <View style={styles.balanceContainer}>
                         <PriceText price={setBalanceField()} isWhite containerStyle={styles.priceCont} />

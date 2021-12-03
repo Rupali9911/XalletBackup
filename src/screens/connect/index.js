@@ -150,18 +150,18 @@ const Connect = ({ route, navigation }) => {
                     setRequestedAppData(response.data);
                     setApproveModal(true);
                 } else if (response.type == 'success' && typeof (response.data) == 'string') {
-                    alertWithSingleBtn('', response.data);
+                    // alertWithSingleBtn('', response.data);
                     if(response.data.includes('removed')){
                         setConnectedApps([]);
                     }
                 } else if (response.type == 'success' && typeof (response.data) == 'object' && response.data.type == 'wallet') {
-                    if(response.data.isConnected == 'true' && response.data.isAppApproved == 'true'){
+                    if(response.data.isAppApproved == 'true'){
                         setConnectedApps([response.data.appId]);
                     }else{
                         setConnectedApps([]);
                     }
                 } else if (response.type == 'connected') {
-                    alertWithSingleBtn('', response.data);
+                    // alertWithSingleBtn('', response.data);
                     let ids = response.data.split(':');
                     if (ids.length > 1) {
                         if (connectedApps.includes(ids[1])) {
@@ -171,7 +171,7 @@ const Connect = ({ route, navigation }) => {
                             getAppId();
                         }
                     }
-                } else if (response.type == 'error') {
+                } else if (response.type == 'error' && !response.data.includes("walletId")) {
                     alertWithSingleBtn('', response.data);
                 }
             },

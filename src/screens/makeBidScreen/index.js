@@ -47,6 +47,7 @@ import {
     KeyboardAwareScrollView
 } from 'react-native-keyboard-aware-scroll-view';
 import { translate } from '../../walletUtils';
+import { AppHeader } from '../../components';
 
 const {
     LeftArrowIcon
@@ -130,16 +131,11 @@ function MakeBidScreen({
 
     return (
         <Container>
-            <Header>
-                <HeaderLeft>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <LeftArrowIcon />
-                    </TouchableOpacity>
-                </HeaderLeft>
-                <HeaderText>
-                    {translate("wallet.common.makeBid")}
-                </HeaderText>
-            </Header>
+            <AppHeader
+                title={translate("wallet.common.makeBid")}
+                showBackButton
+            />
+
             <KeyboardAwareScrollView flex={1}>
                 <FlexWrap>
                     <SpaceView mTop={SIZE(40)} />

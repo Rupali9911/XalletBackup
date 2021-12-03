@@ -12,6 +12,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 import { colors } from '../../res';
+import { AppHeader } from '../../components';
 import Profile from '../profile';
 import { useSelector, useDispatch } from 'react-redux';
 import { translate } from '../../walletUtils';
@@ -29,11 +30,10 @@ const WalletConnectScreen = ({
             flex={1}
             colors={[colors.GRADIENTLIGHT, colors.GRADIENTDARK]}>
             <SafeAreaView>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>
-                        {translate("wallet.common.connectwallet")}
-                    </Text>
-                </View>
+                <AppHeader
+                    titleStyle={styles.headerText}
+                    title={translate("wallet.common.connectwallet")}
+                />
             </SafeAreaView>
             <View style={styles.cardContainer}>
                 <View style={styles.profileImage}>
@@ -47,7 +47,7 @@ const WalletConnectScreen = ({
                 </Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>
-                        {translate("wallet.common.connectwith")+'\n'+translate("wallet.common.yourwallet")}
+                        {translate("wallet.common.connectwith") + '\n' + translate("wallet.common.yourwallet")}
                     </Text>
                 </View>
                 <TouchableOpacity onPress={() => {

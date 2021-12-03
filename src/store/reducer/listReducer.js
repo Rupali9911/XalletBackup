@@ -7,7 +7,8 @@ import {
     NFT_LIST_UPDATE,
     ALL_ARTIST_SUCCESS,
     ARTIST_LOADING_START,
-    ARTIST_LOADING_END
+    ARTIST_LOADING_END,
+    SET_SORT_ORDER
 } from '../types';
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
     artistList: [],
     page: 1,
     totalCount: 0,
-    artistLoading: false
+    artistLoading: false,
+    sort: null
 }
 
 export default function ListReducer(state = initialState, action) {
@@ -48,6 +50,10 @@ export default function ListReducer(state = initialState, action) {
 
         case ARTIST_LOADING_END:
             return { ...state, artistLoading: false };
+
+        case SET_SORT_ORDER:
+            console.log('action.payload',action.payload);
+            return { ...state, sort: action.payload };
 
         default:
             return state;
