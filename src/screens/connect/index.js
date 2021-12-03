@@ -28,6 +28,7 @@ import AppModal from '../../components/appModal';
 import ApproveModalContent from '../../components/approveAppModal';
 import { alertWithSingleBtn } from '../../utils';
 import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
+import {getSig} from '../wallet/functions';
 
 const singleSocket = SingleSocket.getInstance();
 
@@ -173,6 +174,18 @@ const Connect = ({ route, navigation }) => {
                     }
                 } else if (response.type == 'error' && !response.data.includes("walletId")) {
                     alertWithSingleBtn('', response.data);
+                } else if(response.type == 'asksig') {
+                    console.log('message_data',response.data);
+                    let signature = getSig(response.data, wallet.privateKey);
+                    let _data = { 
+                        type: "sig", 
+                        data: {
+                            sig: signature, 
+                            walletId: wallet.address
+                        }
+                    }
+
+                    singleSocket.onSendMessage(_data);
                 }
             },
         });

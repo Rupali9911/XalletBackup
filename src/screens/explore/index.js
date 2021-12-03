@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     ActivityIndicator,
@@ -16,28 +16,20 @@ import {
 import NftItem from '../detailScreen/nftItem';
 import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 import { changeScreenName } from '../../store/actions/authAction';
-import { Loader } from '../../components';
+import { Loader, AppHeader } from '../../components';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
 import AppSearch from '../../components/appSearch';
 import { hp } from '../../constants/responsiveFunct';
 
-function ExploreScreen({
-    navigation
-}) {
+function ExploreScreen() {
 
-    const [listIndex, setListIndex] = React.useState(0);
-    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, TwoDReducer } = useSelector(state => state);
+    const { ListReducer } = useSelector(state => state);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(changeScreenName("Hot"))
-    }, []);
 
     const getNFTlistData = React.useCallback((page) => {
         dispatch(getNFTList(page))
-
-    });
+    }, []);
 
     const handlePageChange = (page) => {
         dispatch(pageChange(page))
@@ -50,18 +42,20 @@ function ExploreScreen({
         )
     }
 
-    let list = ListReducer.nftList;
-
-    let loading = ListReducer.nftListLoading;
-
     const renderItem = ({ item }) => {
-        let findIndex = list.findIndex(x => x.id === item.id);
+        let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
         if (item.metaData) {
             return (
                 <NftItem item={item} index={findIndex} />
             )
         }
     }
+
+    const memoizedValue = useMemo(
+        () => renderItem,
+        [ListReducer.nftList],
+    );
+
 
     return (
         <Container>
@@ -70,27 +64,20 @@ function ExploreScreen({
                     {translate("wallet.common.explore")}
                 </HeaderText>
             </Header>
-            <View>
+            <View style={{ flex: 1 }}>
                 <View style={styles.listContainer}>
                     {
-                        ListReducer.page === 1 && loading ?
+                        ListReducer.page === 1 && ListReducer.nftListLoading ?
                             <View style={styles.loaderContainer}><Loader /></View> :
                             <FlatList
                                 initialNumToRender={10}
-                                data={list.slice(listIndex)}
-                                renderItem={renderItem}
+                                data={ListReducer.nftList}
+                                renderItem={memoizedValue}
                                 onEndReached={() => {
                                     if (!ListReducer.nftListLoading) {
-                                        let num = AuthReducer.screenName == "Hot" ?
-                                            ListReducer.page + 1 :
-                                            AuthReducer.screenName == "newNFT" ?
-                                                NewNFTListReducer.newListPage + 1 :
-                                                AuthReducer.screenName == "favourite" ?
-                                                    MyNFTReducer.favoritePage + 1 :
-                                                    AuthReducer.screenName == "twoDArt" ?
-                                                        TwoDReducer.page + 1 : null;
-                                        getNFTlistData(num)
-                                        handlePageChange(num)
+                                        let num = ListReducer.page + 1;
+                                        getNFTlistData(num);
+                                        handlePageChange(num);
                                     }
                                 }}
                                 ListFooterComponent={renderFooter}
@@ -109,10 +96,12 @@ export default ExploreScreen;
 
 const styles = StyleSheet.create({
     listContainer: {
-        marginTop: hp("6%"),
+        paddingTop: hp("6%"),
+        width: '100%',
+        height: '100%',
     },
     loaderContainer: {
-        paddingTop: hp("2%"),
+        flex: 1,
         justifyContent: 'center'
     }
 });

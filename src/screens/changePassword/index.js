@@ -16,9 +16,9 @@ const LabelInput = (props) => {
         <View style={styles.labelInputContainer}>
             <Text style={styles.placeholderStyle}>{placeholder}</Text>
             <AppInput
-                containerStyle={{borderColor: colors.BLACK2}}
+                containerStyle={{ borderColor: colors.BLACK2 }}
                 value={value}
-                errorStyle={{width: "100%" }}
+                errorStyle={{ width: "100%" }}
                 onChangeText={onChangeText}
                 {...other}
             />
@@ -59,19 +59,10 @@ function ChangePassword({ navigation }) {
 
     return (
         <AppBackground>
-            <View style={styles.header}>
-
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
-                    <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                </TouchableOpacity>
-                <View style={[{ flex: 2, justifyContent: "center" }]}>
-                    <Text style={styles.headerTitle}>
-                        {translate("common.changePassword")}
-                    </Text>
-                </View>
-                <View style={styles.headerChild} />
-
-            </View>
+            <AppHeader
+                showBackButton
+                title={translate("common.changePassword")}
+            />
 
             <KeyboardAvoidingView>
 

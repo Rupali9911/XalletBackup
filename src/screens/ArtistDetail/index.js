@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import {
     Header,
-    HeaderLeft,
     Container,
     RowBetweenWrap,
     CenterWrap,
@@ -48,8 +47,9 @@ import {
 import {
     Loader,
     C_Image,
-    DetailModal
-} from 'src/components';
+    DetailModal, 
+    AppHeader
+} from "../../components";
 import {
     myNFTList,
     myNftLoadStart,
@@ -426,16 +426,12 @@ function ArtistDetail({
 
     return (
         <AppBackground isBusy={loading}>
-            <Header>
-                <HeaderLeft>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <LeftArrowIcon />
-                    </TouchableOpacity>
-                </HeaderLeft>
-                <HeaderText numberOfLines={1}>
-                    {data.title || data.username}
-                </HeaderText>
-            </Header>
+            
+            <AppHeader
+                    title={data.title || data.username}
+                    showBackButton
+                />
+            
             <View style={{ width: "100%", paddingHorizontal: SIZE(14), flexDirection: "row" }} >
                 <UserImageView>
                     <C_Image

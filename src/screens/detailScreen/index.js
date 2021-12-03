@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
 
 import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
 
@@ -14,24 +13,18 @@ import { myCollectionList, myCollectionPageChange } from '../../store/actions/my
 
 import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
 
-import getLanguage from '../../utils/languageSupport';
-const langObj = getLanguage();
-
 import styles from './styles';
 import { images, colors } from '../../res';
-import { Loader } from '../../components';
+import { Loader, AppHeader } from '../../components';
 import NftItem from './nftItem';
-
-const { width } = Dimensions.get('window');
 
 const DetailItemScreen = ({ route }) => {
 
     const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, MyCollectionReducer, AwardsNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const isFocusedHistory = useIsFocused();
 
-    const [listIndex, setListIndex] = React.useState(route.params.index);
+    const [listIndex, setListIndex] = React.useState(route.params.index || 0);
     const [owner, setOwner] = React.useState(route.params.owner);
 
     const getNFTlistData = React.useCallback((page) => {
@@ -47,7 +40,7 @@ const DetailItemScreen = ({ route }) => {
                         AuthReducer.screenName == "awards" ?
                             dispatch(getAwardsNftList(page, 24, owner)) : null
 
-    }, [isFocusedHistory]);
+    }, []);
 
     const getPage = React.useCallback((page) => {
 
@@ -64,17 +57,6 @@ const DetailItemScreen = ({ route }) => {
 
     });
 
-    let list = AuthReducer.screenName == "Hot" ?
-        ListReducer.nftList :
-        AuthReducer.screenName == "newNFT" ?
-            NewNFTListReducer.newNftList :
-            AuthReducer.screenName == "myNFT" ?
-                MyNFTReducer.myList :
-                AuthReducer.screenName == "myCollection" ?
-                    MyCollectionReducer.myCollection :
-                    AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftList : [];
-
     let loading = AuthReducer.screenName == "Hot" ?
         ListReducer.nftListLoading :
         AuthReducer.screenName == "newNFT" ?
@@ -84,7 +66,7 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionListLoading :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftLoading : null;
+                        AwardsNFTReducer.awardsNftLoading : false;
 
     let page = AuthReducer.screenName == "Hot" ?
         ListReducer.page :
@@ -108,6 +90,20 @@ const DetailItemScreen = ({ route }) => {
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsTotalCount : 1;
 
+    const list = React.useMemo(() => {
+        const data = AuthReducer.screenName == "Hot" ?
+            ListReducer.nftList :
+            AuthReducer.screenName == "newNFT" ?
+                NewNFTListReducer.newNftList :
+                AuthReducer.screenName == "myNFT" ?
+                    MyNFTReducer.myList :
+                    AuthReducer.screenName == "myCollection" ?
+                        MyCollectionReducer.myCollection :
+                        AuthReducer.screenName == "awards" ?
+                            AwardsNFTReducer.awardsNftList : [];
+        return data.slice(route.params.index);
+    }, []);
+
     const renderFooter = () => {
         if (!loading) return null;
         return (
@@ -125,29 +121,26 @@ const DetailItemScreen = ({ route }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
             <View style={styles.modalCont} >
-                <View style={styles.header} >
-                    <View style={styles.headerLeft}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon} >
-                            <Image style={styles.headerIcon} source={images.icons.back} resizeMode="contain" />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.headerTextView}>
+                <AppHeader
+                    showBackButton
+                    titleComponent={<View style={styles.headerTextView}>
                         <Text style={styles.topHeaderText}>
                             {'LALALA'}
                         </Text>
                         <Text style={styles.bottomHeaderText}>
                             {'NFTs'}
                         </Text>
-                    </View>
-                </View>
+                    </View>}
+                />
+                
                 {
                     page === 1 && loading ?
                         <Loader /> :
                         <FlatList
                             initialNumToRender={5}
-                            data={list.slice(listIndex)}
+                            data={list}
                             renderItem={renderItem}
                             onEndReached={() => {
                                 if (!loading && totalCount !== list.length) {

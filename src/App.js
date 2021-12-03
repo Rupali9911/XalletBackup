@@ -1,11 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import NetInfo from '@react-native-community/netinfo';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import { Image, Linking, LogBox, AppState } from 'react-native';
+import { Image, Linking, LogBox } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -51,14 +49,9 @@ import TokenDetail from './screens/wallet/tokenDetail';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import SellNFT from './screens/sellNft/index';
 import Store from './store';
-import { getAllLanguages, setAppLanguage } from './store/reducer/languageReducer';
-import {
-    loadFromAsync,
-    setPasscodeAsync,
-    startMainLoading,
-} from './store/reducer/userReducer';
+
 import { setRequestAppId } from './store/reducer/walletReducer';
-import { environment, languageArray, translate } from './walletUtils';
+import { environment, translate } from './walletUtils';
 
 export const regionLanguage = RNLocalize.getLocales()
     .map(a => a.languageCode)
