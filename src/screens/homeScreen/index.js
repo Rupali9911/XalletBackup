@@ -31,135 +31,20 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModal from '../../components/successModal';
 import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
-import { getAllArtist, getNFTList, nftListReset, nftLoadStart, pageChange, setSortBy } from '../../store/actions/nftTrendList';
+import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { updateCreateState } from '../../store/reducer/userReducer';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awards';
 import Favorite from './favorite';
 import NewNFT from './newNFT';
+import Hot from './hot';
 import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import Colors from '../../constants/Colors';
 
 const Tab = createMaterialTopTabNavigator();
-
-const Hot = () => {
-  const {ListReducer} = useSelector(state => state);
-  const [modalData, setModalData] = useState();
-  const [isModalVisible, setModalVisible] = useState(false);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    console.log('update sort',ListReducer);
-    dispatch(nftLoadStart());
-    dispatch(nftListReset());
-    getNFTlist(1,null,ListReducer.sort);
-    dispatch(pageChange(1));
-  }, [ListReducer.sort]);
-
-  const getNFTlist = useCallback((page, limit, _sort) => {
-    console.log('_sort',_sort);
-    dispatch(getNFTList(page, limit, _sort));
-  }, []);
-
-  const refreshFunc = () => {
-    dispatch(nftListReset());
-    getNFTlist(1);
-    dispatch(pageChange(1));
-  };
-
-  const renderFooter = () => {
-    if (!ListReducer.nftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const renderItem = ({item, index}) => {
-    let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
-    if (item.metaData) {
-      let imageUri =
-        item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl
-          : item.metaData.image;
-      return (
-        <TouchableOpacity
-          onLongPress={() => {
-            item.index = index;
-            setModalData(item);
-            setModalVisible(true);
-          }}
-          onPress={() => {
-            dispatch(changeScreenName('Hot'));
-            navigation.navigate('DetailItem', {index: findIndex});
-          }}
-          style={styles.listItem}>
-          <C_Image
-            type={
-              item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
-              ]
-            }
-            uri={imageUri}
-            imageStyle={styles.listImage}
-          />
-        </TouchableOpacity>
-      );
-    }
-  };
-
-  const memoizedValue = useMemo(() => renderItem, [ListReducer.nftList]);
-
-  return (
-    <View style={styles.trendCont}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {ListReducer.page === 1 && ListReducer.nftListLoading ? (
-        <Loader />
-      ) : ListReducer.nftList.length !== 0 ? (
-        <FlatList
-          data={ListReducer.nftList}
-          horizontal={false}
-          numColumns={3}
-          initialNumToRender={15}
-          onRefresh={() => {
-            dispatch(nftLoadStart());
-            refreshFunc();
-          }}
-          scrollEnabled={!isModalVisible}
-          refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
-          renderItem={memoizedValue}
-          onEndReached={() => {
-            if (
-              !ListReducer.nftListLoading &&
-              ListReducer.nftList.length !== ListReducer.totalCount
-            ) {
-              let num = ListReducer.page + 1;
-              getNFTlist(num);
-              dispatch(pageChange(num));
-            }
-          }}
-          onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
-          ListFooterComponent={renderFooter}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
-      {modalData && (
-        <DetailModal
-          index={modalData.index}
-          data={modalData}
-          isModalVisible={isModalVisible}
-          toggleModal={() => setModalVisible(false)}
-        />
-      )}
-    </View>
-  );
-};
 
 const HomeScreen = ({navigation}) => {
   const {artistList, artistLoading, sort} = useSelector(state => state.ListReducer);

@@ -871,7 +871,8 @@
             "remittanceFailure": "汇款失败",
             "askDisconnect": "您确定要删除此 {{appName}} 应用吗？",
             "emailValidation": "电子邮件未经验证",
-            "searchHint": "搜索 NFT、收藏或艺术家"
+            "searchHint": "搜索 NFT、收藏或艺术家",
+            "limitInputLength": "您不应超过 {{number}} 个字符。"
         },
         "backendmessage": {
             "error": {},

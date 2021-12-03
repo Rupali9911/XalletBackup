@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -388,7 +389,7 @@ function Profile({
                 </SmallBoldText>
                 <SpaceView mTop={SIZE(8)} />
                 {
-                    about &&
+                    !_.isEmpty(about) &&
                     <ScrollView style={{ maxHeight: SIZE(70) }}>
                         <SmallNormalText>
                             {about}
@@ -397,7 +398,7 @@ function Profile({
                 }
                 <SpaceView mTop={SIZE(8)} />
                 {
-                    links &&
+                    links && !_.isEmpty(links.website) &&
                     <TouchableOpacity onPress={() => {
                         links.website.includes('://') ? Linking.openURL(links.website) : Linking.openURL(`https://${links.website}`);
                     }}>
