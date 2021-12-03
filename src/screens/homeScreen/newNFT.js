@@ -35,7 +35,7 @@ const NewNFT = () => {
 
     const handleRefresh = () => {
         dispatch(newNftListReset());
-        getNFTlist(1);
+        getNFTlist(1,null,sort);
         dispatch(newPageChange(1));
     }
 

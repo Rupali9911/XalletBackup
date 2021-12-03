@@ -43,7 +43,7 @@ const Awards = () => {
 
   const handleRefresh = () => {
     dispatch(awardsNftListReset());
-    getNFTlist(1);
+    getNFTlist(1,null,sort);
     dispatch(awardsNftPageChange(1));
   };
 

@@ -68,7 +68,7 @@ const Hot = () => {
 
   const refreshFunc = () => {
     dispatch(nftListReset());
-    getNFTlist(1);
+    getNFTlist(1,null,ListReducer.sort);
     dispatch(pageChange(1));
   };
 
