@@ -1,7 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   AppState,
@@ -13,17 +13,20 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
+  Linking
 } from 'react-native';
-import {openSettings} from 'react-native-permissions';
+
+import { openSettings, checkNotifications, requestNotifications } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader, C_Image, DetailModal, Loader} from '../../components';
+import { AppHeader, C_Image, DetailModal, Loader } from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModal from '../../components/successModal';
@@ -44,7 +47,7 @@ import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 const Tab = createMaterialTopTabNavigator();
 
 const Hot = () => {
-  const {ListReducer} = useSelector(state => state);
+  const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -72,7 +75,7 @@ const Hot = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri =
@@ -88,13 +91,13 @@ const Hot = () => {
           }}
           onPress={() => {
             dispatch(changeScreenName('Hot'));
-            navigation.navigate('DetailItem', {index: findIndex});
+            navigation.navigate('DetailItem', { index: findIndex });
           }}
           style={styles.listItem}>
           <C_Image
             type={
               item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
+              item.metaData.image.split('.').length - 1
               ]
             }
             uri={imageUri}
@@ -156,12 +159,12 @@ const Hot = () => {
   );
 };
 
-const HomeScreen = ({navigation}) => {
-  const {artistList, artistLoading} = useSelector(state => state.ListReducer);
-  const {showSuccess} = useSelector(state => state.UserReducer);
-  const {requestAppId} = useSelector(state => state.WalletReducer);
+const HomeScreen = ({ navigation }) => {
+  const { artistList, artistLoading } = useSelector(state => state.ListReducer);
+  const { showSuccess } = useSelector(state => state.UserReducer);
+  const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
-  const {passcodeAsync, data} = useSelector(state => state.UserReducer);
+  const { passcodeAsync, data } = useSelector(state => state.UserReducer);
 
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
@@ -187,7 +190,7 @@ const HomeScreen = ({navigation}) => {
 
       if (pass && !asyncPassCalledParse) {
         navigation.navigate("PasscodeScreen", { screen: "active" })
-      }else{
+      } else {
         AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(false));
       }
     }
@@ -196,7 +199,6 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener(state => {
       const offline = !state.isConnected;
-
       if (state.isInternetReachable) {
         if (offline) {
           alertWithSingleBtn(
@@ -209,11 +211,11 @@ const HomeScreen = ({navigation}) => {
         }
       }
     });
-    
+
     AppState.addEventListener('change', appStateChange);
 
     if (requestAppId) {
-      navigation.navigate('Connect', {appId: requestAppId});
+      navigation.navigate('Connect', { appId: requestAppId });
     }
 
     return () => {
@@ -222,7 +224,7 @@ const HomeScreen = ({navigation}) => {
   }, [requestAppId]);
 
   const checkPermissions = async () => {
-    PushNotification.checkPermissions(async ({alert}) => {
+    PushNotification.checkPermissions(async ({ alert }) => {
       if (!alert) {
         setNotificationVisible(true);
       } else {
@@ -232,19 +234,19 @@ const HomeScreen = ({navigation}) => {
   };
   return (
     <>
-      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <AppHeader
           title={translate('common.home')}
           showRightComponent={
             <View style={styles.headerMenuContainer}>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Certificate')}
-                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Create')}
-                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>
             </View>
@@ -266,28 +268,28 @@ const HomeScreen = ({navigation}) => {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {artistList && artistList.length !== 0
                 ? artistList.map((item, index) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => {
-                          const id =
-                            item.role === 'crypto' ? item.username : item._id;
-                          navigation.navigate('ArtistDetail', {id: id});
-                        }}
-                        key={`_${index}`}>
-                        <View style={styles.userCircle}>
-                          <C_Image
-                            uri={item.profile_image}
-                            type={item.profile_image}
-                            imageType="profile"
-                            imageStyle={{width: '100%', height: '100%'}}
-                          />
-                        </View>
-                        <Text numberOfLines={1} style={styles.userText}>
-                          {item.username}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        const id =
+                          item.role === 'crypto' ? item.username : item._id;
+                        navigation.navigate('ArtistDetail', { id: id });
+                      }}
+                      key={`_${index}`}>
+                      <View style={styles.userCircle}>
+                        <C_Image
+                          uri={item.profile_image}
+                          type={item.profile_image}
+                          imageType="profile"
+                          imageStyle={{ width: '100%', height: '100%' }}
+                        />
+                      </View>
+                      <Text numberOfLines={1} style={styles.userText}>
+                        {item.username}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })
                 : null}
             </ScrollView>
           )}
@@ -355,7 +357,19 @@ const HomeScreen = ({navigation}) => {
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);
-              openSettings();
+              Platform.OS === "ios" ?
+                checkNotifications().then(({ status, settings }) => {
+                  if (status == "denied") {
+                    requestNotifications(['alert', 'sound']).then(({status, settings }) => {
+                      console.log(status, settings, "notification")
+                    })
+                  }
+                  if(status == "blocked"){
+                    Linking.openSettings()
+                  }
+                })
+                :
+                openSettings();
             }}
           />
         ) : null}
