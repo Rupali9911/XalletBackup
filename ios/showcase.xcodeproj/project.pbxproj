@@ -507,7 +507,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = JQ4W7Q7RFM;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -542,7 +542,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = JQ4W7Q7RFM;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				INFOPLIST_FILE = showcaseTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -656,7 +656,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.12.10;
+				MARKETING_VERSION = 1.12.17;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -768,7 +768,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.12.10;
+				MARKETING_VERSION = 1.12.17;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
