@@ -43,7 +43,7 @@ export const myCollectionList = (page, ownerId) => {
             nftType: 'mycollection'
         }
 
-        if (ownerId.length > 24) {
+        if (ownerId?.length > 24) {
             body_data.owner = ownerId.toUpperCase();
         } else {
             body_data.userId = ownerId;
@@ -62,7 +62,7 @@ export const myCollectionList = (page, ownerId) => {
             }
         }
         
-        const url = ownerId.length > 24 ?
+        const url = ownerId?.length > 24 ?
             `${BASE_URL}/xanalia/mydata` :
             `${BASE_URL}/user/get-user-collection`;
 
