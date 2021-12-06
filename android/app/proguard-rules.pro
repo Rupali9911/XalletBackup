@@ -60,3 +60,4 @@
 -dontwarn io.invertase.firebase.**
 # react-native-config
 -keep class com.xanalia.BuildConfig { *; }
+-keep public class com.horcrux.svg.** {*;}
