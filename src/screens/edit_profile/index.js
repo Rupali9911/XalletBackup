@@ -228,13 +228,9 @@ function Profile({
                 <AppHeader
                     title={translate("wallet.common.profileSettings")}
                     showBackButton
-                    showRightComponent={(
-                        <TouchableOpacity onPress={onSave}>
-                            <DoneText>
-                                {translate("wallet.common.done")}
-                            </DoneText>
-                        </TouchableOpacity>
-                    )}
+                    showRightButton={true}
+                    onPressRight={onSave}
+                    rightButtonComponent={<DoneText>{translate("wallet.common.done")}</DoneText>}
                 />
 
                 <KeyboardAwareScrollView extraScrollHeight={hp('7%')}>

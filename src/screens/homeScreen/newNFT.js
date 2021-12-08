@@ -29,7 +29,7 @@ const NewNFT = () => {
     }, [sort])
 
     const getNFTlist = useCallback((page, limit, _sort) => {
-        console.log('___sort',_sort);
+        // console.log('___sort',_sort);
         dispatch(newNFTList(page, limit,_sort));
     }, []);
 

@@ -145,7 +145,7 @@ const Connect = ({ route, navigation }) => {
         }
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-                console.log('data', data);
+                console.log('socket subscribe', data);
                 const response = JSON.parse(data);
                 if (response.type == 'newconnectionrequest') {
                     setRequestedAppData(response.data);
@@ -241,7 +241,7 @@ const Connect = ({ route, navigation }) => {
                         walletId: wallet.address
                     }
                 }
-                console.log('data', data);
+                console.log('disconnect app', data);
                 singleSocket.onSendMessage(data);
             },
             () => null

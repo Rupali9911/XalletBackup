@@ -36,7 +36,7 @@ const Hot = () => {
     }, [ListReducer.sort]);
 
     const getNFTlist = useCallback((page, limit, _sort) => {
-        console.log('__sort',_sort);
+        // console.log('__sort',_sort);
         dispatch(getNFTList(page, limit, _sort));
     }, []);
 

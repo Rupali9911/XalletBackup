@@ -31,7 +31,7 @@ const Favorite = () => {
     }, [sort])
 
     const getNFTlist = useCallback((page, limit, _sort) => {
-        console.log('____sort',_sort);
+        // console.log('____sort',_sort);
         dispatch(newNFTList(page, limit, _sort));
     }, []);
 

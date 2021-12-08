@@ -37,7 +37,7 @@ const Awards = () => {
   }, [sort]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
-    console.log('__sort',_sort);
+    // console.log('__sort',_sort);
     dispatch(getAwardsNftList(page, limit, _sort));
   }, []);
 
