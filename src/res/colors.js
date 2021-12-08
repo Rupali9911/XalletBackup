@@ -8,6 +8,7 @@ const colors = {
 
     themeR: "#008FFF",
     themeL: "#00C7FF",
+    buttonGroupBackground: '#F9FAF9',
 
 
 
@@ -33,6 +34,7 @@ const colors = {
     DANGER: "#F32013",
     RED1: '#FE4F02',
     RED2: '#FF0000',
+    PINK1: '#EA0C63',
     PURPLE: '#3B00FF',
     ORANGE: '#DF5700',
     GREEN1: '#32BD00',

@@ -20,6 +20,7 @@ export default {
   GREY6: '#B0B0B0',
   GREY7: '#DADCDA',
   GREY8: '#C4C4C6',
+  GREY9: '#E5E8EB',
   DANGER: '#F32013',
   RED1: '#FE4F02',
   RED2: '#FF0000',
