@@ -128,11 +128,22 @@ function Profile({
     }
 
     const onSave = async () => {
-
+        
         if (email && !validateEmail(email)) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.emailValidation"),
+                () => {
+                    console.log();
+                }
+            );
+            return;
+        }
+
+        if (!firstName && !lastName) {
+            alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                translate("common.usrempty"),
                 () => {
                     console.log();
                 }
@@ -224,6 +235,14 @@ function Profile({
                     alertWithSingleBtn(
                         translate("wallet.common.alert"),
                         translate("common.emailexists"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                } else if (err.response.data.data === 'username already taken') {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("common.usrnameexists"),
                         () => {
                             console.log(err);
                         }
