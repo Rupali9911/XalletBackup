@@ -48,6 +48,8 @@ import { upateUserData } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn, validateEmail, validURL } from '../../utils';
 import { signOut } from '../../store/reducer/userReducer';
 import { hp } from '../../constants/responsiveFunct';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
 
 function Profile({
     navigation,
@@ -83,8 +85,21 @@ function Profile({
     const OPEN_CAMERA = 0;
     const OPEN_GALLERY = 1;
 
-    const onPhoto = () => {
-        actionSheetRef.current.show();
+    const onPhoto = async () => {
+        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+
+        if (!isGranted) {
+            confirmationAlert(
+                'This feature requires camera access',
+                'To enable access, tap Settings and turn on Camera.',
+                'Cancel',
+                'Settings',
+                () => openSettings(),
+                () => null
+            )
+        } else {
+            actionSheetRef.current.show();
+        }
     }
 
     const selectActionSheet = index => {
