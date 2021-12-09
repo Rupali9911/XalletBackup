@@ -319,7 +319,7 @@ function Profile({
                         limit={20}
                         placeholder={translate("common.phoneNumber")} />
                     <LimitableInput
-                        value={email}
+                        value={_.isEmpty(email)}
                         onChangeText={setEmail}
                         limit={20}
                         placeholder={translate("common.email")} />
