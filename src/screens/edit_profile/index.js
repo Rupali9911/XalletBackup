@@ -185,7 +185,12 @@ function Profile({
         axios.defaults.headers.post['Content-Type'] = 'application/json';
         await axios.post(`${BASE_URL}/user/update-user-profile`, req_body)
             .then(res => {
-                dispatch(upateUserData(res.data.data));
+                let data = res.data.data;
+                if (data.name) {
+                    data.name = data.name.replace('undefined', '');
+                    data.username = data.username.replace('undefined', '');
+                }
+                dispatch(upateUserData(data));
                 navigation.goBack();
             })
             .catch(err => {
