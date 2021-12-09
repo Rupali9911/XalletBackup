@@ -304,7 +304,7 @@ function Profile({
                         </RowWrap>
                         <EditableInput
                             editable={false}
-                            value={username}
+                            value={username.replace('undefined', '')}
                             onChangeText={setUserName}
                             placeholderTextColor={'grey'}
                             returnKeyType="next"
