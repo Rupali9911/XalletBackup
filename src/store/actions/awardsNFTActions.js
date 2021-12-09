@@ -69,10 +69,10 @@ export const newNFTList = (page) => {
 
             }).catch(err => {
                 dispatch(newNftLoadFail())
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.networkFailed"),
-                );
+                // alertWithSingleBtn(
+                //     translate("wallet.common.alert"),
+                //     translate("wallet.common.error.networkFailed"),
+                // );
             })
     }
 }

@@ -82,10 +82,10 @@ export const myNFTList = (page, ownerId) => {
                 dispatch(myNftLoadSuccess(json));
             }).catch(err => {
                 dispatch(myNftLoadFail())
-                alertWithSingleBtn(
-                    translate('common.error'),
-                    translate("wallet.common.error.networkFailed")
-                )
+                // alertWithSingleBtn(
+                //     translate('common.error'),
+                //     translate("wallet.common.error.networkFailed")
+                // )
             })
     }
 }
