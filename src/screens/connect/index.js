@@ -289,7 +289,7 @@ const Connect = ({ route, navigation }) => {
                     />
                 </View>
 
-                <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
+                <AppButton label={translate("wallet.common.connect")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
                     onPress={onCheckPermission} />
             </View>
             <AppModal
