@@ -386,7 +386,7 @@ function Profile({
             <DescriptionView>
                 <SpaceView mTop={SIZE(12)} />
                 <SmallBoldText>
-                    {title || name.replace('undefined', '') || username.replace('undefined', '')}
+                    {title || name ? name.replace('undefined', '') : '' || username ? username.replace('undefined', '') : ''}
                 </SmallBoldText>
                 <SpaceView mTop={SIZE(8)} />
                 {
