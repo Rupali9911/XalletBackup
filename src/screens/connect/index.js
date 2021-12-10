@@ -172,15 +172,20 @@ const Connect = ({ route, navigation }) => {
                             getAppId();
                         }
                     }
-                } else if (response.type == 'error' && !response.data.includes("walletId")) {
-                    alertWithSingleBtn('', response.data);
-                } else if(response.type == 'asksig') {
+                } else if (response.type == 'error' && !response.data.includes("walletId doesn't exists")) {
+                    console.log('error',response.data);
+                    if(response.data.includes(`walletID:${wallet.address}`)){
+                        alertWithSingleBtn('', '');
+                    }else{
+                        alertWithSingleBtn('', response.data);
+                    }
+                }else if(response.type == 'asksig') {
                     console.log('message_data',response.data);
-                    let signature = getSig(response.data, wallet.privateKey);
-                    let _data = { 
-                        type: "sig", 
+                    let signature = getSig(response.data.msg, wallet.privateKey);
+                    let _data = {
+                        type: "sig",
                         data: {
-                            sig: signature, 
+                            sig: signature,
                             walletId: wallet.address
                         }
                     }
