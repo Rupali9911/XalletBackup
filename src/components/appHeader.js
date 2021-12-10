@@ -15,7 +15,6 @@ function AppHeader(props) {
         flex: 1,
         textAlignVertical: "center",
     } : {}
-
     return (
         <View style={[styles.container, props.containerStyle]} >
             <View style={{ flex: 1 }} >
@@ -39,7 +38,7 @@ function AppHeader(props) {
             <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }} >
                 {
                     props.showRightButton ?
-                        <TouchableOpacity style={styles.backContainer} onPress={props.onPressRight} >
+                        <TouchableOpacity style={[styles.backContainer, { alignItems: "flex-end", paddingLeft: 0, paddingRight: wp("3%") }]} onPress={props.onPressRight} >
                             {
                                 props.rightButtonComponent
                             }
@@ -57,7 +56,6 @@ const styles = StyleSheet.create({
         height: hp('7%'),
         width: "100%",
         flexDirection: "row",
-        paddingHorizontal: wp("3%"),
         alignItems: 'center'
     },
     title: {
@@ -67,8 +65,10 @@ const styles = StyleSheet.create({
         color: COLORS.BLACK1
     },
     backContainer: {
-        flex: 1,
-        justifyContent: "center"
+        height: "100%",
+        paddingHorizontal: wp("3%"),
+        justifyContent: "center",
+        width: wp("15%")
     },
     backIcon: {
         ...CommonStyles.imageStyles(5),

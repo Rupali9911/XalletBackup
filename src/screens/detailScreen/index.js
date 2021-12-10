@@ -26,6 +26,7 @@ const DetailItemScreen = ({ route }) => {
 
     const [listIndex, setListIndex] = React.useState(route.params.index || 0);
     const [owner, setOwner] = React.useState(route.params.owner);
+    const [stopVideos, setStopVideos] = React.useState(true);
 
     const getNFTlistData = React.useCallback((page) => {
 
@@ -111,11 +112,11 @@ const DetailItemScreen = ({ route }) => {
         )
     }
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item, index }) => {
         let findIndex = list.findIndex(x => x.id === item.id);
         if (item.metaData) {
             return (
-                <NftItem item={item} index={findIndex} />
+                <NftItem videoStatus={stopVideos} item={item} index={findIndex} />
             )
         }
     }
@@ -134,13 +135,15 @@ const DetailItemScreen = ({ route }) => {
                         </Text>
                     </View>}
                 />
-                
+
                 {
                     page === 1 && loading ?
                         <Loader /> :
                         <FlatList
                             initialNumToRender={5}
                             data={list}
+                            onScrollEndDrag={() => console.log("end")}
+                            onScrollBeginDrag={() => console.log("start")}
                             renderItem={renderItem}
                             onEndReached={() => {
                                 if (!loading && totalCount !== list.length) {

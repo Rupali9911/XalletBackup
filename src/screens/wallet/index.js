@@ -85,7 +85,7 @@ const Wallet = ({route, navigation}) => {
           if (success) console.log('Successfully unsubscribed!');
         });
     }
-    console.log('data', data, wallet);
+    console.log('wallet use effect', data, wallet);
   }, [isFocused]);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const Wallet = ({route, navigation}) => {
 
     const socketSubscribe = Events.asObservable().subscribe({
       next: data => {
-        console.log('data', data);
+        console.log('socket subscribe', data);
         const response = JSON.parse(data);
         if (response.type == 'pong') {
           connect(response.data);

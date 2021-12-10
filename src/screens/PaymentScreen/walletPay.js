@@ -71,7 +71,7 @@ const WalletPay = ({route, navigation}) => {
             setLoading(true);
             getBalances(wallet.address);
         }
-        console.log('data',data);
+        console.log('wallet pay use effect',data);
     },[isFocused]);
 
     useEffect(() => {
@@ -81,7 +81,7 @@ const WalletPay = ({route, navigation}) => {
 
         const socketSubscribe = Events.asObservable().subscribe({
             next: (data) => {
-                console.log('data', data);
+                console.log('wallet pay socket subscribe', data);
                 const response = JSON.parse(data);
                 if (response.type == 'pong') {
                     connect(response.data);
