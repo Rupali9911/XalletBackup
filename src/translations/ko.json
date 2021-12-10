@@ -876,7 +876,14 @@
             "emailValidation": "이메일이 확인되지 않았습니다.",
             "limitInputLength": "{{number}}자를 넘지 않아야 합니다.",
             "xanaliaWallet": "자날리아 지갑",
-            "otherWallet": "기타 지갑"
+            "otherWallet": "기타 지갑",
+            "filter": "필터",
+            "blockChainType": "블록체인 유형",
+            "tokenStandard": "토큰 표준",
+            "nftId": "NFT ID",
+            "contractAddress": "계약 주소",
+            "bidHistory": "입찰 내역",
+            "collectionHint": "이 컬렉션에서 더 많은 것"
         },
         "backendmessage": {
             "error": {},

@@ -45,7 +45,7 @@ const DetailScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {paymentObject} = useSelector(state => state.PaymentReducer);
   const {data, wallet} = useSelector(state => state.UserReducer);
-
+  const [collection, setCollection] = useState('----')
   const refVideo = useRef(null);
   const [isPlay, setPlay] = useState(false);
   const {
@@ -479,7 +479,7 @@ const DetailScreen = ({route, navigation}) => {
         closeAfterSelecting={true}
         style={styles.tokenPicker}
         dropDownContainerStyle={styles.dropDownContainer}
-        placeholder={'Filter'}
+        placeholder={translate('wallet.common.filter')}
       />
     );
   };
@@ -578,7 +578,7 @@ const DetailScreen = ({route, navigation}) => {
                   {translate('common.collected')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {creator}
+                  {collection}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -687,7 +687,7 @@ const DetailScreen = ({route, navigation}) => {
           </NFTDetailDropdown>
           <NFTDetailDropdown title={translate('wallet.common.detail')} icon={details}>
             <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>Contract Address</TextView>
+              <TextView style={styles.rowText}>{translate('wallet.common.contractAddress')}</TextView>
               <TextView
                 style={[styles.rowText, {color: Colors.themeColor}]}
                 ellipsizeMode="middle"
@@ -696,19 +696,19 @@ const DetailScreen = ({route, navigation}) => {
               </TextView>
             </View>
             <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>NFT ID</TextView>
+              <TextView style={styles.rowText}>{translate('wallet.common.nftId')}</TextView>
               <TextView style={styles.rowText}>2568</TextView>
             </View>
             <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>Token Standard</TextView>
+              <TextView style={styles.rowText}>{translate('wallet.common.tokenStandard')}</TextView>
               <TextView style={styles.rowText}>ERC721</TextView>
             </View>
             <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>BlockChain Type</TextView>
+              <TextView style={styles.rowText}>{translate('wallet.common.blockChainType')}</TextView>
               <TextView style={styles.rowText}>BINANCE</TextView>
             </View>
           </NFTDetailDropdown>
-          <NFTDetailDropdown title="Bid History" icon={history}>
+          <NFTDetailDropdown title={translate('wallet.common.bidHistory')} icon={history}>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
@@ -748,7 +748,7 @@ const DetailScreen = ({route, navigation}) => {
               </Table>
             </ScrollView>
           </NFTDetailDropdown>
-          <NFTDetailDropdown title="More from this collection" icon={grid} />
+          <NFTDetailDropdown title={translate('wallet.common.collectionHint')} icon={grid} />
         </ScrollView>
       </SafeAreaView>
       <PaymentMethod

@@ -876,7 +876,14 @@
             "emailValidation": "入力されたメールアドレスは有効ではありません。",
             "limitInputLength": "{{number}}文字以下にしてください。",
             "xanaliaWallet": "XANALIA ウォレット",
-            "otherWallet": "他ウォレット"
+            "otherWallet": "他ウォレット",
+            "filter": "フィルター",
+            "blockChainType": "ブロックチェーンタイプ",
+            "tokenStandard": "トークン標準",
+            "nftId": "NFT ID",
+            "contractAddress": "契約住所",
+            "bidHistory": "入札履歴",
+            "collectionHint": "このコレクションの詳細"
         },
         "backendmessage": {
             "error": {},

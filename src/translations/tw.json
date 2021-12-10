@@ -876,7 +876,14 @@
             "emailValidation": "电子邮件未经验证",
             "limitInputLength": "您不应超过 {{number}} 个字符。",
             "xanaliaWallet": "Xanalia 錢包",
-            "otherWallet": "其他錢包"
+            "otherWallet": "其他錢包",
+            "filter": "篩選",
+            "blockChainType": "區塊鏈類型",
+            "tokenStandard": "代幣標準",
+            "nftId": "NFT ID",
+            "contractAddress": "合約地址",
+            "bidHistory": "投標歷史",
+            "collectionHint": "更多來自這個系列"
         },
         "backendmessage": {
             "error": {},

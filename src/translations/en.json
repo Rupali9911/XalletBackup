@@ -876,7 +876,14 @@
             "emailValidation": "Email is not validated",
             "limitInputLength": "You should not exceed more than {{number}} chars.",
             "xanaliaWallet": "Xanalia Wallet",
-            "otherWallet": "Other Wallet"
+            "otherWallet": "Other Wallet",
+            "filter": "Filter",
+            "blockChainType": "BlockChain Type",
+            "tokenStandard": "Token Standard",
+            "nftId": "NFT ID",
+            "contractAddress": "Contract Address",
+            "bidHistory": "Bid History",
+            "collectionHint": "More from this Collection"
         },
         "backendmessage": {
             "error": {},
