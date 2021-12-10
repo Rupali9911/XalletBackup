@@ -666,7 +666,7 @@ const DetailScreen = ({route, navigation}) => {
             )}
           </View>
           <NFTDetailDropdown
-            title="Creator"
+            title={translate('common.creator')}
             icon={details}
             containerStyles={{marginTop: hp(2)}}>
             <TouchableOpacity
@@ -685,7 +685,7 @@ const DetailScreen = ({route, navigation}) => {
               </View>
             </TouchableOpacity>
           </NFTDetailDropdown>
-          <NFTDetailDropdown title="Detail" icon={details}>
+          <NFTDetailDropdown title={translate('wallet.common.detail')} icon={details}>
             <View style={styles.rowContainer}>
               <TextView style={styles.rowText}>Contract Address</TextView>
               <TextView
@@ -727,7 +727,7 @@ const DetailScreen = ({route, navigation}) => {
               </Table>
             </ScrollView>
           </NFTDetailDropdown>
-          <NFTDetailDropdown title="Trading History" icon={trading}>
+          <NFTDetailDropdown title={translate('common.tradingHistory')} icon={trading}>
             <PayableIn />
             <ScrollView
               horizontal={true}
