@@ -607,7 +607,9 @@
         "wrongOperation": "XANALIA将不承担任何责任，也不支持错误的操作。",
         "YougotFreeNFT": "你获得了免费的NFT",
         "award": "奖",
-        "Giveaway": "免费样品"
+        "Giveaway": "免费样品",
+        "Sellselecttoken": "选择令牌",
+        "allowedcurrency": "应付在"
     },
     "AwardPage": {},
     "wallet": {
@@ -772,7 +774,6 @@
             "connectionError": "连接错误",
             "connectError": "哎呀！看起来您的设备没有连接到互联网。",
             "Like": "喜欢",
-            "Dislike": "不喜欢",
             "Comment": "评论",
             "sendMessage": "以消息发送",
             "selectPaymentMethod": "选择您的付款方式",
@@ -869,10 +870,13 @@
             "paymentComplete": "完全的",
             "paymentFailed": "支付失败",
             "remittanceFailure": "汇款失败",
+            "Dislike": "不喜欢",
             "askDisconnect": "您确定要删除此 {{appName}} 应用吗？",
-            "emailValidation": "电子邮件未经验证",
             "searchHint": "搜索 NFT、收藏或艺术家",
-            "limitInputLength": "您不应超过 {{number}} 个字符。"
+            "emailValidation": "电子邮件未经验证",
+            "limitInputLength": "您不应超过 {{number}} 个字符。",
+            "xanaliaWallet": "Xanalia 钱包",
+            "otherWallet": "其他钱包"
         },
         "backendmessage": {
             "error": {},

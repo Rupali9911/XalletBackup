@@ -607,7 +607,9 @@
         "wrongOperation": "XANALIA는 잘못된 작동에 대한 어떠한 책임도 지지하지 않습니다.",
         "YougotFreeNFT": "무료 NFT를 입수했습니다！",
         "award": "어워드",
-        "Giveaway": "헐값으로 파는"
+        "Giveaway": "헐값으로 파는",
+        "Sellselecttoken": "수령 통화 선택",
+        "allowedcurrency": "결제 통화"
     },
     "AwardPage": {},
     "wallet": {
@@ -772,7 +774,6 @@
             "connectionError": "연결 오류",
             "connectError": "이런! 기기가 인터넷에 연결되어 있지 않은 것처럼 보입니다.",
             "Like": "같이",
-            "Dislike": "싫어함",
             "Comment": "주석",
             "sendMessage": "메시지로 보내기",
             "selectPaymentMethod": "결제 수단 선택",
@@ -871,9 +872,11 @@
             "remittanceFailure": "송금 실패",
             "Dislike": "싫어함",
             "askDisconnect": "이 {{appName}} 앱을 삭제하시겠습니까?",
-            "emailValidation": "이메일이 확인되지 않았습니다.",
             "searchHint": "NFT, 컬렉션 또는 아티스트 검색",
-            "limitInputLength": "{{number}}자를 넘지 않아야 합니다."
+            "emailValidation": "이메일이 확인되지 않았습니다.",
+            "limitInputLength": "{{number}}자를 넘지 않아야 합니다.",
+            "xanaliaWallet": "자날리아 지갑",
+            "otherWallet": "기타 지갑"
         },
         "backendmessage": {
             "error": {},

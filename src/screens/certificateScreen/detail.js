@@ -7,15 +7,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
+import {Row, Rows, Table} from 'react-native-table-component';
 import {useDispatch, useSelector} from 'react-redux';
 import {IMAGES, SIZE, SVGS} from 'src/constants';
+import details from '../../../assets/images/details.png';
+import grid from '../../../assets/images/grid.png';
+import history from '../../../assets/images/history.png';
+import trading from '../../../assets/images/trading.png';
 import {networkType} from '../../common/networkType';
 import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppModal from '../../components/appModal';
+import TextView from '../../components/appText';
+import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
+import Colors from '../../constants/Colors';
+import {hp} from '../../constants/responsiveFunct';
 import {
   getAllCards,
   setPaymentObject,
@@ -70,7 +80,31 @@ const DetailScreen = ({route, navigation}) => {
   const [auctionETime, setAuctionETime] = useState('');
   const [connectedWithTo, setConnectedWithTo] = useState('');
   const [buyLoading, setBuyLoading] = useState(false);
-
+  const [tableHead, setTableHead] = useState([
+    'Price',
+    'From',
+    'To',
+    'Date (DD/MM/YYYY)',
+  ]);
+  const [tradingTableHead, setTradingTableHead] = useState([
+    'Event',
+    'Price',
+    'From',
+    'To',
+    'Date (DD/MM/YYYY)',
+  ]);
+  const [tableData, setTableData] = useState([
+    ['1', '2', '3', '4'],
+    ['a', 'b', 'c', 'd'],
+    ['1', '2', '3', '4'],
+    ['a', 'b', 'c', 'd'],
+  ]);
+  const [tradingTableData, setTradingTableData] = useState([
+    ['1', '2', '3', '4', '5'],
+    ['a', 'b', 'c', 'd', 'e'],
+    ['1', '2', '3', '4', '5'],
+    ['a', 'b', 'c', 'd', 'e'],
+  ]);
   //#region SmartContract
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
@@ -418,11 +452,42 @@ const DetailScreen = ({route, navigation}) => {
       navigation.push('ArtistDetail', {id: artistId});
     }
   };
+  const PayableIn = props => {
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState([]);
+    const [items, setItems] = useState([
+      {label: 'Minted', value: 'Minted'},
+      {label: 'Listing (Fixed Price)', value: 'Listing (Fixed Price)'},
+      {label: 'Bid', value: 'Bid'},
+      {label: 'Sale', value: 'Sale'},
+      {label: 'Claim', value: 'Claim'},
+      {label: 'Listing (Auction)', value: 'Listing (Auction)'},
+      {label: 'Cancel Sell', value: 'Cancel Sell'},
+    ]);
+
+    return (
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        multiple={true}
+        min={0}
+        mode={'BADGE'}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        closeAfterSelecting={true}
+        style={styles.tokenPicker}
+        dropDownContainerStyle={styles.dropDownContainer}
+        placeholder={'Filter'}
+      />
+    );
+  };
   return (
     <>
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader showBackButton title={translate('wallet.common.detail')} />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <TouchableOpacity activeOpacity={1} onPress={() => setPlay(!isPlay)}>
             {fileType === 'mp4' ||
             fileType === 'MP4' ||
@@ -480,24 +545,7 @@ const DetailScreen = ({route, navigation}) => {
               />
             )}
           </TouchableOpacity>
-          <Text style={styles.nftName}>{name}</Text>
           <View style={styles.person}>
-            <TouchableOpacity
-              onPress={() => onProfile(true)}
-              style={styles.personType}>
-              <Image
-                style={styles.iconsImage}
-                source={!ownerImage ? IMAGES.DEFAULTPROFILE : {uri: ownerImage}}
-              />
-              <View>
-                <Text style={styles.personTypeText}>
-                  {translate('common.owner')}
-                </Text>
-                <Text numberOfLines={1} style={styles.personName}>
-                  {owner}
-                </Text>
-              </View>
-            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onProfile(false)}
               style={styles.personType}>
@@ -516,7 +564,43 @@ const DetailScreen = ({route, navigation}) => {
                 </Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onProfile(false)}
+              style={styles.personType}>
+              <Image
+                style={styles.iconsImage}
+                source={
+                  !creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}
+                }
+              />
+              <View>
+                <Text style={styles.personTypeText}>
+                  {translate('common.collected')}
+                </Text>
+                <Text numberOfLines={1} style={styles.personName}>
+                  {creator}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onProfile(true)}
+              style={styles.personType}>
+              <Image
+                style={styles.iconsImage}
+                source={!ownerImage ? IMAGES.DEFAULTPROFILE : {uri: ownerImage}}
+              />
+              <View>
+                <Text style={styles.personTypeText}>
+                  {translate('common.owner')}
+                </Text>
+                <Text numberOfLines={1} style={styles.personName}>
+                  {owner}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
+          <Text style={styles.nftTitle}>KANON</Text>
+          <Text style={styles.nftName}>{name}</Text>
           <Text style={styles.description}>{description}</Text>
           {/* <View style={styles.moreView}>
                         <Text style={styles.moreTitle}>
@@ -541,47 +625,131 @@ const DetailScreen = ({route, navigation}) => {
                             </View>
                         </View>
                     </View> */}
-        </ScrollView>
-        <View style={styles.bottomView}>
-          <Text style={styles.count}>{'# 1 / 1'}</Text>
-          <View style={styles.row}>
-            <Text style={styles.priceUnit}>{'￥'}</Text>
-            <Text style={styles.price}>{price ? price : 0}</Text>
-          </View>
-          {setNFTStatus() !== undefined && (
-            <GroupButton
-              leftText={
-                setNFTStatus() === 'onSell'
-                  ? translate('common.cancelSell')
-                  : setNFTStatus() === 'sell'
-                  ? translate('common.sell')
-                  : setNFTStatus() === 'buy'
-                  ? translate('common.buy')
-                  : setNFTStatus() === 'notOnSell'
-                  ? translate('common.soonOnSell')
-                  : translate('common.buy')
-              }
-              rightText={translate('wallet.common.offerPrice')}
-              leftDisabled={setNFTStatus() === ''}
-              leftLoading={buyLoading}
-              onLeftPress={() => {
-                console.log('priceOfNft', priceNFT);
-                if (buyLoading) return;
-                // navigation.navigate('WalletConnect')
-                // if(price && price > 0){
-                if (setNFTStatus() === 'buy') {
-                  setShowPaymentMethod(true);
-                } else if (setNFTStatus() === 'sell') {
-                  navigation.navigate('sellNft');
+          <View style={styles.bottomView}>
+            <Text style={styles.count}>{'# 1 / 1'}</Text>
+            <View style={styles.row}>
+              <Text style={styles.priceUnit}>{'￥'}</Text>
+              <Text style={styles.price}>{price ? price : 0}</Text>
+            </View>
+            {setNFTStatus() !== undefined && (
+              <GroupButton
+                leftText={
+                  setNFTStatus() === 'onSell'
+                    ? translate('common.cancelSell')
+                    : setNFTStatus() === 'sell'
+                    ? translate('common.sell')
+                    : setNFTStatus() === 'buy'
+                    ? translate('common.buy')
+                    : setNFTStatus() === 'notOnSell'
+                    ? translate('common.soonOnSell')
+                    : translate('common.buy')
                 }
-                // }
-              }}
-              leftHide={setNFTStatus() === undefined}
-              rightHide
-              onRightPress={() => navigation.navigate('MakeBid')}
-            />
-          )}
-        </View>
+                rightText={translate('wallet.common.offerPrice')}
+                leftDisabled={setNFTStatus() === ''}
+                leftLoading={buyLoading}
+                onLeftPress={() => {
+                  console.log('priceOfNft', priceNFT);
+                  if (buyLoading) return;
+                  // navigation.navigate('WalletConnect')
+                  // if(price && price > 0){
+                  if (setNFTStatus() === 'buy') {
+                    setShowPaymentMethod(true);
+                  } else if (setNFTStatus() === 'sell') {
+                    navigation.navigate('sellNft');
+                  }
+                  // }
+                }}
+                leftHide={setNFTStatus() === undefined}
+                rightHide
+                onRightPress={() => navigation.navigate('MakeBid')}
+              />
+            )}
+          </View>
+          <NFTDetailDropdown
+            title={translate('common.creator')}
+            icon={details}
+            containerStyles={{marginTop: hp(2)}}>
+            <TouchableOpacity
+              onPress={() => onProfile(false)}
+              style={styles.personType}>
+              <Image
+                style={styles.creatorImage}
+                source={
+                  !creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}
+                }
+              />
+              <View>
+                <Text numberOfLines={1} style={styles.creatorName}>
+                  {creator}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </NFTDetailDropdown>
+          <NFTDetailDropdown title={translate('wallet.common.detail')} icon={details}>
+            <View style={styles.rowContainer}>
+              <TextView style={styles.rowText}>Contract Address</TextView>
+              <TextView
+                style={[styles.rowText, {color: Colors.themeColor}]}
+                ellipsizeMode="middle"
+                numberOfLines={1}>
+                bsjabdJSddakdssddhsd135
+              </TextView>
+            </View>
+            <View style={styles.rowContainer}>
+              <TextView style={styles.rowText}>NFT ID</TextView>
+              <TextView style={styles.rowText}>2568</TextView>
+            </View>
+            <View style={styles.rowContainer}>
+              <TextView style={styles.rowText}>Token Standard</TextView>
+              <TextView style={styles.rowText}>ERC721</TextView>
+            </View>
+            <View style={styles.rowContainer}>
+              <TextView style={styles.rowText}>BlockChain Type</TextView>
+              <TextView style={styles.rowText}>BINANCE</TextView>
+            </View>
+          </NFTDetailDropdown>
+          <NFTDetailDropdown title="Bid History" icon={history}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              <Table borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                <Row
+                  data={tableHead}
+                  style={styles.head}
+                  textStyle={styles.text}
+                  widthArr={[75, 75, 75, 150]}
+                />
+                <Rows
+                  data={tableData}
+                  textStyle={styles.text}
+                  widthArr={[75, 75, 75, 150]}
+                />
+              </Table>
+            </ScrollView>
+          </NFTDetailDropdown>
+          <NFTDetailDropdown title={translate('common.tradingHistory')} icon={trading}>
+            <PayableIn />
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{marginTop: hp(2)}}>
+              <Table borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                <Row
+                  data={tradingTableHead}
+                  style={styles.head}
+                  textStyle={styles.text}
+                  widthArr={[75, 75, 75, 75, 150]}
+                />
+                <Rows
+                  data={tradingTableData}
+                  textStyle={styles.text}
+                  widthArr={[75, 75, 75, 75, 150]}
+                />
+              </Table>
+            </ScrollView>
+          </NFTDetailDropdown>
+          <NFTDetailDropdown title="More from this collection" icon={grid} />
+        </ScrollView>
       </SafeAreaView>
       <PaymentMethod
         visible={showPaymentMethod}

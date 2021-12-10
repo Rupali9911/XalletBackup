@@ -607,7 +607,9 @@
         "wrongOperation": "XANALIA will not take any responsibility nor support for wrong operation.",
         "YougotFreeNFT": "You got Free NFT !",
         "award": "Award",
-        "Giveaway": "Giveaway"
+        "Giveaway": "Giveaway",
+        "Sellselecttoken": "Select token",
+        "allowedcurrency": "Payable in"
     },
     "AwardPage": {},
     "wallet": {
@@ -772,7 +774,6 @@
             "connectionError": "Connection Error",
             "connectError": "Oops! Looks like your device is not connected to the Internet.",
             "Like": "Like",
-            "Dislike": "Dislike",
             "Comment": "Comment",
             "sendMessage": "Send as Message",
             "selectPaymentMethod": "Select your payment method",
@@ -869,10 +870,13 @@
             "paymentComplete": "Complete",
             "paymentFailed": "Payment Failed",
             "remittanceFailure": "Remittance Failure",
+            "Dislike": "Dislike",
             "askDisconnect": "Are you sure you want to remove this {{appName}} app?",
-            "emailValidation": "Email is not validated",
             "searchHint": "Search NFTs, Collections, and Artists",
-            "limitInputLength": "You should not exceed more than {{number}} chars."
+            "emailValidation": "Email is not validated",
+            "limitInputLength": "You should not exceed more than {{number}} chars.",
+            "xanaliaWallet": "Xanalia Wallet",
+            "otherWallet": "Other Wallet"
         },
         "backendmessage": {
             "error": {},
