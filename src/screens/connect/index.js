@@ -145,7 +145,7 @@ const Connect = ({ route, navigation }) => {
         }
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-                console.log('data', data);
+                console.log('socket subscribe', data);
                 const response = JSON.parse(data);
                 if (response.type == 'newconnectionrequest') {
                     setRequestedAppData(response.data);
@@ -172,15 +172,20 @@ const Connect = ({ route, navigation }) => {
                             getAppId();
                         }
                     }
-                } else if (response.type == 'error' && !response.data.includes("walletId")) {
-                    alertWithSingleBtn('', response.data);
-                } else if(response.type == 'asksig') {
+                } else if (response.type == 'error' && !response.data.includes("walletId doesn't exists")) {
+                    console.log('error',response.data);
+                    if(response.data.includes(`walletID:${wallet.address}`)){
+                        alertWithSingleBtn('', '');
+                    }else{
+                        alertWithSingleBtn('', response.data);
+                    }
+                }else if(response.type == 'asksig') {
                     console.log('message_data',response.data);
-                    let signature = getSig(response.data, wallet.privateKey);
-                    let _data = { 
-                        type: "sig", 
+                    let signature = getSig(response.data.msg, wallet.privateKey);
+                    let _data = {
+                        type: "sig",
                         data: {
-                            sig: signature, 
+                            sig: signature,
                             walletId: wallet.address
                         }
                     }
@@ -241,7 +246,7 @@ const Connect = ({ route, navigation }) => {
                         walletId: wallet.address
                     }
                 }
-                console.log('data', data);
+                console.log('disconnect app', data);
                 singleSocket.onSendMessage(data);
             },
             () => null
@@ -284,7 +289,7 @@ const Connect = ({ route, navigation }) => {
                     />
                 </View>
 
-                <AppButton label={translate("wallet.common.newConnection")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
+                <AppButton label={translate("wallet.common.connect")} containerStyle={CommonStyles.button} labelStyle={[CommonStyles.buttonLabel]}
                     onPress={onCheckPermission} />
             </View>
             <AppModal

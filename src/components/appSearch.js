@@ -10,6 +10,7 @@ import { hp, RF, wp } from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
 import { searchNFT } from '../store/actions/newNFTActions';
 import { translate } from '../walletUtils';
+import LoadingView from './LoadingView';
 
 export default function AppSearch() {
 
@@ -70,7 +71,7 @@ export default function AppSearch() {
 
     return (
         <View style={styles.container}>
-            <Searchbar 
+            <Searchbar
                 style={styles.searchbar}
                 inputStyle={styles.inputStyle}
                 selectionColor={Colors.BLACK1}
@@ -145,15 +146,24 @@ export default function AppSearch() {
 }
 
 const ResultItem = ({item, index, withTag, onPress}) => {
+
+    const [loading, setLoading] = useState(false);
+
     return (
         <View style={[styles.resultItemContainer]}>
             {withTag && <Text style={styles.labelText}>{item.type}</Text>}
             <TouchableOpacity style={styles.resultItem} onPress={() => onPress(item)}>
                 <View style={styles.imageContainer}>
                     <Image
-                        source={item.type == 'NFT' ? { uri: item.metaData.thumbnft } : Images.pIcon}
+                        source={item.type == 'NFT' ? { uri: item.thumbnailUrl } : item.profile_image ? {uri: item.profile_image} : Images.pIcon}
                         style={styles.image}
+                        resizeMode={'cover'}
+                        onLoadStart={() => setLoading(true)}
+                        onLoadEnd={() => {
+                            setLoading(false)
+                        }}
                     />
+                    {loading && <LoadingView />}
                 </View>
                 <Text style={styles.name} numberOfLines={1}>{item.type == 'NFT' ? item.metaData?.name : item?.username}</Text>
             </TouchableOpacity>
@@ -166,7 +176,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // marginVertical: hp("6%"),
         position: 'absolute',
-    },  
+    },
     searchbar: {
         borderWidth: 1,
         borderColor: Colors.borderLightColor3,
@@ -229,6 +239,6 @@ const styles = StyleSheet.create({
         borderRadius: wp("3.5%"),
     },
     loaderContainer: {
-        padding: wp("2%")
+        padding: wp("2%"),
     }
 });

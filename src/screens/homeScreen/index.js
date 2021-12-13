@@ -123,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
-  console.log('data', data, sort);
+  // console.log('home screen', data, sort);
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

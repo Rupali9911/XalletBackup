@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions} from '@react-navigation/native';
-import React, {useState} from 'react';
+import { CommonActions } from '@react-navigation/native';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -11,19 +11,19 @@ import {
 import DeviceInfo from 'react-native-device-info';
 import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader} from '../../components';
+import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
-import {colors} from '../../res';
-import {setAppLanguage} from '../../store/reducer/languageReducer';
+import { colors } from '../../res';
+import { setAppLanguage } from '../../store/reducer/languageReducer';
 import { endMainLoading, _logout } from '../../store/reducer/userReducer';
-import {languageArray, translate} from '../../walletUtils';
-import {confirmationAlert} from '../../common/function';
+import { languageArray, translate } from '../../walletUtils';
+import { confirmationAlert } from '../../common/function';
 import styles from './styled';
 
 const ListItem = props => {
@@ -37,7 +37,7 @@ const ListItem = props => {
         {props.rightText ? (
           <Text style={styles.listLabel}>{props.rightText}</Text>
         ) : props.right ? (
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text style={styles.listLabel}>{props.right}</Text>
             <EntypoIcon
               size={RF(2.5)}
@@ -59,42 +59,49 @@ const ListItem = props => {
   );
 };
 
-function Setting({navigation}) {
+const JapaneseLangTrans = {
+  en: "英語（イギリス）",
+  ko: "韓国語",
+  tw: "中国語（繁体）",
+  ch: "中国語（簡体）"
+}
+
+function Setting({ navigation }) {
   const dispatch = useDispatch();
   const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{width: '100%', backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ width: '100%', backgroundColor: '#fff' }}>
         <AppHeader
           title={translate('wallet.common.settingRight')}
           showBackButton
         />
       </View>
       <ScrollView>
-        <View style={[styles.section2, {marginTop: 0}]}>
+        <View style={[styles.section2, { marginTop: 0 }]}>
           <ListItem
             onPress={() => null}
             label={translate('wallet.common.AECredit')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
             label={translate('wallet.common.security')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => null}
             label={translate('wallet.common.notifications')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => null}
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber()}`}
@@ -109,7 +116,7 @@ function Setting({navigation}) {
                 '',
                 () => {
                   const _selectedLanguageItem = selectedLanguageItem;
-                  AsyncStorage.multiRemove(['@passcode','@wallet','@BackedUp','@apps'],(err)=>console.log(err)).then(()=>{
+                  AsyncStorage.multiRemove(['@passcode', '@wallet', '@BackedUp', '@apps'], (err) => console.log(err)).then(() => {
                     dispatch(_logout());
                     dispatch(endMainLoading());
                     dispatch(setAppLanguage(_selectedLanguageItem));
@@ -138,7 +145,7 @@ function Setting({navigation}) {
           <Text style={styles.modalTitle}>
             {translate('wallet.common.selectLanguage')}
           </Text>
-          <View style={{marginTop: hp('3%')}}>
+          <View style={{ marginTop: hp('3%') }}>
             {languageArray.map((v, i) => {
               return (
                 <TouchableOpacity
@@ -149,12 +156,16 @@ function Setting({navigation}) {
                     navigation.dispatch(
                       CommonActions.reset({
                         index: 0,
-                        routes: [{name: 'Home'}],
+                        routes: [{ name: 'Home' }],
                       }),
                     );
                   }}
-                  style={{...styles.centerProfileCont, flex: null}}>
-                  <Text style={styles.listLabel}>{v.language_display}</Text>
+                  style={{ ...styles.centerProfileCont, flex: null }}>
+                  <Text style={styles.listLabel}>{
+                    selectedLanguageItem.language_name === "ja" ?
+                      JapaneseLangTrans[v.language_name] ? JapaneseLangTrans[v.language_name] : v.language_display
+                      :
+                      v.language_display}</Text>
                   {selectedLanguageItem.language_name == v.language_name ? (
                     <EntypoIcon
                       size={RF(2.5)}

@@ -23,6 +23,7 @@ import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import axios from 'axios';
 import Video from 'react-native-fast-video';
 // import Video from 'react-native-video';
+import InViewPort from "@coffeebeanslabs/react-native-inviewport";
 
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { translate } from '../../walletUtils';
@@ -235,7 +236,6 @@ const nftItem = ({ item, index }) => {
   }
 
   let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
-
   return (
     <View>
       <View style={styles.modalSectCont}>
@@ -298,23 +298,24 @@ const nftItem = ({ item, index }) => {
         {
           fileType === 'mp4' || fileType === 'MP4' || fileType === 'mov' || fileType === 'MOV' ?
             <View style={styles.modalImage}>
-              <Video
-                key={tokenId}
-                ref={refVideo}
-                source={{ uri: item.metaData.image }}
-                repeat
-                playInBackground={false}
-                paused={!isPlay}
-                resizeMode={'cover'}
-                onLoad={() => refVideo.current.seek(0)}
-                style={{
-                  flex: 1,
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }} />
+              <InViewPort onChange={(isVisible) => this.checkVisible(isVisible)}>
+                <Video
+                  key={tokenId}
+                  ref={refVideo}
+                  source={{ uri: item.metaData.image }}
+                  playInBackground={false}
+                  paused={!isPlay}
+                  resizeMode={'cover'}
+                  onLoad={() => refVideo.current.seek(0)}
+                  style={{
+                    flex: 1,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                  }} />
+              </InViewPort>
               {
                 !isPlay &&
                 <View style={{

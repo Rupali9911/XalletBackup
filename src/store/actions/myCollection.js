@@ -72,10 +72,10 @@ export const myCollectionList = (page, ownerId) => {
                 dispatch(myCollectionLoadSuccess(json));
             }).catch(err => {
                 dispatch(myCollectionLoadFail())
-                alertWithSingleBtn(
-                    translate('common.error'),
-                    translate("wallet.common.error.networkFailed")
-                )
+                // alertWithSingleBtn(
+                //     translate('common.error'),
+                //     translate("wallet.common.error.networkFailed")
+                // )
             })
     }
 }
