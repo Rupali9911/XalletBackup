@@ -6,7 +6,8 @@ import {
     NEW_NFT_LOAD_SUCCESS,
     NEW_NFT_LOAD_FAIL,
     NEW_PAGE_CHANGE,
-    NEW_NFT_LIST_RESET
+    NEW_NFT_LIST_RESET,
+    FAVORITE_NFT_LOAD_SUCCESS
 } from '../types';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
@@ -14,6 +15,10 @@ import { ApiRequest } from '../../helpers/ApiRequest';
 
 export const newNftLoadSuccess = (data) => ({
     type: NEW_NFT_LOAD_SUCCESS,
+    payload: data
+});
+export const favoriteNftLoadSuccess = (data) => ({
+    type: FAVORITE_NFT_LOAD_SUCCESS,
     payload: data
 });
 
@@ -73,6 +78,55 @@ export const newNFTList = (page, limit, sort) => {
             .then(json => {
 
                 dispatch(newNftLoadSuccess(json))
+
+            }).catch(err => {
+                dispatch(newNftLoadFail())
+                alertWithSingleBtn(
+                    translate('common.error'),
+                    translate("wallet.common.error.networkFailed")
+                )
+            })
+    }
+}
+export const favoriteNFTList = (page, limit, sort) => {
+    return (dispatch, getState) => {
+
+        dispatch(newNftLoadStart());
+
+        const { data, wallet } = getState().UserReducer;
+        let user = data.user;
+
+        let body_data = {
+            page,
+            limit: limit || 24,
+            networkType: networkType,
+            token: "HubyJ*%qcqR0",
+            type: "portfolio",
+            approveStaus: "approve"
+        }
+
+        if(sort){
+            body_data.sort = sort
+        }
+
+        if (user) {
+            body_data.owner = wallet.address || user._id;
+        }
+        // console.log('body_data',body_data);
+        let fetch_data_body = {
+            method: 'POST',
+            body: JSON.stringify(body_data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }
+
+        fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
+            .then(response => response.json())
+            .then(json => {
+
+                dispatch(favoriteNftLoadSuccess(json))
 
             }).catch(err => {
                 dispatch(newNftLoadFail())

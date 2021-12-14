@@ -298,7 +298,6 @@ const nftItem = ({ item, index }) => {
         {
           fileType === 'mp4' || fileType === 'MP4' || fileType === 'mov' || fileType === 'MOV' ?
             <View style={styles.modalImage}>
-              <InViewPort onChange={(isVisible) => this.checkVisible(isVisible)}>
                 <Video
                   key={tokenId}
                   ref={refVideo}
@@ -315,7 +314,6 @@ const nftItem = ({ item, index }) => {
                     right: 0,
                     bottom: 0,
                   }} />
-              </InViewPort>
               {
                 !isPlay &&
                 <View style={{
