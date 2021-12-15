@@ -71,36 +71,46 @@ const nftItem = ({ item, index }) => {
   let providerUrl = "";
 
   let params = item.tokenId.toString().split('-');
-  let tokenId = params.length > 1 ? params[1] : params[0];
+  let tokenId = params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
   let chainType = params.length > 1 ? params[0] : 'binance';
+  let collectionAddress = params.length > 2 ? params[1] : null;
+
   if (chainType === 'polygon') {
     MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
     MarketContractAddress = blockChainConfig[1].marketConConfig.add;
-    AwardAbi = blockChainConfig[1].awardConConfig.abi;
-    AwardContractAddress = blockChainConfig[1].awardConConfig.add;
-    ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
-    ApproveAdd = blockChainConfig[1].marketApproveConConfig.add;
     providerUrl = blockChainConfig[1].providerUrl;
+    ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
+    ERC721Address = blockChainConfig[1].erc721ConConfig.add;
+    collectionAddress = collectionAddress || blockChainConfig[1].erc721ConConfig.add;
   } else if (chainType === 'binance') {
     MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
     MarketContractAddress = blockChainConfig[0].marketConConfig.add;
-    AwardAbi = blockChainConfig[0].awardConConfig.abi;
-    AwardContractAddress = blockChainConfig[0].awardConConfig.add;
-    ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
-    ApproveAdd = blockChainConfig[0].marketApproveConConfig.add;
     providerUrl = blockChainConfig[0].providerUrl;
+    ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
+    ERC721Address = blockChainConfig[0].erc721ConConfig.add;
+    collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
+  } else if (chainType === 'ethereum') {
+    MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+    providerUrl = blockChainConfig[2].providerUrl;
+    ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
+    ERC721Address = blockChainConfig[2].erc721ConConfig.add;
+    collectionAddress = collectionAddress || blockChainConfig[2].erc721ConConfig.add;
   }
+
+  console.log('params:',params,', tokenId:',tokenId,', collectionAddresss', collectionAddress);
 
   useEffect(() => {
     let web3 = new Web3(providerUrl);
-    if (MarketPlaceAbi && MarketContractAddress) {
+    if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
       let MarketPlaceContract = new web3.eth.Contract(
         MarketPlaceAbi,
         MarketContractAddress
       );
       MarketPlaceContract.methods
-        .getNonCryptoOwner(tokenId)
+        .getNonCryptoOwner(collectionAddress,tokenId)
         .call(async (err, res) => {
+          console.log('getNonCryptoOwner_res',res);
           if (res) {
             const userId = res.toLowerCase();
             setOwnerId(userId);
@@ -135,15 +145,21 @@ const nftItem = ({ item, index }) => {
 
   const lastOwnerOfNFT = () => {
     let web3 = new Web3(providerUrl);
+    let ERC721Contract = new web3.eth.Contract(
+      ERC721Abi,
+      collectionAddress
+    );
+
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress
     );
 
-    MarketPlaceContract.methods.ownerOf(tokenId).call((err, res) => {
+    ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       let ownerAddress = res;
+      console.log('res',res);
       if (!err) {
-        MarketPlaceContract.methods.getSellDetail(tokenId).call((err, res) => {
+        MarketPlaceContract.methods.getSellDetail(collectionAddress, tokenId).call((err, res) => {
           if (res[0] !== '0x0000000000000000000000000000000000000000') {
             getPublicProfile(res[0], true);
           } else {

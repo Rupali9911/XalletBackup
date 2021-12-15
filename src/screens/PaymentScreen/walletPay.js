@@ -37,6 +37,9 @@ import Fonts from '../../constants/Fonts';
 import Separator from '../../components/separator';
 import AppButton from '../../components/appButton';
 import { setPaymentObject } from '../../store/reducer/paymentReducer';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { divideNo } from '../../utils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
 
 const ethers = require('ethers');
 
@@ -53,7 +56,7 @@ const WalletPay = ({route, navigation}) => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
 
-    const {chainType} = route.params
+    const {chainType, price, priceStr, id, baseCurrency, ownerAddress, collectionAddress, allowedTokens} = route.params
 
     const [loading, setLoading] = useState(false);
     const [balances, setBalances] = useState(null);
@@ -64,6 +67,30 @@ const WalletPay = ({route, navigation}) => {
     const [isSend, setIsSend] = useState(false);
     const [network, setNetwork] = useState(chainType === 'polygon' ? {name: "Polygon",icon: ImagesSrc.matic} : {name: "BSC",icon: ImagesSrc.bnb});
     const [selectedObject, setSelectedObject] = useState(null);
+    const [tradeCurrency, setTradeCurrency] = useState(null);
+    const [priceInToken, setPriceInToken] = useState(price);
+
+    let MarketPlaceAbi = "";
+    let MarketContractAddress = "";
+    let providerUrl = "";
+    let ApproveAbi = "";
+
+    if (chainType === 'polygon') {
+        MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+        providerUrl = blockChainConfig[1].providerUrl;
+        ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
+      } else if (chainType === 'binance') {
+        MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+        providerUrl = blockChainConfig[0].providerUrl;
+        ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
+      } else if (chainType === 'ethereum') {
+        MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+        providerUrl = blockChainConfig[2].providerUrl;
+        ApproveAbi = blockChainConfig[2].marketApproveConConfig.abi;
+      }
 
     useEffect(()=>{
         console.log('useEffect')
@@ -76,7 +103,7 @@ const WalletPay = ({route, navigation}) => {
 
     useEffect(() => {
         singleSocket.connectSocket().then(() => {
-            ping(wallet.address);
+            // ping(wallet.address);
         });
 
         const socketSubscribe = Events.asObservable().subscribe({
@@ -113,6 +140,36 @@ const WalletPay = ({route, navigation}) => {
         }
     },[network, ethBalance, bnbBalance, maticBalance]);
 
+    const calculatePrice = async (tradeCurr) => {
+        let web3 = new Web3(providerUrl);
+        let MarketPlaceContract = new web3.eth.Contract(
+          MarketPlaceAbi,
+          MarketContractAddress
+        );
+        console.log('price & priceStr', price, priceStr);
+        console.log(
+            `priceStr_${priceStr}`,
+            baseCurrency.order,
+            tradeCurr,
+            id,
+            ownerAddress,
+            collectionAddress
+        )
+        let res = await MarketPlaceContract.methods
+          .calculatePrice(
+            priceStr,
+            baseCurrency.order,
+            tradeCurr,
+            id,
+            ownerAddress,
+            collectionAddress
+          )
+          .call();
+        console.log("calculate price response", res, price);
+        if (res) return res;
+        else return "";
+      }
+
     const setBalanceField = () => {
         let totalValue = 0;
         if(network.name == 'Ethereum'){
@@ -131,17 +188,39 @@ const WalletPay = ({route, navigation}) => {
         return totalValue;
     }
 
-    const IsActiveToPay = () => {
+    const IsActiveToPay = async () => {
         let tnft = parseFloat(`${tnftBalance}`);
         let tal = parseFloat(`${talBalance}`);
+        let balance = parseFloat(`${selectedObject?.tokenValue}`);
         if(selectedObject){
-            if(chainType === 'polygon' && tal > 0){
+            if(tradeCurrency.approvalRequired){
+                let approvalContract = new web3.eth.Contract(
+                    ApproveAbi,
+                    tradeCurrency.approvalAdd
+                  );
+
+                  let decimals = await approvalContract.methods.decimals().call();
+                if (
+                    parseInt(balance) / Math.pow(10, parseInt(decimals)) === 0 ||
+                    parseInt(balance) / Math.pow(10, parseInt(decimals)) < priceInToken
+                ) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }else if(balance >= priceInToken){
                 return true;
-            } else if(chainType === 'binance' && tnft > 0){
-                return true;
-            }else {
+            }else{
                 return false;
             }
+            
+            // if(chainType === 'polygon' && tal > 0){
+            //     return true;
+            // } else if(chainType === 'binance' && tnft > 0){
+            //     return true;
+            // }else {
+            //     return false;
+            // }
         }else{
             return false;
         }
@@ -330,6 +409,13 @@ const WalletPay = ({route, navigation}) => {
         return getBalances(wallet.address);
     }
 
+    const getCurrencyOnSelect = (item) => {
+        let chain = item.network === 'BSC' ? 'binance' : item.network === 'Ethereum' ? 'ethereum' : item.network === 'Polygon' ? 'polygon' : ''
+        let result = basePriceTokens.find(_ => _.key.toLowerCase() === item.tokenName.toLowerCase() && _.chain === chain)
+        console.log('@@@@@@@@@@@@',result,item);
+        return result;
+    } 
+
     return (
         <AppBackground isBusy={loading}>
             <GradientBackground>
@@ -357,8 +443,12 @@ const WalletPay = ({route, navigation}) => {
             <Tokens
                 values={balances}
                 network={network}
-                onTokenPress={(item) => {
+                onTokenPress={async(item) => {
                     setSelectedObject(item);
+                    setTradeCurrency(getCurrencyOnSelect(item));
+                    let priceInToken = await calculatePrice(3);
+                    console.log('value',parseFloat(divideNo(priceInToken)));
+                    setPriceInToken(parseFloat(divideNo(priceInToken)));
                 }}
                 onRefresh={onRefreshToken}
             />
@@ -368,7 +458,7 @@ const WalletPay = ({route, navigation}) => {
             {selectedObject && <View style={styles.totalContainer}>
                 <View style={styles.payObject}>
                     <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
-                    <Text style={styles.value}>{selectedObject.type} {selectedObject.tokenValue}</Text>
+                    <Text style={styles.value}>{selectedObject.type} {priceInToken || price}</Text>
                 </View>
                 {!IsActiveToPay() && <TextView style={styles.alertMsg}>{translate("wallet.common.insufficientToken",{token: chainType === 'polygon'?'TAL':'TNFT'})}</TextView>}
             </View>}
@@ -384,6 +474,8 @@ const WalletPay = ({route, navigation}) => {
                             navigation.goBack();
                             dispatch(setPaymentObject({
                                 item: selectedObject,
+                                currency: tradeCurrency,
+                                priceInToken,
                                 type: 'wallet'
                             }));
                         }

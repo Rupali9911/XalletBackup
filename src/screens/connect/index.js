@@ -43,9 +43,14 @@ const ListItems = (props) => {
         }
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-                const response = JSON.parse(data);
-                if (response.type == 'success'  && typeof (response.data) == 'object' && response.data.type == 'app') {
-                    setDetails(response.data);
+                console.log('______socket subscribe', data);
+                try {
+                    const response = JSON.parse(data);
+                    if (response.status == 'success' && response.type == 'appInfo') {
+                        setDetails(response.data);
+                    }
+                } catch (err) {
+                    console.log('err________',err);
                 }
             },
         });
@@ -143,55 +148,73 @@ const Connect = ({ route, navigation }) => {
                 getAppId();
             });
         }
+
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
                 console.log('socket subscribe', data);
-                const response = JSON.parse(data);
-                if (response.type == 'newconnectionrequest') {
-                    setRequestedAppData(response.data);
-                    setApproveModal(true);
-                } else if (response.type == 'success' && typeof (response.data) == 'string') {
-                    // alertWithSingleBtn('', response.data);
-                    if(response.data.includes('removed')){
-                        setConnectedApps([]);
-                    }
-                } else if (response.type == 'success' && typeof (response.data) == 'object' && response.data.type == 'wallet') {
-                    if(response.data.isAppApproved == 'true'){
-                        setConnectedApps([response.data.appId]);
-                    }else{
-                        setConnectedApps([]);
-                    }
-                } else if (response.type == 'connected') {
-                    // alertWithSingleBtn('', response.data);
-                    let ids = response.data.split(':');
-                    if (ids.length > 1) {
-                        if (connectedApps.includes(ids[1])) {
-                        } else {
-                            // let array = [...connectedApps, ids[1]];
-                            // dispatch(setConnectedAppsToLocal(array));
-                            getAppId();
-                        }
-                    }
-                } else if (response.type == 'error' && !response.data.includes("walletId doesn't exists")) {
-                    console.log('error',response.data);
-                    if(response.data.includes(`walletID:${wallet.address}`)){
-                        alertWithSingleBtn('', '');
-                    }else{
-                        alertWithSingleBtn('', response.data);
-                    }
-                }else if(response.type == 'asksig') {
-                    console.log('message_data',response.data);
-                    let signature = getSig(response.data.msg, wallet.privateKey);
-                    let _data = {
-                        type: "sig",
-                        data: {
-                            sig: signature,
-                            walletId: wallet.address
-                        }
-                    }
+                try {
+                    const response = JSON.parse(data);
 
-                    singleSocket.onSendMessage(_data);
+                    if (response.status === 'success') {
+                        if (response.type == 'newconnectionrequest') {
+                            setRequestedAppData(response.data);
+                            setApproveModal(true);
+                        } else if (response.type == 'remove') {
+                            // alertWithSingleBtn('', response.data);
+                            if (response.data.appId) {
+                                setConnectedApps([]);
+                                navigation.setParams({appId: null});
+                            }
+                        } else if (response.type == 'walletInfo') {
+                            if (response.data.isAppApproved == 'true') {
+                                setConnectedApps([response.data.appId]);
+                            } else {
+                                setConnectedApps([]);
+                            }
+                        } else if (response.type == 'connection approved') {
+                            // alertWithSingleBtn('', response.data);
+                            let id = response.data.appId;
+                            if (id) {
+                                if (connectedApps.includes(id)) {
+                                } else {
+                                    // let array = [...connectedApps, ids[1]];
+                                    // dispatch(setConnectedAppsToLocal(array));
+                                    getAppId();
+                                }
+                            }
+                        } else if (response.type == 'asksig') {
+                            console.log('message_data', response.data);
+                            let signature = getSig(response.data.msg, wallet.privateKey);
+                            let _data = {
+                                type: "sig",
+                                data: {
+                                    sig: signature,
+                                    walletId: wallet.address
+                                }
+                            }
+                            singleSocket.onSendMessage(_data);
+                        } else if (response.type == 'connected') {
+                            // alertWithSingleBtn('', '');
+                        }
+                    } else if (response.status === 'error') {
+                        if (response.type == 'wallet') {
+                            
+                        } else if (response.type == 'approve') {
+                            alertWithSingleBtn('', translate('wallet.common.error.appNotConnected'));
+                        }
+                    }
+                } catch (err) {
+                    console.log('err________', err);
                 }
+
+                //  else if (response.type == 'error' && !response.data.includes("walletId doesn't exists")) {
+                //     console.log('error',response.data);
+                //     if(response.data.includes(`walletID:${wallet.address}`)){
+                //         alertWithSingleBtn('', '');
+                //     }else{
+                //         alertWithSingleBtn('', response.data);
+                //     }
+                // }
             },
         });
         return () => {

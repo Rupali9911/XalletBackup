@@ -90,21 +90,21 @@ const Wallet = ({route, navigation}) => {
 
   useEffect(() => {
     singleSocket.connectSocket().then(() => {
-      ping(wallet.address);
+      // ping(wallet.address);
     });
 
-    const socketSubscribe = Events.asObservable().subscribe({
-      next: data => {
-        console.log('socket subscribe', data);
-        const response = JSON.parse(data);
-        if (response.type == 'pong') {
-          connect(response.data);
-        }
-      },
-    });
+    // const socketSubscribe = Events.asObservable().subscribe({
+    //   next: data => {
+    //     console.log('socket subscribe', data);
+    //     const response = JSON.parse(data);
+    //     if (response.type == 'pong') {
+    //       connect(response.data);
+    //     }
+    //   },
+    // });
 
     return () => {
-      socketSubscribe.unsubscribe();
+      // socketSubscribe.unsubscribe();
     };
   }, []);
 

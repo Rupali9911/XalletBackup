@@ -644,7 +644,8 @@
                 "passcodeError1": "密码不匹配。请再试一次！",
                 "passcodeError2": "密码不匹配。请再试一次！",
                 "passcodeError3": "",
-                "invalidPrivateKey": "无效的私钥"
+                "invalidPrivateKey": "无效的私钥",
+                "appNotConnected": "您尝试连接的应用程序未与服务器连接。请将应用程序与服务器连接，然后重试。"
             },
             "welcomeTxt": "欢迎",
             "createWallet": "创建一个新钱包",
@@ -876,7 +877,14 @@
             "emailValidation": "电子邮件未经验证",
             "limitInputLength": "您不应超过 {{number}} 个字符。",
             "xanaliaWallet": "Xanalia 钱包",
-            "otherWallet": "其他钱包"
+            "otherWallet": "其他钱包",
+            "filter": "筛选",
+            "blockChainType": "区块链类型",
+            "tokenStandard": "代币标准",
+            "nftId": "NFT ID",
+            "contractAddress": "合约地址",
+            "bidHistory": "投标历史",
+            "collectionHint": "更多来自这个系列"
         },
         "backendmessage": {
             "error": {},

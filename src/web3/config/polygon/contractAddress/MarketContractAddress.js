@@ -2,9 +2,9 @@ import { networkType } from "../../networkType.js";
 
 let add = "";
 if (networkType === "testnet") {
-  add = "0xC84E3F06Ae0f2cf2CA782A1cd0F653663c99280d";
+  add = "0x23c7903A8a61BA72fF239e7856A7D7e3447718B5";
 } else if (networkType === "mainnet") {
-  add = "0xfE1a571eb3458d3aCf7d71bF0A78aC62DA537124"; // main net
+  add = "0x93D7B0C1d4aFaB3d71A7c68AaA3C405a9A9245fc"; // main net
 }
 
 export default add;

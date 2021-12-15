@@ -3651,7 +3651,8 @@ export const environment = {
   polygonScanURL: IsTestNet ? test_PolygonScanURL : PolygonScanURL,
   ethereumScanURL: IsTestNet ? test_EthereumScanURL : EthereumScanURL,
 
-  usdcCont: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  // usdcCont: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  usdcCont: '0x23a91170fa76141ac09f126e8d56bd9896d1fd5c',
   usdcAbi: [
     {
       "anonymous": false,
@@ -7623,6 +7624,8 @@ export const environment = {
 
   talCont: '0x6275bd7102b14810c7cfe69507c3916c7885911a',
 
+  wethCont: '0xd93e56eb481d63b12b364adb8343c4b28623eebf',
+
   polygonNftDex: IsTestNet ? polygonNftDex : polygonNftDex,
   binanceNftDex: IsTestNet ? binanceNftDex : binanceNftDex,
   polygonNftAbi: IsTestNet ? polygonNftAbi : polygonNftAbi,
@@ -7775,6 +7778,42 @@ export const tokens = [
     percent: "+10.49%",
     tokenValue: "0",
     network: 'Polygon'
+  },
+  {
+    type: 'USDC',
+    tokenName: 'USDC',
+    icon: ImagesSrc.usdc,
+    amount: "$387.41",
+    percent: "+10.49%",
+    tokenValue: "0",
+    network: 'Polygon'
+  },
+  {
+    type: 'ETH',
+    tokenName: 'ETH',
+    icon: ImagesSrc.etherium,
+    amount: "$387.41",
+    percent: "+10.49%",
+    tokenValue: "0",
+    network: 'Polygon'
+  },
+  {
+    type: 'BUSD',
+    tokenName: 'BUSD',
+    icon: ImagesSrc.busd,
+    amount: '$387.41',
+    percent: '+10.49%',
+    tokenValue: '0',
+    network: 'BSC',
+  },
+  {
+    type: 'USDT',
+    tokenName: 'USDT',
+    icon: ImagesSrc.usdt,
+    amount: '$3,177.94',
+    percent: '+2.21%',
+    tokenValue: `0`,
+    network: 'Ethereum'
   }
 ]
 
