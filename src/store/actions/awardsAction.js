@@ -76,10 +76,10 @@ export const getAwardsNftList = (page, limit, sort) => {
             }).catch(err => {
 
                 dispatch(awardsNftLoadFail())
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.networkFailed"),
-                );
+                // alertWithSingleBtn(
+                //     translate("wallet.common.alert"),
+                //     translate("wallet.common.error.networkFailed"),
+                // );
             })
     }
 }

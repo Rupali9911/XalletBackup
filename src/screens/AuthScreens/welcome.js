@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
 import LanguageSelector from '../../components/languageSelector';
-import { RF } from '../../constants/responsiveFunct';
+import {RF} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import FastImage from 'react-native-fast-image';
 
-const Welcome = ({ navigation }) => {
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+const Welcome = ({navigation}) => {
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     FastImage.clearMemoryCache();
-    FastImage.clearDiskCache()
-  }, [selectedLanguageItem.language_name])
+    FastImage.clearDiskCache();
+  }, [selectedLanguageItem.language_name]);
 
   const [openPicker, setOpenPicker] = useState(false);
 
@@ -50,6 +50,12 @@ const Welcome = ({ navigation }) => {
             label={translate('wallet.common.haveWallet')}
             containerStyle={CommonStyles.outlineButton}
             labelStyle={CommonStyles.outlineButtonLabel}
+            onPress={() => navigation.navigate('chooseWallet')}
+          />
+          {/* <AppButton
+            label={translate('wallet.common.haveWallet')}
+            containerStyle={CommonStyles.outlineButton}
+            labelStyle={CommonStyles.outlineButtonLabel}
             onPress={() => {
               navigation.navigate('recoveryPhrase', { recover: true });
             }}
@@ -61,7 +67,7 @@ const Welcome = ({ navigation }) => {
             onPress={() => {
               navigation.navigate('importWallet');
             }}
-          />
+          /> */}
         </View>
       </View>
     </AppBackground>

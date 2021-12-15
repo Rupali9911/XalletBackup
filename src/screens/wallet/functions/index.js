@@ -5,6 +5,7 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
 import { binanceNftAbi, binanceNftDex, environment, translate } from '../../../walletUtils';
+import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 
 export const getSig = (message, privateKey) => {
   var accounts = new Accounts("");
@@ -287,25 +288,43 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr,
   })
 }
 
-export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt) => {
+export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, order) => {
   console.log('params',publicKey, privKey, nftId, chainType, gasPr, gasLmt);
   return new Promise(async (resolve, reject) => {
     console.log('chainType',chainType);
-    const web3 = chainType === "polygon" ? new Web3(
+    let rpcURL;
+    let contractAddress;
+    let abiArray;
+    if (chainType === 'polygon') {
+      rpcURL = blockChainConfig[1].providerUrl;
+      abiArray = blockChainConfig[1].marketConConfig.abi;
+      contractAddress = blockChainConfig[1].marketConConfig.add;
+    } else if (chainType === 'binance') {
+      rpcURL = blockChainConfig[0].providerUrl;
+      abiArray = blockChainConfig[0].marketConConfig.abi;
+      contractAddress = blockChainConfig[0].marketConConfig.add;
+    } else if (chainType === 'ethereum') {
+      rpcURL = blockChainConfig[2].providerUrl;
+      abiArray = blockChainConfig[2].marketConConfig.abi;
+      contractAddress = blockChainConfig[2].marketConConfig.add;
+    } else {
+      console.log('invalid chainType');
+      reject('invalid chainType');
+      return;
+    }
+
+    const web3 = new Web3(
       new Web3.providers.HttpProvider(
-        environment.polRpc
-      )
-    ) : new Web3(
-      new Web3.providers.HttpProvider(
-        environment.bnbRpc
+        rpcURL
       )
     );
+
     const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
     if (txCount.error) reject(txCount.error);
     var customGasLimit = gasLmt;
     customGasPrice = gasPr * 1000000000;
-    const contractAddress = chainType === "polygon" ? environment.polygonNftDex : binanceNftDex;
-    const abiArray = chainType === "polygon" ? environment.polygonNftAbi : binanceNftAbi;
+    // const contractAddress = chainType === "polygon" ? blockChainConfig[1].marketConConfig.add : binanceNftDex;
+    // const abiArray = chainType === "polygon" ? environment.polygonNftAbi : binanceNftAbi;
     console.log('contractAddress', contractAddress);
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey
@@ -321,7 +340,7 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
       to: contractAddress,
       value: "0x0",
       data: contract.methods
-        .buyNFT(contractAddress, nftId, "")
+        .buyNFT(collectionAddress, nftId, "", order)
         .encodeABI(),
       nonce: web3.utils.toHex(txCount)
     };
@@ -367,74 +386,192 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
   })
 }
 
-export const checkAllowance = async (publicAddr, chainType) => {
-  // try {
-    let NFTDex;
-    let contractAddress;
-    let abiArray = environment.tnftAbi;
-    let rpcUrl;
-    if(chainType == "binance") {
-      NFTDex = environment.binanceNftDex;
-      contractAddress = environment.tnftCont;
-      rpcUrl = environment.bnbRpc;
-    } else{
-      NFTDex = environment.polygonNftDex;
-      contractAddress = environment.talCont;
-      rpcUrl = environment.polRpc;
+export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent) => {
+  console.log('params',publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent);
+  return new Promise(async (resolve, reject) => {
+    console.log('chainType',chainType);
+    let rpcURL;
+    if(chainType === 'polygon'){
+      rpcURL = blockChainConfig[1].providerUrl;
+    } else if (chainType === 'binance') {
+      rpcURL = blockChainConfig[0].providerUrl;
+    } else if (chainType === 'ethereum') {
+      rpcURL = blockChainConfig[2].providerUrl
+    } else {
+      console.log('invalid chainType');
+      reject('invalid chainType');
+      return;
     }
-    return new Promise(async (resolve, reject) => {
-            let balance;
-            const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
-            const contract = new web3.eth.Contract(abiArray, contractAddress, publicAddr)
-            if (contract) {
-                  await contract.methods.allowance(publicAddr, NFTDex).call().then(async function (info) {
-                    var balance = await web3.utils.fromWei(info.toString(),"ether")
-                    console.log(balance)
-                    resolve(balance);
-                })
-            } else {
-                reject({ success: false, data: 'Smart contract not deployed to detected network.' });
-            }
-        })
-    // } catch (err) {
-    //     console.log(err)
-    // }
+
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider(
+        rpcURL
+      )
+    );
+
+    const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
+    if (txCount.error) reject(txCount.error);
+    var customGasLimit = gasLmt;
+    customGasPrice = gasPr * 1000000000;
+    const contractAddress = chainType === "polygon" ? blockChainConfig[1].marketConConfig.add : binanceNftDex;
+    const abiArray = chainType === "polygon" ? blockChainConfig[1].marketConConfig.abi : binanceNftAbi;
+    console.log('contractAddress', contractAddress);
+    var contract = new web3.eth.Contract(abiArray, contractAddress, {
+      from: publicKey
+    });
+    // console.log('contract',contract);
+    let txObject;
+    // HERE
+    txObject = {
+      from: publicKey,
+      gasPrice: web3.utils.toHex(customGasPrice),
+      gasLimit: web3.utils.toHex(customGasLimit),
+      chainId: chainType === "polygon" ? 80001 : undefined,
+      to: contractAddress,
+      value: addedFivePercent ? web3.utils.toHex(
+        web3.utils.toWei(addedFivePercent.toString(), "ether")
+      ) : "0x0",
+      data: contract.methods
+        .buyNFTBnb(collectionAddress, parseInt(`${nftId}`), "")
+        .encodeABI(),
+      nonce: web3.utils.toHex(txCount)
+    };
+
+    let common = null;
+    if(chainType === 'binance'){
+      common = Common.forCustomChain('mainnet', {
+        name: 'bnb',
+        networkId: 97,
+        chainId: 97
+      }, 'petersburg');
+    }else {
+      common = Common.forCustomChain('mainnet', {
+        name: 'matic',
+        networkId: 80001,
+        chainId: 80001
+      }, 'petersburg');
+    }
+    
+    console.log('txObject',txObject);
+    const tx = new EthereumTx(txObject, {common});
+    privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
+    tx.sign(privateKey);
+    const serializedTx = tx.serialize();
+    const raw = "0x" + serializedTx.toString("hex");
+    // const result = await web3.eth.sendSignedTransaction(
+    //     raw
+    // );
+
+    await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+      if (txHash) {
+        console.log(txHash)
+        console.log("resp noncrypto function", new Date().getTime());
+        resolve({ success: true, status: 200, data: txHash });
+      } else if (err) {
+        console.log(err);
+        reject(err.message);
+      }
+    })
+
+    // console.log(result);
+    // return result
+  })
 }
 
-export const approvebnb = async (publicKey, privateKey, chainType) => {
+export const checkAllowance = async (publicAddr, chainType, approvalAdd) => {
+  // try {
   let NFTDex;
-    let contractAddress;
-    let abiArray = environment.tnftAbi;
-    let rpcUrl;
-    if(chainType == "binance") {
-      NFTDex = environment.binanceNftDex;
-      contractAddress = environment.tnftCont;
-      rpcUrl = environment.bnbRpc;
-    } else{
-      NFTDex = environment.polygonNftDex;
-      contractAddress = environment.talCont;
-      rpcUrl = environment.polRpc;
+  let contractAddress;
+  let abiArray = environment.tnftAbi;
+  let ApproveAbi = "";
+  let rpcUrl;
+  if (chainType == "binance") {
+    NFTDex = blockChainConfig[0].marketConConfig.add;
+    contractAddress = environment.tnftCont;
+    ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi
+    rpcUrl = environment.bnbRpc;
+  } else if (chainType == "polygon") {
+    NFTDex = blockChainConfig[1].marketConConfig.add;
+    contractAddress = environment.talCont;
+    ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi
+    rpcUrl = environment.polRpc;
+  } else if (chainType == "ethereum") {
+    NFTDex = blockChainConfig[2].marketConConfig.add;
+    contractAddress = environment.talCont;
+    ApproveAbi = blockChainConfig[2].marketApproveConConfig.abi
+    rpcUrl = environment.polRpc;
+  }
+
+  return new Promise(async (resolve, reject) => {
+    if (NFTDex && contractAddress && rpcUrl) {
+      let balance;
+      const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
+      // const contract = new web3.eth.Contract(abiArray, contractAddress, publicAddr)
+      const contract = new web3.eth.Contract(ApproveAbi, approvalAdd)
+      if (contract) {
+        await contract.methods.allowance(publicAddr, NFTDex).call().then(async function (info) {
+          var balance = await web3.utils.fromWei(info.toString(), "ether")
+          console.log(balance)
+          resolve(balance, contract);
+        })
+      } else {
+        reject({ success: false, data: 'Smart contract not deployed to detected network.' });
+      }
+    } else {
+      reject({ success: false, data: 'Smart contract not deployed to detected network.' });
     }
 
-  const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
-  
-  var andVal = await web3.utils.toWei("10000000000000000000000000000000000000000000000000000000", 'ether');;
-  console.log("andVal", andVal)
-  amount = web3.utils.toHex(andVal);
-  console.log("amount")
-    
+  })
+  // } catch (err) {
+  //     console.log(err)
+  // }
+}
+
+export const approvebnb = async (publicKey, privateKey, chainType, contract) => {
+  let appprovalValue = "115792089237316195423570985008687907853269984665640564039457";
+  var _contract = contract;
+  let NFTDex;
+  let contractAddress;
+  let abiArray = environment.tnftAbi;
+  let rpcUrl;
+  if (chainType == "binance") {
+    NFTDex = blockChainConfig[0].marketConConfig.add;
+    contractAddress = environment.tnftCont;
+    rpcUrl = environment.bnbRpc;
+  } else if (chainType == "polygon") {
+    NFTDex = blockChainConfig[1].marketConConfig.add;
+    contractAddress = environment.talCont;
+    rpcUrl = environment.polRpc;
+  } else if (chainType == "ethereum") {
+    NFTDex = blockChainConfig[2].marketConConfig.add;
+    contractAddress = environment.talCont;
+    rpcUrl = environment.polRpc;
+  }
+
   return new Promise(async (resolve, reject) => {
-    try {
-      const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
-      const txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
-      if (txCount.error)
-      reject({ success: false, msg: txCount.error });
-      var customGasLimit = 6000000;
-      customGasPrice = 10 * 1000000000;
-      var contract = new web3.eth.Contract(abiArray, contractAddress, { from: publicKey });
-      //console.log("ethtoAddress", ethtoAddress.length)
-      //console.log("amount", amount.length)
-      // HERE
+    if (NFTDex && contractAddress && rpcUrl) {
+      const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
+
+      // var andVal = await web3.utils.toWei("10000000000000000000000000000000000000000000000000000000", 'ether');
+      var andVal = await web3.utils.toWei(appprovalValue, 'ether');
+      console.log("andVal", andVal)
+      amount = web3.utils.toHex(andVal);
+      console.log("amount")
+
+      try {
+        const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
+        const txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
+        if (txCount.error)
+          reject({ success: false, msg: txCount.error });
+        var customGasLimit = 6000000;
+        customGasPrice = 10 * 1000000000;
+
+        if(contract == undefined){
+          _contract = new web3.eth.Contract(abiArray, contractAddress, { from: publicKey });
+        }
+        //console.log("ethtoAddress", ethtoAddress.length)
+        //console.log("amount", amount.length)
+        // HERE
         const txObject = {
           from: publicKey,
           gasPrice: web3.utils.toHex(customGasPrice),
@@ -442,26 +579,26 @@ export const approvebnb = async (publicKey, privateKey, chainType) => {
           to: contractAddress,
           value: "0x0",
           chainId: chainType === "polygon" ? 80001 : undefined,
-          data: contract.methods.approve(NFTDex, amount).encodeABI(),
+          data: _contract.methods.approve(NFTDex, andVal).encodeABI(),
           nonce: web3.utils.toHex(txCount)
         }
 
-      let common = null;
-      if (chainType === 'binance') {
-        common = Common.forCustomChain('mainnet', {
-          name: 'bnb',
-          networkId: 97,
-          chainId: 97
-        }, 'petersburg');
-      } else {
-        common = Common.forCustomChain('mainnet', {
-          name: 'matic',
-          networkId: 80001,
-          chainId: 80001
-        }, 'petersburg');
-      }
+        let common = null;
+        if (chainType === 'binance') {
+          common = Common.forCustomChain('mainnet', {
+            name: 'bnb',
+            networkId: 97,
+            chainId: 97
+          }, 'petersburg');
+        } else {
+          common = Common.forCustomChain('mainnet', {
+            name: 'matic',
+            networkId: 80001,
+            chainId: 80001
+          }, 'petersburg');
+        }
 
-        const tx = new EthereumTx(txObject,{common});
+        const tx = new EthereumTx(txObject, { common });
         tx.sign(privKey);
         const serializedTx = tx.serialize()
         const raw = '0x' + serializedTx.toString('hex')
@@ -472,15 +609,18 @@ export const approvebnb = async (publicKey, privateKey, chainType) => {
             return;
           } else if (err && err.message) {
             console.log(err);
-            reject({ success: false, msg:"failed" });
+            reject({ success: false, msg: "failed" });
           } else {
             reject({ success: false, msg: 'Error Code : 754. Please contact customer support center', error_code: 754 });
           }
         })
-    }
-    catch (err) {
-      console.log(err);
-      reject({ success: false, msg: err.message });
+      }
+      catch (err) {
+        console.log(err);
+        reject({ success: false, msg: err.message });
+      }
+    } else {
+      reject({ success: false, msg: '' });
     }
   })
 }

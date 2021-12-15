@@ -28,7 +28,7 @@ import { useStripe, useConfirmPayment } from '@stripe/stripe-react-native';
 import { StripeApiRequest, ApiRequest, STRIPE_API_URL } from '../../helpers/ApiRequest';
 import WebView from 'react-native-webview';
 import { alertWithSingleBtn } from '../../common/function';
-import { approvebnb, buyNft, checkAllowance } from '../../screens/wallet/functions';
+import { approvebnb, buyNft, buyNftBnb, checkAllowance } from '../../screens/wallet/functions';
 import { BlurView } from "@react-native-community/blur";
 import { IconButton } from 'react-native-paper';
 
@@ -43,7 +43,7 @@ const PaymentNow = (props) => {
         confirmPayment
     } = useStripe();
 
-    const { visible, onRequestClose, NftId, price, chain, ownerId, onPaymentDone, lastBidAmount } = props;
+    const { visible, onRequestClose, NftId, price, chain, ownerId, onPaymentDone, lastBidAmount, ownerAddress, baseCurrency, collectionAddress } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
@@ -254,37 +254,65 @@ const PaymentNow = (props) => {
     // };
 
     const payByWallet = () => {
-        checkAllowance(wallet.address, chain || "binance").then((balance) => {
-            console.log('balance', balance, lastBidAmount);
-            if (parseFloat(`${balance}`) < parseFloat(`${lastBidAmount}`)) {
-                approvebnb(wallet.address, wallet.privateKey, chain || "binance").then((res) => {
-                    buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000).then((bnbBalance) => {
+        if(paymentObject?.currency?.approvalRequired){
+            checkAllowance(wallet.address, chain || "binance", paymentObject?.currency?.approvalAdd).then(async(balance, approvalContract) => {
+                console.log('balance', balance, lastBidAmount);
+                let decimals = await approvalContract.methods.decimals().call();
+                if (parseInt(balance) / Math.pow(10, parseInt(decimals)) <= 0) {
+                // if (parseFloat(`${balance}`) < parseFloat(`${lastBidAmount}`)) {
+                    approvebnb(wallet.address, wallet.privateKey, chain || "binance", approvalContract).then((res) => {
+                        buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, paymentObject?.currency?.order).then((bnbBalance) => {
+                            console.log("approve bnbBalance", bnbBalance)
+                            alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                            onPaymentDone();
+                            setLoading(false);
+                        }).catch((err) => {
+                            console.log("payByWallet_err", err);
+                            setLoading(false);
+                        });
+                    }).catch((err) => {
+                        console.log('approve_err', err);
+                        showErrorAlert('');
+                    });
+                } else {
+                    buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, paymentObject?.currency?.order).then((bnbBalance) => {
                         console.log("bnbBalance", bnbBalance)
-                        alertWithSingleBtn(translate('common.tansactionSuccessFull'));
+                        alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                         onPaymentDone();
                         setLoading(false);
                     }).catch((err) => {
                         console.log("payByWallet_err", err);
                         setLoading(false);
+                        showErrorAlert('');
                     });
-                }).catch((err) => {
-                    console.log('approve_err', err);
-                    showErrorAlert('');
-                });
-            } else {
-                buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000).then((bnbBalance) => {
-                    console.log("bnbBalance", bnbBalance)
-                    alertWithSingleBtn(translate('common.tansactionSuccessFull'));
-                    onPaymentDone();
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("payByWallet_err", err);
-                    setLoading(false);
-                    showErrorAlert('');
-                });
-            }
+                }
+            }).catch((err) => {
+                console.log('err', err);
+            });
+        }else{
+            _buyNFTBnb();
+        }
+    }
+
+    const _buyNFTBnb = async () => {
+        let addedFivePercent = paymentObject.priceInToken;
+        if (
+            !baseCurrency?.chainCurrency &&
+            paymentObject.currency.chainCurrency
+        ) {
+            let percetile = (parseFloat(paymentObject.priceInToken) / 100) * 5;
+            addedFivePercent = (parseFloat(paymentObject.priceInToken) + parseFloat(percetile)).toFixed(18);
+        }
+        console.log("fixed", addedFivePercent, collectionAddress);
+        buyNftBnb(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, addedFivePercent).then((bnbBalance) => {
+            console.log("_bnbBalance", bnbBalance)
+            alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+            onPaymentDone();
+            setLoading(false);
         }).catch((err) => {
-            console.log('err', err);
+            console.log("payByWallet_err", err);
+            setLoading(false);
+            showErrorAlert('');
         });
     }
 
@@ -338,7 +366,7 @@ const PaymentNow = (props) => {
                     <View style={[styles.valueContainer,{alignItems: paymentObject && paymentObject.type == 'card'?'flex-start':'baseline'}]}>
                         {paymentObject && paymentObject.type == 'card' && <Text style={styles.symbol} >{'$'} </Text>}
                         <NumberFormat
-                            value={paymentObject && paymentObject.type == 'wallet' ? paymentObject.item.tokenValue : price || 0}
+                            value={paymentObject && paymentObject.type == 'wallet' ? paymentObject.priceInToken : price || 0}
                             displayType={'text'}
                             decimalScale={4}
                             thousandSeparator={true}

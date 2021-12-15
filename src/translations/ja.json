@@ -607,7 +607,9 @@
         "wrongOperation": "XANALIAは、誤った操作に対する責任やサポートを一切負うことができません。",
         "YougotFreeNFT": "無料のNFTをゲットしました！",
         "award": "アワード",
-        "Giveaway": "ギブアウェイ"
+        "Giveaway": "ギブアウェイ",
+        "Sellselecttoken": "受取通貨を選択",
+        "allowedcurrency": "決済通貨"
     },
     "AwardPage": {},
     "wallet": {
@@ -642,7 +644,8 @@
                 "passcodeError1": "パスコードが一致しませんでした。もう一度お試しください。",
                 "passcodeError2": "パスコードが一致しませんでした。",
                 "passcodeError3": "もう一度お試しください。",
-                "invalidPrivateKey": "無効な秘密鍵"
+                "invalidPrivateKey": "無効な秘密鍵",
+                "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。"
             },
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",
@@ -740,7 +743,7 @@
             "scanTag": "スキャンタグ",
             "readyScan": "スキャンの準備完了",
             "objectScanned": "スキャンされたオブジェクト",
-            "detail": "ディテール",
+            "detail": "作品詳細",
             "offerPrice": "その他の価格を提供",
             "explore": "発見",
             "comingSoon": "もうすぐです",
@@ -772,7 +775,6 @@
             "connectionError": "接続エラー",
             "connectError": "おっと！デバイスがインターネットに接続されていないようです。",
             "Like": "という感じで",
-            "Dislike": "嫌い",
             "Comment": "コメント",
             "sendMessage": "メッセージとして送信",
             "selectPaymentMethod": "お支払い方法を選択してください",
@@ -869,10 +871,20 @@
             "paymentComplete": "完了",
             "paymentFailed": "入金失敗",
             "remittanceFailure": "送金失敗",
+            "Dislike": "嫌い",
             "askDisconnect": "この{{appName}}アプリを削除してもよろしいですか？",
-            "emailValidation": "入力されたメールアドレスは有効ではありません。",
             "searchHint": "NFT、コレクション、アーティストを検索",
-            "limitInputLength": "{{number}}文字以下にしてください。"
+            "emailValidation": "入力されたメールアドレスは有効ではありません。",
+            "limitInputLength": "{{number}}文字以下にしてください。",
+            "xanaliaWallet": "XANALIA ウォレット",
+            "otherWallet": "他ウォレット",
+            "filter": "フィルター",
+            "blockChainType": "ブロックチェーンタイプ",
+            "tokenStandard": "トークン標準",
+            "nftId": "NFT ID",
+            "contractAddress": "契約住所",
+            "bidHistory": "入札履歴",
+            "collectionHint": "このコレクションの詳細"
         },
         "backendmessage": {
             "error": {},

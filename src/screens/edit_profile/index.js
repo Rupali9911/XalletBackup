@@ -48,6 +48,8 @@ import { upateUserData } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn, validateEmail, validURL } from '../../utils';
 import { signOut } from '../../store/reducer/userReducer';
 import { hp } from '../../constants/responsiveFunct';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
 
 function Profile({
     navigation,
@@ -83,8 +85,21 @@ function Profile({
     const OPEN_CAMERA = 0;
     const OPEN_GALLERY = 1;
 
-    const onPhoto = () => {
-        actionSheetRef.current.show();
+    const onPhoto = async () => {
+        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+
+        if (!isGranted) {
+            confirmationAlert(
+                'This feature requires camera access',
+                'To enable access, tap Settings and turn on Camera.',
+                'Cancel',
+                'Settings',
+                () => openSettings(),
+                () => null
+            )
+        } else {
+            actionSheetRef.current.show();
+        }
     }
 
     const selectActionSheet = index => {
@@ -113,11 +128,22 @@ function Profile({
     }
 
     const onSave = async () => {
-
+        
         if (email && !validateEmail(email)) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.emailValidation"),
+                () => {
+                    console.log();
+                }
+            );
+            return;
+        }
+
+        if (!firstName && !lastName) {
+            alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                translate("common.usrempty"),
                 () => {
                     console.log();
                 }
@@ -185,7 +211,12 @@ function Profile({
         axios.defaults.headers.post['Content-Type'] = 'application/json';
         await axios.post(`${BASE_URL}/user/update-user-profile`, req_body)
             .then(res => {
-                dispatch(upateUserData(res.data.data));
+                let data = res.data.data;
+                if (data.name) {
+                    data.name = data.name.replace('undefined', '');
+                    data.username = data.username.replace('undefined', '');
+                }
+                dispatch(upateUserData(data));
                 navigation.goBack();
             })
             .catch(err => {
@@ -204,6 +235,14 @@ function Profile({
                     alertWithSingleBtn(
                         translate("wallet.common.alert"),
                         translate("common.emailexists"),
+                        () => {
+                            console.log(err);
+                        }
+                    );
+                } else if (err.response.data.data === 'username already taken') {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("common.usrnameexists"),
                         () => {
                             console.log(err);
                         }
@@ -261,7 +300,7 @@ function Profile({
                         </RowWrap>
                         <EditableInput
                             editable={false}
-                            value={username}
+                            value={username.replace('undefined', '')}
                             onChangeText={setUserName}
                             placeholderTextColor={'grey'}
                             returnKeyType="next"
@@ -295,7 +334,7 @@ function Profile({
                         limit={20}
                         placeholder={translate("common.phoneNumber")} />
                     <LimitableInput
-                        value={email}
+                        value={_.isEmpty(email)}
                         onChangeText={setEmail}
                         limit={20}
                         placeholder={translate("common.email")} />
