@@ -1,16 +1,16 @@
-import React from 'react';
-import {View, SafeAreaView, Text} from 'react-native';
+import React, { useState} from 'react';
+import { View, SafeAreaView, Text, TouchableOpacity, Image } from 'react-native';
 import styles from './styles';
-import {images, colors, fonts} from '../../res';
-import {AppHeader} from '../../components';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { images, colors, fonts } from '../../res';
+import { AppHeader } from '../../components';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../common/responsiveFunction';
-
-import {translate} from '../../walletUtils';
+import CommonStyles from "../../constants/styles";
+import { translate } from '../../walletUtils';
 
 import Collection from './collection';
 import Filter from './filter';
@@ -19,18 +19,21 @@ import UploadNFT from './uploadNft';
 
 const Tab = createMaterialTopTabNavigator();
 
-const CreateNFTScreen = ({route, navigation}) => {
+const CreateNFTScreen = ({ route, navigation }) => {
+
+const [pickerVisible,setPickerVisible]=useState(false)
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <AppHeader
         title={'Create NFT'}
         showBackButton
-        containerStyle={{backgroundColor: colors.white}}
+        containerStyle={{ backgroundColor: colors.white }}
       />
       <View style={styles.sectionContainer}>
-        <Text style={styles.title}>Collection</Text>
-        <Text style={styles.titleDes}>Create / Collection</Text>
-
+          <Text style={styles.title}>Collection</Text>
+          <Text style={styles.titleDes}>Create / Collection</Text>
+         
         <Tab.Navigator
           tabBarOptions={{
             activeTintColor: colors.BLUE4,
@@ -62,6 +65,7 @@ const CreateNFTScreen = ({route, navigation}) => {
           <Tab.Screen name={'Filter'} component={Filter} />
         </Tab.Navigator>
       </View>
+     
     </SafeAreaView>
   );
 };

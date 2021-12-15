@@ -141,6 +141,7 @@ android {
         versionName "1.12.17"
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
+        vectorDrawables.useSupportLibrary = true
     }
     splits {
         abi {
