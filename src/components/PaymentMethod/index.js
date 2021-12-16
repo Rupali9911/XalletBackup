@@ -28,7 +28,7 @@ const PaymentMethod = (props) => {
     const navigation = useNavigation();
     const { myCards } = useSelector(state => state.PaymentReducer);
 
-    const { visible, onRequestClose, price, priceStr, chain, baseCurrency, allowedTokens, id, ownerAddress, collectionAddress } = props;
+    const { visible, onRequestClose, price, priceStr, priceInDollar, chain, baseCurrency, allowedTokens, id, ownerAddress, collectionAddress } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
@@ -109,10 +109,10 @@ const PaymentMethod = (props) => {
                             if (selectedMethod == 0) {
                                 onRequestClose();
                                 if (myCards.length > 0) {
-                                    navigation.navigate('Cards', { price });
+                                    navigation.navigate('Cards', { price: priceInDollar });
                                 } else {
                                     // navigation.navigate('Cards', { price });
-                                    navigation.navigate('AddCard', { price })
+                                    navigation.navigate('AddCard', { price: priceInDollar })
                                 }
                             } else if (selectedMethod == 2) {
                                 setNotEnoughGoldVisible(true);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {View, StyleSheet, ScrollView, Text, TouchableOpacity, TextInput} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { useSelector } from 'react-redux';
 import { AppHeader } from '../../components';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
@@ -11,13 +12,221 @@ import Fonts from '../../constants/Fonts';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { translate } from '../../walletUtils';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { networkType } from '../../web3/config/networkType';
+import { sellNFT, setApprovalForAll } from '../wallet/functions';
+
+const Web3 = require('web3');
 
 const FIXED_PRICE = 1;
 const AUCTION = 2;
 
 const SellNFT = ({route, navigation}) => {
 
+    const {nftDetail} = route.params;
+
+    const {wallet,data} = useSelector(state => state.UserReducer);
     const [sellFormat, setSellFormat] = useState(FIXED_PRICE);
+
+    //#region SmartContract
+    let MarketPlaceAbi = '';
+    let MarketContractAddress = '';
+
+    let AwardAbi = '';
+    let AwardContractAddress = '';
+    let ApproveAbi = '';
+    let ApproveAdd = '';
+    let providerUrl = '';
+    let ERC721Abi = '';
+    let ERC721Address = '';
+    let NftApprovalAbi = '';
+
+    walletAddressForNonCrypto =
+        networkType === 'testnet'
+            ? nftDetail.nftChain === 'binance'
+                ? '0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af'
+                : '0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859'
+            : '0xac940124f5f3b56b0c298cca8e9e098c2cccae2e';
+
+    let params = nftDetail.collectionAdd.toString().split('-');
+    let _tokenId = params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
+    let chainType = params.length > 1 ? params[0] : 'binance';
+    let collectionAddress = params.length > 2 ? params[1] : null;
+
+    console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
+    if (chainType === 'polygon') {
+        MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+        providerUrl = blockChainConfig[1].providerUrl;
+        ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
+        ERC721Address = blockChainConfig[1].erc721ConConfig.add;
+        collectionAddress = collectionAddress || blockChainConfig[1].erc721ConConfig.add;
+        NftApprovalAbi = blockChainConfig[1].nftApprovalConConfig.abi
+    } else if (chainType === 'binance') {
+        MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+        providerUrl = blockChainConfig[0].providerUrl;
+        ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
+        ERC721Address = blockChainConfig[0].erc721ConConfig.add;
+        collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
+        NftApprovalAbi = blockChainConfig[0].nftApprovalConConfig.abi
+    } else if (chainType === 'ethereum') {
+        MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+        MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+        providerUrl = blockChainConfig[2].providerUrl;
+        ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
+        ERC721Address = blockChainConfig[2].erc721ConConfig.add;
+        collectionAddress = collectionAddress || blockChainConfig[2].erc721ConConfig.add;
+        NftApprovalAbi = blockChainConfig[2].nftApprovalConConfig.abi
+    }
+    //#endregion
+
+    const checkForApproval = async (id, price) => {
+        // let availability = await checkAvailabilityOnChain(
+        //   sessionStorage.getItem("selectedNFTChain"),
+        //   this?.props?.intl.formatMessage,
+        //   true
+        // );
+        // if (!availability) {
+        //   return;
+        // }
+        // this.props.setTransactionInProgress(false);
+        // this.setState({ loaderFor });
+        let web3 = new Web3(providerUrl);
+    
+        let approvalCheckContract = new web3.eth.Contract(
+          NftApprovalAbi,
+          nftDetail.collection
+        );
+          approvalCheckContract.methods
+            .isApprovedForAll(wallet.address, MarketContractAddress)
+            .call((err, res) => {
+              console.log("res", res, "err", err);
+              if (!err) {
+                // console.log(parseInt(res) / Math.pow(10, 18));
+                if (!res) {
+                    setApprovalForAll(wallet.address, wallet.privateKey, providerUrl, chainType, approvalCheckContract, MarketContractAddress, collectionAddress, 10, 600000)
+                        .then((_)=>{
+                            if (sellFormat === AUCTION) {
+                                // setNFTAuction();
+                              } else {
+                                sellNFTItem(id, price);
+                              }      
+                        }).catch((err) => console.log(err));
+                } else {
+                  if (sellFormat === AUCTION) {
+                    // setNFTAuction();
+                  } else {
+                    sellNFTItem(id, price);
+                  }
+                }
+              } else {
+                console.log("err in balanceOf", err);
+              }
+            });
+      }
+
+    const sellNFTItem = async (id, price) => {
+        // console.log(this.state.allowedCurrency);
+        //validation of input
+        // if (
+        //   this.props.metaMaskAddress &&
+        //   (!this.state.price ||
+        //     this.state.price === "0" ||
+        //     !this.state.baseCurrency ||
+        //     !this.state.allowedCurrency ||
+        //     (this.state.allowedCurrency && this.state.allowedCurrency.length === 0))
+        // ) {
+        //   this.setState({ loaderFor: "", setSalePrice: false });
+        //   this.props.setTransactionInProgress(false);
+        //   return;
+        // }
+    
+        // if (
+        //   !this.state.price ||
+        //   this.state.price === "0" ||
+        //   !this.state.baseCurrency
+        // ) {
+        //   this.setState({ loaderFor: "", setSalePrice: false });
+        //   this.props.setTransactionInProgress(false);
+        //   return;
+        // }
+
+        // const historyInfo = this.props?.history?.location?.state;
+    
+        // let priceValue, priceValueDollar;
+        // if (this.state.currency.value === "alia") {
+        //   priceValue = document.getElementById("sellingPrice").value;
+        //   priceValueDollar = "0";
+        // } else if (this.state.currency.value === "dollar") {
+        //   priceValueDollar = document.getElementById("sellingPrice").value;
+        //   priceValue = "0";
+        // }
+    
+        // if (historyInfo?.user !== "Non-crypto") {
+        if (wallet.address) {
+        //   let allowedCurrencies = this.state.allowedCurrency.map(
+        //     (item) => item.order
+        //   );
+          let web3 = new Web3(providerUrl);
+          let MarketPlaceContract = new web3.eth.Contract(
+            MarketPlaceAbi,
+            MarketContractAddress
+          );
+
+          sellNFT(wallet.address, wallet.privateKey, providerUrl, chainType, MarketPlaceContract, MarketContractAddress, id, collectionAddress, price, 3, [], 10, 600000)
+            .then((res)=>{
+                if(res.success){
+                    console.log('sold');
+                    navigation.goBack();
+                }
+            }).catch((err)=>{
+                console.log('sellNFT error',err);
+            });
+        } else {
+        //   this.setState({ loaderFor: "Sell" });
+        //   let web3 = new Web3(this.props.provider);
+        //   const userToken = localStorage.getItem("userToken");
+        //   const priceUser = web3.utils.toWei(price.toString(), "ether");
+        //   const headers = {
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${userToken}`,
+        //   };
+        //   const info = {
+        //     tokenId: historyInfo?.selectedNFT?.collectionAdd,
+        //     price: web3.utils.toWei(priceValue.toString(), "ether"),
+        //     // priceDollar: web3.utils.toWei(priceValueDollar.toString(), "ether"),
+        //     chainType: sessionStorage.getItem("selectedNFTChain"),
+        //     currencyType: this.state.baseCurrency.order,
+        //   };
+        //   let url =
+        //     networkType === "testnet"
+        //       ? process.env.REACT_APP_API_NON_CRYPTO
+        //       : process.env.REACT_APP_API_NON_CRYPTO_MAINNET;
+    
+        //   axios
+        //     .post(url + "/user/sell-nft", info, {
+        //       headers: headers,
+        //     })
+        //     .then((res) => {
+        //       if (!res.data.success && !res.data.whitelisted) {
+        //         toast.info("You are not allowed to put nft on sell for now", {
+        //           position: "bottom-right",
+        //           autoClose: 3000,
+        //           progress: undefined,
+        //         });
+        //         this.setState({ loaderFor: "", setSalePrice: false });
+        //         this.setState({ status: res?.status });
+        //       } else {
+        //         this.setTimer(res.data.data.data);
+        //       }
+        //     })
+        //     .catch((err) => {
+        //       this.setState({ loaderFor: "" });
+        //       this.setState({ status: err?.response?.status });
+        //     });
+        }
+      }
 
     return (
         <AppBackground>
@@ -73,7 +282,9 @@ const SellNFT = ({route, navigation}) => {
 
                         <Text style={[styles.summaryTxt, {fontSize: RF(2)}]}>{translate("common.listing")}</Text>
 
-                        <TouchableOpacity style={styles.saleButton}>
+                        <TouchableOpacity style={styles.saleButton} onPress={() => {
+                            checkForApproval(nftDetail.id, 0.05);
+                        }}>
                             <Text style={styles.saleButtonTxt}>{translate("common.postYourListing")}</Text>
                         </TouchableOpacity>
 
