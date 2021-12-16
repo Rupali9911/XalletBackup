@@ -2,39 +2,88 @@ import React, { useState, useRef } from 'react';
 import { View, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
 import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import Toast from 'react-native-toast-message';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import styles from './styles';
 import { CardCont, CardField, CardLabel, CardButton } from './components';
-import { heightPercentageToDP as hp } from '../../common/responsiveFunction';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../common/responsiveFunction';
 import { IMAGES } from '../../constants';
 import { translate } from '../../walletUtils';
-import Web3 from 'web3';
 import axios from 'axios';
 import { BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { createColection } from '../wallet/functions';
 
-const Collection = () => {
+const toastConfig = {
+  my_custom_type: ({ text1, props, ...rest }) => (
+    <View
+      style={{
+        paddingHorizontal: wp('20%'),
+        borderRadius: wp('10%'),
+        paddingVertical: hp('2%'),
+        backgroundColor: colors.GREY5,
+      }}>
+      <Text style={{ color: colors.white, fontWeight: 'bold' }}>{text1}</Text>
+    </View>
+  ),
+};
 
-  const [collectionName, setCollectionName] = useState("test");
-  const [collectionSymbol, setCollectionSymbol] = useState("abc");
-  const [collectionDes, setCollectionDes] = useState("test");
+const Collection = ({ route }) => {
+
+  const { changeLoadingState } = route.params;
+
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionSymbol, setCollectionSymbol] = useState("");
+  const [collectionDes, setCollectionDes] = useState("");
+  const [collectionAdd, setCollectionAdd] = useState("");
   const [bannerImage, setBannerImage] = useState(null);
   const [iconImage, setIconImage] = useState(null);
   const [errorBanner, setErrorBanner] = useState(false);
   const [errorIcon, setErrorIcon] = useState(false);
 
+  const toastRef = useRef(null);
+
   const { wallet, data } = useSelector(
     state => state.UserReducer
   );
-  const dispatch = useDispatch();
+  const { networkType } = useSelector(
+    state => state.WalletReducer
+  );
 
+  let MarketPlaceAbi = '';
+  let MarketContractAddress = '';
+  let providerUrl = '';
+
+  let gasFee = "";
+  let gasLimit = "";
+
+  if (networkType.value === 'polygon') {
+    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+    providerUrl = blockChainConfig[1].providerUrl;
+    gasFee = 30
+    gasLimit = 6000000
+  } else if (networkType.value === 'binance') {
+    MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+    providerUrl = blockChainConfig[0].providerUrl;
+    gasFee = 8
+    gasLimit = 6000000
+  } else if (networkType.value === 'ethereum') {
+    MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+    providerUrl = blockChainConfig[2].providerUrl;
+    gasFee = 0 // for this api etherscan
+    gasLimit = 6000000
+  }
 
   const onPhoto = (v) => {
     ImagePicker.openPicker({
       mediaType: "photo",
     }).then(image => {
-      console.log(image, image.path.split("/").pop())
       if (v == "banner") {
         if (image.height <= 300 && image.width <= 1600) {
           updateImageState(image, false, v)
@@ -61,40 +110,144 @@ const Collection = () => {
     }
   }
 
+  const cancel = () => {
+    setCollectionName("");
+    setCollectionSymbol("");
+    setCollectionAdd("");
+    setCollectionDes("");
+    setBannerImage(null);
+    setIconImage(null);
+  }
+
+  const copyToClipboard = () => {
+    toastRef.current.show({
+      type: 'my_custom_type',
+      text1: "Collection Address Copied",
+      topOffset: hp('10%'),
+      visibilityTime: 500,
+      autoHide: true,
+    });
+    Clipboard.setString(wallet.mnemonic.phrase);
+  };
+
   const saveCollection = async () => {
     const publicAddress = wallet.address;
     const privKey = wallet.privateKey;
-    console.log(publicAddress, privKey)
-debugger
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-    let formData = new FormData();
-    formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
-    formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+    changeLoadingState(true);
+    if (publicAddress && data.token) {
 
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-    await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
-      .then(res => {
-        console.log(res, "banner and icon response")
-        //         dispatch(upateUserData(res.data.data));
-      })
-      .catch(err => {
-        if (err.response.status === 401) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      let formData = new FormData();
+      formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
+      formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+
+      axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+
+      await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
+        .then(res => {
+          if (res.data.success) {
+
+            createColection(
+              publicAddress,
+              privKey,
+              networkType.value,
+              providerUrl,
+              MarketPlaceAbi,
+              MarketContractAddress,
+              gasFee,
+              gasLimit,
+              collectionName,
+              collectionSymbol
+            ).then(transactionData => {
+
+              if (transactionData.success) {
+
+                let url = `${BASE_URL}/user/create-collection`;
+                axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+                const { collectionAddress } = transactionData.data;
+
+                setCollectionAdd(collectionAddress);
+
+                let obj = {
+                  collectionAddress,
+                  collectionName,
+                  collectionDesc: collectionDes,
+                  bannerImage: res.data.data.banner_image,
+                  iconImage: res.data.data.icon_image,
+                  collectionSymbol,
+                  chainType: networkType.value,
+                };
+
+                axios.post(url, obj)
+                  .then(collectionData => {
+                    changeLoadingState(false);
+
+                    if (collectionData.data.success) {
+                      alertWithSingleBtn(
+                        "Success Message",
+                        "Collection Created Successfully"
+                      );
+                    } else {
+                      alertWithSingleBtn(
+                        "Failed",
+                        "Something Went Wrong!"
+                      )
+                    }
+
+                  })
+                  .catch(e => {
+                    changeLoadingState(false);
+                    console.log(e, "uploading collection data to database");
+                    alertWithSingleBtn(
+                      translate("wallet.common.alert"),
+                      translate("wallet.common.error.networkFailed")
+                    );
+                  })
+
+              }
+
+            }).catch(e => {
+              changeLoadingState(false);
+              console.log("testing collection error", e)
+              alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.networkFailed")
+              );
+            })
+
+          } else {
+            changeLoadingState(false);
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("wallet.common.error.networkFailed")
+            );
+
+          }
+
+        })
+        .catch(err => {
+          changeLoadingState(false);
+          if (err.response.status === 401) {
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("common.sessionexpired")
+            );
+          }
           alertWithSingleBtn(
             translate("wallet.common.alert"),
-            translate("common.sessionexpired")
+            translate("wallet.common.error.networkFailed")
           );
-        }
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.error.networkFailed")
-        );
-      });
+        });
+
+    }
+
   }
 
   let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage;
-  console.log(wallet, data)
   return (
     <View style={styles.childCont}>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <CardCont>
           <CardLabel>Collection Name</CardLabel>
@@ -123,9 +276,9 @@ debugger
           <CardLabel>Contract Address</CardLabel>
           <CardField
             contStyle={{ backgroundColor: colors.GREY10 }}
-            inputProps={{ editable: false }}
+            inputProps={{ editable: false, value: collectionAdd }}
           />
-          <CardButton disable label="Copy" />
+          <CardButton disable={!!collectionAdd ? false : true} onPress={copyToClipboard} label="Copy" />
         </CardCont>
 
         <CardCont style={styles.imageMainCard}>
@@ -174,6 +327,7 @@ debugger
             disable={!disable}
           />
           <CardButton
+            onPress={cancel}
             border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             buttonCont={{ width: '48%' }}
             label="Cancel"
@@ -181,6 +335,8 @@ debugger
           />
         </View>
       </ScrollView>
+      <Toast config={toastConfig} ref={toastRef} />
+
     </View>
   );
 };

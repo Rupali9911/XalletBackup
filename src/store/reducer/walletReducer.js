@@ -14,8 +14,11 @@ import {
     UPDATE_POLY_BALANCES,
     SET_CONNECTED_APPS,
     SET_SOCKET_OPEN,
-    SET_REQUEST_APP_ID
+    SET_REQUEST_APP_ID,
+    UPDATE_NETWORK_TYPE
 } from '../types';
+import ImagesSrc from "../../constants/Images";
+
 
 const initialState = {
     ethTransactions: [],
@@ -30,7 +33,12 @@ const initialState = {
     talBalance: "0",
     connectedApps: [],
     socketOpen: false,
-    requestAppId: null
+    requestAppId: null,
+    networkType: {
+        name: "BSC",
+        value: 'binance',
+        icon: ImagesSrc.bnb
+    }
 }
 
 export default walletReducer = (state = initialState, action) => {
@@ -140,10 +148,21 @@ export default walletReducer = (state = initialState, action) => {
                 requestAppId: action.payload
             }
 
+        case UPDATE_NETWORK_TYPE:
+            return {
+                ...state,
+                networkType: action.payload
+            }
+
         default:
             return state;
     }
 }
+
+export const updateNetworkType = (data) => ({
+    type: UPDATE_NETWORK_TYPE,
+    payload: data
+});
 
 export const addEthTransaction = (data) => ({
     type: ADD_ETH_TRANSACTION,

@@ -1,8 +1,8 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { View, SafeAreaView, Text, TouchableOpacity, Image } from 'react-native';
 import styles from './styles';
 import { images, colors, fonts } from '../../res';
-import { AppHeader } from '../../components';
+import { AppHeader, LoaderIndicator } from '../../components';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {
   heightPercentageToDP as hp,
@@ -21,19 +21,22 @@ const Tab = createMaterialTopTabNavigator();
 
 const CreateNFTScreen = ({ route, navigation }) => {
 
-const [pickerVisible,setPickerVisible]=useState(false)
+  const [loading, setLoading] = useState(false)
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+      {
+        loading && <LoaderIndicator />
+      }
       <AppHeader
         title={'Create NFT'}
         showBackButton
         containerStyle={{ backgroundColor: colors.white }}
       />
       <View style={styles.sectionContainer}>
-          <Text style={styles.title}>Collection</Text>
-          <Text style={styles.titleDes}>Create / Collection</Text>
-         
+        <Text style={styles.title}>Collection</Text>
+        <Text style={styles.titleDes}>Create / Collection</Text>
+
         <Tab.Navigator
           tabBarOptions={{
             activeTintColor: colors.BLUE4,
@@ -59,13 +62,13 @@ const [pickerVisible,setPickerVisible]=useState(false)
               height: 1,
             },
           }}>
-          <Tab.Screen name={'Collection'} component={Collection} />
-          <Tab.Screen name={'NFT List'} component={NFTList} />
-          <Tab.Screen name={'Upload NFT'} component={UploadNFT} />
-          <Tab.Screen name={'Filter'} component={Filter} />
+          <Tab.Screen name={'Collection'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={Collection} />
+          <Tab.Screen name={'NFT List'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={NFTList} />
+          <Tab.Screen name={'Upload NFT'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={UploadNFT} />
+          <Tab.Screen name={'Filter'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={Filter} />
         </Tab.Navigator>
       </View>
-     
+
     </SafeAreaView>
   );
 };

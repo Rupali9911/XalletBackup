@@ -15,11 +15,11 @@ export const getSig = (message, privateKey) => {
 }
 
 export const filterTransaction = (pubKey, trx) => {
-  if(trx == null) return null;
+  if (trx == null) return null;
 
-  if(trx.from == pubKey){
+  if (trx.from == pubKey) {
     return trx;
-  } else if(trx.to == pubKey){
+  } else if (trx.to == pubKey) {
     return trx;
   }
   return null;
@@ -49,30 +49,30 @@ export const watchBalanceUpdate = (updateBalance, type) => {
   let webSocketLink;
   let rpcUrl;
 
-  if(type == 'eth'){
+  if (type == 'eth') {
     webSocketLink = environment.wsEth;
     rpcUrl = environment.ethRpc;
-  }else if(type == 'bsc'){
+  } else if (type == 'bsc') {
     webSocketLink = environment.wsBsc;
     rpcUrl = environment.bnbRpc;
-  }else if(type == 'polygon'){
+  } else if (type == 'polygon') {
     webSocketLink = environment.wsPolygon;
     rpcUrl = environment.polRpc;
   }
 
-  console.log('webSocketLink',webSocketLink);
+  console.log('webSocketLink', webSocketLink);
   var web3 = new Web3(new Web3.providers.WebsocketProvider(webSocketLink));
   const subscribe = web3.eth.subscribe('newBlockHeaders', (error, result) => {
     if (error) console.log('watchBalanceUpdate', error)
   }).on("connected", function (subscriptionId) {
-    console.log("connected",subscriptionId);
+    console.log("connected", subscriptionId);
   })
     .on("data", function (log) {
       // console.log("data",log);
       updateBalance && updateBalance();
     })
     .on("changed", function (log) {
-      console.log("changed",log);
+      console.log("changed", log);
       updateBalance && updateBalance();
     });
 
@@ -101,13 +101,13 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
   let webSocketLink;
   let rpcUrl;
 
-  if(type == 'eth'){
+  if (type == 'eth') {
     webSocketLink = "wss://kovan.infura.io/ws/v3/e2fddb9deb984ba0b9e9daa116d1702a";
     rpcUrl = environment.ethRpc;
-  }else if(type == 'bnb'){
+  } else if (type == 'bnb') {
     webSocketLink = "wss://data-seed-prebsc-2-s1.binance.org:8545/";
     rpcUrl = environment.bnbRpc;
-  }else if(type == 'matic'){
+  } else if (type == 'matic') {
     webSocketLink = "wss://ws-matic-mumbai.chainstacklabs.com/";
     rpcUrl = environment.polRpc;
   }
@@ -120,76 +120,76 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
 
   // Subscribe to pending transactions
   subscription.subscribe((error, result) => {
-    if (error) console.log('subscription',error)
+    if (error) console.log('subscription', error)
   })
-  .on('data', async (txHash) => {
-    try {
-      // Instantiate web3 with HttpProvider
-      const web3Http = new Web3(rpcUrl)
+    .on('data', async (txHash) => {
+      try {
+        // Instantiate web3 with HttpProvider
+        const web3Http = new Web3(rpcUrl)
 
-      // Get transaction details
-      const trx = await web3Http.eth.getTransaction(txHash)
+        // Get transaction details
+        const trx = await web3Http.eth.getTransaction(txHash)
 
-      // const valid = validateTransaction(trx)
-      // // If transaction is not valid, simply return
-      // if (!valid) return
-      let transaction = filterTransaction(pubKey, trx);
+        // const valid = validateTransaction(trx)
+        // // If transaction is not valid, simply return
+        // if (!valid) return
+        let transaction = filterTransaction(pubKey, trx);
 
-      if(transaction !== null){
-        console.log('trx',trx);
-        addToList && addToList(transaction);
+        if (transaction !== null) {
+          console.log('trx', trx);
+          addToList && addToList(transaction);
+        }
+
+        // console.log('Found incoming Ether transaction from ' + process.env.WALLET_FROM + ' to ' + process.env.WALLET_TO);
+        // console.log('Transaction value is: ' + process.env.AMOUNT)
+        // console.log('Transaction hash is: ' + txHash + '\n')
+
+        // Initiate transaction confirmation
+        // confirmEtherTransaction(txHash)
+
+        // Unsubscribe from pending transactions.
+        // subscription.unsubscribe()
       }
-
-      // console.log('Found incoming Ether transaction from ' + process.env.WALLET_FROM + ' to ' + process.env.WALLET_TO);
-      // console.log('Transaction value is: ' + process.env.AMOUNT)
-      // console.log('Transaction hash is: ' + txHash + '\n')
-
-      // Initiate transaction confirmation
-      // confirmEtherTransaction(txHash)
-
-      // Unsubscribe from pending transactions.
-      // subscription.unsubscribe()
-    }
-    catch (error) {
-      console.log(error)
-    }
-  });
+      catch (error) {
+        console.log(error)
+      }
+    });
   return subscription;
 }
 
-export const balance = async(pubKey, contractAddr, contractAbi, rpc, type) => {
-    return new Promise(async (resolve, reject) => {
-      const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
-      if (contractAddr) {
-        const contract = new web3.eth.Contract(contractAbi, contractAddr);
-        let reserves = {};
-        await contract.methods.balanceOf(pubKey).call().then(function (result) {
-          if (type == 'usdc') {
-            resolve(web3.utils.fromWei(result.toString(), "mwei"));
-          } else if (type == 'alia') {
-            resolve(web3.utils.fromWei(result.toString(), "ether"));
-          } else if (type == 'usdt') {
-            resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
-          } else if (type == 'busd') {
-            resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
-          }
-        }).catch(function (error) {
-          console.log(error + ' is the error');
-        })
-      } else {
-        await web3.eth.getBalance(pubKey, function (error, ethbalance) {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(web3.utils.fromWei(ethbalance.toString(10), 'ether'));
-          }
-        })
-      }
-    })
-  }
+export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
+  return new Promise(async (resolve, reject) => {
+    const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
+    if (contractAddr) {
+      const contract = new web3.eth.Contract(contractAbi, contractAddr);
+      let reserves = {};
+      await contract.methods.balanceOf(pubKey).call().then(function (result) {
+        if (type == 'usdc') {
+          resolve(web3.utils.fromWei(result.toString(), "mwei"));
+        } else if (type == 'alia') {
+          resolve(web3.utils.fromWei(result.toString(), "ether"));
+        } else if (type == 'usdt') {
+          resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
+        } else if (type == 'busd') {
+          resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
+        }
+      }).catch(function (error) {
+        console.log(error + ' is the error');
+      })
+    } else {
+      await web3.eth.getBalance(pubKey, function (error, ethbalance) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(web3.utils.fromWei(ethbalance.toString(10), 'ether'));
+        }
+      })
+    }
+  })
+}
 
 export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr, contractAbi, rpc, gasPr, gasLmt) => {
-  console.log('params_________',pubkey, privkey, amount, toAddress, type, contractAddr, contractAbi, rpc, gasPr, gasLmt)
+  console.log('params_________', pubkey, privkey, amount, toAddress, type, contractAddr, contractAbi, rpc, gasPr, gasLmt)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
     try {
@@ -238,13 +238,13 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr,
         txObject.data = contract.methods.transfer(toAddress, amountToSendAlia).encodeABI();
         txObject.to = contractAddr;
 
-        if(rpc === environment.bnbRpc){
+        if (rpc === environment.bnbRpc) {
           common = Common.forCustomChain('mainnet', {
             name: 'bnb',
             networkId: 97,
             chainId: 97
           }, 'petersburg');
-        }else if(rpc === environment.polRpc){
+        } else if (rpc === environment.polRpc) {
           common = Common.forCustomChain('mainnet', {
             name: 'matic',
             networkId: 80001,
@@ -259,13 +259,13 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr,
         }, 'petersburg');
       }
 
-      const tx = new EthereumTx(txObject, type == 'eth'?{chain: 'kovan'}:{common});
+      const tx = new EthereumTx(txObject, type == 'eth' ? { chain: 'kovan' } : { common });
       // const common = new Common({ chain: Chain.Ropsten });
       // const tx = Transaction.fromTxData(txObject, {common});
       tx.sign(privKey);
-      console.log('tx',tx);
+      console.log('tx', tx);
       const serializedTx = tx.serialize()
-      console.log('serializedTx',serializedTx);
+      console.log('serializedTx', serializedTx);
       const raw = '0x' + serializedTx.toString('hex')
       await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
@@ -289,9 +289,9 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr,
 }
 
 export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, order) => {
-  console.log('params',publicKey, privKey, nftId, chainType, gasPr, gasLmt);
+  console.log('params', publicKey, privKey, nftId, chainType, gasPr, gasLmt);
   return new Promise(async (resolve, reject) => {
-    console.log('chainType',chainType);
+    console.log('chainType', chainType);
     let rpcURL;
     let contractAddress;
     let abiArray;
@@ -346,22 +346,22 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
     };
 
     let common = null;
-    if(chainType === 'binance'){
+    if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
         networkId: 97,
         chainId: 97
       }, 'petersburg');
-    }else {
+    } else {
       common = Common.forCustomChain('mainnet', {
         name: 'matic',
         networkId: 80001,
         chainId: 80001
       }, 'petersburg');
     }
-    
-    console.log('txObject',txObject);
-    const tx = new EthereumTx(txObject, {common});
+
+    console.log('txObject', txObject);
+    const tx = new EthereumTx(txObject, { common });
     privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
     tx.sign(privateKey);
     const serializedTx = tx.serialize();
@@ -387,11 +387,11 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
 }
 
 export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent) => {
-  console.log('params',publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent);
+  console.log('params', publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent);
   return new Promise(async (resolve, reject) => {
-    console.log('chainType',chainType);
+    console.log('chainType', chainType);
     let rpcURL;
-    if(chainType === 'polygon'){
+    if (chainType === 'polygon') {
       rpcURL = blockChainConfig[1].providerUrl;
     } else if (chainType === 'binance') {
       rpcURL = blockChainConfig[0].providerUrl;
@@ -438,22 +438,22 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
     };
 
     let common = null;
-    if(chainType === 'binance'){
+    if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
         networkId: 97,
         chainId: 97
       }, 'petersburg');
-    }else {
+    } else {
       common = Common.forCustomChain('mainnet', {
         name: 'matic',
         networkId: 80001,
         chainId: 80001
       }, 'petersburg');
     }
-    
-    console.log('txObject',txObject);
-    const tx = new EthereumTx(txObject, {common});
+
+    console.log('txObject', txObject);
+    const tx = new EthereumTx(txObject, { common });
     privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
     tx.sign(privateKey);
     const serializedTx = tx.serialize();
@@ -566,7 +566,7 @@ export const approvebnb = async (publicKey, privateKey, chainType, contract) => 
         var customGasLimit = 6000000;
         customGasPrice = 10 * 1000000000;
 
-        if(contract == undefined){
+        if (contract == undefined) {
           _contract = new web3.eth.Contract(abiArray, contractAddress, { from: publicKey });
         }
         //console.log("ethtoAddress", ethtoAddress.length)
@@ -626,9 +626,94 @@ export const approvebnb = async (publicKey, privateKey, chainType, contract) => 
 }
 
 export const getBalanceInDollar = () => {
-    let routerContract = web3.eth.contract(environment.tnftCont, environment.binanceNftAbi)
-    let oneToken = web3.toWei(1, 'Ether')
-    let price = routerContract.functions._dollarPrice(oneToken, [tokenAddress, BUSD]).call()
-    let normalizedPrice = web3.fromWei(price[1], 'Ether')
-    return normalizedPrice
+  let routerContract = web3.eth.contract(environment.tnftCont, environment.binanceNftAbi)
+  let oneToken = web3.toWei(1, 'Ether')
+  let price = routerContract.functions._dollarPrice(oneToken, [tokenAddress, BUSD]).call()
+  let normalizedPrice = web3.fromWei(price[1], 'Ether')
+  return normalizedPrice
+}
+
+export const createColection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
+
+  return new Promise(async (resolve, reject) => {
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider(
+        providerUrl
+      )
+    );
+
+    const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
+    if (txCount.error) reject(txCount.error);
+    var customGasLimit = gasLmt;
+    customGasPrice = gasPr * 1000000000;
+    var contract = new web3.eth.Contract(abiArray, contractAddress, {
+      from: publicKey
+    });
+    let txObject;
+    txObject = {
+      from: publicKey,
+      gasPrice: web3.utils.toHex(customGasPrice),
+      gasLimit: web3.utils.toHex(customGasLimit),
+      chainId: chainType === "polygon" ? 80001 : undefined,
+      to: contractAddress,
+      value: "0x0",
+      data: contract.methods
+        .createCollection(collectionN, collectionS)
+        .encodeABI(),
+      nonce: web3.utils.toHex(txCount)
+    };
+
+    let common = null;
+    if (chainType === 'binance') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'bnb',
+        networkId: 97,
+        chainId: 97
+      }, 'petersburg');
+    } else {
+      common = Common.forCustomChain('mainnet', {
+        name: 'matic',
+        networkId: 80001,
+        chainId: 80001
+      }, 'petersburg');
+    }
+
+    const tx = new EthereumTx(txObject, { common });
+    privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
+    tx.sign(privateKey);
+    const serializedTx = tx.serialize();
+    const raw = "0x" + serializedTx.toString("hex");
+
+    await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+      if (txHash) {
+        const interval = setInterval(() => checkingProgressTransaction(), 10000)
+        const checkingProgressTransaction = async () => {
+          try {
+            const transactionReceipt = await web3.eth.getTransactionReceipt(txHash);
+            if (transactionReceipt) {
+              clearInterval(interval);
+              if (transactionReceipt.logs && (transactionReceipt.logs.length > 0)) {
+                for (var i = 0; i < transactionReceipt.logs.length; i++) {
+                  if (transactionReceipt.logs[i].address == contractAddress) {
+                    let transactionData = {
+                      transactionHash: txHash,
+                      collectionAddress: '0x' + transactionReceipt.logs[i].data.substring(26, 66)
+                    }
+                    resolve({ success: true, status: 200, data: transactionData });
+                  }
+                }
+              }
+            }
+          } catch (error) {
+            console.error(error, " transactionReceipt error");
+            reject(error)
+          }
+        }
+
+      } else if (err) {
+        console.log(err, "transactionReceipt");
+        reject(err.message);
+      }
+    })
+  })
 }

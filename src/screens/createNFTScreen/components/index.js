@@ -8,13 +8,13 @@ import {
   Image,
 } from 'react-native';
 
-import {colors, fonts} from '../../../res';
+import { colors, fonts } from '../../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../../common/responsiveFunction';
-import {IMAGES} from '../../../constants';
+import { IMAGES } from '../../../constants';
 
 export const CardCont = props => {
   return <View style={[styles.cardCont, props.style]}>{props.children}</View>;
@@ -68,10 +68,10 @@ export const CardButton = props => {
       disabled={props.disable}
       style={[
         styles.buttonCont,
-        {borderWidth, borderColor, backgroundColor},
+        { borderWidth, borderColor, backgroundColor },
         props.buttonCont,
       ]}>
-      <Text style={[styles.buttonLabel, {color}, props.buttonLabel]}>
+      <Text style={[styles.buttonLabel, { color }, props.buttonLabel]}>
         {props.label}
       </Text>
     </TouchableOpacity>
@@ -128,5 +128,5 @@ const styles = StyleSheet.create({
     height: wp(size),
     width: wp(size),
     resizeMode: 'contain',
-  }),
+  })
 });
