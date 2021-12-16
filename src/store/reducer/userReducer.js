@@ -388,23 +388,28 @@ export const updateProfileImage = (formData) => (dispatch, getState) => {
     });
 }
 
-export const updateProfile = (data) => (dispatch, getState) => {
+export const updateProfile = (props, callBack) => (dispatch, getState) => {
   dispatch(startLoading());
 
   const { data } = getState().UserReducer;
-  axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-  console.log('=====token', `Bearer ${data.token}`);
+  const config = {
+    method: 'post',
+    url: `${BASE_URL}/user/update-user-profile`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${data.token}`
+    },
+    data: props
+  };
 
-  axios.defaults.headers.post['Content-Type'] = 'application/json';
-  axios.post(`${BASE_URL}/user/update-user-profile`, data)
+  axios(config)
     .then(res => {
       let data = res.data.data;
-      console.log('========res', data);
       dispatch(upateUserData(data));
       dispatch(endLoading());
+      callBack();
     })
     .catch(err => {
-      console.log('========err', err);
       dispatch(endLoading());
 
       if (err.response.status === 401) {

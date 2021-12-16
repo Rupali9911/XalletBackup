@@ -15,7 +15,6 @@ import { translate } from '../../walletUtils';
 import AppBackground from '../../components/appBackground';
 import { AppHeader } from '../../components';
 import {
-  alertWithSingleBtn,
   maxLength20,
   maxLength50,
   maxLength200,
@@ -28,7 +27,6 @@ import {
   validateFacebookURL,
 } from '../../utils';
 import { updateProfile, updateProfileImage } from '../../store/reducer/userReducer';
-import { confirmationAlert } from '../../common/function';
 import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 
@@ -47,27 +45,6 @@ function Profile(props) {
     const data = UserReducer.data.user;
     initialize({ ...data, ...data.links });
   }, []);
-
-  const onPhoto = async () => {
-    // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-
-    // if (!isGranted) {
-    //   confirmationAlert(
-    //     'This feature requires camera access',
-    //     'To enable access, tap Settings and turn on Camera.',
-    //     'Cancel',
-    //     'Settings',
-    //     () => openSettings(),
-    //     () => null
-    //   )
-    //   const isPermission = await Permission.requestPermission(PERMISSION_TYPE.camera);
-    //   console.log('=======isPermission', isPermission);
-
-    // } else {
-    //   actionSheetRef.current.show();
-    // }
-    actionSheetRef.current.show();
-  }
 
   const selectActionSheet = index => {
     const options = {
@@ -101,20 +78,8 @@ function Profile(props) {
       dispatch(updateProfileImage(formData));
     }
 
-    props = {
-      about: "asdfasdf",
-      crypto: true,
-      discord: "https://sssadsf.com",
-      email: "Paul@gmail.com",
-      facebook: "https://aaaaa.com",
-      instagram: "https://instagram.com",
-      title: "11111",
-      twitter: "https://twitter.com",
-      website: "",
-      youtube: "https://aaaa.com",
-    }
-    console.log('========props', props)
-    dispatch(updateProfile(props));
+    delete props.links;
+    dispatch(updateProfile(props, () => navigation.goBack()));
   }
 
   return (
@@ -139,7 +104,7 @@ function Profile(props) {
               />
             </Avatar>
             <SpaceView mTop={SIZE(7)} />
-            <TouchableOpacity onPress={onPhoto}>
+            <TouchableOpacity onPress={() => actionSheetRef.current.show()}>
               <ChangeAvatar>
                 {translate("wallet.common.changeprofilephoto")}
               </ChangeAvatar>
@@ -163,11 +128,12 @@ function Profile(props) {
             validate={[maxLength50]}
           />
           <Field
+            editable={_.isEmpty(UserReducer.data?.user.email)}
             name="email"
             label={translate("common.email")}
             component={LimitableInput}
             placeholder={translate("common.email")}
-            validate={[maxLength20, validateEmail]}
+            validate={[maxLength50, validateEmail]}
           />
           <Field
             name="website"
