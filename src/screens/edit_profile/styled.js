@@ -38,18 +38,6 @@ const EditableInput = styled.TextInput`
     color: ${COLORS.BLACK1};
 `;
 
-const MultiLineEditableInput = styled.TextInput`
-    flex: 1;
-    maxHeight: ${SIZE(100)}px;
-    border-bottom-width: 0.8px;
-    border-color: ${COLORS.WHITE3};
-    padding-bottom: ${SIZE(12)}px;
-    font-size: ${FONT(14)}px;
-    font-family: ${FONTS.ARIAL};
-    padding-right: ${SIZE(19)}px;
-    color: ${COLORS.BLACK1};
-`;
-
 const LimitView = styled.View`
     width: 100%;
     height: ${SIZE(36)}px;
@@ -70,7 +58,6 @@ export {
     ChangeAvatar,
     DoneText,
     EditableInput,
-    MultiLineEditableInput,
     LimitView,
     WhiteText
 }

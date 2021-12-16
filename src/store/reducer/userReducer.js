@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 import {
   AUTH_SUCCESS,
@@ -196,9 +197,9 @@ export const endLoader = () => dispatch =>
 
 export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
-    if (asyncData && asyncData.wallet && asyncData.userData) {
-      const { wallet, userData, BackedUp, apps } = asyncData;
-        dispatch(
+  if (asyncData && asyncData.wallet && asyncData.userData) {
+    const { wallet, userData, BackedUp, apps } = asyncData;
+    dispatch(
       setUserData({
         data: userData,
         wallet: wallet,
@@ -282,7 +283,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
     fetch(url, request)
       .then(res => res.json())
       .then(response => {
-        console.log('response',response);
+        console.log('response', response);
         if (response.success) {
           const _params = {
             nonce: response.data,
@@ -324,7 +325,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
               }
             })
             .catch(err => {
-              console.log('error 2',err);
+              console.log('error 2', err);
               dispatch(endLoading());
               reject(err);
             });
@@ -334,7 +335,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
         }
       })
       .catch(err => {
-        console.log('error',err);
+        console.log('error', err);
         dispatch(endLoading());
         reject(err);
       });
@@ -352,4 +353,95 @@ export const signOut = () => {
     AsyncStorage.removeItem('@wallet');
     dispatch(logout());
   }
+}
+
+export const updateProfileImage = (formData) => (dispatch, getState) => {
+  dispatch(startLoading());
+
+  const { data } = getState().UserReducer;
+  axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+
+  axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+  axios.post(`${BASE_URL}/user/update-profile-image`, formData)
+    .then(res => {
+      dispatch(upateUserData(res.data.data));
+    })
+    .catch(err => {
+      dispatch(endLoading());
+      if (err.response.status === 401) {
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("common.sessionexpired"),
+          () => {
+            console.log(err);
+          }
+        );
+        dispatch(signOut());
+      }
+      alertWithSingleBtn(
+        translate("wallet.common.alert"),
+        translate("wallet.common.error.networkFailed"),
+        () => {
+          console.log(err);
+        }
+      );
+    });
+}
+
+export const updateProfile = (data) => (dispatch, getState) => {
+  dispatch(startLoading());
+
+  const { data } = getState().UserReducer;
+  axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+  console.log('=====token', `Bearer ${data.token}`);
+
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
+  axios.post(`${BASE_URL}/user/update-user-profile`, data)
+    .then(res => {
+      let data = res.data.data;
+      console.log('========res', data);
+      dispatch(upateUserData(data));
+      dispatch(endLoading());
+    })
+    .catch(err => {
+      console.log('========err', err);
+      dispatch(endLoading());
+
+      if (err.response.status === 401) {
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("common.sessionexpired"),
+          () => {
+            console.log(err);
+          }
+        );
+        dispatch(signOut());
+        return;
+      }
+      if (err.response.data.data === 'email already taken') {
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("common.emailexists"),
+          () => {
+            console.log(err);
+          }
+        );
+      } else if (err.response.data.data === 'username already taken') {
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("common.usrnameexists"),
+          () => {
+            console.log(err.response.data.data);
+          }
+        );
+      } else {
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.error.networkFailed"),
+          () => {
+            console.log(err);
+          }
+        );
+      }
+    });
 }

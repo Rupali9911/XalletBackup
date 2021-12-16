@@ -97,6 +97,7 @@
     "readable-stream": "^1.0.33",
     "recyclerlistview": "^3.0.5",
     "redux": "^4.1.0",
+    "redux-form": "^8.3.6",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "rxjs": "^7.3.0",

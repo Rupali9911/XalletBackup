@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import {
     COLORS,
     SIZE,
@@ -43,29 +43,65 @@ const WhiteText = styled.Text`
     margin-top: ${SIZE(4)}px;
 `;
 
+const MultiLineEditableInput = styled.TextInput`
+    flex: 1;
+    maxHeight: ${SIZE(100)}px;
+    border-bottom-width: 0.8px;
+    border-color: ${COLORS.WHITE3};
+    padding-bottom: ${SIZE(12)}px;
+    font-size: ${FONT(14)}px;
+    font-family: ${FONTS.ARIAL};
+    padding-right: ${SIZE(19)}px;
+    color: ${COLORS.BLACK1};
+`;
+
 const LimitableInput = (props) => {
-    const { placeholder, value, limit, onChangeText, ...other } = props;
+    const { multiLine, label, input, meta: { touched, error, warning }, ...inputProps } = props;
     return (
         <View>
-            <RowBetweenWrap>
-                <RowWrap>
-                    <SpaceView mLeft={SIZE(19)} />
-                    <NormalText>
-                        {placeholder}
-                    </NormalText>
-                </RowWrap>
-                <EditableInput
-                    isLimit={value?.length > limit}
-                    value={value}
-                    onChangeText={onChangeText}
-                    placeholderTextColor={'grey'}
-                    placeholder={placeholder}
-                    {...other} />
-            </RowBetweenWrap>
-            {value?.length > limit && (
+            {!multiLine ? (
+                <RowBetweenWrap>
+                    <RowWrap>
+                        <SpaceView mLeft={SIZE(19)} />
+                        <NormalText>
+                            {label}
+                        </NormalText>
+                    </RowWrap>
+                    <EditableInput
+                        {...inputProps}
+                        value={input.value}
+                        onChangeText={input.onChange}
+                        onBlur={input.onBlur}
+                        onFocus={input.onFocus}
+                        placeholderTextColor={'grey'} />
+                </RowBetweenWrap>
+            ) : (
+                <>
+                    <RowWrap>
+                        <SpaceView mLeft={SIZE(19)} />
+                        <NormalText>
+                            {label}
+                        </NormalText>
+                    </RowWrap>
+                    <SpaceView mTop={SIZE(12)} />
+                    <RowWrap>
+                        <SpaceView mLeft={SIZE(19)} />
+                        <MultiLineEditableInput
+                            {...inputProps}
+                            value={input.value}
+                            onChangeText={input.onChange}
+                            onBlur={input.onBlur}
+                            onFocus={input.onFocus}
+                            multiline
+                            placeholderTextColor={'grey'} />
+                    </RowWrap>
+                </>
+            )}
+            {touched && error && (
                 <LimitView>
                     <WhiteText>
-                        {translate('wallet.common.limitInputLength', { number: limit })}
+                        {/* {translate('wallet.common.limitInputLength', { number: limit })} */}
+                        {error}
                     </WhiteText>
                 </LimitView>
             )}
