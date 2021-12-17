@@ -644,7 +644,8 @@
                 "passcodeError1": "パスコードが一致しませんでした。もう一度お試しください。",
                 "passcodeError2": "パスコードが一致しませんでした。",
                 "passcodeError3": "もう一度お試しください。",
-                "invalidPrivateKey": "無効な秘密鍵"
+                "invalidPrivateKey": "無効な秘密鍵",
+                "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。"
             },
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",

@@ -3,8 +3,8 @@ import { networkType } from "./networkType";
 //Binance Smart Chain
 import MarketConAddBSC from "./binanceSmartChain/contractAddress/MarketContractAddress";
 import MarketConAbiBSC from "./binanceSmartChain/abi/MarketPlaceAbi";
-import MarketConApproveAbiBSC from "./binanceSmartChain/abi/marketAbi/ApproveAbi";
-import MarketConApproveAddBSC from "./binanceSmartChain/contractAddress/marketAdd/ApproveAdd";
+import MarketConApproveAbiBSC from "./binanceSmartChain/abi/marketAbi/ApproveAbiAlia";
+import MarketConApproveAddBSC from "./binanceSmartChain/contractAddress/marketAdd/ApproveAddAlia";
 
 import LpConAddBSC from "./binanceSmartChain/contractAddress/LPTokenAdd";
 import LpConAbiBSC from "./binanceSmartChain/abi/LpAbi";
@@ -27,11 +27,23 @@ import PackConAbiBSC from "./binanceSmartChain/abi/packAbi";
 import AwardConAddBSC from "./binanceSmartChain/contractAddress/AwardAdd";
 import AwardConAbiBSC from "./binanceSmartChain/abi/AwardAbi";
 
+import CollectionNftConAddBSC from "./binanceSmartChain/contractAddress/collectionNft/collectionNftAdd";
+import CollectionNftConAbiBSC from "./binanceSmartChain/abi/collectionNft/collectionNftAbi";
+
+import NftApprovalConAddBSC from "./binanceSmartChain/contractAddress/collectionNft/nftContractAdd";
+import NftApprovalConAbiBSC from "./binanceSmartChain/abi/collectionNft/nftContractAbi";
+
+import ERC721ConAddBSC from "./binanceSmartChain/contractAddress/erc721/erc721NFTAdd";
+import ERC721ConAbiBSC from "./binanceSmartChain/abi/erc721/erc721NFTAbi";
+
+import UndergroundCastleConAddBSC from "./binanceSmartChain/contractAddress/undergroundCastleAdd";
+import UndergroundCastleConAbiBSC from "./binanceSmartChain/abi/undergroundCastleAbi";
+
 //Polygon Chain
 import MarketConAddPOL from "./polygon/contractAddress/MarketContractAddress";
 import MarketConAbiPOL from "./polygon/abi/MarketPlaceAbi";
-import MarketConApproveAbiPOL from "./polygon/abi/marketAbi/ApproveAbi";
-import MarketConApproveAddPOL from "./polygon/contractAddress/marketAdd/ApproveAdd";
+import MarketConApproveAbiPOL from "./polygon/abi/marketAbi/ApproveAbiAlia";
+import MarketConApproveAddPOL from "./polygon/contractAddress/marketAdd/ApproveAddAlia";
 
 import LpConAddPOL from "./polygon/contractAddress/LPTokenAdd";
 import LpConAbiPOL from "./polygon/abi/LpAbi";
@@ -54,7 +66,60 @@ import PackConAbiPOL from "./polygon/abi/packAbi";
 import AwardConAddPOL from "./polygon/contractAddress/AwardAdd";
 import AwardConAbiPOL from "./polygon/abi/AwardAbi";
 
-const CDN_LINK =  'https://ik.imagekit.io/xanalia/Images';
+import CollectionNftConAddPOL from "./polygon/contractAddress/collectionNft/collectionNftAdd";
+import CollectionNftConAbiPOL from "./polygon/abi/collectionNft/collectionNftAbi";
+
+import NftApprovalConAddPOL from "./polygon/contractAddress/collectionNft/nftContractAdd";
+import NftApprovalConAbiPOL from "./polygon/abi/collectionNft/nftContractAbi";
+
+import ERC721ConAddPOL from "./polygon/contractAddress/erc721/erc721NFTAdd";
+import ERC721ConAbiPOL from "./polygon/abi/erc721/erc721NFTAbi";
+
+import UndergroundCastleConAddPOL from "./polygon/contractAddress/undergroundCastleAdd";
+import UndergroundCastleConAbiPOL from "./polygon/abi/undergroundCastleAbi";
+
+//Ethereum Chain
+import MarketConAddETH from "./ethereum/contractAddress/MarketContractAddress";
+import MarketConAbiETH from "./ethereum/abi/MarketPlaceAbi";
+import MarketConApproveAbiETH from "./ethereum/abi/marketAbi/ApproveAbiUsdt";
+import MarketConApproveAddETH from "./ethereum/contractAddress/marketAdd/ApproveAddUsdt";
+
+import LpConAddETH from "./ethereum/contractAddress/LPTokenAdd";
+import LpConAbiETH from "./ethereum/abi/LpAbi";
+
+import AliaConAddETH from "./ethereum/contractAddress/AliaTokenAdd";
+import AliaConAbiETH from "./ethereum/abi/AliaAbi";
+
+import AliaBnbConAddETH from "./ethereum/contractAddress/aliaBNBReserveAdd";
+import AliaBnbConAbiETH from "./ethereum/abi/aliaBNBReserveAbi";
+
+import StakingConAddETH from "./ethereum/contractAddress/StakingContractAddTestNet";
+import StakingConAbiETH from "./ethereum/abi/StakingAbiTestNet";
+
+import PancakeSwapConAddETH from "./ethereum/contractAddress/pancakeSwapAdd";
+import PancakeSwapConAbiETH from "./ethereum/abi/panCakeSwapAbi";
+
+import PackConAddETH from "./ethereum/contractAddress/packContractAdd";
+import PackConAbiETH from "./ethereum/abi/packAbi";
+
+import AwardConAddETH from "./ethereum/contractAddress/AwardAdd";
+import AwardConAbiETH from "./ethereum/abi/AwardAbi";
+
+import CollectionNftConAddETH from "./ethereum/contractAddress/collectionNft/collectionNftAdd";
+import CollectionNftConAbiETH from "./ethereum/abi/collectionNft/collectionNftAbi";
+
+import NftApprovalConAddETH from "./ethereum/contractAddress/collectionNft/nftContractAdd";
+import NftApprovalConAbiETH from "./ethereum/abi/collectionNft/nftContractAbi";
+
+import ERC721ConAddETH from "./ethereum/contractAddress/erc721/erc721NFTAdd";
+import ERC721ConAbiETH from "./ethereum/abi/erc721/erc721NFTAbi";
+
+import UndergroundCastleConAddETH from "./ethereum/contractAddress/undergroundCastleAdd";
+import UndergroundCastleConAbiETH from "./ethereum/abi/undergroundCastleAbi";
+
+import { ERC721Abi } from "./abi/ERC721Abi";
+
+export const CDN_LINK =  'https://ik.imagekit.io/xanalia/Images';
 
 export const blockChainConfig = [
   {
@@ -63,6 +128,16 @@ export const blockChainConfig = [
     image: `${CDN_LINK}/binance-chain.svg`,
     networkIdTestNet: networkType === "testnet" ? "97" : "56",
     networkIdMainNet: networkType === "testnet" ? "97" : "56",
+    walletName:
+      networkType === "testnet"
+        ? "Binance Smart Chain Testnet"
+        : "Binance Smart Chain Mainnet",
+    currency: "BNB",
+    symbol: "bnb",
+    explorerURL:
+      networkType === "testnet"
+        ? "https://testnet.bscscan.com"
+        : "https://bscscan.com",
     providerUrl:
       networkType === "testnet"
         ? "https://data-seed-prebsc-2-s1.binance.org:8545/"
@@ -91,6 +166,25 @@ export const blockChainConfig = [
       add: AwardConAddBSC,
       abi: AwardConAbiBSC,
     },
+
+    collectionNftConConfig: {
+      add: CollectionNftConAddBSC,
+      abi: CollectionNftConAbiBSC,
+    },
+    nftApprovalConConfig: {
+      add: NftApprovalConAddBSC,
+      abi: NftApprovalConAbiBSC,
+    },
+
+    erc721ConConfig: {
+      add: ERC721ConAddBSC,
+      abi: ERC721ConAbiBSC,
+    },
+
+    undergroundCastleConConfig: {
+      add: UndergroundCastleConAddBSC,
+      abi: UndergroundCastleConAbiBSC,
+    },
   },
   {
     name: "polygon",
@@ -99,13 +193,20 @@ export const blockChainConfig = [
     image: `${CDN_LINK}/polygon-chain.png`,
     networkIdTestNet: networkType === "testnet" ? "80001" : "137",
     networkIdMainNet: networkType === "testnet" ? "80001" : "137",
+    walletName: networkType === "testnet" ? "Matic Testnet" : "Matic Mainnet",
+    currency: "MATIC",
+    symbol: "MATIC",
+    explorerURL:
+      networkType === "testnet"
+        ? "https://explorer-mumbai.maticvigil.com/"
+        : "https://explorer.matic.network",
     providerUrl:
       networkType === "testnet"
         ? "https://rpc-mumbai.maticvigil.com"
         : "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
     providerUrlForAliaPrice:
       "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
-    stakingConConfig: { add: StakingConAddPOL, abi: StakingConAbiPOL },
+      stakingConConfig: { add: StakingConAddPOL, abi: StakingConAbiPOL },
     marketConConfig: { add: MarketConAddPOL, abi: MarketConAbiPOL },
     marketApproveConConfig: {
       add: MarketConApproveAddPOL,
@@ -127,6 +228,92 @@ export const blockChainConfig = [
     awardConConfig: {
       add: AwardConAddPOL,
       abi: AwardConAbiPOL,
+    },
+
+    collectionNftConConfig: {
+      add: CollectionNftConAddPOL,
+      abi: CollectionNftConAbiPOL,
+    },
+    nftApprovalConConfig: {
+      add: NftApprovalConAddPOL,
+      abi: NftApprovalConAbiPOL,
+    },
+
+    erc721ConConfig: {
+      add: ERC721ConAddPOL,
+      abi: ERC721ConAbiPOL,
+    },
+
+    undergroundCastleConConfig: {
+      add: UndergroundCastleConAddPOL,
+      abi: UndergroundCastleConAbiPOL,
+    },
+  },
+  {
+    name: "ethereum",
+    translationKey: "ethereum",
+    key: "ethereum",
+    image: `https://ik.imagekit.io/xanalia/Images/Ethereum-logo.svg`,
+    networkIdTestNet: networkType === "testnet" ? "4" : "1",
+    networkIdMainNet: networkType === "testnet" ? "4" : "1",
+
+    walletName:
+      networkType === "testnet" ? "Rinkeby Test Network" : "Ethereum Mainnet",
+    currency: "ETH",
+    symbol: "ETH",
+    explorerURL:
+      networkType === "testnet"
+        ? "https://rinkeby.etherscan.io"
+        : "https://etherscan.io",
+
+    providerUrl:
+      networkType === "testnet"
+        ? "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+        : "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    providerUrlForAliaPrice:
+      "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+
+    stakingConConfig: { add: StakingConAddETH, abi: StakingConAbiETH },
+    marketConConfig: { add: MarketConAddETH, abi: MarketConAbiETH },
+    marketApproveConConfig: {
+      add: MarketConApproveAddETH,
+      abi: MarketConApproveAbiETH,
+    },
+    lpConConfig: { add: LpConAddETH, abi: LpConAbiETH },
+    aliaConConfig: { add: AliaConAddETH, abi: AliaConAbiETH },
+    aliaBnbConConfig: { add: AliaBnbConAddETH, abi: AliaBnbConAbiETH },
+    pancakeSwapConConfig: {
+      add: PancakeSwapConAddETH,
+      abi: PancakeSwapConAbiETH,
+    },
+
+    packConConfig: {
+      add: PackConAddETH,
+      abi: PackConAbiETH,
+    },
+
+    awardConConfig: {
+      add: AwardConAddETH,
+      abi: AwardConAbiETH,
+    },
+
+    collectionNftConConfig: {
+      add: CollectionNftConAddETH,
+      abi: CollectionNftConAbiETH,
+    },
+    nftApprovalConConfig: {
+      add: NftApprovalConAddETH,
+      abi: NftApprovalConAbiETH,
+    },
+
+    erc721ConConfig: {
+      add: ERC721ConAddETH,
+      abi: ERC721ConAbiETH,
+    },
+
+    undergroundCastleConConfig: {
+      add: UndergroundCastleConAddETH,
+      abi: UndergroundCastleConAbiETH,
     },
   },
 ];

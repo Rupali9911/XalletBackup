@@ -644,7 +644,8 @@
                 "passcodeError1": "密码不匹配。请再试一次！",
                 "passcodeError2": "密码不匹配。请再试一次！",
                 "passcodeError3": "",
-                "invalidPrivateKey": "无效的私钥"
+                "invalidPrivateKey": "无效的私钥",
+                "appNotConnected": "您尝试连接的应用程序未与服务器连接。请将应用程序与服务器连接，然后重试。"
             },
             "welcomeTxt": "欢迎",
             "createWallet": "创建一个新钱包",

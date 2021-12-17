@@ -644,7 +644,8 @@
                 "passcodeError1": "Passcodes did not match. Please try again!",
                 "passcodeError2": "Passcode did not match. Please try again!",
                 "passcodeError3": "",
-                "invalidPrivateKey": "Invalid Private Key"
+                "invalidPrivateKey": "Invalid Private Key",
+                "appNotConnected": "The app you are trying to connect is not connected with server. Please connect app with server and try again."
             },
             "welcomeTxt": "Welcome",
             "createWallet": "Create a new wallet",

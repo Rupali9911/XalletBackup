@@ -156,9 +156,9 @@ function Setting({navigation}) {
             rightText={``}
             label={translate('common.Logout')}
           />
-          <TouchableHighlight onPress={_pressHandler}>
-            <Text>Authenticate with Touch ID</Text>
-          </TouchableHighlight>
+          {/*<TouchableHighlight onPress={_pressHandler}>*/}
+            {/*<Text>Authenticate with Touch ID</Text>*/}
+          {/*</TouchableHighlight>*/}
         </View>
       </ScrollView>
       <Modal

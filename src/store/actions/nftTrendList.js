@@ -109,7 +109,6 @@ export const gifNFTList = (page, limit, sort) => {
     if (sort) {
       body_data.sort = sort;
     }
-
     if (user) {
       body_data.owner = wallet.address || user._id;
     }
@@ -141,10 +140,10 @@ export const gifNFTList = (page, limit, sort) => {
 export const movieNFTList = (page, limit, sort) => {
     return (dispatch, getState) => {
       dispatch(nftLoadStart());
-  
+
       const {data, wallet} = getState().UserReducer;
       let user = data.user;
-  
+
       let body_data = {
         approveStaus: 'approve',
         type: 'movie',
@@ -156,7 +155,7 @@ export const movieNFTList = (page, limit, sort) => {
       if (sort) {
         body_data.sort = sort;
       }
-  
+
       if (user) {
         body_data.owner = wallet.address || user._id;
       }
@@ -169,7 +168,7 @@ export const movieNFTList = (page, limit, sort) => {
           'Content-Type': 'application/json',
         },
       };
-  
+
       fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
         .then(response => response.json())
         .then(json => {

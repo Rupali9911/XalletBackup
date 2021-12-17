@@ -25,6 +25,7 @@ import {
   updateBSCBalances,
   updateEthereumBalances,
   updatePolygonBalances,
+  updateNetworkType
 } from '../../store/reducer/walletReducer';
 import {environment, translate} from '../../walletUtils';
 import {HeaderBtns} from './components/HeaderButtons';
@@ -44,7 +45,7 @@ const Wallet = ({route, navigation}) => {
   const {wallet, isCreate, data, isBackup} = useSelector(
     state => state.UserReducer,
   );
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance} =
+  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, networkType} =
     useSelector(state => state.WalletReducer);
 
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const Wallet = ({route, navigation}) => {
   const [pickerVisible, setPickerVisible] = useState(false);
   const [selectTokenVisible, setSelectTokenVisible] = useState(false);
   const [isSend, setIsSend] = useState(false);
-  const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
+  // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
 
   let subscribeEth;
   let subscribeBnb;
@@ -90,21 +91,21 @@ const Wallet = ({route, navigation}) => {
 
   useEffect(() => {
     singleSocket.connectSocket().then(() => {
-      ping(wallet.address);
+      // ping(wallet.address);
     });
 
-    const socketSubscribe = Events.asObservable().subscribe({
-      next: data => {
-        console.log('socket subscribe', data);
-        const response = JSON.parse(data);
-        if (response.type == 'pong') {
-          connect(response.data);
-        }
-      },
-    });
+    // const socketSubscribe = Events.asObservable().subscribe({
+    //   next: data => {
+    //     console.log('socket subscribe', data);
+    //     const response = JSON.parse(data);
+    //     if (response.type == 'pong') {
+    //       connect(response.data);
+    //     }
+    //   },
+    // });
 
     return () => {
-      socketSubscribe.unsubscribe();
+      // socketSubscribe.unsubscribe();
     };
   }, []);
 
@@ -177,36 +178,36 @@ const Wallet = ({route, navigation}) => {
       //     if (success) console.log('Successfully unsubscribed!');
       //   });
     };
-  }, [network]);
+  }, [networkType]);
 
   useEffect(() => {
     if (balances) {
-      if (network.name == 'Ethereum') {
+      if (networkType.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
         setTotalValue(value);
-      } else if (network.name == 'BSC') {
+      } else if (networkType.name == 'BSC') {
         let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
         setTotalValue(value);
-      } else if (network.name == 'Polygon') {
+      } else if (networkType.name == 'Polygon') {
         let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
         setTotalValue(value);
       }
     }
-  }, [network, ethBalance, bnbBalance, maticBalance]);
+  }, [networkType, ethBalance, bnbBalance, maticBalance]);
 
   const setBalanceField = () => {
     let totalValue = 0;
-    if (network.name == 'Ethereum') {
+    if (networkType.name == 'Ethereum') {
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
       totalValue = value;
-    } else if (network.name == 'BSC') {
+    } else if (networkType.name == 'BSC') {
       // for mainnet
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
 
       //for testing
       let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
       totalValue = value;
-    } else if (network.name == 'Polygon') {
+    } else if (networkType.name == 'Polygon') {
       //for mainnet
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
 
@@ -346,11 +347,11 @@ const Wallet = ({route, navigation}) => {
   };
 
   const getBalances = pubKey => {
-    if (network.name == 'BSC') {
+    if (networkType.name == 'BSC') {
       return getBSCBalances(pubKey);
-    } else if (network.name == 'Ethereum') {
+    } else if (networkType.name == 'Ethereum') {
       return getEthereumBalances(pubKey);
-    } else if (network.name == 'Polygon') {
+    } else if (networkType.name == 'Polygon') {
       return getPolygonBalances(pubKey);
     } else {
       return new Promise((resolve, reject) => {
@@ -423,7 +424,7 @@ const Wallet = ({route, navigation}) => {
               hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
               onPress={() => setPickerVisible(true)}>
               <Image
-                source={network.icon}
+                source={networkType.icon}
                 style={[CommonStyles.imageStyles(6)]}
               />
             </TouchableOpacity>
@@ -501,7 +502,7 @@ const Wallet = ({route, navigation}) => {
       )}
       <Tokens
         values={balances}
-        network={network}
+        network={networkType}
         onTokenPress={item => {
           navigation.navigate('tokenDetail', {item});
         }}
@@ -537,9 +538,9 @@ const Wallet = ({route, navigation}) => {
       <NetworkPicker
         visible={pickerVisible}
         onRequestClose={setPickerVisible}
-        network={network}
+        network={networkType}
         onItemSelect={item => {
-          setNetwork(item);
+          dispatch(updateNetworkType(item));
           setPickerVisible(false);
         }}
       />
@@ -547,7 +548,7 @@ const Wallet = ({route, navigation}) => {
         visible={selectTokenVisible}
         onRequestClose={setSelectTokenVisible}
         values={balances}
-        network={network}
+        network={networkType}
         isSend={isSend}
         onTokenPress={item => {
           setSelectTokenVisible(false);

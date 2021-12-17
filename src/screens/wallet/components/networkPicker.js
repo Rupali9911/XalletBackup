@@ -18,14 +18,17 @@ import Checkbox from '../../../components/checkbox';
 const networks = [
     {
         name: "Ethereum",
+        value: 'ethereum',
         icon: ImagesSrc.etherium
     },
     {
         name: "BSC",
+        value: 'binance',
         icon: ImagesSrc.bnb
     },
     {
         name: "Polygon",
+        value: 'polygon',
         icon: ImagesSrc.matic
     }
 ];
