@@ -642,8 +642,14 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
       )
     );
 
-    const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
-    if (txCount.error) reject(txCount.error);
+    let txCount = "";
+
+    try {
+      txCount = await web3.eth.getTransactionCount(publicKey, "pending")
+    } catch (e) {
+      return reject(e)
+    }
+
     var customGasLimit = gasLmt;
     customGasPrice = gasPr * 1000000000;
     var contract = new web3.eth.Contract(abiArray, contractAddress, {

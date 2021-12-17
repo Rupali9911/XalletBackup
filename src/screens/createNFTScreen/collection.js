@@ -210,7 +210,7 @@ const Collection = ({ changeLoadingState }) => {
               console.log("testing collection error", e)
               alertWithSingleBtn(
                 translate("wallet.common.alert"),
-                translate("wallet.common.error.networkFailed")
+                String(e)
               );
             })
 
