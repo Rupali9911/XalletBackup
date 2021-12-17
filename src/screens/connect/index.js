@@ -96,20 +96,21 @@ const Connect = ({ route, navigation }) => {
     const [connectedApps, setConnectedApps] = useState([]);
 
     const onCheckPermission = async () => {
-        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-        if (!isGranted) {
-            confirmationAlert(
-                'This feature requires camera access',
-                'To enable access, tap Settings and turn on Camera.',
-                'Cancel',
-                'Settings',
-                () => openSettings(),
-                () => null
-            )
-        } else {
-            navigation.navigate("scanToConnect");
-        }
+        // if (!isGranted) {
+        //     confirmationAlert(
+        //         'This feature requires camera access',
+        //         'To enable access, tap Settings and turn on Camera.',
+        //         'Cancel',
+        //         'Settings',
+        //         () => openSettings(),
+        //         () => null
+        //     )
+        // } else {
+            
+        // }
+        navigation.navigate("scanToConnect");
     }
 
     const renderApps = ({ item, index }) => {
