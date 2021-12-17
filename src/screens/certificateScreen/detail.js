@@ -38,6 +38,7 @@ import { divideNo } from '../../utils';
 import styles from './styles';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { BASE_URL } from '../../common/constants';
+import { useIsFocused } from '@react-navigation/native';
 
 const { PlayButtonIcon, GIRL } = SVGS;
 
@@ -49,6 +50,7 @@ const DetailScreen = ({ route, navigation }) => {
     const dispatch = useDispatch();
     const { paymentObject } = useSelector(state => state.PaymentReducer);
     const { data, wallet } = useSelector(state => state.UserReducer);
+    const isFocused = useIsFocused();
 
     const refVideo = useRef(null);
     const [isPlay, setPlay] = useState(false);
@@ -148,7 +150,7 @@ const DetailScreen = ({ route, navigation }) => {
     let chainType = params.length > 1 ? params[0] : 'binance';
     let collectionAddress = params.length > 2 ? params[1] : null;
 
-    console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
+    // console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
     if (chainType === 'polygon') {
         MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
         MarketContractAddress = blockChainConfig[1].marketConConfig.add;
@@ -164,7 +166,7 @@ const DetailScreen = ({ route, navigation }) => {
         ERC721Address = blockChainConfig[0].erc721ConConfig.add;
         collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
     } else if (chainType === 'ethereum') {
-        MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+        MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
         MarketContractAddress = blockChainConfig[2].marketConConfig.add;
         providerUrl = blockChainConfig[2].providerUrl;
         ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
@@ -174,20 +176,22 @@ const DetailScreen = ({ route, navigation }) => {
     //#endregion
 
     useEffect(() => {
-        console.log('tokenId', tokenId);
-        if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
-            setBuyLoading(true);
-            //   checkNFTOnAuction();
-            getNonCryptoNFTOwner();
-        }
+        if (isFocused) {
+            console.log('tokenId', tokenId);
+            if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
+                setBuyLoading(true);
+                //   checkNFTOnAuction();
+                getNonCryptoNFTOwner();
+            }
 
-        if (data.token) {
-            dispatch(getAllCards(data.token)).then(() => {
-            }).catch((err) => {
-                console.log('error====', err);
-            });
+            if (data.token) {
+                dispatch(getAllCards(data.token)).then(() => {
+                }).catch((err) => {
+                    console.log('error====', err);
+                });
+            }
         }
-    }, []);
+    }, [isFocused]);
 
     useEffect(() => {
         if (paymentObject) {
@@ -931,7 +935,7 @@ const DetailScreen = ({ route, navigation }) => {
                                     if (setNFTStatus() === 'buy') {
                                         setShowPaymentMethod(true);
                                     } else if (setNFTStatus() === 'sell') {
-                                        // navigation.navigate('sellNft',{nftDetail: singleNFT});
+                                        navigation.navigate('sellNft',{nftDetail: singleNFT});
                                     }
                                     // }
                                 }}
@@ -1037,14 +1041,14 @@ const DetailScreen = ({ route, navigation }) => {
                 ownerAddress={ownerAddress?.includes("0x") ? ownerAddress : walletAddressForNonCrypto}
                 id={singleNFT.id}
                 collectionAddress={collectionAddress}
-                chain={chain}
+                chain={chainType}
                 onRequestClose={() => setShowPaymentMethod(false)}
             />
             <PaymentNow
                 visible={showPaymentNow}
                 price={price ? price : 0}
                 priceInDollar={priceInDollar}
-                chain={chain}
+                chain={chainType}
                 NftId={_tokenId}
                 IdWithChain={tokenId}
                 ownerId={nonCryptoOwnerId}

@@ -90,7 +90,7 @@ const nftItem = ({ item, index }) => {
     ERC721Address = blockChainConfig[0].erc721ConConfig.add;
     collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
   } else if (chainType === 'ethereum') {
-    MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
     MarketContractAddress = blockChainConfig[2].marketConConfig.add;
     providerUrl = blockChainConfig[2].providerUrl;
     ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
@@ -98,7 +98,7 @@ const nftItem = ({ item, index }) => {
     collectionAddress = collectionAddress || blockChainConfig[2].erc721ConConfig.add;
   }
 
-  console.log('params:',params,', tokenId:',tokenId,', collectionAddresss', collectionAddress);
+  // console.log('params:',params,', tokenId:',tokenId,', collectionAddresss', collectionAddress);
 
   useEffect(() => {
     let web3 = new Web3(providerUrl);

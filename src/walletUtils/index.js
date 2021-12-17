@@ -33,8 +33,8 @@ export const amountValidation = (e, currentValue = '') => {
   return value;
 };
 
-export const test_ethRpc =
-  'https://kovan.infura.io/v3/d9d12a4cf6ec4ea786890cd8c5dcc599';
+// export const test_ethRpc = 'https://kovan.infura.io/v3/d9d12a4cf6ec4ea786890cd8c5dcc599';
+export const test_ethRpc = 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
 export const test_bnbRpc = 'https://data-seed-prebsc-2-s2.binance.org:8545/';
 // export const test_bnbRpc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 export const test_polRpc = 'https://matic-mumbai.chainstacklabs.com';
