@@ -31,9 +31,7 @@ const toastConfig = {
   ),
 };
 
-const Collection = ({ route }) => {
-
-  const { changeLoadingState } = route.params;
+const Collection = ({ changeLoadingState }) => {
 
   const [collectionName, setCollectionName] = useState("");
   const [collectionSymbol, setCollectionSymbol] = useState("");
@@ -127,7 +125,7 @@ const Collection = ({ route }) => {
       visibilityTime: 500,
       autoHide: true,
     });
-    Clipboard.setString(wallet.mnemonic.phrase);
+    Clipboard.setString(collectionAdd);
   };
 
   const saveCollection = async () => {
@@ -244,6 +242,70 @@ const Collection = ({ route }) => {
 
   }
 
+  const saveAsDraftCollection = async() => {
+    changeLoadingState(true);
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+    let formData = new FormData();
+    formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
+    formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+
+    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+
+    await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
+      .then(res => {
+        if (res.data.success) {
+
+          let url = `${BASE_URL}/user/create-collection-draft`;
+
+          let obj = {
+            collectionName,
+            collectionDesc: collectionDes,
+            bannerImage: res.data.data.banner_image,
+            iconImage: res.data.data.icon_image,
+            collectionSymbol,
+            chainType: networkType.value,
+          };
+          axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+          axios.post(url, obj)
+            .then(collectionData => {
+              changeLoadingState(false);
+              console.log(collectionData, "save as draft")
+              if (collectionData.data.success) {
+                cancel()
+                alertWithSingleBtn(
+                  "Success Message",
+                  "Collection Save as Draft Successfully"
+                );
+              } else {
+                alertWithSingleBtn(
+                  "Failed",
+                  "Something Went Wrong!"
+                )
+              }
+
+            })
+            .catch(e => {
+              changeLoadingState(false);
+              console.log(e, "uploading collection data to database");
+              alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                translate("wallet.common.error.networkFailed")
+              );
+            })
+        }
+
+      }).catch(e => {
+        changeLoadingState(false);
+        console.log("testing collection error", e)
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.error.networkFailed")
+        );
+      })
+  }
+
   let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage;
   return (
     <View style={styles.childCont}>
@@ -278,7 +340,7 @@ const Collection = ({ route }) => {
             contStyle={{ backgroundColor: colors.GREY10 }}
             inputProps={{ editable: false, value: collectionAdd }}
           />
-          <CardButton disable={!!collectionAdd ? false : true} onPress={copyToClipboard} label="Copy" />
+          <CardButton disable={collectionAdd !== "" ? false : true} onPress={copyToClipboard} label="Copy" />
         </CardCont>
 
         <CardCont style={styles.imageMainCard}>
@@ -316,6 +378,7 @@ const Collection = ({ route }) => {
         <CardButton
           border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
           label="Save as Draft"
+          onPress={saveAsDraftCollection}
           disable={!disable}
           buttonCont={{ marginBottom: 0 }}
         />
