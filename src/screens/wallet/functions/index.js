@@ -6,6 +6,7 @@ import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
 import { binanceNftAbi, binanceNftDex, environment, translate } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
+import { getChainId, getNetworkId } from '../../../web3/config/chainIds';
 
 export const getSig = (message, privateKey) => {
   var accounts = new Accounts("");
@@ -351,20 +352,20 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
     if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
-        networkId: 97,
-        chainId: 97
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else if (chainType === 'polygon') {
       common = Common.forCustomChain('mainnet', {
         name: 'matic',
-        networkId: 80001,
-        chainId: 80001
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else {
       common = Common.forCustomChain('mainnet', {
         name: 'eth',
-        networkId: 1,
-        chainId: 1
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     }
 
@@ -382,12 +383,14 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
       if (txHash) {
         console.log(txHash)
         console.log("resp noncrypto function", new Date().getTime());
-        resolve({ success: true, status: 200, data: txHash });
+        // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
         console.log(err);
         reject(err.message);
       }
-    })
+    }).once('receipt',(receipt) => {
+      resolve({ success: true, status: 200, data: receipt });
+    });
 
     // console.log(result);
     // return result
@@ -419,6 +422,8 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
       return;
     }
 
+    console.log('rpcURL', rpcURL);
+
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         rpcURL
@@ -442,7 +447,7 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
       from: publicKey,
       gasPrice: web3.utils.toHex(customGasPrice),
       gasLimit: web3.utils.toHex(customGasLimit),
-      chainId: chainType === "polygon" ? 80001 : undefined,
+      // chainId: chainType === "polygon" ? 80001 : undefined,
       to: contractAddress,
       value: addedFivePercent ? web3.utils.toHex(
         web3.utils.toWei(addedFivePercent.toString(), "ether")
@@ -457,20 +462,20 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
     if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
-        networkId: 97,
-        chainId: 97
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else if (chainType === 'polygon') {
       common = Common.forCustomChain('mainnet', {
         name: 'matic',
-        networkId: 80001,
-        chainId: 80001
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else {
       common = Common.forCustomChain('mainnet', {
         name: 'eth',
-        networkId: 1,
-        chainId: 1
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     }
 
@@ -488,11 +493,14 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
       if (txHash) {
         console.log(txHash)
         console.log("resp noncrypto function", new Date().getTime());
-        resolve({ success: true, status: 200, data: txHash });
-      } else if (err) {
+        // resolve({ success: true, status: 200, data: txHash });
+      } else
+      if (err) {
         console.log(err);
         reject(err.message);
       }
+    }).once('receipt',(receipt) => {
+      resolve({ success: true, status: 200, data: receipt });
     })
 
     // console.log(result);
@@ -609,20 +617,20 @@ export const approvebnb = async (publicKey, privateKey, chainType, contract) => 
         if (chainType === 'binance') {
           common = Common.forCustomChain('mainnet', {
             name: 'bnb',
-            networkId: 97,
-            chainId: 97
+            networkId: getNetworkId(chainType),
+            chainId: getChainId(chainType)
           }, 'petersburg');
         } else if (chainType === 'polygon') {
           common = Common.forCustomChain('mainnet', {
             name: 'matic',
-            networkId: 80001,
-            chainId: 80001
+            networkId: getNetworkId(chainType),
+            chainId: getChainId(chainType)
           }, 'petersburg');
         } else {
           common = Common.forCustomChain('mainnet', {
             name: 'eth',
-            networkId: 1,
-            chainId: 1
+            networkId: getNetworkId(chainType),
+            chainId: getChainId(chainType)
           }, 'petersburg');
         }
 
@@ -671,7 +679,6 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     );
 
     let txCount = "";
-
     try {
       txCount = await web3.eth.getTransactionCount(publicKey, "pending")
     } catch (e) {
@@ -697,20 +704,26 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
       nonce: web3.utils.toHex(txCount)
     };
 
-    let common = null;
-    if (chainType === 'binance') {
-      common = Common.forCustomChain('mainnet', {
-        name: 'bnb',
-        networkId: 97,
-        chainId: 97
-      }, 'petersburg');
-    } else {
-      common = Common.forCustomChain('mainnet', {
-        name: 'matic',
-        networkId: 80001,
-        chainId: 80001
-      }, 'petersburg');
-    }
+      let common = null;
+      if (chainType === 'binance') {
+          common = Common.forCustomChain('mainnet', {
+              name: 'bnb',
+              networkId: getNetworkId(chainType),
+              chainId: getChainId(chainType)
+          }, 'petersburg');
+      } else if (chainType === 'polygon') {
+          common = Common.forCustomChain('mainnet', {
+              name: 'matic',
+              networkId: getNetworkId(chainType),
+              chainId: getChainId(chainType)
+          }, 'petersburg');
+      } else {
+          common = Common.forCustomChain('mainnet', {
+              name: 'eth',
+              networkId: getNetworkId(chainType),
+              chainId: getChainId(chainType)
+          }, 'petersburg');
+      }
 
     const tx = new EthereumTx(txObject, { common });
     privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
@@ -792,20 +805,20 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
     if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
-        networkId: 97,
-        chainId: 97
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else if (chainType === 'polygon') {
       common = Common.forCustomChain('mainnet', {
         name: 'matic',
-        networkId: 80001,
-        chainId: 80001
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else {
       common = Common.forCustomChain('mainnet', {
         name: 'eth',
-        networkId: 1,
-        chainId: 1
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     }
 
@@ -823,18 +836,19 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
       if (txHash) {
         console.log(txHash)
         console.log("resp noncrypto function", new Date().getTime());
-        resolve({ success: true, status: 200, data: txHash });
+        // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
         console.log(err);
         reject(err.message);
       }
-    })
+    }).once('receipt',(receipt) => {
+      resolve({ success: true, status: 200, data: receipt });
+    });
 
     // console.log(result);
     // return result
   })
 }
-
 
 export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlaceContract, MarketContractAddress, nftId, collectionAddress, price, baseCurrency, allowedCurrencies, gasPr, gasLmt) => {
   return new Promise(async (resolve, reject) => {
@@ -869,20 +883,20 @@ export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlace
     if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
-        networkId: 97,
-        chainId: 97
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else if (chainType === 'polygon') {
       common = Common.forCustomChain('mainnet', {
         name: 'matic',
-        networkId: 80001,
-        chainId: 80001
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     } else {
       common = Common.forCustomChain('mainnet', {
         name: 'eth',
-        networkId: 1,
-        chainId: 1
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
       }, 'petersburg');
     }
 
@@ -900,12 +914,14 @@ export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlace
       if (txHash) {
         console.log(txHash)
         console.log("resp noncrypto function", new Date().getTime());
-        resolve({ success: true, status: 200, data: txHash });
+        // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
         console.log(err);
         reject(err.message);
       }
-    })
+    }).once('receipt',(receipt) => {
+      resolve({ success: true, status: 200, data: receipt });
+    });
 
     // console.log(result);
     // return result

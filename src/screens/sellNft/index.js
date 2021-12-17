@@ -11,10 +11,12 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { translate } from '../../walletUtils';
+import { amountValidation, translate } from '../../walletUtils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { networkType } from '../../web3/config/networkType';
 import { sellNFT, setApprovalForAll } from '../wallet/functions';
+import { alertWithSingleBtn } from '../../common/function';
 
 const Web3 = require('web3');
 
@@ -27,6 +29,10 @@ const SellNFT = ({route, navigation}) => {
 
     const {wallet,data} = useSelector(state => state.UserReducer);
     const [sellFormat, setSellFormat] = useState(FIXED_PRICE);
+    const [baseCurrency, setBaseCurrency] = useState(null);
+    const [price, setPrice] = useState('');
+    const [allowedTokens, setAllowedTokens] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     //#region SmartContract
     let MarketPlaceAbi = '';
@@ -53,7 +59,7 @@ const SellNFT = ({route, navigation}) => {
     let chainType = params.length > 1 ? params[0] : 'binance';
     let collectionAddress = params.length > 2 ? params[1] : null;
 
-    console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
+    // console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
     if (chainType === 'polygon') {
         MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
         MarketContractAddress = blockChainConfig[1].marketConConfig.add;
@@ -92,6 +98,7 @@ const SellNFT = ({route, navigation}) => {
         // }
         // this.props.setTransactionInProgress(false);
         // this.setState({ loaderFor });
+        setLoading(true);
         let web3 = new Web3(providerUrl);
     
         let approvalCheckContract = new web3.eth.Contract(
@@ -112,7 +119,10 @@ const SellNFT = ({route, navigation}) => {
                               } else {
                                 sellNFTItem(id, price);
                               }      
-                        }).catch((err) => console.log(err));
+                        }).catch((err) => {
+                            console.log(err)
+                            setLoading(false);
+                        });
                 } else {
                   if (sellFormat === AUCTION) {
                     // setNFTAuction();
@@ -122,6 +132,7 @@ const SellNFT = ({route, navigation}) => {
                 }
               } else {
                 console.log("err in balanceOf", err);
+                setLoading(false);
               }
             });
       }
@@ -174,16 +185,19 @@ const SellNFT = ({route, navigation}) => {
             MarketContractAddress
           );
 
-          sellNFT(wallet.address, wallet.privateKey, providerUrl, chainType, MarketPlaceContract, MarketContractAddress, id, collectionAddress, price, 3, [], 10, 600000)
+          sellNFT(wallet.address, wallet.privateKey, providerUrl, chainType, MarketPlaceContract, MarketContractAddress, id, collectionAddress, price, baseCurrency.order, allowedTokens, 10, 600000)
             .then((res)=>{
+                setLoading(false);
                 if(res.success){
                     console.log('sold');
                     navigation.goBack();
                 }
             }).catch((err)=>{
                 console.log('sellNFT error',err);
+                setLoading(false);
             });
         } else {
+            setLoading(false);
         //   this.setState({ loaderFor: "Sell" });
         //   let web3 = new Web3(this.props.provider);
         //   const userToken = localStorage.getItem("userToken");
@@ -229,7 +243,7 @@ const SellNFT = ({route, navigation}) => {
       }
 
     return (
-        <AppBackground>
+        <AppBackground isBusy={loading}>
             <AppHeader 
                 title={''}
                 showBackButton
@@ -240,11 +254,43 @@ const SellNFT = ({route, navigation}) => {
                     
                     <ToggleState activeState={sellFormat} onChange={setSellFormat} />
                     
-                    <SelectToken />
+                    <SelectToken 
+                        tokens={basePriceTokens.filter(_ => _.chain == chainType)}
+                        onChangeValue={(value) => {
+                            let baseCurrency = basePriceTokens.find(_ => _.chain == chainType && _.key == value);
+                            if(baseCurrency){
+                                setBaseCurrency(baseCurrency);
+                            }else{
+                                setBaseCurrency(null);
+                            }
+                        }}
+                        />
                     
-                    <PaymentField />
+                    <PaymentField 
+                        value={price}
+                        onChangeText={(e) => {
+                            let value = amountValidation(e, price);
+                                if (value) {
+                                    setPrice(value);
+                                } else {
+                                    setPrice('');
+                                }
+                        }}/>
                     
-                    <PayableIn />
+                    <PayableIn 
+                        tokens={basePriceTokens.filter(_ => _.chain == chainType)}
+                        onChangeValue={(value) => {
+                            let allowedTokens = basePriceTokens.filter(_ => _.chain == chainType && value.includes(_.key));
+                            if(allowedTokens.length > 0){
+                                let allowed = [];
+                                allowedTokens.map((item) => {
+                                    allowed.push(item.order);
+                                });
+                                setAllowedTokens(allowed);
+                            }else{
+                                setBaseCurrency([]);
+                            }
+                        }}/>
 
                     <View style={styles.summaryContainer}>
                         <Text style={styles.summaryTxt}>{translate("common.summary")}</Text>
@@ -283,7 +329,14 @@ const SellNFT = ({route, navigation}) => {
                         <Text style={[styles.summaryTxt, {fontSize: RF(2)}]}>{translate("common.listing")}</Text>
 
                         <TouchableOpacity style={styles.saleButton} onPress={() => {
-                            checkForApproval(nftDetail.id, 0.05);
+                            console.log(baseCurrency,price);
+                            if (baseCurrency == null) {
+                                alertWithSingleBtn('', 'Please select Token');
+                            } else if (price == '' || parseFloat(`${price}`) <= 0) {
+                                alertWithSingleBtn('', 'Please enter price');
+                            } else {
+                                checkForApproval(nftDetail.id, price);
+                            }
                         }}>
                             <Text style={styles.saleButtonTxt}>{translate("common.postYourListing")}</Text>
                         </TouchableOpacity>
@@ -324,22 +377,22 @@ const ToggleState = (props) => {
 const SelectToken = (props) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        { label: 'ALIA', value: 'Alia' },
-        { label: 'USDC', value: 'USDC' },
-        { label: 'ETH', value: 'ETH' },
-        { label: 'MATIC', value: 'Matic' }
-    ]);
+    const [items, setItems] = useState(props.tokens || []);
 
     return (
         <DropDownPicker
             open={open}
             value={value}
             items={items}
+            schema={{
+                label: 'name',
+                value: 'key'
+            }}
             zIndex={5001}
             setOpen={setOpen}
             setValue={setValue}
             setItems={setItems}
+            onChangeValue={props.onChangeValue}
             closeAfterSelecting={true}
             style={styles.tokenPicker}
             dropDownContainerStyle={styles.dropDownContainer}
@@ -351,24 +404,24 @@ const SelectToken = (props) => {
 const PayableIn = (props) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState([]);
-    const [items, setItems] = useState([
-        { label: 'ALIA', value: 'Alia' },
-        { label: 'USDC', value: 'USDC' },
-        { label: 'ETH', value: 'ETH' },
-        { label: 'MATIC', value: 'Matic' }
-    ]);
+    const [items, setItems] = useState(props.tokens || []);
 
     return (
         <DropDownPicker
             open={open}
             value={value}
             items={items}
+            schema={{
+                label: 'name',
+                value: 'key'
+            }}
             multiple={true}
             min={0}
             mode={'BADGE'}
             setOpen={setOpen}
             setValue={setValue}
             setItems={setItems}
+            onChangeValue={props.onChangeValue}
             closeAfterSelecting={true}
             style={styles.tokenPicker}
             dropDownContainerStyle={styles.dropDownContainer}

@@ -49,7 +49,7 @@ export const newNFTList = (page, limit, sort) => {
 
         let body_data = {
             page,
-            limit: limit || 24,
+            limit: limit || 27,
             networkType: networkType,
             token: "HubyJ*%qcqR0",
             type: "2D",

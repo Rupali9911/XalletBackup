@@ -74,7 +74,30 @@ const Tokens = (props) => {
             array[5].tokenValue = `${usdcBalance}`;
             array[6].tokenValue = `${wethBalance}`;
         }
-        setBalanceData(array);
+
+        let result = [];
+        if(allowedTokens && allowedTokens.length>0){
+
+            let _array = [];
+            allowedTokens.map((item) => {
+                _array.push(item.type);
+            });
+
+            result = array.filter((item) => {
+                if(item.network.toLowerCase() === network.name.toLowerCase()){
+                   if(_array.includes(item.type)){
+                    return true;
+                   } else {
+                       return false;
+                   }
+                } else {
+                    return false;
+                }
+            });
+        }else {
+            result = array;
+        }
+        setBalanceData(result);
         // console.log('value update',array);
     },[network,ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance]);
 

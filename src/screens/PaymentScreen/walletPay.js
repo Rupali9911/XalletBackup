@@ -58,6 +58,8 @@ const WalletPay = ({route, navigation}) => {
 
     const {chainType, price, priceStr, id, baseCurrency, ownerAddress, collectionAddress, allowedTokens} = route.params
 
+    console.log('chainType',chainType);
+
     const [loading, setLoading] = useState(false);
     const [balances, setBalances] = useState(null);
     const [totalValue, setTotalValue] = useState(0);
@@ -87,7 +89,7 @@ const WalletPay = ({route, navigation}) => {
         providerUrl = blockChainConfig[0].providerUrl;
         ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
       } else if (chainType === 'ethereum') {
-        MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+        MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
         MarketContractAddress = blockChainConfig[2].marketConConfig.add;
         providerUrl = blockChainConfig[2].providerUrl;
         ApproveAbi = blockChainConfig[2].marketApproveConConfig.abi;
@@ -110,9 +112,11 @@ const WalletPay = ({route, navigation}) => {
             });
             let result = tokens.filter((item) => {
                 if(item.network.toLowerCase() === chainType){
-                   if(array.includes(item.tokenName.toLowerCase())){
+                    console.log('same chain');
+                   if(array.includes(item.type.toLowerCase())){
+                    console.log('same name');
                     return true;
-                   } else if(array.includes('alia') && (item.tokenName === 'TAL' || item.tokenName === 'TNFT')) {
+                   } else if(array.includes('alia') && (item.type === 'TAL' || item.type === 'TNFT')) {
                        return true;
                    } else {
                        return false;
@@ -121,6 +125,7 @@ const WalletPay = ({route, navigation}) => {
                     return false;
                 }
             });
+            console.log('result of active tokens', result);
             setActiveTokens(result);
         } else {
             let result = tokens.filter(_ => {
@@ -429,9 +434,9 @@ const WalletPay = ({route, navigation}) => {
         let chain = item.network === 'BSC' ? 'binance' : item.network === 'Ethereum' ? 'ethereum' : item.network === 'Polygon' ? 'polygon' : ''
         let result = basePriceTokens.find(_ => {
             if(_.chain === chain){
-                if(_.key.toLowerCase() === item.tokenName.toLowerCase()){
+                if(_.key.toLowerCase() === item.type.toLowerCase()){
                     return true;
-                }else if((item.tokenName === 'TAL' || item.tokenName === 'TNFT') && _.key.toLowerCase() === 'alia'){
+                }else if((item.type === 'TAL' || item.type === 'TNFT') && _.key.toLowerCase() === 'alia'){
                     return true;
                 } else {
                     return false;
