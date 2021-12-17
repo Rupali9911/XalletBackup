@@ -755,8 +755,14 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
       )
     );
 
-    const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
-    if (txCount.error) reject(txCount.error);
+    let txCount = "";
+
+    try {
+      txCount = await web3.eth.getTransactionCount(publicKey, "pending")
+    } catch (e) {
+      return reject(e)
+    }
+
     var customGasLimit = gasLmt;
     customGasPrice = gasPr * 1000000000;
     // console.log('contract',contract);
