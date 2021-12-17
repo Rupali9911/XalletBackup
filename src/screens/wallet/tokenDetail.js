@@ -26,7 +26,7 @@ import {balance} from './functions';
 const TokenDetail = ({route, navigation}) => {
   const {} = route.params;
   const {wallet} = useSelector(state => state.UserReducer);
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance} =
+  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance} =
     useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -117,7 +117,7 @@ const TokenDetail = ({route, navigation}) => {
 
   const getTokenValue = () => {
     let totalValue = 0;
-    if (item.type == 'ETH') {
+    if (item.type == 'ETH' && item.network !== 'Polygon') {
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
       // console.log('Ethereum value',value);
       totalValue = value;
@@ -137,7 +137,16 @@ const TokenDetail = ({route, navigation}) => {
       let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
       // console.log('Polygon value',value);
       totalValue = value;
+    } else if (item.type == 'USDC') {
+      let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
+      // console.log('Polygon value',value);
+      totalValue = value;
+    } else if (item.type === 'ETH' && item.network === 'Polygon') {
+      let value = parseFloat(`${wethBalance}`); //+ parseFloat(balances.USDC)
+      console.log('Polygon value',value);
+      totalValue = value;
     }
+
     return totalValue;
   };
 

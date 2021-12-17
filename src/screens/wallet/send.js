@@ -321,7 +321,7 @@ const SendScreen = (props) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { wallet } = useSelector(state => state.UserReducer);
-    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance } = useSelector(state => state.WalletReducer);
+    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
     const [address, setAddress] = useState(props.address);
     const [amount, setAmount] = useState(props.amount);
     const [transfering, setTransfering] = useState(false);
@@ -335,7 +335,7 @@ const SendScreen = (props) => {
 
     const getTokenValue = () => {
         let totalValue = 0;
-        if (item.type == 'ETH') {
+        if (item.type == 'ETH' && item.network !== 'Polygon') {
             let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
             console.log('Ethereum value', value);
             totalValue = value;
@@ -353,6 +353,14 @@ const SendScreen = (props) => {
             totalValue = value;
         } else if (item.type == 'TAL') {
             let value = parseFloat(talBalance) //+ parseFloat(balances.USDC)
+            console.log('Polygon value', value);
+            totalValue = value;
+        } else if (item.type == 'USDC') {
+            let value = parseFloat(usdcBalance) //+ parseFloat(balances.USDC)
+            console.log('Polygon value', value);
+            totalValue = value;
+        } else if (item.type == 'ETH' && item.network === 'Polygon') {
+            let value = parseFloat(wethBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
             totalValue = value;
         }

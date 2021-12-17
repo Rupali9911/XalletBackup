@@ -31,6 +31,10 @@ const initialState = {
     tnftBalance: "0",
     talTransactions: [],
     talBalance: "0",
+    usdcTransactions: [],
+    usdcBalance: "0",
+    wethTransactions: [],
+    wethBalance: "0",
     connectedApps: [],
     socketOpen: false,
     requestAppId: null,
@@ -127,7 +131,9 @@ export default walletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 maticBalance: action.payload.Matic,
-                talBalance: action.payload.TAL, // for testnet only
+                talBalance: action.payload.TAL, // for testnet only,
+                usdcBalance: action.payload.USDC,
+                wethBalance: action.payload.WETH
             }
 
         case SET_CONNECTED_APPS:

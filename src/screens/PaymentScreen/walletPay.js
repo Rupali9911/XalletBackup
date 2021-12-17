@@ -14,7 +14,7 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import GradientBackground from '../../components/gradientBackground';
 import NumberFormat from 'react-number-format';
 import CommonStyles from '../../constants/styles';
-import {translate, environment, tokens} from '../../walletUtils';
+import {translate, environment, tokens, networkChain} from '../../walletUtils';
 import PriceText from '../../components/priceText';
 import { HeaderBtns } from '../wallet/components/HeaderButtons';
 import ImagesSrc from '../../constants/Images';
@@ -65,10 +65,11 @@ const WalletPay = ({route, navigation}) => {
     const [pickerVisible, setPickerVisible] = useState(false);
     const [selectTokenVisible, setSelectTokenVisible] = useState(false);
     const [isSend, setIsSend] = useState(false);
-    const [network, setNetwork] = useState(chainType === 'polygon' ? {name: "Polygon",icon: ImagesSrc.matic} : {name: "BSC",icon: ImagesSrc.bnb});
+    const [network, setNetwork] = useState(chainType === 'polygon' ? networkChain[2] : chainType === 'ethereum' ? networkChain[0] : networkChain[1]);
     const [selectedObject, setSelectedObject] = useState(null);
     const [tradeCurrency, setTradeCurrency] = useState(null);
     const [priceInToken, setPriceInToken] = useState(price);
+    const [activeTokens, setActiveTokens] = useState([]);
 
     let MarketPlaceAbi = "";
     let MarketContractAddress = "";
@@ -102,22 +103,36 @@ const WalletPay = ({route, navigation}) => {
     },[isFocused]);
 
     useEffect(() => {
-        singleSocket.connectSocket().then(() => {
-            // ping(wallet.address);
-        });
-
-        const socketSubscribe = Events.asObservable().subscribe({
-            next: (data) => {
-                console.log('wallet pay socket subscribe', data);
-                const response = JSON.parse(data);
-                if (response.type == 'pong') {
-                    connect(response.data);
+        if (allowedTokens.length > 0) {
+            let array = [];
+            allowedTokens.map(_ => {
+                array.push(_.key.toLowerCase());
+            });
+            let result = tokens.filter((item) => {
+                if(item.network.toLowerCase() === chainType){
+                   if(array.includes(item.tokenName.toLowerCase())){
+                    return true;
+                   } else if(array.includes('alia') && (item.tokenName === 'TAL' || item.tokenName === 'TNFT')) {
+                       return true;
+                   } else {
+                       return false;
+                   }
+                } else {
+                    return false;
                 }
-            }
-        });
-
-        return () => {
-            socketSubscribe.unsubscribe();
+            });
+            setActiveTokens(result);
+        } else {
+            let result = tokens.filter(_ => {
+                if(_.network.toLowerCase() === chainType && baseCurrency.key.toLowerCase() === _.tokenName.toLowerCase()){
+                    return true;
+                } else if(_.network.toLowerCase() === chainType && baseCurrency.key.toLowerCase() === 'alia' && (_.tokenName === 'TAL' || item.tokenName === 'TNFT')){
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            setActiveTokens(result);
         }
     },[]);
 
@@ -141,7 +156,7 @@ const WalletPay = ({route, navigation}) => {
     },[network, ethBalance, bnbBalance, maticBalance]);
 
     const calculatePrice = async (tradeCurr) => {
-        let web3 = new Web3(providerUrl);
+        const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
         let MarketPlaceContract = new web3.eth.Contract(
           MarketPlaceAbi,
           MarketContractAddress
@@ -194,6 +209,7 @@ const WalletPay = ({route, navigation}) => {
         let balance = parseFloat(`${selectedObject?.tokenValue}`);
         if(selectedObject){
             if(tradeCurrency.approvalRequired){
+                const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
                 let approvalContract = new web3.eth.Contract(
                     ApproveAbi,
                     tradeCurrency.approvalAdd
@@ -411,7 +427,19 @@ const WalletPay = ({route, navigation}) => {
 
     const getCurrencyOnSelect = (item) => {
         let chain = item.network === 'BSC' ? 'binance' : item.network === 'Ethereum' ? 'ethereum' : item.network === 'Polygon' ? 'polygon' : ''
-        let result = basePriceTokens.find(_ => _.key.toLowerCase() === item.tokenName.toLowerCase() && _.chain === chain)
+        let result = basePriceTokens.find(_ => {
+            if(_.chain === chain){
+                if(_.key.toLowerCase() === item.tokenName.toLowerCase()){
+                    return true;
+                }else if((item.tokenName === 'TAL' || item.tokenName === 'TNFT') && _.key.toLowerCase() === 'alia'){
+                    return true;
+                } else {
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        });
         console.log('@@@@@@@@@@@@',result,item);
         return result;
     } 
@@ -443,10 +471,12 @@ const WalletPay = ({route, navigation}) => {
             <Tokens
                 values={balances}
                 network={network}
+                allowedTokens={activeTokens}
                 onTokenPress={async(item) => {
                     setSelectedObject(item);
-                    setTradeCurrency(getCurrencyOnSelect(item));
-                    let priceInToken = await calculatePrice(3);
+                    let tradeCurrency = getCurrencyOnSelect(item);
+                    setTradeCurrency(tradeCurrency);
+                    let priceInToken = await calculatePrice(tradeCurrency.order);
                     console.log('value',parseFloat(divideNo(priceInToken)));
                     setPriceInToken(parseFloat(divideNo(priceInToken)));
                 }}
@@ -464,6 +494,7 @@ const WalletPay = ({route, navigation}) => {
             </View>}
 
             <View style={styles.buttonContainer}>
+                
                 <AppButton
                     label={translate("wallet.common.next")}
                     containerStyle={CommonStyles.button}

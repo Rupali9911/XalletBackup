@@ -43,7 +43,7 @@ const PaymentNow = (props) => {
         confirmPayment
     } = useStripe();
 
-    const { visible, onRequestClose, NftId, price, chain, ownerId, onPaymentDone, lastBidAmount, ownerAddress, baseCurrency, collectionAddress } = props;
+    const { visible, onRequestClose, NftId, IdWithChain, price, priceInDollar, chain, ownerId, onPaymentDone, lastBidAmount, ownerAddress, baseCurrency, collectionAddress } = props;
     const [opacity, setOpacity] = useState(0.88);
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
@@ -66,7 +66,7 @@ const PaymentNow = (props) => {
 
         const params = {
             cardId: paymentObject.item.id,
-            nftId: NftId,
+            nftId: IdWithChain,
             chainType: chain || "binance"
         }
         console.log('params', params);
@@ -174,7 +174,7 @@ const PaymentNow = (props) => {
     const checkPaymentStatus = (paymentIntentId) => {
 
         const params = {
-            "nftId": NftId,
+            "nftId": IdWithChain,
             "paymentIntentId": paymentIntentId,
             "chainType": chain || "binance"
         }
@@ -255,15 +255,16 @@ const PaymentNow = (props) => {
 
     const payByWallet = () => {
         if(paymentObject?.currency?.approvalRequired){
-            checkAllowance(wallet.address, chain || "binance", paymentObject?.currency?.approvalAdd).then(async(balance, approvalContract) => {
+            checkAllowance(wallet.address, chain || "binance", paymentObject?.currency?.approvalAdd).then(async({balance, contract}) => {
                 console.log('balance', balance, lastBidAmount);
-                let decimals = await approvalContract.methods.decimals().call();
+                
+                let decimals = await contract.methods.decimals().call();
                 if (parseInt(balance) / Math.pow(10, parseInt(decimals)) <= 0) {
                 // if (parseFloat(`${balance}`) < parseFloat(`${lastBidAmount}`)) {
-                    approvebnb(wallet.address, wallet.privateKey, chain || "binance", approvalContract).then((res) => {
+                    approvebnb(wallet.address, wallet.privateKey, chain || "binance", contract).then((res) => {
                         buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, paymentObject?.currency?.order).then((bnbBalance) => {
                             console.log("approve bnbBalance", bnbBalance)
-                            alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                            // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                             onPaymentDone();
                             setLoading(false);
                         }).catch((err) => {
@@ -277,7 +278,7 @@ const PaymentNow = (props) => {
                 } else {
                     buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, paymentObject?.currency?.order).then((bnbBalance) => {
                         console.log("bnbBalance", bnbBalance)
-                        alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                        // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                         onPaymentDone();
                         setLoading(false);
                     }).catch((err) => {
@@ -306,7 +307,7 @@ const PaymentNow = (props) => {
         console.log("fixed", addedFivePercent, collectionAddress);
         buyNftBnb(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, addedFivePercent).then((bnbBalance) => {
             console.log("_bnbBalance", bnbBalance)
-            alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+            // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
             onPaymentDone();
             setLoading(false);
         }).catch((err) => {
@@ -366,7 +367,7 @@ const PaymentNow = (props) => {
                     <View style={[styles.valueContainer,{alignItems: paymentObject && paymentObject.type == 'card'?'flex-start':'baseline'}]}>
                         {paymentObject && paymentObject.type == 'card' && <Text style={styles.symbol} >{'$'} </Text>}
                         <NumberFormat
-                            value={paymentObject && paymentObject.type == 'wallet' ? paymentObject.priceInToken : price || 0}
+                            value={paymentObject && paymentObject.type == 'wallet' ? paymentObject.priceInToken : priceInDollar || 0}
                             displayType={'text'}
                             decimalScale={4}
                             thousandSeparator={true}
