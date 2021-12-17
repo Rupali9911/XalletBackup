@@ -13,6 +13,7 @@ import LanguageReducer from './languageReducer';
 import PaymentReducer from './paymentReducer';
 import AsyncReducer from './asyncStorageReducer';
 import PermissionReducer from './cameraPermission';
+import { reducer as formReducer } from 'redux-form'
 
 const RootReducer = combineReducers({
     AuthReducer,
@@ -27,7 +28,8 @@ const RootReducer = combineReducers({
     LanguageReducer,
     PaymentReducer,
     AsyncReducer,
-    PermissionReducer
+    PermissionReducer,
+    form: formReducer
 });
 
 const _rootReducer = (state, action) => {

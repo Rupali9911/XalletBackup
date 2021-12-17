@@ -119,7 +119,7 @@ const TabComponent = () => {
       <Tab.Screen
         name={'Home'}
         component={HomeScreen}
-        options={{tabBarLabel: translate('common.collected')}}
+        options={{tabBarLabel: translate('common.home')}}
       />
       <Tab.Screen
         name={'Explore'}

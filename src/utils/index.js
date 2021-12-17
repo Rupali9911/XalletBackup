@@ -1,6 +1,7 @@
 import Big from "big-js";
 import BigNumber from 'bignumber.js';
 import { Alert } from "react-native";
+import { translate } from '../walletUtils';
 
 export const divideNo = (res) => {
   if (typeof res === "string" && res === "") {
@@ -53,11 +54,6 @@ export function numberWithCommas(x) {
   }
 }
 
-export function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-}
-
 export function validURL(str) {
   var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -102,3 +98,27 @@ export {
   confirmationAlert,
   alertWithSingleBtn
 }
+
+// Field Validations
+export const maxLength = max => value =>
+  value && value.length > max ? translate("wallet.common.limitInputLength", { number: max }) : undefined;
+
+export const maxLength20 = maxLength(20);
+export const maxLength50 = maxLength(50);
+export const maxLength200 = maxLength(200);
+
+export const required = value => value ? undefined : 'Required';
+export const validateEmail = value =>
+  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? translate("common.emailval") : undefined;
+export const validateWebsiteURL = value =>
+  value && !validURL(value) ? translate("common.invalidwebURL") : undefined;
+export const validateDiscordURL = value =>
+  value && !validURL(value) ? translate("common.discordlink") : undefined;
+export const validateTwitterURL = value =>
+  value && !validURL(value) ? translate("common.validtwiiterlink") : undefined;
+export const validateYoutubeURL = value =>
+  value && !validURL(value) ? translate("common.youtubelink") : undefined;
+export const validateInstagramURL = value =>
+  value && !validURL(value) ? translate("common.instagramlink") : undefined;
+export const validateFacebookURL = value =>
+  value && !validURL(value) ? translate("common.validfblink") : undefined;

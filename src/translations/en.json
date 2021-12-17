@@ -443,6 +443,7 @@
         "validtwiiterlink": "Please enter valid Twitter link.",
         "youtubelink": "Please enter valid YouTube link.",
         "instagramlink": "Please enter valid Instagram link.",
+        "discordlink": "Please enter valid Discord link.",
         "usernotfound": "User not found",
         "facebook": "Facebook",
         "youtube": "YouTube",

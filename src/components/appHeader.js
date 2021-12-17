@@ -32,10 +32,10 @@ function AppHeader(props) {
                     props.titleComponent ?
                         props.titleComponent
                         :
-                        <Text style={[styles.title, labelStyle, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
+                        <Text numberOfLines={1} style={[styles.title, labelStyle, { color: props.isWhite ? Colors.white : Colors.black }, props.titleStyle]} >{props.title}</Text>
                 }
             </View>
-            <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }} >
+            <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }}>
                 {
                     props.showRightButton ?
                         <TouchableOpacity style={[styles.backContainer, { alignItems: "flex-end", paddingLeft: 0, paddingRight: wp("3%") }]} onPress={props.onPressRight} >
@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
         fontSize: RF(2.0),
         fontFamily: FONTS.PINGfANG_SBOLD,
         textAlign: "center",
-        color: COLORS.BLACK1
+        color: COLORS.BLACK1,
+        maxWidth: wp('80%'),
     },
     backContainer: {
         height: "100%",

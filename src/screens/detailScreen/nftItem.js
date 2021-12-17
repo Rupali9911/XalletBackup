@@ -314,22 +314,22 @@ const nftItem = ({ item, index }) => {
         {
           fileType === 'mp4' || fileType === 'MP4' || fileType === 'mov' || fileType === 'MOV' ?
             <View style={styles.modalImage}>
-                <Video
-                  key={tokenId}
-                  ref={refVideo}
-                  source={{ uri: item.metaData.image }}
-                  playInBackground={false}
-                  paused={!isPlay}
-                  resizeMode={'cover'}
-                  onLoad={() => refVideo.current.seek(0)}
-                  style={{
-                    flex: 1,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  }} />
+              <Video
+                key={tokenId}
+                ref={refVideo}
+                source={{ uri: item.metaData.image }}
+                playInBackground={false}
+                paused={!isPlay}
+                resizeMode={'cover'}
+                onLoad={() => refVideo.current.seek(0)}
+                style={{
+                  flex: 1,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }} />
               {
                 !isPlay &&
                 <View style={{
