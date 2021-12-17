@@ -323,15 +323,18 @@ const Wallet = ({route, navigation}) => {
           environment.polRpc,
           'alia',
         ),
-        // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
+        balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc"),
+        balance(pubKey, environment.wethCont, environment.wethAbi, environment.polRpc, "weth")
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
+          console.log('responses',responses);
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
-            // USDC: responses[2],
+            USDC: responses[2],
+            WETH: responses[3],
           };
           dispatch(updatePolygonBalances(balances));
           setBalances(balances);

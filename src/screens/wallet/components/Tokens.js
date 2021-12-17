@@ -43,15 +43,19 @@ const ListItems = (props) => {
 }
 
 const Tokens = (props) => {
-    const [balance_Data, setBalanceData] = useState(tokens);
+
+    const {network, allowedTokens} = props;
+
+    const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
-    const {network} = props;
 
-    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance} = useSelector(state => state.WalletReducer);
+    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance, usdcBalance, wethBalance} = useSelector(state => state.WalletReducer);
 
-    // useEffect(() => {
-    //     setBalanceData(tokens);
-    // }, []);
+    useEffect(() => {
+        if(allowedTokens){
+            setBalanceData(allowedTokens);
+        }
+    }, [allowedTokens]);
 
     useEffect(()=>{
         let array = tokens;
@@ -67,10 +71,11 @@ const Tokens = (props) => {
         } else if(network.name == 'Polygon'){
             array[2].tokenValue = `${maticBalance}`;
             array[4].tokenValue = `${talBalance}`;
-            // array[4].tokenValue = `${props.values.USDC}`;
+            array[5].tokenValue = `${usdcBalance}`;
+            array[6].tokenValue = `${wethBalance}`;
         }
         setBalanceData(array);
-        console.log('value update',array);
+        // console.log('value update',array);
     },[network,ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance]);
 
     // useEffect(()=>{

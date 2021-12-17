@@ -14,24 +14,7 @@ import { wp, hp, RF } from '../../../constants/responsiveFunct';
 import ImagesSrc from '../../../constants/Images';
 import TextView from '../../../components/appText';
 import Checkbox from '../../../components/checkbox';
-
-const networks = [
-    {
-        name: "Ethereum",
-        value: 'ethereum',
-        icon: ImagesSrc.etherium
-    },
-    {
-        name: "BSC",
-        value: 'binance',
-        icon: ImagesSrc.bnb
-    },
-    {
-        name: "Polygon",
-        value: 'polygon',
-        icon: ImagesSrc.matic
-    }
-];
+import { networkChain } from '../../../walletUtils';
 
 const NetworkPicker = (props) => {
 
@@ -46,7 +29,7 @@ const NetworkPicker = (props) => {
                 <TouchableOpacity style={styles.emptyView} onPress={onRequestClose} />
                 <View style={styles.contentContainer}>
                     <FlatList
-                        data={networks}
+                        data={networkChain}
                         keyExtractor={(item, index) => `_${index}`}
                         renderItem={({ item, index }) => {
                             const isCheck = network ? network.name === item.name : false;

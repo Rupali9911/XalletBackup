@@ -13,61 +13,60 @@ import {C_Image, DetailModal, Loader} from '../../components';
 import {colors} from '../../res';
 import {changeScreenName} from '../../store/actions/authAction';
 import {
-  favoriteNFTList,
-  newNftListReset,
-  newNftLoadStart,
-  newPageChange,
-} from '../../store/actions/newNFTActions';
-import getLanguage from '../../utils/languageSupport';
+  gifNFTList,
+  nftListReset,
+  nftLoadStart,
+  pageChange,
+} from '../../store/actions/nftTrendList';
 import {translate} from '../../walletUtils';
 import styles from './styles';
 
-const langObj = getLanguage();
-
-const Favorite = () => {
-  const {NewNFTListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
+const Gif = () => {
+  const {ListReducer} = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   useEffect(() => {
-    dispatch(newNftLoadStart());
-    dispatch(newNftListReset());
-    getNFTlist(1, null, sort);
-    dispatch(newPageChange(1));
-  }, [sort]);
+    dispatch(nftLoadStart());
+    dispatch(nftListReset());
+    getNFTlist(1, null, ListReducer.sort);
+    dispatch(pageChange(1));
+  }, [ListReducer.sort]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
-    // console.log('____sort',_sort);
-    dispatch(favoriteNFTList(page, limit, _sort));
+    // console.log('__sort',_sort);
+    dispatch(gifNFTList(page, limit, _sort));
   }, []);
 
-  const handleRefresh = () => {
-    dispatch(newNftListReset());
-    getNFTlist(1, null, sort);
-    dispatch(newPageChange(1));
+  const refreshFunc = () => {
+    dispatch(nftListReset());
+    getNFTlist(1, null, ListReducer.sort);
+    dispatch(pageChange(1));
   };
 
-  const renderItem = ({item}) => {
-    let findIndex = NewNFTListReducer.favoriteNftList.findIndex(
-      x => x.id === item.id,
-    );
+  const renderFooter = () => {
+    if (!ListReducer.nftListLoading) return null;
+    return <ActivityIndicator size="small" color={colors.themeR} />;
+  };
+
+  const renderItem = ({item, index}) => {
+    let findIndex = ListReducer.gifList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri =
         item.thumbnailUrl !== undefined || item.thumbnailUrl
           ? item.thumbnailUrl
           : item.metaData.image;
-
       return (
         <TouchableOpacity
           onLongPress={() => {
+            item.index = index;
             setModalData(item);
             setModalVisible(true);
           }}
           onPress={() => {
-            dispatch(changeScreenName('newNFT'));
+            dispatch(changeScreenName('Hot'));
             navigation.push('DetailItem', {index: findIndex});
           }}
           style={styles.listItem}>
@@ -85,47 +84,34 @@ const Favorite = () => {
     }
   };
 
-  const renderFooter = () => {
-    if (!NewNFTListReducer.newNftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const memoizedValue = useMemo(
-    () => renderItem,
-    [NewNFTListReducer.favoriteNftList],
-  );
+  const memoizedValue = useMemo(() => renderItem, [ListReducer.gifList]);
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {NewNFTListReducer.newListPage === 1 &&
-      NewNFTListReducer.newNftListLoading ? (
+      {ListReducer.page === 1 && ListReducer.nftListLoading ? (
         <Loader />
-      ) : NewNFTListReducer.favoriteNftList.length !== 0 ? (
+      ) : ListReducer.gifList.length !== 0 ? (
         <FlatList
-          data={NewNFTListReducer.favoriteNftList}
+          data={ListReducer.gifList}
           horizontal={false}
           numColumns={3}
           initialNumToRender={15}
           onRefresh={() => {
-            dispatch(newNftLoadStart());
-            handleRefresh();
+            dispatch(nftLoadStart());
+            refreshFunc();
           }}
           scrollEnabled={!isModalVisible}
-          refreshing={
-            NewNFTListReducer.newListPage === 1 &&
-            NewNFTListReducer.newNftListLoading
-          }
+          refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
           renderItem={memoizedValue}
           onEndReached={() => {
             if (
-              !NewNFTListReducer.newNftListLoading &&
-              NewNFTListReducer.newTotalCount !==
-                NewNFTListReducer.favoriteNftList.length
+              !ListReducer.nftListLoading &&
+              ListReducer.gifList.length !== ListReducer.totalCount
             ) {
-              let num = NewNFTListReducer.newListPage + 1;
+              let num = ListReducer.page + 1;
               getNFTlist(num);
-              dispatch(newPageChange(num));
+              dispatch(pageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
@@ -139,6 +125,7 @@ const Favorite = () => {
       )}
       {modalData && (
         <DetailModal
+          index={modalData.index}
           data={modalData}
           isModalVisible={isModalVisible}
           toggleModal={() => setModalVisible(false)}
@@ -148,4 +135,4 @@ const Favorite = () => {
   );
 };
 
-export default Favorite;
+export default Gif;

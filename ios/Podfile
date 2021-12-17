@@ -18,6 +18,8 @@ target 'showcase' do
   # pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
 
 
+  pod 'TouchID', :path => '../node_modules/react-native-touch-id'
+
   target 'showcaseTests' do
     inherit! :complete
     # Pods for testing

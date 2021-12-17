@@ -397,6 +397,15 @@ PODS:
     - React-Core
   - RNIap (8.0.0-rc.4):
     - React-Core
+  - RNImageCropPicker (0.37.2):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.37.2)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.37.2):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
   - RNLocalize (2.1.5):
     - React-Core
   - RNOS (1.2.6):
@@ -434,6 +443,9 @@ PODS:
   - StripeUICore (21.9.0):
     - StripeCore (= 21.9.0)
   - TcpSockets (3.3.2):
+    - React
+  - TOCropViewController (2.6.0)
+  - TouchID (4.4.1):
     - React
   - Yoga (1.14.0)
 
@@ -492,6 +504,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNOS (from `../node_modules/react-native-os`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -502,6 +515,7 @@ DEPENDENCIES:
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - TcpSockets (from `../node_modules/react-native-tcp`)
+  - TouchID (from `../node_modules/react-native-touch-id`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -522,6 +536,7 @@ SPEC REPOS:
     - Stripe
     - StripeCore
     - StripeUICore
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -628,6 +643,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
     :path: "../node_modules/react-native-iap"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
   RNOS:
@@ -648,6 +665,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@stripe/stripe-react-native"
   TcpSockets:
     :path: "../node_modules/react-native-tcp"
+  TouchID:
+    :path: "../node_modules/react-native-touch-id"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -715,6 +734,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 8415ec196e5c1196caa26ec0742cdb48ed4d0f97
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNIap: f24e3931bb8e499b4b8c204539dcc91a0a7347a8
+  RNImageCropPicker: 448d3c6e923fde3466b49caf3c2457c2a0ba02dd
   RNLocalize: 74b82db20cc3895ccc25af992c644879bcec2815
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
@@ -730,8 +750,10 @@ SPEC CHECKSUMS:
   StripeCore: 2ea9531e863ef20f191a0d61f00dedb7f061baef
   StripeUICore: a0f9e40520823d34c63baec0782fc4a0c7fb7484
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
+  TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
+  TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: f6f871a051ae8a48d154a71cdbe0a2842afb18b5
+PODFILE CHECKSUM: f2995322800c478bb1256c06923128434604111b
 
 COCOAPODS: 1.11.2
