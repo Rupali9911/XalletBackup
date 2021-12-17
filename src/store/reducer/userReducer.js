@@ -355,14 +355,14 @@ export const signOut = () => {
   }
 }
 
-export const updateProfileImage = (formData) => (dispatch, getState) => {
+export const updateProfileImage = (formData) => async (dispatch, getState) => {
   dispatch(startLoading());
 
   const { data } = getState().UserReducer;
   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-  axios.post(`${BASE_URL}/user/update-profile-image`, formData)
+  await axios.post(`${BASE_URL}/user/update-profile-image`, formData)
     .then(res => {
       dispatch(upateUserData(res.data.data));
     })
@@ -388,7 +388,7 @@ export const updateProfileImage = (formData) => (dispatch, getState) => {
     });
 }
 
-export const updateProfile = (props, callBack) => (dispatch, getState) => {
+export const updateProfile = (props, callBack) => async (dispatch, getState) => {
   dispatch(startLoading());
 
   const { data } = getState().UserReducer;
@@ -402,7 +402,7 @@ export const updateProfile = (props, callBack) => (dispatch, getState) => {
     data: props
   };
 
-  axios(config)
+  await axios(config)
     .then(res => {
       let data = res.data.data;
       dispatch(upateUserData(data));
