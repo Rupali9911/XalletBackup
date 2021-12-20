@@ -386,7 +386,7 @@ function Profile({
             <DescriptionView>
                 <SpaceView mTop={SIZE(12)} />
                 <SmallBoldText>
-                    {title || name || username}
+                    {title || username}
                 </SmallBoldText>
                 <SpaceView mTop={SIZE(8)} />
                 {
