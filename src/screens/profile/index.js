@@ -65,6 +65,7 @@ import {
 } from '../../common/responsiveFunction';
 import { colors, fonts } from '../../res';
 import { useIsFocused } from '@react-navigation/native';
+import Hyperlink from 'react-native-hyperlink';
 
 const {
     ConnectSmIcon,
@@ -392,9 +393,11 @@ function Profile({
                 {
                     !_.isEmpty(about) &&
                     <ScrollView style={{ maxHeight: SIZE(70) }}>
-                        <SmallNormalText>
-                            {about}
-                        </SmallNormalText>
+                        <Hyperlink onPress={(url, text) => Linking.openURL(url)} linkStyle={{ color: COLORS.BLUE2 }}>
+                            <SmallNormalText>
+                                {about}
+                            </SmallNormalText>
+                        </Hyperlink>
                     </ScrollView>
                 }
                 <SpaceView mTop={SIZE(8)} />
