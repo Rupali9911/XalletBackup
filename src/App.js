@@ -1,24 +1,24 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {StripeProvider} from '@stripe/stripe-react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import {Image, Linking, LogBox} from 'react-native';
+import { Image, Linking, LogBox, Text } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
-import {Provider, useDispatch, useSelector} from 'react-redux';
-import {Subject} from 'rxjs';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Subject } from 'rxjs';
 import '../shim';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from './common/responsiveFunction';
-import {AppSplash, Loader} from './components';
+import { AppSplash, Loader } from './components';
 import Colors from './constants/Colors';
 import ImageSrc from './constants/Images';
-import {screenWidth} from './constants/responsiveFunct';
+import { screenWidth } from './constants/responsiveFunct';
 import AuthStack from './navigations/authStack';
-import {fonts, images} from './res';
+import { fonts, images } from './res';
 import ArtistDetail from './screens/ArtistDetail';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
@@ -50,8 +50,8 @@ import transactionsDetail from './screens/wallet/transactionsDetail';
 import SellNFT from './screens/sellNft/index';
 import Store from './store';
 
-import {setRequestAppId} from './store/reducer/walletReducer';
-import {environment, translate} from './walletUtils';
+import { setRequestAppId } from './store/reducer/walletReducer';
+import { environment, translate } from './walletUtils';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -67,9 +67,9 @@ const deepLinkData = {
 };
 
 const TabComponent = () => {
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
 
   return (
     <Tab.Navigator
@@ -84,8 +84,8 @@ const TabComponent = () => {
         },
         activeTintColor: Colors.themeColor,
       }}
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -111,7 +111,7 @@ const TabComponent = () => {
             <Image
               source={iconName}
               resizeMode="contain"
-              style={{width: wp('6.5%'), height: wp('4.5%')}}
+              style={{ width: wp('6.5%'), height: wp('4.5%') }}
             />
           );
         },
@@ -119,26 +119,26 @@ const TabComponent = () => {
       <Tab.Screen
         name={'Home'}
         component={HomeScreen}
-        options={{tabBarLabel: translate('common.home')}}
+        options={{ tabBarLabel: translate('common.home') }}
       />
       <Tab.Screen
         name={'Explore'}
         component={ExploreScreen}
-        options={{tabBarLabel: translate('wallet.common.explore')}}
+        options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
       <Tab.Screen
         name={'Wallet'}
-        options={{tabBarLabel: translate('wallet.common.wallet')}}
+        options={{ tabBarLabel: translate('wallet.common.wallet') }}
         component={Wallet}
       />
       <Tab.Screen
         name={'Connect'}
-        options={{tabBarLabel: translate('wallet.common.connect')}}
+        options={{ tabBarLabel: translate('wallet.common.connect') }}
         component={Connect}
         initialParams={{}}
       />
       <Tab.Screen
-        options={{tabBarLabel: translate('wallet.common.me')}}
+        options={{ tabBarLabel: translate('wallet.common.me') }}
         name={'Me'}
         component={ProfileScreen}
       />
@@ -147,7 +147,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const {wallet, passcode, mainLoader, showSplash} = useSelector(
+  const { wallet, passcode, mainLoader, showSplash } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -157,13 +157,13 @@ const AppRoutes = () => {
   React.useEffect(() => {
     LogBox.ignoreAllLogs();
 
-    Linking.addEventListener('url', ({url}) => {
+    Linking.addEventListener('url', ({ url }) => {
       console.log('e', url);
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
         if (wallet) {
           setTimeout(() => {
-            navigatorRef.current?.navigate('Connect', {appId: id});
+            navigatorRef.current?.navigate('Connect', { appId: id });
           }, 500);
         } else {
           dispatch(setRequestAppId(id));
@@ -199,66 +199,60 @@ const AppRoutes = () => {
     // },
   };
 
+  if (mainLoader || showSplash) return <AppSplash />
+
   return (
-    <>
-      {showSplash ? (
-        <AppSplash />
-      ) : mainLoader ? (
-        <Loader />
+    <NavigationContainer ref={navigatorRef} linking={linking}>
+      {wallet ? (
+        <Stack.Navigator
+          // initialRouteName={"Create"}
+          initialRouteName={initialRoute}
+          headerMode="none"
+          screenOptions={{
+            gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
+          }}>
+          <Stack.Screen name="Home" component={TabComponent} />
+          <Stack.Screen
+            name="PasscodeScreen"
+            initialParams={{ screen: 'Auth' }}
+            component={PasscodeScreen}
+          />
+          <Stack.Screen name="DetailItem" component={DetailItemScreen} />
+          <Stack.Screen
+            name="CertificateDetail"
+            component={CertificateDetailScreen}
+          />
+          <Stack.Screen name="Pay" component={PayScreen} />
+          <Stack.Screen name="MakeBid" component={MakeBidScreen} />
+          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen name="tokenDetail" component={TokenDetail} />
+          <Stack.Screen name="receive" component={Receive} />
+          <Stack.Screen
+            name="transactionsDetail"
+            component={transactionsDetail}
+          />
+          <Stack.Screen name="send" component={Send} />
+          <Stack.Screen name="scanToConnect" component={ScanToConnect} />
+          <Stack.Screen name="Create" component={CreateNFTScreen} />
+          <Stack.Screen name="Certificate" component={CertificateScreen} />
+          <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
+          <Stack.Screen name="AddCard" component={AddCard} />
+          <Stack.Screen name="Cards" component={Cards} />
+          <Stack.Screen name="BuyGold" component={BuyGold} />
+          <Stack.Screen name="Setting" component={Setting} />
+          <Stack.Screen name="ChangePassword" component={ChangePassword} />
+          <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
+          <Stack.Screen name="WalletPay" component={WalletPay} />
+          <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
+          <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
+          <Stack.Screen name="sellNft" component={SellNFT} />
+        </Stack.Navigator>
       ) : (
-        <NavigationContainer ref={navigatorRef} linking={linking}>
-          {wallet ? (
-            <Stack.Navigator
-              // initialRouteName={"Create"}
-              initialRouteName={initialRoute}
-              headerMode="none"
-              screenOptions={{
-                gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
-              }}>
-              <Stack.Screen name="Home" component={TabComponent} />
-              <Stack.Screen
-                name="PasscodeScreen"
-                initialParams={{screen: 'Auth'}}
-                component={PasscodeScreen}
-              />
-              <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-              <Stack.Screen
-                name="CertificateDetail"
-                component={CertificateDetailScreen}
-              />
-              <Stack.Screen name="Pay" component={PayScreen} />
-              <Stack.Screen name="MakeBid" component={MakeBidScreen} />
-              <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-              <Stack.Screen name="tokenDetail" component={TokenDetail} />
-              <Stack.Screen name="receive" component={Receive} />
-              <Stack.Screen
-                name="transactionsDetail"
-                component={transactionsDetail}
-              />
-              <Stack.Screen name="send" component={Send} />
-              <Stack.Screen name="scanToConnect" component={ScanToConnect} />
-              <Stack.Screen name="Create" component={CreateNFTScreen} />
-              <Stack.Screen name="Certificate" component={CertificateScreen} />
-              <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
-              <Stack.Screen name="AddCard" component={AddCard} />
-              <Stack.Screen name="Cards" component={Cards} />
-              <Stack.Screen name="BuyGold" component={BuyGold} />
-              <Stack.Screen name="Setting" component={Setting} />
-              <Stack.Screen name="ChangePassword" component={ChangePassword} />
-              <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
-              <Stack.Screen name="WalletPay" component={WalletPay} />
-              <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
-              <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
-              <Stack.Screen name="sellNft" component={SellNFT} />
-            </Stack.Navigator>
-          ) : (
-            <Stack.Navigator headerMode="none">
-              <Stack.Screen name="Authentication" component={AuthStack} />
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
+        <Stack.Navigator headerMode="none">
+          <Stack.Screen name="Authentication" component={AuthStack} />
+        </Stack.Navigator>
       )}
-    </>
+    </NavigationContainer>
   );
 };
 
