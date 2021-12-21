@@ -49,7 +49,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Capture profile picture</string>
+	<string>${NSCameraUsageDscription}</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Share your location for better experience</string>
 	<key>NSMicrophoneUsageDescription</key>

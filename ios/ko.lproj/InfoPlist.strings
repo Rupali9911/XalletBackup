@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  showcase
+
+  Created by apple on 20/12/2021.
+  
+*/
+NSCameraUsageDescription = "This allows you to share photos from your library and save photos to your camera roll.";
