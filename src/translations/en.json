@@ -610,7 +610,8 @@
         "award": "Award",
         "Giveaway": "Giveaway",
         "Sellselecttoken": "Select token",
-        "allowedcurrency": "Payable in"
+        "allowedcurrency": "Payable in",
+        "ethereum": "Ethereum"
     },
     "AwardPage": {},
     "wallet": {

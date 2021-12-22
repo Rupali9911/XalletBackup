@@ -59,11 +59,11 @@ function ExploreScreen() {
 
     return (
         <Container>
-            <Header>
-                <HeaderText>
-                    {translate("wallet.common.explore")}
-                </HeaderText>
-            </Header>
+            {/*<Header>*/}
+                {/*<HeaderText>*/}
+                    {/*{translate("wallet.common.explore")}*/}
+                {/*</HeaderText>*/}
+            {/*</Header>*/}
             <View style={{ flex: 1 }}>
                 <View style={styles.listContainer}>
                     {
