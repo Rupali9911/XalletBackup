@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { colors } from '../../res';
 import { networkType as networkStatus } from "../../common/networkType";
 
@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 const ListItem = props => {
   return (
@@ -26,24 +27,45 @@ const ListItem = props => {
   );
 };
 
-const NFTList = ({ changeLoadingState, position }) => {
+const NFTList = ({
+  changeLoadingState,
+  position,
+  showModal,
+  modalItem,
+  modalScreen
+}) => {
 
   const [collectionList, setCollectionList] = useState([]);
-  const [toggle, setToggle] = useState(false);
+  const [collection, setCollection] = useState(null);
+  const [nftListPage, setNftListPage] = useState(1);
+  const [nftListDraftPage, setNftListDraftPage] = useState(1);
+  const [nftListCreated, setNftListCreated] = useState([]);
+  const [nftListDraft, setNftListDraft] = useState([]);
+  const [toggle, setToggle] = useState("mint");
 
   const { wallet, data } = useSelector(
     state => state.UserReducer
   );
-  // const { networkType } = useSelector(
-  //   state => state.WalletReducer
-  // );
+  const { networkType } = useSelector(
+    state => state.WalletReducer
+  );
 
   useEffect(() => {
-    console.log(position)
+    console.log(position, modalItem, modalScreen)
     if (position == 1) {
+      changeLoadingState(true)
       getCollectionList()
     }
   }, [position])
+
+  useEffect(() => {
+    if (modalScreen === "nftList" && modalItem) {
+      setCollection(modalItem)
+      getNftList(modalItem, toggle, 1)
+
+    }
+
+  }, [modalItem])
 
   const getCollectionList = async () => {
     const publicAddress = wallet.address;
@@ -59,9 +81,22 @@ const NFTList = ({ changeLoadingState, position }) => {
       };
       axios.post(url, body)
         .then(collectionList => {
-          console.log(collectionList, "nftlist collectionList")
+          // console.log(collectionList, "nftlist collectionList")
           if (collectionList.data.success) {
+
             setCollectionList(collectionList.data.data)
+            if (collectionList.data.data.length !== 0) {
+              let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
+              // console.log(selectedCollection, "selected collection")
+              setCollection(selectedCollection)
+              toggle == "mint" ?
+                setNftListPage(1) : setNftListDraftPage(1);
+              getNftList(selectedCollection, toggle, 1)
+            } else {
+              changeLoadingState(false)
+            }
+          } else {
+            changeLoadingState(false)
           }
         })
         .catch(e => {
@@ -75,38 +110,107 @@ const NFTList = ({ changeLoadingState, position }) => {
     }
   };
 
+  const getNftList = (collect, tog, page) => {
+    const url = `${BASE_URL}/user/listing-nft`;
+    let body = {
+      collectionAddress: collect.collectionAddress,
+      page: page,
+      limit: 50,
+      status: tog,
+    };
+
+    axios.post(url, body)
+      .then(res => {
+        console.log(res, "nftlist", tog)
+        if (res.data.success) {
+          if (tog == "mint") {
+            setNftListCreated(res.data.data)
+          } else {
+            setNftListDraft(res.data.data)
+          }
+        }
+        changeLoadingState(false)
+
+      })
+      .catch(e => {
+        changeLoadingState(false);
+        console.log(e, "nftlist collectionList error");
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.error.networkFailed")
+        );
+      })
+
+  }
+
+  const pressToggle = (v) => {
+    changeLoadingState(true)
+
+    setToggle(v);
+    v == "mint" ?
+      setNftListPage(1) : setNftListDraftPage(1);
+    getNftList(collection, v, 1)
+  }
+
+  const renderListItem = ({ item, index }) => {
+    return (
+      <ListItem />
+    )
+  }
 
   return (
     <View style={styles.childCont}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <CardCont>
           <CardLabel>Collection</CardLabel>
-          <CardField pressable showRight />
+          <CardField
+            inputProps={{ value: collection ? collection.collectionName : "" }}
+            onPress={() => showModal({ data: collectionList, title: "Collection List", itemToRender: "collectionName" })}
+            pressable
+            showRight />
           <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
             <CardButton
-              onPress={() => setToggle(true)}
-              border={!toggle ? colors.BLUE6 : null}
+              onPress={() => pressToggle("mint")}
+              border={toggle !== "mint" ? colors.BLUE6 : null}
               label="Created"
               buttonCont={styles.leftToggle}
             />
             <CardButton
-              onPress={() => setToggle(false)}
-              border={toggle ? colors.BLUE6 : null}
+              onPress={() => pressToggle("draft")}
+              border={toggle !== "draft" ? colors.BLUE6 : null}
               buttonCont={styles.rightToggle}
               label="Draft"
             />
           </View>
 
           <View style={styles.listMainCont}>
-            <ListItem />
-            <View style={styles.separator} />
-            <ListItem />
-            <View style={styles.separator} />
-            <ListItem />
-            <View style={styles.separator} />
-            <ListItem />
-            <View style={styles.separator} />
-            <ListItem />
+            {
+              (toggle == "mint" && nftListCreated.length !== 0) || (toggle == "draft" && nftListDraft.length !== 0) ?
+
+                <FlatList
+                  data={toggle == "mint" ? nftListCreated : nftListDraft}
+                  initialNumToRender={50}
+                  renderItem={renderListItem}
+                  onEndReached={() => {
+                    let num;
+                    if (toggle == "mint") {
+                      num = nftListPage + 1;
+                      setNftListPage(num)
+                    } else {
+                      num = nftListDraftPage + 1;
+                      setNftListDraftPage(num)
+                    }
+                    getNftList(collection, toggle, num)
+                  }}
+                  onEndReachedThreshold={0.4}
+                  keyExtractor={(v, i) => 'item_' + i}
+                /> :
+                <View style={styles.sorryMessageCont} >
+                  <Text style={styles.sorryMessage} >No Data Found</Text>
+                </View>
+            }
+
+            {/* <View style={styles.separator} /> */}
           </View>
         </CardCont>
       </ScrollView>

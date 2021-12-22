@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import {colors, fonts} from '../../res';
+import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -131,6 +131,15 @@ const styles = StyleSheet.create({
   listLabel: {
     fontSize: RF(1.5),
     color: colors.BLUE5,
+    fontFamily: fonts.SegoeUIRegular,
+  },
+  sorryMessageCont: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  sorryMessage: {
+    fontSize: 15,
     fontFamily: fonts.SegoeUIRegular,
   },
 });

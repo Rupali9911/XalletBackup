@@ -6,7 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  ScrollView
 } from 'react-native';
+import Modal from 'react-native-modal';
 
 import { colors, fonts } from '../../../res';
 import {
@@ -28,6 +30,7 @@ export const CardField = props => {
   let pressable = props.pressable ? false : true;
   return (
     <TouchableOpacity
+      onPress={props.onPress}
       disabled={pressable}
       style={[
         styles.fieldCont,
@@ -77,6 +80,46 @@ export const CardButton = props => {
     </TouchableOpacity>
   );
 };
+
+export const TabModal = (props) => {
+  return (
+    <Modal
+      {
+      ...props.modalProps
+      }
+      backdropColor="#B4B3DB"
+      backdropOpacity={0.8}
+      animationIn="zoomInDown"
+      animationOut="zoomOutUp"
+      animationInTiming={600}
+      animationOutTiming={600}
+      backdropTransitionInTiming={600}
+      backdropTransitionOutTiming={600}>
+      <View style={styles.modalCont}>
+        {
+          props.title ?
+            <Text style={styles.modalTitle}>
+              {props.title}
+            </Text> : null
+        }
+        <ScrollView style={{ marginTop: hp('3%') }}>
+          {props.data.map((v, i) => {
+            return (
+              <TouchableOpacity
+                key={i}
+                onPress={() => props.itemPress(v)}
+                style={styles.modalItem}>
+                <Text style={styles.listLabel}>
+                  {v[props.renderItemName]}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+    </Modal>
+  )
+}
 
 const styles = StyleSheet.create({
   cardCont: {
@@ -128,5 +171,32 @@ const styles = StyleSheet.create({
     height: wp(size),
     width: wp(size),
     resizeMode: 'contain',
-  })
+  }),
+  modalCont: {
+    width: "100%",
+    backgroundColor: colors.white,
+    borderRadius: wp('2%'),
+    maxHeight: hp(60),
+    paddingHorizontal: wp('5%'),
+    paddingVertical: hp('3%')
+  },
+  modalTitle: {
+    fontFamily: fonts.ARIAL_BOLD,
+    fontSize: RF(2.5),
+    color: colors.BLACK8,
+    textAlign: "center"
+  },
+  modalItem: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp("5%"),
+  },
+  listLabel: {
+    fontFamily: fonts.ARIAL,
+    fontSize: RF(1.9),
+    color: colors.BLACK8,
+  },
 });

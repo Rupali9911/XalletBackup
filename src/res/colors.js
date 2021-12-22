@@ -27,6 +27,7 @@ const colors = {
     BLACK5: '#484848',
     BLACK6: '#495057',
     BLACK7: '#212529',
+    BLACK8: '#2C2B2B',
     GREY1: '#656565',
     GREY2: '#DFDFDF',
     GREY3: '#727272',
