@@ -6,4 +6,4 @@
   
 */
 
-NSCameraUsageDescription = "This allows you to share photos from your library and save photos to your camera roll.";
+NSCameraUsageDescription = "プロファイル画像を読み取る";
