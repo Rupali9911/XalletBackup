@@ -30,7 +30,6 @@ import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 
 const { width } = Dimensions.get('window');
-const langObj = getLanguage();
 const Web3 = require("web3");
 
 const {
@@ -59,21 +58,21 @@ const nftItem = ({ item, index }) => {
   const refVideo = useRef(null);
 
   const navigation = useNavigation();
-  const accountKey = AuthReducer.accountKey;
 
   let MarketPlaceAbi = "";
   let MarketContractAddress = "";
 
-  let AwardAbi = "";
-  let AwardContractAddress = "";
-  let ApproveAbi = "";
-  let ApproveAdd = "";
+  let ERC721Abi = "";
   let providerUrl = "";
 
   let params = item.tokenId.toString().split('-');
   let tokenId = params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
-  let chainType = params.length > 1 ? params[0] : 'binance';
+  let chainType = params.length > 1 ? params[0] : 'polygon';
   let collectionAddress = params.length > 2 ? params[1] : null;
+
+  // console.log('========params', item.tokenId.toString());
+  // console.log('========chainType', chainType);
+  // console.log('======tokenId', tokenId);
 
   if (chainType === 'polygon') {
     MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
@@ -90,36 +89,53 @@ const nftItem = ({ item, index }) => {
     ERC721Address = blockChainConfig[0].erc721ConConfig.add;
     collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
   } else if (chainType === 'ethereum') {
-    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+    MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
     MarketContractAddress = blockChainConfig[2].marketConConfig.add;
     providerUrl = blockChainConfig[2].providerUrl;
     ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
     ERC721Address = blockChainConfig[2].erc721ConConfig.add;
     collectionAddress = collectionAddress || blockChainConfig[2].erc721ConConfig.add;
   }
+  // console.log('========collectionAddress', collectionAddress);
 
   // console.log('params:',params,', tokenId:',tokenId,', collectionAddresss', collectionAddress);
 
+  const chainAvailable = () => {
+    let found = false;
+    for (let i = 0; i < blockChainConfig.length; i++) {
+      if (blockChainConfig[i].key === chainType) {
+        found = true;
+        break;
+      }
+    }
+    return found;
+  }
+
   useEffect(() => {
+    // Get NonCryptoNFTOwner
     let web3 = new Web3(providerUrl);
-    if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
+    if (chainAvailable()) {
       let MarketPlaceContract = new web3.eth.Contract(
         MarketPlaceAbi,
         MarketContractAddress
       );
-      MarketPlaceContract.methods
-        .getNonCryptoOwner(collectionAddress,tokenId)
-        .call(async (err, res) => {
-          console.log('getNonCryptoOwner_res',res);
-          if (res) {
-            const userId = res.toLowerCase();
-            setOwnerId(userId);
-            getPublicProfile(userId, false);
-          } else if (!res) {
-            lastOwnerOfNFT();
-          } else if (err) {
-          }
-        });
+      if (MarketPlaceContract.methods.getNonCryptoOwner) {
+        MarketPlaceContract.methods
+          .getNonCryptoOwner(collectionAddress, tokenId)
+          .call(async (err, res) => {
+            if (res) {
+              const userId = res.toLowerCase();
+              setOwnerId(userId);
+              getPublicProfile(userId, false);
+              getTokenDetailsApi(false);
+            } else if (!res) {
+              getTokenDetailsApi();
+            } else if (err) {
+            }
+          });
+      } else {
+        getTokenDetailsApi();
+      }
     }
   }, []);
 
@@ -155,9 +171,14 @@ const nftItem = ({ item, index }) => {
       MarketContractAddress
     );
 
+    // console.log('**************tokenId', tokenId);
+    // console.log('**************collectionAddress', collectionAddress);
+    // console.log('**************ERC721Abi', ERC721Abi.length);
+    // console.log('**************providerUrl', providerUrl);
+
     ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       let ownerAddress = res;
-      console.log('res',res);
+      // console.log('=====err', err);
       if (!err) {
         MarketPlaceContract.methods.getSellDetail(collectionAddress, tokenId).call((err, res) => {
           if (res[0] !== '0x0000000000000000000000000000000000000000') {
@@ -170,7 +191,7 @@ const nftItem = ({ item, index }) => {
     })
   }
 
-  const getTockendetailsApi = async () => {
+  const getTokenDetailsApi = async (isCryptoOwner = true) => {
 
     let body_data = {
       tokenId: item.tokenId,
@@ -218,7 +239,11 @@ const nftItem = ({ item, index }) => {
                 setCreatorImage(res.data.profile_image);
               }
             })
-
+          if (isCryptoOwner) {
+            lastOwnerOfNFT();
+          } else {
+            lastOwnerOfNFTNonCrypto();
+          }
         } else if (res.data.data === "No record found") {
           alertWithSingleBtn(
             translate('common.error'),
@@ -230,13 +255,6 @@ const nftItem = ({ item, index }) => {
         console.log(err);
       });
   }
-
-  useEffect(() => {
-    async function getOwnerOfNFT() {
-      await getTockendetailsApi();
-    };
-    getOwnerOfNFT();
-  }, []);
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
