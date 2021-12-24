@@ -858,7 +858,7 @@ const DetailScreen = ({ route, navigation }) => {
 									{translate('common.collected')}
 								</Text>
 								<Text numberOfLines={1} style={styles.personName}>
-									{creator}
+									{collectionAddress}
 								</Text>
 							</View>
 						</TouchableOpacity>
