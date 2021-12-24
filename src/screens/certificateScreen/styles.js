@@ -1,11 +1,11 @@
-import {Platform, StyleSheet} from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import {
   responsiveFontSize as RF,
   SIZE,
-  widthPercentageToDP as wp,
+  widthPercentageToDP as wp
 } from '../../common/responsiveFunction';
-import {hp} from '../../constants/responsiveFunct';
-import {colors, fonts} from '../../res';
+import { hp } from '../../constants/responsiveFunct';
+import { colors, fonts } from '../../res';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     marginTop: SIZE(15),
     paddingHorizontal: SIZE(12),
     color: colors.PINK1,
+    textTransform: 'uppercase',
   },
   nftName: {
     fontSize: RF(2.75),
@@ -86,6 +87,18 @@ const styles = StyleSheet.create({
     marginBottom: SIZE(15),
     paddingHorizontal: SIZE(12),
   },
+  listItem: {
+    height: wp('87.5%') / 3 - wp('0.5%'),
+    marginVertical: wp('0.3'),
+    //marginHorizontal: wp('0.3'),
+    width: wp('87.5%') / 3 - wp('0.5%'),
+  },
+  listImage: {
+    height: '100%',
+    position: "absolute",
+    top: 0,
+    width: "100%"
+},
   person: {
     flexDirection: 'row',
     paddingHorizontal: SIZE(5),
@@ -214,7 +227,11 @@ const styles = StyleSheet.create({
     maxWidth: wp('30%'),
   },
   head: {height: 35},
-  text: {margin: 6},
+  text: {margin: 10,fontSize: RF(1.60)},
+  emptyData:{
+    alignSelf: 'center',
+    marginVertical: hp('1%'),
+  }
 });
 
 export default styles;
