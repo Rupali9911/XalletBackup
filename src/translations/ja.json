@@ -885,7 +885,10 @@
             "nftId": "NFT ID",
             "contractAddress": "契約住所",
             "bidHistory": "入札履歴",
-            "collectionHint": "このコレクションの詳細"
+            "collectionHint": "このコレクションの詳細",
+            "cameraPermissionHeader": "この機能には、カメラへのアクセスが必要です",
+            "cameraPermissionMessage": "アクセスするには、［設定］をタップし［カメラ］をオンにします。",
+            "settings": "設定"
         },
         "backendmessage": {
             "error": {},

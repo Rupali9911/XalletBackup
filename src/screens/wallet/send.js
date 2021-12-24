@@ -651,21 +651,20 @@ const Send = ({ route, navigation }) => {
                     renderScene={_renderScene}
                     onIndexChange={async index => {
                         if (index) {
-                            // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+                            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-                            // if (!isGranted) {
-                            //     confirmationAlert(
-                            //         'This feature requires camera access',
-                            //         'To enable access, tap Settings and turn on Camera.',
-                            //         'Cancel',
-                            //         'Settings',
-                            //         () => openSettings(),
-                            //         () => null
-                            //     )
-                            // } else {
-                            //     setIndex(index);
-                            // }
-                            setIndex(index);
+                            if (!isGranted) {
+                                confirmationAlert(
+                                    translate("wallet.common.cameraPermissionHeader"),
+                                    translate("wallet.common.cameraPermissionMessage"),
+                                    translate("common.Cancel"),
+                                    translate("wallet.common.settings"),
+                                    () => openSettings(),
+                                    () => null
+                                )
+                            } else {
+                                setIndex(index);
+                            }
                         } else {
                             setIndex(index);
                         }

@@ -885,7 +885,10 @@
             "nftId": "NFT ID",
             "contractAddress": "合約地址",
             "bidHistory": "投標歷史",
-            "collectionHint": "更多來自這個系列"
+            "collectionHint": "更多來自這個系列",
+            "cameraPermissionHeader": "此功能需要使用相机",
+            "cameraPermissionMessage": "要启用访问，请点按设置并打开相机。",
+            "settings": "设置"
         },
         "backendmessage": {
             "error": {},

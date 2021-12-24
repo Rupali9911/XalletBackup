@@ -885,7 +885,10 @@
             "nftId": "NFT ID",
             "contractAddress": "Contract Address",
             "bidHistory": "Bid History",
-            "collectionHint": "More from this Collection"
+            "collectionHint": "More from this Collection",
+            "cameraPermissionHeader": "This feature requires camera access",
+            "cameraPermissionMessage": "To enable access, tap Settings and turn on Camera.",
+            "settings": "Settings"
         },
         "backendmessage": {
             "error": {},
