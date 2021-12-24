@@ -572,7 +572,7 @@
         "cantChangePwd": "パスワードを変更されることができません。",
         "emailverified": "メール認証を完了しました。",
         "Loggedout": "ログアウトに成功しました",
-        "soonOnSell": "売り切れ",
+        "soonOnSell": "完売",
         "Networkchange": "ネットワークが正常に変更されました。",
         "emailinvalid": "認証コードの入力に誤りがあります",
         "Doyouwanttoconfirmyourrating": "評価を確定しますか？",
@@ -610,7 +610,8 @@
         "award": "アワード",
         "Giveaway": "ギブアウェイ",
         "Sellselecttoken": "受取通貨を選択",
-        "allowedcurrency": "決済通貨"
+        "allowedcurrency": "決済通貨",
+        "ethereum": "イーサリアム"
     },
     "AwardPage": {},
     "wallet": {
@@ -831,7 +832,7 @@
             "total": "合計",
             "firstName": "お名前（名)",
             "lastName": "お名前（姓)",
-            "aboutMe": "その他 / 基本情報",
+            "aboutMe": "自己紹介",
             "editprofile": "プロフィール設定",
             "rescan": "再スキャン",
             "connectInfo2": "外部サービスのウォレットコネクトの QRコードをスキャンしてください",

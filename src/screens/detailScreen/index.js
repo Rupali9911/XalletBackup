@@ -21,6 +21,7 @@ import NftItem from './nftItem';
 const DetailItemScreen = ({ route }) => {
 
     const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, MyCollectionReducer, AwardsNFTReducer } = useSelector(state => state);
+    const { sort } = useSelector(state => state.ListReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
@@ -31,15 +32,15 @@ const DetailItemScreen = ({ route }) => {
     const getNFTlistData = React.useCallback((page) => {
 
         AuthReducer.screenName == "Hot" ?
-            dispatch(getNFTList(page, 24)) :
+            dispatch(getNFTList(page, 24, sort)) :
             AuthReducer.screenName == "newNFT" ?
-                dispatch(newNFTList(page, 24)) :
+                dispatch(newNFTList(page, null, owner)) :
                 AuthReducer.screenName == "myNFT" ?
-                    dispatch(myNFTList(page, 24, owner)) :
+                    dispatch(myNFTList(page, owner)) :
                     AuthReducer.screenName == "myCollection" ?
-                        dispatch(myCollectionList(page, 24, owner)) :
+                        dispatch(myCollectionList(page, owner)) :
                         AuthReducer.screenName == "awards" ?
-                            dispatch(getAwardsNftList(page, 24, owner)) : null
+                            dispatch(getAwardsNftList(page, null, sort)) : null
 
     }, []);
 
@@ -76,7 +77,7 @@ const DetailItemScreen = ({ route }) => {
             AuthReducer.screenName == "myNFT" ?
                 MyNFTReducer.myListPage :
                 AuthReducer.screenName == "myCollection" ?
-                    MyCollectionReducer.page :
+                    MyCollectionReducer.myCollectionPage :
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsNftPage : 1;
 
@@ -91,19 +92,16 @@ const DetailItemScreen = ({ route }) => {
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsTotalCount : 1;
 
-    const list = React.useMemo(() => {
-        const data = AuthReducer.screenName == "Hot" ?
-            ListReducer.nftList :
-            AuthReducer.screenName == "newNFT" ?
-                NewNFTListReducer.newNftList :
-                AuthReducer.screenName == "myNFT" ?
-                    MyNFTReducer.myList :
-                    AuthReducer.screenName == "myCollection" ?
-                        MyCollectionReducer.myCollection :
-                        AuthReducer.screenName == "awards" ?
-                            AwardsNFTReducer.awardsNftList : [];
-        return data.slice(route.params.index);
-    }, []);
+    const data = AuthReducer.screenName == "Hot" ?
+        ListReducer.nftList :
+        AuthReducer.screenName == "newNFT" ?
+            NewNFTListReducer.newNftList :
+            AuthReducer.screenName == "myNFT" ?
+                MyNFTReducer.myList :
+                AuthReducer.screenName == "myCollection" ?
+                    MyCollectionReducer.myCollection :
+                    AuthReducer.screenName == "awards" ?
+                        AwardsNFTReducer.awardsNftList : [];
 
     const renderFooter = () => {
         if (!loading) return null;
@@ -113,7 +111,7 @@ const DetailItemScreen = ({ route }) => {
     }
 
     const renderItem = ({ item, index }) => {
-        let findIndex = list.findIndex(x => x.id === item.id);
+        let findIndex = data.findIndex(x => x.id === item.id);
         if (item.metaData) {
             return (
                 <NftItem videoStatus={stopVideos} item={item} index={findIndex} />
@@ -141,20 +139,20 @@ const DetailItemScreen = ({ route }) => {
                         <Loader /> :
                         <FlatList
                             initialNumToRender={5}
-                            data={list}
+                            data={data.slice(route.params.index)}
                             onScrollEndDrag={() => console.log("end")}
                             onScrollBeginDrag={() => console.log("start")}
                             renderItem={renderItem}
                             onEndReached={() => {
-                                if (!loading && totalCount !== list.length) {
+                                if (!loading && (totalCount - route.params.index) !== data.length) {
                                     let num = AuthReducer.screenName == "Hot" ?
                                         ListReducer.page + 1 :
                                         AuthReducer.screenName == "newNFT" ?
                                             NewNFTListReducer.newListPage + 1 :
                                             AuthReducer.screenName == "myNFT" ?
-                                                MyNFTReducer.page + 1 :
-                                                AuthReducer.screenName == "twoDArt" ?
-                                                    MyCollectionReducer.page + 1 :
+                                                MyNFTReducer.myListPage + 1 :
+                                                AuthReducer.screenName == "myCollection" ?
+                                                    MyCollectionReducer.myCollectionPage + 1 :
                                                     AuthReducer.screenName == "awards" ?
                                                         AwardsNFTReducer.awardsNftPage + 1 : null;
                                     getNFTlistData(num);

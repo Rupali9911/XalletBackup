@@ -117,9 +117,7 @@ import ERC721ConAbiETH from "./ethereum/abi/erc721/erc721NFTAbi";
 import UndergroundCastleConAddETH from "./ethereum/contractAddress/undergroundCastleAdd";
 import UndergroundCastleConAbiETH from "./ethereum/abi/undergroundCastleAbi";
 
-import { ERC721Abi } from "./abi/ERC721Abi";
-
-export const CDN_LINK =  'https://ik.imagekit.io/xanalia/Images';
+export const CDN_LINK = 'https://ik.imagekit.io/xanalia/Images';
 
 export const blockChainConfig = [
   {
@@ -128,6 +126,7 @@ export const blockChainConfig = [
     image: `${CDN_LINK}/binance-chain.svg`,
     networkIdTestNet: networkType === "testnet" ? "97" : "56",
     networkIdMainNet: networkType === "testnet" ? "97" : "56",
+
     walletName:
       networkType === "testnet"
         ? "Binance Smart Chain Testnet"
@@ -138,10 +137,13 @@ export const blockChainConfig = [
       networkType === "testnet"
         ? "https://testnet.bscscan.com"
         : "https://bscscan.com",
+
     providerUrl:
       networkType === "testnet"
-        ? "https://data-seed-prebsc-2-s1.binance.org:8545/"
+        ? "https://data-seed-prebsc-2-s3.binance.org:8545/"
         : "https://bsc-dataseed.binance.org/",
+    providerUrlTestnet: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+    providerUrlMainnet: "https://bsc-dataseed.binance.org/",
     providerUrlForAliaPrice: "https://bsc-dataseed.binance.org/",
     stakingConConfig: { add: StakingConAddBSC, abi: StakingConAbiBSC },
     marketConConfig: { add: MarketConAddBSC, abi: MarketConAbiBSC },
@@ -193,6 +195,7 @@ export const blockChainConfig = [
     image: `${CDN_LINK}/polygon-chain.png`,
     networkIdTestNet: networkType === "testnet" ? "80001" : "137",
     networkIdMainNet: networkType === "testnet" ? "80001" : "137",
+
     walletName: networkType === "testnet" ? "Matic Testnet" : "Matic Mainnet",
     currency: "MATIC",
     symbol: "MATIC",
@@ -200,13 +203,17 @@ export const blockChainConfig = [
       networkType === "testnet"
         ? "https://explorer-mumbai.maticvigil.com/"
         : "https://explorer.matic.network",
+
     providerUrl:
       networkType === "testnet"
         ? "https://rpc-mumbai.maticvigil.com"
         : "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
+    providerUrlTestnet: "https://rpc-mumbai.maticvigil.com",
+    providerUrlMainnet:
+      "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
     providerUrlForAliaPrice:
       "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
-      stakingConConfig: { add: StakingConAddPOL, abi: StakingConAbiPOL },
+    stakingConConfig: { add: StakingConAddPOL, abi: StakingConAbiPOL },
     marketConConfig: { add: MarketConAddPOL, abi: MarketConAbiPOL },
     marketApproveConConfig: {
       add: MarketConApproveAddPOL,
@@ -270,6 +277,10 @@ export const blockChainConfig = [
       networkType === "testnet"
         ? "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
         : "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    providerUrlTestnet:
+      "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    providerUrlMainnet:
+      "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
     providerUrlForAliaPrice:
       "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
 

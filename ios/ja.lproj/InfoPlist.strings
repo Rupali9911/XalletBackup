@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  showcase
+
+  Created by apple on 20/12/2021.
+  
+*/
+
+NSCameraUsageDescription = "プロファイル画像を読み取る";

@@ -610,7 +610,8 @@
         "award": "어워드",
         "Giveaway": "헐값으로 파는",
         "Sellselecttoken": "수령 통화 선택",
-        "allowedcurrency": "결제 통화"
+        "allowedcurrency": "결제 통화",
+        "ethereum": "이더 리움"
     },
     "AwardPage": {},
     "wallet": {

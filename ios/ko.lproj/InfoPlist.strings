@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  showcase
+
+  Created by apple on 20/12/2021.
+  
+*/
+NSCameraUsageDescription = "프로필 사진 캡처";
