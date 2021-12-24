@@ -68,7 +68,7 @@ const deepLinkData = {
 };
 
 const TabComponent = () => {
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);console.log('=====asdfasdf==')
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   React.useEffect(() => {}, [selectedLanguageItem.language_name]);
 

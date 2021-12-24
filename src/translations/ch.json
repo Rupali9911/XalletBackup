@@ -401,7 +401,7 @@
         "PendingNFT": "待定 NFT ",
         "sessionexpired": "会话已过期。",
         "switchnetwk": "交换机网络",
-        "polygon": "Polygon",
+        "polygon": "多邊形",
         "cpyrightholder": "版权所有者 ",
         "featuredArtist": "特邀艺术家 ",
         "ranking": "排行",
@@ -610,7 +610,8 @@
         "award": "奖",
         "Giveaway": "免费样品",
         "Sellselecttoken": "选择令牌",
-        "allowedcurrency": "应付在"
+        "allowedcurrency": "应付在",
+        "ethereum": "以太坊"
     },
     "AwardPage": {},
     "wallet": {

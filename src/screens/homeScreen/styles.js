@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    headerView:{
+        maxWidth: wp('20%')
+    },
     userCircle: {
         width: SIZE(57),
         height: SIZE(57),
@@ -65,6 +68,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: fonts.PINGfANG,
         marginBottom: SIZE(8),
+        margin: 2
     },
     headerMenuContainer: {
         flex:1,
