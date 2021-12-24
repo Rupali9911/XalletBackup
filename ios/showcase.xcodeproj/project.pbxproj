@@ -21,6 +21,7 @@
 		1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E69E31E04B349798F0EB5CD /* PingFangSC-Semibold.ttf */; };
 		18386CC127219B9F007133A4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18386CC027219B9F007133A4 /* StoreKit.framework */; };
 		1848960227100BBD00840834 /* Fix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1848960127100BBD00840834 /* Fix.swift */; };
+		18C78DB827710A7D00E6B855 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18C78DBA27710A7D00E6B855 /* InfoPlist.strings */; };
 		37F3FAB3A5CACDD2E3856971 /* libPods-showcase-showcaseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE505EBB777B4FBDCE1B8B10 /* libPods-showcase-showcaseTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		F61FA7A2E986A0DF8B3BAC99 /* libPods-showcase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8C7396E6063439F12ABE171 /* libPods-showcase.a */; };
@@ -57,6 +58,11 @@
 		18C26EA52632C04800A0D972 /* SegoeUI-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SegoeUI-Italic.ttf"; path = "../assets/fonts/SegoeUI-Italic.ttf"; sourceTree = "<group>"; };
 		18C26EAB2632C06700A0D972 /* SegoeUI-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SegoeUI-Bold.ttf"; path = "../assets/fonts/SegoeUI-Bold.ttf"; sourceTree = "<group>"; };
 		18C26FD62632CE9100A0D972 /* SegoeUI.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = SegoeUI.ttf; path = ../assets/fonts/SegoeUI.ttf; sourceTree = "<group>"; };
+		18C78DB927710A7D00E6B855 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		18C78DBD27710D6700E6B855 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		18C78DBE27710D7100E6B855 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		18C78DBF27710D8C00E6B855 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		18C78DC027710D9600E6B855 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		18E94E2626CFB023003DA814 /* Arial-BoldMT.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Arial-BoldMT.ttf"; sourceTree = "<group>"; };
 		18E94E2726CFB024003DA814 /* Metropolis-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Metropolis-Bold.otf"; sourceTree = "<group>"; };
 		18E94E2826CFB024003DA814 /* PingFangSC-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PingFangSC-Regular.ttf"; sourceTree = "<group>"; };
@@ -137,6 +143,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				18C78DBA27710A7D00E6B855 /* InfoPlist.strings */,
 			);
 			name = showcase;
 			sourceTree = "<group>";
@@ -302,6 +309,10 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
+				"zh-Hans",
+				"zh-Hant",
+				ja,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -335,6 +346,7 @@
 				1835A89D270AE55D00F26038 /* PingFangSC-Regular.ttf in Resources */,
 				1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				18C78DB827710A7D00E6B855 /* InfoPlist.strings in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,6 +508,21 @@
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		18C78DBA27710A7D00E6B855 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				18C78DB927710A7D00E6B855 /* en */,
+				18C78DBD27710D6700E6B855 /* ko */,
+				18C78DBE27710D7100E6B855 /* zh-Hans */,
+				18C78DBF27710D8C00E6B855 /* zh-Hant */,
+				18C78DC027710D9600E6B855 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {

@@ -239,7 +239,7 @@ const nftItem = ({ item, index }) => {
   }, []);
 
   const image = item.metaData.image || item.thumbnailUrl;
-  const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
+  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
   const onProfile = (isOwner) => {
     if (isOwner) {
