@@ -110,7 +110,7 @@ const Created = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            const image = item.metaData.thumbnft || item.thumbnailUrl
+            const image = item?.metaData?.thumbnft || item?.thumbnailUrl
             return (
                 <TouchableOpacity
                     onLongPress={() => {
@@ -215,7 +215,7 @@ const Collection = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            const image = item.metaData.thumbnft || item.thumbnailUrl;
+            const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <TouchableOpacity
                     onLongPress={() => {
