@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -18,13 +19,12 @@ import details from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import history from '../../../assets/images/history.png';
 import trading from '../../../assets/images/trading.png';
+import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
-import {translate} from '../../walletUtils';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
@@ -35,10 +35,11 @@ import {
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
 import {divideNo} from '../../utils';
-import styles from './styles';
+import {translate} from '../../walletUtils';
 import {basePriceTokens} from '../../web3/config/availableTokens';
-import {BASE_URL} from '../../common/constants';
-import {useIsFocused} from '@react-navigation/native';
+import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import {CardField, TabModal} from '../createNFTScreen/components';
+import styles from './styles';
 
 const {PlayButtonIcon, GIRL} = SVGS;
 
@@ -107,6 +108,8 @@ const DetailScreen = ({route, navigation}) => {
   const [sellDetails, setSellDetails] = useState([]);
   const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   const [bidHistory, setBidHistory] = useState([]);
+  const [allowedTokenModal, setAllowedTokenModal] = useState(false);
+  const [royality, setRoyality] = useState('Payable In');
   const [tableHead, setTableHead] = useState([
     'Price',
     'From',
@@ -1257,6 +1260,14 @@ const DetailScreen = ({route, navigation}) => {
               <Text style={styles.priceUnit}>{'￥'}</Text>
               <Text style={styles.price}>{price ? price : 0}</Text>
             </View>
+            <CardField
+              inputProps={{value: royality}}
+              onPress={() => {
+                setAllowedTokenModal(true);
+              }}
+              pressable
+              showRight
+            />
             {setNFTStatus() !== undefined && (
               <GroupButton
                 leftText={
@@ -1484,7 +1495,21 @@ const DetailScreen = ({route, navigation}) => {
           setSuccessModalVisible(true);
         }}
       />
-
+      <TabModal
+        modalProps={{
+          isVisible: allowedTokenModal,
+          onBackdropPress: () => {
+            setAllowedTokenModal(false);
+          },
+        }}
+        data={basePriceTokens.filter(_ => _.chain == chainType)}
+        title={'Payable In'}
+        itemPress={v => {
+          setRoyality(v.name);
+          setAllowedTokenModal(false);
+        }}
+        renderItemName={'name'}
+      />
       <AppModal
         visible={successModalVisible}
         onRequestClose={() => setSuccessModalVisible(false)}>
