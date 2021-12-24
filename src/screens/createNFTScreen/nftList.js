@@ -43,7 +43,7 @@ const NFTList = ({
   const [nftListDraft, setNftListDraft] = useState([]);
   const [toggle, setToggle] = useState("mint");
 
-  const { wallet, data } = useSelector(
+  const { data } = useSelector(
     state => state.UserReducer
   );
   const { networkType } = useSelector(
@@ -51,7 +51,6 @@ const NFTList = ({
   );
 
   useEffect(() => {
-    console.log(position, modalItem, modalScreen)
     if (position == 1) {
       changeLoadingState(true)
       getCollectionList()
@@ -60,17 +59,16 @@ const NFTList = ({
 
   useEffect(() => {
     if (modalScreen === "nftList" && modalItem) {
-      setCollection(modalItem)
-      getNftList(modalItem, toggle, 1)
-
+      if (modalItem !== "closed") {
+        setCollection(modalItem)
+        getNftList(modalItem, toggle, 1)
+      }
     }
 
   }, [modalItem])
 
   const getCollectionList = async () => {
-    const publicAddress = wallet.address;
-    const privKey = wallet.privateKey;
-    if (publicAddress && data.token) {
+    if (data.token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       axios.defaults.headers.post['Content-Type'] = 'application/json';
       const url = `${BASE_URL}/user/view-collection`;
@@ -87,8 +85,7 @@ const NFTList = ({
             setCollectionList(collectionList.data.data)
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
-              // console.log(selectedCollection, "selected collection")
-              setCollection(selectedCollection)
+              setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
               toggle == "mint" ?
                 setNftListPage(1) : setNftListDraftPage(1);
               getNftList(selectedCollection, toggle, 1)

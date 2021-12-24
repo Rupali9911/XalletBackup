@@ -4,6 +4,7 @@ import styles from './styles';
 import { colors, fonts } from '../../res';
 import { AppHeader, LoaderIndicator } from '../../components';
 import { TabView, TabBar } from 'react-native-tab-view';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import {
   heightPercentageToDP as hp,
@@ -18,7 +19,7 @@ import NFTList from './nftList';
 import UploadNFT from './uploadNft';
 import { TabModal } from './components';
 
-const CreateNFTScreen = ({ route, navigation }) => {
+const CreateNFTScreen = () => {
 
   const [loading, setLoading] = useState(false);
 
@@ -27,13 +28,25 @@ const CreateNFTScreen = ({ route, navigation }) => {
   const [modalItem, setModalItem] = useState(null);
   const [modalScreen, setModalScreen] = useState("");
 
+  const [dateVisible, setDateVisible] = useState(false);
+  const [miniDate, setMiniDate] = useState(new Date());
+  const [date, setDate] = useState("");
+
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
+  const routes = [
     { key: 'Collection', title: "Collection" },
     { key: 'NFTList', title: "NFT List" },
     { key: 'UploadNFT', title: "Upload NFT" },
     { key: 'Filter', title: "Filter" },
-  ]);
+  ];
+
+  const ShowModalAction = (v, screenName) => {
+    setModalItem(null)
+    setDate("")
+    setModalScreen(screenName)
+    setModalData(v)
+    setModalVisible(true);
+  }
 
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
@@ -43,14 +56,23 @@ const CreateNFTScreen = ({ route, navigation }) => {
         return <NFTList
           modalItem={modalItem}
           modalScreen={modalScreen}
-          showModal={(v) => {
-            setModalItem(null)
-            setModalScreen("nftList")
-            setModalData(v)
-            setModalVisible(true);
-          }} position={index} changeLoadingState={(e) => setLoading(e)} />;
+          showModal={(v) => ShowModalAction(v, "nftList")}
+          position={index}
+          changeLoadingState={(e) => setLoading(e)} />;
       case 'UploadNFT':
-        return <UploadNFT changeLoadingState={(e) => setLoading(e)} />;
+        return <UploadNFT
+          datePickerPress={(v) => {
+            setMiniDate(v)
+            setDate("")
+            setModalScreen("uploadNFT")
+            setDateVisible(true)
+          }}
+          datePickerData={date}
+          modalItem={modalItem}
+          modalScreen={modalScreen}
+          showModal={(v) => ShowModalAction(v, "uploadNFT")}
+          position={index}
+          changeLoadingState={(e) => setLoading(e)} />;
       case 'Filter':
         return <Filter changeLoadingState={(e) => setLoading(e)} />;
       default:
@@ -106,11 +128,11 @@ const CreateNFTScreen = ({ route, navigation }) => {
           renderTabBar={renderTabBar}
           navigationState={{ index, routes }}
           renderScene={_renderScene}
-          onIndexChange={index => {
+          onIndexChange={(i) => {
             setModalData(null);
             setModalItem(null);
             setModalScreen("");
-            setIndex(index);
+            setIndex(i);
           }}
         />
 
@@ -121,6 +143,7 @@ const CreateNFTScreen = ({ route, navigation }) => {
             modalProps={{
               isVisible: modalVisible,
               onBackdropPress: () => {
+                setModalItem("closed")
                 setModalVisible(false)
               }
             }}
@@ -130,10 +153,24 @@ const CreateNFTScreen = ({ route, navigation }) => {
               setModalItem(v)
               setModalVisible(false)
             }}
-            renderItemName={modalData.itemToRender}
+            renderItemName={modalData.hasOwnProperty("itemToRender") ? modalData.itemToRender : null}
           />
           : null
       }
+      <DateTimePickerModal
+        isVisible={dateVisible}
+        mode="datetime"
+        minimumDate={miniDate}
+        onConfirm={date => {
+          setDate(date)
+          setDateVisible(false)
+        }}
+        onCancel={() => {
+          setDate("closed")
+          setDateVisible(false)
+        }
+        }
+      />
 
     </SafeAreaView>
   );

@@ -110,7 +110,11 @@ export const TabModal = (props) => {
                 onPress={() => props.itemPress(v)}
                 style={styles.modalItem}>
                 <Text style={styles.listLabel}>
-                  {v[props.renderItemName]}
+                  {
+                    props.renderItemName ?
+                      v[props.renderItemName] :
+                      v
+                  }
                 </Text>
               </TouchableOpacity>
             );
@@ -198,5 +202,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     fontSize: RF(1.9),
     color: colors.BLACK8,
-  },
+  }
 });
