@@ -168,6 +168,7 @@ const HomeScreen = ({navigation}) => {
                 ? artistList.map((item, index) => {
                     return (
                       <TouchableOpacity
+                          style={styles.headerView}
                         onPress={() => {
                           const id =
                             item.role === 'crypto' ? item.username : item._id;

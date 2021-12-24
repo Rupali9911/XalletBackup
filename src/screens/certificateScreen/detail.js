@@ -1,5 +1,3 @@
-import {useIsFocused} from '@react-navigation/native';
-import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -13,36 +11,36 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import {Row, Rows, Table} from 'react-native-table-component';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
+import { Row, Rows, Table } from 'react-native-table-component';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
 import details from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import history from '../../../assets/images/history.png';
 import trading from '../../../assets/images/trading.png';
-import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
+import { translate } from '../../walletUtils';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import {hp} from '../../constants/responsiveFunct';
+import { hp } from '../../constants/responsiveFunct';
 import {
-  getAllCards,
-  setPaymentObject,
+	getAllCards,
+	setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import {divideNo} from '../../utils';
-// import Video from 'react-native-video';
-import {translate} from '../../walletUtils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import { divideNo } from '../../utils';
 import styles from './styles';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { BASE_URL } from '../../common/constants';
+import { useIsFocused } from '@react-navigation/native';
 
-const {PlayButtonIcon, GIRL} = SVGS;
+const { PlayButtonIcon, GIRL } = SVGS;
 
 const Web3 = require('web3');
 
