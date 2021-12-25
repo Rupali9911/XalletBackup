@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -11,36 +12,36 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import { Row, Rows, Table } from 'react-native-table-component';
-import { useDispatch, useSelector } from 'react-redux';
-import { IMAGES, SIZE, SVGS } from 'src/constants';
+import {Row, Rows, Table} from 'react-native-table-component';
+import {useDispatch, useSelector} from 'react-redux';
+import {IMAGES, SIZE, SVGS} from 'src/constants';
 import details from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import history from '../../../assets/images/history.png';
 import trading from '../../../assets/images/trading.png';
+import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
-import { translate } from '../../walletUtils';
-import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import { hp } from '../../constants/responsiveFunct';
+import {hp} from '../../constants/responsiveFunct';
 import {
-	getAllCards,
-	setPaymentObject,
+  getAllCards,
+  setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import { divideNo } from '../../utils';
+import {divideNo} from '../../utils';
+import {translate} from '../../walletUtils';
+import {basePriceTokens} from '../../web3/config/availableTokens';
+import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import {CardField, TabModal} from '../createNFTScreen/components';
 import styles from './styles';
-import { basePriceTokens } from '../../web3/config/availableTokens';
-import { BASE_URL } from '../../common/constants';
-import { useIsFocused } from '@react-navigation/native';
 
-const { PlayButtonIcon, GIRL } = SVGS;
+const {PlayButtonIcon, GIRL} = SVGS;
 
 const Web3 = require('web3');
 
@@ -107,6 +108,8 @@ const DetailScreen = ({route, navigation}) => {
   const [sellDetails, setSellDetails] = useState([]);
   const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   const [bidHistory, setBidHistory] = useState([]);
+  const [allowedTokenModal, setAllowedTokenModal] = useState(false);
+  const [royality, setRoyality] = useState('Payable In');
   const [tableHead, setTableHead] = useState([
     'Price',
     'From',
@@ -267,8 +270,8 @@ const DetailScreen = ({route, navigation}) => {
                     : divideNo(
                         parseInt(res.data.data[i].returnValues.price._hex, 16),
                       ),
-                seller: res.data.data[i].returnValues.seller,
-                owner: '',
+                seller: res.data.data[i].returnValues.seller.slice(0, 6),
+                owner: 'Null Address',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -298,8 +301,8 @@ const DetailScreen = ({route, navigation}) => {
                           16,
                         ),
                       ),
-                seller: res.data.data[i].returnValues.seller,
-                owner: '',
+                seller: res.data.data[i].returnValues.seller.slice(0, 6),
+                owner: 'Null Address',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -311,8 +314,8 @@ const DetailScreen = ({route, navigation}) => {
             if (res.data.data[i].event === 'awardAuctionNFT') {
               let obj = {
                 event: 'OnAuction',
-                seller: res.data.data[i].returnValues.seller,
-                owner: '',
+                seller: res.data.data[i].returnValues.seller.slice(0, 6),
+                owner: 'Null Address',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -336,8 +339,8 @@ const DetailScreen = ({route, navigation}) => {
                     : divideNo(
                         parseInt(res.data.data[i].returnValues.amount._hex, 16),
                       ),
-                seller: res.data.data[i].returnValues.bidder,
-                owner: '',
+                seller: res.data.data[i].returnValues.bidder.slice(0, 6),
+                owner: 'Null Address',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -369,7 +372,7 @@ const DetailScreen = ({route, navigation}) => {
                         parseInt(res.data.data[i].returnValues.amount._hex, 16),
                       ),
                 seller: seller,
-                owner: res.data.data[i].returnValues.bidder,
+                owner: res.data.data[i].returnValues.bidder.slice(0, 6),
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -382,7 +385,7 @@ const DetailScreen = ({route, navigation}) => {
               res.data.data[i].event === 'BuyNFT' ||
               res.data.data[i].event === 'BuyNFTNonCrypto'
             ) {
-              let sellEvent = '';
+              let sellEvent = {};
               for (let j = i + 1; j <= res.data.data.length; j++) {
                 if (
                   res.data.data[j]?.event &&
@@ -406,20 +409,21 @@ const DetailScreen = ({route, navigation}) => {
                       )
                     : divideNo(parseInt(sellEvent.returnValues.price._hex, 16)),
 
-                seller: sellEvent?.returnValues?.seller,
-                owner: res.data.data[i].returnValues.buyer,
+                seller: sellEvent?.returnValues?.seller.slice(0, 6),
+                owner: res.data.data[i].returnValues.buyer.slice(0, 6),
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
               };
               bids = [obj, ...bids];
             }
+            // console.log('OBJECTTTTTTTTTTTTTTT',obj)
             if (res.data.data[i].event === 'CancelSell') {
               let obj = {
                 event: 'CancelSell',
                 price: '',
-                seller: res.data.data[i].returnValues.from,
-                owner: '',
+                seller: res.data.data[i].returnValues.from.slice(0, 6),
+                owner: 'Null Address',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -435,7 +439,7 @@ const DetailScreen = ({route, navigation}) => {
               let obj = {
                 event: 'MintWithTokenURI',
                 price: '',
-                seller: '',
+                seller: 'Null Address',
                 owner: res.data.data[i].returnValues.from,
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
@@ -446,6 +450,9 @@ const DetailScreen = ({route, navigation}) => {
             }
           }
           bids.sort(comparator);
+          for (let z = 0; z < bids.length; z++) {
+            bids[z].price = (Math.round(bids[z].price * 100) / 100).toFixed(2);
+          }
           let _bidHistory = bids.filter(item => item.event === 'Bid');
           if (_bidHistory.length > 0) {
             setBidHistory(_bidHistory);
@@ -1096,8 +1103,7 @@ const DetailScreen = ({route, navigation}) => {
       );
     }
   };
-
-  const PayableIn = props => {
+  const Filters = props => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState([]);
     const [items, setItems] = useState([
@@ -1254,6 +1260,14 @@ const DetailScreen = ({route, navigation}) => {
               <Text style={styles.priceUnit}>{'￥'}</Text>
               <Text style={styles.price}>{price ? price : 0}</Text>
             </View>
+            <CardField
+              inputProps={{value: royality}}
+              onPress={() => {
+                setAllowedTokenModal(true);
+              }}
+              pressable
+              showRight
+            />
             {setNFTStatus() !== undefined && (
               <GroupButton
                 leftText={
@@ -1371,7 +1385,7 @@ const DetailScreen = ({route, navigation}) => {
           <NFTDetailDropdown
             title={translate('common.tradingHistory')}
             icon={trading}>
-            <PayableIn />
+            <Filters />
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
@@ -1381,13 +1395,13 @@ const DetailScreen = ({route, navigation}) => {
                   data={tradingTableHead}
                   style={styles.head}
                   textStyle={styles.text}
-                  widthArr={[80, 75, 85, 85, 150]}
+                  widthArr={[90, 75, 85, 95, 150]}
                 />
                 {tradingTableData.length > 0 ? (
                   <Rows
                     data={tradingTableData}
                     textStyle={styles.text}
-                    widthArr={[80, 75, 85, 85, 150]}
+                    widthArr={[90, 75, 85, 95, 150]}
                   />
                 ) : (
                   <Text style={styles.emptyData}>No Data Found</Text>
@@ -1481,7 +1495,21 @@ const DetailScreen = ({route, navigation}) => {
           setSuccessModalVisible(true);
         }}
       />
-
+      <TabModal
+        modalProps={{
+          isVisible: allowedTokenModal,
+          onBackdropPress: () => {
+            setAllowedTokenModal(false);
+          },
+        }}
+        data={basePriceTokens.filter(_ => _.chain == chainType)}
+        title={'Payable In'}
+        itemPress={v => {
+          setRoyality(v.name);
+          setAllowedTokenModal(false);
+        }}
+        renderItemName={'name'}
+      />
       <AppModal
         visible={successModalVisible}
         onRequestClose={() => setSuccessModalVisible(false)}>

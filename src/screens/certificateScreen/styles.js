@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     maxWidth: wp('30%'),
   },
   head: {height: 35},
-  text: {margin: 10,fontSize: RF(1.60)},
+  text: {margin: 10,fontSize: RF(1.50)},
   emptyData:{
     alignSelf: 'center',
     marginVertical: hp('1%'),

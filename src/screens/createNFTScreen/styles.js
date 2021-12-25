@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import {colors, fonts} from '../../res';
+import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -133,6 +133,48 @@ const styles = StyleSheet.create({
     color: colors.BLUE5,
     fontFamily: fonts.SegoeUIRegular,
   },
+  sorryMessageCont: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  sorryMessage: {
+    fontSize: 15,
+    fontFamily: fonts.SegoeUIRegular,
+  },
+  thumbNail: {
+    height: wp(20),
+    width: wp(20),
+    overflow: "hidden",
+    borderRadius: wp(2)
+  },
+  cardDesCont: {
+    paddingVertical: hp("1%"),
+    paddingHorizontal: wp(5)
+  },
+  nftImageError: {
+    textAlign: 'center',
+    color: "red",
+    marginVertical: 0
+  },
+  thumbnailEditButton: {
+    color: colors.BLUE6,
+    paddingHorizontal: wp(5),
+    fontSize: RF(1.8)
+  },
+  tagCont: {
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center"
+  },
+  tagItems: {
+    width: null,
+    paddingHorizontal: wp(3),
+    height: hp(4),
+    marginHorizontal: wp(2),
+    marginVertical: hp(1),
+  }
 });
 
 export default styles;

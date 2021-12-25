@@ -1,43 +1,78 @@
 import React, { useState } from 'react';
-import { View, SafeAreaView, Text, TouchableOpacity, Image } from 'react-native';
+import { View, SafeAreaView, Text } from 'react-native';
 import styles from './styles';
-import { images, colors, fonts } from '../../res';
+import { colors, fonts } from '../../res';
 import { AppHeader, LoaderIndicator } from '../../components';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Colors from '../../constants/Colors';
+import { TabView, TabBar } from 'react-native-tab-view';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../common/responsiveFunction';
-import CommonStyles from "../../constants/styles";
 import { translate } from '../../walletUtils';
 
 import Collection from './collection';
 import Filter from './filter';
 import NFTList from './nftList';
 import UploadNFT from './uploadNft';
+import { TabModal } from './components';
 
-const CreateNFTScreen = ({ route, navigation }) => {
+const CreateNFTScreen = () => {
 
   const [loading, setLoading] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const [modalItem, setModalItem] = useState(null);
+  const [modalScreen, setModalScreen] = useState("");
+
+  const [dateVisible, setDateVisible] = useState(false);
+  const [miniDate, setMiniDate] = useState(new Date());
+  const [date, setDate] = useState("");
+
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
+  const routes = [
     { key: 'Collection', title: "Collection" },
     { key: 'NFTList', title: "NFT List" },
     { key: 'UploadNFT', title: "Upload NFT" },
     { key: 'Filter', title: "Filter" },
-  ]);
+  ];
+
+  const ShowModalAction = (v, screenName) => {
+    setModalItem(null)
+    setDate("")
+    setModalScreen(screenName)
+    setModalData(v)
+    setModalVisible(true);
+  }
 
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Collection':
         return <Collection changeLoadingState={(e) => setLoading(e)} />;
       case 'NFTList':
-        return <NFTList position={index} changeLoadingState={(e) => setLoading(e)} />;
+        return <NFTList
+          modalItem={modalItem}
+          modalScreen={modalScreen}
+          showModal={(v) => ShowModalAction(v, "nftList")}
+          position={index}
+          changeLoadingState={(e) => setLoading(e)} />;
       case 'UploadNFT':
-        return <UploadNFT changeLoadingState={(e) => setLoading(e)} />;
+        return <UploadNFT
+          datePickerPress={(v) => {
+            setMiniDate(v)
+            setDate("")
+            setModalScreen("uploadNFT")
+            setDateVisible(true)
+          }}
+          datePickerData={date}
+          modalItem={modalItem}
+          modalScreen={modalScreen}
+          showModal={(v) => ShowModalAction(v, "uploadNFT")}
+          position={index}
+          changeLoadingState={(e) => setLoading(e)} />;
       case 'Filter':
         return <Filter changeLoadingState={(e) => setLoading(e)} />;
       default:
@@ -93,28 +128,49 @@ const CreateNFTScreen = ({ route, navigation }) => {
           renderTabBar={renderTabBar}
           navigationState={{ index, routes }}
           renderScene={_renderScene}
-          onIndexChange={index => setIndex(index)}
+          onIndexChange={(i) => {
+            setModalData(null);
+            setModalItem(null);
+            setModalScreen("");
+            setIndex(i);
+          }}
         />
 
-        {/* <Tab.Navigator
-         
-            tabStyle: {
-              
-            },
-            labelStyle: {
-              
-            },
-            indicatorStyle: {
-              borderBottomColor: colors.BLUE4,
-              height: 1,
-            },
-          }}>
-          <Tab.Screen name={'Collection'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={Collection} />
-          <Tab.Screen name={'NFT List'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={NFTList} />
-          <Tab.Screen name={'Upload NFT'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={UploadNFT} />
-          <Tab.Screen name={'Filter'} initialParams={{ changeLoadingState: (e) => setLoading(e) }} component={Filter} />
-        </Tab.Navigator> */}
       </View>
+      {
+        modalData ?
+          <TabModal
+            modalProps={{
+              isVisible: modalVisible,
+              onBackdropPress: () => {
+                setModalItem("closed")
+                setModalVisible(false)
+              }
+            }}
+            data={modalData.data}
+            title={modalData.title}
+            itemPress={(v) => {
+              setModalItem(v)
+              setModalVisible(false)
+            }}
+            renderItemName={modalData.hasOwnProperty("itemToRender") ? modalData.itemToRender : null}
+          />
+          : null
+      }
+      <DateTimePickerModal
+        isVisible={dateVisible}
+        mode="datetime"
+        minimumDate={miniDate}
+        onConfirm={date => {
+          setDate(date)
+          setDateVisible(false)
+        }}
+        onCancel={() => {
+          setDate("closed")
+          setDateVisible(false)
+        }
+        }
+      />
 
     </SafeAreaView>
   );
