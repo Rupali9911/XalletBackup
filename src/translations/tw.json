@@ -443,7 +443,6 @@
         "validtwiiterlink": "請輸入有效的 Twitter 鏈接。 ",
         "youtubelink": "請輸入有效的 YouTube 鏈接。 ",
         "instagramlink": "請輸入有效的 Instagram 鏈接。",
-        "discordlink": "請輸入有效的 Discord 鏈接。",
         "usernotfound": "未找到用戶 ",
         "facebook": "臉書 ",
         "youtube": "YouTube",
@@ -610,8 +609,10 @@
         "award": "獎",
         "Giveaway": "免費的",
         "Sellselecttoken": "選擇令牌",
+        "discordlink": "請輸入有效的 Discord 鏈接。",
+        "ethereum": "以太坊",
         "allowedcurrency": "應付在",
-        "ethereum": "以太坊"
+        "event": "事件"
     },
     "AwardPage": {},
     "wallet": {

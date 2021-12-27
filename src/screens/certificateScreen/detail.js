@@ -109,19 +109,19 @@ const DetailScreen = ({route, navigation}) => {
   const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   const [bidHistory, setBidHistory] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [royality, setRoyality] = useState('Payable In');
+  const [royality, setRoyality] = useState(translate('common.allowedcurrency'));
   const [tableHead, setTableHead] = useState([
-    'Price',
-    'From',
-    'To',
-    'Date (DD/MM/YYYY)',
+    translate('common.price'),
+    translate('common.from'),
+    translate('common.to'),
+    translate('common.date') + '(DD/MM/YYYY)',
   ]);
   const [tradingTableHead, setTradingTableHead] = useState([
-    'Event',
-    'Price',
-    'From',
-    'To',
-    'Date (DD/MM/YYYY)',
+    translate('common.event'),
+    translate('common.price'),
+    translate('common.from'),
+    translate('common.to'),
+    translate('common.date') + ' (DD/MM/YYYY)',
   ]);
   const [tableData, setTableData] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
@@ -1377,7 +1377,7 @@ const DetailScreen = ({route, navigation}) => {
                     widthArr={[75, 75, 75, 150]}
                   />
                 ) : (
-                  <Text style={styles.emptyData}>No Data Found</Text>
+                  <Text style={styles.emptyData}>{translate('common.noDataFound')}</Text>
                 )}
               </Table>
             </ScrollView>
@@ -1404,7 +1404,7 @@ const DetailScreen = ({route, navigation}) => {
                     widthArr={[90, 75, 85, 95, 150]}
                   />
                 ) : (
-                  <Text style={styles.emptyData}>No Data Found</Text>
+                  <Text style={styles.emptyData}>{translate('common.noDataFound')}</Text>
                 )}
               </Table>
             </ScrollView>
@@ -1503,7 +1503,7 @@ const DetailScreen = ({route, navigation}) => {
           },
         }}
         data={basePriceTokens.filter(_ => _.chain == chainType)}
-        title={'Payable In'}
+        title={translate('common.allowedcurrency')}
         itemPress={v => {
           setRoyality(v.name);
           setAllowedTokenModal(false);
