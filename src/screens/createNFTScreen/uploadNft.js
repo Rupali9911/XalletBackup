@@ -589,7 +589,7 @@ const UploadNFT = ({
             pressable
             showRight />
           {
-            collection && collection.collectionAddress == ERC721Address ?
+            collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
               <>
                 <CardLabel>Royality</CardLabel>
                 <CardField
