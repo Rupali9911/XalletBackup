@@ -1260,14 +1260,16 @@ const DetailScreen = ({route, navigation}) => {
               <Text style={styles.priceUnit}>{'￥'}</Text>
               <Text style={styles.price}>{price ? price : 0}</Text>
             </View>
-            <CardField
-              inputProps={{value: royality}}
-              onPress={() => {
-                setAllowedTokenModal(true);
-              }}
-              pressable
-              showRight
-            />
+            {availableTokens.length > 0 && (
+              <CardField
+                inputProps={{value: royality}}
+                onPress={() => {
+                  setAllowedTokenModal(true);
+                }}
+                pressable
+                showRight
+              />
+            )}
             {setNFTStatus() !== undefined && (
               <GroupButton
                 leftText={
@@ -1377,7 +1379,9 @@ const DetailScreen = ({route, navigation}) => {
                     widthArr={[75, 75, 75, 150]}
                   />
                 ) : (
-                  <Text style={styles.emptyData}>{translate('common.noDataFound')}</Text>
+                  <Text style={styles.emptyData}>
+                    {translate('common.noDataFound')}
+                  </Text>
                 )}
               </Table>
             </ScrollView>
@@ -1404,7 +1408,9 @@ const DetailScreen = ({route, navigation}) => {
                     widthArr={[90, 75, 85, 95, 150]}
                   />
                 ) : (
-                  <Text style={styles.emptyData}>{translate('common.noDataFound')}</Text>
+                  <Text style={styles.emptyData}>
+                    {translate('common.noDataFound')}
+                  </Text>
                 )}
               </Table>
             </ScrollView>
@@ -1502,7 +1508,7 @@ const DetailScreen = ({route, navigation}) => {
             setAllowedTokenModal(false);
           },
         }}
-        data={basePriceTokens.filter(_ => _.chain == chainType)}
+        data={availableTokens}
         title={translate('common.allowedcurrency')}
         itemPress={v => {
           setRoyality(v.name);
