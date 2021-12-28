@@ -174,7 +174,37 @@ const styles = StyleSheet.create({
     height: hp(4),
     marginHorizontal: wp(2),
     marginVertical: hp(1),
+  },
+
+
+  modalCont: {
+    width: "100%",
+    backgroundColor: colors.white,
+    borderRadius: wp('2%'),
+    maxHeight: hp(80),
+    paddingHorizontal: wp('5%'),
+    paddingVertical: hp('3%')
+  },
+  modalTitle: {
+    fontFamily: fonts.ARIAL_BOLD,
+    fontSize: RF(2.5),
+    color: colors.BLACK8,
+    textAlign: "center"
+  },
+  modalItem: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp("5%"),
+  },
+  listLabel: {
+    fontFamily: fonts.ARIAL,
+    fontSize: RF(1.9),
+    color: colors.BLACK8,
   }
+
 });
 
 export default styles;

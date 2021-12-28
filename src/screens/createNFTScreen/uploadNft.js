@@ -21,9 +21,9 @@ import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
 
 const PriceUnits = {
-  ethereum: ['ETH', "USDT"],
-  binance: ["ALIA", "BUSD", "BNB"],
-  polygon: ["ALIA", "USDC", "ETH", "MATIC"]
+  ethereum: [{ order: 1, name: 'ETH' }, { order: 0, name: 'USDT' }],
+  binance: [{ order: 0, name: 'ALIA' }, { order: 1, name: 'BUSD' }, { order: 2, name: 'BNB' }],
+  polygon: [{ order: 0, name: 'ALIA' }, { order: 1, name: 'USDC' }, { order: 2, name: 'ETH' }, { order: 3, name: "MATIC" }]
 }
 
 const ImageType = [
@@ -62,17 +62,63 @@ const UploadNFT = ({
   const [nftName, setNftName] = useState("");
   const [nftDesc, setNftDesc] = useState("");
 
-  const [basePrice, setBasePrice] = useState("");
+  const [basePrice, setBasePrice] = useState(null);
   const [otherPrice, setOtherPrice] = useState([]);
 
+  const [imageTypeList, setImageTypeList] = useState(ImageType);
   const [nftImageType, setNftImageType] = useState(null);
   const [royality, setRoyality] = useState("2.5%");
 
-  const [toggleButton, setToggleButton] = useState("fixed");
+  const [toggleButton, setToggleButton] = useState("fixPrice");
   const [fixedPrice, setFixedPrice] = useState("");
   const [startTimeDate, setStartTimeDate] = useState("");
   const [endTimeDate, setEndTimeDate] = useState("");
-  const [Price, setPrice] = useState("");
+
+
+  //#region SmartContract
+  let MarketPlaceAbi = '';
+  let MarketContractAddress = '';
+  let providerUrl = '';
+
+  let gasFee = "";
+  let gasLimit = "";
+
+  let ERC721Abi = '';
+  let ERC721Address = '';
+
+  // console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
+  if (networkType.value === 'polygon') {
+    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+    providerUrl = blockChainConfig[1].providerUrl;
+    ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
+    ERC721Address = blockChainConfig[1].erc721ConConfig.add;
+    gasFee = 30
+    gasLimit = 6000000
+    // collectionAddress = collectionAddress || blockChainConfig[1].erc721ConConfig.add;
+    // NftApprovalAbi = blockChainConfig[1].nftApprovalConConfig.abi
+  } else if (networkType.value === 'binance') {
+    MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+    providerUrl = blockChainConfig[0].providerUrl;
+    ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
+    ERC721Address = blockChainConfig[0].erc721ConConfig.add;
+    gasFee = 8
+    gasLimit = 6000000
+    // collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
+    // NftApprovalAbi = blockChainConfig[0].nftApprovalConConfig.abi
+  } else if (networkType.value === 'ethereum') {
+    MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+    MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+    providerUrl = blockChainConfig[2].providerUrl;
+    ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
+    ERC721Address = blockChainConfig[2].erc721ConConfig.add;
+    gasFee = 0 // for this api etherscan
+    gasLimit = 6000000
+    // collectionAddress = collectionAddress || blockChainConfig[2].erc721ConConfig.add;
+    // NftApprovalAbi = blockChainConfig[2].nftApprovalConConfig.abi
+  }
+
 
   useEffect(() => {
     if (position == 2) {
@@ -87,11 +133,14 @@ const UploadNFT = ({
       if (modalItem !== "closed") {
         if (activeModal === "collection") {
           setCollection(modalItem)
+          getFiltersList(modalItem._id)
         } else if (activeModal === "basePrice") {
           setBasePrice(modalItem)
-          setOtherPrice([])
+          let newPriceArr = [];
+          newPriceArr.push(modalItem.name)
+          setOtherPrice(newPriceArr)
         } else if (activeModal === "otherCurrency") {
-          setOtherPrice(oldArray => [...oldArray, modalItem]);
+          setOtherPrice(oldArray => [...oldArray, modalItem.name]);
         } else if (activeModal === "nftType") {
           setNftImageType(modalItem)
         } else if (activeModal === "royality") {
@@ -121,6 +170,10 @@ const UploadNFT = ({
 
   }, [datePickerData])
 
+  const getFiltersList = (_id) => {
+
+  }
+
   const getCollectionList = async () => {
     if (data.token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
@@ -129,16 +182,20 @@ const UploadNFT = ({
       const body = {
         page: 1,
         limit: 50,
-        networkType: networkStatus,
+        chainType: networkType.value,
+        networkType: networkStatus
       };
+      console.log(body, "collection list getting")
       axios.post(url, body)
         .then(collectionList => {
+          console.log(collectionList, "collection list getting")
           if (collectionList.data.success) {
             setCollectionList(collectionList.data.data)
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
-
-              setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
+              let selectedData = selectedCollection ? selectedCollection : collectionList.data.data[0];
+              setCollection(selectedData)
+              getFiltersList(selectedData._id)
               changeLoadingState(false)
             } else {
               changeLoadingState(false)
@@ -175,18 +232,31 @@ const UploadNFT = ({
         setImageError("File size should not exceed 50MB")
       } else {
         if (res.mime.includes("image")) {
+
           if (res.height >= 512 && res.width >= 512) {
+            let setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie")
+            setImageTypeList(setImageTList)
+            setNftImageType(null);
             setNftImage(res)
             cropImage(res)
           } else {
-            res.mime.includes("gif") ?
+            if (res.mime.includes("gif")) {
+              let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo")
               setNftImage(res)
-              :
+              setImageTypeList(setImageTList)
+              setNftImageType(null);
+            } else {
               setImageError("Image size should be greater than 512*512")
+            }
+
           }
         } else {
           //  space for video croping code
           setNftImage(res)
+          let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF")
+          setImageTypeList(setImageTList)
+          setNftImageType(null);
+
           videoCropping(res)
         }
       }
@@ -209,8 +279,127 @@ const UploadNFT = ({
     setFixedPrice("");
     setStartTimeDate("");
     setEndTimeDate("");
-    setPrice("");
   }
+
+  const saveDraft = () => {
+    if (data.token) {
+      changeLoadingState(true)
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+
+      let formData = new FormData();
+      formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+
+      axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+
+      axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
+        .then(res => {
+          console.log("upload image nft", res)
+          if (res.data.success) {
+            let thumbnailDataFile = new FormData();
+            thumbnailDataFile.append('imageName', res.data.imageName);
+            thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
+
+            axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
+              .then(res2 => {
+                console.log(res2, "thumbnail url")
+                if (res2.data.success) {
+                  let dataToSend = {
+                    collectionId: collection._id,
+                    name: nftName,
+                    description: nftDesc,
+                    image: res.data.data,
+                    thumbnailImage: res2.data.data,
+                    properties: { type: nftImageType },
+                    salesType: toggleButton,
+                    minPrice: fixedPrice,
+                    startTime:
+                      toggleButton == 'timeAuction'
+                        ? startTimeDate
+                        : '',
+                    endTime:
+                      toggleButton == 'timeAuction'
+                        ? endTimeDate
+                        : '',
+                    acceptCoins: otherPrice,
+                    basePrice: basePrice.order,
+                    chainType: networkType.value,
+                  };
+
+                  axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+                  axios.post(`${BASE_URL}/user/create-nft-draft`, dataToSend)
+                    .then(draftRes => {
+
+                      console.log(draftRes, "draftRes")
+
+                      if (draftRes.data.success) {
+                        alertWithSingleBtn(
+                          "Success",
+                          "Data save as Draft successfully!"
+                        );
+                      }
+                      changeLoadingState(false);
+
+                    })
+                    .catch(err => {
+                      changeLoadingState(false);
+                      if (err.response.status === 401) {
+                        alertWithSingleBtn(
+                          translate("wallet.common.alert"),
+                          translate("common.sessionexpired")
+                        );
+                      }
+                      alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkFailed")
+                      );
+                    });
+                } else {
+                  changeLoadingState(false);
+
+                }
+
+              })
+              .catch(err => {
+                changeLoadingState(false);
+                if (err.response.status === 401) {
+                  alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate("common.sessionexpired")
+                  );
+                }
+                alertWithSingleBtn(
+                  translate("wallet.common.alert"),
+                  translate("wallet.common.error.networkFailed")
+                );
+              });
+          } else {
+            changeLoadingState(false)
+
+          }
+        })
+        .catch(err => {
+          changeLoadingState(false);
+          if (err.response.status === 401) {
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("common.sessionexpired")
+            );
+          }
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("wallet.common.error.networkFailed")
+          );
+        });
+    }
+
+  }
+
+  let disableBtn = collection && nftName && nftDesc && nftImageType &&
+    nftImage && nftImageThumb && basePrice &&
+    (toggleButton == "timeAuction" ? (startTimeDate && endTimeDate && fixedPrice) : fixedPrice) &&
+    networkType;
 
   return (
     <View style={styles.childCont}>
@@ -268,6 +457,8 @@ const UploadNFT = ({
                         setNftImage(null);
                         setImageError("");
                         setNftImageThumb(null);
+                        setImageTypeList(ImageType)
+                        setNftImageType(null)
                       }}
                     />
                     <CardButton
@@ -335,10 +526,10 @@ const UploadNFT = ({
           <CardField inputProps={{ value: networkType.value, editable: false }} showRight />
           <CardLabel>Base Price</CardLabel>
           <CardField
-            inputProps={{ value: basePrice ? basePrice : "Select Base Price" }}
+            inputProps={{ value: basePrice ? basePrice.name : "Select Base Price" }}
             onPress={() => {
               setActiveModal("basePrice")
-              showModal({ data: PriceUnits[networkType.value], title: "Select Base Price" })
+              showModal({ data: PriceUnits[networkType.value], title: "Select Base Price", itemToRender: "name" })
             }}
             pressable
             showRight
@@ -349,14 +540,11 @@ const UploadNFT = ({
             onPress={() => {
               setActiveModal("otherCurrency")
               let priceList = [...PriceUnits[networkType.value]];
-              let index = priceList.indexOf(basePrice);
-              if (index !== -1) {
-                priceList.splice(index, 1);
-              }
+
               if (otherPrice.length !== 0) {
-                priceList = priceList.filter(val => !otherPrice.includes(val))
+                priceList = priceList.filter(val => !otherPrice.find(val1 => val1 === val.name))
               }
-              showModal({ data: priceList, title: "Select the Currency" })
+              showModal({ data: priceList, title: "Select the Currency", itemToRender: "name" })
             }}
             pressable
             showRight
@@ -367,19 +555,22 @@ const UploadNFT = ({
 
                 {
                   otherPrice.map(v => {
-                    return (
-                      <CardButton
-                        onPress={() => {
-                          const removeItem = otherPrice.filter((res) => {
-                            return res !== v;
-                          });
-                          setOtherPrice(removeItem)
-                        }}
-                        border={colors.BLUE6}
-                        buttonCont={styles.tagItems}
-                        label={v}
-                      />
-                    )
+                    if (v !== basePrice.name) {
+                      return (
+                        <CardButton
+                          onPress={() => {
+                            const removeItem = otherPrice.filter((res) => {
+                              return res !== v;
+                            });
+
+                            setOtherPrice(removeItem)
+                          }}
+                          border={colors.BLUE6}
+                          buttonCont={styles.tagItems}
+                          label={v}
+                        />
+                      )
+                    }
                   })
                 }
 
@@ -393,34 +584,40 @@ const UploadNFT = ({
             inputProps={{ value: nftImageType ? nftImageType.name : 'Type' }}
             onPress={() => {
               setActiveModal("nftType")
-              showModal({ data: ImageType, title: "NFT Type", itemToRender: "name" })
+              showModal({ data: imageTypeList, title: "NFT Type", itemToRender: "name" })
             }}
             pressable
             showRight />
+          {
+            collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
+              <>
+                <CardLabel>Royality</CardLabel>
+                <CardField
+                  inputProps={{ value: royality }}
+                  onPress={() => {
+                    setActiveModal("royality")
+                    showModal({ data: royalityData, title: "Royality" })
+                  }}
+                  pressable
+                  showRight />
+              </>
+              : null
+          }
 
-          <CardLabel>Royality</CardLabel>
-          <CardField
-            inputProps={{ value: royality }}
-            onPress={() => {
-              setActiveModal("royality")
-              showModal({ data: royalityData, title: "Royality" })
-            }}
-            pressable
-            showRight />
         </CardCont>
 
         <CardCont>
           <CardLabel>Sale Type</CardLabel>
           <View style={styles.saveBtnGroup}>
             <CardButton
-              onPress={() => changeToggle("fixed")}
-              border={toggleButton !== "fixed" ? colors.BLUE6 : null}
+              onPress={() => changeToggle("fixPrice")}
+              border={toggleButton !== "fixPrice" ? colors.BLUE6 : null}
               label="Fixed Price"
               buttonCont={{ width: '48%' }}
             />
             <CardButton
-              onPress={() => changeToggle("auction")}
-              border={toggleButton !== "auction" ? colors.BLUE6 : null}
+              onPress={() => changeToggle("timeAuction")}
+              border={toggleButton !== "timeAuction" ? colors.BLUE6 : null}
               buttonCont={{ width: '48%' }}
               label="Auction"
             />
@@ -429,14 +626,14 @@ const UploadNFT = ({
 
         <CardCont>
           {
-            toggleButton == "fixed" ?
+            toggleButton == "fixPrice" ?
               <>
                 <CardLabel>Fixed Price</CardLabel>
                 <CardField
                   contStyle={{ paddingRight: 0 }}
                   inputProps={{
                     value: fixedPrice,
-                    onchangeText: v => setFixedPrice(v),
+                    onChangeText: v => setFixedPrice(v),
                     keyboardType: 'number-pad'
                   }}
                   showRight
@@ -444,7 +641,7 @@ const UploadNFT = ({
                     <CardButton
                       disable
                       buttonCont={{ width: '15%', borderRadius: 0 }}
-                      label={basePrice ? basePrice : "ALIA"}
+                      label={basePrice ? basePrice.name : "ALIA"}
                     />
                   }
                 />
@@ -473,8 +670,8 @@ const UploadNFT = ({
                 <CardField
                   contStyle={{ paddingRight: 0 }}
                   inputProps={{
-                    value: Price,
-                    onchangeText: v => setPrice(v),
+                    value: fixedPrice,
+                    onChangeText: v => setFixedPrice(v),
                     keyboardType: 'number-pad'
                   }}
                   showRight
@@ -482,7 +679,7 @@ const UploadNFT = ({
                     <CardButton
                       disable
                       buttonCont={{ width: '15%', borderRadius: 0 }}
-                      label={basePrice ? basePrice : "ALIA"}
+                      label={basePrice ? basePrice.name : "ALIA"}
                     />
                   }
                 />
@@ -491,9 +688,15 @@ const UploadNFT = ({
         </CardCont>
 
         <View style={styles.saveBtnGroup}>
-          <CardButton label="Save as Draft" buttonCont={{ width: '48%' }} />
+          <CardButton
+            onPress={saveDraft}
+            label="Save as Draft"
+            buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
+            disable={!disableBtn} />
           <CardButton
             border={colors.BLUE6}
+            disable={!disableBtn}
+            border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             buttonCont={{ width: '48%' }}
             label="Upload"
           />
