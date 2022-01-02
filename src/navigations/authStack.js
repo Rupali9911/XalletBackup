@@ -8,13 +8,18 @@ import Policy from '../screens/AuthScreens/policy';
 import RecoveryPhrase from '../screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from '../screens/AuthScreens/verifyPhrase';
 import Welcome from '../screens/AuthScreens/welcome';
+import { SignupCrypto, LoginCrypto, ForgetCrypto, Verify } from '../screens/AuthScreens/nonCryptoAuth';
 
 const Auth = createStackNavigator();
 
 const AuthStack = () => {
   return (
-    <Auth.Navigator screenOptions={{headerShown: false}} headerMode="none">
+    <Auth.Navigator screenOptions={{ headerShown: false }} headerMode="none">
       <Auth.Screen name="welcome" component={Welcome} />
+      <Auth.Screen name="CryptoLogin" component={LoginCrypto} />
+      <Auth.Screen name="CryptoSignUp" component={SignupCrypto} />
+      <Auth.Screen name="CryptoForget" component={ForgetCrypto} />
+      <Auth.Screen name="CryptoVerify" component={Verify} />
       <Auth.Screen name="legal" component={Legal} />
       <Auth.Screen name="chooseWallet" component={chooseWallet} />
       <Auth.Screen name="backup" component={Backup} />
