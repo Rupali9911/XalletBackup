@@ -31,8 +31,8 @@ const Verify = ({ route }) => {
         setError("")
         setLoading(true);
 
-        // let url = `${BASE_URL}/auth/verify-email`;
-        let url = `https://api.xanalia.com/auth/verify-email`;
+        let url = `${BASE_URL}/auth/verify-email`;
+        // let url = `https://api.xanalia.com/auth/verify-email`;
 
         let body = {
             code: code
