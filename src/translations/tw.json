@@ -443,7 +443,6 @@
         "validtwiiterlink": "請輸入有效的 Twitter 鏈接。 ",
         "youtubelink": "請輸入有效的 YouTube 鏈接。 ",
         "instagramlink": "請輸入有效的 Instagram 鏈接。",
-        "discordlink": "請輸入有效的 Discord 鏈接。",
         "usernotfound": "未找到用戶 ",
         "facebook": "臉書 ",
         "youtube": "YouTube",
@@ -610,8 +609,10 @@
         "award": "獎",
         "Giveaway": "免費的",
         "Sellselecttoken": "選擇令牌",
+        "discordlink": "請輸入有效的 Discord 鏈接。",
+        "ethereum": "以太坊",
         "allowedcurrency": "應付在",
-        "ethereum": "以太坊"
+        "event": "事件"
     },
     "AwardPage": {},
     "wallet": {
@@ -886,7 +887,10 @@
             "nftId": "NFT ID",
             "contractAddress": "合約地址",
             "bidHistory": "投標歷史",
-            "collectionHint": "更多來自這個系列"
+            "collectionHint": "更多來自這個系列",
+            "cameraPermissionHeader": "此功能需要使用相机",
+            "cameraPermissionMessage": "要启用访问，请点按设置并打开相机。",
+            "settings": "设置"
         },
         "backendmessage": {
             "error": {},

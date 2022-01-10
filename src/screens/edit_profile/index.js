@@ -29,6 +29,8 @@ import {
 import { updateProfile, updateProfileImage } from '../../store/reducer/userReducer';
 import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { openSettings } from 'react-native-permissions';
+import { confirmationAlert } from '../../common/function';
 
 function Profile(props) {
   const { navigation, handleSubmit, initialize } = props;
@@ -46,7 +48,7 @@ function Profile(props) {
     initialize({ ...data, ...data.links });
   }, []);
 
-  const selectActionSheet = index => {
+  const selectActionSheet = async index => {
     const options = {
       title: 'Select Your Photo',
       storageOptions: {
@@ -57,11 +59,24 @@ function Profile(props) {
     };
 
     if (index === OPEN_CAMERA) {
-      launchCamera(options, (response) => {
-        if (response.assets) {
-          setPhoto(response.assets[0]);
-        }
-      });
+      const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+
+      if (!isGranted) {
+        confirmationAlert(
+          translate("wallet.common.cameraPermissionHeader"),
+          translate("wallet.common.cameraPermissionMessage"),
+          translate("common.Cancel"),
+          translate("wallet.common.settings"),
+          () => openSettings(),
+          () => null
+        )
+      } else {
+        launchCamera(options, (response) => {
+          if (response.assets) {
+            setPhoto(response.assets[0]);
+          }
+        });
+      }
     } else if (index === OPEN_GALLERY) {
       launchImageLibrary(options, (response) => {
         if (response.assets) {

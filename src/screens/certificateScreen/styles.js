@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
   },
   listImage: {
     height: '100%',
-    position: "absolute",
+    position: 'absolute',
     top: 0,
-    width: "100%"
-},
+    width: '100%',
+  },
   person: {
     flexDirection: 'row',
     paddingHorizontal: SIZE(5),
@@ -223,15 +223,24 @@ const styles = StyleSheet.create({
   },
   rowText: {
     color: colors.black,
-    fontSize: RF(1.75),
-    maxWidth: wp('30%'),
+    fontSize: RF(1.65),
+    maxWidth: wp('35%'),
   },
   head: {height: 35},
-  text: {margin: 10,fontSize: RF(1.60)},
-  emptyData:{
+  text: {margin: 10, fontSize: RF(1.5)},
+  emptyData: {
     alignSelf: 'center',
     marginVertical: hp('1%'),
-  }
+  },
+  sorryMessageCont: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sorryMessage: {
+    fontSize: 15,
+    fontFamily: fonts.SegoeUIRegular,
+  },
 });
 
 export default styles;

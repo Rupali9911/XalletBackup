@@ -28,7 +28,7 @@ import AppModal from '../../components/appModal';
 import ApproveModalContent from '../../components/approveAppModal';
 import { alertWithSingleBtn } from '../../utils';
 import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
-import {getSig} from '../wallet/functions';
+import { getSig } from '../wallet/functions';
 
 const singleSocket = SingleSocket.getInstance();
 
@@ -50,7 +50,7 @@ const ListItems = (props) => {
                         setDetails(response.data);
                     }
                 } catch (err) {
-                    console.log('err________',err);
+                    console.log('err________', err);
                 }
             },
         });
@@ -96,21 +96,20 @@ const Connect = ({ route, navigation }) => {
     const [connectedApps, setConnectedApps] = useState([]);
 
     const onCheckPermission = async () => {
-        // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-        // if (!isGranted) {
-        //     confirmationAlert(
-        //         'This feature requires camera access',
-        //         'To enable access, tap Settings and turn on Camera.',
-        //         'Cancel',
-        //         'Settings',
-        //         () => openSettings(),
-        //         () => null
-        //     )
-        // } else {
-            
-        // }
-        navigation.navigate("scanToConnect");
+        if (!isGranted) {
+            confirmationAlert(
+                translate("wallet.common.cameraPermissionHeader"),
+                translate("wallet.common.cameraPermissionMessage"),
+                translate("common.Cancel"),
+                translate("wallet.common.settings"),
+                () => openSettings(),
+                () => null
+            )
+        } else {
+            navigation.navigate("scanToConnect");
+        }
     }
 
     const renderApps = ({ item, index }) => {
@@ -164,7 +163,7 @@ const Connect = ({ route, navigation }) => {
                             // alertWithSingleBtn('', response.data);
                             if (response.data.appId) {
                                 setConnectedApps([]);
-                                navigation.setParams({appId: null});
+                                navigation.setParams({ appId: null });
                             }
                         } else if (response.type == 'walletInfo') {
                             if (response.data.isAppApproved == 'true') {
@@ -199,7 +198,7 @@ const Connect = ({ route, navigation }) => {
                         }
                     } else if (response.status === 'error') {
                         if (response.type == 'wallet') {
-                            
+
                         } else if (response.type == 'approve') {
                             alertWithSingleBtn('', translate('wallet.common.error.appNotConnected'));
                         }
@@ -253,7 +252,7 @@ const Connect = ({ route, navigation }) => {
         singleSocket.onSendMessage(data);
         navigation.setParams({
             appId: null,
-          });
+        });
     }
 
     const disconnectApp = (id, name) => {

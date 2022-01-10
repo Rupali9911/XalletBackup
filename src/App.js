@@ -52,6 +52,7 @@ import Store from './store';
 
 import { setRequestAppId } from './store/reducer/walletReducer';
 import { environment, translate } from './walletUtils';
+import SplashScreen from 'react-native-splash-screen';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -69,7 +70,7 @@ const deepLinkData = {
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
+  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
 
   return (
     <Tab.Navigator
@@ -156,7 +157,6 @@ const AppRoutes = () => {
 
   React.useEffect(() => {
     LogBox.ignoreAllLogs();
-
     Linking.addEventListener('url', ({ url }) => {
       console.log('e', url);
       if (url && url.includes('xanaliaapp://connect')) {
@@ -200,6 +200,7 @@ const AppRoutes = () => {
   };
 
   if (mainLoader || showSplash) return <AppSplash />
+  if (!mainLoader && !showSplash) SplashScreen.hide();
 
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>

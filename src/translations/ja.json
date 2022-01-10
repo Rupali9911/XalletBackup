@@ -443,7 +443,6 @@
         "validtwiiterlink": "有効なツイッターのリンクを入力してください。",
         "youtubelink": "有効なユーチューブリンクを入力して下さい。",
         "instagramlink": "有効なインスタグラムリンクを入力してください。",
-        "discordlink": "有効なインスタグラムリンクを入力してください。",
         "usernotfound": "ユーザーが見つかりません。",
         "facebook": "フェイスブック",
         "youtube": "ユーチューブ ",
@@ -610,8 +609,10 @@
         "award": "アワード",
         "Giveaway": "ギブアウェイ",
         "Sellselecttoken": "受取通貨を選択",
-        "allowedcurrency": "決済通貨",
-        "ethereum": "イーサリアム"
+        "discordlink": "有効なリンクを記入してください。",
+        "ethereum": "イーサリアム",
+        "allowedcurrency": "支払通貨選択",
+        "event": "イベント"
     },
     "AwardPage": {},
     "wallet": {
@@ -745,7 +746,7 @@
             "scanTag": "スキャンタグ",
             "readyScan": "スキャンの準備完了",
             "objectScanned": "スキャンされたオブジェクト",
-            "detail": "作品詳細",
+            "detail": "詳細",
             "offerPrice": "その他の価格を提供",
             "explore": "発見",
             "comingSoon": "もうすぐです",
@@ -881,12 +882,15 @@
             "xanaliaWallet": "XANALIA ウォレット",
             "otherWallet": "他ウォレット",
             "filter": "フィルター",
-            "blockChainType": "ブロックチェーンタイプ",
-            "tokenStandard": "トークン標準",
+            "blockChainType": "ブロックチェーン種別",
+            "tokenStandard": "トークン規格",
             "nftId": "NFT ID",
-            "contractAddress": "契約住所",
+            "contractAddress": "コントラクトアドレス",
             "bidHistory": "入札履歴",
-            "collectionHint": "このコレクションの詳細"
+            "collectionHint": "このコレクションの他作品",
+            "cameraPermissionHeader": "この機能には、カメラへのアクセスが必要です",
+            "cameraPermissionMessage": "アクセスするには、［設定］をタップし［カメラ］をオンにします。",
+            "settings": "設定"
         },
         "backendmessage": {
             "error": {},

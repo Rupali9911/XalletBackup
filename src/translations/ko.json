@@ -443,7 +443,6 @@
         "validtwiiterlink": "유효한 트위터 링크를 입력하세요.",
         "youtubelink": "유효한 YouTube 링크를 입력하세요. ",
         "instagramlink": "유효한 Instagram 링크를 입력하세요",
-        "discordlink": "유효한 Discord 링크를 입력하세요.",
         "usernotfound": "사용자를 찾을 수 없습니다. ",
         "facebook": "페이스북 ",
         "youtube": "유튜브",
@@ -610,8 +609,10 @@
         "award": "어워드",
         "Giveaway": "헐값으로 파는",
         "Sellselecttoken": "수령 통화 선택",
+        "discordlink": "유효한 Discord 링크를 입력하세요.",
+        "ethereum": "이더 리움",
         "allowedcurrency": "결제 통화",
-        "ethereum": "이더 리움"
+        "event": "이벤트"
     },
     "AwardPage": {},
     "wallet": {
@@ -886,7 +887,10 @@
             "nftId": "NFT ID",
             "contractAddress": "계약 주소",
             "bidHistory": "입찰 내역",
-            "collectionHint": "이 컬렉션에서 더 많은 것"
+            "collectionHint": "이 컬렉션에서 더 많은 것",
+            "cameraPermissionHeader": "이 기능을 사용하려면 카메라 액세스 권한이 필요합니다.",
+            "cameraPermissionMessage": "액세스를 활성화하려면 설정을 누르고 카메라를 켭니다.",
+            "settings": "설정"
         },
         "backendmessage": {
             "error": {},

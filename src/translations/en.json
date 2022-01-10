@@ -443,7 +443,6 @@
         "validtwiiterlink": "Please enter valid Twitter link.",
         "youtubelink": "Please enter valid YouTube link.",
         "instagramlink": "Please enter valid Instagram link.",
-        "discordlink": "Please enter valid Discord link.",
         "usernotfound": "User not found",
         "facebook": "Facebook",
         "youtube": "YouTube",
@@ -610,8 +609,10 @@
         "award": "Award",
         "Giveaway": "Giveaway",
         "Sellselecttoken": "Select token",
-        "allowedcurrency": "Payable in",
-        "ethereum": "Ethereum"
+        "discordlink": "Please enter valid Discord link.",
+        "ethereum": "Ethereum",
+        "allowedcurrency": "Payable In",
+        "event": "Event"
     },
     "AwardPage": {},
     "wallet": {
@@ -886,7 +887,10 @@
             "nftId": "NFT ID",
             "contractAddress": "Contract Address",
             "bidHistory": "Bid History",
-            "collectionHint": "More from this Collection"
+            "collectionHint": "More from this Collection",
+            "cameraPermissionHeader": "This feature requires camera access",
+            "cameraPermissionMessage": "To enable access, tap Settings and turn on Camera.",
+            "settings": "Settings"
         },
         "backendmessage": {
             "error": {},

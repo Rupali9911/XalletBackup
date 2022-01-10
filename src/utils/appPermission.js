@@ -25,8 +25,9 @@ class AppPermission {
     try {
       const result = await check(permissions);
       console.log('AppPermission checkPermission result:', result);
-      if (result === RESULTS.DENIED) return false;
+      if (result === RESULTS.DENIED) return true;
       if (result === RESULTS.GRANTED) return true;
+      if (result === RESULTS.BLOCKED) return false;
       return false;
     } catch (error) {
       console.log('AppPermission checkPermission error:', error);
