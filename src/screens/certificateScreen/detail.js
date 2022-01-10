@@ -1,4 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
+import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -484,6 +485,7 @@ const DetailScreen = ({route, navigation}) => {
             const obj = bids[i];
             arr.push(Object.values(obj));
           }
+          console.log('JOMO', arr);
           setTradingTableData(arr);
 
           // this.setState(

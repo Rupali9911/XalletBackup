@@ -2,7 +2,6 @@ import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Events} from '../../App';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppModal from '../../components/appModal';
@@ -24,15 +23,15 @@ import {
   updateBalances,
   updateBSCBalances,
   updateEthereumBalances,
+  updateNetworkType,
   updatePolygonBalances,
-  updateNetworkType
 } from '../../store/reducer/walletReducer';
 import {environment, translate} from '../../walletUtils';
 import {HeaderBtns} from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
-import {balance, watchBalanceUpdate} from './functions';
+import {balance} from './functions';
 
 const ethers = require('ethers');
 
@@ -45,8 +44,14 @@ const Wallet = ({route, navigation}) => {
   const {wallet, isCreate, data, isBackup} = useSelector(
     state => state.UserReducer,
   );
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, networkType} =
-    useSelector(state => state.WalletReducer);
+  const {
+    ethBalance,
+    bnbBalance,
+    maticBalance,
+    tnftBalance,
+    talBalance,
+    networkType,
+  } = useSelector(state => state.WalletReducer);
 
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -323,13 +328,25 @@ const Wallet = ({route, navigation}) => {
           environment.polRpc,
           'alia',
         ),
-        balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc"),
-        balance(pubKey, environment.wethCont, environment.wethAbi, environment.polRpc, "weth")
+        balance(
+          pubKey,
+          environment.usdcCont,
+          environment.usdcAbi,
+          environment.polRpc,
+          'usdc',
+        ),
+        balance(
+          pubKey,
+          environment.wethCont,
+          environment.wethAbi,
+          environment.polRpc,
+          'weth',
+        ),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
-          console.log('responses',responses);
+          console.log('responses', responses);
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
