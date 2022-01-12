@@ -74,7 +74,13 @@ const CreateNFTScreen = () => {
           position={index}
           changeLoadingState={(e) => setLoading(e)} />;
       case 'Filter':
-        return <Filter changeLoadingState={(e) => setLoading(e)} />;
+        return <Filter
+          modalItem={modalItem}
+          modalScreen={modalScreen}
+          showModal={(v) => ShowModalAction(v, "filter")}
+          position={index}
+          changeLoadingState={(e) => setLoading(e)}
+        />;
       default:
         return null;
     }

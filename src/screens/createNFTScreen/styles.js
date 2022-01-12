@@ -175,8 +175,6 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(2),
     marginVertical: hp(1),
   },
-
-
   modalCont: {
     width: "100%",
     backgroundColor: colors.white,
@@ -203,6 +201,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     fontSize: RF(1.9),
     color: colors.BLACK8,
+  },
+  progressLoader: {
+    width: "100%",
+    marginVertical: hp(3),
+    justifyContent: "center",
+    alignItems: "center"
   }
 
 });
