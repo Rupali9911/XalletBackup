@@ -33,7 +33,8 @@ const NFTList = ({
   position,
   showModal,
   modalItem,
-  modalScreen
+  modalScreen,
+  nftListDefault
 }) => {
 
   const [collectionList, setCollectionList] = useState([]);
@@ -57,15 +58,32 @@ const NFTList = ({
   useEffect(() => {
     if (position == 1) {
       changeLoadingState(true)
-      getCollectionList()
+      cleanData()
+
+      console.log(nftListDefault)
+      // getCollectionList()
+      if (nftListDefault) {
+        setCollection(nftListDefault.collect)
+        if (nftListDefault.name === "draft") {
+          pressToggle("draft", nftListDefault.collect)
+        }
+      } else {
+        getCollectionList()
+      }
     }
-  }, [position])
+  }, [position, nftListDefault])
+
+  const cleanData = () => {
+    setNftListPage(1)
+    setNftListDraftPage(1)
+    setNftListCreated([])
+    setNftListDraft([])
+  }
 
   useEffect(() => {
     if (modalScreen === "nftList" && modalItem) {
       if (modalItem !== "closed") {
-        setNftListDraft([]);
-        setNftListCreated([]);
+        cleanData()
         setCollection(modalItem)
         getNftList(modalItem, toggle, 1)
       }
@@ -91,7 +109,9 @@ const NFTList = ({
             setCollectionList(collectionList.data.data)
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
+              cleanData()
               setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
+
               toggle == "mint" ?
                 setNftListPage(1) : setNftListDraftPage(1);
               getNftList(selectedCollection, toggle, 1)
@@ -124,7 +144,7 @@ const NFTList = ({
 
     axios.post(url, body)
       .then(res => {
-        console.log(res, "nftlist", tog)
+        console.log(res, "nftlist", tog, collect)
         if (res.data.success) {
           if (tog == "mint") {
             setNftListCreated((old) => [...old, ...res.data.data])
@@ -146,14 +166,14 @@ const NFTList = ({
 
   }
 
-  const pressToggle = (v) => {
+  const pressToggle = (v, collect) => {
     changeLoadingState(true)
     setNftListDraft([]);
     setNftListCreated([]);
     setToggle(v);
     v == "mint" ?
       setNftListPage(1) : setNftListDraftPage(1);
-    getNftList(collection, v, 1)
+    getNftList(collect, v, 1)
   }
 
   const selectItem = (v) => {
@@ -179,13 +199,13 @@ const NFTList = ({
           showRight />
         <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
           <CardButton
-            onPress={() => pressToggle("mint")}
+            onPress={() => pressToggle("mint", collection)}
             border={toggle !== "mint" ? colors.BLUE6 : null}
             label="Created"
             buttonCont={styles.leftToggle}
           />
           <CardButton
-            onPress={() => pressToggle("draft")}
+            onPress={() => pressToggle("draft", collection)}
             border={toggle !== "draft" ? colors.BLUE6 : null}
             buttonCont={styles.rightToggle}
             label="Draft"

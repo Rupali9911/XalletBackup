@@ -31,6 +31,7 @@ const CreateNFTScreen = () => {
   const [dateVisible, setDateVisible] = useState(false);
   const [miniDate, setMiniDate] = useState(new Date());
   const [date, setDate] = useState("");
+  const [nftListDefault, setnftListDefault] = useState(null);
 
   const [index, setIndex] = useState(0);
   const routes = [
@@ -46,6 +47,7 @@ const CreateNFTScreen = () => {
     setModalScreen(screenName)
     setModalData(v)
     setModalVisible(true);
+    setnftListDefault(null)
   }
 
   const _renderScene = ({ route, jumpTo, position }) => {
@@ -58,6 +60,7 @@ const CreateNFTScreen = () => {
           modalScreen={modalScreen}
           showModal={(v) => ShowModalAction(v, "nftList")}
           position={index}
+          nftListDefault={nftListDefault}
           changeLoadingState={(e) => setLoading(e)} />;
       case 'UploadNFT':
         return <UploadNFT
@@ -72,6 +75,10 @@ const CreateNFTScreen = () => {
           modalScreen={modalScreen}
           showModal={(v) => ShowModalAction(v, "uploadNFT")}
           position={index}
+          switchToNFTList={(v, collect) => {
+            setIndex(1)
+            setnftListDefault({ name: v, collect: collect })
+          }}
           changeLoadingState={(e) => setLoading(e)} />;
       case 'Filter':
         return <Filter
