@@ -318,9 +318,9 @@ const UploadNFT = ({
           if (res.data.success) {
             let thumbnailDataFile = new FormData();
             thumbnailDataFile.append('imageName', res.data.imageName);
-            if(nftImageThumb){
+            if (nftImageThumb) {
               thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
-            }else{
+            } else {
               thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
             }
 
@@ -359,10 +359,6 @@ const UploadNFT = ({
 
                       if (draftRes.data.success) {
                         switchToNFTList("draft", collection)
-                        alertWithSingleBtn(
-                          "Success",
-                          "Data save as Draft successfully!"
-                        );
                       }
                       changeLoadingState(false);
 
@@ -579,10 +575,11 @@ const UploadNFT = ({
               <View style={styles.tagCont} >
 
                 {
-                  otherPrice.map(v => {
+                  otherPrice.map((v, i) => {
                     if (v !== basePrice.name) {
                       return (
                         <CardButton
+                          key={i}
                           onPress={() => {
                             const removeItem = otherPrice.filter((res) => {
                               return res !== v;

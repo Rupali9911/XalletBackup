@@ -388,7 +388,7 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
         console.log(err);
         reject(err.message);
       }
-    }).once('receipt',(receipt) => {
+    }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
     });
 
@@ -495,11 +495,11 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
         console.log("resp noncrypto function", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else
-      if (err) {
-        console.log(err);
-        reject(err.message);
-      }
-    }).once('receipt',(receipt) => {
+        if (err) {
+          console.log(err);
+          reject(err.message);
+        }
+    }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
     })
 
@@ -695,7 +695,7 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
       from: publicKey,
       gasPrice: web3.utils.toHex(customGasPrice),
       gasLimit: web3.utils.toHex(customGasLimit),
-      chainId: chainType === "polygon" ? 80001 : undefined,
+      chainId: getChainId(chainType),
       to: contractAddress,
       value: "0x0",
       data: contract.methods
@@ -704,58 +704,62 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
       nonce: web3.utils.toHex(txCount)
     };
 
-      let common = null;
-      if (chainType === 'binance') {
-          common = Common.forCustomChain('mainnet', {
-              name: 'bnb',
-              networkId: getNetworkId(chainType),
-              chainId: getChainId(chainType)
-          }, 'petersburg');
-      } else if (chainType === 'polygon') {
-          common = Common.forCustomChain('mainnet', {
-              name: 'matic',
-              networkId: getNetworkId(chainType),
-              chainId: getChainId(chainType)
-          }, 'petersburg');
-      } else {
-          common = Common.forCustomChain('mainnet', {
-              name: 'eth',
-              networkId: getNetworkId(chainType),
-              chainId: getChainId(chainType)
-          }, 'petersburg');
-      }
+    let common = null;
+    if (chainType === 'binance') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'bnb',
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
+      }, 'petersburg');
+    } else if (chainType === 'polygon') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'matic',
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
+      }, 'petersburg');
+    } else {
+      common = Common.forCustomChain('mainnet', {
+        name: 'eth',
+        networkId: getNetworkId(chainType),
+        chainId: getChainId(chainType)
+      }, 'petersburg');
+    }
 
     const tx = new EthereumTx(txObject, { common });
     privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
     tx.sign(privateKey);
     const serializedTx = tx.serialize();
     const raw = "0x" + serializedTx.toString("hex");
+    console.log(raw, "raw ////////////////", txObject, chainType)
 
+    // reject("testing")
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+      console.log(txHash, "txHash ////////////////", err)
       if (txHash) {
-        const interval = setInterval(() => checkingProgressTransaction(), 10000)
-        const checkingProgressTransaction = async () => {
-          try {
-            const transactionReceipt = await web3.eth.getTransactionReceipt(txHash);
-            if (transactionReceipt) {
-              clearInterval(interval);
-              if (transactionReceipt.logs && (transactionReceipt.logs.length > 0)) {
-                for (var i = 0; i < transactionReceipt.logs.length; i++) {
-                  if (transactionReceipt.logs[i].address == contractAddress) {
-                    let transactionData = {
-                      transactionHash: txHash,
-                      collectionAddress: '0x' + transactionReceipt.logs[i].data.substring(26, 66)
+              const interval = setInterval(() => checkingProgressTransaction(), 10000)
+              const checkingProgressTransaction = async () => {
+                try {
+                  const transactionReceipt = await web3.eth.getTransactionReceipt(txHash);
+                 console.log(transactionReceipt, "transactionReceipt")
+                  if (transactionReceipt) {
+                    clearInterval(interval);
+                    if (transactionReceipt.logs && (transactionReceipt.logs.length > 0)) {
+                      for (var i = 0; i < transactionReceipt.logs.length; i++) {
+                        if (transactionReceipt.logs[i].address == contractAddress) {
+                          let transactionData = {
+                            transactionHash: txHash,
+                            collectionAddress: '0x' + transactionReceipt.logs[i].data.substring(26, 66)
+                          }
+                          resolve({ success: true, status: 200, data: transactionData });
+                        }
+                      }
                     }
-                    resolve({ success: true, status: 200, data: transactionData });
                   }
+                } catch (error) {
+                  console.error(error, " transactionReceipt error");
+                  reject(error)
                 }
               }
-            }
-          } catch (error) {
-            console.error(error, " transactionReceipt error");
-            reject(error)
-          }
-        }
 
       } else if (err) {
         console.log(err, "transactionReceipt");
@@ -841,7 +845,7 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
         console.log(err);
         reject(err.message);
       }
-    }).once('receipt',(receipt) => {
+    }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
     });
 
@@ -919,7 +923,7 @@ export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlace
         console.log(err);
         reject(err.message);
       }
-    }).once('receipt',(receipt) => {
+    }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
     });
 
