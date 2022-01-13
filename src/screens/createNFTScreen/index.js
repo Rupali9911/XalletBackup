@@ -76,8 +76,8 @@ const CreateNFTScreen = () => {
           showModal={(v) => ShowModalAction(v, "uploadNFT")}
           position={index}
           switchToNFTList={(v, collect) => {
-            setIndex(1)
             setnftListDefault({ name: v, collect: collect })
+            setIndex(1)
           }}
           changeLoadingState={(e) => setLoading(e)} />;
       case 'Filter':

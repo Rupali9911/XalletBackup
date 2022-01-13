@@ -302,123 +302,122 @@ const UploadNFT = ({
   }
 
   const saveDraft = () => {
-    // if (data.token) {
-    //   changeLoadingState(true)
+    if (data.token) {
+      changeLoadingState(true)
 
-    //   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
-    //   let formData = new FormData();
-    //   formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+      let formData = new FormData();
+      formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
 
-    //   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+      axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
-    //   axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
-    //     .then(res => {
-    //       console.log("upload image nft", res)
-    //       if (res.data.success) {
-    //         let thumbnailDataFile = new FormData();
-    //         thumbnailDataFile.append('imageName', res.data.imageName);
-    //         if(nftImageThumb){
-    //           thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
-    //         }else{
-    //           thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
-    //         }
+      axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
+        .then(res => {
+          console.log("upload image nft", res)
+          if (res.data.success) {
+            let thumbnailDataFile = new FormData();
+            thumbnailDataFile.append('imageName', res.data.imageName);
+            if(nftImageThumb){
+              thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
+            }else{
+              thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+            }
 
-    //         axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
-    //           .then(res2 => {
-    //             console.log(res2, "thumbnail url")
-    //             if (res2.data.success) {
-    //               let dataToSend = {
-    //                 collectionId: collection._id,
-    //                 name: nftName,
-    //                 description: nftDesc,
-    //                 image: res.data.data,
-    //                 thumbnailImage: res2.data.data,
-    //                 properties: { type: nftImageType },
-    //                 salesType: toggleButton,
-    //                 minPrice: fixedPrice,
-    //                 startTime:
-    //                   toggleButton == 'timeAuction'
-    //                     ? startTimeDate
-    //                     : '',
-    //                 endTime:
-    //                   toggleButton == 'timeAuction'
-    //                     ? endTimeDate
-    //                     : '',
-    //                 acceptCoins: otherPrice,
-    //                 basePrice: basePrice.name,
-    //                 chainType: networkType.value,
-    //               };
+            axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
+              .then(res2 => {
+                console.log(res2, "thumbnail url")
+                if (res2.data.success) {
+                  let dataToSend = {
+                    collectionId: collection._id,
+                    name: nftName,
+                    description: nftDesc,
+                    image: res.data.data,
+                    thumbnailImage: res2.data.data,
+                    properties: { type: nftImageType },
+                    salesType: toggleButton,
+                    minPrice: fixedPrice,
+                    startTime:
+                      toggleButton == 'timeAuction'
+                        ? startTimeDate
+                        : '',
+                    endTime:
+                      toggleButton == 'timeAuction'
+                        ? endTimeDate
+                        : '',
+                    acceptCoins: otherPrice,
+                    basePrice: basePrice.name,
+                    chainType: networkType.value,
+                  };
 
-    //               axios.defaults.headers.post['Content-Type'] = 'application/json';
+                  axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-    //               axios.post(`${BASE_URL}/user/create-nft-draft`, dataToSend)
-    //                 .then(draftRes => {
+                  axios.post(`${BASE_URL}/user/create-nft-draft`, dataToSend)
+                    .then(draftRes => {
 
-    //                   console.log(draftRes, "draftRes")
+                      console.log(draftRes, "draftRes")
 
-    //                   if (draftRes.data.success) {
-    //                     switchToNFTList("draft", collection)
-    //                     alertWithSingleBtn(
-    //                       "Success",
-    //                       "Data save as Draft successfully!"
-    //                     );
-    //                   }
-    //                   changeLoadingState(false);
+                      if (draftRes.data.success) {
+                        switchToNFTList("draft", collection)
+                        alertWithSingleBtn(
+                          "Success",
+                          "Data save as Draft successfully!"
+                        );
+                      }
+                      changeLoadingState(false);
 
-    //                 })
-    //                 .catch(err => {
-    //                   changeLoadingState(false);
-    //                   if (err.response.status === 401) {
-    //                     alertWithSingleBtn(
-    //                       translate("wallet.common.alert"),
-    //                       translate("common.sessionexpired")
-    //                     );
-    //                   }
-    //                   alertWithSingleBtn(
-    //                     translate("wallet.common.alert"),
-    //                     translate("wallet.common.error.networkFailed")
-    //                   );
-    //                 });
-    //             } else {
-    //               changeLoadingState(false);
+                    })
+                    .catch(err => {
+                      changeLoadingState(false);
+                      if (err.response.status === 401) {
+                        alertWithSingleBtn(
+                          translate("wallet.common.alert"),
+                          translate("common.sessionexpired")
+                        );
+                      }
+                      alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkFailed")
+                      );
+                    });
+                } else {
+                  changeLoadingState(false);
 
-    //             }
+                }
 
-    //           })
-    //           .catch(err => {
-    //             changeLoadingState(false);
-    //             if (err.response.status === 401) {
-    //               alertWithSingleBtn(
-    //                 translate("wallet.common.alert"),
-    //                 translate("common.sessionexpired")
-    //               );
-    //             }
-    //             alertWithSingleBtn(
-    //               translate("wallet.common.alert"),
-    //               translate("wallet.common.error.networkFailed")
-    //             );
-    //           });
-    //       } else {
-    //         changeLoadingState(false)
+              })
+              .catch(err => {
+                changeLoadingState(false);
+                if (err.response.status === 401) {
+                  alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate("common.sessionexpired")
+                  );
+                }
+                alertWithSingleBtn(
+                  translate("wallet.common.alert"),
+                  translate("wallet.common.error.networkFailed")
+                );
+              });
+          } else {
+            changeLoadingState(false)
 
-    //       }
-    //     })
-    //     .catch(err => {
-    //       changeLoadingState(false);
-    //       if (err.response.status === 401) {
-    //         alertWithSingleBtn(
-    //           translate("wallet.common.alert"),
-    //           translate("common.sessionexpired")
-    //         );
-    //       }
-    //       alertWithSingleBtn(
-    //         translate("wallet.common.alert"),
-    //         translate("wallet.common.error.networkFailed")
-    //       );
-    //     });
-    // }
-    switchToNFTList("draft", collection)
+          }
+        })
+        .catch(err => {
+          changeLoadingState(false);
+          if (err.response.status === 401) {
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("common.sessionexpired")
+            );
+          }
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("wallet.common.error.networkFailed")
+          );
+        });
+    }
 
   }
 
@@ -732,7 +731,7 @@ const UploadNFT = ({
             onPress={saveDraft}
             label="Save as Draft"
             buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-            // disable={!disableBtn}
+            disable={!disableBtn}
           />
           <CardButton
             border={colors.BLUE6}
