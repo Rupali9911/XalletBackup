@@ -18,7 +18,6 @@ import {SmallBoldText} from 'src/styles/text.styles';
 import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import {handleLikeDislike} from '../../store/actions/nftTrendList';
-import {alertWithSingleBtn} from '../../utils';
 import getLanguage from '../../utils/languageSupport';
 import {translate} from '../../walletUtils';
 import {blockChainConfig} from '../../web3/config/blockChainConfig';
@@ -41,6 +40,7 @@ const nftItem = ({item, index}) => {
   const dispatch = useDispatch();
 
   const {AuthReducer} = useSelector(state => state);
+  const {data, wallet} = useSelector(state => state.UserReducer);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
   const [ownerImage, setOwnerImage] = useState();
@@ -51,17 +51,19 @@ const nftItem = ({item, index}) => {
   const [creatorImage, setCreatorImage] = useState();
   const [isPlay, setPlay] = useState(false);
   const refVideo = useRef(null);
-
+  const [singleNFT, setSingleNFT] = useState({});
+  const [priceNFT, setPriceNFT] = useState('');
   const navigation = useNavigation();
 
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
 
-  let ERC721Abi = "";
-  let providerUrl = "";
+  let ERC721Abi = '';
+  let providerUrl = '';
 
   let params = item.tokenId.toString().split('-');
-  let tokenId = params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
+  let tokenId =
+    params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
   let chainType = params.length > 1 ? params[0] : 'polygon';
   let collectionAddress = params.length > 2 ? params[1] : null;
 
@@ -107,7 +109,7 @@ const nftItem = ({item, index}) => {
       }
     }
     return found;
-  }
+  };
 
   useEffect(() => {
     // Get NonCryptoNFTOwner
@@ -186,19 +188,121 @@ const nftItem = ({item, index}) => {
       }
     });
   };
+  const lastOwnerOfNFTNonCrypto = nonCryptoOwner => {
+    let _data = singleNFT;
+    let web3 = new Web3(providerUrl);
+    let ERC721Contract = new web3.eth.Contract(ERC721Abi, collectionAddress);
+
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress,
+    );
+    ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
+      if (!err) {
+        _data.owner_address = res;
+        console.log('owner_address', res, tokenId);
+        MarketPlaceContract.methods
+          .getSellDetail(collectionAddress, tokenId)
+          .call(async (err, res) => {
+            console.log(
+              'MarketPlaceContract_res',
+              res,
+              err,
+              tokenId,
+              MarketContractAddress,
+            );
+            // return ;
+            if (!err) {
+              let priceOfNft = res[1] / 1e18;
+              if (wallet.address) {
+                // if (priceOfNft === 0) {
+                if (res[0] === '0x0000000000000000000000000000000000000000') {
+                  setPriceNFT(priceOfNft);
+                  setPriceNFTString(res[1]);
+                  setIsContractOwner(
+                    res[0].toLowerCase() === wallet.address.toLowerCase() ||
+                      (res[0].toLowerCase() ===
+                        walletAddressForNonCrypto.toLowerCase() &&
+                        nonCryptoOwnerId.toLowerCase() === data.user._id)
+                      ? true
+                      : false,
+                  );
+                  setIsOwner(
+                    (_data.owner_address.toLowerCase() ===
+                      data.user._id.toLowerCase() &&
+                      res[1] !== '') ||
+                      (data &&
+                        _data.owner_address.toLowerCase() ===
+                          walletAddressForNonCrypto.toLowerCase() &&
+                        res[1] !== '' &&
+                        nonCryptoOwnerId.toLowerCase() === data.user._id)
+                      ? true
+                      : false,
+                  );
+                } else if (
+                  res[0] !== '0x0000000000000000000000000000000000000000'
+                ) {
+                  setIsOwner(
+                    (res[0].toLowerCase() === wallet.address.toLowerCase() &&
+                      res[1] !== '') ||
+                      (data &&
+                        res[0].toLowerCase() ===
+                          walletAddressForNonCrypto.toLowerCase() &&
+                        res[1] !== '' &&
+                        nonCryptoOwnerId.toLowerCase() === data.user._id)
+                      ? true
+                      : false,
+                  );
+                  setIsContractOwner(
+                    res[0].toLowerCase() === wallet.address.toLowerCase() ||
+                      (res[0].toLowerCase() ===
+                        walletAddressForNonCrypto.toLowerCase() &&
+                        data &&
+                        nonCryptoOwnerId.toLowerCase() === data.user._id)
+                      ? true
+                      : false,
+                  );
+                  setPriceNFT(priceOfNft);
+                  setPriceNFTString(res[1]);
+                }
+              } else {
+                if (res[0] === '0x0000000000000000000000000000000000000000') {
+                  setIsContractOwner(false);
+                  setPriceNFT(priceOfNft);
+                  setPriceNFTString(res[1]);
+                } else if (
+                  res[0] !== '0x0000000000000000000000000000000000000000'
+                ) {
+                  setPriceNFT(priceOfNft);
+                  setPriceNFTString(res[1]);
+                  setIsContractOwner(false);
+                }
+              }
+
+              setOwnerAddress(nonCryptoOwner);
+            }
+            setBuyLoading(false);
+          });
+      } else {
+        //console.log("err getAuthor", err);
+        setBuyLoading(false);
+      }
+    });
+  };
 
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
-
-    let body_data = {
-      tokenId: item.tokenId,
+    let category = '2D';
+    let data = {
+      tokenId: tokenId,
       networkType: networkType,
-      type: '2D',
+      type: category,
       chain: chainType,
+      owner: wallet.address,
     };
 
     let fetch_data_body = {
       method: 'POST',
-      body: JSON.stringify(body_data),
+      body: JSON.stringify(data),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -207,17 +311,17 @@ const nftItem = ({item, index}) => {
 
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
-      .then(res => {
+      .then(async res => {
+        console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
-          const data = res.data[0];
+          const temp = res.data[0];
 
           let req_data = {
-            owner: data?.returnValues?.to?.toLowerCase(),
+            owner: temp?.returnValues?.to?.toLowerCase(),
             token: 'HubyJ*%qcqR0',
           };
-          setOwner(data?.returnValues?.to?.toLowerCase());
-          setArtistId(data?.returnValues?.to?.toLowerCase());
-
+          setOwner(temp?.returnValues?.to?.toLowerCase());
+          setArtistId(temp?.returnValues?.to?.toLowerCase());
           let body = {
             method: 'POST',
             body: JSON.stringify(req_data),
@@ -234,23 +338,133 @@ const nftItem = ({item, index}) => {
                 setArtist(res.data.title || res.data.username);
                 setCreatorImage(res.data.profile_image);
               }
-            })
+            });
           if (isCryptoOwner) {
             lastOwnerOfNFT();
           } else {
             lastOwnerOfNFTNonCrypto();
           }
-        } else if (res.data.data === "No record found") {
-          alertWithSingleBtn(
-            translate('common.error'),
-            translate('common.norecordfound'),
+
+          const getDetails = res?.data;
+          if (
+            getDetails &&
+            getDetails[0] &&
+            getDetails[0]?.newprice &&
+            getDetails[0]?.newprice?.seller.includes('0x')
+          ) {
+            getNFTDiscount(
+              getDetails[0]?.newprice?.seller,
+              getDetails[0]?.newprice?.tokenId,
+            );
+            getDiscount();
+          }
+          let newData = await getNFTDetails(res.data[0]);
+          if (newData.newprice && newData.newprice.allowedCurrencies) {
+            let currArray = newData.newprice.allowedCurrencies.split('');
+            let availableTokens = basePriceTokens.filter(
+              token =>
+                token.chain === chainType &&
+                currArray.includes(token.order.toString()),
+            );
+            console.log('availableTokens', availableTokens);
+            setAvailableTokens(availableTokens);
+          } else {
+            setAvailableTokens([]);
+          }
+
+          setSingleNFT(newData);
+          setIsForAward(
+            res?.data[0]?.award
+              ? res?.data[0]?.award
+              : res?.data[1]?.award
+              ? res?.data[1]?.award
+              : false,
           );
+          console.log('calling');
+          checkNFTOnAuction();
+        } else if (res.data === 'No record found') {
+          console.log('res.data.data', res.data);
         }
       })
       .catch(err => {
         console.log(err);
       });
   };
+  const getNFTDiscount = id => {
+    let web3 = new Web3(providerUrl);
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress,
+    );
+    MarketPlaceContract.methods.adminOwner &&
+      MarketPlaceContract.methods.adminOwner(id).call((err, res) => {
+        setDiscount(res);
+      });
+  };
+  // const getTokenDetailsApi = async (isCryptoOwner = true) => {
+
+  //   let body_data = {
+  //     tokenId: item.tokenId,
+  //     networkType: networkType,
+  //     type: '2D',
+  //     chain: chainType,
+  //   };
+
+  //   let fetch_data_body = {
+  //     method: 'POST',
+  //     body: JSON.stringify(body_data),
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   };
+
+  //   fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
+  //     .then(response => response.json())
+  //     .then(res => {
+  //       if (res.data.length > 0 && res.data !== 'No record found') {
+  //         const data = res.data[0];
+
+  //         let req_data = {
+  //           owner: data?.returnValues?.to?.toLowerCase(),
+  //           token: 'HubyJ*%qcqR0',
+  //         };
+  //         setOwner(data?.returnValues?.to?.toLowerCase());
+  //         setArtistId(data?.returnValues?.to?.toLowerCase());
+
+  //         let body = {
+  //           method: 'POST',
+  //           body: JSON.stringify(req_data),
+  //           headers: {
+  //             Accept: 'application/json',
+  //             'Content-Type': 'application/json',
+  //           },
+  //         };
+  //         fetch(`${BASE_URL}/xanalia/getProfile`, body)
+  //           .then(response => response.json())
+  //           .then(res => {
+  //             if (res.data) {
+  //               setArtistData(res.data);
+  //               setArtist(res.data.title || res.data.username);
+  //               setCreatorImage(res.data.profile_image);
+  //             }
+  //           })
+  //         if (isCryptoOwner) {
+  //           lastOwnerOfNFT();
+  //         } else {
+  //           lastOwnerOfNFTNonCrypto();
+  //         }
+  //       } else if (res.data.data === "No record found") {
+  //         alertWithSingleBtn(
+  //           translate('common.error'),
+  //           translate('common.norecordfound'),
+  //         );
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';

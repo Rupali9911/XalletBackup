@@ -1,4 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
+import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -99,7 +100,7 @@ const DetailScreen = ({route, navigation}) => {
   const [nftID, setNftID] = useState('');
   const [artistAddress, setArtistAddress] = useState(null);
   const [isForAward, setIsForAward] = useState(false);
-  const [baseCurrency, setBaseCurrency] = useState('');
+  const [baseCurrency, setBaseCurrency] = useState(null);
   const [bidPriceInDollar, setBidPriceInDollar] = useState('');
   const [discount, setDiscount] = useState(false);
   const [discountValue, setDiscountValue] = useState('');
@@ -109,7 +110,9 @@ const DetailScreen = ({route, navigation}) => {
   const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   const [bidHistory, setBidHistory] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [royality, setRoyality] = useState(translate('common.allowedcurrency'));
+  const [payableIn, setPayableIn] = useState(
+    translate('common.allowedcurrency'),
+  );
   const [tableHead, setTableHead] = useState([
     translate('common.price'),
     translate('common.from'),
@@ -189,7 +192,7 @@ const DetailScreen = ({route, navigation}) => {
       console.log('tokenId', tokenId);
       if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
         setBuyLoading(true);
-        //   checkNFTOnAuction();
+        checkNFTOnAuction();
         getNonCryptoNFTOwner();
       }
 
@@ -590,7 +593,7 @@ const DetailScreen = ({route, navigation}) => {
       });
   };
 
-  const getNonCryptoNFTOwner = () => {
+  const getNonCryptoNFTOwner = async () => {
     // let tokenId = "317";
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
@@ -1255,14 +1258,18 @@ const DetailScreen = ({route, navigation}) => {
           <Text style={styles.nftName}>{name}</Text>
           <Text style={styles.description}>{description}</Text>
           <View style={styles.bottomView}>
-            <Text style={styles.count}>{'# 1 / 1'}</Text>
-            <View style={styles.row}>
-              <Text style={styles.priceUnit}>{'￥'}</Text>
-              <Text style={styles.price}>{price ? price : 0}</Text>
-            </View>
-            {availableTokens.length > 0 && (
+            {setNFTStatus() !== 'notOnSell' && (
+              <>
+                <Text style={styles.count}>{'# 1 / 1'}</Text>
+                <View style={styles.row}>
+                  <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
+                  <Text style={styles.price}>{price ? price : 0}</Text>
+                </View>
+              </>
+            )}
+            {availableTokens.length > 0 && setNFTStatus() !== 'notOnSell' && (
               <CardField
-                inputProps={{value: royality}}
+                inputProps={{value: payableIn}}
                 onPress={() => {
                   setAllowedTokenModal(true);
                 }}
@@ -1292,7 +1299,11 @@ const DetailScreen = ({route, navigation}) => {
                   // navigation.navigate('WalletConnect')
                   // if(price && price > 0){
                   if (setNFTStatus() === 'buy') {
-                    setShowPaymentMethod(true);
+                    if (payableIn === translate('common.allowedcurrency')) {
+                      console.log('Show Modal here');
+                    } else {
+                      setShowPaymentMethod(true);
+                    }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', {nftDetail: singleNFT});
                   }
@@ -1511,7 +1522,7 @@ const DetailScreen = ({route, navigation}) => {
         data={availableTokens}
         title={translate('common.allowedcurrency')}
         itemPress={v => {
-          setRoyality(v.name);
+          setPayableIn(v.name);
           setAllowedTokenModal(false);
         }}
         renderItemName={'name'}
