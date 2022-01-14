@@ -730,17 +730,13 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     tx.sign(privateKey);
     const serializedTx = tx.serialize();
     const raw = "0x" + serializedTx.toString("hex");
-    console.log(raw, "raw ////////////////", txObject, chainType)
 
-    // reject("testing")
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
-      console.log(txHash, "txHash ////////////////", err)
       if (txHash) {
               const interval = setInterval(() => checkingProgressTransaction(), 10000)
               const checkingProgressTransaction = async () => {
                 try {
                   const transactionReceipt = await web3.eth.getTransactionReceipt(txHash);
-                 console.log(transactionReceipt, "transactionReceipt")
                   if (transactionReceipt) {
                     clearInterval(interval);
                     if (transactionReceipt.logs && (transactionReceipt.logs.length > 0)) {

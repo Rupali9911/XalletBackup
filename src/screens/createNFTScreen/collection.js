@@ -33,9 +33,9 @@ const toastConfig = {
 
 const Collection = ({ changeLoadingState }) => {
 
-  const [collectionName, setCollectionName] = useState("testing collection binance2");
-  const [collectionSymbol, setCollectionSymbol] = useState("NFT");
-  const [collectionDes, setCollectionDes] = useState("testing collection binance description");
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionSymbol, setCollectionSymbol] = useState("");
+  const [collectionDes, setCollectionDes] = useState("");
   const [collectionAdd, setCollectionAdd] = useState("");
   const [bannerImage, setBannerImage] = useState(null);
   const [iconImage, setIconImage] = useState(null);
@@ -134,16 +134,16 @@ const Collection = ({ changeLoadingState }) => {
     changeLoadingState(true);
     if (publicAddress && data.token) {
 
-      // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-      // let formData = new FormData();
-      // formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
-      // formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      let formData = new FormData();
+      formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
+      formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
 
-      // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+      axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
-      // await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
-      //   .then(res => {
-      //     if (res.data.success) {
+      await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
+        .then(res => {
+          if (res.data.success) {
 
             createColection(
               publicAddress,
@@ -157,8 +157,6 @@ const Collection = ({ changeLoadingState }) => {
               collectionName,
               collectionSymbol
             ).then(transactionData => {
-// 10,
-              // 600000,
               if (transactionData.success) {
 
                 let url = `${BASE_URL}/user/create-collection`;
@@ -166,48 +164,48 @@ const Collection = ({ changeLoadingState }) => {
 
                 const { collectionAddress } = transactionData.data;
 
-                console.log(collectionAddress,transactionData , "transactionData" )
+                console.log(collectionAddress, "transactionData")
                 setCollectionAdd(collectionAddress);
+                changeLoadingState(false);
+
+                let obj = {
+                  collectionAddress,
+                  collectionName,
+                  collectionDesc: collectionDes,
+                  bannerImage: res.data.data.banner_image,
+                  iconImage: res.data.data.icon_image,
+                  collectionSymbol,
+                  chainType: networkType.value,
+                };
+                console.log(obj, "obj")
+
+                axios.post(url, obj)
+                  .then(collectionData => {
                     changeLoadingState(false);
+                    console.log(collectionData, "collectionData success")
 
-                // let obj = {
-                //   collectionAddress,
-                //   collectionName,
-                //   collectionDesc: collectionDes,
-                //   bannerImage: res.data.data.banner_image,
-                //   iconImage: res.data.data.icon_image,
-                //   collectionSymbol,
-                //   chainType: networkType.value,
-                // };
-                // console.log(obj , "obj" )
+                    if (collectionData.data.success) {
+                      cancel()
+                      alertWithSingleBtn(
+                        "Success Message",
+                        "Collection Created Successfully"
+                      );
+                    } else {
+                      alertWithSingleBtn(
+                        "Failed",
+                        "Something Went Wrong!"
+                      )
+                    }
 
-
-                // axios.post(url, obj)
-                //   .then(collectionData => {
-                //     changeLoadingState(false);
-                //     console.log(collectionData , "collectionData success" )
-
-                //     if (collectionData.data.success) {
-                //       alertWithSingleBtn(
-                //         "Success Message",
-                //         "Collection Created Successfully"
-                //       );
-                //     } else {
-                //       alertWithSingleBtn(
-                //         "Failed",
-                //         "Something Went Wrong!"
-                //       )
-                //     }
-
-                //   })
-                //   .catch(e => {
-                //     changeLoadingState(false);
-                //     console.log(e.response, "uploading collection data to database");
-                //     alertWithSingleBtn(
-                //       translate("wallet.common.alert"),
-                //       translate("wallet.common.error.networkFailed")
-                //     );
-                //   })
+                  })
+                  .catch(e => {
+                    changeLoadingState(false);
+                    console.log(e.response, "uploading collection data to database");
+                    alertWithSingleBtn(
+                      translate("wallet.common.alert"),
+                      translate("wallet.common.error.networkFailed")
+                    );
+                  })
 
               }
 
@@ -220,35 +218,35 @@ const Collection = ({ changeLoadingState }) => {
               );
             })
 
-          // } else {
-          //   changeLoadingState(false);
-          //   alertWithSingleBtn(
-          //     translate("wallet.common.alert"),
-          //     translate("wallet.common.error.networkFailed")
-          //   );
+          } else {
+            changeLoadingState(false);
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("wallet.common.error.networkFailed")
+            );
 
-          // }
+          }
 
-        // })
-        // .catch(err => {
-        //   changeLoadingState(false);
-        //   if (err.response.status === 401) {
-        //     alertWithSingleBtn(
-        //       translate("wallet.common.alert"),
-        //       translate("common.sessionexpired")
-        //     );
-        //   }
-        //   alertWithSingleBtn(
-        //     translate("wallet.common.alert"),
-        //     translate("wallet.common.error.networkFailed")
-        //   );
-        // });
+        })
+        .catch(err => {
+          changeLoadingState(false);
+          if (err.response.status === 401) {
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("common.sessionexpired")
+            );
+          }
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("wallet.common.error.networkFailed")
+          );
+        });
 
     }
 
   }
 
-  const saveAsDraftCollection = async() => {
+  const saveAsDraftCollection = async () => {
     changeLoadingState(true);
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
@@ -393,7 +391,7 @@ const Collection = ({ changeLoadingState }) => {
             onPress={saveCollection}
             label="Save"
             buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-            // disable={!disable}
+          disable={!disable}
           />
           <CardButton
             onPress={cancel}
