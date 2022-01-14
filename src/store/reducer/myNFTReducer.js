@@ -40,7 +40,7 @@ export default function MyNFTReducer(state = initialState, action) {
             return state = { ...state, favorite: [...action.payload.data] };
 
         case MYLIST_LIST_UPDATE:
-            return state = { ...state, myList: [...action.payload] };
+            return state = { ...state, myList: [...action.payload.data] };
 
         case MY_NFT_LOAD_FAIL:
             return state = { ...state, myNftListLoading: false };
