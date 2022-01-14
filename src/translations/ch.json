@@ -612,7 +612,11 @@
         "discordlink": "请输入有效的 Discord 链接。",
         "ethereum": "以太坊",
         "allowedcurrency": "应付在",
-        "event": "事件"
+        "event": "事件",
+        "emailUserRequired": "电子邮件/用户名是必需的！",
+        "passwordReq": "密码是必需的！",
+        "owned": "拥有",
+        "Selectcurrencypopup": "请选择支付货币类型"
     },
     "AwardPage": {},
     "wallet": {
@@ -648,7 +652,9 @@
                 "passcodeError2": "密码不匹配。请再试一次！",
                 "passcodeError3": "",
                 "invalidPrivateKey": "无效的私钥",
-                "appNotConnected": "您尝试连接的应用程序未与服务器连接。请将应用程序与服务器连接，然后重试。"
+                "appNotConnected": "您尝试连接的应用程序未与服务器连接。请将应用程序与服务器连接，然后重试。",
+                "oldAndNewPasswordIsSameText": "旧密码和新密码不能相同",
+                "oldPasswordNCorrect": "旧密码不正确！"
             },
             "welcomeTxt": "欢迎",
             "createWallet": "创建一个新钱包",

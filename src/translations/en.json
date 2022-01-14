@@ -612,7 +612,11 @@
         "discordlink": "Please enter valid Discord link.",
         "ethereum": "Ethereum",
         "allowedcurrency": "Payable In",
-        "event": "Event"
+        "event": "Event",
+        "emailUserRequired": "Email/Username is required!",
+        "passwordReq": "Password is required!",
+        "owned": "Owned",
+        "Selectcurrencypopup": "Please select the Pay in Currency type"
     },
     "AwardPage": {},
     "wallet": {
@@ -648,7 +652,9 @@
                 "passcodeError2": "Passcode did not match. Please try again!",
                 "passcodeError3": "",
                 "invalidPrivateKey": "Invalid Private Key",
-                "appNotConnected": "The app you are trying to connect is not connected with server. Please connect app with server and try again."
+                "appNotConnected": "The app you are trying to connect is not connected with server. Please connect app with server and try again.",
+                "oldAndNewPasswordIsSameText": "Old password and new password should not be same",
+                "oldPasswordNCorrect": "Old Password is not correct!"
             },
             "welcomeTxt": "Welcome",
             "createWallet": "Create a new wallet",

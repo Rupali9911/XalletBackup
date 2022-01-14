@@ -29,6 +29,7 @@ import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
+import {alertWithSingleBtn} from '../../utils';
 import Colors from '../../constants/Colors';
 import {hp} from '../../constants/responsiveFunct';
 import {
@@ -1256,17 +1257,14 @@ const DetailScreen = ({route, navigation}) => {
           </View>
           <Text style={styles.nftTitle}>{creator}</Text>
           <Text style={styles.nftName}>{name}</Text>
+          {setNFTStatus() !== 'notOnSell' && (
+            <View style={styles.row}>
+              <Text style={styles.price}>{price ? price : 0}</Text>
+              <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
+            </View>
+          )}
           <Text style={styles.description}>{description}</Text>
           <View style={styles.bottomView}>
-            {setNFTStatus() !== 'notOnSell' && (
-              <>
-                <Text style={styles.count}>{'# 1 / 1'}</Text>
-                <View style={styles.row}>
-                  <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
-                  <Text style={styles.price}>{price ? price : 0}</Text>
-                </View>
-              </>
-            )}
             {availableTokens.length > 0 && setNFTStatus() !== 'notOnSell' && (
               <CardField
                 inputProps={{value: payableIn}}
@@ -1300,7 +1298,10 @@ const DetailScreen = ({route, navigation}) => {
                   // if(price && price > 0){
                   if (setNFTStatus() === 'buy') {
                     if (payableIn === translate('common.allowedcurrency')) {
-                      console.log('Show Modal here');
+                      alertWithSingleBtn(
+                        translate('wallet.common.alert'),
+                        translate('common.Selectcurrencypopup'),
+                      );
                     } else {
                       setShowPaymentMethod(true);
                     }
@@ -1471,6 +1472,7 @@ const DetailScreen = ({route, navigation}) => {
       </SafeAreaView>
       <PaymentMethod
         visible={showPaymentMethod}
+        payableIn={payableIn}
         price={price ? price : 0}
         priceStr={priceNFTString}
         priceInDollar={priceInDollar}
