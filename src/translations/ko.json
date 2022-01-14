@@ -612,7 +612,11 @@
         "discordlink": "유효한 Discord 링크를 입력하세요.",
         "ethereum": "이더 리움",
         "allowedcurrency": "결제 통화",
-        "event": "이벤트"
+        "event": "이벤트",
+        "emailUserRequired": "이메일/사용자 이름이 필요합니다!",
+        "passwordReq": "암호가 필요합니다!",
+        "owned": "소유",
+        "Selectcurrencypopup": "지불 통화 유형을 선택하십시오"
     },
     "AwardPage": {},
     "wallet": {
@@ -648,7 +652,9 @@
                 "passcodeError2": "암호가 일치하지 않았습니다. 다시 시도하십시오!",
                 "passcodeError3": "",
                 "invalidPrivateKey": "잘못된 개인 키",
-                "appNotConnected": "연결하려는 앱이 서버와 연결되어 있지 않습니다. 앱을 서버에 연결하고 다시 시도하십시오."
+                "appNotConnected": "연결하려는 앱이 서버와 연결되어 있지 않습니다. 앱을 서버에 연결하고 다시 시도하십시오.",
+                "oldAndNewPasswordIsSameText": "이전 비밀번호와 새 비밀번호는 동일하지 않아야합니다.",
+                "oldPasswordNCorrect": "이전 암호가 올바르지 않습니다!"
             },
             "welcomeTxt": "어서 오십시오",
             "createWallet": "새 지갑 만들기",

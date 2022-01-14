@@ -612,7 +612,11 @@
         "discordlink": "有効なリンクを記入してください。",
         "ethereum": "イーサリアム",
         "allowedcurrency": "支払通貨選択",
-        "event": "イベント"
+        "event": "イベント",
+        "emailUserRequired": "メール/ユーザー名が必要です!",
+        "passwordReq": "パスワードが必要です!",
+        "owned": "所有",
+        "Selectcurrencypopup": "支払通貨を選択してください"
     },
     "AwardPage": {},
     "wallet": {
@@ -648,7 +652,9 @@
                 "passcodeError2": "パスコードが一致しませんでした。",
                 "passcodeError3": "もう一度お試しください。",
                 "invalidPrivateKey": "無効な秘密鍵",
-                "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。"
+                "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。",
+                "oldAndNewPasswordIsSameText": "古いパスワードと新しいパスワードを同じにしないでください",
+                "oldPasswordNCorrect": "古いパスワードが正しくない!"
             },
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",

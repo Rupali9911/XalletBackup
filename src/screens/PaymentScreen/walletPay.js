@@ -56,9 +56,8 @@ const WalletPay = ({route, navigation}) => {
     ownerAddress,
     collectionAddress,
     allowedTokens,
+    payableIn,
   } = route.params;
-
-  console.log('chainType', chainType);
 
   const [loading, setLoading] = useState(false);
   const [balances, setBalances] = useState(null);
@@ -454,7 +453,6 @@ const WalletPay = ({route, navigation}) => {
       });
     }
   };
-
   const onRefreshToken = () => {
     return getBalances(wallet.address);
   };
@@ -487,7 +485,6 @@ const WalletPay = ({route, navigation}) => {
     console.log('@@@@@@@@@@@@', result, item);
     return result;
   };
-
   return (
     <AppBackground isBusy={loading}>
       <GradientBackground>
@@ -528,7 +525,7 @@ const WalletPay = ({route, navigation}) => {
       <Tokens
         values={balances}
         network={network}
-        allowedTokens={activeTokens}
+        allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
         onTokenPress={async item => {
           setSelectedObject(item);
           let tradeCurrency = getCurrencyOnSelect(item);
