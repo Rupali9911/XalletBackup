@@ -39,6 +39,9 @@ const colors = {
     GREY9: '#ced4da',
     GREY10: '#e9ecef',
     GREY11: '#c9c9c9',
+    GREY12: '#c5c5c5',
+    GREY13: '#9a9a9a',
+    GREY14: '#aeaeae',
     DANGER: "#F32013",
     RED1: '#FE4F02',
     RED2: '#FF0000',
@@ -56,7 +59,8 @@ const colors = {
     LIGHT_BLUE: '#00DFD6',
     GRADIENTLIGHT: "#5F94FF",
     GRADIENTDARK: "#3F4BAA",
-    SUCCESSBUTTON: "#FEB902"
+    SUCCESSBUTTON: "#FEB902",
+    GREEN1: "#42ba96"
 }
 
 export default colors;
