@@ -650,6 +650,8 @@
                 "invalidPrivateKey": "잘못된 개인 키",
                 "appNotConnected": "연결하려는 앱이 서버와 연결되어 있지 않습니다. 앱을 서버에 연결하고 다시 시도하십시오."
             },
+            "owned": "소유",
+            "noCollection": "사용할 수 있는 컬렉션 없음",
             "welcomeTxt": "어서 오십시오",
             "createWallet": "새 지갑 만들기",
             "haveWallet": "나는 이미 지갑을 가지고 있다",

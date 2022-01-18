@@ -650,6 +650,8 @@
                 "invalidPrivateKey": "无效的私钥",
                 "appNotConnected": "您尝试连接的应用程序未与服务器连接。请将应用程序与服务器连接，然后重试。"
             },
+            "owned": "拥有",
+            "noCollection": "无可用集合",
             "welcomeTxt": "欢迎",
             "createWallet": "创建一个新钱包",
             "haveWallet": "我已经有钱包了",

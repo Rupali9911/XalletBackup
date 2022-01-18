@@ -650,6 +650,8 @@
                 "invalidPrivateKey": "無効な秘密鍵",
                 "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。"
             },
+            "owned": "所有",
+            "noCollection": "コレクションがありません",
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",
             "haveWallet": "既にウォレットを持っている方",

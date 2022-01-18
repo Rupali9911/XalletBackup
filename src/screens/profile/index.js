@@ -1,7 +1,7 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import _ from 'lodash';
-import React, {useCallback, useEffect, useState} from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import _, { toFinite } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -14,18 +14,18 @@ import {
   View,
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
-import {useDispatch, useSelector} from 'react-redux';
-import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
-import {Container, RowWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText, SmallNormalText} from 'src/styles/text.styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
+import { Container, RowWrap, SpaceView } from 'src/styles/common.styles';
+import { SmallBoldText, SmallNormalText } from 'src/styles/text.styles';
 import {
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader, C_Image, DetailModal, Loader} from '../../components';
+import { AppHeader, C_Image, DetailModal, Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import { colors, fonts } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
 import {
   myCollectionList,
   myCollectionListReset,
@@ -38,7 +38,7 @@ import {
   myNftLoadStart,
   myPageChange,
 } from '../../store/actions/myNFTaction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import {
   DescriptionView,
   EditButton,
@@ -47,225 +47,24 @@ import {
   UserImageView,
   WebsiteLink,
 } from './styled';
+import Collection from "./collection";
+import NFT from "./nft";
 
-const {ConnectSmIcon, SettingIcon} = SVGS;
+import { CardButton } from "../createNFTScreen/components";
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
+import axios from 'axios';
 
-const Created = ({route}) => {
-  const isFocusedHistory = useIsFocused();
-
-  const {id} = route?.params;
-  console.log(id)
-  const {MyNFTReducer} = useSelector(state => state);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const [modalData, setModalData] = useState();
-  const [isModalVisible, setModalVisible] = useState(false);
-  useEffect(() => {
-    dispatch(myNftLoadStart());
-    dispatch(myNftListReset());
-    getNFTlist(1);
-    dispatch(myPageChange(1));
-  }, [isFocusedHistory]);
-
-  const getNFTlist = useCallback(page => {
-    dispatch(myNFTList(page, id));
-  }, []);
-
-  const refreshFunc = () => {
-    dispatch(myNftListReset());
-    getNFTlist(1);
-    dispatch(myPageChange(1));
-  };
-
-  const renderFooter = () => {
-    if (!MyNFTReducer.myNftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const renderItem = ({item}) => {
-    let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-    if (item.metaData) {
-      const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
-      return (
-        <NFTItem
-          item={item}
-          image={image}
-          onLongPress={() => {
-            setModalData(item);
-            setModalVisible(true);
-          }}
-          onPress={() => {
-            dispatch(changeScreenName('myNFT'));
-            navigation.navigate('DetailItem', {index: findIndex, owner: id});
-          }}
-        />
-      );
-    }
-  };
-  return (
-    <View style={styles.trendCont}>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.WHITE1} />
-      {MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
-        <Loader />
-      ) : MyNFTReducer.myList.length !== 0 ? (
-        <FlatList
-          data={MyNFTReducer.myList}
-          horizontal={false}
-          numColumns={3}
-          initialNumToRender={15}
-          onRefresh={() => {
-            dispatch(myNftLoadStart());
-            refreshFunc();
-          }}
-          refreshing={
-            MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading
-          }
-          renderItem={renderItem}
-          onEndReached={() => {
-            if (
-              !MyNFTReducer.myNftListLoading &&
-              MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
-            ) {
-              let num = MyNFTReducer.myListPage + 1;
-              getNFTlist(num);
-              dispatch(myPageChange(num));
-            }
-          }}
-          ListFooterComponent={renderFooter}
-          onEndReachedThreshold={0.5}
-          keyExtractor={(v, i) => 'item_' + i}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
-      {modalData && (
-        <DetailModal
-          data={modalData}
-          isModalVisible={isModalVisible}
-          toggleModal={() => setModalVisible(false)}
-        />
-      )}
-    </View>
-  );
-};
-
-const Collection = ({route}) => {
-  const isFocusedHistory = useIsFocused();
-
-  const {id} = route.params;
-  const {MyCollectionReducer} = useSelector(state => state);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const [modalData, setModalData] = useState();
-  const [isModalVisible, setModalVisible] = useState(false);
-  console.log('BIGGER', MyCollectionReducer.myCollection);
-
-  useEffect(() => {
-    dispatch(myCollectionLoadStart());
-    dispatch(myCollectionListReset());
-    getNFTlist(1);
-    dispatch(myCollectionPageChange(1));
-  }, [isFocusedHistory]);
-
-  const getNFTlist = useCallback(page => {
-    dispatch(myCollectionList(page, id));
-  }, []);
-
-  const refreshFunc = () => {
-    dispatch(myCollectionListReset());
-    getNFTlist(1);
-    dispatch(myCollectionPageChange(1));
-  };
-
-  const renderFooter = () => {
-    if (!MyCollectionReducer.myCollectionListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const renderItem = ({item}) => {
-    let findIndex = MyCollectionReducer.myCollection.findIndex(
-      x => x.id === item.id,
-    );
-    if (item.metaData) {
-      const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
-      return (
-        <NFTItem
-          item={item}
-          image={image}
-          onLongPress={() => {
-            setModalData(item);
-            setModalVisible(true);
-          }}
-          onPress={() => {
-            dispatch(changeScreenName('myCollection'));
-            navigation.navigate('DetailItem', {index: findIndex, owner: id});
-          }}
-        />
-      );
-    }
-  };
-
-  return (
-    <View style={styles.trendCont}>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.WHITE1} />
-      {MyCollectionReducer.myCollectionPage === 1 &&
-      MyCollectionReducer.myCollectionListLoading ? (
-        <Loader />
-      ) : MyCollectionReducer.myCollection.length !== 0 ? (
-        <FlatList
-          data={MyCollectionReducer.myCollection}
-          horizontal={false}
-          numColumns={3}
-          initialNumToRender={15}
-          onRefresh={() => {
-            dispatch(myNftLoadStart());
-            refreshFunc();
-          }}
-          refreshing={
-            MyCollectionReducer.myCollectionPage === 1 &&
-            MyCollectionReducer.myCollectionListLoading
-          }
-          renderItem={renderItem}
-          onEndReached={() => {
-            if (
-              !MyCollectionReducer.myCollectionListLoading &&
-              MyCollectionReducer.myCollectionTotalCount !==
-                MyCollectionReducer.myCollection.length
-            ) {
-              let num = MyCollectionReducer.myCollectionPage + 1;
-              getNFTlist(num);
-              dispatch(myCollectionPageChange(num));
-            }
-          }}
-          ListFooterComponent={renderFooter}
-          onEndReachedThreshold={1}
-          keyExtractor={(v, i) => 'item_' + i}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
-      {modalData && (
-        <DetailModal
-          data={modalData}
-          isModalVisible={isModalVisible}
-          toggleModal={() => setModalVisible(false)}
-        />
-      )}
-    </View>
-  );
-};
+const { ConnectSmIcon, SettingIcon } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
 
-function Profile({navigation, connector}) {
+function Profile({ navigation, connector }) {
   const isFocusedHistory = useIsFocused();
   const dispatch = useDispatch();
 
-  const {UserReducer} = useSelector(state => state);
+  const { UserReducer } = useSelector(state => state);
 
   useEffect(() => {
     dispatch(myCollectionListReset());
@@ -273,7 +72,7 @@ function Profile({navigation, connector}) {
   }, [isFocusedHistory]);
 
   const id = UserReducer.data.user.username || UserReducer.wallet.address;
-  const {about, title, firstName, lastName, links, username, name} =
+  const { about, title, firstName, lastName, links, username, name } =
     UserReducer.data.user;
 
   const renderTabView = () => {
@@ -303,15 +102,15 @@ function Profile({navigation, connector}) {
         }}>
         <Tab.Screen
           name="My NFTs"
-          options={{tabBarLabel: translate('wallet.common.myNFTs')}}
-          component={Created}
-          initialParams={{id: id}}
+          options={{ tabBarLabel: translate('wallet.common.myNFTs') }}
+          component={NFT}
+          initialParams={{ id: id }}
         />
         <Tab.Screen
           name="My Collection"
-          options={{tabBarLabel: translate('common.myCollection')}}
+          options={{ tabBarLabel: translate('common.myCollection') }}
           component={Collection}
-          initialParams={{id: id}}
+          initialParams={{ id: id }}
         />
       </Tab.Navigator>
     );
@@ -327,7 +126,7 @@ function Profile({navigation, connector}) {
           <SettingIcon width={SIZE(23)} height={SIZE(23)} />
         }
         onPressRight={() =>
-          navigation.navigate('Setting', {connector: connector})
+          navigation.navigate('Setting', { connector: connector })
         }
       />
       <View
@@ -346,22 +145,22 @@ function Profile({navigation, connector}) {
             imageType="profile"
           />
         </UserImageView>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <View
             style={{
               flexDirection: 'row',
               width: wp('50'),
               justifyContent: 'space-around',
             }}>
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: 'center' }}>
               <Text style={styles.countLabel1}>{'0'}</Text>
               <SmallText>{translate('wallet.common.post')}</SmallText>
             </View>
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: 'center' }}>
               <Text style={styles.countLabel1}>{'0'}</Text>
               <SmallText>{translate('common.followers')}</SmallText>
             </View>
-            <View style={{alignItems: 'center'}}>
+            <View style={{ alignItems: 'center' }}>
               <Text style={styles.countLabel1}>{'0'}</Text>
               <SmallText>{translate('common.following')}</SmallText>
             </View>
@@ -373,10 +172,10 @@ function Profile({navigation, connector}) {
         <SmallBoldText>{title || username}</SmallBoldText>
         <SpaceView mTop={SIZE(8)} />
         {!_.isEmpty(about) && (
-          <ScrollView style={{maxHeight: SIZE(70)}}>
+          <ScrollView style={{ maxHeight: SIZE(70) }}>
             <Hyperlink
               onPress={(url, text) => Linking.openURL(url)}
-              linkStyle={{color: COLORS.BLUE2}}>
+              linkStyle={{ color: COLORS.BLUE2 }}>
               <SmallNormalText>{about}</SmallNormalText>
             </Hyperlink>
           </ScrollView>

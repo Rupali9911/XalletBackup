@@ -1,0 +1,300 @@
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import {
+    ActivityIndicator,
+    FlatList,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    responsiveFontSize as RF,
+    widthPercentageToDP as wp,
+} from '../../common/responsiveFunction';
+import { DetailModal, Loader } from '../../components';
+import NFTItem from '../../components/NFTItem';
+import { colors, fonts } from '../../res';
+import { translate } from '../../walletUtils';
+
+import { CardButton } from "../createNFTScreen/components";
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
+import axios from 'axios';
+
+const Collection = ({ route }) => {
+    const isFocusedHistory = useIsFocused();
+
+    const { id } = route.params;
+    const { MyCollectionReducer } = useSelector(state => state);
+    const { data } = useSelector(
+        state => state.UserReducer
+    );
+    const navigation = useNavigation();
+    const [modalData, setModalData] = useState();
+    const [isModalVisible, setModalVisible] = useState(false);
+    
+    const [toggle, setToggle] = useState("created");
+
+    const [mainLoader, setMainLoader] = useState(false);
+    const [childLoader, setChildLoader] = useState(false);
+    const [stopMoreLoading, setStopMoreLoading] = useState(false);
+
+    const [collectCreatedPage, setCollectCreatedPage] = useState(1);
+    const [collectionCreatedList, setCollectionCreatedList] = useState([]);
+    const [collectDraftPage, setCollectDraftPage] = useState(1);
+    const [collectionDraftList, setCollectionDraftList] = useState([]);
+
+    useEffect(() => {
+        if (isFocusedHistory) {
+            pressToggle(toggle)
+        }
+    }, [isFocusedHistory]);
+
+    const renderFooter = () => {
+        console.log(childLoader)
+        if (!childLoader) return null;
+        return <ActivityIndicator size="small" color={colors.themeR} />;
+    };
+
+    const renderItem = ({ item }) => {
+        return (
+            <NFTItem
+                item={item}
+                image={item.iconImage}
+                onLongPress={() => {
+                    // setModalData(item);
+                    // setModalVisible(true);
+                }}
+                onPress={() => {
+
+                }}
+            />
+        );
+    };
+
+    const pressToggle = (s) => {
+        setToggle(s);
+        setMainLoader(true);
+        setCollectCreatedPage(1);
+        setCollectDraftPage(1);
+        if (s == "created") {
+
+            getCreatedCollectionList(1, true)
+
+        } else {
+
+            getDraftCollectionList(1, true)
+
+        }
+    }
+
+    const getDraftCollectionList = (page, refresh) => {
+
+        let url = `${BASE_URL}/user/listing-draft-collection`;
+        let obj = {
+            limit: 50,
+            page: page
+        };
+
+        const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${data.token}`,
+        };
+
+        axios.post(url, obj, { headers: headers })
+            .then(res => {
+                setMainLoader(false);
+                setChildLoader(false);
+                console.log(res, "res collection created success")
+
+                if (res.data.success) {
+
+                    if (res.data.data.length !== 0) {
+                        setStopMoreLoading(false);
+                        if (refresh) {
+                            setCollectionDraftList([...res.data.data])
+                        }else{
+                            setCollectionDraftList([...collectionDraftList, ...res.data.data])
+                        }
+                    } else {
+                        setStopMoreLoading(true);
+                    }
+
+                } else {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        res.data.data
+                    );
+                }
+
+            })
+            .catch(e => {
+                setMainLoader(false);
+                setChildLoader(false)
+                console.log(e.response, "collection created list error");
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate("wallet.common.error.networkFailed")
+                );
+            })
+    }
+
+    const getCreatedCollectionList = (page, refresh) => {
+
+        let url = `${BASE_URL}/user/view-collection`;
+        let obj = {
+            limit: 50,
+            networkType: networkType,
+            page: page
+        };
+
+        const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${data.token}`,
+        };
+
+        axios.post(url, obj, { headers: headers })
+            .then(res => {
+                setChildLoader(false);
+                setMainLoader(false);
+                console.log(res, "res collection created success")
+
+                if (res.data.success) {
+
+                    if (res.data.data.length !== 0) {
+                        setStopMoreLoading(false);
+                        if (refresh) {
+                            setCollectionCreatedList([...res.data.data])
+                        } else {
+                            setCollectionCreatedList([...collectionCreatedList, ...res.data.data])
+                        }
+                    } else {
+                        setStopMoreLoading(true);
+                    }
+
+                } else {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        res.data.data
+                    );
+                }
+
+            })
+            .catch(e => {
+                setChildLoader(false);
+                setMainLoader(false);
+                console.log(e.response, "collection created list error");
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate("wallet.common.error.networkFailed")
+                );
+            })
+    }
+
+    let showCollectionList = toggle === "created" ?
+        collectionCreatedList : collectionDraftList;
+
+    return (
+        <View style={styles.trendCont}>
+
+            <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
+                <CardButton
+                    onPress={() => pressToggle("created")}
+                    border={toggle !== "created" ? colors.BLUE6 : null}
+                    label={translate("wallet.common.created")}
+                    buttonCont={styles.leftToggle}
+                />
+                <CardButton
+                    onPress={() => pressToggle("draft")}
+                    border={toggle !== "draft" ? colors.BLUE6 : null}
+                    buttonCont={styles.rightToggle}
+                    label={translate("common.saveAsDraft")}
+                />
+            </View>
+
+            {
+                mainLoader ?
+                    <Loader /> :
+                    showCollectionList.length !== 0 ?
+                        <FlatList
+                            data={showCollectionList}
+                            horizontal={false}
+                            numColumns={3}
+                            initialNumToRender={15}
+                            onRefresh={() => pressToggle(toggle)}
+                            refreshing={mainLoader}
+                            renderItem={renderItem}
+                            onEndReached={() => {
+                                if (!stopMoreLoading) {
+                                    setChildLoader(true);
+                                    if (toggle == "created") {
+
+                                        let num = collectCreatedPage + 1;
+                                        setCollectCreatedPage(num)
+                                        getCreatedCollectionList(num)
+
+                                    } else {
+
+                                        let num = collectDraftPage + 1;
+                                        setCollectDraftPage(num)
+                                        getDraftCollectionList(num)
+
+                                    }
+                                }
+
+                            }}
+                            ListFooterComponent={renderFooter}
+                            onEndReachedThreshold={0.4}
+                            keyExtractor={(v, i) => 'item_' + i}
+                        />
+                        :
+                        <View style={styles.sorryMessageCont}>
+                            <Text style={styles.sorryMessage}>{translate("wallet.common.noCollection")}</Text>
+                        </View>
+            }
+            {modalData && (
+                <DetailModal
+                    data={modalData}
+                    isModalVisible={isModalVisible}
+                    toggleModal={() => setModalVisible(false)}
+                />
+            )}
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    trendCont: {
+        backgroundColor: 'white',
+        flex: 1,
+    },
+    sorryMessageCont: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sorryMessage: {
+        fontSize: 15,
+        fontFamily: fonts.SegoeUIRegular,
+    },
+    leftToggle: {
+        width: '30%',
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+    },
+    rightToggle: {
+        width: '30%',
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0,
+    },
+    saveBtnGroup: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+    },
+});
+
+export default Collection;
