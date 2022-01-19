@@ -207,8 +207,16 @@ const styles = StyleSheet.create({
     marginVertical: hp(3),
     justifyContent: "center",
     alignItems: "center"
-  }
-
+  },
+  error: {
+    fontSize: RF(1.4),
+    fontFamily: fonts.ARIAL,
+    color: "red",
+    textAlign: "center",
+    width: "90%",
+    alignSelf: "center",
+    marginBottom: hp(1)
+}
 });
 
 export default styles;

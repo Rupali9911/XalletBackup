@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
 import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useNavigation } from "@react-navigation/native";
 
 import styles from './styles';
 import { CardCont, CardField, CardLabel, CardButton } from './components';
@@ -31,7 +32,9 @@ const toastConfig = {
   ),
 };
 
-const Collection = ({ changeLoadingState }) => {
+const Collection = ({ changeLoadingState, routeParams, position }) => {
+
+  const navigation = useNavigation();
 
   const [collectionName, setCollectionName] = useState("");
   const [collectionSymbol, setCollectionSymbol] = useState("");
@@ -41,6 +44,12 @@ const Collection = ({ changeLoadingState }) => {
   const [iconImage, setIconImage] = useState(null);
   const [errorBanner, setErrorBanner] = useState(false);
   const [errorIcon, setErrorIcon] = useState(false);
+
+  const [disableAll, setDisableAll] = useState(false);
+
+  const [error, setError] = useState("");
+
+  const [screenStatus, setScreenStatus] = useState("new");
 
   const toastRef = useRef(null);
 
@@ -77,6 +86,29 @@ const Collection = ({ changeLoadingState }) => {
     gasFee = 10 // for this api etherscan
     gasLimit = 6000000
   }
+
+  useEffect(() => {
+    if (position == 0) {
+      if (routeParams && routeParams.name == "collection") {
+        let collectData = routeParams.data;
+        console.log(collectData)
+        setScreenStatus(routeParams.status);
+        setCollectionName(collectData.collectionName);
+        setCollectionSymbol(collectData.collectionSymbol);
+        setCollectionDes(collectData.collectionDesc);
+        setCollectionAdd(collectData.collectionAddress);
+        setBannerImage({ path: collectData.bannerImage });
+        setIconImage({ path: collectData.iconImage })
+        if (collectData.chainType !== networkType.value) {
+          setError(`Please change your network to ${collectData.chainType} to edit this collection`)
+        } else {
+          collectData.collectionName.toLowerCase() == "xanalia" ?
+            setDisableAll(true) : setDisableAll(false);
+        }
+      }
+
+    }
+  }, [position])
 
   const onPhoto = (v) => {
     ImagePicker.openPicker({
@@ -128,121 +160,192 @@ const Collection = ({ changeLoadingState }) => {
     Clipboard.setString(collectionAdd);
   };
 
-  const saveCollection = async () => {
-    const publicAddress = wallet.address;
-    const privKey = wallet.privateKey;
-    changeLoadingState(true);
-    if (publicAddress && data.token) {
+  const uploadFileToStorage = async (bannerImage, iconImage, key1, key2, userToken) => {
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${userToken}`,
+    };
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-      let formData = new FormData();
-      formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
-      formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+    let formDataFile = new FormData();
 
-      axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+    if (iconImage.hasOwnProperty("mime")) {
+      formDataFile.append(key2, { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+    }
+    if (bannerImage.hasOwnProperty("mime")) {
+      formDataFile.append(key1, { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
+    }
 
-      await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
-        .then(res => {
-          if (res.data.success) {
-
-            createColection(
-              publicAddress,
-              privKey,
-              networkType.value,
-              providerUrl,
-              MarketPlaceAbi,
-              MarketContractAddress,
-              gasFee,
-              gasLimit,
-              collectionName,
-              collectionSymbol
-            ).then(transactionData => {
-              if (transactionData.success) {
-
-                let url = `${BASE_URL}/user/create-collection`;
-                axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-                const { collectionAddress } = transactionData.data;
-
-                console.log(collectionAddress, "transactionData")
-                setCollectionAdd(collectionAddress);
-                changeLoadingState(false);
-
-                let obj = {
-                  collectionAddress,
-                  collectionName,
-                  collectionDesc: collectionDes,
-                  bannerImage: res.data.data.banner_image,
-                  iconImage: res.data.data.icon_image,
-                  collectionSymbol,
-                  chainType: networkType.value,
-                };
-                console.log(obj, "obj")
-
-                axios.post(url, obj)
-                  .then(collectionData => {
-                    changeLoadingState(false);
-                    console.log(collectionData, "collectionData success")
-
-                    if (collectionData.data.success) {
-                      cancel()
-                      alertWithSingleBtn(
-                        "Success Message",
-                        "Collection Created Successfully"
-                      );
-                    } else {
-                      alertWithSingleBtn(
-                        "Failed",
-                        "Something Went Wrong!"
-                      )
-                    }
-
-                  })
-                  .catch(e => {
-                    changeLoadingState(false);
-                    console.log(e.response, "uploading collection data to database");
-                    alertWithSingleBtn(
-                      translate("wallet.common.alert"),
-                      translate("wallet.common.error.networkFailed")
-                    );
-                  })
-
+    const fileUrl = `${BASE_URL}/user/upload-collection-image`;
+    let res = await axios
+      .post(fileUrl, formDataFile, {
+        headers: headers,
+      })
+      .then(res => {
+        if (res.data.success) {
+          let imageObj = { ...res.data.data };
+          for (var key in imageObj) {
+            if (imageObj[key] === "") {
+              if (key === "banner_image") {
+                imageObj[key] = bannerImage.path;
+              } else {
+                imageObj[key] = iconImage.path;
               }
-
-            }).catch(e => {
-              changeLoadingState(false);
-              console.log("testing collection error", e.response)
-              alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                String(e)
-              );
-            })
-
-          } else {
-            changeLoadingState(false);
-            alertWithSingleBtn(
-              translate("wallet.common.alert"),
-              translate("wallet.common.error.networkFailed")
-            );
-
+            }
           }
-
-        })
-        .catch(err => {
+          return imageObj;
+        } else {
           changeLoadingState(false);
-          if (err.response.status === 401) {
-            alertWithSingleBtn(
-              translate("wallet.common.alert"),
-              translate("common.sessionexpired")
-            );
-          }
           alertWithSingleBtn(
             translate("wallet.common.alert"),
             translate("wallet.common.error.networkFailed")
           );
-        });
+          return false;
+        }
+      })
+      .catch(err => {
+        changeLoadingState(false);
+        if (err.response.status === 401) {
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("common.sessionexpired")
+          );
+        }
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.error.networkFailed")
+        );
+        return false;
+      });
+    return res;
+  }
 
-    }
+  const saveCollection = async () => {
+    // const publicAddress = wallet.address;
+    // const privKey = wallet.privateKey;
+    // changeLoadingState(true);
+    // if (publicAddress && data.token) {
+
+      // if(screenStatus === "created")
+
+    //   let res = await uploadFileToStorage(
+    //     bannerImage,
+    //     iconImage,
+    //     'banner_image',
+    //     'icon_image',
+    //     data.token
+    //   );
+    //   console.log(res, "//////////")
+    //   // if (res) {
+
+    //   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+    //   let formData = new FormData();
+    //   formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
+    //   formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+
+    //   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+
+    //   await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
+    //     .then(res => {
+    //       if (res.data.success) {
+
+    //         createColection(
+    //           publicAddress,
+    //           privKey,
+    //           networkType.value,
+    //           providerUrl,
+    //           MarketPlaceAbi,
+    //           MarketContractAddress,
+    //           gasFee,
+    //           gasLimit,
+    //           collectionName,
+    //           collectionSymbol
+    //         ).then(transactionData => {
+    //           if (transactionData.success) {
+
+    //             let url = `${BASE_URL}/user/create-collection`;
+    //             axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+    //             const { collectionAddress } = transactionData.data;
+
+    //             console.log(collectionAddress, "transactionData")
+    //             setCollectionAdd(collectionAddress);
+    //             changeLoadingState(false);
+
+    //             let obj = {
+    //               collectionAddress,
+    //               collectionName,
+    //               collectionDesc: collectionDes,
+    //               bannerImage: res.data.data.banner_image,
+    //               iconImage: res.data.data.icon_image,
+    //               collectionSymbol,
+    //               chainType: networkType.value,
+    //             };
+    //             console.log(obj, "obj")
+
+    //             axios.post(url, obj)
+    //               .then(collectionData => {
+    //                 changeLoadingState(false);
+    //                 console.log(collectionData, "collectionData success")
+
+    //                 if (collectionData.data.success) {
+    //                   cancel()
+    //                   alertWithSingleBtn(
+    //                     "Success Message",
+    //                     "Collection Created Successfully"
+    //                   );
+    //                 } else {
+    //                   alertWithSingleBtn(
+    //                     "Failed",
+    //                     "Something Went Wrong!"
+    //                   )
+    //                 }
+
+    //               })
+    //               .catch(e => {
+    //                 changeLoadingState(false);
+    //                 console.log(e.response, "uploading collection data to database");
+    //                 alertWithSingleBtn(
+    //                   translate("wallet.common.alert"),
+    //                   translate("wallet.common.error.networkFailed")
+    //                 );
+    //               })
+
+    //           }
+
+    //         }).catch(e => {
+    //           changeLoadingState(false);
+    //           console.log("testing collection error", e.response)
+    //           alertWithSingleBtn(
+    //             translate("wallet.common.alert"),
+    //             String(e)
+    //           );
+    //         })
+
+    //       } else {
+    //         changeLoadingState(false);
+    //         alertWithSingleBtn(
+    //           translate("wallet.common.alert"),
+    //           translate("wallet.common.error.networkFailed")
+    //         );
+
+    //       }
+
+    //     })
+    //     .catch(err => {
+    //       changeLoadingState(false);
+    //       if (err.response.status === 401) {
+    //         alertWithSingleBtn(
+    //           translate("wallet.common.alert"),
+    //           translate("common.sessionexpired")
+    //         );
+    //       }
+    //       alertWithSingleBtn(
+    //         translate("wallet.common.alert"),
+    //         translate("wallet.common.error.networkFailed")
+    //       );
+    //     });
+
+    // }
 
   }
 
@@ -250,82 +353,90 @@ const Collection = ({ changeLoadingState }) => {
     changeLoadingState(true);
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-    let formData = new FormData();
-    formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
-    formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
 
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+    let res = await uploadFileToStorage(
+      bannerImage,
+      iconImage,
+      'banner_image',
+      'icon_image',
+      data.token
+    );
 
-    await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
-      .then(res => {
-        if (res.data.success) {
+    if (res) {
 
-          let url = `${BASE_URL}/user/create-collection-draft`;
+      let url = screenStatus == "draft" ?
+        `${BASE_URL}/user/edit-collection-draft` :
+        `${BASE_URL}/user/create-collection-draft`;
 
-          let obj = {
-            collectionName,
-            collectionDesc: collectionDes,
-            bannerImage: res.data.data.banner_image,
-            iconImage: res.data.data.icon_image,
-            collectionSymbol,
-            chainType: networkType.value,
-          };
-          axios.defaults.headers.post['Content-Type'] = 'application/json';
+      let obj = {
+        collectionName,
+        collectionDesc: collectionDes,
+        bannerImage: res.banner_image,
+        iconImage: res.icon_image,
+        collectionSymbol,
+        chainType: networkType.value
+      };
+      if (screenStatus == "draft") {
+        obj.requestId = routeParams.data._id
+      }
+      axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-          axios.post(url, obj)
-            .then(collectionData => {
-              changeLoadingState(false);
-              console.log(collectionData, "save as draft")
-              if (collectionData.data.success) {
-                cancel()
-                alertWithSingleBtn(
-                  "Success Message",
-                  "Collection Save as Draft Successfully"
-                );
-              } else {
-                alertWithSingleBtn(
-                  "Failed",
-                  "Something Went Wrong!"
-                )
-              }
-
-            })
-            .catch(e => {
-              changeLoadingState(false);
-              console.log(e, "uploading collection data to database");
-              alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                translate("wallet.common.error.networkFailed")
-              );
-            })
-        }
-
-      }).catch(e => {
-        changeLoadingState(false);
-        console.log("testing collection error", e)
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.error.networkFailed")
-        );
-      })
+      axios.post(url, obj)
+        .then(collectionData => {
+          changeLoadingState(false);
+          console.log(collectionData, "save as draft")
+          if (collectionData.data.success) {
+            screenStatus == "draft" ?
+              navigation.goBack() : cancel();
+            alertWithSingleBtn(
+              "Success Message",
+              screenStatus == "draft" ?
+                "Collection Draft Edit Successfully" :
+                "Collection Save as Draft Successfully"
+            );
+          } else {
+            alertWithSingleBtn(
+              "Failed",
+              "Something Went Wrong!"
+            )
+          }
+        })
+        .catch(e => {
+          changeLoadingState(false);
+          console.log(e, "uploading collection data to database");
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("wallet.common.error.networkFailed")
+          );
+        })
+    }
   }
 
-  let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage;
+  let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage && !error && !disableAll;
   return (
     <View style={styles.childCont}>
 
       <ScrollView showsVerticalScrollIndicator={false}>
+
+        {
+          error ?
+            <Text style={styles.error}>{error}</Text>
+            : null
+        }
+
         <CardCont>
           <CardLabel>Collection Name</CardLabel>
           <CardField
-            inputProps={{ value: collectionName, onChangeText: e => setCollectionName(e) }}
+            contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
+            inputProps={{ editable: screenStatus !== "created", value: collectionName, onChangeText: e => setCollectionName(e) }}
           />
         </CardCont>
 
         <CardCont>
           <CardLabel>Collection Symbol</CardLabel>
           <CardField
-            inputProps={{ value: collectionSymbol, onChangeText: e => setCollectionSymbol(e) }}
+            contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
+            inputProps={{ editable: screenStatus !== "created", value: collectionSymbol, onChangeText: e => setCollectionSymbol(e) }}
           />
         </CardCont>
 
@@ -333,8 +444,8 @@ const Collection = ({ changeLoadingState }) => {
           <CardLabel>Collection description</CardLabel>
           <Text style={styles.cardfieldCount}>{collectionDes.length} / 150</Text>
           <CardField
-            inputProps={{ placeholder: 'Type Something', multiline: true, value: collectionDes, onChangeText: e => collectionDes.length < 150 ? setCollectionDes(e) : null }}
-            contStyle={{ height: hp('20%') }}
+            inputProps={{ editable: !disableAll, placeholder: 'Type Something', multiline: true, value: collectionDes, onChangeText: e => collectionDes.length < 150 ? setCollectionDes(e) : null }}
+            contStyle={{ height: hp('20%'), backgroundColor: disableAll ? colors.GREY10 : colors.white }}
           />
         </CardCont>
 
@@ -344,11 +455,15 @@ const Collection = ({ changeLoadingState }) => {
             contStyle={{ backgroundColor: colors.GREY10 }}
             inputProps={{ editable: false, value: collectionAdd }}
           />
-          <CardButton disable={collectionAdd !== "" ? false : true} onPress={copyToClipboard} label="Copy" />
+          <CardButton
+            buttonCont={{ backgroundColor: !collectionAdd ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
+            disable={!collectionAdd}
+            onPress={copyToClipboard} label="Copy"
+          />
         </CardCont>
 
         <CardCont style={styles.imageMainCard}>
-          <TouchableOpacity onPress={() => onPhoto("banner")} activeOpacity={0.5} style={styles.cardImageCont}>
+          <TouchableOpacity onPress={() => !disableAll ? onPhoto("banner") : null} activeOpacity={disableAll ? 1 : 0.5} style={styles.cardImageCont}>
             <Image
               resizeMode='cover'
               resizeMethod='scale'
@@ -359,12 +474,17 @@ const Collection = ({ changeLoadingState }) => {
           <View style={styles.bannerCardCont}>
             <CardLabel>Banner Image</CardLabel>
             <Text style={{ ...styles.bannerDes, color: errorBanner ? "red" : colors.BLACK2 }}>Max Size 1600 * 300</Text>
-            <CardButton onPress={() => onPhoto("banner")} buttonCont={styles.changeBtn} label="Change" />
+            <CardButton
+              buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
+              onPress={() => onPhoto("banner")}
+              disable={disableAll}
+              label="Change"
+            />
           </View>
         </CardCont>
 
         <CardCont style={styles.imageMainCard}>
-          <TouchableOpacity onPress={() => onPhoto("icon")} activeOpacity={0.5} style={styles.cardImageCont}>
+          <TouchableOpacity onPress={() => !disableAll ? onPhoto("icon") : null} activeOpacity={disableAll ? 1 : 0.5} style={styles.cardImageCont}>
             <Image
               resizeMode='cover'
               resizeMethod='scale'
@@ -375,26 +495,34 @@ const Collection = ({ changeLoadingState }) => {
           <View style={styles.bannerCardCont}>
             <CardLabel>Icon Image</CardLabel>
             <Text style={{ ...styles.bannerDes, color: errorIcon ? "red" : colors.BLACK2 }}>Max Size 512 * 512</Text>
-            <CardButton onPress={() => onPhoto("icon")} buttonCont={styles.changeBtn} label="Change" />
+            <CardButton
+              onPress={() => onPhoto("icon")}
+              buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
+              disable={disableAll}
+              label="Change"
+            />
           </View>
         </CardCont>
+        {
+          (screenStatus === "new" || screenStatus === "draft") &&
+          <CardButton
+            border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
+            label={screenStatus === "new" ? "Save as Draft" : "Edit Draft"}
+            onPress={saveAsDraftCollection}
+            disable={!disable}
+            buttonCont={{ marginBottom: 0 }}
+          />
+        }
 
-        <CardButton
-          border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
-          label="Save as Draft"
-          onPress={saveAsDraftCollection}
-          disable={!disable}
-          buttonCont={{ marginBottom: 0 }}
-        />
         <View style={styles.saveBtnGroup}>
           <CardButton
             onPress={saveCollection}
-            label="Save"
+            label={screenStatus === "new" || screenStatus === "draft" ? "Save" : "Edit"}
             buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-          disable={!disable}
+            disable={!disable}
           />
           <CardButton
-            onPress={cancel}
+            onPress={screenStatus === "new" ? cancel : () => navigation.goBack()}
             border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             buttonCont={{ width: '48%' }}
             label="Cancel"

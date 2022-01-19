@@ -3,17 +3,12 @@ import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
-    StatusBar,
     StyleSheet,
     Text,
     View,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-    responsiveFontSize as RF,
-    widthPercentageToDP as wp,
-} from '../../common/responsiveFunction';
-import { DetailModal, Loader } from '../../components';
+import { useSelector } from 'react-redux';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
 import { colors, fonts } from '../../res';
 import { translate } from '../../walletUtils';
@@ -27,15 +22,11 @@ import axios from 'axios';
 const Collection = ({ route }) => {
     const isFocusedHistory = useIsFocused();
 
-    const { id } = route.params;
-    const { MyCollectionReducer } = useSelector(state => state);
     const { data } = useSelector(
         state => state.UserReducer
     );
     const navigation = useNavigation();
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
-    
+
     const [toggle, setToggle] = useState("created");
 
     const [mainLoader, setMainLoader] = useState(false);
@@ -54,7 +45,6 @@ const Collection = ({ route }) => {
     }, [isFocusedHistory]);
 
     const renderFooter = () => {
-        console.log(childLoader)
         if (!childLoader) return null;
         return <ActivityIndicator size="small" color={colors.themeR} />;
     };
@@ -64,13 +54,7 @@ const Collection = ({ route }) => {
             <NFTItem
                 item={item}
                 image={item.iconImage}
-                onLongPress={() => {
-                    // setModalData(item);
-                    // setModalVisible(true);
-                }}
-                onPress={() => {
-
-                }}
+                onPress={() => navigation.navigate("Create", { name: "collection", data: item, status: toggle })}
             />
         );
     };
@@ -108,15 +92,15 @@ const Collection = ({ route }) => {
             .then(res => {
                 setMainLoader(false);
                 setChildLoader(false);
-                console.log(res, "res collection created success")
+                console.log(res, "res collection draft success")
 
                 if (res.data.success) {
 
-                    if (res.data.data.length !== 0) {
+                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
                         setStopMoreLoading(false);
                         if (refresh) {
                             setCollectionDraftList([...res.data.data])
-                        }else{
+                        } else {
                             setCollectionDraftList([...collectionDraftList, ...res.data.data])
                         }
                     } else {
@@ -164,7 +148,7 @@ const Collection = ({ route }) => {
 
                 if (res.data.success) {
 
-                    if (res.data.data.length !== 0) {
+                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
                         setStopMoreLoading(false);
                         if (refresh) {
                             setCollectionCreatedList([...res.data.data])
@@ -255,13 +239,6 @@ const Collection = ({ route }) => {
                             <Text style={styles.sorryMessage}>{translate("wallet.common.noCollection")}</Text>
                         </View>
             }
-            {modalData && (
-                <DetailModal
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
-            )}
         </View>
     );
 };

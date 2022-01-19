@@ -136,7 +136,7 @@ const NFT = ({ route }) => {
 
                 if (res.data.success) {
 
-                    if (res.data.data.length !== 0) {
+                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
                         setStopMoreLoading(false);
                         if (refresh) {
                             setNftOwnedList([...res.data.data])
@@ -196,11 +196,10 @@ const NFT = ({ route }) => {
             .then(res => {
                 setChildLoader(false);
                 setMainLoader(false);
-                console.log(res, "res created nftList success")
+                console.log(res.data.data, "res created nftList success")
 
                 if (res.data.success) {
-
-                    if (res.data.data.length !== 0) {
+                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
                         setStopMoreLoading(false);
                         if (refresh) {
                             setNftCreatedList([...res.data.data])
