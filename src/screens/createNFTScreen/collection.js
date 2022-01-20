@@ -175,183 +175,278 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
       formDataFile.append(key1, { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
     }
 
-    const fileUrl = `${BASE_URL}/user/upload-collection-image`;
-    let res = await axios
-      .post(fileUrl, formDataFile, {
-        headers: headers,
-      })
-      .then(res => {
-        if (res.data.success) {
-          let imageObj = { ...res.data.data };
-          for (var key in imageObj) {
-            if (imageObj[key] === "") {
-              if (key === "banner_image") {
-                imageObj[key] = bannerImage.path;
-              } else {
-                imageObj[key] = iconImage.path;
+    var res = null;
+
+    if (formDataFile.getParts().length !== 0) {
+
+      const fileUrl = `${BASE_URL}/user/upload-collection-image`;
+      res = await axios
+        .post(fileUrl, formDataFile, {
+          headers: headers,
+        })
+        .then(res => {
+          if (res.data.success) {
+            let imageObj = { ...res.data.data };
+            for (var key in imageObj) {
+              if (imageObj[key] === "") {
+                if (key === "banner_image") {
+                  imageObj[key] = bannerImage.path;
+                } else {
+                  imageObj[key] = iconImage.path;
+                }
               }
             }
+            return imageObj;
+          } else {
+            changeLoadingState(false);
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("wallet.common.error.networkFailed")
+            );
+            return false;
           }
-          return imageObj;
-        } else {
+        })
+        .catch(err => {
           changeLoadingState(false);
+          if (err.response.status === 401) {
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate("common.sessionexpired")
+            );
+          }
           alertWithSingleBtn(
             translate("wallet.common.alert"),
             translate("wallet.common.error.networkFailed")
           );
           return false;
-        }
-      })
-      .catch(err => {
-        changeLoadingState(false);
-        if (err.response.status === 401) {
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("common.sessionexpired")
-          );
-        }
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.error.networkFailed")
-        );
-        return false;
-      });
+        });
+    } else {
+      res = {
+        banner_image: bannerImage.path,
+        icon_image: iconImage.path
+      }
+    }
+
     return res;
   }
 
-  const saveCollection = async () => {
-    // const publicAddress = wallet.address;
-    // const privKey = wallet.privateKey;
-    // changeLoadingState(true);
-    // if (publicAddress && data.token) {
+  const saveDraftCollection = async () => {
+    const publicAddress = wallet.address;
+    const privKey = wallet.privateKey;
+    changeLoadingState(true);
+    if (publicAddress && data.token) {
 
-      // if(screenStatus === "created")
+      createColection(
+        publicAddress,
+        privKey,
+        networkType.value,
+        providerUrl,
+        MarketPlaceAbi,
+        MarketContractAddress,
+        gasFee,
+        gasLimit,
+        collectionName,
+        collectionSymbol
+      ).then(async (transactionData) => {
 
-    //   let res = await uploadFileToStorage(
-    //     bannerImage,
-    //     iconImage,
-    //     'banner_image',
-    //     'icon_image',
-    //     data.token
-    //   );
-    //   console.log(res, "//////////")
-    //   // if (res) {
+        if (transactionData.success) {
 
-    //   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-    //   let formData = new FormData();
-    //   formData.append('banner_image', { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
-    //   formData.append('icon_image', { uri: iconImage.path, name: iconImage.path.split("/").pop(), type: iconImage.mime });
+          const { collectionAddress, transactionHash } = transactionData.data;
+          setCollectionAdd(collectionAddress);
+          console.log(collectionAddress, "transactionData")
 
-    //   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+          let res = await uploadFileToStorage(
+            bannerImage,
+            iconImage,
+            'banner_image',
+            'icon_image',
+            data.token
+          );
 
-    //   await axios.post(`${BASE_URL}/user/upload-collection-image`, formData)
-    //     .then(res => {
-    //       if (res.data.success) {
+          if (res) {
 
-    //         createColection(
-    //           publicAddress,
-    //           privKey,
-    //           networkType.value,
-    //           providerUrl,
-    //           MarketPlaceAbi,
-    //           MarketContractAddress,
-    //           gasFee,
-    //           gasLimit,
-    //           collectionName,
-    //           collectionSymbol
-    //         ).then(transactionData => {
-    //           if (transactionData.success) {
+            let editDraftUrl = `${BASE_URL}/user/edit-collection-draft`;
 
-    //             let url = `${BASE_URL}/user/create-collection`;
-    //             axios.defaults.headers.post['Content-Type'] = 'application/json';
+            axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+            axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-    //             const { collectionAddress } = transactionData.data;
+            let editDraftObj = {
+              collectionName,
+              collectionDesc: collectionDes,
+              bannerImage: res.banner_image,
+              iconImage: res.icon_image,
+              collectionSymbol,
+              chainType: networkType.value,
+              requestId: routeParams.data._id
+            };
 
-    //             console.log(collectionAddress, "transactionData")
-    //             setCollectionAdd(collectionAddress);
-    //             changeLoadingState(false);
+            axios.post(editDraftUrl, editDraftObj)
+              .then(collectionData => {
+                console.log(collectionData, "collectionData edit save success")
 
-    //             let obj = {
-    //               collectionAddress,
-    //               collectionName,
-    //               collectionDesc: collectionDes,
-    //               bannerImage: res.data.data.banner_image,
-    //               iconImage: res.data.data.icon_image,
-    //               collectionSymbol,
-    //               chainType: networkType.value,
-    //             };
-    //             console.log(obj, "obj")
+                if (collectionData.data.success) {
 
-    //             axios.post(url, obj)
-    //               .then(collectionData => {
-    //                 changeLoadingState(false);
-    //                 console.log(collectionData, "collectionData success")
+                  let url = `${BASE_URL}/user/change-collection-status-draft`;
+                  let statusObj = {
+                    collectionDraftId: routeParams.data._id,
+                    transctionHash: transactionHash,
+                    chainType: networkType.value,
+                    collectionAddress: collectionAddress,
+                  };
 
-    //                 if (collectionData.data.success) {
-    //                   cancel()
-    //                   alertWithSingleBtn(
-    //                     "Success Message",
-    //                     "Collection Created Successfully"
-    //                   );
-    //                 } else {
-    //                   alertWithSingleBtn(
-    //                     "Failed",
-    //                     "Something Went Wrong!"
-    //                   )
-    //                 }
+                  axios.post(url, statusObj)
+                    .then(draftSaveRes => {
+                      console.log(draftSaveRes, "draftSaveRes save success")
+                      changeLoadingState(false);
 
-    //               })
-    //               .catch(e => {
-    //                 changeLoadingState(false);
-    //                 console.log(e.response, "uploading collection data to database");
-    //                 alertWithSingleBtn(
-    //                   translate("wallet.common.alert"),
-    //                   translate("wallet.common.error.networkFailed")
-    //                 );
-    //               })
+                      if (draftSaveRes.data.success) {
 
-    //           }
+                        navigation.goBack();
+                        alertWithSingleBtn(
+                          "Success Message",
+                          "Draft Collection Saved Successfully"
+                        );
 
-    //         }).catch(e => {
-    //           changeLoadingState(false);
-    //           console.log("testing collection error", e.response)
-    //           alertWithSingleBtn(
-    //             translate("wallet.common.alert"),
-    //             String(e)
-    //           );
-    //         })
+                      } else {
+                        alertWithSingleBtn(
+                          "Failed",
+                          "Something Went Wrong!"
+                        )
+                      }
 
-    //       } else {
-    //         changeLoadingState(false);
-    //         alertWithSingleBtn(
-    //           translate("wallet.common.alert"),
-    //           translate("wallet.common.error.networkFailed")
-    //         );
+                    })
+                    .catch(e => {
+                      changeLoadingState(false);
+                      console.log(e.response, "draftSaveRes data to database error");
+                      alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate("wallet.common.error.networkFailed")
+                      );
+                    })
 
-    //       }
+                } else {
+                  changeLoadingState(false);
+                  alertWithSingleBtn(
+                    "Failed",
+                    "Something Went Wrong!"
+                  )
+                }
 
-    //     })
-    //     .catch(err => {
-    //       changeLoadingState(false);
-    //       if (err.response.status === 401) {
-    //         alertWithSingleBtn(
-    //           translate("wallet.common.alert"),
-    //           translate("common.sessionexpired")
-    //         );
-    //       }
-    //       alertWithSingleBtn(
-    //         translate("wallet.common.alert"),
-    //         translate("wallet.common.error.networkFailed")
-    //       );
-    //     });
+              })
+              .catch(e => {
+                changeLoadingState(false);
+                console.log(e.response, "uploading draft collection data to database error");
+                alertWithSingleBtn(
+                  translate("wallet.common.alert"),
+                  translate("wallet.common.error.networkFailed")
+                );
+              })
+          }
+        }
 
-    // }
-
+      })
+        .catch(e => {
+          changeLoadingState(false);
+          console.log("testing collection error", e.response)
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            String(e)
+          );
+        })
+    }
   }
 
-  const saveAsDraftCollection = async () => {
+  const saveCollection = () => {
+    const publicAddress = wallet.address;
+    const privKey = wallet.privateKey;
     changeLoadingState(true);
+    if (publicAddress && data.token) {
 
+      createColection(
+        publicAddress,
+        privKey,
+        networkType.value,
+        providerUrl,
+        MarketPlaceAbi,
+        MarketContractAddress,
+        gasFee,
+        gasLimit,
+        collectionName,
+        collectionSymbol
+      ).then(async (transactionData) => {
+        if (transactionData.success) {
+
+          const { collectionAddress } = transactionData.data;
+          setCollectionAdd(collectionAddress);
+          console.log(collectionAddress, "transactionData")
+
+          let res = await uploadFileToStorage(
+            bannerImage,
+            iconImage,
+            'banner_image',
+            'icon_image',
+            data.token
+          );
+
+          if (res) {
+
+            let url = `${BASE_URL}/user/create-collection`
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+            axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+            let obj = {
+              collectionAddress,
+              collectionName,
+              collectionDesc: collectionDes,
+              bannerImage: res.banner_image,
+              iconImage: res.icon_image,
+              collectionSymbol,
+              chainType: networkType.value,
+            };
+
+            axios.post(url, obj)
+              .then(collectionData => {
+                changeLoadingState(false);
+                console.log(collectionData, "collectionData success")
+
+                if (collectionData.data.success) {
+                  cancel()
+                  alertWithSingleBtn(
+                    "Success Message",
+                    "Collection Created Successfully"
+                  );
+                } else {
+                  alertWithSingleBtn(
+                    "Failed",
+                    "Something Went Wrong!"
+                  )
+                }
+
+              })
+              .catch(e => {
+                changeLoadingState(false);
+                console.log(e.response, "uploading collection data to database");
+                alertWithSingleBtn(
+                  translate("wallet.common.alert"),
+                  translate("wallet.common.error.networkFailed")
+                );
+              })
+          }
+        }
+      }).catch(e => {
+        changeLoadingState(false);
+        console.log("testing collection error", e.response)
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          String(e)
+        );
+      })
+    }
+  }
+
+  const saveEditAsDraftCollection = async () => {
+    changeLoadingState(true);
     axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
     let res = await uploadFileToStorage(
@@ -364,9 +459,11 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
     if (res) {
 
-      let url = screenStatus == "draft" ?
-        `${BASE_URL}/user/edit-collection-draft` :
-        `${BASE_URL}/user/create-collection-draft`;
+      let url = screenStatus == "created" ?
+        `${BASE_URL}/user/user/edit-collection` :
+        screenStatus == "draft" ?
+          `${BASE_URL}/user/edit-collection-draft` :
+          `${BASE_URL}/user/create-collection-draft`;
 
       let obj = {
         collectionName,
@@ -376,23 +473,29 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         collectionSymbol,
         chainType: networkType.value
       };
+
       if (screenStatus == "draft") {
         obj.requestId = routeParams.data._id
+      } else if (screenStatus == "created") {
+        obj.collectionAddress == collectionAdd
       }
+
       axios.defaults.headers.post['Content-Type'] = 'application/json';
 
       axios.post(url, obj)
         .then(collectionData => {
           changeLoadingState(false);
-          console.log(collectionData, "save as draft")
+          console.log(collectionData, "save as draft or edit")
           if (collectionData.data.success) {
-            screenStatus == "draft" ?
+            screenStatus == "draft" || screenStatus == "created" ?
               navigation.goBack() : cancel();
             alertWithSingleBtn(
               "Success Message",
               screenStatus == "draft" ?
                 "Collection Draft Edit Successfully" :
-                "Collection Save as Draft Successfully"
+                screenStatus == "created" ?
+                  "Collection Edit Successfully" :
+                  "Collection Save as Draft Successfully"
             );
           } else {
             alertWithSingleBtn(
@@ -508,7 +611,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           <CardButton
             border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             label={screenStatus === "new" ? "Save as Draft" : "Edit Draft"}
-            onPress={saveAsDraftCollection}
+            onPress={saveEditAsDraftCollection}
             disable={!disable}
             buttonCont={{ marginBottom: 0 }}
           />
@@ -516,7 +619,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
         <View style={styles.saveBtnGroup}>
           <CardButton
-            onPress={saveCollection}
+            onPress={screenStatus === "new" ? saveCollection :
+              screenStatus === "draft" ? saveDraftCollection : saveEditAsDraftCollection}
             label={screenStatus === "new" || screenStatus === "draft" ? "Save" : "Edit"}
             buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
             disable={!disable}
