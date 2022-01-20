@@ -656,6 +656,8 @@
                 "oldAndNewPasswordIsSameText": "旧密码和新密码不能相同",
                 "oldPasswordNCorrect": "旧密码不正确！"
             },
+            "owned": "拥有",
+            "noCollection": "无可用集合",
             "welcomeTxt": "欢迎",
             "createWallet": "创建一个新钱包",
             "haveWallet": "我已经有钱包了",

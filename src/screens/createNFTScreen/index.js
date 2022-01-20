@@ -19,7 +19,9 @@ import NFTList from './nftList';
 import UploadNFT from './uploadNft';
 import { TabModal } from './components';
 
-const CreateNFTScreen = () => {
+const CreateNFTScreen = ({ route }) => {
+
+  const routeParams = route.params;
 
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +55,11 @@ const CreateNFTScreen = () => {
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Collection':
-        return <Collection changeLoadingState={(e) => setLoading(e)} />;
+        return <Collection
+          position={index}
+          routeParams={routeParams}
+          changeLoadingState={(e) => setLoading(e)}
+        />;
       case 'NFTList':
         return <NFTList
           modalItem={modalItem}

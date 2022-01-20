@@ -20,6 +20,8 @@ target 'showcase' do
 
   pod 'TouchID', :path => '../node_modules/react-native-touch-id'
 
+  pod 'react-native-create-thumbnail', :path => '../node_modules/react-native-create-thumbnail'
+
   target 'showcaseTests' do
     inherit! :complete
     # Pods for testing

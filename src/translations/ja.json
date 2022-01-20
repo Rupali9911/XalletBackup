@@ -656,6 +656,8 @@
                 "oldAndNewPasswordIsSameText": "古いパスワードと新しいパスワードを同じにしないでください",
                 "oldPasswordNCorrect": "古いパスワードが正しくない!"
             },
+            "owned": "所有",
+            "noCollection": "コレクションがありません",
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",
             "haveWallet": "既にウォレットを持っている方",

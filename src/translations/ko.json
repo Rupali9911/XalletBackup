@@ -656,6 +656,8 @@
                 "oldAndNewPasswordIsSameText": "이전 비밀번호와 새 비밀번호는 동일하지 않아야합니다.",
                 "oldPasswordNCorrect": "이전 암호가 올바르지 않습니다!"
             },
+            "owned": "소유",
+            "noCollection": "사용할 수 있는 컬렉션 없음",
             "welcomeTxt": "어서 오십시오",
             "createWallet": "새 지갑 만들기",
             "haveWallet": "나는 이미 지갑을 가지고 있다",

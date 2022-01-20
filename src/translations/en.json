@@ -657,6 +657,8 @@
                 "oldPasswordNCorrect": "Old Password is not correct!"
             },
             "welcomeTxt": "Welcome",
+            "owned": "Owned",
+            "noCollection": "No Collection Available",
             "createWallet": "Create a new wallet",
             "haveWallet": "I already have a wallet",
             "legal": "Legal ",
