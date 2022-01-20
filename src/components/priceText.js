@@ -11,7 +11,7 @@ const PriceText = (props) => {
     let textColor = { color: props.isWhite ? Colors.white : Colors.black };
     return (
         <View style={[styles.paymentCont, props.containerStyle]} >
-            <Text style={[styles.paymentTxt, textColor]} >$</Text>
+            {/*<Text style={[styles.paymentTxt, textColor]} >$</Text>*/}
             <NumberFormat
                 value={props.price || '0.00'}
                 displayType={'text'}
@@ -19,7 +19,7 @@ const PriceText = (props) => {
                 thousandSeparator={true}
                 renderText={formattedValue => <Text numberOfLines={1} style={[styles.paymentTxt, textColor]} >{formattedValue}</Text>} // <--- Don't forget this!
             />
-            
+
         </View>
     )
 }

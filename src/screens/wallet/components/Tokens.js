@@ -22,11 +22,11 @@ const ListItems = (props) => {
             </View>
             <View style={styles.centerCont} >
                 <Text style={styles.tokenName} >{item.tokenName}</Text>
-                <View style={styles.detailsContainer}>
-                    <Text style={styles.townTxt} >{item.amount}</Text>
-                    <Text style={styles.percentTxt} >{item.percent}</Text>
-                </View>
-                
+                {/*<View style={styles.detailsContainer}>*/}
+                    {/*<Text style={styles.townTxt} >{item.amount}</Text>*/}
+                    {/*<Text style={styles.percentTxt} >{item.percent}</Text>*/}
+                {/*</View>*/}
+
             </View>
             <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }} >
                 <Text style={styles.townTxt} >{item.network}</Text>
@@ -65,7 +65,7 @@ const Tokens = (props) => {
         } else if(network.name == 'BSC'){
             array[0].tokenValue = `${bnbBalance}`;
             array[3].tokenValue = `${tnftBalance}`;
-            console.log(array[3]);    
+            console.log(array[3]);
             // array[3].tokenValue = `${props.values.BUSD}`;
             // array[6].tokenValue = `${props.values.ALIA}`;
         } else if(network.name == 'Polygon'){
@@ -161,19 +161,19 @@ const Tokens = (props) => {
 
 const styles = StyleSheet.create({
     scene: {
-        flex: 1,
+        flex: 1
     },
     profileCont: {
         ...CommonStyles.circle("13.5")
     },
     profileImage: {
-        ...CommonStyles.imageStyles(13.5),
+        ...CommonStyles.imageStyles(13.5)
     },
     listCont: {
         paddingHorizontal: wp("4%"),
         paddingVertical: hp('1.8%'),
         flexDirection: "row",
-        alignItems: 'center',
+        alignItems: 'center'
     },
     priceTxt: {
         fontSize: RF(2.3),
@@ -194,16 +194,16 @@ const styles = StyleSheet.create({
         marginVertical: hp("0.5%")
     },
     centerCont: {
-        height: '100%',
+        // height: '100%',
         flex: 1,
         paddingHorizontal: wp("4%"),
-        // justifyContent: "center",
+        justifyContent: "center",
     },
     tokenName: {
         fontFamily: Fonts.ARIAL,
         fontSize: RF(2.3),
         color: Colors.tokenLabel,
-        marginTop: hp('1%'),
+        // marginTop: hp('1%'),
     },
     separator: {
         backgroundColor: Colors.separatorThird,
