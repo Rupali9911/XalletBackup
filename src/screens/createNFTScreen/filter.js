@@ -273,12 +273,12 @@ const Filter = ({
   return (
     <View style={styles.childCont}>
       <CardCont>
-        <CardLabel>Collection</CardLabel>
+        <CardLabel>{translate("common.collected")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
           onPress={() => {
             setActiveModal("collection")
-            showModal({ data: collectionList, title: "Collection List", itemToRender: "collectionName" })
+            showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "collectionName" })
           }}
           pressable
           showRight />
@@ -312,7 +312,7 @@ const Filter = ({
           }}
           disable={addNewFilterDisable}
           buttonCont={{ width: '48%', backgroundColor: addNewFilterDisable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-          label="Add New Filter"
+          label={translate("wallet.common.addFilter")}
         />
       </CardCont>
       <Modal
@@ -330,11 +330,11 @@ const Filter = ({
         backdropTransitionInTiming={600}
         backdropTransitionOutTiming={600}>
         <View style={styles.modalCont}>
-          <Text style={styles.modalTitle}>Filter</Text>
-          <CardLabel style={{ marginTop: hp(5) }}>Filter name</CardLabel>
+          <Text style={styles.modalTitle}>{translate("wallet.common.filter")}</Text>
+          <CardLabel style={{ marginTop: hp(5) }}>{translate("wallet.common.filterName")}</CardLabel>
           <CardField
             inputProps={{
-              placeholder: 'Filter name',
+              placeholder: translate("wallet.common.filterName"),
               value: filterActive ? filterActive.filter_name : "",
               onChangeText: (e) => {
                 let filterActiveItem = filterActive ? { ...filterActive } : null;
@@ -345,11 +345,11 @@ const Filter = ({
               }
             }}
           />
-          <CardLabel>Type</CardLabel>
+          <CardLabel>{translate("common.type")}</CardLabel>
           <CardField
             onPress={() => {
               setActiveModal("filterType")
-              showModal({ data: filterTypeList, title: "Select Type" })
+              showModal({ data: filterTypeList, title: translate("common.selectType") })
             }}
             inputProps={{
               value: filterActive ? filterActive.filter_type : "",
@@ -357,7 +357,7 @@ const Filter = ({
             pressable
             showRight
           />
-          <CardLabel>Value</CardLabel>
+          <CardLabel>{translate("wallet.common.value")}</CardLabel>
           {
             filterActive && filterActive.filter_type == "Number" ?
               <>
@@ -378,7 +378,7 @@ const Filter = ({
                     contStyle={{ width: '38%' }}
                   />
                   <View style={styles.centerFieldCont}>
-                    <Text style={styles.titleDes}>to</Text>
+                    <Text style={styles.titleDes}>{translate("common.to")}</Text>
                   </View>
                   <CardField
                     inputProps={{
@@ -399,7 +399,6 @@ const Filter = ({
               </> :
               <CardField
                 inputProps={{
-                  placeholder: 'Sexy Lip',
                   value: filterActive ? filterActive.filter_value : "",
                   onChangeText: (e) => {
                     let filterActiveItem = filterActive ? { ...filterActive } : null;
@@ -416,12 +415,12 @@ const Filter = ({
             <CardButton
               onPress={filterActiveStatus === "New" ? saveFilter : editFilter}
               disable={!saveEditDisble}
-              label={filterActiveStatus === "New" ? "Save" : "Edit"}
+              label={filterActiveStatus === "New" ? translate("common.save") : translate("wallet.common.edit")}
               buttonCont={{ width: '48%', backgroundColor: !saveEditDisble ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }} />
             <CardButton
               border={colors.BLUE6}
               buttonCont={{ width: '48%' }}
-              label="Cancel"
+              label={translate("common.Cancel")}
               onPress={() => {
                 setFilterActiveStatus("")
                 setModalVisible(false)

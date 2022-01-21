@@ -18,10 +18,11 @@ import { translate } from '../../walletUtils';
 import Modal from 'react-native-modal';
 
 const ListItem = props => {
+  let dataToRender = props.data.hasOwnProperty("metaData") ? props.data.metaData : props.data;
   return (
     <TouchableOpacity onPress={props.press} style={styles.listCont}>
       <View style={styles.listCenter}>
-        <Text style={styles.listLabel}>{props.data.name}</Text>
+        <Text style={styles.listLabel}>{dataToRender.name}</Text>
       </View>
       <Image source={IMAGES.leftArrow} style={styles.imageStyles(3)} />
     </TouchableOpacity>
@@ -103,7 +104,7 @@ const NFTList = ({
       };
       axios.post(url, body)
         .then(collectionList => {
-          // console.log(collectionList, "nftlist collectionList")
+          console.log(collectionList, "nftlist collectionList")
           if (collectionList.data.success) {
 
             setCollectionList(collectionList.data.data)
@@ -191,53 +192,50 @@ const NFTList = ({
     <View style={styles.childCont}>
 
       <CardCont>
-        <CardLabel>Collection</CardLabel>
+        <CardLabel>{translate("common.collected")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
-          onPress={() => showModal({ data: collectionList, title: "Collection List", itemToRender: "collectionName" })}
+          onPress={() => showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "collectionName" })}
           pressable
           showRight />
         <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
           <CardButton
             onPress={() => pressToggle("mint", collection)}
             border={toggle !== "mint" ? colors.BLUE6 : null}
-            label="Created"
+            label={translate("wallet.common.created")}
             buttonCont={styles.leftToggle}
           />
           <CardButton
             onPress={() => pressToggle("draft", collection)}
             border={toggle !== "draft" ? colors.BLUE6 : null}
             buttonCont={styles.rightToggle}
-            label="Draft"
+            label={translate("common.saveAsDraft")}
           />
         </View>
 
         <View style={styles.listMainCont}>
           {
-            (toggle == "mint" && nftListCreated.length !== 0) || (toggle == "draft" && nftListDraft.length !== 0) ?
+            (toggle == "mint" && nftListCreated.length !== 0) || (toggle == "draft" && nftListDraft.length !== 0) &&
 
-              <FlatList
-                data={toggle == "mint" ? nftListCreated : nftListDraft}
-                initialNumToRender={50}
-                renderItem={renderListItem}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                onEndReached={() => {
-                  let num;
-                  if (toggle == "mint") {
-                    num = nftListPage + 1;
-                    setNftListPage(num)
-                  } else {
-                    num = nftListDraftPage + 1;
-                    setNftListDraftPage(num)
-                  }
-                  getNftList(collection, toggle, num)
-                }}
-                onEndReachedThreshold={0.4}
-                keyExtractor={(v, i) => 'item_' + i}
-              /> :
-              <View style={styles.sorryMessageCont} >
-                <Text style={styles.sorryMessage} >No Data Found</Text>
-              </View>
+            <FlatList
+              data={toggle == "mint" ? nftListCreated : nftListDraft}
+              initialNumToRender={50}
+              renderItem={renderListItem}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              onEndReached={() => {
+                let num;
+                if (toggle == "mint") {
+                  num = nftListPage + 1;
+                  setNftListPage(num)
+                } else {
+                  num = nftListDraftPage + 1;
+                  setNftListDraftPage(num)
+                }
+                getNftList(collection, toggle, num)
+              }}
+              onEndReachedThreshold={0.4}
+              keyExtractor={(v, i) => 'item_' + i}
+            />
           }
 
         </View>
