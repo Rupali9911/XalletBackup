@@ -197,7 +197,7 @@
         "pending": "等候接聽",
         "archived": "已存檔 ",
         "selected": "已選擇",
-        "minted": "已鑄造的 ",
+        "minted": "鑄造",
         "fiveColumn": "5列 ",
         "tenColumn": "10列 ",
         "userNameVal": "用戶名（少於40個字符）",
@@ -616,7 +616,12 @@
         "emailUserRequired": "電子郵件/使用者名是必需的！",
         "passwordReq": "密碼是必需的！",
         "owned": "擁有",
-        "Selectcurrencypopup": "請選擇支付貨幣類型"
+        "Selectcurrencypopup": "請選擇支付貨幣類型",
+        "sales": "上市（固定價格）",
+        "Bids": "出價",
+        "Buys": "銷售",
+        "Claim": "宣称",
+        "OnAuction": "上市（拍賣）"
     },
     "AwardPage": {},
     "wallet": {
@@ -898,7 +903,10 @@
             "collectionHint": "更多來自這個系列",
             "cameraPermissionHeader": "此功能需要使用相机",
             "cameraPermissionMessage": "要启用访问，请点按设置并打开相机。",
-            "settings": "设置"
+            "settings": "设置",
+            "about": "大約",
+            "noCollection": "無可用集合",
+            "owned": "擁有"
         },
         "backendmessage": {
             "error": {},

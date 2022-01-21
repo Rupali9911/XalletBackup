@@ -1,156 +1,167 @@
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-
+import {BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {ApiRequest} from '../../helpers/ApiRequest';
+import {alertWithSingleBtn} from '../../utils';
+import {translate} from '../../walletUtils';
 import {
-    NEW_NFT_LOAD_START,
-    NEW_NFT_LOAD_SUCCESS,
-    NEW_NFT_LOAD_FAIL,
-    NEW_PAGE_CHANGE,
-    NEW_NFT_LIST_RESET,
-    FAVORITE_NFT_LOAD_SUCCESS
+  FAVORITE_NFT_LOAD_SUCCESS,
+  NEW_NFT_LIST_RESET,
+  NEW_NFT_LOAD_FAIL,
+  NEW_NFT_LOAD_START,
+  NEW_NFT_LOAD_SUCCESS,
+  NEW_PAGE_CHANGE,
+  UPDATE_ARTIST_DETAIL,
+  UPDATE_NFT_DETAIL,
+  UPDATE_OWNER_DETAIL,
 } from '../types';
-import { alertWithSingleBtn } from '../../utils';
-import { translate } from '../../walletUtils';
-import { ApiRequest } from '../../helpers/ApiRequest';
 
-export const newNftLoadSuccess = (data) => ({
-    type: NEW_NFT_LOAD_SUCCESS,
-    payload: data
+export const newNftLoadSuccess = data => ({
+  type: NEW_NFT_LOAD_SUCCESS,
+  payload: data,
 });
-export const favoriteNftLoadSuccess = (data) => ({
-    type: FAVORITE_NFT_LOAD_SUCCESS,
-    payload: data
+export const favoriteNftLoadSuccess = data => ({
+  type: FAVORITE_NFT_LOAD_SUCCESS,
+  payload: data,
+});
+export const updateNftDetail = data => ({
+  type: UPDATE_NFT_DETAIL,
+  payload: data,
+});
+export const updateArtistDetail = data => ({
+  type: UPDATE_ARTIST_DETAIL,
+  payload: data,
+});
+export const updateOwnerDetail = data => ({
+  type: UPDATE_OWNER_DETAIL,
+  payload: data,
 });
 
 export const newNftLoadStart = () => ({
-    type: NEW_NFT_LOAD_START
+  type: NEW_NFT_LOAD_START,
 });
 
 export const newNftLoadFail = () => ({
-    type: NEW_NFT_LOAD_FAIL
+  type: NEW_NFT_LOAD_FAIL,
 });
 
 export const newNftListReset = () => ({
-    type: NEW_NFT_LIST_RESET
+  type: NEW_NFT_LIST_RESET,
 });
 
-export const newPageChange = (data) => ({
-    type: NEW_PAGE_CHANGE,
-    payload: data
+export const newPageChange = data => ({
+  type: NEW_PAGE_CHANGE,
+  payload: data,
 });
 
 export const newNFTList = (page, limit, sort) => {
-    return (dispatch, getState) => {
+  return (dispatch, getState) => {
+    dispatch(newNftLoadStart());
 
-        dispatch(newNftLoadStart());
+    const {data, wallet} = getState().UserReducer;
+    let user = data.user;
 
-        const { data, wallet } = getState().UserReducer;
-        let user = data.user;
+    let body_data = {
+      page,
+      limit: limit || 27,
+      networkType: networkType,
+      token: 'HubyJ*%qcqR0',
+      type: '2D',
+      approveStaus: 'approve',
+    };
 
-        let body_data = {
-            page,
-            limit: limit || 27,
-            networkType: networkType,
-            token: "HubyJ*%qcqR0",
-            type: "2D",
-            approveStaus: "approve"
-        }
-
-        if(sort){
-            body_data.sort = sort
-        }
-
-        if (user) {
-            body_data.owner = wallet.address || user._id;
-        }
-        // console.log('body_data',body_data);
-        let fetch_data_body = {
-            method: 'POST',
-            body: JSON.stringify(body_data),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        }
-
-        fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
-            .then(response => response.json())
-            .then(json => {
-
-                dispatch(newNftLoadSuccess(json))
-
-            }).catch(err => {
-                dispatch(newNftLoadFail())
-                alertWithSingleBtn(
-                    translate('common.error'),
-                    translate("wallet.common.error.networkFailed")
-                )
-            })
+    if (sort) {
+      body_data.sort = sort;
     }
-}
+
+    if (user) {
+      body_data.owner = wallet.address || user._id;
+    }
+    // console.log('body_data',body_data);
+    let fetch_data_body = {
+      method: 'POST',
+      body: JSON.stringify(body_data),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+
+    fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
+      .then(response => response.json())
+      .then(json => {
+        dispatch(newNftLoadSuccess(json));
+      })
+      .catch(err => {
+        dispatch(newNftLoadFail());
+        alertWithSingleBtn(
+          translate('common.error'),
+          translate('wallet.common.error.networkFailed'),
+        );
+      });
+  };
+};
 export const favoriteNFTList = (page, limit, sort) => {
-    return (dispatch, getState) => {
+  return (dispatch, getState) => {
+    dispatch(newNftLoadStart());
 
-        dispatch(newNftLoadStart());
+    const {data, wallet} = getState().UserReducer;
+    let user = data.user;
 
-        const { data, wallet } = getState().UserReducer;
-        let user = data.user;
+    let body_data = {
+      page,
+      limit: limit || 24,
+      networkType: networkType,
+      token: 'HubyJ*%qcqR0',
+      type: 'portfolio',
+      approveStaus: 'approve',
+    };
 
-        let body_data = {
-            page,
-            limit: limit || 24,
-            networkType: networkType,
-            token: "HubyJ*%qcqR0",
-            type: "portfolio",
-            approveStaus: "approve"
-        }
-
-        if(sort){
-            body_data.sort = sort
-        }
-
-        if (user) {
-            body_data.owner = wallet.address || user._id;
-        }
-        // console.log('body_data',body_data);
-        let fetch_data_body = {
-            method: 'POST',
-            body: JSON.stringify(body_data),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        }
-
-        fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
-            .then(response => response.json())
-            .then(json => {
-
-                dispatch(favoriteNftLoadSuccess(json))
-
-            }).catch(err => {
-                dispatch(newNftLoadFail())
-                alertWithSingleBtn(
-                    translate('common.error'),
-                    translate("wallet.common.error.networkFailed")
-                )
-            })
+    if (sort) {
+      body_data.sort = sort;
     }
-}
 
-export const searchNFT = (searchTxt) => (dispatch) => 
-    new Promise((resolve, reject) => {
-        let data = {
-            page: 1,
-            limit: 5,
-            searchValue: searchTxt,
-            networkType: "testnet"
-        }
+    if (user) {
+      body_data.owner = wallet.address || user._id;
+    }
+    // console.log('body_data',body_data);
+    let fetch_data_body = {
+      method: 'POST',
+      body: JSON.stringify(body_data),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
 
-        ApiRequest(`${BASE_URL}/xanalia/search-nft-type/`,'POST',data,null).then((response) => {
-            resolve(response);
-        }).catch((err) => {
-            reject(err);
-        });
+    fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
+      .then(response => response.json())
+      .then(json => {
+        dispatch(favoriteNftLoadSuccess(json));
+      })
+      .catch(err => {
+        dispatch(newNftLoadFail());
+        alertWithSingleBtn(
+          translate('common.error'),
+          translate('wallet.common.error.networkFailed'),
+        );
+      });
+  };
+};
 
-    });
+export const searchNFT = searchTxt => dispatch =>
+  new Promise((resolve, reject) => {
+    let data = {
+      page: 1,
+      limit: 5,
+      searchValue: searchTxt,
+      networkType: 'testnet',
+    };
+
+    ApiRequest(`${BASE_URL}/xanalia/search-nft-type/`, 'POST', data, null)
+      .then(response => {
+        resolve(response);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
