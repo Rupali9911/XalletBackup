@@ -29,14 +29,15 @@ import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
-import {alertWithSingleBtn} from '../../utils';
 import Colors from '../../constants/Colors';
 import {hp} from '../../constants/responsiveFunct';
+import {colors} from '../../res';
+import {updateNftDetail} from '../../store/actions/newNFTActions';
 import {
   getAllCards,
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import {divideNo} from '../../utils';
+import {alertWithSingleBtn, divideNo} from '../../utils';
 import {translate} from '../../walletUtils';
 import {basePriceTokens} from '../../web3/config/availableTokens';
 import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
@@ -49,10 +50,13 @@ const Web3 = require('web3');
 
 let walletAddressForNonCrypto = '';
 
-const DetailScreen = ({route, navigation}) => {
+const DetailScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const {paymentObject} = useSelector(state => state.PaymentReducer);
   const {data, wallet} = useSelector(state => state.UserReducer);
+  const {nftDetail, ownerDetail, artistDetail} = useSelector(
+    state => state.NewNFTListReducer,
+  );
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
@@ -61,21 +65,15 @@ const DetailScreen = ({route, navigation}) => {
     id,
     name,
     description,
-    owner,
-    ownerImage,
-    creator,
-    creatorImage,
     thumbnailUrl,
     video,
     fileType,
     price,
     chain,
-    ownerId,
     tokenId,
-    artistId,
-    artistData,
-    ownerData,
-  } = route.params;
+  } = nftDetail;
+  const {owner, ownerImage, ownerId, ownerData} = ownerDetail;
+  const {creator, creatorImage, artistId, artistData} = artistDetail;
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [isContractOwner, setIsContractOwner] = useState(false);
@@ -147,7 +145,6 @@ const DetailScreen = ({route, navigation}) => {
         ? '0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af'
         : '0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859'
       : '0xac940124f5f3b56b0c298cca8e9e098c2cccae2e';
-
   let params = tokenId.toString().split('-');
   let _tokenId =
     params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
@@ -190,11 +187,11 @@ const DetailScreen = ({route, navigation}) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log('tokenId', tokenId);
+      console.log('New tokenId', tokenId);
       if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
-        setBuyLoading(true);
+        setBuyLoading(false);
         checkNFTOnAuction();
-        getNonCryptoNFTOwner();
+        //getNonCryptoNFTOwner();
       }
 
       if (data.token) {
@@ -257,7 +254,8 @@ const DetailScreen = ({route, navigation}) => {
               res.data.data[i].event === 'SellNFTNonCrypto'
             ) {
               let obj = {
-                event: 'SellNFT',
+                //event: 'SellNFT',
+                translatedEvent: translate('common.sales'),
                 price:
                   res.data.data[i].returnValues.dollarPrice &&
                   parseInt(
@@ -275,7 +273,7 @@ const DetailScreen = ({route, navigation}) => {
                         parseInt(res.data.data[i].returnValues.price._hex, 16),
                       ),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
-                owner: 'Null Address',
+                owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -285,7 +283,8 @@ const DetailScreen = ({route, navigation}) => {
 
             if (res.data.data[i].event === 'OnAuction') {
               let obj = {
-                event: 'OnAuction',
+                //event: 'OnAuction',
+                translatedEvent: translate('common.OnAuction'),
                 price:
                   res.data.data[i].returnValues.startPrice &&
                   parseInt(
@@ -306,7 +305,7 @@ const DetailScreen = ({route, navigation}) => {
                         ),
                       ),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
-                owner: 'Null Address',
+                owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -317,9 +316,10 @@ const DetailScreen = ({route, navigation}) => {
 
             if (res.data.data[i].event === 'awardAuctionNFT') {
               let obj = {
-                event: 'OnAuction',
+                //event: 'OnAuction',
+                translatedEvent: translate('common.OnAuction'),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
-                owner: 'Null Address',
+                owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -330,7 +330,8 @@ const DetailScreen = ({route, navigation}) => {
 
             if (res.data.data[i].event === 'Bid') {
               let obj = {
-                event: 'Bid',
+                //event: 'Bid',
+                translatedEvent: translate('common.Bids'),
                 price:
                   parseInt(
                     divideNo(
@@ -344,7 +345,7 @@ const DetailScreen = ({route, navigation}) => {
                         parseInt(res.data.data[i].returnValues.amount._hex, 16),
                       ),
                 seller: res.data.data[i].returnValues.bidder.slice(0, 6),
-                owner: 'Null Address',
+                owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -362,7 +363,8 @@ const DetailScreen = ({route, navigation}) => {
                 }
               }
               let obj = {
-                event: 'Claim',
+                //event: 'Claim',
+                translatedEvent: translate('common.Claim'),
                 price:
                   parseInt(
                     divideNo(
@@ -402,7 +404,8 @@ const DetailScreen = ({route, navigation}) => {
               }
 
               let obj = {
-                event: 'BuyNFT',
+                // 'BuyNFT',
+                translatedEvent: translate('common.Buys'),
                 price:
                   sellEvent.returnValues.dollarPrice &&
                   parseInt(
@@ -424,10 +427,11 @@ const DetailScreen = ({route, navigation}) => {
             // console.log('OBJECTTTTTTTTTTTTTTT',obj)
             if (res.data.data[i].event === 'CancelSell') {
               let obj = {
-                event: 'CancelSell',
+                //event: 'CancelSell',
+                translatedEvent: translate('common.cancelSell'),
                 price: '',
                 seller: res.data.data[i].returnValues.from.slice(0, 6),
-                owner: 'Null Address',
+                owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
@@ -441,7 +445,8 @@ const DetailScreen = ({route, navigation}) => {
               res.data.data[i].event === 'MintWithTokenURINonCrypto'
             ) {
               let obj = {
-                event: 'MintWithTokenURI',
+                //event: 'MintWithTokenURI',
+                translatedEvent: translate('common.minted'),
                 price: '',
                 seller: 'Null Address',
                 owner: res.data.data[i].returnValues.from,
@@ -469,20 +474,7 @@ const DetailScreen = ({route, navigation}) => {
             }
             setTableData(bidsArray);
           }
-          console.log(
-            'All Data ...............................................',
-            bids,
-          );
           setSellDetails(bids);
-          // var finalArray = bids.map(function (obj) {
-          //   return (
-          //     String(obj.event),
-          //     String(obj.price),
-          //     String(obj.seller),
-          //     String(obj.owner),
-          //     String(obj.sellDateTime)
-          //   );
-          // });
           let arr = [];
           for (let i = 0; i < bids.length; i++) {
             const obj = bids[i];
@@ -594,29 +586,59 @@ const DetailScreen = ({route, navigation}) => {
       });
   };
 
-  const getNonCryptoNFTOwner = async () => {
-    // let tokenId = "317";
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    MarketPlaceContract.methods
-      .getNonCryptoOwner(collectionAddress, _tokenId)
-      .call(async (err, res) => {
-        console.log('getNonCryptoOwner_res', res);
-        if (res) {
-          setNonCryptoOwnerId(res);
-          lastOwnerOfNFTNonCrypto(res);
-          await getTokenDetailsApi(false);
-        } else if (!res) {
-          lastOwnerOfNFT();
-          await getTokenDetailsApi();
-        } else if (err) {
-        }
-      });
-  };
+  // const getNonCryptoNFTOwner = async () => {
+  //   // let tokenId = "317";
+  //   let web3 = new Web3(providerUrl);
+  //   let MarketPlaceContract = new web3.eth.Contract(
+  //     MarketPlaceAbi,
+  //     MarketContractAddress,
+  //   );
+  //   MarketPlaceContract.methods
+  //     .getNonCryptoOwner(collectionAddress, _tokenId)
+  //     .call(async (err, res) => {
+  //       console.log('getNonCryptoOwner_res', res);
+  //       if (res) {
+  //         const userId = res.toLowerCase();
+  //         getPublicProfile(userId, false);
+  //         setNonCryptoOwnerId(res);
+  //         lastOwnerOfNFTNonCrypto(res);
+  //         await getTokenDetailsApi(false);
+  //       } else if (!res) {
+  //         lastOwnerOfNFT();
+  //         await getTokenDetailsApi();
+  //       } else if (err) {
+  //         console.log('error----->', err);
+  //       }
+  //     });
+  // };
+  // const getPublicProfile = async (id, type) => {
+  //   const userId = id?.toLowerCase();
 
+  //   let profileUrl = type
+  //     ? `${BASE_URL}/user/get-public-profile?publicAddress=${userId}`
+  //     : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
+  //   dispatch(
+  //     updateNftDetail({
+  //       ownerId: userId,
+  //     }),
+  //   );
+  //   let profile = await axios.get(profileUrl);
+  //   if (profile.data) {
+  //     dispatch(
+  //       updateNftDetail({
+  //         ownerData: profile?.data?.data,
+  //         owner: profile?.data?.data?.username,
+  //         ownerImage: profile?.data?.data?.profile_image,
+  //       }),
+  //     );
+  //   } else {
+  //     dispatch(
+  //       updateNftDetail({
+  //         owner: userId,
+  //       }),
+  //     );
+  //   }
+  // };
   const lastOwnerOfNFTNonCrypto = nonCryptoOwner => {
     let _data = singleNFT;
     let web3 = new Web3(providerUrl);
@@ -1072,25 +1094,28 @@ const DetailScreen = ({route, navigation}) => {
           onPress={() => {
             // dispatch(changeScreenName('awards'));
             //navigation.push('DetailItem', {index: findIndex});
-            navigation.navigate('CertificateDetail', {
-              id: item.newtokenId,
-              name: item.metaData.name,
-              description: item.metaData.description,
-              owner: owner,
-              ownerImage: ownerImage,
-              creator: creator,
-              creatorImage: creatorImage,
-              thumbnailUrl: item.thumbnailUrl,
-              video: item.metaData.image,
-              fileType: fileType,
-              price: item.price,
-              chain: item.chain,
-              ownerId: ownerId,
-              artistId: artistId,
-              tokenId: item.tokenId,
-              ownerData: ownerData,
-              artistData: artistData,
-            });
+            navigation.navigate('CertificateDetail');
+            dispatch(
+              updateNftDetail({
+                id: item.newtokenId,
+                name: item.metaData.name,
+                description: item.metaData.description,
+                tokenId: item.tokenId,
+                thumbnailUrl: item.thumbnailUrl,
+                video: item.metaData.image,
+                fileType: fileType,
+                price: item.price,
+                chain: item.chain,
+                ownerId: ownerId,
+                owner: owner,
+                ownerImage: ownerImage,
+                ownerData: ownerData,
+                artistId: artistId,
+                creator: creator,
+                creatorImage: creatorImage,
+                artistData: artistData,
+              }),
+            );
             scrollRef.current.scrollTo({x: 0, y: 0, animated: true});
           }}
           style={styles.listItem}>
@@ -1111,13 +1136,19 @@ const DetailScreen = ({route, navigation}) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState([]);
     const [items, setItems] = useState([
-      {label: 'Minted', value: 'Minted'},
-      {label: 'Listing (Fixed Price)', value: 'Listing (Fixed Price)'},
-      {label: 'Bid', value: 'Bid'},
-      {label: 'Sale', value: 'Sale'},
-      {label: 'Claim', value: 'Claim'},
-      {label: 'Listing (Auction)', value: 'Listing (Auction)'},
-      {label: 'Cancel Sell', value: 'Cancel Sell'},
+      {label: translate('common.minted'), value: translate('common.minted')},
+      {label: translate('common.sales'), value: translate('common.sales')},
+      {label: translate('common.Bids'), value: translate('common.Bids')},
+      {label: translate('common.Buys'), value: translate('common.Buys')},
+      {label: translate('common.Claim'), value: translate('common.Claim')},
+      {
+        label: translate('common.OnAuction'),
+        value: translate('common.OnAuction'),
+      },
+      {
+        label: translate('common.cancelSell'),
+        value: translate('common.cancelSell'),
+      },
     ]);
 
     return (
@@ -1135,6 +1166,7 @@ const DetailScreen = ({route, navigation}) => {
         style={styles.tokenPicker}
         dropDownContainerStyle={styles.dropDownContainer}
         placeholder={translate('wallet.common.filter')}
+        maxHeight={hp(20)}
       />
     );
   };
@@ -1255,7 +1287,9 @@ const DetailScreen = ({route, navigation}) => {
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={styles.nftTitle}>{creator}</Text>
+          <Text style={styles.nftTitle} ellipsizeMode="tail" numberOfLines={1}>
+            {creator}
+          </Text>
           <Text style={styles.nftName}>{name}</Text>
           {setNFTStatus() !== 'notOnSell' && (
             <View style={styles.row}>

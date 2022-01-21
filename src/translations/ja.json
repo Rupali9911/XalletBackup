@@ -197,7 +197,7 @@
         "pending": "保留中",
         "archived": "アーカイブ ",
         "selected": "選択されたNFT",
-        "minted": "鋳造されたNFT",
+        "minted": "出品",
         "fiveColumn": "５列 ",
         "tenColumn": "１０列",
         "userNameVal": "ユーザー名（40文字未満）",
@@ -616,7 +616,12 @@
         "emailUserRequired": "メール/ユーザー名が必要です!",
         "passwordReq": "パスワードが必要です!",
         "owned": "所有",
-        "Selectcurrencypopup": "支払通貨を選択してください"
+        "Selectcurrencypopup": "支払通貨を選択してください",
+        "sales": "リスティング (固定価格)",
+        "Bids": "入札",
+        "Buys": "販売",
+        "Claim": "落札",
+        "OnAuction": "リスティング (オークション)"
     },
     "AwardPage": {},
     "wallet": {
@@ -898,7 +903,10 @@
             "collectionHint": "このコレクションの他作品",
             "cameraPermissionHeader": "この機能には、カメラへのアクセスが必要です",
             "cameraPermissionMessage": "アクセスするには、［設定］をタップし［カメラ］をオンにします。",
-            "settings": "設定"
+            "settings": "設定",
+            "about": "に関しては",
+            "noCollection": "コレクションがありません",
+            "owned": "所有"
         },
         "backendmessage": {
             "error": {},

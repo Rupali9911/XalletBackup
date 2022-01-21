@@ -197,7 +197,7 @@
         "pending": "보류 중 ",
         "archived": "보관 됨 ",
         "selected": "선택된 ",
-        "minted": "발행 ",
+        "minted": "출품",
         "fiveColumn": "5 열 ",
         "tenColumn": "10 열",
         "userNameVal": "사용자 이름 (40 자 미만) ",
@@ -616,7 +616,12 @@
         "emailUserRequired": "이메일/사용자 이름이 필요합니다!",
         "passwordReq": "암호가 필요합니다!",
         "owned": "소유",
-        "Selectcurrencypopup": "지불 통화 유형을 선택하십시오"
+        "Selectcurrencypopup": "지불 통화 유형을 선택하십시오",
+        "sales": "상장(고정가격)",
+        "Bids": "매기다",
+        "Buys": "판매",
+        "Claim": "주장하다",
+        "OnAuction": "상장(경매)"
     },
     "AwardPage": {},
     "wallet": {
@@ -898,7 +903,10 @@
             "collectionHint": "이 컬렉션에서 더 많은 것",
             "cameraPermissionHeader": "이 기능을 사용하려면 카메라 액세스 권한이 필요합니다.",
             "cameraPermissionMessage": "액세스를 활성화하려면 설정을 누르고 카메라를 켭니다.",
-            "settings": "설정"
+            "settings": "설정",
+            "about": "약",
+            "noCollection": "사용할 수 있는 컬렉션 없음",
+            "owned": "소유"
         },
         "backendmessage": {
             "error": {},
