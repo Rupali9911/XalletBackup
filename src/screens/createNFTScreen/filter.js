@@ -30,7 +30,14 @@ const ListItem = props => {
 };
 
 const filterTypeList = [
-  "Text", "Number"
+  {
+    name: "Text",
+    code: "wallet.common.text"
+},
+  {
+    name: "Number",
+    code: "wallet.common.number" 
+}
 ]
 
 const Filter = ({
@@ -77,7 +84,7 @@ const Filter = ({
         } else {
           let filterActiveItem = filterActive && { ...filterActive };
           if (filterActiveItem) {
-            filterActiveItem.filter_type = modalItem;
+            filterActiveItem.filter_type = modalItem.name;
             filterActiveItem.filter_value = "";
             filterActiveItem.filter_value2 = "";
             setFilterActive(filterActiveItem)
@@ -264,7 +271,6 @@ const Filter = ({
         label={item.filter_name} />
     )
   }
-
   const saveEditDisble = filterActive && filterActive.filter_name &&
     filterActive.filter_value &&
     (filterActive.filter_type === "Number" ?
@@ -273,7 +279,7 @@ const Filter = ({
   return (
     <View style={styles.childCont}>
       <CardCont>
-        <CardLabel>{translate("common.collected")}</CardLabel>
+        <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
           onPress={() => {
@@ -349,10 +355,10 @@ const Filter = ({
           <CardField
             onPress={() => {
               setActiveModal("filterType")
-              showModal({ data: filterTypeList, title: translate("common.selectType") })
+              showModal({ data: filterTypeList, title: translate("common.selectType"), itemToRender: "name", translate: "code" })
             }}
             inputProps={{
-              value: filterActive ? filterActive.filter_type : "",
+              value: filterActive ? translate(`wallet.common.${filterActive.filter_type.toLowerCase()}`) : "",
             }}
             pressable
             showRight
@@ -364,7 +370,7 @@ const Filter = ({
                 <View style={styles.groupField}>
                   <CardField
                     inputProps={{
-                      placeholder: 'Number',
+                      placeholder: translate("wallet.common.number"),
                       keyboardType: "number-pad",
                       value: filterActive ? filterActive.filter_value : "",
                       onChangeText: (e) => {
@@ -382,7 +388,7 @@ const Filter = ({
                   </View>
                   <CardField
                     inputProps={{
-                      placeholder: 'Number',
+                      placeholder: translate("wallet.common.number"),
                       keyboardType: "number-pad",
                       value: filterActive && filterActive.hasOwnProperty("filter_value2") ? filterActive.filter_value2 : "",
                       onChangeText: (e) => {

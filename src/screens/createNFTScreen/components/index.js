@@ -17,6 +17,7 @@ import {
   responsiveFontSize as RF,
 } from '../../../common/responsiveFunction';
 import { IMAGES } from '../../../constants';
+import { translate } from '../../../walletUtils';
 
 export const CardCont = props => {
   return <View style={[styles.cardCont, props.style]}>{props.children}</View>;
@@ -103,7 +104,7 @@ export const TabModal = (props) => {
             </Text> : null
         }
         <ScrollView style={{ marginTop: hp('3%') }}>
-          {props.data.map((v, i) => {
+          {props.data.data.map((v, i) => {
             return (
               <TouchableOpacity
                 key={i}
@@ -111,9 +112,13 @@ export const TabModal = (props) => {
                 style={styles.modalItem}>
                 <Text style={styles.listLabel}>
                   {
-                    props.renderItemName ?
-                      v[props.renderItemName] :
-                      v
+                    props.data.hasOwnProperty("translate") ?
+                    (v.hasOwnProperty(props.data.translate) ?
+                     translate(v[props.data.translate]) :
+                     v[props.renderItemName] ) :
+                        props.renderItemName ?
+                          v[props.renderItemName] :
+                          v
                   }
                 </Text>
               </TouchableOpacity>

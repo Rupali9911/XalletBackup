@@ -16,6 +16,8 @@ import { BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import Modal from 'react-native-modal';
+import FastImage from 'react-native-fast-image';
+import { C_Image } from '../../components';
 
 const ListItem = props => {
   let dataToRender = props.data.hasOwnProperty("metaData") ? props.data.metaData : props.data;
@@ -28,6 +30,19 @@ const ListItem = props => {
     </TouchableOpacity>
   );
 };
+
+const ModalItems = props => {
+  return (
+    <View style={styles.modalNftItemCont} >
+      <View style={{ flex: 1 }} >
+        <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>{props.label}</Text>
+      </View>
+      <View style={{ flex: 1 }} >
+        <Text style={styles.listLabel}>{props.value}</Text>
+      </View>
+    </View>
+  )
+}
 
 const NFTList = ({
   changeLoadingState,
@@ -192,7 +207,7 @@ const NFTList = ({
     <View style={styles.childCont}>
 
       <CardCont>
-        <CardLabel>{translate("common.collected")}</CardLabel>
+        <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
           onPress={() => showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "collectionName" })}
@@ -255,56 +270,65 @@ const NFTList = ({
         backdropTransitionOutTiming={600}>
         <View style={styles.modalCont}>
           <Text style={styles.modalTitle}>
-            NFT Detail
+            {translate("wallet.common.nFTDetail")}
           </Text>
           {
             selectData ?
-              <ScrollView style={{ marginTop: hp('3%') }}>
-                <View style={{ width: "100%", paddingVertical: 8, flexDirection: "row", justifyContent: "space-between" }} >
-                  <View style={{ flex: 1 }} >
-                    <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>NFT Name:</Text>
-                  </View>
-                  <View style={{ flex: 1 }} >
-                    <Text style={styles.listLabel}>{selectData.name}</Text>
-                  </View>
+              <ScrollView>
+                <View style={styles.nftImageCont} >
+                  <C_Image
+                    uri={selectData.image}
+                    imageStyle={{height: wp(30), width: wp(30)}}
+                  />
                 </View>
-                <View style={{ width: "100%", paddingVertical: 8, flexDirection: "row", justifyContent: "space-between" }} >
-                  <View style={{ flex: 1 }} >
-                    <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>Price:</Text>
-                  </View>
-                  <View style={{ flex: 1 }} >
-                    <Text style={styles.listLabel}>{selectData.minPrice}</Text>
-                  </View>
-                </View>
-                <View style={{ width: "100%", paddingVertical: 8, flexDirection: "row", justifyContent: "space-between" }} >
-                  <View style={{ flex: 1 }} >
-                    <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>Currency Type:</Text>
-                  </View>
-                  <View style={{ flex: 1 }} >
-                    <Text style={styles.listLabel}>{selectData.basePrice}</Text>
-                  </View>
-                </View>
-                <View style={{ width: "100%", paddingVertical: 8, flexDirection: "row", justifyContent: "space-between" }} >
-                  <View style={{ flex: 1 }} >
-                    <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>Network:</Text>
-                  </View>
-                  <View style={{ flex: 1 }} >
-                    <Text style={styles.listLabel}>{selectData.chainType}</Text>
-                  </View>
-                </View>
-
+                <ModalItems
+                  label={`${translate("common.nftName")}:`}
+                  value={selectData.name}
+                />
+                <ModalItems
+                  label={`${translate("common.price")}:`}
+                  value={selectData.minPrice}
+                />
+                <ModalItems
+                  label={`${translate("wallet.common.currencyType")}:`}
+                  value={selectData.basePrice}
+                />
+                <ModalItems
+                  label={`${translate("wallet.common.network")}:`}
+                  value={selectData.chainType}
+                />
+                <ModalItems
+                  label={`${translate("wallet.common.supply")}:`}
+                  value="1/1"
+                />
+                <ModalItems
+                  label={`${translate("wallet.common.status")}:`}
+                  value={toggle}
+                />
+                <ModalItems
+                  label={`${translate("common.lastprice")}:`}
+                  value={selectData.minPrice}
+                />
+                <ModalItems
+                  label={`${translate("common.trade")}:`}
+                  value="-"
+                />
+                <ModalItems
+                  label={`${translate("common.Earned")}:`}
+                  value="-"
+                />
 
                 <View style={styles.saveBtnGroup}>
                   <CardButton
                     onPress={() => null}
-                    label="Edit"
+                    label={translate("wallet.common.edit")}
                     buttonCont={{ width: '48%' }}
                   />
                   <CardButton
                     onPress={() => null}
                     border={colors.BLUE6}
                     buttonCont={{ width: '48%' }}
-                    label="Delete"
+                    label={translate("wallet.common.delete")}
                   />
                 </View>
               </ScrollView> : null}

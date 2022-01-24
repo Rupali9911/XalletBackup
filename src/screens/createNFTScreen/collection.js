@@ -551,7 +551,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           <CardLabel>{translate("wallet.common.collectionDes")}</CardLabel>
           <Text style={styles.cardfieldCount}>{collectionDes.length} / 150</Text>
           <CardField
-            inputProps={{ editable: !disableAll, placeholder: 'Type Something', multiline: true, value: collectionDes, onChangeText: e => collectionDes.length < 150 ? setCollectionDes(e) : null }}
+            inputProps={{ editable: !disableAll, placeholder: translate("wallet.common.typeSomething"), multiline: true, value: collectionDes, onChangeText: e => collectionDes.length < 150 ? setCollectionDes(e) : null }}
             contStyle={{ height: hp('20%'), backgroundColor: disableAll ? colors.GREY10 : colors.white }}
           />
         </CardCont>

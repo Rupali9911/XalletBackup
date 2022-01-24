@@ -37,7 +37,7 @@ const CreateNFTScreen = ({ route }) => {
 
   const [index, setIndex] = useState(0);
   const routes = [
-    { key: 'Collection', title: translate("common.collected") },
+    { key: 'Collection', title: translate("wallet.common.collection") },
     { key: 'NFTList', title: translate("wallet.common.NFTList") },
     { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
     { key: 'Filter', title: translate("wallet.common.filter") },
@@ -107,6 +107,7 @@ const CreateNFTScreen = ({ route }) => {
           <Text style={{
             color,
             fontSize: RF(1.4),
+            textAlign: "center",
             fontFamily: fonts.ARIAL_BOLD,
             textTransform: 'none',
             marginHorizontal: 0
@@ -129,7 +130,7 @@ const CreateNFTScreen = ({ route }) => {
     )
   }
 
-  let renderTitle = index == 0 ? translate("common.collected") : 
+  let renderTitle = index == 0 ? translate("wallet.common.collection") : 
   index == 1 ? translate("wallet.common.NFTList") : 
   index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter") ;
 
@@ -170,7 +171,7 @@ const CreateNFTScreen = ({ route }) => {
                 setModalVisible(false)
               }
             }}
-            data={modalData.data}
+            data={modalData}
             title={modalData.title}
             itemPress={(v) => {
               setModalItem(v)

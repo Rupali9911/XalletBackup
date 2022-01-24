@@ -28,10 +28,10 @@ const PriceUnits = {
 }
 
 const ImageType = [
-  { name: "Art", type: "2D" },
-  { name: "Photo", type: "portfolio" },
+  { name: "Art", type: "2D", code: "common.2DArt" },
+  { name: "Photo", type: "portfolio", code: "common.photo"  },
   { name: "GIF", type: "GIF" },
-  { name: "Movie", type: "movie" },
+  { name: "Movie", type: "movie", code: "common.video" },
 ]
 
 const royalityData = ["2.5%", "5%", "10%"];
@@ -572,6 +572,10 @@ const UploadNFT = ({
     (toggleButton == "timeAuction" ? (startTimeDate && endTimeDate && fixedPrice) : fixedPrice) &&
     networkType;
 
+  let networkTypeStatus = networkType.value.toLowerCase() == "binance" ?
+    translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
+      translate("common.polygon") : translate("common.ethereum");
+
   return (
     <View style={styles.childCont}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -604,7 +608,7 @@ const UploadNFT = ({
                     styles.bannerDes,
                     { textAlign: 'center' },
                   ]}>
-                  Browse media on your device
+                  {translate("common.mediaOnDevice")}
                 </Text> : null
             }
             {
@@ -622,7 +626,7 @@ const UploadNFT = ({
                 <>
                   <View style={styles.saveBtnGroup}>
                     <CardButton
-                      label="Remove"
+                      label={translate("wallet.common.remove")}
                       buttonCont={{ width: '48%' }}
                       onPress={() => {
                         setNftImage(null);
@@ -636,7 +640,7 @@ const UploadNFT = ({
                       onPress={onPhoto}
                       border={colors.BLUE6}
                       buttonCont={{ width: '48%' }}
-                      label="Change"
+                      label={translate("common.change")}
                     />
                   </View>
                   {
@@ -675,7 +679,7 @@ const UploadNFT = ({
           <CardField
             inputProps={{ value: nftName, onChangeText: e => setNftName(e) }}
           />
-          <CardLabel>{translate("common.collected")}</CardLabel>
+          <CardLabel>{translate("wallet.common.collection")}</CardLabel>
           <CardField
             inputProps={{ value: collection ? collection.collectionName : "" }}
             onPress={() => {
@@ -687,27 +691,27 @@ const UploadNFT = ({
           <CardLabel>{translate("common.description")}</CardLabel>
           <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
           <CardField
-            inputProps={{ placeholder: 'Type Something', multiline: true, value: nftDesc, onChangeText: e => nftDesc.length < 150 ? setNftDesc(e) : null }}
+            inputProps={{ placeholder: translate("wallet.common.typeSomething"), multiline: true, value: nftDesc, onChangeText: e => nftDesc.length < 150 ? setNftDesc(e) : null }}
             contStyle={{ height: hp('15%') }}
           />
         </CardCont>
 
         <CardCont>
           <CardLabel>{translate("wallet.common.network")}</CardLabel>
-          <CardField inputProps={{ value: networkType.value, editable: false }} />
-          <CardLabel>Base Price</CardLabel>
+          <CardField inputProps={{ value: networkTypeStatus, editable: false }} />
+          <CardLabel>{translate("wallet.common.basePrice")}</CardLabel>
           <CardField
-            inputProps={{ value: basePrice ? basePrice.name : "Select Base Price" }}
+            inputProps={{ value: basePrice ? basePrice.name : translate("wallet.common.selectBasePrice") }}
             onPress={() => {
               setActiveModal("basePrice")
-              showModal({ data: PriceUnits[networkType.value], title: "Select Base Price", itemToRender: "name" })
+              showModal({ data: PriceUnits[networkType.value], title: translate("wallet.common.selectBasePrice"), itemToRender: "name" })
             }}
             pressable
             showRight
           />
-          <CardLabel>Also payable in</CardLabel>
+          <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
           <CardField
-            inputProps={{ value: 'Select the Currency' }}
+            inputProps={{ value: translate("wallet.common.selectCurrency") }}
             onPress={() => {
               setActiveModal("otherCurrency")
               let priceList = [...PriceUnits[networkType.value]];
@@ -715,7 +719,7 @@ const UploadNFT = ({
               if (otherPrice.length !== 0) {
                 priceList = priceList.filter(val => !otherPrice.find(val1 => val1 === val.name))
               }
-              showModal({ data: priceList, title: "Select the Currency", itemToRender: "name" })
+              showModal({ data: priceList, title: translate("wallet.common.selectCurrency"), itemToRender: "name" })
             }}
             pressable
             showRight
@@ -753,22 +757,22 @@ const UploadNFT = ({
         <CardCont>
           <CardLabel>{translate("common.nftType")}</CardLabel>
           <CardField
-            inputProps={{ value: nftImageType ? nftImageType.name : translate("common.type") }}
+            inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code): nftImageType.name ) : translate("common.type") }}
             onPress={() => {
               setActiveModal("nftType")
-              showModal({ data: imageTypeList, title: translate("common.nftType"), itemToRender: "name" })
+              showModal({ data: imageTypeList, title: translate("common.nftType"), itemToRender: "name", translate: "code" })
             }}
             pressable
             showRight />
           {
             collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
               <>
-                <CardLabel>Royality</CardLabel>
+                <CardLabel>{translate("wallet.common.royality")}</CardLabel>
                 <CardField
                   inputProps={{ value: royality }}
                   onPress={() => {
                     setActiveModal("royality")
-                    showModal({ data: royalityData, title: "Royality" })
+                    showModal({ data: royalityData, title: translate("wallet.common.royality") })
                   }}
                   pressable
                   showRight />
@@ -804,7 +808,7 @@ const UploadNFT = ({
         </CardCont>
 
         <CardCont>
-          <CardLabel>Sale Type</CardLabel>
+          <CardLabel>{translate("wallet.common.saleType")}</CardLabel>
           <View style={styles.saveBtnGroup}>
             <CardButton
               onPress={() => changeToggle("fixPrice")}
@@ -844,8 +848,8 @@ const UploadNFT = ({
                 />
               </> :
               <>
-                <CardLabel >Auction Time</CardLabel>
-                <CardLabel style={{ fontFamily: fonts.PINGfANG }} >Open Time</CardLabel>
+                <CardLabel >{translate("wallet.common.auctionTime")}</CardLabel>
+                <CardLabel style={{ fontFamily: fonts.PINGfANG }} >{translate("wallet.common.openTime")}</CardLabel>
                 <CardField
                   inputProps={{ value: startTimeDate }}
                   onPress={() => {
@@ -855,7 +859,7 @@ const UploadNFT = ({
                   }}
                   pressable
                   showRight />
-                <CardLabel style={{ fontFamily: fonts.PINGfANG }} >Close Time</CardLabel>
+                <CardLabel style={{ fontFamily: fonts.PINGfANG }} >{translate("wallet.common.closeTime")}</CardLabel>
                 <CardField
                   inputProps={{ value: endTimeDate }}
                   onPress={() => {
@@ -897,7 +901,7 @@ const UploadNFT = ({
             disable={!disableBtn}
             border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             buttonCont={{ width: '48%' }}
-            label="Upload"
+            label={translate("wallet.common.upload")}
           />
         </View>
       </ScrollView>

@@ -216,7 +216,19 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     marginBottom: hp(1)
-}
+  },
+  modalNftItemCont: {
+    width: "100%",
+    paddingVertical: hp(1),
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  nftImageCont: {
+    width: "100%",
+    paddingVertical: hp(2),
+    justifyContent: "center",
+    alignItems: "center"
+  }
 });
 
 export default styles;
