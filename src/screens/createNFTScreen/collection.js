@@ -100,7 +100,11 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         setBannerImage({ path: collectData.bannerImage });
         setIconImage({ path: collectData.iconImage })
         if (collectData.chainType !== networkType.value) {
-          setError(`Please change your network to ${collectData.chainType} to edit this collection`)
+          let networktype = collectData.chainType.toLowerCase() == "binance" ?
+            translate("common.BinanceNtwk") :
+            collectData.chainType.toLowerCase() == "polygon" ?
+              translate("common.polygon") : translate("common.ethereum");
+          setError(translate("wallet.common.collectionChangeNetwork", { networkType: networktype }))
         } else {
           collectData.collectionName.toLowerCase() == "xanalia" ?
             setDisableAll(true) : setDisableAll(false);
@@ -152,7 +156,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   const copyToClipboard = () => {
     toastRef.current.show({
       type: 'my_custom_type',
-      text1: "Collection Address Copied",
+      text1: translate("common.addressCopied"),
       topOffset: hp('10%'),
       visibilityTime: 500,
       autoHide: true,
@@ -309,8 +313,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
                       } else {
                         alertWithSingleBtn(
-                          "Failed",
-                          "Something Went Wrong!"
+                          translate("wallet.common.alert"),
+                          translate("wallet.common.error.apiFailed")
                         )
                       }
 
@@ -327,8 +331,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                 } else {
                   changeLoadingState(false);
                   alertWithSingleBtn(
-                    "Failed",
-                    "Something Went Wrong!"
+                    translate("wallet.common.alert"),
+                    translate("wallet.common.error.apiFailed")
                   )
                 }
 
@@ -350,7 +354,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           console.log("testing collection error", e.response)
           alertWithSingleBtn(
             translate("wallet.common.alert"),
-            String(e)
+            translate("wallet.common.error.networkFailed")
           );
         })
     }
@@ -418,8 +422,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                   );
                 } else {
                   alertWithSingleBtn(
-                    "Failed",
-                    "Something Went Wrong!"
+                    translate("wallet.common.alert"),
+                    translate("wallet.common.error.apiFailed")
                   )
                 }
 
@@ -439,7 +443,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         console.log("testing collection error", e.response)
         alertWithSingleBtn(
           translate("wallet.common.alert"),
-          String(e)
+          translate("wallet.common.error.apiFailed")
         );
       })
     }
@@ -499,8 +503,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             );
           } else {
             alertWithSingleBtn(
-              "Failed",
-              "Something Went Wrong!"
+              translate("wallet.common.alert"),
+              translate("wallet.common.error.apiFailed")
             )
           }
         })
@@ -528,7 +532,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         }
 
         <CardCont>
-          <CardLabel>Collection Name</CardLabel>
+          <CardLabel>{translate("wallet.common.collectionName")}</CardLabel>
           <CardField
             contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
             inputProps={{ editable: screenStatus !== "created", value: collectionName, onChangeText: e => setCollectionName(e) }}
@@ -536,7 +540,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         </CardCont>
 
         <CardCont>
-          <CardLabel>Collection Symbol</CardLabel>
+          <CardLabel>{translate("wallet.common.collectionSymbol")}</CardLabel>
           <CardField
             contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
             inputProps={{ editable: screenStatus !== "created", value: collectionSymbol, onChangeText: e => setCollectionSymbol(e) }}
@@ -544,7 +548,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         </CardCont>
 
         <CardCont>
-          <CardLabel>Collection description</CardLabel>
+          <CardLabel>{translate("wallet.common.collectionDes")}</CardLabel>
           <Text style={styles.cardfieldCount}>{collectionDes.length} / 150</Text>
           <CardField
             inputProps={{ editable: !disableAll, placeholder: 'Type Something', multiline: true, value: collectionDes, onChangeText: e => collectionDes.length < 150 ? setCollectionDes(e) : null }}
@@ -553,7 +557,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         </CardCont>
 
         <CardCont>
-          <CardLabel>Contract Address</CardLabel>
+          <CardLabel>{translate("wallet.common.contractAddress")}</CardLabel>
           <CardField
             contStyle={{ backgroundColor: colors.GREY10 }}
             inputProps={{ editable: false, value: collectionAdd }}
@@ -561,7 +565,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           <CardButton
             buttonCont={{ backgroundColor: !collectionAdd ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
             disable={!collectionAdd}
-            onPress={copyToClipboard} label="Copy"
+            onPress={copyToClipboard} label={translate("wallet.common.copy")}
           />
         </CardCont>
 
@@ -575,13 +579,13 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             />
           </TouchableOpacity>
           <View style={styles.bannerCardCont}>
-            <CardLabel>Banner Image</CardLabel>
-            <Text style={{ ...styles.bannerDes, color: errorBanner ? "red" : colors.BLACK2 }}>Max Size 1600 * 300</Text>
+            <CardLabel>{translate("wallet.common.bannerImage")}</CardLabel>
+            <Text style={{ ...styles.bannerDes, color: errorBanner ? "red" : colors.BLACK2 }}>{translate("wallet.common.maxSize")} 1600 * 300</Text>
             <CardButton
               buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
               onPress={() => onPhoto("banner")}
               disable={disableAll}
-              label="Change"
+              label={translate("common.change")}
             />
           </View>
         </CardCont>
@@ -596,13 +600,13 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             />
           </TouchableOpacity>
           <View style={styles.bannerCardCont}>
-            <CardLabel>Icon Image</CardLabel>
-            <Text style={{ ...styles.bannerDes, color: errorIcon ? "red" : colors.BLACK2 }}>Max Size 512 * 512</Text>
+            <CardLabel>{translate("wallet.common.iconImage")}</CardLabel>
+            <Text style={{ ...styles.bannerDes, color: errorIcon ? "red" : colors.BLACK2 }}>{translate("wallet.common.maxSize")} 512 * 512</Text>
             <CardButton
               onPress={() => onPhoto("icon")}
               buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
               disable={disableAll}
-              label="Change"
+              label={translate("common.change")}
             />
           </View>
         </CardCont>
@@ -610,7 +614,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           (screenStatus === "new" || screenStatus === "draft") &&
           <CardButton
             border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
-            label={screenStatus === "new" ? "Save as Draft" : "Edit Draft"}
+            label={screenStatus === "new" ? translate("wallet.common.saveAsDraft") : translate("wallet.common.editDraft")}
             onPress={saveEditAsDraftCollection}
             disable={!disable}
             buttonCont={{ marginBottom: 0 }}
@@ -621,7 +625,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           <CardButton
             onPress={screenStatus === "new" ? saveCollection :
               screenStatus === "draft" ? saveDraftCollection : saveEditAsDraftCollection}
-            label={screenStatus === "new" || screenStatus === "draft" ? "Save" : "Edit"}
+            label={screenStatus === "new" || screenStatus === "draft" ? translate("common.save") : translate("wallet.common.edit")}
             buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
             disable={!disable}
           />
@@ -629,7 +633,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             onPress={screenStatus === "new" ? cancel : () => navigation.goBack()}
             border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             buttonCont={{ width: '48%' }}
-            label="Cancel"
+            label={translate("common.Cancel")}
             disable={!disable}
           />
         </View>

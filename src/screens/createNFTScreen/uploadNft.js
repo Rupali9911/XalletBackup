@@ -657,7 +657,7 @@ const UploadNFT = ({
                                 styles.bannerDes,
                                 styles.thumbnailEditButton
                               ]}>
-                              Edit Thumbnail
+                              {translate("common.EditTrim")}
                             </Text>
                           </TouchableOpacity>
                         </View>
@@ -671,20 +671,20 @@ const UploadNFT = ({
         </CardCont>
 
         <CardCont>
-          <CardLabel>NFT Name</CardLabel>
+          <CardLabel>{translate("common.nftName")}</CardLabel>
           <CardField
             inputProps={{ value: nftName, onChangeText: e => setNftName(e) }}
           />
-          <CardLabel>Collection</CardLabel>
+          <CardLabel>{translate("common.collected")}</CardLabel>
           <CardField
             inputProps={{ value: collection ? collection.collectionName : "" }}
             onPress={() => {
               setActiveModal("collection")
-              showModal({ data: collectionList, title: "Collection List", itemToRender: "collectionName" })
+              showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "collectionName" })
             }}
             showRight
             pressable />
-          <CardLabel>Description</CardLabel>
+          <CardLabel>{translate("common.description")}</CardLabel>
           <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
           <CardField
             inputProps={{ placeholder: 'Type Something', multiline: true, value: nftDesc, onChangeText: e => nftDesc.length < 150 ? setNftDesc(e) : null }}
@@ -693,7 +693,7 @@ const UploadNFT = ({
         </CardCont>
 
         <CardCont>
-          <CardLabel>Network</CardLabel>
+          <CardLabel>{translate("wallet.common.network")}</CardLabel>
           <CardField inputProps={{ value: networkType.value, editable: false }} />
           <CardLabel>Base Price</CardLabel>
           <CardField
@@ -751,12 +751,12 @@ const UploadNFT = ({
         </CardCont>
 
         <CardCont>
-          <CardLabel>NFT Type</CardLabel>
+          <CardLabel>{translate("common.nftType")}</CardLabel>
           <CardField
-            inputProps={{ value: nftImageType ? nftImageType.name : 'Type' }}
+            inputProps={{ value: nftImageType ? nftImageType.name : translate("common.type") }}
             onPress={() => {
               setActiveModal("nftType")
-              showModal({ data: imageTypeList, title: "NFT Type", itemToRender: "name" })
+              showModal({ data: imageTypeList, title: translate("common.nftType"), itemToRender: "name" })
             }}
             pressable
             showRight />
@@ -809,14 +809,14 @@ const UploadNFT = ({
             <CardButton
               onPress={() => changeToggle("fixPrice")}
               border={toggleButton !== "fixPrice" ? colors.BLUE6 : null}
-              label="Fixed Price"
+              label={translate("common.setPrice")}
               buttonCont={{ width: '48%' }}
             />
             <CardButton
               onPress={() => changeToggle("timeAuction")}
               border={toggleButton !== "timeAuction" ? colors.BLUE6 : null}
               buttonCont={{ width: '48%' }}
-              label="Auction"
+              label={translate("common.highestBid")}
             />
           </View>
         </CardCont>
@@ -825,7 +825,7 @@ const UploadNFT = ({
           {
             toggleButton == "fixPrice" ?
               <>
-                <CardLabel>Fixed Price</CardLabel>
+                <CardLabel>{translate("common.setPrice")}</CardLabel>
                 <CardField
                   contStyle={{ paddingRight: 0 }}
                   inputProps={{
@@ -887,7 +887,7 @@ const UploadNFT = ({
         <View style={styles.saveBtnGroup}>
           <CardButton
             onPress={saveDraft}
-            label="Save as Draft"
+            label={translate("wallet.common.saveAsDraft")}
             buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
             disable={!disableBtn}
           />

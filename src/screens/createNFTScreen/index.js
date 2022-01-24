@@ -37,10 +37,10 @@ const CreateNFTScreen = ({ route }) => {
 
   const [index, setIndex] = useState(0);
   const routes = [
-    { key: 'Collection', title: "Collection" },
-    { key: 'NFTList', title: "NFT List" },
-    { key: 'UploadNFT', title: "Upload NFT" },
-    { key: 'Filter', title: "Filter" },
+    { key: 'Collection', title: translate("common.collected") },
+    { key: 'NFTList', title: translate("wallet.common.NFTList") },
+    { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
+    { key: 'Filter', title: translate("wallet.common.filter") },
   ];
 
   const ShowModalAction = (v, screenName) => {
@@ -129,19 +129,23 @@ const CreateNFTScreen = ({ route }) => {
     )
   }
 
+  let renderTitle = index == 0 ? translate("common.collected") : 
+  index == 1 ? translate("wallet.common.NFTList") : 
+  index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter") ;
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       {
         loading && <LoaderIndicator />
       }
       <AppHeader
-        title={'Create NFT'}
+        title={translate("common.CreateNFT")}
         showBackButton
         containerStyle={{ backgroundColor: colors.white }}
       />
       <View style={styles.sectionContainer}>
-        <Text style={styles.title}>Collection</Text>
-        <Text style={styles.titleDes}>Create / Collection</Text>
+        <Text style={styles.title}>{renderTitle}</Text>
+        <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
 
         <TabView
           renderTabBar={renderTabBar}
