@@ -13,6 +13,8 @@ import LanguageReducer from './languageReducer';
 import PaymentReducer from './paymentReducer';
 import AsyncReducer from './asyncStorageReducer';
 import PermissionReducer from './cameraPermission';
+import HotCollectionReducer from './hotCollectionReducer';
+import NftDataCollectionReducer from './nftDataCollectionReducer';
 import { reducer as formReducer } from 'redux-form'
 
 const RootReducer = combineReducers({
@@ -29,6 +31,8 @@ const RootReducer = combineReducers({
     PaymentReducer,
     AsyncReducer,
     PermissionReducer,
+    HotCollectionReducer,
+    NftDataCollectionReducer,
     form: formReducer
 });
 

@@ -48,6 +48,7 @@ import Send from './screens/wallet/send';
 import TokenDetail from './screens/wallet/tokenDetail';
 import transactionsDetail from './screens/wallet/transactionsDetail';
 import SellNFT from './screens/sellNft/index';
+import CollectionDetail from './screens/collectionDetail';
 import Store from './store';
 
 import { setRequestAppId } from './store/reducer/walletReducer';
@@ -247,6 +248,7 @@ const AppRoutes = () => {
           <Stack.Screen name="recoveryPhrase" component={RecoveryPhrase} />
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
+          <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

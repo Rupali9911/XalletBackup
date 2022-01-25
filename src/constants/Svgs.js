@@ -63,6 +63,9 @@ import CircleCloseIcon from 'src/assets/svgs/icon-circle-close.svg';
 import SendMessageIcon from 'src/assets/svgs/icon-send-message.svg';
 import PhoneIcon from 'src/assets/svgs/icon-phone.svg';
 import EmailIcon from 'src/assets/svgs/icon-email.svg';
+import PolygonIcon from 'src/assets/svgs/icon-polygon.svg';
+import Ethereum from 'src/assets/svgs/icon-etherium.svg';
+import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
 
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
 
@@ -114,7 +117,7 @@ export default {
   BookMarkIcon,
   PlayButtonIcon,
   ConnectSmIcon,
-  
+
   FitRedIcon,
   CartRedIcon,
   StoreActiveIcon,
@@ -132,6 +135,9 @@ export default {
   SendMessageIcon,
   PhoneIcon,
   EmailIcon,
+  PolygonIcon,
+  Ethereum,
+  BitmapIcon,
 
   FantaseedIcon,
 };

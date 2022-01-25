@@ -47,6 +47,7 @@ import Gif from './gif';
 import Hot from './hot';
 import Movie from './movie';
 import NewNFT from './newNFT';
+import HotCollection from './hotCollection';
 import styles from './styles';
 
 const Tab = createMaterialTopTabNavigator();
@@ -224,6 +225,7 @@ const HomeScreen = ({navigation}) => {
                   marginBottom: SIZE(39),
                 },
               }}>
+              <Tab.Screen name={'Hot Collection'} component={HotCollection} />
               <Tab.Screen name={'Awards 2021'} component={AwardsNFT} />
               <Tab.Screen name={translate('common.hot')} component={Hot} />
               <Tab.Screen name={translate('common.2DArt')} component={NewNFT} />

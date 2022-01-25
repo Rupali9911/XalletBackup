@@ -7,11 +7,13 @@ import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
 
 import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 
-import { myNFTList, myPageChange, favoritePageChange } from '../../store/actions/myNFTaction';
+import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
 
 import { myCollectionList, myCollectionPageChange } from '../../store/actions/myCollection';
 
 import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
+
+import { nftDataCollectionList, nftDataCollectionPageChange, } from '../../store/actions/nftDataCollectionAction';
 
 import styles from './styles';
 import { images, colors } from '../../res';
@@ -20,12 +22,23 @@ import NftItem from './nftItem';
 
 const DetailItemScreen = ({ route }) => {
 
-    const { ListReducer, AuthReducer, NewNFTListReducer, MyNFTReducer, MyCollectionReducer, AwardsNFTReducer } = useSelector(state => state);
+    const {
+        ListReducer,
+        AuthReducer,
+        NewNFTListReducer,
+        MyNFTReducer,
+        MyCollectionReducer,
+        AwardsNFTReducer,
+        NftDataCollectionReducer
+    } = useSelector(state => state);
+
     const { sort } = useSelector(state => state.ListReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const [listIndex, setListIndex] = React.useState(route.params.index || 0);
+    const { collectionType, index, collectionAddress } = route.params;
+
+    const [listIndex, setListIndex] = React.useState(index || 0);
     const [owner, setOwner] = React.useState(route.params.owner);
     const [stopVideos, setStopVideos] = React.useState(true);
 
@@ -40,7 +53,9 @@ const DetailItemScreen = ({ route }) => {
                     AuthReducer.screenName == "myCollection" ?
                         dispatch(myCollectionList(page, owner)) :
                         AuthReducer.screenName == "awards" ?
-                            dispatch(getAwardsNftList(page, null, sort)) : null
+                            dispatch(getAwardsNftList(page, null, sort)) :
+                            AuthReducer.screenName == "dataCollection" ?
+                                dispatch(nftDataCollectionList(page, collectionAddress, collectionType)) : null;
 
     }, []);
 
@@ -55,7 +70,9 @@ const DetailItemScreen = ({ route }) => {
                     AuthReducer.screenName == "myCollection" ?
                         dispatch(myCollectionPageChange(page)) :
                         AuthReducer.screenName == "awards" ?
-                            dispatch(awardsNftPageChange(page)) : null
+                            dispatch(awardsNftPageChange(page)) :
+                            AuthReducer.screenName == "dataCollection" ?
+                                dispatch(nftDataCollectionPageChange(page)) : null;
 
     });
 
@@ -68,7 +85,9 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionListLoading :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftLoading : false;
+                        AwardsNFTReducer.awardsNftLoading :
+                        AuthReducer.screenName == "dataCollection" ?
+                            NftDataCollectionReducer.nftDataCollectionLoading : false;
 
     let page = AuthReducer.screenName == "Hot" ?
         ListReducer.page :
@@ -79,7 +98,9 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionPage :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftPage : 1;
+                        AwardsNFTReducer.awardsNftPage :
+                        AuthReducer.screenName == "dataCollection" ?
+                            NftDataCollectionReducer.nftDataCollectionPage : 1;
 
     let totalCount = AuthReducer.screenName == "Hot" ?
         ListReducer.totalCount :
@@ -90,7 +111,9 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollectionTotalCount :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsTotalCount : 1;
+                        AwardsNFTReducer.awardsTotalCount :
+                        AuthReducer.screenName == "dataCollection" ?
+                            NftDataCollectionReducer.nftDataCollectionTotalCount : 1;
 
     const data = AuthReducer.screenName == "Hot" ?
         ListReducer.nftList :
@@ -101,7 +124,9 @@ const DetailItemScreen = ({ route }) => {
                 AuthReducer.screenName == "myCollection" ?
                     MyCollectionReducer.myCollection :
                     AuthReducer.screenName == "awards" ?
-                        AwardsNFTReducer.awardsNftList : [];
+                        AwardsNFTReducer.awardsNftList :
+                        AuthReducer.screenName == "dataCollection" ?
+                            NftDataCollectionReducer.nftDataCollectionList : [];
 
     const renderFooter = () => {
         if (!loading) return null;
@@ -154,7 +179,9 @@ const DetailItemScreen = ({ route }) => {
                                                 AuthReducer.screenName == "myCollection" ?
                                                     MyCollectionReducer.myCollectionPage + 1 :
                                                     AuthReducer.screenName == "awards" ?
-                                                        AwardsNFTReducer.awardsNftPage + 1 : null;
+                                                        AwardsNFTReducer.awardsNftPage + 1 :
+                                                        AuthReducer.screenName == "dataCollection" ?
+                                                            NftDataCollectionReducer.nftDataCollectionPage + 1 : null;
                                     getNFTlistData(num);
                                     getPage(num);
                                 }
