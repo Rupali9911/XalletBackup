@@ -19,7 +19,13 @@ import { BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
-import { hashMessage } from 'ethers/lib/utils';
+import RNFetchBlob from 'rn-fetch-blob';
+import { setApprovalForAll, createNFTSale } from '../wallet/functions';
+
+import base64 from 'react-native-base64'
+const Web3 = require('web3');
+
+const Blob = RNFetchBlob.polyfill.Blob;
 
 const PriceUnits = {
   ethereum: [{ order: 1, name: 'ETH' }, { order: 0, name: 'USDT' }],
@@ -29,7 +35,7 @@ const PriceUnits = {
 
 const ImageType = [
   { name: "Art", type: "2D", code: "common.2DArt" },
-  { name: "Photo", type: "portfolio", code: "common.photo"  },
+  { name: "Photo", type: "portfolio", code: "common.photo" },
   { name: "GIF", type: "GIF" },
   { name: "Movie", type: "movie", code: "common.video" },
 ]
@@ -76,7 +82,7 @@ const UploadNFT = ({
   const [royality, setRoyality] = useState("2.5%");
 
   const [toggleButton, setToggleButton] = useState("fixPrice");
-  const [fixedPrice, setFixedPrice] = useState("");
+  const [fixedPrice, setFixedPrice] = useState("0.00000001");
   const [startTimeDate, setStartTimeDate] = useState("");
   const [endTimeDate, setEndTimeDate] = useState("");
 
@@ -88,12 +94,12 @@ const UploadNFT = ({
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
   let providerUrl = '';
+  let ERC721Abi = '';
+  let ERC721Address = '';
+  let NftApprovalAbi = '';
 
   let gasFee = "";
   let gasLimit = "";
-
-  let ERC721Abi = '';
-  let ERC721Address = '';
 
   // console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
   if (networkType.value === 'polygon') {
@@ -102,6 +108,7 @@ const UploadNFT = ({
     providerUrl = blockChainConfig[1].providerUrl;
     ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
     ERC721Address = blockChainConfig[1].erc721ConConfig.add;
+    NftApprovalAbi = blockChainConfig[1].nftApprovalConConfig.abi
     gasFee = 30
     gasLimit = 6000000
     // collectionAddress = collectionAddress || blockChainConfig[1].erc721ConConfig.add;
@@ -112,6 +119,7 @@ const UploadNFT = ({
     providerUrl = blockChainConfig[0].providerUrl;
     ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
     ERC721Address = blockChainConfig[0].erc721ConConfig.add;
+    NftApprovalAbi = blockChainConfig[0].nftApprovalConConfig.abi
     gasFee = 8
     gasLimit = 6000000
     // collectionAddress = collectionAddress || blockChainConfig[0].erc721ConConfig.add;
@@ -122,12 +130,12 @@ const UploadNFT = ({
     providerUrl = blockChainConfig[2].providerUrl;
     ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
     ERC721Address = blockChainConfig[2].erc721ConConfig.add;
+    NftApprovalAbi = blockChainConfig[2].nftApprovalConConfig.abi
     gasFee = 0 // for this api etherscan
     gasLimit = 6000000
     // collectionAddress = collectionAddress || blockChainConfig[2].erc721ConConfig.add;
     // NftApprovalAbi = blockChainConfig[2].nftApprovalConConfig.abi
   }
-
 
   useEffect(() => {
     if (position == 2) {
@@ -333,122 +341,242 @@ const UploadNFT = ({
     if (data.token) {
       // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
-      let formData = new FormData();
-      formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+      // let formData = new FormData();
+      // formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
 
       axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
-      axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
-        .then(res => {
-          // console.log("upload image nft", res)
-          if (res.data.success) {
-            let thumbnailDataFile = new FormData();
-            thumbnailDataFile.append('imageName', res.data.imageName);
-            if (nftImageThumb) {
-              thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
-            } else {
-              thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
-            }
+      // axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
+      //   .then(res => {
+      // console.log("upload image nft", res)
+      // if (res.data.success) {
+      //   let thumbnailDataFile = new FormData();
+      //   thumbnailDataFile.append('imageName', res.data.imageName);
+      //   if (nftImageThumb) {
+      //     thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
+      //   } else {
+      //     thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+      //   }
 
-            axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
-              .then(res2 => {
-                // console.log(res2, "thumbnail url")
-                if (res2.data.success) {
-                  let dataToSend = {
-                    name: nftName,
-                    description: nftDesc,
-                    image: res.data.data,
-                    properties: { type: nftImageType },
-                    totalSupply: nftSupply,
-                    thumbnft: res2.data.data,
-                    externalLink: nftExternalLink,
-                  };
+      // axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
+      //   .then(res2 => {
+      // console.log(res2, "thumbnail url")
+      // if (res2.data.success) {
+      // let dataToSend = {
+      //   name: nftName,
+      //   description: nftDesc,
+      //   image: res.data.data,
+      //   properties: { type: nftImageType },
+      //   totalSupply: nftSupply,
+      //   thumbnft: res2.data.data,
+      //   externalLink: nftExternalLink,
+      // };
+      let dataToSend = {
+        description: "sadfdssfs",
+        externalLink: "",
+        image: "https://xanalia-test.s3.ap-southeast-1.amazonaws.com/nftData/1643095980808.jpeg",
+        name: "nft binance 1",
+        properties: {
+          type: "portfolio"
+        },
+        thumbnft: "https://xanalia-test.s3.ap-southeast-1.amazonaws.com/thumbnft/1643095980808.jpg",
+        totalSupply: 1
+      };
+      // console.log(dataToSend)
+      // let blob = base64.encode(JSON.stringify(dataToSend));
 
-                  const blob = new Blob([JSON.stringify(dataToSend)], {
-                    type: 'text/plain',
-                  });
+      // let formData = new FormData();
+      // formData.append('path', blob);
 
-                  let formData = new FormData();
-                  formData.append('path', blob);
+      // console.log(formData)
 
-                  console.log(formData)
+      // axios
+      //   .post(
+      //     "https://ipfs.infura.io:5001/api/v0/add",
+      //     formData,
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   )
+      //   .then((response) => {
+      //  this.state.apireturm= response
 
-                  axios
-                    .post(
-                      "https://ipfs.infura.io:5001/api/v0/add",
-                      formData,
-                      {
-                        headers: {
-                          "Content-Type": "text/plain",
-                        },
-                      }
-                    )
-                    .then(function (response) {
-                      //  this.state.apireturm= response
+      // collection
 
-                      //  resp = response.data;
+      //       bannerImage: "https://xanalia.s3.ap-southeast-1.amazonaws.com/collection-data/1642669807776.jpg"
+      // chainType: "binance"
+      // collectionAddress: "0x2c487a74b0b74b97dcd5a63f8f29224e21fd2479"
+      // collectionDesc: " Harris collection Binance update"
+      // collectionName: "Haris binance collection"
+      // collectionSymbol: "Binance photo collect 1"
+      // createdDate: 1642594532186
+      // iconImage: "https://xanalia.s3.ap-southeast-1.amazonaws.com/collection-data/1642669878989.jpg"
+      // txHash: "0x7a226749fd73728af34ab535a6792d7b4c6db5333eccb4f43dcc1287355641a7"
+      // updatedDate: 1642669879247
+      // userId: "6165212444d21562d02125dd"
+      // _id: "61e800e4efca57bfcd2bdf2a"
 
-                      console.log("resp,resp!!!!!!!!!!!!!1", response);
-                    })
-                    .catch(function (error) {
-                      console.log(error);
-                    });
+      //  resp = response.data;
+      let data = {
+        Hash: "Qmbu5hxegqvn7JW9ZPcamgSXvsmimTknnGSfQ7fkwCoeBz",
+        Name: "Qmbu5hxegqvn7JW9ZPcamgSXvsmimTknnGSfQ7fkwCoeBz",
+        Size: "475"
+      }
 
-                  // axios.post('https://ipfs.infura.io:5001/api/v0/add', formData)
-                  //   .then(hashRes => {
-                  //     console.log(hashRes, "hashRes add");
-                  //   })
-                  //   .catch(err => {
-                  //     console.log(err, "add res error")
-                  //     changeLoadingState(false);
-                  //     if (err.response.status === 401) {
-                  //       alertWithSingleBtn(
-                  //         translate("wallet.common.alert"),
-                  //         translate("common.sessionexpired")
-                  //       );
-                  //     }
-                  //     alertWithSingleBtn(
-                  //       translate("wallet.common.alert"),
-                  //       translate("wallet.common.error.networkFailed")
-                  //     );
-                  //   });
+      putNftOnSale(
+        data
+      );
 
-                } else {
-                  changeLoadingState(false);
-                }
-              })
-              .catch(err => {
-                changeLoadingState(false);
-                if (err.response.status === 401) {
-                  alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("common.sessionexpired")
-                  );
-                }
-                alertWithSingleBtn(
-                  translate("wallet.common.alert"),
-                  translate("wallet.common.error.networkFailed")
-                );
-              });
-          } else {
-            changeLoadingState(false)
-          }
-        })
-        .catch(err => {
-          changeLoadingState(false);
-          if (err.response.status === 401) {
-            alertWithSingleBtn(
-              translate("wallet.common.alert"),
-              translate("common.sessionexpired")
-            );
-          }
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
-          );
-        });
+      // let web3 = new Web3(providerUrl);
+
+      // let approvalCheckContract = new web3.eth.Contract(
+      //   NftApprovalAbi,
+      //   "0x2c487a74b0b74b97dcd5a63f8f29224e21fd2479"
+      //   // collection.collectionAddress
+      // );
+      // approvalCheckContract.methods
+      //   .isApprovedForAll(wallet.address, MarketContractAddress)
+      //   .call((err, res) => {
+
+      //     console.log(res, err)
+
+      //     if (!err) {
+
+      //       if (!res) {
+
+      //         setApprovalForAll(
+      //           wallet.address,
+      //           wallet.privateKey,
+      //           providerUrl,
+      //           networkType.value,
+      //           approvalCheckContract,
+      //           MarketContractAddress,
+      //           "0x2c487a74b0b74b97dcd5a63f8f29224e21fd2479"// collectionAddress
+      //           , 10, 600000)
+      //           .then((_) => {
+      //             console.log(_, "____")
+      //           }).catch((err) => {
+      //             console.log(err)
+      //             // setLoading(false);
+      //           });
+
+      //       } else {
+
+      //         putNftOnSale(
+      //           web3,
+      //           data,
+      //           "0x2c487a74b0b74b97dcd5a63f8f29224e21fd2479"
+      //         );
+
+      //       }
+
+      //     } else {
+      //       console.log("err in balanceOf", err);
+      //     }
+      //   })
+      //   console.log("resp,resp!!!!!!!!!!!!!1", response.data);
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
+
+      // })
+      // .catch(error => {
+      //   console.log(error);
+      // });
+
+
+
+
+      // axios.post('https://ipfs.infura.io:5001/api/v0/add', formData)
+      //   .then(hashRes => {
+      //     console.log(hashRes, "hashRes add");
+      //   })
+      //   .catch(err => {
+      //     console.log(err, "add res error")
+      //     changeLoadingState(false);
+      //     if (err.response.status === 401) {
+      //       alertWithSingleBtn(
+      //         translate("wallet.common.alert"),
+      //         translate("common.sessionexpired")
+      //       );
+      //     }
+      //     alertWithSingleBtn(
+      //       translate("wallet.common.alert"),
+      //       translate("wallet.common.error.networkFailed")
+      //     );
+      //   });
+
+      // } else {
+      //   changeLoadingState(false);
+      // }
+      // //   })
+      // //               .catch (err => {
+      // //   changeLoadingState(false);
+      // //   if (err.response.status === 401) {
+      // //     alertWithSingleBtn(
+      // //       translate("wallet.common.alert"),
+      // //       translate("common.sessionexpired")
+      // //     );
+      // //   }
+      // //   alertWithSingleBtn(
+      // //     translate("wallet.common.alert"),
+      // //     translate("wallet.common.error.networkFailed")
+      // //   );
+      // // });
+      // //           } else {
+      //   changeLoadingState(false)
+      // }
+      //         })
+      //         .catch (err => {
+      //   changeLoadingState(false);
+      //   if (err.response.status === 401) {
+      //     alertWithSingleBtn(
+      //       translate("wallet.common.alert"),
+      //       translate("common.sessionexpired")
+      //     );
+      //   }
+      //   alertWithSingleBtn(
+      //     translate("wallet.common.alert"),
+      //     translate("wallet.common.error.networkFailed")
+      //   );
+      // });
 
     }
+  }
+
+  const putNftOnSale = (data) => {
+
+    // let foundOrder = basePrice.order;
+    const publicAddress = wallet.address;
+    const privKey = wallet.privateKey;
+
+    let dataToAdd = {
+      collectionAddress: "0x2c487a74b0b74b97dcd5a63f8f29224e21fd2479",
+      publicAddress,
+      privKey,
+      hash: data.Hash,
+      price: fixedPrice,
+      order: 0,
+      chainType: networkType.value,
+      gasFee: 15,
+      gasLimit: 600000,
+      currencyList: [1],
+      providerUrl,
+      MarketPlaceAbi,
+      MarketContractAddress
+    }
+
+    createNFTSale(
+      dataToAdd
+    )
+      .then((_) => {
+        console.log(_, "__vvvvvvvv__")
+      }).catch((err) => {
+        console.log(err, " errorr create nft ")
+      });
   }
 
   const saveDraft = () => {
@@ -757,7 +885,7 @@ const UploadNFT = ({
         <CardCont>
           <CardLabel>{translate("common.nftType")}</CardLabel>
           <CardField
-            inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code): nftImageType.name ) : translate("common.type") }}
+            inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code) : nftImageType.name) : translate("common.type") }}
             onPress={() => {
               setActiveModal("nftType")
               showModal({ data: imageTypeList, title: translate("common.nftType"), itemToRender: "name", translate: "code" })
@@ -898,7 +1026,7 @@ const UploadNFT = ({
           <CardButton
             onPress={handleCreate}
             border={colors.BLUE6}
-            disable={!disableBtn}
+            // disable={!disableBtn}
             border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
             buttonCont={{ width: '48%' }}
             label={translate("wallet.common.upload")}

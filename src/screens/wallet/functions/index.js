@@ -733,29 +733,29 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
-              const interval = setInterval(() => checkingProgressTransaction(), 10000)
-              const checkingProgressTransaction = async () => {
-                try {
-                  const transactionReceipt = await web3.eth.getTransactionReceipt(txHash);
-                  if (transactionReceipt) {
-                    clearInterval(interval);
-                    if (transactionReceipt.logs && (transactionReceipt.logs.length > 0)) {
-                      for (var i = 0; i < transactionReceipt.logs.length; i++) {
-                        if (transactionReceipt.logs[i].address == contractAddress) {
-                          let transactionData = {
-                            transactionHash: txHash,
-                            collectionAddress: '0x' + transactionReceipt.logs[i].data.substring(26, 66)
-                          }
-                          resolve({ success: true, status: 200, data: transactionData });
-                        }
-                      }
+        const interval = setInterval(() => checkingProgressTransaction(), 10000)
+        const checkingProgressTransaction = async () => {
+          try {
+            const transactionReceipt = await web3.eth.getTransactionReceipt(txHash);
+            if (transactionReceipt) {
+              clearInterval(interval);
+              if (transactionReceipt.logs && (transactionReceipt.logs.length > 0)) {
+                for (var i = 0; i < transactionReceipt.logs.length; i++) {
+                  if (transactionReceipt.logs[i].address == contractAddress) {
+                    let transactionData = {
+                      transactionHash: txHash,
+                      collectionAddress: '0x' + transactionReceipt.logs[i].data.substring(26, 66)
                     }
+                    resolve({ success: true, status: 200, data: transactionData });
                   }
-                } catch (error) {
-                  console.error(error, " transactionReceipt error");
-                  reject(error)
                 }
               }
+            }
+          } catch (error) {
+            console.error(error, " transactionReceipt error");
+            reject(error)
+          }
+        }
 
       } else if (err) {
         console.log(err, "transactionReceipt");
@@ -791,7 +791,7 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
       from: publicKey,
       gasPrice: web3.utils.toHex(customGasPrice),
       gasLimit: web3.utils.toHex(customGasLimit),
-      chainId: chainType === "polygon" ? 80001 : undefined,
+      chainId: getChainId(chainType),
 
       to: collectionAddress,
       value: "0x0",
@@ -825,6 +825,104 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
     console.log('txObject', txObject);
     const tx = new EthereumTx(txObject, { common });
     privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
+    tx.sign(privateKey);
+    const serializedTx = tx.serialize();
+    const raw = "0x" + serializedTx.toString("hex");
+    // const result = await web3.eth.sendSignedTransaction(
+    //     raw
+    // );
+
+    await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+      if (txHash) {
+        console.log(txHash)
+        console.log("resp noncrypto function", new Date().getTime());
+        // resolve({ success: true, status: 200, data: txHash });
+      } else if (err) {
+        console.log(err);
+        reject(err.message);
+      }
+    }).once('receipt', (receipt) => {
+      resolve({ success: true, status: 200, data: receipt });
+    });
+
+    // console.log(result);
+    // return result
+  })
+}
+export const createNFTSale = async (
+  data
+) => {
+  return new Promise(async (resolve, reject) => {
+
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider(
+        data.providerUrl
+      )
+    );
+
+    let txCount = "";
+
+    try {
+      txCount = await web3.eth.getTransactionCount(data.publicAddress, "pending")
+    } catch (e) {
+      return reject(e)
+    }
+
+    let marketContract = new web3.eth.Contract(
+      data.MarketPlaceAbi,
+      data.MarketContractAddress
+    );
+
+    var customGasLimit = data.gasLimit;
+    customGasPrice = data.gasFee * 1000000000;
+    // console.log('contract',contract);
+    let txObject;
+    // HERE
+    txObject = {
+      from: data.publicAddress,
+      gasPrice: web3.utils.toHex(customGasPrice),
+      gasLimit: web3.utils.toHex(customGasLimit),
+      chainId: getChainId(data.chainType),
+
+      to: data.collectionAddress,
+      value: "0x0",
+      data: marketContract.methods
+        .mintAndSellCollectionNFT(
+          data.collectionAddress,
+          data.publicAddress,
+          data.hash,
+          web3.utils.toWei(data.price.toString(), "ether"),
+          data.order.toString(),
+          data.currencyList
+        )
+        .encodeABI(),
+      nonce: web3.utils.toHex(txCount)
+    };
+
+    let common = null;
+    if (data.chainType === 'binance') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'bnb',
+        networkId: getNetworkId(data.chainType),
+        chainId: getChainId(data.chainType)
+      }, 'petersburg');
+    } else if (data.chainType === 'polygon') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'matic',
+        networkId: getNetworkId(data.chainType),
+        chainId: getChainId(data.chainType)
+      }, 'petersburg');
+    } else {
+      common = Common.forCustomChain('mainnet', {
+        name: 'eth',
+        networkId: getNetworkId(data.chainType),
+        chainId: getChainId(data.chainType)
+      }, 'petersburg');
+    }
+
+    console.log('txObject', txObject);
+    const tx = new EthereumTx(txObject, { common });
+    privateKey = Buffer.from(data.privKey.substring(2, 66), 'hex');
     tx.sign(privateKey);
     const serializedTx = tx.serialize();
     const raw = "0x" + serializedTx.toString("hex");

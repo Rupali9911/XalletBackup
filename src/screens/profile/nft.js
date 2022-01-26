@@ -196,7 +196,7 @@ const NFT = ({ route }) => {
             .then(res => {
                 setChildLoader(false);
                 setMainLoader(false);
-                console.log(res.data.data, "res created nftList success")
+                console.log(res.data, "res created nftList success")
 
                 if (res.data.success) {
                     if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
