@@ -1,5 +1,4 @@
 import {
-  AUTH_USER_NFT_REFRESH,
   FAVORITE_LIST_UPDATE,
   FAVORITE_NFT_SUCCESS,
   FAVORITE_PAGE_CHANGE,
@@ -34,13 +33,6 @@ export default function MyNFTReducer(state = initialState, action) {
       return (state = {
         ...state,
         myList: [...state.myList, ...action.payload.data],
-        myNftTotalCount: action.payload.count,
-        myNftListLoading: false,
-      });
-      case AUTH_USER_NFT_REFRESH:
-      return (state = {
-        ...state,
-        myList: action.payload.data,
         myNftTotalCount: action.payload.count,
         myNftListLoading: false,
       });
