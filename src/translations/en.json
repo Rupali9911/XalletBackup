@@ -616,7 +616,12 @@
         "emailUserRequired": "Email/Username is required!",
         "passwordReq": "Password is required!",
         "owned": "Owned",
-        "Selectcurrencypopup": "Please select the Pay in Currency type"
+        "Selectcurrencypopup": "Please select the Pay in Currency type",
+        "sales": "Listing (Fixed Price)",
+        "Bids": "Bid",
+        "Buys": "Sale",
+        "Claim": "Claim",
+        "OnAuction": "Listing (Auction) "
     },
     "AwardPage": {},
     "wallet": {
@@ -933,7 +938,10 @@
             "collectionHint": "More from this Collection",
             "cameraPermissionHeader": "This feature requires camera access",
             "cameraPermissionMessage": "To enable access, tap Settings and turn on Camera.",
-            "settings": "Settings"
+            "settings": "Settings",
+            "about": "About",
+            "noCollection": "No Collection Available",
+            "owned": "Owned"
         },
         "backendmessage": {
             "error": {},

@@ -69,6 +69,7 @@ function Profile({ navigation, connector }) {
   useEffect(() => {
     dispatch(myCollectionListReset());
     dispatch(myNftListReset());
+    console.log('UserReducer',UserReducer)
   }, [isFocusedHistory]);
 
   const id = UserReducer.data.user.username || UserReducer.wallet.address;

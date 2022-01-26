@@ -18,13 +18,12 @@ import {SmallBoldText} from 'src/styles/text.styles';
 import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import {handleLikeDislike} from '../../store/actions/nftTrendList';
-import getLanguage from '../../utils/languageSupport';
 import {translate} from '../../walletUtils';
-import {blockChainConfig} from '../../web3/config/blockChainConfig';
+import {basePriceTokens} from '../../web3/config/availableTokens';
+import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
 import styles from './styles';
 
 const {width} = Dimensions.get('window');
-const langObj = getLanguage();
 const Web3 = require('web3');
 
 const {
@@ -39,7 +38,6 @@ const {
 const nftItem = ({item, index}) => {
   const dispatch = useDispatch();
 
-  const {AuthReducer} = useSelector(state => state);
   const {data, wallet} = useSelector(state => state.UserReducer);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
@@ -53,6 +51,15 @@ const nftItem = ({item, index}) => {
   const refVideo = useRef(null);
   const [singleNFT, setSingleNFT] = useState({});
   const [priceNFT, setPriceNFT] = useState('');
+  const [priceNFTString, setPriceNFTString] = useState('');
+  const [discount, setDiscount] = useState(false);
+  const [discountValue, setDiscountValue] = useState('');
+  const [availableTokens, setAvailableTokens] = useState([]);
+  const [isContractOwner, setIsContractOwner] = useState(false);
+  const [isForAward, setIsForAward] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+  const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
+  const [ownerAddress, setOwnerAddress] = useState('');
   const navigation = useNavigation();
 
   let MarketPlaceAbi = '';
@@ -66,11 +73,6 @@ const nftItem = ({item, index}) => {
     params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
   let chainType = params.length > 1 ? params[0] : 'polygon';
   let collectionAddress = params.length > 2 ? params[1] : null;
-
-  // console.log('========params', item.tokenId.toString());
-  // console.log('========chainType', chainType);
-  // console.log('======tokenId', tokenId);
-
   if (chainType === 'polygon') {
     MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
     MarketContractAddress = blockChainConfig[1].marketConConfig.add;
@@ -96,9 +98,6 @@ const nftItem = ({item, index}) => {
     collectionAddress =
       collectionAddress || blockChainConfig[2].erc721ConConfig.add;
   }
-  // console.log('========collectionAddress', collectionAddress);
-
-  // console.log('params:',params,', tokenId:',tokenId,', collectionAddresss', collectionAddress);
 
   const chainAvailable = () => {
     let found = false;
@@ -110,7 +109,13 @@ const nftItem = ({item, index}) => {
     }
     return found;
   };
-
+  let walletAddressForNonCrypto = '';
+  walletAddressForNonCrypto =
+    networkType === 'testnet'
+      ? chainType === 'binance'
+        ? '0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af'
+        : '0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859'
+      : '0xac940124f5f3b56b0c298cca8e9e098c2cccae2e';
   useEffect(() => {
     // Get NonCryptoNFTOwner
     let web3 = new Web3(providerUrl);
@@ -141,13 +146,10 @@ const nftItem = ({item, index}) => {
 
   const getPublicProfile = async (id, type) => {
     const userId = id?.toLowerCase();
-
     let profileUrl = type
       ? `${BASE_URL}/user/get-public-profile?publicAddress=${userId}`
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
-
     setOwnerId(userId);
-
     let profile = await axios.get(profileUrl);
     if (profile.data) {
       setOwnerData(profile.data.data);
@@ -161,17 +163,10 @@ const nftItem = ({item, index}) => {
   const lastOwnerOfNFT = () => {
     let web3 = new Web3(providerUrl);
     let ERC721Contract = new web3.eth.Contract(ERC721Abi, collectionAddress);
-
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
     );
-
-    // console.log('**************tokenId', tokenId);
-    // console.log('**************collectionAddress', collectionAddress);
-    // console.log('**************ERC721Abi', ERC721Abi.length);
-    // console.log('**************providerUrl', providerUrl);
-
     ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       let ownerAddress = res;
       // console.log('=====err', err);
@@ -228,8 +223,8 @@ const nftItem = ({item, index}) => {
                       : false,
                   );
                   setIsOwner(
-                    (_data.owner_address.toLowerCase() ===
-                      data.user._id.toLowerCase() &&
+                    (_data?.owner_address?.toLowerCase() ===
+                      data?.user?._id?.toLowerCase() &&
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
@@ -281,15 +276,86 @@ const nftItem = ({item, index}) => {
 
               setOwnerAddress(nonCryptoOwner);
             }
-            setBuyLoading(false);
           });
-      } else {
-        //console.log("err getAuthor", err);
-        setBuyLoading(false);
       }
     });
   };
+  const getDiscount = () => {
+    let web3 = new Web3(providerUrl);
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress,
+    );
+    MarketPlaceContract.methods.adminDiscount &&
+      MarketPlaceContract.methods.adminDiscount().call((err, res) => {
+        setDiscountValue(res ? res / 10 : 0);
+      });
+  };
+  const getNFTDetails = async obj => {
+    let _MarketPlaceAbi = ERC721Abi;
+    let _MarketContractAddress = collectionAddress;
 
+    let web3 = new Web3(providerUrl);
+
+    if (obj.tokenId.toString().split('-')[2]) {
+      let nftChain = obj.tokenId.toString().split('-')[0];
+      let collectionAdd = obj.tokenId.toString().split('-')[1];
+      let nftId = obj.tokenId.toString().split('-')[2];
+
+      obj.chainType = nftChain ? nftChain : '';
+      obj.polygonId = '';
+      obj.collection = collectionAdd;
+      obj.collectionAdd = obj.tokenId;
+      obj.tokenId = nftId;
+    }
+
+    // console.log(MarketContractAddress);
+
+    let MarketPlaceContract = new web3.eth.Contract(
+      _MarketPlaceAbi,
+      _MarketContractAddress,
+    );
+
+    let nftObj = {
+      image: obj.metaData.image,
+      description: obj.metaData.description,
+      title: obj.metaData.name,
+      type: obj.metaData.properties.type,
+      price: obj.price,
+      rating: obj.rating,
+      like: obj.like,
+      author: obj.returnValues.to,
+      _id: obj._id,
+      // thumbnailUrl : obj.thumbnailUrl
+      thumbnailUrl: obj?.thumbnailUrl,
+      imageForVideo: obj?.metaData?.thumbnft
+        ? obj?.metaData?.thumbnft
+        : obj?.thumbnailUrl,
+      newprice: obj.newprice,
+      approval: obj.approval,
+    };
+
+    nftObj.id = obj.tokenId;
+    nftObj.collection = _MarketContractAddress;
+    nftObj.collectionAdd = obj.collectionAdd;
+    nftObj.nftChain = obj.chainType;
+
+    nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
+    nftObj.price = nftObj.price ? nftObj.price : '';
+
+    // console.log("nftObj", nftObj);
+
+    await MarketPlaceContract.methods
+      .ownerOf(nftObj.id)
+      .call(function (err, res) {
+        console.log('res', res);
+        if (!err) {
+          nftObj.owner_address = res;
+        }
+      });
+
+    return nftObj;
+  };
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
@@ -320,7 +386,7 @@ const nftItem = ({item, index}) => {
             owner: temp?.returnValues?.to?.toLowerCase(),
             token: 'HubyJ*%qcqR0',
           };
-          setOwner(temp?.returnValues?.to?.toLowerCase());
+          // setOwner(temp?.returnValues?.to?.toLowerCase());
           setArtistId(temp?.returnValues?.to?.toLowerCase());
           let body = {
             method: 'POST',
@@ -335,7 +401,7 @@ const nftItem = ({item, index}) => {
             .then(res => {
               if (res.data) {
                 setArtistData(res.data);
-                setArtist(res.data.title || res.data.username);
+                setArtist(res.data.username || res.data.title);
                 setCreatorImage(res.data.profile_image);
               }
             });
@@ -381,7 +447,7 @@ const nftItem = ({item, index}) => {
               : false,
           );
           console.log('calling');
-          checkNFTOnAuction();
+          // checkNFTOnAuction();
         } else if (res.data === 'No record found') {
           console.log('res.data.data', res.data);
         }
@@ -527,27 +593,29 @@ const nftItem = ({item, index}) => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
-          isPlay
-            ? setPlay(!isPlay)
-            : navigation.navigate('CertificateDetail', {
-                id: item.newtokenId,
-                name: item.metaData.name,
-                description: item.metaData.description,
-                owner: owner,
-                ownerImage: ownerImage,
-                creator: artist,
-                creatorImage: creatorImage,
-                thumbnailUrl: item.thumbnailUrl,
-                video: item.metaData.image,
-                fileType: fileType,
-                price: item.price,
-                chain: item.chain,
-                ownerId: ownerId,
-                artistId: artistId,
-                tokenId: item.tokenId,
-                ownerData: ownerData,
-                artistData: artistData,
-              });
+          if (isPlay) {
+            setPlay(!isPlay);
+          } else {
+            navigation.navigate('CertificateDetail', {
+              id: item.newtokenId,
+              name: item.metaData.name,
+              description: item.metaData.description,
+              tokenId: item.tokenId,
+              thumbnailUrl: item.thumbnailUrl,
+              video: item.metaData.image,
+              fileType: fileType,
+              price: item.price,
+              chain: item.chain,
+              owner: owner,
+              ownerImage: ownerImage,
+              ownerId: ownerId,
+              ownerData: ownerData,
+              creator: artist,
+              creatorImage: creatorImage,
+              artistId: artistId,
+              artistData: artistData,
+            });
+          }
         }}>
         {fileType === 'mp4' ||
         fileType === 'MP4' ||

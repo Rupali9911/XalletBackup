@@ -199,6 +199,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
   if (asyncData && asyncData.wallet && asyncData.userData) {
     const { wallet, userData, BackedUp, apps } = asyncData;
+    console.log('userData', userData)
     dispatch(
       setUserData({
         data: userData,
@@ -212,7 +213,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
     const _wallet = wallet;
     let req_data = {
-      owner: _wallet.address,
+      owner: userData.user._id,
       token: 'HubyJ*%qcqR0',
     };
 

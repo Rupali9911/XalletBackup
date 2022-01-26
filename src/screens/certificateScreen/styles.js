@@ -71,12 +71,12 @@ const styles = StyleSheet.create({
     height: wp('100%'),
     resizeMode: 'contain',
     backgroundColor: colors.GREY2,
-    // marginTop: hp('3%')
   },
   nftTitle: {
     fontSize: RF(1.5),
     fontFamily: fonts.ARIAL_BOLD,
     marginTop: SIZE(15),
+    width: SIZE(80),
     paddingHorizontal: SIZE(12),
     color: colors.PINK1,
     textTransform: 'uppercase',
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL_BOLD,
     marginBottom: SIZE(15),
     paddingHorizontal: SIZE(12),
+    textTransform: 'uppercase'
   },
   listItem: {
     height: wp('87.5%') / 3 - wp('0.5%'),
     marginVertical: wp('0.3'),
-    //marginHorizontal: wp('0.3'),
     width: wp('87.5%') / 3 - wp('0.5%'),
   },
   listImage: {
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
   dropDownContainer: {
     borderColor: colors.themeR,
     borderRadius: 5,
+    backgroundColor: colors.white,
   },
   rowContainer: {
     flexDirection: 'row',
