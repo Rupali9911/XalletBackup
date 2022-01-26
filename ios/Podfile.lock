@@ -376,6 +376,8 @@ PODS:
     - React-perflogger (= 0.64.2)
   - ReactNativeART (1.2.0):
     - React
+  - rn-fetch-blob (0.12.0):
+    - React-Core
   - RNCAsyncStorage (1.15.14):
     - React-Core
   - RNCClipboard (1.9.0):
@@ -401,7 +403,7 @@ PODS:
     - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNIap (8.0.0-rc.3):
+  - RNIap (8.0.0-rc.4):
     - React-Core
   - RNImageCropPicker (0.37.2):
     - React-Core
@@ -502,6 +504,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
+  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
@@ -636,6 +639,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeART:
     :path: "../node_modules/@react-native-community/art"
+  rn-fetch-blob:
+    :path: "../node_modules/rn-fetch-blob"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
@@ -741,6 +746,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
+  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: ea6b5c280997b2b32a587793163b1f10e580c4f7
   RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
@@ -751,7 +757,7 @@ SPEC CHECKSUMS:
   RNFBApp: 729c0666395b1953198dc4a1ec6deb8fbe1c302e
   RNFBMessaging: 8415ec196e5c1196caa26ec0742cdb48ed4d0f97
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNIap: 99db2202f36f612761d5c56f8a9df2f532e654af
+  RNIap: f24e3931bb8e499b4b8c204539dcc91a0a7347a8
   RNImageCropPicker: 448d3c6e923fde3466b49caf3c2457c2a0ba02dd
   RNLocalize: 74b82db20cc3895ccc25af992c644879bcec2815
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
@@ -772,6 +778,6 @@ SPEC CHECKSUMS:
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: f184cfd22e3a0b0c13ef58b470d002a0915c67f1
+PODFILE CHECKSUM: a0126c3b66dc63ed2ce13a64328d5301e73f7940
 
 COCOAPODS: 1.11.2
