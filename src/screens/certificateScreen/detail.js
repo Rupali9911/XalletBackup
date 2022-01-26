@@ -20,7 +20,6 @@ import details from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import history from '../../../assets/images/history.png';
 import trading from '../../../assets/images/trading.png';
-import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppModal from '../../components/appModal';
@@ -31,7 +30,6 @@ import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import {hp} from '../../constants/responsiveFunct';
-import {colors} from '../../res';
 import {updateNftDetail} from '../../store/actions/newNFTActions';
 import {
   getAllCards,
@@ -40,7 +38,7 @@ import {
 import {alertWithSingleBtn, divideNo} from '../../utils';
 import {translate} from '../../walletUtils';
 import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import {blockChainConfig} from '../../web3/config/blockChainConfig';
 import {CardField, TabModal} from '../createNFTScreen/components';
 import styles from './styles';
 
@@ -50,13 +48,10 @@ const Web3 = require('web3');
 
 let walletAddressForNonCrypto = '';
 
-const DetailScreen = ({navigation}) => {
+const DetailScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {paymentObject} = useSelector(state => state.PaymentReducer);
   const {data, wallet} = useSelector(state => state.UserReducer);
-  const {nftDetail, ownerDetail, artistDetail} = useSelector(
-    state => state.NewNFTListReducer,
-  );
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
@@ -71,9 +66,16 @@ const DetailScreen = ({navigation}) => {
     price,
     chain,
     tokenId,
-  } = nftDetail;
-  const {owner, ownerImage, ownerId, ownerData} = ownerDetail;
-  const {creator, creatorImage, artistId, artistData} = artistDetail;
+    owner,
+    ownerImage,
+    ownerId,
+    ownerData,
+    creator,
+    creatorImage,
+    artistId,
+    artistData,
+  } = route.params;
+
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [isContractOwner, setIsContractOwner] = useState(false);
@@ -187,13 +189,11 @@ const DetailScreen = ({navigation}) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log('New tokenId', tokenId);
       if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
-        setBuyLoading(false);
+        setBuyLoading(true);
         checkNFTOnAuction();
-        //getNonCryptoNFTOwner();
+        getNonCryptoNFTOwner();
       }
-
       if (data.token) {
         dispatch(getAllCards(data.token))
           .then(() => {})
@@ -586,57 +586,46 @@ const DetailScreen = ({navigation}) => {
       });
   };
 
-  // const getNonCryptoNFTOwner = async () => {
-  //   // let tokenId = "317";
-  //   let web3 = new Web3(providerUrl);
-  //   let MarketPlaceContract = new web3.eth.Contract(
-  //     MarketPlaceAbi,
-  //     MarketContractAddress,
-  //   );
-  //   MarketPlaceContract.methods
-  //     .getNonCryptoOwner(collectionAddress, _tokenId)
-  //     .call(async (err, res) => {
-  //       console.log('getNonCryptoOwner_res', res);
-  //       if (res) {
-  //         const userId = res.toLowerCase();
-  //         getPublicProfile(userId, false);
-  //         setNonCryptoOwnerId(res);
-  //         lastOwnerOfNFTNonCrypto(res);
-  //         await getTokenDetailsApi(false);
-  //       } else if (!res) {
-  //         lastOwnerOfNFT();
-  //         await getTokenDetailsApi();
-  //       } else if (err) {
-  //         console.log('error----->', err);
-  //       }
-  //     });
-  // };
+  const getNonCryptoNFTOwner = async () => {
+    // let tokenId = "317";
+    let web3 = new Web3(providerUrl);
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress,
+    );
+    MarketPlaceContract.methods
+      .getNonCryptoOwner(collectionAddress, _tokenId)
+      .call(async (err, res) => {
+        console.log('getNonCryptoOwner_res', res);
+        if (res) {
+          const userId = res.toLowerCase();
+          getPublicProfile(userId, false);
+          setNonCryptoOwnerId(res);
+          lastOwnerOfNFTNonCrypto(res);
+          await getTokenDetailsApi(false);
+        } else if (!res) {
+          lastOwnerOfNFT();
+          await getTokenDetailsApi();
+        } else if (err) {
+          console.log('error----->', err);
+        }
+      });
+  };
   // const getPublicProfile = async (id, type) => {
   //   const userId = id?.toLowerCase();
 
   //   let profileUrl = type
   //     ? `${BASE_URL}/user/get-public-profile?publicAddress=${userId}`
   //     : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
-  //   dispatch(
-  //     updateNftDetail({
-  //       ownerId: userId,
-  //     }),
-  //   );
+  //   setOwnerId(userId);
+
   //   let profile = await axios.get(profileUrl);
   //   if (profile.data) {
-  //     dispatch(
-  //       updateNftDetail({
-  //         ownerData: profile?.data?.data,
-  //         owner: profile?.data?.data?.username,
-  //         ownerImage: profile?.data?.data?.profile_image,
-  //       }),
-  //     );
+  //     setOwnerData(profile.data.data);
+  //     setOwner(profile?.data?.data?.username);
+  //     setOwnerImage(profile.data.data.profile_image);
   //   } else {
-  //     dispatch(
-  //       updateNftDetail({
-  //         owner: userId,
-  //       }),
-  //     );
+  //     setOwner(userId);
   //   }
   // };
   const lastOwnerOfNFTNonCrypto = nonCryptoOwner => {
@@ -870,7 +859,7 @@ const DetailScreen = ({navigation}) => {
               : false,
           );
           console.log('calling');
-          checkNFTOnAuction();
+          //checkNFTOnAuction();
         } else if (res.data === 'No record found') {
           console.log('res.data.data', res.data);
         }
@@ -1094,28 +1083,25 @@ const DetailScreen = ({navigation}) => {
           onPress={() => {
             // dispatch(changeScreenName('awards'));
             //navigation.push('DetailItem', {index: findIndex});
-            navigation.navigate('CertificateDetail');
-            dispatch(
-              updateNftDetail({
-                id: item.newtokenId,
-                name: item.metaData.name,
-                description: item.metaData.description,
-                tokenId: item.tokenId,
-                thumbnailUrl: item.thumbnailUrl,
-                video: item.metaData.image,
-                fileType: fileType,
-                price: item.price,
-                chain: item.chain,
-                ownerId: ownerId,
-                owner: owner,
-                ownerImage: ownerImage,
-                ownerData: ownerData,
-                artistId: artistId,
-                creator: creator,
-                creatorImage: creatorImage,
-                artistData: artistData,
-              }),
-            );
+            navigation.navigate('CertificateDetail', {
+              id: item.newtokenId,
+              name: item.metaData.name,
+              description: item.metaData.description,
+              tokenId: item.tokenId,
+              thumbnailUrl: item.thumbnailUrl,
+              video: item.metaData.image,
+              fileType: fileType,
+              price: item.price,
+              chain: item.chain,
+              ownerId: ownerId,
+              owner: owner,
+              ownerImage: ownerImage,
+              ownerData: ownerData,
+              artistId: artistId,
+              creator: creator,
+              creatorImage: creatorImage,
+              artistData: artistData,
+            });
             scrollRef.current.scrollTo({x: 0, y: 0, animated: true});
           }}
           style={styles.listItem}>

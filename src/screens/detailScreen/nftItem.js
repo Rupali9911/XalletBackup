@@ -17,11 +17,6 @@ import {RowBetweenWrap, SpaceView} from 'src/styles/common.styles';
 import {SmallBoldText} from 'src/styles/text.styles';
 import {BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
-import {
-  updateNftDetail,
-  updateOwnerDetail,
-  updateArtistDetail,
-} from '../../store/actions/newNFTActions';
 import {handleLikeDislike} from '../../store/actions/nftTrendList';
 import {translate} from '../../walletUtils';
 import {basePriceTokens} from '../../web3/config/availableTokens';
@@ -228,8 +223,8 @@ const nftItem = ({item, index}) => {
                       : false,
                   );
                   setIsOwner(
-                    (_data.owner_address.toLowerCase() ===
-                      data.user._id.toLowerCase() &&
+                    (_data?.owner_address?.toLowerCase() ===
+                      data?.user?._id?.toLowerCase() &&
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
@@ -452,85 +447,13 @@ const nftItem = ({item, index}) => {
               : false,
           );
           console.log('calling');
-          checkNFTOnAuction();
+          // checkNFTOnAuction();
         } else if (res.data === 'No record found') {
           console.log('res.data.data', res.data);
         }
       })
       .catch(err => {
         console.log(err);
-      });
-  };
-  const checkNFTOnAuction = () => {
-    const setAuctionVariables = (
-      auctionInitiatorAdd = '',
-      auctionETime = '',
-      lastBidAmount = '',
-      isNFTOnAuction = false,
-    ) => {
-      setIsNFTOnAuction(isNFTOnAuction);
-      setAuctionInitiatorAdd(auctionInitiatorAdd);
-      setAuctionETime(auctionETime);
-      setLastBidAmount(lastBidAmount);
-    };
-
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    MarketPlaceContract.methods
-      .getSellDetail(collectionAddress, _tokenId)
-      .call(async (err, res) => {
-        console.log('checkNFTOnAuction_res', res);
-        if (!err) {
-          let baseCurrency = [];
-          if (res[6]) {
-            baseCurrency = basePriceTokens.filter(
-              token => token.chain === chainType && token.order === 1,
-            );
-            setBaseCurrency(baseCurrency[0]);
-            console.log('baseCurrency________', baseCurrency[0]);
-          } else {
-            baseCurrency = basePriceTokens.filter(
-              token =>
-                token.chain === chainType && token.order === parseInt(res[7]),
-            );
-            setBaseCurrency(baseCurrency[0]);
-            console.log('baseCurrency________', baseCurrency[0]);
-          }
-
-          if (res[0] !== '0x0000000000000000000000000000000000000000') {
-            let dollarToken = basePriceTokens.filter(
-              token => token.chain === chainType && token.dollarCurrency,
-            );
-            let rs = await calculatePrice(
-              res[1],
-              dollarToken[0].order,
-              // this.state.nonCryptoOwnerId
-              walletAddressForNonCrypto,
-              baseCurrency[0],
-            );
-            console.log('rs', rs);
-            if (rs) {
-              let res = divideNo(rs);
-              setPriceInDollar(res);
-            }
-          }
-
-          if (parseInt(res[5]) * 1000 > 0) {
-            setAuctionVariables(
-              res[0],
-              parseInt(res[2]) * 1000,
-              divideNo(res[1]),
-              true,
-            );
-          } else {
-            setAuctionVariables();
-          }
-        } else {
-          setAuctionVariables();
-        }
       });
   };
   const getNFTDiscount = id => {
@@ -673,39 +596,25 @@ const nftItem = ({item, index}) => {
           if (isPlay) {
             setPlay(!isPlay);
           } else {
-            console.log('Test Token ID:',item.tokenId);
-            dispatch(
-              updateNftDetail({
-                id: item.newtokenId,
-                name: item.metaData.name,
-                description: item.metaData.description,
-                tokenId: item.tokenId,
-                thumbnailUrl: item.thumbnailUrl,
-                video: item.metaData.image,
-                fileType: fileType,
-                price: item.price,
-                chain: item.chain,
-              }),
-            );
-            dispatch(
-              updateOwnerDetail({
-                owner: owner,
-                ownerImage: ownerImage,
-                ownerId: ownerId,
-                ownerData: ownerData,
-              }),
-            );
-            dispatch(
-              updateArtistDetail({
-                creator: artist,
-                creatorImage: creatorImage,
-                artistId: artistId,
-                artistData: artistData,
-              }),
-            );
-            setTimeout(() => {
-              navigation.navigate('CertificateDetail');
-            }, 600);
+            navigation.navigate('CertificateDetail', {
+              id: item.newtokenId,
+              name: item.metaData.name,
+              description: item.metaData.description,
+              tokenId: item.tokenId,
+              thumbnailUrl: item.thumbnailUrl,
+              video: item.metaData.image,
+              fileType: fileType,
+              price: item.price,
+              chain: item.chain,
+              owner: owner,
+              ownerImage: ownerImage,
+              ownerId: ownerId,
+              ownerData: ownerData,
+              creator: artist,
+              creatorImage: creatorImage,
+              artistId: artistId,
+              artistData: artistData,
+            });
           }
         }}>
         {fileType === 'mp4' ||
