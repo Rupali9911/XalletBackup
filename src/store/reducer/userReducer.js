@@ -199,7 +199,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
   if (asyncData && asyncData.wallet && asyncData.userData) {
     const { wallet, userData, BackedUp, apps } = asyncData;
-    console.log('userData', userData)
+    console.log('userData', userData, wallet)
     dispatch(
       setUserData({
         data: userData,
@@ -213,7 +213,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
     const _wallet = wallet;
     let req_data = {
-      owner: userData.user._id,
+      owner: _wallet.address,
       token: 'HubyJ*%qcqR0',
     };
 
@@ -229,6 +229,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
       .then(response => response.json())
       .then(res => {
         if (res.data) {
+            console.log('Response /xanalia/getProfile', res, JSON.stringify(req_data))
           dispatch(upateUserData(res.data));
         }
         dispatch(endMainLoading());
