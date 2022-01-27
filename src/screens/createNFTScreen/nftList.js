@@ -16,11 +16,11 @@ import { BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import Modal from 'react-native-modal';
-import FastImage from 'react-native-fast-image';
 import { C_Image } from '../../components';
 
 const ListItem = props => {
-  let dataToRender = props.data.hasOwnProperty("metaData") ? props.data.metaData : props.data;
+  let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
+  console.log(props.data)
   return (
     <TouchableOpacity onPress={props.press} style={styles.listCont}>
       <View style={styles.listCenter}>
@@ -82,6 +82,8 @@ const NFTList = ({
         setCollection(nftListDefault.collect)
         if (nftListDefault.name === "draft") {
           pressToggle("draft", nftListDefault.collect)
+        }else{
+          pressToggle("mint", nftListDefault.collect)
         }
       } else {
         getCollectionList()
@@ -199,10 +201,13 @@ const NFTList = ({
 
   const renderListItem = ({ item, index }) => {
     return (
-      <ListItem press={() => selectItem(item)} data={item} />
+      <ListItem press={() => selectItem(item)} data={item} toggle={toggle} />
     )
   }
 
+  let showList = (toggle == "mint" && nftListCreated.length !== 0) ?
+    nftListCreated : (toggle == "draft" && nftListDraft.length !== 0) ?
+      nftListDraft : []
   return (
     <View style={styles.childCont}>
 
@@ -230,10 +235,10 @@ const NFTList = ({
 
         <View style={styles.listMainCont}>
           {
-            (toggle == "mint" && nftListCreated.length !== 0) || (toggle == "draft" && nftListDraft.length !== 0) &&
+            showList.length !== 0 &&
 
             <FlatList
-              data={toggle == "mint" ? nftListCreated : nftListDraft}
+              data={showList}
               initialNumToRender={50}
               renderItem={renderListItem}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -278,7 +283,7 @@ const NFTList = ({
                 <View style={styles.nftImageCont} >
                   <C_Image
                     uri={selectData.image}
-                    imageStyle={{height: wp(30), width: wp(30)}}
+                    imageStyle={{ height: wp(30), width: wp(30) }}
                   />
                 </View>
                 <ModalItems

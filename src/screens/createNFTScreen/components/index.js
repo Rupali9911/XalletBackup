@@ -53,7 +53,7 @@ export const CardField = props => {
         props.rightComponent ? (
           props.rightComponent
         ) : (
-          <Image source={IMAGES.downArrow} style={styles.imageStyles(3.5)} />
+          <Image source={IMAGES.downArrow} style={{...styles.imageStyles(3.5), marginRight: wp('3%') }} />
         )
       ) : null}
     </TouchableOpacity>
@@ -154,12 +154,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GREY9,
     marginVertical: hp('1%'),
-    paddingHorizontal: wp('3%'),
     flexDirection: 'row',
     overflow: 'hidden',
   },
   field: {
     color: colors.BLACK6,
+    paddingHorizontal: wp('3%'),
+    paddingVertical: hp("2%"),
     fontFamily: fonts.SegoeUIRegular,
     fontSize: RF(1.4),
     flex: 1,
