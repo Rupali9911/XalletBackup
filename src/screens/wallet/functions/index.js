@@ -682,6 +682,7 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     try {
       txCount = await web3.eth.getTransactionCount(publicKey, "pending")
     } catch (e) {
+      console.log(e, "reject tx count create collection")
       return reject(e)
     }
 
@@ -732,6 +733,8 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     const raw = "0x" + serializedTx.toString("hex");
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+    console.log(txHash, "tx hash count create collection", err)
+
       if (txHash) {
         const interval = setInterval(() => checkingProgressTransaction(), 10000)
         const checkingProgressTransaction = async () => {
@@ -752,14 +755,14 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
               }
             }
           } catch (error) {
-            console.error(error, " transactionReceipt error");
+            console.log(error, " create nft sendSignedTransaction error");
             reject(error)
           }
         }
 
       } else if (err) {
-        console.log(err, "transactionReceipt");
-        reject(err.message);
+        console.log(err, "transactionReceipt sendSignedTransaction error ");
+        reject(err);
       }
     })
   })
@@ -884,7 +887,7 @@ export const createNFTSale = async (
       gasLimit: web3.utils.toHex(customGasLimit),
       chainId: getChainId(data.chainType),
 
-      to: data.collectionAddress,
+      to: data.MarketContractAddress,
       value: "0x0",
       data: marketContract.methods
         .mintAndSellCollectionNFT(
@@ -894,6 +897,104 @@ export const createNFTSale = async (
           web3.utils.toWei(data.price.toString(), "ether"),
           data.order.toString(),
           data.currencyList
+        )
+        .encodeABI(),
+      nonce: web3.utils.toHex(txCount)
+    };
+
+    let common = null;
+    if (data.chainType === 'binance') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'bnb',
+        networkId: getNetworkId(data.chainType),
+        chainId: getChainId(data.chainType)
+      }, 'petersburg');
+    } else if (data.chainType === 'polygon') {
+      common = Common.forCustomChain('mainnet', {
+        name: 'matic',
+        networkId: getNetworkId(data.chainType),
+        chainId: getChainId(data.chainType)
+      }, 'petersburg');
+    } else {
+      common = Common.forCustomChain('mainnet', {
+        name: 'eth',
+        networkId: getNetworkId(data.chainType),
+        chainId: getChainId(data.chainType)
+      }, 'petersburg');
+    }
+
+    console.log('txObject', txObject);
+    const tx = new EthereumTx(txObject, { common });
+    privateKey = Buffer.from(data.privKey.substring(2, 66), 'hex');
+    tx.sign(privateKey);
+    const serializedTx = tx.serialize();
+    const raw = "0x" + serializedTx.toString("hex");
+    // const result = await web3.eth.sendSignedTransaction(
+    //     raw
+    // );
+
+    await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+      if (txHash) {
+        console.log(txHash)
+        console.log("resp noncrypto function", new Date().getTime());
+        // resolve({ success: true, status: 200, data: txHash });
+      } else if (err) {
+        console.log(err);
+        reject(err.message);
+      }
+    }).once('receipt', (receipt) => {
+      resolve({ success: true, status: 200, data: receipt });
+    });
+
+    // console.log(result);
+    // return result
+  })
+}
+export const createAuctionNFTSale = async (
+  data
+) => {
+  return new Promise(async (resolve, reject) => {
+
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider(
+        data.providerUrl
+      )
+    );
+
+    let txCount = "";
+
+    try {
+      txCount = await web3.eth.getTransactionCount(data.publicAddress, "pending")
+    } catch (e) {
+      return reject(e)
+    }
+
+    let marketContract = new web3.eth.Contract(
+      data.MarketPlaceAbi,
+      data.MarketContractAddress
+    );
+
+    var customGasLimit = data.gasLimit;
+    customGasPrice = data.gasFee * 1000000000;
+    // console.log('contract',contract);
+    let txObject;
+    // HERE
+    txObject = {
+      from: data.publicAddress,
+      gasPrice: web3.utils.toHex(customGasPrice),
+      gasLimit: web3.utils.toHex(customGasLimit),
+      chainId: getChainId(data.chainType),
+
+      to: data.MarketContractAddress,
+      value: "0x0",
+      data: marketContract.methods
+        .mintAndAuctionCollectionNFT(
+          data.collectionAddress,
+          data.publicAddress,
+          data.hash,
+          web3.utils.toWei(data.price.toString(), "ether"),
+          data.order.toString(),
+          data.endTime
         )
         .encodeABI(),
       nonce: web3.utils.toHex(txCount)

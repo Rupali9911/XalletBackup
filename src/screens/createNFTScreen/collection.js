@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
@@ -351,10 +351,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
       })
         .catch(e => {
           changeLoadingState(false);
-          console.log("testing collection error", e.response)
+          console.log("testing collection error", e)
           alertWithSingleBtn(
             translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
+            translate("wallet.common.insufficientFunds")
           );
         })
     }
@@ -443,7 +443,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         console.log("testing collection error", e.response)
         alertWithSingleBtn(
           translate("wallet.common.alert"),
-          translate("wallet.common.error.apiFailed")
+          translate("wallet.common.insufficientFunds")
         );
       })
     }
@@ -464,7 +464,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     if (res) {
 
       let url = screenStatus == "created" ?
-        `${BASE_URL}/user/user/edit-collection` :
+        `${BASE_URL}/user/edit-collection` :
         screenStatus == "draft" ?
           `${BASE_URL}/user/edit-collection-draft` :
           `${BASE_URL}/user/create-collection-draft`;
@@ -480,8 +480,9 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
       if (screenStatus == "draft") {
         obj.requestId = routeParams.data._id
-      } else if (screenStatus == "created") {
-        obj.collectionAddress == collectionAdd
+      }
+      if (screenStatus == "created") {
+        obj.collectionAddress = collectionAdd
       }
 
       axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -521,126 +522,135 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
   let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage && !error && !disableAll;
   return (
-    <View style={styles.childCont}>
+      <View style={styles.childCont}>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+        keyboardDismissMode="on-drag"
+         onScrollBeginDrag={() => Keyboard.dismiss()}
+        showsVerticalScrollIndicator={false}>
 
-        {
-          error ?
-            <Text style={styles.error}>{error}</Text>
-            : null
-        }
+          {
+            error ?
+              <Text style={styles.error}>{error}</Text>
+              : null
+          }
 
-        <CardCont>
-          <CardLabel>{translate("wallet.common.collectionName")}</CardLabel>
-          <CardField
-            contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
-            inputProps={{ editable: screenStatus !== "created", value: collectionName, onChangeText: e => setCollectionName(e) }}
-          />
-        </CardCont>
-
-        <CardCont>
-          <CardLabel>{translate("wallet.common.collectionSymbol")}</CardLabel>
-          <CardField
-            contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
-            inputProps={{ editable: screenStatus !== "created", value: collectionSymbol, onChangeText: e => setCollectionSymbol(e) }}
-          />
-        </CardCont>
-
-        <CardCont>
-          <CardLabel>{translate("wallet.common.collectionDes")}</CardLabel>
-          <Text style={styles.cardfieldCount}>{collectionDes.length} / 150</Text>
-          <CardField
-            inputProps={{ editable: !disableAll, placeholder: translate("wallet.common.typeSomething"), multiline: true, value: collectionDes, onChangeText: e => collectionDes.length < 150 ? setCollectionDes(e) : null }}
-            contStyle={{ height: hp('20%'), backgroundColor: disableAll ? colors.GREY10 : colors.white }}
-          />
-        </CardCont>
-
-        <CardCont>
-          <CardLabel>{translate("wallet.common.contractAddress")}</CardLabel>
-          <CardField
-            contStyle={{ backgroundColor: colors.GREY10 }}
-            inputProps={{ editable: false, value: collectionAdd }}
-          />
-          <CardButton
-            buttonCont={{ backgroundColor: !collectionAdd ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-            disable={!collectionAdd}
-            onPress={copyToClipboard} label={translate("wallet.common.copy")}
-          />
-        </CardCont>
-
-        <CardCont style={styles.imageMainCard}>
-          <TouchableOpacity onPress={() => !disableAll ? onPhoto("banner") : null} activeOpacity={disableAll ? 1 : 0.5} style={styles.cardImageCont}>
-            <Image
-              resizeMode='cover'
-              resizeMethod='scale'
-              style={styles.completeImage}
-              source={bannerImage ? { uri: bannerImage.path } : IMAGES.imagePlaceholder}
+          <CardCont>
+            <CardLabel>{translate("wallet.common.collectionName")}</CardLabel>
+            <CardField
+              contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
+              inputProps={{ editable: screenStatus !== "created", value: collectionName, onChangeText: e => setCollectionName(e) }}
             />
-          </TouchableOpacity>
-          <View style={styles.bannerCardCont}>
-            <CardLabel>{translate("wallet.common.bannerImage")}</CardLabel>
-            <Text style={{ ...styles.bannerDes, color: errorBanner ? "red" : colors.BLACK2 }}>{translate("wallet.common.maxSize")} 1600 * 300</Text>
+          </CardCont>
+
+          <CardCont>
+            <CardLabel>{translate("wallet.common.collectionSymbol")}</CardLabel>
+            <CardField
+              contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
+              inputProps={{ editable: screenStatus !== "created", value: collectionSymbol, onChangeText: e => setCollectionSymbol(e) }}
+            />
+          </CardCont>
+
+          <CardCont>
+            <CardLabel>{translate("wallet.common.collectionDes")}</CardLabel>
+            <Text style={styles.cardfieldCount}>{collectionDes.length} / 150</Text>
+            <CardField
+              inputProps={{
+                editable: !disableAll,
+                placeholder: translate("wallet.common.typeSomething"),
+                multiline: true,
+                value: collectionDes,
+                onChangeText: e => collectionDes.length <= 150 ? setCollectionDes(e.slice(0, 150)) : null
+              }}
+              contStyle={{ height: hp('20%'), backgroundColor: disableAll ? colors.GREY10 : colors.white }}
+            />
+          </CardCont>
+
+          <CardCont>
+            <CardLabel>{translate("wallet.common.contractAddress")}</CardLabel>
+            <CardField
+              contStyle={{ backgroundColor: colors.GREY10 }}
+              inputProps={{ editable: false, value: collectionAdd }}
+            />
             <CardButton
-              buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
-              onPress={() => onPhoto("banner")}
-              disable={disableAll}
-              label={translate("common.change")}
+              buttonCont={{ backgroundColor: !collectionAdd ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
+              disable={!collectionAdd}
+              onPress={copyToClipboard} label={translate("wallet.common.copy")}
+            />
+          </CardCont>
+
+          <CardCont style={styles.imageMainCard}>
+            <TouchableOpacity onPress={() => !disableAll ? onPhoto("banner") : null} activeOpacity={disableAll ? 1 : 0.5} style={styles.cardImageCont}>
+              <Image
+                resizeMode='cover'
+                resizeMethod='scale'
+                style={styles.completeImage}
+                source={bannerImage ? { uri: bannerImage.path } : IMAGES.imagePlaceholder}
+              />
+            </TouchableOpacity>
+            <View style={styles.bannerCardCont}>
+              <CardLabel>{translate("wallet.common.bannerImage")}</CardLabel>
+              <Text style={{ ...styles.bannerDes, color: errorBanner ? "red" : colors.BLACK2 }}>{translate("wallet.common.maxSize")} 1600 * 300</Text>
+              <CardButton
+                buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
+                onPress={() => onPhoto("banner")}
+                disable={disableAll}
+                label={translate("common.change")}
+              />
+            </View>
+          </CardCont>
+
+          <CardCont style={styles.imageMainCard}>
+            <TouchableOpacity onPress={() => !disableAll ? onPhoto("icon") : null} activeOpacity={disableAll ? 1 : 0.5} style={styles.cardImageCont}>
+              <Image
+                resizeMode='cover'
+                resizeMethod='scale'
+                style={styles.completeImage}
+                source={iconImage ? { uri: iconImage.path } : IMAGES.imagePlaceholder}
+              />
+            </TouchableOpacity>
+            <View style={styles.bannerCardCont}>
+              <CardLabel>{translate("wallet.common.iconImage")}</CardLabel>
+              <Text style={{ ...styles.bannerDes, color: errorIcon ? "red" : colors.BLACK2 }}>{translate("wallet.common.maxSize")} 512 * 512</Text>
+              <CardButton
+                onPress={() => onPhoto("icon")}
+                buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
+                disable={disableAll}
+                label={translate("common.change")}
+              />
+            </View>
+          </CardCont>
+          {
+            (screenStatus === "new" || screenStatus === "draft") &&
+            <CardButton
+              border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
+              label={screenStatus === "new" ? translate("wallet.common.saveAsDraft") : translate("wallet.common.editDraft")}
+              onPress={saveEditAsDraftCollection}
+              disable={!disable}
+              buttonCont={{ marginBottom: 0 }}
+            />
+          }
+
+          <View style={styles.saveBtnGroup}>
+            <CardButton
+              onPress={screenStatus === "new" ? saveCollection :
+                screenStatus === "draft" ? saveDraftCollection : saveEditAsDraftCollection}
+              label={screenStatus === "new" || screenStatus === "draft" ? translate("common.save") : translate("wallet.common.edit")}
+              buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
+              disable={!disable}
+            />
+            <CardButton
+              onPress={screenStatus === "new" ? cancel : () => navigation.goBack()}
+              border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
+              buttonCont={{ width: '48%' }}
+              label={translate("common.Cancel")}
+              disable={!disable}
             />
           </View>
-        </CardCont>
+        </ScrollView>
+        <Toast config={toastConfig} ref={toastRef} />
 
-        <CardCont style={styles.imageMainCard}>
-          <TouchableOpacity onPress={() => !disableAll ? onPhoto("icon") : null} activeOpacity={disableAll ? 1 : 0.5} style={styles.cardImageCont}>
-            <Image
-              resizeMode='cover'
-              resizeMethod='scale'
-              style={styles.completeImage}
-              source={iconImage ? { uri: iconImage.path } : IMAGES.imagePlaceholder}
-            />
-          </TouchableOpacity>
-          <View style={styles.bannerCardCont}>
-            <CardLabel>{translate("wallet.common.iconImage")}</CardLabel>
-            <Text style={{ ...styles.bannerDes, color: errorIcon ? "red" : colors.BLACK2 }}>{translate("wallet.common.maxSize")} 512 * 512</Text>
-            <CardButton
-              onPress={() => onPhoto("icon")}
-              buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
-              disable={disableAll}
-              label={translate("common.change")}
-            />
-          </View>
-        </CardCont>
-        {
-          (screenStatus === "new" || screenStatus === "draft") &&
-          <CardButton
-            border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
-            label={screenStatus === "new" ? translate("wallet.common.saveAsDraft") : translate("wallet.common.editDraft")}
-            onPress={saveEditAsDraftCollection}
-            disable={!disable}
-            buttonCont={{ marginBottom: 0 }}
-          />
-        }
-
-        <View style={styles.saveBtnGroup}>
-          <CardButton
-            onPress={screenStatus === "new" ? saveCollection :
-              screenStatus === "draft" ? saveDraftCollection : saveEditAsDraftCollection}
-            label={screenStatus === "new" || screenStatus === "draft" ? translate("common.save") : translate("wallet.common.edit")}
-            buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-            disable={!disable}
-          />
-          <CardButton
-            onPress={screenStatus === "new" ? cancel : () => navigation.goBack()}
-            border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
-            buttonCont={{ width: '48%' }}
-            label={translate("common.Cancel")}
-            disable={!disable}
-          />
-        </View>
-      </ScrollView>
-      <Toast config={toastConfig} ref={toastRef} />
-
-    </View>
+      </View>
   );
 };
 
