@@ -5,6 +5,7 @@ import {
   widthPercentageToDP as wp
 } from '../../common/responsiveFunction';
 import { hp } from '../../constants/responsiveFunct';
+import CommonStyles from '../../constants/styles';
 import { colors, fonts } from '../../res';
 
 const styles = StyleSheet.create({
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL_BOLD,
     marginBottom: SIZE(15),
     paddingHorizontal: SIZE(12),
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   listItem: {
     height: wp('87.5%') / 3 - wp('0.5%'),
@@ -98,6 +99,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: '100%',
+  },
+  button: {
+    width: '47.5%',
+    ...CommonStyles.button,
+    marginVertical: hp('2%'),
   },
   person: {
     flexDirection: 'row',
@@ -191,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: RF(2.3),
     fontFamily: fonts.PINGfANG_SBOLD,
     color: colors.GREY4,
-    marginLeft: wp(2)
+    marginLeft: wp(2),
   },
   price: {
     fontSize: RF(3.1),
