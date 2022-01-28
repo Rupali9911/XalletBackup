@@ -112,30 +112,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     color: '#212529',
   },
-  listItem: {
-    marginVertical: wp("2"),
-    marginHorizontal: wp("1"),
-    width: (wp('100%') / 2) - wp('2%'),
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 1,
-
-    elevation: 5,
-  },
-  listItemContainer: {
-    width: "100%",
-    borderRadius: SIZE(20),
-  },
-  listImage: {
-    width: '100%',
-    height: (wp('100%') / 2) - wp('1%'),
-    borderTopRightRadius: SIZE(12),
-    borderTopLeftRadius: SIZE(12),
-  },
   sorryMessageCont: {
     flex: 1,
     justifyContent: "center",

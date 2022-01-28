@@ -616,7 +616,14 @@
         "emailUserRequired": "Email/Username is required!",
         "passwordReq": "Password is required!",
         "owned": "Owned",
-        "Selectcurrencypopup": "Please select the Pay in Currency type"
+        "Selectcurrencypopup": "Please select the Pay in Currency type",
+        "itemsCollection": "Items",
+        "owners": "Owners",
+        "floorPrice": "Floor Price",
+        "volumeTraded": "Volume Traded",
+        "viewCollection": "View Collection",
+        "auctionended": "Auction ended",
+        "soldout": "Sold Out"
     },
     "AwardPage": {},
     "wallet": {

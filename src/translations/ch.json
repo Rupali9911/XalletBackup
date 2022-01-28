@@ -616,7 +616,14 @@
         "emailUserRequired": "电子邮件/用户名是必需的！",
         "passwordReq": "密码是必需的！",
         "owned": "拥有",
-        "Selectcurrencypopup": "请选择支付货币类型"
+        "Selectcurrencypopup": "请选择支付货币类型",
+        "itemsCollection": "项目",
+        "owners": "拥有者",
+        "floorPrice": "底价",
+        "volumeTraded": "成交量",
+        "viewCollection": "查看集合",
+        "auctionended": "拍賣結束",
+        "soldout": "售罄"
     },
     "AwardPage": {},
     "wallet": {

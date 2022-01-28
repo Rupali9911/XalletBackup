@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -10,20 +10,20 @@ import {
   View,
 } from 'react-native';
 import Video from 'react-native-fast-video';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image} from 'src/components';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
-import {RowBetweenWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText} from 'src/styles/text.styles';
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {handleLikeDislike} from '../../store/actions/nftTrendList';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image } from 'src/components';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
+import { RowBetweenWrap, SpaceView } from 'src/styles/common.styles';
+import { SmallBoldText } from 'src/styles/text.styles';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import getLanguage from '../../utils/languageSupport';
-import {translate} from '../../walletUtils';
-import {blockChainConfig} from '../../web3/config/blockChainConfig';
+import { translate } from '../../walletUtils';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import styles from './styles';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const langObj = getLanguage();
 const Web3 = require('web3');
 
@@ -36,11 +36,11 @@ const {
   PlayButtonIcon,
 } = SVGS;
 
-const nftItem = ({item, index}) => {
+const nftItem = ({ item, index, isCollection }) => {
   const dispatch = useDispatch();
 
-  const {AuthReducer} = useSelector(state => state);
-  const {data, wallet} = useSelector(state => state.UserReducer);
+  const { AuthReducer } = useSelector(state => state);
+  const { data, wallet } = useSelector(state => state.UserReducer);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
   const [ownerImage, setOwnerImage] = useState();
@@ -96,10 +96,7 @@ const nftItem = ({item, index}) => {
     collectionAddress =
       collectionAddress || blockChainConfig[2].erc721ConConfig.add;
   }
-  // console.log('========collectionAddress', collectionAddress);
-
-  // console.log('params:',params,', tokenId:',tokenId,', collectionAddresss', collectionAddress);
-
+  
   const chainAvailable = () => {
     let found = false;
     for (let i = 0; i < blockChainConfig.length; i++) {
@@ -233,7 +230,7 @@ const nftItem = ({item, index}) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -247,7 +244,7 @@ const nftItem = ({item, index}) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -377,8 +374,8 @@ const nftItem = ({item, index}) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-              ? res?.data[1]?.award
-              : false,
+                ? res?.data[1]?.award
+                : false,
           );
           console.log('calling');
           checkNFTOnAuction();
@@ -471,9 +468,9 @@ const nftItem = ({item, index}) => {
 
   const onProfile = isOwner => {
     if (isOwner) {
-      if (ownerId) navigation.push('ArtistDetail', {id: ownerId});
+      if (ownerId) navigation.push('ArtistDetail', { id: ownerId });
     } else {
-      if (artistId) navigation.push('ArtistDetail', {id: artistId});
+      if (artistId) navigation.push('ArtistDetail', { id: artistId });
     }
   };
 
@@ -489,7 +486,7 @@ const nftItem = ({item, index}) => {
           style={styles.iconCont}>
           <Image
             style={styles.profileIcon}
-            source={!ownerImage ? IMAGES.DEFAULTPROFILE : {uri: ownerImage}}
+            source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }}
           />
           <View>
             <Text style={styles.modalIconLabel}>
@@ -497,7 +494,7 @@ const nftItem = ({item, index}) => {
             </Text>
             <Text
               numberOfLines={1}
-              style={[styles.iconLabel, {maxWidth: width * 0.35}]}>
+              style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
               {owner}
             </Text>
           </View>
@@ -507,7 +504,7 @@ const nftItem = ({item, index}) => {
           style={styles.iconCont}>
           <Image
             style={styles.profileIcon}
-            source={!creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}}
+            source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }}
           />
           <View>
             <Text style={styles.modalIconLabel}>
@@ -517,7 +514,7 @@ const nftItem = ({item, index}) => {
               numberOfLines={1}
               style={[
                 styles.iconLabel,
-                {maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4},
+                { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
               ]}>
               {artist}
             </Text>
@@ -530,34 +527,34 @@ const nftItem = ({item, index}) => {
           isPlay
             ? setPlay(!isPlay)
             : navigation.navigate('CertificateDetail', {
-                id: item.newtokenId,
-                name: item.metaData.name,
-                description: item.metaData.description,
-                owner: owner,
-                ownerImage: ownerImage,
-                creator: artist,
-                creatorImage: creatorImage,
-                thumbnailUrl: item.thumbnailUrl,
-                video: item.metaData.image,
-                fileType: fileType,
-                price: item.price,
-                chain: item.chain,
-                ownerId: ownerId,
-                artistId: artistId,
-                tokenId: item.tokenId,
-                ownerData: ownerData,
-                artistData: artistData,
-              });
+              id: item.newtokenId,
+              name: item.metaData.name,
+              description: item.metaData.description,
+              owner: owner,
+              ownerImage: ownerImage,
+              creator: artist,
+              creatorImage: creatorImage,
+              thumbnailUrl: item.thumbnailUrl,
+              video: item.metaData.image,
+              fileType: fileType,
+              price: item.price,
+              chain: item.chain,
+              ownerId: ownerId,
+              artistId: artistId,
+              tokenId: item.tokenId,
+              ownerData: ownerData,
+              artistData: artistData,
+            });
         }}>
         {fileType === 'mp4' ||
-        fileType === 'MP4' ||
-        fileType === 'mov' ||
-        fileType === 'MOV' ? (
+          fileType === 'MP4' ||
+          fileType === 'mov' ||
+          fileType === 'MOV' ? (
           <View style={styles.modalImage}>
             <Video
               key={tokenId}
               ref={refVideo}
-              source={{uri: item.metaData.image}}
+              source={{ uri: item.metaData.image }}
               playInBackground={false}
               paused={!isPlay}
               resizeMode={'cover'}

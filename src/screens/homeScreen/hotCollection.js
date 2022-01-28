@@ -53,14 +53,8 @@ const HotCollection = () => {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        onLongPress={() => {
-          // setModalData(item);
-          // setModalVisible(true);
-        }}
         onPress={() => {
-          navigation.push('CollectionDetail', { collectionId: item._id })
-          // dispatch(changeScreenName('awards'));
-          // navigation.push('DetailItem', {index: findIndex});
+          navigation.push('CollectionDetail', { collectionId: item._id });
         }}
         style={styles.listItem}>
         <C_Image

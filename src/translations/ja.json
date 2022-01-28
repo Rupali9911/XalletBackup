@@ -616,7 +616,14 @@
         "emailUserRequired": "メール/ユーザー名が必要です!",
         "passwordReq": "パスワードが必要です!",
         "owned": "所有",
-        "Selectcurrencypopup": "支払通貨を選択してください"
+        "Selectcurrencypopup": "支払通貨を選択してください",
+        "itemsCollection": "アイテム",
+        "owners": "所有者",
+        "floorPrice": "フロア価格",
+        "volumeTraded": "取引高",
+        "viewCollection": "コレクションへ",
+        "auctionended": "オークション終了",
+        "soldout": "Sold Out New"
     },
     "AwardPage": {},
     "wallet": {

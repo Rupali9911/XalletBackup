@@ -3,13 +3,14 @@ import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import { C_Image } from '../../components';
 import { getHotCollectionDetail } from '../../store/actions/hotCollectionAction';
-import { SIZE, widthPercentageToDP as wp, responsiveFontSize as RF } from '../../common/responsiveFunction';
 import ImageSrc from '../../constants/Images';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Collections from './collections';
 import { colors, fonts } from '../../res';
+import { translate } from '../../walletUtils';
+import { useSelector } from 'react-redux';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -23,16 +24,22 @@ function CollectionDetail(props) {
   const [collectionType, setCollectionType] = useState(0);
   const [collectionAddress, setCollectionAddress] = useState(null);
   const navigation = useNavigation();
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     getCollection();
   }, []);
 
   const getCollection = async () => {
-    const collectionArray = await getHotCollectionDetail(collectionId);
-    setCollectionAddress(collectionArray.data.data[0].collectionAddress);
-    setCollection(collectionArray.data.data[0]);
-    setLoading(false);
+    try {
+      const collectionArray = await getHotCollectionDetail(collectionId);
+      setCollectionAddress(collectionArray.data.data[0].collectionAddress);
+      setCollection(collectionArray.data.data[0]);
+      setLoading(false);
+    } catch (err) {
+      console.error(err.message)
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,25 +65,25 @@ function CollectionDetail(props) {
           <View style={styles.collectionTable}>
             <View style={styles.collectionTableRow}>
               <Text style={styles.collectionTableRowText}>{collection?.nftCount}</Text>
-              <Text style={styles.collectionTableRowDec}>items</Text>
+              <Text style={styles.collectionTableRowDec}>{translate('common.itemsCollection')}</Text>
             </View>
             <View style={styles.collectionTableRow}>
               <Text style={styles.collectionTableRowText}>{collection?.owners}</Text>
-              <Text style={styles.collectionTableRowDec}>Owners</Text>
+              <Text style={styles.collectionTableRowDec}>{translate('common.owners')}</Text>
             </View>
             <View style={styles.collectionTableRow}>
               <View style={{ flexDirection: 'row' }}>
                 <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
                 <Text style={styles.collectionTableRowText}>{Number(collection?.floorPrice).toFixed(2)}</Text>
               </View>
-              <Text style={styles.collectionTableRowDec}>Floor price</Text>
+              <Text style={styles.collectionTableRowDec}>{translate('common.floorPrice')}</Text>
             </View>
             <View style={styles.collectionTableRow}>
               <View style={{ flexDirection: 'row' }}>
                 <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
                 <Text style={styles.collectionTableRowText}>{collection?.volTraded}</Text>
               </View>
-              <Text style={styles.collectionTableRowDec}>Volume Traded</Text>
+              <Text style={styles.collectionTableRowDec}>{translate('common.volumeTraded')}</Text>
             </View>
           </View>
         </View>
@@ -89,7 +96,7 @@ function CollectionDetail(props) {
               borderBottomColor: descTab ? 'transparent' : '#eee',
             }]}
           >
-            <Text style={styles.descriptionTabText}>Collection</Text>
+            <Text style={styles.descriptionTabText}>{translate('common.collected')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setDescTab(false)}
@@ -98,13 +105,13 @@ function CollectionDetail(props) {
               borderBottomColor: !descTab ? 'transparent' : '#eee',
             }]}
           >
-            <Text style={styles.descriptionTabText}>Creator</Text>
+            <Text style={styles.descriptionTabText}>{translate('common.creator')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.description}>
           <ScrollView>
             <Text style={styles.descriptionText}>
-              {descTab ? collection?.collectionDesc : collection?.userInfo.description}
+              {descTab ? collection?.collectionDesc : collection.userInfo[`${selectedLanguageItem.language_name}_about`] || collection.userInfo.about}
             </Text>
           </ScrollView>
         </View>
@@ -122,7 +129,7 @@ function CollectionDetail(props) {
                   styles.tabBarLabel,
                   { color: collectionType === 0 ? colors.BLUE4 : colors.GREY1 },
                 ]}>
-                  On Sale
+                  {translate('common.onSale')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -135,7 +142,7 @@ function CollectionDetail(props) {
                   styles.tabBarLabel,
                   { color: collectionType === 1 ? colors.BLUE4 : colors.GREY1 },
                 ]}>
-                  Not on sale
+                  {translate('common.notforsale')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -148,7 +155,7 @@ function CollectionDetail(props) {
                   styles.tabBarLabel,
                   { color: collectionType === 2 ? colors.BLUE4 : colors.GREY1 },
                 ]}>
-                  Owned
+                  {translate('common.owned')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -161,12 +168,11 @@ function CollectionDetail(props) {
                   styles.tabBarLabel,
                   { color: collectionType === 3 ? colors.BLUE4 : colors.GREY1 },
                 ]}>
-                  Gallery
+                  {translate('common.gallery')}
                 </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
-
           {collectionAddress && (
             <Collections
               collectionAddress={collectionAddress}

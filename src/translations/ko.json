@@ -616,7 +616,14 @@
         "emailUserRequired": "이메일/사용자 이름이 필요합니다!",
         "passwordReq": "암호가 필요합니다!",
         "owned": "소유",
-        "Selectcurrencypopup": "지불 통화 유형을 선택하십시오"
+        "Selectcurrencypopup": "지불 통화 유형을 선택하십시오",
+        "itemsCollection": "아이템",
+        "owners": "소유자",
+        "floorPrice": "최저가격",
+        "volumeTraded": "거래량",
+        "viewCollection": "컬렉션 보기",
+        "auctionended": "경매 종료",
+        "soldout": "매진"
     },
     "AwardPage": {},
     "wallet": {
