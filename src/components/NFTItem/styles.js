@@ -1,6 +1,10 @@
-import {StyleSheet} from 'react-native';
-import { COLORS } from '../../constants';
-import {hp, wp} from '../../constants/responsiveFunct';
+import { StyleSheet } from 'react-native';
+import { hp, wp } from '../../constants/responsiveFunct';
+import {
+  SIZE,
+  COLORS
+} from 'src/constants';
+
 const styles = StyleSheet.create({
   listItem: {
     height: wp('100%') / 3 - wp('0.5%'),
@@ -14,13 +18,38 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
   },
-  bottomContainer:{
+  bottomContainer: {
     width: '100%',
     position: 'absolute',
     bottom: 0,
     alignItems: 'center',
     paddingVertical: hp(0.30),
     backgroundColor: COLORS.BLACKRGBA(0.5)
-  }
+  },
+  collectionListItem: {
+    marginVertical: wp("2"),
+    marginHorizontal: wp("1"),
+    width: (wp('100%') / 2) - wp('2%'),
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 1,
+
+    elevation: 5,
+  },
+  listItemContainer: {
+    width: "100%",
+    borderRadius: SIZE(20),
+    overflow: 'hidden'
+  },
+  collectionListImage: {
+    width: '100%',
+    height: (wp('100%') / 2) - wp('1%'),
+    borderTopRightRadius: SIZE(12),
+    borderTopLeftRadius: SIZE(12),
+  },
 });
 export default styles;

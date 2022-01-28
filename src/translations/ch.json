@@ -621,7 +621,15 @@
         "Bids": "出价",
         "Buys": "销售",
         "Claim": "宣称",
-        "OnAuction": "上市（拍卖）"
+        "OnAuction": "上市（拍卖）",
+        "itemsCollection": "项目",
+        "owners": "拥有者",
+        "floorPrice": "底价",
+        "volumeTraded": "成交量",
+        "viewCollection": "查看集合",
+        "auctionended": "拍賣結束",
+        "soldout": "售罄",
+        "hotcollection": "热门系列"
     },
     "AwardPage": {},
     "wallet": {

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, SafeAreaView, Text } from 'react-native';
+import { View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import { AppHeader, LoaderIndicator } from '../../components';
 import { TabView, TabBar } from 'react-native-tab-view';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useNavigation } from '@react-navigation/native';
 
 import {
   heightPercentageToDP as hp,
@@ -42,6 +43,7 @@ const CreateNFTScreen = ({ route }) => {
     { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
     { key: 'Filter', title: translate("wallet.common.filter") },
   ];
+  const navigation = useNavigation();
 
   const ShowModalAction = (v, screenName) => {
     setModalItem(null)
@@ -51,7 +53,15 @@ const CreateNFTScreen = ({ route }) => {
     setModalVisible(true);
     setnftListDefault(null)
   }
+  const collection = routeParams?.data;
 
+  const onViewCollection = () => {
+    console.log('=====data', routeParams.data);
+    navigation.navigate('CollectionDetail', { collectionId: routeParams.data?._id })
+  }
+
+  console.log('=====collection?.userId', collection?.userId);
+    console.log('=====routeParams', routeParams);
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Collection':
@@ -130,8 +140,8 @@ const CreateNFTScreen = ({ route }) => {
     )
   }
 
-  let renderTitle = index == 0 ? translate("wallet.common.collection") : 
-  index == 1 ? translate("wallet.common.NFTList") : 
+  let renderTitle = index == 0 ? translate("wallet.common.collection") :
+  index == 1 ? translate("wallet.common.NFTList") :
   index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter") ;
 
   return (
@@ -145,7 +155,14 @@ const CreateNFTScreen = ({ route }) => {
         containerStyle={{ backgroundColor: colors.white }}
       />
       <View style={styles.sectionContainer}>
-        <Text style={styles.title}>{renderTitle}</Text>
+        <View style={styles.titleWrapper}>
+            <Text style={styles.title}>{renderTitle}</Text>
+          {collection?.userId != 0 && routeParams?.status &&
+            <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
+              <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
+            </TouchableOpacity>
+          }
+        </View>
         <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
 
         <TabView

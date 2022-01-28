@@ -621,7 +621,15 @@
         "Bids": "매기다",
         "Buys": "판매",
         "Claim": "주장하다",
-        "OnAuction": "상장(경매)"
+        "OnAuction": "상장(경매)",
+        "itemsCollection": "아이템",
+        "owners": "소유자",
+        "floorPrice": "최저가격",
+        "volumeTraded": "거래량",
+        "viewCollection": "컬렉션 보기",
+        "auctionended": "경매 종료",
+        "soldout": "매진",
+        "hotcollection": "핫 컬렉션"
     },
     "AwardPage": {},
     "wallet": {

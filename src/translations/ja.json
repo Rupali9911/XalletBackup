@@ -621,7 +621,15 @@
         "Bids": "入札",
         "Buys": "販売",
         "Claim": "落札",
-        "OnAuction": "リスティング (オークション)"
+        "OnAuction": "リスティング (オークション)",
+        "itemsCollection": "アイテム",
+        "owners": "所有者",
+        "floorPrice": "フロア価格",
+        "volumeTraded": "取引高",
+        "viewCollection": "コレクションへ",
+        "auctionended": "オークション終了",
+        "soldout": "販売終了",
+        "hotcollection": "おすすめコレクション"
     },
     "AwardPage": {},
     "wallet": {
