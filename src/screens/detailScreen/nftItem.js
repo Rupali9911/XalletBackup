@@ -37,7 +37,6 @@ const {
 
 const nftItem = ({item, index}) => {
   const dispatch = useDispatch();
-
   const {data, wallet} = useSelector(state => state.UserReducer);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
@@ -447,7 +446,7 @@ const nftItem = ({item, index}) => {
               : false,
           );
           console.log('calling');
-          checkNFTOnAuction();
+          //checkNFTOnAuction();
         } else if (res.data === 'No record found') {
           console.log('res.data.data', res.data);
         }
@@ -467,78 +466,7 @@ const nftItem = ({item, index}) => {
         setDiscount(res);
       });
   };
-  const checkNFTOnAuction = () => {
-    const setAuctionVariables = (
-      auctionInitiatorAdd = '',
-      auctionETime = '',
-      lastBidAmount = '',
-      isNFTOnAuction = false,
-    ) => {
-      setIsNFTOnAuction(isNFTOnAuction);
-      setAuctionInitiatorAdd(auctionInitiatorAdd);
-      setAuctionETime(auctionETime);
-      setLastBidAmount(lastBidAmount);
-    };
 
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    MarketPlaceContract.methods
-      .getSellDetail(collectionAddress, _tokenId)
-      .call(async (err, res) => {
-        console.log('checkNFTOnAuction_res', res);
-        if (!err) {
-          let baseCurrency = [];
-          if (res[6]) {
-            baseCurrency = basePriceTokens.filter(
-              token => token.chain === chainType && token.order === 1,
-            );
-            setBaseCurrency(baseCurrency[0]);
-            console.log('baseCurrency________', baseCurrency[0]);
-          } else {
-            baseCurrency = basePriceTokens.filter(
-              token =>
-                token.chain === chainType && token.order === parseInt(res[7]),
-            );
-            setBaseCurrency(baseCurrency[0]);
-            console.log('baseCurrency________', baseCurrency[0]);
-          }
-
-          if (res[0] !== '0x0000000000000000000000000000000000000000') {
-            let dollarToken = basePriceTokens.filter(
-              token => token.chain === chainType && token.dollarCurrency,
-            );
-            let rs = await calculatePrice(
-              res[1],
-              dollarToken[0].order,
-              // this.state.nonCryptoOwnerId
-              walletAddressForNonCrypto,
-              baseCurrency[0],
-            );
-            console.log('rs', rs);
-            if (rs) {
-              let res = divideNo(rs);
-              setPriceInDollar(res);
-            }
-          }
-
-          if (parseInt(res[5]) * 1000 > 0) {
-            setAuctionVariables(
-              res[0],
-              parseInt(res[2]) * 1000,
-              divideNo(res[1]),
-              true,
-            );
-          } else {
-            setAuctionVariables();
-          }
-        } else {
-          setAuctionVariables();
-        }
-      });
-  };
   // const getTokenDetailsApi = async (isCryptoOwner = true) => {
 
   //   let body_data = {
@@ -614,7 +542,6 @@ const nftItem = ({item, index}) => {
       if (artistId) navigation.push('ArtistDetail', {id: artistId});
     }
   };
-
   let imageUri =
     item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl

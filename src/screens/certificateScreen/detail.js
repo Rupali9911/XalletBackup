@@ -77,7 +77,6 @@ const DetailScreen = ({navigation, route}) => {
     artistId,
     artistData,
   } = route.params;
-
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [isContractOwner, setIsContractOwner] = useState(false);
@@ -588,7 +587,7 @@ const DetailScreen = ({navigation, route}) => {
       });
   };
 
-  const getNonCryptoNFTOwner = async () => {
+  const getNonCryptoNFTOwner = () => {
     // let tokenId = "317";
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
@@ -603,8 +602,7 @@ const DetailScreen = ({navigation, route}) => {
           const userId = res.toLowerCase();
           //getPublicProfile(userId, false);
           setNonCryptoOwnerId(res);
-          setBuyLoading(false);
-          // lastOwnerOfNFTNonCrypto(res);
+          lastOwnerOfNFTNonCrypto(res);
           await getTokenDetailsApi(false);
         } else if (!res) {
           lastOwnerOfNFT();
@@ -672,7 +670,7 @@ const DetailScreen = ({navigation, route}) => {
                   );
                   setIsOwner(
                     (_data.owner_address.toLowerCase() ===
-                      data.user._id.toLowerCase() &&
+                      data?.user?._id?.toLowerCase() &&
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
@@ -840,6 +838,7 @@ const DetailScreen = ({navigation, route}) => {
             getDiscount();
           }
           let data = await getNFTDetails(res.data[0]);
+          console.log('NFT Detail', data);
           if (data.newprice && data.newprice.allowedCurrencies) {
             let currArray = data.newprice.allowedCurrencies.split('');
             let availableTokens = basePriceTokens.filter(
@@ -847,9 +846,10 @@ const DetailScreen = ({navigation, route}) => {
                 token.chain === chainType &&
                 currArray.includes(token.order.toString()),
             );
-            console.log('availableTokens', availableTokens);
+            console.log('availableTokens S', availableTokens);
             setAvailableTokens(availableTokens);
           } else {
+            console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
           }
 
@@ -924,7 +924,7 @@ const DetailScreen = ({navigation, route}) => {
     nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
     nftObj.price = nftObj.price ? nftObj.price : '';
 
-    // console.log("nftObj", nftObj);
+    console.log("nftObj", nftObj);
 
     await MarketPlaceContract.methods
       .ownerOf(nftObj.id)
@@ -1322,14 +1322,14 @@ const DetailScreen = ({navigation, route}) => {
                   // navigation.navigate('WalletConnect')
                   // if(price && price > 0){
                   if (setNFTStatus() === 'buy') {
-                    if (payableIn === translate('common.allowedcurrency')) {
-                      alertWithSingleBtn(
-                        translate('wallet.common.alert'),
-                        translate('common.Selectcurrencypopup'),
-                      );
-                    } else {
+                    // if (payableIn === translate('common.allowedcurrency')) {
+                    //   alertWithSingleBtn(
+                    //     translate('wallet.common.alert'),
+                    //     translate('common.Selectcurrencypopup'),
+                    //   );
+                    // } else {
                       setShowPaymentMethod(true);
-                    }
+                    // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', {nftDetail: singleNFT});
                   }
