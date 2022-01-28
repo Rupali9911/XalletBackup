@@ -20,7 +20,7 @@ import { C_Image } from '../../components';
 
 const ListItem = props => {
   let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
-  console.log(props.data)
+  // console.log(props.data)
   return (
     <TouchableOpacity onPress={props.press} style={styles.listCont}>
       <View style={styles.listCenter}>
@@ -30,6 +30,67 @@ const ListItem = props => {
     </TouchableOpacity>
   );
 };
+
+const basePriceTokens = [
+  {
+    key: 'ETH',
+    value: 'ETH',
+    chain: 'ethereum',
+    order: 1,
+  },
+  {
+    key: 'USDT',
+    value: 'USDT',
+    chain: 'ethereum',
+    order: 0,
+  },
+  {
+    key: 'ALIA',
+    value: 'ALIA',
+    chain: 'binance',
+    order: 0,
+  },
+  {
+    key: 'BUSD',
+    value: 'BUSD',
+    chain: 'binance',
+    order: 1,
+  },
+
+  {
+    key: 'BNB',
+    value: 'BNB',
+    chain: 'binance',
+    order: 2,
+  },
+
+  {
+    key: 'ALIA',
+    value: 'ALIA',
+    chain: 'polygon',
+    order: 0,
+  },
+  {
+    key: 'USDC',
+    value: 'USDC',
+    chain: 'polygon',
+    order: 1,
+  },
+
+  {
+    key: 'ETH',
+    value: 'ETH',
+    chain: 'polygon',
+    order: 2,
+  },
+
+  {
+    key: 'MATIC',
+    value: 'MATIC',
+    chain: 'polygon',
+    order: 3,
+  },
+];
 
 const ModalItems = props => {
   return (
@@ -73,16 +134,17 @@ const NFTList = ({
 
   useEffect(() => {
     if (position == 1) {
-      changeLoadingState(true)
       cleanData()
+      changeLoadingState(true)
 
       console.log(nftListDefault)
       // getCollectionList()
       if (nftListDefault) {
+
         setCollection(nftListDefault.collect)
         if (nftListDefault.name === "draft") {
           pressToggle("draft", nftListDefault.collect)
-        }else{
+        } else {
           pressToggle("mint", nftListDefault.collect)
         }
       } else {
@@ -186,8 +248,6 @@ const NFTList = ({
 
   const pressToggle = (v, collect) => {
     changeLoadingState(true)
-    setNftListDraft([]);
-    setNftListCreated([]);
     setToggle(v);
     v == "mint" ?
       setNftListPage(1) : setNftListDraftPage(1);
@@ -199,9 +259,30 @@ const NFTList = ({
     setModalVisible(true)
   }
 
+  const getCoinName = (token, chainType) => {
+    let foundCoin = "";
+    if (token && chainType) {
+      for (let coin in basePriceTokens) {
+        if (basePriceTokens[coin]?.chain == chainType && basePriceTokens[coin]?.order == token) {
+          foundCoin = basePriceTokens[coin]?.value;
+        }
+      }
+    }
+    return foundCoin;
+  }
+
   const renderListItem = ({ item, index }) => {
     return (
-      <ListItem press={() => selectItem(item)} data={item} toggle={toggle} />
+      <ListItem press={() => {
+        let objectToRender = toggle == "mint" ? {
+          image: item.metaData.image,
+          name: item.metaData.name,
+          minPrice: parseInt(item.newprice[0].price) / Math.pow(10, 18),
+          basePrice: getCoinName(item.newprice[0].baseCurrency, item.newprice[0].mainChain),
+          chainType: item.newprice?.[0]?.mainChain
+        } : item;
+        selectItem(objectToRender)
+      }} data={item} toggle={toggle} />
     )
   }
 
@@ -220,13 +301,21 @@ const NFTList = ({
           showRight />
         <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
           <CardButton
-            onPress={() => pressToggle("mint", collection)}
+            onPress={() => {
+              setNftListDraft([]);
+              setNftListCreated([]);
+              pressToggle("mint", collection)
+            }}
             border={toggle !== "mint" ? colors.BLUE6 : null}
             label={translate("wallet.common.created")}
             buttonCont={styles.leftToggle}
           />
           <CardButton
-            onPress={() => pressToggle("draft", collection)}
+            onPress={() => {
+              setNftListDraft([]);
+              setNftListCreated([]);
+              pressToggle("draft", collection)
+            }}
             border={toggle !== "draft" ? colors.BLUE6 : null}
             buttonCont={styles.rightToggle}
             label={translate("common.saveAsDraft")}
@@ -322,20 +411,23 @@ const NFTList = ({
                   label={`${translate("common.Earned")}:`}
                   value="-"
                 />
+                {
+                  toggle !== "mint" &&
+                  <View style={styles.saveBtnGroup}>
+                    <CardButton
+                      onPress={() => null}
+                      label={translate("wallet.common.edit")}
+                      buttonCont={{ width: '48%' }}
+                    />
+                    <CardButton
+                      onPress={() => null}
+                      border={colors.BLUE6}
+                      buttonCont={{ width: '48%' }}
+                      label={translate("wallet.common.delete")}
+                    />
+                  </View>
+                }
 
-                <View style={styles.saveBtnGroup}>
-                  <CardButton
-                    onPress={() => null}
-                    label={translate("wallet.common.edit")}
-                    buttonCont={{ width: '48%' }}
-                  />
-                  <CardButton
-                    onPress={() => null}
-                    border={colors.BLUE6}
-                    buttonCont={{ width: '48%' }}
-                    label={translate("wallet.common.delete")}
-                  />
-                </View>
               </ScrollView> : null}
         </View>
       </Modal>

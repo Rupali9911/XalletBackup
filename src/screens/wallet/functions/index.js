@@ -682,6 +682,7 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     try {
       txCount = await web3.eth.getTransactionCount(publicKey, "pending")
     } catch (e) {
+      console.log(e, "reject tx count create collection")
       return reject(e)
     }
 
@@ -732,6 +733,8 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     const raw = "0x" + serializedTx.toString("hex");
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
+    console.log(txHash, "tx hash count create collection", err)
+
       if (txHash) {
         const interval = setInterval(() => checkingProgressTransaction(), 10000)
         const checkingProgressTransaction = async () => {
@@ -752,14 +755,14 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
               }
             }
           } catch (error) {
-            console.error(error, " transactionReceipt error");
+            console.log(error, " create nft sendSignedTransaction error");
             reject(error)
           }
         }
 
       } else if (err) {
-        console.log(err, "transactionReceipt");
-        reject(err.message);
+        console.log(err, "transactionReceipt sendSignedTransaction error ");
+        reject(err);
       }
     })
   })

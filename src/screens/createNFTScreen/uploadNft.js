@@ -178,6 +178,25 @@ const UploadNFT = ({
 
   }, [datePickerData])
 
+const cleanAll = () => {
+  setNftImage(null);
+   setImageError("");
+   setNftImageThumb(null);
+   setActiveModal("");
+   setFilterList([]);
+   setFilterItemActive({});
+   setFilterSelect("");
+   setNftName("");
+   setNftDesc("");
+   setBasePrice(null);
+   setOtherPrice([]);
+   setNftImageType(null);
+   setRoyality("2.5%");
+   setFixedPrice("");
+   setStartTimeDate("");
+   setEndTimeDate("");
+}
+
   const setMainFiltersData = filters => {
     let newArray = [];
     for (let i = 0; i < filters?.length; i++) {
@@ -405,22 +424,26 @@ const UploadNFT = ({
                                 .then((_) => {
                                   console.log(_, "__approval set__")
 
-                                  if(toggleButton == "fixPrice"){
+                                  if (toggleButton == "fixPrice") {
                                     putNftOnSale(hashResp);
-                                  }else{
+                                  } else {
                                     putNftOnAuction(hashResp);
                                   }
 
                                 }).catch((err) => {
-                                  console.log(err)
-                                  errorMethod(err, "approval set nft err")
+                                  changeLoadingState(false);
+
+                                  alertWithSingleBtn(
+                                    translate("wallet.common.alert"),
+                                    translate("wallet.common.insufficientFunds")
+                                  );
                                 });
 
                             } else {
 
-                              if(toggleButton == "fixPrice"){
+                              if (toggleButton == "fixPrice") {
                                 putNftOnSale(hashResp);
-                              }else{
+                              } else {
                                 putNftOnAuction(hashResp);
                               }
 
@@ -502,11 +525,17 @@ const UploadNFT = ({
       .then((_) => {
         changeLoadingState(false);
         console.log(_, "__create auction nft__")
+        cleanAll();
         switchToNFTList("mint", collection)
       }).catch((err) => {
-        errorMethod(err, "errorr create auction nft")
+        changeLoadingState(false);
+
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.insufficientFunds")
+        );
       });
-  } 
+  }
 
   const putNftOnSale = (data) => {
 
@@ -515,7 +544,7 @@ const UploadNFT = ({
     const privKey = wallet.privateKey;
 
     let currencyListArr = otherPrice.map(i => Number(i));
-    
+
     let dataToAdd = {
       collectionAddress: collection.collectionAddress,
       publicAddress,
@@ -538,9 +567,15 @@ const UploadNFT = ({
       .then((_) => {
         changeLoadingState(false);
         console.log(_, "__create nft__")
+        cleanAll();
         switchToNFTList("mint", collection)
       }).catch((err) => {
-        errorMethod(err, "errorr create nft")
+        changeLoadingState(false);
+
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.insufficientFunds")
+        );
       });
   }
 
@@ -599,8 +634,9 @@ const UploadNFT = ({
                     .then(draftRes => {
 
                       console.log(draftRes, "draftRes")
-
+                      
                       if (draftRes.data.success) {
+                        cleanAll();
                         switchToNFTList("draft", collection)
                       }
                       changeLoadingState(false);
