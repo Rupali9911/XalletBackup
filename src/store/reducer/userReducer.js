@@ -14,13 +14,13 @@ import {
   SET_PASSCODE_ASYNC,
   UPDATE_BACKUP,
   UPDATE_ASYNC_PASSCODE,
-  LOG_OUT
+  LOG_OUT,
 } from '../types';
-import { getSig } from '../../screens/wallet/functions';
-import { BASE_URL } from '../../common/constants';
-import { translate } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../common/function';
-import { setConnectedApps } from './walletReducer';
+import {getSig} from '../../screens/wallet/functions';
+import {BASE_URL} from '../../common/constants';
+import {translate} from '../../walletUtils';
+import {alertWithSingleBtn} from '../../common/function';
+import {setConnectedApps} from './walletReducer';
 
 const initialState = {
   loading: false,
@@ -29,8 +29,8 @@ const initialState = {
   wallet: null,
   isCreate: false,
   data: {},
-  passcode: "",
-  passcodeAsync: "",
+  passcode: '',
+  passcodeAsync: '',
   isBackup: false,
   showSuccess: false,
 };
@@ -69,14 +69,14 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         passcode: action.payload,
-        loading: true
+        loading: true,
       };
     case SET_PASSCODE_ASYNC:
       return {
         ...state,
         passcode: action.payload,
         passcodeAsync: action.payload,
-        loading: true
+        loading: true,
       };
     case UPDATE_ASYNC_PASSCODE:
       return {
@@ -91,14 +91,14 @@ export default UserReducer = (state = initialState, action) => {
         data: action.payload.data,
         isCreate: action.payload.isCreate,
         showSuccess: action.payload.showSuccess,
-        loading: false
+        loading: false,
       };
 
     case UPDATE_CREATE:
       return {
         ...state,
         isCreate: false,
-        showSuccess: false
+        showSuccess: false,
       };
 
     case UPDATE_PROFILE:
@@ -106,21 +106,21 @@ export default UserReducer = (state = initialState, action) => {
       _data.user = action.payload;
       return {
         ...state,
-        data: { ..._data }
-      }
+        data: {..._data},
+      };
 
     case UPDATE_BACKUP:
       return {
         ...state,
         isBackup: action.payload,
-        loading: false
+        loading: false,
       };
 
     case LOG_OUT:
       return {
         ...state,
-        wallet: null
-      }
+        wallet: null,
+      };
     default:
       return state;
   }
@@ -130,7 +130,7 @@ export const startLoading = () => ({
   type: AUTH_LOADING_START,
 });
 export const hideSplash = () => ({
-  type: HIDE_SPLASH
+  type: HIDE_SPLASH,
 });
 
 const endLoading = () => ({
@@ -163,14 +163,14 @@ export const setPasscodeAsync = data => ({
   payload: data,
 });
 
-export const updateAsyncPasscodeAction = (payload) => ({
+export const updateAsyncPasscodeAction = payload => ({
   type: UPDATE_ASYNC_PASSCODE,
-  payload
+  payload,
 });
 
-export const setBackup = (data) => ({
+export const setBackup = data => ({
   type: UPDATE_BACKUP,
-  payload: data
+  payload: data,
 });
 
 export const logout = () => ({
@@ -195,11 +195,10 @@ export const endLoader = () => dispatch =>
     resolve();
   });
 
-export const loadFromAsync = (asyncData) => (dispatch, getState) => {
-
+export const loadFromAsync = asyncData => (dispatch, getState) => {
   if (asyncData && asyncData.wallet && asyncData.userData) {
     const { wallet, userData, BackedUp, apps } = asyncData;
-    console.log('userData', userData)
+    console.log('userData', userData, wallet)
     dispatch(
       setUserData({
         data: userData,
@@ -213,7 +212,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
     const _wallet = wallet;
     let req_data = {
-      owner: userData.user._id,
+      owner: _wallet.address,
       token: 'HubyJ*%qcqR0',
     };
 
@@ -229,6 +228,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
       .then(response => response.json())
       .then(res => {
         if (res.data) {
+            console.log('Response /xanalia/getProfile', res, JSON.stringify(req_data))
           dispatch(upateUserData(res.data));
         }
         dispatch(endMainLoading());
@@ -240,7 +240,7 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
         alertWithSingleBtn(
           translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed')
+          translate('wallet.common.error.networkFailed'),
         );
       });
   } else {
@@ -251,16 +251,16 @@ export const loadFromAsync = (asyncData) => (dispatch, getState) => {
 
 export const setUserAuthData =
   (data, isCreate = false) =>
-    dispatch =>
-      new Promise(async (resolve, reject) => {
-        dispatch(startLoading());
-        AsyncStorage.setItem('@wallet', JSON.stringify(data));
-        dispatch(setUserData({ data, isCreate }));
-      });
+  dispatch =>
+    new Promise(async (resolve, reject) => {
+      dispatch(startLoading());
+      AsyncStorage.setItem('@wallet', JSON.stringify(data));
+      dispatch(setUserData({data, isCreate}));
+    });
 
 export const updateCreateState = () => dispatch =>
   new Promise((resolve, reject) => {
-    dispatch({ type: UPDATE_CREATE });
+    dispatch({type: UPDATE_CREATE});
     resolve();
   });
 
@@ -342,7 +342,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
       });
   });
 
-export const setBackupStatus = (data) => (dispatch) =>
+export const setBackupStatus = data => dispatch =>
   new Promise(async (resolve, reject) => {
     dispatch(startLoading());
     AsyncStorage.setItem('@BackedUp', JSON.stringify(data));
@@ -353,17 +353,18 @@ export const signOut = () => {
   return (dispatch, getState) => {
     AsyncStorage.removeItem('@wallet');
     dispatch(logout());
-  }
-}
+  };
+};
 
-export const updateProfileImage = (formData) => async (dispatch, getState) => {
+export const updateProfileImage = formData => async (dispatch, getState) => {
   dispatch(startLoading());
 
-  const { data } = getState().UserReducer;
+  const {data} = getState().UserReducer;
   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-  await axios.post(`${BASE_URL}/user/update-profile-image`, formData)
+  await axios
+    .post(`${BASE_URL}/user/update-profile-image`, formData)
     .then(res => {
       dispatch(upateUserData(res.data.data));
     })
@@ -371,83 +372,84 @@ export const updateProfileImage = (formData) => async (dispatch, getState) => {
       dispatch(endLoading());
       if (err.response.status === 401) {
         alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("common.sessionexpired"),
+          translate('wallet.common.alert'),
+          translate('common.sessionexpired'),
           () => {
             console.log(err);
-          }
+          },
         );
         dispatch(signOut());
       }
       alertWithSingleBtn(
-        translate("wallet.common.alert"),
-        translate("wallet.common.error.networkFailed"),
+        translate('wallet.common.alert'),
+        translate('wallet.common.error.networkFailed'),
         () => {
           console.log(err);
-        }
+        },
       );
     });
-}
+};
 
-export const updateProfile = (props, callBack) => async (dispatch, getState) => {
-  dispatch(startLoading());
+export const updateProfile =
+  (props, callBack) => async (dispatch, getState) => {
+    dispatch(startLoading());
 
-  const { data } = getState().UserReducer;
-  const config = {
-    method: 'post',
-    url: `${BASE_URL}/user/update-user-profile`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${data.token}`
-    },
-    data: props
+    const {data} = getState().UserReducer;
+    const config = {
+      method: 'post',
+      url: `${BASE_URL}/user/update-user-profile`,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${data.token}`,
+      },
+      data: props,
+    };
+
+    await axios(config)
+      .then(res => {
+        let data = res.data.data;
+        dispatch(upateUserData(data));
+        dispatch(endLoading());
+        callBack();
+      })
+      .catch(err => {
+        dispatch(endLoading());
+
+        if (err.response.status === 401) {
+          alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('common.sessionexpired'),
+            () => {
+              console.log(err);
+            },
+          );
+          dispatch(signOut());
+          return;
+        }
+        if (err.response.data.data === 'email already taken') {
+          alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('common.emailexists'),
+            () => {
+              console.log(err);
+            },
+          );
+        } else if (err.response.data.data === 'username already taken') {
+          alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('common.usrnameexists'),
+            () => {
+              console.log(err.response.data.data);
+            },
+          );
+        } else {
+          alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('wallet.common.error.networkFailed'),
+            () => {
+              console.log(err);
+            },
+          );
+        }
+      });
   };
-
-  await axios(config)
-    .then(res => {
-      let data = res.data.data;
-      dispatch(upateUserData(data));
-      dispatch(endLoading());
-      callBack();
-    })
-    .catch(err => {
-      dispatch(endLoading());
-
-      if (err.response.status === 401) {
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("common.sessionexpired"),
-          () => {
-            console.log(err);
-          }
-        );
-        dispatch(signOut());
-        return;
-      }
-      if (err.response.data.data === 'email already taken') {
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("common.emailexists"),
-          () => {
-            console.log(err);
-          }
-        );
-      } else if (err.response.data.data === 'username already taken') {
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("common.usrnameexists"),
-          () => {
-            console.log(err.response.data.data);
-          }
-        );
-      } else {
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.error.networkFailed"),
-          () => {
-            console.log(err);
-          }
-        );
-      }
-    });
-}

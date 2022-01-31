@@ -30,7 +30,6 @@ import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import {hp} from '../../constants/responsiveFunct';
-import {updateNftDetail} from '../../store/actions/newNFTActions';
 import {
   getAllCards,
   setPaymentObject,
@@ -41,6 +40,9 @@ import {basePriceTokens} from '../../web3/config/availableTokens';
 import {blockChainConfig} from '../../web3/config/blockChainConfig';
 import {CardField, TabModal} from '../createNFTScreen/components';
 import styles from './styles';
+import AppButton from '../../components/appButton';
+import CommonStyles from '../../constants/styles';
+import {BASE_URL} from '../../common/constants';
 
 const {PlayButtonIcon, GIRL} = SVGS;
 
@@ -75,7 +77,6 @@ const DetailScreen = ({navigation, route}) => {
     artistId,
     artistData,
   } = route.params;
-
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [isContractOwner, setIsContractOwner] = useState(false);
@@ -586,7 +587,7 @@ const DetailScreen = ({navigation, route}) => {
       });
   };
 
-  const getNonCryptoNFTOwner = async () => {
+  const getNonCryptoNFTOwner = () => {
     // let tokenId = "317";
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
@@ -599,7 +600,7 @@ const DetailScreen = ({navigation, route}) => {
         console.log('getNonCryptoOwner_res', res);
         if (res) {
           const userId = res.toLowerCase();
-          getPublicProfile(userId, false);
+          //getPublicProfile(userId, false);
           setNonCryptoOwnerId(res);
           lastOwnerOfNFTNonCrypto(res);
           await getTokenDetailsApi(false);
@@ -669,7 +670,7 @@ const DetailScreen = ({navigation, route}) => {
                   );
                   setIsOwner(
                     (_data.owner_address.toLowerCase() ===
-                      data.user._id.toLowerCase() &&
+                      data?.user?._id?.toLowerCase() &&
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
@@ -821,7 +822,7 @@ const DetailScreen = ({navigation, route}) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        console.log('getDetailNFT_res', res);
+        // console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
           const getDetails = res?.data;
           if (
@@ -837,6 +838,7 @@ const DetailScreen = ({navigation, route}) => {
             getDiscount();
           }
           let data = await getNFTDetails(res.data[0]);
+          console.log('NFT Detail', data);
           if (data.newprice && data.newprice.allowedCurrencies) {
             let currArray = data.newprice.allowedCurrencies.split('');
             let availableTokens = basePriceTokens.filter(
@@ -844,9 +846,10 @@ const DetailScreen = ({navigation, route}) => {
                 token.chain === chainType &&
                 currArray.includes(token.order.toString()),
             );
-            console.log('availableTokens', availableTokens);
+            console.log('availableTokens S', availableTokens);
             setAvailableTokens(availableTokens);
           } else {
+            console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
           }
 
@@ -921,7 +924,7 @@ const DetailScreen = ({navigation, route}) => {
     nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
     nftObj.price = nftObj.price ? nftObj.price : '';
 
-    // console.log("nftObj", nftObj);
+    console.log("nftObj", nftObj);
 
     await MarketPlaceContract.methods
       .ownerOf(nftObj.id)
@@ -1285,16 +1288,18 @@ const DetailScreen = ({navigation, route}) => {
           )}
           <Text style={styles.description}>{description}</Text>
           <View style={styles.bottomView}>
-            {availableTokens.length > 0 && setNFTStatus() !== 'notOnSell' && (
-              <CardField
-                inputProps={{value: payableIn}}
-                onPress={() => {
-                  setAllowedTokenModal(true);
-                }}
-                pressable
-                showRight
-              />
-            )}
+            {availableTokens.length > 0 &&
+              setNFTStatus() !== 'notOnSell' &&
+              setNFTStatus() !== 'onSell' && (
+                <CardField
+                  inputProps={{value: payableIn}}
+                  onPress={() => {
+                    setAllowedTokenModal(true);
+                  }}
+                  pressable
+                  showRight
+                />
+              )}
             {setNFTStatus() !== undefined && (
               <GroupButton
                 leftText={
@@ -1317,14 +1322,14 @@ const DetailScreen = ({navigation, route}) => {
                   // navigation.navigate('WalletConnect')
                   // if(price && price > 0){
                   if (setNFTStatus() === 'buy') {
-                    if (payableIn === translate('common.allowedcurrency')) {
-                      alertWithSingleBtn(
-                        translate('wallet.common.alert'),
-                        translate('common.Selectcurrencypopup'),
-                      );
-                    } else {
+                    // if (payableIn === translate('common.allowedcurrency')) {
+                    //   alertWithSingleBtn(
+                    //     translate('wallet.common.alert'),
+                    //     translate('common.Selectcurrencypopup'),
+                    //   );
+                    // } else {
                       setShowPaymentMethod(true);
-                    }
+                    // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', {nftDetail: singleNFT});
                   }
@@ -1334,6 +1339,23 @@ const DetailScreen = ({navigation, route}) => {
                 rightHide
                 onRightPress={() => navigation.navigate('MakeBid')}
               />
+            )}
+            {setNFTStatus() === 'onSell' && (
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <AppButton
+                  label={(price ? price : 0) + ' ' + baseCurrency?.key}
+                  containerStyle={[styles.button, CommonStyles.outlineButton]}
+                  labelStyle={[CommonStyles.outlineButtonLabel]}
+                  onPress={() => {}}
+                />
+                <AppButton
+                  label={translate('common.editPrice')}
+                  containerStyle={styles.button}
+                  labelStyle={CommonStyles.buttonLabel}
+                  onPress={() => {}}
+                />
+              </View>
             )}
           </View>
           <NFTDetailDropdown
@@ -1541,7 +1563,7 @@ const DetailScreen = ({navigation, route}) => {
             setAllowedTokenModal(false);
           },
         }}
-        data={availableTokens}
+        data={{data: availableTokens}}
         title={translate('common.allowedcurrency')}
         itemPress={v => {
           setPayableIn(v.name);

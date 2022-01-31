@@ -125,20 +125,17 @@ export default function AppSearch() {
                         const fileType = image
                           ? image.substring(image.lastIndexOf('.') + 1)
                           : '';
-                        navigation.navigate('CertificateDetail');
-                        dispatch(
-                          updateNftDetail({
-                            id: item.newtokenId,
-                            name: item.metaData.name,
-                            description: item.metaData.description,
-                            thumbnailUrl: item.thumbnailUrl,
-                            video: item.metaData.image,
-                            fileType: fileType,
-                            price: item.price,
-                            chain: item.chain,
-                            tokenId: item.tokenId,
-                          }),
-                        );
+                        navigation.navigate('CertificateDetail', {
+                          id: item.newtokenId,
+                          name: item.metaData.name,
+                          description: item.metaData.description,
+                          thumbnailUrl: item.thumbnailUrl,
+                          video: item.metaData.image,
+                          fileType: fileType,
+                          price: item.price,
+                          chain: item.chain,
+                          tokenId: item.tokenId,
+                        });
                         setSearchData([]);
                         setSearchTxt('');
                       } else if (item.type == 'Artist') {

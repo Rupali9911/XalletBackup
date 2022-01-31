@@ -12,7 +12,7 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    StatusBar
+    StatusBar, Linking
 } from 'react-native';
 import {
     Header,
@@ -47,7 +47,7 @@ import {
 import {
     Loader,
     C_Image,
-    DetailModal, 
+    DetailModal,
     AppHeader
 } from "../../components";
 import {
@@ -74,6 +74,7 @@ import { colors } from '../../res';
 import { translate } from '../../walletUtils';
 import axios from 'axios';
 import AppBackground from '../../components/appBackground';
+import Hyperlink from "react-native-hyperlink";
 
 const langObj = getLanguage();
 
@@ -426,12 +427,12 @@ function ArtistDetail({
 
     return (
         <AppBackground isBusy={loading}>
-            
+
             <AppHeader
                     title={data.title || data.username}
                     showBackButton
                 />
-            
+
             <View style={{ width: "100%", paddingHorizontal: SIZE(14), flexDirection: "row" }} >
                 <UserImageView>
                     <C_Image
@@ -482,7 +483,11 @@ function ArtistDetail({
                     <RowWrap>
                         <ConnectSmIcon />
                         <WebsiteLink>
-                            {data.links.website}
+                            <Hyperlink
+                                onPress={(url, text) => Linking.openURL(url)}
+                                linkStyle={{ color: COLORS.BLUE2 }}>
+                                {data.links.website}
+                            </Hyperlink>
                         </WebsiteLink>
                     </RowWrap>
                 }

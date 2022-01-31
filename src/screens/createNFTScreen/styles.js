@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('4%'),
     paddingTop: hp('2%'),
   },
+  titleWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
   title: {
     fontSize: RF(2.5),
     fontFamily: fonts.PINGfANG_SBOLD,
@@ -27,6 +32,16 @@ const styles = StyleSheet.create({
     fontSize: RF(1.5),
     marginVertical: hp('1%'),
     fontFamily: fonts.PINGfANG,
+  },
+  collectionButton: {
+    padding: wp('2%'),
+    paddingVertical: wp('1.5%'),
+    backgroundColor: colors.BLUE4,
+  },
+  collectionButtonLabel: {
+    color: 'white',
+    fontFamily: fonts.PINGfANG,
+    fontSize: RF(1.5),
   },
   childCont: {
     flex: 1,

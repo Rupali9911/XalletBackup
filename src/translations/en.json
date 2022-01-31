@@ -621,7 +621,15 @@
         "Bids": "Bid",
         "Buys": "Sale",
         "Claim": "Claim",
-        "OnAuction": "Listing (Auction) "
+        "OnAuction": "Listing (Auction) ",
+        "itemsCollection": "Items",
+        "owners": "Owners",
+        "floorPrice": "Floor Price",
+        "volumeTraded": "Volume Traded",
+        "viewCollection": "View Collection",
+        "auctionended": "Auction ended",
+        "soldout": "Sold Out",
+        "hotcollection": "Hot collections"
     },
     "AwardPage": {},
     "wallet": {
