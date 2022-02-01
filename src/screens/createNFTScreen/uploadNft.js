@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, Image, TouchableOpacity, Keyboard } from 'react-native';
 import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-fast-video';
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import moment from 'moment';
 
 import styles from './styles';
@@ -20,6 +21,8 @@ import { alertWithSingleBtn } from '../../utils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
 import { setApprovalForAll, createNFTSale, createAuctionNFTSale } from '../wallet/functions';
+import { RF } from '../../constants/responsiveFunct';
+import Colors from '../../constants/Colors';
 
 const Web3 = require('web3');
 
@@ -129,6 +132,9 @@ const UploadNFT = ({
     if (position == 2) {
       changeLoadingState(true)
       getCollectionList()
+      if (networkType.value !== 'ethereum') {
+        setOtherPrice(["0"])
+      }
     }
   }, [position])
 
@@ -141,7 +147,20 @@ const UploadNFT = ({
           getFiltersList(modalItem._id)
         } else if (activeModal === "basePrice") {
           setBasePrice(modalItem)
-          setOtherPrice([])
+          let priceList = [...otherPrice];
+          if (networkType.value !== 'ethereum') {
+            priceList = priceList.slice(0, 1)
+            if (modalItem.order !== "0") {
+              priceList[1] = modalItem.order
+            } else {
+              priceList = priceList.slice(0, 1)
+            }
+          }else{
+            priceList[0] = modalItem.order
+            priceList = priceList.slice(0, 1)
+          }
+          let uniqueChars = [...new Set(priceList)];
+          setOtherPrice(uniqueChars)
         } else if (activeModal === "otherCurrency") {
           setOtherPrice(oldArray => [...oldArray, modalItem.order]);
         } else if (activeModal === "nftType") {
@@ -178,24 +197,24 @@ const UploadNFT = ({
 
   }, [datePickerData])
 
-const cleanAll = () => {
-  setNftImage(null);
-   setImageError("");
-   setNftImageThumb(null);
-   setActiveModal("");
-   setFilterList([]);
-   setFilterItemActive({});
-   setFilterSelect("");
-   setNftName("");
-   setNftDesc("");
-   setBasePrice(null);
-   setOtherPrice([]);
-   setNftImageType(null);
-   setRoyality("2.5%");
-   setFixedPrice("");
-   setStartTimeDate("");
-   setEndTimeDate("");
-}
+  const cleanAll = () => {
+    setNftImage(null);
+    setImageError("");
+    setNftImageThumb(null);
+    setActiveModal("");
+    setFilterList([]);
+    setFilterItemActive({});
+    setFilterSelect("");
+    setNftName("");
+    setNftDesc("");
+    setBasePrice(null);
+    setOtherPrice([]);
+    setNftImageType(null);
+    setRoyality("2.5%");
+    setFixedPrice("");
+    setStartTimeDate("");
+    setEndTimeDate("");
+  }
 
   const setMainFiltersData = filters => {
     let newArray = [];
@@ -634,7 +653,7 @@ const cleanAll = () => {
                     .then(draftRes => {
 
                       console.log(draftRes, "draftRes")
-                      
+
                       if (draftRes.data.success) {
                         cleanAll();
                         switchToNFTList("draft", collection)
@@ -707,7 +726,11 @@ const cleanAll = () => {
 
   return (
     <View style={styles.childCont}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        keyboardDismissMode="on-drag"
+         onScrollBeginDrag={() => Keyboard.dismiss()}
+        showsVerticalScrollIndicator={false}>
+
         <CardCont style={styles.imageMainCard}>
           <TouchableOpacity onPress={nftImage ? nftImage.mime.includes("image") ? onPhoto : null : onPhoto} activeOpacity={0.5} style={styles.cardImageCont}>
             {
@@ -820,7 +843,11 @@ const cleanAll = () => {
           <CardLabel>{translate("common.description")}</CardLabel>
           <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
           <CardField
-            inputProps={{ placeholder: translate("wallet.common.typeSomething"), multiline: true, value: nftDesc, onChangeText: e => nftDesc.length < 150 ? setNftDesc(e) : null }}
+            inputProps={{ 
+              placeholder: translate("wallet.common.typeSomething"), 
+              multiline: true, 
+              value: nftDesc, 
+              onChangeText: e => nftDesc.length <= 150 ? setNftDesc(e.slice(0, 150)) : null }}
             contStyle={{ height: hp('15%') }}
           />
         </CardCont>
@@ -838,49 +865,67 @@ const cleanAll = () => {
             pressable
             showRight
           />
-          <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
-          <CardField
-            inputProps={{ value: translate("wallet.common.selectCurrency") }}
-            onPress={() => {
-              setActiveModal("otherCurrency")
-              let priceList = [...PriceUnits[networkType.value]];
-              if (basePrice) {
-                priceList = priceList.filter(obj => obj.order !== basePrice.order);
-              }
-
-              if (otherPrice.length !== 0) {
-                priceList = priceList.filter((res1) => !otherPrice.find(res2 => res2 === res1.order))
-              }
-              showModal({ data: priceList, title: translate("wallet.common.selectCurrency"), itemToRender: "name" })
-            }}
-            pressable
-            showRight
-          />
           {
-            otherPrice.length !== 0 ?
-              <View style={styles.tagCont} >
+            toggleButton !== "timeAuction" ?
+              <>
+                <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
+                <CardField
+                  inputProps={{ value: translate("wallet.common.selectCurrency") }}
+                  onPress={() => {
+                    setActiveModal("otherCurrency")
+                    let priceList = [...PriceUnits[networkType.value]];
+                    
+                    if (otherPrice.length !== 0) {
+                      priceList = priceList.filter((res1) => !otherPrice.find(res2 => res2 === res1.order))
+                    }
+                    showModal({ data: priceList, title: translate("wallet.common.selectCurrency"), itemToRender: "name" })
+                  }}
+                  pressable
+                  showRight
+                />
+                {otherPrice.length !== 0 ?
+                  <View style={styles.tagCont} >
 
-                {
-                  otherPrice.map((v, i) => {
-                    let priceObj = PriceUnits[networkType.value].find(x => x.order === v);
-                    return (
-                      <CardButton
-                        key={i}
-                        onPress={() => {
-                          const removeItem = otherPrice.filter((res) => {
-                            return res !== v;
-                          });
-                          setOtherPrice(removeItem)
-                        }}
-                        border={colors.BLUE6}
-                        buttonCont={styles.tagItems}
-                        label={priceObj.name}
-                      />
-                    )
-                  })
-                }
+                    {
+                      otherPrice.map((v, i) => {
+                        let priceObj = PriceUnits[networkType.value].find(x => x.order === v);
+                        if (networkType.value !== 'ethereum') {
+                          if (priceObj.order === "0" ) {
+                            return (
+                              <CardButton
+                                border={colors.BLUE6}
+                                key={i}
+                                disable
+                                buttonCont={[styles.tagItems]}
+                                label={priceObj.name}
+                              />
+                            )
+                          }
+                        }
 
-              </View> : null
+                        return (
+                          <View
+                            key={i}
+                          >
+                            <CardButton
+                              onPress={() => {
+                                const removeItem = otherPrice.filter((res) => {
+                                  return res !== v;
+                                });
+                                setOtherPrice(removeItem)
+                              }}
+                              border={colors.BLUE6}
+                              buttonCont={styles.tagItems}
+                              label={priceObj.name}
+                            />
+                            <MaterialIcon style={styles.negIcon} name="remove-circle-outline" />
+                          </View>
+                        )
+                      })
+                    }
+
+                  </View> : null}
+              </> : null
           }
         </CardCont>
 

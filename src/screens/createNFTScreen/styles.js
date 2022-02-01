@@ -185,10 +185,19 @@ const styles = StyleSheet.create({
   },
   tagItems: {
     width: null,
-    paddingHorizontal: wp(3),
+    paddingHorizontal: wp(5),
     height: hp(4),
+    borderRadius: wp(1),
     marginHorizontal: wp(2),
     marginVertical: hp(1),
+  },
+  negIcon: {
+    color: colors.BLUE6,
+    fontSize: RF(2.7),
+    position: "absolute",
+    top: 0,
+    right: 0,
+    backgroundColor: colors.white,
   },
   modalCont: {
     width: "100%",

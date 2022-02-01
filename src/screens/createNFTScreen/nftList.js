@@ -20,7 +20,6 @@ import { C_Image } from '../../components';
 
 const ListItem = props => {
   let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
-  // console.log(props.data)
   return (
     <TouchableOpacity onPress={props.press} style={styles.listCont}>
       <View style={styles.listCenter}>
@@ -137,8 +136,6 @@ const NFTList = ({
       cleanData()
       changeLoadingState(true)
 
-      console.log(nftListDefault)
-      // getCollectionList()
       if (nftListDefault) {
 
         setCollection(nftListDefault.collect)
