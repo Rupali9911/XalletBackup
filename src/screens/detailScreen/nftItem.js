@@ -10,8 +10,8 @@ import {
   View,
 } from 'react-native';
 import Video from 'react-native-fast-video';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import { C_Image } from 'src/components';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
@@ -685,7 +685,7 @@ const nftItem = ({ item, index, isCollection }) => {
               onPress={() => {
                 dispatch(handleLikeDislike(item, index));
               }}>
-              {item.like == 0 ? <HeartIcon /> : <HeartActiveIcon />}
+              {item.like ? <HeartActiveIcon /> : <HeartIcon />}
             </TouchableOpacity>
             <SpaceView mRight={SIZE(15)} />
             <TouchableOpacity>
