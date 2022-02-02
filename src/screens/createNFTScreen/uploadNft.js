@@ -840,7 +840,7 @@ const UploadNFT = ({
             }}
             showRight
             pressable />
-          <CardLabel>{translate("common.description")}</CardLabel>
+          <CardLabel>{translate("wallet.common.description")}</CardLabel>
           <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
           <CardField
             inputProps={{ 
@@ -930,12 +930,12 @@ const UploadNFT = ({
         </CardCont>
 
         <CardCont>
-          <CardLabel>{translate("common.nftType")}</CardLabel>
+          <CardLabel>{translate("wallet.common.nftType")}</CardLabel>
           <CardField
             inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code) : nftImageType.name) : translate("common.type") }}
             onPress={() => {
               setActiveModal("nftType")
-              showModal({ data: imageTypeList, title: translate("common.nftType"), itemToRender: "name", translate: "code" })
+              showModal({ data: imageTypeList, title: translate("wallet.common.nftType"), itemToRender: "name", translate: "code" })
             }}
             pressable
             showRight />
@@ -988,14 +988,14 @@ const UploadNFT = ({
             <CardButton
               onPress={() => changeToggle("fixPrice")}
               border={toggleButton !== "fixPrice" ? colors.BLUE6 : null}
-              label={translate("common.setPrice")}
+              label={translate("common.fixedPrice")}
               buttonCont={{ width: '48%' }}
             />
             <CardButton
               onPress={() => changeToggle("timeAuction")}
               border={toggleButton !== "timeAuction" ? colors.BLUE6 : null}
               buttonCont={{ width: '48%' }}
-              label={translate("common.highestBid")}
+              label={translate("wallet.common.auctionnew")}
             />
           </View>
         </CardCont>
@@ -1004,7 +1004,7 @@ const UploadNFT = ({
           {
             toggleButton == "fixPrice" ?
               <>
-                <CardLabel>{translate("common.setPrice")}</CardLabel>
+                <CardLabel>{translate("common.fixedPrice")}</CardLabel>
                 <CardField
                   contStyle={{ paddingRight: 0 }}
                   inputProps={{
