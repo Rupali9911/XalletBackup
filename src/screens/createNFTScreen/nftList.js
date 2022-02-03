@@ -289,7 +289,7 @@ const NFTList = ({
   return (
     <View style={styles.childCont}>
 
-      <CardCont>
+      <CardCont style={{ flex: 1}} >
         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
