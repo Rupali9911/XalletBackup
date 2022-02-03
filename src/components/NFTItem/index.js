@@ -7,15 +7,21 @@ import insertComma from '../../utils/insertComma';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { SvgUri } from 'react-native-svg';
 import { translate } from '../../walletUtils';
+import { handleLikeDislike } from '../../store/actions/nftTrendList';
+import { useDispatch } from 'react-redux';
 
 export default function NFTItem(props) {
-  const { item, image, onPress, onLongPress, isCollection } = props;
+  const { item, image, onPress, onLongPress, isCollection, index } = props;
 
   const {
     PolygonIcon,
     Ethereum,
     BitmapIcon,
+    HeartWhiteIcon,
+    HeartActiveIcon,
   } = SVGS;
+
+  const dispatch = useDispatch();
 
   let imageUri =
     item.thumbnailUrl !== undefined || item.thumbnailUrl
@@ -67,6 +73,12 @@ export default function NFTItem(props) {
           onPress={onPress}
           style={styles.collectionListItem}>
           <View style={styles.listItemContainer}>
+            <TouchableOpacity
+              onPress={() => dispatch(handleLikeDislike(item, index))}
+              style={styles.likeButton}
+            >
+              {item.like == 0 ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+            </TouchableOpacity>
             <C_Image
               type={
                 item.metaData?.image.split('.')[
@@ -76,12 +88,7 @@ export default function NFTItem(props) {
               uri={imageUri}
               imageStyle={styles.collectionListImage}
             />
-            <View style={{
-              padding: SIZE(10),
-              backgroundColor: 'white',
-              borderBottomRightRadius: SIZE(12),
-              borderBottomLeftRadius: SIZE(12),
-            }}>
+            <View style={styles.collectionWrapper}>
               <Text>{item.name}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
 
@@ -108,7 +115,7 @@ export default function NFTItem(props) {
               {chainType(item.nftChain)}
             </View>
           </View>
-        </TouchableOpacity>}
+        </TouchableOpacity >}
     </>
   );
 }

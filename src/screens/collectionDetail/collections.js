@@ -53,11 +53,12 @@ const Collections = (props) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     let findIndex = NftDataCollectionReducer.nftDataCollectionList.findIndex(x => x.id === item.id);
     return (
       <NFTItem
         item={item}
+        index={index}
         image={item.iconImage}
         onPress={() => {
           dispatch(changeScreenName('dataCollection'));

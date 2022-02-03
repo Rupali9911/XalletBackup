@@ -51,5 +51,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
   },
+  likeButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: SIZE(10),
+    right: SIZE(10)
+  },
+  collectionWrapper: {
+    padding: SIZE(10),
+    backgroundColor: 'white',
+    borderBottomRightRadius: SIZE(12),
+    borderBottomLeftRadius: SIZE(12),
+  },
 });
 export default styles;
