@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   listMainCont: {
     marginVertical: hp(3),
     width: '100%',
+    height: hp(32),
   },
   listCont: {
     flexDirection: 'row',

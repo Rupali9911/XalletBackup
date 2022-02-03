@@ -325,6 +325,7 @@ const NFTList = ({
 
             <FlatList
               data={showList}
+              showsVerticalScrollIndicator={false}
               initialNumToRender={50}
               renderItem={renderListItem}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
