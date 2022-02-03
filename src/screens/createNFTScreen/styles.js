@@ -10,6 +10,7 @@ import {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    flexGrow: 1,
     backgroundColor: colors.GREY8,
   },
   sectionContainer: {
