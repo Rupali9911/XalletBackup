@@ -41,13 +41,17 @@ export const CardField = props => {
               ? 'flex-start'
               : 'center'
             : 'center',
+            justifyContent: "space-between"
         },
         props.contStyle,
       ]}>
       <TextInput
         editable={pressable}
         {...props.inputProps}
-        style={styles.field}
+        style={[styles.field, { 
+          flex: !pressable ? null : 1,
+          paddingVertical: !pressable? 0 : hp("2%"),
+        }]}
       />
       {props.showRight ? (
         props.rightComponent ? (
@@ -163,7 +167,6 @@ const styles = StyleSheet.create({
     paddingVertical: hp("2%"),
     fontFamily: fonts.SegoeUIRegular,
     fontSize: RF(1.4),
-    flex: 1,
   },
   buttonCont: {
     height: hp('6%'),

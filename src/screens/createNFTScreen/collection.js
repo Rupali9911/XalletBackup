@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
 import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './styles';
 import { CardCont, CardField, CardLabel, CardButton } from './components';
@@ -522,12 +523,11 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
   let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage && !error && !disableAll;
   return (
-      <View style={styles.childCont}>
+    <View style={styles.childCont}>
 
-        <ScrollView
-        keyboardDismissMode="on-drag"
-         onScrollBeginDrag={() => Keyboard.dismiss()}
+      <ScrollView
         showsVerticalScrollIndicator={false}>
+        <KeyboardAwareScrollView extraScrollHeight={hp('2%')}>
 
           {
             error ?
@@ -647,10 +647,11 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               disable={!disable}
             />
           </View>
-        </ScrollView>
-        <Toast config={toastConfig} ref={toastRef} />
+        </KeyboardAwareScrollView>
+      </ScrollView>
+      <Toast config={toastConfig} ref={toastRef} />
 
-      </View>
+    </View>
   );
 };
 

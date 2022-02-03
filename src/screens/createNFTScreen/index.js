@@ -56,12 +56,9 @@ const CreateNFTScreen = ({ route }) => {
   const collection = routeParams?.data;
 
   const onViewCollection = () => {
-    console.log('=====data', routeParams.data);
     navigation.navigate('CollectionDetail', { collectionId: routeParams.data?._id })
   }
 
-  console.log('=====collection?.userId', collection?.userId);
-    console.log('=====routeParams', routeParams);
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Collection':
@@ -125,7 +122,6 @@ const CreateNFTScreen = ({ route }) => {
             {route.title}
           </Text>
         )}
-        contentContainerStyle={{ height: hp(6) }}
         tabStyle={{ paddingHorizontal: 0 }}
         indicatorStyle={{ backgroundColor: colors.BLUE4 }}
         style={{
@@ -141,78 +137,78 @@ const CreateNFTScreen = ({ route }) => {
   }
 
   let renderTitle = index == 0 ? translate("wallet.common.collection") :
-  index == 1 ? translate("wallet.common.NFTList") :
-  index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter") ;
+    index == 1 ? translate("wallet.common.NFTList") :
+      index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      {
-        loading && <LoaderIndicator />
-      }
-      <AppHeader
-        title={translate("common.CreateNFT")}
-        showBackButton
-        containerStyle={{ backgroundColor: colors.white }}
-      />
-      <View style={styles.sectionContainer}>
-        <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{renderTitle}</Text>
-          {collection?.userId != 0 && routeParams?.status &&
-            <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
-              <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
-            </TouchableOpacity>
-          }
-        </View>
-        <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
 
-        <TabView
-          renderTabBar={renderTabBar}
-          navigationState={{ index, routes }}
-          renderScene={_renderScene}
-          onIndexChange={(i) => {
-            setModalData(null);
-            setModalItem(null);
-            setModalScreen("");
-            setIndex(i);
-          }}
+        {
+          loading && <LoaderIndicator />
+        }
+        <AppHeader
+          title={translate("common.CreateNFT")}
+          showBackButton
+          containerStyle={{ backgroundColor: colors.white }}
         />
+        <View style={styles.sectionContainer}>
+          <View style={styles.titleWrapper}>
+            <Text style={styles.title}>{renderTitle}</Text>
+            {collection?.userId != 0 && routeParams?.status &&
+              <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
+                <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
+              </TouchableOpacity>
+            }
+          </View>
+          <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
 
-      </View>
-      {
-        modalData ?
-          <TabModal
-            modalProps={{
-              isVisible: modalVisible,
-              onBackdropPress: () => {
-                setModalItem("closed")
-                setModalVisible(false)
-              }
+          <TabView
+            renderTabBar={renderTabBar}
+            navigationState={{ index, routes }}
+            renderScene={_renderScene}
+            onIndexChange={(i) => {
+              setModalData(null);
+              setModalItem(null);
+              setModalScreen("");
+              setIndex(i);
             }}
-            data={modalData}
-            title={modalData.title}
-            itemPress={(v) => {
-              setModalItem(v)
-              setModalVisible(false)
-            }}
-            renderItemName={modalData.hasOwnProperty("itemToRender") ? modalData.itemToRender : null}
           />
-          : null
-      }
-      <DateTimePickerModal
-        isVisible={dateVisible}
-        mode="datetime"
-        minimumDate={miniDate}
-        onConfirm={date => {
-          setDate(date)
-          setDateVisible(false)
-        }}
-        onCancel={() => {
-          setDate("closed")
-          setDateVisible(false)
-        }
-        }
-      />
 
+        </View>
+        {
+          modalData ?
+            <TabModal
+              modalProps={{
+                isVisible: modalVisible,
+                onBackdropPress: () => {
+                  setModalItem("closed")
+                  setModalVisible(false)
+                }
+              }}
+              data={modalData}
+              title={modalData.title}
+              itemPress={(v) => {
+                setModalItem(v)
+                setModalVisible(false)
+              }}
+              renderItemName={modalData.hasOwnProperty("itemToRender") ? modalData.itemToRender : null}
+            />
+            : null
+        }
+        <DateTimePickerModal
+          isVisible={dateVisible}
+          mode="datetime"
+          minimumDate={miniDate}
+          onConfirm={date => {
+            setDate(date)
+            setDateVisible(false)
+          }}
+          onCancel={() => {
+            setDate("closed")
+            setDateVisible(false)
+          }
+          }
+        />
     </SafeAreaView>
   );
 };
