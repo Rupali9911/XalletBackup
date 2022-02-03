@@ -1011,7 +1011,7 @@ const UploadNFT = ({
                     inputProps={{
                       value: fixedPrice,
                       onChangeText: v => setFixedPrice(v),
-                      keyboardType: 'number-pad'
+                      keyboardType: "decimal-pad"
                     }}
                     showRight
                     rightComponent={
