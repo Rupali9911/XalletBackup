@@ -63,9 +63,20 @@ export const newNFTList = (page) => {
         fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
-
-                let new_list = [...json.data];
-                dispatch(newNftLoadSuccess(new_list))
+                let nftData = [];
+                if (!json.count) {
+                    json.data = [];
+                } else {
+                    json.data.map(item => {
+                        const parsedNFT = parseNftObject(item);
+                        const data = {
+                            ...parsedNFT,
+                            ...item,
+                        };
+                        nftData.push(data);
+                    });
+                }
+                dispatch(newNftLoadSuccess(nftData))
 
             }).catch(err => {
                 dispatch(newNftLoadFail())

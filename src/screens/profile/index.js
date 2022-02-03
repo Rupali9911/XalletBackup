@@ -65,6 +65,7 @@ function Profile({ navigation, connector }) {
   const dispatch = useDispatch();
 
   const { UserReducer } = useSelector(state => state);
+  console.log('==========UserReducer.data', UserReducer.data);
 
   const id = UserReducer.data.user.username || UserReducer.wallet.address;
   const { about, title, firstName, lastName, links, username, name } =
