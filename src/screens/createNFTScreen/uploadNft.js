@@ -50,7 +50,8 @@ const UploadNFT = ({
   modalScreen,
   datePickerPress,
   datePickerData,
-  switchToNFTList
+  switchToNFTList,
+  nftItem
 }) => {
 
   const { wallet, data } = useSelector(

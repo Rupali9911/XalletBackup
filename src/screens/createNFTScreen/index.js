@@ -35,6 +35,7 @@ const CreateNFTScreen = ({ route }) => {
   const [miniDate, setMiniDate] = useState(new Date());
   const [date, setDate] = useState("");
   const [nftListDefault, setnftListDefault] = useState(null);
+  const [nftItem, setnftItem] = useState(null);
 
   const [index, setIndex] = useState(0);
   const routes = [
@@ -52,6 +53,7 @@ const CreateNFTScreen = ({ route }) => {
     setModalData(v)
     setModalVisible(true);
     setnftListDefault(null)
+    setnftItem(null)
   }
   const collection = routeParams?.data;
 
@@ -71,6 +73,10 @@ const CreateNFTScreen = ({ route }) => {
         return <NFTList
           modalItem={modalItem}
           modalScreen={modalScreen}
+          switchEditNFT={(data) => {
+            setnftItem(data)
+            setIndex(2)
+          }}
           showModal={(v) => ShowModalAction(v, "nftList")}
           position={index}
           nftListDefault={nftListDefault}
@@ -88,6 +94,7 @@ const CreateNFTScreen = ({ route }) => {
           modalScreen={modalScreen}
           showModal={(v) => ShowModalAction(v, "uploadNFT")}
           position={index}
+          nftItem={nftItem}
           switchToNFTList={(v, collect) => {
             setnftListDefault({ name: v, collect: collect })
             setIndex(1)

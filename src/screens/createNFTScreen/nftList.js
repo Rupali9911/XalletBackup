@@ -187,7 +187,9 @@ const NFTList = ({
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
               cleanData()
-              setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
+              if(!nftListDefault){
+                setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
+              }
 
               toggle == "mint" ?
                 setNftListPage(1) : setNftListDraftPage(1);
