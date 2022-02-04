@@ -2,6 +2,7 @@ import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
+import { parseNftObject } from '../../utils/parseNFTObj';
 import {
     NEW_NFT_LOAD_START,
     NEW_NFT_LOAD_SUCCESS,
@@ -76,6 +77,7 @@ export const newNFTList = (page) => {
                         nftData.push(data);
                     });
                 }
+				json.data = nftData;
                 dispatch(newNftLoadSuccess(nftData))
 
             }).catch(err => {

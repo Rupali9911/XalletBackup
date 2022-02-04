@@ -1,5 +1,6 @@
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
+import { parseNftObject } from '../../utils/parseNFTObj';
 import {
   FAVORITE_NFT_SUCCESS,
   FAVORITE_PAGE_CHANGE,
@@ -72,11 +73,21 @@ export const myNFTList = (page, ownerId) => {
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
       .then(json => {
-        if (json.count) {
-          dispatch(myNftLoadSuccess(json));
+        let nftData = [];
+        if (!json.count) {
+            json.data = [];
         } else {
-          dispatch(myNftLoadFail());
+            json.data.map(item => {
+                const parsedNFT = parseNftObject(item);
+                const data = {
+                    ...parsedNFT,
+                    ...item,
+                };
+                nftData.push(data);
+            });
         }
+				json.data = nftData;
+        dispatch(myNftLoadSuccess(json));
       })
       .catch(err => {
         dispatch(myNftLoadFail());
