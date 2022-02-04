@@ -225,7 +225,7 @@ const HomeScreen = ({navigation}) => {
                   marginBottom: SIZE(39),
                 },
               }}>
-              <Tab.Screen getId={(data) => console.log('data from tab screen', data)} name={translate('common.hotcollection')} component={HotCollection} />
+              <Tab.Screen name={translate('common.hotcollection')} component={HotCollection} />
               <Tab.Screen name={'Awards 2021'} component={AwardsNFT} />
               <Tab.Screen name={translate('common.hot')} component={Hot} />
               <Tab.Screen name={translate('common.2DArt')} component={NewNFT} />
