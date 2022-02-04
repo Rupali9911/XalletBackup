@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -131,7 +132,70 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
-  // console.log('home screen', data, sort);
+
+  const fabActions = useMemo(() => {
+    if (currentTab === 1) {
+      return [
+        {
+          icon: 'sort-variant',
+          label: translate('common.mostFavourite'),
+          style: styles.fabItemStyle,
+          onPress: () => dispatch(setSortBy(null)),
+        },
+        {
+          icon: 'sort-variant',
+          label: translate('common.recentlyListed'),
+          style: styles.fabItemStyle,
+          onPress: () => dispatch(setSortBy('sell')),
+        },
+        {
+          icon: 'sort-variant',
+          label: translate('common.onAuction'),
+          style: styles.fabItemStyle,
+          onPress: () => dispatch(setSortBy('onAuction')),
+        },
+      ];
+    }
+    return [
+      {
+        icon: 'sort-variant',
+        label: translate('common.mostFavourite'),
+        style: styles.fabItemStyle,
+        onPress: () => dispatch(setSortBy(null)),
+      },
+      {
+        icon: 'sort-variant',
+        label: translate('common.recentlyListed'),
+        style: styles.fabItemStyle,
+        onPress: () => dispatch(setSortBy('sell')),
+      },
+      {
+        icon: 'sort-variant',
+        label: translate('common.recentlyCreated'),
+        style: styles.fabItemStyle,
+        onPress: () => dispatch(setSortBy('mint')),
+      },
+      {
+        icon: 'sort-variant',
+        label: translate('common.priceLowToHigh'),
+        style: styles.fabItemStyle,
+        onPress: () => dispatch(setSortBy('pricelow')),
+      },
+      {
+        icon: 'sort-variant',
+        label: translate('common.priceHighToLow'),
+        style: styles.fabItemStyle,
+        onPress: () => dispatch(setSortBy('pricehigh')),
+      },
+      {
+        icon: 'sort-variant',
+        label: translate('common.onAuction'),
+        style: styles.fabItemStyle,
+        onPress: () => dispatch(setSortBy('onAuction')),
+      },
+    ];
+  }, [currentTab]);
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -347,44 +411,7 @@ const HomeScreen = ({ navigation }) => {
               )
           }
           fabStyle={{ backgroundColor: Colors.themeColor }}
-          actions={[
-            {
-              icon: 'sort-variant',
-              label: translate('common.mostFavourite'),
-              style: styles.fabItemStyle,
-              onPress: () => dispatch(setSortBy(null)),
-            },
-            {
-              icon: 'sort-variant',
-              label: translate('common.recentlyListed'),
-              style: styles.fabItemStyle,
-              onPress: () => dispatch(setSortBy('sell')),
-            },
-            {
-              icon: 'sort-variant',
-              label: translate('common.recentlyCreated'),
-              style: styles.fabItemStyle,
-              onPress: () => dispatch(setSortBy('mint')),
-            },
-            {
-              icon: 'sort-variant',
-              label: translate('common.priceLowToHigh'),
-              style: styles.fabItemStyle,
-              onPress: () => dispatch(setSortBy('pricelow')),
-            },
-            {
-              icon: 'sort-variant',
-              label: translate('common.priceHighToLow'),
-              style: styles.fabItemStyle,
-              onPress: () => dispatch(setSortBy('pricehigh')),
-            },
-            {
-              icon: 'sort-variant',
-              label: translate('common.onAuction'),
-              style: styles.fabItemStyle,
-              onPress: () => dispatch(setSortBy('onAuction')),
-            },
-          ]}
+          actions={fabActions}
           onStateChange={onStateChange}
           onPress={() => {
             if (openState) {
