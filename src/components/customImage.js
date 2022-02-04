@@ -19,7 +19,7 @@ const C_Image = (props) => {
     const checkVideoUrl = props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV';
 
     return (
-        <View>
+        <>
             {
                 loadImage && <View style={[styles.imageCont, { backgroundColor: Colors.GREY8 }]}>
                     <ActivityIndicator size="small" color={Colors.themeColor} />
@@ -84,7 +84,7 @@ const C_Image = (props) => {
                     </View>
                     : null
             }
-        </View>
+        </>
     )
 }
 

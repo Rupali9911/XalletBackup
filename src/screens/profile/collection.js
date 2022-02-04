@@ -55,7 +55,7 @@ const Collection = ({ route }) => {
                 item={item}
                 image={item.iconImage}
                 onPress={() => navigation.navigate("Create", { name: "collection", data: item, status: toggle })}
-                 isCollection
+                isCollection
             />
         );
     };
