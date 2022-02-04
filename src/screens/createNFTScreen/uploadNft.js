@@ -5,7 +5,9 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-fast-video';
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import moment from 'moment';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './styles';
 import { CardCont, CardField, CardLabel, CardButton } from './components';
@@ -20,6 +22,8 @@ import { alertWithSingleBtn } from '../../utils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
 import { setApprovalForAll, createNFTSale, createAuctionNFTSale } from '../wallet/functions';
+import { RF } from '../../constants/responsiveFunct';
+import Colors from '../../constants/Colors';
 
 const Web3 = require('web3');
 
@@ -46,7 +50,8 @@ const UploadNFT = ({
   modalScreen,
   datePickerPress,
   datePickerData,
-  switchToNFTList
+  switchToNFTList,
+  nftItem
 }) => {
 
   const { wallet, data } = useSelector(
@@ -129,8 +134,73 @@ const UploadNFT = ({
     if (position == 2) {
       changeLoadingState(true)
       getCollectionList()
+      cleanAll();
+
+      if (networkType.value !== 'ethereum') {
+        setOtherPrice(["0"])
+      }
+
+      if (nftItem) {
+        console.log(nftItem)
+        updateNFTData(nftItem)
+      }
+
     }
-  }, [position])
+  }, [position, nftItem])
+
+  const updateNFTData = (item) => {
+
+    setNftName(item.name);
+    setNftDesc(item.description);
+
+    let checkImage = item.image.match(/^http[^\?]*.(jpg|jpeg|gif|png)(\?(.*))?$/gmi);
+    let imageObjSet = {
+      path: item.image
+    }
+    let setImageTList;
+
+    if (checkImage) {
+
+      if (item.image.includes("gif")) {
+        imageObjSet.mime = "image/gif"
+        setImageTList = ImageType.filter(v => v.name == "GIF")
+      } else {
+        imageObjSet.mime = "image"
+        setNftImageThumb({ path: item.thumbnailImage })
+        setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie")
+      }
+      setNftImage(imageObjSet)
+
+    } else {
+      imageObjSet.mime = "video"
+      setImageTList = ImageType.filter(v => v.name == "Movie")
+      setNftImage(imageObjSet)
+      setNftImageThumb({ path: item.thumbnailImage })
+    }
+
+    setImageTypeList(setImageTList)
+
+    let basePriceFind = PriceUnits[networkType.value].find(
+      v => v.name == item.basePrice || v.order == item.basePrice
+    );
+
+    if (typeof (item.properties.type) == "string") {
+      let imageTypeFind = ImageType.find(
+        v => v.type == item.properties.type
+      )
+      setNftImageType(imageTypeFind)
+    }
+
+    setBasePrice(basePriceFind)
+    setOtherPrice(item.acceptCoins)
+
+    setToggleButton(item.salesType)
+    setFixedPrice(item.minPrice)
+    setStartTimeDate(item.startTime)
+    setEndTimeDate(item.endTime)
+    changeLoadingState(false);
+
+  }
 
   useEffect(() => {
     if (modalScreen === "uploadNFT" && modalItem) {
@@ -141,7 +211,20 @@ const UploadNFT = ({
           getFiltersList(modalItem._id)
         } else if (activeModal === "basePrice") {
           setBasePrice(modalItem)
-          setOtherPrice([])
+          let priceList = [...otherPrice];
+          if (networkType.value !== 'ethereum') {
+            priceList = priceList.slice(0, 1)
+            if (modalItem.order !== "0") {
+              priceList[1] = modalItem.order
+            } else {
+              priceList = priceList.slice(0, 1)
+            }
+          } else {
+            priceList[0] = modalItem.order
+            priceList = priceList.slice(0, 1)
+          }
+          let uniqueChars = [...new Set(priceList)];
+          setOtherPrice(uniqueChars)
         } else if (activeModal === "otherCurrency") {
           setOtherPrice(oldArray => [...oldArray, modalItem.order]);
         } else if (activeModal === "nftType") {
@@ -178,24 +261,24 @@ const UploadNFT = ({
 
   }, [datePickerData])
 
-const cleanAll = () => {
-  setNftImage(null);
-   setImageError("");
-   setNftImageThumb(null);
-   setActiveModal("");
-   setFilterList([]);
-   setFilterItemActive({});
-   setFilterSelect("");
-   setNftName("");
-   setNftDesc("");
-   setBasePrice(null);
-   setOtherPrice([]);
-   setNftImageType(null);
-   setRoyality("2.5%");
-   setFixedPrice("");
-   setStartTimeDate("");
-   setEndTimeDate("");
-}
+  const cleanAll = () => {
+    setNftImage(null);
+    setImageError("");
+    setNftImageThumb(null);
+    setActiveModal("");
+    setFilterList([]);
+    setFilterItemActive({});
+    setFilterSelect("");
+    setNftName("");
+    setNftDesc("");
+    setBasePrice(null);
+    setOtherPrice([]);
+    setNftImageType(null);
+    setRoyality("2.5%");
+    setFixedPrice("");
+    setStartTimeDate("");
+    setEndTimeDate("");
+  }
 
   const setMainFiltersData = filters => {
     let newArray = [];
@@ -246,17 +329,22 @@ const cleanAll = () => {
         chainType: networkType.value,
         networkType: networkStatus
       };
-      console.log(body, "collection list getting")
       axios.post(url, body)
         .then(collectionList => {
           console.log(collectionList, "collection list getting")
           if (collectionList.data.success) {
             setCollectionList(collectionList.data.data)
             if (collectionList.data.data.length !== 0) {
-              let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
-              let selectedData = selectedCollection ? selectedCollection : collectionList.data.data[0];
-              setCollection(selectedData)
-              getFiltersList(selectedData._id)
+              if (nftItem) {
+                let selectedData = collectionList.data.data.find(v => v._id == nftItem.collectionId);
+                setCollection(selectedData)
+                getFiltersList(selectedData._id)
+              } else {
+                let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
+                let selectedData = selectedCollection ? selectedCollection : collectionList.data.data[0];
+                setCollection(selectedData)
+                getFiltersList(selectedData._id)
+              }
             } else {
               changeLoadingState(false)
             }
@@ -302,7 +390,7 @@ const cleanAll = () => {
           } else {
             if (res.mime.includes("gif")) {
               let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "Movie")
-              console.log(setImageTList, res, "aaaaaaaaaaaaa")
+              // console.log(setImageTList, res, "aaaaaaaaaaaaa")
               setNftImage(res)
               setImageTypeList(setImageTList)
               setNftImageType(null);
@@ -606,73 +694,14 @@ const cleanAll = () => {
               .then(res2 => {
                 console.log(res2, "thumbnail url")
                 if (res2.data.success) {
-                  let dataToSend = {
-                    collectionId: collection._id,
-                    name: nftName,
-                    description: nftDesc,
-                    image: res.data.data,
-                    thumbnailImage: res2.data.data,
-                    properties: { type: nftImageType },
-                    salesType: toggleButton,
-                    minPrice: fixedPrice,
-                    startTime:
-                      toggleButton == 'timeAuction'
-                        ? startTimeDate
-                        : '',
-                    endTime:
-                      toggleButton == 'timeAuction'
-                        ? endTimeDate
-                        : '',
-                    acceptCoins: otherPrice,
-                    basePrice: basePrice.name,
-                    chainType: networkType.value,
-                  };
-
-                  axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-                  axios.post(`${BASE_URL}/user/create-nft-draft`, dataToSend)
-                    .then(draftRes => {
-
-                      console.log(draftRes, "draftRes")
-                      
-                      if (draftRes.data.success) {
-                        cleanAll();
-                        switchToNFTList("draft", collection)
-                      }
-                      changeLoadingState(false);
-
-                    })
-                    .catch(err => {
-                      changeLoadingState(false);
-                      if (err.response.status === 401) {
-                        alertWithSingleBtn(
-                          translate("wallet.common.alert"),
-                          translate("common.sessionexpired")
-                        );
-                      }
-                      alertWithSingleBtn(
-                        translate("wallet.common.alert"),
-                        translate("wallet.common.error.networkFailed")
-                      );
-                    });
+                  saveDraftToDatabase(res.data.data, res2.data.data)
                 } else {
                   changeLoadingState(false);
-
                 }
 
               })
               .catch(err => {
-                changeLoadingState(false);
-                if (err.response.status === 401) {
-                  alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("common.sessionexpired")
-                  );
-                }
-                alertWithSingleBtn(
-                  translate("wallet.common.alert"),
-                  translate("wallet.common.error.networkFailed")
-                );
+                errorMethod(err, "draft thumbnail error")
               });
           } else {
             changeLoadingState(false)
@@ -680,20 +709,70 @@ const cleanAll = () => {
           }
         })
         .catch(err => {
-          changeLoadingState(false);
-          if (err.response.status === 401) {
-            alertWithSingleBtn(
-              translate("wallet.common.alert"),
-              translate("common.sessionexpired")
-            );
-          }
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
-          );
+          errorMethod(err, "draft image error")
         });
     }
+  }
 
+  const saveDraftToDatabase = (res, res2) => {
+    let dataToSend = {
+      collectionId: collection._id,
+      name: nftName,
+      description: nftDesc,
+      image: res,
+      thumbnailImage: res2,
+      properties: { type: nftImageType.type },
+      salesType: toggleButton,
+      minPrice: fixedPrice,
+      startTime:
+        toggleButton == 'timeAuction'
+          ? startTimeDate
+          : '',
+      endTime:
+        toggleButton == 'timeAuction'
+          ? endTimeDate
+          : '',
+      acceptCoins: otherPrice,
+      basePrice: basePrice.name,
+      chainType: networkType.value,
+    };
+
+    let url;
+
+    if(nftItem){
+      dataToSend.requestId= nftItem._id,
+      url = `${BASE_URL}/user/edit-nft-draft`
+    }else{
+      url = `${BASE_URL}/user/create-nft-draft`
+    }
+
+    axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+    axios.post(url, dataToSend)
+      .then(draftRes => {
+
+        console.log(draftRes, "draftRes")
+
+        if (draftRes.data.success) {
+          cleanAll();
+          switchToNFTList("draft", collection)
+        }
+        changeLoadingState(false);
+
+      })
+      .catch(err => {
+        changeLoadingState(false);
+        if (err.response.status === 401) {
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("common.sessionexpired")
+          );
+        }
+        alertWithSingleBtn(
+          translate("wallet.common.alert"),
+          translate("wallet.common.error.networkFailed")
+        );
+      });
   }
 
   let disableBtn = collection && nftName && nftDesc && nftImageType &&
@@ -707,333 +786,360 @@ const cleanAll = () => {
 
   return (
     <View style={styles.childCont}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <CardCont style={styles.imageMainCard}>
-          <TouchableOpacity onPress={nftImage ? nftImage.mime.includes("image") ? onPhoto : null : onPhoto} activeOpacity={0.5} style={styles.cardImageCont}>
-            {
-              nftImage ?
-                nftImage.mime.includes("image") ?
+      <ScrollView
+        showsVerticalScrollIndicator={false}>
+        <KeyboardAwareScrollView extraScrollHeight={hp('2%')}>
+
+          <CardCont style={styles.imageMainCard}>
+            <TouchableOpacity onPress={!nftItem ? (nftImage ? nftImage.mime.includes("image") ? onPhoto : null : onPhoto) : null} activeOpacity={0.5} style={styles.cardImageCont}>
+              {
+                nftImage ?
+                  nftImage.mime.includes("image") ?
+                    <Image
+                      style={styles.completeImage}
+                      source={{ uri: nftImage.path }}
+                    /> :
+                    <Video
+                      source={{ uri: nftImage.path }}
+                      style={styles.completeImage}
+                      resizeMode="contain"
+                    />
+                  :
                   <Image
                     style={styles.completeImage}
-                    source={{ uri: nftImage.path }}
-                  /> :
-                  <Video
-                    source={{ uri: nftImage.path }}
-                    style={styles.completeImage}
-                    resizeMode="contain"
+                    source={IMAGES.imagePlaceholder}
                   />
-                :
-                <Image
-                  style={styles.completeImage}
-                  source={IMAGES.imagePlaceholder}
-                />
-            }
-          </TouchableOpacity>
-          <View style={styles.cardDesCont} >
+              }
+            </TouchableOpacity>
+            <View style={styles.cardDesCont} >
+              {
+                !nftImage ?
+                  <Text
+                    style={[
+                      styles.bannerDes,
+                      { textAlign: 'center' },
+                    ]}>
+                    {translate("common.mediaOnDevice")}
+                  </Text> : null
+              }
+              {
+                !!imageError ?
+                  <Text
+                    style={[
+                      styles.bannerDes,
+                      styles.nftImageError,
+                    ]}>
+                    {imageError}
+                  </Text> : null
+              }
+              {
+                !nftItem ? (nftImage ?
+                  <>
+                    <View style={styles.saveBtnGroup}>
+                      <CardButton
+                        label={translate("wallet.common.remove")}
+                        buttonCont={{ width: '48%' }}
+                        onPress={() => {
+                          setNftImage(null);
+                          setImageError("");
+                          setNftImageThumb(null);
+                          setImageTypeList(ImageType)
+                          setNftImageType(null)
+                        }}
+                      />
+                      <CardButton
+                        onPress={onPhoto}
+                        border={colors.BLUE6}
+                        buttonCont={{ width: '48%' }}
+                        label={translate("common.change")}
+                      />
+                    </View>
+                    {
+                      !nftImage.mime.includes("gif") ?
+                        <View style={{ flexDirection: "row", marginTop: hp(2) }} >
+                          <View style={styles.thumbNail} >
+                            <Image source={nftImageThumb ? { uri: nftImageThumb.path } : IMAGES.imagePlaceholder} style={styles.completeImage} />
+                          </View>
+                          <View style={{ flex: 1, justifyContent: "center" }} >
+                            <TouchableOpacity onPress={() => {
+                              nftImage ? nftImage.mime.includes("image") ?
+                                cropImage(nftImage) :
+                                videoCropping(nftImage)
+                                : null
+                            }} >
+                              <Text
+                                style={[
+                                  styles.bannerDes,
+                                  styles.thumbnailEditButton
+                                ]}>
+                                {translate("common.EditTrim")}
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View> : null
+                    }
+                  </> : null) : null
+              }
+
+            </View>
+
+          </CardCont>
+
+          <CardCont>
+            <CardLabel>{translate("common.nftName")}</CardLabel>
+            <CardField
+              inputProps={{ value: nftName, onChangeText: e => setNftName(e) }}
+            />
+            <CardLabel>{translate("wallet.common.collection")}</CardLabel>
+            <CardField
+              inputProps={{ value: collection ? collection.collectionName : "" }}
+              onPress={() => {
+                setActiveModal("collection")
+                showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "collectionName" })
+              }}
+              showRight
+              pressable />
+            <CardLabel>{translate("wallet.common.description")}</CardLabel>
+            <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
+            <CardField
+              inputProps={{
+                placeholder: translate("wallet.common.typeSomething"),
+                multiline: true,
+                value: nftDesc,
+                onChangeText: e => nftDesc.length <= 150 ? setNftDesc(e.slice(0, 150)) : null
+              }}
+              contStyle={{ height: hp('15%') }}
+            />
+          </CardCont>
+
+          <CardCont>
+            <CardLabel>{translate("wallet.common.network")}</CardLabel>
+            <CardField inputProps={{ value: networkTypeStatus, editable: false }} />
+            <CardLabel>{translate("wallet.common.basePrice")}</CardLabel>
+            <CardField
+              inputProps={{ value: basePrice ? basePrice.name : translate("wallet.common.selectBasePrice") }}
+              onPress={() => {
+                setActiveModal("basePrice")
+                showModal({ data: PriceUnits[networkType.value], title: translate("wallet.common.selectBasePrice"), itemToRender: "name" })
+              }}
+              pressable
+              showRight
+            />
             {
-              !nftImage ?
-                <Text
-                  style={[
-                    styles.bannerDes,
-                    { textAlign: 'center' },
-                  ]}>
-                  {translate("common.mediaOnDevice")}
-                </Text> : null
-            }
-            {
-              !!imageError ?
-                <Text
-                  style={[
-                    styles.bannerDes,
-                    styles.nftImageError,
-                  ]}>
-                  {imageError}
-                </Text> : null
-            }
-            {
-              nftImage ?
+              toggleButton !== "timeAuction" ?
                 <>
-                  <View style={styles.saveBtnGroup}>
-                    <CardButton
-                      label={translate("wallet.common.remove")}
-                      buttonCont={{ width: '48%' }}
-                      onPress={() => {
-                        setNftImage(null);
-                        setImageError("");
-                        setNftImageThumb(null);
-                        setImageTypeList(ImageType)
-                        setNftImageType(null)
-                      }}
-                    />
-                    <CardButton
-                      onPress={onPhoto}
-                      border={colors.BLUE6}
-                      buttonCont={{ width: '48%' }}
-                      label={translate("common.change")}
-                    />
-                  </View>
-                  {
-                    !nftImage.mime.includes("gif") ?
-                      <View style={{ flexDirection: "row", marginTop: hp(2) }} >
-                        <View style={styles.thumbNail} >
-                          <Image source={nftImageThumb ? { uri: nftImageThumb.path } : IMAGES.imagePlaceholder} style={styles.completeImage} />
-                        </View>
-                        <View style={{ flex: 1, justifyContent: "center" }} >
-                          <TouchableOpacity onPress={() => {
-                            nftImage ? nftImage.mime.includes("image") ?
-                              cropImage(nftImage) :
-                              videoCropping(nftImage)
-                              : null
-                          }} >
-                            <Text
-                              style={[
-                                styles.bannerDes,
-                                styles.thumbnailEditButton
-                              ]}>
-                              {translate("common.EditTrim")}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View> : null
-                  }
+                  <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
+                  <CardField
+                    inputProps={{ value: translate("wallet.common.selectCurrency") }}
+                    onPress={() => {
+                      setActiveModal("otherCurrency")
+                      let priceList = [...PriceUnits[networkType.value]];
+
+                      if (otherPrice.length !== 0) {
+                        priceList = priceList.filter((res1) => !otherPrice.find(res2 => res2 === res1.order))
+                      }
+                      showModal({ data: priceList, title: translate("wallet.common.selectCurrency"), itemToRender: "name" })
+                    }}
+                    pressable
+                    showRight
+                  />
+                  {otherPrice.length !== 0 ?
+                    <View style={styles.tagCont} >
+
+                      {
+                        otherPrice.map((v, i) => {
+                          let priceObj = PriceUnits[networkType.value].find(x => x.order === v);
+                          if (networkType.value !== 'ethereum') {
+                            if (priceObj.order === "0") {
+                              return (
+                                <CardButton
+                                  border={colors.BLUE6}
+                                  key={i}
+                                  disable
+                                  buttonCont={[styles.tagItems]}
+                                  label={priceObj.name}
+                                />
+                              )
+                            }
+                          }
+
+                          return (
+                            <View
+                              key={i}
+                            >
+                              <CardButton
+                                onPress={() => {
+                                  const removeItem = otherPrice.filter((res) => {
+                                    return res !== v;
+                                  });
+                                  setOtherPrice(removeItem)
+                                }}
+                                border={colors.BLUE6}
+                                buttonCont={styles.tagItems}
+                                label={priceObj.name}
+                              />
+                              <MaterialIcon style={styles.negIcon} name="remove-circle-outline" />
+                            </View>
+                          )
+                        })
+                      }
+
+                    </View> : null}
                 </> : null
             }
+          </CardCont>
 
-          </View>
-
-        </CardCont>
-
-        <CardCont>
-          <CardLabel>{translate("common.nftName")}</CardLabel>
-          <CardField
-            inputProps={{ value: nftName, onChangeText: e => setNftName(e) }}
-          />
-          <CardLabel>{translate("wallet.common.collection")}</CardLabel>
-          <CardField
-            inputProps={{ value: collection ? collection.collectionName : "" }}
-            onPress={() => {
-              setActiveModal("collection")
-              showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "collectionName" })
-            }}
-            showRight
-            pressable />
-          <CardLabel>{translate("common.description")}</CardLabel>
-          <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
-          <CardField
-            inputProps={{ placeholder: translate("wallet.common.typeSomething"), multiline: true, value: nftDesc, onChangeText: e => nftDesc.length < 150 ? setNftDesc(e) : null }}
-            contStyle={{ height: hp('15%') }}
-          />
-        </CardCont>
-
-        <CardCont>
-          <CardLabel>{translate("wallet.common.network")}</CardLabel>
-          <CardField inputProps={{ value: networkTypeStatus, editable: false }} />
-          <CardLabel>{translate("wallet.common.basePrice")}</CardLabel>
-          <CardField
-            inputProps={{ value: basePrice ? basePrice.name : translate("wallet.common.selectBasePrice") }}
-            onPress={() => {
-              setActiveModal("basePrice")
-              showModal({ data: PriceUnits[networkType.value], title: translate("wallet.common.selectBasePrice"), itemToRender: "name" })
-            }}
-            pressable
-            showRight
-          />
-          <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
-          <CardField
-            inputProps={{ value: translate("wallet.common.selectCurrency") }}
-            onPress={() => {
-              setActiveModal("otherCurrency")
-              let priceList = [...PriceUnits[networkType.value]];
-              if (basePrice) {
-                priceList = priceList.filter(obj => obj.order !== basePrice.order);
-              }
-
-              if (otherPrice.length !== 0) {
-                priceList = priceList.filter((res1) => !otherPrice.find(res2 => res2 === res1.order))
-              }
-              showModal({ data: priceList, title: translate("wallet.common.selectCurrency"), itemToRender: "name" })
-            }}
-            pressable
-            showRight
-          />
-          {
-            otherPrice.length !== 0 ?
-              <View style={styles.tagCont} >
-
-                {
-                  otherPrice.map((v, i) => {
-                    let priceObj = PriceUnits[networkType.value].find(x => x.order === v);
-                    return (
-                      <CardButton
-                        key={i}
-                        onPress={() => {
-                          const removeItem = otherPrice.filter((res) => {
-                            return res !== v;
-                          });
-                          setOtherPrice(removeItem)
-                        }}
-                        border={colors.BLUE6}
-                        buttonCont={styles.tagItems}
-                        label={priceObj.name}
+          <CardCont>
+            <CardLabel>{translate("wallet.common.nftType")}</CardLabel>
+            <CardField
+              inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code) : nftImageType.name) : translate("common.type") }}
+              onPress={() => {
+                setActiveModal("nftType")
+                showModal({ data: imageTypeList, title: translate("wallet.common.nftType"), itemToRender: "name", translate: "code" })
+              }}
+              pressable
+              showRight />
+            {
+              collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
+                <>
+                  <CardLabel>{translate("wallet.common.royality")}</CardLabel>
+                  <CardField
+                    inputProps={{ value: royality }}
+                    onPress={() => {
+                      setActiveModal("royality")
+                      showModal({ data: royalityData, title: translate("wallet.common.royality") })
+                    }}
+                    pressable
+                    showRight />
+                </>
+                : null
+            }
+            {
+              filterList.length !== 0 &&
+              filterList.map((fList, i) => {
+                return (
+                  <View key={i}>
+                    <CardLabel>{fList.name}</CardLabel>
+                    {fList.values.length == 1 ?
+                      <CardField
+                        inputProps={{ value: fList?.values?.[0].filter_value, editable: false }}
                       />
-                    )
-                  })
-                }
+                      :
+                      <CardField
+                        inputProps={{ value: filterItemActive.hasOwnProperty(fList.name) ? filterItemActive[fList.name].filter_value : "" }}
+                        onPress={() => {
+                          setActiveModal(fList.name)
+                          setFilterSelect(fList.name)
+                          showModal({ data: fList?.values, title: fList.name, itemToRender: "filter_value" })
+                        }}
+                        pressable
+                        showRight />
+                    }
+                  </View>
+                )
+              })
+            }
 
-              </View> : null
-          }
-        </CardCont>
+          </CardCont>
 
-        <CardCont>
-          <CardLabel>{translate("common.nftType")}</CardLabel>
-          <CardField
-            inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code) : nftImageType.name) : translate("common.type") }}
-            onPress={() => {
-              setActiveModal("nftType")
-              showModal({ data: imageTypeList, title: translate("common.nftType"), itemToRender: "name", translate: "code" })
-            }}
-            pressable
-            showRight />
-          {
-            collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
-              <>
-                <CardLabel>{translate("wallet.common.royality")}</CardLabel>
-                <CardField
-                  inputProps={{ value: royality }}
-                  onPress={() => {
-                    setActiveModal("royality")
-                    showModal({ data: royalityData, title: translate("wallet.common.royality") })
-                  }}
-                  pressable
-                  showRight />
-              </>
-              : null
-          }
-          {
-            filterList.length !== 0 &&
-            filterList.map((fList, i) => {
-              return (
-                <View key={i}>
-                  <CardLabel>{fList.name}</CardLabel>
-                  {fList.values.length == 1 ?
-                    <CardField
-                      inputProps={{ value: fList?.values?.[0].filter_value, editable: false }}
-                    />
-                    :
-                    <CardField
-                      inputProps={{ value: filterItemActive.hasOwnProperty(fList.name) ? filterItemActive[fList.name].filter_value : "" }}
-                      onPress={() => {
-                        setActiveModal(fList.name)
-                        setFilterSelect(fList.name)
-                        showModal({ data: fList?.values, title: fList.name, itemToRender: "filter_value" })
-                      }}
-                      pressable
-                      showRight />
-                  }
-                </View>
-              )
-            })
-          }
+          <CardCont>
+            <CardLabel>{translate("wallet.common.saleType")}</CardLabel>
+            <View style={styles.saveBtnGroup}>
+              <CardButton
+                onPress={() => changeToggle("fixPrice")}
+                border={toggleButton !== "fixPrice" ? colors.BLUE6 : null}
+                label={translate("common.fixedPrice")}
+                buttonCont={{ width: '48%' }}
+              />
+              <CardButton
+                onPress={() => changeToggle("timeAuction")}
+                border={toggleButton !== "timeAuction" ? colors.BLUE6 : null}
+                buttonCont={{ width: '48%' }}
+                label={translate("wallet.common.auctionnew")}
+              />
+            </View>
+          </CardCont>
 
-        </CardCont>
+          <CardCont>
+            {
+              toggleButton == "fixPrice" ?
+                <>
+                  <CardLabel>{translate("common.fixedPrice")}</CardLabel>
+                  <CardField
+                    contStyle={{ paddingRight: 0 }}
+                    inputProps={{
+                      value: fixedPrice,
+                      onChangeText: v => setFixedPrice(v),
+                      keyboardType: "decimal-pad"
+                    }}
+                    showRight
+                    rightComponent={
+                      <CardButton
+                        disable
+                        buttonCont={{ width: '15%', borderRadius: 0 }}
+                        label={basePrice ? basePrice.name : "ALIA"}
+                      />
+                    }
+                  />
+                </> :
+                <>
+                  <CardLabel >{translate("wallet.common.auctionTime")}</CardLabel>
+                  <CardLabel style={{ fontFamily: fonts.PINGfANG }} >{translate("wallet.common.openTime")}</CardLabel>
+                  <CardField
+                    inputProps={{ value: startTimeDate }}
+                    onPress={() => {
+                      setActiveModal("startTime")
+                      setEndTimeDate("")
+                      datePickerPress(new Date())
+                    }}
+                    pressable
+                    showRight />
+                  <CardLabel style={{ fontFamily: fonts.PINGfANG }} >{translate("wallet.common.closeTime")}</CardLabel>
+                  <CardField
+                    inputProps={{ value: endTimeDate }}
+                    onPress={() => {
+                      setActiveModal("endTime")
+                      datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date())
+                    }}
+                    pressable
+                    showRight />
+                  <CardField
+                    contStyle={{ paddingRight: 0 }}
+                    inputProps={{
+                      value: fixedPrice,
+                      onChangeText: v => setFixedPrice(v),
+                      keyboardType: 'number-pad'
+                    }}
+                    showRight
+                    rightComponent={
+                      <CardButton
+                        disable
+                        buttonCont={{ width: '15%', borderRadius: 0 }}
+                        label={basePrice ? basePrice.name : "ALIA"}
+                      />
+                    }
+                  />
+                </>
+            }
+          </CardCont>
 
-        <CardCont>
-          <CardLabel>{translate("wallet.common.saleType")}</CardLabel>
           <View style={styles.saveBtnGroup}>
             <CardButton
-              onPress={() => changeToggle("fixPrice")}
-              border={toggleButton !== "fixPrice" ? colors.BLUE6 : null}
-              label={translate("common.setPrice")}
-              buttonCont={{ width: '48%' }}
+              onPress={() => nftItem ? saveDraftToDatabase(nftItem.image, nftItem.thumbnailImage ) : saveDraft()}
+              label={nftItem ? translate("wallet.common.edit") : translate("wallet.common.saveAsDraft")}
+              buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
+              disable={!disableBtn}
             />
             <CardButton
-              onPress={() => changeToggle("timeAuction")}
-              border={toggleButton !== "timeAuction" ? colors.BLUE6 : null}
+              onPress={handleCreate}
+              border={colors.BLUE6}
+              disable={!disableBtn}
+              border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
               buttonCont={{ width: '48%' }}
-              label={translate("common.highestBid")}
+              label={translate("wallet.common.upload")}
             />
           </View>
-        </CardCont>
-
-        <CardCont>
-          {
-            toggleButton == "fixPrice" ?
-              <>
-                <CardLabel>{translate("common.setPrice")}</CardLabel>
-                <CardField
-                  contStyle={{ paddingRight: 0 }}
-                  inputProps={{
-                    value: fixedPrice,
-                    onChangeText: v => setFixedPrice(v),
-                    keyboardType: 'number-pad'
-                  }}
-                  showRight
-                  rightComponent={
-                    <CardButton
-                      disable
-                      buttonCont={{ width: '15%', borderRadius: 0 }}
-                      label={basePrice ? basePrice.name : "ALIA"}
-                    />
-                  }
-                />
-              </> :
-              <>
-                <CardLabel >{translate("wallet.common.auctionTime")}</CardLabel>
-                <CardLabel style={{ fontFamily: fonts.PINGfANG }} >{translate("wallet.common.openTime")}</CardLabel>
-                <CardField
-                  inputProps={{ value: startTimeDate }}
-                  onPress={() => {
-                    setActiveModal("startTime")
-                    setEndTimeDate("")
-                    datePickerPress(new Date())
-                  }}
-                  pressable
-                  showRight />
-                <CardLabel style={{ fontFamily: fonts.PINGfANG }} >{translate("wallet.common.closeTime")}</CardLabel>
-                <CardField
-                  inputProps={{ value: endTimeDate }}
-                  onPress={() => {
-                    setActiveModal("endTime")
-                    datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date())
-                  }}
-                  pressable
-                  showRight />
-                <CardField
-                  contStyle={{ paddingRight: 0 }}
-                  inputProps={{
-                    value: fixedPrice,
-                    onChangeText: v => setFixedPrice(v),
-                    keyboardType: 'number-pad'
-                  }}
-                  showRight
-                  rightComponent={
-                    <CardButton
-                      disable
-                      buttonCont={{ width: '15%', borderRadius: 0 }}
-                      label={basePrice ? basePrice.name : "ALIA"}
-                    />
-                  }
-                />
-              </>
-          }
-        </CardCont>
-
-        <View style={styles.saveBtnGroup}>
-          <CardButton
-            onPress={saveDraft}
-            label={translate("wallet.common.saveAsDraft")}
-            buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-            disable={!disableBtn}
-          />
-          <CardButton
-            onPress={handleCreate}
-            border={colors.BLUE6}
-            disable={!disableBtn}
-            border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
-            buttonCont={{ width: '48%' }}
-            label={translate("wallet.common.upload")}
-          />
-        </View>
+        </KeyboardAwareScrollView>
       </ScrollView>
     </View>
   );

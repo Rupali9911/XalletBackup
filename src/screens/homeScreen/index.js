@@ -229,10 +229,7 @@ const HomeScreen = ({navigation}) => {
               <Tab.Screen name={'Awards 2021'} component={AwardsNFT} />
               <Tab.Screen name={translate('common.hot')} component={Hot} />
               <Tab.Screen name={translate('common.2DArt')} component={NewNFT} />
-              <Tab.Screen
-                name={translate('common.photo')}
-                component={Favorite}
-              />
+              <Tab.Screen name={translate('common.photo')} component={Favorite}/>
               <Tab.Screen name="gif" component={Gif} />
               <Tab.Screen name={translate('common.video')} component={Movie} />
             </Tab.Navigator>

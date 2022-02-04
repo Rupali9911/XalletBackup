@@ -101,12 +101,12 @@ const WalletPay = ({route, navigation}) => {
   }
 
   useEffect(() => {
-    console.log('useEffect');
+    console.log('useEffect', route.params);
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
       getBalances(wallet.address);
     }
-    console.log('wallet pay use effect', data);
+    console.log('wallet pay use effect', data, route.params);
   }, [isFocused]);
 
   useEffect(() => {
@@ -115,7 +115,9 @@ const WalletPay = ({route, navigation}) => {
       allowedTokens.map(_ => {
         array.push(_.key.toLowerCase());
       });
+        console.log('tokens', tokens);
       let result = tokens.filter(item => {
+          console.log('item', item);
         if (item.network.toLowerCase() === chainType) {
           console.log('same chain');
           if (array.includes(item.type.toLowerCase())) {
@@ -133,7 +135,7 @@ const WalletPay = ({route, navigation}) => {
           return false;
         }
       });
-      console.log('result of active tokens', result);
+     // console.log('result of active tokens', result);
       setActiveTokens(result);
     } else {
       let result = tokens.filter(_ => {
@@ -482,7 +484,7 @@ const WalletPay = ({route, navigation}) => {
         return false;
       }
     });
-    console.log('@@@@@@@@@@@@', result, item);
+   // console.log('@@@@@@@@@@@@', result, item);
     return result;
   };
   return (
@@ -525,7 +527,7 @@ const WalletPay = ({route, navigation}) => {
       <Tokens
         values={balances}
         network={network}
-        allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
+        allowedTokens={payableIn && payableIn !== 'Payable In' ? basePriceTokens.filter((item) => item.key !== payableIn) : basePriceTokens}
         onTokenPress={async item => {
           setSelectedObject(item);
           let tradeCurrency = getCurrencyOnSelect(item);

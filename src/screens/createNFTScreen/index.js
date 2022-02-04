@@ -35,6 +35,7 @@ const CreateNFTScreen = ({ route }) => {
   const [miniDate, setMiniDate] = useState(new Date());
   const [date, setDate] = useState("");
   const [nftListDefault, setnftListDefault] = useState(null);
+  const [nftItem, setnftItem] = useState(null);
 
   const [index, setIndex] = useState(0);
   const routes = [
@@ -71,6 +72,10 @@ const CreateNFTScreen = ({ route }) => {
         return <NFTList
           modalItem={modalItem}
           modalScreen={modalScreen}
+          switchEditNFT={(data) => {
+            setnftItem(data)
+            setIndex(2)
+          }}
           showModal={(v) => ShowModalAction(v, "nftList")}
           position={index}
           nftListDefault={nftListDefault}
@@ -88,6 +93,7 @@ const CreateNFTScreen = ({ route }) => {
           modalScreen={modalScreen}
           showModal={(v) => ShowModalAction(v, "uploadNFT")}
           position={index}
+          nftItem={nftItem}
           switchToNFTList={(v, collect) => {
             setnftListDefault({ name: v, collect: collect })
             setIndex(1)
@@ -122,7 +128,6 @@ const CreateNFTScreen = ({ route }) => {
             {route.title}
           </Text>
         )}
-        contentContainerStyle={{ height: hp(6) }}
         tabStyle={{ paddingHorizontal: 0 }}
         indicatorStyle={{ backgroundColor: colors.BLUE4 }}
         style={{
@@ -138,11 +143,12 @@ const CreateNFTScreen = ({ route }) => {
   }
 
   let renderTitle = index == 0 ? translate("wallet.common.collection") :
-  index == 1 ? translate("wallet.common.NFTList") :
-  index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter") ;
+    index == 1 ? translate("wallet.common.NFTList") :
+      index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+
       {
         loading && <LoaderIndicator />
       }
@@ -153,7 +159,7 @@ const CreateNFTScreen = ({ route }) => {
       />
       <View style={styles.sectionContainer}>
         <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{renderTitle}</Text>
+          <Text style={styles.title}>{renderTitle}</Text>
           {collection?.userId != 0 && routeParams?.status &&
             <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
               <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
@@ -169,6 +175,8 @@ const CreateNFTScreen = ({ route }) => {
           onIndexChange={(i) => {
             setModalData(null);
             setModalItem(null);
+            setnftListDefault(null)
+            setnftItem(null)
             setModalScreen("");
             setIndex(i);
           }}
@@ -209,7 +217,6 @@ const CreateNFTScreen = ({ route }) => {
         }
         }
       />
-
     </SafeAreaView>
   );
 };

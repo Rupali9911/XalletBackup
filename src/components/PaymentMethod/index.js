@@ -100,14 +100,15 @@ const PaymentMethod = props => {
                 onPress: () => {
                   setSelectedMethod(1);
                 },
-              },
-              {
-                text: translate('wallet.common.payByGold'),
-                icon: ImagesSrc.goldPay,
-                onPress: () => {
-                  setSelectedMethod(2);
-                },
-              },
+              }
+              // ,
+              // {
+              //   text: translate('wallet.common.payByGold'),
+              //   icon: ImagesSrc.goldPay,
+              //   onPress: () => {
+              //     setSelectedMethod(2);
+              //   },
+              // },
             ]}
             style={styles.optionContainer}
             selectable
@@ -121,7 +122,7 @@ const PaymentMethod = props => {
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
-            <Text style={styles.value}>$ {price}</Text>
+            <Text style={styles.value}>{price}</Text>
           </View>
 
           {selectedMethod == 2 && (

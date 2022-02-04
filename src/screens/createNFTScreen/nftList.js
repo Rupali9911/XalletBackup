@@ -20,7 +20,6 @@ import { C_Image } from '../../components';
 
 const ListItem = props => {
   let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
-  // console.log(props.data)
   return (
     <TouchableOpacity onPress={props.press} style={styles.listCont}>
       <View style={styles.listCenter}>
@@ -111,7 +110,8 @@ const NFTList = ({
   showModal,
   modalItem,
   modalScreen,
-  nftListDefault
+  nftListDefault,
+  switchEditNFT
 }) => {
 
   const [collectionList, setCollectionList] = useState([]);
@@ -137,8 +137,6 @@ const NFTList = ({
       cleanData()
       changeLoadingState(true)
 
-      console.log(nftListDefault)
-      // getCollectionList()
       if (nftListDefault) {
 
         setCollection(nftListDefault.collect)
@@ -179,7 +177,8 @@ const NFTList = ({
       const body = {
         page: 1,
         limit: 50,
-        networkType: networkStatus,
+        chainType: networkType.value,
+        networkType: networkStatus
       };
       axios.post(url, body)
         .then(collectionList => {
@@ -190,7 +189,9 @@ const NFTList = ({
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
               cleanData()
-              setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
+              if (!nftListDefault) {
+                setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
+              }
 
               toggle == "mint" ?
                 setNftListPage(1) : setNftListDraftPage(1);
@@ -292,7 +293,7 @@ const NFTList = ({
   return (
     <View style={styles.childCont}>
 
-      <CardCont>
+      <CardCont style={{ flex: 1 }} >
         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
@@ -328,6 +329,7 @@ const NFTList = ({
 
             <FlatList
               data={showList}
+              showsVerticalScrollIndicator={false}
               initialNumToRender={50}
               renderItem={renderListItem}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -415,7 +417,10 @@ const NFTList = ({
                   toggle !== "mint" &&
                   <View style={styles.saveBtnGroup}>
                     <CardButton
-                      onPress={() => null}
+                      onPress={() => {
+                        setModalVisible(false)
+                        switchEditNFT(selectData)
+                      }}
                       label={translate("wallet.common.edit")}
                       buttonCont={{ width: '48%' }}
                     />

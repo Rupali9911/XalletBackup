@@ -10,6 +10,7 @@ import {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    flexGrow: 1,
     backgroundColor: colors.GREY8,
   },
   sectionContainer: {
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   }),
   listMainCont: {
     marginVertical: hp(3),
-    width: '100%',
+    flex: 1,
   },
   listCont: {
     flexDirection: 'row',
@@ -185,10 +186,19 @@ const styles = StyleSheet.create({
   },
   tagItems: {
     width: null,
-    paddingHorizontal: wp(3),
+    paddingHorizontal: wp(5),
     height: hp(4),
+    borderRadius: wp(1),
     marginHorizontal: wp(2),
     marginVertical: hp(1),
+  },
+  negIcon: {
+    color: colors.BLUE6,
+    fontSize: RF(2.7),
+    position: "absolute",
+    top: 0,
+    right: 0,
+    backgroundColor: colors.white,
   },
   modalCont: {
     width: "100%",
