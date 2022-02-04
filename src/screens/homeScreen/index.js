@@ -144,9 +144,9 @@ const HomeScreen = ({ navigation }) => {
         },
         {
           icon: 'sort-variant',
-          label: translate('common.recentlyListed'),
+          label: translate('common.recentlyCreated'),
           style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy('sell')),
+          onPress: () => dispatch(setSortBy('mint')),
         },
         {
           icon: 'sort-variant',
