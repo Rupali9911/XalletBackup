@@ -254,10 +254,11 @@ const PaymentNow = (props) => {
     // };
 
     const payByWallet = () => {
+        console.log('paymentObject', paymentObject)
         if(paymentObject?.currency?.approvalRequired){
             checkAllowance(wallet.address, chain || "binance", paymentObject?.currency?.approvalAdd).then(async({balance, contract}) => {
                 console.log('balance', balance, lastBidAmount);
-                
+
                 let decimals = await contract.methods.decimals().call();
                 if (parseInt(balance) / Math.pow(10, parseInt(decimals)) <= 0) {
                 // if (parseFloat(`${balance}`) < parseFloat(`${lastBidAmount}`)) {
@@ -273,7 +274,8 @@ const PaymentNow = (props) => {
                         });
                     }).catch((err) => {
                         console.log('approve_err', err);
-                        showErrorAlert('');
+                        showErrorAlert('');+
+                            setLoading(false);
                     });
                 } else {
                     buyNft(wallet.address, wallet.privateKey, NftId, chain || "binance", 10, 600000, collectionAddress, paymentObject?.currency?.order).then((bnbBalance) => {
@@ -285,10 +287,12 @@ const PaymentNow = (props) => {
                         console.log("payByWallet_err", err);
                         setLoading(false);
                         showErrorAlert('');
+                        setLoading(false);
                     });
                 }
             }).catch((err) => {
                 console.log('err', err);
+                setLoading(false);
             });
         }else{
             _buyNFTBnb();

@@ -18,6 +18,7 @@ import {
     UPDATE_NETWORK_TYPE
 } from '../types';
 import ImagesSrc from "../../constants/Images";
+import {BASE_URL} from "../../helpers/ApiRequest";
 
 
 const initialState = {
@@ -250,7 +251,7 @@ export const getTransactions = (address, type) => (dispatch) =>
                 'Content-Type': 'application/json',
             }
         }
-        fetch(`https://testapi.xanalia.com/xanawallet/fetch-transactions`, fetch_request_param).then((response) => {
+        fetch(`${BASE_URL}xanawallet/fetch-transactions`, fetch_request_param).then((response) => {
             return ""
         })
             .then((res) => {

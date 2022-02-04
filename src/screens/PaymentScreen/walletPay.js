@@ -527,7 +527,8 @@ const WalletPay = ({route, navigation}) => {
       <Tokens
         values={balances}
         network={network}
-        allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
+        //allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
+        allowedTokens={tokens}
         onTokenPress={async item => {
           setSelectedObject(item);
           let tradeCurrency = getCurrencyOnSelect(item);

@@ -266,7 +266,7 @@ export const updateCreateState = () => dispatch =>
 
 export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
   new Promise((resolve, reject) => {
-    const url = 'https://testapi.xanalia.com/auth/get-address-nonce';
+    const url = `${BASE_URL}/auth/get-address-nonce`;
     const params = {
       publicAddress: wallet.address,
     };
@@ -300,7 +300,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
             },
           };
           fetch(
-            'https://testapi.xanalia.com/auth/verify-signature',
+              `${BASE_URL}/auth/verify-signature`,
             verifyReuqest,
           )
             .then(_res => _res.json())
