@@ -196,54 +196,20 @@ export default function NFTItem(props) {
           </View>
         </TouchableOpacity>
         :
-        <TouchableOpacity
-          onLongPress={onLongPress}
-          onPress={onPress}
-          style={styles.collectionListItem}>
-          <View style={styles.listItemContainer}>
-            <TouchableOpacity
-              onPress={() => dispatch(handleLikeDislike(item, index))}
-              style={styles.likeButton}
-            >
-              {item.like ? <HeartActiveIcon /> : <HeartWhiteIcon />}
-            </TouchableOpacity>
-            <C_Image
-              type={
-                imageUri.split('.')[
-                imageUri.split('.').length - 1
-                ]
-              }
-              uri={imageUri}
-              imageStyle={styles.collectionListImage}
-            />
-            <View style={styles.collectionWrapper}>
-              <Text>{item.name}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-
-                {
-                  item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime() ?
-                    <Text style={{ color: '#60C083', fontSize: SIZE(12), marginVertical: SIZE(10) }}>{translate('common.auctionended')}</Text>
-                    :
-                    item?.price ? (
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ color: '#60c083', marginVertical: SIZE(10), marginRight: SIZE(2), fontSize: SIZE(12) }}>
-                          {
-                            item?.baseCurrency === "ALIA" ?
-                              insertComma(parseFloat(item?.price, true).toFixed(0)) :
-                              insertComma(item?.price, true)
-                          }
-                        </Text>
-                        {renderIcon()}
-                      </View>
-                    ) : (
-                      <Text style={{ color: '#60C083', fontSize: SIZE(12), marginVertical: SIZE(10) }}>{translate('common.soldout')}</Text>
-                    )
-                }
-              </View>
-              {chainType(item.nftChain)}
-            </View>
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity
+              onLongPress={onLongPress}
+              onPress={onPress}
+              style={styles.listItem}>
+              <C_Image
+                  uri={image}
+                  type={
+                      item?.metaData?.image?.split('.')[
+                      item?.metaData?.image?.split('.')?.length - 1
+                          ]
+                  }
+                  imageStyle={styles.listImage}
+              />
+          </TouchableOpacity>
       }
     </>
   );
