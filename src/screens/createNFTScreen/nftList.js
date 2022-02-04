@@ -110,7 +110,8 @@ const NFTList = ({
   showModal,
   modalItem,
   modalScreen,
-  nftListDefault
+  nftListDefault,
+  switchEditNFT
 }) => {
 
   const [collectionList, setCollectionList] = useState([]);
@@ -176,7 +177,8 @@ const NFTList = ({
       const body = {
         page: 1,
         limit: 50,
-        networkType: networkStatus,
+        chainType: networkType.value,
+        networkType: networkStatus
       };
       axios.post(url, body)
         .then(collectionList => {
@@ -187,7 +189,7 @@ const NFTList = ({
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
               cleanData()
-              if(!nftListDefault){
+              if (!nftListDefault) {
                 setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
               }
 
@@ -291,7 +293,7 @@ const NFTList = ({
   return (
     <View style={styles.childCont}>
 
-      <CardCont style={{ flex: 1}} >
+      <CardCont style={{ flex: 1 }} >
         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
           inputProps={{ value: collection ? collection.collectionName : "" }}
@@ -415,7 +417,10 @@ const NFTList = ({
                   toggle !== "mint" &&
                   <View style={styles.saveBtnGroup}>
                     <CardButton
-                      onPress={() => null}
+                      onPress={() => {
+                        setModalVisible(false)
+                        switchEditNFT(selectData)
+                      }}
                       label={translate("wallet.common.edit")}
                       buttonCont={{ width: '48%' }}
                     />
