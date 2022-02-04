@@ -4,10 +4,11 @@ import { networkType } from '../../common/networkType';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import {
-    ALL_ARTIST_SUCCESS, ARTIST_LOADING_END, ARTIST_LOADING_START, GIF_NFT_LIST_SUCCESS, HANDLE_LIKE_DISLIKE, LOAD_NFT_START, MOVIE_NFT_LIST_SUCCESS, MYLIST_LIST_UPDATE,
-    MY_COLLECTION_LIST_UPDATE, NEW_NFT_LIST_UPDATE, NFT_LIST_FAIL, NFT_LIST_RESET, NFT_LIST_SUCCESS, NFT_LIST_UPDATE, PAGE_CHANGE, SET_SORT_ORDER
+  ALL_ARTIST_SUCCESS, ARTIST_LOADING_END, ARTIST_LOADING_START, GIF_NFT_LIST_SUCCESS, HANDLE_LIKE_DISLIKE, LOAD_NFT_START, MOVIE_NFT_LIST_SUCCESS, MYLIST_LIST_UPDATE,
+  MY_COLLECTION_LIST_UPDATE, NEW_NFT_LIST_UPDATE, NFT_LIST_FAIL, NFT_LIST_RESET, NFT_LIST_SUCCESS, NFT_LIST_UPDATE, PAGE_CHANGE, SET_SORT_ORDER, NFT_DATA_COLLECTION_LIST_UPDATE,
+  AWARDS_LIST_UPDATE
 } from '../types';
-
+import { parseNftObject } from '../../utils/parseNFTObj';
 
 export const nftLoadStart = () => ({
   type: LOAD_NFT_START,
@@ -30,9 +31,9 @@ export const gifNftLoadSuccess = data => ({
   payload: data,
 });
 export const movieNftLoadSuccess = data => ({
-    type: MOVIE_NFT_LIST_SUCCESS,
-    payload: data,
-  });
+  type: MOVIE_NFT_LIST_SUCCESS,
+  payload: data,
+});
 
 export const handleLikeDislikeSuccess = data => ({
   type: HANDLE_LIKE_DISLIKE,
@@ -48,7 +49,7 @@ export const getNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(nftLoadStart());
 
-    const {data, wallet} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -80,6 +81,20 @@ export const getNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         // console.log('json',json)
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(nftLoadSuccess(json));
       })
       .catch(err => {
@@ -95,7 +110,7 @@ export const gifNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(nftLoadStart());
 
-    const {data, wallet} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -126,6 +141,20 @@ export const gifNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         // console.log('json',json)
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(gifNftLoadSuccess(json));
       })
       .catch(err => {
@@ -138,52 +167,66 @@ export const gifNFTList = (page, limit, sort) => {
   };
 };
 export const movieNFTList = (page, limit, sort) => {
-    return (dispatch, getState) => {
-      dispatch(nftLoadStart());
+  return (dispatch, getState) => {
+    dispatch(nftLoadStart());
 
-      const {data, wallet} = getState().UserReducer;
-      let user = data.user;
+    const { data, wallet } = getState().UserReducer;
+    let user = data.user;
 
-      let body_data = {
-        approveStaus: 'approve',
-        type: 'movie',
-        page,
-        limit: limit || 28,
-        networkType: networkType,
-        token: 'HubyJ*%qcqR0',
-      };
-      if (sort) {
-        body_data.sort = sort;
-      }
-
-      if (user) {
-        body_data.owner = wallet.address || user._id;
-      }
-      // console.log('body_data',body_data);
-      let fetch_data_body = {
-        method: 'POST',
-        body: JSON.stringify(body_data),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      };
-
-      fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
-        .then(response => response.json())
-        .then(json => {
-          // console.log('json',json)
-          dispatch(movieNftLoadSuccess(json));
-        })
-        .catch(err => {
-          dispatch(nftLoadFail());
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('wallet.common.error.networkFailed'),
-          );
-        });
+    let body_data = {
+      approveStaus: 'approve',
+      type: 'movie',
+      page,
+      limit: limit || 28,
+      networkType: networkType,
+      token: 'HubyJ*%qcqR0',
     };
+    if (sort) {
+      body_data.sort = sort;
+    }
+
+    if (user) {
+      body_data.owner = wallet.address || user._id;
+    }
+    // console.log('body_data',body_data);
+    let fetch_data_body = {
+      method: 'POST',
+      body: JSON.stringify(body_data),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+
+    fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
+      .then(response => response.json())
+      .then(json => {
+        // console.log('json',json)
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
+        dispatch(movieNftLoadSuccess(json));
+      })
+      .catch(err => {
+        dispatch(nftLoadFail());
+        alertWithSingleBtn(
+          translate('wallet.common.alert'),
+          translate('wallet.common.error.networkFailed'),
+        );
+      });
   };
+};
 
 const artistLoadingStart = () => ({
   type: ARTIST_LOADING_START,
@@ -237,27 +280,27 @@ export const getAllArtist = () => {
 
 export const handleLikeDislike = (item, index) => {
   return (dispatch, getState) => {
-    const {screenName} = getState().AuthReducer;
-    const {data} = getState().UserReducer;
+    const { screenName } = getState().AuthReducer;
+    const { data, wallet } = getState().UserReducer;
 
     let oldNFTS =
       screenName == 'Hot'
         ? getState().ListReducer.nftList
         : screenName == 'newNFT'
-        ? getState().NewNFTListReducer.newNftList
-        : screenName == 'myNFT'
-        ? getState().MyNFTReducer.myList
-        : screenName == 'myCollection'
-        ? getState().MyCollectionReducer.myCollection
-        : screenName == 'awards'
-        ? getState().AwardsNFTReducer.awardsNftList
-        : [];
+          ? getState().NewNFTListReducer.newNftList
+          : screenName == 'myNFT'
+            ? getState().MyNFTReducer.myList
+            : screenName == 'myCollection'
+              ? getState().MyCollectionReducer.myCollection
+              : screenName == 'awards'
+                ? getState().AwardsNFTReducer.awardsNftList
+                : getState().NftDataCollectionReducer.nftDataCollectionList;
 
     var url1 = '';
     var url2 = `${BASE_URL}/xanalia/updateRating`;
     let like_body = {
       networkType: networkType,
-      owner: data.user._id,
+      owner: wallet.address || data.user._id,
       tokenId: item.tokenId,
     };
 
@@ -265,7 +308,7 @@ export const handleLikeDislike = (item, index) => {
       networkType: networkType,
       tokenId: item.tokenId,
     };
-    if (item.like == 0) {
+    if (!item.like) {
       url1 = `${BASE_URL}/xanalia/likeNFT`;
       rating_body.rating = item.rating + 1;
       item.like = 1;
@@ -298,21 +341,25 @@ export const handleLikeDislike = (item, index) => {
       fetch(url2, fetch_rating_body).then(res => res.json()),
     ])
       .then(([v, a]) => {
-        const nftUpdated = [
-          ...oldNFTS.slice(0, index),
-          item,
-          ...oldNFTS.slice(index + 1),
-        ];
+        if (v.success) {
+          const nftUpdated = [
+            ...oldNFTS.slice(0, index),
+            item,
+            ...oldNFTS.slice(index + 1),
+          ];
 
-        screenName == 'Hot'
-          ? dispatch(nftLoadUpdate(nftUpdated))
-          : screenName == 'newNFT'
-          ? dispatch(newNftLoadUpdate(nftUpdated))
-          : screenName == 'myNFT'
-          ? dispatch(myNFTUpdate(nftUpdated))
-          : screenName == 'myCollection'
-          ? dispatch(myCollectionNFTUpdate(nftUpdated))
-          : dispatch(myNFTupdate(nftUpdated));
+          screenName == 'Hot'
+            ? dispatch(nftLoadUpdate(nftUpdated))
+            : screenName == 'newNFT'
+              ? dispatch(newNftLoadUpdate(nftUpdated))
+              : screenName == 'myNFT'
+                ? dispatch(myNFTUpdate(nftUpdated))
+                : screenName == 'myCollection'
+                  ? dispatch(myCollectionNFTUpdate(nftUpdated))
+                  : screenName == 'awards'
+                    ? dispatch(awardsListUpdate(nftUpdated))
+                    : dispatch(nftDataCollectionUpdate(nftUpdated));
+        }
       })
       .catch(err => {
         alertWithSingleBtn(
@@ -325,7 +372,7 @@ export const handleLikeDislike = (item, index) => {
 
 export const handleFollow = (followingUserId, isFollowing) => {
   return (dispatch, getState) => {
-    const {data} = getState().UserReducer;
+    const { data } = getState().UserReducer;
 
     let url = isFollowing
       ? `${BASE_URL}/user/unFollow-user`
@@ -356,12 +403,17 @@ export const newNftLoadUpdate = data => ({
   payload: data,
 });
 
-export const myNFTUpdate = data => ({
-  type: MYLIST_LIST_UPDATE,
+export const awardsListUpdate = data => ({
+  type: AWARDS_LIST_UPDATE,
   payload: data,
 });
 
 export const myCollectionNFTUpdate = data => ({
   type: MY_COLLECTION_LIST_UPDATE,
+  payload: data,
+});
+
+export const nftDataCollectionUpdate = data => ({
+  type: NFT_DATA_COLLECTION_LIST_UPDATE,
   payload: data,
 });

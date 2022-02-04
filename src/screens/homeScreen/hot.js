@@ -19,6 +19,7 @@ import {
     pageChange,
 } from '../../store/actions/nftTrendList';
 import { translate } from '../../walletUtils';
+import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
 const Hot = () => {
@@ -31,7 +32,7 @@ const Hot = () => {
     useEffect(() => {
         dispatch(nftLoadStart());
         dispatch(nftListReset());
-        getNFTlist(1,null,ListReducer.sort);
+        getNFTlist(1, null, ListReducer.sort);
         dispatch(pageChange(1));
     }, [ListReducer.sort]);
 
@@ -59,9 +60,10 @@ const Hot = () => {
                     ? item.thumbnailUrl
                     : item.metaData.image;
             return (
-                <TouchableOpacity
+                <NFTItem
+                    item={item}
+                    image={imageUri}
                     onLongPress={() => {
-                        item.index = index;
                         setModalData(item);
                         setModalVisible(true);
                     }}
@@ -69,17 +71,7 @@ const Hot = () => {
                         dispatch(changeScreenName('Hot'));
                         navigation.push('DetailItem', { index: findIndex });
                     }}
-                    style={styles.listItem}>
-                    <C_Image
-                        type={
-                            item.metaData.image.split('.')[
-                            item.metaData.image.split('.').length - 1
-                            ]
-                        }
-                        uri={imageUri}
-                        imageStyle={styles.listImage}
-                    />
-                </TouchableOpacity>
+                />
             );
         }
     };
@@ -95,7 +87,7 @@ const Hot = () => {
                 <FlatList
                     data={ListReducer.nftList}
                     horizontal={false}
-                    numColumns={3}
+                    numColumns={2}
                     initialNumToRender={15}
                     onRefresh={() => {
                         dispatch(nftLoadStart());

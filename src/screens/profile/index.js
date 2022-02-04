@@ -66,7 +66,7 @@ function Profile({ navigation, connector }) {
 
   const { UserReducer } = useSelector(state => state);
 
-  const id = UserReducer.data.user.username || UserReducer.wallet.address;
+  const id = UserReducer.wallet.address || UserReducer.data.user.username;
   const { about, title, firstName, lastName, links, username, name } =
     UserReducer.data.user;
 

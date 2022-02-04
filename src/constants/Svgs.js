@@ -13,6 +13,7 @@ import ChatIcon from 'src/assets/svgs/icon-chat.svg';
 import ChatActiveIcon from 'src/assets/svgs/icon-chat-active.svg';
 import HeartIcon from 'src/assets/svgs/icon-fav-unfilled.svg';
 import HeartActiveIcon from 'src/assets/svgs/icon-fav-filled.svg';
+import HeartWhiteIcon from 'src/assets/svgs/icon-fav-white.svg';
 import RiseIcon from 'src/assets/svgs/icon-rise.svg';
 import RiseActiveIcon from 'src/assets/svgs/icon-rise-active.svg';
 import TradeIcon from 'src/assets/svgs/icon-trade.svg';
@@ -87,6 +88,7 @@ export default {
   ChatIcon,
   ChatActiveIcon,
   HeartIcon,
+  HeartWhiteIcon,
   HeartActiveIcon,
   RiseIcon,
   RiseActiveIcon,

@@ -81,7 +81,7 @@ function CollectionDetail(props) {
             <View style={styles.collectionTableRow}>
               <View style={{ flexDirection: 'row' }}>
                 <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
-                <Text style={styles.collectionTableRowText}>{collection?.volTraded}</Text>
+                <Text style={styles.collectionTableRowText}>{Number(collection?.volTraded).toFixed(2)}</Text>
               </View>
               <Text style={styles.collectionTableRowDec}>{translate('common.volumeTraded')}</Text>
             </View>

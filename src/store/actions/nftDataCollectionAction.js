@@ -34,13 +34,13 @@ export const nftDataCollectionPageChange = (data) => ({
 export const nftDataCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
 
-    const { data } = getState().UserReducer;
-    let user = data.user;
+    const { data, wallet } = getState().UserReducer;
+    const owner = wallet.address || data.user._id;
 
-    fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${collectionAddress}&page=${page}&limit=10&owner=${user?._id}`)
+    fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${collectionAddress}&page=${page}&limit=10&owner=${owner}`)
       .then(response => response.json())
       .then(json => {
-        let nftData = [];
+        const nftData = [];
 
         if (!json.count) {
           json.data = [];

@@ -41,7 +41,7 @@ const NFT = ({ route }) => {
 
     const { id } = route?.params;
     const { MyNFTReducer } = useSelector(state => state);
-    const { data } = useSelector(state => state.UserReducer);
+    const { data, wallet } = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [modalData, setModalData] = useState();
@@ -70,7 +70,7 @@ const NFT = ({ route }) => {
 
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-        
+
         if (item.metaData) {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
@@ -123,7 +123,7 @@ const NFT = ({ route }) => {
         }
 
         if (data.user) {
-            obj.loggedIn = data.user._id;
+            obj.loggedIn = wallet.address || data.user._id;
         }
 
         const headers = {

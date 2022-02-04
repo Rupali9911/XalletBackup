@@ -40,6 +40,20 @@ const styles = StyleSheet.create({
 
     elevation: 5,
   },
+  nftListItem: {
+    marginVertical: wp("2"),
+    marginHorizontal: wp("1"),
+    width: (wp('100%') / 3) - wp('3%'),
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 1,
+
+    elevation: 5,
+  },
   listItemContainer: {
     width: "100%",
     borderRadius: SIZE(20),
@@ -48,8 +62,22 @@ const styles = StyleSheet.create({
   collectionListImage: {
     width: '100%',
     height: (wp('100%') / 2) - wp('1%'),
+    resizeMode: 'stretch',
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
+  },
+  likeButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: SIZE(10),
+    right: SIZE(10)
+  },
+  collectionWrapper: {
+    padding: SIZE(10),
+    backgroundColor: 'white',
+    borderBottomRightRadius: SIZE(12),
+    borderBottomLeftRadius: SIZE(12),
+    height: (hp('100%') / 8) - hp('2%'),
   },
 });
 export default styles;

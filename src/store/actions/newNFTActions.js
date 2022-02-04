@@ -1,8 +1,8 @@
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {ApiRequest} from '../../helpers/ApiRequest';
-import {alertWithSingleBtn} from '../../utils';
-import {translate} from '../../walletUtils';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { ApiRequest } from '../../helpers/ApiRequest';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 import {
   FAVORITE_NFT_LOAD_SUCCESS,
   NEW_NFT_LIST_RESET,
@@ -14,6 +14,7 @@ import {
   UPDATE_NFT_DETAIL,
   UPDATE_OWNER_DETAIL,
 } from '../types';
+import { parseNftObject } from '../../utils/parseNFTObj';
 
 export const newNftLoadSuccess = data => ({
   type: NEW_NFT_LOAD_SUCCESS,
@@ -57,7 +58,7 @@ export const newNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(newNftLoadStart());
 
-    const {data, wallet} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -89,6 +90,20 @@ export const newNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(newNftLoadSuccess(json));
       })
       .catch(err => {
@@ -104,7 +119,7 @@ export const favoriteNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(newNftLoadStart());
 
-    const {data, wallet} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -136,6 +151,20 @@ export const favoriteNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(favoriteNftLoadSuccess(json));
       })
       .catch(err => {

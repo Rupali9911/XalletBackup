@@ -35,7 +35,7 @@ export const newPageChange = (data) => ({
 export const newNFTList = (page) => {
     return (dispatch, getState) => {
 
-        const { data } = getState().UserReducer;
+        const { data, wallet } = getState().UserReducer;
         let user = data.user;
 
         let body_data = {
@@ -48,7 +48,7 @@ export const newNFTList = (page) => {
         }
 
         if (user) {
-            body_data.owner = user._id;
+            body_data.owner = wallet.address;
         }
 
         let fetch_data_body = {
@@ -63,9 +63,20 @@ export const newNFTList = (page) => {
         fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
             .then(response => response.json())
             .then(json => {
-
-                let new_list = [...json.data];
-                dispatch(newNftLoadSuccess(new_list))
+                let nftData = [];
+                if (!json.count) {
+                    json.data = [];
+                } else {
+                    json.data.map(item => {
+                        const parsedNFT = parseNftObject(item);
+                        const data = {
+                            ...parsedNFT,
+                            ...item,
+                        };
+                        nftData.push(data);
+                    });
+                }
+                dispatch(newNftLoadSuccess(nftData))
 
             }).catch(err => {
                 dispatch(newNftLoadFail())

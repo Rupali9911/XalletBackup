@@ -86,7 +86,7 @@ const HotCollection = () => {
           data={HotCollectionReducer.hotCollectionList}
           horizontal={false}
           numColumns={3}
-          initialNumToRender={15}
+          initialNumToRender={14}
           onRefresh={() => {
             dispatch(hotCollectionLoadStart());
             handleRefresh();

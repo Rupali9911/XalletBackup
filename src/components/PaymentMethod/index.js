@@ -121,7 +121,7 @@ const PaymentMethod = props => {
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
-            <Text style={styles.value}>$ {price}</Text>
+            <Text style={styles.value}>{price}</Text>
           </View>
 
           {selectedMethod == 2 && (
