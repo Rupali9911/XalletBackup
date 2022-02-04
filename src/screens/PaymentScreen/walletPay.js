@@ -101,7 +101,7 @@ const WalletPay = ({route, navigation}) => {
   }
 
   useEffect(() => {
-    console.log('useEffect');
+    console.log('useEffect', route.params);
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
       getBalances(wallet.address);
@@ -527,7 +527,7 @@ const WalletPay = ({route, navigation}) => {
       <Tokens
         values={balances}
         network={network}
-        allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
+        allowedTokens={payableIn && payableIn !== 'Payable In' ? basePriceTokens.filter((item) => item.key !== payableIn) : basePriceTokens}
         onTokenPress={async item => {
           setSelectedObject(item);
           let tradeCurrency = getCurrencyOnSelect(item);

@@ -55,7 +55,7 @@ const Collection = ({ route }) => {
                 item={item}
                 image={item.iconImage}
                 onPress={() => navigation.navigate("Create", { name: "collection", data: item, status: toggle })}
-                // isCollection
+                 isCollection
             />
         );
     };
@@ -207,7 +207,7 @@ const Collection = ({ route }) => {
                         <FlatList
                             data={showCollectionList}
                             horizontal={false}
-                            numColumns={2}
+                            numColumns={3}
                             initialNumToRender={15}
                             onRefresh={() => pressToggle(toggle)}
                             refreshing={mainLoader}
