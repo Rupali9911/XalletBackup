@@ -21,7 +21,7 @@ import { BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
-import { setApprovalForAll, createNFTSale, createAuctionNFTSale } from '../wallet/functions';
+import { setApprovalForAll, nftMakingMethods } from '../wallet/functions';
 import { RF } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 
@@ -591,38 +591,29 @@ const UploadNFT = ({
     const publicAddress = wallet.address;
     const privKey = wallet.privateKey;
 
+    let marketContractData = getMarketContract();
+
     let dataToAdd = {
-      collectionAddress: collection.collectionAddress,
+      providerUrl,
       publicAddress,
-      privKey,
-      hash: data.Hash,
-      price: fixedPrice,
-      order: Number(foundOrder),
-      chainType: networkType.value,
       gasFee: 10,
       gasLimit: 6000000,
-      endTime: new Date(endTimeDate).getTime() / 1000,
-      providerUrl,
-      MarketPlaceAbi,
+      chainType: networkType.value,
       MarketContractAddress,
+      privKey,
+      data: marketContractData.marketContract.methods
+        .mintAndAuctionCollectionNFT(
+          collection.collectionAddress,
+          publicAddress,
+          data.Hash,
+          marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+          foundOrder.toString(),
+          new Date(endTimeDate).getTime() / 1000
+        )
+        .encodeABI()
     }
 
-    console.log(dataToAdd)
-
-    createAuctionNFTSale(dataToAdd)
-      .then((_) => {
-        changeLoadingState(false);
-        console.log(_, "__create auction nft__")
-        cleanAll();
-        switchToNFTList("mint", collection)
-      }).catch((err) => {
-        changeLoadingState(false);
-
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.insufficientFunds")
-        );
-      });
+    nftCallTransaction(dataToAdd)    
   }
 
   const putNftOnSale = (data) => {
@@ -633,38 +624,61 @@ const UploadNFT = ({
 
     let currencyListArr = otherPrice.map(i => Number(i));
 
+    let marketContractData = getMarketContract();
+
     let dataToAdd = {
-      collectionAddress: collection.collectionAddress,
+      providerUrl,
       publicAddress,
-      privKey,
-      hash: data.Hash,
-      price: fixedPrice,
-      order: Number(foundOrder),
-      chainType: networkType.value,
       gasFee: 10,
       gasLimit: 6000000,
-      currencyList: currencyListArr,
-      providerUrl,
-      MarketPlaceAbi,
+      chainType: networkType.value,
       MarketContractAddress,
+      privKey,
+      data: marketContractData.marketContract.methods
+        .mintAndSellCollectionNFT(
+          collection.collectionAddress,
+          publicAddress,
+          data.Hash,
+          marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+          foundOrder.toString(),
+          currencyListArr
+        )
+        .encodeABI()
     }
 
-    console.log(dataToAdd)
+    nftCallTransaction(dataToAdd)    
+  }
 
-    createNFTSale(dataToAdd)
-      .then((_) => {
-        changeLoadingState(false);
-        console.log(_, "__create nft__")
-        cleanAll();
-        switchToNFTList("mint", collection)
-      }).catch((err) => {
-        changeLoadingState(false);
+  const nftCallTransaction = (data) => {
+    nftMakingMethods(data)
+    .then((_) => {
+      changeLoadingState(false);
+      console.log(_, "__create nft__")
+      cleanAll();
+      switchToNFTList("mint", collection)
+    }).catch((err) => {
+      changeLoadingState(false);
 
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.insufficientFunds")
-        );
-      });
+      alertWithSingleBtn(
+        translate("wallet.common.alert"),
+        translate("wallet.common.insufficientFunds")
+      );
+    });
+  }
+
+  const getMarketContract = () => {
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider(
+        providerUrl
+      )
+    );
+
+    let marketContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress
+    );
+
+    return {marketContract, web3}
   }
 
   const saveDraft = () => {
@@ -739,10 +753,10 @@ const UploadNFT = ({
 
     let url;
 
-    if(nftItem){
-      dataToSend.requestId= nftItem._id,
-      url = `${BASE_URL}/user/edit-nft-draft`
-    }else{
+    if (nftItem) {
+      dataToSend.requestId = nftItem._id,
+        url = `${BASE_URL}/user/edit-nft-draft`
+    } else {
       url = `${BASE_URL}/user/create-nft-draft`
     }
 
@@ -1125,7 +1139,7 @@ const UploadNFT = ({
 
           <View style={styles.saveBtnGroup}>
             <CardButton
-              onPress={() => nftItem ? saveDraftToDatabase(nftItem.image, nftItem.thumbnailImage ) : saveDraft()}
+              onPress={() => nftItem ? saveDraftToDatabase(nftItem.image, nftItem.thumbnailImage) : saveDraft()}
               label={nftItem ? translate("wallet.common.edit") : translate("wallet.common.saveAsDraft")}
               buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
               disable={!disableBtn}
