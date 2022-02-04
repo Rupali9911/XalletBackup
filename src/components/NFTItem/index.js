@@ -110,15 +110,17 @@ export default function NFTItem(props) {
             >
               {item.like ? <HeartActiveIcon /> : <HeartWhiteIcon />}
             </TouchableOpacity>
-            <C_Image
-              type={
-                imageUri?.split('.')[
-                imageUri?.split('.').length - 1
-                ]
-              }
-              uri={imageUri}
-              imageStyle={styles.collectionListImage}
-            />
+            <View>
+              <C_Image
+                type={
+                  imageUri?.split('.')[
+                  imageUri?.split('.').length - 1
+                  ]
+                }
+                uri={imageUri}
+                imageStyle={styles.collectionListImage}
+              />
+            </View>
             <View style={styles.collectionWrapper}>
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -196,20 +198,20 @@ export default function NFTItem(props) {
           </View>
         </TouchableOpacity>
         :
-          <TouchableOpacity
-              onLongPress={onLongPress}
-              onPress={onPress}
-              style={styles.listItem}>
-              <C_Image
-                  uri={image}
-                  type={
-                      item?.metaData?.image?.split('.')[
-                      item?.metaData?.image?.split('.')?.length - 1
-                          ]
-                  }
-                  imageStyle={styles.listImage}
-              />
-          </TouchableOpacity>
+        <TouchableOpacity
+          onLongPress={onLongPress}
+          onPress={onPress}
+          style={styles.listItem}>
+          <C_Image
+            uri={image}
+            type={
+              item?.metaData?.image?.split('.')[
+              item?.metaData?.image?.split('.')?.length - 1
+              ]
+            }
+            imageStyle={styles.listImage}
+          />
+        </TouchableOpacity>
       }
     </>
   );
