@@ -198,7 +198,7 @@ export const endLoader = () => dispatch =>
 export const loadFromAsync = asyncData => (dispatch, getState) => {
   if (asyncData && asyncData.wallet && asyncData.userData) {
     const { wallet, userData, BackedUp, apps } = asyncData;
-    console.log('userData', userData, wallet)
+    wallet.address = String(wallet.address).toLowerCase();
     dispatch(
       setUserData({
         data: userData,
@@ -311,6 +311,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
                   ['@userData', JSON.stringify(_response.data)],
                 ];
                 await AsyncStorage.multiSet(items);
+                wallet.address = String(wallet.address).toLowerCase();
                 dispatch(
                   setUserData({
                     data: _response.data,

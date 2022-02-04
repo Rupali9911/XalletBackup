@@ -207,7 +207,7 @@ const Collection = ({ route }) => {
                         <FlatList
                             data={showCollectionList}
                             horizontal={false}
-                            numColumns={3}
+                            numColumns={2}
                             initialNumToRender={15}
                             onRefresh={() => pressToggle(toggle)}
                             refreshing={mainLoader}

@@ -87,7 +87,7 @@ const Gif = () => {
         <FlatList
           data={ListReducer.gifList}
           horizontal={false}
-          numColumns={3}
+          numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
             dispatch(nftLoadStart());

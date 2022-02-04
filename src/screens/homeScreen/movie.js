@@ -87,7 +87,7 @@ const Movie = () => {
         <FlatList
           data={ListReducer.movieList}
           horizontal={false}
-          numColumns={3}
+          numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
             dispatch(nftLoadStart());

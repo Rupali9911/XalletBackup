@@ -1,5 +1,5 @@
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
 import {
   FAVORITE_NFT_SUCCESS,
   FAVORITE_PAGE_CHANGE,
@@ -35,7 +35,7 @@ export const favoritePageChange = data => ({
 export const myNFTList = (page, ownerId) => {
   return (dispatch, getState) => {
 
-    const {data} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -52,7 +52,7 @@ export const myNFTList = (page, ownerId) => {
     }
 
     if (user) {
-      body_data.loggedIn = user._id;
+      body_data.loggedIn = wallet.address || user._id;
     }
 
     let fetch_data_body = {

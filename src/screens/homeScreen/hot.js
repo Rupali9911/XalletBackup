@@ -87,7 +87,7 @@ const Hot = () => {
                 <FlatList
                     data={ListReducer.nftList}
                     horizontal={false}
-                    numColumns={3}
+                    numColumns={2}
                     initialNumToRender={15}
                     onRefresh={() => {
                         dispatch(nftLoadStart());

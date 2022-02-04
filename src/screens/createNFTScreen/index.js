@@ -56,12 +56,9 @@ const CreateNFTScreen = ({ route }) => {
   const collection = routeParams?.data;
 
   const onViewCollection = () => {
-    console.log('=====data', routeParams.data);
     navigation.navigate('CollectionDetail', { collectionId: routeParams.data?._id })
   }
 
-  console.log('=====collection?.userId', collection?.userId);
-    console.log('=====routeParams', routeParams);
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Collection':

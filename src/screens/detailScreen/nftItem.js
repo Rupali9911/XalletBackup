@@ -173,7 +173,6 @@ const nftItem = ({ item, index, isCollection }) => {
     );
     ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       let ownerAddress = res;
-      // console.log('=====err', err);
       if (!err) {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, tokenId)

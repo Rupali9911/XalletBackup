@@ -98,7 +98,7 @@ const Favorite = () => {
         <FlatList
           data={NewNFTListReducer.favoriteNftList}
           horizontal={false}
-          numColumns={3}
+          numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
             dispatch(newNftLoadStart());

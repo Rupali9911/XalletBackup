@@ -281,7 +281,7 @@ export const getAllArtist = () => {
 export const handleLikeDislike = (item, index) => {
   return (dispatch, getState) => {
     const { screenName } = getState().AuthReducer;
-    const { data } = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
 
     let oldNFTS =
       screenName == 'Hot'
@@ -300,7 +300,7 @@ export const handleLikeDislike = (item, index) => {
     var url2 = `${BASE_URL}/xanalia/updateRating`;
     let like_body = {
       networkType: networkType,
-      owner: data.user.username,
+      owner: wallet.address || data.user._id,
       tokenId: item.tokenId,
     };
 
@@ -310,18 +310,15 @@ export const handleLikeDislike = (item, index) => {
     };
     if (!item.like) {
       url1 = `${BASE_URL}/xanalia/likeNFT`;
-      rating_body.rating = item.rating ? item.rating : 0 + 1;
+      rating_body.rating = item.rating + 1;
       item.like = 1;
-      item.rating = item.rating ? item.rating : 0 + 1;
+      item.rating = item.rating + 1;
     } else {
       url1 = `${BASE_URL}/xanalia/unlikeNFT`;
-      rating_body.rating = item.rating ? item.rating : 1 - 1;
+      rating_body.rating = item.rating - 1;
       item.like = 0;
-      item.rating = item.rating ? item.rating : 1 - 1;
+      item.rating = item.rating - 1;
     }
-
-    console.log('========like_body', like_body);
-    console.log('========rating_body', rating_body);
 
     let fetch_like_body = {
       method: 'POST',
@@ -344,8 +341,6 @@ export const handleLikeDislike = (item, index) => {
       fetch(url2, fetch_rating_body).then(res => res.json()),
     ])
       .then(([v, a]) => {
-        console.log('======v', v);
-        console.log('======item', item);
         if (v.success) {
           const nftUpdated = [
             ...oldNFTS.slice(0, index),
@@ -367,7 +362,6 @@ export const handleLikeDislike = (item, index) => {
         }
       })
       .catch(err => {
-        console.log('=====error', err);
         alertWithSingleBtn(
           translate('wallet.common.alert'),
           translate('wallet.common.error.networkFailed'),

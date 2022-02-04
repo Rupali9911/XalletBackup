@@ -35,7 +35,7 @@ export const newPageChange = (data) => ({
 export const newNFTList = (page) => {
     return (dispatch, getState) => {
 
-        const { data } = getState().UserReducer;
+        const { data, wallet } = getState().UserReducer;
         let user = data.user;
 
         let body_data = {
@@ -48,7 +48,7 @@ export const newNFTList = (page) => {
         }
 
         if (user) {
-            body_data.owner = user._id;
+            body_data.owner = wallet.address;
         }
 
         let fetch_data_body = {

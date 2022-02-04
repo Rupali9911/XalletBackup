@@ -40,7 +40,7 @@ export const getAwardsNftList = (page, limit, sort) => {
 
 		dispatch(awardsNftLoadStart());
 
-		const { data } = getState().UserReducer;
+		const { data, wallet } = getState().UserReducer;
 		let user = data.user;
 		let body_data = {
 			approveStaus: "approve",
@@ -56,9 +56,9 @@ export const getAwardsNftList = (page, limit, sort) => {
 		}
 
 		if (user) {
-			body_data.owner = user._id;
+			body_data.owner = wallet.address || user._id;
 		}
-		// console.log('body_data',body_data);
+
 		let fetch_data_body = {
 			method: 'POST',
 			body: JSON.stringify(body_data),
