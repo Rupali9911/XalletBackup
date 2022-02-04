@@ -289,7 +289,7 @@ const Filter = ({
           pressable
           showRight />
       </CardCont>
-      <CardCont style={{ flex: 1 }} >
+      <CardCont style={{ flex: 1}} >
 
         {
           listLoader ?

@@ -35,6 +35,7 @@ const CreateNFTScreen = ({ route }) => {
   const [miniDate, setMiniDate] = useState(new Date());
   const [date, setDate] = useState("");
   const [nftListDefault, setnftListDefault] = useState(null);
+  const [nftItem, setnftItem] = useState(null);
 
   const [index, setIndex] = useState(0);
   const routes = [
@@ -71,6 +72,10 @@ const CreateNFTScreen = ({ route }) => {
         return <NFTList
           modalItem={modalItem}
           modalScreen={modalScreen}
+          switchEditNFT={(data) => {
+            setnftItem(data)
+            setIndex(2)
+          }}
           showModal={(v) => ShowModalAction(v, "nftList")}
           position={index}
           nftListDefault={nftListDefault}
@@ -88,6 +93,7 @@ const CreateNFTScreen = ({ route }) => {
           modalScreen={modalScreen}
           showModal={(v) => ShowModalAction(v, "uploadNFT")}
           position={index}
+          nftItem={nftItem}
           switchToNFTList={(v, collect) => {
             setnftListDefault({ name: v, collect: collect })
             setIndex(1)
@@ -143,72 +149,74 @@ const CreateNFTScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.mainContainer}>
 
-        {
-          loading && <LoaderIndicator />
-        }
-        <AppHeader
-          title={translate("common.CreateNFT")}
-          showBackButton
-          containerStyle={{ backgroundColor: colors.white }}
-        />
-        <View style={styles.sectionContainer}>
-          <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{renderTitle}</Text>
-            {collection?.userId != 0 && routeParams?.status &&
-              <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
-                <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
-              </TouchableOpacity>
-            }
-          </View>
-          <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
-
-          <TabView
-            renderTabBar={renderTabBar}
-            navigationState={{ index, routes }}
-            renderScene={_renderScene}
-            onIndexChange={(i) => {
-              setModalData(null);
-              setModalItem(null);
-              setModalScreen("");
-              setIndex(i);
-            }}
-          />
-
+      {
+        loading && <LoaderIndicator />
+      }
+      <AppHeader
+        title={translate("common.CreateNFT")}
+        showBackButton
+        containerStyle={{ backgroundColor: colors.white }}
+      />
+      <View style={styles.sectionContainer}>
+        <View style={styles.titleWrapper}>
+          <Text style={styles.title}>{renderTitle}</Text>
+          {collection?.userId != 0 && routeParams?.status &&
+            <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
+              <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
+            </TouchableOpacity>
+          }
         </View>
-        {
-          modalData ?
-            <TabModal
-              modalProps={{
-                isVisible: modalVisible,
-                onBackdropPress: () => {
-                  setModalItem("closed")
-                  setModalVisible(false)
-                }
-              }}
-              data={modalData}
-              title={modalData.title}
-              itemPress={(v) => {
-                setModalItem(v)
-                setModalVisible(false)
-              }}
-              renderItemName={modalData.hasOwnProperty("itemToRender") ? modalData.itemToRender : null}
-            />
-            : null
-        }
-        <DateTimePickerModal
-          isVisible={dateVisible}
-          mode="datetime"
-          minimumDate={miniDate}
-          onConfirm={date => {
-            setDate(date)
-            setDateVisible(false)
+        <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
+
+        <TabView
+          renderTabBar={renderTabBar}
+          navigationState={{ index, routes }}
+          renderScene={_renderScene}
+          onIndexChange={(i) => {
+            setModalData(null);
+            setModalItem(null);
+            setnftListDefault(null)
+            setnftItem(null)
+            setModalScreen("");
+            setIndex(i);
           }}
-          onCancel={() => {
-            setDate("closed")
-            setDateVisible(false)
-          }
-          }
         />
+
+      </View>
+      {
+        modalData ?
+          <TabModal
+            modalProps={{
+              isVisible: modalVisible,
+              onBackdropPress: () => {
+                setModalItem("closed")
+                setModalVisible(false)
+              }
+            }}
+            data={modalData}
+            title={modalData.title}
+            itemPress={(v) => {
+              setModalItem(v)
+              setModalVisible(false)
+            }}
+            renderItemName={modalData.hasOwnProperty("itemToRender") ? modalData.itemToRender : null}
+          />
+          : null
+      }
+      <DateTimePickerModal
+        isVisible={dateVisible}
+        mode="datetime"
+        minimumDate={miniDate}
+        onConfirm={date => {
+          setDate(date)
+          setDateVisible(false)
+        }}
+        onCancel={() => {
+          setDate("closed")
+          setDateVisible(false)
+        }
+        }
+      />
     </SafeAreaView>
   );
 };
