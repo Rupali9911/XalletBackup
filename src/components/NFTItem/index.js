@@ -206,7 +206,7 @@ export default function NFTItem(props) {
                                     alignItems: 'center',
                                     justifyContent: 'space-between'
                                 }}>
-                                    <Text style={{fontSize: SIZE(12), marginVertical: SIZE(10)}}>
+                                    <Text numberOfLines={1} style={{fontSize: SIZE(12), marginVertical: SIZE(10), width: SIZE(100)}}>
                                         {item.creatorObj && item.creatorObj[0]
                                             ? item.creatorObj[0].title
                                                 ? item.creatorObj[0].title
@@ -215,20 +215,24 @@ export default function NFTItem(props) {
                                     </Text>
                                     {
                                         item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime() ?
-                                            <Text style={{
-                                                color: '#60C083',
-                                                fontSize: SIZE(12),
-                                                marginVertical: SIZE(10)
-                                            }}>{translate('common.auctionended')}</Text>
+                                            <Text
+                                                numberOfLines={1}
+                                                style={{
+                                                    color: '#60C083',
+                                                    fontSize: SIZE(12),
+                                                    marginVertical: SIZE(10)
+                                                }}>{translate('common.auctionended')}</Text>
                                             :
                                             item?.price ? (
                                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                    <Text style={{
-                                                        color: '#60c083',
-                                                        marginVertical: SIZE(10),
-                                                        marginRight: SIZE(2),
-                                                        fontSize: SIZE(12)
-                                                    }}>
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        style={{
+                                                            color: '#60c083',
+                                                            marginVertical: SIZE(10),
+                                                            marginRight: SIZE(2),
+                                                            fontSize: SIZE(12)
+                                                        }}>
                                                         {
                                                             item?.baseCurrency === "ALIA" ?
                                                                 insertComma(parseFloat(item?.price, true).toFixed(0)) :
@@ -258,11 +262,13 @@ export default function NFTItem(props) {
                                                 new Date(item.newprice.endTime) < new Date().getTime() ? (
                                                     item.price ? (
                                                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                            <Text style={{
-                                                                color: '#60c083',
-                                                                marginRight: SIZE(2),
-                                                                fontSize: SIZE(12)
-                                                            }}>
+                                                            <Text
+                                                                numberOfLines={1}
+                                                                style={{
+                                                                    color: '#60c083',
+                                                                    marginRight: SIZE(2),
+                                                                    fontSize: SIZE(12)
+                                                                }}>
                                                                 {
                                                                     item?.baseCurrency === "ALIA" ?
                                                                         insertComma(parseFloat(item?.price, true).toFixed(0)) :
@@ -280,9 +286,13 @@ export default function NFTItem(props) {
                                                     {
                                                         item?.lastpriceTraded ? (
                                                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                                <Text>last price new</Text>
+                                                                <Text
+                                                                style={{
+                                                                    color: '#aaa',
+                                                                    fontSize: SIZE(12)
+                                                                }}>Last: </Text>
                                                                 <Text style={{
-                                                                    color: '#60c083',
+                                                                    color: '#aaa',
                                                                     marginRight: SIZE(2),
                                                                     fontSize: SIZE(12)
                                                                 }}>
