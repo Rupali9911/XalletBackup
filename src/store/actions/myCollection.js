@@ -1,7 +1,7 @@
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {alertWithSingleBtn} from '../../utils';
-import {translate} from '../../walletUtils';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 import {
   MY_COLLECTION_LOAD_FAIL,
@@ -32,7 +32,7 @@ export const myCollectionList = (page, ownerId) => {
   return (dispatch, getState) => {
     dispatch(myCollectionLoadStart());
 
-    const {data} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -49,7 +49,7 @@ export const myCollectionList = (page, ownerId) => {
     }
 
     if (user) {
-      body_data.loggedIn = user._id;
+      body_data.loggedIn = wallet.address || user._id;
     }
 
     let fetch_data_body = {

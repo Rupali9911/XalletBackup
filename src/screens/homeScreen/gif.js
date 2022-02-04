@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,21 +8,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image, DetailModal, Loader} from '../../components';
-import {colors} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image, DetailModal, Loader } from '../../components';
+import { colors } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
 import {
   gifNFTList,
   nftListReset,
   nftLoadStart,
   pageChange,
 } from '../../store/actions/nftTrendList';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
+import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
 const Gif = () => {
-  const {ListReducer} = useSelector(state => state);
+  const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const Gif = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     let findIndex = ListReducer.gifList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri =
@@ -59,27 +60,18 @@ const Gif = () => {
           ? item.thumbnailUrl
           : item.metaData.image;
       return (
-        <TouchableOpacity
+        <NFTItem
+          item={item}
+          image={imageUri}
           onLongPress={() => {
-            item.index = index;
             setModalData(item);
             setModalVisible(true);
           }}
           onPress={() => {
             dispatch(changeScreenName('Hot'));
-            navigation.push('DetailItem', {index: findIndex});
+            navigation.push('DetailItem', { index: findIndex });
           }}
-          style={styles.listItem}>
-          <C_Image
-            type={
-              item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
-              ]
-            }
-            uri={imageUri}
-            imageStyle={styles.listImage}
-          />
-        </TouchableOpacity>
+        />
       );
     }
   };
@@ -95,8 +87,8 @@ const Gif = () => {
         <FlatList
           data={ListReducer.gifList}
           horizontal={false}
-          numColumns={3}
-          initialNumToRender={15}
+          numColumns={2}
+          initialNumToRender={14}
           onRefresh={() => {
             dispatch(nftLoadStart());
             refreshFunc();

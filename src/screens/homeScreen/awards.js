@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,22 +8,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image, DetailModal, Loader} from '../../components';
-import {colors} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image, DetailModal, Loader } from '../../components';
+import { colors } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
 import {
   awardsNftListReset,
   awardsNftLoadStart,
   awardsNftPageChange,
   getAwardsNftList,
 } from '../../store/actions/awardsAction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './styles';
+import NFTItem from '../../components/NFTItem';
 
 const Awards = () => {
-  const {AwardsNFTReducer,ListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
+  const { AwardsNFTReducer, ListReducer } = useSelector(state => state);
+  const { sort } = useSelector(state => state.ListReducer);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const Awards = () => {
   useEffect(() => {
     dispatch(awardsNftLoadStart());
     dispatch(awardsNftListReset());
-    getNFTlist(1,null,sort);
+    getNFTlist(1, null, sort);
     dispatch(awardsNftPageChange(1));
   }, [sort]);
 
@@ -43,7 +44,7 @@ const Awards = () => {
 
   const handleRefresh = () => {
     dispatch(awardsNftListReset());
-    getNFTlist(1,null,sort);
+    getNFTlist(1, null, sort);
     dispatch(awardsNftPageChange(1));
   };
 
@@ -52,7 +53,7 @@ const Awards = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
       x => x.id === item.id,
     );
@@ -63,26 +64,18 @@ const Awards = () => {
           : item.metaData.image;
 
       return (
-        <TouchableOpacity
+        <NFTItem
+          item={item}
+          image={imageUri}
           onLongPress={() => {
             setModalData(item);
             setModalVisible(true);
           }}
           onPress={() => {
             dispatch(changeScreenName('awards'));
-            navigation.push('DetailItem', {index: findIndex});
+            navigation.push('DetailItem', { index: findIndex });
           }}
-          style={styles.listItem}>
-          <C_Image
-            type={
-              item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
-              ]
-            }
-            uri={imageUri}
-            imageStyle={styles.listImage}
-          />
-        </TouchableOpacity>
+        />
       );
     }
   };
@@ -96,14 +89,14 @@ const Awards = () => {
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       {AwardsNFTReducer.awardsNftPage === 1 &&
-      AwardsNFTReducer.awardsNftLoading ? (
+        AwardsNFTReducer.awardsNftLoading ? (
         <Loader />
       ) : AwardsNFTReducer.awardsNftList.length !== 0 ? (
         <FlatList
           data={AwardsNFTReducer.awardsNftList}
           horizontal={false}
-          numColumns={3}
-          initialNumToRender={15}
+          numColumns={2}
+          initialNumToRender={14}
           onRefresh={() => {
             dispatch(awardsNftLoadStart());
             handleRefresh();
@@ -118,7 +111,7 @@ const Awards = () => {
             if (
               !AwardsNFTReducer.awardsNftLoading &&
               AwardsNFTReducer.awardsTotalCount !==
-                AwardsNFTReducer.awardsNftList.length
+              AwardsNFTReducer.awardsNftList.length
             ) {
               let num = AwardsNFTReducer.awardsNftPage + 1;
               getNFTlist(num);

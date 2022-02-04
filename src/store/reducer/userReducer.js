@@ -16,11 +16,11 @@ import {
   UPDATE_ASYNC_PASSCODE,
   LOG_OUT,
 } from '../types';
-import {getSig} from '../../screens/wallet/functions';
-import {BASE_URL} from '../../common/constants';
-import {translate} from '../../walletUtils';
-import {alertWithSingleBtn} from '../../common/function';
-import {setConnectedApps} from './walletReducer';
+import { getSig } from '../../screens/wallet/functions';
+import { BASE_URL } from '../../common/constants';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../common/function';
+import { setConnectedApps } from './walletReducer';
 
 const initialState = {
   loading: false,
@@ -106,7 +106,7 @@ export default UserReducer = (state = initialState, action) => {
       _data.user = action.payload;
       return {
         ...state,
-        data: {..._data},
+        data: { ..._data },
       };
 
     case UPDATE_BACKUP:
@@ -198,7 +198,7 @@ export const endLoader = () => dispatch =>
 export const loadFromAsync = asyncData => (dispatch, getState) => {
   if (asyncData && asyncData.wallet && asyncData.userData) {
     const { wallet, userData, BackedUp, apps } = asyncData;
-    console.log('userData', userData, wallet)
+    wallet.address = String(wallet.address).toLowerCase();
     dispatch(
       setUserData({
         data: userData,
@@ -227,8 +227,8 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     fetch(`${BASE_URL}/xanalia/getProfile`, body)
       .then(response => response.json())
       .then(res => {
-        if (res.data) {
-            console.log('Response /xanalia/getProfile', res, JSON.stringify(req_data))
+        if (typeof(res.data) !== 'string' && res.data) {
+          console.log('Response /xanalia/getProfile', res, JSON.stringify(req_data))
           dispatch(upateUserData(res.data));
         }
         dispatch(endMainLoading());
@@ -251,16 +251,16 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
 
 export const setUserAuthData =
   (data, isCreate = false) =>
-  dispatch =>
-    new Promise(async (resolve, reject) => {
-      dispatch(startLoading());
-      AsyncStorage.setItem('@wallet', JSON.stringify(data));
-      dispatch(setUserData({data, isCreate}));
-    });
+    dispatch =>
+      new Promise(async (resolve, reject) => {
+        dispatch(startLoading());
+        AsyncStorage.setItem('@wallet', JSON.stringify(data));
+        dispatch(setUserData({ data, isCreate }));
+      });
 
 export const updateCreateState = () => dispatch =>
   new Promise((resolve, reject) => {
-    dispatch({type: UPDATE_CREATE});
+    dispatch({ type: UPDATE_CREATE });
     resolve();
   });
 
@@ -311,6 +311,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
                   ['@userData', JSON.stringify(_response.data)],
                 ];
                 await AsyncStorage.multiSet(items);
+                wallet.address = String(wallet.address).toLowerCase();
                 dispatch(
                   setUserData({
                     data: _response.data,
@@ -359,7 +360,7 @@ export const signOut = () => {
 export const updateProfileImage = formData => async (dispatch, getState) => {
   dispatch(startLoading());
 
-  const {data} = getState().UserReducer;
+  const { data } = getState().UserReducer;
   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
@@ -394,7 +395,7 @@ export const updateProfile =
   (props, callBack) => async (dispatch, getState) => {
     dispatch(startLoading());
 
-    const {data} = getState().UserReducer;
+    const { data } = getState().UserReducer;
     const config = {
       method: 'post',
       url: `${BASE_URL}/user/update-user-profile`,

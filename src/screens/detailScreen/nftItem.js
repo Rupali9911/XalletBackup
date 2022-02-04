@@ -23,6 +23,7 @@ import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 import styles from './styles';
+import { numberWithCommas } from '../../utils';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -172,7 +173,6 @@ const nftItem = ({ item, index, isCollection }) => {
     );
     ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       let ownerAddress = res;
-      // console.log('=====err', err);
       if (!err) {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, tokenId)
@@ -701,7 +701,7 @@ const nftItem = ({ item, index, isCollection }) => {
           </TouchableOpacity>
         </RowBetweenWrap>
         <SpaceView mTop={SIZE(8)} />
-        <SmallBoldText>{`13,589 ${translate('common.Likes')}`}</SmallBoldText>
+        <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
         <SpaceView mTop={SIZE(6)} />
         <Text style={styles.modalLabel}>{item.metaData.name}</Text>
         <View style={styles.separator} />

@@ -8,7 +8,7 @@ import {
   MY_COLLECTION_LIST_UPDATE, NEW_NFT_LIST_UPDATE, NFT_LIST_FAIL, NFT_LIST_RESET, NFT_LIST_SUCCESS, NFT_LIST_UPDATE, PAGE_CHANGE, SET_SORT_ORDER, NFT_DATA_COLLECTION_LIST_UPDATE,
   AWARDS_LIST_UPDATE
 } from '../types';
-
+import { parseNftObject } from '../../utils/parseNFTObj';
 
 export const nftLoadStart = () => ({
   type: LOAD_NFT_START,
@@ -81,6 +81,20 @@ export const getNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         // console.log('json',json)
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(nftLoadSuccess(json));
       })
       .catch(err => {
@@ -127,6 +141,20 @@ export const gifNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         // console.log('json',json)
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(gifNftLoadSuccess(json));
       })
       .catch(err => {
@@ -174,6 +202,20 @@ export const movieNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         // console.log('json',json)
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
+        } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
+        json.data = nftData;
         dispatch(movieNftLoadSuccess(json));
       })
       .catch(err => {
@@ -239,7 +281,7 @@ export const getAllArtist = () => {
 export const handleLikeDislike = (item, index) => {
   return (dispatch, getState) => {
     const { screenName } = getState().AuthReducer;
-    const { data } = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
 
     let oldNFTS =
       screenName == 'Hot'
@@ -258,7 +300,7 @@ export const handleLikeDislike = (item, index) => {
     var url2 = `${BASE_URL}/xanalia/updateRating`;
     let like_body = {
       networkType: networkType,
-      owner: data.user.username,
+      owner: wallet.address || data.user._id,
       tokenId: item.tokenId,
     };
 
@@ -266,17 +308,16 @@ export const handleLikeDislike = (item, index) => {
       networkType: networkType,
       tokenId: item.tokenId,
     };
-    
     if (!item.like) {
       url1 = `${BASE_URL}/xanalia/likeNFT`;
-      rating_body.rating = item.rating ? item.rating : 0 + 1;
+      rating_body.rating = item.rating + 1;
       item.like = 1;
-      item.rating = item.rating ? item.rating : 0 + 1;
+      item.rating = item.rating + 1;
     } else {
       url1 = `${BASE_URL}/xanalia/unlikeNFT`;
-      rating_body.rating = item.rating ? item.rating : 1 - 1;
+      rating_body.rating = item.rating - 1;
       item.like = 0;
-      item.rating = item.rating ? item.rating : 1 - 1;
+      item.rating = item.rating - 1;
     }
 
     let fetch_like_body = {

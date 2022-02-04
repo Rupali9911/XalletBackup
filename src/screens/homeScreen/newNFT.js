@@ -10,6 +10,7 @@ import styles from './styles';
 import { colors } from '../../res';
 import { Loader, DetailModal, C_Image } from '../../components';
 import { translate } from '../../walletUtils';
+import NFTItem from '../../components/NFTItem';
 
 
 const NewNFT = () => {
@@ -24,18 +25,18 @@ const NewNFT = () => {
     useEffect(() => {
         dispatch(newNftLoadStart());
         dispatch(newNftListReset());
-        getNFTlist(1,null,sort);
+        getNFTlist(1, null, sort);
         dispatch(newPageChange(1));
     }, [sort])
 
     const getNFTlist = useCallback((page, limit, _sort) => {
         // console.log('___sort',_sort);
-        dispatch(newNFTList(page, limit,_sort));
+        dispatch(newNFTList(page, limit, _sort));
     }, []);
 
     const handleRefresh = () => {
         dispatch(newNftListReset());
-        getNFTlist(1,null,sort);
+        getNFTlist(1, null, sort);
         dispatch(newPageChange(1));
     }
 
@@ -45,22 +46,18 @@ const NewNFT = () => {
             let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
 
             return (
-                <TouchableOpacity
+                <NFTItem
+                    item={item}
+                    image={imageUri}
                     onLongPress={() => {
                         setModalData(item);
                         setModalVisible(true);
                     }}
                     onPress={() => {
-                        dispatch(changeScreenName("newNFT"));
-                        navigation.push("DetailItem", { index: findIndex });
+                        dispatch(changeScreenName('newNFT'));
+                        navigation.push('DetailItem', { index: findIndex });
                     }}
-                    style={styles.listItem}>
-                    <C_Image
-                        type={item.metaData.image.split('.')[item.metaData.image.split('.').length - 1]}
-                        uri={imageUri}
-                        imageStyle={styles.listImage} />
-
-                </TouchableOpacity>
+                />
             )
         }
     }
@@ -86,7 +83,7 @@ const NewNFT = () => {
                             data={NewNFTListReducer.newNftList}
                             horizontal={false}
                             numColumns={3}
-                            initialNumToRender={15}
+                            initialNumToRender={14}
                             onRefresh={() => {
                                 dispatch(newNftLoadStart());
                                 handleRefresh();

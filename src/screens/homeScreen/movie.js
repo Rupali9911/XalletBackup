@@ -19,6 +19,7 @@ import {
   pageChange,
 } from '../../store/actions/nftTrendList';
 import {translate} from '../../walletUtils';
+import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
 const Movie = () => {
@@ -59,27 +60,18 @@ const Movie = () => {
           ? item.thumbnailUrl
           : item.metaData.image;
       return (
-        <TouchableOpacity
+        <NFTItem
+          item={item}
+          image={imageUri}
           onLongPress={() => {
-            item.index = index;
             setModalData(item);
             setModalVisible(true);
           }}
           onPress={() => {
             dispatch(changeScreenName('Hot'));
-            navigation.push('DetailItem', {index: findIndex});
+            navigation.push('DetailItem', { index: findIndex });
           }}
-          style={styles.listItem}>
-          <C_Image
-            type={
-              item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
-              ]
-            }
-            uri={imageUri}
-            imageStyle={styles.listImage}
-          />
-        </TouchableOpacity>
+        />
       );
     }
   };
@@ -95,8 +87,8 @@ const Movie = () => {
         <FlatList
           data={ListReducer.movieList}
           horizontal={false}
-          numColumns={3}
-          initialNumToRender={15}
+          numColumns={2}
+          initialNumToRender={14}
           onRefresh={() => {
             dispatch(nftLoadStart());
             refreshFunc();
