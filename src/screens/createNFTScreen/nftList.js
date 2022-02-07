@@ -136,6 +136,7 @@ const NFTList = ({
     if (position == 1) {
       cleanData()
       changeLoadingState(true)
+      getCollectionList()
 
       if (nftListDefault) {
 
@@ -145,9 +146,7 @@ const NFTList = ({
         } else {
           pressToggle("mint", nftListDefault.collect)
         }
-      } else {
-        getCollectionList()
-      }
+      } 
     }
   }, [position, nftListDefault])
 
