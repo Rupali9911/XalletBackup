@@ -291,15 +291,6 @@ const HomeScreen = ({ navigation }) => {
                 },
               }}>
               <Tab.Screen
-                name={translate('common.hotcollection')}
-                component={HotCollection}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(0);
-                  }
-                }}
-              />
-              <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}
                 listeners={({ navigation, route }) => {
@@ -314,6 +305,15 @@ const HomeScreen = ({ navigation }) => {
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(2);
+                  }
+                }}
+              />
+              <Tab.Screen
+                name={translate('common.hotcollection')}
+                component={HotCollection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
                   }
                 }}
               />
