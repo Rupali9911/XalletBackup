@@ -781,6 +781,7 @@ const UploadNFT = ({
     translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
       translate("common.polygon") : translate("common.ethereum");
 
+let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
   return (
     <View style={styles.childCont}>
       <ScrollView
@@ -1124,8 +1125,11 @@ const UploadNFT = ({
             <CardButton
               onPress={() => nftItem ? saveDraftToDatabase(nftItem.image, nftItem.thumbnailImage) : saveDraft()}
               label={nftItem ? translate("wallet.common.edit") : translate("wallet.common.saveAsDraft")}
-              buttonCont={{ width: '48%', backgroundColor: !disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-              disable={!disableBtn}
+              buttonCont={{
+                width: '48%',
+                backgroundColor: draftBtnD ? '#rgba(59,125,221,0.5)' : colors.BLUE6
+              }}
+              disable={draftBtnD}
             />
             <CardButton
               onPress={handleCreate}

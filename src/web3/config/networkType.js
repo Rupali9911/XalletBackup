@@ -1,3 +1,5 @@
-export { networkType } from '../../common/networkType';
+export const networkType = 'testnet';
+// export const networkType =  'mainnet'
 export const adminAccess = true;
 export const judgesAccess = true;
+export const isChinaApp = false;

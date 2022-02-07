@@ -39,6 +39,10 @@ import ERC721ConAbiBSC from "./binanceSmartChain/abi/erc721/erc721NFTAbi";
 import UndergroundCastleConAddBSC from "./binanceSmartChain/contractAddress/undergroundCastleAdd";
 import UndergroundCastleConAbiBSC from "./binanceSmartChain/abi/undergroundCastleAbi";
 
+
+import OffChainBlindBoxAddBSC from "./binanceSmartChain/contractAddress/offChainBlindBoxAdd";
+import OffChainBlindBoxAbiBSC from "./binanceSmartChain/abi/offChainBlindBoxAbi";
+
 //Polygon Chain
 import MarketConAddPOL from "./polygon/contractAddress/MarketContractAddress";
 import MarketConAbiPOL from "./polygon/abi/MarketPlaceAbi";
@@ -78,6 +82,10 @@ import ERC721ConAbiPOL from "./polygon/abi/erc721/erc721NFTAbi";
 import UndergroundCastleConAddPOL from "./polygon/contractAddress/undergroundCastleAdd";
 import UndergroundCastleConAbiPOL from "./polygon/abi/undergroundCastleAbi";
 
+import OffChainBlindBoxAddPOL from "./polygon/contractAddress/offChainBlindBoxAdd";
+import OffChainBlindBoxAbiPOL from "./polygon/abi/offChainBlindBoxAbi";
+
+
 //Ethereum Chain
 import MarketConAddETH from "./ethereum/contractAddress/MarketContractAddress";
 import MarketConAbiETH from "./ethereum/abi/MarketPlaceAbi";
@@ -116,6 +124,11 @@ import ERC721ConAbiETH from "./ethereum/abi/erc721/erc721NFTAbi";
 
 import UndergroundCastleConAddETH from "./ethereum/contractAddress/undergroundCastleAdd";
 import UndergroundCastleConAbiETH from "./ethereum/abi/undergroundCastleAbi";
+
+
+import OffChainBlindBoxAddETH from "./ethereum/contractAddress/offChainBlindBoxAdd";
+import OffChainBlindBoxAbiETH from "./ethereum/abi/offChainBlindBoxAbi";
+
 
 export const CDN_LINK = 'https://ik.imagekit.io/xanalia/Images';
 
@@ -187,6 +200,11 @@ export const blockChainConfig = [
       add: UndergroundCastleConAddBSC,
       abi: UndergroundCastleConAbiBSC,
     },
+
+    offChainBlindBoxConConfig: {
+      add: OffChainBlindBoxAddBSC,
+      abi: OffChainBlindBoxAbiBSC,
+    },
   },
   {
     name: "polygon",
@@ -201,14 +219,14 @@ export const blockChainConfig = [
     symbol: "MATIC",
     explorerURL:
       networkType === "testnet"
-        ? "https://explorer-mumbai.maticvigil.com/"
+        ? "https://matic-mumbai.chainstacklabs.com"
         : "https://explorer.matic.network",
 
     providerUrl:
       networkType === "testnet"
-        ? "https://rpc-mumbai.maticvigil.com"
+        ? "https://matic-mumbai.chainstacklabs.com"
         : "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
-    providerUrlTestnet: "https://rpc-mumbai.maticvigil.com",
+    providerUrlTestnet: "https://matic-mumbai.chainstacklabs.com",
     providerUrlMainnet:
       "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
     providerUrlForAliaPrice:
@@ -255,7 +273,13 @@ export const blockChainConfig = [
       add: UndergroundCastleConAddPOL,
       abi: UndergroundCastleConAbiPOL,
     },
+
+    offChainBlindBoxConConfig: {
+      add: OffChainBlindBoxAddPOL,
+      abi: OffChainBlindBoxAbiPOL,
+    },
   },
+
   {
     name: "ethereum",
     translationKey: "ethereum",
@@ -325,6 +349,11 @@ export const blockChainConfig = [
     undergroundCastleConConfig: {
       add: UndergroundCastleConAddETH,
       abi: UndergroundCastleConAbiETH,
+    },
+
+    offChainBlindBoxConConfig: {
+      add: OffChainBlindBoxAddETH,
+      abi: OffChainBlindBoxAbiETH,
     },
   },
 ];
