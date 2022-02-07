@@ -206,7 +206,7 @@ export default function NFTItem(props) {
                                     alignItems: 'center',
                                     justifyContent: 'space-between'
                                 }}>
-                                    <Text numberOfLines={1} style={{fontSize: SIZE(12), marginVertical: SIZE(10), width: SIZE(100)}}>
+                                    <Text numberOfLines={1} style={{fontSize: SIZE(12), marginVertical: SIZE(10), width: SIZE(80)}}>
                                         {item.creatorObj && item.creatorObj[0]
                                             ? item.creatorObj[0].title
                                                 ? item.creatorObj[0].title
