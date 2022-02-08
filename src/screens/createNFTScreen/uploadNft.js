@@ -432,63 +432,74 @@ const UploadNFT = ({
 
   const uploadImageToStorage = async () => {
     changeLoadingState(true);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+    if (nftItem) {
 
-    let formData = new FormData();
-    formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+      let datares = {
+        image1: nftItem.image,
+        image2: nftItem.thumbnailImage
+      };
 
-    axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-    let responseSend;
+      return datares;
 
-    await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
-      .then(async res => {
-        console.log("upload image nft", res)
-        if (res.data.success) {
+    } else {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
-          let thumbnailDataFile = new FormData();
-          thumbnailDataFile.append('imageName', res.data.imageName);
-          if (nftImageThumb) {
-            thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
-          } else {
-            thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
-          }
+      let formData = new FormData();
+      formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
 
-          await axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
-            .then(res2 => {
-              if (res2.data.success) {
-                let datares = {
-                  image1: res.data.data,
-                  image2: res2.data.data
-                };
-                console.log(datares, "thumbnail url")
-                responseSend = datares;
-              } else {
-                changeLoadingState(false);
-                alertWithSingleBtn(
-                  translate("wallet.common.alert"),
-                  translate(res.data.data)
-                );
+      axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+      let responseSend;
+
+      await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
+        .then(async res => {
+          console.log("upload image nft", res)
+          if (res.data.success) {
+
+            let thumbnailDataFile = new FormData();
+            thumbnailDataFile.append('imageName', res.data.imageName);
+            if (nftImageThumb) {
+              thumbnailDataFile.append('image', { uri: nftImageThumb.path, name: nftImageThumb.path.split("/").pop(), type: nftImageThumb.mime });
+            } else {
+              thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+            }
+
+            await axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
+              .then(res2 => {
+                if (res2.data.success) {
+                  let datares = {
+                    image1: res.data.data,
+                    image2: res2.data.data
+                  };
+                  console.log(datares, "thumbnail url")
+                  responseSend = datares;
+                } else {
+                  changeLoadingState(false);
+                  alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate(res.data.data)
+                  );
+                  return null;
+                }
+              })
+              .catch(err => {
+                errorMethod(err, "thumbnail image nft err")
                 return null;
-              }
-            })
-            .catch(err => {
-              errorMethod(err, "thumbnail image nft err")
-              return null;
-            });
-        } else {
-          changeLoadingState(false);
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate(res.data.data)
-          );
-          return null
-        }
-      })
-      .catch(err => {
-        errorMethod(err, "upload image nft err")
-        return null;
-      });
-    return responseSend;
+              });
+          } else {
+            changeLoadingState(false);
+            alertWithSingleBtn(
+              translate("wallet.common.alert"),
+              translate(res.data.data)
+            );
+            return null
+          }
+        })
+        .catch(err => {
+          errorMethod(err, "upload image nft err")
+          return null;
+        });
+      return responseSend;
+    }
   }
 
   const handleInfura = async (image1, image2) => {
@@ -621,15 +632,19 @@ const UploadNFT = ({
 
     let marketContractData = getMarketContract();
 
-    let dataToAdd = {
-      providerUrl,
-      publicAddress,
-      gasFee: 10,
-      gasLimit: 6000000,
-      chainType: networkType.value,
-      MarketContractAddress,
-      privKey,
-      data: marketContractData.marketContract.methods
+    let marketData = (collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) ?
+      marketContractData.marketContract.methods
+        .MintAndAuctionNFT(
+          publicAddress,
+          data.Hash,
+          ERC721Address, // xanalia collection
+          marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+          '',
+          new Date(endTimeDate).getTime() / 1000,
+          (parseFloat(royality) * Math.pow(10, 1)).toString(),
+          foundOrder.toString()
+        ).encodeABI() :
+      marketContractData.marketContract.methods
         .mintAndAuctionCollectionNFT(
           collection.collectionAddress,
           publicAddress,
@@ -638,7 +653,17 @@ const UploadNFT = ({
           foundOrder.toString(),
           new Date(endTimeDate).getTime() / 1000
         )
-        .encodeABI()
+        .encodeABI();
+
+    let dataToAdd = {
+      providerUrl,
+      publicAddress,
+      gasFee: 10,
+      gasLimit: 6000000,
+      chainType: networkType.value,
+      MarketContractAddress,
+      privKey,
+      data: marketData
     }
 
     nftCallTransaction(dataToAdd)
@@ -654,15 +679,18 @@ const UploadNFT = ({
 
     let marketContractData = getMarketContract();
 
-    let dataToAdd = {
-      providerUrl,
-      publicAddress,
-      gasFee: 10,
-      gasLimit: 6000000,
-      chainType: networkType.value,
-      MarketContractAddress,
-      privKey,
-      data: marketContractData.marketContract.methods
+    let marketData = (collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) ?
+      marketContractData.marketContract.methods
+        .MintAndSellNFT(
+          publicAddress,
+          data.Hash,
+          marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+          '',
+          (parseFloat(royality) * Math.pow(10, 1)).toString(),
+          foundOrder.toString(),
+          currencyListArr
+        ).encodeABI() :
+      marketContractData.marketContract.methods
         .mintAndSellCollectionNFT(
           collection.collectionAddress,
           publicAddress,
@@ -671,7 +699,17 @@ const UploadNFT = ({
           foundOrder.toString(),
           currencyListArr
         )
-        .encodeABI()
+        .encodeABI();
+
+    let dataToAdd = {
+      providerUrl,
+      publicAddress,
+      gasFee: 10,
+      gasLimit: 6000000,
+      chainType: networkType.value,
+      MarketContractAddress,
+      privKey,
+      data: marketData
     }
 
     nftCallTransaction(dataToAdd)
@@ -679,11 +717,39 @@ const UploadNFT = ({
 
   const nftCallTransaction = (data) => {
     nftMakingMethods(data)
-      .then((_) => {
-        changeLoadingState(false);
-        console.log(_, "__create nft__")
-        cleanAll();
-        switchToNFTList("mint", collection)
+      .then((transRes) => {
+        if (transRes.success) {
+          if (nftItem) {
+
+            let changeStatusData = {
+              collectionId: nftItem.collectionId,
+              nftDraftId: nftItem._id,
+              transctionHash: transRes.data.transactionHash,
+              chainType: networkType.value
+            };
+            console.log(changeStatusData, "changeStatusData")
+            let url = `${BASE_URL}/user/change-status-draft`
+            axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+            axios.post(url, changeStatusData)
+              .then(res => {
+                changeLoadingState(false);
+                console.log(res, "__draft status updated__")
+
+              })
+              .catch(err => {
+                errorMethod(err, "error from delete draft catch")
+              });
+          } else {
+            changeLoadingState(false);
+          }
+          cleanAll();
+          switchToNFTList("mint", collection)
+        } else {
+          changeLoadingState(false);
+
+        }
+
       }).catch((err) => {
         changeLoadingState(false);
 
@@ -713,7 +779,6 @@ const UploadNFT = ({
     if (data.token) {
 
       const imageRes = await uploadImageToStorage();
-      console.log(imageRes, "///////aaaaaa")
       if (imageRes) {
         saveDraftToDatabase(imageRes.image1, imageRes.image2)
       }
@@ -781,7 +846,7 @@ const UploadNFT = ({
     translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
       translate("common.polygon") : translate("common.ethereum");
 
-let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
+  let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
   return (
     <View style={styles.childCont}>
       <ScrollView

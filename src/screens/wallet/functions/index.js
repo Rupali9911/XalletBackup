@@ -918,14 +918,13 @@ export const nftMakingMethods = async (
     // const result = await web3.eth.sendSignedTransaction(
     //     raw
     // );
-
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
         console.log(txHash)
         console.log("resp noncrypto function", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
-        console.log(err);
+        console.log(err, "testing txHash error");
         reject(err.message);
       }
     }).once('receipt', (receipt) => {

@@ -224,7 +224,7 @@ const NFTList = ({
 
     axios.post(url, body)
       .then(res => {
-        console.log(res, "nftlist", tog, collect)
+        console.log(res, "nftlist")
         if (res.data.success) {
           if (tog == "mint") {
             setNftListCreated((old) => [...old, ...res.data.data])
