@@ -3,6 +3,8 @@ import { TouchableOpacity, View, Text, Image } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
+import { translate } from '../../walletUtils';
+
 
 const {
   PolygonIcon,
@@ -59,7 +61,7 @@ export default function HotcollectionItem(props) {
           <View style={styles.bottomWrap}>
             {chainIcon(chainType)}
             <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
-              {`${items} items`}
+              { `${items} ` + translate('common.itemsCollection')}
             </Text>
           </View>
         </View>
