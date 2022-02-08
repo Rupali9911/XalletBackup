@@ -844,7 +844,8 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
         console.log(err);
         reject(err.message);
       }
-    }).once('receipt', (receipt) => {
+    }).once('receipt', (receipt, err) => {
+      console.log(err, "///////")
       resolve({ success: true, status: 200, data: receipt });
     });
 
@@ -918,19 +919,20 @@ export const nftMakingMethods = async (
     // const result = await web3.eth.sendSignedTransaction(
     //     raw
     // );
-
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
         console.log(txHash)
         console.log("resp noncrypto function", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
-        console.log(err);
+        console.log(err, "testing txHash error");
         reject(err.message);
       }
     }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
-    });
+    }).catch(e => {
+      reject(e.message);
+    })
 
   })
 }

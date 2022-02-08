@@ -136,6 +136,7 @@ const NFTList = ({
     if (position == 1) {
       cleanData()
       changeLoadingState(true)
+      getCollectionList()
 
       if (nftListDefault) {
 
@@ -145,9 +146,7 @@ const NFTList = ({
         } else {
           pressToggle("mint", nftListDefault.collect)
         }
-      } else {
-        getCollectionList()
-      }
+      } 
     }
   }, [position, nftListDefault])
 
@@ -225,7 +224,7 @@ const NFTList = ({
 
     axios.post(url, body)
       .then(res => {
-        console.log(res, "nftlist", tog, collect)
+        console.log(res, "nftlist")
         if (res.data.success) {
           if (tog == "mint") {
             setNftListCreated((old) => [...old, ...res.data.data])
