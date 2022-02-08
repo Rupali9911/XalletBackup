@@ -41,7 +41,7 @@ export const getAllCards = (token) => (dispatch) =>
         let headers = {
             'Authorization': `Bearer ${token}`
         }
-        ApiRequest(`https://testapi.xanalia.com/stripe/get-all-user-card?limit=10`, 'GET', null, headers)
+        ApiRequest(`${BASE_URL}stripe/get-all-user-card?limit=10`, 'GET', null, headers)
             .then((response) => {
                 if (response.success) {
                     dispatch(setAllCards(response.data.data));

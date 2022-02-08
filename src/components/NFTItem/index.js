@@ -11,7 +11,7 @@ import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useDispatch } from 'react-redux';
 
 export default function NFTItem(props) {
-  const { item, image, onPress, onLongPress, isCollection, index } = props;
+  const { item, image, onPress, onLongPress, isCollection, index, isMeCollection } = props;
 
   const {
     PolygonIcon,
@@ -98,118 +98,222 @@ export default function NFTItem(props) {
 
   return (
     <>
-      {!isCollection ?
-        <TouchableOpacity
-          onLongPress={onLongPress}
-          onPress={onPress}
-          style={styles.collectionListItem}>
-          <View style={styles.listItemContainer}>
+        {isMeCollection ?
             <TouchableOpacity
-              onPress={() => dispatch(handleLikeDislike(item, index))}
-              style={styles.likeButton}
-            >
-              {item.like ? <HeartActiveIcon /> : <HeartWhiteIcon />}
-            </TouchableOpacity>
-            <C_Image
-              type={
-                imageUri?.split('.')[
-                imageUri?.split('.').length - 1
-                ]
-              }
-              uri={imageUri}
-              imageStyle={styles.collectionListImage}
-            />
-            <View style={styles.collectionWrapper}>
-              <Text numberOfLines={1}>{item.metaData?.name}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Text style={{ fontSize: SIZE(12), marginVertical: SIZE(10) }}>
-                  {item.creatorObj && item.creatorObj[0]
-                    ? item.creatorObj[0].title
-                      ? item.creatorObj[0].title
-                      : item.creatorObj[0].username
-                    : ""}
-                </Text>
-                {
-                  item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime() ?
-                    <Text style={{ color: '#60C083', fontSize: SIZE(12), marginVertical: SIZE(10) }}>{translate('common.auctionended')}</Text>
-                    :
-                    item?.price ? (
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ color: '#60c083', marginVertical: SIZE(10), marginRight: SIZE(2), fontSize: SIZE(12) }}>
-                          {
-                            item?.baseCurrency === "ALIA" ?
-                              insertComma(parseFloat(item?.price, true).toFixed(0)) :
-                              insertComma(item?.price, true)
-                          }
-                        </Text>
-                        {renderIcon()}
-                      </View>
-                    ) : (
-                      <Text style={{ color: '#60C083', fontSize: SIZE(12), marginVertical: SIZE(10) }}>{translate('common.soldout')}</Text>
-                    )
-                }
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                {chainType(item?.nftChain)}
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {
-                    item.newprice && item.newprice?.endTime ? (
-                      new Date(item.newprice.endTime) < new Date().getTime() ? (
-                        item.price ? (
-                          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ color: '#60c083', marginRight: SIZE(2), fontSize: SIZE(12) }}>
-                              {
-                                item?.baseCurrency === "ALIA" ?
-                                  insertComma(parseFloat(item?.price, true).toFixed(0)) :
-                                  insertComma(item?.price, true)
-                              }
-                            </Text>
-                            {renderIcon()}
-                          </View>
-                        ) : null
-                      ) : (
-                        getAuctionTimeRemain(item)
-                      )
-                    ) : (
-                      <>
-                        {
-                          item?.lastpriceTraded ? (
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                              <Text>last price new</Text>
-                              <Text style={{ color: '#60c083', marginRight: SIZE(2), fontSize: SIZE(12) }}>
-                                {
-                                  item?.lastCurrencyTraded === "ALIA" ?
-                                    insertComma(parseFloat(item?.lastpriceTraded, true).toFixed(0)) :
-                                    insertComma(item?.lastpriceTraded, true)
-                                }
-                              </Text>
-                              {renderIcon()}
-                            </View>
-                          ) : null
-                        }
-                      </>
-                    )
-                  }
+                onLongPress={onLongPress}
+                onPress={onPress}
+                style={styles.listItem}>
+                <C_Image
+                    uri={image}
+                    type={
+                        item?.metaData?.image?.split('.')[
+                        item?.metaData?.image?.split('.')?.length - 1
+                            ]
+                    }
+                    imageStyle={styles.listImage}
+                />
+            </TouchableOpacity> :
+        isCollection ?
+            <TouchableOpacity
+                onLongPress={onLongPress}
+                onPress={onPress}
+                style={styles.collectionListItem}>
+                <View style={styles.listItemContainer}>
+                    <TouchableOpacity
+                        onPress={() => dispatch(handleLikeDislike(item, index))}
+                        style={styles.likeButton}
+                    >
+                        {item.like ? <HeartActiveIcon/> : <HeartWhiteIcon/>}
+                    </TouchableOpacity>
+                    <View>
+                        <C_Image
+                            type={
+                                imageUri.split('.')[
+                                imageUri.split('.').length - 1
+                                    ]
+                            }
+                            uri={imageUri}
+                            imageStyle={styles.collectionListImage}
+                        />
+                    </View>
+                    <View style={styles.collectionWrapper}>
+                        <Text>{item.name}</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+
+                            {
+                                item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime() ?
+                                    <Text style={{
+                                        color: '#60C083',
+                                        fontSize: SIZE(12),
+                                        marginVertical: SIZE(10)
+                                    }}>{translate('common.auctionended')}</Text>
+                                    :
+                                    item?.price ? (
+                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                            <Text style={{
+                                                color: '#60c083',
+                                                marginVertical: SIZE(10),
+                                                marginRight: SIZE(2),
+                                                fontSize: SIZE(12)
+                                            }}>
+                                                {
+                                                    item?.baseCurrency === "ALIA" ?
+                                                        insertComma(parseFloat(item?.price, true).toFixed(0)) :
+                                                        insertComma(item?.price, true)
+                                                }
+                                            </Text>
+                                            {renderIcon()}
+                                        </View>
+                                    ) : (
+                                        <Text style={{
+                                            color: '#60C083',
+                                            fontSize: SIZE(12),
+                                            marginVertical: SIZE(10)
+                                        }}>{translate('common.soldout')}</Text>
+                                    )
+                            }
+                        </View>
+                        {chainType(item.nftChain)}
+                    </View>
                 </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-        :
-          <TouchableOpacity
-              onLongPress={onLongPress}
-              onPress={onPress}
-              style={styles.listItem}>
-              <C_Image
-                  uri={image}
-                  type={
-                      item?.metaData?.image?.split('.')[
-                      item?.metaData?.image?.split('.')?.length - 1
-                          ]
-                  }
-                  imageStyle={styles.listImage}
-              />
-          </TouchableOpacity>
+            </TouchableOpacity>
+            :<TouchableOpacity
+                        onLongPress={onLongPress}
+                        onPress={onPress}
+                        style={styles.collectionListItem}>
+                        <View style={styles.listItemContainer}>
+                            <TouchableOpacity
+                                onPress={() => dispatch(handleLikeDislike(item, index))}
+                                style={styles.likeButton}
+                            >
+                                {item.like ? <HeartActiveIcon/> : <HeartWhiteIcon/>}
+                            </TouchableOpacity>
+                            <View>
+                                <C_Image
+                                    type={
+                                        imageUri?.split('.')[
+                                        imageUri?.split('.').length - 1
+                                            ]
+                                    }
+                                    uri={imageUri}
+                                    imageStyle={styles.collectionListImage}
+                                />
+                            </View>
+                            <View style={styles.collectionWrapper}>
+                                <Text numberOfLines={1}>{item.metaData?.name}</Text>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}>
+                                    <Text numberOfLines={1} style={{fontSize: SIZE(12), marginVertical: SIZE(10), width: SIZE(80)}}>
+                                        {item.creatorObj && item.creatorObj[0]
+                                            ? item.creatorObj[0].title
+                                                ? item.creatorObj[0].title
+                                                : item.creatorObj[0].username
+                                            : ""}
+                                    </Text>
+                                    {
+                                        item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime() ?
+                                            <Text
+                                                numberOfLines={1}
+                                                style={{
+                                                    color: '#60C083',
+                                                    fontSize: SIZE(12),
+                                                    marginVertical: SIZE(10)
+                                                }}>{translate('common.auctionended')}</Text>
+                                            :
+                                            item?.price ? (
+                                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Text
+                                                        numberOfLines={1}
+                                                        style={{
+                                                            color: '#60c083',
+                                                            marginVertical: SIZE(10),
+                                                            marginRight: SIZE(2),
+                                                            fontSize: SIZE(12)
+                                                        }}>
+                                                        {
+                                                            item?.baseCurrency === "ALIA" ?
+                                                                insertComma(parseFloat(item?.price, true).toFixed(0)) :
+                                                                insertComma(item?.price, true)
+                                                        }
+                                                    </Text>
+                                                    {renderIcon()}
+                                                </View>
+                                            ) : (
+                                                <Text style={{
+                                                    color: '#60C083',
+                                                    fontSize: SIZE(12),
+                                                    marginVertical: SIZE(10)
+                                                }}>{translate('common.soldout')}</Text>
+                                            )
+                                    }
+                                </View>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    {chainType(item?.nftChain)}
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        {
+                                            item.newprice && item.newprice?.endTime ? (
+                                                new Date(item.newprice.endTime) < new Date().getTime() ? (
+                                                    item.price ? (
+                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            <Text
+                                                                numberOfLines={1}
+                                                                style={{
+                                                                    color: '#60c083',
+                                                                    marginRight: SIZE(2),
+                                                                    fontSize: SIZE(12)
+                                                                }}>
+                                                                {
+                                                                    item?.baseCurrency === "ALIA" ?
+                                                                        insertComma(parseFloat(item?.price, true).toFixed(0)) :
+                                                                        insertComma(item?.price, true)
+                                                                }
+                                                            </Text>
+                                                            {renderIcon()}
+                                                        </View>
+                                                    ) : null
+                                                ) : (
+                                                    getAuctionTimeRemain(item)
+                                                )
+                                            ) : (
+                                                <>
+                                                    {
+                                                        item?.lastpriceTraded ? (
+                                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                                <Text
+                                                                style={{
+                                                                    color: '#aaa',
+                                                                    fontSize: SIZE(12)
+                                                                }}>Last: </Text>
+                                                                <Text style={{
+                                                                    color: '#aaa',
+                                                                    marginRight: SIZE(2),
+                                                                    fontSize: SIZE(12)
+                                                                }}>
+                                                                    {
+                                                                        item?.lastCurrencyTraded === "ALIA" ?
+                                                                            insertComma(parseFloat(item?.lastpriceTraded, true).toFixed(0)) :
+                                                                            insertComma(item?.lastpriceTraded, true)
+                                                                    }
+                                                                </Text>
+                                                                {renderIcon()}
+                                                            </View>
+                                                        ) : null
+                                                    }
+                                                </>
+                                            )
+                                        }
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
       }
     </>
   );

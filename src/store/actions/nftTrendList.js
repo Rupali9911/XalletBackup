@@ -108,7 +108,6 @@ export const getNFTList = (page, limit, sort) => {
 };
 export const gifNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
-    dispatch(nftLoadStart());
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;
@@ -155,6 +154,7 @@ export const gifNFTList = (page, limit, sort) => {
           });
         }
         json.data = nftData;
+        console.log('======json.data', json.data[0].description)
         dispatch(gifNftLoadSuccess(json));
       })
       .catch(err => {
@@ -168,7 +168,6 @@ export const gifNFTList = (page, limit, sort) => {
 };
 export const movieNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
-    dispatch(nftLoadStart());
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;

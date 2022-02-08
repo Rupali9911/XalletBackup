@@ -57,7 +57,7 @@ export default function ListReducer(state = initialState, action) {
       return (state = {...state, nftList: [...action.payload]});
 
     case NFT_LIST_RESET:
-      return (state = {...state, nftList: []});
+      return (state = {...state, nftList: [], gifList: [], movieList: []});
 
     case NFT_LIST_FAIL:
       return (state = {...state, nftListLoading: false});

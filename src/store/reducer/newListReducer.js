@@ -51,7 +51,7 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {...state, newNftListLoading: false});
 
     case NEW_NFT_LIST_RESET:
-      return (state = {...state, newNftList: []});
+      return (state = {...state, newNftList: [], favoriteNftList: []});
 
     case NEW_NFT_LIST_UPDATE:
       return (state = {...state, newNftList: [...action.payload]});

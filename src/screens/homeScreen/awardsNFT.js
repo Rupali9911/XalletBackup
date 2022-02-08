@@ -13,20 +13,17 @@ import { C_Image, DetailModal, Loader } from '../../components';
 import { colors } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import {
-  favoriteNFTList,
-  newNftListReset,
-  newNftLoadStart,
-  newPageChange,
-} from '../../store/actions/newNFTActions';
-import getLanguage from '../../utils/languageSupport';
+  awardsNftListReset,
+  awardsNftLoadStart,
+  awardsNftPageChange,
+  getAwardsNftList,
+} from '../../store/actions/awardsAction';
 import { translate } from '../../walletUtils';
-import NFTItem from '../../components/NFTItem';
 import styles from './styles';
+import NFTItem from '../../components/NFTItem';
 
-const langObj = getLanguage();
-
-const Favorite = () => {
-  const { NewNFTListReducer } = useSelector(state => state);
+const AwardsNFT = () => {
+  const { AwardsNFTReducer } = useSelector(state => state);
   const { sort } = useSelector(state => state.ListReducer);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -34,25 +31,30 @@ const Favorite = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    dispatch(newNftLoadStart());
-    dispatch(newNftListReset());
+    dispatch(awardsNftLoadStart());
+    dispatch(awardsNftListReset());
     getNFTlist(1, null, sort);
-    dispatch(newPageChange(1));
+    dispatch(awardsNftPageChange(1));
   }, [sort]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
-    // console.log('____sort',_sort);
-    dispatch(favoriteNFTList(page, limit, _sort));
+    // console.log('__sort',_sort);
+    dispatch(getAwardsNftList(page, limit, _sort));
   }, []);
 
   const handleRefresh = () => {
-    dispatch(newNftListReset());
+    dispatch(awardsNftListReset());
     getNFTlist(1, null, sort);
-    dispatch(newPageChange(1));
+    dispatch(awardsNftPageChange(1));
+  };
+
+  const renderFooter = () => {
+    if (!AwardsNFTReducer.awardsNftLoading) return null;
+    return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
   const renderItem = ({ item }) => {
-    let findIndex = NewNFTListReducer.favoriteNftList.findIndex(
+    let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
       x => x.id === item.id,
     );
     if (item.metaData) {
@@ -70,7 +72,7 @@ const Favorite = () => {
             setModalVisible(true);
           }}
           onPress={() => {
-            dispatch(changeScreenName('newNFT'));
+            dispatch(changeScreenName('awards'));
             navigation.push('DetailItem', { index: findIndex });
           }}
         />
@@ -78,47 +80,42 @@ const Favorite = () => {
     }
   };
 
-  const renderFooter = () => {
-    if (!NewNFTListReducer.newNftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
   const memoizedValue = useMemo(
     () => renderItem,
-    [NewNFTListReducer.favoriteNftList],
+    [AwardsNFTReducer.awardsNftList],
   );
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {NewNFTListReducer.newListPage === 1 &&
-        NewNFTListReducer.newNftListLoading ? (
+      {AwardsNFTReducer.awardsNftPage === 1 &&
+        AwardsNFTReducer.awardsNftLoading ? (
         <Loader />
-      ) : NewNFTListReducer.favoriteNftList.length !== 0 ? (
+      ) : AwardsNFTReducer.awardsNftList.length !== 0 ? (
         <FlatList
-          data={NewNFTListReducer.favoriteNftList}
+          data={AwardsNFTReducer.awardsNftList}
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
-            dispatch(newNftLoadStart());
+            dispatch(awardsNftLoadStart());
             handleRefresh();
           }}
           scrollEnabled={!isModalVisible}
           refreshing={
-            NewNFTListReducer.newListPage === 1 &&
-            NewNFTListReducer.newNftListLoading
+            AwardsNFTReducer.awardsNftPage === 1 &&
+            AwardsNFTReducer.awardsNftLoading
           }
           renderItem={memoizedValue}
           onEndReached={() => {
             if (
-              !NewNFTListReducer.newNftListLoading &&
-              NewNFTListReducer.newTotalCount !==
-              NewNFTListReducer.favoriteNftList.length
+              !AwardsNFTReducer.awardsNftLoading &&
+              AwardsNFTReducer.awardsTotalCount !==
+              AwardsNFTReducer.awardsNftList.length
             ) {
-              let num = NewNFTListReducer.newListPage + 1;
+              let num = AwardsNFTReducer.awardsNftPage + 1;
               getNFTlist(num);
-              dispatch(newPageChange(num));
+              dispatch(awardsNftPageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
@@ -141,4 +138,4 @@ const Favorite = () => {
   );
 };
 
-export default Favorite;
+export default AwardsNFT;

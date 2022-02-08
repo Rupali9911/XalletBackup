@@ -117,7 +117,6 @@ export const newNFTList = (page, limit, sort) => {
 };
 export const favoriteNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
-    dispatch(newNftLoadStart());
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;

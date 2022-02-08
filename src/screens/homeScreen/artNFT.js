@@ -13,7 +13,7 @@ import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 
 
-const NewNFT = () => {
+const ArtNFT = () => {
 
     const { NewNFTListReducer } = useSelector(state => state);
     const { sort } = useSelector(state => state.ListReducer);
@@ -82,7 +82,7 @@ const NewNFT = () => {
                         <FlatList
                             data={NewNFTListReducer.newNftList}
                             horizontal={false}
-                            numColumns={3}
+                            numColumns={2}
                             initialNumToRender={14}
                             onRefresh={() => {
                                 dispatch(newNftLoadStart());
@@ -118,4 +118,4 @@ const NewNFT = () => {
     )
 }
 
-export default NewNFT;
+export default ArtNFT;
