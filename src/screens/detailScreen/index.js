@@ -1,11 +1,11 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, TouchableOpacity, FlatList, SafeAreaView, Image, Text, Dimensions, ActivityIndicator } from 'react-native';
+import { View, FlatList, SafeAreaView, Text, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { newNFTList, newPageChange } from '../../store/actions/newNFTActions';
+import { newNFTList, newPageChange, favoriteNFTList } from '../../store/actions/newNFTActions';
 
-import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
+import { getNFTList, pageChange, gifNFTList, movieNFTList } from '../../store/actions/nftTrendList';
 
 import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
 
@@ -16,7 +16,7 @@ import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/award
 import { nftDataCollectionList, nftDataCollectionPageChange, } from '../../store/actions/nftDataCollectionAction';
 
 import styles from './styles';
-import { images, colors } from '../../res';
+import { colors } from '../../res';
 import { Loader, AppHeader } from '../../components';
 import NftItem from './nftItem';
 
@@ -34,11 +34,9 @@ const DetailItemScreen = ({ route }) => {
 
     const { sort } = useSelector(state => state.ListReducer);
     const dispatch = useDispatch();
-    const navigation = useNavigation();
 
     const { collectionType, index, collectionAddress } = route.params;
 
-    const [listIndex, setListIndex] = React.useState(index || 0);
     const [owner, setOwner] = React.useState(route.params.owner);
     const [stopVideos, setStopVideos] = React.useState(true);
 
@@ -54,8 +52,14 @@ const DetailItemScreen = ({ route }) => {
                         dispatch(myCollectionList(page, owner)) :
                         AuthReducer.screenName == "awards" ?
                             dispatch(getAwardsNftList(page, null, sort)) :
-                            AuthReducer.screenName == "dataCollection" ?
-                                dispatch(nftDataCollectionList(page, collectionAddress, collectionType)) : null;
+                            AuthReducer.screenName == 'photoNFT' ?
+                                dispatch(favoriteNFTList(page, null, sort)) :
+                                AuthReducer.screenName == 'gitNFT' ?
+                                    dispatch(gifNFTList(page, null, sort)) :
+                                    AuthReducer.screenName == 'movieNFT' ?
+                                        dispatch(movieNFTList(page, null, sort)) :
+                                        AuthReducer.screenName == "dataCollection" ?
+                                            dispatch(nftDataCollectionList(page, collectionAddress, collectionType)) : null;
 
     }, []);
 
@@ -71,8 +75,14 @@ const DetailItemScreen = ({ route }) => {
                         dispatch(myCollectionPageChange(page)) :
                         AuthReducer.screenName == "awards" ?
                             dispatch(awardsNftPageChange(page)) :
-                            AuthReducer.screenName == "dataCollection" ?
-                                dispatch(nftDataCollectionPageChange(page)) : null;
+                            AuthReducer.screenName == 'photoNFT' ?
+                                dispatch(newPageChange(page)) :
+                                AuthReducer.screenName == 'gitNFT' ?
+                                    dispatch(pageChange(page)) :
+                                    AuthReducer.screenName == 'movieNFT' ?
+                                        dispatch(pageChange(page)) :
+                                        AuthReducer.screenName == "dataCollection" ?
+                                            dispatch(nftDataCollectionPageChange(page)) : null;
 
     });
 
@@ -86,8 +96,14 @@ const DetailItemScreen = ({ route }) => {
                     MyCollectionReducer.myCollectionListLoading :
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsNftLoading :
-                        AuthReducer.screenName == "dataCollection" ?
-                            NftDataCollectionReducer.nftDataCollectionLoading : false;
+                        AuthReducer.screenName == 'photoNFT' ?
+                            NewNFTListReducer.newNftListLoading :
+                            AuthReducer.screenName == 'gitNFT' ?
+                                ListReducer.nftListLoading :
+                                AuthReducer.screenName == 'movieNFT' ?
+                                    ListReducer.nftListLoading :
+                                    AuthReducer.screenName == "dataCollection" ?
+                                        NftDataCollectionReducer.nftDataCollectionLoading : false;
 
     let page = AuthReducer.screenName == "Hot" ?
         ListReducer.page :
@@ -99,8 +115,14 @@ const DetailItemScreen = ({ route }) => {
                     MyCollectionReducer.myCollectionPage :
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsNftPage :
-                        AuthReducer.screenName == "dataCollection" ?
-                            NftDataCollectionReducer.nftDataCollectionPage : 1;
+                        AuthReducer.screenName == 'photoNFT' ?
+                            NewNFTListReducer.newListPage :
+                            AuthReducer.screenName == 'gitNFT' ?
+                                ListReducer.page :
+                                AuthReducer.screenName == 'movieNFT' ?
+                                    ListReducer.page :
+                                    AuthReducer.screenName == "dataCollection" ?
+                                        NftDataCollectionReducer.nftDataCollectionPage : 1;
 
     let totalCount = AuthReducer.screenName == "Hot" ?
         ListReducer.totalCount :
@@ -112,8 +134,14 @@ const DetailItemScreen = ({ route }) => {
                     MyCollectionReducer.myCollectionTotalCount :
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsTotalCount :
-                        AuthReducer.screenName == "dataCollection" ?
-                            NftDataCollectionReducer.nftDataCollectionTotalCount : 1;
+                        AuthReducer.screenName == 'photoNFT' ?
+                            NewNFTListReducer.newTotalCount :
+                            AuthReducer.screenName == 'gitNFT' ?
+                                ListReducer.totalCount :
+                                AuthReducer.screenName == 'movieNFT' ?
+                                    ListReducer.totalCount :
+                                    AuthReducer.screenName == "dataCollection" ?
+                                        NftDataCollectionReducer.nftDataCollectionTotalCount : 1;
 
     const data = AuthReducer.screenName == "Hot" ?
         ListReducer.nftList :
@@ -125,8 +153,14 @@ const DetailItemScreen = ({ route }) => {
                     MyCollectionReducer.myCollection :
                     AuthReducer.screenName == "awards" ?
                         AwardsNFTReducer.awardsNftList :
-                        AuthReducer.screenName == "dataCollection" ?
-                            NftDataCollectionReducer.nftDataCollectionList : [];
+                        AuthReducer.screenName == 'photoNFT' ?
+                            NewNFTListReducer.favoriteNftList :
+                            AuthReducer.screenName == 'gitNFT' ?
+                                ListReducer.gifList :
+                                AuthReducer.screenName == 'movieNFT' ?
+                                    ListReducer.movieList :
+                                    AuthReducer.screenName == "dataCollection" ?
+                                        NftDataCollectionReducer.nftDataCollectionList : [];
 
     const renderFooter = () => {
         if (!loading) return null;
@@ -191,9 +225,9 @@ const DetailItemScreen = ({ route }) => {
                             keyExtractor={(v, i) => "item_" + i}
                         />
                 }
-      </View>
-    </SafeAreaView>
-  );
+            </View>
+        </SafeAreaView>
+    );
 };
 
 export default DetailItemScreen;

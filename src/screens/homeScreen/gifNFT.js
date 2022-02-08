@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,22 +8,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image, DetailModal, Loader} from '../../components';
-import {colors} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image, DetailModal, Loader } from '../../components';
+import { colors } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
 import {
-  movieNFTList,
+  gifNFTList,
   nftListReset,
   nftLoadStart,
   pageChange,
 } from '../../store/actions/nftTrendList';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
-const Movie = () => {
-  const {ListReducer} = useSelector(state => state);
+const GifNFT = () => {
+  const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const Movie = () => {
 
   const getNFTlist = useCallback((page, limit, _sort) => {
     // console.log('__sort',_sort);
-    dispatch(movieNFTList(page, limit, _sort));
+    dispatch(gifNFTList(page, limit, _sort));
   }, []);
 
   const refreshFunc = () => {
@@ -52,8 +52,8 @@ const Movie = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item, index}) => {
-    let findIndex = ListReducer.movieList.findIndex(x => x.id === item.id);
+  const renderItem = ({ item, index }) => {
+    let findIndex = ListReducer.gifList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri =
         item.thumbnailUrl !== undefined || item.thumbnailUrl
@@ -68,7 +68,7 @@ const Movie = () => {
             setModalVisible(true);
           }}
           onPress={() => {
-            dispatch(changeScreenName('Hot'));
+            dispatch(changeScreenName('gitNFT'));
             navigation.push('DetailItem', { index: findIndex });
           }}
         />
@@ -76,16 +76,16 @@ const Movie = () => {
     }
   };
 
-  const memoizedValue = useMemo(() => renderItem, [ListReducer.movieList]);
+  const memoizedValue = useMemo(() => renderItem, [ListReducer.gifList]);
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       {ListReducer.page === 1 && ListReducer.nftListLoading ? (
         <Loader />
-      ) : ListReducer.movieList.length !== 0 ? (
+      ) : ListReducer.gifList.length !== 0 ? (
         <FlatList
-          data={ListReducer.movieList}
+          data={ListReducer.gifList}
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
@@ -99,7 +99,7 @@ const Movie = () => {
           onEndReached={() => {
             if (
               !ListReducer.nftListLoading &&
-              ListReducer.movieList.length !== ListReducer.totalCount
+              ListReducer.gifList.length !== ListReducer.totalCount
             ) {
               let num = ListReducer.page + 1;
               getNFTlist(num);
@@ -127,4 +127,4 @@ const Movie = () => {
   );
 };
 
-export default Movie;
+export default GifNFT;

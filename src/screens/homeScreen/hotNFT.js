@@ -22,7 +22,7 @@ import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
-const Hot = () => {
+const HotNFT = () => {
     const { ListReducer } = useSelector(state => state);
     const [modalData, setModalData] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
@@ -127,4 +127,4 @@ const Hot = () => {
     );
 };
 
-export default Hot;
+export default HotNFT;

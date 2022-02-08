@@ -42,12 +42,12 @@ import { setCameraPermission } from '../../store/reducer/cameraPermission';
 import { updateCreateState } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
-import AwardsNFT from './awards';
-import Favorite from './favorite';
-import Gif from './gif';
-import Hot from './hot';
-import Movie from './movie';
-import NewNFT from './newNFT';
+import AwardsNFT from './awardsNFT';
+import PhotoNFT from './photoNFT';
+import GifNFT from './gifNFT';
+import HotNFT from './hotNFT';
+import MovieNFT from './movieNFT';
+import ArtNFT from './artNFT';
 import HotCollection from './hotCollection';
 import styles from './styles';
 
@@ -301,7 +301,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name={translate('common.hot')}
-                component={Hot}
+                component={HotNFT}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(2);
@@ -319,7 +319,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name={translate('common.2DArt')}
-                component={NewNFT}
+                component={ArtNFT}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(3);
@@ -328,7 +328,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name={translate('common.photo')}
-                component={Favorite}
+                component={PhotoNFT}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(4);
@@ -337,7 +337,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name="gif"
-                component={Gif}
+                component={GifNFT}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(5);
@@ -346,7 +346,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name={translate('common.video')}
-                component={Movie}
+                component={MovieNFT}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(6);
