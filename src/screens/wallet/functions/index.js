@@ -844,7 +844,8 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
         console.log(err);
         reject(err.message);
       }
-    }).once('receipt', (receipt) => {
+    }).once('receipt', (receipt, err) => {
+      console.log(err, "///////")
       resolve({ success: true, status: 200, data: receipt });
     });
 
@@ -929,7 +930,9 @@ export const nftMakingMethods = async (
       }
     }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
-    });
+    }).catch(e => {
+      reject(e.message);
+    })
 
   })
 }

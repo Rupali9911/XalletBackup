@@ -431,9 +431,7 @@ const UploadNFT = ({
   }
 
   const uploadImageToStorage = async () => {
-    changeLoadingState(true);
     if (nftItem) {
-
       let datares = {
         image1: nftItem.image,
         image2: nftItem.thumbnailImage
@@ -448,9 +446,8 @@ const UploadNFT = ({
       formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
 
       axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-      let responseSend;
 
-      await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
+      let responseSend = await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
         .then(async res => {
           console.log("upload image nft", res)
           if (res.data.success) {
@@ -463,7 +460,7 @@ const UploadNFT = ({
               thumbnailDataFile.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
             }
 
-            await axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
+            let thumbRes = await axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
               .then(res2 => {
                 if (res2.data.success) {
                   let datares = {
@@ -471,7 +468,7 @@ const UploadNFT = ({
                     image2: res2.data.data
                   };
                   console.log(datares, "thumbnail url")
-                  responseSend = datares;
+                  return datares;
                 } else {
                   changeLoadingState(false);
                   alertWithSingleBtn(
@@ -485,6 +482,7 @@ const UploadNFT = ({
                 errorMethod(err, "thumbnail image nft err")
                 return null;
               });
+              return thumbRes;
           } else {
             changeLoadingState(false);
             alertWithSingleBtn(
@@ -516,8 +514,8 @@ const UploadNFT = ({
     let blob = JSON.stringify(dataToSend);
     let formData = new FormData();
     formData.append('path', blob);
-    let hashRes;
-    await axios
+
+    let hashRes = await axios
       .post(
         "https://ipfs.infura.io:5001/api/v0/add",
         formData,
@@ -528,7 +526,7 @@ const UploadNFT = ({
         }
       )
       .then((response) => {
-        hashRes = response;
+        return response;
       })
       .catch((err) => {
         errorMethod(err, "error from infura catch")
@@ -539,16 +537,17 @@ const UploadNFT = ({
 
   const handleCreate = async () => {
     if (data.token) {
+      changeLoadingState(true);
 
       const imageRes = await uploadImageToStorage();
-
+      console.log(imageRes, "imageRes--------")
       if (imageRes) {
 
         const infuraRes = await handleInfura(imageRes.image1, imageRes.image2);
 
         if (infuraRes) {
           let hashResp = infuraRes.data;
-          console.log(hashResp)
+          console.log(hashResp, "infura res")
           let web3 = new Web3(providerUrl);
 
           let approvalCheckContract = new web3.eth.Contract(
@@ -558,7 +557,7 @@ const UploadNFT = ({
           approvalCheckContract.methods
             .isApprovedForAll(wallet.address, MarketContractAddress)
             .call((err, res) => {
-
+              console.log(res, err, "approval response")
               if (!err) {
 
                 if (!res) {
@@ -674,6 +673,7 @@ const UploadNFT = ({
     let foundOrder = basePrice.order;
     const publicAddress = wallet.address;
     const privKey = wallet.privateKey;
+    console.log(data, "put nft on sale")
 
     let currencyListArr = otherPrice.map(i => Number(i));
 
@@ -777,6 +777,7 @@ const UploadNFT = ({
 
   const saveDraft = async () => {
     if (data.token) {
+      changeLoadingState(true);
 
       const imageRes = await uploadImageToStorage();
       if (imageRes) {
