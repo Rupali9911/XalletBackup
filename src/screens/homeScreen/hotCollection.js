@@ -11,7 +11,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { C_Image, DetailModal, Loader } from '../../components';
 import { colors } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
+import HotcollectionItem from '../../components/HotCollectionItem';
 import {
   hotCollectionListReset,
   hotCollectionLoadStart,
@@ -52,21 +52,12 @@ const HotCollection = () => {
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity
+      <HotcollectionItem
+        item={item}
         onPress={() => {
           navigation.push('CollectionDetail', { collectionId: item._id });
         }}
-        style={styles.listItem}>
-        <C_Image
-          type={
-            item.bannerImage.split('.')[
-            item.bannerImage.split('.').length - 1
-            ]
-          }
-          uri={item.bannerImage}
-          imageStyle={styles.listImage}
-        />
-      </TouchableOpacity>
+      />
     );
   };
 
@@ -85,7 +76,7 @@ const HotCollection = () => {
         <FlatList
           data={HotCollectionReducer.hotCollectionList}
           horizontal={false}
-          numColumns={3}
+          numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
             dispatch(hotCollectionLoadStart());
