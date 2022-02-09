@@ -147,7 +147,7 @@ const WalletPay = ({route, navigation}) => {
         } else if (
           _.network.toLowerCase() === chainType &&
           baseCurrency?.key?.toLowerCase() === 'alia' &&
-          (_.tokenName === 'TAL' || item.tokenName === 'TNFT')
+          (_.tokenName === 'TAL' || _.tokenName === 'TNFT')
         ) {
           return true;
         } else {
