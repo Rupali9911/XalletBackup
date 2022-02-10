@@ -75,6 +75,7 @@ import { translate } from '../../walletUtils';
 import axios from 'axios';
 import AppBackground from '../../components/appBackground';
 import Hyperlink from "react-native-hyperlink";
+import NFTItem from '../../components/NFTItem';
 
 const langObj = getLanguage();
 
@@ -123,30 +124,12 @@ const Created = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            const image = item.metaData.image || item.thumbnailUrl;
-            const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
-            if (!image) {
-                console.log(fileType, image, item.metaData.image, item.thumbnailUrl, item, "aaaaaaaaaaaaa")
-                return (
-                    <TouchableOpacity
-                        onLongPress={() => {
-                            setModalData(item);
-                            setModalVisible(true);
-                        }}
-                        onPress={() => {
-                            dispatch(changeScreenName("myNFT"));
-                            navigation.push("DetailItem", { index: findIndex, owner: id });
-                        }}
-                        style={styles.listItem}>
-                        <C_Image
-                            uri={image}
-                            type={fileType}
-                            imageStyle={styles.listImage} />
-                    </TouchableOpacity>
-                )
-            }
+            let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
+
             return (
-                <TouchableOpacity
+                <NFTItem
+                    item={item}
+                    image={imageUri}
                     onLongPress={() => {
                         setModalData(item);
                         setModalVisible(true);
@@ -155,14 +138,8 @@ const Created = ({ route }) => {
                         dispatch(changeScreenName("myNFT"));
                         navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
-                    style={styles.listItem}>
-                    <C_Image
-                        uri={image}
-                        type={fileType}
-                        imageStyle={styles.listImage} />
-                </TouchableOpacity>
+                />
             )
-
         }
     }
 
@@ -176,8 +153,8 @@ const Created = ({ route }) => {
                         <FlatList
                             data={MyNFTReducer.myList}
                             horizontal={false}
-                            numColumns={3}
-                            initialNumToRender={15}
+                            numColumns={2}
+                            initialNumToRender={14}
                             onRefresh={() => {
                                 dispatch(myNftLoadStart())
                                 refreshFunc()
@@ -248,10 +225,12 @@ const Collection = ({ route }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
         if (item.metaData) {
-            const image = item.metaData.image || item.thumbnailUrl;
-            const fileType = image ? image.split('.')[image.split('.').length - 1] : '';
+            let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
+
             return (
-                <TouchableOpacity
+                <NFTItem
+                    item={item}
+                    image={imageUri}
                     onLongPress={() => {
                         setModalData(item);
                         setModalVisible(true);
@@ -260,13 +239,7 @@ const Collection = ({ route }) => {
                         dispatch(changeScreenName("myCollection"));
                         navigation.push("DetailItem", { index: findIndex, owner: id });
                     }}
-                    style={styles.listItem}>
-                    <C_Image
-                        uri={image}
-                        type={fileType}
-                        imageStyle={styles.listImage} />
-
-                </TouchableOpacity>
+                />
             )
         }
     }
@@ -281,8 +254,8 @@ const Collection = ({ route }) => {
                         <FlatList
                             data={MyCollectionReducer.myCollection}
                             horizontal={false}
-                            numColumns={3}
-                            initialNumToRender={15}
+                            numColumns={2}
+                            initialNumToRender={14}
                             onRefresh={() => {
                                 dispatch(myNftLoadStart())
                                 refreshFunc()
