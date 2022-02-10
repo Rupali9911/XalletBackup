@@ -135,6 +135,7 @@ export default function AppSearch() {
                           price: item.price,
                           chain: item.chain,
                           tokenId: item.tokenId,
+                          item: item
                         });
                         setSearchData([]);
                         setSearchTxt('');

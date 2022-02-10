@@ -103,7 +103,7 @@ const WalletPay = ({route, navigation}) => {
   useEffect(() => {
     console.log('useEffect');
     if (wallet && !isCreate && isFocused) {
-      setLoading(true);
+      // setLoading(true);
       getBalances(wallet.address);
     }
     console.log('wallet pay use effect', data, route.params);
@@ -487,6 +487,9 @@ const WalletPay = ({route, navigation}) => {
    // console.log('@@@@@@@@@@@@', result, item);
     return result;
   };
+
+  // console.log(tokens)
+  // console.log(basePriceTokens)
   return (
     <AppBackground isBusy={loading}>
       <GradientBackground>
@@ -527,7 +530,7 @@ const WalletPay = ({route, navigation}) => {
       <Tokens
         values={balances}
         network={network}
-        //allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
+        // allowedTokens={payableIn ? tokens.filter((item) => item.type == payableIn): tokens}
         allowedTokens={tokens}
         onTokenPress={async item => {
           setSelectedObject(item);

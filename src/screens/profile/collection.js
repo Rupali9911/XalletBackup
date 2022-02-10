@@ -97,12 +97,19 @@ const Collection = ({ route }) => {
 
                 if (res.data.success) {
 
-                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
+                    if (Array.isArray(res.data.data)) {
                         setStopMoreLoading(false);
-                        if (refresh) {
-                            setCollectionDraftList([...res.data.data])
+                        if (res.data.data.length !== 0) {
+                            if (refresh) {
+                                setCollectionDraftList([...res.data.data])
+                            } else {
+                                setCollectionDraftList([...collectionDraftList, ...res.data.data])
+                            }
                         } else {
-                            setCollectionDraftList([...collectionDraftList, ...res.data.data])
+                            if(page == 1){
+                                setCollectionDraftList([])
+                            }
+                            setStopMoreLoading(true);
                         }
                     } else {
                         setStopMoreLoading(true);
