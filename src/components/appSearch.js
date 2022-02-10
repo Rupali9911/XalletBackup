@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     borderRadius: hp('3%'),
     marginHorizontal: wp('2'),
     width: wp('96%'),
-    height: hp('5.9%'),
+    height: hp('4.6%'),
   },
   inputStyle: {
     fontSize: RF(1.8),
