@@ -1,11 +1,11 @@
-import {StyleSheet} from 'react-native';
-import {FONTS, SIZE} from 'src/constants';
+import { StyleSheet } from 'react-native';
+import { FONTS, SIZE } from 'src/constants';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {colors, fonts} from '../../res';
+import { colors, fonts } from '../../res';
 
 const styles = StyleSheet.create({
   modalCont: {
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   description: {
-    fontSize: 10,
+    fontSize: SIZE(13),
     fontFamily: fonts.PINGfANG,
     color: '#909090',
     marginVertical: hp('1.5%'),
@@ -150,6 +150,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  threeDot: {
+    fontSize: SIZE(13),
+    fontFamily: fonts.PINGfANG,
+    color: '#909090',
+  },
+  readMore: {
+    fontSize: SIZE(13),
+    color: colors.BLUE2,
+    fontFamily: fonts.PINGfANG,
+  },
+  readMoreWrap: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: hp('1.5%'),
+    right: 0,
+    backgroundColor: 'white'
   },
 });
 
