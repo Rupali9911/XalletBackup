@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: SIZE(12),
     borderBottomLeftRadius: SIZE(12),
     height: (hp('100%') / 8) - hp('2%'),
+    justifyContent: 'space-between'
   },
 });
 export default styles;
