@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   collectionTableRow: {
     alignItems: 'center',
-    width: SIZE(80),
+    width: SIZE(86),
     height: SIZE(46),
     alignItems: 'center',
     justifyContent: 'center',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
   },
   collectionTableRowDec: {
-    fontSize: SIZE(11),
+    fontSize: SIZE(10),
     color: '#7B848D',
     marginTop: SIZE(2),
     fontFamily: fonts.ARIAL,

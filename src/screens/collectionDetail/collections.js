@@ -26,7 +26,7 @@ const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
 const { height } = Dimensions.get('window');
 
 const Collections = (props) => {
-  const { collectionAddress, collectionType } = props;
+  const { collectionAddress, collectionType, collectionId } = props;
   const { NftDataCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -39,7 +39,7 @@ const Collections = (props) => {
   }, [collectionType]);
 
   const getNFTlist = useCallback((page) => {
-    dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType]));
+    dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
   }, [collectionType]);
 
   const refreshFunc = () => {

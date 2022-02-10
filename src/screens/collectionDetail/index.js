@@ -186,6 +186,7 @@ function CollectionDetail(props) {
             <Collections
               collectionAddress={collectionAddress}
               collectionType={collectionType}
+              collectionId={collectionId}
             />
           )}
         </View>
