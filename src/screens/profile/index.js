@@ -1,20 +1,16 @@
+import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import _, { toFinite } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import _ from 'lodash';
 import {
-  ActivityIndicator,
-  FlatList,
   Linking,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
 import { Container, RowWrap, SpaceView } from 'src/styles/common.styles';
 import { SmallBoldText, SmallNormalText } from 'src/styles/text.styles';
@@ -22,22 +18,8 @@ import {
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image, DetailModal, Loader } from '../../components';
-import NFTItem from '../../components/NFTItem';
-import { colors, fonts } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
-import {
-  myCollectionList,
-  myCollectionListReset,
-  myCollectionLoadStart,
-  myCollectionPageChange,
-} from '../../store/actions/myCollection';
-import {
-  myNFTList,
-  myNftListReset,
-  myNftLoadStart,
-  myPageChange,
-} from '../../store/actions/myNFTaction';
+import { AppHeader, C_Image } from '../../components';
+import { fonts } from '../../res';
 import { translate } from '../../walletUtils';
 import {
   DescriptionView,
@@ -50,25 +32,16 @@ import {
 import Collection from "./collection";
 import NFT from "./nft";
 
-import { CardButton } from "../createNFTScreen/components";
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
-import axios from 'axios';
-
 const { ConnectSmIcon, SettingIcon } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
 
 function Profile({ navigation, connector }) {
-  const isFocusedHistory = useIsFocused();
-  const dispatch = useDispatch();
 
   const { UserReducer } = useSelector(state => state);
 
   const id = UserReducer.wallet.address || UserReducer.data.user.username;
-  const { about, title, firstName, lastName, links, username, name } =
-    UserReducer.data.user;
+  const { about, title, links, username } = UserReducer.data.user;
 
   const renderTabView = () => {
     return (
@@ -116,7 +89,7 @@ function Profile({ navigation, connector }) {
       <AppHeader
         title={translate('wallet.common.myPage')}
         showRightButton
-        showBackButton
+        // showBackButton
         rightButtonComponent={
           <SettingIcon width={SIZE(23)} height={SIZE(23)} />
         }

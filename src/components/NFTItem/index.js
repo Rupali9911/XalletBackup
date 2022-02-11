@@ -206,7 +206,7 @@ export default function NFTItem(props) {
                                     alignItems: 'center',
                                     justifyContent: 'space-between'
                                 }}>
-                                    <Text numberOfLines={1} style={{fontSize: SIZE(12), marginVertical: SIZE(10), width: SIZE(80)}}>
+                                    <Text numberOfLines={1} style={{fontSize: SIZE(12), width: SIZE(80)}}>
                                         {item.creatorObj && item.creatorObj[0]
                                             ? item.creatorObj[0].title
                                                 ? item.creatorObj[0].title
@@ -220,7 +220,6 @@ export default function NFTItem(props) {
                                                 style={{
                                                     color: '#60C083',
                                                     fontSize: SIZE(12),
-                                                    marginVertical: SIZE(10)
                                                 }}>{translate('common.auctionended')}</Text>
                                             :
                                             item?.price ? (
@@ -229,7 +228,6 @@ export default function NFTItem(props) {
                                                         numberOfLines={1}
                                                         style={{
                                                             color: '#60c083',
-                                                            marginVertical: SIZE(10),
                                                             marginRight: SIZE(2),
                                                             fontSize: SIZE(12)
                                                         }}>
@@ -245,7 +243,6 @@ export default function NFTItem(props) {
                                                 <Text style={{
                                                     color: '#60C083',
                                                     fontSize: SIZE(12),
-                                                    marginVertical: SIZE(10)
                                                 }}>{translate('common.soldout')}</Text>
                                             )
                                     }

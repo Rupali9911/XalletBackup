@@ -69,6 +69,7 @@ import Ethereum from 'src/assets/svgs/icon-etherium.svg';
 import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
 
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
+import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
 
 export default {
   GirlIcon,
@@ -142,4 +143,5 @@ export default {
   BitmapIcon,
 
   FantaseedIcon,
+  TwiiterIcon,
 };

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   Dimensions,
   Image,
@@ -24,6 +24,7 @@ import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import { numberWithCommas } from '../../utils';
+import { colors } from '../../res';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -64,6 +65,8 @@ const nftItem = ({ item, index, isCollection }) => {
   const [isOwner, setIsOwner] = useState(false);
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [ownerAddress, setOwnerAddress] = useState('');
+  const [textShown, setTextShown] = useState(false);
+  const [lengthMore, setLengthMore] = useState(false);
   const navigation = useNavigation();
 
   let MarketPlaceAbi = '';
@@ -536,6 +539,8 @@ const nftItem = ({ item, index, isCollection }) => {
   //     });
   // };
 
+  const onTextLayout = useCallback(e => setLengthMore(e.nativeEvent.lines.length > 2), []);
+
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
@@ -705,7 +710,17 @@ const nftItem = ({ item, index, isCollection }) => {
         <SpaceView mTop={SIZE(6)} />
         <Text style={styles.modalLabel}>{item.metaData.name}</Text>
         <View style={styles.separator} />
-        <Text style={styles.description}>{item.metaData.description}</Text>
+        <View>
+          <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
+            {item.metaData.description}
+          </Text>
+          {lengthMore && !textShown && (
+            <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
+              <Text style={styles.threeDot}>{'...'}</Text>
+              <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );

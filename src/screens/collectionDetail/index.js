@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import { C_Image } from '../../components';
 import { getHotCollectionDetail } from '../../store/actions/hotCollectionAction';
@@ -11,8 +11,10 @@ import Collections from './collections';
 import { colors, fonts } from '../../res';
 import { translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
+import { SVGS } from 'src/constants';
 
 const Tab = createMaterialTopTabNavigator();
+const { TwiiterIcon } = SVGS;
 
 function CollectionDetail(props) {
 
@@ -53,6 +55,13 @@ function CollectionDetail(props) {
           type={'jpg'}
           imageStyle={styles.bannerImage}
         />
+        {collection?.userInfo?.links?.twitter ? (
+          <TouchableOpacity
+            onPress={() => Linking.openURL(collection?.userInfo?.links?.twitter)}
+            style={{ alignSelf: 'flex-end', marginRight: 10, marginTop: 10 }}>
+            <TwiiterIcon />
+          </TouchableOpacity>
+        ) : null}
         <View style={styles.bannerIconWrap}>
           <Image
             source={{ uri: collection?.iconImage }}
@@ -177,6 +186,7 @@ function CollectionDetail(props) {
             <Collections
               collectionAddress={collectionAddress}
               collectionType={collectionType}
+              collectionId={collectionId}
             />
           )}
         </View>
