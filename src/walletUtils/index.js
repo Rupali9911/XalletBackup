@@ -8404,7 +8404,7 @@ export const tokens = [
   {
     type: 'ETH',
     tokenName: 'ETH',
-    icon: ImagesSrc.etherium,
+    icon: ImagesSrc.ethPolygon,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",

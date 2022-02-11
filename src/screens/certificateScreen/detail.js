@@ -113,9 +113,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   const [bidHistory, setBidHistory] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [payableIn, setPayableIn] = useState(
-    translate('common.allowedcurrency'),
-  );
+  const [payableIn, setPayableIn] = useState("");
 
   console.log(route.params)
   const [tableHead, setTableHead] = useState([
@@ -851,6 +849,7 @@ const DetailScreen = ({ navigation, route }) => {
             );
             console.log('availableTokens S', availableTokens);
             setAvailableTokens(availableTokens);
+            setPayableIn(availableTokens[0].name);
           } else {
             console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
@@ -1285,6 +1284,7 @@ const DetailScreen = ({ navigation, route }) => {
           )}
           <Text style={styles.description}>{description}</Text>
           <View style={styles.bottomView}>
+          <Text style={[styles.payIn]}>{translate('common.allowedcurrency')}</Text>
             {availableTokens.length > 0 &&
               setNFTStatus() !== 'notOnSell' &&
               setNFTStatus() !== 'onSell' && (
