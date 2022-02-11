@@ -33,10 +33,12 @@ function CollectionDetail(props) {
   }, []);
 
   const getCollection = async () => {
+    console.log('=======collectionId', collectionId);
     try {
       const collectionArray = await getHotCollectionDetail(collectionId);
-      setCollectionAddress(collectionArray.data.data[0].collectionAddress);
-      setCollection(collectionArray.data.data[0]);
+      console.log('=======collectionArray', collectionArray.data);
+      setCollectionAddress(collectionArray?.data.data[0].collectionAddress);
+      setCollection(collectionArray?.data.data[0]);
       setLoading(false);
     } catch (err) {
       console.error(err.message)
