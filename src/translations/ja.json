@@ -630,7 +630,8 @@
         "viewCollection": "コレクションへ",
         "auctionended": "オークション終了",
         "soldout": "販売終了",
-        "hotcollection": "おすすめ"
+        "hotcollection": "おすすめ",
+        "cardSaved": "カード情報の登録が完了しました"
     },
     "AwardPage": {},
     "wallet": {
@@ -870,7 +871,7 @@
             "createAccount": "新しいアカウントの作成",
             "nameYWallet": "財布に名前を付ける",
             "walletName": "ウォレット名",
-            "phrase": "フレーズ",
+            "phrase": "復元フレーズ",
             "privateKey": "秘密キー",
             "priceIn": "価格 {{type}}",
             "purchasedSuccess": "正常に購入しました",

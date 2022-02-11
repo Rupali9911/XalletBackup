@@ -628,7 +628,8 @@
         "auctionended": "Auction ended",
         "itemsCollection": "Items",
         "soldout": "Sold Out",
-        "hotcollection": "Hot collections"
+        "hotcollection": "Hot collections",
+        "cardSaved": "User card saved"
     },
     "AwardPage": {},
     "wallet": {

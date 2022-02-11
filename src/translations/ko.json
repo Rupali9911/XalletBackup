@@ -630,7 +630,8 @@
         "viewCollection": "컬렉션 보기",
         "auctionended": "경매 종료",
         "soldout": "매진",
-        "hotcollection": "핫 컬렉션"
+        "hotcollection": "핫 컬렉션",
+        "cardSaved": "사용자 카드가 저장됨"
     },
     "AwardPage": {},
     "wallet": {
