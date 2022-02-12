@@ -43,8 +43,9 @@ import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import {BASE_URL} from '../../common/constants';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
 
-const {PlayButtonIcon, GIRL} = SVGS;
+const {PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
 
 const Web3 = require('web3');
 
@@ -76,6 +77,9 @@ const DetailScreen = ({navigation, route}) => {
     creatorImage,
     artistId,
     artistData,
+    like,
+    item,
+    index,
   } = route.params;
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
@@ -130,6 +134,7 @@ const DetailScreen = ({navigation, route}) => {
   ]);
   const [tableData, setTableData] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
+  const [isLike, setLike] = useState(like);
   //#region SmartContract
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
@@ -924,7 +929,7 @@ const DetailScreen = ({navigation, route}) => {
     nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
     nftObj.price = nftObj.price ? nftObj.price : '';
 
-    console.log("nftObj", nftObj);
+    console.log('nftObj', nftObj);
 
     await MarketPlaceContract.methods
       .ownerOf(nftObj.id)
@@ -1222,6 +1227,14 @@ const DetailScreen = ({navigation, route}) => {
               />
             )}
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setLike(!isLike);
+              dispatch(handleLikeDislike(item, index));
+            }}
+            style={styles.likeButton}>
+            {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+          </TouchableOpacity>
           <View style={styles.person}>
             <TouchableOpacity
               onPress={() => onProfile(false)}
@@ -1328,7 +1341,7 @@ const DetailScreen = ({navigation, route}) => {
                     //     translate('common.Selectcurrencypopup'),
                     //   );
                     // } else {
-                      setShowPaymentMethod(true);
+                    setShowPaymentMethod(true);
                     // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', {nftDetail: singleNFT});

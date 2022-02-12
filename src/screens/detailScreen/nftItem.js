@@ -621,6 +621,9 @@ const nftItem = ({ item, index, isCollection }) => {
               tokenId: item.tokenId,
               ownerData: ownerData,
               artistData: artistData,
+              like: item.like,
+              item: item,
+              index: index,
             });
         }}>
         {fileType === 'mp4' ||
