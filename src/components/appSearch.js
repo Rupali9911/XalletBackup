@@ -25,16 +25,13 @@ export default function AppSearch() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  const [isFocus, setIsFocus] = useState(false);
   const [loading, setloading] = useState(false);
   const [searchTxt, setSearchTxt] = useState('');
   const [searchData, setSearchData] = useState([]);
 
   useEffect(() => {
-    if (!isFocused) {
-      setSearchData([]);
-      setSearchTxt('');
-    }
+    setSearchData([]);
+    setSearchTxt('');
   }, [isFocused]);
 
   const searchNftType = txt => {
@@ -90,11 +87,6 @@ export default function AppSearch() {
           setSearchTxt(txt);
         }}
         value={searchTxt}
-        onFocus={e => {
-          setIsFocus(true);
-          console.log('set focus');
-        }}
-        onBlur={e => setIsFocus(false)}
       />
 
       {loading || searchData?.length ? (
@@ -103,7 +95,7 @@ export default function AppSearch() {
             <View style={styles.loaderContainer}>
               <ActivityIndicator color={Colors.themeColor} size={25} />
             </View>
-          ) : searchData.length > 0 ? (
+          ) : searchData.length > 0 && searchTxt ? (
             <FlatList
               data={searchData}
               keyboardShouldPersistTaps={'handled'}
@@ -136,14 +128,10 @@ export default function AppSearch() {
                           chain: item.chain,
                           tokenId: item.tokenId,
                         });
-                        setSearchData([]);
-                        setSearchTxt('');
                       } else if (item.type == 'Artist') {
                         const id =
                           item.role === 'crypto' ? item.username : item._id;
                         navigation.navigate('ArtistDetail', {id: id});
-                        setSearchData([]);
-                        setSearchTxt('');
                       }
                     }}
                   />
