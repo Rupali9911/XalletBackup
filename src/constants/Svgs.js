@@ -70,6 +70,8 @@ import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
 
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
 import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
+import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
+import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
 
 export default {
   GirlIcon,
@@ -144,4 +146,6 @@ export default {
 
   FantaseedIcon,
   TwiiterIcon,
+  FacebookIcon,
+  InstagramIcon,
 };
