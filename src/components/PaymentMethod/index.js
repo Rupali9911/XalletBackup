@@ -151,7 +151,7 @@ const PaymentMethod = props => {
               if (selectedMethod == 0) {
                 onRequestClose();
                 if (myCards.length > 0) {
-                  navigation.navigate('Cards', {price: priceInDollar});
+                  navigation.navigate('Cards', {price: priceInDollar, isFromSetting: true});
                 } else {
                   // navigation.navigate('Cards', { price });
                   navigation.navigate('AddCard', {price: priceInDollar});
