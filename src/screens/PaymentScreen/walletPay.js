@@ -103,14 +103,14 @@ const WalletPay = ({route, navigation}) => {
   useEffect(() => {
     console.log('useEffect');
     if (wallet && !isCreate && isFocused) {
-      setLoading(true);
+      // setLoading(true);
       getBalances(wallet.address);
     }
     console.log('wallet pay use effect', data, route.params);
   }, [isFocused]);
 
   useEffect(() => {
-    if (allowedTokens.length > 0) {
+    if (allowedTokens.length > 0 && payableIn == translate('common.allowedcurrency')) {
       let array = [];
       allowedTokens.map(_ => {
         array.push(_.key.toLowerCase());
@@ -138,23 +138,44 @@ const WalletPay = ({route, navigation}) => {
      // console.log('result of active tokens', result);
       setActiveTokens(result);
     } else {
-      let result = tokens.filter(_ => {
-        if (
-          _.network.toLowerCase() === chainType &&
-          baseCurrency?.key?.toLowerCase() === _.tokenName.toLowerCase()
-        ) {
-          return true;
-        } else if (
-          _.network.toLowerCase() === chainType &&
-          baseCurrency?.key?.toLowerCase() === 'alia' &&
-          (_.tokenName === 'TAL' || _.tokenName === 'TNFT')
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-      setActiveTokens(result);
+      if(payableIn){
+        console.log("/////////". payableIn)
+        let result = tokens.filter(_ => {
+          if (
+            _.network.toLowerCase() === chainType &&
+            payableIn.toLowerCase() === _.tokenName.toLowerCase()
+          ) {
+            return true;
+          } else if (
+            _.network.toLowerCase() === chainType &&
+            payableIn.toLowerCase() === 'alia' &&
+            (_.tokenName === 'TAL' || _.tokenName === 'TNFT')
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        setActiveTokens(result);
+      }else{
+        let result = tokens.filter(_ => {
+          if (
+            _.network.toLowerCase() === chainType &&
+            baseCurrency?.key?.toLowerCase() === _.tokenName.toLowerCase()
+          ) {
+            return true;
+          } else if (
+            _.network.toLowerCase() === chainType &&
+            baseCurrency?.key?.toLowerCase() === 'alia' &&
+            (_.tokenName === 'TAL' || _.tokenName === 'TNFT')
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        setActiveTokens(result);
+      }
     }
   }, []);
 
@@ -487,6 +508,9 @@ const WalletPay = ({route, navigation}) => {
    // console.log('@@@@@@@@@@@@', result, item);
     return result;
   };
+
+  // console.log(tokens)
+  // console.log(basePriceTokens)
   return (
     <AppBackground isBusy={loading}>
       <GradientBackground>
@@ -527,8 +551,8 @@ const WalletPay = ({route, navigation}) => {
       <Tokens
         values={balances}
         network={network}
-        //allowedTokens={basePriceTokens.filter((item) => item.key !== payableIn)}
-        allowedTokens={tokens}
+        // allowedTokens={payableIn ? tokens.filter((item) => item.type == payableIn): tokens}
+        allowedTokens={activeTokens}
         onTokenPress={async item => {
           setSelectedObject(item);
           let tradeCurrency = getCurrencyOnSelect(item);

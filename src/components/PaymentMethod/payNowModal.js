@@ -408,7 +408,7 @@ const PaymentNow = (props) => {
                     {selectedMethod == 2 && <Text style={styles.goldValue}><Image source={ImagesSrc.goldcoin} /> {price}</Text>}
 
                     <AppButton
-                        label={translate("wallet.common.next")}
+                        label={translate("common.buyNext")}
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
@@ -419,7 +419,6 @@ const PaymentNow = (props) => {
                                 } else if (paymentObject.type == 'wallet') {
                                     payByWallet();
                                 }
-
                             }
                         }}
                         loading={loading}

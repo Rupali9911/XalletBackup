@@ -218,9 +218,10 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     // userData.user.username => 0xD55468830878d9dB7D0D36380421880Ef391a6Af
     // _wallet.address => 0xd55468830878d9db7d0d36380421880ef391a6af
     // actually username is same as address but different is string case. why response is dfference in between username and address.
-  
+
     let req_data = {
       owner: userData.user.username || _wallet.address,
+        //owner:  userData.user._id,
       token: 'HubyJ*%qcqR0',
     };
 

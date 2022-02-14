@@ -631,7 +631,8 @@
         "auctionended": "オークション終了",
         "soldout": "販売終了",
         "hotcollection": "おすすめ",
-        "cardSaved": "カード情報の登録が完了しました"
+        "cardSaved": "カード情報の登録が完了しました",
+        "buyNext": "購入する"
     },
     "AwardPage": {},
     "wallet": {
@@ -666,7 +667,7 @@
                 "passcodeError1": "パスコードが一致しませんでした。もう一度お試しください。",
                 "passcodeError2": "パスコードが一致しませんでした。",
                 "passcodeError3": "もう一度お試しください。",
-                "invalidPrivateKey": "無効な秘密鍵",
+                "invalidPrivateKey": "無効な秘密キーです、再確認ください",
                 "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。",
                 "oldAndNewPasswordIsSameText": "古いパスワードと新しいパスワードを同じにしないでください",
                 "oldPasswordNCorrect": "古いパスワードが正しくない!"

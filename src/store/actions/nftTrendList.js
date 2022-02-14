@@ -251,6 +251,7 @@ export const getAllArtist = () => {
       networkType: networkType,
     };
 
+
     dispatch(artistLoadingStart());
 
     let fetch_data_body = {

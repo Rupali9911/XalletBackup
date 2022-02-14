@@ -165,6 +165,16 @@ const styles = StyleSheet.create({
     marginBottom: SIZE(20),
     paddingHorizontal: SIZE(12),
   },
+  payIn: {
+    fontSize: RF(1.6),
+    fontFamily: fonts.ARIAL,
+    // textAlign: "center",
+    color: "#707a83",
+    marginTop: 0, 
+    paddingHorizontal: 0, 
+    marginBottom: 0, 
+    fontWeight: "bold"
+  },
   moreView: {
     marginTop: SIZE(13),
     borderTopColor: '#F9FAF9',
@@ -230,8 +240,8 @@ const styles = StyleSheet.create({
     fontSize: RF(1.65),
     maxWidth: wp('35%'),
   },
-  head: {height: 35},
-  text: {margin: 10, fontSize: RF(1.5)},
+  head: { height: 35 },
+  text: { margin: 10, fontSize: RF(1.5) },
   emptyData: {
     alignSelf: 'center',
     marginVertical: hp('1%'),

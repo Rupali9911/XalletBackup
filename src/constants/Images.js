@@ -36,6 +36,7 @@ export default {
     //token type icons
     bitcoin: require("../../assets/images/bitcoin.png"),
     etherium: require("../../assets/images/etherium.png"),
+    ethPolygon: require("../../assets/images/ETH.png"),
     bnb: require("../../assets/images/bnb.png"),
     smartChain: require("../../assets/images/smartChain.png"),
     alia: require("../../assets/images/ALIA.png"),

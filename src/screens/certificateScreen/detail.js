@@ -1,7 +1,7 @@
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -13,15 +13,15 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import {Row, Rows, Table} from 'react-native-table-component';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
+import { Row, Rows, Table } from 'react-native-table-component';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
 import details from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import history from '../../../assets/images/history.png';
 import trading from '../../../assets/images/trading.png';
-import {networkType} from '../../common/networkType';
-import {AppHeader, C_Image, GroupButton} from '../../components';
+import { networkType } from '../../common/networkType';
+import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
@@ -29,31 +29,31 @@ import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import {hp} from '../../constants/responsiveFunct';
+import { hp } from '../../constants/responsiveFunct';
 import {
   getAllCards,
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import {alertWithSingleBtn, divideNo} from '../../utils';
-import {translate} from '../../walletUtils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig} from '../../web3/config/blockChainConfig';
-import {CardField, TabModal} from '../createNFTScreen/components';
+import { alertWithSingleBtn, divideNo } from '../../utils';
+import { translate } from '../../walletUtils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
+import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL} from '../../common/constants';
+import { BASE_URL } from '../../common/constants';
 
-const {PlayButtonIcon, GIRL} = SVGS;
+const { PlayButtonIcon, GIRL } = SVGS;
 
 const Web3 = require('web3');
 
 let walletAddressForNonCrypto = '';
 
-const DetailScreen = ({navigation, route}) => {
+const DetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
-  const {data, wallet} = useSelector(state => state.UserReducer);
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
+  const { data, wallet } = useSelector(state => state.UserReducer);
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
@@ -76,6 +76,7 @@ const DetailScreen = ({navigation, route}) => {
     creatorImage,
     artistId,
     artistData,
+    item
   } = route.params;
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
@@ -112,9 +113,9 @@ const DetailScreen = ({navigation, route}) => {
   const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   const [bidHistory, setBidHistory] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [payableIn, setPayableIn] = useState(
-    translate('common.allowedcurrency'),
-  );
+  const [payableIn, setPayableIn] = useState("");
+
+  console.log(route.params)
   const [tableHead, setTableHead] = useState([
     translate('common.price'),
     translate('common.from'),
@@ -197,7 +198,7 @@ const DetailScreen = ({navigation, route}) => {
       }
       if (data.token) {
         dispatch(getAllCards(data.token))
-          .then(() => {})
+          .then(() => { })
           .catch(err => {
             console.log('error====', err);
           });
@@ -259,20 +260,20 @@ const DetailScreen = ({navigation, route}) => {
                 translatedEvent: translate('common.sales'),
                 price:
                   res.data.data[i].returnValues.dollarPrice &&
-                  parseInt(
-                    divideNo(
-                      parseInt(res.data.data[i].returnValues.dollarPrice?._hex),
-                    ),
-                  ) > 0
-                    ? divideNo(
-                        parseInt(
-                          res.data.data[i].returnValues.dollarPrice._hex,
-                          16,
-                        ),
-                      )
-                    : divideNo(
-                        parseInt(res.data.data[i].returnValues.price._hex, 16),
+                    parseInt(
+                      divideNo(
+                        parseInt(res.data.data[i].returnValues.dollarPrice?._hex),
                       ),
+                    ) > 0
+                    ? divideNo(
+                      parseInt(
+                        res.data.data[i].returnValues.dollarPrice._hex,
+                        16,
+                      ),
+                    )
+                    : divideNo(
+                      parseInt(res.data.data[i].returnValues.price._hex, 16),
+                    ),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
@@ -288,23 +289,23 @@ const DetailScreen = ({navigation, route}) => {
                 translatedEvent: translate('common.OnAuction'),
                 price:
                   res.data.data[i].returnValues.startPrice &&
-                  parseInt(
-                    divideNo(
-                      parseInt(res.data.data[i].returnValues.startPrice._hex),
-                    ),
-                  ) > 0
-                    ? divideNo(
-                        parseInt(
-                          res.data.data[i].returnValues.startPrice._hex,
-                          16,
-                        ),
-                      )
-                    : divideNo(
-                        parseInt(
-                          res.data.data[i].returnValues.startPrice._hex,
-                          16,
-                        ),
+                    parseInt(
+                      divideNo(
+                        parseInt(res.data.data[i].returnValues.startPrice._hex),
                       ),
+                    ) > 0
+                    ? divideNo(
+                      parseInt(
+                        res.data.data[i].returnValues.startPrice._hex,
+                        16,
+                      ),
+                    )
+                    : divideNo(
+                      parseInt(
+                        res.data.data[i].returnValues.startPrice._hex,
+                        16,
+                      ),
+                    ),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
@@ -340,11 +341,11 @@ const DetailScreen = ({navigation, route}) => {
                     ),
                   ) > 0
                     ? divideNo(
-                        parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                      )
+                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
+                    )
                     : divideNo(
-                        parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                      ),
+                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
+                    ),
                 seller: res.data.data[i].returnValues.bidder.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
@@ -373,11 +374,11 @@ const DetailScreen = ({navigation, route}) => {
                     ),
                   ) > 0
                     ? divideNo(
-                        parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                      )
+                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
+                    )
                     : divideNo(
-                        parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                      ),
+                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
+                    ),
                 seller: seller,
                 owner: res.data.data[i].returnValues.bidder.slice(0, 6),
                 sellDateTime: moment
@@ -409,12 +410,12 @@ const DetailScreen = ({navigation, route}) => {
                 translatedEvent: translate('common.Buys'),
                 price:
                   sellEvent.returnValues.dollarPrice &&
-                  parseInt(
-                    divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex)),
-                  ) > 0
+                    parseInt(
+                      divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex)),
+                    ) > 0
                     ? divideNo(
-                        parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
-                      )
+                      parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
+                    )
                     : divideNo(parseInt(sellEvent.returnValues.price._hex, 16)),
 
                 seller: sellEvent?.returnValues?.seller.slice(0, 6),
@@ -674,7 +675,7 @@ const DetailScreen = ({navigation, route}) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -688,7 +689,7 @@ const DetailScreen = ({navigation, route}) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -848,6 +849,7 @@ const DetailScreen = ({navigation, route}) => {
             );
             console.log('availableTokens S', availableTokens);
             setAvailableTokens(availableTokens);
+            setPayableIn(availableTokens[0].name);
           } else {
             console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
@@ -858,8 +860,8 @@ const DetailScreen = ({navigation, route}) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-              ? res?.data[1]?.award
-              : false,
+                ? res?.data[1]?.award
+                : false,
           );
           console.log('calling');
           //checkNFTOnAuction();
@@ -877,7 +879,6 @@ const DetailScreen = ({navigation, route}) => {
     let _MarketContractAddress = collectionAddress;
 
     let web3 = new Web3(providerUrl);
-
     if (obj.tokenId.toString().split('-')[2]) {
       let nftChain = obj.tokenId.toString().split('-')[0];
       let collectionAdd = obj.tokenId.toString().split('-')[1];
@@ -890,8 +891,6 @@ const DetailScreen = ({navigation, route}) => {
       obj.tokenId = nftId;
     }
 
-    // console.log(MarketContractAddress);
-
     let MarketPlaceContract = new web3.eth.Contract(
       _MarketPlaceAbi,
       _MarketContractAddress,
@@ -902,7 +901,7 @@ const DetailScreen = ({navigation, route}) => {
       description: obj.metaData.description,
       title: obj.metaData.name,
       type: obj.metaData.properties.type,
-      price: obj.price,
+      price: obj.price ? obj.price : "",
       rating: obj.rating,
       like: obj.like,
       author: obj.returnValues.to,
@@ -914,22 +913,17 @@ const DetailScreen = ({navigation, route}) => {
         : obj?.thumbnailUrl,
       newprice: obj.newprice,
       approval: obj.approval,
+      id: obj.tokenId,
+      collection: _MarketContractAddress,
+      collectionAdd: obj.collectionAdd,
+      nftChain: obj.chainType,
+      logoImg: `${CDN_LINK}/logo-v2.svg`
     };
-
-    nftObj.id = obj.tokenId;
-    nftObj.collection = _MarketContractAddress;
-    nftObj.collectionAdd = obj.collectionAdd;
-    nftObj.nftChain = obj.chainType;
-
-    nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
-    nftObj.price = nftObj.price ? nftObj.price : '';
-
-    console.log("nftObj", nftObj);
 
     await MarketPlaceContract.methods
       .ownerOf(nftObj.id)
       .call(function (err, res) {
-        console.log('res', res);
+        // console.log('aaaaaaaa', res, err);
         if (!err) {
           nftObj.owner_address = res;
         }
@@ -1003,19 +997,19 @@ const DetailScreen = ({navigation, route}) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        console.log('set NftStatus 1');
+        // console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        console.log('set NftStatus 1.1');
+        // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        console.log('set NftStatus 2');
+        // console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      console.log('set NftStatus 3');
+      // console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1028,48 +1022,48 @@ const DetailScreen = ({navigation, route}) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        console.log('set NftStatus 4');
+        // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet.address) {
           // setNftStatus('buy')
-          console.log('set NftStatus 5');
+          // console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else if (connectedWithTo === 'paymentCard') {
         } else {
           // setNftStatus('buy');
-          console.log('set NftStatus 6');
+          // console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        console.log('set NftStatus 7');
+        // console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      console.log('set NftStatus 8');
+      // console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    console.log(
-      '_nftStatus',
-      _nftStatus,
-      priceNFT,
-      isContractOwner,
-      isOwner,
-      isNFTOnAuction,
-    );
+    // console.log(
+    //   '_nftStatus',
+    //   _nftStatus,
+    //   priceNFT,
+    //   isContractOwner,
+    //   isOwner,
+    //   isNFTOnAuction,
+    // );
     return _nftStatus;
   };
 
   const onProfile = () => {
     if (isOwner) {
-      navigation.push('ArtistDetail', {id: ownerId});
+      navigation.push('ArtistDetail', { id: ownerId });
     } else {
-      navigation.push('ArtistDetail', {id: artistId});
+      navigation.push('ArtistDetail', { id: artistId });
     }
   };
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri =
@@ -1086,6 +1080,7 @@ const DetailScreen = ({navigation, route}) => {
           onPress={() => {
             // dispatch(changeScreenName('awards'));
             //navigation.push('DetailItem', {index: findIndex});
+
             navigation.navigate('CertificateDetail', {
               id: item.newtokenId,
               name: item.metaData.name,
@@ -1104,14 +1099,15 @@ const DetailScreen = ({navigation, route}) => {
               creator: creator,
               creatorImage: creatorImage,
               artistData: artistData,
+              item: item
             });
-            scrollRef.current.scrollTo({x: 0, y: 0, animated: true});
+            scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
           }}
           style={styles.listItem}>
           <C_Image
             type={
               item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
+              item.metaData.image.split('.').length - 1
               ]
             }
             uri={imageUri}
@@ -1125,11 +1121,11 @@ const DetailScreen = ({navigation, route}) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState([]);
     const [items, setItems] = useState([
-      {label: translate('common.minted'), value: translate('common.minted')},
-      {label: translate('common.sales'), value: translate('common.sales')},
-      {label: translate('common.Bids'), value: translate('common.Bids')},
-      {label: translate('common.Buys'), value: translate('common.Buys')},
-      {label: translate('common.Claim'), value: translate('common.Claim')},
+      { label: translate('common.minted'), value: translate('common.minted') },
+      { label: translate('common.sales'), value: translate('common.sales') },
+      { label: translate('common.Bids'), value: translate('common.Bids') },
+      { label: translate('common.Buys'), value: translate('common.Buys') },
+      { label: translate('common.Claim'), value: translate('common.Claim') },
       {
         label: translate('common.OnAuction'),
         value: translate('common.OnAuction'),
@@ -1167,14 +1163,14 @@ const DetailScreen = ({navigation, route}) => {
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
           <TouchableOpacity activeOpacity={1} onPress={() => setPlay(!isPlay)}>
             {fileType === 'mp4' ||
-            fileType === 'MP4' ||
-            fileType === 'mov' ||
-            fileType === 'MOV' ? (
-              <View style={{...styles.modalImage}}>
+              fileType === 'MP4' ||
+              fileType === 'mov' ||
+              fileType === 'MOV' ? (
+              <View style={{ ...styles.modalImage }}>
                 {/* <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain /> */}
                 <Video
                   ref={refVideo}
-                  source={{uri: video}}
+                  source={{ uri: video }}
                   repeat
                   playInBackground={false}
                   paused={!isPlay}
@@ -1229,7 +1225,7 @@ const DetailScreen = ({navigation, route}) => {
               <Image
                 style={styles.iconsImage}
                 source={
-                  !creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}
+                  !creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }
                 }
               />
               <View>
@@ -1247,7 +1243,7 @@ const DetailScreen = ({navigation, route}) => {
               <Image
                 style={styles.iconsImage}
                 source={
-                  !creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}
+                  !creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }
                 }
               />
               <View>
@@ -1264,7 +1260,7 @@ const DetailScreen = ({navigation, route}) => {
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
-                source={!ownerImage ? IMAGES.DEFAULTPROFILE : {uri: ownerImage}}
+                source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }}
               />
               <View>
                 <Text style={styles.personTypeText}>
@@ -1288,11 +1284,12 @@ const DetailScreen = ({navigation, route}) => {
           )}
           <Text style={styles.description}>{description}</Text>
           <View style={styles.bottomView}>
+          <Text style={[styles.payIn]}>{translate('common.allowedcurrency')}</Text>
             {availableTokens.length > 0 &&
               setNFTStatus() !== 'notOnSell' &&
               setNFTStatus() !== 'onSell' && (
                 <CardField
-                  inputProps={{value: payableIn}}
+                  inputProps={{ value: payableIn }}
                   onPress={() => {
                     setAllowedTokenModal(true);
                   }}
@@ -1306,12 +1303,12 @@ const DetailScreen = ({navigation, route}) => {
                   setNFTStatus() === 'onSell'
                     ? translate('common.cancelSell')
                     : setNFTStatus() === 'sell'
-                    ? translate('common.sell')
-                    : setNFTStatus() === 'buy'
-                    ? translate('common.buy')
-                    : setNFTStatus() === 'notOnSell'
-                    ? translate('common.soonOnSell')
-                    : translate('common.buy')
+                      ? translate('common.sell')
+                      : setNFTStatus() === 'buy'
+                        ? translate('common.buy')
+                        : setNFTStatus() === 'notOnSell'
+                          ? translate('common.soonOnSell')
+                          : translate('common.buy')
                 }
                 rightText={translate('wallet.common.offerPrice')}
                 leftDisabled={setNFTStatus() === ''}
@@ -1328,10 +1325,10 @@ const DetailScreen = ({navigation, route}) => {
                     //     translate('common.Selectcurrencypopup'),
                     //   );
                     // } else {
-                      setShowPaymentMethod(true);
+                    setShowPaymentMethod(true);
                     // }
                   } else if (setNFTStatus() === 'sell') {
-                    navigation.navigate('sellNft', {nftDetail: singleNFT});
+                    navigation.navigate('sellNft', { nftDetail: singleNFT });
                   }
                   // }
                 }}
@@ -1342,18 +1339,18 @@ const DetailScreen = ({navigation, route}) => {
             )}
             {setNFTStatus() === 'onSell' && (
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <AppButton
                   label={(price ? price : 0) + ' ' + baseCurrency?.key}
                   containerStyle={[styles.button, CommonStyles.outlineButton]}
                   labelStyle={[CommonStyles.outlineButtonLabel]}
-                  onPress={() => {}}
+                  onPress={() => { }}
                 />
                 <AppButton
                   label={translate('common.editPrice')}
                   containerStyle={styles.button}
                   labelStyle={CommonStyles.buttonLabel}
-                  onPress={() => {}}
+                  onPress={() => { }}
                 />
               </View>
             )}
@@ -1361,14 +1358,14 @@ const DetailScreen = ({navigation, route}) => {
           <NFTDetailDropdown
             title={translate('common.creator')}
             icon={details}
-            containerStyles={{marginTop: hp(2)}}>
+            containerStyles={{ marginTop: hp(2) }}>
             <TouchableOpacity
               onPress={() => onProfile(false)}
               style={styles.personType}>
               <Image
                 style={styles.creatorImage}
                 source={
-                  !creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}
+                  !creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }
                 }
               />
               <View>
@@ -1386,7 +1383,7 @@ const DetailScreen = ({navigation, route}) => {
                 {translate('wallet.common.contractAddress')}
               </TextView>
               <TextView
-                style={[styles.rowText, {color: Colors.themeColor}]}
+                style={[styles.rowText, { color: Colors.themeColor }]}
                 ellipsizeMode="middle"
                 numberOfLines={1}>
                 {MarketContractAddress}
@@ -1408,7 +1405,7 @@ const DetailScreen = ({navigation, route}) => {
               <TextView style={styles.rowText}>
                 {translate('wallet.common.blockChainType')}
               </TextView>
-              <TextView style={[styles.rowText, {textTransform: 'uppercase'}]}>
+              <TextView style={[styles.rowText, { textTransform: 'uppercase' }]}>
                 {chainType}
               </TextView>
             </View>
@@ -1419,7 +1416,7 @@ const DetailScreen = ({navigation, route}) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
-              <Table borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+              <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                 <Row
                   data={tableHead}
                   style={styles.head}
@@ -1447,8 +1444,8 @@ const DetailScreen = ({navigation, route}) => {
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              style={{marginTop: hp(2)}}>
-              <Table borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+              style={{ marginTop: hp(2) }}>
+              <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                 <Row
                   data={tradingTableHead}
                   style={styles.head}
@@ -1563,7 +1560,7 @@ const DetailScreen = ({navigation, route}) => {
             setAllowedTokenModal(false);
           },
         }}
-        data={{data: availableTokens}}
+        data={{ data: availableTokens }}
         title={translate('common.allowedcurrency')}
         itemPress={v => {
           setPayableIn(v.name);

@@ -629,7 +629,8 @@
         "itemsCollection": "Items",
         "soldout": "Sold Out",
         "hotcollection": "Hot collections",
-        "cardSaved": "User card saved"
+        "cardSaved": "User card saved",
+        "buyNext": "Next"
     },
     "AwardPage": {},
     "wallet": {

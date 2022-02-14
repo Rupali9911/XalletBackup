@@ -346,7 +346,7 @@ const Wallet = ({route, navigation}) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          console.log('responses', responses);
+          console.log('responses polygon', responses);
           let balances = {
             Matic: responses[0],
             TAL: responses[1],

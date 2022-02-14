@@ -631,7 +631,8 @@
         "auctionended": "拍賣結束",
         "soldout": "售罄",
         "hotcollection": "熱門系列",
-        "cardSaved": "用戶卡已保存"
+        "cardSaved": "用戶卡已保存",
+        "buyNext": "下一個"
     },
     "AwardPage": {},
     "wallet": {
