@@ -4,7 +4,7 @@ import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import insertComma from '../../utils/insertComma';
-import { basePriceTokens } from '../../web3/config/availableTokens';
+import { basePriceTokens } from '../../web3/config/basePriceTokens';
 import { SvgUri } from 'react-native-svg';
 import { translate } from '../../walletUtils';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
@@ -37,10 +37,10 @@ export default function NFTItem(props) {
   const nftCurrencyIcon = (CurrencyFlag, chainType) => {
     let chainTypeFlag = chainType;
     let found = basePriceTokens.find(
-      token => token.name === CurrencyFlag && token.chain === chainTypeFlag
+      token => token.value === CurrencyFlag && token.chain === chainTypeFlag
     );
     if (found) {
-      return found.image
+      return found.icon
     }
   };
 
