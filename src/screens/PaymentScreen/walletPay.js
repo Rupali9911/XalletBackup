@@ -1,6 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Web3 from 'web3';
 import AppBackground from '../../components/appBackground';
@@ -31,6 +31,7 @@ import {HeaderBtns} from '../wallet/components/HeaderButtons';
 import NetworkPicker from '../wallet/components/networkPicker';
 import Tokens from '../wallet/components/Tokens';
 import {balance} from '../wallet/functions';
+import {SIZE} from 'src/constants';
 
 const ethers = require('ethers');
 
@@ -115,9 +116,9 @@ const WalletPay = ({route, navigation}) => {
       allowedTokens.map(_ => {
         array.push(_.key.toLowerCase());
       });
-        console.log('tokens', tokens);
+      console.log('tokens', tokens);
       let result = tokens.filter(item => {
-          console.log('item', item);
+        console.log('item', item);
         if (item.network.toLowerCase() === chainType) {
           console.log('same chain');
           if (array.includes(item.type.toLowerCase())) {
@@ -135,7 +136,7 @@ const WalletPay = ({route, navigation}) => {
           return false;
         }
       });
-     // console.log('result of active tokens', result);
+      // console.log('result of active tokens', result);
       setActiveTokens(result);
     } else {
       let result = tokens.filter(_ => {
@@ -484,11 +485,16 @@ const WalletPay = ({route, navigation}) => {
         return false;
       }
     });
-   // console.log('@@@@@@@@@@@@', result, item);
+    // console.log('@@@@@@@@@@@@', result, item);
     return result;
   };
   return (
     <AppBackground isBusy={loading}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButtonWrap}>
+        <Image style={styles.backIcon} source={ImagesSrc.backArrow} />
+      </TouchableOpacity>
       <GradientBackground>
         <View style={styles.gradient}>
           <AppHeader
@@ -661,6 +667,23 @@ const styles = StyleSheet.create({
     color: Colors.alert,
     fontSize: RF(1.5),
     marginVertical: hp('1%'),
+  },
+  backIcon: {
+    width: SIZE(16),
+    height: SIZE(16),
+    resizeMode: 'contain',
+  },
+  backButtonWrap: {
+    position: 'absolute',
+    left: SIZE(10),
+    top: SIZE(10),
+    zIndex: 1,
+    backgroundColor: 'white',
+    width: SIZE(26),
+    height: SIZE(26),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: SIZE(13),
   },
 });
 

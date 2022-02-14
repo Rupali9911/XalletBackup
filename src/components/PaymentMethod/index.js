@@ -99,6 +99,18 @@ const PaymentMethod = props => {
                 icon: ImagesSrc.walletPay,
                 onPress: () => {
                   setSelectedMethod(1);
+                  onRequestClose();
+                  navigation.navigate('WalletPay', {
+                    price,
+                    priceStr,
+                    chainType: chain || 'binance',
+                    baseCurrency,
+                    allowedTokens,
+                    id,
+                    collectionAddress,
+                    ownerAddress,
+                    payableIn,
+                  });
                 },
               }
               // ,
