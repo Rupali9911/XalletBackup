@@ -96,6 +96,7 @@ function Setting({navigation}) {
   const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const {myCards} = useSelector(state => state.PaymentReducer);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -108,7 +109,14 @@ function Setting({navigation}) {
       <ScrollView>
         <View style={[styles.section2, {marginTop: 0}]}>
           <ListItem
-            onPress={() => null}
+            onPress={() => {
+              if (myCards.length > 0) {
+                navigation.navigate('Cards', {price: 0, isFromSetting: true});
+              } else {
+                // navigation.navigate('Cards', { price });
+                navigation.navigate('AddCard', {price: 0});
+              }
+            }}
             label={translate('wallet.common.AECredit')}
           />
           <View style={{...styles.separator, width: wp('81%')}} />
@@ -157,7 +165,7 @@ function Setting({navigation}) {
             label={translate('common.Logout')}
           />
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
-            {/*<Text>Authenticate with Touch ID</Text>*/}
+          {/*<Text>Authenticate with Touch ID</Text>*/}
           {/*</TouchableHighlight>*/}
         </View>
       </ScrollView>

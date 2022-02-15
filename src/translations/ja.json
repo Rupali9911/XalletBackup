@@ -630,9 +630,9 @@
         "viewCollection": "コレクションへ",
         "auctionended": "オークション終了",
         "soldout": "販売終了",
-        "hotcollection": "おすすめ",
         "cardSaved": "カード情報の登録が完了しました",
-        "buyNext": "購入する"
+        "buyNext": "購入する",
+        "hotcollection": "推奨コレクション"
     },
     "AwardPage": {},
     "wallet": {

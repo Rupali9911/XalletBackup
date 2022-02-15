@@ -99,6 +99,18 @@ const PaymentMethod = props => {
                 icon: ImagesSrc.walletPay,
                 onPress: () => {
                   setSelectedMethod(1);
+                  // onRequestClose();
+                  // navigation.navigate('WalletPay', {
+                  //   price,
+                  //   priceStr,
+                  //   chainType: chain || 'binance',
+                  //   baseCurrency,
+                  //   allowedTokens,
+                  //   id,
+                  //   collectionAddress,
+                  //   ownerAddress,
+                  //   payableIn,
+                  // });
                 },
               }
               // ,
@@ -150,7 +162,7 @@ const PaymentMethod = props => {
               if (selectedMethod == 0) {
                 onRequestClose();
                 if (myCards.length > 0) {
-                  navigation.navigate('Cards', { price: priceInDollar });
+                  navigation.navigate('Cards', {price: priceInDollar, isFromSetting: true});
                 } else {
                   // navigation.navigate('Cards', { price });
                   navigation.navigate('AddCard', { price: priceInDollar });
