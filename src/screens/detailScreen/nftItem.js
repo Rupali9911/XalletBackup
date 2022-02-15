@@ -24,7 +24,7 @@ import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import { numberWithCommas } from '../../utils';
-import { colors } from '../../res';
+import { TextReadMoreView } from '../../components';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -539,7 +539,10 @@ const nftItem = ({ item, index, isCollection }) => {
   //     });
   // };
 
-  const onTextLayout = useCallback(e => setLengthMore(e.nativeEvent.lines.length > 2), []);
+  const onTextLayout = useCallback(e => {
+    if (e.nativeEvent.lines.length >= 2 && e.nativeEvent.lines[1].width > width - SIZE(40))
+      setLengthMore(true);
+  }, []);
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
@@ -621,7 +624,9 @@ const nftItem = ({ item, index, isCollection }) => {
               tokenId: item.tokenId,
               ownerData: ownerData,
               artistData: artistData,
-              item: item
+              like: item.like,
+              item: item,
+              index: index,
             });
         }}>
         {fileType === 'mp4' ||

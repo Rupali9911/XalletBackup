@@ -255,6 +255,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: fonts.SegoeUIRegular,
   },
+  likeButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: SIZE(10),
+    right: SIZE(10)
+  },
 });
 
 export default styles;

@@ -146,6 +146,9 @@ const CreateNFTScreen = ({ route }) => {
     index == 1 ? translate("wallet.common.NFTList") :
       index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
 
+    console.log('==========userId', collection);
+    console.log('==========status', routeParams?.status);
+
   return (
     <SafeAreaView style={styles.mainContainer}>
 
@@ -160,7 +163,7 @@ const CreateNFTScreen = ({ route }) => {
       <View style={styles.sectionContainer}>
         <View style={styles.titleWrapper}>
           <Text style={styles.title}>{renderTitle}</Text>
-          {collection?.userId != 0 && routeParams?.status &&
+          {routeParams?.status === 'created' &&
             <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
               <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
             </TouchableOpacity>
