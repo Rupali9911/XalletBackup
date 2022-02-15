@@ -760,7 +760,7 @@
                 "searchCountry": "国を検索",
                 "searchState": "検索都道府県",
                 "select": "選択",
-                "creditCard": "クレジットカード",
+                "creditCard": "クレジットカード情報",
                 "payNow": "今払う"
             },
             "post": "投稿",
@@ -822,7 +822,7 @@
                 "invalid_expiry_month": "有効期限の月が無効です。"
             },
             "confirmDeleteCard": "このカードを削除したいでしょうか？",
-            "balanceAmount": "残高",
+            "balanceAmount": "購入金額",
             "paste": "貼り付け",
             "AECredit": "クレジット カードの追加/編集",
             "security": "パスコード設定",

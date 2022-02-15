@@ -44,6 +44,7 @@ import {
 } from '../../screens/wallet/functions';
 import {BlurView} from '@react-native-community/blur';
 import {IconButton} from 'react-native-paper';
+import { numberWithCommas } from '../../utils';
 
 const PaymentNow = props => {
   const navigation = useNavigation();
@@ -552,7 +553,7 @@ const PaymentNow = props => {
                 : ''}{' '}
               {paymentObject && paymentObject.type == 'wallet'
                 ? paymentObject.priceInToken
-                : priceInDollar || 0}
+                : numberWithCommas(Number(priceInDollar).toFixed(4)) || 0}
             </Text>
           </View>
 
@@ -691,7 +692,7 @@ const styles = StyleSheet.create({
     marginBottom: hp('3%'),
   },
   symbol: {
-    fontSize: RF(2),
+    fontSize: RF(3.2),
     fontFamily: Fonts.ARIAL,
     color: Colors.themeColor,
   },
