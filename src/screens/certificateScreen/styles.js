@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     fontSize: RF(1.65),
     maxWidth: wp('35%'),
   },
-  head: { height: 35 },
-  text: { margin: 10, fontSize: RF(1.5) },
+  head: { height: SIZE(35) },
+  text: { margin: SIZE(10), fontSize: SIZE(12) },
   emptyData: {
     alignSelf: 'center',
     marginVertical: hp('1%'),

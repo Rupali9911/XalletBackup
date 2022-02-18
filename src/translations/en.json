@@ -900,7 +900,7 @@
             "searchHint": "Search NFTs, Collections, and Artists",
             "emailValidation": "Email is not validated",
             "limitInputLength": "You should not exceed more than {{number}} chars.",
-            "xanaliaWallet": "Xanalia Wallet",
+            "xanaliaWallet": "Xanalia App",
             "otherWallet": "Other Wallet",
             "filter": "Filter",
             "blockChainType": "BlockChain Type",

@@ -761,7 +761,7 @@
                 "searchCountry": "国を検索",
                 "searchState": "検索都道府県",
                 "select": "選択",
-                "creditCard": "クレジットカード",
+                "creditCard": "クレジットカード情報",
                 "payNow": "今払う"
             },
             "post": "投稿",
@@ -823,7 +823,7 @@
                 "invalid_expiry_month": "有効期限の月が無効です。"
             },
             "confirmDeleteCard": "このカードを削除したいでしょうか？",
-            "balanceAmount": "残高",
+            "balanceAmount": "購入金額",
             "paste": "貼り付け",
             "AECredit": "クレジット カードの追加/編集",
             "security": "パスコード設定",
@@ -902,7 +902,7 @@
             "searchHint": "NFT、コレクション、アーティストを検索",
             "emailValidation": "入力されたメールアドレスは有効ではありません。",
             "limitInputLength": "{{number}}文字以下にしてください。",
-            "xanaliaWallet": "XANALIA ウォレット",
+            "xanaliaWallet": "XANALIA アプリ",
             "otherWallet": "他ウォレット",
             "filter": "フィルター",
             "blockChainType": "ブロックチェーン種別",
