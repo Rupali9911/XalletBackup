@@ -365,7 +365,7 @@ const nftItem = ({ item, index, isCollection }) => {
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
-      tokenId: tokenId,
+      tokenId: item.tokenId,
       networkType: networkType,
       type: category,
       chain: chainType,
@@ -388,11 +388,12 @@ const nftItem = ({ item, index, isCollection }) => {
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
+            console.log('getDetailNFT_res', temp);
           let req_data = {
             owner: temp?.returnValues?.to?.toLowerCase(),
             token: 'HubyJ*%qcqR0',
           };
-          // setOwner(temp?.returnValues?.to?.toLowerCase());
+           setOwner(temp?.returnValues?.to?.toLowerCase());
           setArtistId(temp?.returnValues?.to?.toLowerCase());
           let body = {
             method: 'POST',
@@ -406,6 +407,7 @@ const nftItem = ({ item, index, isCollection }) => {
             .then(response => response.json())
             .then(res => {
               if (res.data) {
+                console.log('/xanalia/getProfile response', res.data)
                 setArtistData(res.data);
                 setArtist(res.data.username || res.data.title);
                 setCreatorImage(res.data.profile_image);

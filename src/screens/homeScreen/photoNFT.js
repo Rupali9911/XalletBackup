@@ -59,7 +59,6 @@ const PhotoNFT = () => {
         item.thumbnailUrl !== undefined || item.thumbnailUrl
           ? item.thumbnailUrl
           : item.metaData.image;
-
       return (
         <NFTItem
           item={item}

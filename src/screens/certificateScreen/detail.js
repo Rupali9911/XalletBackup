@@ -807,7 +807,7 @@ const DetailScreen = ({ navigation, route }) => {
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
-      tokenId: tokenId,
+      tokenId: item.tokenId,
       networkType: networkType,
       type: category,
       chain: chainType,

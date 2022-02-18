@@ -670,7 +670,8 @@
                 "invalidPrivateKey": "無効な秘密キーです、再確認ください",
                 "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。",
                 "oldAndNewPasswordIsSameText": "古いパスワードと新しいパスワードを同じにしないでください",
-                "oldPasswordNCorrect": "古いパスワードが正しくない!"
+                "oldPasswordNCorrect": "古いパスワードが正しくない!",
+                "appAlreadyConnected": "接続しようとしているアプリはすでに接続されています"
             },
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",

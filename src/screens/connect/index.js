@@ -50,7 +50,7 @@ const ListItems = (props) => {
                         setDetails(response.data);
                     }
                 } catch (err) {
-                    console.log('err________', err);
+                    console.log('err________', err, data);
                 }
             },
         });
@@ -135,6 +135,7 @@ const Connect = ({ route, navigation }) => {
     // },[]);
 
     useEffect(() => {
+        console.log('useEffect, passcode', passcode, !passcode, socketOpen)
         if (socketOpen) {
             if (appId && !passcode) {
                 connectApp(appId);
@@ -142,7 +143,9 @@ const Connect = ({ route, navigation }) => {
             getAppId();
         } else {
             singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
+                console.log('Socket connected')
                 if (appId && !passcode) {
+                    console.log('Connect app called')
                     connectApp(appId);
                 }
                 getAppId();
@@ -168,6 +171,9 @@ const Connect = ({ route, navigation }) => {
                         } else if (response.type == 'walletInfo') {
                             if (response.data.isAppApproved == 'true') {
                                 setConnectedApps([response.data.appId]);
+                            }else if (response.data.isConnected == 'false') {
+                                singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
+                                });
                             } else {
                                 setConnectedApps([]);
                             }
@@ -176,6 +182,7 @@ const Connect = ({ route, navigation }) => {
                             let id = response.data.appId;
                             if (id) {
                                 if (connectedApps.includes(id)) {
+                                    alertWithSingleBtn( translate("wallet.common.alert"), translate("wallet.common.error.appAlreadyConnected"));
                                 } else {
                                     // let array = [...connectedApps, ids[1]];
                                     // dispatch(setConnectedAppsToLocal(array));
@@ -201,6 +208,9 @@ const Connect = ({ route, navigation }) => {
 
                         } else if (response.type == 'approve') {
                             alertWithSingleBtn('', translate('wallet.common.error.appNotConnected'));
+                        }else if (response.type == 'remove') {
+                            setConnectedApps([]);
+                            // navigation.setParams({ appId: null });
                         }
                     }
                 } catch (err) {
@@ -256,6 +266,7 @@ const Connect = ({ route, navigation }) => {
     }
 
     const disconnectApp = (id, name) => {
+        console.log('id from disconnect spp',id)
         confirmationAlert(
             translate('wallet.common.verification'),
             translate('wallet.common.askDisconnect', { appName: name }),
