@@ -1432,13 +1432,13 @@ const DetailScreen = ({ navigation, route }) => {
                   data={tableHead}
                   style={styles.head}
                   textStyle={styles.text}
-                  widthArr={[70, 120, 110, 150]}
+                  widthArr={[70, 140, 130, 150]}
                 />
                 {tableData.length > 0 ? (
                   <Rows
                     data={tableData}
                     textStyle={styles.text}
-                    widthArr={[70, 120, 110, 150]}
+                    widthArr={[70, 140, 130, 150]}
                   />
                 ) : (
                   <Text style={styles.emptyData}>
@@ -1461,13 +1461,13 @@ const DetailScreen = ({ navigation, route }) => {
                   data={tradingTableHead}
                   style={styles.head}
                   textStyle={styles.text}
-                  widthArr={[70, 75, 120, 110, 150]}
+                  widthArr={[90, 75, 140, 130, 150]}
                 />
                 {tradingTableData.length > 0 ? (
                   <Rows
                     data={tradingTableData}
                     textStyle={styles.text}
-                    widthArr={[70, 75, 120, 110, 150]}
+                    widthArr={[90, 75, 140, 130, 150]}
                   />
                 ) : (
                   <Text style={styles.emptyData}>
