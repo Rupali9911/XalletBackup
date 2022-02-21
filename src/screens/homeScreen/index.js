@@ -88,11 +88,11 @@ const HomeScreen = ({ navigation }) => {
         }
       }
 
-      if (pass && !asyncPassCalledParse) {
-        navigation.navigate('PasscodeScreen', { screen: 'active' });
-      } else {
-        AsyncStorage.setItem('@asyncPassCalled', JSON.stringify(false));
-      }
+      // if (pass && !asyncPassCalledParse) {
+      //   navigation.navigate('PasscodeScreen', { screen: 'active' });
+      // } else {
+      //   AsyncStorage.setItem('@asyncPassCalled', JSON.stringify(false));
+      // }
     }
   };
 

@@ -53,6 +53,8 @@ import CollectionDetail from './screens/collectionDetail';
 import Store from './store';
 import {setRequestAppId} from './store/reducer/walletReducer';
 import {environment, translate} from './walletUtils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setPasscodeAsync } from './store/reducer/userReducer';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -170,6 +172,11 @@ const AppRoutes = () => {
         }
       }
     });
+  }, []);
+
+  React.useEffect(() => {
+    AsyncStorage.getItem('@passcode')
+    .then(val => dispatch(setPasscodeAsync(JSON.parse(val))))
   }, []);
 
   const linking = {
