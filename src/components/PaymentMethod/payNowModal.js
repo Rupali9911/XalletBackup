@@ -21,20 +21,16 @@ import AppButton from '../appButton';
 import {useNavigation} from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
 import {useSelector, useDispatch} from 'react-redux';
-import NumberFormat from 'react-number-format';
 import {formatWithMask} from 'react-native-mask-input';
 import {
   getPaymentIntent,
   getTransactionHash,
   updateTransactionSuccess,
 } from '../../store/reducer/paymentReducer';
-import {useStripe, useConfirmPayment} from '@stripe/stripe-react-native';
+import {useStripe} from '@stripe/stripe-react-native';
 import {
   StripeApiRequest,
-  ApiRequest,
-  STRIPE_API_URL,
 } from '../../helpers/ApiRequest';
-import WebView from 'react-native-webview';
 import {alertWithSingleBtn} from '../../common/function';
 import {
   approvebnb,
@@ -44,7 +40,7 @@ import {
 } from '../../screens/wallet/functions';
 import {BlurView} from '@react-native-community/blur';
 import {IconButton} from 'react-native-paper';
-import { numberWithCommas } from '../../utils';
+import {numberWithCommas} from '../../utils';
 
 const PaymentNow = props => {
   const navigation = useNavigation();
@@ -475,21 +471,11 @@ const PaymentNow = props => {
             {paymentObject && paymentObject.type == 'card' && (
               <Text style={styles.symbol}>{'$'} </Text>
             )}
-            <NumberFormat
-              value={
-                paymentObject && paymentObject.type == 'wallet'
-                  ? paymentObject.priceInToken
-                  : priceInDollar || 0
-              }
-              displayType={'text'}
-              decimalScale={4}
-              thousandSeparator={true}
-              renderText={formattedValue => (
-                <Text numberOfLines={1} style={styles.amount}>
-                  {formattedValue}
-                </Text>
-              )} // <--- Don't forget this!
-            />
+            <Text numberOfLines={1} style={styles.amount}>
+              {numberWithCommas(Number(paymentObject && paymentObject.type == 'wallet'
+                ? paymentObject.priceInToken
+                : priceInDollar || 0).toFixed(4))}
+            </Text>
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
                 {paymentObject && paymentObject.type == 'wallet'
