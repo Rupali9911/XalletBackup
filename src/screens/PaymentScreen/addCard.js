@@ -254,7 +254,8 @@ function AddCard({ route, navigation }) {
             if(response.success){
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
-                    response.msg_key?translate(response.msg_key):response.data.message,
+                    response.msg_key?translate(response.msg_key):response.data.message === 'user card saved' ? translate("common.cardSaved") : response.data.message ,
+                    //response.msg_key?translate(response.msg_key):response.data.message ,
                     () => {
                         // navigation.goBack()
                         if(myCards.length<1){
@@ -338,7 +339,7 @@ function AddCard({ route, navigation }) {
                 />
 
                 <LabelInput
-                    label={translate("wallet.common.topup.address")}
+                    label={translate("common.address")}
                     value={address}
                     onChangeText={setAddress}
                 />

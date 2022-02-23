@@ -670,7 +670,8 @@
                 "invalidPrivateKey": "無效的私鑰",
                 "appNotConnected": "您嘗試連接的應用程序未與服務器連接。請將應用程序與服務器連接，然後重試。",
                 "oldAndNewPasswordIsSameText": "舊密碼和新密碼不能相同",
-                "oldPasswordNCorrect": "舊密碼不正確！"
+                "oldPasswordNCorrect": "舊密碼不正確！",
+                "appAlreadyConnected": "您嘗試連接的應用程序已連接"
             },
             "welcomeTxt": "歡迎",
             "createWallet": "創建一個新錢包",

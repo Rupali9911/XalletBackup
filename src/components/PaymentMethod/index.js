@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -12,20 +12,20 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
-import { RF, wp, hp } from '../../constants/responsiveFunct';
+import {RF, wp, hp} from '../../constants/responsiveFunct';
 import ButtonGroup from '../buttonGroup';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
-import { useSelector } from 'react-redux';
-import { BlurView } from '@react-native-community/blur';
-import { IconButton } from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import {BlurView} from '@react-native-community/blur';
+import {IconButton} from 'react-native-paper';
 
 const PaymentMethod = props => {
   const navigation = useNavigation();
-  const { myCards } = useSelector(state => state.PaymentReducer);
+  const {myCards} = useSelector(state => state.PaymentReducer);
 
   const {
     visible,
@@ -99,8 +99,20 @@ const PaymentMethod = props => {
                 icon: ImagesSrc.walletPay,
                 onPress: () => {
                   setSelectedMethod(1);
+                  // onRequestClose();
+                  // navigation.navigate('WalletPay', {
+                  //   price,
+                  //   priceStr,
+                  //   chainType: chain || 'binance',
+                  //   baseCurrency,
+                  //   allowedTokens,
+                  //   id,
+                  //   collectionAddress,
+                  //   ownerAddress,
+                  //   payableIn,
+                  // });
                 },
-              }
+              },
               // ,
               // {
               //   text: translate('wallet.common.payByGold'),
@@ -150,31 +162,34 @@ const PaymentMethod = props => {
               if (selectedMethod == 0) {
                 onRequestClose();
                 if (myCards.length > 0) {
-                  navigation.navigate('Cards', { price: priceInDollar });
+                  navigation.navigate('Cards', {
+                    price: priceInDollar,
+                    isFromSetting: false,
+                  });
                 } else {
                   // navigation.navigate('Cards', { price });
-                  navigation.navigate('AddCard', { price: priceInDollar });
+                  navigation.navigate('AddCard', {price: priceInDollar});
                 }
               } else if (selectedMethod == 2) {
                 setNotEnoughGoldVisible(true);
               } else if (selectedMethod == 1) {
                 onRequestClose();
-                  navigation.navigate('WalletPay', {
-                    price,
-                    priceStr,
-                    chainType: chain || 'binance',
-                    baseCurrency,
-                    allowedTokens,
-                    id,
-                    collectionAddress,
-                    ownerAddress,
-                    payableIn,
-                  });
+                navigation.navigate('WalletPay', {
+                  price,
+                  priceStr,
+                  chainType: chain || 'binance',
+                  baseCurrency,
+                  allowedTokens,
+                  id,
+                  collectionAddress,
+                  ownerAddress,
+                  payableIn,
+                });
               }
             }}
           />
         </View>
-        <SafeAreaView style={{ backgroundColor: Colors.white }} />
+        <SafeAreaView style={{backgroundColor: Colors.white}} />
       </View>
       <NotEnoughGold
         visible={notEnoughGoldVisible}

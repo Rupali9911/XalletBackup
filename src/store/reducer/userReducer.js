@@ -207,11 +207,21 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
         showSuccess: false,
       }),
     );
+
     dispatch(setBackup(BackedUp));
     apps && dispatch(setConnectedApps(apps));
+    const _wallet = wallet;
+
+    console.log('========userData.user._id', userData.user);
+    console.log('========_wallet.address', _wallet.address);
+
+    // userData.user.username => 0xD55468830878d9dB7D0D36380421880Ef391a6Af
+    // _wallet.address => 0xd55468830878d9db7d0d36380421880ef391a6af
+    // actually username is same as address but different is string case. why response is dfference in between username and address.
 
     let req_data = {
-      owner:  userData.user._id,
+      owner: userData.user.username || _wallet.address,
+        //owner:  userData.user._id,
       token: 'HubyJ*%qcqR0',
     };
 
@@ -219,7 +229,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
       method: 'POST',
       body: JSON.stringify(req_data),
       headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
     };
@@ -227,7 +237,6 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
       .then(response => response.json())
       .then(res => {
         if (typeof(res.data) !== 'string' && res.data) {
-          console.log('Response /xanalia/getProfile', res, JSON.stringify(req_data))
           dispatch(upateUserData(res.data));
         }
         dispatch(endMainLoading());

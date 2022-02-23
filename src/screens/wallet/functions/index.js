@@ -166,7 +166,8 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
       let reserves = {};
       await contract.methods.balanceOf(pubKey).call().then(function (result) {
         if (type == 'usdc') {
-          resolve(web3.utils.fromWei(result.toString(), "ether"));
+         // resolve(web3.utils.fromWei(result.toString(), "ether"));
+            resolve(web3.utils.fromWei(result.toString(), "mwei"));
         } else if (type == 'alia') {
           resolve(web3.utils.fromWei(result.toString(), "ether"));
         } else if (type == 'usdt') {

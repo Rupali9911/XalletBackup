@@ -42,27 +42,27 @@ export const nftDataCollectionList = (page, collectionAddress, type) => {
       .then(json => {
         const nftData = [];
 
-        if (!json.count) {
-          json.data = [];
-        } else {
-          json.data.map(item => {
-            const parsedNFT = parseNftObject(item);
-            const data = {
-              ...parsedNFT,
-              totalSupply: item?.metaData?.totalSupply,
-              properties: {
-                type: item?.metaData?.properties?.type,
-              },
-              externalLink: item?.metaData?.externalLink,
-              // thumbnft: item?.metaData?.thumbnft,
-              thumbnft: item?.thumbnailUrl,
-              tokenURI: item?.catInfo?.tokenUri,
-              thumbnailUrl: item?.metaData.thumbnft,
-              ...item,
-            };
-            nftData.push(data);
-          });
-        }
+        // if (!json.count) {
+        //   json.data = [];
+        // } else {
+        json.data.map(item => {
+          const parsedNFT = parseNftObject(item);
+          const data = {
+            ...parsedNFT,
+            totalSupply: item?.metaData?.totalSupply,
+            properties: {
+              type: item?.metaData?.properties?.type,
+            },
+            externalLink: item?.metaData?.externalLink,
+            // thumbnft: item?.metaData?.thumbnft,
+            thumbnft: item?.thumbnailUrl,
+            tokenURI: item?.catInfo?.tokenUri,
+            thumbnailUrl: item?.metaData.thumbnft,
+            ...item,
+          };
+          nftData.push(data);
+        });
+        // }
         json.data = nftData;
         dispatch(nftDataCollectionLoadSuccess(json));
 

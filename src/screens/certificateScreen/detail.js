@@ -42,9 +42,9 @@ import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import { BASE_URL } from '../../common/constants';
-
-const { PlayButtonIcon, GIRL } = SVGS;
+import {BASE_URL} from '../../common/constants';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
+const {PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
 
 const Web3 = require('web3');
 
@@ -76,7 +76,9 @@ const DetailScreen = ({ navigation, route }) => {
     creatorImage,
     artistId,
     artistData,
-    item
+    like,
+    item,
+    index,
   } = route.params;
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
@@ -131,6 +133,7 @@ const DetailScreen = ({ navigation, route }) => {
   ]);
   const [tableData, setTableData] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
+  const [isLike, setLike] = useState(like);
   //#region SmartContract
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
@@ -804,7 +807,7 @@ const DetailScreen = ({ navigation, route }) => {
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
-      tokenId: tokenId,
+      tokenId: item.tokenId,
       networkType: networkType,
       type: category,
       chain: chainType,
@@ -1218,6 +1221,14 @@ const DetailScreen = ({ navigation, route }) => {
               />
             )}
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setLike(!isLike);
+              dispatch(handleLikeDislike(item, index));
+            }}
+            style={styles.likeButton}>
+            {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+          </TouchableOpacity>
           <View style={styles.person}>
             <TouchableOpacity
               onPress={() => onProfile(false)}
@@ -1429,13 +1440,13 @@ const DetailScreen = ({ navigation, route }) => {
                   data={tableHead}
                   style={styles.head}
                   textStyle={styles.text}
-                  widthArr={[75, 75, 75, 150]}
+                  widthArr={[70, 120, 110, 150]}
                 />
                 {tableData.length > 0 ? (
                   <Rows
                     data={tableData}
                     textStyle={styles.text}
-                    widthArr={[75, 75, 75, 150]}
+                    widthArr={[70, 120, 110, 150]}
                   />
                 ) : (
                   <Text style={styles.emptyData}>
@@ -1458,13 +1469,13 @@ const DetailScreen = ({ navigation, route }) => {
                   data={tradingTableHead}
                   style={styles.head}
                   textStyle={styles.text}
-                  widthArr={[90, 75, 85, 95, 150]}
+                  widthArr={[70, 75, 120, 110, 150]}
                 />
                 {tradingTableData.length > 0 ? (
                   <Rows
                     data={tradingTableData}
                     textStyle={styles.text}
-                    widthArr={[90, 75, 85, 95, 150]}
+                    widthArr={[70, 75, 120, 110, 150]}
                   />
                 ) : (
                   <Text style={styles.emptyData}>

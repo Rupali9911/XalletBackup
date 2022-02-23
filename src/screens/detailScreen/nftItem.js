@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   Dimensions,
   Image,
@@ -24,6 +24,7 @@ import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import { numberWithCommas } from '../../utils';
+import { TextReadMoreView } from '../../components';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -64,6 +65,8 @@ const nftItem = ({ item, index, isCollection }) => {
   const [isOwner, setIsOwner] = useState(false);
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [ownerAddress, setOwnerAddress] = useState('');
+  const [textShown, setTextShown] = useState(false);
+  const [lengthMore, setLengthMore] = useState(false);
   const navigation = useNavigation();
 
   let MarketPlaceAbi = '';
@@ -362,7 +365,7 @@ const nftItem = ({ item, index, isCollection }) => {
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
-      tokenId: tokenId,
+      tokenId: item.tokenId,
       networkType: networkType,
       type: category,
       chain: chainType,
@@ -385,11 +388,12 @@ const nftItem = ({ item, index, isCollection }) => {
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
+            console.log('getDetailNFT_res', temp);
           let req_data = {
             owner: temp?.returnValues?.to?.toLowerCase(),
             token: 'HubyJ*%qcqR0',
           };
-          // setOwner(temp?.returnValues?.to?.toLowerCase());
+           setOwner(temp?.returnValues?.to?.toLowerCase());
           setArtistId(temp?.returnValues?.to?.toLowerCase());
           let body = {
             method: 'POST',
@@ -403,6 +407,7 @@ const nftItem = ({ item, index, isCollection }) => {
             .then(response => response.json())
             .then(res => {
               if (res.data) {
+                console.log('/xanalia/getProfile response', res.data)
                 setArtistData(res.data);
                 setArtist(res.data.username || res.data.title);
                 setCreatorImage(res.data.profile_image);
@@ -536,6 +541,11 @@ const nftItem = ({ item, index, isCollection }) => {
   //     });
   // };
 
+  const onTextLayout = useCallback(e => {
+    if (e.nativeEvent.lines.length >= 2 && e.nativeEvent.lines[1].width > width - SIZE(40))
+      setLengthMore(true);
+  }, []);
+
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
@@ -616,7 +626,9 @@ const nftItem = ({ item, index, isCollection }) => {
               tokenId: item.tokenId,
               ownerData: ownerData,
               artistData: artistData,
-              item: item
+              like: item.like,
+              item: item,
+              index: index,
             });
         }}>
         {fileType === 'mp4' ||
@@ -706,7 +718,17 @@ const nftItem = ({ item, index, isCollection }) => {
         <SpaceView mTop={SIZE(6)} />
         <Text style={styles.modalLabel}>{item.metaData.name}</Text>
         <View style={styles.separator} />
-        <Text style={styles.description}>{item.metaData.description}</Text>
+        <View>
+          <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
+            {item.metaData.description}
+          </Text>
+          {lengthMore && !textShown && (
+            <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
+              <Text style={styles.threeDot}>{'...'}</Text>
+              <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
