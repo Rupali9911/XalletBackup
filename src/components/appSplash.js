@@ -43,9 +43,9 @@ const appSplash = () => {
                         let value = JSON.parse(result[1]);
                         asyncData[name] = value;
 
-                        if (name == 'passcode') {
-                            dispatch(setPasscodeAsync(value));
-                        }
+                        // if (name == 'passcode') {
+                        //     dispatch(setPasscodeAsync(value));
+                        // }
                         if (name == 'language') {
                             dispatch(setAppLanguage(value));
                         }

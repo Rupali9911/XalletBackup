@@ -32,6 +32,7 @@ import {
   deleteCard,
 } from '../../store/reducer/paymentReducer';
 import {Button} from 'react-native-paper';
+import { numberWithCommas } from '../../utils';
 
 const PriceBtns = props => {
   return (
@@ -193,7 +194,7 @@ const Cards = ({route, navigation}) => {
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
-            <Text style={styles.value}>$ {price}</Text>
+            <Text style={styles.value}>$ {numberWithCommas(Number(price).toFixed(4))}</Text>
           </View>
           <View style={styles.buttonContainer}>
             <AppButton
