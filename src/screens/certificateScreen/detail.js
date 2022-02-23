@@ -1000,19 +1000,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 1');
+        console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        // console.log('set NftStatus 1.1');
+        console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        // console.log('set NftStatus 2');
+        console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      // console.log('set NftStatus 3');
+      console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1025,37 +1025,37 @@ const DetailScreen = ({ navigation, route }) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 4');
+        console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet.address) {
           // setNftStatus('buy')
-          // console.log('set NftStatus 5');
+          console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else if (connectedWithTo === 'paymentCard') {
         } else {
           // setNftStatus('buy');
-          // console.log('set NftStatus 6');
+          console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 7');
+        console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      // console.log('set NftStatus 8');
+      console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    // console.log(
-    //   '_nftStatus',
-    //   _nftStatus,
-    //   priceNFT,
-    //   isContractOwner,
-    //   isOwner,
-    //   isNFTOnAuction,
-    // );
+    console.log(
+      '_nftStatus',
+      _nftStatus,
+      priceNFT,
+      isContractOwner,
+      isOwner,
+      isNFTOnAuction,
+    );
     return _nftStatus;
   };
 
@@ -1288,26 +1288,34 @@ const DetailScreen = ({ navigation, route }) => {
           </Text>
           <Text style={styles.nftName}>{name}</Text>
           {setNFTStatus() !== 'notOnSell' && (
-            <View style={styles.row}>
-              <Text style={styles.price}>{price ? price : 0}</Text>
-              <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
+            <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
+              <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
+                <Text style={styles.price}>{price ? parseFloat(price) : 0}</Text>
+                <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
+              </View>
+              <View style={{ flex: 0.4 }} >
+                {availableTokens.length > 0 &&
+                  setNFTStatus() !== 'notOnSell' &&
+                  setNFTStatus() !== 'onSell' && (
+                    <>
+                      <Text style={[styles.payIn]}>{translate('wallet.common.buyerpayin')}</Text>
+                      <CardField
+                        inputProps={{ value: payableIn }}
+                        onPress={() => {
+                          setAllowedTokenModal(true);
+                        }}
+                        pressable
+                        showRight
+                        contStyle={{ height: hp("5%") }}
+                      />
+                    </>
+                  )}
+              </View>
             </View>
           )}
           <Text style={styles.description}>{description}</Text>
           <View style={styles.bottomView}>
-          <Text style={[styles.payIn]}>{translate('common.allowedcurrency')}</Text>
-            {availableTokens.length > 0 &&
-              setNFTStatus() !== 'notOnSell' &&
-              setNFTStatus() !== 'onSell' && (
-                <CardField
-                  inputProps={{ value: payableIn }}
-                  onPress={() => {
-                    setAllowedTokenModal(true);
-                  }}
-                  pressable
-                  showRight
-                />
-              )}
+
             {setNFTStatus() !== undefined && (
               <GroupButton
                 leftText={

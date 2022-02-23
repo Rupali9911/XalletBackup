@@ -952,7 +952,9 @@
             "delete": "Delete",
             "description": "Description",
             "nftType": "NFT Type",
-            "auctionnew": "Auction"
+            "auctionnew": "Auction",
+            "Sellerpayin": "Pay in ",
+            "buyerpayin": "Pay in "
         },
         "backendmessage": {
             "error": {},

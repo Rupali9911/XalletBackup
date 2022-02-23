@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   payIn: {
     fontSize: RF(1.6),
     fontFamily: fonts.ARIAL,
-    // textAlign: "center",
+    textAlign: "center",
     color: "#707a83",
     marginTop: 0, 
     paddingHorizontal: 0, 

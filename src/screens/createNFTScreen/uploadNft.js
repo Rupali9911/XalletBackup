@@ -482,7 +482,7 @@ const UploadNFT = ({
                 errorMethod(err, "thumbnail image nft err")
                 return null;
               });
-              return thumbRes;
+            return thumbRes;
           } else {
             changeLoadingState(false);
             alertWithSingleBtn(
@@ -838,9 +838,16 @@ const UploadNFT = ({
       });
   }
 
+  const changePrice = (v) => {
+    var validNumber = new RegExp(/^\d*\.?\d*$/);
+    if (validNumber.test(v)) {
+      setFixedPrice(v)
+    }
+  }
+
   let disableBtn = collection && nftName && nftDesc && nftImageType &&
     nftImage && basePrice &&
-    (toggleButton == "timeAuction" ? (startTimeDate && endTimeDate && fixedPrice) : fixedPrice) &&
+    (toggleButton == "timeAuction" ? (startTimeDate && endTimeDate && fixedPrice && fixedPrice>0) : fixedPrice>0) &&
     networkType;
 
   let networkTypeStatus = networkType.value.toLowerCase() == "binance" ?
@@ -1133,7 +1140,7 @@ const UploadNFT = ({
                     contStyle={{ paddingRight: 0 }}
                     inputProps={{
                       value: fixedPrice,
-                      onChangeText: v => setFixedPrice(v),
+                      onChangeText: changePrice,
                       keyboardType: "decimal-pad"
                     }}
                     showRight
@@ -1171,7 +1178,7 @@ const UploadNFT = ({
                     contStyle={{ paddingRight: 0 }}
                     inputProps={{
                       value: fixedPrice,
-                      onChangeText: v => setFixedPrice(v),
+                      onChangeText: changePrice,
                       keyboardType: 'decimal-pad'
                     }}
                     showRight

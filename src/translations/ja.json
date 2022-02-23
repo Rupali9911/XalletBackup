@@ -955,7 +955,9 @@
             "items": "アイテム",
             "description": "作品の説明",
             "nftType": "作品のタイプ",
-            "auctionnew": "オークション"
+            "auctionnew": "オークション",
+            "Sellerpayin": "支払通貨選択",
+            "buyerpayin": "支払通貨選択"
         },
         "backendmessage": {
             "error": {},
