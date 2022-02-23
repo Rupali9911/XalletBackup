@@ -628,7 +628,9 @@
         "auctionended": "Auction ended",
         "itemsCollection": "Items",
         "soldout": "Sold Out",
-        "hotcollection": "Hot collections"
+        "hotcollection": "Hot collections",
+        "cardSaved": "User card saved",
+        "buyNext": "Next"
     },
     "AwardPage": {},
     "wallet": {
@@ -949,7 +951,9 @@
             "delete": "Delete",
             "description": "Description",
             "nftType": "NFT Type",
-            "auctionnew": "Auction"
+            "auctionnew": "Auction",
+            "Sellerpayin": "Pay in ",
+            "buyerpayin": "Pay in "
         },
         "backendmessage": {
             "error": {},

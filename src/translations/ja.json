@@ -118,8 +118,8 @@
         "tradingHistory": "取引履歴",
         "otherWorkFromCreator": "この作成者より他の作品",
         "price": "価格",
-        "from": "このアドレスから",
-        "to": "から",
+        "from": "下記ユーザーから",
+        "to": "下記ユーザーへ",
         "date": "日付",
         "nftDescription": "NFTの説明",
         "noRecord": "レコードが見つかりません",
@@ -630,7 +630,9 @@
         "viewCollection": "コレクションへ",
         "auctionended": "オークション終了",
         "soldout": "販売終了",
-        "hotcollection": "おすすめ"
+        "hotcollection": "おすすめ",
+        "cardSaved": "カード情報の登録が完了しました",
+        "buyNext": "購入する"
     },
     "AwardPage": {},
     "wallet": {
@@ -665,7 +667,7 @@
                 "passcodeError1": "パスコードが一致しませんでした。もう一度お試しください。",
                 "passcodeError2": "パスコードが一致しませんでした。",
                 "passcodeError3": "もう一度お試しください。",
-                "invalidPrivateKey": "無効な秘密鍵",
+                "invalidPrivateKey": "無効な秘密キーです、再確認ください",
                 "appNotConnected": "アプリがサーバに接続されていません。サーバに接続後に再度お試してください。",
                 "oldAndNewPasswordIsSameText": "古いパスワードと新しいパスワードを同じにしないでください",
                 "oldPasswordNCorrect": "古いパスワードが正しくない!"
@@ -870,7 +872,7 @@
             "createAccount": "新しいアカウントの作成",
             "nameYWallet": "財布に名前を付ける",
             "walletName": "ウォレット名",
-            "phrase": "フレーズ",
+            "phrase": "復元フレーズ",
             "privateKey": "秘密キー",
             "priceIn": "価格 {{type}}",
             "purchasedSuccess": "正常に購入しました",
@@ -952,7 +954,9 @@
             "items": "アイテム",
             "description": "作品の説明",
             "nftType": "作品のタイプ",
-            "auctionnew": "オークション"
+            "auctionnew": "オークション",
+            "Sellerpayin": "支払通貨選択",
+            "buyerpayin": "支払通貨選択"
         },
         "backendmessage": {
             "error": {},

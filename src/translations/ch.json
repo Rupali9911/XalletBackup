@@ -630,7 +630,9 @@
         "viewCollection": "查看集合",
         "auctionended": "拍賣結束",
         "soldout": "售罄",
-        "hotcollection": "热门系列"
+        "hotcollection": "热门系列",
+        "cardSaved": "用户卡已保存",
+        "buyNext": "下一个"
     },
     "AwardPage": {},
     "wallet": {
@@ -952,7 +954,9 @@
             "items": "項目",
             "description": "描述",
             "nftType": "NFT类型",
-            "auctionnew": "拍卖"
+            "auctionnew": "拍卖",
+            "Sellerpayin": "选择收款货币",
+            "buyerpayin": "支付货币选择"
         },
         "backendmessage": {
             "error": {},
