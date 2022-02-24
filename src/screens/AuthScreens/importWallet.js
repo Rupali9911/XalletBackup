@@ -198,7 +198,7 @@ const ImportWallet = ({route, navigation}) => {
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <View style={styles.padding}>
-              <AppLogo logoStyle={styles.logo} />
+              <AppLogo/>
               <TextView style={styles.title}>
                 {translate('wallet.common.importWallet')}
               </TextView>
@@ -322,9 +322,6 @@ const styles = StyleSheet.create({
   bottomView: {
     paddingHorizontal: wp('5%'),
     marginTop: hp('1%'),
-  },
-  logo: {
-    ...CommonStyles.imageStyles(25),
   },
   title: {
     alignSelf: 'center',

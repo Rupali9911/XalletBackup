@@ -31,7 +31,7 @@ const Welcome = ({navigation}) => {
           return true;
         }}>
         <View style={styles.contentContainer}>
-          <AppLogo logoStyle={styles.logo} />
+          <AppLogo />
           <TextView style={styles.title}>
             {translate('wallet.common.welcomeTxt')}
           </TextView>
@@ -77,9 +77,6 @@ const Welcome = ({navigation}) => {
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-  },
-  logo: {
-    ...CommonStyles.imageStyles(25),
   },
   title: {
     alignSelf: 'center',

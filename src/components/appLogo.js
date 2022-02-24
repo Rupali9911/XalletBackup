@@ -8,7 +8,7 @@ import { hp } from '../constants/responsiveFunct';
 function AppLogo(props) {
     return (
         <View style={[styles.logoContainer, props.containerStyle]} >
-            <Image style={[styles.logoSize, props.logoStyle]} resizeMode="contain" source={ImagesSrc.alia} />
+            <Image style={[styles.logoSize, props.logoStyle]} resizeMode="contain" source={ImagesSrc.appIcon} />
             <Text style={[styles.appTitle, props.labelStyle]} >{props.label}</Text>
         </View>
     )
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     logoSize: {
-        ...CommonStyles.imageStyles(45)
+        ...CommonStyles.imageStyles(30)
     }
 })
 
