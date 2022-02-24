@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    ...CommonStyles.imageStyles(25),
     marginVertical: hp('5%'),
   },
   hint: {

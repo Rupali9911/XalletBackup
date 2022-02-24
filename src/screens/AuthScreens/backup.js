@@ -68,7 +68,7 @@ const Backup = ({ navigation }) => {
             }}>
 
                 <View style={styles.contentContainer}>
-                    <AppLogo logoStyle={styles.logo} />
+                    <AppLogo />
                     <TextView style={styles.title}>{translate("wallet.common.backupTxt")} !</TextView>
                     <HintText >{translate("wallet.common.phraseHint")}</HintText>
                     <View style={styles.imgContainer}>
@@ -103,9 +103,6 @@ const Backup = ({ navigation }) => {
 const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
-    },
-    logo: {
-        ...CommonStyles.imageStyles(25)
     },
     title: {
         alignSelf: 'center',

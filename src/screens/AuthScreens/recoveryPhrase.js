@@ -166,7 +166,7 @@ const RecoveryPhrase = ({route, navigation}) => {
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <View style={styles.padding}>
-              <AppLogo logoStyle={styles.logo} />
+              <AppLogo/>
               <TextView style={styles.title}>
                 {translate('wallet.common.yourPhrase')}
               </TextView>
@@ -338,9 +338,6 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     paddingHorizontal: wp('5%'),
-  },
-  logo: {
-    ...CommonStyles.imageStyles(25),
   },
   title: {
     alignSelf: 'center',

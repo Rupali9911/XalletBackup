@@ -25,7 +25,7 @@ const Legal = ({ navigation }) => {
             }}>
 
                 <View style={styles.contentContainer}>
-                    <AppLogo logoStyle={styles.logo} />
+                    <AppLogo/>
                     <HintText style={styles.hint}>{translate("wallet.common.legalHint1") + '\n' + translate("wallet.common.legalHint2")}</HintText>
                     <ButtonGroup buttons={[
                         {
@@ -53,9 +53,6 @@ const Legal = ({ navigation }) => {
 const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
-    },
-    logo: {
-        ...CommonStyles.imageStyles(25)
     },
     hint: {
         marginTop: hp("3%")
