@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import Video from 'react-native-fast-video';
 import { basePriceTokens } from '../../web3/config/availableTokens';
@@ -47,7 +48,7 @@ const nftItem = ({ item, index, isCollection }) => {
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
   const [ownerImage, setOwnerImage] = useState();
-  const [ownerData, setOwnerData] = useState();
+
   const [artistId, setArtistId] = useState();
   const [artist, setArtist] = useState('----');
   const [artistData, setArtistData] = useState();
@@ -63,11 +64,22 @@ const nftItem = ({ item, index, isCollection }) => {
   const [isContractOwner, setIsContractOwner] = useState(false);
   const [isForAward, setIsForAward] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-  const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [ownerAddress, setOwnerAddress] = useState('');
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const navigation = useNavigation();
+
+  // haris change these states
+  const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
+
+  const [artistRole, setArtistRole] = useState('');
+  const [collectCreat, setcollectCreat] = useState(null);
+
+
+  const [ownerData, setOwnerData] = useState();
+  const [nftDetail, setNFTDetail] = useState();
+  const [isArtistProfile, setisArtistProfile] = useState(true);
+  const [loader, setLoader] = useState(false);
 
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
@@ -126,45 +138,76 @@ const nftItem = ({ item, index, isCollection }) => {
   useEffect(() => {
     // Get NonCryptoNFTOwner
     let web3 = new Web3(providerUrl);
+
+    const getDetail = async () => {
+      await getTokenDetailsApi();
+    }
+
     if (chainAvailable()) {
+      setLoader(true)
       let MarketPlaceContract = new web3.eth.Contract(
         MarketPlaceAbi,
         MarketContractAddress,
       );
       if (MarketPlaceContract.methods.getNonCryptoOwner) {
+        // console.log("//////1111")
         MarketPlaceContract.methods
           .getNonCryptoOwner(collectionAddress, tokenId)
           .call(async (err, res) => {
+            // console.log(res)
             if (res) {
-              const userId = res.toLowerCase();
-              setOwnerId(userId);
-              getPublicProfile(userId, false);
-              getTokenDetailsApi(false);
+              // console.log("1111")
+              setNonCryptoOwnerId(res)
+              // const userId = res.toLowerCase();
+              // setOwnerId(userId);
+              getOwnerDetailsById(res);
+              await getTokenDetailsApi(false);
             } else if (!res) {
-              getTokenDetailsApi();
+              // console.log("2222")
+              await getTokenDetailsApi();
             } else if (err) {
             }
           });
       } else {
-        getTokenDetailsApi();
+        console.log("333")
+        // console.log("//////22222")
+        getDetail()
       }
     }
   }, []);
+
+  const getOwnerDetailsById = async (id) => {
+    const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
+    try {
+      let profile = await axios.get(profileUrl);
+      setLoader(false)
+      console.log(profile, "non_crypto")
+      setOwnerData(profile?.data?.data)
+      setOwner(id);
+      setArtistRole('non_crypto')
+    } catch (err) { }
+  };
 
   const getPublicProfile = async (id, type) => {
     const userId = id?.toLowerCase();
     let profileUrl = type
       ? `${BASE_URL}/user/get-public-profile?publicAddress=${userId}`
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
-    setOwnerId(userId);
+    // setOwnerId(userId);
     let profile = await axios.get(profileUrl);
-    if (profile.data) {
+    // console.log(profile.data.success, "userIduserIduserIduserId")
+    if (profile.data.success) {
+      // console.log(profile?.data?.data, "crypto")
       setOwnerData(profile.data.data);
-      setOwner(profile?.data?.data?.username);
-      setOwnerImage(profile.data.data.profile_image);
+      setArtistRole("crypto")
+      setLoader(false)
+      setOwner(userId);
+      // setOwner(profile?.data?.data?.title ? profile?.data?.data?.title : profile?.data?.data?.username);
+      // setOwnerImage(profile.data.data.profile_image);
     } else {
       setOwner(userId);
     }
+
   };
 
   const lastOwnerOfNFT = () => {
@@ -180,6 +223,7 @@ const nftItem = ({ item, index, isCollection }) => {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, tokenId)
           .call((err, res) => {
+            // console.log(res[0] !== '0x0000000000000000000000000000000000000000', "///////")
             if (res[0] !== '0x0000000000000000000000000000000000000000') {
               getPublicProfile(res[0], true);
             } else {
@@ -193,7 +237,7 @@ const nftItem = ({ item, index, isCollection }) => {
     let _data = singleNFT;
     let web3 = new Web3(providerUrl);
     let ERC721Contract = new web3.eth.Contract(ERC721Abi, collectionAddress);
-
+    // console.log("lastOwnerOfNFTNonCrypto")
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
@@ -201,25 +245,26 @@ const nftItem = ({ item, index, isCollection }) => {
     ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       if (!err) {
         _data.owner_address = res;
-        console.log('owner_address', res, tokenId);
+        // console.log('owner_address', res, tokenId);
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, tokenId)
           .call(async (err, res) => {
-            console.log(
-              'MarketPlaceContract_res',
-              res,
-              err,
-              tokenId,
-              MarketContractAddress,
-            );
-            // return ;
+            // console.log(
+            //   'MarketPlaceContract_res',
+            //   res,
+            //   err,
+            //   tokenId,
+            //   MarketContractAddress,
+            // );
+
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               if (wallet.address) {
-                // if (priceOfNft === 0) {
+                // console.log(res[0] === "0x0000000000000000000000000000000000000000", "////")
                 if (res[0] === '0x0000000000000000000000000000000000000000') {
                   setPriceNFT(priceOfNft);
                   setPriceNFTString(res[1]);
+
                   setIsContractOwner(
                     res[0].toLowerCase() === wallet.address.toLowerCase() ||
                       (res[0].toLowerCase() ===
@@ -279,13 +324,26 @@ const nftItem = ({ item, index, isCollection }) => {
                   setIsContractOwner(false);
                 }
               }
-
-              setOwnerAddress(nonCryptoOwner);
+              // setOwnerAddress(nonCryptoOwner);
             }
           });
       }
     });
   };
+
+  const getCollectionByAddress = (collect) => {
+    let url = `${BASE_URL}/xanalia/collection-info?collectionAddr=${collect}`
+
+    axios
+      .get(url)
+      .then((response) => {
+        if (response.data) {
+          setcollectCreat(response.data.data)
+        }
+      })
+      .catch((err) => { });
+  }
+
   const getDiscount = () => {
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
@@ -354,7 +412,7 @@ const nftItem = ({ item, index, isCollection }) => {
     await MarketPlaceContract.methods
       .ownerOf(nftObj.id)
       .call(function (err, res) {
-        console.log('res', res);
+        // console.log('res', res);
         if (!err) {
           nftObj.owner_address = res;
         }
@@ -369,9 +427,10 @@ const nftItem = ({ item, index, isCollection }) => {
       networkType: networkType,
       type: category,
       chain: chainType,
-      owner: wallet.address,
     };
-
+    if (wallet.address) {
+      data.owner = wallet.address
+    }
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -380,43 +439,17 @@ const nftItem = ({ item, index, isCollection }) => {
         'Content-Type': 'application/json',
       },
     };
-
-    fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
+    console.log("getTokenDetailsApi")
+    await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        // console.log('getDetailNFT_res', res);
+        console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
-            console.log('getDetailNFT_res', temp);
-          let req_data = {
-            owner: temp?.returnValues?.to?.toLowerCase(),
-            token: 'HubyJ*%qcqR0',
-          };
-           setOwner(temp?.returnValues?.to?.toLowerCase());
-          setArtistId(temp?.returnValues?.to?.toLowerCase());
-          let body = {
-            method: 'POST',
-            body: JSON.stringify(req_data),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          };
-          fetch(`${BASE_URL}/xanalia/getProfile`, body)
-            .then(response => response.json())
-            .then(res => {
-              if (res.data) {
-                console.log('/xanalia/getProfile response', res.data)
-                setArtistData(res.data);
-                setArtist(res.data.username || res.data.title);
-                setCreatorImage(res.data.profile_image);
-              }
-            });
-          if (isCryptoOwner) {
-            lastOwnerOfNFT();
-          } else {
-            lastOwnerOfNFTNonCrypto();
+          setNFTDetail(temp)
+          if (temp.offchain) {
+            setisArtistProfile(false)
           }
 
           const getDetails = res?.data;
@@ -432,7 +465,13 @@ const nftItem = ({ item, index, isCollection }) => {
             );
             getDiscount();
           }
+
           let newData = await getNFTDetails(res.data[0]);
+          // console.log(newData, "newDatanewDatanewData")
+          let collection = newData.offchain
+            ? newData.collectionOffChainId
+            : newData.collectionAdd.toString().split("-")[1];
+          getCollectionByAddress(collection);
           if (newData.newprice && newData.newprice.allowedCurrencies) {
             let currArray = newData.newprice.allowedCurrencies.split('');
             let availableTokens = basePriceTokens.filter(
@@ -440,12 +479,11 @@ const nftItem = ({ item, index, isCollection }) => {
                 token.chain === chainType &&
                 currArray.includes(token.order.toString()),
             );
-            console.log('availableTokens', availableTokens);
+            // console.log('availableTokens', availableTokens);
             setAvailableTokens(availableTokens);
           } else {
             setAvailableTokens([]);
           }
-
           setSingleNFT(newData);
           setIsForAward(
             res?.data[0]?.award
@@ -454,10 +492,40 @@ const nftItem = ({ item, index, isCollection }) => {
                 ? res?.data[1]?.award
                 : false,
           );
-          console.log('calling');
-          //checkNFTOnAuction();
+          let req_data = {
+            owner: temp?.returnValues?.to?.toLowerCase(),
+            token: 'HubyJ*%qcqR0',
+          };
+
+          // setOwner(temp?.returnValues?.to?.toLowerCase());
+          // setArtistId(temp?.returnValues?.to?.toLowerCase());
+          let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          };
+          fetch(`${BASE_URL}/xanalia/getProfile`, body)
+            .then(response => response.json())
+            .then(res => {
+              // console.log(res.data, "///////")
+              setArtist(temp?.returnValues?.to?.toLowerCase());
+              if (res.data) {
+                setArtistData(res.data);
+              }
+            });
+          if (isCryptoOwner) {
+            lastOwnerOfNFT();
+          } else {
+            // console.log("aaaaaaaa")
+            lastOwnerOfNFTNonCrypto();
+          }
+
+          //       // checkNFTOnAuction();
         } else if (res.data === 'No record found') {
-          console.log('res.data.data', res.data);
+          console.log('res.data.data', res.data, "getDetailNFT_res");
         }
       })
       .catch(err => {
@@ -476,71 +544,6 @@ const nftItem = ({ item, index, isCollection }) => {
       });
   };
 
-  // const getTokenDetailsApi = async (isCryptoOwner = true) => {
-
-  //   let body_data = {
-  //     tokenId: item.tokenId,
-  //     networkType: networkType,
-  //     type: '2D',
-  //     chain: chainType,
-  //   };
-
-  //   let fetch_data_body = {
-  //     method: 'POST',
-  //     body: JSON.stringify(body_data),
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   };
-
-  //   fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
-  //     .then(response => response.json())
-  //     .then(res => {
-  //       if (res.data.length > 0 && res.data !== 'No record found') {
-  //         const data = res.data[0];
-
-  //         let req_data = {
-  //           owner: data?.returnValues?.to?.toLowerCase(),
-  //           token: 'HubyJ*%qcqR0',
-  //         };
-  //         setOwner(data?.returnValues?.to?.toLowerCase());
-  //         setArtistId(data?.returnValues?.to?.toLowerCase());
-
-  //         let body = {
-  //           method: 'POST',
-  //           body: JSON.stringify(req_data),
-  //           headers: {
-  //             Accept: 'application/json',
-  //             'Content-Type': 'application/json',
-  //           },
-  //         };
-  //         fetch(`${BASE_URL}/xanalia/getProfile`, body)
-  //           .then(response => response.json())
-  //           .then(res => {
-  //             if (res.data) {
-  //               setArtistData(res.data);
-  //               setArtist(res.data.title || res.data.username);
-  //               setCreatorImage(res.data.profile_image);
-  //             }
-  //           })
-  //         if (isCryptoOwner) {
-  //           lastOwnerOfNFT();
-  //         } else {
-  //           lastOwnerOfNFTNonCrypto();
-  //         }
-  //       } else if (res.data.data === "No record found") {
-  //         alertWithSingleBtn(
-  //           translate('common.error'),
-  //           translate('common.norecordfound'),
-  //         );
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-
   const onTextLayout = useCallback(e => {
     if (e.nativeEvent.lines.length >= 2 && e.nativeEvent.lines[1].width > width - SIZE(40))
       setLengthMore(true);
@@ -551,186 +554,220 @@ const nftItem = ({ item, index, isCollection }) => {
 
   const onProfile = isOwner => {
     if (isOwner) {
-      if (ownerId) navigation.push('ArtistDetail', { id: ownerId });
+      if (owner) navigation.push('ArtistDetail', { id: owner });
     } else {
-      if (artistId) navigation.push('ArtistDetail', { id: artistId });
+      if (artist) navigation.push('ArtistDetail', { id: artist });
     }
   };
   let imageUri =
     item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl
       : item.metaData.image;
+
   return (
-    <View>
-      <View style={styles.modalSectCont}>
-        <TouchableOpacity
-          onPress={() => onProfile(true)}
-          style={styles.iconCont}>
-          <Image
-            style={styles.profileIcon}
-            source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }}
-          />
-          <View>
-            <Text style={styles.modalIconLabel}>
-              {translate('common.owner')}
-            </Text>
-            <Text
-              numberOfLines={1}
-              style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
-              {owner}
-            </Text>
+    <>
+      {
+        loader ?
+          <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator size={"small"} />
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onProfile(false)}
-          style={styles.iconCont}>
-          <Image
-            style={styles.profileIcon}
-            source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }}
-          />
+          :
           <View>
-            <Text style={styles.modalIconLabel}>
-              {translate('common.creator')}
-            </Text>
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.iconLabel,
-                { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
-              ]}>
-              {artist}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          isPlay
-            ? setPlay(!isPlay)
-            : navigation.navigate('CertificateDetail', {
-              id: item.newtokenId,
-              name: item.metaData.name,
-              description: item.metaData.description,
-              owner: owner,
-              ownerImage: ownerImage,
-              creator: artist,
-              creatorImage: creatorImage,
-              thumbnailUrl: item.thumbnailUrl,
-              video: item.metaData.image,
-              fileType: fileType,
-              price: item.price,
-              chain: item.chain,
-              ownerId: ownerId,
-              artistId: artistId,
-              tokenId: item.tokenId,
-              ownerData: ownerData,
-              artistData: artistData,
-              like: item.like,
-              item: item,
-              index: index,
-            });
-        }}>
-        {fileType === 'mp4' ||
-          fileType === 'MP4' ||
-          fileType === 'mov' ||
-          fileType === 'MOV' ? (
-          <View style={styles.modalImage}>
-            <Video
-              key={tokenId}
-              ref={refVideo}
-              source={{ uri: item.metaData.image }}
-              playInBackground={false}
-              paused={!isPlay}
-              resizeMode={'cover'}
-              onLoad={() => refVideo.current.seek(0)}
+            <View style={styles.modalSectCont}>
+              <TouchableOpacity
+                onPress={() => onProfile(true)}
+                style={styles.iconCont}>
+                <Image
+                  style={styles.profileIcon}
+                  source={ownerData && ownerData.hasOwnProperty("profile_image") && ownerData.profile_image ? { uri: ownerData.profile_image } : IMAGES.DEFAULTPROFILE}
+                />
+                <View>
+                  <Text style={styles.modalIconLabel}>
+                    {translate('common.owner')}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
+                    {
+                      ownerData && (
+                        ownerData.role === 'crypto' ?
+                          ownerData.title ?
+                            ownerData.title :
+                            owner.includes("0x")
+                              ? owner.substring(0, 6)
+                              : owner.substring(0, 6) :
+                          ownerData.role === 'non_crypto' ?
+                            ownerData.username ?
+                              ownerData.username : ""
+                            : "")
+                    }
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onProfile(false)}
+                style={styles.iconCont}>
+                <Image
+                  style={styles.profileIcon}
+                  source={artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE}
+                />
+                <View>
+                  <Text style={styles.modalIconLabel}>
+                    {translate('common.creator')}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={[
+                      styles.iconLabel,
+                      { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
+                    ]}>
+                    {
+                      artist
+                        ? (artist.includes("0x")
+                          ? (artistData && artistData.hasOwnProperty("title") && artistData.title)
+                            ? artistData.title
+                            : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
+                              || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
+                              || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
+                              ? collectCreat?.creator
+                              : artist.substring(0, 6)
+                          : artist)
+                        : ""
+                    }
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                isPlay
+                  ? setPlay(!isPlay)
+                  : navigation.navigate('CertificateDetail', {
+                    id: item.newtokenId,
+                    name: item.metaData.name,
+                    description: item.metaData.description,
+                    owner: owner,
+                    ownerImage: ownerImage,
+                    creator: artist,
+                    creatorImage: creatorImage,
+                    thumbnailUrl: item.thumbnailUrl,
+                    video: item.metaData.image,
+                    fileType: fileType,
+                    price: item.price,
+                    chain: item.chain,
+                    ownerId: ownerId,
+                    artistId: artistId,
+                    tokenId: item.tokenId,
+                    ownerData: ownerData,
+                    artistData: artistData,
+                    like: item.like,
+                    item: item,
+                    index: index,
+                  });
+              }}>
+              {fileType === 'mp4' ||
+                fileType === 'MP4' ||
+                fileType === 'mov' ||
+                fileType === 'MOV' ? (
+                <View style={styles.modalImage}>
+                  <Video
+                    key={tokenId}
+                    ref={refVideo}
+                    source={{ uri: item.metaData.image }}
+                    playInBackground={false}
+                    paused={!isPlay}
+                    resizeMode={'cover'}
+                    onLoad={() => refVideo.current.seek(0)}
+                    style={{
+                      flex: 1,
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    }}
+                  />
+                  {!isPlay && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View
+                        style={{
+                          width: SIZE(100),
+                          height: SIZE(100),
+                          backgroundColor: '#00000030',
+                          borderRadius: SIZE(100),
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <TouchableOpacity onPress={() => setPlay(true)}>
+                          <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              ) : (
+                <C_Image uri={imageUri} imageStyle={styles.modalImage} />
+              )}
+            </TouchableOpacity>
+
+            <View
               style={{
-                flex: 1,
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-            {!isPlay && (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <View
-                  style={{
-                    width: SIZE(100),
-                    height: SIZE(100),
-                    backgroundColor: '#00000030',
-                    borderRadius: SIZE(100),
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <TouchableOpacity onPress={() => setPlay(true)}>
-                    <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                width: '100%',
+                alignSelf: 'center',
+                paddingTop: SIZE(17),
+                paddingHorizontal: SIZE(14),
+              }}>
+              <RowBetweenWrap>
+                <View style={styles.buttons}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      dispatch(handleLikeDislike(item, index));
+                    }}>
+                    {item.like ? <HeartActiveIcon /> : <HeartIcon />}
+                  </TouchableOpacity>
+                  <SpaceView mRight={SIZE(15)} />
+                  <TouchableOpacity>
+                    <CommentIcon />
+                  </TouchableOpacity>
+                  <SpaceView mRight={SIZE(15)} />
+                  <TouchableOpacity>
+                    <ShareIcon />
                   </TouchableOpacity>
                 </View>
+                <TouchableOpacity>
+                  <BookMarkIcon />
+                </TouchableOpacity>
+              </RowBetweenWrap>
+              <SpaceView mTop={SIZE(8)} />
+              <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
+              <SpaceView mTop={SIZE(6)} />
+              <Text style={styles.modalLabel}>{item.metaData.name}</Text>
+              <View style={styles.separator} />
+              <View>
+                <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
+                  {item.metaData.description}
+                </Text>
+                {lengthMore && !textShown && (
+                  <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
+                    <Text style={styles.threeDot}>{'...'}</Text>
+                    <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
+                  </TouchableOpacity>
+                )}
               </View>
-            )}
+            </View>
           </View>
-        ) : (
-          <C_Image uri={imageUri} imageStyle={styles.modalImage} />
-        )}
-      </TouchableOpacity>
-
-      <View
-        style={{
-          width: '100%',
-          alignSelf: 'center',
-          paddingTop: SIZE(17),
-          paddingHorizontal: SIZE(14),
-        }}>
-        <RowBetweenWrap>
-          <View style={styles.buttons}>
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(handleLikeDislike(item, index));
-              }}>
-              {item.like ? <HeartActiveIcon /> : <HeartIcon />}
-            </TouchableOpacity>
-            <SpaceView mRight={SIZE(15)} />
-            <TouchableOpacity>
-              <CommentIcon />
-            </TouchableOpacity>
-            <SpaceView mRight={SIZE(15)} />
-            <TouchableOpacity>
-              <ShareIcon />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity>
-            <BookMarkIcon />
-          </TouchableOpacity>
-        </RowBetweenWrap>
-        <SpaceView mTop={SIZE(8)} />
-        <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
-        <SpaceView mTop={SIZE(6)} />
-        <Text style={styles.modalLabel}>{item.metaData.name}</Text>
-        <View style={styles.separator} />
-        <View>
-          <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
-            {item.metaData.description}
-          </Text>
-          {lengthMore && !textShown && (
-            <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
-              <Text style={styles.threeDot}>{'...'}</Text>
-              <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-    </View>
+      }
+    </>
   );
 };
 
