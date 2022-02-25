@@ -75,6 +75,7 @@ function CollectionDetail(props) {
           {collection?.userInfo?.links?.twitter ? (
             <TouchableOpacity
               style={{marginRight: 10}}
+              hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
               onPress={() =>
                 Linking.openURL(collection?.userInfo?.links?.twitter)
               }>
@@ -83,6 +84,7 @@ function CollectionDetail(props) {
           ) : null}
           {collection?.userInfo?.links?.instagram ? (
             <TouchableOpacity
+            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
               style={{marginRight: 6}}
               onPress={() =>
                 Linking.openURL(collection?.userInfo?.links?.instagram)
@@ -92,6 +94,7 @@ function CollectionDetail(props) {
           ) : null}
           {collection?.userInfo?.links?.facebook ? (
             <TouchableOpacity
+              hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
               onPress={() =>
                 Linking.openURL(collection?.userInfo?.links?.facebook)
               }>
