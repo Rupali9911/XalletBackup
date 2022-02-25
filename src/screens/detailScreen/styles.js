@@ -156,6 +156,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.PINGfANG,
     color: '#909090',
   },
+  readLessWrap: {
+    marginBottom: -3 
+  },
   readMore: {
     fontSize: SIZE(13),
     color: colors.BLUE2,

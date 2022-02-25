@@ -721,12 +721,17 @@ const nftItem = ({ item, index, isCollection }) => {
         <View>
           <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
             {item.metaData.description}
+            {lengthMore && textShown && (
+              <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
+                <Text style={styles.readMore}>{translate('common.Readless')}</Text>
+              </TouchableOpacity> 
+            )}
           </Text>
           {lengthMore && !textShown && (
-            <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
-              <Text style={styles.threeDot}>{'...'}</Text>
-              <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
-            </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
+                <Text style={styles.threeDot}>{'...'}</Text>
+                <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
+              </TouchableOpacity>
           )}
         </View>
       </View>
