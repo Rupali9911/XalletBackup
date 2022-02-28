@@ -22,6 +22,7 @@ import AppButton from '../../components/appButton';
 import { StripeApiRequest } from '../../helpers/ApiRequest';
 import { addCard } from '../../store/reducer/paymentReducer';
 import { StackActions } from '@react-navigation/routers';
+import { signOut } from '../../store/reducer/userReducer';
 
 function AddCard({ route, navigation }) {
 
@@ -274,10 +275,18 @@ function AddCard({ route, navigation }) {
         }).catch((err)=>{
             console.log('err',err);
             setLoading(false);
-            alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                err.error_code?translate(`common.${err.error_code}`):''
-            )
+            if (err.message === 'Unauthorized!') {
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate('common.sessionexpired')
+                )
+                dispatch(signOut());
+            } else {
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    err.error_code?translate(`common.${err.error_code}`):''
+                )
+            }
         });
 
     }
