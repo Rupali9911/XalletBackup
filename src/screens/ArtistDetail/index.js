@@ -298,7 +298,7 @@ function ArtistDetail({
 }) {
 
     const [data, setData] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [isFollowing, setFollowing] = useState(false);
     const { UserReducer } = useSelector(state => state);
     const dispatch = useDispatch();
@@ -308,6 +308,7 @@ function ArtistDetail({
     }, []);
 
     const getProfile = () => {
+        console.log(route.params.id)
         let req_data = {
             owner: route.params.id,
             token: 'HubyJ*%qcqR0'

@@ -42,9 +42,9 @@ import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL} from '../../common/constants';
-import {handleLikeDislike} from '../../store/actions/nftTrendList';
-const {PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
+import { BASE_URL } from '../../common/constants';
+import { handleLikeDislike } from '../../store/actions/nftTrendList';
+const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
 const Web3 = require('web3');
 
@@ -69,11 +69,10 @@ const DetailScreen = ({ navigation, route }) => {
     chain,
     tokenId,
     owner,
-    ownerImage,
     ownerId,
     ownerData,
     creator,
-    creatorImage,
+    collectCreat,
     artistId,
     artistData,
     like,
@@ -1095,12 +1094,11 @@ const DetailScreen = ({ navigation, route }) => {
               price: item.price,
               chain: item.chain,
               ownerId: ownerId,
+              collectCreat,
               owner: owner,
-              ownerImage: ownerImage,
               ownerData: ownerData,
               artistId: artistId,
               creator: creator,
-              creatorImage: creatorImage,
               artistData: artistData,
               item: item
             });
@@ -1236,7 +1234,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Image
                 style={styles.iconsImage}
                 source={
-                  !creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }
+                  artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>
@@ -1244,7 +1242,17 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('common.creator')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {creator}
+                  {creator
+                    ? (creator.includes("0x")
+                      ? (artistData && artistData.hasOwnProperty("title") && artistData.title)
+                        ? artistData.title
+                        : (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
+                          || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
+                          || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
+                          ? collectCreat?.creator
+                          : creator.substring(0, 6)
+                      : creator)
+                    : ""}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -1254,7 +1262,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Image
                 style={styles.iconsImage}
                 source={
-                  !creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }
+                  artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>
@@ -1271,14 +1279,28 @@ const DetailScreen = ({ navigation, route }) => {
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
-                source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }}
+                source={
+                  ownerData && ownerData.hasOwnProperty("profile_image") && ownerData.profile_image ? { uri: ownerData.profile_image } : IMAGES.DEFAULTPROFILE
+                }
               />
               <View>
                 <Text style={styles.personTypeText}>
                   {translate('common.owner')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {owner}
+                  {
+                    ownerData && (
+                      ownerData.role === 'crypto' ?
+                        ownerData.title ?
+                          ownerData.title :
+                          owner.includes("0x")
+                            ? owner.substring(0, 6)
+                            : owner.substring(0, 6) :
+                        ownerData.role === 'non_crypto' ?
+                          ownerData.username ?
+                            ownerData.username : ""
+                          : "")
+                  }
                 </Text>
               </View>
             </TouchableOpacity>
@@ -1384,7 +1406,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Image
                 style={styles.creatorImage}
                 source={
-                  !creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }
+                  artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>

@@ -49,6 +49,8 @@ const nftItem = ({ item, index, isCollection }) => {
   const [ownerId, setOwnerId] = useState('');
   const [ownerImage, setOwnerImage] = useState();
 
+  const [creatorAddress, setCreatorAddress] = useState("");
+
   const [artistId, setArtistId] = useState();
   const [artist, setArtist] = useState('----');
   const [artistData, setArtistData] = useState();
@@ -86,6 +88,7 @@ const nftItem = ({ item, index, isCollection }) => {
 
   let ERC721Abi = '';
   let providerUrl = '';
+  let ERC721Address = '';
 
   let params = item.tokenId.toString().split('-');
   let tokenId =
@@ -150,27 +153,19 @@ const nftItem = ({ item, index, isCollection }) => {
         MarketContractAddress,
       );
       if (MarketPlaceContract.methods.getNonCryptoOwner) {
-        // console.log("//////1111")
         MarketPlaceContract.methods
           .getNonCryptoOwner(collectionAddress, tokenId)
           .call(async (err, res) => {
-            // console.log(res)
             if (res) {
-              // console.log("1111")
               setNonCryptoOwnerId(res)
-              // const userId = res.toLowerCase();
-              // setOwnerId(userId);
               getOwnerDetailsById(res);
               await getTokenDetailsApi(false);
             } else if (!res) {
-              // console.log("2222")
               await getTokenDetailsApi();
             } else if (err) {
             }
           });
       } else {
-        console.log("333")
-        // console.log("//////22222")
         getDetail()
       }
     }
@@ -485,6 +480,7 @@ const nftItem = ({ item, index, isCollection }) => {
             setAvailableTokens([]);
           }
           setSingleNFT(newData);
+          setCreatorAddress(newData.author)
           setIsForAward(
             res?.data[0]?.award
               ? res?.data[0]?.award
@@ -497,8 +493,6 @@ const nftItem = ({ item, index, isCollection }) => {
             token: 'HubyJ*%qcqR0',
           };
 
-          // setOwner(temp?.returnValues?.to?.toLowerCase());
-          // setArtistId(temp?.returnValues?.to?.toLowerCase());
           let body = {
             method: 'POST',
             body: JSON.stringify(req_data),
@@ -648,17 +642,16 @@ const nftItem = ({ item, index, isCollection }) => {
                     name: item.metaData.name,
                     description: item.metaData.description,
                     owner: owner,
-                    ownerImage: ownerImage,
                     creator: artist,
-                    creatorImage: creatorImage,
                     thumbnailUrl: item.thumbnailUrl,
                     video: item.metaData.image,
                     fileType: fileType,
                     price: item.price,
                     chain: item.chain,
-                    ownerId: ownerId,
-                    artistId: artistId,
+                    ownerId: owner,
+                    artistId: artist,
                     tokenId: item.tokenId,
+                    collectCreat: collectCreat,
                     ownerData: ownerData,
                     artistData: artistData,
                     like: item.like,
