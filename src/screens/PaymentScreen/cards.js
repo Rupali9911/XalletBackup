@@ -52,7 +52,7 @@ const Cards = ({route, navigation}) => {
   const [defaultCard, _setDefaultCard] = useState(route.params.defaultCard);
   const [loading, setLoading] = useState(false);
 
-  const {price, isFromSetting} = route.params;
+  const {price, isCardPay} = route.params;
 
   useEffect(() => {
     if (isFocused) {
@@ -187,7 +187,7 @@ const Cards = ({route, navigation}) => {
           )}
         />
       </KeyboardAwareScrollView>
-      {!isFromSetting && (
+      {isCardPay && (
         <>
           <Separator style={styles.separator} />
           <View style={styles.totalContainer}>
