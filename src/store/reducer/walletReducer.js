@@ -42,7 +42,7 @@ const initialState = {
     networkType: {
         name: "BSC",
         value: 'binance',
-        icon: ImagesSrc.bnb
+        icon: ImagesSrc.smartChain
     }
 }
 
