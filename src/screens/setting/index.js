@@ -111,7 +111,7 @@ function Setting({navigation}) {
           <ListItem
             onPress={() => {
               if (myCards.length > 0) {
-                navigation.navigate('Cards', {price: 0, isFromSetting: true});
+                navigation.navigate('Cards', {price: 0, isCardPay: false});
               } else {
                 // navigation.navigate('Cards', { price });
                 navigation.navigate('AddCard', {price: 0});
