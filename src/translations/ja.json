@@ -611,7 +611,7 @@
         "Sellselecttoken": "受取通貨を選択",
         "discordlink": "有効なリンクを記入してください。",
         "ethereum": "イーサリアム",
-        "allowedcurrency": "支払通貨選択",
+        "allowedcurrency": "支払通貨を選択",
         "event": "イベント",
         "emailUserRequired": "メール/ユーザー名が必要です!",
         "passwordReq": "パスワードが必要です!",
@@ -956,8 +956,8 @@
             "description": "作品の説明",
             "nftType": "作品のタイプ",
             "auctionnew": "オークション",
-            "Sellerpayin": "支払通貨選択",
-            "buyerpayin": "支払通貨選択"
+            "Sellerpayin": "支払通貨を選択",
+            "buyerpayin": "支払通貨を選択"
         },
         "backendmessage": {
             "error": {},
