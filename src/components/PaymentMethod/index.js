@@ -22,6 +22,7 @@ import NotEnoughGold from './alertGoldModal';
 import {useSelector} from 'react-redux';
 import {BlurView} from '@react-native-community/blur';
 import {IconButton} from 'react-native-paper';
+import { numberWithCommas } from '../../utils';
 
 const PaymentMethod = props => {
   const navigation = useNavigation();
@@ -42,7 +43,7 @@ const PaymentMethod = props => {
     collectionAddress,
   } = props;
   const [opacity, setOpacity] = useState(0.88);
-  const [selectedMethod, setSelectedMethod] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState(0);
   const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
 
   return (
@@ -134,7 +135,7 @@ const PaymentMethod = props => {
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
-            <Text style={styles.value}>{price}</Text>
+            <Text style={styles.value}>$ {selectedMethod ? numberWithCommas(Number(price).toFixed(3)) : numberWithCommas(Number(priceInDollar).toFixed(1))}</Text>
           </View>
 
           {selectedMethod == 2 && (
