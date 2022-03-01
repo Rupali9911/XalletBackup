@@ -145,13 +145,13 @@ const nftItem = ({ item, index, isCollection }) => {
     const getDetail = async () => {
       await getTokenDetailsApi();
     }
-
     if (chainAvailable()) {
       setLoader(true)
       let MarketPlaceContract = new web3.eth.Contract(
         MarketPlaceAbi,
         MarketContractAddress,
       );
+      console.log(MarketPlaceContract.methods.getNonCryptoOwner, "/////////")
       if (MarketPlaceContract.methods.getNonCryptoOwner) {
         MarketPlaceContract.methods
           .getNonCryptoOwner(collectionAddress, tokenId)
@@ -561,11 +561,11 @@ const nftItem = ({ item, index, isCollection }) => {
   return (
     <>
       {
-        loader ?
-          <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
-            <ActivityIndicator size={"small"} />
-          </View>
-          :
+        // loader ?
+        //   <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
+        //     <ActivityIndicator size={"small"} />
+        //   </View>
+        //   :
           <View>
             <View style={styles.modalSectCont}>
               <TouchableOpacity
@@ -749,6 +749,11 @@ const nftItem = ({ item, index, isCollection }) => {
               <View>
                 <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
                   {item.metaData.description}
+                  {lengthMore && textShown && (
+                    <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
+                      <Text style={styles.readMore}>{translate('common.Readless')}</Text>
+                    </TouchableOpacity>
+                  )}
                 </Text>
                 {lengthMore && !textShown && (
                   <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
