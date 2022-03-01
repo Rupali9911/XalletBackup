@@ -1257,12 +1257,12 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => onProfile(false)}
+              onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
                 source={
-                  artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE
+                  collectCreat ? { uri: collectCreat.iconImage } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>
@@ -1270,7 +1270,9 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('common.collected')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {collectionAddress}
+                  {collectCreat &&
+                    collectCreat.collectionName
+                  }
                 </Text>
               </View>
             </TouchableOpacity>
