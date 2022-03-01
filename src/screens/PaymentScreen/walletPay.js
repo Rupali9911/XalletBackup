@@ -32,6 +32,7 @@ import NetworkPicker from '../wallet/components/networkPicker';
 import Tokens from '../wallet/components/Tokens';
 import {balance} from '../wallet/functions';
 import {SIZE} from 'src/constants';
+import { alertWithSingleBtn } from '../../common/function';
 
 const ethers = require('ethers');
 
@@ -606,6 +607,11 @@ const WalletPay = ({route, navigation}) => {
                   priceInToken,
                   type: 'wallet',
                 }),
+              );
+            }else{
+              alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate('common.blanceLow'),
               );
             }
           }}
