@@ -262,7 +262,6 @@ const HomeScreen = ({ navigation }) => {
         {online &&
           (showSuccess ? null : (
             <Tab.Navigator
-
               screenOptions={{
                 tabBarScrollEnabled: true,
                 tabBarActiveTintColor: colors.BLUE4,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, Image } from 'react-native';
+import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
@@ -32,6 +32,9 @@ export default function HotcollectionItem(props) {
     }
   }
 
+  let uriType = bannerImage?.split('.')[bannerImage?.split('.').length - 1]
+  const checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -39,13 +42,9 @@ export default function HotcollectionItem(props) {
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
-            type={
-              bannerImage?.split('.')[
-              bannerImage?.split('.').length - 1
-              ]
-            }
+            type={uriType}
             uri={bannerImage}
-            imageStyle={styles.collectionListImage}
+            imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
           />
         </View>
         <View style={styles.collectionWrapper}>
@@ -61,7 +60,7 @@ export default function HotcollectionItem(props) {
           <View style={styles.bottomWrap}>
             {chainIcon(chainType)}
             <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
-              { `${items} ` + translate('common.itemsCollection')}
+              {`${items} ` + translate('common.itemsCollection')}
             </Text>
           </View>
         </View>
