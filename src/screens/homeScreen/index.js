@@ -262,33 +262,34 @@ const HomeScreen = ({ navigation }) => {
         {online &&
           (showSuccess ? null : (
             <Tab.Navigator
-              tabBarOptions={{
-                scrollEnabled: true,
-                activeTintColor: colors.BLUE4,
-                inactiveTintColor: colors.GREY1,
-                style: {
-                  boxShadow: 'none',
-                  elevation: 0,
-                  borderTopColor: '#EFEFEF',
-                  borderTopWidth: 1,
-                  shadowOpacity: 0,
+
+              screenOptions={{
+                tabBarScrollEnabled: true,
+                tabBarActiveTintColor: colors.BLUE4,
+                tabBarInactiveTintColor: colors.GREY1,
+                tabBarLabelStyle: {
+                  fontSize: RF(1.4),
+                  fontFamily: fonts.SegoeUIRegular,
+                  textTransform: 'capitalize',
                 },
-                tabStyle: {
+                tabBarIndicatorStyle: {
+                  borderBottomColor: colors.BLUE4,
+                  height: 1,
+                  marginBottom: SIZE(39),
+                },
+                tabBarItemStyle: {
                   height: SIZE(40),
                   width: wp('27%'),
                   paddingHorizontal: wp('1%'),
                   justifyContent: 'center',
                 },
-                labelStyle: {
-                  fontSize: RF(1.4),
-                  fontFamily: fonts.SegoeUIRegular,
-                  textTransform: 'capitalize',
-                },
-                indicatorStyle: {
-                  borderBottomColor: colors.BLUE4,
-                  height: 1,
-                  marginBottom: SIZE(39),
-                },
+                tabBarStyle: {
+                  boxShadow: 'none',
+                  elevation: 0,
+                  borderTopColor: '#EFEFEF',
+                  borderTopWidth: 1,
+                  shadowOpacity: 0,
+                }
               }}>
               <Tab.Screen
                 name={'Awards 2021'}
