@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {
   Dimensions,
   Image,
@@ -10,23 +10,23 @@ import {
   View,
 } from 'react-native';
 import Video from 'react-native-fast-video';
-import { basePriceTokens } from '../../web3/config/availableTokens';
-import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
-import { useDispatch, useSelector } from 'react-redux';
-import { C_Image } from 'src/components';
-import { IMAGES, SIZE, SVGS } from 'src/constants';
-import { RowBetweenWrap, SpaceView } from 'src/styles/common.styles';
-import { SmallBoldText } from 'src/styles/text.styles';
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
+import {basePriceTokens} from '../../web3/config/availableTokens';
+import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import {useDispatch, useSelector} from 'react-redux';
+import {C_Image} from 'src/components';
+import {IMAGES, SIZE, SVGS} from 'src/constants';
+import {RowBetweenWrap, SpaceView} from 'src/styles/common.styles';
+import {SmallBoldText} from 'src/styles/text.styles';
+import {BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
 import getLanguage from '../../utils/languageSupport';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import styles from './styles';
-import { numberWithCommas } from '../../utils';
-import { TextReadMoreView } from '../../components';
+import {numberWithCommas} from '../../utils';
+import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const langObj = getLanguage();
 
 const Web3 = require('web3');
@@ -40,10 +40,10 @@ const {
   PlayButtonIcon,
 } = SVGS;
 
-const nftItem = ({ item, index, isCollection }) => {
+const nftItem = ({item, index, isCollection}) => {
   const dispatch = useDispatch();
-  const { AuthReducer } = useSelector(state => state);
-  const { data, wallet } = useSelector(state => state.UserReducer);
+  const {AuthReducer} = useSelector(state => state);
+  const {data, wallet} = useSelector(state => state.UserReducer);
   const [owner, setOwner] = useState('----');
   const [ownerId, setOwnerId] = useState('');
   const [ownerImage, setOwnerImage] = useState();
@@ -53,7 +53,6 @@ const nftItem = ({ item, index, isCollection }) => {
   const [artistData, setArtistData] = useState();
   const [creatorImage, setCreatorImage] = useState();
   const [isPlay, setPlay] = useState(false);
-  const refVideo = useRef(null);
   const [singleNFT, setSingleNFT] = useState({});
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
@@ -68,6 +67,8 @@ const nftItem = ({ item, index, isCollection }) => {
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const navigation = useNavigation();
+  const refVideo = useRef(null);
+  const refVideoPlay = useRef(null);
 
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
@@ -234,7 +235,7 @@ const nftItem = ({ item, index, isCollection }) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                        walletAddressForNonCrypto.toLowerCase() &&
+                          walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -248,7 +249,7 @@ const nftItem = ({ item, index, isCollection }) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                        walletAddressForNonCrypto.toLowerCase() &&
+                          walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -388,12 +389,12 @@ const nftItem = ({ item, index, isCollection }) => {
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
-            console.log('getDetailNFT_res', temp);
+          console.log('getDetailNFT_res', temp);
           let req_data = {
             owner: temp?.returnValues?.to?.toLowerCase(),
             token: 'HubyJ*%qcqR0',
           };
-           setOwner(temp?.returnValues?.to?.toLowerCase());
+          setOwner(temp?.returnValues?.to?.toLowerCase());
           setArtistId(temp?.returnValues?.to?.toLowerCase());
           let body = {
             method: 'POST',
@@ -407,7 +408,7 @@ const nftItem = ({ item, index, isCollection }) => {
             .then(response => response.json())
             .then(res => {
               if (res.data) {
-                console.log('/xanalia/getProfile response', res.data)
+                console.log('/xanalia/getProfile response', res.data);
                 setArtistData(res.data);
                 setArtist(res.data.username || res.data.title);
                 setCreatorImage(res.data.profile_image);
@@ -451,8 +452,8 @@ const nftItem = ({ item, index, isCollection }) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-                ? res?.data[1]?.award
-                : false,
+              ? res?.data[1]?.award
+              : false,
           );
           console.log('calling');
           //checkNFTOnAuction();
@@ -542,7 +543,10 @@ const nftItem = ({ item, index, isCollection }) => {
   // };
 
   const onTextLayout = useCallback(e => {
-    if (e.nativeEvent.lines.length >= 2 && e.nativeEvent.lines[1].width > width - SIZE(40))
+    if (
+      e.nativeEvent.lines.length >= 2 &&
+      e.nativeEvent.lines[1].width > width - SIZE(40)
+    )
       setLengthMore(true);
   }, []);
 
@@ -551,9 +555,9 @@ const nftItem = ({ item, index, isCollection }) => {
 
   const onProfile = isOwner => {
     if (isOwner) {
-      if (ownerId) navigation.push('ArtistDetail', { id: ownerId });
+      if (ownerId) navigation.push('ArtistDetail', {id: ownerId});
     } else {
-      if (artistId) navigation.push('ArtistDetail', { id: artistId });
+      if (artistId) navigation.push('ArtistDetail', {id: artistId});
     }
   };
   let imageUri =
@@ -568,7 +572,7 @@ const nftItem = ({ item, index, isCollection }) => {
           style={styles.iconCont}>
           <Image
             style={styles.profileIcon}
-            source={!ownerImage ? IMAGES.DEFAULTPROFILE : { uri: ownerImage }}
+            source={!ownerImage ? IMAGES.DEFAULTPROFILE : {uri: ownerImage}}
           />
           <View>
             <Text style={styles.modalIconLabel}>
@@ -576,7 +580,7 @@ const nftItem = ({ item, index, isCollection }) => {
             </Text>
             <Text
               numberOfLines={1}
-              style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
+              style={[styles.iconLabel, {maxWidth: width * 0.35}]}>
               {owner}
             </Text>
           </View>
@@ -586,7 +590,7 @@ const nftItem = ({ item, index, isCollection }) => {
           style={styles.iconCont}>
           <Image
             style={styles.profileIcon}
-            source={!creatorImage ? IMAGES.DEFAULTPROFILE : { uri: creatorImage }}
+            source={!creatorImage ? IMAGES.DEFAULTPROFILE : {uri: creatorImage}}
           />
           <View>
             <Text style={styles.modalIconLabel}>
@@ -596,94 +600,111 @@ const nftItem = ({ item, index, isCollection }) => {
               numberOfLines={1}
               style={[
                 styles.iconLabel,
-                { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
+                {maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4},
               ]}>
               {artist}
             </Text>
           </View>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => {
-          isPlay
-            ? setPlay(!isPlay)
-            : navigation.navigate('CertificateDetail', {
-              id: item.newtokenId,
-              name: item.metaData.name,
-              description: item.metaData.description,
-              owner: owner,
-              ownerImage: ownerImage,
-              creator: artist,
-              creatorImage: creatorImage,
-              thumbnailUrl: item.thumbnailUrl,
-              video: item.metaData.image,
-              fileType: fileType,
-              price: item.price,
-              chain: item.chain,
-              ownerId: ownerId,
-              artistId: artistId,
-              tokenId: item.tokenId,
-              ownerData: ownerData,
-              artistData: artistData,
-              like: item.like,
-              item: item,
-              index: index,
-            });
-        }}>
-        {fileType === 'mp4' ||
+      <InViewPort onChange={(isVisible) => {
+        if (!isVisible) {
+          setPlay(false);
+        }
+      }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            isPlay
+              ? setPlay(!isPlay)
+              : navigation.navigate('CertificateDetail', {
+                  id: item.newtokenId,
+                  name: item.metaData.name,
+                  description: item.metaData.description,
+                  owner: owner,
+                  ownerImage: ownerImage,
+                  creator: artist,
+                  creatorImage: creatorImage,
+                  thumbnailUrl: item.thumbnailUrl,
+                  video: item.metaData.image,
+                  fileType: fileType,
+                  price: item.price,
+                  chain: item.chain,
+                  ownerId: ownerId,
+                  artistId: artistId,
+                  tokenId: item.tokenId,
+                  ownerData: ownerData,
+                  artistData: artistData,
+                  like: item.like,
+                  item: item,
+                  index: index,
+                });
+          }}>
+          {fileType === 'mp4' ||
           fileType === 'MP4' ||
           fileType === 'mov' ||
           fileType === 'MOV' ? (
-          <View style={styles.modalImage}>
-            <Video
-              key={tokenId}
-              ref={refVideo}
-              source={{ uri: item.metaData.image }}
-              playInBackground={false}
-              paused={!isPlay}
-              resizeMode={'cover'}
-              onLoad={() => refVideo.current.seek(0)}
-              style={{
-                flex: 1,
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-            {!isPlay && (
-              <View
+            <View style={styles.modalImage}>
+              <Video
+                key={tokenId}
+                ref={refVideo}
+                source={{uri: item.metaData.image}}
+                playInBackground={false}
+                paused={!isPlay}
+                resizeMode={'cover'}
+                onLoad={() => refVideo.current.seek(0)}
+                onEnd={() => {
+                  setPlay(false);
+                  refVideoPlay.current = true;
+                }}
                 style={{
+                  flex: 1,
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
+                }}
+              />
+              {!isPlay && (
                 <View
                   style={{
-                    width: SIZE(100),
-                    height: SIZE(100),
-                    backgroundColor: '#00000030',
-                    borderRadius: SIZE(100),
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <TouchableOpacity onPress={() => setPlay(true)}>
-                    <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                  </TouchableOpacity>
+                  <View
+                    style={{
+                      width: SIZE(100),
+                      height: SIZE(100),
+                      backgroundColor: '#00000030',
+                      borderRadius: SIZE(100),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (refVideoPlay.current) {
+                          refVideo.current.seek(0);
+                        }
+                        refVideoPlay.current = false;
+                        setPlay(true);
+                      }}>
+                      <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
-          </View>
-        ) : (
-          <C_Image uri={imageUri} imageStyle={styles.modalImage} />
-        )}
-      </TouchableOpacity>
+              )}
+            </View>
+          ) : (
+            <C_Image uri={imageUri} imageStyle={styles.modalImage} />
+          )}
+        </TouchableOpacity>
+      </InViewPort>
 
       <View
         style={{
@@ -714,18 +735,28 @@ const nftItem = ({ item, index, isCollection }) => {
           </TouchableOpacity>
         </RowBetweenWrap>
         <SpaceView mTop={SIZE(8)} />
-        <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
+        <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate(
+          'common.Likes',
+        )}`}</SmallBoldText>
         <SpaceView mTop={SIZE(6)} />
         <Text style={styles.modalLabel}>{item.metaData.name}</Text>
         <View style={styles.separator} />
         <View>
-          <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
+          <Text
+            onTextLayout={onTextLayout}
+            numberOfLines={textShown ? null : 2}
+            style={styles.description}>
             {item.metaData.description}
           </Text>
           {lengthMore && !textShown && (
-            <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={styles.readMoreWrap}
+              onPress={() => setTextShown(true)}>
               <Text style={styles.threeDot}>{'...'}</Text>
-              <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
+              <Text style={styles.readMore}>
+                {translate('common.Readmore')}
+              </Text>
             </TouchableOpacity>
           )}
         </View>
