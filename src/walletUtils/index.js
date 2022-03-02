@@ -8335,7 +8335,7 @@ export const networkChain = [
   {
       name: "BSC",
       value: 'binance',
-      icon: ImagesSrc.bnb,
+      icon: ImagesSrc.smartChain,
       translatedName: 'バイナンス'
   },
   {
@@ -8350,7 +8350,7 @@ export const tokens = [
   {
     type: 'BNB',
     tokenName: "BNB",
-    icon: ImagesSrc.bnb,
+    icon: ImagesSrc.smartChain,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",

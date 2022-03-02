@@ -66,7 +66,8 @@ import PhoneIcon from 'src/assets/svgs/icon-phone.svg';
 import EmailIcon from 'src/assets/svgs/icon-email.svg';
 import PolygonIcon from 'src/assets/svgs/icon-polygon.svg';
 import Ethereum from 'src/assets/svgs/icon-etherium.svg';
-import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
+// import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
+import BitmapIcon from 'src/assets/svgs/icon-smart-chain.svg';
 
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
 import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
