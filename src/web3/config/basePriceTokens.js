@@ -18,7 +18,8 @@ export const basePriceTokens = [
     key: 'ALIA',
     value: 'ALIA',
     chain: 'binance',
-    icon: 'https://ik.imagekit.io/xanalia/CollectionMainData/ALIA_currency.svg',
+    // icon: 'https://ik.imagekit.io/xanalia/CollectionMainData/ALIA_currency.svg',
+    icon: 'https://ik.imagekit.io/xanalia/Images/XANALIA-ICON.svg',
     order: 0,
   },
   {
@@ -41,7 +42,8 @@ export const basePriceTokens = [
     key: 'ALIA',
     value: 'ALIA',
     chain: 'polygon',
-    icon: 'https://ik.imagekit.io/xanalia/CollectionMainData/ALIA_currency.svg',
+    // icon: 'https://ik.imagekit.io/xanalia/CollectionMainData/ALIA_currency.svg',
+    icon: 'https://ik.imagekit.io/xanalia/Images/XANALIA-ICON.svg',
     order: 0,
   },
   {
