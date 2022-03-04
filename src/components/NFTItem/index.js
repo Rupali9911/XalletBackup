@@ -19,6 +19,7 @@ export default function NFTItem(props) {
     isCollection,
     index,
     isMeCollection,
+    isBlind,
   } = props;
 
   const {PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon} =

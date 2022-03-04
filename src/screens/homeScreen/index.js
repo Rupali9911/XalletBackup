@@ -49,6 +49,7 @@ import HotNFT from './hotNFT';
 import MovieNFT from './movieNFT';
 import ArtNFT from './artNFT';
 import HotCollection from './hotCollection';
+import Collection from './collection';
 import styles from './styles';
 
 const Tab = createMaterialTopTabNavigator();
@@ -350,6 +351,15 @@ const HomeScreen = ({ navigation }) => {
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(6);
+                  }
+                }}
+              />
+              <Tab.Screen
+                name={translate('wallet.common.collection')}
+                component={Collection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(7);
                   }
                 }}
               />

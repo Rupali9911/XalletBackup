@@ -12,38 +12,38 @@ import { Loader } from '../../components';
 import { colors } from '../../res';
 import HotcollectionItem from '../../components/HotCollectionItem';
 import {
-  hotCollectionListReset,
-  hotCollectionLoadStart,
-  hotCollectionPageChange,
-  hotCollectionList,
-} from '../../store/actions/hotCollectionAction';
+  collectionListReset,
+  collectionLoadStart,
+  collectionPageChange,
+  collectionList,
+} from '../../store/actions/collectionAction';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 
-const HotCollection = () => {
-  const { HotCollectionReducer } = useSelector(state => state);
+const Collection = () => {
+  const { CollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   useEffect(() => {
-    dispatch(hotCollectionLoadStart());
-    dispatch(hotCollectionListReset());
-    getHotCollection(1);
-    dispatch(hotCollectionPageChange(1));
+    dispatch(collectionLoadStart());
+    dispatch(collectionListReset());
+    getCollection(1);
+    dispatch(collectionPageChange(1));
   }, []);
 
-  const getHotCollection = useCallback((page) => {
-    dispatch(hotCollectionList(page));
+  const getCollection = useCallback((page) => {
+    dispatch(collectionList(page));
   }, []);
 
   const handleRefresh = () => {
-    dispatch(hotCollectionListReset());
-    getHotCollection(1);
-    dispatch(hotCollectionPageChange(1));
+    dispatch(collectionListReset());
+    getCollection(1);
+    dispatch(collectionPageChange(1));
   };
 
   const renderFooter = () => {
-    if (!HotCollectionReducer.hotCollectionLoading) return null;
+    if (!CollectionReducer.collectionLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
@@ -51,13 +51,19 @@ const HotCollection = () => {
     return (
       <HotcollectionItem
         bannerImage={item.bannerImage}
-        chainType={item.chainType}
+        chainType={item.chainType || 'polygon'}
         items={item.items}
         iconImage={item.iconImage}
         collectionName={item.collectionName}
+        creator={item.creator}
         creatorInfo={item.creatorInfo}
+        blind={item.blind}
         onPress={() => {
-          navigation.push('CollectionDetail', { collectionId: item._id });
+          if (item.blind) {
+            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId });
+          } else {
+            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id });
+          }
         }}
       />
     );
@@ -65,39 +71,39 @@ const HotCollection = () => {
 
   const memoizedValue = useMemo(
     () => renderItem,
-    [HotCollectionReducer.hotCollectionList],
+    [CollectionReducer.collectionList],
   );
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {HotCollectionReducer.hotCollectionPage === 1 &&
-        HotCollectionReducer.hotCollectionLoading ? (
+      {CollectionReducer.collectionPage === 1 &&
+        CollectionReducer.collectionLoading ? (
         <Loader />
-      ) : HotCollectionReducer.hotCollectionList.length !== 0 ? (
+      ) : CollectionReducer.collectionList.length !== 0 ? (
         <FlatList
-          data={HotCollectionReducer.hotCollectionList}
+          data={CollectionReducer.collectionList}
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
-            dispatch(hotCollectionLoadStart());
+            dispatch(collectionLoadStart());
             handleRefresh();
           }}
           refreshing={
-            HotCollectionReducer.hotCollectionPage === 1 &&
-            HotCollectionReducer.hotCollectionLoading
+            CollectionReducer.collectionPage === 1 &&
+            CollectionReducer.collectionLoading
           }
           renderItem={memoizedValue}
           onEndReached={() => {
             if (
-              !HotCollectionReducer.hotCollectionLoading &&
-              HotCollectionReducer.hotCollectionTotalCount !==
-              HotCollectionReducer.hotCollectionList.length
+              !CollectionReducer.collectionLoading &&
+              CollectionReducer.collectionTotalCount !==
+              CollectionReducer.collectionList.length
             ) {
-              let num = HotCollectionReducer.hotCollectionPage + 1;
-              getHotCollection(num);
-              dispatch(hotCollectionPageChange(num));
+              let num = CollectionReducer.collectionPage + 1;
+              getCollection(num);
+              dispatch(collectionPageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
@@ -113,4 +119,4 @@ const HotCollection = () => {
   );
 };
 
-export default HotCollection;
+export default Collection;

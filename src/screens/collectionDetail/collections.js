@@ -13,6 +13,7 @@ import { Loader } from '../../components';
 import { colors } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import {
+  nftBlindDataCollectionList,
   nftDataCollectionList,
   nftDataCollectionListReset,
   nftDataCollectionLoadStart,
@@ -26,7 +27,7 @@ const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
 const { height } = Dimensions.get('window');
 
 const Collections = (props) => {
-  const { collectionAddress, collectionType, collectionId } = props;
+  const { collectionAddress, collectionType, collectionId, isBlind } = props;
   const { NftDataCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -39,6 +40,11 @@ const Collections = (props) => {
   }, [collectionType]);
 
   const getNFTlist = useCallback((page) => {
+    // if (!isBlind) {
+    //   dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
+    // } else {
+    //   dispatch(nftBlindDataCollectionList(collectionId));
+    // }
     dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
   }, [collectionType]);
 
@@ -69,6 +75,7 @@ const Collections = (props) => {
           });
         }}
         isCollection
+        isBlind
       />
     );
   };
