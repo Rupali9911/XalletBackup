@@ -71,3 +71,20 @@ export const nftDataCollectionList = (page, collectionAddress, type) => {
       })
   }
 }
+
+export const nftBlindDataCollectionList = (collectionAddress) => {
+  return (dispatch, getState) => {
+    const { data, wallet } = getState().UserReducer;
+    const owner = wallet.address || data.user._id;
+
+    fetch(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`)
+    .then(response => response.json())
+      .then(json => {
+        console.log('====json', json, collectionAddress);
+        dispatch(nftDataCollectionLoadSuccess(json));
+      })
+      .catch(err => {
+        dispatch(nftDataCollectionLoadFail());
+      })
+  }
+}

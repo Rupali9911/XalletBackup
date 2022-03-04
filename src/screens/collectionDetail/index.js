@@ -19,13 +19,14 @@ import {colors, fonts} from '../../res';
 import {translate} from '../../walletUtils';
 import {useSelector} from 'react-redux';
 import {SVGS} from 'src/constants';
+import {SIZE} from '../../constants';
 
 const Tab = createMaterialTopTabNavigator();
 const {TwiiterIcon, FacebookIcon, InstagramIcon} = SVGS;
 
 function CollectionDetail(props) {
   const {route} = props;
-  const {collectionId} = route.params;
+  const {collectionId, isBlind} = route.params;
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
   const [descTab, setDescTab] = useState(true);
@@ -40,9 +41,17 @@ function CollectionDetail(props) {
 
   const getCollection = async () => {
     try {
-      const collectionArray = await getHotCollectionDetail(collectionId);
-      setCollectionAddress(collectionArray?.data.data[0].collectionAddress);
-      setCollection(collectionArray?.data.data[0]);
+      const collectionArray = await getHotCollectionDetail(
+        collectionId,
+        isBlind,
+      );
+      if (isBlind) {
+        setCollectionAddress(collectionArray?.data.data.collectionAddress);
+        setCollection(collectionArray?.data.data);
+      } else {
+        setCollectionAddress(collectionArray?.data.data[0].collectionAddress);
+        setCollection(collectionArray?.data.data[0]);
+      }
       setLoading(false);
     } catch (err) {
       console.error(err.message);
@@ -113,46 +122,48 @@ function CollectionDetail(props) {
           <Text style={styles.collectionName}>
             {collection?.collectionName}
           </Text>
-          <View style={styles.collectionTable}>
-            <View style={styles.collectionTableRow}>
-              <Text style={styles.collectionTableRowText}>
-                {collection?.nftCount}
-              </Text>
-              <Text style={styles.collectionTableRowDec}>
-                {translate('common.itemsCollection')}
-              </Text>
-            </View>
-            <View style={styles.collectionTableRow}>
-              <Text style={styles.collectionTableRowText}>
-                {collection?.owners}
-              </Text>
-              <Text style={styles.collectionTableRowDec}>
-                {translate('common.owners')}
-              </Text>
-            </View>
-            <View style={styles.collectionTableRow}>
-              <View style={{flexDirection: 'row'}}>
-                <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+          {!isBlind ? (
+            <View style={styles.collectionTable}>
+              <View style={styles.collectionTableRow}>
                 <Text style={styles.collectionTableRowText}>
-                  {Number(collection?.floorPrice).toFixed(2)}
+                  {collection?.nftCount}
+                </Text>
+                <Text style={styles.collectionTableRowDec}>
+                  {translate('common.itemsCollection')}
                 </Text>
               </View>
-              <Text style={styles.collectionTableRowDec}>
-                {translate('common.floorPrice')}
-              </Text>
-            </View>
-            <View style={styles.collectionTableRow}>
-              <View style={{flexDirection: 'row'}}>
-                <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+              <View style={styles.collectionTableRow}>
                 <Text style={styles.collectionTableRowText}>
-                  {Number(collection?.volTraded).toFixed(2)}
+                  {collection?.owners}
+                </Text>
+                <Text style={styles.collectionTableRowDec}>
+                  {translate('common.owners')}
                 </Text>
               </View>
-              <Text style={styles.collectionTableRowDec}>
-                {translate('common.volumeTraded')}
-              </Text>
+              <View style={styles.collectionTableRow}>
+                <View style={{flexDirection: 'row'}}>
+                  <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                  <Text style={styles.collectionTableRowText}>
+                    {Number(collection?.floorPrice).toFixed(2)}
+                  </Text>
+                </View>
+                <Text style={styles.collectionTableRowDec}>
+                  {translate('common.floorPrice')}
+                </Text>
+              </View>
+              <View style={styles.collectionTableRow}>
+                <View style={{flexDirection: 'row'}}>
+                  <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                  <Text style={styles.collectionTableRowText}>
+                    {Number(collection?.volTraded).toFixed(2)}
+                  </Text>
+                </View>
+                <Text style={styles.collectionTableRowDec}>
+                  {translate('common.volumeTraded')}
+                </Text>
+              </View>
             </View>
-          </View>
+          ) : null}
         </View>
 
         <View style={styles.descriptionTabWrapper}>
@@ -185,94 +196,126 @@ function CollectionDetail(props) {
         </View>
         <View style={styles.description}>
           <ScrollView>
-            <Text style={styles.descriptionText}>
-              {descTab
-                ? collection?.collectionDesc
-                : collection.userInfo[
-                    `${selectedLanguageItem.language_name}_about`
-                  ] || collection.userInfo.about}
-            </Text>
+            {descTab ? (
+              <Text style={styles.descriptionText}>
+                {collection?.collectionDesc}
+              </Text>
+            ) : !isBlind ? (
+              <Text style={styles.descriptionText}>
+                {collection.userInfo[
+                  `${selectedLanguageItem.language_name}_about`
+                ] || collection.userInfo.about}
+              </Text>
+            ) : (
+              <View>
+                <Text
+                  style={[
+                    styles.descriptionText,
+                    {fontSize: SIZE(16), fontWeight: 'bold'},
+                  ]}>
+                  {collection.creatorName}
+                </Text>
+                <Text style={styles.descriptionText}>
+                  {collection.creatorDescription}
+                </Text>
+              </View>
+            )}
           </ScrollView>
         </View>
 
         <View style={{flex: 1}}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                onPress={() => setCollectionType(0)}
-                style={[
-                  styles.tabBarItem,
-                  {
-                    borderTopColor:
-                      collectionType === 0 ? colors.BLUE4 : 'white',
-                  },
-                ]}>
-                <Text
+          {!isBlind ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  onPress={() => setCollectionType(0)}
                   style={[
-                    styles.tabBarLabel,
-                    {color: collectionType === 0 ? colors.BLUE4 : colors.GREY1},
+                    styles.tabBarItem,
+                    {
+                      borderTopColor:
+                        collectionType === 0 ? colors.BLUE4 : 'white',
+                    },
                   ]}>
-                  {translate('common.onSale')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setCollectionType(1)}
-                style={[
-                  styles.tabBarItem,
-                  {
-                    borderTopColor:
-                      collectionType === 1 ? colors.BLUE4 : 'white',
-                  },
-                ]}>
-                <Text
+                  <Text
+                    style={[
+                      styles.tabBarLabel,
+                      {
+                        color:
+                          collectionType === 0 ? colors.BLUE4 : colors.GREY1,
+                      },
+                    ]}>
+                    {translate('common.onSale')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setCollectionType(1)}
                   style={[
-                    styles.tabBarLabel,
-                    {color: collectionType === 1 ? colors.BLUE4 : colors.GREY1},
+                    styles.tabBarItem,
+                    {
+                      borderTopColor:
+                        collectionType === 1 ? colors.BLUE4 : 'white',
+                    },
                   ]}>
-                  {translate('common.notforsale')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setCollectionType(2)}
-                style={[
-                  styles.tabBarItem,
-                  {
-                    borderTopColor:
-                      collectionType === 2 ? colors.BLUE4 : 'white',
-                  },
-                ]}>
-                <Text
+                  <Text
+                    style={[
+                      styles.tabBarLabel,
+                      {
+                        color:
+                          collectionType === 1 ? colors.BLUE4 : colors.GREY1,
+                      },
+                    ]}>
+                    {translate('common.notforsale')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setCollectionType(2)}
                   style={[
-                    styles.tabBarLabel,
-                    {color: collectionType === 2 ? colors.BLUE4 : colors.GREY1},
+                    styles.tabBarItem,
+                    {
+                      borderTopColor:
+                        collectionType === 2 ? colors.BLUE4 : 'white',
+                    },
                   ]}>
-                  {translate('common.owned')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setCollectionType(3)}
-                style={[
-                  styles.tabBarItem,
-                  {
-                    borderTopColor:
-                      collectionType === 3 ? colors.BLUE4 : 'white',
-                  },
-                ]}>
-                <Text
+                  <Text
+                    style={[
+                      styles.tabBarLabel,
+                      {
+                        color:
+                          collectionType === 2 ? colors.BLUE4 : colors.GREY1,
+                      },
+                    ]}>
+                    {translate('common.owned')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setCollectionType(3)}
                   style={[
-                    styles.tabBarLabel,
-                    {color: collectionType === 3 ? colors.BLUE4 : colors.GREY1},
+                    styles.tabBarItem,
+                    {
+                      borderTopColor:
+                        collectionType === 3 ? colors.BLUE4 : 'white',
+                    },
                   ]}>
-                  {translate('common.gallery')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+                  <Text
+                    style={[
+                      styles.tabBarLabel,
+                      {
+                        color:
+                          collectionType === 3 ? colors.BLUE4 : colors.GREY1,
+                      },
+                    ]}>
+                    {translate('common.gallery')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          ) : null}
           {collectionAddress && (
             <Collections
               collectionAddress={collectionAddress}
               collectionType={collectionType}
               collectionId={collectionId}
+              isBlind={isBlind}
             />
           )}
         </View>
