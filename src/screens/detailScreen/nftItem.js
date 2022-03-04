@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {
   Dimensions,
   Image,
@@ -11,23 +11,23 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Video from 'react-native-fast-video';
-import { basePriceTokens } from '../../web3/config/availableTokens';
-import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
-import { useDispatch, useSelector } from 'react-redux';
-import { C_Image } from 'src/components';
-import { IMAGES, SIZE, SVGS } from 'src/constants';
-import { RowBetweenWrap, SpaceView } from 'src/styles/common.styles';
-import { SmallBoldText } from 'src/styles/text.styles';
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
+import {basePriceTokens} from '../../web3/config/availableTokens';
+import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import {useDispatch, useSelector} from 'react-redux';
+import {C_Image} from 'src/components';
+import {IMAGES, SIZE, SVGS} from 'src/constants';
+import {RowBetweenWrap, SpaceView} from 'src/styles/common.styles';
+import {SmallBoldText} from 'src/styles/text.styles';
+import {BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
 import getLanguage from '../../utils/languageSupport';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import styles from './styles';
-import { numberWithCommas } from '../../utils';
-import { TextReadMoreView } from '../../components';
+import {numberWithCommas} from '../../utils';
+import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const langObj = getLanguage();
 
 const Web3 = require('web3');
@@ -49,7 +49,6 @@ const nftItem = ({ item, index }) => {
   const [creatorAddress, setCreatorAddress] = useState("");
 
   const [isPlay, setPlay] = useState(false);
-  const refVideo = useRef(null);
   const [singleNFT, setSingleNFT] = useState({});
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
@@ -63,6 +62,8 @@ const nftItem = ({ item, index }) => {
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const navigation = useNavigation();
+  const refVideo = useRef(null);
+  const refVideoPlay = useRef(null);
 
   // haris change these states
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
@@ -249,7 +250,7 @@ const nftItem = ({ item, index }) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                        walletAddressForNonCrypto.toLowerCase() &&
+                          walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -263,7 +264,7 @@ const nftItem = ({ item, index }) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                        walletAddressForNonCrypto.toLowerCase() &&
+                          walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -460,8 +461,8 @@ const nftItem = ({ item, index }) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-                ? res?.data[1]?.award
-                : false,
+              ? res?.data[1]?.award
+              : false,
           );
           let req_data = {
             owner: temp?.returnValues?.to?.toLowerCase(),
@@ -514,7 +515,10 @@ const nftItem = ({ item, index }) => {
   };
 
   const onTextLayout = useCallback(e => {
-    if (e.nativeEvent.lines.length >= 2 && e.nativeEvent.lines[1].width > width - SIZE(40))
+    if (
+      e.nativeEvent.lines.length >= 2 &&
+      e.nativeEvent.lines[1].width > width - SIZE(40)
+    )
       setLengthMore(true);
   }, []);
 
@@ -617,6 +621,11 @@ const nftItem = ({ item, index }) => {
                 </View>
               </TouchableOpacity>
             </View>
+            <InViewPort onChange={(isVisible) => {
+        if (!isVisible) {
+          setPlay(false);
+        }
+      }}>
             <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
@@ -659,6 +668,11 @@ const nftItem = ({ item, index }) => {
                     paused={!isPlay}
                     resizeMode={'cover'}
                     onLoad={() => refVideo.current.seek(0)}
+                      onEnd={() => {
+                  setPlay(false);
+                  refVideoPlay.current = true;
+                }}
+                    onLoad={() => refVideo.current.seek(0)}
                     style={{
                       flex: 1,
                       position: 'absolute',
@@ -688,7 +702,13 @@ const nftItem = ({ item, index }) => {
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}>
-                        <TouchableOpacity onPress={() => setPlay(true)}>
+                        <TouchableOpacity onPress={() => {
+                        if (refVideoPlay.current) {
+                          refVideo.current.seek(0);
+                        }
+                        refVideoPlay.current = false;
+                        setPlay(true);
+                      }}>
                           <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
                         </TouchableOpacity>
                       </View>
@@ -699,7 +719,7 @@ const nftItem = ({ item, index }) => {
                 <C_Image uri={imageUri} imageStyle={styles.modalImage} />
               )}
             </TouchableOpacity>
-
+ </InViewPort>
             <View
               style={{
                 width: '100%',

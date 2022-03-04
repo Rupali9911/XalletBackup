@@ -2,13 +2,13 @@ import React from 'react';
 import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
-import { SIZE, SVGS } from 'src/constants';
+import {SIZE, SVGS} from 'src/constants';
 import insertComma from '../../utils/insertComma';
-import { basePriceTokens } from '../../web3/config/basePriceTokens';
-import { SvgUri } from 'react-native-svg';
-import { translate } from '../../walletUtils';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
-import { useDispatch } from 'react-redux';
+import {basePriceTokens} from '../../web3/config/basePriceTokens';
+import {SvgUri} from 'react-native-svg';
+import {translate} from '../../walletUtils';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
+import {useDispatch} from 'react-redux';
 
 export default function NFTItem(props) {
   const {
