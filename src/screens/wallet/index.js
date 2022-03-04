@@ -31,7 +31,7 @@ import {HeaderBtns} from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
-import {balance} from './functions';
+import {balance, currencyInDollar} from './functions';
 
 const ethers = require('ethers');
 
@@ -45,11 +45,13 @@ const Wallet = ({route, navigation}) => {
     state => state.UserReducer,
   );
   const {
-    ethBalance,
     bnbBalance,
-    maticBalance,
     tnftBalance,
+    ethBalance,
+    maticBalance,
     talBalance,
+    usdcBalance,
+    wethBalance,
     networkType,
   } = useSelector(state => state.WalletReducer);
 
@@ -67,6 +69,8 @@ const Wallet = ({route, navigation}) => {
   const [pickerVisible, setPickerVisible] = useState(false);
   const [selectTokenVisible, setSelectTokenVisible] = useState(false);
   const [isSend, setIsSend] = useState(false);
+
+  const [currencyPriceDollar, setCurrencyPriceDollar] = useState(false);
   // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
 
   let subscribeEth;
@@ -203,21 +207,25 @@ const Wallet = ({route, navigation}) => {
   const setBalanceField = () => {
     let totalValue = 0;
     if (networkType.name == 'Ethereum') {
-      let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
+      let value = parseFloat(ethBalance) * currencyPriceDollar?.ETH ; //+ parseFloat(balances.USDT)
       totalValue = value;
     } else if (networkType.name == 'BSC') {
       // for mainnet
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
 
-      //for testing
-      let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+      // for testing
+      let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;  
+      let tnftValue = parseFloat(tnftBalance) * 1;
+      let value = bnbValue + tnftValue;
       totalValue = value;
     } else if (networkType.name == 'Polygon') {
       //for mainnet
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
 
-      //for testing
-      let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
+      // for testing
+      let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC; 
+      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH; 
+      let value = maticValue + talBalance + usdcBalance + wethValue;
       totalValue = value;
     }
     return totalValue;
@@ -271,6 +279,33 @@ const Wallet = ({route, navigation}) => {
             // USDT: responses[1],
           };
           dispatch(updateEthereumBalances(balances));
+          setLoading(false);
+          resolve();
+        })
+        .catch(err => {
+          console.log('err', err);
+          setLoading(false);
+          reject();
+        });
+    });
+  };
+
+  const priceInDollars =( pubKey ) => {
+    return new Promise((resolve, reject) => {
+      let balanceRequests = [
+        currencyInDollar(pubKey, 'BSC'),
+        currencyInDollar(pubKey, 'ETH'),
+        currencyInDollar(pubKey, 'Polygon'),
+      ];
+
+      Promise.all(balanceRequests)
+        .then(responses => {
+          let balances = {
+            BNB: responses[0],
+            ETH: responses[1],
+            MATIC: responses[2],
+          };
+          setCurrencyPriceDollar(balances)
           setLoading(false);
           resolve();
         })
@@ -346,7 +381,6 @@ const Wallet = ({route, navigation}) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          console.log('responses polygon', responses);
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
@@ -366,7 +400,8 @@ const Wallet = ({route, navigation}) => {
     });
   };
 
-  const getBalances = pubKey => {
+  const getBalances = async(pubKey) => {
+    await priceInDollars(pubKey)
     if (networkType.name == 'BSC') {
       return getBSCBalances(pubKey);
     } else if (networkType.name == 'Ethereum') {
@@ -454,6 +489,7 @@ const Wallet = ({route, navigation}) => {
             <PriceText
               price={setBalanceField()}
               isWhite
+              isDollar
               containerStyle={styles.priceCont}
             />
             <TextView style={styles.balanceLabel}>
@@ -478,11 +514,11 @@ const Wallet = ({route, navigation}) => {
                 setSelectTokenVisible(true);
               }}
             />
-            <HeaderBtns
+            {/* <HeaderBtns
               onPress={() => {}}
               image={ImagesSrc.topup}
               label={translate('wallet.common.buy')}
-            />
+            /> */}
           </View>
         </View>
       </GradientBackground>

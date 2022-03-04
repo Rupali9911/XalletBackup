@@ -4,7 +4,7 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 // import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
-import { binanceNftAbi, binanceNftDex, environment, translate } from '../../../walletUtils';
+import { binanceNftAbi_new, binanceNftDex_new, environment, ethNftDex_new, maticNftDex_new, translate } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 import { getChainId, getNetworkId } from '../../../web3/config/chainIds';
 
@@ -156,6 +156,53 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
       }
     });
   return subscription;
+}
+
+export const currencyInDollar = async(pubkey,type) => {
+  let rpcUrl = ''
+  let nftDex = ''
+  let key = pubkey
+
+  switch(type) {
+    case "BSC":
+      rpcUrl = 'https://bsc-dataseed.binance.org/'
+      nftDex = binanceNftDex_new
+      break;
+    case "ETH":
+      rpcUrl = 'https://mainnet.infura.io/v3/e2fddb9deb984ba0b9e9daa116d1702a'
+      nftDex = ethNftDex_new
+      break;
+    case "Polygon":
+      rpcUrl = 'https://rpc-mainnet.matic.quiknode.pro/'
+      nftDex = maticNftDex_new
+      break;
+  }
+
+  return new Promise(async (resolve, reject) => {
+    const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
+    const contract = new web3.eth.Contract(binanceNftAbi_new, nftDex, { from: key })
+    if (contract) {
+      if(type ==='BSC'){
+        await contract?.methods?.getReserves()?.call().then(function (info) {
+          if(info == null) {
+              return resolve(1);
+          }
+          var bnbLpReserve = info[0].toString();
+          var busdLpReserve = info[1].toString();
+          var bnbPriceInner = busdLpReserve / bnbLpReserve;
+          resolve(bnbPriceInner);
+        })
+      } else {
+        await contract.methods.getReserves().call().then(function (info) {
+          maticQuickReserve =  web3.utils.fromWei(info._reserve0.toString(),"ether");
+          aliaQuickReserve = web3.utils.fromWei(info._reserve1.toString(),"mwei");
+          resolve(parseFloat(aliaQuickReserve) / parseFloat(maticQuickReserve));
+        })
+      }
+    } else {
+        reject({ success: false, data: 'Smart contract not deployed to detected network.' });
+    }
+  })    
 }
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
