@@ -402,9 +402,9 @@ function ArtistDetail({
         <AppBackground isBusy={loading}>
 
             <AppHeader
-                    title={data.title || data.username}
-                    showBackButton
-                />
+                title={data.title || data.username}
+                showBackButton
+            />
 
             <View style={{ width: "100%", paddingHorizontal: SIZE(14), flexDirection: "row" }} >
                 <UserImageView>
@@ -443,12 +443,12 @@ function ArtistDetail({
                 <SpaceView mTop={SIZE(8)} />
                 {
                     data.about !== "" ?
-                    <ScrollView style={{ maxHeight: SIZE(70) }}>
-                        <SmallNormalText>
-                            {data.about}
-                        </SmallNormalText>
-                    </ScrollView>
-                    : null
+                        <ScrollView style={{ maxHeight: SIZE(70) }}>
+                            <SmallNormalText>
+                                {data.about}
+                            </SmallNormalText>
+                        </ScrollView>
+                        : null
                 }
                 <SpaceView mTop={SIZE(8)} />
                 {
