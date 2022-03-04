@@ -34,6 +34,7 @@ import {
     myNFTList,
     myNftLoadStart,
     myPageChange,
+    myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 
 const NFT = ({ route }) => {
@@ -134,7 +135,7 @@ const NFT = ({ route }) => {
         axios
             .post(url, obj, { headers: headers })
             .then(res => {
-                setMainLoader(false);
+                dispatch(myNftLoadFail());
                 console.log(res, 'res owned success');
 
                 if (res.data.success) {
@@ -153,7 +154,8 @@ const NFT = ({ route }) => {
                 }
             })
             .catch(e => {
-                setMainLoader(false);
+                dispatch(myNftLoadFail());
+
                 console.log(e.response, 'collection created list error');
                 alertWithSingleBtn(
                     translate('wallet.common.alert'),

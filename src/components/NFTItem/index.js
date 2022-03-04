@@ -1,6 +1,6 @@
 import React from 'react';
-import {TouchableOpacity, View, Text, Image} from 'react-native';
-import {C_Image} from '../../components';
+import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
+import { C_Image } from '../../components';
 import styles from './styles';
 import {SIZE, SVGS} from 'src/constants';
 import insertComma from '../../utils/insertComma';
@@ -21,7 +21,7 @@ export default function NFTItem(props) {
     isMeCollection,
   } = props;
 
-  const {PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon} =
+  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
     SVGS;
 
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ export default function NFTItem(props) {
           height={SIZE(12)}
         />
       );
-    else return <Image source={{uri: uri}} />;
+    else return <Image source={{ uri: uri }} />;
   };
 
   const getAuctionTimeRemain = item => {
@@ -88,6 +88,9 @@ export default function NFTItem(props) {
     return null;
   };
 
+  let uriType = imageUri.split('.')[imageUri.split('.').length - 1];
+  const checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
+
   return (
     <>
       {isMeCollection ? (
@@ -99,7 +102,7 @@ export default function NFTItem(props) {
             uri={image}
             type={
               item?.metaData?.image?.split('.')[
-                item?.metaData?.image?.split('.')?.length - 1
+              item?.metaData?.image?.split('.')?.length - 1
               ]
             }
             imageStyle={styles.listImage}
@@ -118,9 +121,9 @@ export default function NFTItem(props) {
             </TouchableOpacity>
             <View>
               <C_Image
-                type={imageUri.split('.')[imageUri.split('.').length - 1]}
+                type={uriType}
                 uri={imageUri}
-                imageStyle={styles.collectionListImage}
+                imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
               />
             </View>
             <View style={styles.collectionWrapper}>
@@ -132,8 +135,8 @@ export default function NFTItem(props) {
                   justifyContent: 'flex-end',
                 }}>
                 {item.newprice &&
-                item.newprice.endTime &&
-                new Date(item.newprice.endTime) < new Date().getTime() ? (
+                  item.newprice.endTime &&
+                  new Date(item.newprice.endTime) < new Date().getTime() ? (
                   <Text
                     style={{
                       color: '#60C083',
@@ -143,7 +146,7 @@ export default function NFTItem(props) {
                     {translate('common.auctionended')}
                   </Text>
                 ) : item?.price ? (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text
                       style={{
                         color: '#60c083',
@@ -185,9 +188,9 @@ export default function NFTItem(props) {
             </TouchableOpacity>
             <View>
               <C_Image
-                type={imageUri?.split('.')[imageUri?.split('.').length - 1]}
+                type={uriType}
                 uri={imageUri}
-                imageStyle={styles.collectionListImage}
+                imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
               />
             </View>
             <View style={styles.collectionWrapper}>
@@ -200,7 +203,7 @@ export default function NFTItem(props) {
                 }}>
                 <Text
                   numberOfLines={1}
-                  style={{fontSize: SIZE(12), width: SIZE(80)}}>
+                  style={{ fontSize: SIZE(12), width: SIZE(80) }}>
                   {item.creatorObj && item.creatorObj[0]
                     ? item.creatorObj[0].title
                       ? item.creatorObj[0].title
@@ -208,8 +211,8 @@ export default function NFTItem(props) {
                     : ''}
                 </Text>
                 {item.newprice &&
-                item.newprice.endTime &&
-                new Date(item.newprice.endTime) < new Date().getTime() ? (
+                  item.newprice.endTime &&
+                  new Date(item.newprice.endTime) < new Date().getTime() ? (
                   <Text
                     numberOfLines={1}
                     style={{
@@ -219,7 +222,7 @@ export default function NFTItem(props) {
                     {translate('common.auctionended')}
                   </Text>
                 ) : item?.price ? (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text
                       numberOfLines={1}
                       style={{
@@ -250,12 +253,12 @@ export default function NFTItem(props) {
                   alignItems: 'center',
                 }}>
                 {chainType(item?.nftChain)}
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   {item.newprice && item.newprice?.endTime ? (
                     new Date(item.newprice.endTime) < new Date().getTime() ? (
                       item.price ? (
                         <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <Text
                             numberOfLines={1}
                             style={{
@@ -265,8 +268,8 @@ export default function NFTItem(props) {
                             }}>
                             {item?.baseCurrency === 'ALIA'
                               ? insertComma(
-                                  parseFloat(item?.price, true).toFixed(0),
-                                )
+                                parseFloat(item?.price, true).toFixed(0),
+                              )
                               : insertComma(item?.price, true)}
                           </Text>
                           {renderIcon()}
@@ -285,7 +288,7 @@ export default function NFTItem(props) {
                     <>
                       {item?.lastpriceTraded ? (
                         <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <Text
                             style={{
                               color: '#aaa',
@@ -301,11 +304,11 @@ export default function NFTItem(props) {
                             }}>
                             {item?.lastCurrencyTraded === 'ALIA'
                               ? insertComma(
-                                  parseFloat(
-                                    item?.lastpriceTraded,
-                                    true,
-                                  ).toFixed(0),
-                                )
+                                parseFloat(
+                                  item?.lastpriceTraded,
+                                  true,
+                                ).toFixed(0),
+                              )
                               : insertComma(item?.lastpriceTraded, true)}
                           </Text>
                           {renderIcon()}

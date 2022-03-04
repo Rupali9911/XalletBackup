@@ -1242,17 +1242,29 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('common.creator')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {creator
-                    ? (creator.includes("0x")
-                      ? (artistData && artistData.hasOwnProperty("title") && artistData.title)
-                        ? artistData.title
-                        : (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
-                          || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
-                          || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
-                          ? collectCreat?.creator
-                          : creator.substring(0, 6)
-                      : creator)
-                    : ""}
+                  {
+                    artistData ?
+                      (
+                        artistData.hasOwnProperty("username") && artistData.username && !artistData.username.includes("0x") ?
+                          artistData.username :
+                          (
+                            artistData.hasOwnProperty("title") && artistData.title ?
+                              artistData.title :
+                              (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
+                                || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
+                                || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
+                                ? collectCreat?.creator
+                                : creator.substring(0, 6)
+                          )
+                      )
+                      :
+                      (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
+                        || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
+                        || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
+                        ? collectCreat?.creator
+                        : creator.substring(0, 6)
+                  }
+
                 </Text>
               </View>
             </TouchableOpacity>

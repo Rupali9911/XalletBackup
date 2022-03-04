@@ -173,7 +173,7 @@ const DetailItemScreen = ({ route }) => {
         let findIndex = data.findIndex(x => x.id === item.id);
         if (item.metaData) {
             return (
-                <NftItem videoStatus={stopVideos} item={item} index={findIndex} isCollection />
+                <NftItem videoStatus={stopVideos} item={item} index={findIndex} />
             )
         }
     }

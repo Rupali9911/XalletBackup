@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {
   Dimensions,
   Image,
@@ -11,23 +11,23 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Video from 'react-native-fast-video';
-import { basePriceTokens } from '../../web3/config/availableTokens';
-import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
-import { useDispatch, useSelector } from 'react-redux';
-import { C_Image } from 'src/components';
-import { IMAGES, SIZE, SVGS } from 'src/constants';
-import { RowBetweenWrap, SpaceView } from 'src/styles/common.styles';
-import { SmallBoldText } from 'src/styles/text.styles';
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
+import {basePriceTokens} from '../../web3/config/availableTokens';
+import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
+import {useDispatch, useSelector} from 'react-redux';
+import {C_Image} from 'src/components';
+import {IMAGES, SIZE, SVGS} from 'src/constants';
+import {RowBetweenWrap, SpaceView} from 'src/styles/common.styles';
+import {SmallBoldText} from 'src/styles/text.styles';
+import {BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
 import getLanguage from '../../utils/languageSupport';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import styles from './styles';
-import { numberWithCommas } from '../../utils';
-import { TextReadMoreView } from '../../components';
+import {numberWithCommas} from '../../utils';
+import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const langObj = getLanguage();
 
 const Web3 = require('web3');
@@ -41,22 +41,14 @@ const {
   PlayButtonIcon,
 } = SVGS;
 
-const nftItem = ({ item, index, isCollection }) => {
+const nftItem = ({ item, index }) => {
   const dispatch = useDispatch();
   const { AuthReducer } = useSelector(state => state);
   const { data, wallet } = useSelector(state => state.UserReducer);
-  const [owner, setOwner] = useState('----');
-  const [ownerId, setOwnerId] = useState('');
-  const [ownerImage, setOwnerImage] = useState();
 
   const [creatorAddress, setCreatorAddress] = useState("");
 
-  const [artistId, setArtistId] = useState();
-  const [artist, setArtist] = useState('----');
-  const [artistData, setArtistData] = useState();
-  const [creatorImage, setCreatorImage] = useState();
   const [isPlay, setPlay] = useState(false);
-  const refVideo = useRef(null);
   const [singleNFT, setSingleNFT] = useState({});
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
@@ -70,6 +62,8 @@ const nftItem = ({ item, index, isCollection }) => {
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const navigation = useNavigation();
+  const refVideo = useRef(null);
+  const refVideoPlay = useRef(null);
 
   // haris change these states
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
@@ -79,79 +73,61 @@ const nftItem = ({ item, index, isCollection }) => {
 
 
   const [ownerData, setOwnerData] = useState();
+  const [owner, setOwner] = useState('----');
+
+  const [artist, setArtist] = useState('----');
+  const [artistData, setArtistData] = useState();
+
   const [nftDetail, setNFTDetail] = useState();
   const [isArtistProfile, setisArtistProfile] = useState(true);
   const [loader, setLoader] = useState(false);
 
-  let MarketPlaceAbi = '';
-  let MarketContractAddress = '';
-
-  let ERC721Abi = '';
-  let providerUrl = '';
-  let ERC721Address = '';
 
   let params = item.tokenId.toString().split('-');
-  let tokenId =
-    params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
-  let chainType = params.length > 1 ? params[0] : 'polygon';
-  let collectionAddress = params.length > 2 ? params[1] : null;
-  if (chainType === 'polygon') {
-    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
-    MarketContractAddress = blockChainConfig[1].marketConConfig.add;
-    providerUrl = blockChainConfig[1].providerUrl;
-    ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
-    ERC721Address = blockChainConfig[1].erc721ConConfig.add;
-    collectionAddress =
-      collectionAddress || blockChainConfig[1].erc721ConConfig.add;
-  } else if (chainType === 'binance') {
-    MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
-    MarketContractAddress = blockChainConfig[0].marketConConfig.add;
-    providerUrl = blockChainConfig[0].providerUrl;
-    ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
-    ERC721Address = blockChainConfig[0].erc721ConConfig.add;
-    collectionAddress =
-      collectionAddress || blockChainConfig[0].erc721ConConfig.add;
-  } else if (chainType === 'ethereum') {
-    MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
-    MarketContractAddress = blockChainConfig[2].marketConConfig.add;
-    providerUrl = blockChainConfig[2].providerUrl;
-    ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
-    ERC721Address = blockChainConfig[2].erc721ConConfig.add;
-    collectionAddress =
-      collectionAddress || blockChainConfig[2].erc721ConConfig.add;
+  let chainType,
+    tokenId,
+    collectionAddress,
+    ERC721Abi,
+    ERC721Address,
+    MarketPlaceAbi,
+    MarketContractAddress,
+    providerUrl,
+    walletAddressForNonCrypto;
+
+  if (params.length > 2) {
+    chainType = params[0];
+    collectionAddress = params[1];
+    tokenId = params[2]
+
+    let getBlockChainConfig = blockChainConfig.find(v => v.key.toLowerCase() === chainType.toLowerCase());
+    ERC721Abi = getBlockChainConfig.erc721ConConfig.abi;
+    ERC721Address = getBlockChainConfig.erc721ConConfig.add;
+    MarketPlaceAbi = getBlockChainConfig.marketConConfig.abi
+    MarketContractAddress = getBlockChainConfig.marketConConfig.add;
+    providerUrl = getBlockChainConfig.providerUrl;
+
+    walletAddressForNonCrypto = networkType === "testnet"
+      ? chainType === "binance"
+        ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
+        : "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
+      : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e";
+
   }
 
-  const chainAvailable = () => {
-    let found = false;
-    for (let i = 0; i < blockChainConfig.length; i++) {
-      if (blockChainConfig[i].key === chainType) {
-        found = true;
-        break;
-      }
-    }
-    return found;
-  };
-  let walletAddressForNonCrypto = '';
-  walletAddressForNonCrypto =
-    networkType === 'testnet'
-      ? chainType === 'binance'
-        ? '0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af'
-        : '0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859'
-      : '0xac940124f5f3b56b0c298cca8e9e098c2cccae2e';
   useEffect(() => {
-    // Get NonCryptoNFTOwner
-    let web3 = new Web3(providerUrl);
+    if (chainType) {
 
-    const getDetail = async () => {
-      await getTokenDetailsApi();
-    }
-    if (chainAvailable()) {
-      setLoader(true)
+      const getDetail = async () => {
+        await getTokenDetailsApi();
+      }
+
+      let web3 = new Web3(providerUrl);
       let MarketPlaceContract = new web3.eth.Contract(
         MarketPlaceAbi,
         MarketContractAddress,
       );
-      console.log(MarketPlaceContract.methods.getNonCryptoOwner, "/////////")
+
+      setLoader(true)
       if (MarketPlaceContract.methods.getNonCryptoOwner) {
         MarketPlaceContract.methods
           .getNonCryptoOwner(collectionAddress, tokenId)
@@ -176,7 +152,7 @@ const nftItem = ({ item, index, isCollection }) => {
     try {
       let profile = await axios.get(profileUrl);
       setLoader(false)
-      console.log(profile, "non_crypto")
+      // console.log(profile, "non_crypto", item.metaData.name)
       setOwnerData(profile?.data?.data)
       setOwner(id);
       setArtistRole('non_crypto')
@@ -274,7 +250,7 @@ const nftItem = ({ item, index, isCollection }) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                        walletAddressForNonCrypto.toLowerCase() &&
+                          walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -288,7 +264,7 @@ const nftItem = ({ item, index, isCollection }) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                        walletAddressForNonCrypto.toLowerCase() &&
+                          walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -434,11 +410,11 @@ const nftItem = ({ item, index, isCollection }) => {
         'Content-Type': 'application/json',
       },
     };
-    console.log("getTokenDetailsApi")
+    // console.log("getTokenDetailsApi")
     await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        console.log('getDetailNFT_res', res);
+        // console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
@@ -485,8 +461,8 @@ const nftItem = ({ item, index, isCollection }) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-                ? res?.data[1]?.award
-                : false,
+              ? res?.data[1]?.award
+              : false,
           );
           let req_data = {
             owner: temp?.returnValues?.to?.toLowerCase(),
@@ -504,7 +480,7 @@ const nftItem = ({ item, index, isCollection }) => {
           fetch(`${BASE_URL}/xanalia/getProfile`, body)
             .then(response => response.json())
             .then(res => {
-              // console.log(res.data, "///////")
+              // console.log(res.data, "///////", item.metaData.name)
               setArtist(temp?.returnValues?.to?.toLowerCase());
               if (res.data) {
                 setArtistData(res.data);
@@ -539,7 +515,10 @@ const nftItem = ({ item, index, isCollection }) => {
   };
 
   const onTextLayout = useCallback(e => {
-    if (e.nativeEvent.lines.length >= 2 && e.nativeEvent.lines[1].width > width - SIZE(40))
+    if (
+      e.nativeEvent.lines.length >= 2 &&
+      e.nativeEvent.lines[1].width > width - SIZE(40)
+    )
       setLengthMore(true);
   }, []);
 
@@ -548,24 +527,24 @@ const nftItem = ({ item, index, isCollection }) => {
 
   const onProfile = isOwner => {
     if (isOwner) {
-      if (owner) navigation.push('ArtistDetail', { id: owner });
+      if (owner !== "----") navigation.push('ArtistDetail', { id: owner });
     } else {
-      if (artist) navigation.push('ArtistDetail', { id: artist });
+      if (artist !== "----") navigation.push('ArtistDetail', { id: artist });
     }
   };
   let imageUri =
     item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl
       : item.metaData.image;
-
+  // console.log(item.metaData.name, artist, artistData, "/////////")
   return (
     <>
       {
-        // loader ?
-        //   <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
-        //     <ActivityIndicator size={"small"} />
-        //   </View>
-        //   :
+        loader ?
+          <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator size={"small"} />
+          </View>
+          :
           <View>
             <View style={styles.modalSectCont}>
               <TouchableOpacity
@@ -583,7 +562,7 @@ const nftItem = ({ item, index, isCollection }) => {
                     numberOfLines={1}
                     style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
                     {
-                      ownerData && (
+                      ownerData ? (
                         ownerData.role === 'crypto' ?
                           ownerData.title ?
                             ownerData.title :
@@ -593,7 +572,8 @@ const nftItem = ({ item, index, isCollection }) => {
                           ownerData.role === 'non_crypto' ?
                             ownerData.username ?
                               ownerData.username : ""
-                            : "")
+                            : owner) :
+                        owner
                     }
                   </Text>
                 </View>
@@ -616,48 +596,64 @@ const nftItem = ({ item, index, isCollection }) => {
                       { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
                     ]}>
                     {
-                      artist
-                        ? (artist.includes("0x")
-                          ? (artistData && artistData.hasOwnProperty("title") && artistData.title)
-                            ? artistData.title
-                            : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
-                              || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
-                              || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
-                              ? collectCreat?.creator
-                              : artist.substring(0, 6)
-                          : artist)
-                        : ""
+                      artistData ?
+                        (
+                          artistData.hasOwnProperty("username") && artistData.username && !artistData.username.includes("0x") ?
+                            artistData.username :
+                            (
+                              artistData.hasOwnProperty("title") && artistData.title ?
+                                artistData.title :
+                                (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
+                                  || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
+                                  || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
+                                  ? collectCreat?.creator
+                                  : artist.substring(0, 6)
+                            )
+                        )
+                        :
+                        (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
+                          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
+                          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
+                          ? collectCreat?.creator
+                          : artist.substring(0, 6)
                     }
                   </Text>
                 </View>
               </TouchableOpacity>
             </View>
+            <InViewPort onChange={(isVisible) => {
+        if (!isVisible) {
+          setPlay(false);
+        }
+      }}>
             <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
-                isPlay
-                  ? setPlay(!isPlay)
-                  : navigation.navigate('CertificateDetail', {
-                    id: item.newtokenId,
-                    name: item.metaData.name,
-                    description: item.metaData.description,
-                    owner: owner,
-                    creator: artist,
-                    thumbnailUrl: item.thumbnailUrl,
-                    video: item.metaData.image,
-                    fileType: fileType,
-                    price: item.price,
-                    chain: item.chain,
-                    ownerId: owner,
-                    artistId: artist,
-                    tokenId: item.tokenId,
-                    collectCreat: collectCreat,
-                    ownerData: ownerData,
-                    artistData: artistData,
-                    like: item.like,
-                    item: item,
-                    index: index,
-                  });
+                chainType && (
+                  isPlay
+                    ? setPlay(!isPlay)
+                    : navigation.navigate('CertificateDetail', {
+                      id: item.newtokenId,
+                      name: item.metaData.name,
+                      description: item.metaData.description,
+                      owner: owner,
+                      creator: artist,
+                      thumbnailUrl: item.thumbnailUrl,
+                      video: item.metaData.image,
+                      fileType: fileType,
+                      price: item.price,
+                      chain: item.chain,
+                      ownerId: owner,
+                      artistId: artist,
+                      tokenId: item.tokenId,
+                      collectCreat: collectCreat,
+                      ownerData: ownerData,
+                      artistData: artistData,
+                      like: item.like,
+                      item: item,
+                      index: index,
+                    })
+                )
               }}>
               {fileType === 'mp4' ||
                 fileType === 'MP4' ||
@@ -671,6 +667,11 @@ const nftItem = ({ item, index, isCollection }) => {
                     playInBackground={false}
                     paused={!isPlay}
                     resizeMode={'cover'}
+                    onLoad={() => refVideo.current.seek(0)}
+                      onEnd={() => {
+                  setPlay(false);
+                  refVideoPlay.current = true;
+                }}
                     onLoad={() => refVideo.current.seek(0)}
                     style={{
                       flex: 1,
@@ -701,7 +702,13 @@ const nftItem = ({ item, index, isCollection }) => {
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}>
-                        <TouchableOpacity onPress={() => setPlay(true)}>
+                        <TouchableOpacity onPress={() => {
+                        if (refVideoPlay.current) {
+                          refVideo.current.seek(0);
+                        }
+                        refVideoPlay.current = false;
+                        setPlay(true);
+                      }}>
                           <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
                         </TouchableOpacity>
                       </View>
@@ -712,7 +719,7 @@ const nftItem = ({ item, index, isCollection }) => {
                 <C_Image uri={imageUri} imageStyle={styles.modalImage} />
               )}
             </TouchableOpacity>
-
+ </InViewPort>
             <View
               style={{
                 width: '100%',

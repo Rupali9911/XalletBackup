@@ -66,6 +66,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
   },
+  collectionListVideo: {
+    width: '100%',
+    height: (wp('100%') / 2) - wp('1%'),
+    borderTopRightRadius: SIZE(12),
+    borderTopLeftRadius: SIZE(12),
+  },
   likeButton: {
     position: 'absolute',
     zIndex: 1,

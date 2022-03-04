@@ -190,7 +190,7 @@ const Cards = ({route, navigation}) => {
       {isCardPay && (
         <>
           <Separator style={styles.separator} />
-          <View style={styles.totalContainer}>
+          <View style={styles.totalContainer}> 
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
