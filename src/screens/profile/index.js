@@ -46,24 +46,24 @@ function Profile({ navigation, connector }) {
   const renderTabView = () => {
     return (
       <Tab.Navigator
-        tabBarOptions={{
-          activeTintColor: COLORS.BLUE2,
-          inactiveTintColor: COLORS.BLACK5,
-          style: {
+        screenOptions={{
+          tabBarActiveTintColor: COLORS.BLUE2,
+          tabBarInactiveTintColor: COLORS.BLACK5,
+          tabBarStyle: {
             boxShadow: 'none',
             elevation: 0,
             borderBottomColor: '#EFEFEF',
             borderBottomWidth: 1,
           },
-          tabStyle: {
+          tabBarItemStyle: {
             height: SIZE(42),
             marginTop: SIZE(-10),
           },
-          labelStyle: {
+          tabBarLabelStyle: {
             fontSize: FONT(12),
             textTransform: 'none',
           },
-          indicatorStyle: {
+          tabBarIndicatorStyle: {
             backgroundColor: COLORS.BLUE4,
             height: 2,
           },
