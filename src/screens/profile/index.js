@@ -30,7 +30,9 @@ import {
   WebsiteLink,
 } from './styled';
 import Collection from "./collection";
-import NFT from "./nft";
+import NFTCreated from './nftCreated';
+import NFTOwned from './nftOwned';
+import Draft from './draft';
 import colors from "../../res/colors";
 
 const { ConnectSmIcon, SettingIcon } = SVGS;
@@ -69,6 +71,7 @@ function Profile({ navigation, connector }) {
         //     height: 2,
         //   },
           tabBarOptions={{
+              scrollEnabled: true,
               activeTintColor: colors.BLUE2,
               inactiveTintColor: colors.BLACK5,
               style: {
@@ -80,6 +83,7 @@ function Profile({ navigation, connector }) {
               tabStyle: {
                   height: SIZE(42),
                   marginTop: SIZE(-10),
+                  width:SIZE(100),
               },
               labelStyle: {
                   fontSize: FONT(12),
@@ -91,16 +95,24 @@ function Profile({ navigation, connector }) {
               },
 
         }}>
-        <Tab.Screen
-          name="My NFTs"
-          options={{ tabBarLabel: translate('wallet.common.myNFTs') }}
-          component={NFT}
+         <Tab.Screen
+          name={translate('wallet.common.profileCreated')}
+          component={NFTCreated}
           initialParams={{ id: id }}
         />
         <Tab.Screen
-          name="My Collection"
-          options={{ tabBarLabel: translate('common.myCollection') }}
+          name={translate('wallet.common.owned')}
+          component={NFTOwned}
+          initialParams={{ id: id }}
+        />
+        <Tab.Screen
+          name={translate('wallet.common.collection')}
           component={Collection}
+          initialParams={{ id: id }}
+        />
+        <Tab.Screen
+          name={translate('common.saveAsDraft')}
+          component={Draft}
           initialParams={{ id: id }}
         />
       </Tab.Navigator>

@@ -265,11 +265,11 @@ const TokenDetail = ({route, navigation}) => {
               image={ImagesSrc.receive}
               label={translate('wallet.common.receive')}
             />
-            <HeaderBtns
+            {/* <HeaderBtns
               onPress={() => {}}
               image={ImagesSrc.topup}
               label={translate('wallet.common.buy')}
-            />
+            /> */}
           </View>
         </View>
       </GradientBackground>

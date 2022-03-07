@@ -916,7 +916,7 @@
             "settings": "設定",
             "about": "に関しては",
             "noCollection": "コレクションがありません",
-            "owned": "所有",
+            "owned": "所有中",
             "NFTList": "NFTリスト",
             "uploadNFT": "NFT のアップロード",
             "collectionChangeNetwork": "このコレクションを編集するには、ネットワークを {{networkType}} に変更してください",
@@ -957,7 +957,8 @@
             "nftType": "作品のタイプ",
             "auctionnew": "オークション",
             "Sellerpayin": "支払通貨を選択",
-            "buyerpayin": "支払通貨を選択"
+            "buyerpayin": "支払通貨を選択",
+            "profileCreated":"制作物"
         },
         "backendmessage": {
             "error": {},
