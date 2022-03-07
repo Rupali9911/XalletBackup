@@ -137,8 +137,19 @@ const PaymentMethod = props => {
             </Text>
             <Text style={styles.value}>
               {selectedMethod
-                ? numberWithCommas(Number(price).toFixed(3)) + baseCurrency?.key + ' = ' + '$' + numberWithCommas(Number(priceInDollar).toFixed(1))
-                : '$ ' + numberWithCommas(Number(priceInDollar).toFixed(1)) + ' = ' + numberWithCommas(Number(price).toFixed(3)) + baseCurrency?.key}
+                ?
+                  numberWithCommas(parseFloat(Number(price).toFixed(3)))
+                  + baseCurrency?.key
+                  + ' = '
+                  + '$'
+                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1)))
+                :
+                  '$ '
+                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1)))
+                  + ' = '
+                  + numberWithCommas(parseFloat(Number(price).toFixed(3)))
+                  + baseCurrency?.key
+              }
             </Text>
           </View>
 

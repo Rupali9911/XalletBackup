@@ -404,8 +404,6 @@ const PaymentNow = props => {
     alertWithSingleBtn(translate('common.error'), msg);
   };
 
-  console.log('============paymentObject', paymentObject);
-
   return (
     <Modal
       visible={visible}
@@ -472,9 +470,17 @@ const PaymentNow = props => {
               <Text style={styles.symbol}>{'$'} </Text>
             )}
             <Text numberOfLines={1} style={styles.amount}>
-              {numberWithCommas(Number(paymentObject && paymentObject.type == 'wallet'
+              {
+                numberWithCommas(
+                  parseFloat(
+                  Number(
+                  paymentObject
+                  && paymentObject.type == 'wallet'
                 ? paymentObject.priceInToken
-                : priceInDollar || 0).toFixed(4))}
+                : priceInDollar || 0).toFixed(1)
+                )
+                )
+              }
             </Text>
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
@@ -539,7 +545,7 @@ const PaymentNow = props => {
                 : ''}{' '}
               {paymentObject && paymentObject.type == 'wallet'
                 ? paymentObject.priceInToken
-                : numberWithCommas(Number(priceInDollar).toFixed(4)) || 0}
+                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1))) || 0}
             </Text>
           </View>
 
