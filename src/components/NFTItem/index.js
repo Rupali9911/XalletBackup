@@ -19,6 +19,7 @@ export default function NFTItem(props) {
     isCollection,
     index,
     isMeCollection,
+    isBlind,
   } = props;
 
   const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
@@ -26,7 +27,7 @@ export default function NFTItem(props) {
 
   const dispatch = useDispatch();
 
-  let imageUri =
+  let imageUri = isMeCollection ? (item.iconImage : null) :
     item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl
       : item.metaData?.image;
@@ -72,17 +73,17 @@ export default function NFTItem(props) {
         let mins = parseInt(diff / (1000 * 60));
         let secs = parseInt(diff / 1000);
 
-        // if (days > 0) {
-        //   return days + ' Days Left';
-        // } else if (hours > 0) {
-        //   return hours + ' Hours Left';
-        // } else if (mins > 0) {
-        //   return mins + ' Minutes Left';
-        // } else if (secs > 0) {
-        //   return secs + ' Seconds Left';
-        // } else {
-        //   return `Bid Deadline ${hours}:${mins}:${secs} `;
-        // }
+        if (days > 0) {
+          return days + ' Days Left';
+        } else if (hours > 0) {
+          return hours + ' Hours Left';
+        } else if (mins > 0) {
+          return mins + ' Minutes Left';
+        } else if (secs > 0) {
+          return secs + ' Seconds Left';
+        } else {
+          return `Bid Deadline ${hours}:${mins}:${secs} `;
+        }
       }
     }
     return null;

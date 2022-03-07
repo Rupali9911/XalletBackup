@@ -2,8 +2,8 @@ import i18n from 'i18n-js';
 import memoize from 'lodash.memoize';
 import store from '../store';
 import ImagesSrc from '../constants/Images';
-
-export const IsTestNet = true;
+import { networkType } from "../common/networkType";
+export const IsTestNet = networkType === "testnet" ? true : false;
 export const SCAN_WALLET = 'SCAN_WALLET';
 export const SCAN_APP = 'SCAN_APP';
 
@@ -4354,7 +4354,9 @@ export const environment = {
   },
   stripeKey: {
     p_key:
-      'pk_test_51Jbha5Ee7q061aolrboDAHMlO4Y6eYpoHZtARZwQcFXUIu0fxFFzHjFKSTQNUnfrYO6owRxHzfECLULhV7RXZ7Zr00oa6Um1Zb',
+    IsTestNet?
+      'pk_test_51Jbha5Ee7q061aolrboDAHMlO4Y6eYpoHZtARZwQcFXUIu0fxFFzHjFKSTQNUnfrYO6owRxHzfECLULhV7RXZ7Zr00oa6Um1Zb'
+      : 'pk_live_51Jbha5Ee7q061aolh0uX0uwQnJ30MydHuT4yJGN98fkM8v0dOTpkBONT7B2ZNTGiHFGOoagsU0TDJgJFO7hjhMFl00uPoEkbuR',
   },
   ethRpc: IsTestNet ? test_ethRpc : ethRpc,
   bnbRpc: IsTestNet ? test_bnbRpc : bnbRpc,

@@ -44,7 +44,8 @@ export const hotCollectionList = (page) => {
   }
 }
 
-export const getHotCollectionDetail = (collectionId) => {
+export const getHotCollectionDetail = (collectionId, isBlind) => {
   axios.defaults.headers.post['Content-Type'] = 'application/json';
-  return axios.get(`${BASE_URL}/user/specific-collection?collectionId=${collectionId}`);
+  const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
+  return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
 }

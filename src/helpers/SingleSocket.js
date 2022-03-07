@@ -15,7 +15,7 @@ export default class SingleSocket extends Component {
   }
 
   static myInstance = null;
-  
+
   static getInstance() {
     if (SingleSocket.myInstance == null) {
       SingleSocket.myInstance = new SingleSocket();
@@ -53,7 +53,7 @@ export default class SingleSocket extends Component {
   }
 
   onNewMessage(e) {
-    console.log('socket_new_message',e);
+    //console.log('socket_new_message',e);
     // eventService.sendMessage(JSON.parse(e.data));
     Events.next(e.data);
   }

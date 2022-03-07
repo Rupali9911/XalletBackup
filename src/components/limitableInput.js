@@ -73,6 +73,7 @@ const LimitableInput = (props) => {
                         onChangeText={input.onChange}
                         onBlur={input.onBlur}
                         onFocus={input.onFocus}
+                        // autoCorrect
                         placeholderTextColor={'grey'} />
                 </RowBetweenWrap>
             ) : (
@@ -93,6 +94,7 @@ const LimitableInput = (props) => {
                             onBlur={input.onBlur}
                             onFocus={input.onFocus}
                             multiline
+                            // autoCorrect
                             placeholderTextColor={'grey'} />
                     </RowWrap>
                 </>

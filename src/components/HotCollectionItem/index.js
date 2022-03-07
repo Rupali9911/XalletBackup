@@ -13,9 +13,7 @@ const {
 } = SVGS;
 
 export default function HotcollectionItem(props) {
-  const { item, onPress } = props;
-
-  const { bannerImage, chainType, items, iconImage, collectionName, creatorInfo } = item;
+  const { bannerImage, chainType, items, iconImage, collectionName, creatorInfo, onPress, creator, blind } = props;
 
   const chainIcon = (type) => {
     if (type === 'polygon') return <PolygonIcon />
@@ -24,6 +22,7 @@ export default function HotcollectionItem(props) {
   };
 
   const getByUser = () => {
+    if (creator) return creator;
     if (creatorInfo[0].title) return creatorInfo[0].title;
     if (creatorInfo[0].role === 'crypto') {
       return creatorInfo[0].username.slice(0, 6);
@@ -34,6 +33,20 @@ export default function HotcollectionItem(props) {
 
   let uriType = bannerImage?.split('.')[bannerImage?.split('.').length - 1]
   const checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
+
+  const renderChain = () => {
+    if (blind) {
+      return (
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <BitmapIcon style={{ marginRight: SIZE(8)}} />
+          <PolygonIcon style={{ marginRight: SIZE(8)}} />
+          <Ethereum />
+        </View>
+      );
+    } else {
+      return chainIcon(chainType);
+    }
+  }
 
   return (
     <TouchableOpacity
@@ -54,11 +67,11 @@ export default function HotcollectionItem(props) {
             imageStyle={styles.iconImage}
           />
           <View style={styles.bottomCenterWrap}>
-            <Text style={styles.collectionName}>{collectionName}</Text>
+            <Text numberOfLines={1} style={styles.collectionName}>{collectionName}</Text>
             <Text style={styles.byUser}>{`by ${getByUser()}`}</Text>
           </View>
           <View style={styles.bottomWrap}>
-            {chainIcon(chainType)}
+            {renderChain()}
             <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>
