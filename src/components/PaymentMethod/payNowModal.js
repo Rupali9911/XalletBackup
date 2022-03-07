@@ -404,7 +404,7 @@ const PaymentNow = props => {
     alertWithSingleBtn(translate('common.error'), msg);
   };
 
-  console.log('============paymentObject', paymentObject);
+  // console.log('============paymentObject', paymentObject);
 
   return (
     <Modal
