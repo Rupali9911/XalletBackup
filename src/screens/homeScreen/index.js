@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   ActivityIndicator,
   AppState,
@@ -96,6 +97,12 @@ const HomeScreen = ({ navigation }) => {
       // }
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => setOpenState(false);
+    },[])
+  );
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener(state => {
