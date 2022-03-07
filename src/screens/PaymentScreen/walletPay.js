@@ -579,7 +579,7 @@ const WalletPay = ({ route, navigation }) => {
           <View style={styles.payObject}>
             <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
             <Text style={styles.value}>
-              {selectedObject.type} {priceInToken || price}
+              {priceInToken || price} {selectedObject.type}
             </Text>
           </View>
           {!IsActiveToPay() && (
