@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import _, { toFinite } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -37,7 +37,7 @@ import {
     myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 
-const NFT = ({ route }) => {
+const NFTCreated = ({ route }) => {
     const isFocusedHistory = useIsFocused();
 
     const { id } = route?.params;
@@ -58,6 +58,10 @@ const NFT = ({ route }) => {
     const [nftOwnedPage, setNftOwnedPage] = useState(1);
     const [nftOwnedList, setNftOwnedList] = useState([]);
 
+    // useEffect(() => {
+    //         pressToggle(toggle)
+    // }, []);
+
     useEffect(() => {
         if (isFocusedHistory) {
             pressToggle(toggle);
@@ -71,7 +75,7 @@ const NFT = ({ route }) => {
 
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-
+        
         if (item.metaData) {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
@@ -90,7 +94,9 @@ const NFT = ({ route }) => {
             );
         }
     };
-
+    
+    const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myList]);
+    
     const getNFTlist = useCallback(page => {
         dispatch(myNFTList(page, id));
     }, []);
@@ -101,113 +107,31 @@ const NFT = ({ route }) => {
         dispatch(myPageChange(1));
         dispatch(myNftLoadStart());
         // setNftOwnedPage(1);
-        if (s == 'created') {
-            getNFTlist(1);
-        } else {
-            getOwnedNftList(1, true);
-        }
+        getNFTlist(1);
     };
-
-    const getOwnedNftList = (page, refresh) => {
-        let url = `${BASE_URL}/xanalia/mydata`;
-        let obj = {
-            limit: 50,
-            networkType: networkType,
-            nftType: 'mycollection',
-            page: page,
-        };
-
-        if (id?.length > 24) {
-            obj.owner = id.toUpperCase();
-        } else {
-            obj.userId = id;
-        }
-
-        if (data.user) {
-            obj.loggedIn = wallet.address || data.user._id;
-        }
-
-        const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${data.token}`,
-        };
-
-        axios
-            .post(url, obj, { headers: headers })
-            .then(res => {
-                dispatch(myNftLoadFail());
-                console.log(res, 'res owned success');
-
-                if (res.data.success) {
-                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
-                        setStopMoreLoading(false);
-                        if (refresh) {
-                            setNftOwnedList([...res.data.data]);
-                        } else {
-                            setNftOwnedList([...nftOwnedList, ...res.data.data]);
-                        }
-                    } else {
-                        setStopMoreLoading(true);
-                    }
-                } else {
-                    alertWithSingleBtn(translate('wallet.common.alert'), res.data.data);
-                }
-            })
-            .catch(e => {
-                dispatch(myNftLoadFail());
-
-                console.log(e.response, 'collection created list error');
-                alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('wallet.common.error.networkFailed'),
-                );
-            });
-    };
-
-    let showNftList = toggle === 'created' ? MyNFTReducer.myList : nftOwnedList;
 
     return (
         <View style={styles.trendCont}>
-            <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
-                <CardButton
-                    onPress={() => pressToggle('created')}
-                    border={toggle !== 'created' ? colors.BLUE6 : null}
-                    label={translate('wallet.common.created')}
-                    buttonCont={styles.leftToggle}
-                />
-                <CardButton
-                    onPress={() => pressToggle('Owned')}
-                    border={toggle !== 'Owned' ? colors.BLUE6 : null}
-                    buttonCont={styles.rightToggle}
-                    label={translate('wallet.common.owned')}
-                />
-            </View>
 
             {MyNFTReducer.myNftListLoading ? (
                 <Loader />
-            ) : showNftList.length !== 0 ? (
+            ) : MyNFTReducer.myList?.length !== 0 ? (
                 <FlatList
-                    data={showNftList}
+                    data={MyNFTReducer?.myList}
                     horizontal={false}
                     numColumns={3}
                     initialNumToRender={15}
                     onRefresh={() => pressToggle(toggle)}
                     refreshing={MyNFTReducer.myNftListLoading}
-                    renderItem={renderItem}
+                    renderItem={memoizedValue}
                     onEndReached={() => {
-                        if (toggle == 'created') {
-                            if (
-                                !MyNFTReducer.myNftListLoading &&
-                                MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
-                            ) {
-                                let num = MyNFTReducer.myListPage + 1;
-                                getNFTlist(num);
-                                dispatch(myPageChange(num));
-                            }
-                        } else {
-                            let num = nftOwnedPage + 1;
-                            setNftOwnedPage(num);
-                            getOwnedNftList(num);
+                        if (
+                            !MyNFTReducer.myNftListLoading &&
+                            MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+                        ) {
+                            let num = MyNFTReducer.myListPage + 1;
+                            getNFTlist(num);
+                            dispatch(myPageChange(num));
                         }
                     }}
                     ListFooterComponent={renderFooter}
@@ -262,4 +186,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NFT;
+export default NFTCreated;

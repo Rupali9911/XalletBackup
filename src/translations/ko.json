@@ -957,7 +957,8 @@
             "nftType": "NFT 유형",
             "auctionnew": "경매",
             "Sellerpayin": "수취 통화 선택",
-            "buyerpayin": "지불 통화 선택"
+            "buyerpayin": "지불 통화 선택",
+            "profileCreated": "만들어진"
         },
         "backendmessage": {
             "error": {},
