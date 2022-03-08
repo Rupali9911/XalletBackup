@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -13,40 +13,40 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
-import {RF, wp, hp} from '../../constants/responsiveFunct';
+import { RF, wp, hp } from '../../constants/responsiveFunct';
 import ButtonGroup from '../buttonGroup';
-import {translate, CARD_MASK, environment} from '../../walletUtils';
+import { translate, CARD_MASK, environment } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import NotEnoughGold from './alertGoldModal';
-import {useSelector, useDispatch} from 'react-redux';
-import {formatWithMask} from 'react-native-mask-input';
+import { useSelector, useDispatch } from 'react-redux';
+import { formatWithMask } from 'react-native-mask-input';
 import {
   getPaymentIntent,
   getTransactionHash,
   updateTransactionSuccess,
 } from '../../store/reducer/paymentReducer';
-import {useStripe} from '@stripe/stripe-react-native';
+import { useStripe } from '@stripe/stripe-react-native';
 import {
   StripeApiRequest,
 } from '../../helpers/ApiRequest';
-import {alertWithSingleBtn} from '../../common/function';
+import { alertWithSingleBtn } from '../../common/function';
 import {
   approvebnb,
   buyNft,
   buyNftBnb,
   checkAllowance,
 } from '../../screens/wallet/functions';
-import {BlurView} from '@react-native-community/blur';
-import {IconButton} from 'react-native-paper';
-import {numberWithCommas} from '../../utils';
+import { BlurView } from '@react-native-community/blur';
+import { IconButton } from 'react-native-paper';
+import { numberWithCommas } from '../../utils';
 
 const PaymentNow = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
-  const {data, wallet} = useSelector(state => state.UserReducer);
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
+  const { data, wallet } = useSelector(state => state.UserReducer);
 
   const {
     initPaymentSheet,
@@ -190,7 +190,7 @@ const PaymentNow = props => {
   };
 
   const manageOnRequireAction = async payment_intent_client_secret => {
-    const {error, paymentIntent} = await handleCardAction(
+    const { error, paymentIntent } = await handleCardAction(
       payment_intent_client_secret,
     );
     if (error) {
@@ -295,7 +295,7 @@ const PaymentNow = props => {
         chain || 'binance',
         paymentObject?.currency?.approvalAdd,
       )
-        .then(async ({balance, contract}) => {
+        .then(async ({ balance, contract }) => {
           console.log('balance', balance, lastBidAmount);
 
           let decimals = await contract.methods.decimals().call();
@@ -326,6 +326,7 @@ const PaymentNow = props => {
                   })
                   .catch(err => {
                     console.log('payByWallet_err', err);
+                    showErrorAlert("");
                     setLoading(false);
                   });
               })
@@ -354,7 +355,7 @@ const PaymentNow = props => {
               .catch(err => {
                 console.log('payByWallet_err', err);
                 setLoading(false);
-                showErrorAlert('');
+                showErrorAlert("");
                 setLoading(false);
               });
           }
@@ -430,7 +431,7 @@ const PaymentNow = props => {
         />
         <View style={styles.contentContainer}>
           <TouchableOpacity
-            style={{alignSelf: 'flex-end'}}
+            style={{ alignSelf: 'flex-end' }}
             onPress={() => {
               // setOpacity(0);
               onRequestClose();
@@ -491,7 +492,7 @@ const PaymentNow = props => {
 
           {paymentObject && paymentObject.type == 'card' && (
             <View style={styles.totalContainer}>
-              <Text style={[styles.totalLabel, {textTransform: 'uppercase'}]}>
+              <Text style={[styles.totalLabel, { textTransform: 'uppercase' }]}>
                 {translate('wallet.common.topup.creditCard')}
               </Text>
               {paymentObject && (
@@ -507,7 +508,7 @@ const PaymentNow = props => {
               <TouchableOpacity
                 style={styles.editContainer}
                 onPress={() => {
-                  navigation.navigate('Cards', {price});
+                  navigation.navigate('Cards', { price });
                   onRequestClose();
                 }}>
                 <Image
@@ -525,18 +526,18 @@ const PaymentNow = props => {
               {paymentObject && paymentObject.type == 'card'
                 ? translate('wallet.common.total')
                 : translate('wallet.common.priceIn', {
-                    type:
-                      paymentObject && paymentObject.type == 'wallet'
-                        ? paymentObject.item.type
-                        : 'GOLD',
-                  })}
+                  type:
+                    paymentObject && paymentObject.type == 'wallet'
+                      ? paymentObject.item.type
+                      : 'GOLD',
+                })}
             </Text>
             <Text style={styles.value}>
               {paymentObject && paymentObject.type == 'card'
                 ? '$'
                 : paymentObject && paymentObject.type == 'wallet'
-                ? `${paymentObject.item.type}`
-                : ''}{' '}
+                  ? `${paymentObject.item.type}`
+                  : ''}{' '}
               {paymentObject && paymentObject.type == 'wallet'
                 ? paymentObject.priceInToken
                 : numberWithCommas(Number(priceInDollar).toFixed(4)) || 0}
@@ -567,7 +568,7 @@ const PaymentNow = props => {
             view={loading}
           />
         </View>
-        <SafeAreaView style={{backgroundColor: Colors.white}} />
+        <SafeAreaView style={{ backgroundColor: Colors.white }} />
       </View>
       <NotEnoughGold
         visible={notEnoughGoldVisible}
