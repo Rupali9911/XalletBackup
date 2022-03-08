@@ -1157,6 +1157,19 @@ const DetailScreen = ({ navigation, route }) => {
     );
   };
 
+  const collectionClick = () => {
+    switch (collectCreat?.collectionName) {
+      case "Xanalia (BNB)": 
+        return true;
+      case "Xanalia (MATIC)":
+        return true;
+      case "Xanalia (ETH)":
+        return true;
+      default: 
+      return false;
+    }
+  }
+
   return (
     <>
       <SafeAreaView style={styles.mainContainer}>
@@ -1269,6 +1282,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
+              disabled={collectionClick()}
               onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
               style={styles.personType}>
               <Image
