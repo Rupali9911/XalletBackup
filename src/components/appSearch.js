@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     marginTop: wp('2%'),
     width: wp('88%'),
     height: hp('4.3%'),
+    paddingVertical: 0,
   },
   inputStyle: {
     fontSize: RF(1.8),

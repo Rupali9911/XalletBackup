@@ -186,7 +186,7 @@ const PaymentMethod = props => {
                   });
                 } else {
                   // navigation.navigate('Cards', { price });
-                  navigation.navigate('AddCard', {price: priceInDollar});
+                  navigation.navigate('AddCard', {price: priceInDollar, isCardPay: true});
                 }
               } else if (selectedMethod == 2) {
                 setNotEnoughGoldVisible(true);
