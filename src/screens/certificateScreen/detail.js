@@ -1307,88 +1307,60 @@ const DetailScreen = ({ navigation, route }) => {
                             ? collectCreat?.creator
                             : creator.substring(0, 6)
                       }
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={collectionClick()}
-              onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
-              style={styles.personType}>
-              <Image
-                style={styles.iconsImage}
-                source={
-                  collectCreat ? { uri: collectCreat.iconImage } : IMAGES.DEFAULTPROFILE
-                }
-              />
-              <View>
-                <Text style={styles.personTypeText}>
-                  {translate('common.collected')}
-                </Text>
-                <Text numberOfLines={1} style={styles.personName}>
-                  {collectCreat &&
-                    collectCreat.collectionName
-                  }
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onProfile(true)}
-              style={styles.personType}>
-              <Image
-                style={styles.iconsImage}
-                source={
-                    ownerDataN && ownerDataN.hasOwnProperty("profile_image") && ownerDataN.profile_image ? { uri: ownerDataN.profile_image } : IMAGES.DEFAULTPROFILE
-                }
-              />
-              <View>
-                <Text style={styles.personTypeText}>
-                  {translate('common.owner')}
-                </Text>
-                <Text numberOfLines={1} style={styles.personName}>
-                  {
-                      ownerDataN && (
+                      </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    disabled={collectionClick()}
+                  onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
+                  style={styles.personType}>
+                  <Image
+                    style={styles.iconsImage}
+                    source={
+                      collectCreat ? { uri: collectCreat.iconImage } : IMAGES.DEFAULTPROFILE
+                    }
+                  />
+                  <View>
+                    <Text style={styles.personTypeText}>
+                      {translate('common.collected')}
+                    </Text>
+                    <Text numberOfLines={1} style={styles.personName}>
+                      {collectCreat &&
+                        collectCreat.collectionName
+                      }
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onProfile(true)}
+                  style={styles.personType}>
+                  <Image
+                    style={styles.iconsImage}
+                    source={
+                      ownerDataN && ownerDataN.hasOwnProperty("profile_image") && ownerDataN.profile_image ? { uri: ownerDataN.profile_image } : IMAGES.DEFAULTPROFILE
+                    }
+                  />
+                  <View>
+                    <Text style={styles.personTypeText}>
+                      {translate('common.owner')}
+                    </Text>
+                    <Text numberOfLines={1} style={styles.personName}>
+                      {
+                        ownerDataN && (
                           ownerDataN.role === 'crypto' ?
-                              ownerDataN.title ?
-                                  ownerDataN.title :
-                                  ownerDataN.includes("0x")
-                            ? ownerDataN.substring(0, 6)
-                            : ownerDataN.substring(0, 6) :
-                              ownerDataN.role === 'non_crypto' ?
-                                  ownerDataN.username ?
-                                      ownerDataN.username : ""
-                          : "")
-                  }
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.nftTitle} ellipsizeMode="tail" numberOfLines={1}>
-            {creator}
-          </Text>
-          <Text style={styles.nftName}>{name}</Text>
-          {setNFTStatus() !== 'notOnSell' && (
-            <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
-              <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
-                <Text style={styles.price}>{price ? parseFloat(price) : 0}</Text>
-                <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
-              </View>
-              <View style={{ flex: 0.4 }} >
-                {availableTokens.length > 0 &&
-                  setNFTStatus() !== 'notOnSell' &&
-                  setNFTStatus() !== 'onSell' && (
-                    <>
-                      <Text style={[styles.payIn]}>{translate('wallet.common.buyerpayin')}</Text>
-                      <CardField
-                        inputProps={{ value: payableIn }}
-                        onPress={() => {
-                          setAllowedTokenModal(true);
-                        }}
-                        pressable
-                        showRight
-                        contStyle={{ height: hp("5%") }}
-                      />
-                    </>
-                  )}
+                            ownerDataN.title ?
+                              ownerDataN.title :
+                              ownerN.includes("0x")
+                                ? ownerN.substring(0, 6)
+                                : ownerN.substring(0, 6) :
+                            ownerDataN.role === 'non_crypto' ?
+                              ownerDataN.username ?
+                                ownerDataN.username : ""
+                              : "")
+                      }
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
               <Text style={styles.nftTitle} ellipsizeMode="tail" numberOfLines={1}>
                 {creator}
