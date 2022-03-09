@@ -958,7 +958,9 @@
             "auctionnew": "オークション",
             "Sellerpayin": "支払通貨を選択",
             "buyerpayin": "支払通貨を選択",
-            "profileCreated":"制作物"
+            "profileCreated":"制作物",
+            "connectionEstablished":"コネクトが完了しました！",
+            "openApp":"XANAアプリを開いてください。"
         },
         "backendmessage": {
             "error": {},

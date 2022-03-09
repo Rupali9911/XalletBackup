@@ -643,7 +643,6 @@ const nftItem = ({ item, index }) => {
                       fileType: fileType,
                       price: item.price,
                       chain: item.chain,
-                      ownerId: owner,
                       artistId: artist,
                       tokenId: item.tokenId,
                       collectCreat: collectCreat,

@@ -200,6 +200,8 @@ const Connect = ({ route, navigation }) => {
                                 }
                             }
                             singleSocket.onSendMessage(_data);
+                        } else if (response.type == 'sig') {
+                            alertWithSingleBtn( translate("wallet.common.connectionEstablished"), translate("wallet.common.openApp"));
                         } else if (response.type == 'connected') {
                             // alertWithSingleBtn('', '');
                         }

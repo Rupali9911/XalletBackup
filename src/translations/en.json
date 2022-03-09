@@ -955,7 +955,9 @@
             "auctionnew": "Auction",
             "Sellerpayin": "Pay in ",
             "buyerpayin": "Pay in ",
-            "profileCreated":"Created"
+            "profileCreated":"Created",
+            "connectionEstablished":"Connection established",
+            "openApp":"Please open the XANA app"
         },
         "backendmessage": {
             "error": {},

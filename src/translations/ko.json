@@ -958,7 +958,9 @@
             "auctionnew": "경매",
             "Sellerpayin": "수취 통화 선택",
             "buyerpayin": "지불 통화 선택",
-            "profileCreated": "만들어진"
+            "profileCreated": "만들어진",
+            "connectionEstablished":"연결 설정됨",
+            "openApp":"XANA 앱을 열어주세요"
         },
         "backendmessage": {
             "error": {},
