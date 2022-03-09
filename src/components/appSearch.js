@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -99,6 +100,7 @@ export default function AppSearch() {
             <FlatList
               data={searchData}
               keyboardShouldPersistTaps={'handled'}
+              style={styles.flatlistStyle}
               renderItem={({item, index}) => {
                 let withTag = false;
                 if (index == 0) {
@@ -224,7 +226,9 @@ const styles = StyleSheet.create({
     color: Colors.black,
   },
   resultItemContainer: {},
-  resultItemContainer: {},
+  flatlistStyle: {
+    height:Platform.OS === 'ios' ? hp('51%') : hp('48%')
+  },
   resultItem: {
     padding: wp('2%'),
     paddingHorizontal: wp('3%'),

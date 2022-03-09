@@ -183,7 +183,7 @@ export const searchNFT = searchTxt => dispatch =>
       page: 1,
       limit: 5,
       searchValue: searchTxt,
-      networkType: 'testnet',
+      networkType: networkType,
     };
 
     ApiRequest(`${BASE_URL}/xanalia/search-nft-type/`, 'POST', data, null)
