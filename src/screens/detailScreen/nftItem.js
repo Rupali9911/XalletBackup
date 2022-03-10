@@ -629,7 +629,7 @@ const nftItem = ({ item, index }) => {
             <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
-                chainType && (
+                // chainType && (
                   isPlay
                     ? setPlay(!isPlay)
                     : navigation.navigate('CertificateDetail', {
@@ -652,7 +652,7 @@ const nftItem = ({ item, index }) => {
                       item: item,
                       index: index,
                     })
-                )
+                // )
               }}>
               {fileType === 'mp4' ||
                 fileType === 'MP4' ||

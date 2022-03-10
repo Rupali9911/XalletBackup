@@ -1195,6 +1195,37 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }
 
+  const getAuctionTimeRemain = item => {
+    if (item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime()) {
+      return 'Bidding time has been ended. Highest bidder can claim now.';
+    }
+    if (item.newprice && item.newprice.endTime) {
+      const diff =
+        new Date(item.newprice.endTime).getTime() - new Date().getTime();
+      if (diff <= 0) {
+        return null;
+      } else {
+        let days = parseInt(diff / (1000 * 60 * 60 * 24));
+        let hours = parseInt(diff / (1000 * 60 * 60));
+        let mins = parseInt(diff / (1000 * 60));
+        let secs = parseInt(diff / 1000);
+
+        if (days > 0) {
+          return `Bid ends in : ${days} DAY`;
+        } else if (hours > 0) {
+          return `Bid ends in : ${hours} HOUR`;
+        } else if (mins > 0) {
+          return `Bid ends in : ${mins} MIN`;
+        } else if (secs > 0) {
+          return `Bid ends in : ${secs} SEC`;
+        } else {
+          return `Bid Deadline ${hours}:${mins}:${secs} `;
+        }
+      }
+    }
+    return null;
+  };
+
   return (
     <>
       {
@@ -1393,6 +1424,10 @@ const DetailScreen = ({ navigation, route }) => {
                 </View>
               )}
               <Text style={styles.description}>{description}</Text>
+
+              <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15 }}>
+                <Text style={{ fontSize: 11,  }}>{getAuctionTimeRemain(item)}</Text>
+              </View>
               <View style={styles.bottomView}>
 
                 {setNFTStatus() !== undefined && (
