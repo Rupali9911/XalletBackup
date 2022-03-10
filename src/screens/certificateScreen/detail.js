@@ -1183,15 +1183,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    switch (collectCreat?.collectionName) {
-      case "Xanalia (BNB)":
+    switch (collectCreat?.userId) {
+      case "0": 
         return true;
-      case "Xanalia (MATIC)":
-        return true;
-      case "Xanalia (ETH)":
-        return true;
-      default:
-      return false;
+      default: 
+        return false;
     }
   }
 
