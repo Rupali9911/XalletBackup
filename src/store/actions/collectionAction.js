@@ -32,6 +32,7 @@ export const collectionPageChange = (data) => ({
 
 export const collectionList = (page) => {
   return (dispatch) => {
+    dispatch(collectionLoadStart());
 
     fetch(`${BASE_URL}/user/actual-collections?page=${page}&limit=13`)
       .then(response => response.json())

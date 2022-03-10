@@ -1158,15 +1158,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    switch (collectCreat?.collectionName) {
-      case "Xanalia (BNB)": 
-        return true;
-      case "Xanalia (MATIC)":
-        return true;
-      case "Xanalia (ETH)":
+    switch (collectCreat?.userId) {
+      case "0": 
         return true;
       default: 
-      return false;
+        return false;
     }
   }
 

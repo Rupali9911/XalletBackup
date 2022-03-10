@@ -3,7 +3,9 @@ import {
   NEW_NFT_LIST_RESET,
   NEW_NFT_LIST_UPDATE,
   NEW_NFT_LOAD_FAIL,
+  ART_NFT_LOAD_FAIL,
   NEW_NFT_LOAD_START,
+  ART_NFT_LOAD_START,
   NEW_NFT_LOAD_SUCCESS,
   NEW_PAGE_CHANGE,
   UPDATE_ARTIST_DETAIL,
@@ -12,6 +14,7 @@ import {
 } from '../types';
 
 const initialState = {
+  isArtNftLoading: false,
   newNftListLoading: false,
   newNftList: [],
   favoriteNftList: [],
@@ -24,6 +27,9 @@ const initialState = {
 
 export default function NewNFTListReducer(state = initialState, action) {
   switch (action.type) {
+    case ART_NFT_LOAD_START:
+      return (state = {...state, isArtNftLoading: true});
+
     case NEW_NFT_LOAD_START:
       return (state = {...state, newNftListLoading: true});
 
@@ -33,6 +39,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newNftList: [...state.newNftList, ...action.payload.data],
         newTotalCount: action.payload.count,
         newNftListLoading: false,
+        isArtNftLoading: false,
       });
     case FAVORITE_NFT_LOAD_SUCCESS:
       return (state = {
@@ -49,6 +56,8 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {...state, ownerDetail: action.payload});
     case NEW_NFT_LOAD_FAIL:
       return (state = {...state, newNftListLoading: false});
+    case ART_NFT_LOAD_FAIL:
+      return (state = {...state, isArtNftLoading: false});
 
     case NEW_NFT_LIST_RESET:
       return (state = {...state, newNftList: [], favoriteNftList: []});
