@@ -150,11 +150,9 @@ const CreateNFTScreen = ({ route }) => {
     console.log('==========status', routeParams?.status);
 
   return (
+    <View style={styles.mainContainer}>
+      { loading ? <LoaderIndicator /> : null}
     <SafeAreaView style={styles.mainContainer}>
-
-      {
-        loading && <LoaderIndicator />
-      }
       <AppHeader
         title={translate("common.CreateNFT")}
         showBackButton
@@ -221,6 +219,7 @@ const CreateNFTScreen = ({ route }) => {
         }
       />
     </SafeAreaView>
+  </View>
   );
 };
 

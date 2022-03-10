@@ -61,7 +61,7 @@ const styles = {
     },
     buttonText: {
         color: colors.white,
-        fontSize: RF(1.4),
+        fontSize: RF(1.6),
         fontFamily: fonts.ARIAL_BOLD
     }
 };
