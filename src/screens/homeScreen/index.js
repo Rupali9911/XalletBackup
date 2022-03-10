@@ -420,6 +420,9 @@ const HomeScreen = ({ navigation }) => {
         ) : null}
         {isNotificationVisible ? (
           <NotificationActionModal
+              title={translate('wallet.common.yourPhrase')}
+              hint={translate('wallet.common.notificationHint')}
+              btnText={translate('wallet.common.enable')}
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);

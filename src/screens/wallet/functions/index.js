@@ -202,10 +202,11 @@ export const currencyInDollar = async(pubkey,type) => {
     } else {
         reject({ success: false, data: 'Smart contract not deployed to detected network.' });
     }
-  })    
+  })
 }
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
+ // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
     if (contractAddr) {
@@ -226,6 +227,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
         }
       }).catch(function (error) {
         console.log(error + ' is the error');
+        reject(error);
       })
     } else {
       await web3.eth.getBalance(pubKey, function (error, ethbalance) {

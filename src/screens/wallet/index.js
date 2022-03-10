@@ -214,7 +214,7 @@ const Wallet = ({route, navigation}) => {
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
 
       // for testing
-      let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;  
+      let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
       let tnftValue = parseFloat(tnftBalance) * 1;
       let value = bnbValue + tnftValue;
       totalValue = value;
@@ -223,8 +223,8 @@ const Wallet = ({route, navigation}) => {
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
 
       // for testing
-      let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC; 
-      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH; 
+      let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
+      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
       let value = maticValue + talBalance + usdcBalance + wethValue;
       totalValue = value;
     }
@@ -345,7 +345,7 @@ const Wallet = ({route, navigation}) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
+          //console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -580,6 +580,9 @@ const Wallet = ({route, navigation}) => {
 
         {isNotificationVisible ? (
           <NotificationActionModal
+              title={translate('wallet.common.yourPhrase')}
+              hint={translate('wallet.common.notificationHint')}
+              btnText={translate('wallet.common.enable')}
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);

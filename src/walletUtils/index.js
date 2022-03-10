@@ -9060,7 +9060,7 @@ export const networkChain = [
   {
       name: "Polygon",
       value: 'polygon',
-      icon: ImagesSrc.matic,
+      icon: ImagesSrc.polygonNew,
       translatedName: 'ポリゴン'
   }
 ];
@@ -9095,8 +9095,8 @@ export const tokens = [
   },
   {
     type: 'TNFT',
-    tokenName: 'TNFT',
-    icon: ImagesSrc.busd,
+    tokenName: IsTestNet ? 'TNFT' : 'ALIA',
+    icon: ImagesSrc.aliaNew,
     amount: '$387.41',
     percent: '+10.49%',
     tokenValue: '0',
@@ -9104,8 +9104,8 @@ export const tokens = [
   },
   {
     type: 'TAL',
-    tokenName: 'TAL',
-    icon: ImagesSrc.busd,
+    tokenName: IsTestNet ? 'TAL' : 'ALIA',
+    icon: ImagesSrc.aliaNew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
@@ -9114,7 +9114,7 @@ export const tokens = [
   {
     type: 'USDC',
     tokenName: 'USDC',
-    icon: ImagesSrc.usdc,
+    icon: ImagesSrc.usdcNew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
@@ -9122,8 +9122,8 @@ export const tokens = [
   },
   {
     type: 'ETH',
-    tokenName: 'ETH',
-    icon: ImagesSrc.ethPolygon,
+    tokenName: IsTestNet ? 'ETH' : 'WETH',
+    icon: ImagesSrc.ethnew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
@@ -9141,7 +9141,7 @@ export const tokens = [
   {
     type: 'USDT',
     tokenName: 'USDT',
-    icon: ImagesSrc.usdt,
+    icon: ImagesSrc.usdtNew,
     amount: '$3,177.94',
     percent: '+2.21%',
     tokenValue: `0`,

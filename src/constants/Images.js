@@ -90,5 +90,11 @@ export default {
         "unknown": require("../../assets/images/unknown.png")
     },
     noApp: require("../../assets/images/noApp.png"),
-    pIcon: require("../../assets/images/pIcon.png")
+    pIcon: require("../../assets/images/pIcon.png"),
+    aliaNew: require("../../assets/images/alia-new.png"),
+    usdcNew: require("../../assets/images/USDC-Polygon.png"),
+    usdtNew: require("../../assets/images/USDT-Ethereum.png"),
+    ethnew: require("../../assets/images/ETH-Polygon.png"),
+    polygonNew: require("../../assets/images/polygon-new.png")
+
 };

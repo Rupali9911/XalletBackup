@@ -23,13 +23,13 @@ const NotificationActionModalContent = props => {
       />
       <Image style={styles.img} source={ImagesSrc.notificationAction} />
       <TextView style={styles.title}>
-        {translate('wallet.common.yourPhrase')}
+        {props.title}
       </TextView>
       <TextView style={styles.hint}>
-        {translate('wallet.common.notificationHint')}
-      </TextView>
+          {props.hint}
+          </TextView>
       <AppButton
-        label={translate('wallet.common.enable')}
+        label={props.btnText}
         containerStyle={styles.button}
         labelStyle={CommonStyles.buttonLabel}
         onPress={() => {

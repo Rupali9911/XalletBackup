@@ -5,7 +5,7 @@ import {
     StyleSheet,
     FlatList,
     Image,
-    Platform
+    Platform, Linking
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import TextView from '../../components/appText';
@@ -18,7 +18,7 @@ import Fonts from '../../constants/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
-import { openSettings } from 'react-native-permissions';
+import {checkNotifications, openSettings, requestNotifications} from 'react-native-permissions';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import SingleSocket from '../../helpers/SingleSocket';
@@ -29,7 +29,7 @@ import ApproveModalContent from '../../components/approveAppModal';
 import { alertWithSingleBtn } from '../../utils';
 import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
 import { getSig } from '../wallet/functions';
-
+import NotificationActionModal from '../../components/notificationActionModal';
 const singleSocket = SingleSocket.getInstance();
 
 const ListItems = (props) => {
@@ -94,6 +94,7 @@ const Connect = ({ route, navigation }) => {
     const [approveModal, setApproveModal] = useState(false);
     const [requestedAppData, setRequestedAppData] = useState(null);
     const [connectedApps, setConnectedApps] = useState([]);
+    const [showConnectionSuccess, setConnectionSuccess] = useState(false);
 
     const onCheckPermission = async () => {
         const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
@@ -201,7 +202,8 @@ const Connect = ({ route, navigation }) => {
                             }
                             singleSocket.onSendMessage(_data);
                         } else if (response.type == 'sig') {
-                            alertWithSingleBtn( translate("wallet.common.connectionEstablished"), translate("wallet.common.openApp"));
+                            // alertWithSingleBtn( translate("wallet.common.connectionEstablished"), translate("wallet.common.openApp"));
+                            setConnectionSuccess(true)
                         } else if (response.type == 'connected') {
                             // alertWithSingleBtn('', '');
                         }
@@ -343,6 +345,19 @@ const Connect = ({ route, navigation }) => {
                         setApproveModal(false);
                     }}
                 />
+            </AppModal>
+            <AppModal
+                visible={showConnectionSuccess}
+                onRequestClose={() => setConnectionSuccess(false)}>
+                <NotificationActionModal
+                    title={translate('wallet.common.connectionEstablished')}
+                    hint={translate('wallet.common.openApp')}
+                    btnText={translate('common.OK')}
+                        onClose={() => setConnectionSuccess(false)}
+                        onDonePress={() => {
+                            setConnectionSuccess(false);
+                        }}
+                    />
             </AppModal>
         </AppBackground>
     );
