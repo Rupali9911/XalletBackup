@@ -137,8 +137,21 @@ const PaymentMethod = props => {
             </Text>
             <Text style={styles.value}>
               {selectedMethod
-                ? numberWithCommas(Number(price).toFixed(3)) + baseCurrency?.key + ' = ' + '$' + numberWithCommas(Number(priceInDollar).toFixed(1))
-                : '$ ' + numberWithCommas(Number(priceInDollar).toFixed(1)) + ' = ' + numberWithCommas(Number(price).toFixed(3)) + baseCurrency?.key}
+                ?
+                  numberWithCommas(parseFloat(Number(price).toFixed(3)))
+                  + ' '
+                  + baseCurrency?.key
+                  + ' = '
+                  + '$ '
+                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1)))
+                :
+                  '$ '
+                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1)))
+                  + ' = '
+                  + numberWithCommas(parseFloat(Number(price).toFixed(3)))
+                  + ' '
+                  + baseCurrency?.key
+              }
             </Text>
           </View>
 
@@ -173,7 +186,7 @@ const PaymentMethod = props => {
                   });
                 } else {
                   // navigation.navigate('Cards', { price });
-                  navigation.navigate('AddCard', {price: priceInDollar});
+                  navigation.navigate('AddCard', {price: priceInDollar, isCardPay: true});
                 }
               } else if (selectedMethod == 2) {
                 setNotEnoughGoldVisible(true);

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -25,6 +25,7 @@ import {AppHeader} from '../../components';
 import Colors from '../../constants/Colors';
 import {colors} from '../../res';
 import {setAppLanguage} from '../../store/reducer/languageReducer';
+import {getAllCards} from '../../store/reducer/paymentReducer';
 import {endMainLoading, _logout} from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
 import styles from './styled';
@@ -39,6 +40,7 @@ const optionalConfigObject = {
   unifiedErrors: false, // use unified error messages (default false)
   passcodeFallback: true, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
 };
+
 const _pressHandler = () => {
   TouchID.authenticate(
     'to demo this react-native component',
@@ -51,7 +53,9 @@ const _pressHandler = () => {
       Alert.alert('Authentication Failed');
     });
 };
+
 const ListItem = props => {
+
   return (
     <TouchableOpacity
       disabled={props.disableView}
@@ -97,6 +101,12 @@ function Setting({navigation}) {
   const [showLanguage, setShowLanguage] = useState(false);
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {myCards} = useSelector(state => state.PaymentReducer);
+  const { data } = useSelector(state => state.UserReducer);
+
+  useEffect(() => {
+    console.log('=======data.token', data.token);
+    dispatch(getAllCards(data.token));
+  }, []);
 
   return (
     <SafeAreaView style={{flex: 1}}>

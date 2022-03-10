@@ -26,7 +26,7 @@ const ApproveModalContent = props => {
                     props.onClose && props.onClose();
                 }}
             /> */}
-            
+
             <Image style={styles.img} source={{uri: appData?.icon ? appData.icon : 'http://www.newdesignfile.com/postpic/2011/03/ios-7-icon-template_108214.png'}} />
 
             <TextView style={styles.title}>
@@ -74,8 +74,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.iconBg,
     },
     img: {
-        ...CommonStyles.imageStyles(25),
+        // ...CommonStyles.imageStyles(25),
         marginVertical: hp('2%'),
+        height: wp(`35%`),
+        width: wp(`35%`),
     },
     title: {
         fontSize: RF(3),
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     },
     hint: {
         color: Colors.modalHintText,
-        marginTop: '4.7%',
+        //marginTop: '4.7%',
         marginBottom: hp('5%'),
         textAlign: 'center',
         fontSize: RF(1.7),

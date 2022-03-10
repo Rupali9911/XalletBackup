@@ -260,7 +260,7 @@ function AddCard({ route, navigation }) {
                     () => {
                         // navigation.goBack()
                         if(myCards.length<1){
-                            navigation.dispatch(StackActions.replace('Cards', {price : route?.parmas?.price}));
+                            navigation.dispatch(StackActions.replace('Cards', {price : route?.params?.price, isCardPay: route?.params?.isCardPay}));
                         }else{
                             navigation.goBack();
                         }

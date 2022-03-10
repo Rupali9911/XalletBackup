@@ -153,9 +153,9 @@ export const blockChainConfig = [
 
     providerUrl:
       networkType === "testnet"
-        ? "https://data-seed-prebsc-2-s3.binance.org:8545/"
+        ? "https://data-seed-prebsc-2-s2.binance.org:8545/"
         : "https://bsc-dataseed.binance.org/",
-    providerUrlTestnet: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+    providerUrlTestnet: "https://data-seed-prebsc-2-s2.binance.org:8545/",
     providerUrlMainnet: "https://bsc-dataseed.binance.org/",
     providerUrlForAliaPrice: "https://bsc-dataseed.binance.org/",
     stakingConConfig: { add: StakingConAddBSC, abi: StakingConAbiBSC },

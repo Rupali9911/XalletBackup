@@ -17,6 +17,7 @@ import { AppHeader } from '../../components';
 import {
   maxLength20,
   maxLength50,
+  maxLength100,
   maxLength200,
   validateEmail,
   validateWebsiteURL,
@@ -162,35 +163,35 @@ function Profile(props) {
             label={translate("common.discord")}
             component={LimitableInput}
             placeholder={translate("common.discord")}
-            validate={[maxLength50, validateDiscordURL]}
+            validate={[maxLength100, validateDiscordURL]}
           />
           <Field
             name="twitter"
             label={translate("common.twitter")}
             component={LimitableInput}
             placeholder={translate("common.twitter")}
-            validate={[maxLength50, validateTwitterURL]}
+            validate={[maxLength100, validateTwitterURL]}
           />
           <Field
             name="youtube"
             label={translate("common.youtube")}
             component={LimitableInput}
             placeholder={translate("common.youtube")}
-            validate={[maxLength50, validateYoutubeURL]}
+            validate={[maxLength100, validateYoutubeURL]}
           />
           <Field
             name="instagram"
             label={translate("common.instagram")}
             component={LimitableInput}
             placeholder={translate("common.instagram")}
-            validate={[maxLength50, validateInstagramURL]}
+            validate={[maxLength100, validateInstagramURL]}
           />
           <Field
             name="facebook"
             label={translate("common.facebook")}
             component={LimitableInput}
             placeholder={translate("common.facebook")}
-            validate={[maxLength50, validateFacebookURL]}
+            validate={[maxLength100, validateFacebookURL]}
           />
           <SpaceView mTop={SIZE(12)} />
           <Field

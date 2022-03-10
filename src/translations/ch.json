@@ -958,7 +958,9 @@
             "auctionnew": "拍卖",
             "Sellerpayin": "选择收款货币",
             "buyerpayin": "支付货币选择",
-            "profileCreated": "已创建"
+            "profileCreated": "已创建",
+            "connectionEstablished":"连接已建立",
+            "openApp":"请打开 XANA 应用"
         },
         "backendmessage": {
             "error": {},
