@@ -564,6 +564,7 @@ const Wallet = ({route, navigation}) => {
         values={balances}
         network={networkType}
         onTokenPress={item => {
+          console.log('Token details transfered', item)
           navigation.navigate('tokenDetail', {item});
         }}
         onRefresh={onRefreshToken}
