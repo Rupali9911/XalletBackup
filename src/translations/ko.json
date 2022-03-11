@@ -632,7 +632,8 @@
         "soldout": "매진",
         "hotcollection": "핫 컬렉션",
         "cardSaved": "사용자 카드가 저장됨",
-        "buyNext": "다음"
+        "buyNext": "다음",
+        "nftNotOnSell": "NFT 판매 안 함"
     },
     "AwardPage": {},
     "wallet": {

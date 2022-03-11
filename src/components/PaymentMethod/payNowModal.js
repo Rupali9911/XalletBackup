@@ -88,6 +88,16 @@ const PaymentNow = props => {
     return title;
   };
 
+  const nftErrorMessage = (message) => {
+    let msg = '';
+    if(message === 'NFT not on sell'){
+        msg = translate('common.nftNotOnSell');
+    } else {
+        msg = message;
+    }
+    return msg;
+  };
+
   const _getPaymentIntent = () => {
     const params = {
       cardId: paymentObject.item.id,
@@ -127,9 +137,9 @@ const PaymentNow = props => {
         } else {
           if (res.error) {
             // alertWithSingleBtn(translate(`common.${res.error.code}`));
-            alertWithSingleBtn(res.message);
+            alertWithSingleBtn(nftErrorMessage(res.message));
           } else {
-            alertWithSingleBtn(res.data);
+            alertWithSingleBtn(nftErrorMessage(res.data));
           }
           setLoading(false);
         }
