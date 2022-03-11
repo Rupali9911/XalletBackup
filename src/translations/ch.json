@@ -632,7 +632,8 @@
         "soldout": "售罄",
         "hotcollection": "热门系列",
         "cardSaved": "用户卡已保存",
-        "buyNext": "下一个"
+        "buyNext": "下一个",
+        "nftNotOnSell": "NFT 不出售"
     },
     "AwardPage": {},
     "wallet": {

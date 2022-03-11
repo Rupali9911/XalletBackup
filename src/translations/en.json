@@ -630,7 +630,8 @@
         "soldout": "Sold Out",
         "hotcollection": "Hot collections",
         "cardSaved": "User card saved",
-        "buyNext": "Next"
+        "buyNext": "Next",
+        "nftNotOnSell":"NFT not on sell"
     },
     "AwardPage": {},
     "wallet": {

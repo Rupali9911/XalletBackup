@@ -434,7 +434,7 @@ const PaymentField = (props) => {
     return (
         <View style={styles.inputContainer}>
             <TextInput
-                style={[styles.inputCont, styles.paymentField, { fontSize: RF(2) }]}
+                style={[styles.paymentField, { fontSize: RF(2) }]}
                 keyboardType='decimal-pad'
                 placeholder={translate("common.enterNewPrice")}
                 placeholderTextColor={Colors.topUpPlaceholder}
@@ -502,6 +502,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp("2.5%"),
         ...CommonStyles.text(FONTS.ARIAL, Colors.black, RF(1.6)),
         flex: 1,
+        height:hp("5%")
     },
     summaryContainer: {
         borderColor: Colors.themeColor,
