@@ -207,6 +207,7 @@ export const currencyInDollar = async(pubkey,type) => {
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
  // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
+   console.log('pubKey', pubKey)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
     if (contractAddr) {
@@ -231,6 +232,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
       })
     } else {
       await web3.eth.getBalance(pubKey, function (error, ethbalance) {
+        console.log('ETH BALANCE', ethbalance)
         if (error) {
           reject(error);
         } else {

@@ -334,6 +334,7 @@ const Wallet = ({route, navigation}) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
+            console.log('RESPONSES',responses)
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
