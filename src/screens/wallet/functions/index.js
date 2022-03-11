@@ -551,6 +551,8 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
         }
     }).once('receipt', (receipt) => {
       resolve({ success: true, status: 200, data: receipt });
+    }).catch(e => {
+      reject(e);
     })
 
     // console.log(result);
