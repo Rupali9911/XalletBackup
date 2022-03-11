@@ -279,6 +279,7 @@ const Wallet = ({route, navigation}) => {
             // USDT: responses[1],
           };
           dispatch(updateEthereumBalances(balances));
+          setBalances(balances);
           setLoading(false);
           resolve();
         })
@@ -342,6 +343,7 @@ const Wallet = ({route, navigation}) => {
             // ALIA: responses[3],
           };
           dispatch(updateBSCBalances(balances));
+          setBalances(balances);
           setLoading(false);
           resolve();
         })
@@ -465,8 +467,9 @@ const Wallet = ({route, navigation}) => {
   const onRefreshToken = () => {
     return getBalances(wallet.address);
   };
+
   return (
-    <AppBackground isBusy={loading}>
+    <AppBackground isBusy={ balances ? loading : true}>
       <GradientBackground>
         <View style={styles.gradient}>
           <View style={styles.header}>
@@ -602,6 +605,7 @@ const Wallet = ({route, navigation}) => {
         onItemSelect={item => {
           dispatch(updateNetworkType(item));
           setPickerVisible(false);
+          setBalances(null)
         }}
       />
       <SelectToken

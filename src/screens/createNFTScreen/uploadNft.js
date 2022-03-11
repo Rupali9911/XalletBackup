@@ -846,9 +846,9 @@ const UploadNFT = ({
   }
 
   let disableBtn = collection && nftName && nftDesc && nftImageType &&
-    nftImage && basePrice &&
-    (toggleButton == "timeAuction" ? (startTimeDate && endTimeDate && fixedPrice && fixedPrice>0) : fixedPrice>0) &&
-    networkType;
+    nftImage && basePrice && (
+      toggleButton == "timeAuction" ? (fixedPrice && fixedPrice>0) && (startTimeDate < endTimeDate)
+    : fixedPrice>0 ) && networkType;
 
   let networkTypeStatus = networkType.value.toLowerCase() == "binance" ?
     translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
