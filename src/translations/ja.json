@@ -822,7 +822,7 @@
                 "invalid_expiry_year": "有効期限の年が無効です。",
                 "invalid_expiry_month": "有効期限の月が無効です。"
             },
-            "confirmDeleteCard": "このカードを削除したいでしょうか？",
+            "confirmDeleteCard": "このクレジットカードを削除しますか？",
             "balanceAmount": "購入金額",
             "paste": "貼り付け",
             "AECredit": "クレジット カードの追加/編集",
@@ -916,7 +916,7 @@
             "settings": "設定",
             "about": "に関しては",
             "noCollection": "コレクションがありません",
-            "owned": "所有",
+            "owned": "所有中",
             "NFTList": "NFTリスト",
             "uploadNFT": "NFT のアップロード",
             "collectionChangeNetwork": "このコレクションを編集するには、ネットワークを {{networkType}} に変更してください",
@@ -957,7 +957,10 @@
             "nftType": "作品のタイプ",
             "auctionnew": "オークション",
             "Sellerpayin": "支払通貨を選択",
-            "buyerpayin": "支払通貨を選択"
+            "buyerpayin": "支払通貨を選択",
+            "profileCreated":"制作物",
+            "connectionEstablished":"コネクトが完了しました！",
+            "openApp":"XANAアプリを開いてください。"
         },
         "backendmessage": {
             "error": {},

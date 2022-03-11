@@ -548,37 +548,6 @@ const nftItem = ({ item, index }) => {
           <View>
             <View style={styles.modalSectCont}>
               <TouchableOpacity
-                onPress={() => onProfile(true)}
-                style={styles.iconCont}>
-                <Image
-                  style={styles.profileIcon}
-                  source={ownerData && ownerData.hasOwnProperty("profile_image") && ownerData.profile_image ? { uri: ownerData.profile_image } : IMAGES.DEFAULTPROFILE}
-                />
-                <View>
-                  <Text style={styles.modalIconLabel}>
-                    {translate('common.owner')}
-                  </Text>
-                  <Text
-                    numberOfLines={1}
-                    style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
-                    {
-                      ownerData ? (
-                        ownerData.role === 'crypto' ?
-                          ownerData.title ?
-                            ownerData.title :
-                            owner.includes("0x")
-                              ? owner.substring(0, 6)
-                              : owner.substring(0, 6) :
-                          ownerData.role === 'non_crypto' ?
-                            ownerData.username ?
-                              ownerData.username : ""
-                            : owner) :
-                        owner
-                    }
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
                 onPress={() => onProfile(false)}
                 style={styles.iconCont}>
                 <Image
@@ -616,6 +585,37 @@ const nftItem = ({ item, index }) => {
                           || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
                           ? collectCreat?.creator
                           : artist.substring(0, 6)
+                    }
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onProfile(true)}
+                style={styles.iconCont}>
+                <Image
+                  style={styles.profileIcon}
+                  source={ownerData && ownerData.hasOwnProperty("profile_image") && ownerData.profile_image ? { uri: ownerData.profile_image } : IMAGES.DEFAULTPROFILE}
+                />
+                <View>
+                  <Text style={styles.modalIconLabel}>
+                    {translate('common.owner')}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
+                    {
+                      ownerData ? (
+                        ownerData.role === 'crypto' ?
+                          ownerData.title ?
+                            ownerData.title :
+                            owner.includes("0x")
+                              ? owner.substring(0, 6)
+                              : owner.substring(0, 6) :
+                          ownerData.role === 'non_crypto' ?
+                            ownerData.username ?
+                              ownerData.username : ""
+                            : owner) :
+                        owner
                     }
                   </Text>
                 </View>

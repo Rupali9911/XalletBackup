@@ -19,7 +19,7 @@ import { networkType } from '../../common/networkType';
 import { alertWithSingleBtn } from '../../utils';
 import axios from 'axios';
 
-const Collection = ({ route }) => {
+const Draft = ({ route }) => {
     const isFocusedHistory = useIsFocused();
 
     const { data } = useSelector(
@@ -27,7 +27,7 @@ const Collection = ({ route }) => {
     );
     const navigation = useNavigation();
 
-    const [toggle, setToggle] = useState("created");
+    const [toggle, setToggle] = useState("draft");
 
     const [mainLoader, setMainLoader] = useState(false);
     const [childLoader, setChildLoader] = useState(false);
@@ -68,15 +68,14 @@ const Collection = ({ route }) => {
         setMainLoader(true);
         setCollectCreatedPage(1);
         setCollectDraftPage(1);
-        getCreatedCollectionList(1, true)
+        getDraftCollectionList(1, true)
     }
 
-    const getCreatedCollectionList = (page, refresh) => {
+    const getDraftCollectionList = (page, refresh) => {
 
-        let url = `${BASE_URL}/user/view-collection`;
+        let url = `${BASE_URL}/user/listing-draft-collection`;
         let obj = {
             limit: 50,
-            networkType: networkType,
             page: page
         };
 
@@ -87,18 +86,25 @@ const Collection = ({ route }) => {
 
         axios.post(url, obj, { headers: headers })
             .then(res => {
-                setChildLoader(false);
                 setMainLoader(false);
-                console.log(res, "res collection created success")
+                setChildLoader(false);
+                console.log(res, "res collection draft success")
 
                 if (res.data.success) {
 
-                    if (res.data.data.length !== 0 && Array.isArray(res.data.data)) {
+                    if (Array.isArray(res.data.data)) {
                         setStopMoreLoading(false);
-                        if (refresh) {
-                            setCollectionCreatedList([...res.data.data])
+                        if (res.data.data.length !== 0) {
+                            if (refresh) {
+                                setCollectionDraftList([...res.data.data])
+                            } else {
+                                setCollectionDraftList([...collectionDraftList, ...res.data.data])
+                            }
                         } else {
-                            setCollectionCreatedList([...collectionCreatedList, ...res.data.data])
+                            if(page == 1){
+                                setCollectionDraftList([])
+                            }
+                            setStopMoreLoading(true);
                         }
                     } else {
                         setStopMoreLoading(true);
@@ -113,8 +119,8 @@ const Collection = ({ route }) => {
 
             })
             .catch(e => {
-                setChildLoader(false);
                 setMainLoader(false);
+                setChildLoader(false)
                 console.log(e.response, "collection created list error");
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
@@ -125,13 +131,12 @@ const Collection = ({ route }) => {
 
     return (
         <View style={styles.trendCont}>
-
             {
                 mainLoader ?
                     <Loader /> :
-                    collectionCreatedList.length !== 0 ?
+                    collectionDraftList.length !== 0 ?
                         <FlatList
-                            data={collectionCreatedList}
+                            data={collectionDraftList}
                             horizontal={false}
                             numColumns={3}
                             initialNumToRender={15}
@@ -141,9 +146,9 @@ const Collection = ({ route }) => {
                             onEndReached={() => {
                                 if (!stopMoreLoading) {
                                     setChildLoader(true);
-                                    let num = collectCreatedPage + 1;
-                                    setCollectCreatedPage(num)
-                                    getCreatedCollectionList(num)
+                                    let num = collectDraftPage + 1;
+                                    setCollectDraftPage(num)
+                                    getDraftCollectionList(num)
                                 }
 
                             }}
@@ -191,4 +196,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Collection;
+export default Draft;

@@ -27,10 +27,9 @@ export default function NFTItem(props) {
 
   const dispatch = useDispatch();
 
-  let imageUri = isMeCollection ? (item.iconImage : null) :
-    item.thumbnailUrl !== undefined || item.thumbnailUrl
-      ? item.thumbnailUrl
-      : item.metaData?.image;
+  let imageUri = isMeCollection ? (item.iconImage? item.iconImage  : null) 
+   : item.thumbnailUrl !== undefined || item.thumbnailUrl
+      ? item.thumbnailUrl : item.metaData?.image;
 
   const chainType = type => {
     if (type === 'polygon') return <PolygonIcon />;
@@ -50,15 +49,17 @@ export default function NFTItem(props) {
 
   const renderIcon = () => {
     const uri = nftCurrencyIcon(item?.baseCurrency, item?.nftChain);
-    // if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
-    //   return (
-    //     <SvgUri
-    //       uri={nftCurrencyIcon(item?.baseCurrency, item?.nftChain)}
-    //       width={SIZE(12)}
-    //       height={SIZE(12)}
-    //     />
-    //   );
-    // else return <Image source={{ uri: uri }} />;
+    if(uri){
+     if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
+      return (
+        <SvgUri
+          uri={nftCurrencyIcon(item?.baseCurrency, item?.nftChain)}
+          width={SIZE(12)}
+          height={SIZE(12)}
+        />
+      );
+    else return <Image source={{ uri: uri }} />;
+    }
   };
 
   const getAuctionTimeRemain = item => {
