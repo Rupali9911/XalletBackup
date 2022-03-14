@@ -1119,11 +1119,12 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item.metaData) {
-      let imageUri =
-        item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl
-          : item.metaData.image;
+    if (item.metaData) {  
+      // it's temporary fix
+      const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+    
+      const image = item.metaData.image || item.thumbnailUrl;
+      const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
       return (
         <TouchableOpacity

@@ -81,8 +81,7 @@ const nftItem = ({ item, index }) => {
   const [nftDetail, setNFTDetail] = useState();
   const [isArtistProfile, setisArtistProfile] = useState(true);
   const [loader, setLoader] = useState(false);
-
-
+  
   let params = item.tokenId.toString().split('-');
   let chainType,
     tokenId,
@@ -414,7 +413,6 @@ const nftItem = ({ item, index }) => {
     await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        // console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
@@ -522,9 +520,6 @@ const nftItem = ({ item, index }) => {
       setLengthMore(true);
   }, []);
 
-  const image = item.metaData.image || item.thumbnailUrl;
-  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
-
   const onProfile = isOwner => {
     if (isOwner) {
       if (owner !== "----") navigation.push('ArtistDetail', { id: owner });
@@ -532,11 +527,14 @@ const nftItem = ({ item, index }) => {
       if (artist !== "----") navigation.push('ArtistDetail', { id: artist });
     }
   };
-  let imageUri =
-    item.thumbnailUrl !== undefined || item.thumbnailUrl
-      ? item.thumbnailUrl
-      : item.metaData.image;
-  // console.log(item.metaData.name, artist, artistData, "/////////")
+
+
+  // it's temporary fix
+  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+
+  const image = item.metaData.image || item.thumbnailUrl;
+  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
+
   return (
     <>
       {
@@ -671,7 +669,6 @@ const nftItem = ({ item, index }) => {
                   setPlay(false);
                   refVideoPlay.current = true;
                 }}
-                    onLoad={() => refVideo.current.seek(0)}
                     style={{
                       flex: 1,
                       position: 'absolute',
