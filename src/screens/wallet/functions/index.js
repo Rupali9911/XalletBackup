@@ -202,16 +202,19 @@ export const currencyInDollar = async(pubkey,type) => {
     } else {
         reject({ success: false, data: 'Smart contract not deployed to detected network.' });
     }
-  })    
+  })
 }
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
+ // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
+   console.log('pubKey', pubKey)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
     if (contractAddr) {
       const contract = new web3.eth.Contract(contractAbi, contractAddr);
       let reserves = {};
       await contract.methods.balanceOf(pubKey).call().then(function (result) {
+        console.log('Results from balance of', result)
         if (type == 'usdc') {
          // resolve(web3.utils.fromWei(result.toString(), "ether"));
             resolve(web3.utils.fromWei(result.toString(), "mwei"));
@@ -220,15 +223,17 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
         } else if (type == 'usdt') {
           resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
         } else if (type == 'busd') {
-          resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
+            resolve(web3.utils.fromWei(result.toString(), "ether"));
         } else if (type == 'weth') {
           resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
         }
       }).catch(function (error) {
         console.log(error + ' is the error');
+        reject(error);
       })
     } else {
       await web3.eth.getBalance(pubKey, function (error, ethbalance) {
+        console.log('ETH BALANCE', ethbalance)
         if (error) {
           reject(error);
         } else {

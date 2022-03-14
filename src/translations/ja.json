@@ -632,6 +632,7 @@
         "soldout": "販売終了",
         "cardSaved": "カード情報の登録が完了しました",
         "buyNext": "購入する",
+        "nftNotOnSell": "NFTは販売されていません",
         "hotcollection": "推奨コレクション"
     },
     "AwardPage": {},
@@ -820,7 +821,8 @@
                 "invalid_cvc": "セキュリティコードが正しくありません。",
                 "incorrect_number": "カード情報の入力に誤りがあります",
                 "invalid_expiry_year": "有効期限の年が無効です。",
-                "invalid_expiry_month": "有効期限の月が無効です。"
+                "invalid_expiry_month": "有効期限の月が無効です。",
+                "card_declined": "クレジットカード登録が拒否されました。テスト用カードは登録できません、正規なカード情報を入力ください。"
             },
             "confirmDeleteCard": "このクレジットカードを削除しますか？",
             "balanceAmount": "購入金額",
@@ -960,7 +962,8 @@
             "buyerpayin": "支払通貨を選択",
             "profileCreated":"制作物",
             "connectionEstablished":"コネクトが完了しました！",
-            "openApp":"XANAアプリを開いてください。"
+            "openApp":"XANAアプリを開いてください。",
+            "setPushNotification":"プッシュ通知を設定"
         },
         "backendmessage": {
             "error": {},

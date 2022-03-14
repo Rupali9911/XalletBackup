@@ -632,7 +632,8 @@
         "soldout": "售罄",
         "hotcollection": "熱門系列",
         "cardSaved": "用戶卡已保存",
-        "buyNext": "下一個"
+        "buyNext": "下一個",
+        "nftNotOnSell": "NFT 不出售"
     },
     "AwardPage": {},
     "wallet": {
@@ -820,7 +821,8 @@
                 "invalid_cvc": "您的卡的安全碼無效。",
                 "incorrect_number": "您的卡號不正確。",
                 "invalid_expiry_year": "您的卡的到期年份無效。",
-                "invalid_expiry_month": "您的卡的到期月份無效。"
+                "invalid_expiry_month": "您的卡的到期月份無效。",
+                "card_declined": "您的信用卡遭到拒絕。您的請求處於實時模式，但使用了已知的測試卡。"
             },
             "confirmDeleteCard": "您確定要移除這張卡嗎？",
             "balanceAmount": "餘額",
@@ -960,7 +962,8 @@
             "buyerpayin": "支付貨幣選擇",
             "profileCreated": "已創建",
             "connectionEstablished":"連接已建立",
-            "openApp":"請打開 XANA 應用"
+            "openApp":"請打開 XANA 應用",
+            "setPushNotification":"設置推送通知"
         },
         "backendmessage": {
             "error": {},

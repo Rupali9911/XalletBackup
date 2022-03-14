@@ -156,7 +156,7 @@ function Profile(props) {
             label={translate("common.website")}
             component={LimitableInput}
             placeholder={translate("common.website")}
-            validate={[maxLength50, validateWebsiteURL]}
+            validate={[maxLength100, validateWebsiteURL]}
           />
           <Field
             name="discord"

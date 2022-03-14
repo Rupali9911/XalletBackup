@@ -22,11 +22,12 @@ import {environment, IsTestNet, translate} from '../../walletUtils';
 import {HeaderBtns} from './components/HeaderButtons';
 import History from './components/History';
 import {balance} from './functions';
+import {networkType} from '../../common/networkType'
 
 const TokenDetail = ({route, navigation}) => {
   const {} = route.params;
   const {wallet} = useSelector(state => state.UserReducer);
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance} =
+  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance, busdBalance,usdtBalance} =
     useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -79,9 +80,9 @@ const TokenDetail = ({route, navigation}) => {
         type = 'busd';
         break;
       case 'ALIA':
-        cont = environment.aliaCont;
+        cont = item.network === 'BSC' ? environment.tnftCont : environment.talCont;
         abi = environment.aliaAbi;
-        rpc = environment.bnbRpc;
+        rpc = item.network === 'BSC' ? environment.bnbRpc : environment.polRpc;
         type = 'alia';
         break;
       case 'USDC':
@@ -119,43 +120,48 @@ const TokenDetail = ({route, navigation}) => {
     let totalValue = 0;
     if (item.type == 'ETH' && item.network !== 'Polygon') {
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-      // console.log('Ethereum value',value);
       totalValue = value;
     } else if (item.type == 'BNB') {
       let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-      // console.log('BSC value',value);
       totalValue = value;
     } else if (item.type == 'Matic') {
       let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-      // console.log('Polygon value',value);
       totalValue = value;
     } else if (item.type == 'TNFT') {
       let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
-      // console.log('Polygon value',value);
       totalValue = value;
     } else if (item.type == 'TAL') {
       let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
-      // console.log('Polygon value',value);
       totalValue = value;
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
-      // console.log('Polygon value',value);
       totalValue = value;
     } else if (item.type === 'ETH' && item.network === 'Polygon') {
       let value = parseFloat(`${wethBalance}`); //+ parseFloat(balances.USDC)
-      console.log('Polygon value',value);
       totalValue = value;
+    }else if (item.network === 'BSC' && item.type == 'ALIA') {
+        let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
+        totalValue = value;
+    }else if (item.network === 'Polygon' && item.type == 'ALIA') {
+        let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
+        totalValue = value;
+    }else if (item.type == 'BUSD') {
+        let value = parseFloat(busdBalance); //+ parseFloat(balances.USDC)
+        totalValue = value;
+    }else if (item.type == 'USDT') {
+        let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
+        totalValue = value;
     }
 
-    return totalValue;
+      return totalValue;
   };
 
   const getTransactionsByType = (address, type) => {
+    console.log('address, type', address, type)
     return new Promise((resolve, reject) => {
       fetch(
-        `${BASE_URL}xanawallet/fetch-transactions?addr=${address}&type=${
-          type == 'ethereum' ? 'eth' : type
-        }&networkType=${IsTestNet ? 'testnet' : 'mainnet'}`,
+        `${BASE_URL}xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}
+        &networkType=${networkType}`,
       )
         .then(response => {
           // console.log('response', response);
@@ -245,10 +251,10 @@ const TokenDetail = ({route, navigation}) => {
                 )}
               />
 
-              <View style={styles.tokenDetail}>
-                <TextView style={styles.amount}>{item.amount}</TextView>
-                <TextView style={styles.percent}>{item.percent}</TextView>
-              </View>
+              {/*<View style={styles.tokenDetail}>*/}
+                {/*<TextView style={styles.amount}>{item.amount}</TextView>*/}
+                {/*<TextView style={styles.percent}>{item.percent}</TextView>*/}
+              {/*</View>*/}
             </View>
           )}
 

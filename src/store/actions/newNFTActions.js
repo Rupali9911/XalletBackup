@@ -7,7 +7,9 @@ import {
   FAVORITE_NFT_LOAD_SUCCESS,
   NEW_NFT_LIST_RESET,
   NEW_NFT_LOAD_FAIL,
+  ART_NFT_LOAD_FAIL,
   NEW_NFT_LOAD_START,
+  ART_NFT_LOAD_START,
   NEW_NFT_LOAD_SUCCESS,
   NEW_PAGE_CHANGE,
   UPDATE_ARTIST_DETAIL,
@@ -37,12 +39,20 @@ export const updateOwnerDetail = data => ({
   payload: data,
 });
 
+export const isArtNftLoadStart = () => ({
+  type: ART_NFT_LOAD_START,
+});
+
 export const newNftLoadStart = () => ({
   type: NEW_NFT_LOAD_START,
 });
 
 export const newNftLoadFail = () => ({
   type: NEW_NFT_LOAD_FAIL,
+});
+
+export const artNftLoadFail = () => ({
+  type: ART_NFT_LOAD_FAIL,
 });
 
 export const newNftListReset = () => ({
@@ -57,6 +67,7 @@ export const newPageChange = data => ({
 export const newNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(newNftLoadStart());
+    dispatch(isArtNftLoadStart());
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;
@@ -90,7 +101,7 @@ export const newNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        console.log('json', json)
+        //console.log('json', json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -109,6 +120,7 @@ export const newNFTList = (page, limit, sort) => {
       })
       .catch(err => {
         dispatch(newNftLoadFail());
+        dispatch(artNftLoadFail());
         alertWithSingleBtn(
           translate('common.error'),
           translate('wallet.common.error.networkFailed'),

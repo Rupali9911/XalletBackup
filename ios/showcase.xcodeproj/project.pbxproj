@@ -683,7 +683,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.18;
+				MARKETING_VERSION = 2.3.25;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -694,6 +694,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/libwebp/src",
@@ -795,7 +796,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.18;
+				MARKETING_VERSION = 2.3.25;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -805,6 +806,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = XANALIA_Dev_26Nov;
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/libwebp/src",
@@ -846,7 +848,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
@@ -907,7 +909,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

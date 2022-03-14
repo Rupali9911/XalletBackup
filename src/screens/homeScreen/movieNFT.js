@@ -81,7 +81,7 @@ const MovieNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {ListReducer.page === 1 && ListReducer.nftListLoading ? (
+      {ListReducer.page === 1 && ListReducer.isMovieNftLoading ? (
         <Loader />
       ) : ListReducer.movieList.length !== 0 ? (
         <FlatList

@@ -1208,6 +1208,45 @@ const DetailScreen = ({ navigation, route }) => {
     );
   };
 
+  const collectionClick = () => {
+    switch (collectCreat?.userId) {
+      case "0":
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  const getAuctionTimeRemain = item => {
+    if (item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime()) {
+      return 'Bidding time has been ended. Highest bidder can claim now.';
+    }
+    if (item.newprice && item.newprice.endTime) {
+      const diff =
+        new Date(item.newprice.endTime).getTime() - new Date().getTime();
+      if (diff <= 0) {
+        return null;
+      } else {
+        let days = parseInt(diff / (1000 * 60 * 60 * 24));
+        let hours = parseInt(diff / (1000 * 60 * 60));
+        let mins = parseInt(diff / (1000 * 60));
+        let secs = parseInt(diff / 1000);
+
+        if (days > 0) {
+          return `Bid ends in : ${days} DAY`;
+        } else if (hours > 0) {
+          return `Bid ends in : ${hours} HOUR`;
+        } else if (mins > 0) {
+          return `Bid ends in : ${mins} MIN`;
+        } else if (secs > 0) {
+          return `Bid ends in : ${secs} SEC`;
+        } else {
+          return `Bid Deadline ${hours}:${mins}:${secs} `;
+        }
+      }
+    }
+    return null;
+  };
   const closeSuccess = () => {
     console.log("Success ==============")
     setSuccessModalVisible(false);
@@ -1226,7 +1265,7 @@ const DetailScreen = ({ navigation, route }) => {
               || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
               || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
               ? collectCreat?.creator
-              : creator.substring(0, 6)
+              : creator?.substring(0, 6)
         )
     )
     :
@@ -1234,7 +1273,7 @@ const DetailScreen = ({ navigation, route }) => {
       || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
       || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
       ? collectCreat?.creator
-      : creator.substring(0, 6);
+      : creator?.substring(0, 6);
 
   return (
     <>
@@ -1331,6 +1370,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
+                disabled={collectionClick()}
               onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
               style={styles.personType}>
               <Image
@@ -1341,7 +1381,7 @@ const DetailScreen = ({ navigation, route }) => {
               />
               <View>
                 <Text style={styles.personTypeText}>
-                  {translate('common.collected')}
+                  {translate('wallet.common.collection')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
                   {collectCreat &&
@@ -1369,9 +1409,9 @@ const DetailScreen = ({ navigation, route }) => {
                       ownerDataN.role === 'crypto' ?
                         ownerDataN.title ?
                           ownerDataN.title :
-                          ownerN.includes("0x")
-                            ? ownerN.substring(0, 6)
-                            : ownerN.substring(0, 6) :
+                          ownerN?.includes("0x")
+                            ? ownerN?.substring(0, 6)
+                            : ownerN?.substring(0, 6) :
                         ownerDataN.role === 'non_crypto' ?
                           ownerDataN.username ?
                             ownerDataN.username : ""
@@ -1412,6 +1452,9 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>{description}</Text>
+            <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15 }}>
+                <Text style={{ fontSize: 11,  }}>{getAuctionTimeRemain(item)}</Text>
+            </View>
           <View style={styles.bottomView}>
 
             {setNFTStatus() !== undefined && (

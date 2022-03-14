@@ -44,7 +44,7 @@ var accounts = new Accounts('');
 const WalletPay = ({ route, navigation }) => {
   const { wallet, isCreate, data } = useSelector(state => state.UserReducer);
   const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance } =
+  const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance } =
     useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -150,7 +150,7 @@ const WalletPay = ({ route, navigation }) => {
             } else if (payableIn.toLowerCase() === 'alia' &&
               (_.type === 'TAL' || _.type === 'TNFT')) {
               return true;
-            } 
+            }
              else {
               return false;
             }

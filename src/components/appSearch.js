@@ -35,7 +35,35 @@ export default function AppSearch() {
     setSearchTxt('');
   }, [isFocused]);
 
-  const searchNftType = txt => {
+    useEffect(() => {
+        if (searchTxt !== '') {
+            setloading(true);
+        const delayDebounceFn = setTimeout(() => {
+            console.log(searchTxt)
+                dispatch(searchNFT(searchTxt))
+                    .then(response => {
+                        console.log('search response', response);
+                        setloading(false);
+                        if (response.success) {
+                            setDataToList(response.data);
+                        } else {
+                            setSearchData([]);
+                        }
+                    })
+                    .catch(err => {
+                        console.log('search response error', err);
+                        setloading(false);
+                        setSearchData([]);
+                    });
+        }, 1000)
+            return () => clearTimeout(delayDebounceFn)
+        } else {
+            setloading(false);
+            setSearchData([]);
+        }
+    }, [searchTxt])
+
+    const searchNftType = txt => {
     if (txt !== '') {
       setloading(true);
       dispatch(searchNFT(txt))
@@ -67,6 +95,12 @@ export default function AppSearch() {
         type: 'Artist',
       });
     });
+      list[1]?.collections?.map((item, index) => {
+          array.push({
+              ...item,
+              type: 'Collections',
+          });
+      });
     list[2]?.nft?.map((item, index) => {
       array.push({
         ...item,
@@ -84,7 +118,6 @@ export default function AppSearch() {
         selectionColor={Colors.BLACK1}
         placeholder={translate('wallet.common.searchHint')}
         onChangeText={txt => {
-          searchNftType(txt);
           setSearchTxt(txt);
         }}
         value={searchTxt}
@@ -135,6 +168,8 @@ export default function AppSearch() {
                         const id =
                           item.role === 'crypto' ? item.username : item._id;
                         navigation.navigate('ArtistDetail', {id: id});
+                      }else if (item.type == 'Collections') {
+                          navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id });
                       }
                     }}
                   />
@@ -161,7 +196,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
             source={
               item.type == 'NFT'
                 ? {uri: item.thumbnailUrl}
-                : item.profile_image
+                : item.type == 'Collections' ? {uri: item.iconImage} : item.profile_image
                 ? {uri: item.profile_image}
                 : Images.pIcon
             }
@@ -175,7 +210,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
           {loading && <LoadingView />}
         </View>
         <Text style={styles.name} numberOfLines={1}>
-          {item.type == 'NFT' ? item.metaData?.name : item?.username}
+          {item.type == 'NFT' ? item.metaData?.name : item.type == 'Collections' ? item.collectionName : item?.username}
         </Text>
       </TouchableOpacity>
     </View>

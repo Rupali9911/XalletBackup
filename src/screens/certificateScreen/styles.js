@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     height: wp('100%'),
     resizeMode: 'contain',
-    backgroundColor: colors.GREY2,
+    backgroundColor: colors.BLACK1,
   },
   nftTitle: {
     fontSize: RF(1.5),

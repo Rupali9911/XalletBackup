@@ -47,6 +47,8 @@ const Wallet = ({route, navigation}) => {
   const {
     bnbBalance,
     tnftBalance,
+      busdBalance,
+      usdtBalance,
     ethBalance,
     maticBalance,
     talBalance,
@@ -207,25 +209,28 @@ const Wallet = ({route, navigation}) => {
   const setBalanceField = () => {
     let totalValue = 0;
     if (networkType.name == 'Ethereum') {
-      let value = parseFloat(ethBalance) * currencyPriceDollar?.ETH ; //+ parseFloat(balances.USDT)
+      let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH ; //+ parseFloat(balances.USDT)
+         let usdtValue = parseFloat(usdtBalance) * 1;
+         let value = eth + usdtValue
       totalValue = value;
     } else if (networkType.name == 'BSC') {
       // for mainnet
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
 
       // for testing
-      let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;  
+      let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
       let tnftValue = parseFloat(tnftBalance) * 1;
-      let value = bnbValue + tnftValue;
+      let busdValue = parseFloat(busdBalance) * 1;
+      let value = bnbValue + tnftValue + busdValue;
       totalValue = value;
     } else if (networkType.name == 'Polygon') {
       //for mainnet
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
 
       // for testing
-      let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC; 
-      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH; 
-      let value = maticValue + talBalance + usdcBalance + wethValue;
+      let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
+      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+      let value = maticValue + talBalance;
       totalValue = value;
     }
     return totalValue;
@@ -269,16 +274,17 @@ const Wallet = ({route, navigation}) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.ethRpc, 'eth'),
-        // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
+          balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
           let balances = {
             ETH: responses[0],
-            // USDT: responses[1],
+             USDT: responses[1],
           };
           dispatch(updateEthereumBalances(balances));
+          setBalances(balances);
           setLoading(false);
           resolve();
         })
@@ -328,24 +334,26 @@ const Wallet = ({route, navigation}) => {
           environment.bnbRpc,
           'alia',
         ),
-        // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+         balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
         // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
+            console.log('RESPONSES',responses)
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
-            // BUSD: responses[2],
+              BUSD: responses[2],
             // ALIA: responses[3],
           };
           dispatch(updateBSCBalances(balances));
+          setBalances(balances);
           setLoading(false);
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
+          //console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -428,8 +436,8 @@ const Wallet = ({route, navigation}) => {
             environment.polRpc,
             'alia',
           ),
-          // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
-          // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+           balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
+           balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
           // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
           // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
         ];
@@ -442,8 +450,8 @@ const Wallet = ({route, navigation}) => {
               Matic: responses[2],
               TNFT: responses[3],
               TAL: responses[4],
-              // USDT: responses[3],
-              // BUSD: responses[4],
+               USDT: responses[5],
+               BUSD: responses[6],
               // ALIA: responses[5],
               // USDC: responses[6],
             };
@@ -464,8 +472,9 @@ const Wallet = ({route, navigation}) => {
   const onRefreshToken = () => {
     return getBalances(wallet.address);
   };
+
   return (
-    <AppBackground isBusy={loading}>
+    <AppBackground isBusy={ balances ? loading : true}>
       <GradientBackground>
         <View style={styles.gradient}>
           <View style={styles.header}>
@@ -560,6 +569,7 @@ const Wallet = ({route, navigation}) => {
         values={balances}
         network={networkType}
         onTokenPress={item => {
+          console.log('Token details transfered', item)
           navigation.navigate('tokenDetail', {item});
         }}
         onRefresh={onRefreshToken}
@@ -580,6 +590,9 @@ const Wallet = ({route, navigation}) => {
 
         {isNotificationVisible ? (
           <NotificationActionModal
+              title={translate('wallet.common.setPushNotification')}
+              hint={translate('wallet.common.notificationHint')}
+              btnText={translate('wallet.common.enable')}
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);
@@ -598,6 +611,7 @@ const Wallet = ({route, navigation}) => {
         onItemSelect={item => {
           dispatch(updateNetworkType(item));
           setPickerVisible(false);
+          setBalances(null)
         }}
       />
       <SelectToken

@@ -468,11 +468,11 @@ function ArtistDetail({
             <SpaceView mTop={SIZE(14)} />
             <RowWrap>
                 <SpaceView mLeft={SIZE(15)} />
-                <EditButton isFollowing={isFollowing} onPress={onFollow}>
+                {/* <EditButton isFollowing={isFollowing} onPress={onFollow}>
                     <EditButtonText isFollowing={isFollowing}>
                         {isFollowing ? translate("common.unfollow") : translate("common.follow")}
                     </EditButtonText>
-                </EditButton>
+                </EditButton> */}
                 <SpaceView mRight={SIZE(15)} />
             </RowWrap>
             <SpaceView mTop={SIZE(16)} />

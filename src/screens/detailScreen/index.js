@@ -184,12 +184,12 @@ const DetailItemScreen = ({ route }) => {
                 <AppHeader
                     showBackButton
                     titleComponent={<View style={styles.headerTextView}>
-                        <Text style={styles.topHeaderText}>
+                        {/* <Text style={styles.topHeaderText}>
                             {'LALALA'}
                         </Text>
                         <Text style={styles.bottomHeaderText}>
                             {'NFTs'}
-                        </Text>
+                        </Text> */}
                     </View>}
                 />
 

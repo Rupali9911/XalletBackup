@@ -4371,7 +4371,7 @@ export const environment = {
   ethereumScanURL: IsTestNet ? test_EthereumScanURL : EthereumScanURL,
 
   // usdcCont: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-  usdcCont: '0x23a91170fa76141ac09f126e8d56bd9896d1fd5c',
+  usdcCont: IsTestNet ? '0x23a91170fA76141Ac09f126e8D56BD9896D1FD5c' : '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   usdcAbi: [
     {
       "anonymous": false,
@@ -6512,7 +6512,7 @@ export const environment = {
       "type": "event"
     }
   ],
-  busdCont: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+  busdCont: IsTestNet ? '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee' : '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
   busdAbi: [
     {
       "inputs": [
@@ -6999,7 +6999,7 @@ export const environment = {
       "type": "function"
     }
   ],
-  usdtCont: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+  usdtCont: IsTestNet ? '0xD92E713d051C37EbB2561803a3b5FBAbc4962431' : '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   usdtAbi: [
     {
       "constant": true,
@@ -7732,7 +7732,7 @@ export const environment = {
     }
   ],
 
-  tnftCont: '0x8d8108a9cfa5a669300074a602f36af3252b7533',
+  tnftCont: IsTestNet ? '0x8d8108a9cfa5a669300074a602f36af3252b7533' : '0x13861C017735d3b2F0678A546948D67AD51AC07B',
   tnftAbi: [
     {
       "constant": true,
@@ -8341,9 +8341,9 @@ export const environment = {
     }
   ],
 
-  talCont: '0x6275bd7102b14810c7cfe69507c3916c7885911a',
+  talCont: IsTestNet ? '0x6275BD7102b14810C7Cfe69507C3916c7885911A' :'0xe1a4af407A124777A4dB6bB461b6F256c1f8E341',
 
-  wethCont: '0xd93e56eb481d63b12b364adb8343c4b28623eebf',
+  wethCont: IsTestNet ? '0xd93e56Eb481D63b12b364adB8343c4b28623EebF' : '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
   wethAbi: [
     {
       "constant": true,
@@ -9060,7 +9060,7 @@ export const networkChain = [
   {
       name: "Polygon",
       value: 'polygon',
-      icon: ImagesSrc.matic,
+      icon: ImagesSrc.polygonNew,
       translatedName: 'ポリゴン'
   }
 ];
@@ -9094,18 +9094,18 @@ export const tokens = [
     network: 'Polygon'
   },
   {
-    type: 'TNFT',
-    tokenName: 'TNFT',
-    icon: ImagesSrc.busd,
+    type: IsTestNet ? 'TNFT' : 'ALIA',
+    tokenName: IsTestNet ? 'TNFT' : 'ALIA',
+    icon: ImagesSrc.aliaNew,
     amount: '$387.41',
     percent: '+10.49%',
     tokenValue: '0',
     network: 'BSC',
   },
   {
-    type: 'TAL',
-    tokenName: 'TAL',
-    icon: ImagesSrc.busd,
+    type: IsTestNet ? 'TAL' : 'ALIA',
+    tokenName: IsTestNet ? 'TAL' : 'ALIA',
+    icon: ImagesSrc.aliaNew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
@@ -9114,7 +9114,7 @@ export const tokens = [
   {
     type: 'USDC',
     tokenName: 'USDC',
-    icon: ImagesSrc.usdc,
+    icon: ImagesSrc.usdcNew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
@@ -9122,8 +9122,8 @@ export const tokens = [
   },
   {
     type: 'ETH',
-    tokenName: 'ETH',
-    icon: ImagesSrc.ethPolygon,
+    tokenName: IsTestNet ? 'ETH' : 'WETH',
+    icon: ImagesSrc.ethnew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
@@ -9141,7 +9141,7 @@ export const tokens = [
   {
     type: 'USDT',
     tokenName: 'USDT',
-    icon: ImagesSrc.usdt,
+    icon: ImagesSrc.usdtNew,
     amount: '$3,177.94',
     percent: '+2.21%',
     tokenValue: `0`,

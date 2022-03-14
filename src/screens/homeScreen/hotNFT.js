@@ -81,7 +81,7 @@ const HotNFT = () => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {ListReducer.page === 1 && ListReducer.nftListLoading ? (
+            {ListReducer.page === 1 && ListReducer.isHotNftLoading ? (
                 <Loader />
             ) : ListReducer.nftList.length !== 0 ? (
                 <FlatList

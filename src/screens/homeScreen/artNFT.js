@@ -76,7 +76,7 @@ const ArtNFT = () => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
-                NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading ?
+                NewNFTListReducer.newListPage === 1 && NewNFTListReducer.isArtNftLoading ?
                     <Loader /> :
                     NewNFTListReducer.newNftList.length !== 0 ?
                         <FlatList

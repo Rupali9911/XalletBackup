@@ -63,7 +63,7 @@ const NFTCreated = ({ route }) => {
     // }, []);
 
     useEffect(() => {
-        if (isFocusedHistory) {
+        if (isFocusedHistory && !MyNFTReducer?.myList?.length>0) {
             pressToggle(toggle);
         }
     }, [isFocusedHistory]);
@@ -103,9 +103,9 @@ const NFTCreated = ({ route }) => {
 
     const pressToggle = s => {
         setToggle(s);
+        dispatch(myNftLoadStart());
         dispatch(myNftListReset());
         dispatch(myPageChange(1));
-        dispatch(myNftLoadStart());
         // setNftOwnedPage(1);
         getNFTlist(1);
     };
