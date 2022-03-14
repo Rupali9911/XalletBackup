@@ -639,7 +639,7 @@ const nftItem = ({ item, index }) => {
                       owner: owner,
                       creator: artist,
                       thumbnailUrl: item.thumbnailUrl,
-                      video: item.metaData.image,
+                      video: imageUri,
                       fileType: fileType,
                       price: item.price,
                       chain: item.chain,
@@ -662,7 +662,7 @@ const nftItem = ({ item, index }) => {
                   <Video
                     key={tokenId}
                     ref={refVideo}
-                    source={{ uri: item.metaData.image }}
+                    source={{ uri: imageUri }}
                     playInBackground={false}
                     paused={!isPlay}
                     resizeMode={'cover'}
