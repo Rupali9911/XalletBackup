@@ -821,7 +821,8 @@
                 "invalid_cvc": "您的卡的安全码无效。",
                 "incorrect_number": "您的卡号不正确。",
                 "invalid_expiry_year": "您的卡的到期年份无效。",
-                "invalid_expiry_month": "您的卡的到期月份无效。"
+                "invalid_expiry_month": "您的卡的到期月份无效。",
+                "card_declined": "您的信用卡遭到拒绝。您的请求处于实时模式，但使用了已知的测试卡。"
             },
             "confirmDeleteCard": "您确定要移除这张卡吗？",
             "balanceAmount": "余额",
@@ -961,7 +962,8 @@
             "buyerpayin": "支付货币选择",
             "profileCreated": "已创建",
             "connectionEstablished":"连接已建立",
-            "openApp":"请打开 XANA 应用"
+            "openApp":"请打开 XANA 应用",
+            "setPushNotification":"设置推送通知"
         },
         "backendmessage": {
             "error": {},

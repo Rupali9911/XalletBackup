@@ -214,6 +214,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
       const contract = new web3.eth.Contract(contractAbi, contractAddr);
       let reserves = {};
       await contract.methods.balanceOf(pubKey).call().then(function (result) {
+        console.log('Results from balance of', result)
         if (type == 'usdc') {
          // resolve(web3.utils.fromWei(result.toString(), "ether"));
             resolve(web3.utils.fromWei(result.toString(), "mwei"));
@@ -222,7 +223,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
         } else if (type == 'usdt') {
           resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
         } else if (type == 'busd') {
-          resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
+            resolve(web3.utils.fromWei(result.toString(), "ether"));
         } else if (type == 'weth') {
           resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
         }

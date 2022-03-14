@@ -216,7 +216,7 @@ function AddCard({ route, navigation }) {
         }
 
         StripeApiRequest(`tokens`,body).then((response)=>{
-            console.log(response);
+            console.log('Response from STRIPE', response);
             if(response.id){
                 addCustomerCard(response.id);
             }else if(response.error){

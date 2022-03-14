@@ -49,7 +49,7 @@ const Tokens = (props) => {
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
 
-    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance, usdcBalance, wethBalance} = useSelector(state => state.WalletReducer);
+    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance, usdcBalance, wethBalance, busdBalance, usdtBalance} = useSelector(state => state.WalletReducer);
 
     useEffect(() => {
         if(allowedTokens){
@@ -59,15 +59,14 @@ const Tokens = (props) => {
 
     useEffect(()=>{
         let array = tokens;
+        console.log('TOKENS', tokens)
         if(network.name == 'Ethereum'){
             array[1].tokenValue = `${ethBalance}`;
-            // array[5].tokenValue = `${props.values.USDT}`;
+             array[8].tokenValue = `${usdtBalance}`;
         } else if(network.name == 'BSC'){
             array[0].tokenValue = `${bnbBalance}`;
             array[3].tokenValue = `${tnftBalance}`;
-            console.log(array[3]);
-            // array[3].tokenValue = `${props.values.BUSD}`;
-            // array[6].tokenValue = `${props.values.ALIA}`;
+             array[7].tokenValue = `${busdBalance}`;
         } else if(network.name == 'Polygon'){
             array[2].tokenValue = `${maticBalance}`;
             array[4].tokenValue = `${talBalance}`;
@@ -99,7 +98,7 @@ const Tokens = (props) => {
         }
         setBalanceData(result);
         // console.log('value update',array);
-    },[network,ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance]);
+    },[network,ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance, busdBalance, usdtBalance]);
 
     // useEffect(()=>{
     //     if(props.values){

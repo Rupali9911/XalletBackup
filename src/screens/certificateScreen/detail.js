@@ -1265,7 +1265,7 @@ const DetailScreen = ({ navigation, route }) => {
               || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
               || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
               ? collectCreat?.creator
-              : creator.substring(0, 6)
+              : creator?.substring(0, 6)
         )
     )
     :
@@ -1273,7 +1273,7 @@ const DetailScreen = ({ navigation, route }) => {
       || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
       || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
       ? collectCreat?.creator
-      : creator.substring(0, 6);
+      : creator?.substring(0, 6);
 
   return (
     <>
@@ -1381,7 +1381,7 @@ const DetailScreen = ({ navigation, route }) => {
               />
               <View>
                 <Text style={styles.personTypeText}>
-                  {translate('common.collected')}
+                  {translate('wallet.common.collection')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
                   {collectCreat &&
@@ -1409,9 +1409,9 @@ const DetailScreen = ({ navigation, route }) => {
                       ownerDataN.role === 'crypto' ?
                         ownerDataN.title ?
                           ownerDataN.title :
-                          ownerN.includes("0x")
-                            ? ownerN.substring(0, 6)
-                            : ownerN.substring(0, 6) :
+                          ownerN?.includes("0x")
+                            ? ownerN?.substring(0, 6)
+                            : ownerN?.substring(0, 6) :
                         ownerDataN.role === 'non_crypto' ?
                           ownerDataN.username ?
                             ownerDataN.username : ""

@@ -819,7 +819,8 @@
                 "invalid_cvc": "The Security code you have entered is in correct",
                 "incorrect_number": "The card number is incorrect.",
                 "invalid_expiry_year": "The expiration year is invalid.",
-                "invalid_expiry_month": "The expiration month is invalid."
+                "invalid_expiry_month": "The expiration month is invalid.",
+                "card_declined": "Your card was declined. Your request was in live mode, but used a known test card."
             },
             "confirmDeleteCard": "Are you sure you want to remove this card?",
             "balanceAmount": "Balance Amount",
@@ -958,7 +959,8 @@
             "buyerpayin": "Pay in ",
             "profileCreated":"Created",
             "connectionEstablished":"Connection established",
-            "openApp":"Please open the XANA app"
+            "openApp":"Please open the XANA app",
+            "setPushNotification":"Set up push notifications"
         },
         "backendmessage": {
             "error": {},

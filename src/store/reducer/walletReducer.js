@@ -32,6 +32,10 @@ const initialState = {
     tnftBalance: "0",
     talTransactions: [],
     talBalance: "0",
+    busdTransactions: [],
+    busdBalance: "0",
+    usdtTransactions: [],
+    usdtBalance: "0",
     usdcTransactions: [],
     usdcBalance: "0",
     wethTransactions: [],
@@ -113,12 +117,15 @@ export default walletReducer = (state = initialState, action) => {
                 maticBalance: action.payload.Matic,
                 tnftBalance: action.payload.TNFT, // for testnet only
                 talBalance: action.payload.TAL, // for testnet only
+                usdtBalance: action.payload.USDT,
+                busdBalance: action.payload.BUSD
             }
 
         case UPDATE_ETH_BALANCES:
             return {
                 ...state,
                 ethBalance: action.payload.ETH,
+                usdtBalance: action.payload.USDT,
             }
 
         case UPDATE_BSC_BALANCES:
@@ -126,6 +133,7 @@ export default walletReducer = (state = initialState, action) => {
                 ...state,
                 bnbBalance: action.payload.BNB,
                 tnftBalance: action.payload.TNFT, // for testnet only
+                busdBalance: action.payload.BUSD
             }
 
         case UPDATE_POLY_BALANCES:

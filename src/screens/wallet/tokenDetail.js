@@ -27,7 +27,7 @@ import {networkType} from '../../common/networkType'
 const TokenDetail = ({route, navigation}) => {
   const {} = route.params;
   const {wallet} = useSelector(state => state.UserReducer);
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance} =
+  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance, busdBalance,usdtBalance} =
     useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -145,9 +145,15 @@ const TokenDetail = ({route, navigation}) => {
     }else if (item.network === 'Polygon' && item.type == 'ALIA') {
         let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
         totalValue = value;
+    }else if (item.type == 'BUSD') {
+        let value = parseFloat(busdBalance); //+ parseFloat(balances.USDC)
+        totalValue = value;
+    }else if (item.type == 'USDT') {
+        let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
+        totalValue = value;
     }
 
-    return totalValue;
+      return totalValue;
   };
 
   const getTransactionsByType = (address, type) => {
