@@ -73,6 +73,7 @@ export const myNFTList = (page, ownerId) => {
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
       .then(json => {
+        console.log(json, "get my created nft")
         let nftData = [];
         if (!json.count) {
             json.data = [];

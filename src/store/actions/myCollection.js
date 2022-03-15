@@ -1,6 +1,7 @@
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { alertWithSingleBtn } from '../../utils';
+import { parseNftObject } from '../../utils/parseNFTObj';
 import { translate } from '../../walletUtils';
 
 import {
@@ -69,18 +70,29 @@ export const myCollectionList = (page, ownerId) => {
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
       .then(json => {
-        if (json.count) {
-          dispatch(myCollectionLoadSuccess(json));
+        console.log(json, "myCollectionList nft")
+        let nftData = [];
+        if (!json.count) {
+          json.data = [];
         } else {
-          dispatch(myCollectionLoadFail());
-        }
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+                ...parsedNFT,
+                ...item,
+              };
+              nftData.push(data);
+            });
+          }
+        json.data = nftData;
+        dispatch(myCollectionLoadSuccess(json));
       })
       .catch(err => {
         dispatch(myCollectionLoadFail());
-        // alertWithSingleBtn(
-        //     translate('common.error'),
-        //     translate("wallet.common.error.networkFailed")
-        // )
+        //   alertWithSingleBtn(
+        //     translate('wallet.common.alert'),
+        //     translate('wallet.common.error.networkFailed'),
+        // );
       });
   };
 };
