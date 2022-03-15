@@ -4,7 +4,7 @@ const EthereumTx = require('ethereumjs-tx').Transaction;
 // import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
 import { Transaction } from '@ethereumjs/tx'
-import { binanceNftAbi_new, binanceNftDex_new, environment, ethNftDex_new, maticNftDex_new, translate } from '../../../walletUtils';
+import { binanceNftAbi_new, binanceNftDex_new, environment, ethNftDex_new, maticNftDex_new, translate,lpAliaContractAbi,lpAliaContractAddr } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 import { getChainId, getNetworkId } from '../../../web3/config/chainIds';
 
@@ -161,6 +161,7 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
 export const currencyInDollar = async(pubkey,type) => {
   let rpcUrl = ''
   let nftDex = ''
+  let nftAbi = ''
   let key = pubkey
 
   switch(type) {
@@ -168,21 +169,31 @@ export const currencyInDollar = async(pubkey,type) => {
       rpcUrl = 'https://bsc-dataseed.binance.org/'
       nftDex = binanceNftDex_new
       break;
+
+    case "ALIA":
+      rpcUrl = 'https://bsc-dataseed.binance.org/'
+      nftDex = lpAliaContractAddr
+      nftAbi = lpAliaContractAbi
+      break;
+
     case "ETH":
       rpcUrl = 'https://mainnet.infura.io/v3/e2fddb9deb984ba0b9e9daa116d1702a'
       nftDex = ethNftDex_new
       break;
+
     case "Polygon":
       rpcUrl = 'https://rpc-mainnet.matic.quiknode.pro/'
       nftDex = maticNftDex_new
       break;
   }
 
+  nftAbi = nftAbi ? nftAbi : binanceNftAbi_new;
+
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl));
-    const contract = new web3.eth.Contract(binanceNftAbi_new, nftDex, { from: key })
+    const contract = new web3.eth.Contract(nftAbi, nftDex, { from: key })
     if (contract) {
-      if(type ==='BSC'){
+      if(type === 'BSC'){
         await contract?.methods?.getReserves()?.call().then(function (info) {
           if(info == null) {
               return resolve(1);
@@ -191,6 +202,13 @@ export const currencyInDollar = async(pubkey,type) => {
           var busdLpReserve = info[1].toString();
           var bnbPriceInner = busdLpReserve / bnbLpReserve;
           resolve(bnbPriceInner);
+        })
+      } else if(type === 'ALIA'){
+        await contract?.methods?.getReserves()?.call().then(function (info) {
+          var aliaReserve = info[0].toString();
+          var BNBReserve = info[1].toString();
+          var newbnbPerAlia = aliaReserve / BNBReserve;
+          resolve(newbnbPerAlia);
         })
       } else {
         await contract.methods.getReserves().call().then(function (info) {
@@ -207,7 +225,7 @@ export const currencyInDollar = async(pubkey,type) => {
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
  // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
-   console.log('pubKey', pubKey)
+  //  console.log('pubKey', pubKey)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
     if (contractAddr) {
