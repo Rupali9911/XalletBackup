@@ -95,6 +95,7 @@ export default function NFTItem(props) {
     uriType = imageUri.split('.')[imageUri.split('.').length - 1];
     checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
   }
+  // console.log(item.name, "/////////")
   return (
     <>
       {isMeCollection ? (
@@ -230,9 +231,9 @@ export default function NFTItem(props) {
                         marginRight: SIZE(2),
                         fontSize: SIZE(12),
                       }}>
-                      {item?.baseCurrency === 'ALIA'
-                        ? insertComma(parseFloat(item?.price, true).toFixed(0))
-                        : insertComma(item?.price, true)}
+                        {
+                          insertComma(parseFloat(item?.price, true).toFixed(0))
+                        }
                     </Text>
                     {renderIcon()}
                   </View>
@@ -266,11 +267,9 @@ export default function NFTItem(props) {
                               marginRight: SIZE(2),
                               fontSize: SIZE(12),
                             }}>
-                            {item?.baseCurrency === 'ALIA'
-                              ? insertComma(
-                                parseFloat(item?.price, true).toFixed(0),
-                              )
-                              : insertComma(item?.price, true)}
+                              {
+                                insertComma(parseFloat(item?.price, true).toFixed(0))
+                              }
                           </Text>
                           {renderIcon()}
                         </View>
