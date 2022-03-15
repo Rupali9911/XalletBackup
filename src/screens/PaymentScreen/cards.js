@@ -194,7 +194,7 @@ const Cards = ({route, navigation}) => {
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
-            <Text style={styles.value}>$ {numberWithCommas(Number(price).toFixed(1))}</Text>
+            <Text style={styles.value}>$ {numberWithCommas(parseFloat(Number(price).toFixed(2)))}</Text>
           </View>
           <View style={styles.buttonContainer}>
             <AppButton
