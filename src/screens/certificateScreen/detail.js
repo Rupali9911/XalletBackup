@@ -1177,11 +1177,12 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item.metaData) {
-      let imageUri =
-        item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl
-          : item.metaData.image;
+    if (item.metaData) {  
+      // it's temporary fix
+      const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+    
+      const image = item.metaData.image || item.thumbnailUrl;
+      const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
       return (
         <TouchableOpacity
@@ -1277,7 +1278,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   const getAuctionTimeRemain = item => {
     if (item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime()) {
-      return 'Bidding time has been ended. Highest bidder can claim now.';
+      return translate('common.biddingTime');
     }
     if (item.newprice && item.newprice.endTime) {
       const diff =
@@ -1291,22 +1292,21 @@ const DetailScreen = ({ navigation, route }) => {
         let secs = parseInt(diff / 1000);
 
         if (days > 0) {
-          return `Bid ends in : ${days} DAY`;
+          return `${translate('common.saleEndIn')} : ${days} ${translate('common.day')}`;
         } else if (hours > 0) {
-          return `Bid ends in : ${hours} HOUR`;
+          return `${translate('common.saleEndIn')} : ${hours} ${translate('common.hours')}`;
         } else if (mins > 0) {
-          return `Bid ends in : ${mins} MIN`;
+          return `${translate('common.saleEndIn')} : ${mins} ${translate('common.min')}`;
         } else if (secs > 0) {
-          return `Bid ends in : ${secs} SEC`;
+          return `${translate('common.saleEndIn')} : ${secs} ${translate('common.sec')}`;
         } else {
-          return `Bid Deadline ${hours}:${mins}:${secs} `;
+          return `${translate('common.saleEndIn')} ${hours}:${mins}:${secs} `;
         }
       }
     }
     return null;
   };
   const closeSuccess = () => {
-    console.log("Success ==============")
     setSuccessModalVisible(false);
     setLoader(true)
     getNonCryptoNFTOwner();
@@ -1510,9 +1510,11 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>{description}</Text>
-            <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15 }}>
-                <Text style={{ fontSize: 11,  }}>{getAuctionTimeRemain(item)}</Text>
-            </View>
+            {getAuctionTimeRemain(item) ? (
+              <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
+                  <Text style={{ fontSize: 11,  }}>{getAuctionTimeRemain(item)}</Text>
+              </View>
+            ) : null}
           <View style={styles.bottomView}>
 
             {setNFTStatus() !== undefined && (
