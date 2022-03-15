@@ -577,7 +577,7 @@ const WalletPay = ({ route, navigation }) => {
       {selectedObject && (
         <View style={styles.totalContainer}>
           <View style={styles.payObject}>
-            <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
+            <Text style={styles.totalLabel}>{translate('wallet.common.total')}</Text>
             <Text style={styles.value}>
               {numberWithCommas(parseFloat(Number(priceInToken || price)).toFixed(4))} {selectedObject.type}
             </Text>
@@ -599,7 +599,7 @@ const WalletPay = ({ route, navigation }) => {
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
             // navigation.navigate("AddCard")
-            if (!selectedObject && selectedObject.tokenValue !== '0') {
+            // if (!selectedObject && selectedObject.tokenValue !== '0') {
               navigation.goBack();
               dispatch(
                 setPaymentObject({
@@ -609,12 +609,12 @@ const WalletPay = ({ route, navigation }) => {
                   type: 'wallet',
                 }),
               );
-            } else {
-              alertWithSingleBtn(
-                translate('wallet.common.alert'),
-                translate('common.blanceLow'),
-              );
-            }
+            // } else {
+            //   alertWithSingleBtn(
+            //     translate('wallet.common.alert'),
+            //     translate('common.blanceLow'),
+            //   );
+            // }
           }}
           view={!IsActiveToPay()}
         />

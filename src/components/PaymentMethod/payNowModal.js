@@ -531,14 +531,7 @@ const PaymentNow = props => {
 
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>
-              {paymentObject && paymentObject.type == 'card'
-                ? translate('wallet.common.total')
-                : translate('wallet.common.priceIn', {
-                  type:
-                    paymentObject && paymentObject.type == 'wallet'
-                      ? paymentObject.item.type
-                      : 'GOLD',
-                })}
+              {paymentObject && translate('wallet.common.total')}
             </Text>
             <Text style={styles.value}>
               {paymentObject && paymentObject.type == 'card' ? '$' : ''}{' '}
