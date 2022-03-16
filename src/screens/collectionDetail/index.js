@@ -26,7 +26,7 @@ const {TwiiterIcon, FacebookIcon, InstagramIcon} = SVGS;
 
 function CollectionDetail(props) {
   const {route} = props;
-  const {collectionId, isBlind} = route.params;
+  const {collectionId, isBlind, isHotCollection} = route.params;
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
   const [descTab, setDescTab] = useState(true);
@@ -40,14 +40,14 @@ function CollectionDetail(props) {
   }, []);
 
   const getCollection = async () => {
-    console.log('collectionId', collectionId, isBlind)
+    console.log('========collectionId', collectionId, isBlind);
     try {
       const collectionArray = await getHotCollectionDetail(
         collectionId,
         isBlind,
       );
       if (isBlind) {
-        setCollectionAddress(collectionArray?.data.data.collectionAddress);
+        setCollectionAddress(collectionArray?.data.data._id);
         setCollection(collectionArray?.data.data);
       } else {
         setCollectionAddress(collectionArray?.data.data[0].collectionAddress);
@@ -167,40 +167,83 @@ function CollectionDetail(props) {
           ) : null}
         </View>
 
-        <View style={styles.descriptionTabWrapper}>
-          <TouchableOpacity
-            onPress={() => setDescTab(true)}
-            style={[
-              styles.descriptionTab,
-              {
-                borderColor: descTab ? '#eee' : 'transparent',
-                borderBottomColor: descTab ? 'transparent' : '#eee',
-              },
-            ]}>
-            <Text style={styles.descriptionTabText}>
-              {translate('common.collected')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setDescTab(false)}
-            style={[
-              styles.descriptionTab,
-              {
-                borderColor: !descTab ? '#eee' : 'transparent',
-                borderBottomColor: !descTab ? 'transparent' : '#eee',
-              },
-            ]}>
-            <Text style={styles.descriptionTabText}>
-              {translate('common.creator')}
-            </Text>
-          </TouchableOpacity>
-        </View>
+
+          {isBlind ? (
+            <View style={styles.descriptionTabWrapper}>
+              <TouchableOpacity
+                onPress={() => setDescTab(false)}
+                style={[
+                  styles.descriptionTab,
+                  {
+                    borderColor: !descTab ? '#eee' : 'transparent',
+                    borderBottomColor: !descTab ? 'transparent' : '#eee',
+                  },
+                ]}>
+                <Text style={styles.descriptionTabText}>
+                  {translate('common.creator')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setDescTab(true)}
+                style={[
+                  styles.descriptionTab,
+                  {
+                    borderColor: descTab ? '#eee' : 'transparent',
+                    borderBottomColor: descTab ? 'transparent' : '#eee',
+                  },
+                ]}>
+                <Text style={styles.descriptionTabText}>
+                  {translate('common.collected')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.descriptionTabWrapper}>
+              <TouchableOpacity
+                onPress={() => setDescTab(true)}
+                style={[
+                  styles.descriptionTab,
+                  {
+                    borderColor: descTab ? '#eee' : 'transparent',
+                    borderBottomColor: descTab ? 'transparent' : '#eee',
+                  },
+                ]}>
+                <Text style={styles.descriptionTabText}>
+                  {translate('common.collected')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setDescTab(false)}
+                style={[
+                  styles.descriptionTab,
+                  {
+                    borderColor: !descTab ? '#eee' : 'transparent',
+                    borderBottomColor: !descTab ? 'transparent' : '#eee',
+                  },
+                ]}>
+                <Text style={styles.descriptionTabText}>
+                  {translate('common.creator')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         <View style={styles.description}>
           <ScrollView>
             {descTab ? (
-              <Text style={styles.descriptionText}>
-                {collection?.collectionDesc}
-              </Text>
+              <View>
+                {isBlind ? (
+                  <Text
+                    style={[
+                      styles.descriptionText,
+                      {fontSize: SIZE(16), fontWeight: 'bold'},
+                    ]}>
+                    {collection.collectionName}
+                  </Text>
+                ) : null}
+                <Text style={styles.descriptionText}>
+                  {collection?.collectionDesc}
+                </Text>
+              </View>
             ) : !isBlind ? (
               <Text style={styles.descriptionText}>
                 {collection.userInfo[
@@ -315,7 +358,7 @@ function CollectionDetail(props) {
             <Collections
               collectionAddress={collectionAddress}
               collectionType={collectionType}
-              collectionId={collectionId}
+              isHotCollection={isHotCollection}
               isBlind={isBlind}
             />
           )}

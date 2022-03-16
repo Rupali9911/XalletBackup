@@ -542,9 +542,7 @@ const nftItem = ({ item, index }) => {
   };
 
   // it's temporary fix
-  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUrl !== undefined || item.thumbnailUrl
-      ? item.thumbnailUrl
-      : item.metaData.image;;
+  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUrl
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';

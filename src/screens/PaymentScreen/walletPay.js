@@ -754,7 +754,7 @@ const WalletPay = ({ route, navigation }) => {
       {selectedObject && (
         <View style={styles.totalContainer}>
           <View style={styles.payObject}>
-            <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
+            <Text style={styles.totalLabel}>{translate('wallet.common.total')}</Text>
             <Text style={styles.value}>
               {numberWithCommas(parseFloat(Number(priceInToken || price)).toFixed(4))} {selectedObject.type}
             </Text>
@@ -775,24 +775,28 @@ const WalletPay = ({ route, navigation }) => {
           containerStyle={CommonStyles.button}
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
-            // navigation.navigate("AddCard")
-            if (selectedObject && selectedObject.tokenValue !== '0' && priceInToken < selectedObject?.tokenValue) {
-              navigation.goBack();
-              dispatch(
-                setPaymentObject({
-                  item: selectedObject,
-                  currency: tradeCurrency,
-                  priceInToken,
-                  type: 'wallet',
-                }),
-              );
-            } else {
-              alertWithSingleBtn(
-                translate('wallet.common.alert'),
-                translate('common.blanceLow'),
-              );
-            }
-          }}
+              // navigation.navigate("AddCard")
+                  if (
+                      selectedObject &&
+                      selectedObject.tokenValue !== '0' &&
+                      priceInToken < selectedObject?.tokenValue
+                  ) {
+                      navigation.goBack();
+                      dispatch(
+                          setPaymentObject({
+                              item: selectedObject,
+                              currency: tradeCurrency,
+                              priceInToken,
+                              type: 'wallet',
+                          }),
+                      );
+                  } else {
+                      alertWithSingleBtn(
+                          translate('wallet.common.alert'),
+                          translate('common.blanceLow'),
+                      );
+                  }
+              }}
           // view={!IsActiveToPay()}
           view={isNextDisabled}
         />
