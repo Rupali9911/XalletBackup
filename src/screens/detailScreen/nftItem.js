@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import React, {useEffect, useRef, useState, useCallback} from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   Dimensions,
   Image,
@@ -11,23 +11,23 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Video from 'react-native-fast-video';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image} from 'src/components';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
-import {RowBetweenWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText} from 'src/styles/text.styles';
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {handleLikeDislike} from '../../store/actions/nftTrendList';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image } from 'src/components';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
+import { RowBetweenWrap, SpaceView } from 'src/styles/common.styles';
+import { SmallBoldText } from 'src/styles/text.styles';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import getLanguage from '../../utils/languageSupport';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './styles';
-import {numberWithCommas} from '../../utils';
+import { numberWithCommas } from '../../utils';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const langObj = getLanguage();
 
 const Web3 = require('web3');
@@ -250,7 +250,7 @@ const nftItem = ({ item, index }) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -264,7 +264,7 @@ const nftItem = ({ item, index }) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -368,6 +368,19 @@ const nftItem = ({ item, index }) => {
         : obj?.thumbnailUrl,
       newprice: obj.newprice,
       approval: obj.approval,
+      buyTxHash: obj?.buyTxHash ? obj?.buyTxHash : "",
+
+      offchain: obj?.offchain ? obj?.offchain : false,
+      collectionOffChainId: obj?.returnValues?.collection
+        ? obj?.returnValues?.collection
+        : "",
+
+      seriesId: obj?.seriesId
+        ? obj?.seriesId
+        : "",
+      secondarySales: obj.secondarySales ? true : false,
+
+      lastTradeType: obj.newprice2 && obj.newprice2?.type === 'auction' ? "auction" : "sell"
     };
 
     nftObj.id = obj.tokenId;
@@ -461,8 +474,8 @@ const nftItem = ({ item, index }) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-              ? res?.data[1]?.award
-              : false,
+                ? res?.data[1]?.award
+                : false,
           );
           let req_data = {
             owner: temp?.returnValues?.to?.toLowerCase(),
@@ -481,8 +494,8 @@ const nftItem = ({ item, index }) => {
             .then(response => response.json())
             .then(res => {
               // console.log(res.data, "///////", item.metaData.name)
-              setArtist(temp?.returnValues?.to?.toLowerCase());
               if (res.data) {
+                setArtist(temp?.returnValues?.to?.toLowerCase());
                 setArtistData(res.data);
               }
             });
@@ -527,16 +540,30 @@ const nftItem = ({ item, index }) => {
 
   const onProfile = isOwner => {
     if (isOwner) {
-      if (owner !== "----") navigation.push('ArtistDetail', { id: owner });
+      if (owner !== "----" && owner) navigation.push('ArtistDetail', { id: owner });
     } else {
-      if (artist !== "----") navigation.push('ArtistDetail', { id: artist });
+      if (artist !== "----" && artist) navigation.push('ArtistDetail', { id: artist });
     }
   };
   let imageUri =
     item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl
       : item.metaData.image;
-  // console.log(item.metaData.name, artist, artistData, "/////////")
+
+  let artistName = artistData && artist
+    ? artist.includes("0x")
+      ? artistData.hasOwnProperty("title") && artistData.title ?
+        artistData.title
+        : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+          ? collectCreat?.creator
+          : artist.substring(0, 6)
+      : artistData === "No record found" ?
+        artist.substring(0, 6) :
+        artistData.hasOwnProperty("username") && artistData.username ?
+          artistData.username.substring(0, 6) : artist.substring(0, 6)
+    : artist.substring(0, 6)
   return (
     <>
       {
@@ -565,26 +592,7 @@ const nftItem = ({ item, index }) => {
                       { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
                     ]}>
                     {
-                      artistData ?
-                        (
-                          artistData.hasOwnProperty("username") && artistData.username && !artistData.username.includes("0x") ?
-                            artistData.username :
-                            (
-                              artistData.hasOwnProperty("title") && artistData.title ?
-                                artistData.title :
-                                (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
-                                  || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
-                                  || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
-                                  ? collectCreat?.creator
-                                  : artist.substring(0, 6)
-                            )
-                        )
-                        :
-                        (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
-                          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
-                          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
-                          ? collectCreat?.creator
-                          : artist.substring(0, 6)
+                      artistName
                     }
                   </Text>
                 </View>
@@ -622,14 +630,14 @@ const nftItem = ({ item, index }) => {
               </TouchableOpacity>
             </View>
             <InViewPort onChange={(isVisible) => {
-        if (!isVisible) {
-          setPlay(false);
-        }
-      }}>
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => {
-                // chainType && (
+              if (!isVisible) {
+                setPlay(false);
+              }
+            }}>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => {
+                  // chainType && (
                   isPlay
                     ? setPlay(!isPlay)
                     : navigation.navigate('CertificateDetail', {
@@ -652,73 +660,73 @@ const nftItem = ({ item, index }) => {
                       item: item,
                       index: index,
                     })
-                // )
-              }}>
-              {fileType === 'mp4' ||
-                fileType === 'MP4' ||
-                fileType === 'mov' ||
-                fileType === 'MOV' ? (
-                <View style={styles.modalImage}>
-                  <Video
-                    key={tokenId}
-                    ref={refVideo}
-                    source={{ uri: item.metaData.image }}
-                    playInBackground={false}
-                    paused={!isPlay}
-                    resizeMode={'cover'}
-                    onLoad={() => refVideo.current.seek(0)}
+                  // )
+                }}>
+                {fileType === 'mp4' ||
+                  fileType === 'MP4' ||
+                  fileType === 'mov' ||
+                  fileType === 'MOV' ? (
+                  <View style={styles.modalImage}>
+                    <Video
+                      key={tokenId}
+                      ref={refVideo}
+                      source={{ uri: item.metaData.image }}
+                      playInBackground={false}
+                      paused={!isPlay}
+                      resizeMode={'cover'}
+                      onLoad={() => refVideo.current.seek(0)}
                       onEnd={() => {
-                  setPlay(false);
-                  refVideoPlay.current = true;
-                }}
-                    onLoad={() => refVideo.current.seek(0)}
-                    style={{
-                      flex: 1,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                    }}
-                  />
-                  {!isPlay && (
-                    <View
+                        setPlay(false);
+                        refVideoPlay.current = true;
+                      }}
+                      onLoad={() => refVideo.current.seek(0)}
                       style={{
+                        flex: 1,
                         position: 'absolute',
                         top: 0,
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
+                      }}
+                    />
+                    {!isPlay && (
                       <View
                         style={{
-                          width: SIZE(100),
-                          height: SIZE(100),
-                          backgroundColor: '#00000030',
-                          borderRadius: SIZE(100),
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}>
-                        <TouchableOpacity onPress={() => {
-                        if (refVideoPlay.current) {
-                          refVideo.current.seek(0);
-                        }
-                        refVideoPlay.current = false;
-                        setPlay(true);
-                      }}>
-                          <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                        </TouchableOpacity>
+                        <View
+                          style={{
+                            width: SIZE(100),
+                            height: SIZE(100),
+                            backgroundColor: '#00000030',
+                            borderRadius: SIZE(100),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <TouchableOpacity onPress={() => {
+                            if (refVideoPlay.current) {
+                              refVideo.current.seek(0);
+                            }
+                            refVideoPlay.current = false;
+                            setPlay(true);
+                          }}>
+                            <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                    </View>
-                  )}
-                </View>
-              ) : (
-                <C_Image uri={imageUri} imageStyle={styles.modalImage} />
-              )}
-            </TouchableOpacity>
- </InViewPort>
+                    )}
+                  </View>
+                ) : (
+                  <C_Image uri={imageUri} imageStyle={styles.modalImage} />
+                )}
+              </TouchableOpacity>
+            </InViewPort>
             <View
               style={{
                 width: '100%',

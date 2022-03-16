@@ -314,17 +314,22 @@ function ArtistDetail({
             token: 'HubyJ*%qcqR0'
         };
 
+const url = route.params.id.includes('0x') ?
+`${BASE_URL}/user/get-public-profile?publicAddress=${route.params.id}` : 
+`${BASE_URL}/user/get-public-profile?userId=${route.params.id}`
+
         let body = {
-            method: 'POST',
-            body: JSON.stringify(req_data),
+            method: 'GET',
+            // body: JSON.stringify(req_data),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             }
         }
-        fetch(`${BASE_URL}/xanalia/getProfile`, body)
+        fetch(url, body)
             .then(response => response.json())
             .then(res => {
+                console.log(res.data, "res.data testing", route.params.id)
                 if (res.data) {
                     setData(res.data);
                 }
