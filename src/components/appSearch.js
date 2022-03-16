@@ -186,7 +186,6 @@ export default function AppSearch() {
 
 const ResultItem = ({item, index, withTag, onPress}) => {
   const [loading, setLoading] = useState(false);
-
   return (
     <View style={[styles.resultItemContainer]}>
       {withTag && <Text style={styles.labelText}>{item.type}</Text>}
@@ -198,7 +197,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
                 ? {uri: item.thumbnailUrl}
                 : item.type == 'Collections' ? {uri: item.iconImage} : item.profile_image
                 ? {uri: item.profile_image}
-                : Images.pIcon
+                : Images.default_user 
             }
             style={styles.image}
             resizeMode={'cover'}

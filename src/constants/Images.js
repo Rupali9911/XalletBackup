@@ -95,6 +95,7 @@ export default {
     usdcNew: require("../../assets/images/USDC-Polygon.png"),
     usdtNew: require("../../assets/images/USDT-Ethereum.png"),
     ethnew: require("../../assets/images/ETH-Polygon.png"),
-    polygonNew: require("../../assets/images/polygon-new.png")
+    polygonNew: require("../../assets/images/polygon-new.png"),
+    default_user: require("../../assets/images/default-user.png")
 
 };

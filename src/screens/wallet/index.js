@@ -1,7 +1,7 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppModal from '../../components/appModal';
@@ -11,14 +11,14 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import PriceText from '../../components/priceText';
 import SuccessModal from '../../components/successModal';
 import ToggleButtons from '../../components/toggleButton';
-import {COLORS} from '../../constants';
+import { COLORS } from '../../constants';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import SingleSocket from '../../helpers/SingleSocket';
-import {updateCreateState} from '../../store/reducer/userReducer';
+import { updateCreateState } from '../../store/reducer/userReducer';
 import {
   updateBalances,
   updateBSCBalances,
@@ -26,8 +26,8 @@ import {
   updateNetworkType,
   updatePolygonBalances,
 } from '../../store/reducer/walletReducer';
-import {environment, translate} from '../../walletUtils';
-import {HeaderBtns} from './components/HeaderButtons';
+import { environment, translate } from '../../walletUtils';
+import { HeaderBtns } from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
@@ -40,8 +40,8 @@ const singleSocket = new SingleSocket();
 var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
-const Wallet = ({route, navigation}) => {
-  const {wallet, isCreate, data, isBackup} = useSelector(
+const Wallet = ({ route, navigation }) => {
+  const { wallet, isCreate, data, isBackup } = useSelector(
     state => state.UserReducer,
   );
   const {
@@ -209,7 +209,7 @@ const Wallet = ({route, navigation}) => {
   const setBalanceField = () => {
     let totalValue = 0;
     if (networkType.name == 'Ethereum') {
-      let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH ; //+ parseFloat(balances.USDT)
+      let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH; //+ parseFloat(balances.USDT)
       let usdtValue = parseFloat(usdtBalance) * 1;
       let value = eth + usdtValue;
       totalValue = value;
@@ -276,7 +276,13 @@ const Wallet = ({route, navigation}) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.ethRpc, 'eth'),
-          balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
+        balance(
+          pubKey,
+          environment.usdtCont,
+          environment.usdtAbi,
+          environment.ethRpc,
+          'usdt',
+        ),
       ];
 
       Promise.all(balanceRequests)
@@ -298,7 +304,7 @@ const Wallet = ({route, navigation}) => {
     });
   };
 
-  const priceInDollars =( pubKey ) => {
+  const priceInDollars = pubKey => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         currencyInDollar(pubKey, 'BSC'),
@@ -315,7 +321,7 @@ const Wallet = ({route, navigation}) => {
             MATIC: responses[2],
             ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
           };
-          setCurrencyPriceDollar(balances)
+          setCurrencyPriceDollar(balances);
           setLoading(false);
           resolve();
         })
@@ -338,17 +344,23 @@ const Wallet = ({route, navigation}) => {
           environment.bnbRpc,
           'alia',
         ),
-         balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+        balance(
+          pubKey,
+          environment.busdCont,
+          environment.busdAbi,
+          environment.bnbRpc,
+          'busd',
+        ),
         // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
-            console.log('RESPONSES',responses)
+          console.log('BSC RESPONSES', responses);
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
-              BUSD: responses[2],
+            BUSD: responses[2],
             // ALIA: responses[3],
           };
           dispatch(updateBSCBalances(balances));
@@ -412,8 +424,8 @@ const Wallet = ({route, navigation}) => {
     });
   };
 
-  const getBalances = async(pubKey) => {
-    await priceInDollars(pubKey)
+  const getBalances = async pubKey => {
+    await priceInDollars(pubKey);
     if (networkType.name == 'BSC') {
       return getBSCBalances(pubKey);
     } else if (networkType.name == 'Ethereum') {
@@ -440,8 +452,20 @@ const Wallet = ({route, navigation}) => {
             environment.polRpc,
             'alia',
           ),
-           balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
-           balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+          balance(
+            pubKey,
+            environment.usdtCont,
+            environment.usdtAbi,
+            environment.ethRpc,
+            'usdt',
+          ),
+          balance(
+            pubKey,
+            environment.busdCont,
+            environment.busdAbi,
+            environment.bnbRpc,
+            'busd',
+          ),
           // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
           // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
         ];
@@ -454,8 +478,8 @@ const Wallet = ({route, navigation}) => {
               Matic: responses[2],
               TNFT: responses[3],
               TAL: responses[4],
-               USDT: responses[5],
-               BUSD: responses[6],
+              USDT: responses[5],
+              BUSD: responses[6],
               // ALIA: responses[5],
               // USDC: responses[6],
             };
@@ -478,7 +502,7 @@ const Wallet = ({route, navigation}) => {
   };
 
   return (
-    <AppBackground isBusy={ balances ? loading : true}>
+    <AppBackground isBusy={balances ? loading : true}>
       <GradientBackground>
         <View style={styles.gradient}>
           <View style={styles.header}>
@@ -489,7 +513,7 @@ const Wallet = ({route, navigation}) => {
 
             <TouchableOpacity
               style={styles.networkIcon}
-              hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
+              hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
               onPress={() => setPickerVisible(true)}>
               <Image
                 source={networkType.icon}
@@ -573,8 +597,8 @@ const Wallet = ({route, navigation}) => {
         values={balances}
         network={networkType}
         onTokenPress={item => {
-          console.log('Token details transfered', item)
-          navigation.navigate('tokenDetail', {item});
+          console.log('Token details transfered', item);
+          navigation.navigate('tokenDetail', { item });
         }}
         onRefresh={onRefreshToken}
       />
@@ -594,9 +618,9 @@ const Wallet = ({route, navigation}) => {
 
         {isNotificationVisible ? (
           <NotificationActionModal
-              title={translate('wallet.common.setPushNotification')}
-              hint={translate('wallet.common.notificationHint')}
-              btnText={translate('wallet.common.enable')}
+            title={translate('wallet.common.setPushNotification')}
+            hint={translate('wallet.common.notificationHint')}
+            btnText={translate('wallet.common.enable')}
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);
@@ -615,7 +639,7 @@ const Wallet = ({route, navigation}) => {
         onItemSelect={item => {
           dispatch(updateNetworkType(item));
           setPickerVisible(false);
-          setBalances(null)
+          setBalances(null);
         }}
       />
       <SelectToken
@@ -627,9 +651,9 @@ const Wallet = ({route, navigation}) => {
         onTokenPress={item => {
           setSelectTokenVisible(false);
           if (isSend) {
-            navigation.navigate('send', {item, type: item.type});
+            navigation.navigate('send', { item, type: item.type });
           } else {
-            navigation.navigate('receive', {item, type: item.type});
+            navigation.navigate('receive', { item, type: item.type });
           }
         }}
       />

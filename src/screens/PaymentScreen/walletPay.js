@@ -24,13 +24,19 @@ import {
   updatePolygonBalances,
 } from '../../store/reducer/walletReducer';
 import { divideNo } from '../../utils';
-import { environment, networkChain, tokens, translate } from '../../walletUtils';
+import {
+  environment,
+  IsTestNet,
+  networkChain,
+  tokens,
+  translate,
+} from '../../walletUtils';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { HeaderBtns } from '../wallet/components/HeaderButtons';
 import NetworkPicker from '../wallet/components/networkPicker';
 import Tokens from '../wallet/components/Tokens';
-import { balance } from '../wallet/functions';
+import { balance, currencyInDollar } from '../wallet/functions';
 import { SIZE } from 'src/constants';
 import { alertWithSingleBtn } from '../../common/function';
 
@@ -44,8 +50,17 @@ var accounts = new Accounts('');
 const WalletPay = ({ route, navigation }) => {
   const { wallet, isCreate, data } = useSelector(state => state.UserReducer);
   const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance } =
-    useSelector(state => state.WalletReducer);
+  const {
+    bnbBalance,
+    tnftBalance,
+    busdBalance,
+    usdtBalance,
+    ethBalance,
+    maticBalance,
+    talBalance,
+    usdcBalance,
+    wethBalance,
+  } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -79,6 +94,8 @@ const WalletPay = ({ route, navigation }) => {
   const [tradeCurrency, setTradeCurrency] = useState(null);
   const [priceInToken, setPriceInToken] = useState(price);
   const [activeTokens, setActiveTokens] = useState([]);
+  const [isNextDisabled, setIsNextDisabled] = useState(false);
+  const [currencyPriceDollar, setCurrencyPriceDollar] = useState(false);
 
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
@@ -105,15 +122,18 @@ const WalletPay = ({ route, navigation }) => {
   useEffect(() => {
     console.log('useEffect');
     if (wallet && !isCreate && isFocused) {
-      // setLoading(true);
+      setLoading(true);
       getBalances(wallet.address);
     }
     console.log('wallet pay use effect', data, route.params);
   }, [isFocused]);
 
   useEffect(() => {
-
-    if (allowedTokens.length > 0 && payableIn == translate('common.allowedcurrency')) {
+    if (
+      allowedTokens.length > 0 &&
+      payableIn == translate('common.allowedcurrency')
+    ) {
+      console.log('116 >>>>', allowedTokens, payableIn);
       let array = [];
       allowedTokens.map(_ => {
         array.push(_.key.toLowerCase());
@@ -138,27 +158,30 @@ const WalletPay = ({ route, navigation }) => {
           return false;
         }
       });
-      // console.log('result of active tokens', result);
+      // console.log('141 result of active tokens', result);
       setActiveTokens(result);
     } else {
       if (payableIn) {
         let result = tokens.filter(_ => {
-          let setChain = chainType === "binance" ? "BSC" : chainType;
+          let setChain = chainType === 'binance' ? 'BSC' : chainType;
           if (_.network.toLowerCase() === setChain.toLowerCase()) {
             if (payableIn.toLowerCase() === _.type.toLowerCase()) {
               return true;
-            } else if (payableIn.toLowerCase() === 'alia' &&
-              (_.type === 'TAL' || _.type === 'TNFT')) {
+            } else if (
+              payableIn.toLowerCase() === 'alia' &&
+              (_.type === 'TAL' || _.type === 'TNFT')
+            ) {
               return true;
-            }
-             else {
+            } else {
               return false;
             }
           } else {
             return false;
           }
-
         });
+        if (result?.length == 1) {
+          currencySelect(result[0]);
+        }
         setActiveTokens(result);
       } else {
         let result = tokens.filter(_ => {
@@ -177,13 +200,17 @@ const WalletPay = ({ route, navigation }) => {
             return false;
           }
         });
+
+        if (result?.length == 0) {
+          setIsNextDisabled(true);
+        }
         setActiveTokens(result);
       }
     }
   }, []);
 
   useEffect(() => {
-    console.log('update Total', network);
+    console.log('202 update Total', network);
     if (balances) {
       if (network.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
@@ -231,20 +258,120 @@ const WalletPay = ({ route, navigation }) => {
     else return '';
   };
 
+  const priceInDollars = pubKey => {
+    return new Promise((resolve, reject) => {
+      let balanceRequests = [
+        currencyInDollar(pubKey, 'BSC'),
+        currencyInDollar(pubKey, 'ETH'),
+        currencyInDollar(pubKey, 'Polygon'),
+        currencyInDollar(pubKey, 'ALIA'),
+      ];
+
+      Promise.all(balanceRequests)
+        .then(responses => {
+          let balances = {
+            BNB: responses[0],
+            ETH: responses[1],
+            MATIC: responses[2],
+            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+          };
+          // console.log('priceInDollars 273', balances);
+          setCurrencyPriceDollar(balances);
+          setLoading(false);
+          resolve();
+        })
+        .catch(err => {
+          console.log('err', err);
+          setLoading(false);
+          reject();
+        });
+    });
+  };
+
   const setBalanceField = () => {
     let totalValue = 0;
-    if (network.name == 'Ethereum') {
-      let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-      // console.log('Ethereum value',value);
-      totalValue = value;
-    } else if (network.name == 'BSC') {
-      let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-      // console.log('BSC value',value);
-      totalValue = value;
-    } else if (network.name == 'Polygon') {
-      let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-      // console.log('Polygon value',value);
-      totalValue = value;
+    if (activeTokens?.length > 0) {
+      for (let i = 0; i < activeTokens?.length; i++) {
+        if (
+          network?.name == 'Ethereum' &&
+          activeTokens[i]?.network == 'Ethereum'
+        ) {
+          let ethValue = parseFloat(ethBalance) * currencyPriceDollar?.ETH;
+          let usdtValue = parseFloat(usdtBalance) * 1;
+
+          switch (activeTokens[i]?.type) {
+            case 'ETH':
+              totalValue = totalValue + ethValue;
+              break;
+            case 'USDT':
+              totalValue = totalValue + usdtValue;
+              break;
+          }
+        } else if (
+          network?.name == 'BSC' &&
+          activeTokens[i]?.network == 'BSC'
+        ) {
+          let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
+          let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
+          let busdValue = parseFloat(busdBalance) * 1;
+
+          switch (activeTokens[i]?.type) {
+            case 'BNB':
+              totalValue = totalValue + bnbValue;
+              break;
+            case IsTestNet ? 'TNFT' : 'ALIA':
+              totalValue = totalValue + tnftValue;
+              break;
+            case 'BUSD':
+              totalValue = totalValue + busdValue;
+              break;
+          }
+        } else if (
+          network?.name == 'Polygon' &&
+          activeTokens[i]?.network == 'Polygon'
+        ) {
+          let maticValue =
+            parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
+          let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
+          let usdcValue = parseFloat(usdcBalance) * 1;
+          let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+
+          switch (activeTokens[i]?.type) {
+            case 'Matic':
+              totalValue = totalValue + maticValue;
+              break;
+            case IsTestNet ? 'TAL' : 'ALIA':
+              totalValue = totalValue + talValue;
+              break;
+            case 'USDC':
+              totalValue = totalValue + usdcValue;
+              break;
+            case IsTestNet ? 'ETH' : 'WETH':
+              totalValue = totalValue + wethValue;
+              break;
+          }
+        }
+      }
+    } else {
+      if (network?.name == 'Ethereum') {
+        let ethValue = parseFloat(ethBalance) * currencyPriceDollar?.ETH;
+        let usdtValue = parseFloat(usdtBalance) * 1;
+        let value = ethValue + usdtValue;
+        totalValue = value;
+      } else if (network?.name == 'BSC') {
+        let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
+        let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
+        let busdValue = parseFloat(busdBalance) * 1;
+        let value = bnbValue + tnftValue + busdValue;
+        totalValue = value;
+      } else if (network?.name == 'Polygon') {
+        let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
+        let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
+        let usdcValue = parseFloat(usdcBalance) * 1;
+        let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+        let value = maticValue + talValue + usdcValue + wethValue;
+        totalValue = value;
+      }
     }
     return totalValue;
   };
@@ -326,17 +453,24 @@ const WalletPay = ({ route, navigation }) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.ethRpc, 'eth'),
-        // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
+        balance(
+          pubKey,
+          environment.usdtCont,
+          environment.usdtAbi,
+          environment.ethRpc,
+          'usdt',
+        ),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('balances',responses);
           let balances = {
             ETH: responses[0],
-            // USDT: responses[1],
+            USDT: responses[1],
           };
+          // console.log('ETH 404 balances',responses);
           dispatch(updateEthereumBalances(balances));
+          setBalances(balances);
           setLoading(false);
           resolve();
         })
@@ -359,20 +493,27 @@ const WalletPay = ({ route, navigation }) => {
           environment.bnbRpc,
           'alia',
         ),
-        // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+        balance(
+          pubKey,
+          environment.busdCont,
+          environment.busdAbi,
+          environment.bnbRpc,
+          'busd',
+        ),
         // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('balances',responses);
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
-            // BUSD: responses[2],
+            BUSD: responses[2],
             // ALIA: responses[3],
           };
+          // console.log('BSC 440 balances',responses);
           dispatch(updateBSCBalances(balances));
+          setBalances(balances);
           setLoading(false);
           resolve();
         })
@@ -395,17 +536,31 @@ const WalletPay = ({ route, navigation }) => {
           environment.polRpc,
           'alia',
         ),
-        // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
+        balance(
+          pubKey,
+          environment.usdcCont,
+          environment.usdcAbi,
+          environment.polRpc,
+          'usdc',
+        ),
+        balance(
+          pubKey,
+          environment.wethCont,
+          environment.wethAbi,
+          environment.polRpc,
+          'weth',
+        ),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('balances',responses);
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
-            // USDC: responses[2],
+            USDC: responses[2],
+            WETH: responses[3],
           };
+          // console.log('Polygon 488 balances',responses);
           dispatch(updatePolygonBalances(balances));
           setBalances(balances);
           setLoading(false);
@@ -419,7 +574,8 @@ const WalletPay = ({ route, navigation }) => {
     });
   };
 
-  const getBalances = pubKey => {
+  const getBalances = async pubKey => {
+    await priceInDollars(pubKey);
     if (network.name == 'BSC') {
       return getBSCBalances(pubKey);
     } else if (network.name == 'Ethereum') {
@@ -446,8 +602,20 @@ const WalletPay = ({ route, navigation }) => {
             environment.polRpc,
             'alia',
           ),
-          // balance(pubKey, environment.usdtCont, environment.usdtAbi, environment.ethRpc, "usdt"),
-          // balance(pubKey, environment.busdCont, environment.busdAbi, environment.bnbRpc, "busd"),
+          balance(
+            pubKey,
+            environment.usdtCont,
+            environment.usdtAbi,
+            environment.ethRpc,
+            'usdt',
+          ),
+          balance(
+            pubKey,
+            environment.busdCont,
+            environment.busdAbi,
+            environment.bnbRpc,
+            'busd',
+          ),
           // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
           // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
         ];
@@ -461,8 +629,8 @@ const WalletPay = ({ route, navigation }) => {
               Matic: responses[2],
               TNFT: responses[3],
               TAL: responses[4],
-              // USDT: responses[3],
-              // BUSD: responses[4],
+              USDT: responses[5],
+              BUSD: responses[6],
               // ALIA: responses[5],
               // USDC: responses[6],
             };
@@ -512,10 +680,26 @@ const WalletPay = ({ route, navigation }) => {
     return result;
   };
 
+  const currencySelect = async item => {
+    console.log('522 currencySelect', item);
+    setSelectedObject(item);
+    let tradeCurrency = getCurrencyOnSelect(item);
+    setTradeCurrency(tradeCurrency);
+    let priceInToken = await calculatePrice(tradeCurrency.order);
+    console.log(
+      'value 667',
+      parseFloat(divideNo(priceInToken)),
+      priceInToken,
+      tradeCurrency.order,
+    );
+    setPriceInToken(parseFloat(divideNo(priceInToken)));
+    setIsNextDisabled(false);
+  };
+
   // console.log(tokens)
   // console.log(basePriceTokens)
   return (
-    <AppBackground isBusy={loading}>
+    <AppBackground isBusy={balances ? loading : true}>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.backButtonWrap}>
@@ -532,6 +716,7 @@ const WalletPay = ({ route, navigation }) => {
             <PriceText
               price={setBalanceField()}
               isWhite
+              isDollar
               containerStyle={styles.priceCont}
             />
             <TextView style={styles.balanceLabel}>
@@ -561,17 +746,9 @@ const WalletPay = ({ route, navigation }) => {
         network={network}
         // allowedTokens={payableIn ? tokens.filter((item) => item.type == payableIn): tokens}
         allowedTokens={activeTokens}
-        onTokenPress={async item => {
-          setSelectedObject(item);
-          let tradeCurrency = getCurrencyOnSelect(item);
-          setTradeCurrency(tradeCurrency);
-          let priceInToken = await calculatePrice(tradeCurrency.order);
-          console.log('value', parseFloat(divideNo(priceInToken)));
-          setPriceInToken(parseFloat(divideNo(priceInToken)));
-        }}
+        onTokenPress={currencySelect}
         onRefresh={onRefreshToken}
       />
-
       <Separator style={styles.separator} />
 
       {selectedObject && (
@@ -599,7 +776,11 @@ const WalletPay = ({ route, navigation }) => {
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
             // navigation.navigate("AddCard")
-            if (selectedObject && selectedObject.tokenValue !== '0') {
+            if (
+              selectedObject &&
+              selectedObject.tokenValue !== '0' &&
+              priceInToken < selectedObject?.tokenValue
+            ) {
               navigation.goBack();
               dispatch(
                 setPaymentObject({
@@ -616,7 +797,8 @@ const WalletPay = ({ route, navigation }) => {
               );
             }
           }}
-          view={!IsActiveToPay()}
+          // view={!IsActiveToPay()}
+          view={isNextDisabled}
         />
       </View>
 
