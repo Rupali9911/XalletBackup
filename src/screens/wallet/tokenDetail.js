@@ -12,7 +12,7 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL} from '../../helpers/ApiRequest';
+import { BASE_URL } from '../../common/constants';
 import {
   addAllBnbTransactions,
   addAllEthTransactions,
