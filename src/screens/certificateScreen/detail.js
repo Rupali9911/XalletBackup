@@ -47,6 +47,7 @@ import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
+import { getBaseCurrency } from '../../utils/parseNFTObj';
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
 const Web3 = require('web3');
@@ -223,34 +224,34 @@ const DetailScreen = ({ navigation, route }) => {
   useEffect(()=>{
     getCurrencyPrice();
   },[wallet, price, baseCurrency])
-  
+
   const getCurrencyPrice = async() => {
     let finalPrice = '';
     let currencyPrices = await priceInDollars(wallet?.address)
-    switch (baseCurrency?.key) {  
+    switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = price * currencyPrices?.BNB;
         break;
-        
+
       case "ALIA":
         finalPrice = price * currencyPrices?.ALIA;
         break;
-        
+
       case "ETH":
         finalPrice = price * currencyPrices?.ETH;
         break;
-      
+
       case "MATIC":
         finalPrice = price * currencyPrices?.MATIC;
         break;
-      
+
       default:
         finalPrice = price * 1;
         break;
    }
    setPriceInDollar(finalPrice);
   };
-  
+
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
@@ -334,30 +335,133 @@ const DetailScreen = ({ navigation, route }) => {
               res.data.data[i].event === 'SellNFT' ||
               res.data.data[i].event === 'SellNFTNonCrypto'
             ) {
+              let price = res.data.data[i].returnValues.dollarPrice &&
+                parseFloat(
+                  divideNo(
+                    parseInt(res.data.data[i].returnValues.dollarPrice?._hex, 16)
+                  )
+                ) > 0
+                ? divideNo(
+                  parseInt(
+                    res.data.data[i].returnValues.dollarPrice._hex,
+                    16
+                  )
+                )
+                : divideNo(
+                  parseInt(res.data.data[i].returnValues.price._hex, 16)
+                );
+              let tradeCurr = res.data.data[i].returnValues.baseCurrency ?
+                getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
+                :
+                res.data.data[i].returnValues.dollarPrice &&
+                  parseFloat(
+                    divideNo(
+                      parseInt(res.data.data[i].returnValues.dollarPrice?._hex, 16)
+                    )
+                  ) > 0
+                  ?
+                  "$" :
+                  "ALIA"
               let obj = {
                 //event: 'SellNFT',
                 translatedEvent: translate('common.sales'),
-                price:
-                  res.data.data[i].returnValues.dollarPrice &&
-                    parseInt(
-                      divideNo(
-                        parseInt(res.data.data[i].returnValues.dollarPrice?._hex),
-                      ),
-                    ) > 0
-                    ? divideNo(
-                      parseInt(
-                        res.data.data[i].returnValues.dollarPrice._hex,
-                        16,
-                      ),
-                    )
-                    : divideNo(
-                      parseInt(res.data.data[i].returnValues.price._hex, 16),
-                    ),
+                price: price  ,
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
+                tradeCurrency: tradeCurr
+              };
+              bids = [obj, ...bids];
+            }
+
+            if (
+              res.data.data[i].event === "OfferAccept"
+            ) {
+              let obj = {
+                //event: 'SellNFT',
+                translatedEvent: "OfferAccept",
+                price:
+                  res.data.data[i].returnValues.amount &&
+                    parseFloat(
+                      divideNo(
+                        parseInt(res.data.data[i].returnValues.amount?._hex, 16)
+                      )
+                    ) > 0
+                    ? divideNo(
+                      parseInt(
+                        res.data.data[i].returnValues.amount._hex,
+                        16
+                      )
+                    )
+                    : divideNo(
+                      parseInt(res.data.data[i].returnValues.amount._hex, 16)
+                    ),
+                seller: res.data.data[i].returnValues.from.slice(0, 6),
+                owner: res.data.data[i].returnValues.to,
+                sellDateTime: moment
+                  .unix(res.data.data[i].timestamp)
+                  .format('DD-MM-YYYY HH:mm:ss'),
+                tradeCurrency:
+                  res.data.data[i].returnValues.currencyType ?
+                    getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.currencyType._hex, 16))
+                    : "ALIA"
+              };
+              bids = [obj, ...bids];
+            }
+
+            if (
+              res.data.data[i].event === "UpdatePrice"
+            ) {
+
+              let sellEvent = "";
+              for (let j = i + 1; j <= res.data.data.length; j++) {
+                if (
+                  res.data.data[j]?.event &&
+                  (res.data.data[j].event === "SellNFT" ||
+                    res.data.data[j].event === "SellNFTNonCrypto")
+                ) {
+                  sellEvent = res.data.data[j];
+                  break;
+                }
+              }
+              let obj = {
+                translatedEvent: "UpdatePrice",
+                price:
+                  res.data.data[i].returnValues.newDollarPrice &&
+                    parseFloat(
+                      divideNo(
+                        parseInt(res.data.data[i].returnValues.newDollarPrice?._hex, 16)
+                      )
+                    ) > 0
+                    ? divideNo(
+                      parseInt(
+                        res.data.data[i].returnValues.newDollarPrice._hex,
+                        16
+                      )
+                    )
+                    : divideNo(
+                      parseInt(res.data.data[i].returnValues.newPrice._hex, 16)
+                    ),
+                seller: sellEvent?.returnValues?.seller.slice(0, 6),
+                owner: "",
+                sellDateTime: moment
+                  .unix(res.data.data[i].timestamp)
+                  .format('DD-MM-YYYY HH:mm:ss'),
+                tradeCurrency:
+                  res.data.data[i].returnValues.baseCurrency ?
+                    getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
+                    :
+                    res.data.data[i].returnValues.newDollarPrice &&
+                      parseFloat(
+                        divideNo(
+                          parseInt(res.data.data[i].returnValues.newDollarPrice?._hex, 16)
+                        )
+                      ) > 0
+                      ?
+                      "$" :
+                      "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -391,6 +495,20 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
+                tradeCurrency:
+                  res.data.data[i].returnValues.baseCurrency ?
+                    getBaseCurrency(this.props.router.query.nftChain,
+                      parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
+                    :
+                    res.data.data[i].returnValues.dollarPrice &&
+                      parseFloat(
+                        divideNo(
+                          parseInt(res.data.data[i].returnValues.dollarPrice?._hex, 16)
+                        )
+                      ) > 0
+                      ?
+                      "$" :
+                      "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -405,6 +523,19 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'dollar',
+                tradeCurrency:
+                  res.data.data[i].returnValues.baseCurrency ?
+                    getBaseCurrency(this.props.router.query.nftChain, parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
+                    :
+                    res.data.data[i].returnValues.priceDollar &&
+                      parseFloat(
+                        divideNo(
+                          parseInt(res.data.data[i].returnValues.priceDollar?._hex, 16)
+                        )
+                      ) > 0
+                      ?
+                      "$" :
+                      "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -431,6 +562,11 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
+                tradeCurrency:
+                  lastAuction && lastAuction.returnValues.baseCurrency ?
+                    getBaseCurrency(this.props.router.query.nftChain,
+                      parseInt(lastAuction.returnValues.baseCurrency._hex, 16))
+                    : "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -464,6 +600,11 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
+                tradeCurrency:
+                  res.data.data[i].returnValues.baseCurrency ?
+                    getBaseCurrency(this.props.router.query.nftChain,
+                      parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
+                    : "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -502,6 +643,28 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
+                tradeCurrency:
+                  res.data.data[i].returnValues.currencyType ?
+                    getBaseCurrency(this.props.router.query.nftChain,
+                      parseInt(res.data.data[i].returnValues.currencyType._hex, 16)) :
+                    updateEvent ?
+                      updateEvent.returnValues.baseCurrency ?
+                        getBaseCurrency(chainType, parseInt(updateEvent.returnValues.baseCurrency._hex, 16)) :
+                        updateEvent.returnValues.newDollarPrice &&
+                          parseFloat(
+                            divideNo(
+                              parseInt(updateEvent.returnValues.newDollarPrice?._hex, 16)
+                            )
+                          ) > 0
+                          ?
+                          "$" :
+                          "ALIA" :
+                      sellEvent.returnValues.dollarPrice &&
+                        parseInt(
+                          divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex, 16))
+                        ) > 0
+                        ? "$"
+                        : "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -517,6 +680,7 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: '',
+                tradeCurrency: ""
               };
               bids = [obj, ...bids];
             }
@@ -534,6 +698,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
+                tradeCurrency: ""
                 //currency_type: '',
               };
               bids = [obj, ...bids];
@@ -542,7 +707,7 @@ const DetailScreen = ({ navigation, route }) => {
           bids.sort(comparator);
           console.log(bids, "bidsssssss")
           for (let z = 0; z < bids.length; z++) {
-            bids[z].price = (Math.round(bids[z].price * 100) / 100).toFixed(2);
+            bids[z].price = (Math.round(bids[z].price * 100) / 100).toFixed(2) + " " + bids[z].tradeCurrency;
           }
           console.log(bids, "bidsssssss11111")
           let _bidHistory = bids.filter(item => item.event === 'Bid');
@@ -567,13 +732,16 @@ const DetailScreen = ({ navigation, route }) => {
           }
           console.log(arr, "arrrr")
           setTradingTableData(arr);
-
+          setTimeout(() => {
+            setTradingTableLoader(false)
+            setLoader(false)
+          }, 1000);
         } else {
           setSellDetails([]);
           setSellDetailsFiltered([]);
+          setTradingTableLoader(false)
+          setLoader(false)
         }
-        setTradingTableLoader(false)
-        setLoader(false)
       })
       .catch(err => {
         setLoader(false)
@@ -823,7 +991,7 @@ const DetailScreen = ({ navigation, route }) => {
               }
 
               setOwnerAddress(nonCryptoOwner);
-            }else {
+            } else {
               setLoader(false);
             }
             setBuyLoading(false);
@@ -898,7 +1066,7 @@ const DetailScreen = ({ navigation, route }) => {
                 }
               }
               setOwnerAddress(_ownerAddress);
-            }else{
+            } else {
               setLoader(false);
             }
             setBuyLoading(false);
@@ -1170,17 +1338,21 @@ const DetailScreen = ({ navigation, route }) => {
 
   const onProfile = () => {
     if (isOwner) {
-      navigation.push('ArtistDetail', { id: ownerN });
+      if (ownerN) {
+        navigation.push('ArtistDetail', { id: ownerN });
+      }
     } else {
-      navigation.push('ArtistDetail', { id: artistId });
+      if (artistId) {
+        navigation.push('ArtistDetail', { id: artistId });
+      }
     }
   };
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item.metaData) {  
+    if (item.metaData) {
       // it's temporary fix
       const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
-    
+
       const image = item.metaData.image || item.thumbnailUrl;
       const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
@@ -1312,26 +1484,20 @@ const DetailScreen = ({ navigation, route }) => {
     getNonCryptoNFTOwner();
   }
 
-  let creatorName = artistData ?
-    (
-      artistData.hasOwnProperty("username") && artistData.username && !artistData.username.includes("0x") ?
-        artistData.username :
-        (
-          artistData.hasOwnProperty("title") && artistData.title ?
-            artistData.title :
-            (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
-              || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
-              || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
-              ? collectCreat?.creator
-              : creator?.substring(0, 6)
-        )
-    )
-    :
-    (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'
-      || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'
-      || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933')
-      ? collectCreat?.creator
-      : creator?.substring(0, 6);
+  let creatorName = artistData && creator
+    ? creator.includes("0x")
+      ? artistData.hasOwnProperty("title") && artistData.title ?
+        artistData.title
+        : (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+          || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+          || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+          ? collectCreat?.creator
+          : creator.substring(0, 6)
+      : artistData === "No record found" ?
+      creator.substring(0, 6) :
+        artistData.hasOwnProperty("username") && artistData.username ?
+          artistData.username.substring(0, 6) : creator.substring(0, 6)
+    : creator.substring(0, 6)
 
   return (
     <>
@@ -1428,7 +1594,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-                disabled={collectionClick()}
+              disabled={collectionClick()}
               onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
               style={styles.personType}>
               <Image
@@ -1648,13 +1814,13 @@ const DetailScreen = ({ navigation, route }) => {
                       data={tradingTableHead}
                       style={styles.head}
                       textStyle={styles.text}
-                      widthArr={[90, 75, 140, 130, 150]}
+                      widthArr={[90, 100, 140, 130, 150]}
                     />
                     {tradingTableData.length > 0 ? (
                       <Rows
                         data={tradingTableData}
                         textStyle={styles.text}
-                        widthArr={[90, 75, 140, 130, 150]}
+                        widthArr={[90, 100, 140, 130, 150]}
                       />
                     ) : (
                       <Text style={styles.emptyData}>
