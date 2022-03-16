@@ -482,7 +482,7 @@ const PaymentNow = props => {
             )}
             <Text numberOfLines={1} style={styles.amount}>
               {paymentObject && paymentObject.type == 'wallet'
-                ? paymentObject.priceInToken + ' '
+                ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4))) + ' '
                 : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1))) || 0}
             </Text>
             {paymentObject && paymentObject.type !== 'card' && (
@@ -543,7 +543,7 @@ const PaymentNow = props => {
             <Text style={styles.value}>
               {paymentObject && paymentObject.type == 'card' ? '$' : ''}{' '}
               {paymentObject && paymentObject.type == 'wallet'
-                ? paymentObject.priceInToken
+                ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4)))
                 : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1))) || 0}
                 {' '}{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type}` : ''}
             </Text>

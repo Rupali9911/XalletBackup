@@ -170,6 +170,7 @@ export default function AppSearch() {
                         navigation.navigate('ArtistDetail', {id: id});
                       }else if (item.type == 'Collections') {
                           navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id });
+                          //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id });
                       }
                     }}
                   />
