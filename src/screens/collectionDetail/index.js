@@ -40,7 +40,7 @@ function CollectionDetail(props) {
   }, []);
 
   const getCollection = async () => {
-    console.log('========collectionId', collectionId, isBlind);
+    console.log('collectionId', collectionId, isBlind)
     try {
       const collectionArray = await getHotCollectionDetail(
         collectionId,

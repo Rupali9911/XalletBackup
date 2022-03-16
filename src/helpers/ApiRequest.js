@@ -116,6 +116,8 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                         } catch (err) {
                             if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
                                 throw `Try again !!!`;
+                            }else if (err?.code){
+                                console.log('err?.code', err?.code)
                             }
                         };
                         return response.json();

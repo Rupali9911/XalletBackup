@@ -52,7 +52,8 @@ function AddCard({ route, navigation }) {
                 translate("wallet.common.error.reuiredCardNumber")
             );
             return false;
-        }else if(cardNumber.length < 16){
+        }
+        else if(cardNumber.length < 16){
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.reuiredCardNumber")

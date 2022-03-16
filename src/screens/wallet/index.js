@@ -31,7 +31,7 @@ import {HeaderBtns} from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
-import {balance, currencyInDollar} from './functions';
+import { balance, currencyInDollar } from './functions';
 
 const ethers = require('ethers');
 
@@ -47,8 +47,8 @@ const Wallet = ({route, navigation}) => {
   const {
     bnbBalance,
     tnftBalance,
-      busdBalance,
-      usdtBalance,
+    busdBalance,
+    usdtBalance,
     ethBalance,
     maticBalance,
     talBalance,
@@ -210,8 +210,8 @@ const Wallet = ({route, navigation}) => {
     let totalValue = 0;
     if (networkType.name == 'Ethereum') {
       let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH ; //+ parseFloat(balances.USDT)
-         let usdtValue = parseFloat(usdtBalance) * 1;
-         let value = eth + usdtValue
+      let usdtValue = parseFloat(usdtBalance) * 1;
+      let value = eth + usdtValue;
       totalValue = value;
     } else if (networkType.name == 'BSC') {
       // for mainnet
@@ -219,7 +219,7 @@ const Wallet = ({route, navigation}) => {
 
       // for testing
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
-      let tnftValue = parseFloat(tnftBalance) * 1;
+      let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
       let busdValue = parseFloat(busdBalance) * 1;
       let value = bnbValue + tnftValue + busdValue;
       totalValue = value;
@@ -229,8 +229,10 @@ const Wallet = ({route, navigation}) => {
 
       // for testing
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
+      let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
+      let usdctValue = parseFloat(usdcBalance) * 1;
       let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-      let value = maticValue + talBalance;
+      let value = maticValue + talValue + usdctValue + wethValue;
       totalValue = value;
     }
     return totalValue;
@@ -281,7 +283,7 @@ const Wallet = ({route, navigation}) => {
         .then(responses => {
           let balances = {
             ETH: responses[0],
-             USDT: responses[1],
+            USDT: responses[1],
           };
           dispatch(updateEthereumBalances(balances));
           setBalances(balances);
@@ -302,6 +304,7 @@ const Wallet = ({route, navigation}) => {
         currencyInDollar(pubKey, 'BSC'),
         currencyInDollar(pubKey, 'ETH'),
         currencyInDollar(pubKey, 'Polygon'),
+        currencyInDollar(pubKey, 'ALIA'),
       ];
 
       Promise.all(balanceRequests)
@@ -310,6 +313,7 @@ const Wallet = ({route, navigation}) => {
             BNB: responses[0],
             ETH: responses[1],
             MATIC: responses[2],
+            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
           };
           setCurrencyPriceDollar(balances)
           setLoading(false);

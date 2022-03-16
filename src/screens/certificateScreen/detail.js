@@ -46,6 +46,7 @@ import { BASE_URL } from '../../common/constants';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
+import { currencyInDollar } from '../wallet/functions';
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
 const Web3 = require('web3');
@@ -218,6 +219,64 @@ const DetailScreen = ({ navigation, route }) => {
     }
     getRealtedNFT();
   }, [isFocused]);
+
+  useEffect(()=>{
+    getCurrencyPrice();
+  },[wallet, price, baseCurrency])
+  
+  const getCurrencyPrice = async() => {
+    let finalPrice = '';
+    let currencyPrices = await priceInDollars(wallet?.address)
+    switch (baseCurrency?.key) {  
+      case "BNB":
+        finalPrice = price * currencyPrices?.BNB;
+        break;
+        
+      case "ALIA":
+        finalPrice = price * currencyPrices?.ALIA;
+        break;
+        
+      case "ETH":
+        finalPrice = price * currencyPrices?.ETH;
+        break;
+      
+      case "MATIC":
+        finalPrice = price * currencyPrices?.MATIC;
+        break;
+      
+      default:
+        finalPrice = price * 1;
+        break;
+   }
+   setPriceInDollar(finalPrice);
+  };
+  
+  const priceInDollars = (pubKey) => {
+    return new Promise((resolve, reject) => {
+      let balanceRequests = [
+        currencyInDollar(pubKey, 'BSC'),
+        currencyInDollar(pubKey, 'ETH'),
+        currencyInDollar(pubKey, 'Polygon'),
+        currencyInDollar(pubKey, 'ALIA'),
+      ];
+
+      Promise.all(balanceRequests)
+        .then(responses => {
+          let balances = {
+            BNB: responses[0],
+            ETH: responses[1],
+            MATIC: responses[2],
+            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+          };
+          resolve(balances);
+        })
+        .catch(err => {
+          console.log('err', err);
+          reject();
+        });
+    });
+  };
+
   const getRealtedNFT = async () => {
     let url =
       networkType === 'testnet'
@@ -591,10 +650,9 @@ const DetailScreen = ({ navigation, route }) => {
             // console.log('rs', rs);
             if (rs) {
               let res = divideNo(rs);
-              setPriceInDollar(res);
+              // setPriceInDollar(res);
             }
           }
-
           if (parseInt(res[5]) * 1000 > 0) {
             setAuctionVariables(
               res[0],
@@ -1051,19 +1109,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        console.log('set NftStatus 1');
+        // console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
         // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        console.log('set NftStatus 2');
+        // console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      console.log('set NftStatus 3');
+      // console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1076,37 +1134,37 @@ const DetailScreen = ({ navigation, route }) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        console.log('set NftStatus 4');
+        // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet.address) {
           // setNftStatus('buy')
-          console.log('set NftStatus 5');
+          // console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else if (connectedWithTo === 'paymentCard') {
         } else {
           // setNftStatus('buy');
-          console.log('set NftStatus 6');
+          // console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        console.log('set NftStatus 7');
+        // console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      console.log('set NftStatus 8');
+      // console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    console.log(
-      '_nftStatus',
-      _nftStatus,
-      priceNFT,
-      isContractOwner,
-      isOwner,
-      isNFTOnAuction,
-    );
+    // console.log(
+    //   '_nftStatus',
+    //   _nftStatus,
+    //   priceNFT,
+    //   isContractOwner,
+    //   isOwner,
+    //   isNFTOnAuction,
+    // );
     return _nftStatus;
   };
 

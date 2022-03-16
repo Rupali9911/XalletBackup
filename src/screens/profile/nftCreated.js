@@ -48,23 +48,9 @@ const NFTCreated = ({ route }) => {
     const [modalData, setModalData] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
 
-    const [toggle, setToggle] = useState('created');
-
-    const [mainLoader, setMainLoader] = useState(false);
-    const [stopMoreLoading, setStopMoreLoading] = useState(false);
-
-    const [nftCreatedPage, setNftCreatedPage] = useState(1);
-    const [nftCreatedList, setNftCreatedList] = useState([]);
-    const [nftOwnedPage, setNftOwnedPage] = useState(1);
-    const [nftOwnedList, setNftOwnedList] = useState([]);
-
-    // useEffect(() => {
-    //         pressToggle(toggle)
-    // }, []);
-
     useEffect(() => {
         if (isFocusedHistory && !MyNFTReducer?.myList?.length>0) {
-            pressToggle(toggle);
+            pressToggle("created");
         }
     }, [isFocusedHistory]);
 
@@ -102,7 +88,6 @@ const NFTCreated = ({ route }) => {
     }, []);
 
     const pressToggle = s => {
-        setToggle(s);
         dispatch(myNftLoadStart());
         dispatch(myNftListReset());
         dispatch(myPageChange(1));
@@ -119,9 +104,9 @@ const NFTCreated = ({ route }) => {
                 <FlatList
                     data={MyNFTReducer?.myList}
                     horizontal={false}
-                    numColumns={3}
+                    numColumns={2}
                     initialNumToRender={15}
-                    onRefresh={() => pressToggle(toggle)}
+                    onRefresh={() => pressToggle("created")}
                     refreshing={MyNFTReducer.myNftListLoading}
                     renderItem={memoizedValue}
                     onEndReached={() => {
