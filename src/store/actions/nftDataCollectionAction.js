@@ -80,7 +80,21 @@ export const nftBlindDataCollectionList = (collectionAddress) => {
     fetch(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`)
     .then(response => response.json())
       .then(json => {
-        console.log('====json', json, collectionAddress);
+
+        const data = json.data;
+        let nftData = [];
+        for (let i = 0; i < data.length; i++) {
+          nftData.push({
+            ...data[i],
+            collectionName: data[i]?.boxURIMetaInfo?.name,
+            bannerImage: data[i]?.boxURIMetaInfo?.banner_image,
+            iconImage: data[i]?.boxURIMetaInfo?.image,
+            items: data[i]?.maxBoxes,
+          });
+        }
+
+        json.count = json.data.length;
+        json.data = nftData;
         dispatch(nftDataCollectionLoadSuccess(json));
       })
       .catch(err => {

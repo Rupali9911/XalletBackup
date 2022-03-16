@@ -146,9 +146,6 @@ const CreateNFTScreen = ({ route }) => {
     index == 1 ? translate("wallet.common.NFTList") :
       index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
 
-    console.log('==========userId', collection);
-    console.log('==========status', routeParams?.status);
-
   return (
     <View style={styles.mainContainer}>
       { loading ? <LoaderIndicator /> : null}

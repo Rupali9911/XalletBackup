@@ -127,7 +127,7 @@ export default function NFTItem(props) {
               />
             </View>
             <View style={styles.collectionWrapper}>
-              <Text>{item.name}</Text>
+              <Text numberOfLines={1}>{item.name}</Text>
               <View
                 style={{
                   flexDirection: 'row',

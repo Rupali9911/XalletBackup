@@ -22,12 +22,13 @@ import {
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
+import HotcollectionItem from '../../components/HotCollectionItem';
 
 const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
 const { height } = Dimensions.get('window');
 
 const Collections = (props) => {
-  const { collectionAddress, collectionType, collectionId, isBlind } = props;
+  const { collectionAddress, collectionType, isBlind, isHotCollection } = props;
   const { NftDataCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -40,12 +41,12 @@ const Collections = (props) => {
   }, [collectionType]);
 
   const getNFTlist = useCallback((page) => {
-    // if (!isBlind) {
-    //   dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
-    // } else {
-    //   dispatch(nftBlindDataCollectionList(collectionId));
-    // }
-    dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
+    if (!isBlind) {
+      dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionAddress));
+    } else {
+      dispatch(nftBlindDataCollectionList(collectionAddress));
+    }
+    // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
   }, [collectionType]);
 
   const refreshFunc = () => {
@@ -61,21 +62,44 @@ const Collections = (props) => {
 
   const renderItem = ({ item, index }) => {
     let findIndex = NftDataCollectionReducer.nftDataCollectionList.findIndex(x => x.id === item.id);
+    if (isHotCollection) {
+      return (
+        <NFTItem
+          item={item}
+          index={index}
+          image={item.iconImage}
+          onPress={() => {
+            dispatch(changeScreenName('dataCollection'));
+            navigation.push('DetailItem', {
+              index: findIndex,
+              collectionType: COLLECTION_TYPES[collectionType],
+              collectionAddress,
+            });
+          }}
+          isCollection
+          isBlind
+        />
+        )
+    }
     return (
-      <NFTItem
-        item={item}
-        index={index}
-        image={item.iconImage}
+      <HotcollectionItem
+        bannerImage={item.bannerImage}
+        chainType={item.chainType || 'polygon'}
+        items={item.items}
+        iconImage={item.iconImage}
+        collectionName={item.collectionName}
+        creator={item.creator}
+        creatorInfo={item.creatorInfo}
+        blind={item.blind}
+        isCollection={!isHotCollection}
         onPress={() => {
-          dispatch(changeScreenName('dataCollection'));
-          navigation.push('DetailItem', {
-            index: findIndex,
-            collectionType: COLLECTION_TYPES[collectionType],
-            collectionAddress,
-          });
+          if (item.blind) {
+            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: !item.blind });
+          } else {
+            console.log('======blind', item._id, item.collectionId, item.blind, isHotCollection)
+            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          }
         }}
-        isCollection
-        isBlind
       />
     );
   };
