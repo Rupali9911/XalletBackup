@@ -46,6 +46,7 @@ import { BASE_URL } from '../../common/constants';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
+import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
@@ -219,6 +220,64 @@ const DetailScreen = ({ navigation, route }) => {
     }
     getRealtedNFT();
   }, [isFocused]);
+
+  useEffect(()=>{
+    getCurrencyPrice();
+  },[wallet, price, baseCurrency])
+  
+  const getCurrencyPrice = async() => {
+    let finalPrice = '';
+    let currencyPrices = await priceInDollars(wallet?.address)
+    switch (baseCurrency?.key) {  
+      case "BNB":
+        finalPrice = price * currencyPrices?.BNB;
+        break;
+        
+      case "ALIA":
+        finalPrice = price * currencyPrices?.ALIA;
+        break;
+        
+      case "ETH":
+        finalPrice = price * currencyPrices?.ETH;
+        break;
+      
+      case "MATIC":
+        finalPrice = price * currencyPrices?.MATIC;
+        break;
+      
+      default:
+        finalPrice = price * 1;
+        break;
+   }
+   setPriceInDollar(finalPrice);
+  };
+  
+  const priceInDollars = (pubKey) => {
+    return new Promise((resolve, reject) => {
+      let balanceRequests = [
+        currencyInDollar(pubKey, 'BSC'),
+        currencyInDollar(pubKey, 'ETH'),
+        currencyInDollar(pubKey, 'Polygon'),
+        currencyInDollar(pubKey, 'ALIA'),
+      ];
+
+      Promise.all(balanceRequests)
+        .then(responses => {
+          let balances = {
+            BNB: responses[0],
+            ETH: responses[1],
+            MATIC: responses[2],
+            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+          };
+          resolve(balances);
+        })
+        .catch(err => {
+          console.log('err', err);
+          reject();
+        });
+    });
+  };
+
   const getRealtedNFT = async () => {
     let url =
       networkType === 'testnet'
@@ -759,10 +818,9 @@ const DetailScreen = ({ navigation, route }) => {
             // console.log('rs', rs);
             if (rs) {
               let res = divideNo(rs);
-              setPriceInDollar(res);
+              // setPriceInDollar(res);
             }
           }
-
           if (parseInt(res[5]) * 1000 > 0) {
             setAuctionVariables(
               res[0],
@@ -1219,19 +1277,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        console.log('set NftStatus 1');
+        // console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
         // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        console.log('set NftStatus 2');
+        // console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      console.log('set NftStatus 3');
+      // console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1244,37 +1302,37 @@ const DetailScreen = ({ navigation, route }) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        console.log('set NftStatus 4');
+        // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet.address) {
           // setNftStatus('buy')
-          console.log('set NftStatus 5');
+          // console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else if (connectedWithTo === 'paymentCard') {
         } else {
           // setNftStatus('buy');
-          console.log('set NftStatus 6');
+          // console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        console.log('set NftStatus 7');
+        // console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      console.log('set NftStatus 8');
+      // console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    console.log(
-      '_nftStatus',
-      _nftStatus,
-      priceNFT,
-      isContractOwner,
-      isOwner,
-      isNFTOnAuction,
-    );
+    // console.log(
+    //   '_nftStatus',
+    //   _nftStatus,
+    //   priceNFT,
+    //   isContractOwner,
+    //   isOwner,
+    //   isNFTOnAuction,
+    // );
     return _nftStatus;
   };
 
@@ -1291,11 +1349,12 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item.metaData) {
-      let imageUri =
-        item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl
-          : item.metaData.image;
+    if (item.metaData) {  
+      // it's temporary fix
+      const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+    
+      const image = item.metaData.image || item.thumbnailUrl;
+      const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
       return (
         <TouchableOpacity
@@ -1391,7 +1450,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   const getAuctionTimeRemain = item => {
     if (item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime()) {
-      return 'Bidding time has been ended. Highest bidder can claim now.';
+      return translate('common.biddingTime');
     }
     if (item.newprice && item.newprice.endTime) {
       const diff =
@@ -1405,22 +1464,21 @@ const DetailScreen = ({ navigation, route }) => {
         let secs = parseInt(diff / 1000);
 
         if (days > 0) {
-          return `Bid ends in : ${days} DAY`;
+          return `${translate('common.saleEndIn')} : ${days} ${translate('common.day')}`;
         } else if (hours > 0) {
-          return `Bid ends in : ${hours} HOUR`;
+          return `${translate('common.saleEndIn')} : ${hours} ${translate('common.hours')}`;
         } else if (mins > 0) {
-          return `Bid ends in : ${mins} MIN`;
+          return `${translate('common.saleEndIn')} : ${mins} ${translate('common.min')}`;
         } else if (secs > 0) {
-          return `Bid ends in : ${secs} SEC`;
+          return `${translate('common.saleEndIn')} : ${secs} ${translate('common.sec')}`;
         } else {
-          return `Bid Deadline ${hours}:${mins}:${secs} `;
+          return `${translate('common.saleEndIn')} ${hours}:${mins}:${secs} `;
         }
       }
     }
     return null;
   };
   const closeSuccess = () => {
-    console.log("Success ==============")
     setSuccessModalVisible(false);
     setLoader(true)
     getNonCryptoNFTOwner();
@@ -1618,9 +1676,11 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>{description}</Text>
-          <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15 }}>
-            <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
-          </View>
+            {getAuctionTimeRemain(item) ? (
+              <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
+                  <Text style={{ fontSize: 11,  }}>{getAuctionTimeRemain(item)}</Text>
+              </View>
+            ) : null}
           <View style={styles.bottomView}>
 
             {setNFTStatus() !== undefined && (

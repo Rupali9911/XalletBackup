@@ -27,7 +27,7 @@ export default function NFTItem(props) {
 
   const dispatch = useDispatch();
 
-  let imageUri = isMeCollection ? (item.iconImage? item.iconImage  : null) 
+  let imageUri = isMeCollection ? (item.iconImage? item.iconImage  : null)
    : item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl : item.metaData?.image;
 
@@ -128,7 +128,7 @@ export default function NFTItem(props) {
               />
             </View>
             <View style={styles.collectionWrapper}>
-              <Text>{item.name}</Text>
+              <Text numberOfLines={1}>{item.name}</Text>
               <View
                 style={{
                   flexDirection: 'row',

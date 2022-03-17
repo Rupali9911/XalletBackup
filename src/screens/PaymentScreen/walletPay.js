@@ -23,7 +23,7 @@ import {
   updateEthereumBalances,
   updatePolygonBalances,
 } from '../../store/reducer/walletReducer';
-import { divideNo } from '../../utils';
+import { divideNo, numberWithCommas } from '../../utils';
 import { environment, networkChain, tokens, translate } from '../../walletUtils';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
@@ -579,7 +579,7 @@ const WalletPay = ({ route, navigation }) => {
           <View style={styles.payObject}>
             <Text style={styles.totalLabel}>{selectedObject.tokenName}</Text>
             <Text style={styles.value}>
-              {priceInToken || price} {selectedObject.type}
+              {numberWithCommas(parseFloat(Number(priceInToken || price)).toFixed(4))} {selectedObject.type}
             </Text>
           </View>
           {!IsActiveToPay() && (
@@ -599,7 +599,7 @@ const WalletPay = ({ route, navigation }) => {
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
             // navigation.navigate("AddCard")
-            if (selectedObject && selectedObject.tokenValue !== '0') {
+            if (!selectedObject && selectedObject.tokenValue !== '0') {
               navigation.goBack();
               dispatch(
                 setPaymentObject({

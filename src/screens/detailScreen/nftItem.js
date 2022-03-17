@@ -81,8 +81,7 @@ const nftItem = ({ item, index }) => {
   const [nftDetail, setNFTDetail] = useState();
   const [isArtistProfile, setisArtistProfile] = useState(true);
   const [loader, setLoader] = useState(false);
-
-
+  
   let params = item.tokenId.toString().split('-');
   let chainType,
     tokenId,
@@ -427,7 +426,6 @@ const nftItem = ({ item, index }) => {
     await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        // console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
 
@@ -535,9 +533,6 @@ const nftItem = ({ item, index }) => {
       setLengthMore(true);
   }, []);
 
-  const image = item.metaData.image || item.thumbnailUrl;
-  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
-
   const onProfile = isOwner => {
     if (isOwner) {
       if (owner !== "----" && owner) navigation.push('ArtistDetail', { id: owner });
@@ -545,10 +540,11 @@ const nftItem = ({ item, index }) => {
       if (artist !== "----" && artist) navigation.push('ArtistDetail', { id: artist });
     }
   };
-  let imageUri =
-    item.thumbnailUrl !== undefined || item.thumbnailUrl
-      ? item.thumbnailUrl
-      : item.metaData.image;
+  // it's temporary fix
+  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+
+  const image = item.metaData.image || item.thumbnailUrl;
+  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
   let artistName = artistData && artist
     ? artist.includes("0x")
@@ -647,7 +643,7 @@ const nftItem = ({ item, index }) => {
                       owner: owner,
                       creator: artist,
                       thumbnailUrl: item.thumbnailUrl,
-                      video: item.metaData.image,
+                      video: imageUri,
                       fileType: fileType,
                       price: item.price,
                       chain: item.chain,
@@ -660,26 +656,25 @@ const nftItem = ({ item, index }) => {
                       item: item,
                       index: index,
                     })
-                  // )
-                }}>
-                {fileType === 'mp4' ||
-                  fileType === 'MP4' ||
-                  fileType === 'mov' ||
-                  fileType === 'MOV' ? (
-                  <View style={styles.modalImage}>
-                    <Video
-                      key={tokenId}
-                      ref={refVideo}
-                      source={{ uri: item.metaData.image }}
-                      playInBackground={false}
-                      paused={!isPlay}
-                      resizeMode={'cover'}
-                      onLoad={() => refVideo.current.seek(0)}
+                // )
+              }}>
+              {fileType === 'mp4' ||
+                fileType === 'MP4' ||
+                fileType === 'mov' ||
+                fileType === 'MOV' ? (
+                <View style={styles.modalImage}>
+                  <Video
+                    key={tokenId}
+                    ref={refVideo}
+                    source={{ uri: imageUri }}
+                    playInBackground={false}
+                    paused={!isPlay}
+                    resizeMode={'cover'}
+                    onLoad={() => refVideo.current.seek(0)}
                       onEnd={() => {
-                        setPlay(false);
-                        refVideoPlay.current = true;
-                      }}
-                      onLoad={() => refVideo.current.seek(0)}
+                  setPlay(false);
+                  refVideoPlay.current = true;
+                }}
                       style={{
                         flex: 1,
                         position: 'absolute',
