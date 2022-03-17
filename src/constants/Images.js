@@ -64,10 +64,7 @@ export default {
 
     // payment method
     walletPay: require("../../assets/images/walletPay.png"),
-    goldPay: require("../../assets/images/goldPay.png"),
     cardPay: require("../../assets/images/cardPay.png"),
-    goldcoin: require("../../assets/images/goldcoin.png"),
-    goldcoin1: require("../../assets/images/goldcoin1.png"),
     itemDelete: require("../../assets/images/itemDelete.png"),
 
     edit: require("../../assets/images/edit.png"),
