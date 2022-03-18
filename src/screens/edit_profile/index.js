@@ -32,22 +32,38 @@ import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { openSettings } from 'react-native-permissions';
 import { confirmationAlert } from '../../common/function';
+import { TextInput } from 'react-native-gesture-handler';
 
 function Profile(props) {
-  const { navigation, handleSubmit, initialize } = props;
+  const { navigation, handleSubmit } = props;
 
   const { UserReducer } = useSelector(state => state);
   const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
+  const [username, setUsername] = useState(UserReducer.data.user.username);
+  const [errUsername, setErrUsername] = useState(false);
+  const [title, setTitle] = useState(UserReducer.data.user.title);
+  const [errTitle, setErrTitle] = useState(false);
+  const [email, setEmail] = useState(UserReducer.data.user.email);
+  const [errEmail, setErrEmail] = useState(false);
+  const [website, setWebsite] = useState(UserReducer.data.user.links?.website);
+  const [errWebsite, setErrWebsite] = useState(false);
+  const [discord, setDiscord] = useState(UserReducer.data.user.links?.discord);
+  const [errDiscord, setErrDiscord] = useState(false);
+  const [twitter, setTwitter] = useState(UserReducer.data.user.links?.twitter);
+  const [errTwitter, setErrTwitter] = useState(false);
+  const [youtube, setYoutube] = useState(UserReducer.data.user.links?.youtube);
+  const [errYoutube, setErrYoutube] = useState(false);
+  const [instagram, setInstagram] = useState(UserReducer.data.user.links?.instagram);
+  const [errInstagram, setErrInstagram] = useState(false);
+  const [facebook, setFacebook] = useState(UserReducer.data.user.links?.facebook);
+  const [errFacebook, setErrFacebook] = useState(false);
+  const [about, setAbout] = useState(UserReducer.data.user.about);
+  const [errAbout, setErrAbout] = useState(false);
   const actionSheetRef = useRef(null);
   const dispatch = useDispatch();
 
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
-
-  useEffect(() => {
-    const data = UserReducer.data.user;
-    initialize({ ...data, ...data.links });
-  }, []);
 
   const selectActionSheet = async index => {
     const options = {
@@ -87,15 +103,120 @@ function Profile(props) {
     }
   }
 
-  const onSave = (props) => {
-    if (photo.uri !== UserReducer.data.user.profile_image) {
-      let formData = new FormData();
-      formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
-      dispatch(updateProfileImage(formData));
+  const onSave = () => {
+
+    let validateNum = 0;
+    if (maxLength50(username)) {
+      setErrUsername(maxLength50(username));
+    } else {
+      validateNum ++;
     }
 
-    delete props.links;
-    dispatch(updateProfile(props, () => navigation.goBack()));
+    if (maxLength50(title)) {
+      setErrTitle(maxLength50(title));
+    } else {
+      validateNum ++;
+    }
+
+    if (maxLength50(email)) {
+      setErrEmail(maxLength50(email));
+    } else {
+      if (validateEmail(email)) {
+        setErrEmail(validateEmail(email));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength100(website)) {
+      setErrWebsite(maxLength100(website));
+    } else {
+      if (validateWebsiteURL(website)) {
+        setErrWebsite(validateWebsiteURL(website));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength100(discord)) {
+      setErrDiscord(maxLength100(discord));
+    } else {
+      if (validateDiscordURL(discord)) {
+        setErrDiscord(validateDiscordURL(discord));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength100(twitter)) {
+      setErrTwitter(maxLength100(twitter));
+    } else {
+      if (validateTwitterURL(twitter)) {
+        setErrTwitter(validateTwitterURL(twitter));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength100(youtube)) {
+      setErrYoutube(maxLength100(youtube));
+    } else {
+      if (validateYoutubeURL(youtube)) {
+        setErrYoutube(validateYoutubeURL(youtube));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength100(instagram)) {
+      setErrInstagram(maxLength100(instagram));
+    } else {
+      if (validateInstagramURL(instagram)) {
+        setErrInstagram(validateInstagramURL(instagram));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength100(facebook)) {
+      setErrFacebook(maxLength100(facebook));
+    } else {
+      if (validateFacebookURL(facebook)) {
+        setErrFacebook(validateFacebookURL(facebook));
+      } else {
+        validateNum ++;
+      }
+    }
+
+    if (maxLength200(about)) {
+      setErrAbout(maxLength200(about));
+    } else {
+      validateNum ++;
+    }
+
+    const req_body = {
+      username,
+      title,
+      email,
+      website,
+      discord,
+      twitter,
+      youtube,
+      instagram,
+      facebook,
+      about
+    }
+
+    if (validateNum === 10) {
+
+      if (photo.uri !== UserReducer.data.user.profile_image) {
+        let formData = new FormData();
+        formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
+        dispatch(updateProfileImage(formData));
+      }
+  
+      dispatch(updateProfile(req_body, () => navigation.goBack()));
+    }
   }
 
   return (
@@ -105,7 +226,7 @@ function Profile(props) {
           title={translate("wallet.common.profileSettings")}
           showBackButton
           showRightButton={true}
-          onPressRight={handleSubmit(onSave)}
+          onPressRight={onSave}
           rightButtonComponent={<DoneText>{translate("wallet.common.done")}</DoneText>}
         />
 
@@ -128,79 +249,89 @@ function Profile(props) {
             <SpaceView mTop={SIZE(17)} />
           </CenterWrap>
           <BorderView />
-          <Field
-            name="username"
+          <LimitableInput
+            value={username}
+            onChange={(text) => { setUsername(text); setErrUsername(false); }}
             label={translate("common.UserName")}
-            component={LimitableInput}
             placeholder={translate("common.UserName")}
             validate={[maxLength50]}
             editable={false}
+            error={errUsername}
           />
-          <Field
-            name="title"
+          <LimitableInput
+            value={title}
+            onChange={(text) => { setTitle(text); setErrTitle(false); }}
             label={translate("common.artistname")}
-            component={LimitableInput}
             placeholder={translate("common.artistname")}
             validate={[maxLength50]}
+            error={errTitle}
           />
-          <Field
-            editable={_.isEmpty(UserReducer.data?.user.email)}
-            name="email"
+          <LimitableInput
+            value={email}
+            onChange={(text) => { setEmail(text); setErrEmail(false); }}
             label={translate("common.email")}
-            component={LimitableInput}
             placeholder={translate("common.email")}
             validate={[maxLength50, validateEmail]}
+            editable={_.isEmpty(UserReducer.data?.user.email)}
+            error={errEmail}
           />
-          <Field
-            name="website"
+          <LimitableInput
+            value={website}
+            onChange={(text) => { setWebsite(text); setErrWebsite(false) }}
             label={translate("common.website")}
-            component={LimitableInput}
             placeholder={translate("common.website")}
             validate={[maxLength100, validateWebsiteURL]}
+            error={errWebsite}
           />
-          <Field
-            name="discord"
+          <LimitableInput
+            value={discord}
+            onChange={(text) => { setDiscord(text); setErrDiscord(false); }}
             label={translate("common.discord")}
-            component={LimitableInput}
             placeholder={translate("common.discord")}
             validate={[maxLength100, validateDiscordURL]}
+            error={errDiscord}
           />
-          <Field
-            name="twitter"
+          <LimitableInput
+            value={twitter}
+            onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
             label={translate("common.twitter")}
-            component={LimitableInput}
             placeholder={translate("common.twitter")}
             validate={[maxLength100, validateTwitterURL]}
+            error={errTwitter}
           />
-          <Field
-            name="youtube"
+          <LimitableInput
+            value={youtube}
+            onChange={(text) => { setYoutube(text); setErrYoutube(false); }}
             label={translate("common.youtube")}
-            component={LimitableInput}
             placeholder={translate("common.youtube")}
             validate={[maxLength100, validateYoutubeURL]}
+            error={errYoutube}
           />
-          <Field
-            name="instagram"
+          <LimitableInput
+            value={instagram}
+            onChange={(text) => { setInstagram(text); setErrInstagram(false); }}
             label={translate("common.instagram")}
-            component={LimitableInput}
             placeholder={translate("common.instagram")}
             validate={[maxLength100, validateInstagramURL]}
+            error={errInstagram}
           />
-          <Field
-            name="facebook"
+          <LimitableInput
+            value={facebook}
+            onChange={(text) => { setFacebook(text); setErrFacebook(false); }}
             label={translate("common.facebook")}
-            component={LimitableInput}
             placeholder={translate("common.facebook")}
             validate={[maxLength100, validateFacebookURL]}
+            error={errFacebook}
           />
           <SpaceView mTop={SIZE(12)} />
-          <Field
+          <LimitableInput
             multiLine
-            name="about"
+            value={about}
+            onChange={(text) => { setAbout(text); setErrAbout(false); }}
             label={translate("wallet.common.aboutMe")}
-            component={LimitableInput}
             placeholder={translate("wallet.common.aboutMe")}
             validate={[maxLength200]}
+            error={errAbout}
           />
         </KeyboardAwareScrollView>
 
@@ -216,6 +347,4 @@ function Profile(props) {
   )
 }
 
-export default reduxForm({
-  form: 'Profile' // a unique identifier for this form
-})(Profile);
+export default Profile;

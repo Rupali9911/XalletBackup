@@ -56,7 +56,7 @@ const MultiLineEditableInput = styled.TextInput`
 `;
 
 const LimitableInput = (props) => {
-    const { multiLine, label, input, meta: { touched, error, warning }, ...inputProps } = props;
+    const { multiLine, label, value, onChange, error, ...inputProps } = props;
     return (
         <View>
             {!multiLine ? (
@@ -69,11 +69,8 @@ const LimitableInput = (props) => {
                     </RowWrap>
                     <EditableInput
                         {...inputProps}
-                        value={input.value}
-                        onChangeText={input.onChange}
-                        onBlur={input.onBlur}
-                        onFocus={input.onFocus}
-                        // autoCorrect
+                        value={value}
+                        onChangeText={onChange}
                         placeholderTextColor={'grey'} />
                 </RowBetweenWrap>
             ) : (
@@ -89,17 +86,15 @@ const LimitableInput = (props) => {
                         <SpaceView mLeft={SIZE(19)} />
                         <MultiLineEditableInput
                             {...inputProps}
-                            value={input.value}
-                            onChangeText={input.onChange}
-                            onBlur={input.onBlur}
-                            onFocus={input.onFocus}
+                            value={value}
+                            onChangeText={onChange}
                             multiline
                             // autoCorrect
                             placeholderTextColor={'grey'} />
                     </RowWrap>
                 </>
             )}
-            {touched && error && (
+            {error && (
                 <LimitView>
                     <WhiteText>
                         {/* {translate('wallet.common.limitInputLength', { number: limit })} */}
