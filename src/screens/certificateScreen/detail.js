@@ -48,7 +48,13 @@ import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
-const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
 
 const Web3 = require('web3');
 
@@ -1505,7 +1511,27 @@ const DetailScreen = ({ navigation, route }) => {
         loader && <FetchingIndicator />
       }
       <SafeAreaView style={styles.mainContainer}>
-        <AppHeader showBackButton title={translate('wallet.common.detail')} />
+        <AppHeader
+          showBackButton
+          title={translate('wallet.common.detail')}
+          showRightComponent={
+            <View style={{ paddingRight: 10 }}>
+              <Menu onSelect={value => {
+                alert(value ? 'NFT has been reported!' : 'User has been blocked!');
+              }}>
+                <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+                <MenuOptions>
+                  <MenuOption value={1}>
+                    <Text style={{ marginVertical: 10 }}>Report NFT</Text>
+                  </MenuOption>
+                  <MenuOption value={2}>
+                    <Text style={{ marginVertical: 10}}>Block User</Text>
+                  </MenuOption>
+                </MenuOptions>
+              </Menu>
+            </View>
+          }
+        />
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
           <TouchableOpacity activeOpacity={1} onPress={() => setPlay(!isPlay)}>
             {fileType === 'mp4' ||
