@@ -34,7 +34,7 @@ import {
   getAllCards,
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import { alertWithSingleBtn, divideNo } from '../../utils';
+import { alertWithSingleBtn, divideNo, numberWithCommas } from '../../utils';
 import { translate } from '../../walletUtils';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
@@ -1652,7 +1652,7 @@ const DetailScreen = ({ navigation, route }) => {
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
-                <Text style={styles.price}>{price ? parseFloat(price) : 0}</Text>
+                <Text style={styles.price}>{price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0}</Text>
                 <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
               </View>
               <View style={{ flex: 0.4 }} >
@@ -1727,7 +1727,7 @@ const DetailScreen = ({ navigation, route }) => {
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <AppButton
-                  label={(price ? price : 0) + ' ' + baseCurrency?.key}
+                  label={(price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0) + ' ' + baseCurrency?.key}
                   containerStyle={[styles.button, CommonStyles.outlineButton]}
                   labelStyle={[CommonStyles.outlineButtonLabel]}
                   onPress={() => { }}
