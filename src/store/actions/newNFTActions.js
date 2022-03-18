@@ -164,6 +164,7 @@ export const favoriteNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         let nftData = [];
+        console.log(json)
         if (!json.count) {
           json.data = [];
         } else {

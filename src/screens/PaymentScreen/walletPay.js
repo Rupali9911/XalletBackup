@@ -151,7 +151,7 @@ const WalletPay = ({ route, navigation }) => {
               (_.type === 'TAL' || _.type === 'TNFT')) {
               return true;
             }
-             else {
+            else {
               return false;
             }
           } else {
@@ -599,7 +599,7 @@ const WalletPay = ({ route, navigation }) => {
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
             // navigation.navigate("AddCard")
-            if (!selectedObject && selectedObject.tokenValue !== '0') {
+            if (typeof (selectedObject) == "object" && Object.keys(selectedObject).length !== 0 && selectedObject.tokenValue !== '0') {
               navigation.goBack();
               dispatch(
                 setPaymentObject({

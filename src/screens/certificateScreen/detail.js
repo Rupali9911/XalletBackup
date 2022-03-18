@@ -48,9 +48,86 @@ import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
+import addComma from '../../utils/insertComma';
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
 const Web3 = require('web3');
+
+export function showActualValue(data, decimalValue, returnType) {
+  let value = data.toString();
+  let val;
+  if (parseFloat(value) === 0) {
+    val = parseFloat(value)?.toFixed(2);
+    return val;
+  }
+
+  if (parseFloat(value) > 0) {
+    if (!value.includes('.')) {
+      value = value + '.0';
+    }
+    let split = value.split('.');
+
+    val = split[0] + '.' + split[1].slice(0, decimalValue);
+  } else {
+    val = parseFloat(value)?.toFixed(decimalValue);
+  }
+
+  if (returnType === 'string') {
+    let splited = val.split('.')[1];
+    let index = '';
+    for (let i = 0; i < splited.length; i++) {
+      let afterAllZero = true;
+      for (let j = i; j < splited.length; j++) {
+        if (splited[j] !== '0') {
+          afterAllZero = false;
+          break;
+        }
+      }
+      if (afterAllZero) {
+        index = i;
+        break;
+      }
+    }
+    if (index !== '') {
+      if (index === 0) {
+        let v = val.split('.')[0] + '.' + '00';
+        return v.toString();
+      } else {
+        let v = val.split('.')[0] + '.' + splited.slice(0, index + 1);
+        return v.toString();
+      }
+    }
+    return val.toString();
+  } else if (returnType === 'number') {
+    // console.log(parseFloat(val));
+    return parseFloat(val);
+  }
+}
+
+export function trimZeroFromTheEnd(val) {
+  let str = val.toString();
+  if (str.includes(".")) {
+    let decimalPart = str.split(".")[1];
+    let nonDecimalPart = str.split(".")[0];
+    for (let i = 0; i < decimalPart.length; i++) {
+      let isZero = true;
+      for (let j = i + 1; j < decimalPart.length; j++) {
+        if (decimalPart[j] !== "0") {
+          isZero = false;
+          break;
+        }
+      }
+
+      if (isZero) {
+        // console.log(i);
+        // console.log(decimalPart.slice(0, i + 1));
+        return nonDecimalPart + "." + decimalPart.slice(0, i + 1);
+      }
+    }
+  }
+  return str;
+}
+
 
 let walletAddressForNonCrypto = '';
 
@@ -221,37 +298,37 @@ const DetailScreen = ({ navigation, route }) => {
     getRealtedNFT();
   }, [isFocused]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getCurrencyPrice();
-  },[wallet, price, baseCurrency])
-  
-  const getCurrencyPrice = async() => {
+  }, [wallet, price, baseCurrency])
+
+  const getCurrencyPrice = async () => {
     let finalPrice = '';
     let currencyPrices = await priceInDollars(wallet?.address)
-    switch (baseCurrency?.key) {  
+    switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = price * currencyPrices?.BNB;
         break;
-        
+
       case "ALIA":
         finalPrice = price * currencyPrices?.ALIA;
         break;
-        
+
       case "ETH":
         finalPrice = price * currencyPrices?.ETH;
         break;
-      
+
       case "MATIC":
         finalPrice = price * currencyPrices?.MATIC;
         break;
-      
+
       default:
         finalPrice = price * 1;
         break;
-   }
-   setPriceInDollar(finalPrice);
+    }
+    setPriceInDollar(finalPrice);
   };
-  
+
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
@@ -305,6 +382,38 @@ const DetailScreen = ({ navigation, route }) => {
         console.log(err);
       });
   };
+
+  const convertPrice = (price, detail, tradeCurrency) => {
+    let data = price ? detail.currency_type === "dollar" ?
+      addComma(
+        trimZeroFromTheEnd(showActualValue(parseFloat(price.toString()), 4, "number"), true),
+        true
+      ) : addComma(
+        trimZeroFromTheEnd(showActualValue(price, 6, "number"), true),
+        true
+      ) + " " + tradeCurrency
+      : "";
+
+    return data;
+  }
+
+  const getPrice = (aPrice, bPrice) => {
+    return aPrice &&
+      parseFloat(divideNo(parseInt(aPrice?._hex, 16))) > 0
+      ? divideNo(parseInt(aPrice._hex, 16)
+      )
+      : bPrice ? divideNo(
+        parseInt(bPrice._hex, 16)
+      ) : "";
+  }
+
+  const getTradeCurrency = (baseCurrency, dollarPrice) => {
+    return baseCurrency ? getBaseCurrency(chainType, parseInt(baseCurrency._hex, 16))
+      : dollarPrice &&
+        parseFloat(divideNo(parseInt(dollarPrice?._hex, 16))) > 0 ?
+        "$" : "ALIA";
+  }
+
   const getNFTSellDetails = async (id, filterArray = []) => {
     function comparator(a, b) {
       return parseInt(b['sellDateTime'], 10) - parseInt(a['sellDateTime'], 10);
@@ -326,7 +435,7 @@ const DetailScreen = ({ navigation, route }) => {
         networkType,
         filter: filterArray,
       })
-      .then(res => {
+      .then(async res => {
         console.log('transactoinhistory: ', res.data.data);
         if (res.data.data.length > 0) {
           let bids = [];
@@ -335,43 +444,22 @@ const DetailScreen = ({ navigation, route }) => {
               res.data.data[i].event === 'SellNFT' ||
               res.data.data[i].event === 'SellNFTNonCrypto'
             ) {
-              let price = res.data.data[i].returnValues.dollarPrice &&
-                parseFloat(
-                  divideNo(
-                    parseInt(res.data.data[i].returnValues.dollarPrice?._hex, 16)
-                  )
-                ) > 0
-                ? divideNo(
-                  parseInt(
-                    res.data.data[i].returnValues.dollarPrice._hex,
-                    16
-                  )
-                )
-                : divideNo(
-                  parseInt(res.data.data[i].returnValues.price._hex, 16)
-                );
-              let tradeCurr = res.data.data[i].returnValues.baseCurrency ?
-                getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
-                :
-                res.data.data[i].returnValues.dollarPrice &&
-                  parseFloat(
-                    divideNo(
-                      parseInt(res.data.data[i].returnValues.dollarPrice?._hex, 16)
-                    )
-                  ) > 0
-                  ?
-                  "$" :
-                  "ALIA"
+
+              let { dollarPrice, price, baseCurrency } = res.data.data[i].returnValues;
+
+              let priceCond = getPrice(dollarPrice, price);
+
+              let tradeCurr = getTradeCurrency(baseCurrency, dollarPrice)
+
               let obj = {
                 //event: 'SellNFT',
                 translatedEvent: translate('common.sales'),
-                price: price  ,
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                tradeCurrency: tradeCurr
               };
               bids = [obj, ...bids];
             }
@@ -379,34 +467,22 @@ const DetailScreen = ({ navigation, route }) => {
             if (
               res.data.data[i].event === "OfferAccept"
             ) {
+
+              let { amount } = res.data.data[i].returnValues;
+              let priceCond = getPrice(amount, null);
+              let tradeCurr = res.data.data[i].returnValues.currencyType ?
+                getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.currencyType._hex, 16))
+                : "ALIA"
+
               let obj = {
                 //event: 'SellNFT',
-                translatedEvent: "OfferAccept",
-                price:
-                  res.data.data[i].returnValues.amount &&
-                    parseFloat(
-                      divideNo(
-                        parseInt(res.data.data[i].returnValues.amount?._hex, 16)
-                      )
-                    ) > 0
-                    ? divideNo(
-                      parseInt(
-                        res.data.data[i].returnValues.amount._hex,
-                        16
-                      )
-                    )
-                    : divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex, 16)
-                    ),
+                translatedEvent: translate('common.sales'),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: res.data.data[i].returnValues.from.slice(0, 6),
                 owner: res.data.data[i].returnValues.to,
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                tradeCurrency:
-                  res.data.data[i].returnValues.currencyType ?
-                    getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.currencyType._hex, 16))
-                    : "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -426,147 +502,101 @@ const DetailScreen = ({ navigation, route }) => {
                   break;
                 }
               }
+
+              let { newDollarPrice, newPrice, baseCurrency } = res.data.data[i].returnValues;
+              let priceCond = getPrice(newDollarPrice, newPrice);
+              let tradeCurr = getTradeCurrency(baseCurrency, newDollarPrice)
+
               let obj = {
                 translatedEvent: "UpdatePrice",
-                price:
-                  res.data.data[i].returnValues.newDollarPrice &&
-                    parseFloat(
-                      divideNo(
-                        parseInt(res.data.data[i].returnValues.newDollarPrice?._hex, 16)
-                      )
-                    ) > 0
-                    ? divideNo(
-                      parseInt(
-                        res.data.data[i].returnValues.newDollarPrice._hex,
-                        16
-                      )
-                    )
-                    : divideNo(
-                      parseInt(res.data.data[i].returnValues.newPrice._hex, 16)
-                    ),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: sellEvent?.returnValues?.seller.slice(0, 6),
                 owner: "",
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                tradeCurrency:
-                  res.data.data[i].returnValues.baseCurrency ?
-                    getBaseCurrency(chainType, parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
-                    :
-                    res.data.data[i].returnValues.newDollarPrice &&
-                      parseFloat(
-                        divideNo(
-                          parseInt(res.data.data[i].returnValues.newDollarPrice?._hex, 16)
-                        )
-                      ) > 0
-                      ?
-                      "$" :
-                      "ALIA"
               };
               bids = [obj, ...bids];
             }
 
             if (res.data.data[i].event === 'OnAuction') {
+              let { startPrice, baseCurrency, dollarPrice } = res.data.data[i].returnValues;
+              let priceCond = getPrice(startPrice, null);
+              let tradeCurr = getTradeCurrency(baseCurrency, dollarPrice)
+
               let obj = {
                 //event: 'OnAuction',
                 translatedEvent: translate('common.OnAuction'),
-                price:
-                  res.data.data[i].returnValues.startPrice &&
-                    parseInt(
-                      divideNo(
-                        parseInt(res.data.data[i].returnValues.startPrice._hex),
-                      ),
-                    ) > 0
-                    ? divideNo(
-                      parseInt(
-                        res.data.data[i].returnValues.startPrice._hex,
-                        16,
-                      ),
-                    )
-                    : divideNo(
-                      parseInt(
-                        res.data.data[i].returnValues.startPrice._hex,
-                        16,
-                      ),
-                    ),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: res.data.data[i].returnValues.seller.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
-                tradeCurrency:
-                  res.data.data[i].returnValues.baseCurrency ?
-                    getBaseCurrency(this.props.router.query.nftChain,
-                      parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
-                    :
-                    res.data.data[i].returnValues.dollarPrice &&
-                      parseFloat(
-                        divideNo(
-                          parseInt(res.data.data[i].returnValues.dollarPrice?._hex, 16)
-                        )
-                      ) > 0
-                      ?
-                      "$" :
-                      "ALIA"
               };
               bids = [obj, ...bids];
             }
 
             if (res.data.data[i].event === 'awardAuctionNFT') {
+
+              let seller = "";
+              for (let j = 0; j <= res.data.data.length; j++) {
+                if (res.data.data[j].event === "MintWithTokenURINonCrypto") {
+                  seller = res.data.data[j].returnValues.to;
+                  break;
+                }
+              }
+
+              let { startPrice, priceDollar, baseCurrency } = res.data.data[i].returnValues;
+
+              let priceCond = getPrice(startPrice, priceDollar);
+
+              let tradeCurr = getTradeCurrency(baseCurrency, priceDollar)
+
               let obj = {
                 //event: 'OnAuction',
                 translatedEvent: translate('common.OnAuction'),
-                seller: res.data.data[i].returnValues.seller.slice(0, 6),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
+                seller: seller,
                 owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'dollar',
-                tradeCurrency:
-                  res.data.data[i].returnValues.baseCurrency ?
-                    getBaseCurrency(this.props.router.query.nftChain, parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
-                    :
-                    res.data.data[i].returnValues.priceDollar &&
-                      parseFloat(
-                        divideNo(
-                          parseInt(res.data.data[i].returnValues.priceDollar?._hex, 16)
-                        )
-                      ) > 0
-                      ?
-                      "$" :
-                      "ALIA"
               };
               bids = [obj, ...bids];
             }
 
             if (res.data.data[i].event === 'Bid') {
+
+              let lastAuction = "";
+              for (let j = i + 1; j <= res.data.data.length; j++) {
+                if (res.data.data[j].event === "OnAuction") {
+                  lastAuction = res.data.data[j];
+                  break;
+                }
+              }
+
+              let { amount } = res.data.data[i].returnValues;
+
+              let priceCond = getPrice(amount, null);
+
+              let tradeCurr = lastAuction && lastAuction.returnValues.baseCurrency ?
+                getBaseCurrency(chainType,
+                  parseInt(lastAuction.returnValues.baseCurrency._hex, 16))
+                : "ALIA"
+
               let obj = {
                 //event: 'Bid',
                 translatedEvent: translate('common.Bids'),
-                price:
-                  parseInt(
-                    divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex),
-                    ),
-                  ) > 0
-                    ? divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                    )
-                    : divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                    ),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: res.data.data[i].returnValues.bidder.slice(0, 6),
                 owner: '',
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
-                tradeCurrency:
-                  lastAuction && lastAuction.returnValues.baseCurrency ?
-                    getBaseCurrency(this.props.router.query.nftChain,
-                      parseInt(lastAuction.returnValues.baseCurrency._hex, 16))
-                    : "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -579,32 +609,25 @@ const DetailScreen = ({ navigation, route }) => {
                   break;
                 }
               }
+
+              let { amount } = res.data.data[i].returnValues;
+
+              let priceCond = getPrice(amount, null);
+              let tradeCurr = res.data.data[i].returnValues.baseCurrency ?
+                getBaseCurrency(chainType,
+                  parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
+                : "ALIA"
+
               let obj = {
                 //event: 'Claim',
                 translatedEvent: translate('common.Claim'),
-                price:
-                  parseInt(
-                    divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex),
-                    ),
-                  ) > 0
-                    ? divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                    )
-                    : divideNo(
-                      parseInt(res.data.data[i].returnValues.amount._hex, 16),
-                    ),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: seller,
                 owner: res.data.data[i].returnValues.bidder.slice(0, 6),
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
-                tradeCurrency:
-                  res.data.data[i].returnValues.baseCurrency ?
-                    getBaseCurrency(this.props.router.query.nftChain,
-                      parseInt(res.data.data[i].returnValues.baseCurrency._hex, 16))
-                    : "ALIA"
               };
               bids = [obj, ...bids];
             }
@@ -613,62 +636,81 @@ const DetailScreen = ({ navigation, route }) => {
               res.data.data[i].event === 'BuyNFT' ||
               res.data.data[i].event === 'BuyNFTNonCrypto'
             ) {
-              let sellEvent = {};
+              let sellEvent = "";
+              let updateEvent = ""
               for (let j = i + 1; j <= res.data.data.length; j++) {
+                if (res.data.data[j]?.event && res.data.data[j].event === "UpdatePrice") {
+                  updateEvent = res.data.data[j]
+                }
                 if (
                   res.data.data[j]?.event &&
-                  (res.data.data[j].event === 'SellNFT' ||
-                    res.data.data[j].event === 'SellNFTNonCrypto')
+                  (res.data.data[j].event === "SellNFT" ||
+                    res.data.data[j].event === "SellNFTNonCrypto")
                 ) {
                   sellEvent = res.data.data[j];
                   break;
                 }
               }
 
+              let priceCond = res.data.data[i].returnValues.calculated ?
+                divideNo(parseInt(res.data.data[i].returnValues.calculated._hex, 16)) :
+                updateEvent ?
+                  updateEvent.returnValues.newDollarPrice &&
+                    parseFloat(
+                      divideNo(
+                        parseInt(updateEvent.returnValues.newDollarPrice?._hex, 16)
+                      )
+                    ) > 0
+                    ? divideNo(
+                      parseInt(
+                        updateEvent.returnValues.newDollarPrice._hex,
+                        16
+                      )
+                    ) : divideNo(
+                      parseInt(updateEvent.returnValues.newPrice._hex, 16)
+                    ) :
+                  sellEvent.returnValues.dollarPrice &&
+                    parseFloat(
+                      divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex, 16))
+                    ) > 0
+                    ? divideNo(
+                      parseInt(sellEvent.returnValues.dollarPrice._hex, 16)
+                    )
+                    : divideNo(parseInt(sellEvent.returnValues.price._hex, 16))
+              let tradeCurr = res.data.data[i].returnValues.currencyType ?
+                getBaseCurrency(chainType,
+                  parseInt(res.data.data[i].returnValues.currencyType._hex, 16)) :
+                updateEvent ?
+                  updateEvent.returnValues.baseCurrency ?
+                    getBaseCurrency(chainType, parseInt(updateEvent.returnValues.baseCurrency._hex, 16)) :
+                    updateEvent.returnValues.newDollarPrice &&
+                      parseFloat(
+                        divideNo(
+                          parseInt(updateEvent.returnValues.newDollarPrice?._hex, 16)
+                        )
+                      ) > 0
+                      ?
+                      "$" :
+                      "ALIA" :
+                  sellEvent.returnValues.dollarPrice &&
+                    parseInt(
+                      divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex, 16))
+                    ) > 0
+                    ? "$"
+                    : "ALIA"
+
               let obj = {
                 // 'BuyNFT',
                 translatedEvent: translate('common.Buys'),
-                price:
-                  sellEvent.returnValues.dollarPrice &&
-                    parseInt(
-                      divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex)),
-                    ) > 0
-                    ? divideNo(
-                      parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
-                    )
-                    : divideNo(parseInt(sellEvent.returnValues.price._hex, 16)),
-
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: sellEvent?.returnValues?.seller.slice(0, 6),
                 owner: res.data.data[i].returnValues.buyer.slice(0, 6),
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                tradeCurrency:
-                  res.data.data[i].returnValues.currencyType ?
-                    getBaseCurrency(this.props.router.query.nftChain,
-                      parseInt(res.data.data[i].returnValues.currencyType._hex, 16)) :
-                    updateEvent ?
-                      updateEvent.returnValues.baseCurrency ?
-                        getBaseCurrency(chainType, parseInt(updateEvent.returnValues.baseCurrency._hex, 16)) :
-                        updateEvent.returnValues.newDollarPrice &&
-                          parseFloat(
-                            divideNo(
-                              parseInt(updateEvent.returnValues.newDollarPrice?._hex, 16)
-                            )
-                          ) > 0
-                          ?
-                          "$" :
-                          "ALIA" :
-                      sellEvent.returnValues.dollarPrice &&
-                        parseInt(
-                          divideNo(parseInt(sellEvent.returnValues.dollarPrice._hex, 16))
-                        ) > 0
-                        ? "$"
-                        : "ALIA"
               };
               bids = [obj, ...bids];
             }
-            // console.log('OBJECTTTTTTTTTTTTTTT',obj)
             if (res.data.data[i].event === 'CancelSell') {
               let obj = {
                 //event: 'CancelSell',
@@ -680,7 +722,6 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: '',
-                tradeCurrency: ""
               };
               bids = [obj, ...bids];
             }
@@ -694,22 +735,20 @@ const DetailScreen = ({ navigation, route }) => {
                 translatedEvent: translate('common.minted'),
                 price: '',
                 seller: 'Null Address',
-                owner: res.data.data[i].returnValues.from,
+                owner: res.data.data[i].returnValues.minter ? res.data.data[i].returnValues.minter
+                  : res.data.data[i].returnValues.from.toLowerCase() === walletAddressForNonCrypto.toLocaleLowerCase() ?
+                    res.data.data[i].returnValues.to :
+                    res.data.data[i].returnValues.from,
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                tradeCurrency: ""
                 //currency_type: '',
               };
               bids = [obj, ...bids];
             }
           }
           bids.sort(comparator);
-          console.log(bids, "bidsssssss")
-          for (let z = 0; z < bids.length; z++) {
-            bids[z].price = (Math.round(bids[z].price * 100) / 100).toFixed(2) + " " + bids[z].tradeCurrency;
-          }
-          console.log(bids, "bidsssssss11111")
+
           let _bidHistory = bids.filter(item => item.event === 'Bid');
           console.log(_bidHistory, "_bidHistory")
           if (_bidHistory.length > 0) {
@@ -1194,6 +1233,17 @@ const DetailScreen = ({ navigation, route }) => {
       newprice: obj.newprice,
       approval: obj.approval,
       id: obj.tokenId,
+      buyTxHash: obj?.buyTxHash ? obj?.buyTxHash : "",
+      offchain: obj?.offchain ? obj?.offchain : false,
+      collectionOffChainId: obj?.returnValues?.collection
+        ? obj?.returnValues?.collection
+        : "",
+
+      seriesId: obj?.seriesId
+        ? obj?.seriesId
+        : "",
+      secondarySales: obj.secondarySales ? true : false,
+      lastTradeType: obj.newprice2 && obj.newprice2?.type === 'auction' ? "auction" : "sell",
       collection: _MarketContractAddress,
       collectionAdd: obj.collectionAdd,
       nftChain: obj.chainType,
@@ -1349,10 +1399,10 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item.metaData) {  
+    if (item.metaData) {
       // it's temporary fix
       const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
-    
+
       const image = item.metaData.image || item.thumbnailUrl;
       const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
@@ -1483,7 +1533,7 @@ const DetailScreen = ({ navigation, route }) => {
     setLoader(true)
     getNonCryptoNFTOwner();
   }
- 
+
   let creatorName = artistData && creator
     ? creator.includes("0x")
       ? artistData.hasOwnProperty("title") && artistData.title ?
@@ -1494,11 +1544,10 @@ const DetailScreen = ({ navigation, route }) => {
           ? collectCreat?.creator
           : creator.substring(0, 6)
       : artistData === "No record found" ?
-      creator.substring(0, 6) :
+        creator.substring(0, 6) :
         artistData.hasOwnProperty("username") && artistData.username ?
           artistData.username.substring(0, 6) : creator.substring(0, 6)
     : creator.substring(0, 6)
-
   return (
     <>
       {
@@ -1676,11 +1725,11 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>{description}</Text>
-            {getAuctionTimeRemain(item) ? (
-              <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
-                  <Text style={{ fontSize: 11,  }}>{getAuctionTimeRemain(item)}</Text>
-              </View>
-            ) : null}
+          {getAuctionTimeRemain(item) ? (
+            <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
+              <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
+            </View>
+          ) : null}
           <View style={styles.bottomView}>
 
             {setNFTStatus() !== undefined && (
@@ -1689,7 +1738,7 @@ const DetailScreen = ({ navigation, route }) => {
                   setNFTStatus() === 'onSell'
                     ? translate('common.cancelSell')
                     : setNFTStatus() === 'sell'
-                      ? translate('common.sell')
+                      ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
                       : setNFTStatus() === 'buy'
                         ? translate('common.buy')
                         : setNFTStatus() === 'notOnSell'
