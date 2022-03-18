@@ -547,7 +547,6 @@ const nftItem = ({ item, index }) => {
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
-
   let artistName = artistData && artist
     ? artist.includes("0x")
       ? artistData.hasOwnProperty("title") && artistData.title ?
@@ -677,15 +676,15 @@ const nftItem = ({ item, index }) => {
                   setPlay(false);
                   refVideoPlay.current = true;
                 }}
-                    style={{
-                      flex: 1,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                    }}
-                  />
+                      style={{
+                        flex: 1,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      }}
+                    />
                     {!isPlay && (
                       <View
                         style={{
