@@ -164,6 +164,7 @@ console.log('fetch_data_body',  JSON.stringify(fetch_data_body))
       .then(response => response.json())
       .then(json => {
         let nftData = [];
+        console.log(json)
         if (!json.count) {
           json.data = [];
         } else {
