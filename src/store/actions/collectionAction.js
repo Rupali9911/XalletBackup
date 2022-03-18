@@ -7,6 +7,7 @@ import {
   COLLECTION_SUCCESS,
   COLLECTION_PAGE_CHANGE,
 } from '../types';
+import { networkType } from '../../common/networkType';
 
 export const collectionLoadSuccess = (data) => ({
   type: COLLECTION_SUCCESS,
@@ -34,7 +35,13 @@ export const collectionList = (page) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
 
-    fetch(`${BASE_URL}/user/actual-collections?page=${page}&limit=13`)
+    const limit = page === 1 ? 13 : 15;
+
+    const url = networkType === 'testnet'
+      ? `${BASE_URL}/user/actual-collections?page=${page}&limit=${limit}`
+      : `${BASE_URL}/user/live-actual-collections?page=${page}&limit=${limit}`;
+
+    fetch(url)
       .then(response => response.json())
       .then(json => {
         if (page === 1) {

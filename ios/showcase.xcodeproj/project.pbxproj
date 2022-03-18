@@ -684,6 +684,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 2.3.25;
+				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -797,6 +798,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 2.3.25;
+				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",

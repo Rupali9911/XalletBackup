@@ -56,8 +56,9 @@ const HotCollection = () => {
         iconImage={item.iconImage}
         collectionName={item.collectionName}
         creatorInfo={item.creatorInfo}
+        blind={item.blind}
         onPress={() => {
-          navigation.push('CollectionDetail', { collectionId: item._id });
+          navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
         }}
       />
     );

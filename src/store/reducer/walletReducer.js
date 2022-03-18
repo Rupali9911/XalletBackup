@@ -18,7 +18,8 @@ import {
     UPDATE_NETWORK_TYPE
 } from '../types';
 import ImagesSrc from "../../constants/Images";
-import {BASE_URL} from "../../helpers/ApiRequest";
+// import {BASE_URL} from "../../helpers/ApiRequest";
+import { BASE_URL } from '../../common/constants';
 
 
 const initialState = {

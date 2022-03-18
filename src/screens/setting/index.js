@@ -104,7 +104,6 @@ function Setting({navigation}) {
   const { data } = useSelector(state => state.UserReducer);
 
   useEffect(() => {
-    console.log('=======data.token', data.token);
     dispatch(getAllCards(data.token));
   }, []);
 

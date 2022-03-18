@@ -159,7 +159,7 @@ export const favoriteNFTList = (page, limit, sort) => {
         'Content-Type': 'application/json',
       },
     };
-
+console.log('fetch_data_body',  JSON.stringify(fetch_data_body))
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {

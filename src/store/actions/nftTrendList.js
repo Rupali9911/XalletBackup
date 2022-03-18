@@ -181,7 +181,6 @@ export const gifNFTList = (page, limit, sort) => {
           });
         }
         json.data = nftData;
-        console.log('======json.data', json.data[0].description)
         dispatch(gifNftLoadSuccess(json));
       })
       .catch(err => {

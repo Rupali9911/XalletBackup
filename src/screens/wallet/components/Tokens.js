@@ -14,17 +14,17 @@ import { translate, tokens } from '../../../walletUtils';
 import { useSelector } from 'react-redux';
 
 const ListItems = (props) => {
-    const {item} = props;
+    const { item } = props;
     return (
-        <TouchableOpacity onPress={()=>props.onPress && props.onPress(item)} style={styles.listCont} >
+        <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
                 <Image style={styles.profileImage} source={item.icon} />
             </View>
             <View style={styles.centerCont} >
                 <Text style={styles.tokenName} >{item.tokenName}</Text>
                 {/*<View style={styles.detailsContainer}>*/}
-                    {/*<Text style={styles.townTxt} >{item.amount}</Text>*/}
-                    {/*<Text style={styles.percentTxt} >{item.percent}</Text>*/}
+                {/*<Text style={styles.townTxt} >{item.amount}</Text>*/}
+                {/*<Text style={styles.percentTxt} >{item.percent}</Text>*/}
                 {/*</View>*/}
 
             </View>
@@ -44,30 +44,30 @@ const ListItems = (props) => {
 
 const Tokens = (props) => {
 
-    const {network, allowedTokens} = props;
+    const { network, allowedTokens } = props;
 
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
 
-    const {ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance, usdcBalance, wethBalance, busdBalance, usdtBalance} = useSelector(state => state.WalletReducer);
+    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance, busdBalance, usdtBalance } = useSelector(state => state.WalletReducer);
 
     useEffect(() => {
-        if(allowedTokens){
+        if (allowedTokens?.length > 0) {
             setBalanceData(allowedTokens);
         }
     }, [allowedTokens]);
 
-    useEffect(()=>{
+    useEffect(() => {
         let array = tokens;
         console.log('TOKENS', tokens)
-        if(network.name == 'Ethereum'){
+        if (network.name == 'Ethereum') {
             array[1].tokenValue = `${ethBalance}`;
-             array[8].tokenValue = `${usdtBalance}`;
-        } else if(network.name == 'BSC'){
+            array[8].tokenValue = `${usdtBalance}`;
+        } else if (network.name == 'BSC') {
             array[0].tokenValue = `${bnbBalance}`;
             array[3].tokenValue = `${tnftBalance}`;
-             array[7].tokenValue = `${busdBalance}`;
-        } else if(network.name == 'Polygon'){
+            array[7].tokenValue = `${busdBalance}`;
+        } else if (network.name == 'Polygon') {
             array[2].tokenValue = `${maticBalance}`;
             array[4].tokenValue = `${talBalance}`;
             array[5].tokenValue = `${usdcBalance}`;
@@ -75,7 +75,7 @@ const Tokens = (props) => {
         }
 
         let result = [];
-        if(allowedTokens && allowedTokens.length>0){
+        if (allowedTokens && allowedTokens.length > 0) {
 
             let _array = [];
             allowedTokens.map((item) => {
@@ -83,22 +83,22 @@ const Tokens = (props) => {
             });
 
             result = array.filter((item) => {
-                if(item.network.toLowerCase() === network.name.toLowerCase()){
-                   if(_array.includes(item.type)){
-                    return true;
-                   } else {
-                       return false;
-                   }
+                if (item.network.toLowerCase() === network.name.toLowerCase()) {
+                    if (_array.includes(item.type)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 } else {
                     return false;
                 }
             });
-        }else {
+        } else {
             result = array;
         }
         setBalanceData(result);
         // console.log('value update',array);
-    },[network,ethBalance,bnbBalance,maticBalance,tnftBalance,talBalance, busdBalance, usdtBalance]);
+    }, [network, ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance]);
 
     // useEffect(()=>{
     //     if(props.values){
@@ -120,16 +120,16 @@ const Tokens = (props) => {
 
     const onRefresh = () => {
         setRefreshing(true);
-        props.onRefresh && props.onRefresh().then(()=>{
+        props.onRefresh && props.onRefresh().then(() => {
             setRefreshing(false);
         }).catch(() => {
             setRefreshing(false);
         });
     }
 
-    const renderItems = ({item,index}) => {
+    const renderItems = ({ item, index }) => {
         return (
-            <ListItems item={item} onPress={props.onTokenPress}/>
+            <ListItems item={item} onPress={props.onTokenPress} />
         );
     }
 

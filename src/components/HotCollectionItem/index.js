@@ -13,7 +13,7 @@ const {
 } = SVGS;
 
 export default function HotcollectionItem(props) {
-  const { bannerImage, chainType, items, iconImage, collectionName, creatorInfo, onPress, creator, blind } = props;
+  const { bannerImage, chainType, items, iconImage, collectionName, creatorInfo, onPress, creator, blind, isCollection } = props;
 
   const chainIcon = (type) => {
     if (type === 'polygon') return <PolygonIcon />
@@ -68,10 +68,10 @@ export default function HotcollectionItem(props) {
           />
           <View style={styles.bottomCenterWrap}>
             <Text numberOfLines={1} style={styles.collectionName}>{collectionName}</Text>
-            <Text style={styles.byUser}>{`by ${getByUser()}`}</Text>
+            {!isCollection && <Text style={styles.byUser}>{`by ${getByUser()}`}</Text>}
           </View>
           <View style={styles.bottomWrap}>
-            {renderChain()}
+            {!isCollection ? renderChain() : <View />}
             <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>

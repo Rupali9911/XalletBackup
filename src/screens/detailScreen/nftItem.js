@@ -81,7 +81,7 @@ const nftItem = ({ item, index }) => {
   const [nftDetail, setNFTDetail] = useState();
   const [isArtistProfile, setisArtistProfile] = useState(true);
   const [loader, setLoader] = useState(false);
-  
+
   let params = item.tokenId.toString().split('-');
   let chainType,
     tokenId,
@@ -540,8 +540,9 @@ const nftItem = ({ item, index }) => {
       if (artist !== "----" && artist) navigation.push('ArtistDetail', { id: artist });
     }
   };
+
   // it's temporary fix
-  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUrl
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
@@ -560,6 +561,7 @@ const nftItem = ({ item, index }) => {
         artistData.hasOwnProperty("username") && artistData.username ?
           artistData.username.substring(0, 6) : artist.substring(0, 6)
     : artist.substring(0, 6)
+
   return (
     <>
       {
@@ -656,7 +658,6 @@ const nftItem = ({ item, index }) => {
                       item: item,
                       index: index,
                     })
-                // )
               }}>
               {fileType === 'mp4' ||
                 fileType === 'MP4' ||

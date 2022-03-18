@@ -483,7 +483,7 @@ const PaymentNow = props => {
             <Text numberOfLines={1} style={styles.amount}>
               {paymentObject && paymentObject.type == 'wallet'
                 ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4))) + ' '
-                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1))) || 0}
+                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
             </Text>
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
@@ -531,20 +531,13 @@ const PaymentNow = props => {
 
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>
-              {paymentObject && paymentObject.type == 'card'
-                ? translate('wallet.common.total')
-                : translate('wallet.common.priceIn', {
-                  type:
-                    paymentObject && paymentObject.type == 'wallet'
-                      ? paymentObject.item.type
-                      : 'GOLD',
-                })}
+              {paymentObject && translate('wallet.common.total')}
             </Text>
             <Text style={styles.value}>
               {paymentObject && paymentObject.type == 'card' ? '$' : ''}{' '}
               {paymentObject && paymentObject.type == 'wallet'
                 ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4)))
-                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(1))) || 0}
+                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
                 {' '}{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type}` : ''}
             </Text>
           </View>
