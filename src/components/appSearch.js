@@ -169,8 +169,12 @@ export default function AppSearch() {
                           item.role === 'crypto' ? item.username : item._id;
                         navigation.navigate('ArtistDetail', {id: id});
                       }else if (item.type == 'Collections') {
-                          navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id });
-                          //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id });
+                        if (item.blind) {
+                          console.log('========collection search => blind', item.blind, item.collectionId)
+                          navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
+                        } else {
+                          navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+                        }
                       }
                     }}
                   />

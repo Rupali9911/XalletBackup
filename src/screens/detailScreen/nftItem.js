@@ -26,6 +26,12 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 import { numberWithCommas } from '../../utils';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -39,6 +45,7 @@ const {
   ShareIcon,
   BookMarkIcon,
   PlayButtonIcon,
+  ThreeDotsVerticalIcon,
 } = SVGS;
 
 const nftItem = ({ item, index }) => {
@@ -747,9 +754,24 @@ const nftItem = ({ item, index }) => {
                     <ShareIcon />
                   </TouchableOpacity> */}
                 </View>
-                {/* <TouchableOpacity>
-                  <BookMarkIcon />
-                </TouchableOpacity> */}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {/* <TouchableOpacity style={{ marginRight: 8 }}>
+                    <BookMarkIcon />
+                  </TouchableOpacity> */}
+                  <Menu onSelect={value => {
+                    alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
+                  }}>
+                    <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+                    <MenuOptions>
+                      <MenuOption value={1}>
+                        <Text style={{ marginVertical: 10 }}>{translate('common.reportNft')}</Text>
+                      </MenuOption>
+                      <MenuOption value={2}>
+                        <Text style={{ marginVertical: 10}}>{translate('common.blockUser')}</Text>
+                      </MenuOption>
+                    </MenuOptions>
+                  </Menu>
+                </View>
               </RowBetweenWrap>
               <SpaceView mTop={SIZE(8)} />
               <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>

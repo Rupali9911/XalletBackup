@@ -633,7 +633,13 @@
         "hotcollection": "熱門系列",
         "cardSaved": "用戶卡已保存",
         "buyNext": "下一個",
-        "nftNotOnSell": "NFT 不出售"
+        "nftNotOnSell": "NFT 不出售",
+        "collectionReported":"收藏已舉報！",
+        "nftReported":"NFT已被舉報！",
+        "userBlocked":"用戶已被屏蔽！",
+        "reportNft":"NFT 報告",
+        "blockUser":"阻止用戶",
+        "reportCollection":"報告收集"
     },
     "AwardPage": {},
     "wallet": {
