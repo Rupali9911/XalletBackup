@@ -633,7 +633,13 @@
         "cardSaved": "カード情報の登録が完了しました",
         "buyNext": "購入する",
         "nftNotOnSell": "NFTは販売されていません",
-        "hotcollection": "推奨コレクション"
+        "hotcollection": "推奨コレクション",
+        "collectionReported":"コレクションが報告されました！",
+        "nftReported":"NFTが報告されました！",
+        "userBlocked":"ユーザーがブロックされました！",
+        "reportNft":"NFTレポート",
+        "blockUser":"ユーザをブロックする",
+        "reportCollection":"レポートコレクション"
     },
     "AwardPage": {},
     "wallet": {
@@ -676,7 +682,7 @@
             },
             "welcomeTxt": "ようこそ",
             "createWallet": "新しいウォレットを作成する",
-            "haveWallet": "既にウォレットを持っている方",
+            "haveWallet": "既存のアドレスを使用してログイン",
             "legal": "利用規約",
             "privacyPolicy": "プライバシーポリシー",
             "termsServices": "利用規約",
