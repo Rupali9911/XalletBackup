@@ -847,8 +847,8 @@ const UploadNFT = ({
 
   let disableBtn = collection && nftName && nftDesc && nftImageType &&
     nftImage && basePrice && (
-      toggleButton == "timeAuction" ? (fixedPrice && fixedPrice>0) && (startTimeDate < endTimeDate)
-    : fixedPrice>0 ) && networkType;
+      toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate)
+        : fixedPrice > 0) && networkType;
 
   let networkTypeStatus = networkType.value.toLowerCase() == "binance" ?
     translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
@@ -1208,7 +1208,7 @@ const UploadNFT = ({
             />
             <CardButton
               onPress={handleCreate}
-              border={colors.BLUE6}
+              // border={colors.BLUE6}
               disable={!disableBtn}
               border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
               buttonCont={{ width: '48%' }}
