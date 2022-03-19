@@ -521,6 +521,23 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     }
   }
 
+  const editDisable = () => {
+    if (routeParams && routeParams.name == "collection" && routeParams.status == "created") {
+      let collectData = routeParams.data;
+      let des = collectData?.collectionDesc == collectionDes;
+      let bannerImg = collectData?.bannerImage == (bannerImage?.path ? bannerImage.path : bannerImage);
+      let iconImg = collectData?.iconImage == (iconImage?.path ? iconImage.path : iconImage);
+
+      if (collectData && (des && bannerImg && iconImg)) {
+        return true;
+      } else {
+        return !disable;
+      }
+    } else {
+      return !disable;
+    }
+  }
+
   let disable = collectionName && collectionSymbol && collectionDes && bannerImage && iconImage && !error && !disableAll;
   return (
     <View style={styles.childCont}>
@@ -636,8 +653,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               onPress={screenStatus === "new" ? saveCollection :
                 screenStatus === "draft" ? saveDraftCollection : saveEditAsDraftCollection}
               label={screenStatus === "new" || screenStatus === "draft" ? translate("common.save") : translate("wallet.common.edit")}
-              buttonCont={{ width: '48%', backgroundColor: !disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
-              disable={!disable}
+              buttonCont={{ width: '48%', backgroundColor: editDisable() ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
+              disable={screenStatus === "new" || screenStatus === "draft" ? !disable : editDisable()}
             />
             <CardButton
               onPress={screenStatus === "new" ? cancel : () => navigation.goBack()}

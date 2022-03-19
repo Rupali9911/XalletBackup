@@ -19,7 +19,6 @@ import { translate, CARD_MASK, environment } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
 import { useNavigation } from '@react-navigation/native';
-import NotEnoughGold from './alertGoldModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { formatWithMask } from 'react-native-mask-input';
 import {
@@ -72,7 +71,6 @@ const PaymentNow = props => {
   } = props;
   const [opacity, setOpacity] = useState(0.88);
   const [selectedMethod, setSelectedMethod] = useState(null);
-  const [notEnoughGoldVisible, setNotEnoughGoldVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [redirectURL, setRedirectURL] = useState('');
 
@@ -489,7 +487,7 @@ const PaymentNow = props => {
               <Text style={styles.symbol}>
                 {paymentObject && paymentObject.type == 'wallet'
                   ? `${paymentObject.item.type} `
-                  : 'GOLD'}
+                  : ''}
               </Text>
             )}
           </View>
@@ -542,12 +540,6 @@ const PaymentNow = props => {
             </Text>
           </View>
 
-          {selectedMethod == 2 && (
-            <Text style={styles.goldValue}>
-              <Image source={ImagesSrc.goldcoin} /> {price}
-            </Text>
-          )}
-
           <AppButton
             label={translate('common.buyNext')}
             containerStyle={CommonStyles.button}
@@ -568,16 +560,6 @@ const PaymentNow = props => {
         </View>
         <SafeAreaView style={{ backgroundColor: Colors.white }} />
       </View>
-      <NotEnoughGold
-        visible={notEnoughGoldVisible}
-        onNavigate={() => {
-          onRequestClose();
-          setNotEnoughGoldVisible(false);
-        }}
-        onRequestClose={() => {
-          setNotEnoughGoldVisible(false);
-        }}
-      />
     </Modal>
   );
 };
@@ -650,13 +632,6 @@ const styles = StyleSheet.create({
     fontSize: RF(2.3),
     fontFamily: Fonts.ARIAL_BOLD,
     color: Colors.themeColor,
-  },
-  goldValue: {
-    fontSize: RF(2.3),
-    fontFamily: Fonts.ARIAL_BOLD,
-    color: Colors.themeColor,
-    alignSelf: 'flex-end',
-    marginBottom: hp('1%'),
   },
   balance: {
     fontSize: RF(1.8),

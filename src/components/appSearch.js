@@ -210,7 +210,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
           {loading && <LoadingView />}
         </View>
         <Text style={styles.name} numberOfLines={1}>
-          {item.type == 'NFT' ? item.metaData?.name : item.type == 'Collections' ? item.collectionName : item?.username}
+          {item.type == 'NFT' ? item.metaData?.name : item.type == 'Collections' ? item.collectionName : item?.title ? item.title : item?.username}
         </Text>
       </TouchableOpacity>
     </View>

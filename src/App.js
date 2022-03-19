@@ -35,7 +35,6 @@ import ExploreScreen from './screens/explore';
 import HomeScreen from './screens/homeScreen';
 import MakeBidScreen from './screens/makeBidScreen';
 import AddCard from './screens/PaymentScreen/addCard';
-import BuyGold from './screens/PaymentScreen/buyGold';
 import Cards from './screens/PaymentScreen/cards';
 import WalletPay from './screens/PaymentScreen/walletPay';
 import PayScreen from './screens/payScreen';
@@ -246,7 +245,6 @@ const AppRoutes = () => {
           <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
           <Stack.Screen name="AddCard" component={AddCard} />
           <Stack.Screen name="Cards" component={Cards} />
-          <Stack.Screen name="BuyGold" component={BuyGold} />
           <Stack.Screen name="Setting" component={Setting} />
           <Stack.Screen name="ChangePassword" component={ChangePassword} />
           <Stack.Screen name="SecurityScreen" component={SecurityScreen} />
