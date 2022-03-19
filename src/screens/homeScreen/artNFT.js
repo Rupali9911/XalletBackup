@@ -23,6 +23,7 @@ const ArtNFT = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
+        console.log("artNFT")
         dispatch(newNftLoadStart());
         dispatch(newNftListReset());
         getNFTlist(1, null, sort);

@@ -30,6 +30,7 @@ const HotNFT = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
+        console.log("hot nft")
         dispatch(nftLoadStart());
         dispatch(nftListReset());
         getNFTlist(1, null, ListReducer.sort);

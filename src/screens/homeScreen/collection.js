@@ -26,6 +26,8 @@ const Collection = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log("collection")
+
     dispatch(collectionLoadStart());
     dispatch(collectionListReset());
     getCollection(1);

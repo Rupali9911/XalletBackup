@@ -31,6 +31,8 @@ const AwardsNFT = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log("award nft")
+
     dispatch(awardsNftLoadStart());
     dispatch(awardsNftListReset());
     getNFTlist(1, null, sort);

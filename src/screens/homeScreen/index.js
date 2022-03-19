@@ -101,7 +101,7 @@ const HomeScreen = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       return () => setOpenState(false);
-    },[])
+    }, [])
   );
 
   useEffect(() => {
@@ -270,63 +270,64 @@ const HomeScreen = ({ navigation }) => {
         {online &&
           (showSuccess ? null : (
             <Tab.Navigator
-              // screenOptions={{
-              //   tabBarScrollEnabled: true,
-              //   tabBarActiveTintColor: colors.BLUE4,
-              //   tabBarInactiveTintColor: colors.GREY1,
-              //   tabBarLabelStyle: {
-              //     fontSize: RF(1.4),
-              //     fontFamily: fonts.SegoeUIRegular,
-              //     textTransform: 'capitalize',
-              //   },
-              //   tabBarIndicatorStyle: {
-              //     borderBottomColor: colors.BLUE4,
-              //     height: 1,
-              //     marginBottom: SIZE(39),
-              //   },
-              //   tabBarItemStyle: {
-              //     height: SIZE(40),
-              //     width: wp('27%'),
-              //     paddingHorizontal: wp('1%'),
-              //     justifyContent: 'center',
-              //   },
-              //   tabBarStyle: {
-              //     boxShadow: 'none',
-              //     elevation: 0,
-              //     borderTopColor: '#EFEFEF',
-              //     borderTopWidth: 1,
-              //     shadowOpacity: 0,
-              //   }
-              // }}>
+              screenOptions={{
+                tabBarScrollEnabled: true,
+                tabBarActiveTintColor: colors.BLUE4,
+                tabBarInactiveTintColor: colors.GREY1,
+                tabBarLabelStyle: {
+                  fontSize: RF(1.4),
+                  fontFamily: fonts.SegoeUIRegular,
+                  textTransform: 'capitalize',
+                },
+                tabBarIndicatorStyle: {
+                  borderBottomColor: colors.BLUE4,
+                  height: 1,
+                  marginBottom: SIZE(39),
+                },
+                tabBarItemStyle: {
+                  height: SIZE(40),
+                  width: wp('27%'),
+                  paddingHorizontal: wp('1%'),
+                  justifyContent: 'center',
+                },
+                tabBarStyle: {
+                  boxShadow: 'none',
+                  elevation: 0,
+                  borderTopColor: '#EFEFEF',
+                  borderTopWidth: 1,
+                  shadowOpacity: 0,
+                }
+              }}
 
-                tabBarOptions={{
-                    scrollEnabled: true,
-                    activeTintColor: colors.BLUE4,
-                    inactiveTintColor: colors.GREY1,
-                    style: {
-                        boxShadow: 'none',
-                        elevation: 0,
-                        borderTopColor: '#EFEFEF',
-                        borderTopWidth: 1,
-                        shadowOpacity: 0,
-                    },
-                    tabStyle: {
-                        height: SIZE(40),
-                        width: wp('27%'),
-                        paddingHorizontal: wp('1%'),
-                        justifyContent: 'center',
-                    },
-                    labelStyle: {
-                      fontSize: RF(1.4),
-                        fontFamily: fonts.SegoeUIRegular,
-                        textTransform: 'capitalize',
-                    },
-                    indicatorStyle: {
-                        borderBottomColor: colors.BLUE4,
-                        height: 1,
-                        marginBottom: SIZE(39),
-                    }
-            }}>
+            //     tabBarOptions={{
+            //         scrollEnabled: true,
+            //         activeTintColor: colors.BLUE4,
+            //         inactiveTintColor: colors.GREY1,
+            //         style: {
+            //             boxShadow: 'none',
+            //             elevation: 0,
+            //             borderTopColor: '#EFEFEF',
+            //             borderTopWidth: 1,
+            //             shadowOpacity: 0,
+            //         },
+            //         tabStyle: {
+            //             height: SIZE(40),
+            //             width: wp('27%'),
+            //             paddingHorizontal: wp('1%'),
+            //             justifyContent: 'center',
+            //         },
+            //         labelStyle: {
+            //           fontSize: RF(1.4),
+            //             fontFamily: fonts.SegoeUIRegular,
+            //             textTransform: 'capitalize',
+            //         },
+            //         indicatorStyle: {
+            //             borderBottomColor: colors.BLUE4,
+            //             height: 1,
+            //             marginBottom: SIZE(39),
+            //         }
+            // }}
+            >
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}
@@ -420,9 +421,9 @@ const HomeScreen = ({ navigation }) => {
         ) : null}
         {isNotificationVisible ? (
           <NotificationActionModal
-              title={translate('wallet.common.setPushNotification')}
-              hint={translate('wallet.common.notificationHint')}
-              btnText={translate('wallet.common.enable')}
+            title={translate('wallet.common.setPushNotification')}
+            hint={translate('wallet.common.notificationHint')}
+            btnText={translate('wallet.common.enable')}
             onClose={() => setModalVisible(false)}
             onDonePress={() => {
               setModalVisible(false);

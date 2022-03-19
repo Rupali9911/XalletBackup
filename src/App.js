@@ -1,25 +1,25 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {StripeProvider} from '@stripe/stripe-react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import {Image, Linking, LogBox} from 'react-native';
+import { Image, Linking, LogBox } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
-import {Provider, useDispatch, useSelector} from 'react-redux';
-import {Subject} from 'rxjs';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Subject } from 'rxjs';
 import '../shim';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from './common/responsiveFunction';
-import {AppSplash} from './components';
+import { AppSplash } from './components';
 import Colors from './constants/Colors';
 import ImageSrc from './constants/Images';
-import {screenWidth} from './constants/responsiveFunct';
+import { screenWidth } from './constants/responsiveFunct';
 import AuthStack from './navigations/authStack';
-import {fonts, images} from './res';
+import { fonts, images } from './res';
 import ArtistDetail from './screens/ArtistDetail';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
@@ -50,8 +50,8 @@ import transactionsDetail from './screens/wallet/transactionsDetail';
 import SellNFT from './screens/sellNft/index';
 import CollectionDetail from './screens/collectionDetail';
 import Store from './store';
-import {setRequestAppId} from './store/reducer/walletReducer';
-import {environment, translate} from './walletUtils';
+import { setRequestAppId } from './store/reducer/walletReducer';
+import { environment, translate } from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setPasscodeAsync } from './store/reducer/userReducer';
 
@@ -69,9 +69,9 @@ const deepLinkData = {
 };
 
 const TabComponent = () => {
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
 
   return (
     <Tab.Navigator
@@ -86,8 +86,8 @@ const TabComponent = () => {
         },
         activeTintColor: Colors.themeColor,
       }}
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color}) => {
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -113,7 +113,7 @@ const TabComponent = () => {
             <Image
               source={iconName}
               resizeMode="contain"
-              style={{width: wp('6.5%'), height: wp('4.5%')}}
+              style={{ width: wp('6.5%'), height: wp('4.5%') }}
             />
           );
         },
@@ -121,26 +121,26 @@ const TabComponent = () => {
       <Tab.Screen
         name={'Home'}
         component={HomeScreen}
-        options={{tabBarLabel: translate('common.home')}}
+        options={{ tabBarLabel: translate('common.home') }}
       />
       <Tab.Screen
         name={'Explore'}
         component={ExploreScreen}
-        options={{tabBarLabel: translate('wallet.common.explore')}}
+        options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
       <Tab.Screen
         name={'Wallet'}
-        options={{tabBarLabel: translate('wallet.common.wallet')}}
+        options={{ tabBarLabel: translate('wallet.common.wallet') }}
         component={Wallet}
       />
       <Tab.Screen
         name={'Connect'}
-        options={{tabBarLabel: translate('wallet.common.connect')}}
+        options={{ tabBarLabel: translate('wallet.common.connect') }}
         component={Connect}
         initialParams={{}}
       />
       <Tab.Screen
-        options={{tabBarLabel: translate('wallet.common.me')}}
+        options={{ tabBarLabel: translate('wallet.common.me') }}
         name={'Me'}
         component={ProfileScreen}
       />
@@ -149,7 +149,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const {wallet, passcode, mainLoader, showSplash} = useSelector(
+  const { wallet, passcode, mainLoader, showSplash } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -158,13 +158,13 @@ const AppRoutes = () => {
 
   React.useEffect(() => {
     LogBox.ignoreAllLogs();
-    Linking.addEventListener('url', ({url}) => {
+    Linking.addEventListener('url', ({ url }) => {
       console.log('e', url);
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
         if (wallet) {
           setTimeout(() => {
-            navigatorRef.current?.navigate('Connect', {appId: id});
+            navigatorRef.current?.navigate('Connect', { appId: id });
           }, 500);
         } else {
           dispatch(setRequestAppId(id));
@@ -175,7 +175,7 @@ const AppRoutes = () => {
 
   React.useEffect(() => {
     AsyncStorage.getItem('@passcode')
-    .then(val => dispatch(setPasscodeAsync(JSON.parse(val))))
+      .then(val => dispatch(setPasscodeAsync(JSON.parse(val))))
   }, []);
 
   const linking = {
@@ -216,12 +216,24 @@ const AppRoutes = () => {
           initialRouteName={initialRoute}
           headerMode="none"
           screenOptions={{
-            gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
+            animationEnabled: true,
+            animationTypeForReplace: "pop",
+            transitionSpec: {
+              open: {
+                animation: "timing",
+                duration: 1000
+              },
+              close: {
+                animation: "timing",
+                duration: 1000
+              },
+            },
+            gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
           <Stack.Screen
             name="PasscodeScreen"
-            initialParams={{screen: 'Auth'}}
+            initialParams={{ screen: 'Auth' }}
             component={PasscodeScreen}
           />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
