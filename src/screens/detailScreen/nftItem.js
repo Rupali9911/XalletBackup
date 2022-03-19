@@ -738,18 +738,18 @@ const nftItem = ({ item, index }) => {
                     }}>
                     {item.like ? <HeartActiveIcon /> : <HeartIcon />}
                   </TouchableOpacity>
-                  <SpaceView mRight={SIZE(15)} />
+                  {/* <SpaceView mRight={SIZE(15)} />
                   <TouchableOpacity>
                     <CommentIcon />
                   </TouchableOpacity>
                   <SpaceView mRight={SIZE(15)} />
                   <TouchableOpacity>
                     <ShareIcon />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                   <BookMarkIcon />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </RowBetweenWrap>
               <SpaceView mTop={SIZE(8)} />
               <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
