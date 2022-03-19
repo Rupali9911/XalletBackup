@@ -74,7 +74,7 @@ function CollectionDetail(props) {
           style={styles.backButtonWrap}>
           <Image style={styles.backIcon} source={ImageSrc.backArrow} />
         </TouchableOpacity>
-        <View style={{ 
+        <View style={{
           position: 'absolute',
           right: SIZE(10),
           top: SIZE(10),
@@ -87,15 +87,15 @@ function CollectionDetail(props) {
           borderRadius: SIZE(13),
         }}>
           <Menu onSelect={value => {
-            alert(value ? 'Collection has been reported!' : 'User has been blocked!');
+            alert(value === 1 ? translate('common.collectionReported') : translate('common.userBlocked'));
           }}>
             <MenuTrigger children={<ThreeDotsVerticalIcon />} />
             <MenuOptions>
               <MenuOption value={1}>
-                <Text style={{ marginVertical: 10 }}>Report Collection</Text>
+                <Text style={{ marginVertical: 10 }}>{translate('common.reportCollection')}</Text>
               </MenuOption>
               <MenuOption value={2}>
-                <Text style={{ marginVertical: 10}}>Block User</Text>
+                <Text style={{ marginVertical: 10}}>{translate('common.blockUser')}</Text>
               </MenuOption>
             </MenuOptions>
           </Menu>

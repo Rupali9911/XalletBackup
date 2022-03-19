@@ -118,7 +118,11 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   const onPhoto = (v) => {
     ImagePicker.openPicker({
       mediaType: "photo",
+      width: v == "banner" ? 1600 : 512,
+      height: v == "banner" ? 300 : 512,
+      cropping: true
     }).then(image => {
+
       if (v == "banner") {
         if (image.height <= 300 && image.width <= 1600) {
           updateImageState(image, false, v)
