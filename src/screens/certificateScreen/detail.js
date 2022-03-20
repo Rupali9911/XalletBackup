@@ -1403,6 +1403,7 @@ const DetailScreen = ({ navigation, route }) => {
       }
     }
   };
+
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item.metaData) {
@@ -1456,6 +1457,7 @@ const DetailScreen = ({ navigation, route }) => {
       );
     }
   };
+
   const Filters = props => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState([]);
@@ -1496,11 +1498,21 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    switch (collectCreat?.userId) {
-      case "0":
-        return true;
-      default:
-        return false;
+    if (collectCreat?.userId === "0") {
+      return true;
+    } else {
+      switch (collectCreat?.collectionName) {
+        case "ULTRAMAN":
+          return true;
+        case "MONKEY COSER 101":
+          return true;
+        case "Underground City":
+          return true;
+        case "TIF2021 After Party":
+          return true;
+        default:
+          return false;
+      }
     }
   }
 
@@ -1534,6 +1546,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
     return null;
   };
+
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     setLoader(true)
@@ -1574,7 +1587,7 @@ const DetailScreen = ({ navigation, route }) => {
                     <Text style={{ marginVertical: 10 }}>{translate('common.reportNft')}</Text>
                   </MenuOption>
                   <MenuOption value={2}>
-                    <Text style={{ marginVertical: 10}}>{translate('common.blockUser')}</Text>
+                    <Text style={{ marginVertical: 10 }}>{translate('common.blockUser')}</Text>
                   </MenuOption>
                 </MenuOptions>
               </Menu>

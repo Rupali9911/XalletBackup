@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     height: wp('87.5%') / 3 - wp('0.5%'),
-    marginVertical: wp('0.3'),
+    margin: wp('0.4'),
     width: wp('87.5%') / 3 - wp('0.5%'),
   },
   listImage: {
