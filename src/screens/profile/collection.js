@@ -39,7 +39,7 @@ const Collection = ({ route }) => {
     const [collectionDraftList, setCollectionDraftList] = useState([]);
 
     useEffect(() => {
-        pressToggle(toggle)
+        // pressToggle(toggle)
     }, []);
     // useEffect(() => {
     //     // if (isFocusedHistory) {
@@ -126,7 +126,12 @@ const Collection = ({ route }) => {
     return (
         <View style={styles.trendCont}>
 
-            {
+            {isFocusedHistory && alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate('common.comingSoon'),
+                () => navigation.goBack())
+            }
+            {/* {
                 mainLoader ?
                     <Loader /> :
                     collectionCreatedList.length !== 0 ?
@@ -155,7 +160,7 @@ const Collection = ({ route }) => {
                         <View style={styles.sorryMessageCont}>
                             <Text style={styles.sorryMessage}>{translate("wallet.common.noCollection")}</Text>
                         </View>
-            }
+            } */}
         </View>
     );
 };

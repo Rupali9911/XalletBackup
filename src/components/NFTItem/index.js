@@ -232,7 +232,7 @@ export default function NFTItem(props) {
                         fontSize: SIZE(12),
                       }}>
                         {
-                          insertComma(parseFloat(item?.price, true).toFixed(0))
+                          insertComma(parseFloat(item?.price, true).toFixed(2))
                         }
                     </Text>
                     {renderIcon()}

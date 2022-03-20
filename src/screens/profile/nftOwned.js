@@ -77,9 +77,9 @@ const NFTOwned = ({ route }) => {
             {
                 MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
-                    MyCollectionReducer.myCollectionTotalCount !== 0 ?
+                    MyCollectionReducer?.myCollection !== 0 ?
                         <FlatList
-                            data={MyCollectionReducer.myCollection}
+                            data={MyCollectionReducer?.myCollection}
                             horizontal={false}
                             numColumns={2}
                             initialNumToRender={14}

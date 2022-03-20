@@ -745,19 +745,19 @@ const nftItem = ({ item, index }) => {
                     }}>
                     {item.like ? <HeartActiveIcon /> : <HeartIcon />}
                   </TouchableOpacity>
-                  <SpaceView mRight={SIZE(15)} />
+                  {/* <SpaceView mRight={SIZE(15)} />
                   <TouchableOpacity>
                     <CommentIcon />
                   </TouchableOpacity>
                   <SpaceView mRight={SIZE(15)} />
                   <TouchableOpacity>
                     <ShareIcon />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <TouchableOpacity style={{ marginRight: 8 }}>
+                  {/* <TouchableOpacity style={{ marginRight: 8 }}>
                     <BookMarkIcon />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <Menu onSelect={value => {
                     alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
                   }}>
