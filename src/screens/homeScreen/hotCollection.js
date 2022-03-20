@@ -26,6 +26,8 @@ const HotCollection = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log("hot collection")
+
     dispatch(hotCollectionLoadStart());
     dispatch(hotCollectionListReset());
     getHotCollection(1);

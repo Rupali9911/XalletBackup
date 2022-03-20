@@ -30,6 +30,8 @@ const GifNFT = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log("gifnft")
+
     dispatch(nftLoadStart());
     dispatch(nftListReset());
     getNFTlist(1, null, ListReducer.sort);
