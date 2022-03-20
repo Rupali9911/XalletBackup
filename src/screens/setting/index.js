@@ -15,7 +15,7 @@ import Modal from 'react-native-modal';
 import TouchID from 'react-native-touch-id';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {useDispatch, useSelector} from 'react-redux';
-import {confirmationAlert} from '../../common/function';
+import {alertWithSingleBtn, confirmationAlert} from '../../common/function';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
@@ -135,7 +135,10 @@ function Setting({navigation}) {
           />
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
-            onPress={() => null}
+            onPress={() => alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate('common.comingSoon'),
+            )}
             label={translate('wallet.common.notifications')}
           />
           <View style={{...styles.separator, width: wp('81%')}} />
