@@ -756,7 +756,7 @@ const WalletPay = ({ route, navigation }) => {
           <View style={styles.payObject}>
             <Text style={styles.totalLabel}>{translate('wallet.common.total')}</Text>
             <Text style={styles.value}>
-              {numberWithCommas(parseFloat(Number(priceInToken || price)).toFixed(4))} {selectedObject.type}
+              {numberWithCommas(parseFloat(Number(priceInToken || price).toFixed(4)))} {selectedObject.type}
             </Text>
           </View>
           {!IsActiveToPay() && (

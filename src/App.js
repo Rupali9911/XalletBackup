@@ -54,6 +54,7 @@ import { setRequestAppId } from './store/reducer/walletReducer';
 import { environment, translate } from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setPasscodeAsync } from './store/reducer/userReducer';
+import { MenuProvider } from 'react-native-popup-menu';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -280,13 +281,15 @@ export const Events = new Subject();
 const App = () => {
   return (
     <Provider store={Store}>
-      <StripeProvider
-        publishableKey={environment.stripeKey.p_key}
-        urlScheme="xanalia" // required for 3D Secure and bank redirects
-        merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
-      >
-        <AppRoutes />
-      </StripeProvider>
+      <MenuProvider>
+        <StripeProvider
+          publishableKey={environment.stripeKey.p_key}
+          urlScheme="xanalia" // required for 3D Secure and bank redirects
+          merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
+        >
+          <AppRoutes />
+        </StripeProvider>
+      </MenuProvider>
     </Provider>
   );
 };

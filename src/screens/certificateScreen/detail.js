@@ -48,8 +48,14 @@ import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
 import addComma from '../../utils/insertComma';
-const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
 const Web3 = require('web3');
 
@@ -1397,6 +1403,7 @@ const DetailScreen = ({ navigation, route }) => {
       }
     }
   };
+
   const renderItem = ({ item }) => {
     let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item.metaData) {
@@ -1450,6 +1457,7 @@ const DetailScreen = ({ navigation, route }) => {
       );
     }
   };
+
   const Filters = props => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState([]);
@@ -1490,11 +1498,21 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    switch (collectCreat?.userId) {
-      case "0":
-        return true;
-      default:
-        return false;
+    if (collectCreat?.userId === "0") {
+      return true;
+    } else {
+      switch (collectCreat?.collectionName) {
+        case "ULTRAMAN":
+          return true;
+        case "MONKEY COSER 101":
+          return true;
+        case "Underground City":
+          return true;
+        case "TIF2021 After Party":
+          return true;
+        default:
+          return false;
+      }
     }
   }
 
@@ -1528,6 +1546,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
     return null;
   };
+
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     setLoader(true)
@@ -1554,7 +1573,27 @@ const DetailScreen = ({ navigation, route }) => {
         loader && <FetchingIndicator />
       }
       <SafeAreaView style={styles.mainContainer}>
-        <AppHeader showBackButton title={translate('wallet.common.detail')} />
+        <AppHeader
+          showBackButton
+          title={translate('wallet.common.detail')}
+          showRightComponent={
+            <View style={{ paddingRight: 10 }}>
+              <Menu onSelect={value => {
+                alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
+              }}>
+                <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+                <MenuOptions>
+                  <MenuOption value={1}>
+                    <Text style={{ marginVertical: 10 }}>{translate('common.reportNft')}</Text>
+                  </MenuOption>
+                  <MenuOption value={2}>
+                    <Text style={{ marginVertical: 10 }}>{translate('common.blockUser')}</Text>
+                  </MenuOption>
+                </MenuOptions>
+              </Menu>
+            </View>
+          }
+        />
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
           <TouchableOpacity activeOpacity={1} onPress={() => setPlay(!isPlay)}>
             {fileType === 'mp4' ||

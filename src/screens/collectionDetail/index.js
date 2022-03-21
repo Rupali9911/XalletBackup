@@ -20,9 +20,15 @@ import {translate} from '../../walletUtils';
 import {useSelector} from 'react-redux';
 import {SVGS} from 'src/constants';
 import {SIZE} from '../../constants';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 const Tab = createMaterialTopTabNavigator();
-const {TwiiterIcon, FacebookIcon, InstagramIcon} = SVGS;
+const {TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon} = SVGS;
 
 function CollectionDetail(props) {
   const {route} = props;
@@ -68,6 +74,32 @@ function CollectionDetail(props) {
           style={styles.backButtonWrap}>
           <Image style={styles.backIcon} source={ImageSrc.backArrow} />
         </TouchableOpacity>
+        <View style={{
+          position: 'absolute',
+          right: SIZE(10),
+          top: SIZE(10),
+          zIndex: 1,
+          backgroundColor: 'white',
+          width: SIZE(26),
+          height: SIZE(26),
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: SIZE(13),
+        }}>
+          <Menu onSelect={value => {
+            alert(value === 1 ? translate('common.collectionReported') : translate('common.userBlocked'));
+          }}>
+            <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+            <MenuOptions>
+              <MenuOption value={1}>
+                <Text style={{ marginVertical: 10 }}>{translate('common.reportCollection')}</Text>
+              </MenuOption>
+              <MenuOption value={2}>
+                <Text style={{ marginVertical: 10}}>{translate('common.blockUser')}</Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        </View>
         <C_Image
           uri={collection?.bannerImage}
           type={'jpg'}

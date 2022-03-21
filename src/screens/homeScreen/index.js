@@ -52,6 +52,7 @@ import ArtNFT from './artNFT';
 import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
+import { alertWithSingleBtn } from '../../utils';
 
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
@@ -204,6 +205,17 @@ const HomeScreen = ({ navigation }) => {
     ];
   }, [currentTab]);
 
+  const onClickButton = (from) => {
+    if (from == 'Certificate')
+      navigation.navigate('Certificate')
+    else if (from == 'Create')
+      navigation.navigate('Create')
+    else
+      alertWithSingleBtn(
+        translate('wallet.common.alert'),
+        translate('common.comingSoon'))
+  }
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -212,12 +224,12 @@ const HomeScreen = ({ navigation }) => {
           showRightComponent={
             <View style={styles.headerMenuContainer}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Certificate')}
+                onPress={() => onClickButton()}
                 hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Create')}
+                onPress={() => onClickButton()}
                 hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>
@@ -270,64 +282,63 @@ const HomeScreen = ({ navigation }) => {
         {online &&
           (showSuccess ? null : (
             <Tab.Navigator
-              screenOptions={{
-                tabBarScrollEnabled: true,
-                tabBarActiveTintColor: colors.BLUE4,
-                tabBarInactiveTintColor: colors.GREY1,
-                tabBarLabelStyle: {
-                  fontSize: RF(1.4),
-                  fontFamily: fonts.SegoeUIRegular,
-                  textTransform: 'capitalize',
-                },
-                tabBarIndicatorStyle: {
-                  borderBottomColor: colors.BLUE4,
-                  height: 1,
-                  marginBottom: SIZE(39),
-                },
-                tabBarItemStyle: {
-                  height: SIZE(40),
-                  width: wp('27%'),
-                  paddingHorizontal: wp('1%'),
-                  justifyContent: 'center',
-                },
-                tabBarStyle: {
-                  boxShadow: 'none',
-                  elevation: 0,
-                  borderTopColor: '#EFEFEF',
-                  borderTopWidth: 1,
-                  shadowOpacity: 0,
-                }
-              }}
-
-            //     tabBarOptions={{
-            //         scrollEnabled: true,
-            //         activeTintColor: colors.BLUE4,
-            //         inactiveTintColor: colors.GREY1,
-            //         style: {
-            //             boxShadow: 'none',
-            //             elevation: 0,
-            //             borderTopColor: '#EFEFEF',
-            //             borderTopWidth: 1,
-            //             shadowOpacity: 0,
-            //         },
-            //         tabStyle: {
-            //             height: SIZE(40),
-            //             width: wp('27%'),
-            //             paddingHorizontal: wp('1%'),
-            //             justifyContent: 'center',
-            //         },
-            //         labelStyle: {
-            //           fontSize: RF(1.4),
-            //             fontFamily: fonts.SegoeUIRegular,
-            //             textTransform: 'capitalize',
-            //         },
-            //         indicatorStyle: {
-            //             borderBottomColor: colors.BLUE4,
-            //             height: 1,
-            //             marginBottom: SIZE(39),
-            //         }
-            // }}
-            >
+                screenOptions={{
+                    tabBarScrollEnabled: true,
+                    tabBarActiveTintColor: colors.BLUE4,
+                    tabBarInactiveTintColor: colors.GREY1,
+                    tabBarLabelStyle: {
+                        fontSize: RF(1.4),
+                        fontFamily: fonts.SegoeUIRegular,
+                        textTransform: 'capitalize',
+                    },
+                    tabBarIndicatorStyle: {
+                        borderBottomColor: colors.BLUE4,
+                        height: 1,
+                        marginBottom: SIZE(39),
+                    },
+                    tabBarItemStyle: {
+                        height: SIZE(40),
+                        width: wp('27%'),
+                        paddingHorizontal: wp('1%'),
+                        justifyContent: 'center',
+                    },
+                    tabBarStyle: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderTopColor: '#EFEFEF',
+                        borderTopWidth: 1,
+                        shadowOpacity: 0,
+                    }
+                }}
+              // tabBarOptions={{
+              //   scrollEnabled: true,
+              //   activeTintColor: colors.BLUE4,
+              //   inactiveTintColor: colors.GREY1,
+              //   style: {
+              //     boxShadow: 'none',
+              //     elevation: 0,
+              //     borderTopColor: '#EFEFEF',
+              //     borderTopWidth: 1,
+              //     shadowOpacity: 0,
+              //   },
+              //   tabStyle: {
+              //     height: SIZE(40),
+              //     width: wp('27%'),
+              //     paddingHorizontal: wp('1%'),
+              //     justifyContent: 'center',
+              //   },
+              //   labelStyle: {
+              //     fontSize: RF(1.4),
+              //     fontFamily: fonts.SegoeUIRegular,
+              //     textTransform: 'capitalize',
+              //   },
+              //   indicatorStyle: {
+              //     borderBottomColor: colors.BLUE4,
+              //     height: 1,
+              //     marginBottom: SIZE(39),
+              //   }
+              // }}>
+                >
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}
@@ -391,7 +402,7 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-              <Tab.Screen
+              {/* <Tab.Screen
                 name={translate('wallet.common.collection')}
                 component={Collection}
                 listeners={({ navigation, route }) => {
@@ -399,7 +410,7 @@ const HomeScreen = ({ navigation }) => {
                     setCurrentTab(7);
                   }
                 }}
-              />
+              /> */}
             </Tab.Navigator>
           ))}
       </SafeAreaView>

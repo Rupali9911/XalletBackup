@@ -73,6 +73,7 @@ import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
 import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
 import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
 import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
+import ThreeDotsVerticalIcon from 'src/assets/svgs/icon-three-dots-vertical.svg';
 
 export default {
   GirlIcon,
@@ -149,4 +150,5 @@ export default {
   TwiiterIcon,
   FacebookIcon,
   InstagramIcon,
+  ThreeDotsVerticalIcon,
 };

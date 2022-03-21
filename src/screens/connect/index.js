@@ -30,6 +30,8 @@ import { alertWithSingleBtn } from '../../utils';
 import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
 import { getSig } from '../wallet/functions';
 import NotificationActionModal from '../../components/notificationActionModal';
+import {BASE_URL} from "../../common/constants";
+import axios from "axios";
 const singleSocket = SingleSocket.getInstance();
 
 const ListItems = (props) => {
@@ -172,6 +174,31 @@ const Connect = ({ route, navigation }) => {
                         } else if (response.type == 'walletInfo') {
                             if (response.data.isAppApproved == 'true') {
                                 setConnectedApps([response.data.appId]);
+
+                                let url = `https://app-api.xana.net/auth/get-user-nonce`;
+
+                                let body = {
+                                    walletAddress: wallet.address
+                                }
+
+                                axios.post(url, body)
+                                    .then(response => {
+                                        console.log(response.data?.data, "Get Nonce response")
+                                        let signature = getSig(response.data?.data?.nonce, wallet.privateKey);
+                                        let _data = {
+                                            type: "sig",
+                                            data: {
+                                                sig: signature,
+                                                walletId: wallet.address,
+                                                nonce: response.data?.data?.nonce
+                                            }
+                                        }
+                                        singleSocket.onSendMessage(_data);
+                                    })
+                                    .catch(error => {
+                                        console.log(error.response, "Get Nonce error")
+
+                                    });
                             }else if (response.data.isConnected == 'false') {
                                 singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
                                 });
