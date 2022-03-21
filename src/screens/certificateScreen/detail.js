@@ -466,7 +466,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-              };
+                  dateTime: res.data.data[i].timestamp
+                };
               bids = [obj, ...bids];
             }
 
@@ -489,7 +490,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-              };
+                  dateTime: res.data.data[i].timestamp
+                };
               bids = [obj, ...bids];
             }
 
@@ -521,7 +523,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-              };
+                  dateTime: res.data.data[i].timestamp
+                };
               bids = [obj, ...bids];
             }
 
@@ -540,6 +543,7 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -570,6 +574,7 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'dollar',
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -603,6 +608,7 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -634,6 +640,7 @@ const DetailScreen = ({ navigation, route }) => {
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
                 //currency_type: 'alia',
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -714,7 +721,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-              };
+                  dateTime: res.data.data[i].timestamp
+                };
               bids = [obj, ...bids];
             }
             if (res.data.data[i].event === 'CancelSell') {
@@ -727,6 +735,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
+                dateTime: res.data.data[i].timestamp
                 //currency_type: '',
               };
               bids = [obj, ...bids];
@@ -748,6 +757,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
+                dateTime: res.data.data[i].timestamp
                 //currency_type: '',
               };
               bids = [obj, ...bids];
@@ -769,13 +779,22 @@ const DetailScreen = ({ navigation, route }) => {
             setTableData(bidsArray);
           }
           setSellDetails(bids);
-          console.log(bids, "bids333333")
+          let dataSorted = bids.sort((a, b) => {
+            const dateA = new Date(a.dateTime).valueOf();
+            const dateB = new Date(b.dateTime).valueOf();
+            console.log(dateA, dateB, "aaaa")
+            if (dateA > dateB) {
+              return -1; // return -1 here for DESC order
+            }
+            return 1 // return 1 here for DESC Order
+          });
+          console.log(bids, "bids333333", dataSorted)
           let arr = [];
-          for (let i = 0; i < bids.length; i++) {
-            const obj = bids[i];
+          for (let i = 0; i < dataSorted.length; i++) {
+            const obj = dataSorted[i];
             arr.push(Object.values(obj));
           }
-          console.log(arr, "arrrr")
+          console.log(arr)
           setTradingTableData(arr);
           setTimeout(() => {
             setTradingTableLoader(false)
