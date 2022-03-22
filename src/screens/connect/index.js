@@ -176,24 +176,39 @@ const Connect = ({ route, navigation }) => {
                                 setConnectedApps([response.data.appId]);
 
                                 let url = `https://app-api.xana.net/auth/get-user-nonce`;
+                                let urlXanalia = `${BASE_URL}/auth/get-address-nonce`;
 
                                 let body = {
                                     walletAddress: wallet.address
+                                }
+                                let bodyXanalia = {
+                                    publicAddress: wallet.address
                                 }
 
                                 axios.post(url, body)
                                     .then(response => {
                                         console.log(response.data?.data, "Get Nonce response")
                                         let signature = getSig(response.data?.data?.nonce, wallet.privateKey);
-                                        let _data = {
-                                            type: "sig",
-                                            data: {
-                                                sig: signature,
-                                                walletId: wallet.address,
-                                                nonce: response.data?.data?.nonce
-                                            }
-                                        }
-                                        singleSocket.onSendMessage(_data);
+                                        axios.post(urlXanalia, bodyXanalia)
+                                            .then(responseXanalia => {
+                                                console.log(responseXanalia.data?.data, "Get Nonce response Xanalia")
+                                                let signatureXanalia = getSig(responseXanalia.data?.data, wallet.privateKey);
+                                                let _data = {
+                                                    type: "sig",
+                                                    data: {
+                                                        sig: signature,
+                                                        walletId: wallet.address,
+                                                        nonce: response.data?.data?.nonce,
+                                                        sigXanalia: signatureXanalia,
+                                                        nonceXanalia: responseXanalia.data?.data
+                                                    }
+                                                }
+                                                console.log('Data sent to sig event', _data)
+                                                singleSocket.onSendMessage(_data);
+                                            })
+                                            .catch(error => {
+                                                console.log(error, "Get Nonce error Xanalia")
+                                            });
                                     })
                                     .catch(error => {
                                         console.log(error.response, "Get Nonce error")

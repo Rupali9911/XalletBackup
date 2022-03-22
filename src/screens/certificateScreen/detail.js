@@ -1598,7 +1598,11 @@ const DetailScreen = ({ navigation, route }) => {
           showRightComponent={
             <View style={{ paddingRight: 10 }}>
               <Menu onSelect={value => {
-                alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
+                  alertWithSingleBtn(
+                      translate('common.Confirm'),
+                      value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
+
+                //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
               }}>
                 <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                 <MenuOptions>

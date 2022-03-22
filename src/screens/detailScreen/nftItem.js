@@ -32,6 +32,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import {alertWithSingleBtn} from "../../common/function";
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -759,7 +760,10 @@ const nftItem = ({ item, index }) => {
                     <BookMarkIcon />
                   </TouchableOpacity> */}
                   <Menu onSelect={value => {
-                    alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
+                      alertWithSingleBtn(
+                          translate('common.Confirm'),
+                          value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
+                    //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
                   }}>
                     <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                     <MenuOptions>
