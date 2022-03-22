@@ -49,51 +49,27 @@ function Profile({ navigation, connector }) {
   const renderTabView = () => {
     return (
       <Tab.Navigator
-        // screenOptions={{
-        //   tabBarActiveTintColor: COLORS.BLUE2,
-        //   tabBarInactiveTintColor: COLORS.BLACK5,
-        //   tabBarStyle: {
-        //     boxShadow: 'none',
-        //     elevation: 0,
-        //     borderBottomColor: '#EFEFEF',
-        //     borderBottomWidth: 1,
-        //   },
-        //   tabBarItemStyle: {
-        //     height: SIZE(42),
-        //     marginTop: SIZE(-10),
-        //   },
-        //   tabBarLabelStyle: {
-        //     fontSize: FONT(12),
-        //     textTransform: 'none',
-        //   },
-        //   tabBarIndicatorStyle: {
-        //     backgroundColor: COLORS.BLUE4,
-        //     height: 2,
-        //   },
-          tabBarOptions={{
-              scrollEnabled: true,
-              activeTintColor: colors.BLUE2,
-              inactiveTintColor: colors.BLACK5,
-              style: {
-                  boxShadow: 'none',
-                  elevation: 0,
-                  borderBottomColor: '#EFEFEF',
-                  borderBottomWidth: 1,
-              },
-              tabStyle: {
-                  height: SIZE(42),
-                  marginTop: SIZE(-10),
-                  width:SIZE(100),
-              },
-              labelStyle: {
-                  fontSize: FONT(12),
-                  textTransform: 'none',
-              },
-              indicatorStyle: {
-                  backgroundColor: COLORS.BLUE4,
-                  height: 2,
-              },
-
+        screenOptions={{
+          tabBarActiveTintColor: COLORS.BLUE2,
+          tabBarInactiveTintColor: COLORS.BLACK5,
+          tabBarStyle: {
+            boxShadow: 'none',
+            elevation: 0,
+            borderBottomColor: '#EFEFEF',
+            borderBottomWidth: 1,
+          },
+          tabBarItemStyle: {
+            height: SIZE(42),
+            marginTop: SIZE(-10),
+          },
+          tabBarLabelStyle: {
+            fontSize: FONT(12),
+            textTransform: 'none',
+          },
+          tabBarIndicatorStyle: {
+            backgroundColor: COLORS.BLUE4,
+            height: 2,
+          }
         }}>
          <Tab.Screen
           name={translate('wallet.common.profileCreated')}

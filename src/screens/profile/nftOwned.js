@@ -15,11 +15,10 @@ import { changeScreenName } from '../../store/actions/authAction';
 import { translate } from '../../walletUtils';
 import { myCollectionList, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 
-const NFTOwned = ({ route }) => {
+const NFTOwned = ({ route, navigation }) => {
     const isFocusedHistory = useIsFocused();
 
     const { id } = route?.params;
-    const navigation = useNavigation();
     const { MyCollectionReducer } = useSelector(state => state);
 
     const { MyNFTReducer } = useSelector(state => state);
