@@ -27,8 +27,8 @@ export default function NFTItem(props) {
 
   const dispatch = useDispatch();
 
-  let imageUri = isMeCollection ? (item.iconImage? item.iconImage  : null)
-   : item.thumbnailUrl !== undefined || item.thumbnailUrl
+  let imageUri = isMeCollection ? (item.iconImage ? item.iconImage : null)
+    : item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl : item.metaData?.image;
 
   const chainType = type => {
@@ -49,16 +49,16 @@ export default function NFTItem(props) {
 
   const renderIcon = () => {
     const uri = nftCurrencyIcon(item?.baseCurrency, item?.nftChain);
-    if(uri){
-     if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
-      return (
-        <SvgUri
-          uri={nftCurrencyIcon(item?.baseCurrency, item?.nftChain)}
-          width={SIZE(12)}
-          height={SIZE(12)}
-        />
-      );
-    else return <Image source={{ uri: uri }} />;
+    if (uri) {
+      if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
+        return (
+          <SvgUri
+            uri={nftCurrencyIcon(item?.baseCurrency, item?.nftChain)}
+            width={SIZE(12)}
+            height={SIZE(12)}
+          />
+        );
+      else return <Image source={{ uri: uri }} />;
     }
   };
 
@@ -231,9 +231,9 @@ export default function NFTItem(props) {
                         marginRight: SIZE(2),
                         fontSize: SIZE(12),
                       }}>
-                        {
-                          insertComma(parseFloat(item?.price, true).toFixed(2))
-                        }
+                      {
+                        insertComma(parseFloat(item?.price, true).toFixed(2))
+                      }
                     </Text>
                     {renderIcon()}
                   </View>
@@ -267,9 +267,9 @@ export default function NFTItem(props) {
                               marginRight: SIZE(2),
                               fontSize: SIZE(12),
                             }}>
-                              {
-                                insertComma(parseFloat(item?.price, true).toFixed(0))
-                              }
+                            {
+                              insertComma(parseFloat(item?.price, true).toFixed(0))
+                            }
                           </Text>
                           {renderIcon()}
                         </View>

@@ -74,7 +74,7 @@ export const ApiRequest = async (url, method, body, headers) => {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.apiFailed"),
-                () => {
+                (e) => {
                     console.log(e);
                 }
             );

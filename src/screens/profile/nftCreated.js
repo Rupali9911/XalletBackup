@@ -49,7 +49,7 @@ const NFTCreated = ({ route }) => {
     const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        if (isFocusedHistory && !MyNFTReducer?.myList?.length>0) {
+        if (isFocusedHistory && !MyNFTReducer?.myList?.length > 0) {
             pressToggle("created");
         }
     }, [isFocusedHistory]);
@@ -61,7 +61,7 @@ const NFTCreated = ({ route }) => {
 
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-        
+
         if (item.metaData) {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
@@ -80,9 +80,9 @@ const NFTCreated = ({ route }) => {
             );
         }
     };
-    
+
     const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myList]);
-    
+
     const getNFTlist = useCallback(page => {
         dispatch(myNFTList(page, id));
     }, []);

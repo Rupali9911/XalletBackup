@@ -549,7 +549,8 @@ const nftItem = ({ item, index }) => {
   };
 
   // it's temporary fix
-  const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUrl
+  // const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUrl;
+  const imageUri = item.thumbnailUrl || item.metaData?.image?.replace('nftdata', 'nftData');
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
@@ -665,24 +666,24 @@ const nftItem = ({ item, index }) => {
                       item: item,
                       index: index,
                     })
-              }}>
-              {fileType === 'mp4' ||
-                fileType === 'MP4' ||
-                fileType === 'mov' ||
-                fileType === 'MOV' ? (
-                <View style={styles.modalImage}>
-                  <Video
-                    key={tokenId}
-                    ref={refVideo}
-                    source={{ uri: imageUri }}
-                    playInBackground={false}
-                    paused={!isPlay}
-                    resizeMode={'cover'}
-                    onLoad={() => refVideo.current.seek(0)}
+                }}>
+                {fileType === 'mp4' ||
+                  fileType === 'MP4' ||
+                  fileType === 'mov' ||
+                  fileType === 'MOV' ? (
+                  <View style={styles.modalImage}>
+                    <Video
+                      key={tokenId}
+                      ref={refVideo}
+                      source={{ uri: imageUri }}
+                      playInBackground={false}
+                      paused={!isPlay}
+                      resizeMode={'cover'}
+                      onLoad={() => refVideo.current.seek(0)}
                       onEnd={() => {
-                  setPlay(false);
-                  refVideoPlay.current = true;
-                }}
+                        setPlay(false);
+                        refVideoPlay.current = true;
+                      }}
                       style={{
                         flex: 1,
                         position: 'absolute',
@@ -767,7 +768,7 @@ const nftItem = ({ item, index }) => {
                         <Text style={{ marginVertical: 10 }}>{translate('common.reportNft')}</Text>
                       </MenuOption>
                       <MenuOption value={2}>
-                        <Text style={{ marginVertical: 10}}>{translate('common.blockUser')}</Text>
+                        <Text style={{ marginVertical: 10 }}>{translate('common.blockUser')}</Text>
                       </MenuOption>
                     </MenuOptions>
                   </Menu>
