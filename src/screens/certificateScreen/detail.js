@@ -1585,7 +1585,7 @@ const DetailScreen = ({ navigation, route }) => {
         creator.substring(0, 6) :
         artistData.hasOwnProperty("username") && artistData.username ?
           artistData.username.substring(0, 6) : creator.substring(0, 6)
-    : creator.substring(0, 6)
+    : creator ? creator?.substring(0, 6) : "";
   return (
     <>
       {
@@ -1914,6 +1914,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View> :
               <NFTDetailDropdown
                 title={translate('common.tradingHistory')}
+                containerChildStyles={{ height: hp(37.5) }}
                 icon={trading}>
                 <Filters />
                 <ScrollView
