@@ -99,20 +99,26 @@ const Connect = ({ route, navigation }) => {
     const [showConnectionSuccess, setConnectionSuccess] = useState(false);
 
     const onCheckPermission = async () => {
-        const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
 
-        if (!isGranted) {
-            confirmationAlert(
-                translate("wallet.common.cameraPermissionHeader"),
-                translate("wallet.common.cameraPermissionMessage"),
-                translate("common.Cancel"),
-                translate("wallet.common.settings"),
-                () => openSettings(),
-                () => null
-            )
-        } else {
-            navigation.navigate("scanToConnect");
-        }
+        alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('common.comingSoon'),
+        )
+
+        // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        //
+        // if (!isGranted) {
+        //     confirmationAlert(
+        //         translate("wallet.common.cameraPermissionHeader"),
+        //         translate("wallet.common.cameraPermissionMessage"),
+        //         translate("common.Cancel"),
+        //         translate("wallet.common.settings"),
+        //         () => openSettings(),
+        //         () => null
+        //     )
+        // } else {
+        //     navigation.navigate("scanToConnect");
+        // }
     }
 
     const renderApps = ({ item, index }) => {
