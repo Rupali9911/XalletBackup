@@ -20,7 +20,8 @@ import { colors } from '../../res';
 import { Loader, AppHeader } from '../../components';
 import NftItem from './nftItem';
 
-const DetailItemScreen = ({ route }) => {
+const DetailItemScreen = (props) => {
+    const { route } = props;
 
     const {
         ListReducer,
@@ -35,7 +36,7 @@ const DetailItemScreen = ({ route }) => {
     const { sort } = useSelector(state => state.ListReducer);
     const dispatch = useDispatch();
 
-    const { collectionType, index, collectionAddress } = route.params;
+    const { collectionType, index, collectionAddress, showNFT } = route.params;
 
     const [owner, setOwner] = React.useState(route.params.owner);
     const [stopVideos, setStopVideos] = React.useState(true);
@@ -198,26 +199,28 @@ const DetailItemScreen = ({ route }) => {
                         <Loader /> :
                         <FlatList
                             initialNumToRender={5}
-                            data={data.slice(route.params.index)}
+                            data={data.slice(route.params.index, showNFT == 'single' && route.params.index + 1)}
                             onScrollEndDrag={() => console.log("end")}
                             onScrollBeginDrag={() => console.log("start")}
                             renderItem={renderItem}
                             onEndReached={() => {
-                                if (!loading && (totalCount - route.params.index) !== data.length) {
-                                    let num = AuthReducer.screenName == "Hot" ?
-                                        ListReducer.page + 1 :
-                                        AuthReducer.screenName == "newNFT" ?
-                                            NewNFTListReducer.newListPage + 1 :
-                                            AuthReducer.screenName == "myNFT" ?
-                                                MyNFTReducer.myListPage + 1 :
-                                                AuthReducer.screenName == "myCollection" ?
-                                                    MyCollectionReducer.myCollectionPage + 1 :
-                                                    AuthReducer.screenName == "awards" ?
-                                                        AwardsNFTReducer.awardsNftPage + 1 :
-                                                        AuthReducer.screenName == "dataCollection" ?
-                                                            NftDataCollectionReducer.nftDataCollectionPage + 1 : null;
-                                    getNFTlistData(num);
-                                    getPage(num);
+                                if (showNFT !== 'single') {
+                                    if (!loading && (totalCount - route.params.index) !== data.length) {
+                                        let num = AuthReducer.screenName == "Hot" ?
+                                            ListReducer.page + 1 :
+                                            AuthReducer.screenName == "newNFT" ?
+                                                NewNFTListReducer.newListPage + 1 :
+                                                AuthReducer.screenName == "myNFT" ?
+                                                    MyNFTReducer.myListPage + 1 :
+                                                    AuthReducer.screenName == "myCollection" ?
+                                                        MyCollectionReducer.myCollectionPage + 1 :
+                                                        AuthReducer.screenName == "awards" ?
+                                                            AwardsNFTReducer.awardsNftPage + 1 :
+                                                            AuthReducer.screenName == "dataCollection" ?
+                                                                NftDataCollectionReducer.nftDataCollectionPage + 1 : null;
+                                        getNFTlistData(num);
+                                        getPage(num);
+                                    }
                                 }
                             }}
                             ListFooterComponent={renderFooter}

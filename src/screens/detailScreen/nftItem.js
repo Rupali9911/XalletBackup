@@ -549,8 +549,9 @@ const nftItem = ({ item, index }) => {
   };
 
   // it's temporary fix
-  // const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUrl;
-  const imageUri = item.thumbnailUrl || item.metaData?.image?.replace('nftdata', 'nftData');
+  const imageUri = nftDetail ?
+    nftDetail?.metaData?.image?.replace('nftdata', 'nftData') || nftDetail?.thumbnailUrl :
+    item?.metaData?.image?.replace('nftdata', 'nftData') || item?.thumbnailUrl;
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
@@ -581,6 +582,7 @@ const nftItem = ({ item, index }) => {
           <View>
             <View style={styles.modalSectCont}>
               <TouchableOpacity
+                disabled={artist == "----" && artist ? true : false}
                 onPress={() => onProfile(false)}
                 style={styles.iconCont}>
                 <Image
@@ -604,6 +606,7 @@ const nftItem = ({ item, index }) => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
+                disabled={owner == "----" && owner ? true : false}
                 onPress={() => onProfile(true)}
                 style={styles.iconCont}>
                 <Image
