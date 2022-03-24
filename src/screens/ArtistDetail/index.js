@@ -136,7 +136,7 @@ const Created = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myNFT"));
-                        navigation.push("DetailItem", { index: findIndex, owner: id });
+                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single'});
                     }}
                 />
             )
@@ -237,7 +237,7 @@ const Collection = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myCollection"));
-                        navigation.push("DetailItem", { index: findIndex, owner: id });
+                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single'});
                     }}
                 />
             )

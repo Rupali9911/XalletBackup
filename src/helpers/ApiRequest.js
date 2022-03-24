@@ -48,7 +48,7 @@ export const ApiRequest = async (url, method, body, headers) => {
                         // alertWithSingleBtn(
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.apiFailed"),
-                        //     () => {
+                        //     (e) => {
                         //         console.log(e);
                         //     }
                         // );
@@ -74,7 +74,7 @@ export const ApiRequest = async (url, method, body, headers) => {
             // alertWithSingleBtn(
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),
-            //     () => {
+            //     (e) => {
             //         console.log(e);
             //     }
             // );
@@ -116,7 +116,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                         } catch (err) {
                             if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
                                 throw `Try again !!!`;
-                            }else if (err?.code){
+                            } else if (err?.code) {
                                 console.log('err?.code', err?.code)
                             }
                         };
@@ -130,7 +130,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                         // alertWithSingleBtn(
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.networkFailed"),
-                        //     () => {
+                        //     (e) => {
                         //         console.log(e);
                         //     }
                         // );
@@ -155,7 +155,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
             // alertWithSingleBtn(
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),
-            //     () => {
+            //     (e) => {
             //         console.log(e);
             //     }
             // );
