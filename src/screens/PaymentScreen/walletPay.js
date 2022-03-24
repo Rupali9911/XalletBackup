@@ -15,7 +15,6 @@ import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import SingleSocket from '../../helpers/SingleSocket';
 import { setPaymentObject } from '../../store/reducer/paymentReducer';
 import {
   updateBalances,
@@ -41,8 +40,6 @@ import { SIZE } from 'src/constants';
 import { alertWithSingleBtn } from '../../common/function';
 
 const ethers = require('ethers');
-
-const singleSocket = new SingleSocket();
 
 var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
@@ -413,40 +410,6 @@ const WalletPay = ({ route, navigation }) => {
     } else {
       return false;
     }
-  };
-
-  const ping = async public_key => {
-    console.log('accounts', public_key);
-    let data = {
-      type: 'ping',
-      data: {
-        type: 'wallet',
-        publicKey: public_key,
-      },
-    };
-    return singleSocket.onSendMessage(data);
-  };
-
-  const getSig = message => {
-    let wlt = accounts.privateKeyToAccount(wallet.privateKey);
-    let sigMsg = wlt.sign(message, wallet.privateKey);
-    return sigMsg.signature;
-  };
-
-  const connect = async msg => {
-    console.log('connecting', msg);
-    let data = {
-      type: 'connect',
-      data: {
-        type: 'wallet',
-        data: {
-          walletId: wallet.address,
-          publicKey: wallet.address,
-          sig: `${getSig(msg)}`,
-        },
-      },
-    };
-    singleSocket.onSendMessage(data);
   };
 
   const getEthereumBalances = pubKey => {
