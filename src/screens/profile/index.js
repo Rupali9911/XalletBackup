@@ -71,7 +71,7 @@ function Profile({ navigation, connector }) {
             height: 2,
           }
         }}>
-         <Tab.Screen
+        <Tab.Screen
           name={translate('wallet.common.profileCreated')}
           component={NFTCreated}
           initialParams={{ id: id }}
@@ -124,22 +124,23 @@ function Profile({ navigation, connector }) {
             imageType="profile"
           />
         </UserImageView>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+        <View style={{
+          flex: 1, justifyContent: "center",
+          alignItems: "flex-end", paddingLeft: wp("4")
+        }}>
           <View
             style={{
               flexDirection: 'row',
-              width: wp('50'),
-              justifyContent: 'space-around',
             }}>
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', width: wp("17") }}>
               <Text style={styles.countLabel1}>{'0'}</Text>
               <SmallText>{translate('wallet.common.post')}</SmallText>
             </View>
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', width: wp("17") }}>
               <Text style={styles.countLabel1}>{'0'}</Text>
               <SmallText>{translate('common.followers')}</SmallText>
             </View>
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', width: wp("17") }}>
               <Text style={styles.countLabel1}>{'0'}</Text>
               <SmallText>{translate('common.following')}</SmallText>
             </View>

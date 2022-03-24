@@ -89,7 +89,7 @@ const LimitableInput = (props) => {
                             value={value}
                             onChangeText={onChange}
                             multiline
-                            // autoCorrect
+                            autoCapitalize= 'none'
                             placeholderTextColor={'grey'} />
                     </RowWrap>
                 </>

@@ -197,6 +197,7 @@ function Profile(props) {
     const req_body = {
       username,
       title,
+      crypto: true,
       email,
       website,
       discord,
@@ -272,7 +273,6 @@ function Profile(props) {
             label={translate("common.email")}
             placeholder={translate("common.email")}
             validate={[maxLength50, validateEmail]}
-            editable={_.isEmpty(UserReducer.data?.user.email)}
             error={errEmail}
           />
           <LimitableInput
