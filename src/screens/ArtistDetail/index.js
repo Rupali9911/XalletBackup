@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
@@ -292,53 +292,57 @@ const Collection = ({ route }) => {
 
 const Tab = createMaterialTopTabNavigator();
 
+export function useIsMounted() {
+    const isMounted = useRef(false);
+
+    useEffect(() => {
+        isMounted.current = true;
+        return () => isMounted.current = false;
+    }, []);
+
+    return isMounted;
+}
+
 function ArtistDetail({
     navigation,
     route
 }) {
 
     const [data, setData] = useState({});
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [isFollowing, setFollowing] = useState(false);
     const { UserReducer } = useSelector(state => state);
     const dispatch = useDispatch();
+    const isMounted = useIsMounted();
 
     useEffect(() => {
-        getProfile();
-    }, []);
-
-    const getProfile = () => {
-        console.log(route.params.id)
-        let req_data = {
-            owner: route.params.id,
-            token: 'HubyJ*%qcqR0'
-        };
-
-const url = route.params.id.includes('0x') ?
-`${BASE_URL}/user/get-public-profile?publicAddress=${route.params.id}` : 
-`${BASE_URL}/user/get-public-profile?userId=${route.params.id}`
+        const url = route.params.id.includes('0x') ?
+            `${BASE_URL}/user/get-public-profile?publicAddress=${route.params.id}` :
+            `${BASE_URL}/user/get-public-profile?userId=${route.params.id}`
 
         let body = {
             method: 'GET',
-            // body: JSON.stringify(req_data),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            }
+            },
         }
         fetch(url, body)
             .then(response => response.json())
             .then(res => {
                 console.log(res.data, "res.data testing", route.params.id)
-                if (res.data) {
-                    setData(res.data);
+                if (isMounted.current) {
+                    if (res.data) {
+                        setData(res.data);
+                    }
+                    getIsFollowing(route.params.id);
                 }
-                getIsFollowing(route.params.id);
             })
             .catch(err => {
+                if (err.name === 'AbortError') return;
                 getIsFollowing(route.params.id);
             });
-    }
+    }, []);
 
     const getIsFollowing = (id) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${UserReducer.data.token}`;
@@ -355,28 +359,30 @@ const url = route.params.id.includes('0x') ?
     const renderTabView = () => {
         if (_.isEmpty(data)) return null;
         return (
-            <Tab.Navigator tabBarOptions={{
-                activeTintColor: COLORS.BLUE4,
-                inactiveTintColor: COLORS.GREY1,
-                style: {
-                    boxShadow: 'none',
-                    elevation: 0,
-                    borderBottomColor: '#EFEFEF',
-                    borderBottomWidth: 1,
-                },
-                tabStyle: {
-                    height: SIZE(42),
-                    marginTop: SIZE(-10)
-                },
-                labelStyle: {
-                    fontSize: FONT(12),
-                    textTransform: 'none'
-                },
-                indicatorStyle: {
-                    backgroundColor: COLORS.BLUE4,
-                    height: 2
-                }
-            }}>
+            <Tab.Navigator
+                screenOptions={{
+                    tabBarActiveTintColor: COLORS.BLUE4,
+                    tabBarInactiveTintColor: COLORS.GREY1,
+                    tabBarLabelStyle: {
+                        fontSize: FONT(12),
+                        textTransform: 'none'
+                    },
+                    tabBarIndicatorStyle: {
+                        backgroundColor: COLORS.BLUE4,
+                        height: 2
+                    },
+                    tabBarItemStyle: {
+                        height: SIZE(42),
+                        marginTop: SIZE(-10)
+                    },
+                    tabBarStyle: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderBottomColor: '#EFEFEF',
+                        borderBottomWidth: 1,
+                    }
+                }}
+            >
                 <Tab.Screen
                     name='Created'
                     component={Created}
@@ -473,11 +479,6 @@ const url = route.params.id.includes('0x') ?
             <SpaceView mTop={SIZE(14)} />
             <RowWrap>
                 <SpaceView mLeft={SIZE(15)} />
-                {/* <EditButton isFollowing={isFollowing} onPress={onFollow}>
-                    <EditButtonText isFollowing={isFollowing}>
-                        {isFollowing ? translate("common.unfollow") : translate("common.follow")}
-                    </EditButtonText>
-                </EditButton> */}
                 <SpaceView mRight={SIZE(15)} />
             </RowWrap>
             <SpaceView mTop={SIZE(16)} />
