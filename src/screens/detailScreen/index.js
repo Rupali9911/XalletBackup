@@ -198,32 +198,31 @@ const DetailItemScreen = (props) => {
                     page === 1 && loading ?
                         <Loader /> :
                         <FlatList
-                            initialNumToRender={5}
-                            data={data.slice(route.params.index, showNFT == 'single' && route.params.index + 1)}
-                            onScrollEndDrag={() => console.log("end")}
-                            onScrollBeginDrag={() => console.log("start")}
+                            scrollEnabled={false}
+                            initialNumToRender={1}
+                            data={data.slice(route.params.index, route.params.index + 1)}
+                            // onScrollEndDrag={() => console.log("end")}
+                            // onScrollBeginDrag={() => console.log("start")}
                             renderItem={renderItem}
-                            onEndReached={() => {
-                                if (showNFT !== 'single') {
-                                    if (!loading && (totalCount - route.params.index) !== data.length) {
-                                        let num = AuthReducer.screenName == "Hot" ?
-                                            ListReducer.page + 1 :
-                                            AuthReducer.screenName == "newNFT" ?
-                                                NewNFTListReducer.newListPage + 1 :
-                                                AuthReducer.screenName == "myNFT" ?
-                                                    MyNFTReducer.myListPage + 1 :
-                                                    AuthReducer.screenName == "myCollection" ?
-                                                        MyCollectionReducer.myCollectionPage + 1 :
-                                                        AuthReducer.screenName == "awards" ?
-                                                            AwardsNFTReducer.awardsNftPage + 1 :
-                                                            AuthReducer.screenName == "dataCollection" ?
-                                                                NftDataCollectionReducer.nftDataCollectionPage + 1 : null;
-                                        getNFTlistData(num);
-                                        getPage(num);
-                                    }
-                                }
-                            }}
-                            ListFooterComponent={renderFooter}
+                            // onEndReached={() => {
+                            //         if (!loading && (totalCount - route.params.index) !== data.length) {
+                            //             let num = AuthReducer.screenName == "Hot" ?
+                            //                 ListReducer.page + 1 :
+                            //                 AuthReducer.screenName == "newNFT" ?
+                            //                     NewNFTListReducer.newListPage + 1 :
+                            //                     AuthReducer.screenName == "myNFT" ?
+                            //                         MyNFTReducer.myListPage + 1 :
+                            //                         AuthReducer.screenName == "myCollection" ?
+                            //                             MyCollectionReducer.myCollectionPage + 1 :
+                            //                             AuthReducer.screenName == "awards" ?
+                            //                                 AwardsNFTReducer.awardsNftPage + 1 :
+                            //                                 AuthReducer.screenName == "dataCollection" ?
+                            //                                     NftDataCollectionReducer.nftDataCollectionPage + 1 : null;
+                            //             getNFTlistData(num);
+                            //             getPage(num);
+                            //         }
+                            // }}
+                            // ListFooterComponent={renderFooter}
                             onEndReachedThreshold={0.4}
                             keyExtractor={(v, i) => "item_" + i}
                         />
