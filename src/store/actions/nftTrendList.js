@@ -6,7 +6,7 @@ import { translate } from '../../walletUtils';
 import {
   ALL_ARTIST_SUCCESS, ARTIST_LOADING_END, ARTIST_LOADING_START, GIF_NFT_LIST_SUCCESS, HANDLE_LIKE_DISLIKE, LOAD_NFT_START, MOVIE_NFT_LIST_SUCCESS, MYLIST_LIST_UPDATE,
   MY_COLLECTION_LIST_UPDATE, NEW_NFT_LIST_UPDATE, NFT_LIST_FAIL, NFT_LIST_RESET, NFT_LIST_SUCCESS, NFT_LIST_UPDATE, PAGE_CHANGE, SET_SORT_ORDER, NFT_DATA_COLLECTION_LIST_UPDATE,
-  AWARDS_LIST_UPDATE, MOVIE_NFT_LOAD_START, HOT_NFT_LOAD_START, GIF_NFT_LOAD_START, GIF_NFT_LOAD_FAIL, NFT_LOAD_FAIL, HOT_NFT_LOAD_FAIL, 
+  AWARDS_LIST_UPDATE, MOVIE_NFT_LOAD_START, HOT_NFT_LOAD_START, GIF_NFT_LOAD_START, GIF_NFT_LOAD_FAIL, NFT_LOAD_FAIL, HOT_NFT_LOAD_FAIL,
 } from '../types';
 import { parseNftObject } from '../../utils/parseNFTObj';
 
@@ -73,10 +73,10 @@ export const getNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(nftLoadStart());
     dispatch(hotNftIsLoadStart());
-    
+
     const { data, wallet } = getState().UserReducer;
     let user = data.user;
-    
+
     let body_data = {
       approveStaus: 'approve',
       type: 'hot',
@@ -125,10 +125,10 @@ export const getNFTList = (page, limit, sort) => {
       .catch(err => {
         dispatch(nftLoadFail());
         dispatch(hotNftLoadFail());
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed'),
-        );
+        // alertWithSingleBtn(
+        //   translate('wallet.common.alert'),
+        //   translate('wallet.common.error.networkFailed'),
+        // );
       });
   };
 };
@@ -186,16 +186,16 @@ export const gifNFTList = (page, limit, sort) => {
       .catch(err => {
         dispatch(nftLoadFail());
         dispatch(gifNftLoadFail());
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed'),
-        );
+        // alertWithSingleBtn(
+        //   translate('wallet.common.alert'),
+        //   translate('wallet.common.error.networkFailed'),
+        // );
       });
   };
 };
 export const movieNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
-    dispatch(movieNftIsLoadStart());  
+    dispatch(movieNftIsLoadStart());
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;
@@ -248,10 +248,10 @@ export const movieNFTList = (page, limit, sort) => {
       .catch(err => {
         dispatch(nftLoadFail());
         dispatch(nftMovieLoadFail());
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed'),
-        );
+        // alertWithSingleBtn(
+        //   translate('wallet.common.alert'),
+        //   translate('wallet.common.error.networkFailed'),
+        // );
       });
   };
 };
@@ -299,10 +299,10 @@ export const getAllArtist = () => {
       })
       .catch(err => {
         dispatch(artistLoadingEnd());
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed'),
-        );
+        // alertWithSingleBtn(
+        //   translate('wallet.common.alert'),
+        //   translate('wallet.common.error.networkFailed'),
+        // );
       });
   };
 };
@@ -391,10 +391,10 @@ export const handleLikeDislike = (item, index) => {
         }
       })
       .catch(err => {
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed'),
-        );
+        // alertWithSingleBtn(
+        //   translate('wallet.common.alert'),
+        //   translate('wallet.common.error.networkFailed'),
+        // );
       });
   };
 };

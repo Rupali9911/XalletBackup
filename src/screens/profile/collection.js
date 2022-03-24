@@ -116,10 +116,10 @@ const Collection = ({ route }) => {
                 setChildLoader(false);
                 setMainLoader(false);
                 console.log(e.response, "collection created list error");
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.networkFailed")
-                );
+                // alertWithSingleBtn(
+                //     translate("wallet.common.alert"),
+                //     translate("wallet.common.error.networkFailed")
+                // );
             })
     }
 

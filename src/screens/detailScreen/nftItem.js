@@ -555,6 +555,8 @@ const nftItem = ({ item, index }) => {
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
+  let disableCreator = false;
+
   let artistName = artistData && artist
     ? artist.includes("0x")
       ? artistData.hasOwnProperty("title") && artistData.title ?
@@ -562,7 +564,10 @@ const nftItem = ({ item, index }) => {
         : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
           || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
           || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
-          ? collectCreat?.creator
+          ? (
+            disableCreator = true,
+            collectCreat?.creator
+          )
           : artist.substring(0, 6)
       : artistData === "No record found" ?
         artist.substring(0, 6) :
@@ -581,7 +586,12 @@ const nftItem = ({ item, index }) => {
           <View>
             <View style={styles.modalSectCont}>
               <TouchableOpacity
-                onPress={() => onProfile(false)}
+                onPress={() => {
+                  if (!disableCreator) {
+                    onProfile(false)
+                  }
+                }
+                }
                 style={styles.iconCont}>
                 <Image
                   style={styles.profileIcon}
@@ -666,24 +676,24 @@ const nftItem = ({ item, index }) => {
                       item: item,
                       index: index,
                     })
-              }}>
-              {fileType === 'mp4' ||
-                fileType === 'MP4' ||
-                fileType === 'mov' ||
-                fileType === 'MOV' ? (
-                <View style={styles.modalImage}>
-                  <Video
-                    key={tokenId}
-                    ref={refVideo}
-                    source={{ uri: imageUri }}
-                    playInBackground={false}
-                    paused={!isPlay}
-                    resizeMode={'cover'}
-                    onLoad={() => refVideo.current.seek(0)}
+                }}>
+                {fileType === 'mp4' ||
+                  fileType === 'MP4' ||
+                  fileType === 'mov' ||
+                  fileType === 'MOV' ? (
+                  <View style={styles.modalImage}>
+                    <Video
+                      key={tokenId}
+                      ref={refVideo}
+                      source={{ uri: imageUri }}
+                      playInBackground={false}
+                      paused={!isPlay}
+                      resizeMode={'cover'}
+                      onLoad={() => refVideo.current.seek(0)}
                       onEnd={() => {
-                  setPlay(false);
-                  refVideoPlay.current = true;
-                }}
+                        setPlay(false);
+                        refVideoPlay.current = true;
+                      }}
                       style={{
                         flex: 1,
                         position: 'absolute',
@@ -771,7 +781,7 @@ const nftItem = ({ item, index }) => {
                         <Text style={{ marginVertical: 10 }}>{translate('common.reportNft')}</Text>
                       </MenuOption>
                       <MenuOption value={2}>
-                        <Text style={{ marginVertical: 10}}>{translate('common.blockUser')}</Text>
+                        <Text style={{ marginVertical: 10 }}>{translate('common.blockUser')}</Text>
                       </MenuOption>
                     </MenuOptions>
                   </Menu>

@@ -466,8 +466,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                  dateTime: res.data.data[i].timestamp
-                };
+                dateTime: res.data.data[i].timestamp
+              };
               bids = [obj, ...bids];
             }
 
@@ -490,8 +490,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                  dateTime: res.data.data[i].timestamp
-                };
+                dateTime: res.data.data[i].timestamp
+              };
               bids = [obj, ...bids];
             }
 
@@ -523,8 +523,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                  dateTime: res.data.data[i].timestamp
-                };
+                dateTime: res.data.data[i].timestamp
+              };
               bids = [obj, ...bids];
             }
 
@@ -721,8 +721,8 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .unix(res.data.data[i].timestamp)
                   .format('DD-MM-YYYY HH:mm:ss'),
-                  dateTime: res.data.data[i].timestamp
-                };
+                dateTime: res.data.data[i].timestamp
+              };
               bids = [obj, ...bids];
             }
             if (res.data.data[i].event === 'CancelSell') {
@@ -1411,8 +1411,8 @@ const DetailScreen = ({ navigation, route }) => {
     return _nftStatus;
   };
 
-  const onProfile = () => {
-    if (isOwner) {
+  const onProfile = (ownerStatus) => {
+    if (ownerStatus) {
       if (ownerN) {
         navigation.push('ArtistDetail', { id: ownerN });
       }
@@ -1571,7 +1571,7 @@ const DetailScreen = ({ navigation, route }) => {
     setLoader(true)
     getNonCryptoNFTOwner();
   }
-
+  let disableCreator = false;
   let creatorName = artistData && creator
     ? creator.includes("0x")
       ? artistData.hasOwnProperty("title") && artistData.title ?
@@ -1579,7 +1579,10 @@ const DetailScreen = ({ navigation, route }) => {
         : (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
           || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
           || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
-          ? collectCreat?.creator
+          ? (
+            disableCreator = true,
+            collectCreat?.creator
+          )
           : creator.substring(0, 6)
       : artistData === "No record found" ?
         creator.substring(0, 6) :
@@ -1685,7 +1688,11 @@ const DetailScreen = ({ navigation, route }) => {
           </TouchableOpacity>
           <View style={styles.person}>
             <TouchableOpacity
-              onPress={() => onProfile(false)}
+              onPress={() => {
+                if (!disableCreator) {
+                  onProfile(false)
+                }
+              }}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
@@ -1794,46 +1801,47 @@ const DetailScreen = ({ navigation, route }) => {
           ) : null}
           <View style={styles.bottomView}>
 
-            {setNFTStatus() !== undefined && (
+            {setNFTStatus() !== undefined && setNFTStatus() === 'notOnSell' &&
               <GroupButton
-                leftText={
-                  setNFTStatus() === 'onSell'
-                    ? translate('common.cancelSell')
-                    : setNFTStatus() === 'sell'
-                      ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
-                      : setNFTStatus() === 'buy'
-                        ? translate('common.buy')
-                        : setNFTStatus() === 'notOnSell'
-                          ? translate('common.soonOnSell')
-                          : translate('common.buy')
-                }
-                rightText={translate('wallet.common.offerPrice')}
-                leftDisabled={setNFTStatus() === ''}
-                leftLoading={buyLoading}
-                onLeftPress={() => {
-                  console.log('priceOfNft', priceNFT);
-                  if (buyLoading) return;
-                  // navigation.navigate('WalletConnect')
-                  // if(price && price > 0){
-                  if (setNFTStatus() === 'buy') {
-                    // if (payableIn === translate('common.allowedcurrency')) {
-                    //   alertWithSingleBtn(
-                    //     translate('wallet.common.alert'),
-                    //     translate('common.Selectcurrencypopup'),
-                    //   );
-                    // } else {
-                    setShowPaymentMethod(true);
-                    // }
-                  } else if (setNFTStatus() === 'sell') {
-                    navigation.navigate('sellNft', { nftDetail: singleNFT });
-                  }
+              leftText={
+                translate('common.soonOnSell')
+                // setNFTStatus() === 'onSell'
+                //   ? translate('common.cancelSell')
+                //   : setNFTStatus() === 'sell'
+                //     ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
+                //     : setNFTStatus() === 'buy'
+                //       ? translate('common.buy')
+                //       : setNFTStatus() === 'notOnSell'
+                //         ? translate('common.soonOnSell')
+                //         : translate('common.buy')
+              }
+              rightText={translate('wallet.common.offerPrice')}
+              leftDisabled={setNFTStatus() === ''}
+              leftLoading={buyLoading}
+              onLeftPress={() => {
+                console.log('priceOfNft', priceNFT);
+                if (buyLoading) return;
+                // navigation.navigate('WalletConnect')
+                // if(price && price > 0){
+                if (setNFTStatus() === 'buy') {
+                  // if (payableIn === translate('common.allowedcurrency')) {
+                  //   alertWithSingleBtn(
+                  //     translate('wallet.common.alert'),
+                  //     translate('common.Selectcurrencypopup'),
+                  //   );
+                  // } else {
+                  setShowPaymentMethod(true);
                   // }
-                }}
-                leftHide={setNFTStatus() === undefined}
-                rightHide
-                onRightPress={() => navigation.navigate('MakeBid')}
-              />
-            )}
+                } else if (setNFTStatus() === 'sell') {
+                  navigation.navigate('sellNft', { nftDetail: singleNFT });
+                }
+                // }
+              }}
+              leftHide={setNFTStatus() === undefined}
+              rightHide
+              onRightPress={() => navigation.navigate('MakeBid')}
+            />
+            }
             {setNFTStatus() === 'onSell' && (
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -1857,7 +1865,11 @@ const DetailScreen = ({ navigation, route }) => {
             icon={details}
             containerStyles={{ marginTop: hp(2) }}>
             <TouchableOpacity
-              onPress={() => onProfile(false)}
+              onPress={() => {
+                if (!disableCreator) {
+                  onProfile(false)
+                }
+              }}
               style={styles.personType}>
               <Image
                 style={styles.creatorImage}

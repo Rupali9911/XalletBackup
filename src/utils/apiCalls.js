@@ -19,7 +19,7 @@ export const ApiCalls = async (url, method, body, headers) => {
             .then(response => {
                 const statusCode = response.status;
                 console.log('response', response.status);
-                
+
                 try{
                     return response.json();
                 }catch(err){
@@ -33,13 +33,13 @@ export const ApiCalls = async (url, method, body, headers) => {
                 resolve({ response })
             })
             .catch(error => {
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.networkFailed"),
-                    () => {
-                        console.log(e);
-                    }
-                );
+                // alertWithSingleBtn(
+                //     translate("wallet.common.alert"),
+                //     translate("wallet.common.error.networkFailed"),
+                //     () => {
+                //         console.log(e);
+                //     }
+                // );
             });
 
     })

@@ -1,70 +1,33 @@
 {
   "project_info": {
-    "project_number": "552518166772",
-    "project_id": "xanalia-app",
-    "storage_bucket": "xanalia-app.appspot.com"
+    "project_number": "81393168969",
+    "project_id": "xanalia-8dda5",
+    "storage_bucket": "xanalia-8dda5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:552518166772:android:a118cca3741ea6aa10d6a1",
+        "mobilesdk_app_id": "1:81393168969:android:2a2fd9d15b0ca31bc54598",
         "android_client_info": {
-          "package_name": "com.showcase"
+          "package_name": "com.xanaliaApp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "552518166772-h2r8tkun07ssuc7imot2s88cmia7dk1t.apps.googleusercontent.com",
+          "client_id": "81393168969-odeflu413uj6nlup7a8jmku6faoqouue.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDfV6XKluBYFC1hNMPM_ANPACiV2Dn2PrA"
+          "current_key": "AIzaSyBKE98DGbZLWzE1t1dw7_Qf6_EJwgkt8So"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "552518166772-h2r8tkun07ssuc7imot2s88cmia7dk1t.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:552518166772:android:cef9aea8f18f1c7110d6a1",
-        "android_client_info": {
-          "package_name": "com.xanalia"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "552518166772-oc0fija02r6h972qsuvfvnoee40um8qr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.xanalia",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "552518166772-h2r8tkun07ssuc7imot2s88cmia7dk1t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDfV6XKluBYFC1hNMPM_ANPACiV2Dn2PrA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "552518166772-h2r8tkun07ssuc7imot2s88cmia7dk1t.apps.googleusercontent.com",
+              "client_id": "81393168969-odeflu413uj6nlup7a8jmku6faoqouue.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
