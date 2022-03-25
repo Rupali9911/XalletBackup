@@ -32,7 +32,8 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {alertWithSingleBtn} from "../../common/function";
+import { alertWithSingleBtn } from "../../common/function";
+import { hp } from '../../constants/responsiveFunct';
 
 const { width } = Dimensions.get('window');
 const langObj = getLanguage();
@@ -49,7 +50,7 @@ const {
   ThreeDotsVerticalIcon,
 } = SVGS;
 
-const nftItem = ({ item, index }) => {
+const nftItem = ({ item, index, minHeight }) => {
   const dispatch = useDispatch();
   const { AuthReducer } = useSelector(state => state);
   const { data, wallet } = useSelector(state => state.UserReducer);
@@ -553,10 +554,10 @@ const nftItem = ({ item, index }) => {
   };
 
   // it's temporary fix
-  const imageUri =
-    nftDetail ?
-      nftDetail?.metaData?.image?.replace('nftdata', 'nftData') || nftDetail?.thumbnailUrl :
-      item?.metaData?.image?.replace('nftdata', 'nftData') || item?.thumbnailUrl;
+  const videoUri = nftDetail ?
+    nftDetail?.metaData?.image :
+    item ? item?.metaData?.image?.replace('nftdata', 'nftData') : item?.thumbnailUrl;
+  const imageUri = item?.thumbnailUrl;
 
   const image = item.metaData.image || item.thumbnailUrl;
   const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
@@ -585,7 +586,7 @@ const nftItem = ({ item, index }) => {
     <>
       {
         loader ?
-          <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ width: "100%", minHeight: minHeight ? hp(52) : 200, justifyContent: "center", alignItems: "center" }}>
             <ActivityIndicator size={"small"} />
           </View>
           :
@@ -670,7 +671,7 @@ const nftItem = ({ item, index }) => {
                       owner: owner,
                       creator: artist,
                       thumbnailUrl: item.thumbnailUrl,
-                      video: imageUri,
+                      video: videoUri,
                       fileType: fileType,
                       price: item.price,
                       chain: item.chain,
@@ -692,7 +693,7 @@ const nftItem = ({ item, index }) => {
                     <Video
                       key={tokenId}
                       ref={refVideo}
-                      source={{ uri: imageUri }}
+                      source={{ uri: videoUri }}
                       playInBackground={false}
                       paused={!isPlay}
                       resizeMode={'cover'}
@@ -777,9 +778,9 @@ const nftItem = ({ item, index }) => {
                     <BookMarkIcon />
                   </TouchableOpacity> */}
                   <Menu onSelect={value => {
-                      alertWithSingleBtn(
-                          translate('common.Confirm'),
-                          value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
+                    alertWithSingleBtn(
+                      translate('common.Confirm'),
+                      value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
                     //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
                   }}>
                     <MenuTrigger children={<ThreeDotsVerticalIcon />} />

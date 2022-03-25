@@ -1,16 +1,18 @@
-import React, {useMemo} from 'react';
-import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Container} from 'src/styles/common.styles';
-import {Loader} from '../../components';
+import React, { useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { Container } from 'src/styles/common.styles';
+import { Loader } from '../../components';
 import AppSearch from '../../components/appSearch';
-import {hp} from '../../constants/responsiveFunct';
-import {colors} from '../../res';
-import {getNFTList, pageChange} from '../../store/actions/nftTrendList';
+import { hp } from '../../constants/responsiveFunct';
+import { colors } from '../../res';
+import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
 import NftItem from '../detailScreen/nftItem';
 
 function ExploreScreen() {
-  const {ListReducer} = useSelector(state => state);
+  const { ListReducer } = useSelector(state => state);
+  const [nftIndex, setNftIndex] = useState(2);
+
   const dispatch = useDispatch();
 
   const getNFTlistData = React.useCallback(page => {
@@ -26,10 +28,10 @@ function ExploreScreen() {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
     if (item.metaData) {
-      return <NftItem item={item} index={findIndex} />;
+      return <NftItem item={item} index={findIndex} minHeight={true} />;
     }
   };
 
@@ -37,7 +39,7 @@ function ExploreScreen() {
 
   return (
     <Container>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={styles.listContainer}>
           {ListReducer.page === 1 && ListReducer.nftListLoading ? (
             <View style={styles.loaderContainer}>
@@ -45,18 +47,20 @@ function ExploreScreen() {
             </View>
           ) : (
             <FlatList
-              initialNumToRender={10}
-              data={ListReducer.nftList}
+              data={ListReducer?.nftList?.slice(0, nftIndex)}
               renderItem={memoizedValue}
               onEndReached={() => {
-                if (!ListReducer.nftListLoading) {
+                let tempIndex = nftIndex + 2;
+                setNftIndex(tempIndex)
+
+                if (ListReducer?.nftList?.length == tempIndex && !ListReducer.nftListLoading) {
                   let num = ListReducer.page + 1;
                   getNFTlistData(num);
                   handlePageChange(num);
                 }
               }}
               ListFooterComponent={renderFooter}
-              onEndReachedThreshold={1}
+              onEndReachedThreshold={0.1}
               keyExtractor={(v, i) => 'item_' + i}
             />
           )}
