@@ -206,6 +206,9 @@ const DetailScreen = ({ navigation, route }) => {
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [payableIn, setPayableIn] = useState("");
+  const [collectCreatData, setcollectCreat] = useState(collectCreat);
+  const [artistDetail, setArtistData] = useState(artistData);
+  const [artist, setArtist] = useState(creator);
 
   const [loaderFor, setLoaderFor] = useState("");
 
@@ -442,7 +445,7 @@ const DetailScreen = ({ navigation, route }) => {
         filter: filterArray,
       })
       .then(async res => {
-        console.log('transactoinhistory: ', res.data.data);
+        // console.log('transactoinhistory: ', res.data.data);
         if (res.data.data.length > 0) {
           let bids = [];
           for (let i = 0; i < res.data.data.length; i++) {
@@ -766,7 +769,7 @@ const DetailScreen = ({ navigation, route }) => {
           bids.sort(comparator);
 
           let _bidHistory = bids.filter(item => item.event === 'Bid');
-          console.log(_bidHistory, "_bidHistory")
+          // console.log(_bidHistory, "_bidHistory")
           if (_bidHistory.length > 0) {
             setBidHistory(_bidHistory);
             var array = [];
@@ -782,19 +785,19 @@ const DetailScreen = ({ navigation, route }) => {
           let dataSorted = bids.sort((a, b) => {
             const dateA = new Date(a.dateTime).valueOf();
             const dateB = new Date(b.dateTime).valueOf();
-            console.log(dateA, dateB, "aaaa")
+            // console.log(dateA, dateB, "aaaa")
             if (dateA > dateB) {
               return -1; // return -1 here for DESC order
             }
             return 1 // return 1 here for DESC Order
           });
-          console.log(bids, "bids333333", dataSorted)
+          // console.log(bids, "bids333333", dataSorted)
           let arr = [];
           for (let i = 0; i < dataSorted.length; i++) {
             const obj = dataSorted[i];
             arr.push(Object.values(obj));
           }
-          console.log(arr)
+          // console.log(arr)
           setTradingTableData(arr);
           setTimeout(() => {
             setTradingTableLoader(false)
@@ -913,7 +916,6 @@ const DetailScreen = ({ navigation, route }) => {
       .call(async (err, res) => {
         console.log('getNonCryptoOwner_res', res, item.metaData.name);
         if (res) {
-          console.log('1111111');
           const userId = res.toLowerCase();
           //getPublicProfile(userId, false);
           setNonCryptoOwnerId(res)
@@ -949,9 +951,7 @@ const DetailScreen = ({ navigation, route }) => {
       ? `${BASE_URL}/user/get-public-profile?publicAddress=${userId}`
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
     // setOwnerId(userId);
-    console.log(profileUrl, "userIduserIduserIduserId")
     let profile = await axios.get(profileUrl);
-    console.log(profile, "userIduserIduserIduserId")
     // console.log(profile.data.success, "userIduserIduserIduserId")
 
     if (profile.data.success) {
@@ -1083,7 +1083,7 @@ const DetailScreen = ({ navigation, route }) => {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
           .call((err, res) => {
-            console.log('MarketPlaceContract_res', wallet.address, err, item.metaData.name);
+            // console.log('MarketPlaceContract_res', wallet.address, err, item.metaData.name);
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               let _ownerAddress = _data.owner_address;
@@ -1142,6 +1142,19 @@ const DetailScreen = ({ navigation, route }) => {
     });
   };
 
+  const getCollectionByAddress = (collect) => {
+    let url = `${BASE_URL}/xanalia/collection-info?collectionAddr=${collect}`
+
+    axios
+      .get(url)
+      .then((response) => {
+        if (response.data) {
+          setcollectCreat(response.data.data)
+        }
+      })
+      .catch((err) => { });
+  }
+
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
@@ -1164,7 +1177,7 @@ const DetailScreen = ({ navigation, route }) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        console.log('getDetailNFT_res', res);
+        // console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
           const getDetails = res?.data;
           if (
@@ -1180,6 +1193,34 @@ const DetailScreen = ({ navigation, route }) => {
             getDiscount();
           }
           let data = await getNFTDetails(res.data[0]);
+          if (route.params.hasOwnProperty("routeName") && route.params.routeName === "Search") {
+            let collection = data.offchain
+              ? data.collectionOffChainId
+              : data.collectionAdd.toString().split("-")[1];
+            getCollectionByAddress(collection);
+            let req_data = {
+              owner: res.data[0]?.returnValues?.to?.toLowerCase(),
+              token: 'HubyJ*%qcqR0',
+            };
+
+            let body = {
+              method: 'POST',
+              body: JSON.stringify(req_data),
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            };
+            await fetch(`${BASE_URL}/xanalia/getProfile`, body)
+              .then(response => response.json())
+              .then(response => {
+                // console.log(response.data, "///////", item.metaData.name)
+                if (response.data) {
+                  setArtist(res.data[0]?.returnValues?.to?.toLowerCase());
+                  setArtistData(response.data);
+                }
+              });
+          }
           // console.log('NFT Detail', data);
           if (data.newprice && data.newprice.allowedCurrencies) {
             let currArray = data.newprice.allowedCurrencies.split('');
@@ -1204,12 +1245,12 @@ const DetailScreen = ({ navigation, route }) => {
                 ? res?.data[1]?.award
                 : false,
           );
-          console.log('calling');
+          // console.log('calling');
           //checkNFTOnAuction();
           getNFTSellDetails();
         } else if (res.data === 'No record found') {
           setLoader(false);
-          console.log('res.data.data', res.data);
+          // console.log('res.data.data', res.data);
         }
       })
       .catch(err => {
@@ -1417,8 +1458,8 @@ const DetailScreen = ({ navigation, route }) => {
         navigation.push('ArtistDetail', { id: ownerN });
       }
     } else {
-      if (artistId) {
-        navigation.push('ArtistDetail', { id: artistId });
+      if (artist) {
+        navigation.push('ArtistDetail', { id: artist });
       }
     }
   };
@@ -1452,12 +1493,12 @@ const DetailScreen = ({ navigation, route }) => {
               fileType: fileType,
               price: item.price,
               chain: item.chain,
-              collectCreat,
+              collectCreatData,
               owner: ownerN,
               ownerData: ownerDataN,
               artistId: artistId,
-              creator: creator,
-              artistData: artistData,
+              creator: artist,
+              artistData: artistDetail,
               item: item
             });
             scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
@@ -1517,11 +1558,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    console.log('collectCreat', collectCreat)
-    if (collectCreat?.userId === "0") {
+    // console.log('collectCreat', collectCreatData)
+    if (collectCreatData?.userId === "0") {
       return true;
     } else {
-      switch (collectCreat?.collectionName) {
+      switch (collectCreatData?.collectionName) {
         case "ULTRAMAN":
           return true;
         case "MONKEY COSER 101":
@@ -1530,7 +1571,7 @@ const DetailScreen = ({ navigation, route }) => {
           return true;
         case "TIF2021 After Party":
           return true;
-          case "Shinnosuke Tachibana":
+        case "Shinnosuke Tachibana":
           return true;
         default:
           return false;
@@ -1575,23 +1616,24 @@ const DetailScreen = ({ navigation, route }) => {
     getNonCryptoNFTOwner();
   }
   let disableCreator = false;
-  let creatorName = artistData && creator
-    ? creator.includes("0x")
-      ? artistData.hasOwnProperty("title") && artistData.title ?
-        artistData.title
-        : (creator === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-          || creator === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-          || creator === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+  let creatorName = artistDetail && artist
+    ? artist.includes("0x")
+      ? artistDetail.hasOwnProperty("title") && artistDetail.title ?
+        artistDetail.title
+        : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
           ? (
             disableCreator = true,
-            collectCreat?.creator
+            collectCreatData?.creator
           )
-          : creator.substring(0, 6)
-      : artistData === "No record found" ?
-        creator.substring(0, 6) :
-        artistData.hasOwnProperty("username") && artistData.username ?
-          artistData.username.substring(0, 6) : creator.substring(0, 6)
-    : creator ? creator?.substring(0, 6) : "";
+          : artist.substring(0, 6)
+      : artistDetail === "No record found" ?
+        artist.substring(0, 6) :
+        artistDetail.hasOwnProperty("username") && artistDetail.username ?
+          artistDetail.username.substring(0, 6) : artist.substring(0, 6)
+    : artist ? artist?.substring(0, 6) : "";
+  // console.log(creatorName, "/aaaaaaa", artistDetail && artist)
   return (
     <>
       {
@@ -1604,9 +1646,9 @@ const DetailScreen = ({ navigation, route }) => {
           showRightComponent={
             <View style={{ paddingRight: 10 }}>
               <Menu onSelect={value => {
-                  alertWithSingleBtn(
-                      translate('common.Confirm'),
-                      value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
+                alertWithSingleBtn(
+                  translate('common.Confirm'),
+                  value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
 
                 //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
               }}>
@@ -1700,7 +1742,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Image
                 style={styles.iconsImage}
                 source={
-                  artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE
+                  artistDetail && artistDetail.hasOwnProperty("profile_image") && artistDetail.profile_image ? { uri: artistDetail.profile_image } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>
@@ -1716,12 +1758,12 @@ const DetailScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={collectionClick()}
-              onPress={() => collectCreat? navigation.navigate('CollectionDetail', { collectionId: collectCreat?._id }) : null}
+              onPress={() => collectCreatData ? navigation.navigate('CollectionDetail', { collectionId: collectCreatData?._id }) : null}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
                 source={
-                  collectCreat ? { uri: collectCreat.iconImage } : IMAGES.DEFAULTPROFILE
+                  collectCreatData ? { uri: collectCreatData.iconImage } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>
@@ -1729,8 +1771,8 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('wallet.common.collection')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {collectCreat &&
-                    collectCreat.collectionName
+                  {collectCreatData &&
+                    collectCreatData.collectionName
                   }
                 </Text>
               </View>
@@ -1806,44 +1848,44 @@ const DetailScreen = ({ navigation, route }) => {
 
             {setNFTStatus() !== undefined && setNFTStatus() === 'notOnSell' &&
               <GroupButton
-              leftText={
-                translate('common.soonOnSell')
-                // setNFTStatus() === 'onSell'
-                //   ? translate('common.cancelSell')
-                //   : setNFTStatus() === 'sell'
-                //     ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
-                //     : setNFTStatus() === 'buy'
-                //       ? translate('common.buy')
-                //       : setNFTStatus() === 'notOnSell'
-                //         ? translate('common.soonOnSell')
-                //         : translate('common.buy')
-              }
-              rightText={translate('wallet.common.offerPrice')}
-              leftDisabled={setNFTStatus() === ''}
-              leftLoading={buyLoading}
-              onLeftPress={() => {
-                console.log('priceOfNft', priceNFT);
-                if (buyLoading) return;
-                // navigation.navigate('WalletConnect')
-                // if(price && price > 0){
-                if (setNFTStatus() === 'buy') {
-                  // if (payableIn === translate('common.allowedcurrency')) {
-                  //   alertWithSingleBtn(
-                  //     translate('wallet.common.alert'),
-                  //     translate('common.Selectcurrencypopup'),
-                  //   );
-                  // } else {
-                  setShowPaymentMethod(true);
-                  // }
-                } else if (setNFTStatus() === 'sell') {
-                  navigation.navigate('sellNft', { nftDetail: singleNFT });
+                leftText={
+                  translate('common.soonOnSell')
+                  // setNFTStatus() === 'onSell'
+                  //   ? translate('common.cancelSell')
+                  //   : setNFTStatus() === 'sell'
+                  //     ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
+                  //     : setNFTStatus() === 'buy'
+                  //       ? translate('common.buy')
+                  //       : setNFTStatus() === 'notOnSell'
+                  //         ? translate('common.soonOnSell')
+                  //         : translate('common.buy')
                 }
-                // }
-              }}
-              leftHide={setNFTStatus() === undefined}
-              rightHide
-              onRightPress={() => navigation.navigate('MakeBid')}
-            />
+                rightText={translate('wallet.common.offerPrice')}
+                leftDisabled={setNFTStatus() === ''}
+                leftLoading={buyLoading}
+                onLeftPress={() => {
+                  console.log('priceOfNft', priceNFT);
+                  if (buyLoading) return;
+                  // navigation.navigate('WalletConnect')
+                  // if(price && price > 0){
+                  if (setNFTStatus() === 'buy') {
+                    // if (payableIn === translate('common.allowedcurrency')) {
+                    //   alertWithSingleBtn(
+                    //     translate('wallet.common.alert'),
+                    //     translate('common.Selectcurrencypopup'),
+                    //   );
+                    // } else {
+                    setShowPaymentMethod(true);
+                    // }
+                  } else if (setNFTStatus() === 'sell') {
+                    navigation.navigate('sellNft', { nftDetail: singleNFT });
+                  }
+                  // }
+                }}
+                leftHide={setNFTStatus() === undefined}
+                rightHide
+                onRightPress={() => navigation.navigate('MakeBid')}
+              />
             }
             {setNFTStatus() === 'onSell' && (
               <View
@@ -1877,7 +1919,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Image
                 style={styles.creatorImage}
                 source={
-                  artistData && artistData.hasOwnProperty("profile_image") && artistData.profile_image ? { uri: artistData.profile_image } : IMAGES.DEFAULTPROFILE
+                  artistDetail && artistDetail.hasOwnProperty("profile_image") && artistDetail.profile_image ? { uri: artistDetail.profile_image } : IMAGES.DEFAULTPROFILE
                 }
               />
               <View>

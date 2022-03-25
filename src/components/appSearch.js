@@ -141,7 +141,7 @@ export default function AppSearch() {
                 } else if (searchData[index - 1].type !== item.type) {
                   withTag = true;
                 }
-                return (
+                return ( 
                   <ResultItem
                     item={item}
                     index={index}
@@ -162,7 +162,8 @@ export default function AppSearch() {
                           price: item.price,
                           chain: item.chain,
                           tokenId: item.tokenId,
-                          item: item
+                          item: item,
+                          routeName: "Search"
                         });
                       } else if (item.type == 'Artist') {
                         const id =
