@@ -1148,6 +1148,7 @@ const DetailScreen = ({ navigation, route }) => {
     axios
       .get(url)
       .then((response) => {
+        console.log('response from collection info', response.data)
         if (response.data) {
           setcollectCreat(response.data.data)
         }
@@ -1573,6 +1574,8 @@ const DetailScreen = ({ navigation, route }) => {
           return true;
         case "Shinnosuke Tachibana":
           return true;
+          case "XANA Alpha pass":
+              return true;
         default:
           return false;
       }
@@ -1622,7 +1625,8 @@ const DetailScreen = ({ navigation, route }) => {
         artistDetail.title
         : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
           || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
+          || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
           ? (
             disableCreator = true,
             collectCreatData?.creator
@@ -1758,7 +1762,11 @@ const DetailScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={collectionClick()}
-              onPress={() => collectCreatData ? navigation.navigate('CollectionDetail', { collectionId: collectCreatData?._id }) : null}
+              onPress={() => collectCreatData ?
+                  collectCreatData.blind ?
+                  navigation.navigate('CollectionDetail', { isBlind: true, collectionId: collectCreatData.collectionId, isHotCollection: false })
+                      :
+                  navigation.navigate('CollectionDetail', { isBlind: false, collectionId: collectCreatData._id, isHotCollection: true }) : null}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
