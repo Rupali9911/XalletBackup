@@ -1517,6 +1517,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
+    console.log('collectCreat', collectCreat)
     if (collectCreat?.userId === "0") {
       return true;
     } else {
@@ -1528,6 +1529,8 @@ const DetailScreen = ({ navigation, route }) => {
         case "Underground City":
           return true;
         case "TIF2021 After Party":
+          return true;
+          case "Shinnosuke Tachibana":
           return true;
         default:
           return false;
@@ -1713,7 +1716,7 @@ const DetailScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={collectionClick()}
-              onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
+              onPress={() => collectCreat? navigation.navigate('CollectionDetail', { collectionId: collectCreat?._id }) : null}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}

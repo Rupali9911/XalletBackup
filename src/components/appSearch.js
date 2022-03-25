@@ -170,7 +170,7 @@ export default function AppSearch() {
                         navigation.navigate('ArtistDetail', {id: id});
                       }else if (item.type == 'Collections') {
                         if (item.blind) {
-                          console.log('========collection search => blind', item.blind, item.collectionId)
+                          console.log('========collection search => blind', item.blind, item)
                           navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
                         } else {
                           navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
@@ -202,7 +202,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
                 ? {uri: item.thumbnailUrl}
                 : item.type == 'Collections' ? {uri: item.iconImage} : item.profile_image
                 ? {uri: item.profile_image}
-                : Images.default_user 
+                : Images.default_user
             }
             style={styles.image}
             resizeMode={'cover'}
