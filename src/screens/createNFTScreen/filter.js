@@ -36,7 +36,7 @@ const filterTypeList = [
 },
   {
     name: "Number",
-    code: "wallet.common.number" 
+    code: "wallet.common.number"
 }
 ]
 
@@ -129,10 +129,10 @@ const Filter = ({
         .catch(e => {
           changeLoadingState(false);
           console.log(e.response, "nftlist collectionList error");
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
-          );
+          // alertWithSingleBtn(
+          //   translate("wallet.common.alert"),
+          //   translate("wallet.common.error.networkFailed")
+          // );
         })
     }
   };

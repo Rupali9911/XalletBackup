@@ -355,10 +355,10 @@ const UploadNFT = ({
         .catch(e => {
           changeLoadingState(false);
           console.log(e.response, "nftlist collectionList error");
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
-          );
+          // alertWithSingleBtn(
+          //   translate("wallet.common.alert"),
+          //   translate("wallet.common.error.networkFailed")
+          // );
         })
     }
   };
@@ -618,10 +618,10 @@ const UploadNFT = ({
         translate("common.sessionexpired")
       );
     }
-    alertWithSingleBtn(
-      translate("wallet.common.alert"),
-      translate("wallet.common.error.networkFailed")
-    );
+    // alertWithSingleBtn(
+    //   translate("wallet.common.alert"),
+    //   translate("wallet.common.error.networkFailed")
+    // );
   }
 
   const putNftOnAuction = (data) => {

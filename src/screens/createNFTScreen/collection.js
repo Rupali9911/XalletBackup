@@ -208,10 +208,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             return imageObj;
           } else {
             changeLoadingState(false);
-            alertWithSingleBtn(
-              translate("wallet.common.alert"),
-              translate("wallet.common.error.networkFailed")
-            );
+            // alertWithSingleBtn(
+            //   translate("wallet.common.alert"),
+            //   translate("wallet.common.error.networkFailed")
+            // );
             return false;
           }
         })
@@ -223,10 +223,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               translate("common.sessionexpired")
             );
           }
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
-          );
+          // alertWithSingleBtn(
+          //   translate("wallet.common.alert"),
+          //   translate("wallet.common.error.networkFailed")
+          // );
           return false;
         });
     } else {
@@ -327,10 +327,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                     .catch(e => {
                       changeLoadingState(false);
                       console.log(e.response, "draftSaveRes data to database error");
-                      alertWithSingleBtn(
-                        translate("wallet.common.alert"),
-                        translate("wallet.common.error.networkFailed")
-                      );
+                      // alertWithSingleBtn(
+                      //   translate("wallet.common.alert"),
+                      //   translate("wallet.common.error.networkFailed")
+                      // );
                     })
 
                 } else {
@@ -345,10 +345,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               .catch(e => {
                 changeLoadingState(false);
                 console.log(e.response, "uploading draft collection data to database error");
-                alertWithSingleBtn(
-                  translate("wallet.common.alert"),
-                  translate("wallet.common.error.networkFailed")
-                );
+                // alertWithSingleBtn(
+                //   translate("wallet.common.alert"),
+                //   translate("wallet.common.error.networkFailed")
+                // );
               })
           }
         }
@@ -436,10 +436,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               .catch(e => {
                 changeLoadingState(false);
                 console.log(e.response, "uploading collection data to database");
-                alertWithSingleBtn(
-                  translate("wallet.common.alert"),
-                  translate("wallet.common.error.networkFailed")
-                );
+                // alertWithSingleBtn(
+                //   translate("wallet.common.alert"),
+                //   translate("wallet.common.error.networkFailed")
+                // );
               })
           }
         }
@@ -517,10 +517,10 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         .catch(e => {
           changeLoadingState(false);
           console.log(e, "uploading collection data to database");
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.error.networkFailed")
-          );
+          // alertWithSingleBtn(
+          //   translate("wallet.common.alert"),
+          //   translate("wallet.common.error.networkFailed")
+          // );
         })
     }
   }

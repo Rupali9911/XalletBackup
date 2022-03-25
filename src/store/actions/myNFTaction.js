@@ -76,18 +76,18 @@ export const myNFTList = (page, ownerId) => {
         console.log(json, "get my created nft")
         let nftData = [];
         if (!json.count) {
-            json.data = [];
+          json.data = [];
         } else {
-            json.data.map(item => {
-                const parsedNFT = parseNftObject(item);
-                const data = {
-                    ...parsedNFT,
-                    ...item,
-                };
-                nftData.push(data);
-            });
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
         }
-				json.data = nftData;
+        json.data = nftData;
         dispatch(myNftLoadSuccess(json));
       })
       .catch(err => {

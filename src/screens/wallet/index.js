@@ -32,6 +32,8 @@ import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
+import {alertWithSingleBtn} from "../../common/function";
+import {CommonActions} from '@react-navigation/native';
 
 const ethers = require('ethers');
 
@@ -74,30 +76,41 @@ const Wallet = ({ route, navigation }) => {
 
   const [currencyPriceDollar, setCurrencyPriceDollar] = useState(false);
   // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
+    const [isComingSoon, setComingSoon] = useState(true);
 
   let subscribeEth;
   let subscribeBnb;
   let subscribeMatic;
 
   useEffect(() => {
-    if (wallet && !isCreate && isFocused) {
-      setLoading(true);
-      getBalances(wallet.address);
+    if (!isComingSoon){
+        if (wallet && !isCreate && isFocused) {
+            setLoading(true);
+            getBalances(wallet.address);
+        } else {
+            subscribeEth &&
+            subscribeEth.unsubscribe((error, success) => {
+                if (success) console.log('Successfully unsubscribed!');
+            });
+            subscribeBnb &&
+            subscribeBnb.unsubscribe((error, success) => {
+                if (success) console.log('Successfully unsubscribed!');
+            });
+            subscribeMatic &&
+            subscribeMatic.unsubscribe((error, success) => {
+                if (success) console.log('Successfully unsubscribed!');
+            });
+        }
+        console.log('wallet use effect', data, wallet);
     } else {
-      subscribeEth &&
-        subscribeEth.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeBnb &&
-        subscribeBnb.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeMatic &&
-        subscribeMatic.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
+        if (isFocused) {
+            alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate('common.comingSoon')
+            )
+        }
     }
-    console.log('wallet use effect', data, wallet);
+
   }, [isFocused]);
 
   useEffect(() => {
@@ -502,6 +515,7 @@ const Wallet = ({ route, navigation }) => {
   };
 
   return (
+      !isComingSoon  ?
     <AppBackground isBusy={balances ? loading : true}>
       <GradientBackground>
         <View style={styles.gradient}>
@@ -658,6 +672,7 @@ const Wallet = ({ route, navigation }) => {
         }}
       />
     </AppBackground>
+          : null
   );
 };
 

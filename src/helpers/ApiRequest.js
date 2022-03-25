@@ -45,13 +45,13 @@ export const ApiRequest = async (url, method, body, headers) => {
                     })
                     .catch(error => {
                         reject()
-                        alertWithSingleBtn(
-                            translate("wallet.common.alert"),
-                            translate("wallet.common.error.apiFailed"),
-                            () => {
-                                console.log(e);
-                            }
-                        );
+                        // alertWithSingleBtn(
+                        //     translate("wallet.common.alert"),
+                        //     translate("wallet.common.error.apiFailed"),
+                        //     (e) => {
+                        //         console.log(e);
+                        //     }
+                        // );
                         // alert(error)
                     });
             } else {
@@ -71,13 +71,13 @@ export const ApiRequest = async (url, method, body, headers) => {
             }
         }).catch(err => {
             reject();
-            alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                translate("wallet.common.error.apiFailed"),
-                () => {
-                    console.log(e);
-                }
-            );
+            // alertWithSingleBtn(
+            //     translate("wallet.common.alert"),
+            //     translate("wallet.common.error.apiFailed"),
+            //     (e) => {
+            //         console.log(e);
+            //     }
+            // );
         });
     })
 };
@@ -116,7 +116,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                         } catch (err) {
                             if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
                                 throw `Try again !!!`;
-                            }else if (err?.code){
+                            } else if (err?.code) {
                                 console.log('err?.code', err?.code)
                             }
                         };
@@ -127,13 +127,13 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                     })
                     .catch(error => {
                         reject();
-                        alertWithSingleBtn(
-                            translate("wallet.common.alert"),
-                            translate("wallet.common.error.networkFailed"),
-                            () => {
-                                console.log(e);
-                            }
-                        );
+                        // alertWithSingleBtn(
+                        //     translate("wallet.common.alert"),
+                        //     translate("wallet.common.error.networkFailed"),
+                        //     (e) => {
+                        //         console.log(e);
+                        //     }
+                        // );
                     });
             } else {
                 if (!isAlert) {
@@ -152,13 +152,13 @@ export const StripeApiRequest = (url, body, method = "POST") => {
             }
         }).catch(err => {
             reject();
-            alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                translate("wallet.common.error.apiFailed"),
-                () => {
-                    console.log(e);
-                }
-            );
+            // alertWithSingleBtn(
+            //     translate("wallet.common.alert"),
+            //     translate("wallet.common.error.apiFailed"),
+            //     (e) => {
+            //         console.log(e);
+            //     }
+            // );
         });
     })
 }

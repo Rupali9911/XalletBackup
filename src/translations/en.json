@@ -711,7 +711,7 @@
             "setAmount": "Set amount",
             "share": "Share",
             "sendAlert": "Send only {{token}} to this address.",
-            "connectInfo": "Connect your wallet with external application to make transactions",
+            "connectInfo": "Connect app with Xana",
             "newConnection": "New connection",
             "enterAmount": "Enter Amount",
             "scanTxt": "Scan external application QR code to connect with external app",

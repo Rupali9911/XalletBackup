@@ -1517,6 +1517,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
+    console.log('collectCreat', collectCreat)
     if (collectCreat?.userId === "0") {
       return true;
     } else {
@@ -1528,6 +1529,8 @@ const DetailScreen = ({ navigation, route }) => {
         case "Underground City":
           return true;
         case "TIF2021 After Party":
+          return true;
+          case "Shinnosuke Tachibana":
           return true;
         default:
           return false;
@@ -1588,7 +1591,7 @@ const DetailScreen = ({ navigation, route }) => {
         creator.substring(0, 6) :
         artistData.hasOwnProperty("username") && artistData.username ?
           artistData.username.substring(0, 6) : creator.substring(0, 6)
-    : creator.substring(0, 6);
+    : creator ? creator?.substring(0, 6) : "";
   return (
     <>
       {
@@ -1601,7 +1604,11 @@ const DetailScreen = ({ navigation, route }) => {
           showRightComponent={
             <View style={{ paddingRight: 10 }}>
               <Menu onSelect={value => {
-                alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
+                  alertWithSingleBtn(
+                      translate('common.Confirm'),
+                      value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
+
+                //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
               }}>
                 <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                 <MenuOptions>
@@ -1709,7 +1716,7 @@ const DetailScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={collectionClick()}
-              onPress={() => navigation.navigate('CollectionDetail', { collectionId: collectCreat._id })}
+              onPress={() => collectCreat? navigation.navigate('CollectionDetail', { collectionId: collectCreat?._id }) : null}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
@@ -1922,6 +1929,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View> :
               <NFTDetailDropdown
                 title={translate('common.tradingHistory')}
+                containerChildStyles={{ height: hp(37.5) }}
                 icon={trading}>
                 <Filters />
                 <ScrollView

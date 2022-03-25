@@ -26,6 +26,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import {alertWithSingleBtn} from "../../common/function";
 
 const Tab = createMaterialTopTabNavigator();
 const {TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon} = SVGS;
@@ -87,7 +88,11 @@ function CollectionDetail(props) {
           borderRadius: SIZE(13),
         }}>
           <Menu onSelect={value => {
-            alert(value === 1 ? translate('common.collectionReported') : translate('common.userBlocked'));
+              alertWithSingleBtn(
+                  translate('common.Confirm'),
+                  value === 1 ? translate('common.collectionReported') : translate('common.userBlocked'))
+
+           // alert(value === 1 ? translate('common.collectionReported') : translate('common.userBlocked'));
           }}>
             <MenuTrigger children={<ThreeDotsVerticalIcon />} />
             <MenuOptions>

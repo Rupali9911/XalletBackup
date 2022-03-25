@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   Platform,
@@ -7,6 +7,7 @@ import {
   UIManager,
   LayoutAnimation,
   View,
+  ScrollView,
 } from 'react-native';
 import down_arrow from '../../../assets/images/chevronDown.png';
 import up_arrow from '../../../assets/images/chevronUp.png';
@@ -21,6 +22,7 @@ export default function NFTDetailDropdown({
   title = '',
   icon,
   containerStyles = {},
+  containerChildStyles = {},
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleToggle = () => {
@@ -43,7 +45,11 @@ export default function NFTDetailDropdown({
         />
       </TouchableOpacity>
       {children && isExpanded && (
-        <View style={styles.childrenContainer}>{children}</View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={[styles.childrenContainer, containerChildStyles]}>
+          {children}
+        </ScrollView>
       )}
     </View>
   );

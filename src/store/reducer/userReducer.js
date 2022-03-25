@@ -246,10 +246,10 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
         dispatch(hideSplash());
         dispatch(endMainLoading());
 
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
-          translate('wallet.common.error.networkFailed'),
-        );
+        // alertWithSingleBtn(
+        //   translate('wallet.common.alert'),
+        //   translate('wallet.common.error.networkFailed'),
+        // );
       });
   } else {
     dispatch(hideSplash());
@@ -389,13 +389,13 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
         );
         dispatch(signOut());
       }
-      alertWithSingleBtn(
-        translate('wallet.common.alert'),
-        translate('wallet.common.error.networkFailed'),
-        () => {
-          console.log(err);
-        },
-      );
+      // alertWithSingleBtn(
+      //   translate('wallet.common.alert'),
+      //   translate('wallet.common.error.networkFailed'),
+      //   () => {
+      //     console.log(err);
+      //   },
+      // );
     });
 };
 
@@ -452,13 +452,13 @@ export const updateProfile =
             },
           );
         } else {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('wallet.common.error.networkFailed'),
-            () => {
-              console.log(err);
-            },
-          );
+          // alertWithSingleBtn(
+          //   translate('wallet.common.alert'),
+          //   translate('wallet.common.error.networkFailed'),
+          //   () => {
+          //     console.log(err);
+          //   },
+          // );
         }
       });
   };

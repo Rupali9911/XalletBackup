@@ -59,5 +59,5 @@
 -keep class io.invertase.firebase.** { *; }
 -dontwarn io.invertase.firebase.**
 # react-native-config
--keep class com.xanalia.BuildConfig { *; }
+-keep class com.xanaliaApp.BuildConfig { *; }
 -keep public class com.horcrux.svg.** {*;}
