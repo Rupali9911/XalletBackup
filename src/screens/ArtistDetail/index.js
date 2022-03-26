@@ -102,6 +102,9 @@ const Created = ({ route }) => {
         dispatch(myNftListReset());
         getNFTlist(1);
         dispatch(myPageChange(1));
+        return () => {
+            dispatch(myNftLoadStart());
+        }
     }, [])
 
     const getNFTlist = useCallback((page) => {
@@ -136,7 +139,7 @@ const Created = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myNFT"));
-                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single'});
+                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single' });
                     }}
                 />
             )
@@ -147,7 +150,7 @@ const Created = ({ route }) => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
+                    MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
                     <Loader /> :
                     MyNFTReducer.myNftTotalCount !== 0 ?
                         <FlatList
@@ -237,7 +240,7 @@ const Collection = ({ route }) => {
                     }}
                     onPress={() => {
                         dispatch(changeScreenName("myCollection"));
-                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single'});
+                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single' });
                     }}
                 />
             )
