@@ -231,79 +231,67 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(like);
   //#region SmartContract
-  let MarketPlaceAbi = '';
-  let MarketContractAddress = '';
+  // let MarketPlaceAbi = '';
+  // let MarketContractAddress = '';
 
-  let AwardAbi = '';
-  let AwardContractAddress = '';
-  let ApproveAbi = '';
-  let ApproveAdd = '';
-  let providerUrl = '';
-  let ERC721Abi = '';
-  let ERC721Address = '';
+  // let AwardAbi = '';
+  // let AwardContractAddress = '';
+  // let ApproveAbi = '';
+  // let ApproveAdd = '';
+  // let providerUrl = '';
+  // let ERC721Abi = '';
+  // let ERC721Address = '';
 
-  walletAddressForNonCrypto =
-    networkType === 'testnet'
-      ? chain === 'binance'
-        ? '0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af'
-        : '0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859'
-      : '0xac940124f5f3b56b0c298cca8e9e098c2cccae2e';
-  let params = tokenId.toString().split('-');
-  let _tokenId =
-    params.length > 2 ? params[2] : params.length > 1 ? params[1] : params[0];
-  let chainType = params.length > 1 ? params[0] : 'binance';
-  let collectionAddress = params.length > 2 ? params[1] : null;
-  // console.log(
-  //   'params:',
-  //   params,
-  //   ', tokenId:',
-  //   _tokenId,
-  //   ', collectionAddresss',
-  //   collectionAddress,
-  // );
-  if (chainType === 'polygon') {
-    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
-    MarketContractAddress = blockChainConfig[1].marketConConfig.add;
-    providerUrl = blockChainConfig[1].providerUrl;
-    ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
-    ERC721Address = blockChainConfig[1].erc721ConConfig.add;
-    collectionAddress =
-      collectionAddress || blockChainConfig[1].erc721ConConfig.add;
-  } else if (chainType === 'binance') {
-    MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
-    MarketContractAddress = blockChainConfig[0].marketConConfig.add;
-    providerUrl = blockChainConfig[0].providerUrl;
-    ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
-    ERC721Address = blockChainConfig[0].erc721ConConfig.add;
-    collectionAddress =
-      collectionAddress || blockChainConfig[0].erc721ConConfig.add;
-  } else if (chainType === 'ethereum') {
-    MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
-    MarketContractAddress = blockChainConfig[2].marketConConfig.add;
-    providerUrl = blockChainConfig[2].providerUrl;
-    ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
-    ERC721Address = blockChainConfig[2].erc721ConConfig.add;
-    collectionAddress =
-      collectionAddress || blockChainConfig[2].erc721ConConfig.add;
+  let params = item.tokenId.toString().split('-');
+  let chainType,
+    _tokenId,
+    collectionAddress,
+    ERC721Abi,
+    ERC721Address,
+    MarketPlaceAbi,
+    MarketContractAddress,
+    providerUrl,
+    walletAddressForNonCrypto;
+
+  if (params.length > 2) {
+    chainType = params[0];
+    collectionAddress = params[1];
+    _tokenId = params[2]
+
+    let getBlockChainConfig = blockChainConfig.find(v => v.key.toLowerCase() === chainType.toLowerCase());
+    ERC721Abi = getBlockChainConfig.erc721ConConfig.abi;
+    ERC721Address = getBlockChainConfig.erc721ConConfig.add;
+    MarketPlaceAbi = getBlockChainConfig.marketConConfig.abi
+    MarketContractAddress = getBlockChainConfig.marketConConfig.add;
+    providerUrl = getBlockChainConfig.providerUrl;
+
+    walletAddressForNonCrypto = networkType === "testnet"
+      ? chainType === "binance"
+        ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
+        : "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
+      : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e";
+
   }
-  //#endregion
 
   useEffect(() => {
-    if (isFocused) {
-      if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
-        setBuyLoading(true);
-        checkNFTOnAuction();
-        getNonCryptoNFTOwner();
-      }
-      setLoaderFor("notOnSell")
-      if (data.token) {
-        dispatch(getAllCards(data.token))
-          .then(() => { })
-          .catch(err => {
-            console.log('error====', err);
-          });
+    if(chainType){
+      if (isFocused ) {
+        if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
+          setBuyLoading(true);
+          checkNFTOnAuction();
+          getNonCryptoNFTOwner();
+        }
+        setLoaderFor("notOnSell")
+        if (data.token) {
+          dispatch(getAllCards(data.token))
+            .then(() => { })
+            .catch(err => {
+              console.log('error====', err);
+            });
+        }
       }
     }
+
     getRealtedNFT();
   }, [isFocused]);
 
@@ -1142,9 +1130,10 @@ const DetailScreen = ({ navigation, route }) => {
     });
   };
 
-  const getCollectionByAddress = (collect) => {
-    let url = `${BASE_URL}/xanalia/collection-info?collectionAddr=${collect}`
+  const getCollectionByAddress = (c) => {
+    let url = `${BASE_URL}/xanalia/collection-info?collectionAddr=${c.toLowerCase()}`
 
+    console.log(c, "response.data")
     axios
       .get(url)
       .then((response) => {
@@ -1194,10 +1183,12 @@ const DetailScreen = ({ navigation, route }) => {
             getDiscount();
           }
           let data = await getNFTDetails(res.data[0]);
+
           if (route.params.hasOwnProperty("routeName") && route.params.routeName === "Search") {
             let collection = data.offchain
               ? data.collectionOffChainId
               : data.collectionAdd.toString().split("-")[1];
+            console.log("yahoo")
             getCollectionByAddress(collection);
             let req_data = {
               owner: res.data[0]?.returnValues?.to?.toLowerCase(),
@@ -1265,10 +1256,10 @@ const DetailScreen = ({ navigation, route }) => {
     let _MarketContractAddress = collectionAddress;
 
     let web3 = new Web3(providerUrl);
-    if (obj.tokenId.toString().split('-')[2]) {
-      let nftChain = obj.tokenId.toString().split('-')[0];
-      let collectionAdd = obj.tokenId.toString().split('-')[1];
-      let nftId = obj.tokenId.toString().split('-')[2];
+    if (_tokenId) {
+      let nftChain = chainType;
+      let collectionAdd = collectionAddress;
+      let nftId = _tokenId;
 
       obj.chainType = nftChain ? nftChain : '';
       obj.polygonId = '';

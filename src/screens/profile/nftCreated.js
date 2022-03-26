@@ -49,9 +49,13 @@ const NFTCreated = ({ route }) => {
     const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        if (isFocusedHistory && !MyNFTReducer?.myList?.length > 0) {
+        if (isFocusedHistory) {
             pressToggle("created");
         }
+        return () => {
+            dispatch(myNftLoadStart());
+        }
+
     }, [isFocusedHistory]);
 
     const renderFooter = () => {
@@ -91,44 +95,43 @@ const NFTCreated = ({ route }) => {
         dispatch(myNftLoadStart());
         dispatch(myNftListReset());
         dispatch(myPageChange(1));
-        // setNftOwnedPage(1);
         getNFTlist(1);
     };
 
     return (
         <View style={styles.trendCont}>
-
-            {MyNFTReducer.myNftListLoading ? (
-                <Loader />
-            ) : MyNFTReducer.myList?.length !== 0 ? (
-                <FlatList
-                    data={MyNFTReducer?.myList}
-                    horizontal={false}
-                    numColumns={2}
-                    initialNumToRender={15}
-                    onRefresh={() => pressToggle("created")}
-                    refreshing={MyNFTReducer.myNftListLoading}
-                    renderItem={memoizedValue}
-                    onEndReached={() => {
-                        if (
-                            !MyNFTReducer.myNftListLoading &&
-                            MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
-                        ) {
-                            let num = MyNFTReducer.myListPage + 1;
-                            getNFTlist(num);
-                            dispatch(myPageChange(num));
-                        }
-                    }}
-                    ListFooterComponent={renderFooter}
-                    onEndReachedThreshold={0.4}
-                    keyExtractor={(v, i) => 'item_' + i}
-                />
-            ) : (
-                <View style={styles.sorryMessageCont}>
-                    <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-                </View>
-            )}
-
+            {
+                MyNFTReducer.myNftListLoading ? (
+                    <Loader />
+                ) : MyNFTReducer.myList?.length !== 0 ? (
+                    <FlatList
+                        data={MyNFTReducer?.myList}
+                        horizontal={false}
+                        numColumns={2}
+                        initialNumToRender={15}
+                        onRefresh={() => pressToggle("created")}
+                        refreshing={MyNFTReducer.myNftListLoading}
+                        renderItem={memoizedValue}
+                        onEndReached={() => {
+                            if (
+                                !MyNFTReducer.myNftListLoading &&
+                                MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+                            ) {
+                                let num = MyNFTReducer.myListPage + 1;
+                                getNFTlist(num);
+                                dispatch(myPageChange(num));
+                            }
+                        }}
+                        ListFooterComponent={renderFooter}
+                        onEndReachedThreshold={0.4}
+                        keyExtractor={(v, i) => 'item_' + i}
+                    />
+                ) : (
+                    <View style={styles.sorryMessageCont}>
+                        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+                    </View>
+                )
+            }
             {modalData && (
                 <DetailModal
                     data={modalData}
