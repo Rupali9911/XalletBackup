@@ -270,7 +270,7 @@ const HomeScreen = ({ navigation }) => {
                         />
                       </View>
                       <Text numberOfLines={1} style={styles.userText}>
-                        {item.username}
+                        {item.title || item.username}
                       </Text>
                     </TouchableOpacity>
                   );

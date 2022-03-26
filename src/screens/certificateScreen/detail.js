@@ -1153,7 +1153,7 @@ const DetailScreen = ({ navigation, route }) => {
           setcollectCreat(response.data.data)
         }
       })
-      .catch((err) => { });
+      .catch((err) => {console.log('err from collection info', err) });
   }
 
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
@@ -1559,7 +1559,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    // console.log('collectCreat', collectCreatData)
+     console.log('collectCreat', collectCreatData?.collectionName)
     if (collectCreatData?.userId === "0") {
       return true;
     } else {
@@ -1575,6 +1575,8 @@ const DetailScreen = ({ navigation, route }) => {
         case "Shinnosuke Tachibana":
           return true;
           case "XANA Alpha pass":
+              return true;
+          case "Shinnosuke Tachibana TEST":
               return true;
         default:
           return false;
