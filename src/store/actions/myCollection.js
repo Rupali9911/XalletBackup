@@ -70,7 +70,7 @@ export const myCollectionList = (page, ownerId) => {
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
       .then(json => {
-        console.log(json, "myCollectionList nft")
+       // console.log(json, "myCollectionList nft")
         let nftData = [];
         if (!json.count) {
           json.data = [];

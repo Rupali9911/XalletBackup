@@ -97,7 +97,9 @@ const Collections = (props) => {
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: !item.blind });
           } else {
             console.log('======blind', item._id, item.collectionId, item.blind, isHotCollection)
-            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+              if (item.collectionId) {
+                  navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+              }
           }
         }}
       />

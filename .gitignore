@@ -34,6 +34,7 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+.vscode/
 
 # BUCK
 buck-out/
@@ -61,8 +62,6 @@ buck-out/
 /ios/Pods/
 /yarn.lock
 /package-lock.json
-<<<<<<< HEAD
 /ios/Podfile.lock
-=======
-/ios/Podfile.lock
->>>>>>> c47849da2b9e92c93dd9811b60ff0cd5f0bb9d28
+
+
