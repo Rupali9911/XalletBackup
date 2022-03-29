@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -26,17 +26,21 @@ const GifNFT = () => {
   const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isFirsRender, setIsFirstRender] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    console.log("gifnft")
-
-    dispatch(nftLoadStart());
-    dispatch(nftListReset());
-    getNFTlist(1, null, ListReducer.sort);
-    dispatch(pageChange(1));
-  }, [ListReducer.sort]);
+    if (isFocused && isFirsRender) {
+      console.log("gifnft")
+      dispatch(nftLoadStart());
+      dispatch(nftListReset('gif'));
+      getNFTlist(1, null, ListReducer.sort);
+      dispatch(pageChange(1));
+      setIsFirstRender(false)
+    }
+  }, [ListReducer.sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
     // console.log('__sort',_sort);
@@ -83,7 +87,7 @@ const GifNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {ListReducer.page === 1 && ListReducer.isGifNftLoading ? (
+      {isFirsRender ? isFirsRender : ListReducer.page === 1 && ListReducer.isGifNftLoading ? (
         <Loader />
       ) : ListReducer.gifList.length !== 0 ? (
         <FlatList

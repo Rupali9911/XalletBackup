@@ -42,8 +42,9 @@ export const nftMovieLoadFail = () => ({
   type: NFT_LOAD_FAIL,
 });
 
-export const nftListReset = () => ({
+export const nftListReset = data => ({
   type: NFT_LIST_RESET,
+  payload: data,
 });
 
 export const nftLoadSuccess = data => ({
