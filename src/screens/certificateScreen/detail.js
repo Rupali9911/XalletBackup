@@ -1163,7 +1163,7 @@ const DetailScreen = ({ navigation, route }) => {
         'Content-Type': 'application/json',
       },
     };
-
+      console.log('/xanalia/getDetailNFT called')
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
