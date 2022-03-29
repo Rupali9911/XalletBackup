@@ -202,14 +202,16 @@ function Setting({navigation}) {
                 <TouchableOpacity
                   key={i}
                   onPress={() => {
-                    dispatch(setAppLanguage(v));
-                    setShowLanguage(false);
-                    navigation.dispatch(
-                      CommonActions.reset({
-                        index: 0,
-                        routes: [{name: 'Home'}],
-                      }),
-                    );
+                    if(selectedLanguageItem.language_name !== v.language_name){
+                      dispatch(setAppLanguage(v));
+                      setShowLanguage(false);
+                      navigation.dispatch(
+                        CommonActions.reset({
+                          index: 0,
+                          routes: [{name: 'Home'}],
+                        }),
+                      );
+                    }
                   }}
                   style={{...styles.centerProfileCont, flex: null}}>
                   <Text style={styles.listLabel}>
