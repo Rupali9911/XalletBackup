@@ -55,8 +55,9 @@ export const artNftLoadFail = () => ({
   type: ART_NFT_LOAD_FAIL,
 });
 
-export const newNftListReset = () => ({
+export const newNftListReset = data => ({
   type: NEW_NFT_LIST_RESET,
+  payload: data,
 });
 
 export const newPageChange = data => ({
@@ -159,7 +160,7 @@ export const favoriteNFTList = (page, limit, sort) => {
         'Content-Type': 'application/json',
       },
     };
-console.log('fetch_data_body',  JSON.stringify(fetch_data_body))
+    console.log('fetch_data_body', JSON.stringify(fetch_data_body))
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {

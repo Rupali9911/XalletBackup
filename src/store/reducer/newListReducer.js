@@ -60,7 +60,14 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {...state, isArtNftLoading: false});
 
     case NEW_NFT_LIST_RESET:
-      return (state = {...state, newNftList: [], favoriteNftList: []});
+      switch (action.payload) {
+        case 'art':
+          return (state = {...state, newNftList: [] })
+        case 'photo':
+          return (state = {...state, favoriteNftList: [] })
+        default:
+          return (state = {...state, newNftList: [], favoriteNftList: []});
+      }
 
     case NEW_NFT_LIST_UPDATE:
       return (state = {...state, newNftList: [...action.payload]});

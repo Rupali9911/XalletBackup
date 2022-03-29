@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
@@ -26,16 +26,21 @@ const HotNFT = () => {
     const { ListReducer } = useSelector(state => state);
     const [modalData, setModalData] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isFirsRender, setIsFirstRender] = useState(true);
     const dispatch = useDispatch();
+    const isFocused = useIsFocused();
     const navigation = useNavigation();
 
     useEffect(() => {
-        console.log("hot nft")
-        dispatch(nftLoadStart());
-        dispatch(nftListReset());
-        getNFTlist(1, null, ListReducer.sort);
-        dispatch(pageChange(1));
-    }, [ListReducer.sort]);
+        if (isFocused && isFirsRender) {
+            console.log("hot nft")
+            dispatch(nftLoadStart());
+            dispatch(nftListReset('hot'));
+            getNFTlist(1, null, ListReducer.sort);
+            dispatch(pageChange(1));
+            setIsFirstRender(false)
+        }
+    }, [ListReducer.sort, isFocused]);
 
     const getNFTlist = useCallback((page, limit, _sort) => {
         // console.log('__sort',_sort);
@@ -82,7 +87,7 @@ const HotNFT = () => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {ListReducer.page === 1 && ListReducer.isHotNftLoading ? (
+            {isFirsRender ? isFirsRender : ListReducer.page === 1 && ListReducer.isHotNftLoading ? (
                 <Loader />
             ) : ListReducer.nftList.length !== 0 ? (
                 <FlatList

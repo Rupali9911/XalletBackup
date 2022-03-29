@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -30,15 +30,21 @@ const PhotoNFT = () => {
   const { sort } = useSelector(state => state.ListReducer);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true)
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    dispatch(newNftLoadStart());
-    dispatch(newNftListReset());
-    getNFTlist(1, null, sort);
-    dispatch(newPageChange(1));
-  }, [sort]);
+    if (isFocused && isFirstRender) {
+      console.log("PhotoNFT")
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset('photo'));
+      getNFTlist(1, null, sort);
+      setIsFirstRender(false)
+      dispatch(newPageChange(1));
+    }
+  }, [sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
     dispatch(favoriteNFTList(page, limit, _sort));
@@ -89,7 +95,7 @@ const PhotoNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {NewNFTListReducer.newListPage === 1 &&
+      { isFirstRender ? isFirstRender : NewNFTListReducer.newListPage === 1 &&
         NewNFTListReducer.newNftListLoading ? (
         <Loader />
       ) : NewNFTListReducer.favoriteNftList.length !== 0 ? (
