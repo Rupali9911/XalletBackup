@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -24,15 +24,19 @@ const HotCollection = () => {
   const { HotCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const [isFirsRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    console.log("hot collection")
-
-    dispatch(hotCollectionLoadStart());
-    dispatch(hotCollectionListReset());
-    getHotCollection(1);
-    dispatch(hotCollectionPageChange(1));
-  }, []);
+    if (isFocused && isFirsRender) {
+      console.log("hot collection",)
+      dispatch(hotCollectionLoadStart());
+      dispatch(hotCollectionListReset());
+      getHotCollection(1);
+      dispatch(hotCollectionPageChange(1))
+      setIsFirstRender(false)
+    }
+  }, [isFocused]);
 
   const getHotCollection = useCallback((page) => {
     dispatch(hotCollectionList(page));
@@ -74,7 +78,7 @@ const HotCollection = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {HotCollectionReducer.hotCollectionPage === 1 &&
+      {isFirsRender ? isFirsRender : HotCollectionReducer.hotCollectionPage === 1 &&
         HotCollectionReducer.hotCollectionLoading ? (
         <Loader />
       ) : HotCollectionReducer.hotCollectionList.length !== 0 ? (

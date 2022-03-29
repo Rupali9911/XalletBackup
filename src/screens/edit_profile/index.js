@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView, } from 'react-native';
+import { TouchableOpacity, SafeAreaView } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
 import { Field, reduxForm } from 'redux-form';
+import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { CenterWrap, SpaceView, BorderView } from 'src/styles/common.styles';
@@ -88,18 +89,51 @@ function Profile(props) {
           () => null
         )
       } else {
-        launchCamera(options, (response) => {
-          if (response.assets) {
-            setPhoto(response.assets[0]);
+        // launchCamera(options, (response) => {
+        //   if (response.assets) {
+        //     setPhoto(response.assets[0]);
+        //   }
+        // });
+        ImagePicker.openCamera({
+          height: 180,
+          width: 512,
+          cropping: true,
+        }).then(image => {
+          if (image.height <= 180 && image.width <= 512) {
+            let temp = {
+              image: image,
+              path: image.path,
+              uri: image.sourceURL,
+              type: image.mime,
+              fileName: image.filename
+            }
+            setPhoto(temp)
           }
-        });
+        })
       }
     } else if (index === OPEN_GALLERY) {
-      launchImageLibrary(options, (response) => {
-        if (response.assets) {
-          setPhoto(response.assets[0]);
+      // launchImageLibrary(options, (response) => {
+      //   if (response.assets) {
+      //     setPhoto(response.assets[0]);
+      //   }
+      // });
+      ImagePicker.openPicker({
+        mediaType: "photo",
+        height: 180,
+        width: 512,
+        cropping: true
+      }).then(image => {
+        if (image.height <= 180 && image.width <= 512) {
+          let temp = {
+            image: image,
+            path: image.path,
+            uri: image.sourceURL,
+            type: image.mime,
+            fileName: image.filename
+          }
+          setPhoto(temp)
         }
-      });
+      })
     }
   }
 
@@ -109,13 +143,13 @@ function Profile(props) {
     if (maxLength50(username)) {
       setErrUsername(maxLength50(username));
     } else {
-      validateNum ++;
+      validateNum++;
     }
 
     if (maxLength50(title)) {
       setErrTitle(maxLength50(title));
     } else {
-      validateNum ++;
+      validateNum++;
     }
 
     if (maxLength50(email)) {
@@ -124,7 +158,7 @@ function Profile(props) {
       if (validateEmail(email)) {
         setErrEmail(validateEmail(email));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
@@ -134,7 +168,7 @@ function Profile(props) {
       if (validateWebsiteURL(website)) {
         setErrWebsite(validateWebsiteURL(website));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
@@ -144,7 +178,7 @@ function Profile(props) {
       if (validateDiscordURL(discord)) {
         setErrDiscord(validateDiscordURL(discord));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
@@ -154,7 +188,7 @@ function Profile(props) {
       if (validateTwitterURL(twitter)) {
         setErrTwitter(validateTwitterURL(twitter));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
@@ -164,7 +198,7 @@ function Profile(props) {
       if (validateYoutubeURL(youtube)) {
         setErrYoutube(validateYoutubeURL(youtube));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
@@ -174,7 +208,7 @@ function Profile(props) {
       if (validateInstagramURL(instagram)) {
         setErrInstagram(validateInstagramURL(instagram));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
@@ -184,14 +218,14 @@ function Profile(props) {
       if (validateFacebookURL(facebook)) {
         setErrFacebook(validateFacebookURL(facebook));
       } else {
-        validateNum ++;
+        validateNum++;
       }
     }
 
     if (maxLength200(about)) {
       setErrAbout(maxLength200(about));
     } else {
-      validateNum ++;
+      validateNum++;
     }
 
     const req_body = {
@@ -236,7 +270,7 @@ function Profile(props) {
             <SpaceView mTop={SIZE(10)} />
             <Avatar>
               <C_Image
-                uri={photo.uri}
+                uri={photo?.path ? photo.path : photo.uri}
                 imageType="profile"
                 imageStyle={{ width: '100%', height: '100%' }}
               />

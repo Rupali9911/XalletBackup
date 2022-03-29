@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { newNftLoadStart, newNFTList, newPageChange, newNftListReset } from '../../store/actions/newNFTActions';
@@ -19,16 +19,21 @@ const ArtNFT = () => {
     const { sort } = useSelector(state => state.ListReducer);
     const [modalData, setModalData] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isFirsRender, setIsFirstRender] = useState(true);
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        console.log("artNFT")
-        dispatch(newNftLoadStart());
-        dispatch(newNftListReset());
-        getNFTlist(1, null, sort);
-        dispatch(newPageChange(1));
-    }, [sort])
+        if (isFocused && isFirsRender) {
+            console.log("artNFT")
+            dispatch(newNftLoadStart());
+            dispatch(newNftListReset('art'));
+            getNFTlist(1, null, sort);
+            dispatch(newPageChange(1));
+            setIsFirstRender(false)
+        }
+    }, [sort, isFocused])
 
     const getNFTlist = useCallback((page, limit, _sort) => {
         // console.log('___sort',_sort);
@@ -77,7 +82,7 @@ const ArtNFT = () => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
-                NewNFTListReducer.newListPage === 1 && NewNFTListReducer.isArtNftLoading ?
+                isFirsRender ? isFirsRender : NewNFTListReducer.newListPage === 1 && NewNFTListReducer.isArtNftLoading ?
                     <Loader /> :
                     NewNFTListReducer.newNftList.length !== 0 ?
                         <FlatList

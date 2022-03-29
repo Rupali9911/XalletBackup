@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,33 +8,39 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image, DetailModal, Loader} from '../../components';
-import {colors} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image, DetailModal, Loader } from '../../components';
+import { colors } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
 import {
   movieNFTList,
   nftListReset,
   nftLoadStart,
   pageChange,
 } from '../../store/actions/nftTrendList';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
 const MovieNFT = () => {
-  const {ListReducer} = useSelector(state => state);
+  const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const [isFirsRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    dispatch(nftLoadStart());
-    dispatch(nftListReset());
-    getNFTlist(1, null, ListReducer.sort);
-    dispatch(pageChange(1));
-  }, [ListReducer.sort]);
+    if (isFocused && isFirsRender) {
+      console.log('MovieNFT')
+      dispatch(nftLoadStart());
+      dispatch(nftListReset('movie'));
+      getNFTlist(1, null, ListReducer.sort);
+      dispatch(pageChange(1));
+      setIsFirstRender(false)
+    }
+  }, [ListReducer.sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
     // console.log('__sort',_sort);
@@ -52,7 +58,7 @@ const MovieNFT = () => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     let findIndex = ListReducer.movieList.findIndex(x => x.id === item.id);
     if (item.metaData) {
       let imageUri =
@@ -81,7 +87,7 @@ const MovieNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {ListReducer.page === 1 && ListReducer.isMovieNftLoading ? (
+      {isFirsRender ? isFirsRender : ListReducer.page === 1 && ListReducer.isMovieNftLoading ? (
         <Loader />
       ) : ListReducer.movieList.length !== 0 ? (
         <FlatList

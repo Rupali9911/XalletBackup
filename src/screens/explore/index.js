@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'src/styles/common.styles';
@@ -6,12 +6,25 @@ import { Loader } from '../../components';
 import AppSearch from '../../components/appSearch';
 import { hp } from '../../constants/responsiveFunct';
 import { colors } from '../../res';
-import { getNFTList, pageChange } from '../../store/actions/nftTrendList';
+import { getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
 import NftItem from '../detailScreen/nftItem';
 
 function ExploreScreen() {
   const { ListReducer } = useSelector(state => state);
   const [nftIndex, setNftIndex] = useState(2);
+  const [isFirsRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (ListReducer?.nftList?.length == 0 && isFirsRender) {
+      dispatch(nftLoadStart());
+      dispatch(nftListReset('hot'));
+      getNFTlistData(1);
+      dispatch(pageChange(1));
+      setIsFirstRender(false)
+    } else {
+      setIsFirstRender(false)
+    }
+  }, [ListReducer?.nftList]);
 
   const dispatch = useDispatch();
 
@@ -41,7 +54,7 @@ function ExploreScreen() {
     <Container>
       <View style={{ flex: 1 }}>
         <View style={styles.listContainer}>
-          {ListReducer.page === 1 && ListReducer.nftListLoading ? (
+          {isFirsRender ? isFirsRender : ListReducer.page === 1 && ListReducer.nftListLoading ? (
             <View style={styles.loaderContainer}>
               <Loader />
             </View>
