@@ -95,11 +95,11 @@ function Profile(props) {
         //   }
         // });
         ImagePicker.openCamera({
-          height: 180,
+          height: 512,
           width: 512,
           cropping: true,
         }).then(image => {
-          if (image.height <= 180 && image.width <= 512) {
+          if (image.height <= 512 && image.width <= 512) {
             let temp = {
               image: image,
               path: image.path,
@@ -119,11 +119,11 @@ function Profile(props) {
       // });
       ImagePicker.openPicker({
         mediaType: "photo",
-        height: 180,
+        height: 512,
         width: 512,
         cropping: true
       }).then(image => {
-        if (image.height <= 180 && image.width <= 512) {
+        if (image.height <= 512 && image.width <= 512) {
           let temp = {
             image: image,
             path: image.path,

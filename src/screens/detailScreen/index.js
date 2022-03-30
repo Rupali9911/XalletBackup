@@ -198,7 +198,7 @@ const DetailItemScreen = (props) => {
                     page === 1 && loading ?
                         <Loader /> :
                         <FlatList
-                            scrollEnabled={false}
+                            scrollEnabled={true}
                             initialNumToRender={1}
                             data={data.slice(route.params.index, route.params.index + 1)}
                             // onScrollEndDrag={() => console.log("end")}
