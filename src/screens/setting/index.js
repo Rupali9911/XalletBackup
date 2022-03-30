@@ -149,7 +149,7 @@ function Setting({navigation}) {
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
             onPress={() => null}
-            rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber()}`}
+            rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(0,1)}`}
             label={translate('wallet.common.version')}
           />
           <ListItem
