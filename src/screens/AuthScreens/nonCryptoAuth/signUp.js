@@ -3,9 +3,10 @@ import { ScrollView, View, Text } from 'react-native';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
 import { useSelector } from 'react-redux';
+import KeyboardAwareScrollView from '../../../components/keyboardAwareScrollView';
 import {
     useNavigation
- } from '@react-navigation/native';
+} from '@react-navigation/native';
 import styles from "./styles";
 import { Label, FormButton, InputFields } from "./components";
 import { colors, fonts } from '../../../res';
@@ -16,6 +17,8 @@ import {
 } from '../../../common/responsiveFunction';
 import axios from "axios";
 import { BASE_URL } from '../../../common/constants';
+import AppLogo from '../../../components/appLogo';
+import { translate } from '../../../walletUtils';
 
 const SignupCrypto = ({ route }) => {
 
@@ -38,9 +41,9 @@ const SignupCrypto = ({ route }) => {
             delete errorRend.signUpScreen
         }
         if (!v) {
-            errorRend.email = "Email is required!"
+            errorRend.email = translate("wallet.common.error.emailRequired")
         } else if (!regEmail.test(v)) {
-            errorRend.email = "Please enter a valid email address"
+            errorRend.email = translate("wallet.common.error.invalidEmail")
         } else {
             if (errorRend.hasOwnProperty('email')) {
                 delete errorRend.email
@@ -54,7 +57,7 @@ const SignupCrypto = ({ route }) => {
         setLoading(true);
 
         let url = `${BASE_URL}/auth/signup`;
-        
+
         let body = {
             locale: selectedLanguageItem.language_name,
             referralCode: "",
@@ -73,7 +76,7 @@ const SignupCrypto = ({ route }) => {
             })
             .catch(error => {
                 console.log(error.response, "Sign up error")
-                errorF.signUpScreen = error.response.data.data;
+                errorF.signUpScreen = translate(`common.${error.response.data.error_code}`);
                 setError(errorF);
                 setLoading(false);
             });
@@ -83,10 +86,12 @@ const SignupCrypto = ({ route }) => {
         <AppBackground isBusy={loading}>
             <AppHeader showBackButton title={''} />
 
-            <ScrollView>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.scrollContent}
+                KeyboardShiftStyle={styles.keyboardShift}>
                 <View style={styles.sectionCont} >
-
-                    <Label label="Sign Up" containerStyle={{ marginTop: hp(6) }} />
+                    <AppLogo />
+                    <Label label={translate("common.signup")} containerStyle={{ marginTop: hp(6) }} />
 
                     {
                         error["signUpScreen"] ?
@@ -95,7 +100,7 @@ const SignupCrypto = ({ route }) => {
                     }
 
                     <InputFields
-                        label="User Name"
+                        label={translate("common.UserName")}
                         inputProps={{
                             value: name,
                             onChangeText: (v) => {
@@ -105,7 +110,7 @@ const SignupCrypto = ({ route }) => {
                                     delete errorRend.signUpScreen
                                 }
                                 if (!v) {
-                                    errorRend.name = "Username is required!"
+                                    errorRend.name = translate("wallet.common.error.fieldRequired")
                                 } else {
                                     if (errorRend.hasOwnProperty('name')) {
                                         delete errorRend.name
@@ -117,7 +122,7 @@ const SignupCrypto = ({ route }) => {
                         error={error["name"]}
                     />
                     <InputFields
-                        label="Email Address"
+                        label={translate("common.userEmail")}
                         inputProps={{
                             value: email,
                             onChangeText: (v) => checkValidation(v),
@@ -125,21 +130,22 @@ const SignupCrypto = ({ route }) => {
                         error={error["email"]}
                     />
                     <InputFields
-                        label="Password"
+                        label={translate("common.password")}
                         error={error["password"]}
                         inputProps={{
                             value: password,
                             onChangeText: (v) => {
                                 let errorRend = { ...error };
-                                let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+                                const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
+
                                 setPassword(v)
                                 if (errorRend.hasOwnProperty('signUpScreen')) {
                                     delete errorRend.signUpScreen
                                 }
                                 if (!v) {
-                                    errorRend.password = "Password is required!"
+                                    errorRend.password = translate("common.passwordReq")
                                 } else if (!passwordRegex.test(v)) {
-                                    errorRend.password = "Your password should be more than 8 digits with alphanumeric characters."
+                                    errorRend.password = translate("common.PassVal")
                                 } else {
                                     if (errorRend.hasOwnProperty('password')) {
                                         delete errorRend.password
@@ -151,7 +157,7 @@ const SignupCrypto = ({ route }) => {
                         }}
                     />
                     <InputFields
-                        label="Enter Confirm Password"
+                        label={translate("common.confirmPassword")}
                         error={error["cPassword"]}
                         inputProps={{
                             value: cpassword,
@@ -162,9 +168,9 @@ const SignupCrypto = ({ route }) => {
                                     delete errorRend.signUpScreen
                                 }
                                 if (!v) {
-                                    errorRend.cPassword = "Confirm Password is required!"
+                                    errorRend.cPassword = translate("wallet.common.error.confirmPasswordRequired")
                                 } else if (v !== password) {
-                                    errorRend.cPassword = "Your Password doesn't match"
+                                    errorRend.cPassword = translate("wallet.common.error.passwordNotMatch")
                                 } else {
                                     if (errorRend.hasOwnProperty('cPassword')) {
                                         delete errorRend.cPassword
@@ -180,11 +186,11 @@ const SignupCrypto = ({ route }) => {
                         onPress={SignUp}
                         disable={!name || !email || !password || !cpassword || Object.keys(error).length !== 0}
                         gradient={[colors.themeL, colors.themeR]}
-                        label="Next"
+                        label={translate("common.NEXT")}
                     />
 
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
 
         </AppBackground>
     );
