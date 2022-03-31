@@ -133,7 +133,7 @@ export const hideSplash = () => ({
   type: HIDE_SPLASH,
 });
 
-const endLoading = () => ({
+export const endLoading = () => ({
   type: AUTH_LOADING_END,
 });
 export const startMainLoading = () => ({
@@ -144,7 +144,7 @@ export const endMainLoading = () => ({
   type: MAIN_LOADING_END,
 });
 
-const setUserData = data => ({
+export const setUserData = data => ({
   type: AUTH_SUCCESS,
   payload: data,
 });
