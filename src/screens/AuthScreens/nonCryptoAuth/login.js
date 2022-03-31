@@ -25,8 +25,8 @@ const LoginCrypto = ({ route, navigation }) => {
     const { loading } = useSelector(state => state.UserReducer);
 
     const [error, setError] = useState({});
-    const [email, setEmail] = useState("haris@yopmail.com");
-    const [password, setPassword] = useState("Xanalia123@");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const login = () => {
 
