@@ -12,10 +12,10 @@ import NftItem from '../detailScreen/nftItem';
 function ExploreScreen() {
   const { ListReducer } = useSelector(state => state);
   const [nftIndex, setNftIndex] = useState(2);
-  const [isFirsRender, setIsFirstRender] = useState(true);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    if (ListReducer?.nftList?.length == 0 && isFirsRender) {
+    if (ListReducer?.nftList?.length == 0 && isFirstRender) {
       dispatch(nftLoadStart());
       dispatch(nftListReset('hot'));
       getNFTlistData(1);
@@ -54,7 +54,7 @@ function ExploreScreen() {
     <Container>
       <View style={{ flex: 1 }}>
         <View style={styles.listContainer}>
-          {isFirsRender ? isFirsRender : ListReducer.page === 1 && ListReducer.nftListLoading ? (
+          {isFirstRender ? isFirstRender : ListReducer.page === 1 && ListReducer.nftListLoading ? (
             <View style={styles.loaderContainer}>
               <Loader />
             </View>

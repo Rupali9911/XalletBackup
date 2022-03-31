@@ -434,7 +434,7 @@ const nftItem = ({ item, index, minHeight }) => {
         'Content-Type': 'application/json',
       },
     };
-    // console.log("getTokenDetailsApi")
+    
     await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {

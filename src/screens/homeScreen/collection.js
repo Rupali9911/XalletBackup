@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
@@ -22,17 +22,21 @@ import styles from './styles';
 
 const Collection = () => {
   const { CollectionReducer } = useSelector(state => state);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    console.log("collection")
-
-    dispatch(collectionLoadStart());
-    dispatch(collectionListReset());
-    getCollection(1);
-    dispatch(collectionPageChange(1));
-  }, []);
+    if (isFocused && isFirstRender) {
+      console.log("collection")
+      dispatch(collectionLoadStart());
+      dispatch(collectionListReset());
+      getCollection(1);
+      dispatch(collectionPageChange(1));
+      setIsFirstRender(false)
+    }
+  }, [isFocused]);
 
   const getCollection = useCallback((page) => {
     dispatch(collectionList(page));

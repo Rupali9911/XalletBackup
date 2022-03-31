@@ -26,19 +26,21 @@ const MovieNFT = () => {
   const { ListReducer } = useSelector(state => state);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isSort, setIsSort] = useState(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [isFirsRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    if (isFocused && isFirsRender) {
+    if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
       console.log('MovieNFT')
       dispatch(nftLoadStart());
       dispatch(nftListReset('movie'));
       getNFTlist(1, null, ListReducer.sort);
       dispatch(pageChange(1));
       setIsFirstRender(false)
+      setIsSort(ListReducer.sort)
     }
   }, [ListReducer.sort, isFocused]);
 
@@ -87,7 +89,7 @@ const MovieNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirsRender ? isFirsRender : ListReducer.page === 1 && ListReducer.isMovieNftLoading ? (
+      {isFirstRender ? isFirstRender : ListReducer.page === 1 && ListReducer.isMovieNftLoading ? (
         <Loader />
       ) : ListReducer.movieList.length !== 0 ? (
         <FlatList

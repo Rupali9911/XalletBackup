@@ -19,19 +19,21 @@ const ArtNFT = () => {
     const { sort } = useSelector(state => state.ListReducer);
     const [modalData, setModalData] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
-    const [isFirsRender, setIsFirstRender] = useState(true);
+    const [isFirstRender, setIsFirstRender] = useState(true);
+    const [isSort, setIsSort] = useState(null);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        if (isFocused && isFirsRender) {
+        if (isFocused && (isFirstRender || isSort !== sort)) {
             console.log("artNFT")
             dispatch(newNftLoadStart());
             dispatch(newNftListReset('art'));
             getNFTlist(1, null, sort);
             dispatch(newPageChange(1));
             setIsFirstRender(false)
+            setIsSort(sort)
         }
     }, [sort, isFocused])
 
@@ -82,7 +84,7 @@ const ArtNFT = () => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
             {
-                isFirsRender ? isFirsRender : NewNFTListReducer.newListPage === 1 && NewNFTListReducer.isArtNftLoading ?
+                isFirstRender ? isFirstRender : NewNFTListReducer.newListPage === 1 && NewNFTListReducer.isArtNftLoading ?
                     <Loader /> :
                     NewNFTListReducer.newNftList.length !== 0 ?
                         <FlatList

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, Touchable } from 'react-native';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
@@ -27,6 +27,15 @@ const LoginCrypto = ({ route, navigation }) => {
     const [error, setError] = useState({});
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    useEffect(()=>{
+
+        return()=>{
+            setEmail('');
+            setPassword('');
+            setError({});
+        };
+    },[]);
 
     const login = () => {
 
@@ -64,6 +73,9 @@ const LoginCrypto = ({ route, navigation }) => {
                 if (!error.response.data.success) {
                     if (error.response.data.data == "Please verify your email") {
                         navigation.navigate("CryptoVerify", { email })
+                    } else {
+                        errorF.password = translate(`common.${error.response.data.error_code}`);
+                        setError(errorF);
                     }
                 } else {
                     errorF.password = translate(`common.${error.response.data.error_code}`);

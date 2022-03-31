@@ -31,18 +31,20 @@ const PhotoNFT = () => {
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true)
+  const [isSort, setIsSort] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused && isFirstRender) {
+    if (isFocused && (isFirstRender || isSort !== sort)) {
       console.log("PhotoNFT")
       dispatch(newNftLoadStart());
       dispatch(newNftListReset('photo'));
       getNFTlist(1, null, sort);
       setIsFirstRender(false)
       dispatch(newPageChange(1));
+      setIsSort(sort)
     }
   }, [sort, isFocused]);
 
