@@ -150,7 +150,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const { wallet, passcode, mainLoader, showSplash } = useSelector(
+  const { wallet, passcode, mainLoader, showSplash, data } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -208,10 +208,9 @@ const AppRoutes = () => {
 
   if (mainLoader || showSplash) return <AppSplash />;
   if (!mainLoader && !showSplash) SplashScreen.hide();
-
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
-      {wallet ? (
+      {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data.user.role === "non_crypto")  ? (
         <Stack.Navigator
           // initialRouteName={"Create"}
           initialRouteName={initialRoute}
