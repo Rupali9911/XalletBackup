@@ -229,7 +229,7 @@ const HomeScreen = ({ navigation }) => {
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => onClickButton()}
+                onPress={() => onClickButton('Create')}
                 hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>

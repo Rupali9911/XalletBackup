@@ -75,15 +75,15 @@ export default function NFTItem(props) {
         let secs = parseInt(diff / 1000);
 
         if (days > 0) {
-          return days + ' Days Left';
+          return days + ' ' + translate('common.daysleft');
         } else if (hours > 0) {
-          return hours + ' Hours Left';
+          return hours + ' ' + translate('common.hoursLeft');
         } else if (mins > 0) {
-          return mins + ' Minutes Left';
+          return mins + ' ' + translate('common.minutesLeft');
         } else if (secs > 0) {
-          return secs + ' Seconds Left';
+          return secs + ' ' + translate('common.secondsLeft');
         } else {
-          return `Bid Deadline ${hours}:${mins}:${secs} `;
+          return translate('common.bidDeadLine') + ` ${hours}:${mins}:${secs} `;
         }
       }
     }

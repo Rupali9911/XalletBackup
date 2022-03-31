@@ -76,14 +76,12 @@ const Wallet = ({ route, navigation }) => {
 
   const [currencyPriceDollar, setCurrencyPriceDollar] = useState(false);
   // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
-    const [isComingSoon, setComingSoon] = useState(true);
 
   let subscribeEth;
   let subscribeBnb;
   let subscribeMatic;
 
   useEffect(() => {
-    if (!isComingSoon){
         if (wallet && !isCreate && isFocused) {
             setLoading(true);
             getBalances(wallet.address);
@@ -102,16 +100,7 @@ const Wallet = ({ route, navigation }) => {
             });
         }
         console.log('wallet use effect', data, wallet);
-    } else {
-        if (isFocused) {
-            alertWithSingleBtn(
-                translate('wallet.common.alert'),
-                translate('common.comingSoon')
-            )
-        }
-    }
-
-  }, [isFocused]);
+      }, [isFocused]);
 
   useEffect(() => {
     singleSocket.connectSocket().then(() => {
@@ -515,7 +504,6 @@ const Wallet = ({ route, navigation }) => {
   };
 
   return (
-      !isComingSoon  ?
     <AppBackground isBusy={balances ? loading : true}>
       <GradientBackground>
         <View style={styles.gradient}>
@@ -672,7 +660,6 @@ const Wallet = ({ route, navigation }) => {
         }}
       />
     </AppBackground>
-          : null
   );
 };
 

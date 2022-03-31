@@ -639,7 +639,12 @@
         "userBlocked":"用户已被屏蔽！",
         "reportNft":"NFT 报告",
         "blockUser":"阻止用户",
-        "reportCollection":"报告收集"
+        "reportCollection":"报告收集",
+        "daysleft":"天",
+        "bidDeadLine":"投标截止日期",
+        "hoursLeft":"剩余小时数",
+        "minutesLeft":"还剩几分钟",
+        "secondsLeft":"剩余秒数"
     },
     "AwardPage": {},
     "wallet": {

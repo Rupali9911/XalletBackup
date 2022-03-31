@@ -86,7 +86,7 @@ const LoginCrypto = ({ route, navigation }) => {
 
     return (
         <AppBackground isBusy={loading}>
-            <AppHeader title={''} />
+            <AppHeader showBackButton title={'Log in with Account'} />
             <KeyboardAwareScrollView
                 contentContainerStyle={styles.scrollContent}
                 KeyboardShiftStyle={styles.keyboardShift}>
