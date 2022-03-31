@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         justifyContent: "space-between",
-        marginVertical: hp(4)
+        marginVertical: hp(2)
     },
     sectionCont: {
         width: wp(85),
@@ -32,7 +32,13 @@ const styles = StyleSheet.create({
         width: "90%",
         alignSelf: "center",
         marginTop: hp(1)
-    }
+    },
+    scrollContent: {
+        flexGrow: 1,
+    },
+    keyboardShift: {
+        flex: 1,
+    },
 })
 
 export default styles;

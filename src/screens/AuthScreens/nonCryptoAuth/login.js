@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, Touchable } from 'react-native';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import KeyboardAwareScrollView from '../../../components/keyboardAwareScrollView';
 
 import styles from "./styles";
 import { Label, InputFields, FormButton } from "./components";
@@ -14,10 +15,14 @@ import {
 } from '../../../common/responsiveFunction';
 import axios from "axios";
 import { BASE_URL } from '../../../common/constants';
+import AppLogo from '../../../components/appLogo';
+import { translate } from '../../../walletUtils';
+import { setUserData, startLoading, endLoading } from '../../../store/reducer/userReducer';
 
 const LoginCrypto = ({ route, navigation }) => {
+    const dispatch = useDispatch();
 
-    const [loading, setLoading] = useState(false);
+    const { loading } = useSelector(state => state.UserReducer);
 
     const [error, setError] = useState({});
     const [email, setEmail] = useState("");
@@ -26,7 +31,7 @@ const LoginCrypto = ({ route, navigation }) => {
     const login = () => {
 
         let errorF = {};
-        setLoading(true);
+        dispatch(startLoading());
 
         let url = `${BASE_URL}/auth/signin`;
 
@@ -36,75 +41,97 @@ const LoginCrypto = ({ route, navigation }) => {
         }
 
         axios.post(url, body)
-            .then(response => {
-                console.log(response, "Sign in success")
+            .then(async response => {
+                console.log(response.data.data, "Sign in success")
+                if (response.data.success) {
+                    dispatch(
+                        setUserData({
+                            data: response.data.data,
+                            wallet: "",
+                            isCreate: false,
+                            showSuccess: false,
+                        }),
+                    );
+                }
                 setError({});
-                setLoading(false);
+                dispatch(endLoading());
+
             })
             .catch(error => {
-                console.log(error.response, "Sign in error")
-                errorF.email = error.response.data.errors._error;
-                errorF.password = error.response.data.errors.password;
-                setError(errorF);
-                setLoading(false);
+                dispatch(endLoading());
+
+                console.log(error.response.data, "Sign in error")
+                if (!error.response.data.success) {
+                    if (error.response.data.data == "Please verify your email") {
+                        navigation.navigate("CryptoVerify", { email })
+                    }
+                } else {
+                    errorF.password = translate(`common.${error.response.data.error_code}`);
+                    setError(errorF);
+                }
             });
     }
 
     return (
         <AppBackground isBusy={loading}>
             <AppHeader title={''} />
-            <View style={styles.sectionCont} >
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.scrollContent}
+                KeyboardShiftStyle={styles.keyboardShift}>
+                <View style={styles.sectionCont} >
 
-                <Label label="User Login" containerStyle={{ marginTop: hp(6) }} />
+                    <AppLogo />
 
-                <InputFields
-                    label="Email Address / User Name"
-                    inputProps={{
-                        value: email,
-                        onChangeText: (v) => {
-                            let errorRend = {}
-                            setEmail(v)
-                            if (!v) {
-                                errorRend.email = "Email/Username is required!"
+                    <Label label={translate("common.UserLogin")} containerStyle={{ marginTop: hp(6) }} />
+
+                    <InputFields
+                        label={translate("common.emailAddressUsername")}
+                        inputProps={{
+                            value: email,
+                            onChangeText: (v) => {
+                                let errorRend = {}
+                                setEmail(v)
+                                if (!v) {
+                                    errorRend.email = translate("common.emailUserRequired")
+                                }
+                                setError(errorRend)
                             }
-                            setError(errorRend)
-                        }
-                    }}
-                    error={error["email"]}
-                />
-                <InputFields
-                    label="Password"
-                    inputProps={{
-                        secureTextEntry: true,
-                        value: password,
-                        onChangeText: (v) => {
-                            let errorRend = {};
-                            setPassword(v)
-                            if (!v) {
-                                errorRend.password = "Password is required!"
+                        }}
+                        error={error["email"]}
+                    />
+                    <InputFields
+                        label={translate("common.password")}
+                        inputProps={{
+                            secureTextEntry: true,
+                            value: password,
+                            onChangeText: (v) => {
+                                let errorRend = {};
+                                setPassword(v)
+                                if (!v) {
+                                    errorRend.password = translate("common.passwordReq")
+                                }
+                                setError(errorRend)
                             }
-                            setError(errorRend)
-                        }
-                    }}
-                    error={error["password"]}
-                />
-                <FormButton
-                    onPress={login}
-                    disable={!email || !password || Object.keys(error).length !== 0}
-                    gradient={[colors.themeL, colors.themeR]}
-                    label="Login"
-                />
+                        }}
+                        error={error["password"]}
+                    />
+                    <FormButton
+                        onPress={login}
+                        disable={!email || !password || Object.keys(error).length !== 0}
+                        gradient={[colors.themeL, colors.themeR]}
+                        label={translate("common.signIn")}
+                    />
 
-                <View style={styles.bottomLogin} >
-                    <TouchableOpacity onPress={() => navigation.navigate("CryptoSignUp")} >
-                        <Text style={styles.loginBTxt} >Create an account</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("CryptoForget")} >
-                        <Text style={styles.loginBTxt} >Forgot Password?</Text>
-                    </TouchableOpacity>
+                    <View style={styles.bottomLogin} >
+                        <TouchableOpacity onPress={() => navigation.navigate("CryptoSignUp")} >
+                            <Text style={styles.loginBTxt} >{translate("common.createNewAccount")}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate("CryptoForget")} >
+                            <Text style={styles.loginBTxt} >{translate("common.ForgottenUser")}?</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-
+            </KeyboardAwareScrollView>
         </AppBackground>
     );
 }

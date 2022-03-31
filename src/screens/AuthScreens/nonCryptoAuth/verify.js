@@ -14,6 +14,8 @@ import {
 } from '../../../common/responsiveFunction';
 import axios from "axios";
 import { BASE_URL } from '../../../common/constants';
+import AppLogo from '../../../components/appLogo';
+import { translate } from '../../../walletUtils';
 
 const Verify = ({ route }) => {
     const navigation = useNavigation();
@@ -42,17 +44,16 @@ const Verify = ({ route }) => {
             .then(response => {
                 console.log(response, "verify success")
                 setError("");
-                setshowSuccess("Email verified!");
+                setshowSuccess(translate("common.emailverified"));
                 const successTO = setTimeout(() => {
                     navigation.navigate('CryptoLogin');
                     clearTimeout(successTO);
+                    setLoading(false);
                 }, 5000);
-                navigation.navigate("")
-                setLoading(false);
             })
             .catch(error => {
                 console.log(error.response, "verify error")
-                setError(error.response.data.data);
+                setError(translate(`common.${error.response.data.error_code}`));
                 setLoading(false);
             });
     }
@@ -71,7 +72,7 @@ const Verify = ({ route }) => {
         axios.post(url, body)
             .then(response => {
                 console.log(response, "r verify success")
-                setshowSuccess("Email Sent Successfully!");
+                setshowSuccess(translate("common.emailsendsuccess"));
                 const successTO = setTimeout(() => {
                     setshowSuccess("")
                     clearTimeout(successTO);
@@ -81,7 +82,7 @@ const Verify = ({ route }) => {
             })
             .catch(error => {
                 console.log(error.response, "r verify error")
-                setError(error.response.data.data);
+                setError(translate(`common.${error.response.data.error_code}`));
                 setLoading(false);
             });
     }
@@ -92,7 +93,9 @@ const Verify = ({ route }) => {
 
             <View style={styles.sectionCont} >
 
-                <Text style={[styles.error, { color: colors.GREY14, marginTop: hp(10) }]}>Verification Code has been sent to the email {email}  kindly enter it here to verify your account</Text>
+            <AppLogo />
+
+                <Text style={[styles.error, { color: colors.GREY14, marginTop: hp(10) }]}>{translate("common.verificationCode")}{email}{translate("common.kindlyEnter")}</Text>
                 {
                     error ?
                         <Text style={styles.error}>{error}</Text>
@@ -105,7 +108,7 @@ const Verify = ({ route }) => {
                 }
 
                 <InputFields
-                    label="Verification Code"
+                    label={translate("common.VerificationCode")}
                     inputProps={{
                         value: code,
                         onChangeText: (v) => {
@@ -119,14 +122,14 @@ const Verify = ({ route }) => {
                     onPress={sendVerify}
                     disable={!code || error}
                     gradient={[colors.themeL, colors.themeR]}
-                    label="Verify Code"
+                    label={translate("common.VERIFYEMAIL")}
                 />
                 <FormButton
                     onPress={resendVerify}
                     gradient={[colors.white, colors.white]}
                     buttonLabel={{ color: colors.BLUE6 }}
                     buttonCont={{ marginVertical: 0 }}
-                    label="Resend Verification Code"
+                    label={translate("common.ResendVerificationCode")}
                 />
 
             </View>

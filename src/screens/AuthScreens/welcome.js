@@ -52,6 +52,12 @@ const Welcome = ({navigation}) => {
             labelStyle={CommonStyles.outlineButtonLabel}
             onPress={() => navigation.navigate('chooseWallet')}
           />
+          <AppButton
+            label={"login with Account"}
+            containerStyle={CommonStyles.outlineButton}
+            labelStyle={CommonStyles.outlineButtonLabel}
+            onPress={() => navigation.navigate('CryptoLogin')}
+          />
           {/* <AppButton
             label={translate('wallet.common.haveWallet')}
             containerStyle={CommonStyles.outlineButton}
