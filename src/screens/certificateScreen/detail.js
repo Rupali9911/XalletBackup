@@ -1847,22 +1847,21 @@ const DetailScreen = ({ navigation, route }) => {
           ) : null}
           <View style={styles.bottomView}>
 
-            {setNFTStatus() !== undefined && setNFTStatus() === 'notOnSell' &&
+            {setNFTStatus() !== undefined &&
               <GroupButton
                 leftText={
-                  translate('common.soonOnSell')
-                  // setNFTStatus() === 'onSell'
-                  //   ? translate('common.cancelSell')
-                  //   : setNFTStatus() === 'sell'
-                  //     ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
-                  //     : setNFTStatus() === 'buy'
-                  //       ? translate('common.buy')
-                  //       : setNFTStatus() === 'notOnSell'
-                  //         ? translate('common.soonOnSell')
-                  //         : translate('common.buy')
+                  setNFTStatus() === 'onSell'
+                    ? translate('common.cancelSell')
+                    : setNFTStatus() === 'sell'
+                      ? (singleNFT?.secondarySales ? translate("wallet.common.reSell") : translate('common.sell'))
+                      : setNFTStatus() === 'buy'
+                        ? translate('common.buy')
+                        : setNFTStatus() === 'notOnSell'
+                          ? translate('common.soonOnSell')
+                          : translate('common.buy')
                 }
                 rightText={translate('wallet.common.offerPrice')}
-                leftDisabled={setNFTStatus() === ''}
+                leftDisabled={setNFTStatus() === '' || setNFTStatus() === 'notOnSell'}
                 leftLoading={buyLoading}
                 onLeftPress={() => {
                   console.log('priceOfNft', priceNFT);
