@@ -637,7 +637,12 @@
         "userBlocked":"User has been blocked!",
         "reportNft":"Report NFT",
         "blockUser":"Block User",
-        "reportCollection":"Report Collection"
+        "reportCollection":"Report Collection",
+        "daysleft":"Days Left",
+        "bidDeadLine":"Bid Deadline",
+        "hoursLeft":"Hours Left",
+        "minutesLeft":"Minutes Left",
+        "secondsLeft":"Seconds Left"
     },
     "AwardPage": {},
     "wallet": {

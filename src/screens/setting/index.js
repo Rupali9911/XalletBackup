@@ -76,12 +76,12 @@ const ListItem = props => {
           </View>
         ) : props.rightComponent ? (
           props.rightComponent
-        ) : (
-          <EntypoIcon
+        ) : (props.noArrow ? null
+           : <EntypoIcon
             size={RF(2.5)}
             color={Colors.GREY8}
             name="chevron-right"
-          />
+            />
         )}
       </View>
     </TouchableOpacity>
@@ -174,6 +174,7 @@ function Setting({navigation}) {
               );
             }}
             rightText={``}
+            noArrow={true}
             label={translate('common.Logout')}
           />
           {/*<TouchableHighlight onPress={_pressHandler}>*/}

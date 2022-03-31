@@ -639,7 +639,12 @@
         "userBlocked":"このユーザーをブロックしました",
         "reportNft":"このNFTを報告する",
         "blockUser":"このユーザーをブロックする",
-        "reportCollection":"レポートコレクション"
+        "reportCollection":"レポートコレクション",
+        "daysleft":"日",
+        "bidDeadLine":"入札期限",
+        "hoursLeft":"残り時間",
+        "minutesLeft":"残り分",
+        "secondsLeft":"残り秒数"
     },
     "AwardPage": {},
     "wallet": {
