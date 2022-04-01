@@ -49,7 +49,7 @@ export const newNFTList = (page) => {
         }
 
         if (user) {
-            body_data.owner = wallet.address;
+            body_data.owner = wallet?.address;
         }
 
         let fetch_data_body = {
@@ -77,7 +77,7 @@ export const newNFTList = (page) => {
                         nftData.push(data);
                     });
                 }
-				json.data = nftData;
+                json.data = nftData;
                 dispatch(newNftLoadSuccess(nftData))
 
             }).catch(err => {

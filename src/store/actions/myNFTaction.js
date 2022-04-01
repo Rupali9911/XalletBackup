@@ -53,7 +53,7 @@ export const myNFTList = (page, ownerId) => {
     }
 
     if (user) {
-      body_data.loggedIn = wallet.address || user._id;
+      body_data.loggedIn = wallet?.address || user?._id;
     }
 
     let fetch_data_body = {

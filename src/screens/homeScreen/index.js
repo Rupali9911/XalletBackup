@@ -59,11 +59,10 @@ const HomeScreen = ({ navigation }) => {
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess } = useSelector(state => state.UserReducer);
+  const { showSuccess, passcodeAsync, data } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
-  const { passcodeAsync, data } = useSelector(state => state.UserReducer);
-
+    
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);

@@ -43,7 +43,7 @@ const WalletBTNS = ({ navigation }) => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
-              navigation.navigate('welcome');
+              navigation.navigate('legal');
             }}
           />
           <AppButton

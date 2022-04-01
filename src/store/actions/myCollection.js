@@ -50,7 +50,7 @@ export const myCollectionList = (page, ownerId) => {
     }
 
     if (user) {
-      body_data.loggedIn = wallet.address || user._id;
+      body_data.loggedIn = wallet?.address || user?._id;
     }
 
     let fetch_data_body = {
@@ -70,7 +70,7 @@ export const myCollectionList = (page, ownerId) => {
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
       .then(json => {
-       // console.log(json, "myCollectionList nft")
+        // console.log(json, "myCollectionList nft")
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -78,12 +78,12 @@ export const myCollectionList = (page, ownerId) => {
           json.data.map(item => {
             const parsedNFT = parseNftObject(item);
             const data = {
-                ...parsedNFT,
-                ...item,
-              };
-              nftData.push(data);
-            });
-          }
+              ...parsedNFT,
+              ...item,
+            };
+            nftData.push(data);
+          });
+        }
         json.data = nftData;
         dispatch(myCollectionLoadSuccess(json));
       })

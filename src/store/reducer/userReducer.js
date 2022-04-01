@@ -196,32 +196,35 @@ export const endLoader = () => dispatch =>
   });
 
 export const loadFromAsync = asyncData => (dispatch, getState) => {
-  if (asyncData && asyncData.wallet && asyncData.userData) {
+  if (asyncData && (asyncData.wallet || asyncData.userData)) {
     const { wallet, userData, BackedUp, apps } = asyncData;
-    wallet.address = String(wallet.address).toLowerCase();
+
+    if (wallet) {
+      wallet.address = String(wallet?.address).toLowerCase();
+    }
     dispatch(
       setUserData({
         data: userData,
-        wallet: wallet,
+        wallet: wallet ? wallet : null,
         isCreate: false,
         showSuccess: false,
       }),
     );
 
-    dispatch(setBackup(BackedUp));
+    BackedUp && dispatch(setBackup(BackedUp));
     apps && dispatch(setConnectedApps(apps));
     const _wallet = wallet;
 
-    console.log('========userData.user._id', userData.user);
-    console.log('========_wallet.address', _wallet.address);
+    console.log('========userData.user._id', userData?.user);
+    console.log('========_wallet?.address', _wallet?.address);
 
     // userData.user.username => 0xD55468830878d9dB7D0D36380421880Ef391a6Af
     // _wallet.address => 0xd55468830878d9db7d0d36380421880ef391a6af
     // actually username is same as address but different is string case. why response is dfference in between username and address.
 
     let req_data = {
-      owner: userData.user.username || _wallet.address,
-        //owner:  userData.user._id,
+      owner: userData.user.username || _wallet?.address,
+      //owner:  userData.user._id,
       token: 'HubyJ*%qcqR0',
     };
 
@@ -236,7 +239,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     fetch(`${BASE_URL}/xanalia/getProfile`, body)
       .then(response => response.json())
       .then(res => {
-        if (typeof(res.data) !== 'string' && res.data) {
+        if (typeof (res.data) !== 'string' && res.data) {
           dispatch(upateUserData(res.data));
         }
         dispatch(endMainLoading());
@@ -276,7 +279,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
   new Promise((resolve, reject) => {
     const url = `${BASE_URL}/auth/get-address-nonce`;
     const params = {
-      publicAddress: wallet.address,
+      publicAddress: wallet?.address,
     };
 
     const request = {
@@ -308,7 +311,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
             },
           };
           fetch(
-              `${BASE_URL}/auth/verify-signature`,
+            `${BASE_URL}/auth/verify-signature`,
             verifyReuqest,
           )
             .then(_res => _res.json())
@@ -319,7 +322,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
                   ['@userData', JSON.stringify(_response.data)],
                 ];
                 await AsyncStorage.multiSet(items);
-                wallet.address = String(wallet.address).toLowerCase();
+                wallet.address = String(wallet?.address).toLowerCase();
                 dispatch(
                   setUserData({
                     data: _response.data,

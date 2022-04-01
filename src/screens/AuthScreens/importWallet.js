@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useKeyboard} from '@react-native-community/hooks';
+import { useKeyboard } from '@react-native-community/hooks';
 import axios from 'axios';
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   FlatList,
   Platform,
@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
@@ -21,9 +21,9 @@ import TextView from '../../components/appText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import SelectButtongroup from '../../components/selectButtonGroup';
 import Colors from '../../constants/Colors';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {colors} from '../../res';
+import { colors } from '../../res';
 import {
   endLoader,
   getAddressNonce,
@@ -31,13 +31,13 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import {alertWithSingleBtn} from '../../utils';
-import {translate} from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
 const ethers = require('ethers');
 
 const toastConfig = {
-  my_custom_type: ({text1, props, ...rest}) => (
+  my_custom_type: ({ text1, props, ...rest }) => (
     <View
       style={{
         paddingHorizontal: wp('20%'),
@@ -45,15 +45,15 @@ const toastConfig = {
         paddingVertical: hp('2%'),
         backgroundColor: colors.GREY5,
       }}>
-      <Text style={{color: colors.white, fontWeight: 'bold'}}>{text1}</Text>
+      <Text style={{ color: colors.white, fontWeight: 'bold' }}>{text1}</Text>
     </View>
   ),
 };
 
-const ImportWallet = ({route, navigation}) => {
+const ImportWallet = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
-  const {loading} = useSelector(state => state.UserReducer);
+  const { loading } = useSelector(state => state.UserReducer);
   const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -198,13 +198,13 @@ const ImportWallet = ({route, navigation}) => {
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <View style={styles.padding}>
-              <AppLogo/>
+              <AppLogo />
               <TextView style={styles.title}>
                 {translate('wallet.common.importWallet')}
               </TextView>
             </View>
             <View>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <SelectButtongroup
                   buttons={[
                     translate('wallet.common.phrase'),
@@ -249,7 +249,7 @@ const ImportWallet = ({route, navigation}) => {
                     paddingHorizontal: wp('3%'),
                     paddingVertical: hp('1%'),
                   }}>
-                  <Text style={{color: Colors.themeColor}}>
+                  <Text style={{ color: Colors.themeColor }}>
                     {translate('wallet.common.paste')}
                   </Text>
                 </TouchableOpacity>
@@ -265,7 +265,7 @@ const ImportWallet = ({route, navigation}) => {
                     data={suggestions}
                     horizontal
                     keyboardShouldPersistTaps="always"
-                    renderItem={({item, index}) => (
+                    renderItem={({ item, index }) => (
                       <TouchableOpacity
                         style={styles.suggestionContainer}
                         onPress={() => setPhraseText(item.word)}>
@@ -305,7 +305,7 @@ const WordView = props => {
   return (
     <View style={styles.word}>
       <TextView style={styles.wordTxt}>
-        <Text style={{color: Colors.townTxt}}>{props.index} </Text>
+        <Text style={{ color: Colors.townTxt }}>{props.index} </Text>
         {props.word}
       </TextView>
     </View>

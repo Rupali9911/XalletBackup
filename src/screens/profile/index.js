@@ -43,8 +43,8 @@ function Profile({ navigation, connector }) {
 
   const { UserReducer } = useSelector(state => state);
 
-  const id = UserReducer.wallet.address || UserReducer.data.user.username;
-  const { about, title, links, username } = UserReducer.data.user;
+  const id = UserReducer?.wallet?.address || UserReducer?.data?.user?.username;
+  const { about, title, links, username } = UserReducer?.data?.user;
 
   const renderTabView = () => {
     return (

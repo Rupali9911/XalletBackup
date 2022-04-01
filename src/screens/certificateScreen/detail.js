@@ -274,8 +274,8 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    if(chainType){
-      if (isFocused ) {
+    if (chainType) {
+      if (isFocused) {
         if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
           setBuyLoading(true);
           checkNFTOnAuction();
@@ -977,7 +977,7 @@ const DetailScreen = ({ navigation, route }) => {
             // return ;
             if (!err) {
               let priceOfNft = res[1] / 1e18;
-              if (wallet.address) {
+              if (wallet?.address) {
                 // if (priceOfNft === 0) {
                 if (res[0] === '0x0000000000000000000000000000000000000000') {
                   setPriceNFT(priceOfNft);
@@ -1075,7 +1075,7 @@ const DetailScreen = ({ navigation, route }) => {
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               let _ownerAddress = _data.owner_address;
-              if (wallet.address) {
+              if (wallet?.address) {
                 if (res[0] !== '0x0000000000000000000000000000000000000000') {
                   _ownerAddress = res[0];
                   getPublicProfile(res[0], true);
@@ -1142,7 +1142,7 @@ const DetailScreen = ({ navigation, route }) => {
           setcollectCreat(response.data.data)
         }
       })
-      .catch((err) => {console.log('err from collection info', err) });
+      .catch((err) => { console.log('err from collection info', err) });
   }
 
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
@@ -1152,7 +1152,7 @@ const DetailScreen = ({ navigation, route }) => {
       networkType: networkType,
       type: category,
       chain: chainType,
-      owner: wallet.address,
+      owner: wallet?.address,
     };
 
     let fetch_data_body = {
@@ -1163,7 +1163,7 @@ const DetailScreen = ({ navigation, route }) => {
         'Content-Type': 'application/json',
       },
     };
-      console.log('/xanalia/getDetailNFT called')
+    console.log('/xanalia/getDetailNFT called')
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
@@ -1402,18 +1402,18 @@ const DetailScreen = ({ navigation, route }) => {
     } else if (
       priceNFT ||
       (isNFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet.address.toLowerCase())
+        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
     ) {
       if (
         isNFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet.address.toLowerCase() &&
+        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase() &&
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
         // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
-        if (wallet.address) {
+        if (wallet?.address) {
           // setNftStatus('buy')
           // console.log('set NftStatus 5');
           _nftStatus = 'buy';
@@ -1550,7 +1550,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-     console.log('collectCreat', collectCreatData?.collectionName)
+    // console.log('collectCreat', collectCreatData?.collectionName)
     if (collectCreatData?.userId === "0") {
       return true;
     } else {
@@ -1565,10 +1565,10 @@ const DetailScreen = ({ navigation, route }) => {
           return true;
         case "Shinnosuke Tachibana":
           return true;
-          case "XANA Alpha pass":
-              return true;
-          case "Shinnosuke Tachibana TEST":
-              return true;
+        case "XANA Alpha pass":
+          return true;
+        case "Shinnosuke Tachibana TEST":
+          return true;
         default:
           return false;
       }
@@ -1756,9 +1756,9 @@ const DetailScreen = ({ navigation, route }) => {
             <TouchableOpacity
               disabled={collectionClick()}
               onPress={() => collectCreatData ?
-                  collectCreatData.blind ?
+                collectCreatData.blind ?
                   navigation.navigate('CollectionDetail', { isBlind: true, collectionId: collectCreatData.collectionId, isHotCollection: false })
-                      :
+                  :
                   navigation.navigate('CollectionDetail', { isBlind: false, collectionId: collectCreatData._id, isHotCollection: true }) : null}
               style={styles.personType}>
               <Image

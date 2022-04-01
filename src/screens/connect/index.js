@@ -185,10 +185,10 @@ const Connect = ({ route, navigation }) => {
                                 let urlXanalia = `${BASE_URL}/auth/get-address-nonce`;
 
                                 let body = {
-                                    walletAddress: wallet.address
+                                    walletAddress: wallet?.address
                                 }
                                 let bodyXanalia = {
-                                    publicAddress: wallet.address
+                                    publicAddress: wallet?.address
                                 }
 
                                 axios.post(url, body)
@@ -203,7 +203,7 @@ const Connect = ({ route, navigation }) => {
                                                     type: "sig",
                                                     data: {
                                                         sig: signature,
-                                                        walletId: wallet.address,
+                                                        walletId: wallet?.address,
                                                         nonce: response.data?.data?.nonce,
                                                         sigXanalia: signatureXanalia,
                                                         nonceXanalia: responseXanalia.data?.data
@@ -245,7 +245,7 @@ const Connect = ({ route, navigation }) => {
                                 type: "sig",
                                 data: {
                                     sig: signature,
-                                    walletId: wallet.address
+                                    walletId: wallet?.address
                                 }
                             }
                             singleSocket.onSendMessage(_data);
@@ -292,8 +292,8 @@ const Connect = ({ route, navigation }) => {
             data: {
                 type: "wallet",
                 data: {
-                    walletId: wallet.address,
-                    publicKey: wallet.address,
+                    walletId: wallet?.address,
+                    publicKey: wallet?.address,
                     appId: appId
                 }
             },
@@ -306,9 +306,9 @@ const Connect = ({ route, navigation }) => {
             type: "approve",
             data: {
                 appId: appId,
-                walletId: wallet.address,
+                walletId: wallet?.address,
                 flag: flag,
-                publicKey: wallet.address
+                publicKey: wallet?.address
             }
         }
         singleSocket.onSendMessage(data);
@@ -329,7 +329,7 @@ const Connect = ({ route, navigation }) => {
                     type: "remove",
                     data: {
                         appId: id,
-                        walletId: wallet.address
+                        walletId: wallet?.address
                     }
                 }
                 console.log('disconnect app', data);
@@ -343,7 +343,7 @@ const Connect = ({ route, navigation }) => {
         const data = {
             type: "wallet",
             data: {
-                walletId: wallet.address
+                walletId: wallet?.address
             }
         }
         singleSocket.onSendMessage(data);
