@@ -24,7 +24,7 @@ const WalletBTNS = ({ navigation }) => {
 
   return (
     <AppBackground>
-      <AppHeader showBackButton title={"Log in with Wallet"} />
+      <AppHeader showBackButton title={translate('wallet.common.loginWithWallet')} />
 
       <View
         style={CommonStyles.screenContainer}
@@ -43,7 +43,7 @@ const WalletBTNS = ({ navigation }) => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
-              navigation.navigate('welcome');
+              navigation.navigate('legal');
             }}
           />
           <AppButton

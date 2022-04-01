@@ -970,7 +970,9 @@
             "profileCreated": "已创建",
             "connectionEstablished":"连接已建立",
             "openApp":"请打开 XANA 应用",
-            "setPushNotification":"设置推送通知"
+            "setPushNotification":"设置推送通知",
+            "loginWithWallet":"使用钱包登录",
+            "loginWithAccount":"使用帐户登录"
         },
         "backendmessage": {
             "error": {},
