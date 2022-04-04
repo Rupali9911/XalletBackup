@@ -16,6 +16,7 @@ import { translate } from '../../walletUtils';
 import AppBackground from '../../components/appBackground';
 import { AppHeader } from '../../components';
 import {
+  maxLength13,
   maxLength20,
   maxLength50,
   maxLength100,
@@ -39,6 +40,14 @@ function Profile(props) {
   const { navigation, handleSubmit } = props;
 
   const { UserReducer } = useSelector(state => state);
+  const [firstName, setFirstName] = useState(UserReducer.data.user?.firstName);
+  const [errfirstname, setErrFirstname] = useState(false);
+  const [lastName, setLastName] = useState(UserReducer.data.user?.lastName);
+  const [errLastname, setErrLastname] = useState(false);
+  const [address, setAddress] = useState(UserReducer.data.user?.address);
+  const [errAddress, setErrAddress] = useState(false);
+  const [phoneNumber, setPhoneNo] = useState(UserReducer.data.user?.phoneNumber);
+  const [errphoneNo, setErrPhoneNo] = useState(false);
   const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
   const [username, setUsername] = useState(UserReducer.data.user.username);
   const [errUsername, setErrUsername] = useState(false);
@@ -58,6 +67,8 @@ function Profile(props) {
   const [errInstagram, setErrInstagram] = useState(false);
   const [facebook, setFacebook] = useState(UserReducer.data.user.links?.facebook);
   const [errFacebook, setErrFacebook] = useState(false);
+  const [zoomLink, setZoomLink] = useState(UserReducer.data.user.links?.zoomLink);
+  const [errZoomLink, setErrZoomLink] = useState(false);
   const [about, setAbout] = useState(UserReducer.data.user.about);
   const [errAbout, setErrAbout] = useState(false);
   const actionSheetRef = useRef(null);
@@ -145,7 +156,26 @@ function Profile(props) {
     } else {
       validateNum++;
     }
-
+    if (maxLength20(firstName)) {
+      setErrFirstname(maxLength50(firstName));
+    } else {
+      validateNum++;
+    }
+    if (maxLength20(lastName)) {
+      setErrLastname(maxLength50(lastName));
+    } else {
+      validateNum++;
+    }
+    if (maxLength100(address)) {
+      setErrAddress(maxLength100(address));
+    } else {
+      validateNum++;
+    }
+    if (maxLength13(phoneNumber)) {
+      setErrPhoneNo(maxLength13(phoneNumber));
+    } else {
+      validateNum++;
+    }
     if (maxLength50(title)) {
       setErrTitle(maxLength50(title));
     } else {
@@ -229,6 +259,10 @@ function Profile(props) {
     }
 
     const req_body = {
+      firstName,
+      lastName,
+      address,
+      phoneNumber,
       username,
       title,
       crypto: true,
@@ -242,7 +276,7 @@ function Profile(props) {
       about
     }
 
-    if (validateNum === 10) {
+    if (validateNum === 14) {
 
       if (photo.uri !== UserReducer.data.user.profile_image) {
         let formData = new FormData();
@@ -284,6 +318,43 @@ function Profile(props) {
             <SpaceView mTop={SIZE(17)} />
           </CenterWrap>
           <BorderView />
+          
+          <LimitableInput
+            value={firstName}
+            onChange={(text) => { setFirstName(text); setErrFirstname(false); }}
+            label={translate("common.firstName")}
+            placeholder={translate("common.firstName")}
+            validate={[maxLength20]}
+            editable={true}
+            error={errfirstname}
+          />
+          <LimitableInput
+            value={lastName}
+            onChange={(text) => { setLastName(text); setErrLastname(false); }}
+            label={translate("common.lastName")}
+            placeholder={translate("common.lastName")}
+            validate={[maxLength20]}
+            editable={true}
+            error={errLastname}
+          />
+          <LimitableInput
+            value={address}
+            onChange={(text) => { setAddress(text); setErrAddress(false); }}
+            label={translate("common.address")}
+            placeholder={translate("common.address")}
+            validate={[maxLength50]}
+            editable={true}
+            error={errAddress}
+          />
+          <LimitableInput
+            value={phoneNumber}
+            onChange={(text) => { setPhoneNo(text); setErrPhoneNo(false); }}
+            label={translate("common.phoneNumber")}
+            placeholder={translate("common.phoneNumber")}
+            validate={[maxLength13]}
+            editable={true}
+            error={errphoneNo}
+          />
           <LimitableInput
             value={username}
             onChange={(text) => { setUsername(text); setErrUsername(false); }}
@@ -308,6 +379,7 @@ function Profile(props) {
             placeholder={translate("common.email")}
             validate={[maxLength50, validateEmail]}
             error={errEmail}
+            editable={false}
           />
           <LimitableInput
             value={website}

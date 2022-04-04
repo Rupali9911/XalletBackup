@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -12,20 +12,20 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
-import {RF, wp, hp} from '../../constants/responsiveFunct';
+import { RF, wp, hp } from '../../constants/responsiveFunct';
 import ButtonGroup from '../buttonGroup';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {BlurView} from '@react-native-community/blur';
-import {IconButton} from 'react-native-paper';
-import {numberWithCommas} from '../../utils';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { BlurView } from '@react-native-community/blur';
+import { IconButton } from 'react-native-paper';
+import { numberWithCommas } from '../../utils';
 
 const PaymentMethod = props => {
   const navigation = useNavigation();
-  const {myCards} = useSelector(state => state.PaymentReducer);
+  const { myCards } = useSelector(state => state.PaymentReducer);
 
   const {
     visible,
@@ -43,6 +43,7 @@ const PaymentMethod = props => {
   } = props;
   const [opacity, setOpacity] = useState(0.88);
   const [selectedMethod, setSelectedMethod] = useState(0);
+  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
 
   return (
     <Modal
@@ -85,34 +86,44 @@ const PaymentMethod = props => {
             {translate('wallet.common.selectPaymentMethod')}
           </Text>
           <ButtonGroup
-            buttons={[
-              {
-                text: translate('wallet.common.payByCreditCard'),
-                icon: ImagesSrc.cardPay,
-                onPress: () => {
-                  setSelectedMethod(0);
+            buttons={userRole === 'crypto' ?
+              [
+                {
+                  text: translate('wallet.common.payByCreditCard'),
+                  icon: ImagesSrc.cardPay,
+                  onPress: () => {
+                    setSelectedMethod(0);
+                  },
                 },
-              },
-              {
-                text: translate('wallet.common.payByWallet'),
-                icon: ImagesSrc.walletPay,
-                onPress: () => {
-                  setSelectedMethod(1);
-                  // onRequestClose();
-                  // navigation.navigate('WalletPay', {
-                  //   price,
-                  //   priceStr,
-                  //   chainType: chain || 'binance',
-                  //   baseCurrency,
-                  //   allowedTokens,
-                  //   id,
-                  //   collectionAddress,
-                  //   ownerAddress,
-                  //   payableIn,
-                  // });
+                {
+                  text: translate('wallet.common.payByWallet'),
+                  icon: ImagesSrc.walletPay,
+                  onPress: () => {
+                    setSelectedMethod(1);
+                    // onRequestClose();
+                    // navigation.navigate('WalletPay', {
+                    //   price,
+                    //   priceStr,
+                    //   chainType: chain || 'binance',
+                    //   baseCurrency,
+                    //   allowedTokens,
+                    //   id,
+                    //   collectionAddress,
+                    //   ownerAddress,
+                    //   payableIn,
+                    // });
+                  },
                 },
-              },
-            ]}
+              ] :
+              [
+                {
+                  text: translate('wallet.common.payByCreditCard'),
+                  icon: ImagesSrc.cardPay,
+                  onPress: () => {
+                    setSelectedMethod(0);
+                  },
+                },
+              ]}
             style={styles.optionContainer}
             selectable
             selectedIndex={selectedMethod}
@@ -126,21 +137,25 @@ const PaymentMethod = props => {
               {translate('wallet.common.totalAmount')}
             </Text>
             <Text style={styles.value}>
-              {selectedMethod
-                ?
+              {userRole === 'crypto' ?
+                selectedMethod
+                  ?
                   numberWithCommas(parseFloat(Number(price).toFixed(4)))
                   + ' '
                   + baseCurrency?.key
                   + ' = '
                   + '$ '
                   + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
-                :
+                  :
                   '$ '
                   + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
                   + ' = '
                   + numberWithCommas(parseFloat(Number(price).toFixed(4)))
                   + ' '
                   + baseCurrency?.key
+                :
+                '$ '
+                + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
               }
             </Text>
           </View>
@@ -170,7 +185,7 @@ const PaymentMethod = props => {
                   });
                 } else {
                   // navigation.navigate('Cards', { price });
-                  navigation.navigate('AddCard', {price: priceInDollar, isCardPay: true});
+                  navigation.navigate('AddCard', { price: priceInDollar, isCardPay: true });
                 }
               } else if (selectedMethod == 1) {
                 onRequestClose();
@@ -189,7 +204,7 @@ const PaymentMethod = props => {
             }}
           />
         </View>
-        <SafeAreaView style={{backgroundColor: Colors.white}} />
+        <SafeAreaView style={{ backgroundColor: Colors.white }} />
       </View>
     </Modal>
   );

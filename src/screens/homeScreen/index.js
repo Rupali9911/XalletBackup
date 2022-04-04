@@ -56,13 +56,14 @@ import { alertWithSingleBtn } from '../../utils';
 
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
+  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
   const { showSuccess, passcodeAsync, data } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
-    
+
   const [modalVisible, setModalVisible] = useState(showSuccess);
   const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
@@ -228,7 +229,7 @@ const HomeScreen = ({ navigation }) => {
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => onClickButton('Create')}
+                onPress={() => onClickButton(userRole === 'crypto' ? 'Create' : '')}
                 hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>

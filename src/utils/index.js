@@ -110,6 +110,7 @@ export const maxLength = max => value =>
     ? translate('wallet.common.limitInputLength', {number: max})
     : undefined;
 
+export const maxLength13 = maxLength(13);
 export const maxLength20 = maxLength(20);
 export const maxLength50 = maxLength(50);
 export const maxLength100 = maxLength(100);
