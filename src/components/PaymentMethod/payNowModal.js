@@ -155,7 +155,7 @@ const PaymentNow = props => {
       use_stripe_sdk: true,
       webauthn_uvpa_available: false,
       spc_eligible: false,
-      key: 'pk_test_51Jbha5Ee7q061aolrboDAHMlO4Y6eYpoHZtARZwQcFXUIu0fxFFzHjFKSTQNUnfrYO6owRxHzfECLULhV7RXZ7Zr00oa6Um1Zb',
+      key: environment.stripeKey.p_key,
       client_secret: clientSecret,
     };
 
