@@ -28,6 +28,7 @@ import {
   validateYoutubeURL,
   validateInstagramURL,
   validateFacebookURL,
+  validateZoomLinkURL,
 } from '../../utils';
 import { updateProfile, updateProfileImage } from '../../store/reducer/userReducer';
 import { hp } from '../../constants/responsiveFunct';
@@ -72,6 +73,7 @@ function Profile(props) {
   const [about, setAbout] = useState(UserReducer.data.user.about);
   const [errAbout, setErrAbout] = useState(false);
   const actionSheetRef = useRef(null);
+  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
   const dispatch = useDispatch();
 
   const OPEN_CAMERA = 0;
@@ -251,6 +253,15 @@ function Profile(props) {
         validateNum++;
       }
     }
+    if (maxLength100(zoomLink)) {
+      setErrZoomLink(maxLength100(zoomLink));
+    } else {
+      if (validateZoomLinkURL(zoomLink)) {
+        setErrZoomLink(validateZoomLinkURL(zoomLink));
+      } else {
+        validateNum++;
+      }
+    }
 
     if (maxLength200(about)) {
       setErrAbout(maxLength200(about));
@@ -273,10 +284,11 @@ function Profile(props) {
       youtube,
       instagram,
       facebook,
+      zoomLink,
       about
     }
 
-    if (validateNum === 14) {
+    if (validateNum === 15) {
 
       if (photo.uri !== UserReducer.data.user.profile_image) {
         let formData = new FormData();
@@ -361,7 +373,7 @@ function Profile(props) {
             label={translate("common.UserName")}
             placeholder={translate("common.UserName")}
             validate={[maxLength50]}
-            editable={false}
+            editable={userRole === 'crypto' ? false : true}
             error={errUsername}
           />
           <LimitableInput
@@ -379,7 +391,7 @@ function Profile(props) {
             placeholder={translate("common.email")}
             validate={[maxLength50, validateEmail]}
             error={errEmail}
-            editable={false}
+            editable={userRole === 'crypto' ? true : false}
           />
           <LimitableInput
             value={website}
@@ -428,6 +440,14 @@ function Profile(props) {
             placeholder={translate("common.facebook")}
             validate={[maxLength100, validateFacebookURL]}
             error={errFacebook}
+          />
+          <LimitableInput
+            value={zoomLink}
+            onChange={(text) => { setZoomLink(text); setErrZoomLink(false); }}
+            label={translate("common.zoomMail")}
+            placeholder={translate("common.zoomMail")}
+            validate={[maxLength100, validateZoomLinkURL]}
+            error={errZoomLink}
           />
           <SpaceView mTop={SIZE(12)} />
           <LimitableInput

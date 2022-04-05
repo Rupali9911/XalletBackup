@@ -252,7 +252,6 @@ const DetailScreen = ({ navigation, route }) => {
     MarketContractAddress,
     providerUrl,
     walletAddressForNonCrypto;
-
   if (params.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
@@ -270,7 +269,6 @@ const DetailScreen = ({ navigation, route }) => {
         ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
         : "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
       : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e";
-
   }
 
   useEffect(() => {
@@ -298,10 +296,22 @@ const DetailScreen = ({ navigation, route }) => {
   useEffect(() => {
     getCurrencyPrice();
   }, [wallet, price, baseCurrency])
-
   const getCurrencyPrice = async () => {
     let finalPrice = '';
-    let currencyPrices = await priceInDollars(wallet?.address)
+    let i;
+    switch (chain) {
+      case 'BinanceNtwk':
+        i = 0
+        break;
+      case 'polygon':
+        i = 1
+        break;
+      case 'ethereum':
+        i = 2
+        break;
+    }
+
+    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i].walletAddressForNonCrypto)
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = price * currencyPrices?.BNB;
@@ -324,6 +334,8 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
     setPriceInDollar(finalPrice);
+    console.log('finalPrice 326 //////////', finalPrice);
+    console.log("Currency ", currencyPrices);
   };
 
   const priceInDollars = (pubKey) => {

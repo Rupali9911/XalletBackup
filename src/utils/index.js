@@ -133,3 +133,5 @@ export const validateInstagramURL = value =>
   value && !validURL(value) ? translate('common.instagramlink') : undefined;
 export const validateFacebookURL = value =>
   value && !validURL(value) ? translate('common.validfblink') : undefined;
+export const validateZoomLinkURL = value =>
+  value && !validURL(value) ? translate('common.emailval') : undefined;

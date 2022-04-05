@@ -205,6 +205,11 @@ export const blockChainConfig = [
       add: OffChainBlindBoxAddBSC,
       abi: OffChainBlindBoxAbiBSC,
     },
+
+    walletAddressForNonCrypto:
+      networkType === "testnet"
+        ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
+        : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e"
   },
   {
     name: "polygon",
@@ -227,10 +232,8 @@ export const blockChainConfig = [
         ? "https://matic-mumbai.chainstacklabs.com"
         : "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
     providerUrlTestnet: "https://matic-mumbai.chainstacklabs.com",
-    providerUrlMainnet:
-      "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
-    providerUrlForAliaPrice:
-      "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
+    providerUrlMainnet: "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
+    providerUrlForAliaPrice: "https://polygon-mainnet.infura.io/v3/ce70617b31124974a29c2d7c79970142",
     stakingConConfig: { add: StakingConAddPOL, abi: StakingConAbiPOL },
     marketConConfig: { add: MarketConAddPOL, abi: MarketConAbiPOL },
     marketApproveConConfig: {
@@ -278,6 +281,11 @@ export const blockChainConfig = [
       add: OffChainBlindBoxAddPOL,
       abi: OffChainBlindBoxAbiPOL,
     },
+
+    walletAddressForNonCrypto:
+      networkType === "testnet" ?
+        "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
+        : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e"
   },
 
   {
@@ -355,5 +363,10 @@ export const blockChainConfig = [
       add: OffChainBlindBoxAddETH,
       abi: OffChainBlindBoxAbiETH,
     },
+
+    walletAddressForNonCrypto:
+      networkType === "testnet" ?
+        "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
+        : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e"
   },
 ];
