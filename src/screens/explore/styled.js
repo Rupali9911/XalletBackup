@@ -1,11 +1,16 @@
 import styled from 'styled-components';
-
+import { StyleSheet } from "react-native";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from '../../common/responsiveFunction';
 import {
     COLORS,
     SIZE,
     FONT,
     FONTS
 } from 'src/constants';
+import { colors, fonts } from '../../res';
 
 const MainContainer = styled.ScrollView`
     flex: 1;
@@ -82,7 +87,64 @@ const GroupText = styled.Text`
     font-weight: 700;
 `;
 
+const styles = StyleSheet.create({
+    videoContainer: {
+        flex: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+    },
+    playBtnCont: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    playBtnChild: {
+        width: SIZE(100),
+        height: SIZE(100),
+        backgroundColor: '#00000030',
+        borderRadius: SIZE(100),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalImage: {
+        width: wp('100%'),
+        height: wp('80%'),
+        resizeMode: 'cover',
+    },
+    threeDot: {
+        fontSize: SIZE(13),
+        fontFamily: fonts.PINGfANG,
+        color: '#909090',
+    },
+    readLessWrap: {
+        marginBottom: -3
+    },
+    readMore: {
+        fontSize: SIZE(13),
+        color: colors.BLUE2,
+        fontFamily: fonts.PINGfANG,
+    },
+    readMoreWrap: {
+        flexDirection: 'row',
+        backgroundColor: 'white'
+    },
+    description: {
+        fontSize: SIZE(13),
+        fontFamily: fonts.PINGfANG,
+        color: '#909090',
+        marginTop: hp('1%'),
+      },
+})
+
 export {
+    styles,
     MainContainer,
     MainContent,
     UserText,

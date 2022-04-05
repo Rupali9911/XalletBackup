@@ -80,7 +80,7 @@ export function showActualValue(data, decimalValue, returnType) {
 
   if (returnType === 'string') {
     let splited = val.split('.')[1];
-    let index = '';
+    let ind = '';
     for (let i = 0; i < splited.length; i++) {
       let afterAllZero = true;
       for (let j = i; j < splited.length; j++) {
@@ -90,16 +90,16 @@ export function showActualValue(data, decimalValue, returnType) {
         }
       }
       if (afterAllZero) {
-        index = i;
+        ind = i;
         break;
       }
     }
-    if (index !== '') {
-      if (index === 0) {
+    if (ind !== '') {
+      if (ind === 0) {
         let v = val.split('.')[0] + '.' + '00';
         return v.toString();
       } else {
-        let v = val.split('.')[0] + '.' + splited.slice(0, index + 1);
+        let v = val.split('.')[0] + '.' + splited.slice(0, ind + 1);
         return v.toString();
       }
     }
@@ -134,9 +134,6 @@ export function trimZeroFromTheEnd(val) {
   return str;
 }
 
-
-let walletAddressForNonCrypto = '';
-
 const DetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const { paymentObject } = useSelector(state => state.PaymentReducer);
@@ -146,22 +143,13 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
   const [isPlay, setPlay] = useState(false);
   const {
-    id,
-    name,
-    description,
-    thumbnailUrl,
-    video,
-    fileType,
-    price,
-    chain,
-    tokenId,
     owner,
     ownerData,
-    creator,
-    collectCreat,
     artistId,
+    collectCreat,
     artistData,
-    like,
+    video,
+    fileType,
     item,
     index,
   } = route.params;
@@ -176,49 +164,31 @@ const DetailScreen = ({ navigation, route }) => {
   const [isNFTOnAuction, setIsNFTOnAuction] = useState(false);
   const [singleNFT, setSingleNFT] = useState({});
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
-  const [nonCryptoOwner, setNonCryptoOwner] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [lastBidAmount, setLastBidAmount] = useState('');
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
   const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState('');
-  const [auctionSTime, setAuctionSTime] = useState('');
   const [auctionETime, setAuctionETime] = useState('');
-  const [highestBidderAdd, setHighestBidderAdd] = useState('');
-  const [minBidPrice, setMinBidPrice] = useState('');
-  const [connectedWithTo, setConnectedWithTo] = useState('');
   const [buyLoading, setBuyLoading] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
-  const [creatorAddress, setCreatorAddress] = useState(null);
   const [ownerAddress, setOwnerAddress] = useState('');
-  const [nftID, setNftID] = useState('');
-  const [artistAddress, setArtistAddress] = useState(null);
   const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
-  const [bidPriceInDollar, setBidPriceInDollar] = useState('');
-  const [discount, setDiscount] = useState(false);
-  const [discountValue, setDiscountValue] = useState('');
+  // const [discount, setDiscount] = useState(false);
+  // const [discountValue, setDiscountValue] = useState('');
+  // const [sellDetails, setSellDetails] = useState([]);
+  // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
+  // const [bidHistory, setBidHistory] = useState([]);
   const [priceInDollar, setPriceInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
-  const [sellDetails, setSellDetails] = useState([]);
-  const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
-  const [bidHistory, setBidHistory] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [payableIn, setPayableIn] = useState("");
   const [collectCreatData, setcollectCreat] = useState(collectCreat);
   const [artistDetail, setArtistData] = useState(artistData);
-  const [artist, setArtist] = useState(creator);
+  const [artist, setArtist] = useState(artistId);
 
-  const [loaderFor, setLoaderFor] = useState("");
-
-  // console.log(route.params)
-  const [tableHead, setTableHead] = useState([
-    translate('common.price'),
-    translate('common.from'),
-    translate('common.to'),
-    translate('common.date') + '(DD/MM/YYYY)',
-  ]);
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
     translate('common.price'),
@@ -226,21 +196,10 @@ const DetailScreen = ({ navigation, route }) => {
     translate('common.to'),
     translate('common.date') + ' (DD/MM/YYYY)',
   ]);
-  const [tableData, setTableData] = useState([]);
+  // const [tableData, setTableData] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
-  const [isLike, setLike] = useState(like);
-  //#region SmartContract
-  // let MarketPlaceAbi = '';
-  // let MarketContractAddress = '';
-
-  // let AwardAbi = '';
-  // let AwardContractAddress = '';
-  // let ApproveAbi = '';
-  // let ApproveAdd = '';
-  // let providerUrl = '';
-  // let ERC721Abi = '';
-  // let ERC721Address = '';
+  const [isLike, setLike] = useState(item.like);
 
   let params = item.tokenId.toString().split('-');
   let chainType,
@@ -274,14 +233,13 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    if(chainType){
-      if (isFocused ) {
+    if (chainType) {
+      if (isFocused) {
         if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
           setBuyLoading(true);
           checkNFTOnAuction();
           getNonCryptoNFTOwner();
         }
-        setLoaderFor("notOnSell")
         if (data.token) {
           dispatch(getAllCards(data.token))
             .then(() => { })
@@ -297,30 +255,30 @@ const DetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getCurrencyPrice();
-  }, [wallet, price, baseCurrency])
+  }, [wallet, baseCurrency])
 
   const getCurrencyPrice = async () => {
     let finalPrice = '';
     let currencyPrices = await priceInDollars(wallet?.address)
     switch (baseCurrency?.key) {
       case "BNB":
-        finalPrice = price * currencyPrices?.BNB;
+        finalPrice = item.price * currencyPrices?.BNB;
         break;
 
       case "ALIA":
-        finalPrice = price * currencyPrices?.ALIA;
+        finalPrice = item.price * currencyPrices?.ALIA;
         break;
 
       case "ETH":
-        finalPrice = price * currencyPrices?.ETH;
+        finalPrice = item.price * currencyPrices?.ETH;
         break;
 
       case "MATIC":
-        finalPrice = price * currencyPrices?.MATIC;
+        finalPrice = item.price * currencyPrices?.MATIC;
         break;
 
       default:
-        finalPrice = price * 1;
+        finalPrice = item.price * 1;
         break;
     }
     setPriceInDollar(finalPrice);
@@ -359,20 +317,12 @@ const DetailScreen = ({ navigation, route }) => {
         : 'https://api.xanalia.com/xanalia/getMoreItems';
     await axios
       .post(url, {
-        tokenId: tokenId,
+        tokenId: item.tokenId,
         networkType,
       })
       .then(res => {
         if (res.data.data) {
           setMoreData(res.data.data);
-          // let nftObjArray = [];
-          // for (let i = 0; i < res.data.data.length; i++) {
-          //   nftObjArray.push(parseNftObject(res.data.data[i]));
-          // }
-          // this.setState({
-          //   NftsData: [...nftObjArray],
-          //   nftLoader: false,
-          // });
         }
       })
       .catch(err => {
@@ -380,13 +330,13 @@ const DetailScreen = ({ navigation, route }) => {
       });
   };
 
-  const convertPrice = (price, detail, tradeCurrency) => {
-    let data = price ? detail.currency_type === "dollar" ?
+  const convertPrice = (price2, detail, tradeCurrency) => {
+    let data = price2 ? detail.currency_type === "dollar" ?
       addComma(
-        trimZeroFromTheEnd(showActualValue(parseFloat(price.toString()), 4, "number"), true),
+        trimZeroFromTheEnd(showActualValue(parseFloat(price2.toString()), 4, "number"), true),
         true
       ) : addComma(
-        trimZeroFromTheEnd(showActualValue(price, 6, "number"), true),
+        trimZeroFromTheEnd(showActualValue(price2, 6, "number"), true),
         true
       ) + " " + tradeCurrency
       : "";
@@ -416,7 +366,7 @@ const DetailScreen = ({ navigation, route }) => {
       return parseInt(b['sellDateTime'], 10) - parseInt(a['sellDateTime'], 10);
     }
     console.log({
-      tokenId: tokenId,
+      tokenId: item.tokenId,
       networkType,
       filter: filterArray,
     })
@@ -428,7 +378,7 @@ const DetailScreen = ({ navigation, route }) => {
         : 'https://api.xanalia.com/xanalia/getEventHistory';
     await axios
       .post(url, {
-        tokenId: tokenId,
+        tokenId: item.tokenId,
         networkType,
         filter: filterArray,
       })
@@ -759,7 +709,7 @@ const DetailScreen = ({ navigation, route }) => {
           let _bidHistory = bids.filter(item => item.event === 'Bid');
           // console.log(_bidHistory, "_bidHistory")
           if (_bidHistory.length > 0) {
-            setBidHistory(_bidHistory);
+            // setBidHistory(_bidHistory);
             var array = [];
             array = _bidHistory.filter(item => delete item['event']);
             let bidsArray = [];
@@ -767,9 +717,9 @@ const DetailScreen = ({ navigation, route }) => {
               const obj = array[i];
               bidsArray.push(Object.values(obj));
             }
-            setTableData(bidsArray);
+            // setTableData(bidsArray);
           }
-          setSellDetails(bids);
+          // setSellDetails(bids);
           let dataSorted = bids.sort((a, b) => {
             const dateA = new Date(a.dateTime).valueOf();
             const dateB = new Date(b.dateTime).valueOf();
@@ -792,8 +742,8 @@ const DetailScreen = ({ navigation, route }) => {
             setLoader(false)
           }, 1000);
         } else {
-          setSellDetails([]);
-          setSellDetailsFiltered([]);
+          // setSellDetails([]);
+          // setSellDetailsFiltered([]);
           setTradingTableLoader(false)
           setLoader(false)
         }
@@ -801,8 +751,8 @@ const DetailScreen = ({ navigation, route }) => {
       .catch(err => {
         setLoader(false)
         setTradingTableLoader(false)
-        setSellDetails([]);
-        setSellDetailsFiltered([]);
+        // setSellDetails([]);
+        // setSellDetailsFiltered([]);
       });
   };
   useEffect(() => {
@@ -1142,7 +1092,7 @@ const DetailScreen = ({ navigation, route }) => {
           setcollectCreat(response.data.data)
         }
       })
-      .catch((err) => {console.log('err from collection info', err) });
+      .catch((err) => { console.log('err from collection info', err) });
   }
 
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
@@ -1163,7 +1113,7 @@ const DetailScreen = ({ navigation, route }) => {
         'Content-Type': 'application/json',
       },
     };
-      console.log('/xanalia/getDetailNFT called')
+    console.log('/xanalia/getDetailNFT called')
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
@@ -1176,11 +1126,11 @@ const DetailScreen = ({ navigation, route }) => {
             getDetails[0]?.newprice &&
             getDetails[0]?.newprice?.seller.includes('0x')
           ) {
-            getNFTDiscount(
-              getDetails[0]?.newprice?.seller,
-              getDetails[0]?.newprice?.tokenId,
-            );
-            getDiscount();
+            // getNFTDiscount(
+            //   getDetails[0]?.newprice?.seller,
+            //   getDetails[0]?.newprice?.tokenId,
+            // );
+            // getDiscount();
           }
           let data = await getNFTDetails(res.data[0]);
 
@@ -1283,7 +1233,6 @@ const DetailScreen = ({ navigation, route }) => {
       like: obj.like,
       author: obj.returnValues.to,
       _id: obj._id,
-      // thumbnailUrl : obj.thumbnailUrl
       thumbnailUrl: obj?.thumbnailUrl,
       imageForVideo: obj?.metaData?.thumbnft
         ? obj?.metaData?.thumbnft
@@ -1321,49 +1270,39 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const getNFTDiscount = id => {
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    MarketPlaceContract.methods.adminOwner &&
-      MarketPlaceContract.methods.adminOwner(id).call((err, res) => {
-        setDiscount(res);
-      });
+    // let web3 = new Web3(providerUrl);
+    // let MarketPlaceContract = new web3.eth.Contract(
+    //   MarketPlaceAbi,
+    //   MarketContractAddress,
+    // );
+    // MarketPlaceContract.methods.adminOwner &&
+    //   MarketPlaceContract.methods.adminOwner(id).call((err, res) => {
+    //     setDiscount(res);
+    //   });
   };
 
   const getDiscount = () => {
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    MarketPlaceContract.methods.adminDiscount &&
-      MarketPlaceContract.methods.adminDiscount().call((err, res) => {
-        setDiscountValue(res ? res / 10 : 0);
-      });
+    // let web3 = new Web3(providerUrl);
+    // let MarketPlaceContract = new web3.eth.Contract(
+    //   MarketPlaceAbi,
+    //   MarketContractAddress,
+    // );
+    // MarketPlaceContract.methods.adminDiscount &&
+    //   MarketPlaceContract.methods.adminDiscount().call((err, res) => {
+    //     setDiscountValue(res ? res / 10 : 0);
+    //   });
   };
 
-  const calculatePrice = async (price, tradeCurr, owner, _baseCurrency) => {
+  const calculatePrice = async (price1, tradeCurr, owner, _baseCurrency) => {
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
     );
-
-    // console.log(
-    //   'calculate price params _______________',
-    //   price,
-    //   _baseCurrency.order,
-    //   tradeCurr,
-    //   _tokenId,
-    //   owner,
-    //   collectionAddress,
-    // );
 
     let res = await MarketPlaceContract.methods
       .calculatePrice(
-        price,
+        price1,
         _baseCurrency.order,
         tradeCurr,
         _tokenId,
@@ -1417,7 +1356,6 @@ const DetailScreen = ({ navigation, route }) => {
           // setNftStatus('buy')
           // console.log('set NftStatus 5');
           _nftStatus = 'buy';
-        } else if (connectedWithTo === 'paymentCard') {
         } else {
           // setNftStatus('buy');
           // console.log('set NftStatus 6');
@@ -1457,7 +1395,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const renderItem = ({ item }) => {
-    let findIndex = moreData.findIndex(x => x.id === item.id);
+    // let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item.metaData) {
       // it's temporary fix
       const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
@@ -1467,31 +1405,17 @@ const DetailScreen = ({ navigation, route }) => {
 
       return (
         <TouchableOpacity
-          // onLongPress={() => {
-          //   setModalData(item);
-          //   setModalVisible(true);
-          // }}
           onPress={() => {
-            // dispatch(changeScreenName('awards'));
-            //navigation.push('DetailItem', {index: findIndex});
-
             navigation.navigate('CertificateDetail', {
-              id: item.newtokenId,
-              name: item.metaData.name,
-              description: item.metaData.description,
-              tokenId: item.tokenId,
-              thumbnailUrl: item.thumbnailUrl,
-              video: item.metaData.image,
-              fileType: fileType,
-              price: item.price,
-              chain: item.chain,
-              collectCreatData,
               owner: ownerN,
               ownerData: ownerDataN,
-              artistId: artistId,
-              creator: artist,
+              artistId: artist,
+              collectCreat: collectCreatData,
               artistData: artistDetail,
-              item: item
+              video: item.metaData.image,
+              fileType: fileType,
+              item: item,
+              index: index
             });
             scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
           }}
@@ -1550,7 +1474,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-     console.log('collectCreat', collectCreatData?.collectionName)
+    console.log('collectCreat', collectCreatData?.collectionName)
     if (collectCreatData?.userId === "0") {
       return true;
     } else {
@@ -1565,10 +1489,10 @@ const DetailScreen = ({ navigation, route }) => {
           return true;
         case "Shinnosuke Tachibana":
           return true;
-          case "XANA Alpha pass":
-              return true;
-          case "Shinnosuke Tachibana TEST":
-              return true;
+        case "XANA Alpha pass":
+          return true;
+        case "Shinnosuke Tachibana TEST":
+          return true;
         default:
           return false;
       }
@@ -1669,7 +1593,6 @@ const DetailScreen = ({ navigation, route }) => {
               fileType === 'mov' ||
               fileType === 'MOV' ? (
               <View style={{ ...styles.modalImage }}>
-                {/* <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} isContain /> */}
                 <Video
                   ref={refVideo}
                   source={{ uri: video }}
@@ -1714,7 +1637,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             ) : (
               <C_Image
-                uri={thumbnailUrl}
+                uri={item.thumbnailUrl}
                 imageStyle={styles.modalImage}
                 isContain
               />
@@ -1756,9 +1679,9 @@ const DetailScreen = ({ navigation, route }) => {
             <TouchableOpacity
               disabled={collectionClick()}
               onPress={() => collectCreatData ?
-                  collectCreatData.blind ?
+                collectCreatData.blind ?
                   navigation.navigate('CollectionDetail', { isBlind: true, collectionId: collectCreatData.collectionId, isHotCollection: false })
-                      :
+                  :
                   navigation.navigate('CollectionDetail', { isBlind: false, collectionId: collectCreatData._id, isHotCollection: true }) : null}
               style={styles.personType}>
               <Image
@@ -1812,11 +1735,11 @@ const DetailScreen = ({ navigation, route }) => {
           <Text style={styles.nftTitle} ellipsizeMode="tail" numberOfLines={1}>
             {creatorName}
           </Text>
-          <Text style={styles.nftName}>{name}</Text>
+          <Text style={styles.nftName}>{item.metaData.name}</Text>
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
-                <Text style={styles.price}>{price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0}</Text>
+                <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}</Text>
                 <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
               </View>
               <View style={{ flex: 0.4 }} >
@@ -1839,7 +1762,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </View>
           )}
-          <Text style={styles.description}>{description}</Text>
+          <Text style={styles.description}>{item.metaData.description}</Text>
           {getAuctionTimeRemain(item) ? (
             <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
               <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
@@ -1891,7 +1814,7 @@ const DetailScreen = ({ navigation, route }) => {
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <AppButton
-                  label={(price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0) + ' ' + baseCurrency?.key}
+                  label={(item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0) + ' ' + baseCurrency?.key}
                   containerStyle={[styles.button, CommonStyles.outlineButton]}
                   labelStyle={[CommonStyles.outlineButtonLabel]}
                   onPress={() => { }}
@@ -2026,7 +1949,7 @@ const DetailScreen = ({ navigation, route }) => {
       <PaymentMethod
         visible={showPaymentMethod}
         payableIn={payableIn}
-        price={price ? price : 0}
+        price={item.price ? item.price : 0}
         priceStr={priceNFTString}
         priceInDollar={priceInDollar}
         baseCurrency={baseCurrency}
@@ -2043,11 +1966,11 @@ const DetailScreen = ({ navigation, route }) => {
       />
       <PaymentNow
         visible={showPaymentNow}
-        price={price ? price : 0}
+        price={item.price ? item.price : 0}
         priceInDollar={priceInDollar}
         chain={chainType}
         NftId={_tokenId}
-        IdWithChain={tokenId}
+        IdWithChain={item.tokenId}
         ownerId={nonCryptoOwnerId}
         ownerAddress={
           ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto
