@@ -334,8 +334,8 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
     setPriceInDollar(finalPrice);
-    console.log('finalPrice 326 //////////', finalPrice);
-    console.log("Currency ", currencyPrices);
+    // console.log('finalPrice 337 //////////', finalPrice, baseCurrency?.key, i, chain);
+    // console.log("Currency 338", currencyPrices);
   };
 
   const priceInDollars = (pubKey) => {
@@ -1829,7 +1829,12 @@ const DetailScreen = ({ navigation, route }) => {
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
                 <Text style={styles.price}>{price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0}</Text>
-                <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
+                <Text style={styles.priceUnit}>
+                  {baseCurrency?.key}<Text style={styles.dollarText}>
+                    {` ($${parseFloat(priceInDollar, true).toFixed(2)})`}
+                  </Text>
+                </Text>
+                {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
               </View>
               <View style={{ flex: 0.4 }} >
                 {availableTokens.length > 0 &&

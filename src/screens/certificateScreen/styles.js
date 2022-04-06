@@ -209,6 +209,9 @@ const styles = StyleSheet.create({
     color: colors.GREY4,
     marginLeft: wp(2),
   },
+  dollarText:{
+    fontSize: RF(1.7)
+  },
   price: {
     fontSize: RF(3.1),
     fontFamily: fonts.ARIAL_BOLD,
