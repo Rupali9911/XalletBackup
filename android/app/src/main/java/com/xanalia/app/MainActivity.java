@@ -1,4 +1,4 @@
-package com.xanaliaApp;
+package com.xanalia.app;
 
 import android.os.Bundle;
 

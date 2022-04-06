@@ -213,7 +213,7 @@ function AddCard({ route, navigation }) {
             "card[address_city]": city,
             "card[address_state]": state,
             "card[address_zip]": zipcode,
-            "card[address_country]": country.name,
+            "card[address_country]": country.name
         }
 
         StripeApiRequest(`tokens`,body).then((response)=>{
@@ -285,8 +285,15 @@ function AddCard({ route, navigation }) {
             } else {
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
-                    err.error_code?translate(`common.${err.error_code}`):''
-                )
+                    translate(`common.${err.error?.error_code ? err.error?.error_code
+                        : err.error?.decline_code ?
+                            err.error?.decline_code
+                            : err.error?.code}`))
+
+                // alertWithSingleBtn(
+                //     translate("wallet.common.alert"),
+                //     err.error_code?translate(`common.${err.error_code}`):''
+                // )
             }
         });
 
