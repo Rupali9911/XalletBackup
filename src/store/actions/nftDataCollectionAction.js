@@ -35,7 +35,7 @@ export const nftDataCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
 
     const { data, wallet } = getState().UserReducer;
-    const owner = wallet.address || data.user._id;
+    const owner = wallet?.address || data?.user?._id;
 
     fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${collectionAddress}&page=${page}&limit=10&owner=${owner}`)
       .then(response => response.json())
@@ -75,10 +75,10 @@ export const nftDataCollectionList = (page, collectionAddress, type) => {
 export const nftBlindDataCollectionList = (collectionAddress) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
-    const owner = wallet.address || data.user._id;
+    const owner = wallet?.address || data?.user?._id;
 
     fetch(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`)
-    .then(response => response.json())
+      .then(response => response.json())
       .then(json => {
 
         const data = json.data;

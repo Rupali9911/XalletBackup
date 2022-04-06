@@ -212,7 +212,7 @@ const AppRoutes = () => {
   if (!mainLoader && !showSplash) SplashScreen.hide();
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
-      {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data.user.role === "non_crypto") ? (
+      {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data?.user?.role === "non_crypto") ? (
         <Stack.Navigator
           // initialRouteName={"Create"}
           initialRouteName={initialRoute}

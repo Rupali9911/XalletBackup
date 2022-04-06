@@ -252,7 +252,6 @@ const DetailScreen = ({ navigation, route }) => {
     MarketContractAddress,
     providerUrl,
     walletAddressForNonCrypto;
-
   if (params.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
@@ -270,12 +269,11 @@ const DetailScreen = ({ navigation, route }) => {
         ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
         : "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
       : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e";
-
   }
 
   useEffect(() => {
-    if(chainType){
-      if (isFocused ) {
+    if (chainType) {
+      if (isFocused) {
         if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
           setBuyLoading(true);
           checkNFTOnAuction();
@@ -298,10 +296,22 @@ const DetailScreen = ({ navigation, route }) => {
   useEffect(() => {
     getCurrencyPrice();
   }, [wallet, price, baseCurrency])
-
   const getCurrencyPrice = async () => {
     let finalPrice = '';
-    let currencyPrices = await priceInDollars(wallet?.address)
+    let i;
+    switch (chain) {
+      case 'BinanceNtwk':
+        i = 0
+        break;
+      case 'polygon':
+        i = 1
+        break;
+      case 'ethereum':
+        i = 2
+        break;
+    }
+
+    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i].walletAddressForNonCrypto)
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = price * currencyPrices?.BNB;
@@ -324,6 +334,8 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
     setPriceInDollar(finalPrice);
+    console.log('finalPrice 326 //////////', finalPrice);
+    console.log("Currency ", currencyPrices);
   };
 
   const priceInDollars = (pubKey) => {
@@ -977,7 +989,7 @@ const DetailScreen = ({ navigation, route }) => {
             // return ;
             if (!err) {
               let priceOfNft = res[1] / 1e18;
-              if (wallet.address) {
+              if (wallet?.address) {
                 // if (priceOfNft === 0) {
                 if (res[0] === '0x0000000000000000000000000000000000000000') {
                   setPriceNFT(priceOfNft);
@@ -1075,7 +1087,7 @@ const DetailScreen = ({ navigation, route }) => {
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               let _ownerAddress = _data.owner_address;
-              if (wallet.address) {
+              if (wallet?.address) {
                 if (res[0] !== '0x0000000000000000000000000000000000000000') {
                   _ownerAddress = res[0];
                   getPublicProfile(res[0], true);
@@ -1142,7 +1154,7 @@ const DetailScreen = ({ navigation, route }) => {
           setcollectCreat(response.data.data)
         }
       })
-      .catch((err) => {console.log('err from collection info', err) });
+      .catch((err) => { console.log('err from collection info', err) });
   }
 
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
@@ -1152,7 +1164,7 @@ const DetailScreen = ({ navigation, route }) => {
       networkType: networkType,
       type: category,
       chain: chainType,
-      owner: wallet.address,
+      owner: wallet?.address,
     };
 
     let fetch_data_body = {
@@ -1163,7 +1175,7 @@ const DetailScreen = ({ navigation, route }) => {
         'Content-Type': 'application/json',
       },
     };
-      console.log('/xanalia/getDetailNFT called')
+    console.log('/xanalia/getDetailNFT called')
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
@@ -1402,18 +1414,18 @@ const DetailScreen = ({ navigation, route }) => {
     } else if (
       priceNFT ||
       (isNFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet.address.toLowerCase())
+        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
     ) {
       if (
         isNFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet.address.toLowerCase() &&
+        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase() &&
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
         // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
-        if (wallet.address) {
+        if (wallet?.address) {
           // setNftStatus('buy')
           // console.log('set NftStatus 5');
           _nftStatus = 'buy';
@@ -1550,7 +1562,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-     console.log('collectCreat', collectCreatData?.collectionName)
+    // console.log('collectCreat', collectCreatData?.collectionName)
     if (collectCreatData?.userId === "0") {
       return true;
     } else {
@@ -1565,10 +1577,10 @@ const DetailScreen = ({ navigation, route }) => {
           return true;
         case "Shinnosuke Tachibana":
           return true;
-          case "XANA Alpha pass":
-              return true;
-          case "Shinnosuke Tachibana TEST":
-              return true;
+        case "XANA Alpha pass":
+          return true;
+        case "Shinnosuke Tachibana TEST":
+          return true;
         default:
           return false;
       }
@@ -1756,9 +1768,9 @@ const DetailScreen = ({ navigation, route }) => {
             <TouchableOpacity
               disabled={collectionClick()}
               onPress={() => collectCreatData ?
-                  collectCreatData.blind ?
+                collectCreatData.blind ?
                   navigation.navigate('CollectionDetail', { isBlind: true, collectionId: collectCreatData.collectionId, isHotCollection: false })
-                      :
+                  :
                   navigation.navigate('CollectionDetail', { isBlind: false, collectionId: collectCreatData._id, isHotCollection: true }) : null}
               style={styles.personType}>
               <Image

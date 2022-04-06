@@ -555,7 +555,7 @@ const UploadNFT = ({
             collection.collectionAddress
           );
           approvalCheckContract.methods
-            .isApprovedForAll(wallet.address, MarketContractAddress)
+            .isApprovedForAll(wallet?.address, MarketContractAddress)
             .call((err, res) => {
               console.log(res, err, "approval response")
               if (!err) {
@@ -563,7 +563,7 @@ const UploadNFT = ({
                 if (!res) {
 
                   setApprovalForAll(
-                    wallet.address,
+                    wallet?.address,
                     wallet.privateKey,
                     providerUrl,
                     networkType.value,
@@ -626,7 +626,7 @@ const UploadNFT = ({
 
   const putNftOnAuction = (data) => {
     let foundOrder = basePrice.order;
-    const publicAddress = wallet.address;
+    const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
 
     let marketContractData = getMarketContract();
@@ -671,7 +671,7 @@ const UploadNFT = ({
   const putNftOnSale = (data) => {
 
     let foundOrder = basePrice.order;
-    const publicAddress = wallet.address;
+    const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
     console.log(data, "put nft on sale")
 

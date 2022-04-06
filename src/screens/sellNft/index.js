@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {View, StyleSheet, ScrollView, Text, TouchableOpacity, TextInput} from 'react-native';
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity, TextInput } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useSelector } from 'react-redux';
 import { AppHeader } from '../../components';
@@ -23,11 +23,11 @@ const Web3 = require('web3');
 const FIXED_PRICE = 1;
 const AUCTION = 2;
 
-const SellNFT = ({route, navigation}) => {
+const SellNFT = ({ route, navigation }) => {
 
-    const {nftDetail} = route.params;
+    const { nftDetail } = route.params;
 
-    const {wallet,data} = useSelector(state => state.UserReducer);
+    const { wallet, data } = useSelector(state => state.UserReducer);
     const [sellFormat, setSellFormat] = useState(FIXED_PRICE);
     const [baseCurrency, setBaseCurrency] = useState(null);
     const [price, setPrice] = useState('');
@@ -100,42 +100,42 @@ const SellNFT = ({route, navigation}) => {
         // this.setState({ loaderFor });
         setLoading(true);
         let web3 = new Web3(providerUrl);
-    
+
         let approvalCheckContract = new web3.eth.Contract(
-          NftApprovalAbi,
-          nftDetail.collection
+            NftApprovalAbi,
+            nftDetail.collection
         );
-          approvalCheckContract.methods
-            .isApprovedForAll(wallet.address, MarketContractAddress)
+        approvalCheckContract.methods
+            .isApprovedForAll(wallet?.address, MarketContractAddress)
             .call((err, res) => {
-              console.log("res", res, "err", err);
-              if (!err) {
-                // console.log(parseInt(res) / Math.pow(10, 18));
-                if (!res) {
-                    setApprovalForAll(wallet.address, wallet.privateKey, providerUrl, chainType, approvalCheckContract, MarketContractAddress, collectionAddress, 10, 600000)
-                        .then((_)=>{
-                            if (sellFormat === AUCTION) {
-                                // setNFTAuction();
-                              } else {
-                                sellNFTItem(id, price);
-                              }      
-                        }).catch((err) => {
-                            console.log(err)
-                            setLoading(false);
-                        });
+                console.log("res", res, "err", err);
+                if (!err) {
+                    // console.log(parseInt(res) / Math.pow(10, 18));
+                    if (!res) {
+                        setApprovalForAll(wallet?.address, wallet.privateKey, providerUrl, chainType, approvalCheckContract, MarketContractAddress, collectionAddress, 10, 600000)
+                            .then((_) => {
+                                if (sellFormat === AUCTION) {
+                                    // setNFTAuction();
+                                } else {
+                                    sellNFTItem(id, price);
+                                }
+                            }).catch((err) => {
+                                console.log(err)
+                                setLoading(false);
+                            });
+                    } else {
+                        if (sellFormat === AUCTION) {
+                            // setNFTAuction();
+                        } else {
+                            sellNFTItem(id, price);
+                        }
+                    }
                 } else {
-                  if (sellFormat === AUCTION) {
-                    // setNFTAuction();
-                  } else {
-                    sellNFTItem(id, price);
-                  }
+                    console.log("err in balanceOf", err);
+                    setLoading(false);
                 }
-              } else {
-                console.log("err in balanceOf", err);
-                setLoading(false);
-              }
             });
-      }
+    }
 
     const sellNFTItem = async (id, price) => {
         // console.log(this.state.allowedCurrency);
@@ -152,7 +152,7 @@ const SellNFT = ({route, navigation}) => {
         //   this.props.setTransactionInProgress(false);
         //   return;
         // }
-    
+
         // if (
         //   !this.state.price ||
         //   this.state.price === "0" ||
@@ -164,7 +164,7 @@ const SellNFT = ({route, navigation}) => {
         // }
 
         // const historyInfo = this.props?.history?.location?.state;
-    
+
         // let priceValue, priceValueDollar;
         // if (this.state.currency.value === "alia") {
         //   priceValue = document.getElementById("sellingPrice").value;
@@ -173,141 +173,141 @@ const SellNFT = ({route, navigation}) => {
         //   priceValueDollar = document.getElementById("sellingPrice").value;
         //   priceValue = "0";
         // }
-    
-        // if (historyInfo?.user !== "Non-crypto") {
-        if (wallet.address) {
-        //   let allowedCurrencies = this.state.allowedCurrency.map(
-        //     (item) => item.order
-        //   );
-          let web3 = new Web3(providerUrl);
-          let MarketPlaceContract = new web3.eth.Contract(
-            MarketPlaceAbi,
-            MarketContractAddress
-          );
 
-          sellNFT(wallet.address, wallet.privateKey, providerUrl, chainType, MarketPlaceContract, MarketContractAddress, id, collectionAddress, price, baseCurrency.order, allowedTokens, 10, 600000)
-            .then((res)=>{
-                setLoading(false);
-                if(res.success){
-                    console.log('sold');
-                    navigation.goBack();
-                }
-            }).catch((err)=>{
-                console.log('sellNFT error',err);
-                setLoading(false);
-            });
+        // if (historyInfo?.user !== "Non-crypto") {
+        if (wallet?.address) {
+            //   let allowedCurrencies = this.state.allowedCurrency.map(
+            //     (item) => item.order
+            //   );
+            let web3 = new Web3(providerUrl);
+            let MarketPlaceContract = new web3.eth.Contract(
+                MarketPlaceAbi,
+                MarketContractAddress
+            );
+
+            sellNFT(wallet.address, wallet.privateKey, providerUrl, chainType, MarketPlaceContract, MarketContractAddress, id, collectionAddress, price, baseCurrency.order, allowedTokens, 10, 600000)
+                .then((res) => {
+                    setLoading(false);
+                    if (res.success) {
+                        console.log('sold');
+                        navigation.goBack();
+                    }
+                }).catch((err) => {
+                    console.log('sellNFT error', err);
+                    setLoading(false);
+                });
         } else {
             setLoading(false);
-        //   this.setState({ loaderFor: "Sell" });
-        //   let web3 = new Web3(this.props.provider);
-        //   const userToken = localStorage.getItem("userToken");
-        //   const priceUser = web3.utils.toWei(price.toString(), "ether");
-        //   const headers = {
-        //     "Content-Type": "application/json",
-        //     Authorization: `Bearer ${userToken}`,
-        //   };
-        //   const info = {
-        //     tokenId: historyInfo?.selectedNFT?.collectionAdd,
-        //     price: web3.utils.toWei(priceValue.toString(), "ether"),
-        //     // priceDollar: web3.utils.toWei(priceValueDollar.toString(), "ether"),
-        //     chainType: sessionStorage.getItem("selectedNFTChain"),
-        //     currencyType: this.state.baseCurrency.order,
-        //   };
-        //   let url =
-        //     networkType === "testnet"
-        //       ? process.env.REACT_APP_API_NON_CRYPTO
-        //       : process.env.REACT_APP_API_NON_CRYPTO_MAINNET;
-    
-        //   axios
-        //     .post(url + "/user/sell-nft", info, {
-        //       headers: headers,
-        //     })
-        //     .then((res) => {
-        //       if (!res.data.success && !res.data.whitelisted) {
-        //         toast.info("You are not allowed to put nft on sell for now", {
-        //           position: "bottom-right",
-        //           autoClose: 3000,
-        //           progress: undefined,
-        //         });
-        //         this.setState({ loaderFor: "", setSalePrice: false });
-        //         this.setState({ status: res?.status });
-        //       } else {
-        //         this.setTimer(res.data.data.data);
-        //       }
-        //     })
-        //     .catch((err) => {
-        //       this.setState({ loaderFor: "" });
-        //       this.setState({ status: err?.response?.status });
-        //     });
+            //   this.setState({ loaderFor: "Sell" });
+            //   let web3 = new Web3(this.props.provider);
+            //   const userToken = localStorage.getItem("userToken");
+            //   const priceUser = web3.utils.toWei(price.toString(), "ether");
+            //   const headers = {
+            //     "Content-Type": "application/json",
+            //     Authorization: `Bearer ${userToken}`,
+            //   };
+            //   const info = {
+            //     tokenId: historyInfo?.selectedNFT?.collectionAdd,
+            //     price: web3.utils.toWei(priceValue.toString(), "ether"),
+            //     // priceDollar: web3.utils.toWei(priceValueDollar.toString(), "ether"),
+            //     chainType: sessionStorage.getItem("selectedNFTChain"),
+            //     currencyType: this.state.baseCurrency.order,
+            //   };
+            //   let url =
+            //     networkType === "testnet"
+            //       ? process.env.REACT_APP_API_NON_CRYPTO
+            //       : process.env.REACT_APP_API_NON_CRYPTO_MAINNET;
+
+            //   axios
+            //     .post(url + "/user/sell-nft", info, {
+            //       headers: headers,
+            //     })
+            //     .then((res) => {
+            //       if (!res.data.success && !res.data.whitelisted) {
+            //         toast.info("You are not allowed to put nft on sell for now", {
+            //           position: "bottom-right",
+            //           autoClose: 3000,
+            //           progress: undefined,
+            //         });
+            //         this.setState({ loaderFor: "", setSalePrice: false });
+            //         this.setState({ status: res?.status });
+            //       } else {
+            //         this.setTimer(res.data.data.data);
+            //       }
+            //     })
+            //     .catch((err) => {
+            //       this.setState({ loaderFor: "" });
+            //       this.setState({ status: err?.response?.status });
+            //     });
         }
-      }
+    }
 
     return (
         <AppBackground isBusy={loading}>
-            <AppHeader 
+            <AppHeader
                 title={''}
                 showBackButton
-                />
-            <ScrollView style={{flex: 1}} contentContainerStyle={styles.scrollContainer}>
+            />
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.container}>
                     <Text style={styles.heading}>{translate("common.selectYourSellMethod")}</Text>
-                    
+
                     <ToggleState activeState={sellFormat} onChange={setSellFormat} />
-                    
-                    <SelectToken 
+
+                    <SelectToken
                         tokens={basePriceTokens.filter(_ => _.chain == chainType)}
                         onChangeValue={(value) => {
                             let baseCurrency = basePriceTokens.find(_ => _.chain == chainType && _.key == value);
-                            if(baseCurrency){
+                            if (baseCurrency) {
                                 setBaseCurrency(baseCurrency);
-                            }else{
+                            } else {
                                 setBaseCurrency(null);
                             }
                         }}
-                        />
-                    
-                    <PaymentField 
+                    />
+
+                    <PaymentField
                         value={price}
                         onChangeText={(e) => {
                             let value = amountValidation(e, price);
-                                if (value) {
-                                    setPrice(value);
-                                } else {
-                                    setPrice('');
-                                }
-                        }}/>
-                    
-                    <PayableIn 
+                            if (value) {
+                                setPrice(value);
+                            } else {
+                                setPrice('');
+                            }
+                        }} />
+
+                    <PayableIn
                         tokens={basePriceTokens.filter(_ => _.chain == chainType)}
                         onChangeValue={(value) => {
                             let allowedTokens = basePriceTokens.filter(_ => _.chain == chainType && value.includes(_.key));
-                            if(allowedTokens.length > 0){
+                            if (allowedTokens.length > 0) {
                                 let allowed = [];
                                 allowedTokens.map((item) => {
                                     allowed.push(item.order);
                                 });
                                 setAllowedTokens(allowed);
-                            }else{
+                            } else {
                                 setBaseCurrency([]);
                             }
-                        }}/>
+                        }} />
 
                     <View style={styles.summaryContainer}>
                         <Text style={styles.summaryTxt}>{translate("common.summary")}</Text>
-                        <Separator style={styles.separator}/>
-                        
-                        <View style={{flexDirection: 'row',justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={[styles.summaryTxt, {fontSize: RF(2)}]}>{translate("common.bounties")}</Text>
+                        <Separator style={styles.separator} />
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={[styles.summaryTxt, { fontSize: RF(2) }]}>{translate("common.bounties")}</Text>
                             <Text style={styles.comingsoon}>{translate("common.comingSoon")}</Text>
                         </View>
                         <Text style={styles.desc}>{translate("common.xanaliaReward")}</Text>
 
-                        <Separator style={styles.separator}/>
+                        <Separator style={styles.separator} />
 
-                        <View style={{marginTop: hp("1%"), flexDirection: 'row',justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Text style={[styles.summaryTxt, {fontSize: RF(2)}]}>{translate("common.fees")}</Text>
+                        <View style={{ marginTop: hp("1%"), flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={[styles.summaryTxt, { fontSize: RF(2) }]}>{translate("common.fees")}</Text>
                         </View>
-                        <Text style={[styles.desc, {marginBottom: hp("2%")}]}>{translate("common.listingIsFree")}</Text>
+                        <Text style={[styles.desc, { marginBottom: hp("2%") }]}>{translate("common.listingIsFree")}</Text>
 
                         <View style={styles.chargesRow}>
                             <Text style={styles.desc}>{translate("common.toText")}</Text>
@@ -319,17 +319,17 @@ const SellNFT = ({route, navigation}) => {
                             <Text style={styles.desc}>2.5%</Text>
                         </View>
 
-                        <View style={[styles.chargesRow,{marginBottom: 0}]}>
-                            <Text style={[styles.desc,{fontFamily: Fonts.ARIAL_BOLD}]}>{translate("common.total")}</Text>
-                            <Text style={[styles.desc,{fontFamily: Fonts.ARIAL_BOLD}]}>2.5%</Text>
+                        <View style={[styles.chargesRow, { marginBottom: 0 }]}>
+                            <Text style={[styles.desc, { fontFamily: Fonts.ARIAL_BOLD }]}>{translate("common.total")}</Text>
+                            <Text style={[styles.desc, { fontFamily: Fonts.ARIAL_BOLD }]}>2.5%</Text>
                         </View>
 
-                        <Separator style={styles.separator}/>
+                        <Separator style={styles.separator} />
 
-                        <Text style={[styles.summaryTxt, {fontSize: RF(2)}]}>{translate("common.listing")}</Text>
+                        <Text style={[styles.summaryTxt, { fontSize: RF(2) }]}>{translate("common.listing")}</Text>
 
                         <TouchableOpacity style={styles.saleButton} onPress={() => {
-                            console.log(baseCurrency,price);
+                            console.log(baseCurrency, price);
                             if (baseCurrency == null) {
                                 alertWithSingleBtn('', 'Please select Token');
                             } else if (price == '' || parseFloat(`${price}`) <= 0) {
@@ -349,19 +349,19 @@ const SellNFT = ({route, navigation}) => {
 }
 
 const ToggleState = (props) => {
-    const {activeState, onChange} = props;
+    const { activeState, onChange } = props;
 
     return (
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={activeState == FIXED_PRICE ? styles.button : styles.outLineButton} onPress={() => onChange(FIXED_PRICE)}>
-                <Text style={[activeState == FIXED_PRICE ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel, {fontSize: RF(2)}]}>
+                <Text style={[activeState == FIXED_PRICE ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel, { fontSize: RF(2) }]}>
                     {translate("common.fixedPrice")}
                 </Text>
-                <Text style={[activeState == FIXED_PRICE ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel, {fontSize: RF(1.5)}]}>
+                <Text style={[activeState == FIXED_PRICE ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel, { fontSize: RF(1.5) }]}>
                     {translate("common.sellAtAfixe")}
                 </Text>
             </TouchableOpacity>
-            <View style={{flex: 0.1}}/>
+            <View style={{ flex: 0.1 }} />
             <TouchableOpacity disabled style={activeState == AUCTION ? styles.button : styles.outLineButton} onPress={() => onChange(AUCTION)}>
                 <Text style={activeState == AUCTION ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel}>
                     {translate("common.highestBid")}
@@ -490,19 +490,19 @@ const styles = StyleSheet.create({
         borderColor: Colors.themeColor,
         borderRadius: 5
     },
-    inputContainer: { 
-        flexDirection: 'row', 
+    inputContainer: {
+        flexDirection: 'row',
         alignItems: 'center',
         borderColor: Colors.themeColor,
         borderWidth: 1,
         borderRadius: 5,
-        marginVertical: hp("1%") 
+        marginVertical: hp("1%")
     },
     paymentField: {
         paddingHorizontal: wp("2.5%"),
         ...CommonStyles.text(FONTS.ARIAL, Colors.black, RF(1.6)),
         flex: 1,
-        height:hp("5%")
+        height: hp("5%")
     },
     summaryContainer: {
         borderColor: Colors.themeColor,
@@ -526,8 +526,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp("2%")
     },
     chargesRow: {
-        flexDirection: 'row', 
-        justifyContent: 'space-between', 
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         marginVertical: hp("1%")
     },
     desc: {

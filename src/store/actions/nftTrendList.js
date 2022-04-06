@@ -91,7 +91,7 @@ export const getNFTList = (page, limit, sort) => {
     }
 
     if (user) {
-      body_data.owner = wallet.address || user._id;
+      body_data.owner = wallet?.address || user?._id;
     }
     // console.log('body_data',body_data);
     let fetch_data_body = {
@@ -152,7 +152,7 @@ export const gifNFTList = (page, limit, sort) => {
       body_data.sort = sort;
     }
     if (user) {
-      body_data.owner = wallet.address || user._id;
+      body_data.owner = wallet?.address || user?._id;
     }
     // console.log('body_data',body_data);
     let fetch_data_body = {
@@ -214,7 +214,7 @@ export const movieNFTList = (page, limit, sort) => {
     }
 
     if (user) {
-      body_data.owner = wallet.address || user._id;
+      body_data.owner = wallet?.address || user?._id;
     }
     // console.log('body_data',body_data);
     let fetch_data_body = {
@@ -330,7 +330,7 @@ export const handleLikeDislike = (item, index) => {
     var url2 = `${BASE_URL}/xanalia/updateRating`;
     let like_body = {
       networkType: networkType,
-      owner: wallet.address || data.user._id,
+      owner: wallet?.address || data.user._id,
       tokenId: item.tokenId,
     };
 

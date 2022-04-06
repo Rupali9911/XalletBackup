@@ -18,6 +18,7 @@ import { BASE_URL } from '../../../common/constants';
 import AppLogo from '../../../components/appLogo';
 import { translate } from '../../../walletUtils';
 import { setUserData, startLoading, endLoading } from '../../../store/reducer/userReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginCrypto = ({ route, navigation }) => {
     const dispatch = useDispatch();
@@ -28,14 +29,14 @@ const LoginCrypto = ({ route, navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        return()=>{
+        return () => {
             setEmail('');
             setPassword('');
             setError({});
         };
-    },[]);
+    }, []);
 
     const login = () => {
 
@@ -53,9 +54,14 @@ const LoginCrypto = ({ route, navigation }) => {
             .then(async response => {
                 console.log(response.data.data, "Sign in success")
                 if (response.data.success) {
+                    let tempData = {
+                        user: response.data.data.user,
+                        token: response.data.data.accessToken
+                    }
+                    await AsyncStorage.setItem('@userData', JSON.stringify(tempData));
                     dispatch(
                         setUserData({
-                            data: response.data.data,
+                            data: tempData,
                             wallet: "",
                             isCreate: false,
                             showSuccess: false,

@@ -299,7 +299,7 @@ const PaymentNow = props => {
     console.log('paymentObject', paymentObject);
     if (paymentObject?.currency?.approvalRequired) {
       checkAllowance(
-        wallet.address,
+        wallet?.address,
         chain || 'binance',
         paymentObject?.currency?.approvalAdd,
       )
@@ -310,14 +310,14 @@ const PaymentNow = props => {
           if (parseInt(balance) / Math.pow(10, parseInt(decimals)) <= 0) {
             // if (parseFloat(`${balance}`) < parseFloat(`${lastBidAmount}`)) {
             approvebnb(
-              wallet.address,
+              wallet?.address,
               wallet.privateKey,
               chain || 'binance',
               contract,
             )
               .then(res => {
                 buyNft(
-                  wallet.address,
+                  wallet?.address,
                   wallet.privateKey,
                   NftId,
                   chain || 'binance',
@@ -345,7 +345,7 @@ const PaymentNow = props => {
               });
           } else {
             buyNft(
-              wallet.address,
+              wallet?.address,
               wallet.privateKey,
               NftId,
               chain || 'binance',
@@ -387,7 +387,7 @@ const PaymentNow = props => {
     }
     console.log('fixed', addedFivePercent, collectionAddress);
     buyNftBnb(
-      wallet.address,
+      wallet?.address,
       wallet.privateKey,
       NftId,
       chain || 'binance',

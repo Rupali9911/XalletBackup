@@ -89,7 +89,7 @@ const getTokenValue = (item) => {
 const transferAmount = async () => {
 
     const { wallet } = useSelector(state => state.UserReducer);
-    const publicAddress = wallet.address;
+    const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
     const toAddress = address;
     setLoading(true);
@@ -368,7 +368,7 @@ const SendScreen = (props) => {
     }
 
     const transferAmount = async () => {
-        const publicAddress = wallet.address;
+        const publicAddress = wallet?.address;
         const privKey = wallet.privateKey;
         const toAddress = address;
         setLoading(true);

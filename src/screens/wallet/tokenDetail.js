@@ -1,8 +1,8 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
 import NumberFormat from 'react-number-format';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -10,7 +10,7 @@ import TextView from '../../components/appText';
 import GradientBackground from '../../components/gradientBackground';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { BASE_URL } from '../../common/constants';
 import {
@@ -18,16 +18,16 @@ import {
   addAllEthTransactions,
   addAllMaticTransactions,
 } from '../../store/reducer/walletReducer';
-import {environment, IsTestNet, translate} from '../../walletUtils';
-import {HeaderBtns} from './components/HeaderButtons';
+import { environment, IsTestNet, translate } from '../../walletUtils';
+import { HeaderBtns } from './components/HeaderButtons';
 import History from './components/History';
-import {balance} from './functions';
-import {networkType} from '../../common/networkType'
+import { balance } from './functions';
+import { networkType } from '../../common/networkType'
 
-const TokenDetail = ({route, navigation}) => {
-  const {} = route.params;
-  const {wallet} = useSelector(state => state.UserReducer);
-  const {ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance, busdBalance,usdtBalance} =
+const TokenDetail = ({ route, navigation }) => {
+  const { } = route.params;
+  const { wallet } = useSelector(state => state.UserReducer);
+  const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance, busdBalance, usdtBalance } =
     useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -45,7 +45,7 @@ const TokenDetail = ({route, navigation}) => {
     //         setLoading(false);
     //     });
 
-    getTransactionsByType(wallet.address, item.network.toLowerCase());
+    getTransactionsByType(wallet?.address, item.network.toLowerCase());
   }, []);
 
   const getBalance = () => {
@@ -93,7 +93,7 @@ const TokenDetail = ({route, navigation}) => {
         break;
       default:
     }
-    return balance(wallet.address, cont, abi, rpc, type);
+    return balance(wallet?.address, cont, abi, rpc, type);
   };
 
   const getData = () => {
@@ -139,21 +139,21 @@ const TokenDetail = ({route, navigation}) => {
     } else if (item.type === 'ETH' && item.network === 'Polygon') {
       let value = parseFloat(`${wethBalance}`); //+ parseFloat(balances.USDC)
       totalValue = value;
-    }else if (item.network === 'BSC' && item.type == 'ALIA') {
-        let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
-        totalValue = value;
-    }else if (item.network === 'Polygon' && item.type == 'ALIA') {
-        let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
-        totalValue = value;
-    }else if (item.type == 'BUSD') {
-        let value = parseFloat(busdBalance); //+ parseFloat(balances.USDC)
-        totalValue = value;
-    }else if (item.type == 'USDT') {
-        let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
-        totalValue = value;
+    } else if (item.network === 'BSC' && item.type == 'ALIA') {
+      let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.network === 'Polygon' && item.type == 'ALIA') {
+      let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'BUSD') {
+      let value = parseFloat(busdBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'USDT') {
+      let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
     }
 
-      return totalValue;
+    return totalValue;
   };
 
   const getTransactionsByType = (address, type) => {
@@ -178,11 +178,11 @@ const TokenDetail = ({route, navigation}) => {
                   ..._item,
                   value: Web3.utils.fromWei(trx.value, 'ether'),
                   type:
-                    _item.from == wallet.address
+                    _item.from == wallet?.address
                       ? 'OUT'
-                      : _item.to == wallet.address
-                      ? 'IN'
-                      : '',
+                      : _item.to == wallet?.address
+                        ? 'IN'
+                        : '',
                 });
               });
               array.reverse();
@@ -193,11 +193,11 @@ const TokenDetail = ({route, navigation}) => {
                 _array.push({
                   ..._item,
                   type:
-                    _item.from == wallet.address
+                    _item.from == wallet?.address
                       ? 'OUT'
-                      : _item.to == wallet.address
-                      ? 'IN'
-                      : '',
+                      : _item.to == wallet?.address
+                        ? 'IN'
+                        : '',
                 });
               });
               _array.reverse();
@@ -209,11 +209,11 @@ const TokenDetail = ({route, navigation}) => {
                 __array.push({
                   ..._item,
                   type:
-                    _item.from == wallet.address
+                    _item.from == wallet?.address
                       ? 'OUT'
-                      : _item.to == wallet.address
-                      ? 'IN'
-                      : '',
+                      : _item.to == wallet?.address
+                        ? 'IN'
+                        : '',
                 });
               });
               __array.reverse();
@@ -252,8 +252,8 @@ const TokenDetail = ({route, navigation}) => {
               />
 
               {/*<View style={styles.tokenDetail}>*/}
-                {/*<TextView style={styles.amount}>{item.amount}</TextView>*/}
-                {/*<TextView style={styles.percent}>{item.percent}</TextView>*/}
+              {/*<TextView style={styles.amount}>{item.amount}</TextView>*/}
+              {/*<TextView style={styles.percent}>{item.percent}</TextView>*/}
               {/*</View>*/}
             </View>
           )}
@@ -261,13 +261,13 @@ const TokenDetail = ({route, navigation}) => {
           <View style={[styles.headerBtns, styles.headerBottomCont]}>
             <HeaderBtns
               onPress={() => {
-                navigation.navigate('send', {item, type: item.type});
+                navigation.navigate('send', { item, type: item.type });
               }}
               image={ImagesSrc.send}
               label={translate('wallet.common.send')}
             />
             <HeaderBtns
-              onPress={() => navigation.navigate('receive', {item})}
+              onPress={() => navigation.navigate('receive', { item })}
               image={ImagesSrc.receive}
               label={translate('wallet.common.receive')}
             />

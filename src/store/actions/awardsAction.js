@@ -56,7 +56,7 @@ export const getAwardsNftList = (page, limit, sort) => {
 		}
 
 		if (user) {
-			body_data.owner = wallet.address || user._id;
+			body_data.owner = wallet?.address || user._id;
 		}
 
 		console.log('body_data', body_data)
