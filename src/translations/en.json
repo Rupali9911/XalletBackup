@@ -444,6 +444,7 @@
         "instagramlink": "Please enter valid Instagram link.",
         "usernotfound": "User not found",
         "facebook": "Facebook",
+        "zoomMail": "ZoomMail",
         "youtube": "YouTube",
         "carddeclined": "The card has been declined for an unknown reason.",
         "oneormorefieldmissing": "All fields are Mandatory",
@@ -967,7 +968,9 @@
             "profileCreated":"Created",
             "connectionEstablished":"Connection established",
             "openApp":"Please open the XANA app",
-            "setPushNotification":"Set up push notifications"
+            "setPushNotification":"Set up push notifications",
+            "loginWithWallet":"Log in with Wallet",
+            "loginWithAccount":"Log in with Account"
         },
         "backendmessage": {
             "error": {},

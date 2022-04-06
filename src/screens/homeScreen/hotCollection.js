@@ -25,10 +25,10 @@ const HotCollection = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [isFirsRender, setIsFirstRender] = useState(true);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    if (isFocused && isFirsRender) {
+    if (isFocused && isFirstRender) {
       console.log("hot collection",)
       dispatch(hotCollectionLoadStart());
       dispatch(hotCollectionListReset());
@@ -78,7 +78,7 @@ const HotCollection = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirsRender ? isFirsRender : HotCollectionReducer.hotCollectionPage === 1 &&
+      {isFirstRender ? isFirstRender : HotCollectionReducer.hotCollectionPage === 1 &&
         HotCollectionReducer.hotCollectionLoading ? (
         <Loader />
       ) : HotCollectionReducer.hotCollectionList.length !== 0 ? (

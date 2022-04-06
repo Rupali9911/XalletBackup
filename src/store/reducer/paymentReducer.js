@@ -61,6 +61,7 @@ export const addCard = (token, data) => (dispatch) =>
         let headers = {
             'Authorization': `Bearer ${token}`
         }
+        console.log('request data save user card', data)
         ApiRequest(`${BASE_URL}/stripe/save-user-card`, 'POST', data, headers)
             .then((response) => {
                 if (response.success) {

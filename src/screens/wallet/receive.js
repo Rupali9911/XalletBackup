@@ -41,7 +41,7 @@ const QRScreen = () => {
 
     const [price, setPrice] = useState("");
     const [showShare, setShowShare] = useState(false);
-    const [qrData, setQrData] = useState(wallet.address);
+    const [qrData, setQrData] = useState(wallet?.address);
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -71,7 +71,7 @@ const QRScreen = () => {
     }
 
     const copyToClipboard = () => {
-        Clipboard.setString(wallet.address);
+        Clipboard.setString(wallet?.address);
         alertWithSingleBtn(translate("wallet.common.copied"))
     }
 
@@ -88,7 +88,7 @@ const QRScreen = () => {
                             quietZone={5}
                         />
                     </TouchableOpacity>
-                    <TextView style={styles.codeValue}>{wallet.address}</TextView>
+                    <TextView style={styles.codeValue}>{wallet?.address}</TextView>
                     <TextView style={styles.qrLabel}>{""}</TextView>
                     {price!=="" && <TextView style={styles.price}>{price}</TextView>}
                     {price!=="" && <TextView style={styles.valueLabel}>{item.type}</TextView>}

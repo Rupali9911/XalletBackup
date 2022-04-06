@@ -72,6 +72,7 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
 
   React.useEffect(() => { }, [selectedLanguageItem.language_name]);
 
@@ -130,11 +131,12 @@ const TabComponent = () => {
         component={ExploreScreen}
         options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
-      <Tab.Screen
-        name={'Wallet'}
-        options={{ tabBarLabel: translate('wallet.common.wallet') }}
-        component={Wallet}
-      />
+      {userRole === 'crypto' &&
+        <Tab.Screen
+          name={'Wallet'}
+          options={{ tabBarLabel: translate('wallet.common.wallet') }}
+          component={Wallet}
+        />}
       <Tab.Screen
         name={'Connect'}
         options={{ tabBarLabel: translate('wallet.common.connect') }}
@@ -211,7 +213,7 @@ const AppRoutes = () => {
   if (!mainLoader && !showSplash) SplashScreen.hide();
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
-      {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data.user.role === "non_crypto") ? (
+      {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data?.user?.role === "non_crypto") ? (
         <Stack.Navigator
           // initialRouteName={"Create"}
           initialRouteName={initialRoute}

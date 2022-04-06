@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -27,17 +27,23 @@ const AwardsNFT = () => {
   const { sort } = useSelector(state => state.ListReducer);
   const [modalData, setModalData] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [isSort, setIsSort] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    console.log("award nft")
-
-    dispatch(awardsNftLoadStart());
-    dispatch(awardsNftListReset());
-    getNFTlist(1, null, sort);
-    dispatch(awardsNftPageChange(1));
-  }, [sort]);
+    if (isFocused && (isFirstRender || isSort !== sort)) {
+      console.log("award nft")
+      dispatch(awardsNftLoadStart());
+      dispatch(awardsNftListReset());
+      getNFTlist(1, null, sort);
+      dispatch(awardsNftPageChange(1));
+      setIsFirstRender(false)
+      setIsSort(sort)
+    }
+  }, [sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
     // console.log('__sort',_sort);

@@ -240,7 +240,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   }
 
   const saveDraftCollection = async () => {
-    const publicAddress = wallet.address;
+    const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
     changeLoadingState(true);
     if (publicAddress && data.token) {
@@ -366,7 +366,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   }
 
   const saveCollection = () => {
-    const publicAddress = wallet.address;
+    const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
     changeLoadingState(true);
     if (publicAddress && data.token) {

@@ -32,8 +32,8 @@ import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
-import {alertWithSingleBtn} from "../../common/function";
-import {CommonActions} from '@react-navigation/native';
+import { alertWithSingleBtn } from "../../common/function";
+import { CommonActions } from '@react-navigation/native';
 
 const ethers = require('ethers');
 
@@ -82,25 +82,25 @@ const Wallet = ({ route, navigation }) => {
   let subscribeMatic;
 
   useEffect(() => {
-        if (wallet && !isCreate && isFocused) {
-            setLoading(true);
-            getBalances(wallet.address);
-        } else {
-            subscribeEth &&
-            subscribeEth.unsubscribe((error, success) => {
-                if (success) console.log('Successfully unsubscribed!');
-            });
-            subscribeBnb &&
-            subscribeBnb.unsubscribe((error, success) => {
-                if (success) console.log('Successfully unsubscribed!');
-            });
-            subscribeMatic &&
-            subscribeMatic.unsubscribe((error, success) => {
-                if (success) console.log('Successfully unsubscribed!');
-            });
-        }
-        console.log('wallet use effect', data, wallet);
-      }, [isFocused]);
+    if (wallet && !isCreate && isFocused) {
+      setLoading(true);
+      getBalances(wallet.address);
+    } else {
+      subscribeEth &&
+        subscribeEth.unsubscribe((error, success) => {
+          if (success) console.log('Successfully unsubscribed!');
+        });
+      subscribeBnb &&
+        subscribeBnb.unsubscribe((error, success) => {
+          if (success) console.log('Successfully unsubscribed!');
+        });
+      subscribeMatic &&
+        subscribeMatic.unsubscribe((error, success) => {
+          if (success) console.log('Successfully unsubscribed!');
+        });
+    }
+    console.log('wallet use effect', data, wallet);
+  }, [isFocused]);
 
   useEffect(() => {
     singleSocket.connectSocket().then(() => {
@@ -136,7 +136,7 @@ const Wallet = ({ route, navigation }) => {
 
   useEffect(() => {
     setLoading(true);
-    getBalances(wallet.address);
+    getBalances(wallet?.address);
     // if (network.name == 'Ethereum' && subscribeEth == null) {
     //   subscribeEth = watchBalanceUpdate(() => {
     //     getBalances(wallet.address);
@@ -265,8 +265,8 @@ const Wallet = ({ route, navigation }) => {
       data: {
         type: 'wallet',
         data: {
-          walletId: wallet.address,
-          publicKey: wallet.address,
+          walletId: wallet?.address,
+          publicKey: wallet?.address,
           sig: `${getSig(msg)}`,
         },
       },
@@ -500,7 +500,7 @@ const Wallet = ({ route, navigation }) => {
   };
 
   const onRefreshToken = () => {
-    return getBalances(wallet.address);
+    return getBalances(wallet?.address);
   };
 
   return (

@@ -110,6 +110,7 @@ export const maxLength = max => value =>
     ? translate('wallet.common.limitInputLength', {number: max})
     : undefined;
 
+export const maxLength13 = maxLength(13);
 export const maxLength20 = maxLength(20);
 export const maxLength50 = maxLength(50);
 export const maxLength100 = maxLength(100);
@@ -132,3 +133,5 @@ export const validateInstagramURL = value =>
   value && !validURL(value) ? translate('common.instagramlink') : undefined;
 export const validateFacebookURL = value =>
   value && !validURL(value) ? translate('common.validfblink') : undefined;
+export const validateZoomLinkURL = value =>
+  value && !validURL(value) ? translate('common.emailval') : undefined;

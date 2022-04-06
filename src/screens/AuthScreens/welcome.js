@@ -39,7 +39,7 @@ const Welcome = ({navigation}) => {
 
         <View>
           <AppButton
-            label={"Log in with Wallet"}
+            label={translate('wallet.common.loginWithWallet')}
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
@@ -47,7 +47,7 @@ const Welcome = ({navigation}) => {
             }}
           />
           <AppButton
-            label={"Log in with Account"}
+            label={translate('wallet.common.loginWithAccount')}
             containerStyle={CommonStyles.outlineButton}
             labelStyle={CommonStyles.outlineButtonLabel}
             onPress={() => navigation.navigate('CryptoLogin')}

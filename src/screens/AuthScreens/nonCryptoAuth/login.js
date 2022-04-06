@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, Touchable } from 'react-native';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
@@ -18,6 +18,7 @@ import { BASE_URL } from '../../../common/constants';
 import AppLogo from '../../../components/appLogo';
 import { translate } from '../../../walletUtils';
 import { setUserData, startLoading, endLoading } from '../../../store/reducer/userReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginCrypto = ({ route, navigation }) => {
     const dispatch = useDispatch();
@@ -27,6 +28,15 @@ const LoginCrypto = ({ route, navigation }) => {
     const [error, setError] = useState({});
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    useEffect(() => {
+
+        return () => {
+            setEmail('');
+            setPassword('');
+            setError({});
+        };
+    }, []);
 
     const login = () => {
 
@@ -44,9 +54,14 @@ const LoginCrypto = ({ route, navigation }) => {
             .then(async response => {
                 console.log(response.data.data, "Sign in success")
                 if (response.data.success) {
+                    let tempData = {
+                        user: response.data.data.user,
+                        token: response.data.data.accessToken
+                    }
+                    await AsyncStorage.setItem('@userData', JSON.stringify(tempData));
                     dispatch(
                         setUserData({
-                            data: response.data.data,
+                            data: tempData,
                             wallet: "",
                             isCreate: false,
                             showSuccess: false,
@@ -64,6 +79,9 @@ const LoginCrypto = ({ route, navigation }) => {
                 if (!error.response.data.success) {
                     if (error.response.data.data == "Please verify your email") {
                         navigation.navigate("CryptoVerify", { email })
+                    } else {
+                        errorF.password = translate(`common.${error.response.data.error_code}`);
+                        setError(errorF);
                     }
                 } else {
                     errorF.password = translate(`common.${error.response.data.error_code}`);
@@ -74,7 +92,7 @@ const LoginCrypto = ({ route, navigation }) => {
 
     return (
         <AppBackground isBusy={loading}>
-            <AppHeader showBackButton title={'Log in with Account'} />
+            <AppHeader showBackButton title={translate('wallet.common.loginWithAccount')} />
             <KeyboardAwareScrollView
                 contentContainerStyle={styles.scrollContent}
                 KeyboardShiftStyle={styles.keyboardShift}>
