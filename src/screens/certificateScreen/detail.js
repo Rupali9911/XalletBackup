@@ -1752,7 +1752,6 @@ const DetailScreen = ({ navigation, route }) => {
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
-<<<<<<< HEAD
                 <Text style={styles.price}>{price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0}</Text>
                 <Text style={styles.priceUnit}>
                   {baseCurrency?.key}<Text style={styles.dollarText}>
@@ -1760,10 +1759,6 @@ const DetailScreen = ({ navigation, route }) => {
                   </Text>
                 </Text>
                 {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
-=======
-                <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}</Text>
-                <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
->>>>>>> 30d47e71b429a2be0ed576f1c17bb96c42daffc9
               </View>
               <View style={{ flex: 0.4 }} >
                 {availableTokens.length > 0 &&
