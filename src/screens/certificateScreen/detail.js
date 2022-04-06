@@ -258,7 +258,7 @@ const DetailScreen = ({ navigation, route }) => {
   const getCurrencyPrice = async () => {
     let finalPrice = '';
     let i;
-    switch (chain) {
+    switch (item.nftChain) {
       case 'BinanceNtwk':
         i = 0
         break;
@@ -270,7 +270,7 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
 
-    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i].walletAddressForNonCrypto)
+    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto)
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = item.price * currencyPrices?.BNB;
@@ -293,8 +293,6 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
     setPriceInDollar(finalPrice);
-    // console.log('finalPrice 337 //////////', finalPrice, baseCurrency?.key, i, chain);
-    // console.log("Currency 338", currencyPrices);
   };
 
   const priceInDollars = (pubKey) => {
@@ -1752,7 +1750,7 @@ const DetailScreen = ({ navigation, route }) => {
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
-                <Text style={styles.price}>{price ? numberWithCommas(parseFloat(Number(price).toFixed(4))) : 0}</Text>
+                <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}</Text>
                 <Text style={styles.priceUnit}>
                   {baseCurrency?.key}<Text style={styles.dollarText}>
                     {` ($${parseFloat(priceInDollar, true).toFixed(2)})`}
