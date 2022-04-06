@@ -81,7 +81,7 @@ const ListItem = props => {
             size={RF(2.5)}
             color={Colors.GREY8}
             name="chevron-right"
-          />
+            />
         )}
       </View>
     </TouchableOpacity>
