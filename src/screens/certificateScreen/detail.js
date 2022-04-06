@@ -1406,7 +1406,7 @@ const DetailScreen = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('CertificateDetail', {
+            navigation.push('CertificateDetail', {
               owner: ownerN,
               ownerData: ownerDataN,
               artistId: artist,
@@ -1415,9 +1415,9 @@ const DetailScreen = ({ navigation, route }) => {
               video: item.metaData.image,
               fileType: fileType,
               item: item,
-              index: index
+              index: index,
+              routeName: "Search"
             });
-            scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
           }}
           style={styles.listItem}>
           <C_Image
