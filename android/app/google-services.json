@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:81393168969:android:2a2fd9d15b0ca31bc54598",
+        "mobilesdk_app_id": "1:81393168969:android:0854c1f1cc8d76f1c54598",
         "android_client_info": {
-          "package_name": "com.xanaliaApp"
+          "package_name": "com.xanalia.app"
         }
       },
       "oauth_client": [

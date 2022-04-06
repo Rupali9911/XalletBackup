@@ -666,22 +666,13 @@ const nftItem = ({ item, index, minHeight }) => {
                   isPlay
                     ? setPlay(!isPlay)
                     : navigation.navigate('CertificateDetail', {
-                      id: item.newtokenId,
-                      name: item.metaData.name,
-                      description: item.metaData.description,
                       owner: owner,
-                      creator: artist,
-                      thumbnailUrl: item.thumbnailUrl,
+                      ownerData: ownerData,
+                      artistId: artist,
+                      collectCreat: collectCreat,
+                      artistData: artistData,
                       video: videoUri,
                       fileType: fileType,
-                      price: item.price,
-                      chain: item.chain,
-                      artistId: artist,
-                      tokenId: item.tokenId,
-                      collectCreat: collectCreat,
-                      ownerData: ownerData,
-                      artistData: artistData,
-                      like: item.like,
                       item: item,
                       index: index,
                     })

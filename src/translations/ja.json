@@ -971,7 +971,9 @@
             "profileCreated":"制作物",
             "connectionEstablished":"コネクトが完了しました！",
             "openApp":"XANAアプリを開いてください。",
-            "setPushNotification":"プッシュ通知を設定"
+            "setPushNotification":"プッシュ通知を設定",
+            "loginWithWallet":"ウォレットでログイン",
+            "loginWithAccount":"アカウントでログイン"
         },
         "backendmessage": {
             "error": {},

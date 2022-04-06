@@ -971,7 +971,9 @@
             "profileCreated": "만들어진",
             "connectionEstablished":"연결 설정됨",
             "openApp":"XANA 앱을 열어주세요",
-            "setPushNotification":"푸시 알림 설정"
+            "setPushNotification":"푸시 알림 설정",
+            "loginWithWallet":"지갑으로 로그인",
+            "loginWithAccount":"계정으로 로그인"
         },
         "backendmessage": {
             "error": {},

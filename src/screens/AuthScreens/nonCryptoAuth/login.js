@@ -92,7 +92,7 @@ const LoginCrypto = ({ route, navigation }) => {
 
     return (
         <AppBackground isBusy={loading}>
-            <AppHeader showBackButton title={'Log in with Account'} />
+            <AppHeader showBackButton title={translate('wallet.common.loginWithAccount')} />
             <KeyboardAwareScrollView
                 contentContainerStyle={styles.scrollContent}
                 KeyboardShiftStyle={styles.keyboardShift}>

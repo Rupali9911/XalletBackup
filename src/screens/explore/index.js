@@ -1,77 +1,111 @@
+import { Divider } from 'native-base';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'src/styles/common.styles';
+import { BASE_URL } from '../../common/constants';
 import { Loader } from '../../components';
 import AppSearch from '../../components/appSearch';
 import { hp } from '../../constants/responsiveFunct';
 import { colors } from '../../res';
 import { getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
-import NftItem from '../detailScreen/nftItem';
+import NftItem from './nftItems';
 
 function ExploreScreen() {
-  const { ListReducer } = useSelector(state => state);
-  const [nftIndex, setNftIndex] = useState(2);
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
+  const [discoverNFTList, setDiscoverNFTList] = useState([]);
+  const [loader, setLoader] = useState(true);
+  const [footerLoader, setFooterLoader] = useState(false);
+  const [noMore, setNoMore] = useState(false);
+  const [isFetching, toggleFetching] = useState(false);
 
   useEffect(() => {
-    if (ListReducer?.nftList?.length == 0 && isFirstRender) {
-      dispatch(nftLoadStart());
-      dispatch(nftListReset('hot'));
-      getNFTlistData(1);
-      dispatch(pageChange(1));
-      setIsFirstRender(false)
-    } else {
-      setIsFirstRender(false)
-    }
-  }, [ListReducer?.nftList]);
-
-  const dispatch = useDispatch();
-
-  const getNFTlistData = React.useCallback(page => {
-    dispatch(getNFTList(page));
+    setLoader(true)
+    loadNFTList(1, true)
   }, []);
 
-  const handlePageChange = page => {
-    dispatch(pageChange(page));
-  };
+  const loadNFTList = (p, refresh) => {
+    let url = `${BASE_URL}/xanalia/discover?page=${p}&limit=10`;
+    let fetch_data_body = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+    fetch(url, fetch_data_body)
+      .then(response => response.json())
+      .then(json => {
+        console.log('json discover', json)
+        if (json.data === "No record found") {
+          setNoMore(true)
+        } else {
+          if (json.success) {
+            if (refresh) {
+              setDiscoverNFTList([...json.data])
+            } else {
+              setDiscoverNFTList([...discoverNFTList, ...json.data])
+            }
+            setCount(json.count)
+          }
+        }
+        setLoader(false)
+        toggleFetching(false)
+        setFooterLoader(false)
+      })
+      .catch(err => {
+        setLoader(false)
+        setFooterLoader(false);
+        toggleFetching(false)
+        console.log(err, "error discover")
+      });
+  }
 
   const renderFooter = () => {
-    if (!ListReducer.nftListLoading) return null;
+    if (!footerLoader) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
   const renderItem = ({ item }) => {
-    let findIndex = ListReducer.nftList.findIndex(x => x.id === item.id);
     if (item.metaData) {
-      return <NftItem item={item} index={findIndex} minHeight={true} />;
+      return <NftItem item={item} />;
     }
   };
 
-  const memoizedValue = useMemo(() => renderItem, [ListReducer.nftList]);
+  const onRefresh = () => {
+    toggleFetching(true);
+    setPage(1)
+    loadNFTList(1, true)
+  }
 
+  const memoizedValue = useMemo(() => renderItem, [discoverNFTList]);
+  console.log(discoverNFTList, "discoverNFTList")
   return (
     <Container>
       <View style={{ flex: 1 }}>
         <View style={styles.listContainer}>
-          {isFirstRender ? isFirstRender : ListReducer.page === 1 && ListReducer.nftListLoading ? (
+          {loader ? (
             <View style={styles.loaderContainer}>
               <Loader />
             </View>
           ) : (
             <FlatList
-              data={ListReducer?.nftList?.slice(0, nftIndex)}
+              data={discoverNFTList}
               renderItem={memoizedValue}
+              onRefresh={onRefresh}
+              refreshing={isFetching}
               onEndReached={() => {
-                let tempIndex = nftIndex + 2;
-                setNftIndex(tempIndex)
-
-                if (ListReducer?.nftList?.length == tempIndex && !ListReducer.nftListLoading) {
-                  let num = ListReducer.page + 1;
-                  getNFTlistData(num);
-                  handlePageChange(num);
+                if (!noMore) {
+                  if (!footerLoader && discoverNFTList.length !== count) {
+                    setFooterLoader(true)
+                    let pageI = page + 1;
+                    setPage(pageI)
+                    loadNFTList(pageI)
+                  }
                 }
               }}
+              ItemSeparatorComponent={() => <Divider />}
               ListFooterComponent={renderFooter}
               onEndReachedThreshold={0.1}
               keyExtractor={(v, i) => 'item_' + i}
