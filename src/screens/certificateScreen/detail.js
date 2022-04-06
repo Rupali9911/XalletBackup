@@ -253,7 +253,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getCurrencyPrice();
-  }, [wallet, price, baseCurrency])
+  }, [wallet, baseCurrency])
 
   const getCurrencyPrice = async () => {
     let finalPrice = '';
@@ -1815,7 +1815,7 @@ const DetailScreen = ({ navigation, route }) => {
                     // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', { nftDetail: singleNFT });
-                  }
+                  }0
                   // }
                 }}
                 leftHide={setNFTStatus() === undefined}
