@@ -56,6 +56,7 @@ import {
 } from 'react-native-popup-menu';
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
 import addComma from '../../utils/insertComma';
+import { handleLike } from '../explore/nftItems';
 
 const Web3 = require('web3');
 
@@ -152,6 +153,7 @@ const DetailScreen = ({ navigation, route }) => {
     fileType,
     item,
     index,
+    setNftItem
   } = route.params;
 
   const [ownerDataN, setOwnerDataN] = useState(ownerData);
@@ -258,7 +260,7 @@ const DetailScreen = ({ navigation, route }) => {
   const getCurrencyPrice = async () => {
     let finalPrice = '';
     let i;
-    switch (chain) {
+    switch (chainType) {
       case 'BinanceNtwk':
         i = 0
         break;
@@ -865,7 +867,7 @@ const DetailScreen = ({ navigation, route }) => {
     MarketPlaceContract.methods
       .getNonCryptoOwner(collectionAddress, _tokenId)
       .call(async (err, res) => {
-        console.log('getNonCryptoOwner_res', res, item.metaData.name);
+        // console.log('getNonCryptoOwner_res', res, item.metaData.name);
         if (res) {
           const userId = res.toLowerCase();
           //getPublicProfile(userId, false);
@@ -1096,11 +1098,11 @@ const DetailScreen = ({ navigation, route }) => {
   const getCollectionByAddress = (c) => {
     let url = `${BASE_URL}/xanalia/collection-info?collectionAddr=${c.toLowerCase()}`
 
-    console.log(c, "response.data")
+    // console.log(c, "response.data")
     axios
       .get(url)
       .then((response) => {
-        console.log('response from collection info', response.data)
+        // console.log('response from collection info', response.data)
         if (response.data) {
           setcollectCreat(response.data.data)
         }
@@ -1126,32 +1128,20 @@ const DetailScreen = ({ navigation, route }) => {
         'Content-Type': 'application/json',
       },
     };
-    console.log('/xanalia/getDetailNFT called')
+    // console.log('/xanalia/getDetailNFT called')
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        // console.log('getDetailNFT_res', res);
+        console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
-          const getDetails = res?.data;
-          if (
-            getDetails &&
-            getDetails[0] &&
-            getDetails[0]?.newprice &&
-            getDetails[0]?.newprice?.seller.includes('0x')
-          ) {
-            // getNFTDiscount(
-            //   getDetails[0]?.newprice?.seller,
-            //   getDetails[0]?.newprice?.tokenId,
-            // );
-            // getDiscount();
-          }
-          let data = await getNFTDetails(res.data[0]);
 
-          if (route.params.hasOwnProperty("routeName") && route.params.routeName === "Search") {
+          let data = await getNFTDetails(res.data[0]);
+          setLike(data.like)
+          if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
             let collection = data.offchain
               ? data.collectionOffChainId
               : data.collectionAdd.toString().split("-")[1];
-            console.log("yahoo")
+            // console.log("yahoo")
             getCollectionByAddress(collection);
             let req_data = {
               owner: res.data[0]?.returnValues?.to?.toLowerCase(),
@@ -1429,7 +1419,7 @@ const DetailScreen = ({ navigation, route }) => {
               fileType: fileType,
               item: item,
               index: index,
-              routeName: "Search"
+              routeName: "Detail"
             });
           }}
           style={styles.listItem}>
@@ -1487,7 +1477,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    console.log('collectCreat', collectCreatData?.collectionName)
+    // console.log('collectCreat', collectCreatData?.collectionName)
     if (collectCreatData?.userId === "0") {
       return true;
     } else {
@@ -1543,6 +1533,16 @@ const DetailScreen = ({ navigation, route }) => {
     return null;
   };
 
+  const handleLikeMethod = async () => {
+    let nftItem = {...item, like: isLike}
+    const handleLikeM = await handleLike(wallet, data, nftItem);
+    if (handleLikeM) {
+      if (route.params.hasOwnProperty("setNftItem") && route.params.setNftItem) {
+        route.params.setNftItem(handleLikeM)
+      }
+    }
+  }
+
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     setLoader(true)
@@ -1568,6 +1568,7 @@ const DetailScreen = ({ navigation, route }) => {
           artistDetail.username.substring(0, 6) : artist.substring(0, 6)
     : artist ? artist?.substring(0, 6) : "";
   // console.log(creatorName, "/aaaaaaa", artistDetail && artist)
+  // console.log(isLike, item)
   return (
     <>
       {
@@ -1659,7 +1660,8 @@ const DetailScreen = ({ navigation, route }) => {
           <TouchableOpacity
             onPress={() => {
               setLike(!isLike);
-              dispatch(handleLikeDislike(item, index));
+              handleLikeMethod()
+              // dispatch(handleLikeDislike(item, index));
             }}
             style={styles.likeButton}>
             {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
@@ -1815,7 +1817,7 @@ const DetailScreen = ({ navigation, route }) => {
                     // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', { nftDetail: singleNFT });
-                  }0
+                  } 0
                   // }
                 }}
                 leftHide={setNFTStatus() === undefined}
