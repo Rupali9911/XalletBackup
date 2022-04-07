@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { ActivityIndicator, View, Text, TouchableOpacity, StatusBar, FlatList } from 'react-native';
+import { ActivityIndicator, View, Text, StatusBar, FlatList } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -8,7 +8,7 @@ import { changeScreenName } from '../../store/actions/authAction';
 
 import styles from './styles';
 import { colors } from '../../res';
-import { Loader, DetailModal, C_Image } from '../../components';
+import { Loader } from '../../components';
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 
@@ -17,8 +17,6 @@ const ArtNFT = () => {
 
     const { NewNFTListReducer } = useSelector(state => state);
     const { sort } = useSelector(state => state.ListReducer);
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
     const [isFirstRender, setIsFirstRender] = useState(true);
     const [isSort, setIsSort] = useState(null);
     const dispatch = useDispatch();
@@ -57,10 +55,6 @@ const ArtNFT = () => {
                 <NFTItem
                     item={item}
                     image={imageUri}
-                    onLongPress={() => {
-                        setModalData(item);
-                        setModalVisible(true);
-                    }}
                     onPress={() => {
                         dispatch(changeScreenName('newNFT'));
                         navigation.push('DetailItem', { index: findIndex });
@@ -96,7 +90,6 @@ const ArtNFT = () => {
                                 dispatch(newNftLoadStart());
                                 handleRefresh();
                             }}
-                            scrollEnabled={!isModalVisible}
                             refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
                             renderItem={memoizedValue}
                             onEndReached={() => {
@@ -113,14 +106,6 @@ const ArtNFT = () => {
                         <View style={styles.sorryMessageCont} >
                             <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
-            }
-            {
-                modalData &&
-                <DetailModal
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
             }
         </View>
     )

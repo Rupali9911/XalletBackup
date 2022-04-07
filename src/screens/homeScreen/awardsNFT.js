@@ -5,11 +5,10 @@ import {
   FlatList,
   StatusBar,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { C_Image, DetailModal, Loader } from '../../components';
+import { Loader } from '../../components';
 import { colors } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import {
@@ -25,8 +24,6 @@ import NFTItem from '../../components/NFTItem';
 const AwardsNFT = () => {
   const { AwardsNFTReducer } = useSelector(state => state);
   const { sort } = useSelector(state => state.ListReducer);
-  const [modalData, setModalData] = useState();
-  const [isModalVisible, setModalVisible] = useState(false);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isSort, setIsSort] = useState(null);
   const dispatch = useDispatch();
@@ -75,10 +72,6 @@ const AwardsNFT = () => {
         <NFTItem
           item={item}
           image={imageUri}
-          onLongPress={() => {
-            setModalData(item);
-            setModalVisible(true);
-          }}
           onPress={() => {
             dispatch(changeScreenName('awards'));
             navigation.push('DetailItem', { index: findIndex });
@@ -109,7 +102,6 @@ const AwardsNFT = () => {
             dispatch(awardsNftLoadStart());
             handleRefresh();
           }}
-          scrollEnabled={!isModalVisible}
           refreshing={
             AwardsNFTReducer.awardsNftPage === 1 &&
             AwardsNFTReducer.awardsNftLoading
@@ -134,13 +126,6 @@ const AwardsNFT = () => {
         <View style={styles.sorryMessageCont}>
           <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
         </View>
-      )}
-      {modalData && (
-        <DetailModal
-          data={modalData}
-          isModalVisible={isModalVisible}
-          toggleModal={() => setModalVisible(false)}
-        />
       )}
     </View>
   );
