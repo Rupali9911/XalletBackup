@@ -969,6 +969,7 @@
             "connectionEstablished":"Connection established",
             "openApp":"Please open the XANA app",
             "setPushNotification":"Set up push notifications",
+            "reSell": "Resale",
             "loginWithWallet":"Log in with Wallet",
             "loginWithAccount":"Log in with Account"
         },

@@ -972,6 +972,7 @@
             "connectionEstablished":"连接已建立",
             "openApp":"请打开 XANA 应用",
             "setPushNotification":"设置推送通知",
+            "reSell": "转售",
             "loginWithWallet":"使用钱包登录",
             "loginWithAccount":"使用帐户登录"
         },

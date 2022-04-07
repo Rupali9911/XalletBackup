@@ -49,12 +49,12 @@ const NFTCreated = ({ route }) => {
     const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        if (isFocusedHistory) {
+        if (isFocusedHistory && !MyNFTReducer?.myList?.length > 0) {
             pressToggle("created");
         }
-        return () => {
-            dispatch(myNftLoadStart());
-        }
+        // return () => {
+        //     // dispatch(myNftLoadStart());
+        // }
 
     }, [isFocusedHistory]);
 

@@ -178,7 +178,9 @@ const PaymentMethod = props => {
               // })
               if (selectedMethod == 0) {
                 onRequestClose();
+                console.log("1----selectedMethod")
                 if (myCards.length > 0) {
+                console.log("2----selectedMethod -- IF")
                   navigation.navigate('Cards', {
                     price: priceInDollar,
                     isCardPay: true,
@@ -189,6 +191,7 @@ const PaymentMethod = props => {
                 }
               } else if (selectedMethod == 1) {
                 onRequestClose();
+                console.log("1.1----selectedMethod -")
                 navigation.navigate('WalletPay', {
                   price,
                   priceStr,
