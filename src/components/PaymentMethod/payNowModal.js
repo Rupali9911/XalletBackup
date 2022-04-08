@@ -105,7 +105,7 @@ const PaymentNow = props => {
     console.log('params', params);
     dispatch(getPaymentIntent(data.token, params))
       .then(async res => {
-        console.log('res', res);
+        console.log('108 _getPaymentIntent :res', res);
         if (res.success) {
           // const {error, paymentIntent} = await confirmPayment(res.data.client_secret, {
           //     type: 'Card',
@@ -128,7 +128,7 @@ const PaymentNow = props => {
           // }
 
           _confirmPayment(res.data.id, res.data.client_secret);
-          console.log(">>>>>>Response confirm payment",res.data.id, res.data.client_secret);
+          console.log("131_getPaymentIntent: response",res.data.id, res.data.client_secret);
           // initializePaymentSheet({
           //     paymentIntent: res.data.client_secret,
           //     customer: res.data.customer
@@ -162,7 +162,7 @@ const PaymentNow = props => {
 
     StripeApiRequest(`payment_intents/${paymentIntentId}/confirm`, params)
       .then(response => {
-        console.log('response', JSON.stringify(response));
+        console.log('165_confirmPayment response', JSON.stringify(response));
         if (response) {
           if (response.status === 'requires_action') {
             manageOnRequireAction(response.client_secret);
@@ -185,7 +185,7 @@ const PaymentNow = props => {
     console.log('url', url);
     StripeApiRequest(url, null, 'GET')
       .then(_response => {
-        console.log('_response', _response);
+        console.log('188 chargePayment: _response', _response);
         if (_response.status === 'requires_action') {
           manageOnRequireAction(clientSecret);
         } else {
@@ -206,7 +206,7 @@ const PaymentNow = props => {
       Alert.alert(`Error code: ${error.code}`, error.message);
       setLoading(false);
     } else if (paymentIntent) {
-      console.log('paymentIntent', paymentIntent);
+      console.log('209 manageOnRequireAction', paymentIntent);
       checkPaymentStatus(paymentIntent.id);
     }
   };
@@ -220,7 +220,7 @@ const PaymentNow = props => {
 
     dispatch(getTransactionHash(data.token, params))
       .then(_hash_res => {
-        console.log('_hash_res', _hash_res);
+        console.log('223 CheckPaymentStatus: _hash_res', _hash_res);
         if (_hash_res.success) {
           transactionSuccess(_hash_res.data.transactionHash);
         } else {
@@ -243,7 +243,7 @@ const PaymentNow = props => {
 
     dispatch(updateTransactionSuccess(data.token, params))
       .then(success_res => {
-        console.log('success_res', success_res);
+        console.log('246 transactionSuccess: success_res', success_res);
         if (success_res.success) {
           alertWithSingleBtn(translate('common.tansactionSuccessFull'));
           onPaymentDone();
@@ -462,7 +462,6 @@ const PaymentNow = props => {
             </View>
           ) : (
             <Text style={styles.balance}>
-              {console.log("3-Balance")}
               {translate('wallet.common.balanceAmount')}
             </Text>
           )}
@@ -485,7 +484,6 @@ const PaymentNow = props => {
                 ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4))) + ' '
                 : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
             </Text>
-            {console.log("🚀 ~ file: payNowModal.js ~ line 487 ~ payByWal ~ priceInDollar", priceInDollar)}
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
                 {paymentObject && paymentObject.type == 'wallet'
