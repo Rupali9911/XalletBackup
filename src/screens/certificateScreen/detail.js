@@ -1335,19 +1335,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 1');
+        console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        // console.log('set NftStatus 1.1');
+        console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        // console.log('set NftStatus 2');
+        console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      // console.log('set NftStatus 3');
+      console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1360,36 +1360,36 @@ const DetailScreen = ({ navigation, route }) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 4');
+        console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet?.address) {
           // setNftStatus('buy')
-          // console.log('set NftStatus 5');
+          console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else {
           // setNftStatus('buy');
-          // console.log('set NftStatus 6');
+          console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 7');
+        console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      // console.log('set NftStatus 8');
+      console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    // console.log(
-    //   '_nftStatus',
-    //   _nftStatus,
-    //   priceNFT,
-    //   isContractOwner,
-    //   isOwner,
-    //   isNFTOnAuction,
-    // );
+    console.log(
+      '_nftStatus',
+      _nftStatus,
+      priceNFT,
+      isContractOwner,
+      isOwner,
+      isNFTOnAuction,
+    );
     return _nftStatus;
   };
 
@@ -1485,7 +1485,6 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    console.log('collectCreat', collectCreatData?.collectionName)
     if (collectCreatData?.userId === "0") {
       return true;
     } else {
@@ -1785,8 +1784,8 @@ const DetailScreen = ({ navigation, route }) => {
               <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
             </View>
           ) : null}
+          { console.log("🚀 ~ file: detail.js ~ line 1791 ~ lastOwnerOfNFT ~ setNFTStatus", setNFTStatus())}
           <View style={styles.bottomView}>
-
             {setNFTStatus() !== undefined &&
               <GroupButton
                 leftText={
@@ -1911,7 +1910,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View> :
               <NFTDetailDropdown
                 title={translate('common.tradingHistory')}
-                containerChildStyles={{ height: hp(37.5) }}
+                containerChildStyles={{ height: hp(47.6) }}
                 icon={trading}>
                 <Filters />
                 <ScrollView
