@@ -58,6 +58,7 @@ const nftItem = ({ item, index, minHeight }) => {
   const [creatorAddress, setCreatorAddress] = useState("");
 
   const [isPlay, setPlay] = useState(false);
+  const [isLike, setLike] = useState(item.like);
   const [singleNFT, setSingleNFT] = useState({});
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
@@ -462,6 +463,7 @@ const nftItem = ({ item, index, minHeight }) => {
           }
 
           let newData = await getNFTDetails(res.data[0]);
+          setLike(newData.like)
           // console.log(newData, "newDatanewDatanewData")
           let collection = newData.offchain
             ? newData.collectionOffChainId
@@ -754,7 +756,7 @@ const nftItem = ({ item, index, minHeight }) => {
                     onPress={() => {
                       dispatch(handleLikeDislike(item, index));
                     }}>
-                    {item.like ? <HeartActiveIcon /> : <HeartIcon />}
+                    {isLike ? <HeartActiveIcon /> : <HeartIcon />}
                   </TouchableOpacity>
                   {/* <SpaceView mRight={SIZE(15)} />
                   <TouchableOpacity>

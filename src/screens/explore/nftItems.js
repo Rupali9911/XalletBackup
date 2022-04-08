@@ -62,6 +62,64 @@ const Name = ({ label }) => {
     )
 }
 
+export const handleLike = (wallet, data, nftItem) => {
+    let getNftItem = { ...nftItem };
+    var url1 = '';
+    var url2 = `${BASE_URL}/xanalia/updateRating`;
+    let like_body = {
+        networkType: networkType,
+        owner: wallet.address || data.user._id,
+        tokenId: getNftItem.tokenId,
+    };
+
+    let rating_body = {
+        networkType: networkType,
+        tokenId: getNftItem.tokenId,
+    };
+    if (!getNftItem.like) {
+        url1 = `${BASE_URL}/xanalia/likeNFT`;
+        rating_body.rating = getNftItem.rating + 1;
+        getNftItem.like = 1;
+        getNftItem.rating = getNftItem.rating + 1;
+    } else {
+        url1 = `${BASE_URL}/xanalia/unlikeNFT`;
+        rating_body.rating = getNftItem.rating - 1;
+        getNftItem.like = 0;
+        getNftItem.rating = getNftItem.rating - 1;
+    }
+    let fetch_like_body = {
+        method: 'POST',
+        body: JSON.stringify(like_body),
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    let fetch_rating_body = {
+        method: 'POST',
+        body: JSON.stringify(rating_body),
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+   return Promise.all([
+        fetch(url1, fetch_like_body).then(res => res.json()),
+        fetch(url2, fetch_rating_body).then(res => res.json()),
+    ])
+        .then(([v, a]) => {
+            console.log(v, "testing")
+            if (v.success) {
+                return getNftItem;
+            } else {
+                return false
+            }
+        })
+        .catch(err => {
+            return false
+        });
+}
+
 function NftItem({
     item
 }) {
@@ -81,62 +139,6 @@ function NftItem({
         )
             setLengthMore(true);
     }, []);
-
-    const handleLike = () => {
-        let getNftItem = { ...nftItem };
-        var url1 = '';
-        var url2 = `${BASE_URL}/xanalia/updateRating`;
-        let like_body = {
-            networkType: networkType,
-            owner: wallet.address || data.user._id,
-            tokenId: getNftItem.tokenId,
-        };
-
-        let rating_body = {
-            networkType: networkType,
-            tokenId: getNftItem.tokenId,
-        };
-        if (!getNftItem.like) {
-            url1 = `${BASE_URL}/xanalia/likeNFT`;
-            rating_body.rating = getNftItem.rating + 1;
-            getNftItem.like = 1;
-            getNftItem.rating = getNftItem.rating + 1;
-        } else {
-            url1 = `${BASE_URL}/xanalia/unlikeNFT`;
-            rating_body.rating = getNftItem.rating - 1;
-            getNftItem.like = 0;
-            getNftItem.rating = getNftItem.rating - 1;
-        }
-        let fetch_like_body = {
-            method: 'POST',
-            body: JSON.stringify(like_body),
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        };
-        let fetch_rating_body = {
-            method: 'POST',
-            body: JSON.stringify(rating_body),
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        };
-        Promise.all([
-            fetch(url1, fetch_like_body).then(res => res.json()),
-            fetch(url2, fetch_rating_body).then(res => res.json()),
-        ])
-            .then(([v, a]) => {
-                console.log(v, "testing")
-                if (v.success) {
-                    setNftItem(getNftItem)
-                }
-            })
-            .catch(err => {
-
-            });
-    }
 
     const creatorObj = nftItem.creatorObj[0];
     const ownerObj = nftItem.buyerObj[0];
@@ -168,6 +170,13 @@ function NftItem({
             if (nftItem.buyerUser) navigation.push('ArtistDetail', { id: nftItem.buyerUser });
         } else {
             if (nftItem.creator) navigation.push('ArtistDetail', { id: nftItem.creator });
+        }
+    }
+
+    const handleLikeMethod = async () => {
+        const handleLikeM = await handleLike(wallet, data, nftItem);
+        if (handleLikeM) {
+            setNftItem(handleLikeM)
         }
     }
 
@@ -224,6 +233,7 @@ function NftItem({
                                 video: videoUri,
                                 fileType: fileType,
                                 item: item,
+                                setNftItem
                             })
                     }}>
                     {fileType === 'mp4' ||
@@ -271,7 +281,7 @@ function NftItem({
             <Box px={4} py={3} >
                 <HStack justifyContent="space-between" >
                     <TouchableOpacity
-                        onPress={handleLike}>
+                        onPress={handleLikeMethod}>
                         {nftItem.like ? <HeartActiveIcon /> : <HeartIcon />}
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>

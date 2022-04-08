@@ -12,6 +12,8 @@ import { getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/
 import NftItem from './nftItems';
 
 function ExploreScreen() {
+  const { wallet, data } = useSelector(state => state.UserReducer);
+
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [discoverNFTList, setDiscoverNFTList] = useState([]);
@@ -19,6 +21,7 @@ function ExploreScreen() {
   const [footerLoader, setFooterLoader] = useState(false);
   const [noMore, setNoMore] = useState(false);
   const [isFetching, toggleFetching] = useState(false);
+  const owner = wallet?.address || data?.user?._id;
 
   useEffect(() => {
     setLoader(true)
@@ -26,7 +29,7 @@ function ExploreScreen() {
   }, []);
 
   const loadNFTList = (p, refresh) => {
-    let url = `${BASE_URL}/xanalia/discover?page=${p}&limit=10`;
+    let url = `${BASE_URL}/xanalia/discover?page=${p}&limit=10&owner=${owner}`;
     let fetch_data_body = {
       method: 'GET',
       headers: {

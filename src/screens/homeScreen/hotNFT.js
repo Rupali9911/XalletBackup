@@ -5,11 +5,10 @@ import {
     FlatList,
     StatusBar,
     Text,
-    TouchableOpacity,
     View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { C_Image, DetailModal, Loader } from '../../components';
+import { Loader } from '../../components';
 import { colors } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import {
@@ -24,8 +23,6 @@ import styles from './styles';
 
 const HotNFT = () => {
     const { ListReducer } = useSelector(state => state);
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
     const [isFirstRender, setIsFirstRender] = useState(true);
     const [isSort, setIsSort] = useState(null);
     const dispatch = useDispatch();
@@ -71,10 +68,6 @@ const HotNFT = () => {
                 <NFTItem
                     item={item}
                     image={imageUri}
-                    onLongPress={() => {
-                        setModalData(item);
-                        setModalVisible(true);
-                    }}
                     onPress={() => {
                         dispatch(changeScreenName('Hot'));
                         navigation.push('DetailItem', { index: findIndex });
@@ -101,7 +94,6 @@ const HotNFT = () => {
                         dispatch(nftLoadStart());
                         refreshFunc();
                     }}
-                    scrollEnabled={!isModalVisible}
                     refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
                     renderItem={memoizedValue}
                     onEndReached={() => {
@@ -122,14 +114,6 @@ const HotNFT = () => {
                 <View style={styles.sorryMessageCont}>
                     <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
                 </View>
-            )}
-            {modalData && (
-                <DetailModal
-                    index={modalData.index}
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
             )}
         </View>
     );

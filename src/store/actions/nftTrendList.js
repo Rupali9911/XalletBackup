@@ -312,7 +312,6 @@ export const handleLikeDislike = (item, index) => {
   return (dispatch, getState) => {
     const { screenName } = getState().AuthReducer;
     const { data, wallet } = getState().UserReducer;
-
     let oldNFTS =
       screenName == 'Hot'
         ? getState().ListReducer.nftList
