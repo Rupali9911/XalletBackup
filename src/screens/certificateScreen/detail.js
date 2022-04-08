@@ -231,6 +231,7 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    console.log('ITEM', item)
     if (chainType) {
       if (isFocused) {
         if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
@@ -799,6 +800,7 @@ const DetailScreen = ({ navigation, route }) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
+    // console.log('MarketPlaceContract.methods', MarketPlaceContract.methods)
     MarketPlaceContract.methods
       .getSellDetail(collectionAddress, _tokenId)
       .call(async (err, res) => {
@@ -860,6 +862,7 @@ const DetailScreen = ({ navigation, route }) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
+      console.log('MarketPlaceContract.methods', MarketPlaceContract.methods, collectionAddress, _tokenId)
     MarketPlaceContract.methods
       .getNonCryptoOwner(collectionAddress, _tokenId)
       .call(async (err, res) => {
