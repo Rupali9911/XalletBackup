@@ -19,7 +19,7 @@ const groupButton = ({
         <View style={styles.mainContainer}>
             {leftHide ? null : <TouchableOpacity
                 onPress={onLeftPress}
-                style={styles.leftButton}
+                style={[styles.leftButton, leftDisabled ? {opacity: 0.4} : null]}
                 disabled={leftDisabled}>
                 {leftLoading ? <ActivityIndicator color={colors.white} /> : <Text style={styles.buttonText}>
                     {leftText}

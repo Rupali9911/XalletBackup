@@ -642,7 +642,7 @@
         "blockUser":"阻止用戶",
         "reportCollection":"報告收集",
         "daysleft":"天",
-        "bidDeadLine":"投標截止日期",
+        "bidDeadLine":"投標截止日期:",
         "hoursLeft":"剩余小時數",
         "minutesLeft":"還剩幾分鐘",
         "secondsLeft":"剩餘秒數"

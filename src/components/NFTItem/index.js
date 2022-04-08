@@ -75,15 +75,15 @@ export default function NFTItem(props) {
         let secs = parseInt(diff / 1000);
 
         if (days > 0) {
-          return days + ' ' + translate('common.daysleft');
+          return translate('common.bidDeadLine')+ ' ' + days + ' ' + translate('common.daysleft');
         } else if (hours > 0) {
-          return hours + ' ' + translate('common.hoursLeft');
+          return translate('common.bidDeadLine')+ ' ' + hours + ' ' + translate('common.hoursLeft');
         } else if (mins > 0) {
-          return mins + ' ' + translate('common.minutesLeft');
+          return translate('common.bidDeadLine')+ ' ' + mins + ' ' + translate('common.minutesLeft');
         } else if (secs > 0) {
-          return secs + ' ' + translate('common.secondsLeft');
+          return translate('common.bidDeadLine')+ ' ' + secs + ' ' + translate('common.secondsLeft');
         } else {
-          return translate('common.bidDeadLine') + ` ${hours}:${mins}:${secs} `;
+          return translate('common.bidDeadLine')+ ' ' + ` ${hours}:${mins}:${secs} `;
         }
       }
     }

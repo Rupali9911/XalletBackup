@@ -640,7 +640,7 @@
         "blockUser":"Block User",
         "reportCollection":"Report Collection",
         "daysleft":"Days Left",
-        "bidDeadLine":"Bid Deadline",
+        "bidDeadLine":"",
         "hoursLeft":"Hours Left",
         "minutesLeft":"Minutes Left",
         "secondsLeft":"Seconds Left"

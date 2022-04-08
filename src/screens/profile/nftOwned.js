@@ -8,7 +8,7 @@ import {
     View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { DetailModal, Loader } from '../../components';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
@@ -23,8 +23,8 @@ const NFTOwned = ({ route, navigation }) => {
 
     const { MyNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
+    // const [modalData, setModalData] = useState();
+    // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         if (isFocusedHistory && !MyNFTReducer?.myCollection?.length > 0) {
@@ -48,10 +48,10 @@ const NFTOwned = ({ route, navigation }) => {
                 <NFTItem
                     item={item}
                     image={image}
-                    onLongPress={() => {
-                        setModalData(item);
-                        setModalVisible(true);
-                    }}
+                    // onLongPress={() => {
+                    //     setModalData(item);
+                    //     setModalVisible(true);
+                    // }}
                     onPress={() => {
                         dispatch(changeScreenName('myCollection'));
                         navigation.navigate('DetailItem', { index: findIndex, owner: id });
@@ -102,13 +102,13 @@ const NFTOwned = ({ route, navigation }) => {
                         </View>
             }
 
-            {modalData && (
-                <DetailModal
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
-            )}
+            {/*{modalData && (*/}
+                {/*<DetailModal*/}
+                    {/*data={modalData}*/}
+                    {/*isModalVisible={isModalVisible}*/}
+                    {/*toggleModal={() => setModalVisible(false)}*/}
+                {/*/>*/}
+            {/*)}*/}
         </View>
     );
 };

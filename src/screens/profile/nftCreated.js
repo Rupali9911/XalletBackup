@@ -18,7 +18,7 @@ import {
     responsiveFontSize as RF,
     widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { DetailModal, Loader } from '../../components';
+import {Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
@@ -45,8 +45,8 @@ const NFTCreated = ({ route }) => {
     const { data, wallet } = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
+    // const [modalData, setModalData] = useState();
+    // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         if (isFocusedHistory && !MyNFTReducer?.myList?.length > 0) {
@@ -72,10 +72,10 @@ const NFTCreated = ({ route }) => {
                 <NFTItem
                     item={item}
                     image={image}
-                    onLongPress={() => {
-                        setModalData(item);
-                        setModalVisible(true);
-                    }}
+                    // onLongPress={() => {
+                    //     setModalData(item);
+                    //     setModalVisible(true);
+                    // }}
                     onPress={() => {
                         dispatch(changeScreenName('myNFT'));
                         navigation.navigate('DetailItem', { index: findIndex, owner: id });
@@ -132,13 +132,13 @@ const NFTCreated = ({ route }) => {
                     </View>
                 )
             }
-            {modalData && (
-                <DetailModal
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
-            )}
+            {/*{modalData && (*/}
+                {/*<DetailModal*/}
+                    {/*data={modalData}*/}
+                    {/*isModalVisible={isModalVisible}*/}
+                    {/*toggleModal={() => setModalVisible(false)}*/}
+                {/*/>*/}
+            {/*)}*/}
         </View>
     );
 };
