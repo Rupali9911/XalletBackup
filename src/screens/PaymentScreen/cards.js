@@ -204,6 +204,7 @@ const Cards = ({route, navigation}) => {
               onPress={() => {
                 // navigation.navigate("AddCard")
                 if (defaultCard) {
+                  console.log("4-Default card selected",defaultCard);
                   dispatch(
                     setPaymentObject({
                       item: defaultCard,

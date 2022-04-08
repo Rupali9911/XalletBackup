@@ -128,6 +128,7 @@ const PaymentNow = props => {
           // }
 
           _confirmPayment(res.data.id, res.data.client_secret);
+          console.log(">>>>>>Response confirm payment",res.data.id, res.data.client_secret);
           // initializePaymentSheet({
           //     paymentIntent: res.data.client_secret,
           //     customer: res.data.customer
@@ -461,6 +462,7 @@ const PaymentNow = props => {
             </View>
           ) : (
             <Text style={styles.balance}>
+              {console.log("3-Balance")}
               {translate('wallet.common.balanceAmount')}
             </Text>
           )}
@@ -483,6 +485,7 @@ const PaymentNow = props => {
                 ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4))) + ' '
                 : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
             </Text>
+            {console.log("🚀 ~ file: payNowModal.js ~ line 487 ~ payByWal ~ priceInDollar", priceInDollar)}
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
                 {paymentObject && paymentObject.type == 'wallet'

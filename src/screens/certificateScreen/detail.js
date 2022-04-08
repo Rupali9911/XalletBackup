@@ -259,7 +259,7 @@ const DetailScreen = ({ navigation, route }) => {
   const getCurrencyPrice = async () => {
     let finalPrice = '';
     let i;
-    switch (item.nftChain) {
+    switch (chainType) {
       case 'BinanceNtwk':
         i = 0
         break;
@@ -1764,7 +1764,8 @@ const DetailScreen = ({ navigation, route }) => {
               <View style={{ flex: 0.4 }} >
                 {availableTokens.length > 0 &&
                   setNFTStatus() !== 'notOnSell' &&
-                  setNFTStatus() !== 'onSell' && (
+                  setNFTStatus() !== 'onSell' &&
+                  data?.user?.role === 'crypto' && (
                     <>
                       <Text style={[styles.payIn]}>{translate('wallet.common.buyerpayin')}</Text>
                       <CardField
@@ -1821,7 +1822,7 @@ const DetailScreen = ({ navigation, route }) => {
                     // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', { nftDetail: singleNFT });
-                  }0
+                  }
                   // }
                 }}
                 leftHide={setNFTStatus() === undefined}

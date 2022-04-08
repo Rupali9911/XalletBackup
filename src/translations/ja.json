@@ -972,6 +972,7 @@
             "connectionEstablished":"コネクトが完了しました！",
             "openApp":"XANAアプリを開いてください。",
             "setPushNotification":"プッシュ通知を設定",
+            "reSell": "再販する",
             "loginWithWallet":"ウォレットでログイン",
             "loginWithAccount":"アカウントでログイン"
         },
