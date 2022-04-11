@@ -47,7 +47,6 @@ import {
 import {
     Loader,
     C_Image,
-    DetailModal,
     AppHeader
 } from "../../components";
 import {
@@ -94,8 +93,8 @@ const Created = ({ route }) => {
     const { MyNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
+    // const [modalData, setModalData] = useState();
+    // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         dispatch(myNftLoadStart());
@@ -133,10 +132,10 @@ const Created = ({ route }) => {
                 <NFTItem
                     item={item}
                     image={imageUri}
-                    onLongPress={() => {
-                        setModalData(item);
-                        setModalVisible(true);
-                    }}
+                    // onLongPress={() => {
+                    //     setModalData(item);
+                    //     setModalVisible(true);
+                    // }}
                     onPress={() => {
                         dispatch(changeScreenName("myNFT"));
                         navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single' });
@@ -180,14 +179,14 @@ const Created = ({ route }) => {
                             <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
-            {
-                modalData &&
-                <DetailModal
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
-            }
+            {/*{*/}
+                {/*modalData &&*/}
+                {/*<DetailModal*/}
+                    {/*data={modalData}*/}
+                    {/*isModalVisible={isModalVisible}*/}
+                    {/*toggleModal={() => setModalVisible(false)}*/}
+                {/*/>*/}
+            {/*}*/}
         </View>
     )
 }
@@ -198,8 +197,8 @@ const Collection = ({ route }) => {
     const { MyCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const [modalData, setModalData] = useState();
-    const [isModalVisible, setModalVisible] = useState(false);
+    // const [modalData, setModalData] = useState();
+    // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         dispatch(myCollectionLoadStart());
@@ -234,10 +233,10 @@ const Collection = ({ route }) => {
                 <NFTItem
                     item={item}
                     image={imageUri}
-                    onLongPress={() => {
-                        setModalData(item);
-                        setModalVisible(true);
-                    }}
+                    // onLongPress={() => {
+                    //     setModalData(item);
+                    //     setModalVisible(true);
+                    // }}
                     onPress={() => {
                         dispatch(changeScreenName("myCollection"));
                         navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single' });
@@ -281,14 +280,14 @@ const Collection = ({ route }) => {
                             <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
                         </View>
             }
-            {
-                modalData &&
-                <DetailModal
-                    data={modalData}
-                    isModalVisible={isModalVisible}
-                    toggleModal={() => setModalVisible(false)}
-                />
-            }
+            {/*{*/}
+                {/*modalData &&*/}
+                {/*<DetailModal*/}
+                    {/*data={modalData}*/}
+                    {/*isModalVisible={isModalVisible}*/}
+                    {/*toggleModal={() => setModalVisible(false)}*/}
+                {/*/>*/}
+            {/*}*/}
         </View>
     )
 }
@@ -395,7 +394,7 @@ function ArtistDetail({
                 <Tab.Screen
                     name='Collection'
                     component={Collection}
-                    options={{ tabBarLabel: translate("common.collected") }}
+                    options={{ tabBarLabel: translate("wallet.common.owned") }}
                     initialParams={{ id: data.role === 'crypto' ? data.username : data._id }}
                 />
             </Tab.Navigator>

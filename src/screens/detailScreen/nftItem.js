@@ -79,7 +79,7 @@ const nftItem = ({ item, index, minHeight }) => {
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
 
   const [artistRole, setArtistRole] = useState('');
-  const [collectCreat, setcollectCreat] = useState(null);
+  const [collectCreat, setcollectCreat] = useState(null)
 
 
   const [ownerData, setOwnerData] = useState();

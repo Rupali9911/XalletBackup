@@ -233,6 +233,7 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    console.log('ITEM', item)
     if (chainType) {
       if (isFocused) {
         if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
@@ -272,7 +273,7 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
 
-    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i].walletAddressForNonCrypto)
+    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto)
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = item.price * currencyPrices?.BNB;
@@ -295,8 +296,6 @@ const DetailScreen = ({ navigation, route }) => {
         break;
     }
     setPriceInDollar(finalPrice);
-    console.log('finalPrice 326 //////////', finalPrice);
-    console.log("Currency ", currencyPrices);
   };
 
   const priceInDollars = (pubKey) => {
@@ -803,6 +802,7 @@ const DetailScreen = ({ navigation, route }) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
+    // console.log('MarketPlaceContract.methods', MarketPlaceContract.methods)
     MarketPlaceContract.methods
       .getSellDetail(collectionAddress, _tokenId)
       .call(async (err, res) => {
@@ -864,6 +864,7 @@ const DetailScreen = ({ navigation, route }) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
+      console.log('MarketPlaceContract.methods', MarketPlaceContract.methods, collectionAddress, _tokenId)
     MarketPlaceContract.methods
       .getNonCryptoOwner(collectionAddress, _tokenId)
       .call(async (err, res) => {
@@ -1327,19 +1328,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 1');
+        console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        // console.log('set NftStatus 1.1');
+        console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        // console.log('set NftStatus 2');
+        console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      // console.log('set NftStatus 3');
+      console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1352,36 +1353,36 @@ const DetailScreen = ({ navigation, route }) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 4');
+        console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet?.address) {
           // setNftStatus('buy')
-          // console.log('set NftStatus 5');
+          console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else {
           // setNftStatus('buy');
-          // console.log('set NftStatus 6');
+          console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        // console.log('set NftStatus 7');
+        console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      // console.log('set NftStatus 8');
+      console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    // console.log(
-    //   '_nftStatus',
-    //   _nftStatus,
-    //   priceNFT,
-    //   isContractOwner,
-    //   isOwner,
-    //   isNFTOnAuction,
-    // );
+    console.log(
+      '_nftStatus',
+      _nftStatus,
+      priceNFT,
+      isContractOwner,
+      isOwner,
+      isNFTOnAuction,
+    );
     return _nftStatus;
   };
 
@@ -1755,12 +1756,18 @@ const DetailScreen = ({ navigation, route }) => {
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
                 <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}</Text>
-                <Text style={styles.priceUnit}>{baseCurrency?.key}</Text>
+                <Text style={styles.priceUnit}>
+                  {baseCurrency?.key}<Text style={styles.dollarText}>
+                    {` ($${parseFloat(priceInDollar, true).toFixed(2)})`}
+                  </Text>
+                </Text>
+                {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
               </View>
               <View style={{ flex: 0.4 }} >
                 {availableTokens.length > 0 &&
                   setNFTStatus() !== 'notOnSell' &&
-                  setNFTStatus() !== 'onSell' && (
+                  setNFTStatus() !== 'onSell' &&
+                  data?.user?.role === 'crypto' && (
                     <>
                       <Text style={[styles.payIn]}>{translate('wallet.common.buyerpayin')}</Text>
                       <CardField
@@ -1783,8 +1790,8 @@ const DetailScreen = ({ navigation, route }) => {
               <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
             </View>
           ) : null}
+          { console.log("🚀 ~ file: detail.js ~ line 1791 ~ lastOwnerOfNFT ~ setNFTStatus", setNFTStatus())}
           <View style={styles.bottomView}>
-
             {setNFTStatus() !== undefined &&
               <GroupButton
                 leftText={
@@ -1817,7 +1824,7 @@ const DetailScreen = ({ navigation, route }) => {
                     // }
                   } else if (setNFTStatus() === 'sell') {
                     navigation.navigate('sellNft', { nftDetail: singleNFT });
-                  } 0
+                  }
                   // }
                 }}
                 leftHide={setNFTStatus() === undefined}
@@ -1909,7 +1916,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View> :
               <NFTDetailDropdown
                 title={translate('common.tradingHistory')}
-                containerChildStyles={{ height: hp(37.5) }}
+                containerChildStyles={{ height: hp(47.6) }}
                 icon={trading}>
                 <Filters />
                 <ScrollView

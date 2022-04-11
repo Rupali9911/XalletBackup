@@ -642,7 +642,7 @@
         "blockUser":"阻止用戶",
         "reportCollection":"報告收集",
         "daysleft":"天",
-        "bidDeadLine":"投標截止日期",
+        "bidDeadLine":"投標截止日期:",
         "hoursLeft":"剩余小時數",
         "minutesLeft":"還剩幾分鐘",
         "secondsLeft":"剩餘秒數"
@@ -972,6 +972,7 @@
             "connectionEstablished":"連接已建立",
             "openApp":"請打開 XANA 應用",
             "setPushNotification":"設置推送通知",
+            "reSell": "轉售",
             "loginWithWallet":"使用錢包登錄",
             "loginWithAccount":"使用帳戶登錄"
         },

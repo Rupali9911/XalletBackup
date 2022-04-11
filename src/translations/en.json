@@ -589,7 +589,7 @@
         "BlindBox": "Blind Box",
         "cmingsoon": "Opening Soon",
         "gallery": "Gallery",
-        "notfornotforsalesale": "Not on Sale",
+        "notforsale": "Not on Sale",
         "changeNetword": "Wallet is available on Binance Smart Chain(BSC)",
         "blanceLow": "You don't have enough balance.",
         "invalidOtp": "The OTP you have entered is invalid",
@@ -640,7 +640,7 @@
         "blockUser":"Block User",
         "reportCollection":"Report Collection",
         "daysleft":"Days Left",
-        "bidDeadLine":"Bid Deadline",
+        "bidDeadLine":"",
         "hoursLeft":"Hours Left",
         "minutesLeft":"Minutes Left",
         "secondsLeft":"Seconds Left"
@@ -969,6 +969,7 @@
             "connectionEstablished":"Connection established",
             "openApp":"Please open the XANA app",
             "setPushNotification":"Set up push notifications",
+            "reSell": "Resale",
             "loginWithWallet":"Log in with Wallet",
             "loginWithAccount":"Log in with Account"
         },
