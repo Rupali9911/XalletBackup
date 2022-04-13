@@ -134,4 +134,4 @@ export const validateInstagramURL = value =>
 export const validateFacebookURL = value =>
   value && !validURL(value) ? translate('common.validfblink') : undefined;
 export const validateZoomLinkURL = value =>
-  value && !validURL(value) ? translate('common.emailval') : undefined;
+  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? translate('common.emailval') : undefined;

@@ -28,10 +28,11 @@ const ForgetCrypto = ({ route }) => {
         let errorRend = {}
         setEmail(v)
         let regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!v) {
-            errorRend.email = translate("wallet.common.error.emailRequired")
-        } else if (!regEmail.test(v)) {
-            errorRend.email = translate("wallet.common.error.invalidEmail")
+        // if (!v) {
+        //     errorRend.email = translate("wallet.common.error.emailRequired")
+        // } else
+            if (v && !regEmail.test(v)) {
+            errorRend.email = translate("common.emailval")
         }
         setError(errorRend)
     }
@@ -58,11 +59,15 @@ const ForgetCrypto = ({ route }) => {
                 setLoading(false);
             })
             .catch(error => {
-                console.log(error.response, "forget error")
-                errorF.errorForget = error.response.data.errors.email;
-                setError(errorF);
                 setLoading(false);
+                console.log(error.response, "forget error")
+                if (error.response?.data?.error_code){
+                    errorF.errorForget =translate(`common.${error.response?.data?.error_code}`);
+                } else{
+                    errorF.errorForget = error.response?.data?.errors?.email
+                }
 
+                setError(errorF);
             });
     }
 
@@ -90,7 +95,8 @@ const ForgetCrypto = ({ route }) => {
                     label={translate("common.userEmail")}
                     inputProps={{
                         value: email,
-                        onChangeText: (v) => checkValidation(v)
+                        onChangeText: (v) => checkValidation(v),
+                        autoCapitalize: 'none'
                     }}
                     error={error["email"]}
                 />

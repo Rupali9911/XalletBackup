@@ -334,7 +334,7 @@ const PaymentNow = props => {
                     setLoading(false);
                   })
                   .catch(err => {
-                    console.log('payByWallet_err', err);
+                    console.log('payByWallet_err payByWallet', err);
                     showErrorAlert("");
                     setLoading(false);
                   });
@@ -342,7 +342,7 @@ const PaymentNow = props => {
               .catch(err => {
                 console.log('approve_err', err);
                 showErrorAlert('');
-                +setLoading(false);
+                setLoading(false);
               });
           } else {
             buyNft(
@@ -362,7 +362,7 @@ const PaymentNow = props => {
                 setLoading(false);
               })
               .catch(err => {
-                console.log('payByWallet_err', err);
+                  console.log('payByWallet_err payByWallet', err);
                 setLoading(false);
                 showErrorAlert("");
                 setLoading(false);
@@ -404,9 +404,15 @@ const PaymentNow = props => {
         setLoading(false);
       })
       .catch(err => {
-        console.log('payByWallet_err', err);
+        console.log('payByWallet_err _buyNFTBnb', err);
         setLoading(false);
-        showErrorAlert('');
+          showErrorAlert("");
+        // if (err.includes('transaction underpriced')){
+        //     alertWithSingleBtn(
+        //         translate('wallet.common.alert'),
+        //         translate('common.blanceLow'),
+        //     );
+        // }
       });
   };
 

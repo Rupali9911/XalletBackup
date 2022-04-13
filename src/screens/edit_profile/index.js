@@ -253,8 +253,8 @@ function Profile(props) {
         validateNum++;
       }
     }
-    if (maxLength100(zoomLink)) {
-      setErrZoomLink(maxLength100(zoomLink));
+    if (maxLength50(zoomLink)) {
+      setErrZoomLink(maxLength50(zoomLink));
     } else {
       if (validateZoomLinkURL(zoomLink)) {
         setErrZoomLink(validateZoomLinkURL(zoomLink));
@@ -295,7 +295,7 @@ function Profile(props) {
         formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
         dispatch(updateProfileImage(formData));
       }
-  
+
       dispatch(updateProfile(req_body, () => navigation.goBack()));
     }
   }
@@ -330,7 +330,7 @@ function Profile(props) {
             <SpaceView mTop={SIZE(17)} />
           </CenterWrap>
           <BorderView />
-          
+
           <LimitableInput
             value={firstName}
             onChange={(text) => { setFirstName(text); setErrFirstname(false); }}
@@ -446,7 +446,7 @@ function Profile(props) {
             onChange={(text) => { setZoomLink(text); setErrZoomLink(false); }}
             label={translate("common.zoomMail")}
             placeholder={translate("common.zoomMail")}
-            validate={[maxLength100, validateZoomLinkURL]}
+            validate={[maxLength50, validateEmail]}
             error={errZoomLink}
           />
           <SpaceView mTop={SIZE(12)} />

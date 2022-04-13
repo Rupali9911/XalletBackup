@@ -326,7 +326,7 @@
         "createpgFSphoto": "NFTタイプ:‐写真には(* .png, *.jpeg, *.jpg)ファイルのみアップ可能です。",
         "signIn": "ログイン",
         "": "",
-        "PassVal": "パスワードは最低8文字以上の英数字で入力ください。",
+        "PassVal": "パスワードは最低8文字〜15文字以内、1つ以上の大小英数字と特殊記号を使い入力ください",
         "emailAddressUsername": "メールアドレスまたはユーザー名",
         "password": "パスワード",
         "usrempty": "ユーザーネームを入力してください",
@@ -645,7 +645,8 @@
         "bidDeadLine":"入札期限:",
         "hoursLeft":"残り時間",
         "minutesLeft":"残り分",
-        "secondsLeft":"残り秒数"
+        "secondsLeft":"残り秒数",
+        "passwordlengthshort":"パスワードは8文字以上でなければならない。"
     },
     "AwardPage": {},
     "wallet": {

@@ -326,7 +326,7 @@
         "createpgFSphoto": "NFT 类型：- 图片仅支持（*.png、*.jpeg、*.jpg）文件 ",
         "signIn": "登入",
         "": "",
-        "PassVal": "密码必须至少有 8 个字符，大小写和数字",
+        "PassVal": "您的密码必须介于 8 到 15 个字符之间，其中至少有一个小写和一个大写字母、一个数字和一个特殊字符。",
         "emailAddressUsername": "电子邮件地址/用户名",
         "password": "密码",
         "usrempty": "用户名不能为空",
@@ -645,7 +645,8 @@
         "bidDeadLine":"投标截止日期:",
         "hoursLeft":"剩余小时数",
         "minutesLeft":"还剩几分钟",
-        "secondsLeft":"剩余秒数"
+        "secondsLeft":"剩余秒数",
+        "passwordlengthshort":"密码长度必须至少为八个字符。"
     },
     "AwardPage": {},
     "wallet": {
