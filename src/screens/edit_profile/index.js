@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView } from 'react-native';
+import { TouchableOpacity, SafeAreaView, Keyboard} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
@@ -151,7 +151,7 @@ function Profile(props) {
   }
 
   const onSave = () => {
-
+      Keyboard.dismiss()
     let validateNum = 0;
     if (maxLength50(username)) {
       setErrUsername(maxLength50(username));

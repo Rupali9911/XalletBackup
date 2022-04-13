@@ -96,10 +96,10 @@ function SecurityScreen({ navigation }) {
             }
           />
 
-          {wallet.mnemonic && (
+          {wallet?.mnemonic && (
             <ListItem
               onPress={() => {
-                if (wallet.mnemonic) {
+                if (wallet?.mnemonic) {
                   navigation.navigate('recoveryPhrase', { wallet });
                 }
               }}
