@@ -775,7 +775,6 @@ const nftItem = ({ item, index, minHeight }) => {
                     alertWithSingleBtn(
                       translate('common.Confirm'),
                       value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
-                    //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
                   }}>
                     <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                     <MenuOptions>

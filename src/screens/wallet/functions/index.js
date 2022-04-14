@@ -201,6 +201,7 @@ export const currencyInDollar = async(pubkey,type) => {
           var bnbLpReserve = info[0].toString();
           var busdLpReserve = info[1].toString();
           var bnbPriceInner = busdLpReserve / bnbLpReserve;
+          console.log('bnbPriceInner', bnbPriceInner)
           resolve(bnbPriceInner);
         })
       } else if(type === 'ALIA'){
@@ -208,12 +209,14 @@ export const currencyInDollar = async(pubkey,type) => {
           var aliaReserve = info[0].toString();
           var BNBReserve = info[1].toString();
           var newbnbPerAlia = aliaReserve / BNBReserve;
+            console.log('newbnbPerAlia', newbnbPerAlia)
           resolve(newbnbPerAlia);
         })
       } else {
         await contract.methods.getReserves().call().then(function (info) {
           maticQuickReserve =  web3.utils.fromWei(info._reserve0.toString(),"ether");
           aliaQuickReserve = web3.utils.fromWei(info._reserve1.toString(),"mwei");
+            console.log('maticQuickReserve and aliaQuickReserve', maticQuickReserve, aliaQuickReserve)
           resolve(parseFloat(aliaQuickReserve) / parseFloat(maticQuickReserve));
         })
       }
@@ -243,7 +246,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
         } else if (type == 'busd') {
             resolve(web3.utils.fromWei(result.toString(), "ether"));
         } else if (type == 'weth') {
-          resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
+          resolve(web3.utils.fromWei(result.toString(), 'ether'));
         }
       }).catch(function (error) {
         console.log(error + ' is the error');
