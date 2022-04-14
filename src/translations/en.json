@@ -325,7 +325,7 @@
         "createpgFS3D": " 3D supports(*.mp4,* .png, *.jpeg, *.jpg) files only",
         "createpgFSphoto": "Photo supports( *.png, *.jpeg,* .jpg) files only",
         "signIn": "Login",
-        "PassVal": "Your password should be more than 8 digits with alphanumeric characters.",
+        "PassVal": "Enter the password using at least 8 to 15 characters, one large and small alphanumerical character and a special symbol..",
         "emailAddressUsername": "Email Address / User Name",
         "password": "Password",
         "usrempty": "Username cannot be empty",
@@ -643,7 +643,8 @@
         "bidDeadLine":"",
         "hoursLeft":"Hours Left",
         "minutesLeft":"Minutes Left",
-        "secondsLeft":"Seconds Left"
+        "secondsLeft":"Seconds Left",
+        "passwordlengthshort":"Password must be at least eight characters long."
     },
     "AwardPage": {},
     "wallet": {
