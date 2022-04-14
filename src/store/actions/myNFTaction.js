@@ -46,10 +46,10 @@ export const myNFTList = (page, ownerId) => {
       nftType: 'mynft',
     };
 
-    if (ownerId?.length > 24) {
+    if (user?.role==='crypto') {
       body_data.owner = ownerId.toUpperCase();
     } else {
-      body_data.userId = ownerId;
+      body_data.status ='my_nft'
     }
 
     if (user) {
@@ -62,13 +62,14 @@ export const myNFTList = (page, ownerId) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-      },
+        Authorization: `Bearer ${data.token}`,
+    },
     };
 
-    const url =
-      ownerId?.length > 24
+    // const url = ownerId?.length > 24
+    const url = user?.role==='crypto'
         ? `${BASE_URL}/xanalia/mydata`
-        : `${BASE_URL}/user/get-user-collection`;
+        : `${BASE_URL}/user/my-collection`; // user/get-user-collection;
 
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
