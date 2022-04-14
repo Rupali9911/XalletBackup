@@ -163,11 +163,11 @@ const DetailScreen = ({ navigation, route }) => {
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [isContractOwner, setIsContractOwner] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-  const [isNFTOnAuction, setIsNFTOnAuction] = useState(false);
+  const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
   const [singleNFT, setSingleNFT] = useState({});
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [lastBidAmount, setLastBidAmount] = useState('');
+  const [lBidAmount, setLastBidAmount] = useState('');
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
   const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState('');
@@ -212,7 +212,8 @@ const DetailScreen = ({ navigation, route }) => {
     MarketPlaceAbi,
     MarketContractAddress,
     providerUrl,
-    walletAddressForNonCrypto;
+    walletAddressForNonCrypto,
+    chainAvailable;
   if (params.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
@@ -224,19 +225,14 @@ const DetailScreen = ({ navigation, route }) => {
     MarketPlaceAbi = getBlockChainConfig.marketConConfig.abi
     MarketContractAddress = getBlockChainConfig.marketConConfig.add;
     providerUrl = getBlockChainConfig.providerUrl;
-
-    walletAddressForNonCrypto = networkType === "testnet"
-      ? chainType === "binance"
-        ? "0x61598488ccD8cb5114Df579e3E0c5F19Fdd6b3Af"
-        : "0x9b6D7b08460e3c2a1f4DFF3B2881a854b4f3b859"
-      : "0xac940124f5f3b56b0c298cca8e9e098c2cccae2e";
+    chainAvailable = true
+    walletAddressForNonCrypto = getBlockChainConfig.walletAddressForNonCrypto
   }
 
   useEffect(() => {
-    console.log('ITEM', item)
     if (chainType) {
       if (isFocused) {
-        if (MarketPlaceAbi && MarketContractAddress && collectionAddress) {
+        if (chainAvailable) {
           setBuyLoading(true);
           checkNFTOnAuction();
           getNonCryptoNFTOwner();
@@ -786,10 +782,13 @@ const DetailScreen = ({ navigation, route }) => {
 
   const checkNFTOnAuction = () => {
     const setAuctionVariables = (
-      auctionInitiatorAdd = '',
-      auctionETime = '',
-      lastBidAmount = '',
-      isNFTOnAuction = false,
+      auctionInitiatorAdd = "",
+      highestBidderAdd = "",
+      minBidPrice = "",
+      auctionSTime = "",
+      auctionETime = "",
+      lastBidAmount = "",
+      isNFTOnAuction = false
     ) => {
       setIsNFTOnAuction(isNFTOnAuction);
       setAuctionInitiatorAdd(auctionInitiatorAdd);
@@ -824,29 +823,15 @@ const DetailScreen = ({ navigation, route }) => {
             // console.log('baseCurrency________', baseCurrency[0]);
           }
 
-          if (res[0] !== '0x0000000000000000000000000000000000000000') {
-            let dollarToken = basePriceTokens.filter(
-              token => token.chain === chainType && token.dollarCurrency,
-            );
-            let rs = await calculatePrice(
-              res[1],
-              dollarToken[0].order,
-              // this.state.nonCryptoOwnerId
-              walletAddressForNonCrypto,
-              baseCurrency[0],
-            );
-            // console.log('rs', rs);
-            if (rs) {
-              let res = divideNo(rs);
-              // setPriceInDollar(res);
-            }
-          }
           if (parseInt(res[5]) * 1000 > 0) {
             setAuctionVariables(
               res[0],
+              res[3],
+              divideNo(res[4]),
+              parseInt(res[5]) * 1000,
               parseInt(res[2]) * 1000,
               divideNo(res[1]),
-              true,
+              true
             );
           } else {
             setAuctionVariables();
@@ -857,45 +842,47 @@ const DetailScreen = ({ navigation, route }) => {
       });
   };
 
-  const getNonCryptoNFTOwner = () => {
+  const getNonCryptoNFTOwner = async () => {
     // let tokenId = "317";
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
     );
-      console.log('MarketPlaceContract.methods', MarketPlaceContract.methods, collectionAddress, _tokenId)
-    MarketPlaceContract.methods
-      .getNonCryptoOwner(collectionAddress, _tokenId)
-      .call(async (err, res) => {
-        // console.log('getNonCryptoOwner_res', res, item.metaData.name);
-        if (res) {
-          const userId = res.toLowerCase();
-          //getPublicProfile(userId, false);
-          setNonCryptoOwnerId(res)
-          getOwnerDetailsById(res);;
-          lastOwnerOfNFTNonCrypto(res);
-          await getTokenDetailsApi(false);
-        } else if (!res) {
-          lastOwnerOfNFT();
-          await getTokenDetailsApi();
-        } else if (err) {
-          setLoader(false);
-          console.log('error----->', err);
-        }
-      });
+    console.log('MarketPlaceContract.methods', collectionAddress, _tokenId)
+    if (MarketPlaceContract.methods.getNonCryptoOwner) {
+      MarketPlaceContract.methods
+        .getNonCryptoOwner(collectionAddress, _tokenId)
+        .call(async (err, res) => {
+          console.log('getNonCryptoOwner_res', res, item.metaData.name);
+          if (res) {
+            setNonCryptoOwnerId(res)
+            getOwnerDetailsById(res);
+            lastOwnerOfNFTNonCrypto(res);
+            await getTokenDetailsApi(false);
+          } else if (!res) {
+            lastOwnerOfNFT();
+            await getTokenDetailsApi();
+          } else if (err) {
+            setLoader(false);
+            console.log('error----->', err);
+          }
+        });
+    } else {
+      lastOwnerOfNFT();
+      await getTokenDetailsApi();
+    }
   };
 
   const getOwnerDetailsById = async (id) => {
     const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
     try {
       let profile = await axios.get(profileUrl);
-      // console.log(profile, "non_crypto", item.metaData.name)
+      console.log(profile, "non_crypto", item.metaData.name)
       setOwnerDataN(profile?.data?.data)
       setOwnerN(id);
     } catch (err) {
       setLoader(false);
-
     }
   };
 
@@ -929,17 +916,16 @@ const DetailScreen = ({ navigation, route }) => {
     ERC721Contract.methods.ownerOf(_tokenId).call((err, res) => {
       if (!err) {
         _data.owner_address = res;
-        // console.log('owner_address', res, _tokenId);
+        console.log('owner_address', res, _tokenId);
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
           .call(async (err, res) => {
-            // console.log(
-            //   'MarketPlaceContract_res',
-            //   res,
-            //   err,
-            //   _tokenId,
-            //   MarketContractAddress,
-            // );
+            console.log(
+              'MarketPlaceContract_res',
+              res[0] === '0x0000000000000000000000000000000000000000',
+              res[0] !== '0x0000000000000000000000000000000000000000',
+              wallet?.address
+            );
             // return ;
             if (!err) {
               let priceOfNft = res[1] / 1e18;
@@ -952,13 +938,13 @@ const DetailScreen = ({ navigation, route }) => {
                     res[0].toLowerCase() === wallet.address.toLowerCase() ||
                       (res[0].toLowerCase() ===
                         walletAddressForNonCrypto.toLowerCase() &&
+                        data &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
                       : false,
                   );
                   setIsOwner(
-                    (_data.owner_address.toLowerCase() ===
-                      data?.user?._id?.toLowerCase() &&
+                    (_data.owner_address.toLowerCase() === wallet.address.toLowerCase() &&
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
@@ -972,9 +958,8 @@ const DetailScreen = ({ navigation, route }) => {
                   res[0] !== '0x0000000000000000000000000000000000000000'
                 ) {
                   setIsOwner(
-                    (res[0].toLowerCase() === wallet.address.toLowerCase() &&
-                      res[1] !== '') ||
-                      (data &&
+                    (res[0].toLowerCase() === wallet.address.toLowerCase() && res[1] !== "") ||
+                      ( data &&
                         res[0].toLowerCase() ===
                         walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
@@ -986,7 +971,6 @@ const DetailScreen = ({ navigation, route }) => {
                     res[0].toLowerCase() === wallet.address.toLowerCase() ||
                       (res[0].toLowerCase() ===
                         walletAddressForNonCrypto.toLowerCase() &&
-                        data &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
                       : false,
@@ -1111,7 +1095,7 @@ const DetailScreen = ({ navigation, route }) => {
       .catch((err) => { console.log('err from collection info', err) });
   }
 
-  const getTokenDetailsApi = async (isCryptoOwner = true) => {
+  const getTokenDetailsApi = async () => {
     let category = '2D';
     let data = {
       tokenId: item.tokenId,
@@ -1326,62 +1310,53 @@ const DetailScreen = ({ navigation, route }) => {
   const setNFTStatus = () => {
     let _nftStatus = '';
     if (isContractOwner) {
-      if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
-        // setNftStatus(undefined);
-        console.log('set NftStatus 1');
+      if (nFTOnAuction && lBidAmount !== '0.000000000000000000') {
+        // console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        console.log('set NftStatus 1.1');
+        // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
-        // setNftStatus('onSell')
-        console.log('set NftStatus 2');
+        // console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
-      // setNftStatus('sell')
-      console.log('set NftStatus 3');
+      // console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
-      (isNFTOnAuction &&
+      (nFTOnAuction &&
         auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
     ) {
       if (
-        isNFTOnAuction &&
+        nFTOnAuction &&
         auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase() &&
         bidingTimeEnded() !== true
       ) {
-        // setNftStatus(undefined);
-        console.log('set NftStatus 4');
+        // console.log('set NftStatus 4');
         _nftStatus = undefined;
-      } else if (priceNFT && !isNFTOnAuction) {
+      } else if (priceNFT && !nFTOnAuction) {
         if (wallet?.address) {
-          // setNftStatus('buy')
-          console.log('set NftStatus 5');
+          // console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else {
-          // setNftStatus('buy');
-          console.log('set NftStatus 6');
+          // console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
-        // setNftStatus(undefined);
-        console.log('set NftStatus 7');
+        // console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
-      // setNftStatus('notOnSell');
-      console.log('set NftStatus 8');
+      // console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
     console.log(
       '_nftStatus',
-      _nftStatus,
-      priceNFT,
       isContractOwner,
       isOwner,
-      isNFTOnAuction,
+      priceNFT || (nFTOnAuction &&
+        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
     );
     return _nftStatus;
   };
@@ -1535,7 +1510,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const handleLikeMethod = async () => {
-    let nftItem = {...item, like: isLike}
+    let nftItem = { ...item, like: isLike }
     const handleLikeM = await handleLike(wallet, data, nftItem);
     if (handleLikeM) {
       if (route.params.hasOwnProperty("setNftItem") && route.params.setNftItem) {
@@ -1547,6 +1522,7 @@ const DetailScreen = ({ navigation, route }) => {
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     setLoader(true)
+    console.log("yahoo")
     getNonCryptoNFTOwner();
   }
   let disableCreator = false;
@@ -1790,7 +1766,6 @@ const DetailScreen = ({ navigation, route }) => {
               <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
             </View>
           ) : null}
-          { console.log("🚀 ~ file: detail.js ~ line 1791 ~ lastOwnerOfNFT ~ setNFTStatus", setNFTStatus())}
           <View style={styles.bottomView}>
             {setNFTStatus() !== undefined &&
               <GroupButton
@@ -2004,8 +1979,9 @@ const DetailScreen = ({ navigation, route }) => {
           dispatch(setPaymentObject(null));
           setShowPaymentNow(false);
         }}
-        onPaymentDone={async () => {
+        onPaymentDone={() => {
           dispatch(setPaymentObject(null));
+          setIsOwner(true);
           setBuyLoading(true);
           setShowPaymentNow(false);
           setSuccessModalVisible(true);

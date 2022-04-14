@@ -21,7 +21,6 @@ import { SmallBoldText } from 'src/styles/text.styles';
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
-import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import { numberWithCommas } from '../../utils';
@@ -36,7 +35,6 @@ import { alertWithSingleBtn } from "../../common/function";
 import { hp } from '../../constants/responsiveFunct';
 
 const { width } = Dimensions.get('window');
-const langObj = getLanguage();
 
 const Web3 = require('web3');
 
