@@ -44,6 +44,7 @@ const PaymentMethod = props => {
   const [opacity, setOpacity] = useState(0.88);
   const [selectedMethod, setSelectedMethod] = useState(0);
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  let currencyLabel = payableIn !== '' ? payableIn : baseCurrency?.key;
 
   return (
     <Modal
@@ -142,7 +143,7 @@ const PaymentMethod = props => {
                   ?
                   numberWithCommas(parseFloat(Number(price).toFixed(4)))
                   + ' '
-                  + baseCurrency?.key
+                  + currencyLabel
                   + ' = '
                   + '$ '
                   + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
@@ -152,7 +153,7 @@ const PaymentMethod = props => {
                   + ' = '
                   + numberWithCommas(parseFloat(Number(price).toFixed(4)))
                   + ' '
-                  + baseCurrency?.key
+                  + currencyLabel
                 :
                 '$ '
                 + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
@@ -180,7 +181,7 @@ const PaymentMethod = props => {
                 onRequestClose();
                 console.log("1----selectedMethod")
                 if (myCards.length > 0) {
-                console.log("2----selectedMethod -- IF")
+                  console.log("2----selectedMethod -- IF")
                   navigation.navigate('Cards', {
                     price: priceInDollar,
                     isCardPay: true,

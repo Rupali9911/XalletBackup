@@ -190,6 +190,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [collectCreatData, setcollectCreat] = useState(collectCreat);
   const [artistDetail, setArtistData] = useState(artistData);
   const [artist, setArtist] = useState(artistId);
+  const [currenciesInDollar, setCurrenciesInDollar] = useState(null);
 
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
@@ -274,6 +275,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
 
     let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto)
+    // finalPrice = getPaybleInPrice(currencyPrices, baseCurrency?.key);
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = item.price * currencyPrices?.BNB;
@@ -295,8 +297,97 @@ const DetailScreen = ({ navigation, route }) => {
         finalPrice = item.price * 1;
         break;
     }
+    setCurrenciesInDollar(currencyPrices)
     setPriceInDollar(finalPrice);
   };
+
+  const getPaybleInPrice = (prices, paybleInCurrency) => {
+    let finalPrice = '';
+    switch (paybleInCurrency) {
+      case "BNB":
+        finalPrice = item.price * prices?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = item.price * prices?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = item.price * prices?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = item.price * prices?.MATIC;
+        break;
+
+      default:
+        finalPrice = item.price * 1;
+        break;
+    }
+    return finalPrice;
+  };
+
+  const currencyConversion = (prices, baseCurrency, paybleInCurrency) => {
+  // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
+    let finalPrice = '';
+
+    let temp = currConversion(baseCurrency) / currConversion(paybleInCurrency)
+    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
+    temp = temp * item?.price
+    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
+
+    switch (paybleInCurrency) {
+      case "BNB":
+        finalPrice = temp * prices?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = temp * prices?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = temp * prices?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = temp * prices?.MATIC;
+        break;
+
+      default:
+        finalPrice = temp * 1;
+        break;
+    }
+    // return finalPrice;
+  };
+
+  const currConversion = (key) => {
+    let finalPrice = '';
+    switch (key) {
+      case "BNB":
+        finalPrice = currenciesInDollar?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = currenciesInDollar?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = currenciesInDollar?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = currenciesInDollar?.MATIC;
+        break;
+
+      default:
+        finalPrice = 1;
+        break;
+    }
+    return finalPrice;
+  };
+
+  currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
+  console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
 
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
@@ -864,7 +955,7 @@ const DetailScreen = ({ navigation, route }) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
-      console.log('MarketPlaceContract.methods', MarketPlaceContract.methods, collectionAddress, _tokenId)
+    console.log('MarketPlaceContract.methods', MarketPlaceContract.methods, collectionAddress, _tokenId)
     MarketPlaceContract.methods
       .getNonCryptoOwner(collectionAddress, _tokenId)
       .call(async (err, res) => {
@@ -1167,7 +1258,7 @@ const DetailScreen = ({ navigation, route }) => {
                 }
               });
           }
-          // console.log('NFT Detail', data);
+          // console.log('NFT Detail', data, data.newprice);
           if (data.newprice && data.newprice.allowedCurrencies) {
             let currArray = data.newprice.allowedCurrencies.split('');
             let availableTokens = basePriceTokens.filter(
@@ -1328,19 +1419,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (isContractOwner) {
       if (isNFTOnAuction && lastBidAmount !== '0.000000000000000000') {
         // setNftStatus(undefined);
-        console.log('set NftStatus 1');
+        // console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        console.log('set NftStatus 1.1');
+        // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         // setNftStatus('onSell')
-        console.log('set NftStatus 2');
+        // console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
       // setNftStatus('sell')
-      console.log('set NftStatus 3');
+      // console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1353,36 +1444,36 @@ const DetailScreen = ({ navigation, route }) => {
         bidingTimeEnded() !== true
       ) {
         // setNftStatus(undefined);
-        console.log('set NftStatus 4');
+        // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !isNFTOnAuction) {
         if (wallet?.address) {
           // setNftStatus('buy')
-          console.log('set NftStatus 5');
+          // console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else {
           // setNftStatus('buy');
-          console.log('set NftStatus 6');
+          // console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
         // setNftStatus(undefined);
-        console.log('set NftStatus 7');
+        // console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
       // setNftStatus('notOnSell');
-      console.log('set NftStatus 8');
+      // console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    console.log(
-      '_nftStatus',
-      _nftStatus,
-      priceNFT,
-      isContractOwner,
-      isOwner,
-      isNFTOnAuction,
-    );
+    // console.log(
+    //   '_nftStatus',
+    //   _nftStatus,
+    //   priceNFT,
+    //   isContractOwner,
+    //   isOwner,
+    //   isNFTOnAuction,
+    // );
     return _nftStatus;
   };
 
@@ -1535,7 +1626,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const handleLikeMethod = async () => {
-    let nftItem = {...item, like: isLike}
+    let nftItem = { ...item, like: isLike }
     const handleLikeM = await handleLike(wallet, data, nftItem);
     if (handleLikeM) {
       if (route.params.hasOwnProperty("setNftItem") && route.params.setNftItem) {
@@ -1788,7 +1879,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
             </View>
           ) : null}
-          { console.log("🚀 ~ file: detail.js ~ line 1791 ~ lastOwnerOfNFT ~ setNFTStatus", setNFTStatus())}
+
           <View style={styles.bottomView}>
             {setNFTStatus() !== undefined &&
               <GroupButton
@@ -1971,7 +2062,7 @@ const DetailScreen = ({ navigation, route }) => {
         payableIn={payableIn}
         price={item.price ? item.price : 0}
         priceStr={priceNFTString}
-        priceInDollar={priceInDollar}
+        priceInDollar={payableIn ? getPaybleInPrice(currenciesInDollar, payableIn) : priceInDollar}
         baseCurrency={baseCurrency}
         allowedTokens={availableTokens}
         ownerAddress={
