@@ -12,6 +12,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  mainLoaderView:{ 
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center" 
+  },
   bgImageCont: {
     position: 'absolute',
     height: '100%',

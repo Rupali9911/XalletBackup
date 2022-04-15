@@ -10,7 +10,6 @@ import { hp } from '../../constants/responsiveFunct';
 import { colors } from '../../res';
 import { getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
 import NftItem from './nftItems';
-
 function ExploreScreen() {
   const { wallet, data } = useSelector(state => state.UserReducer);
 

@@ -47,7 +47,7 @@ const GifNFT = () => {
   }, []);
 
   const refreshFunc = () => {
-    dispatch(nftListReset());
+    dispatch(nftListReset('gif'));
     getNFTlist(1, null, ListReducer.sort);
     dispatch(pageChange(1));
   };

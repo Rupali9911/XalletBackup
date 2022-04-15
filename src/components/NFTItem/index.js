@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
@@ -26,6 +26,7 @@ export default function NFTItem(props) {
     SVGS;
 
   const dispatch = useDispatch();
+  const [isDisable, setIsDisable] = useState(false)
 
   let imageUri = isMeCollection ? (item.iconImage ? item.iconImage : null)
     : item.thumbnailUrl !== undefined || item.thumbnailUrl
@@ -75,15 +76,15 @@ export default function NFTItem(props) {
         let secs = parseInt(diff / 1000);
 
         if (days > 0) {
-          return translate('common.bidDeadLine')+ ' ' + days + ' ' + translate('common.daysleft');
+          return translate('common.bidDeadLine') + ' ' + days + ' ' + translate('common.daysleft');
         } else if (hours > 0) {
-          return translate('common.bidDeadLine')+ ' ' + hours + ' ' + translate('common.hoursLeft');
+          return translate('common.bidDeadLine') + ' ' + hours + ' ' + translate('common.hoursLeft');
         } else if (mins > 0) {
-          return translate('common.bidDeadLine')+ ' ' + mins + ' ' + translate('common.minutesLeft');
+          return translate('common.bidDeadLine') + ' ' + mins + ' ' + translate('common.minutesLeft');
         } else if (secs > 0) {
-          return translate('common.bidDeadLine')+ ' ' + secs + ' ' + translate('common.secondsLeft');
+          return translate('common.bidDeadLine') + ' ' + secs + ' ' + translate('common.secondsLeft');
         } else {
-          return translate('common.bidDeadLine')+ ' ' + ` ${hours}:${mins}:${secs} `;
+          return translate('common.bidDeadLine') + ' ' + ` ${hours}:${mins}:${secs} `;
         }
       }
     }
@@ -111,6 +112,7 @@ export default function NFTItem(props) {
         </TouchableOpacity>
       ) : isCollection ? (
         <TouchableOpacity
+          // disabled={isDisable}
           onLongPress={onLongPress}
           onPress={onPress}
           style={styles.collectionListItem}>
@@ -178,6 +180,7 @@ export default function NFTItem(props) {
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
+          // disabled={isDisable}
           onLongPress={onLongPress}
           onPress={onPress}
           style={styles.collectionListItem}>

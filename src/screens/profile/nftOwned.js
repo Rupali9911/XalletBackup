@@ -20,15 +20,14 @@ const NFTOwned = ({ route, navigation }) => {
 
     const { id } = route?.params;
     const { MyCollectionReducer } = useSelector(state => state);
-
     const { MyNFTReducer } = useSelector(state => state);
+    const [isFirstRender, setIsFirstRender] = useState(true);
     const dispatch = useDispatch();
-    // const [modalData, setModalData] = useState();
-    // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        if (isFocusedHistory && !MyNFTReducer?.myCollection?.length > 0) {
+        if (isFocusedHistory && !MyCollectionReducer?.myCollection?.length > 0) {
             pressToggle("owned")
+            setIsFirstRender(false)
         }
     }, [isFocusedHistory]);
 
@@ -73,10 +72,11 @@ const NFTOwned = ({ route, navigation }) => {
     return (
         <View style={styles.trendCont}>
 
+            {/* { isFocusedHistory &&console.log("🚀 ~ file: nftOwned.js ~ line 85 ~ NFTOwned ~ MyCollectionReducer", MyCollectionReducer)} */}
             {
-                MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
+               isFirstRender ? isFirstRender : MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
-                    MyCollectionReducer?.myCollection !== 0 ?
+                    MyCollectionReducer?.myCollection.length !== 0 ?
                         <FlatList
                             data={MyCollectionReducer?.myCollection}
                             horizontal={false}
@@ -102,13 +102,6 @@ const NFTOwned = ({ route, navigation }) => {
                         </View>
             }
 
-            {/*{modalData && (*/}
-                {/*<DetailModal*/}
-                    {/*data={modalData}*/}
-                    {/*isModalVisible={isModalVisible}*/}
-                    {/*toggleModal={() => setModalVisible(false)}*/}
-                {/*/>*/}
-            {/*)}*/}
         </View>
     );
 };
