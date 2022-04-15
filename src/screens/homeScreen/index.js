@@ -143,6 +143,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const fabActions = useMemo(() => {
+    console.log('openState', openState)
     if (currentTab === 1) {
       return [
         {
@@ -429,7 +430,6 @@ const HomeScreen = ({ navigation }) => {
         ) : null}
       </AppModal>
       {
-        currentTab !== 0 &&
         <FAB.Group
           open={openState}
           icon={
@@ -443,6 +443,7 @@ const HomeScreen = ({ navigation }) => {
                 />
               )
           }
+          visible={currentTab !== 0}
           fabStyle={{ backgroundColor: Colors.themeColor }}
           actions={fabActions}
           onStateChange={onStateChange}

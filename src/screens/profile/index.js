@@ -152,7 +152,7 @@ function Profile({ navigation, connector }) {
         <SmallBoldText>{title || username}</SmallBoldText>
         <SpaceView mTop={SIZE(8)} />
         {!_.isEmpty(about) && (
-          <ScrollView style={{ maxHeight: SIZE(70) }}>
+          <ScrollView style={{ maxHeight: SIZE(70), padding: 5}}>
             <Hyperlink
               onPress={(url, text) => Linking.openURL(url)}
               linkStyle={{ color: COLORS.BLUE2 }}>
