@@ -44,7 +44,7 @@ function Profile({ navigation, connector }) {
   const { UserReducer } = useSelector(state => state);
 
   const id = UserReducer?.wallet?.address || UserReducer?.data?.user?.username;
-  const { about, title, links, username } = UserReducer?.data?.user;
+  const { about, title, links, username,role } = UserReducer?.data?.user;
 
   const renderTabView = () => {
     return (
@@ -81,16 +81,16 @@ function Profile({ navigation, connector }) {
           component={NFTOwned}
           initialParams={{ id: id }}
         />
-        <Tab.Screen
+       {role === 'crypto' && <Tab.Screen
           name={translate('wallet.common.collection')}
           component={Collection}
           initialParams={{ id: id }}
-        />
-        <Tab.Screen
+        />}
+        {role === 'crypto' && <Tab.Screen
           name={translate('common.saveAsDraft')}
           component={Draft}
           initialParams={{ id: id }}
-        />
+        />}
       </Tab.Navigator>
     );
   };
