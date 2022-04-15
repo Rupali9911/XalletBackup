@@ -126,11 +126,6 @@ const Collection = ({ route }) => {
     return (
         <View style={styles.trendCont}>
 
-            {/*{isFocusedHistory && alertWithSingleBtn(*/}
-                {/*translate('wallet.common.alert'),*/}
-                {/*translate('common.comingSoon'),*/}
-                {/*() => navigation.goBack())*/}
-            {/*}*/}
             {
                 mainLoader ?
                     <Loader /> :

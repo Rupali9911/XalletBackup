@@ -174,10 +174,12 @@ const DetailItemScreen = (props) => {
         let findIndex = data.findIndex(x => x.id === item.id);
         if (item.metaData) {
             return (
-                <NftItem videoStatus={stopVideos} item={item} index={findIndex} />
+                <NftItem videoStatus={stopVideos} item={item} index={findIndex} minHeight={true} />
             )
         }
     }
+    // let itemData = data.slice(route.params.index, route.params.index + 1)
+    // let findIndex = data.findIndex(x => x.id === itemData?.[0].id);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
@@ -193,7 +195,6 @@ const DetailItemScreen = (props) => {
                         </Text> */}
                     </View>}
                 />
-
                 {
                     page === 1 && loading ?
                         <Loader /> :
@@ -231,5 +232,4 @@ const DetailItemScreen = (props) => {
         </SafeAreaView>
     );
 };
-
 export default DetailItemScreen;
