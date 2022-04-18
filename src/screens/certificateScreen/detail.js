@@ -214,6 +214,7 @@ const DetailScreen = ({ navigation, route }) => {
     providerUrl,
     walletAddressForNonCrypto,
     chainAvailable;
+    console.log(params, item, params.length > 2 )
   if (params.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
@@ -856,11 +857,13 @@ const DetailScreen = ({ navigation, route }) => {
         .call(async (err, res) => {
           console.log('getNonCryptoOwner_res', res, item.metaData.name);
           if (res) {
+            console.log("crypto user")
             setNonCryptoOwnerId(res)
             getOwnerDetailsById(res);
             lastOwnerOfNFTNonCrypto(res);
             await getTokenDetailsApi(false);
           } else if (!res) {
+            console.log("non crypto user")
             lastOwnerOfNFT();
             await getTokenDetailsApi();
           } else if (err) {
@@ -893,7 +896,7 @@ const DetailScreen = ({ navigation, route }) => {
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
     // setOwnerId(userId);
     let profile = await axios.get(profileUrl);
-    // console.log(profile.data.success, "userIduserIduserIduserId")
+    console.log(profile.data, "userIduserIduserIduserId")
 
     if (profile.data.success) {
       // console.log(profile?.data?.data, "crypto")
@@ -1021,7 +1024,7 @@ const DetailScreen = ({ navigation, route }) => {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
           .call((err, res) => {
-            // console.log('MarketPlaceContract_res', wallet.address, err, item.metaData.name);
+            console.log('getSellDetail public', res, item.metaData.name);
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               let _ownerAddress = _data.owner_address;
@@ -1311,17 +1314,17 @@ const DetailScreen = ({ navigation, route }) => {
     let _nftStatus = '';
     if (isContractOwner) {
       if (nFTOnAuction && lBidAmount !== '0.000000000000000000') {
-        // console.log('set NftStatus 1');
+        console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        // console.log('set NftStatus 1.1');
+        console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
-        // console.log('set NftStatus 2');
+        console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
-      // console.log('set NftStatus 3');
+      console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1333,22 +1336,22 @@ const DetailScreen = ({ navigation, route }) => {
         auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase() &&
         bidingTimeEnded() !== true
       ) {
-        // console.log('set NftStatus 4');
+        console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !nFTOnAuction) {
         if (wallet?.address) {
-          // console.log('set NftStatus 5');
+          console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else {
-          // console.log('set NftStatus 6');
+          console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
-        // console.log('set NftStatus 7');
+        console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
-      // console.log('set NftStatus 8');
+      console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
     console.log(
