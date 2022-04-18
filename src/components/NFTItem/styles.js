@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomRightRadius: SIZE(12),
     borderBottomLeftRadius: SIZE(12),
-    height: (hp('100%') / 8) - hp('2%'),
+    height: (hp('100%') / 8) ,
     justifyContent: 'space-between'
   },
 });

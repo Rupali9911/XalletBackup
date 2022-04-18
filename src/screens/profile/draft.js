@@ -101,7 +101,7 @@ const Draft = ({ route }) => {
                                 setCollectionDraftList([...collectionDraftList, ...res.data.data])
                             }
                         } else {
-                            if(page == 1){
+                            if (page == 1) {
                                 setCollectionDraftList([])
                             }
                             setStopMoreLoading(true);
@@ -132,11 +132,6 @@ const Draft = ({ route }) => {
     return (
         <View style={styles.trendCont}>
 
-            {/*{isFocusedHistory && alertWithSingleBtn(*/}
-                {/*translate('wallet.common.alert'),*/}
-                {/*translate('common.comingSoon'),*/}
-                {/*() => navigation.goBack())*/}
-            {/*}*/}
             {
                 mainLoader ?
                     <Loader /> :

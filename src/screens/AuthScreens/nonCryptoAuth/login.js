@@ -109,9 +109,9 @@ const LoginCrypto = ({ route, navigation }) => {
                             onChangeText: (v) => {
                                 let errorRend = {}
                                 setEmail(v)
-                                if (!v) {
-                                    errorRend.email = translate("common.emailUserRequired")
-                                }
+                                // if (!v) {
+                                //     errorRend.email = translate("common.emailUserRequired")
+                                // }
                                 setError(errorRend)
                             }
                         }}
@@ -125,9 +125,9 @@ const LoginCrypto = ({ route, navigation }) => {
                             onChangeText: (v) => {
                                 let errorRend = {};
                                 setPassword(v)
-                                if (!v) {
-                                    errorRend.password = translate("common.passwordReq")
-                                }
+                                // if (!v) {
+                                //     errorRend.password = translate("common.passwordReq")
+                                // }
                                 setError(errorRend)
                             }
                         }}

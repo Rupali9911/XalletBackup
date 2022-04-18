@@ -18,7 +18,7 @@ import {
     responsiveFontSize as RF,
     widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {Loader } from '../../components';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
@@ -45,12 +45,12 @@ const NFTCreated = ({ route }) => {
     const { data, wallet } = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    // const [modalData, setModalData] = useState();
-    // const [isModalVisible, setModalVisible] = useState(false);
+    const [isFirstRender, setIsFirstRender] = useState(true); 
 
     useEffect(() => {
         if (isFocusedHistory && !MyNFTReducer?.myList?.length > 0) {
             pressToggle("created");
+            setIsFirstRender(false)
         }
         // return () => {
         //     // dispatch(myNftLoadStart());
@@ -100,8 +100,9 @@ const NFTCreated = ({ route }) => {
 
     return (
         <View style={styles.trendCont}>
+            {/* {console.log("🚀 ~ file: nftCreated.js ~ line 135 ~ NFTCreated ~ MyNFTReducer", MyNFTReducer)} */}
             {
-                MyNFTReducer.myNftListLoading ? (
+              isFirstRender ? isFirstRender : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
                     <Loader />
                 ) : MyNFTReducer.myList?.length !== 0 ? (
                     <FlatList
@@ -110,7 +111,8 @@ const NFTCreated = ({ route }) => {
                         numColumns={2}
                         initialNumToRender={15}
                         onRefresh={() => pressToggle("created")}
-                        refreshing={MyNFTReducer.myNftListLoading}
+                        refreshing={MyNFTReducer.myListPage === 1 &&
+                            MyNFTReducer.myNftListLoading}
                         renderItem={memoizedValue}
                         onEndReached={() => {
                             if (
@@ -133,11 +135,11 @@ const NFTCreated = ({ route }) => {
                 )
             }
             {/*{modalData && (*/}
-                {/*<DetailModal*/}
-                    {/*data={modalData}*/}
-                    {/*isModalVisible={isModalVisible}*/}
-                    {/*toggleModal={() => setModalVisible(false)}*/}
-                {/*/>*/}
+            {/*<DetailModal*/}
+            {/*data={modalData}*/}
+            {/*isModalVisible={isModalVisible}*/}
+            {/*toggleModal={() => setModalVisible(false)}*/}
+            {/*/>*/}
             {/*)}*/}
         </View>
     );

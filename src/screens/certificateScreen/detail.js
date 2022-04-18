@@ -295,6 +295,94 @@ const DetailScreen = ({ navigation, route }) => {
     setPriceInDollar(finalPrice);
   };
 
+  const getPaybleInPrice = (prices, paybleInCurrency) => {
+    let finalPrice = '';
+    switch (paybleInCurrency) {
+      case "BNB":
+        finalPrice = item.price * prices?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = item.price * prices?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = item.price * prices?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = item.price * prices?.MATIC;
+        break;
+
+      default:
+        finalPrice = item.price * 1;
+        break;
+    }
+    return finalPrice;
+  };
+
+  const currencyConversion = (prices, baseCurrency, paybleInCurrency) => {
+  // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
+    let finalPrice = '';
+
+    let temp = currConversion(baseCurrency) / currConversion(paybleInCurrency)
+    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
+    temp = temp * item?.price
+    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
+
+    switch (paybleInCurrency) {
+      case "BNB":
+        finalPrice = temp * prices?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = temp * prices?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = temp * prices?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = temp * prices?.MATIC;
+        break;
+
+      default:
+        finalPrice = temp * 1;
+        break;
+    }
+    // return finalPrice;
+  };
+
+  const currConversion = (key) => {
+    let finalPrice = '';
+    switch (key) {
+      case "BNB":
+        finalPrice = currenciesInDollar?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = currenciesInDollar?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = currenciesInDollar?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = currenciesInDollar?.MATIC;
+        break;
+
+      default:
+        finalPrice = 1;
+        break;
+    }
+    return finalPrice;
+  };
+
+  currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
+  console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
+
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
@@ -1154,7 +1242,7 @@ const DetailScreen = ({ navigation, route }) => {
                 }
               });
           }
-          // console.log('NFT Detail', data);
+          // console.log('NFT Detail', data, data.newprice);
           if (data.newprice && data.newprice.allowedCurrencies) {
             let currArray = data.newprice.allowedCurrencies.split('');
             let availableTokens = basePriceTokens.filter(
@@ -1317,7 +1405,7 @@ const DetailScreen = ({ navigation, route }) => {
         console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
-        console.log('set NftStatus 1.1');
+        // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
         console.log('set NftStatus 2');
@@ -1564,8 +1652,6 @@ const DetailScreen = ({ navigation, route }) => {
                 alertWithSingleBtn(
                   translate('common.Confirm'),
                   value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
-
-                //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
               }}>
                 <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                 <MenuOptions>
@@ -1769,6 +1855,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
             </View>
           ) : null}
+
           <View style={styles.bottomView}>
             {setNFTStatus() !== undefined &&
               <GroupButton
@@ -1951,7 +2038,7 @@ const DetailScreen = ({ navigation, route }) => {
         payableIn={payableIn}
         price={item.price ? item.price : 0}
         priceStr={priceNFTString}
-        priceInDollar={priceInDollar}
+        priceInDollar={payableIn ? getPaybleInPrice(currenciesInDollar, payableIn) : priceInDollar}
         baseCurrency={baseCurrency}
         allowedTokens={availableTokens}
         ownerAddress={
@@ -1984,7 +2071,6 @@ const DetailScreen = ({ navigation, route }) => {
         }}
         onPaymentDone={() => {
           dispatch(setPaymentObject(null));
-          setIsOwner(true);
           setBuyLoading(true);
           setShowPaymentNow(false);
           setSuccessModalVisible(true);

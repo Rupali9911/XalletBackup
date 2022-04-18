@@ -23,6 +23,7 @@ export default {
     receive: require("../../assets/images/receive.png"),
     topup: require("../../assets/images/topup.png"),
     transaction: require("../../assets/images/transaction_history.png"),
+    loadergif: require("../assets/gifs/loadergif.gif"),
 
     //tab icons
     wallet: require("../../assets/images/wallet.png"),

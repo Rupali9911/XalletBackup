@@ -163,10 +163,10 @@ const styles = StyleSheet.create({
         flex: 1
     },
     profileCont: {
-        ...CommonStyles.circle("13.5")
+        ...CommonStyles.circle("10")
     },
     profileImage: {
-        ...CommonStyles.imageStyles(13.5)
+        ...CommonStyles.imageStyles(10)
     },
     listCont: {
         paddingHorizontal: wp("4%"),

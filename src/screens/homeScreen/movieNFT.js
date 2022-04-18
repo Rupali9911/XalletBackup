@@ -47,7 +47,7 @@ const MovieNFT = () => {
   }, []);
 
   const refreshFunc = () => {
-    dispatch(nftListReset());
+    dispatch(nftListReset('movie'));
     getNFTlist(1, null, ListReducer.sort);
     dispatch(pageChange(1));
   };

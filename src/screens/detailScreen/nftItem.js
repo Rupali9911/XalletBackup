@@ -33,6 +33,7 @@ import {
 } from 'react-native-popup-menu';
 import { alertWithSingleBtn } from "../../common/function";
 import { hp } from '../../constants/responsiveFunct';
+import Images from '../../constants/Images';
 
 const { width } = Dimensions.get('window');
 
@@ -587,8 +588,9 @@ const nftItem = ({ item, index, minHeight }) => {
     <>
       {
         loader ?
-          <View style={{ width: "100%", minHeight: minHeight ? hp(52) : 200, justifyContent: "center", alignItems: "center" }}>
-            <ActivityIndicator size={"small"} />
+          <View style={[styles.mainLoaderView, { minHeight: minHeight ? hp(78) : 200 }]}>
+            {/* <ActivityIndicator size={"small"} /> */}
+            <Image source={Images.loadergif} />
           </View>
           :
           <View>
@@ -773,7 +775,6 @@ const nftItem = ({ item, index, minHeight }) => {
                     alertWithSingleBtn(
                       translate('common.Confirm'),
                       value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
-                    //alert(value === 1 ? translate('common.nftReported') : translate('common.userBlocked'));
                   }}>
                     <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                     <MenuOptions>
