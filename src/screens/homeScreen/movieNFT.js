@@ -53,7 +53,7 @@ const MovieNFT = () => {
   };
 
   const renderFooter = () => {
-    if (!ListReducer.nftListLoading) return null;
+    if (!ListReducer.isMovieNftLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
@@ -94,11 +94,11 @@ const MovieNFT = () => {
             dispatch(nftLoadStart());
             refreshFunc();
           }}
-          refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
+          refreshing={ListReducer.page === 1 && ListReducer.isMovieNftLoading}
           renderItem={memoizedValue}
           onEndReached={() => {
             if (
-              !ListReducer.nftListLoading &&
+              !ListReducer.isMovieNftLoading &&
               ListReducer.movieList.length !== ListReducer.totalCount
             ) {
               let num = ListReducer.page + 1;

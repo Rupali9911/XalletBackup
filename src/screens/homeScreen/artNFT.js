@@ -26,7 +26,7 @@ const ArtNFT = () => {
     useEffect(() => {
         if (isFocused && (isFirstRender || isSort !== sort)) {
             console.log("artNFT")
-            dispatch(newNftLoadStart());
+            dispatch(newNftLoadStart('art'));
             dispatch(newNftListReset('art'));
             getNFTlist(1, null, sort);
             dispatch(newPageChange(1));
@@ -87,7 +87,7 @@ const ArtNFT = () => {
                             numColumns={2}
                             initialNumToRender={14}
                             onRefresh={() => {
-                                dispatch(newNftLoadStart());
+                                dispatch(newNftLoadStart('art'));
                                 handleRefresh();
                             }}
                             refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}

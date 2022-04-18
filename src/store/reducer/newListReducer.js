@@ -15,6 +15,7 @@ import {
 
 const initialState = {
   isArtNftLoading: false,
+  isPhotoNftLoading: false,
   newNftListLoading: false,
   newNftList: [],
   favoriteNftList: [],
@@ -31,7 +32,14 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {...state, isArtNftLoading: true});
 
     case NEW_NFT_LOAD_START:
-      return (state = {...state, newNftListLoading: true});
+      switch (action.payload) {
+        case 'art':
+          return (state = {...state, isArtNftLoading: true })
+        case 'photo':
+          return (state = {...state, isPhotoNftLoading: true })
+        default:
+          return (state = {...state, newNftListLoading: true })
+      }
 
     case NEW_NFT_LOAD_SUCCESS:
       return (state = {
@@ -46,6 +54,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         ...state,
         favoriteNftList: [...state.favoriteNftList, ...action.payload.data],
         newTotalCount: action.payload.count,
+        isPhotoNftLoading: false,
         newNftListLoading: false,
       });
     case UPDATE_NFT_DETAIL:
@@ -55,7 +64,7 @@ export default function NewNFTListReducer(state = initialState, action) {
     case UPDATE_OWNER_DETAIL:
       return (state = {...state, ownerDetail: action.payload});
     case NEW_NFT_LOAD_FAIL:
-      return (state = {...state, newNftListLoading: false});
+      return (state = {...state, newNftListLoading: false, isPhotoNftLoading: false  });
     case ART_NFT_LOAD_FAIL:
       return (state = {...state, isArtNftLoading: false});
 

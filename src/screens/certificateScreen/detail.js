@@ -328,13 +328,10 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const currencyConversion = (prices, baseCurrency, paybleInCurrency) => {
-  // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
     let finalPrice = '';
 
     let temp = currConversion(baseCurrency) / currConversion(paybleInCurrency)
-    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
     temp = temp * item?.price
-    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
 
     switch (paybleInCurrency) {
       case "BNB":
@@ -386,8 +383,8 @@ const DetailScreen = ({ navigation, route }) => {
     return finalPrice;
   };
 
-  currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
-  console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
+  // currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
+  // console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
 
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
@@ -2005,7 +2002,11 @@ const DetailScreen = ({ navigation, route }) => {
               </View> :
               <NFTDetailDropdown
                 title={translate('common.tradingHistory')}
-                containerChildStyles={{ height: hp(47.6) }}
+                containerChildStyles={{
+                  height: tradingTableData.length == 0 ? hp(19) :
+                    tradingTableData.length < 5 ?
+                      hp(16) + (hp(6) * tradingTableData.length) : hp(47.6)
+                }}
                 icon={trading}>
                 <Filters />
                 <ScrollView
