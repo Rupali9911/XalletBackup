@@ -190,6 +190,11 @@ const DetailScreen = ({ navigation, route }) => {
   const [collectCreatData, setcollectCreat] = useState(collectCreat);
   const [artistDetail, setArtistData] = useState(artistData);
   const [artist, setArtist] = useState(artistId);
+  const [videoLoad, setVideoLoad] = useState(true);
+  const [playVideoLoad, setPlayVideoLoad] = useState(false);
+  const [videoLoadErr, setVideoLoadErr] = useState(false);
+  const [videoKey, setVideoKey] = useState(1);
+  const [videoURL, setVideoURI] = useState(video);
 
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
@@ -202,6 +207,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData, setTradingTableData] = useState([]);
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(item.like);
+  const [currenciesInDollar, setCurrenciesInDollar] = useState(null);
 
   let params = item.tokenId.toString().split('-');
   let chainType,
@@ -214,7 +220,6 @@ const DetailScreen = ({ navigation, route }) => {
     providerUrl,
     walletAddressForNonCrypto,
     chainAvailable;
-    console.log(params, item, params.length > 2 )
   if (params.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
@@ -322,13 +327,13 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const currencyConversion = (prices, baseCurrency, paybleInCurrency) => {
-  // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
+    // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
     let finalPrice = '';
 
     let temp = currConversion(baseCurrency) / currConversion(paybleInCurrency)
-    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
+    // console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
     temp = temp * item?.price
-    console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
+    // console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
 
     switch (paybleInCurrency) {
       case "BNB":
@@ -381,7 +386,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
-  console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
+  // console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
 
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
@@ -464,11 +469,6 @@ const DetailScreen = ({ navigation, route }) => {
     function comparator(a, b) {
       return parseInt(b['sellDateTime'], 10) - parseInt(a['sellDateTime'], 10);
     }
-    console.log({
-      tokenId: item.tokenId,
-      networkType,
-      filter: filterArray,
-    })
 
     setTradingTableLoader(true)
     let url =
@@ -938,20 +938,20 @@ const DetailScreen = ({ navigation, route }) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
-    console.log('MarketPlaceContract.methods', collectionAddress, _tokenId)
+    // console.log('MarketPlaceContract.methods', collectionAddress, _tokenId)
     if (MarketPlaceContract.methods.getNonCryptoOwner) {
       MarketPlaceContract.methods
         .getNonCryptoOwner(collectionAddress, _tokenId)
         .call(async (err, res) => {
-          console.log('getNonCryptoOwner_res', res, item.metaData.name);
+          // console.log('getNonCryptoOwner_res', res, item.metaData.name);
           if (res) {
-            console.log("crypto user")
+            // console.log("crypto user")
             setNonCryptoOwnerId(res)
             getOwnerDetailsById(res);
             lastOwnerOfNFTNonCrypto(res);
             await getTokenDetailsApi(false);
           } else if (!res) {
-            console.log("non crypto user")
+            // console.log("non crypto user")
             lastOwnerOfNFT();
             await getTokenDetailsApi();
           } else if (err) {
@@ -969,7 +969,7 @@ const DetailScreen = ({ navigation, route }) => {
     const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
     try {
       let profile = await axios.get(profileUrl);
-      console.log(profile, "non_crypto", item.metaData.name)
+      // console.log(profile, "non_crypto", item.metaData.name)
       setOwnerDataN(profile?.data?.data)
       setOwnerN(id);
     } catch (err) {
@@ -984,7 +984,7 @@ const DetailScreen = ({ navigation, route }) => {
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
     // setOwnerId(userId);
     let profile = await axios.get(profileUrl);
-    console.log(profile.data, "userIduserIduserIduserId")
+    // console.log(profile.data, "userIduserIduserIduserId")
 
     if (profile.data.success) {
       // console.log(profile?.data?.data, "crypto")
@@ -1007,16 +1007,16 @@ const DetailScreen = ({ navigation, route }) => {
     ERC721Contract.methods.ownerOf(_tokenId).call((err, res) => {
       if (!err) {
         _data.owner_address = res;
-        console.log('owner_address', res, _tokenId);
+        // console.log('owner_address', res, _tokenId);
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
           .call(async (err, res) => {
-            console.log(
-              'MarketPlaceContract_res',
-              res[0] === '0x0000000000000000000000000000000000000000',
-              res[0] !== '0x0000000000000000000000000000000000000000',
-              wallet?.address
-            );
+            // console.log(
+            //   'MarketPlaceContract_res',
+            //   res[0] === '0x0000000000000000000000000000000000000000',
+            //   res[0] !== '0x0000000000000000000000000000000000000000',
+            //   wallet?.address
+            // );
             // return ;
             if (!err) {
               let priceOfNft = res[1] / 1e18;
@@ -1050,7 +1050,7 @@ const DetailScreen = ({ navigation, route }) => {
                 ) {
                   setIsOwner(
                     (res[0].toLowerCase() === wallet.address.toLowerCase() && res[1] !== "") ||
-                      ( data &&
+                      (data &&
                         res[0].toLowerCase() ===
                         walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
@@ -1112,7 +1112,7 @@ const DetailScreen = ({ navigation, route }) => {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
           .call((err, res) => {
-            console.log('getSellDetail public', res, item.metaData.name);
+            // console.log('getSellDetail public', res, item.metaData.name);
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               let _ownerAddress = _data.owner_address;
@@ -1208,7 +1208,7 @@ const DetailScreen = ({ navigation, route }) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        console.log('getDetailNFT_res', res);
+        // console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
 
           let data = await getNFTDetails(res.data[0]);
@@ -1402,17 +1402,17 @@ const DetailScreen = ({ navigation, route }) => {
     let _nftStatus = '';
     if (isContractOwner) {
       if (nFTOnAuction && lBidAmount !== '0.000000000000000000') {
-        console.log('set NftStatus 1');
+        // console.log('set NftStatus 1');
         _nftStatus = undefined;
       } else if (isForAward) {
         // console.log('set NftStatus 1.1');
         _nftStatus = undefined;
       } else {
-        console.log('set NftStatus 2');
+        // console.log('set NftStatus 2');
         _nftStatus = 'onSell';
       }
     } else if (isOwner) {
-      console.log('set NftStatus 3');
+      // console.log('set NftStatus 3');
       _nftStatus = 'sell';
     } else if (
       priceNFT ||
@@ -1424,31 +1424,31 @@ const DetailScreen = ({ navigation, route }) => {
         auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase() &&
         bidingTimeEnded() !== true
       ) {
-        console.log('set NftStatus 4');
+        // console.log('set NftStatus 4');
         _nftStatus = undefined;
       } else if (priceNFT && !nFTOnAuction) {
         if (wallet?.address) {
-          console.log('set NftStatus 5');
+          // console.log('set NftStatus 5');
           _nftStatus = 'buy';
         } else {
-          console.log('set NftStatus 6');
+          // console.log('set NftStatus 6');
           _nftStatus = 'buy';
         }
       } else {
-        console.log('set NftStatus 7');
+        // console.log('set NftStatus 7');
         _nftStatus = undefined;
       }
     } else {
-      console.log('set NftStatus 8');
+      // console.log('set NftStatus 8');
       _nftStatus = 'notOnSell';
     }
-    console.log(
-      '_nftStatus',
-      isContractOwner,
-      isOwner,
-      priceNFT || (nFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
-    );
+    // console.log(
+    //   '_nftStatus',
+    //   isContractOwner,
+    //   isOwner,
+    //   priceNFT || (nFTOnAuction &&
+    //     auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
+    // );
     return _nftStatus;
   };
 
@@ -1463,7 +1463,6 @@ const DetailScreen = ({ navigation, route }) => {
       }
     }
   };
-
   const renderItem = ({ item }) => {
     // let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item.metaData) {
@@ -1472,10 +1471,11 @@ const DetailScreen = ({ navigation, route }) => {
 
       const image = item.metaData.image || item.thumbnailUrl;
       const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
-
+      // console.log(fileType, item.metaData.name, "item.metaData.name")
       return (
         <TouchableOpacity
           onPress={() => {
+            setVideoURI(null);
             navigation.push('CertificateDetail', {
               owner: ownerN,
               ownerData: ownerDataN,
@@ -1613,7 +1613,7 @@ const DetailScreen = ({ navigation, route }) => {
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     setLoader(true)
-    console.log("yahoo")
+    // console.log("yahoo")
     getNonCryptoNFTOwner();
   }
   let disableCreator = false;
@@ -1635,7 +1635,7 @@ const DetailScreen = ({ navigation, route }) => {
         artistDetail.hasOwnProperty("username") && artistDetail.username ?
           artistDetail.username.substring(0, 6) : artist.substring(0, 6)
     : artist ? artist?.substring(0, 6) : "";
-  // console.log(creatorName, "/aaaaaaa", artistDetail && artist)
+  // console.log(item, "/////////")
   // console.log(isLike, item)
   return (
     <>
@@ -1667,20 +1667,38 @@ const DetailScreen = ({ navigation, route }) => {
           }
         />
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
-          <TouchableOpacity activeOpacity={1} onPress={() => setPlay(!isPlay)}>
-            {fileType === 'mp4' ||
-              fileType === 'MP4' ||
-              fileType === 'mov' ||
-              fileType === 'MOV' ? (
+          <TouchableOpacity activeOpacity={1} onPress={() => {
+            let status = !isPlay;
+            setPlay(status)
+            if (status) {
+              setPlayVideoLoad(true)
+            }
+          }}>
+            {fileType.toLowerCase() === 'mp4' ||
+              fileType.toLowerCase() === 'mov' ? (
               <View style={{ ...styles.modalImage }}>
                 <Video
+                  key={videoKey}
                   ref={refVideo}
-                  source={{ uri: video }}
+                  source={{ uri: videoURL }}
                   repeat
                   playInBackground={false}
                   paused={!isPlay}
+                  onProgress={r => {
+                    setVideoLoad(false)
+                    setPlayVideoLoad(false)
+                  }}
                   resizeMode={'cover'}
-                  onLoad={() => refVideo.current.seek(0)}
+                  onError={(error) => {
+                    setVideoLoadErr(true)
+                  }}
+                  onReadyForDisplay={() => {
+                    setPlayVideoLoad(false)
+                    setVideoLoad(false)
+                  }}
+                  onLoad={(data) => {
+                    refVideo.current.seek(0)
+                  }}
                   style={{
                     flex: 1,
                     position: 'absolute',
@@ -1690,7 +1708,7 @@ const DetailScreen = ({ navigation, route }) => {
                     bottom: 0,
                   }}
                 />
-                {!isPlay && (
+                {!isPlay ? (
                   <View
                     style={{
                       position: 'absolute',
@@ -1703,17 +1721,56 @@ const DetailScreen = ({ navigation, route }) => {
                     }}>
                     <View
                       style={{
-                        width: SIZE(100),
+                        width: SIZE(200),
                         height: SIZE(100),
                         backgroundColor: '#00000030',
                         borderRadius: SIZE(100),
                         alignItems: 'center',
                         justifyContent: 'center',
-                      }}>
-                      <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                      }}>{
+                        videoLoadErr ?
+                          <View style={{ backgroundColor: "rgba(0,0,0,0.5)" }} >
+                            <TouchableOpacity onPress={() => {
+                              setVideoLoadErr(false)
+                              setVideoKey(videoKey + 1)
+                            }} style={{ paddingHorizontal: 15, paddingVertical: 10 }} >
+                              <Text style={{ fontSize: 20, color: "#fff", fontWeight: "bold", textAlign: "center" }} >Retry Loading</Text>
+                            </TouchableOpacity>
+                          </View>
+                          :
+                          videoLoad ?
+                            <ActivityIndicator size="large" color='white' />
+                            :
+                            <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                      }
                     </View>
                   </View>
-                )}
+                ) :
+                  playVideoLoad && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View
+                        style={{
+                          width: SIZE(200),
+                          height: SIZE(100),
+                          backgroundColor: '#00000030',
+                          borderRadius: SIZE(100),
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>{
+                          <ActivityIndicator size="large" color='white' />
+                        }
+                      </View>
+                    </View>
+                  )}
               </View>
             ) : (
               <C_Image
@@ -1874,7 +1931,7 @@ const DetailScreen = ({ navigation, route }) => {
                 leftDisabled={setNFTStatus() === '' || setNFTStatus() === 'notOnSell'}
                 leftLoading={buyLoading}
                 onLeftPress={() => {
-                  console.log('priceOfNft', priceNFT);
+                  // console.log('priceOfNft', priceNFT);
                   if (buyLoading) return;
                   // navigation.navigate('WalletConnect')
                   // if(price && price > 0){
