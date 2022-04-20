@@ -34,7 +34,7 @@ const PhotoNFT = () => {
   useEffect(() => {
     if (isFocused && (isFirstRender || isSort !== sort)) {
       console.log("PhotoNFT")
-      dispatch(newNftLoadStart());
+      dispatch(newNftLoadStart('photo'));
       dispatch(newNftListReset('photo'));
       getNFTlist(1, null, sort);
       setIsFirstRender(false)
@@ -76,7 +76,7 @@ const PhotoNFT = () => {
   };
 
   const renderFooter = () => {
-    if (!NewNFTListReducer.newNftListLoading) return null;
+    if (!NewNFTListReducer.isPhotoNftLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
@@ -88,8 +88,8 @@ const PhotoNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      { isFirstRender ? isFirstRender : NewNFTListReducer.newListPage === 1 &&
-        NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ? isFirstRender : NewNFTListReducer.newListPage === 1 &&
+        NewNFTListReducer.isPhotoNftLoading ? (
         <Loader />
       ) : NewNFTListReducer.favoriteNftList.length !== 0 ? (
         <FlatList
@@ -98,17 +98,17 @@ const PhotoNFT = () => {
           numColumns={2}
           initialNumToRender={14}
           onRefresh={() => {
-            dispatch(newNftLoadStart());
+            dispatch(newNftLoadStart('photo'));
             handleRefresh();
           }}
           refreshing={
             NewNFTListReducer.newListPage === 1 &&
-            NewNFTListReducer.newNftListLoading
+            NewNFTListReducer.isPhotoNftLoading
           }
           renderItem={memoizedValue}
           onEndReached={() => {
             if (
-              !NewNFTListReducer.newNftListLoading &&
+              !NewNFTListReducer.isPhotoNftLoading &&
               NewNFTListReducer.newTotalCount !==
               NewNFTListReducer.favoriteNftList.length
             ) {

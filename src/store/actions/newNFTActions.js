@@ -43,8 +43,9 @@ export const isArtNftLoadStart = () => ({
   type: ART_NFT_LOAD_START,
 });
 
-export const newNftLoadStart = () => ({
+export const newNftLoadStart = data => ({
   type: NEW_NFT_LOAD_START,
+  payload: data,
 });
 
 export const newNftLoadFail = () => ({
@@ -131,6 +132,7 @@ export const newNFTList = (page, limit, sort) => {
 };
 export const favoriteNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
+    dispatch(newNftLoadStart('photo'));
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;
