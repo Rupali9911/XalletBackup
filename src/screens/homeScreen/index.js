@@ -216,7 +216,36 @@ const HomeScreen = ({ navigation }) => {
         translate('common.comingSoon'))
   }
 
-  return (
+    const fab = () =>{
+        return (
+            <FAB.Group
+                open={openState}
+                icon={
+                    openState
+                        ? 'close'
+                        : props => (
+                            <FontAwesome5
+                                name={'sort-amount-down'}
+                                color={props.color}
+                                size={props.size}
+                            />
+                        )
+                }
+                fabStyle={{backgroundColor: Colors.themeColor}}
+                actions={fabActions}
+                onStateChange={onStateChange}
+                onPress={() => {
+                    if (openState) {
+                        // do something if the speed dial is open
+                    }
+                }}
+            />
+        )
+    }
+
+    const FilterComponent = React.memo(fab);
+
+    return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <AppHeader
@@ -430,28 +459,7 @@ const HomeScreen = ({ navigation }) => {
       </AppModal>
       {
         currentTab !== 0 &&
-        <FAB.Group
-          open={openState}
-          icon={
-            openState
-              ? 'close'
-              : props => (
-                <FontAwesome5
-                  name={'sort-amount-down'}
-                  color={props.color}
-                  size={props.size}
-                />
-              )
-          }
-          fabStyle={{ backgroundColor: Colors.themeColor }}
-          actions={fabActions}
-          onStateChange={onStateChange}
-          onPress={() => {
-            if (openState) {
-              // do something if the speed dial is open
-            }
-          }}
-        />
+        <FilterComponent/>
       }
     </>
   );
