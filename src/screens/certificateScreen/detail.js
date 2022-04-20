@@ -142,7 +142,6 @@ const DetailScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
-  const [isPlay, setPlay] = useState(false);
   const {
     owner,
     ownerData,
@@ -190,11 +189,14 @@ const DetailScreen = ({ navigation, route }) => {
   const [collectCreatData, setcollectCreat] = useState(collectCreat);
   const [artistDetail, setArtistData] = useState(artistData);
   const [artist, setArtist] = useState(artistId);
-  const [videoLoad, setVideoLoad] = useState(true);
+
+  const [showThumb, toggleThumb] = useState(true);
+  const [videoLoad, setVideoLoad] = useState(false);
   const [playVideoLoad, setPlayVideoLoad] = useState(false);
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
   const [videoURL, setVideoURI] = useState(video);
+  const [playVideo, toggleVideoPlay] = useState(false);
 
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
@@ -1668,109 +1670,85 @@ const DetailScreen = ({ navigation, route }) => {
         />
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
           <TouchableOpacity activeOpacity={1} onPress={() => {
-            let status = !isPlay;
-            setPlay(status)
-            if (status) {
+            let status = !playVideo;
+            if (showThumb) {
+              setVideoLoad(true)
+            }else{
               setPlayVideoLoad(true)
             }
+            if(!status){
+              setVideoLoad(false);
+              setPlayVideoLoad(false)
+            }
+            toggleVideoPlay(status)
           }}>
             {fileType.toLowerCase() === 'mp4' ||
               fileType.toLowerCase() === 'mov' ? (
               <View style={{ ...styles.modalImage }}>
+                {showThumb &&
+                  <C_Image
+                    uri={item.metaData.thumbnft}
+                    imageStyle={styles.modalImage}
+                    isContain
+                  />
+                }
                 <Video
                   key={videoKey}
                   ref={refVideo}
                   source={{ uri: videoURL }}
                   repeat
                   playInBackground={false}
-                  paused={!isPlay}
+                  paused={!playVideo}
                   onProgress={r => {
-                    setVideoLoad(false)
-                    setPlayVideoLoad(false)
+                      setVideoLoad(false)
+                      setPlayVideoLoad(false)
                   }}
                   resizeMode={'cover'}
                   onError={(error) => {
+                    console.log(error)
                     setVideoLoadErr(true)
                   }}
                   onReadyForDisplay={() => {
-                    setPlayVideoLoad(false)
-                    setVideoLoad(false)
+                    toggleThumb(false)
                   }}
                   onLoad={(data) => {
                     refVideo.current.seek(0)
                   }}
-                  style={{
-                    flex: 1,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  }}
+                  style={[styles.video]}
                 />
-                {!isPlay ? (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+
+                {(!playVideo && !videoLoad) && (
+                  <View style={styles.videoPlayIconCont}>
                     <View
-                      style={{
-                        width: SIZE(200),
-                        height: SIZE(100),
-                        backgroundColor: '#00000030',
-                        borderRadius: SIZE(100),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>{
-                        videoLoadErr ?
-                          <View style={{ backgroundColor: "rgba(0,0,0,0.5)" }} >
-                            <TouchableOpacity onPress={() => {
-                              setVideoLoadErr(false)
-                              setVideoKey(videoKey + 1)
-                            }} style={{ paddingHorizontal: 15, paddingVertical: 10 }} >
-                              <Text style={{ fontSize: 20, color: "#fff", fontWeight: "bold", textAlign: "center" }} >Retry Loading</Text>
-                            </TouchableOpacity>
-                          </View>
-                          :
-                          videoLoad ?
-                            <ActivityIndicator size="large" color='white' />
-                            :
-                            <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                      }
+                      style={styles.videoPlayIconChild}>
+                      <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
                     </View>
                   </View>
-                ) :
-                  playVideoLoad && (
+                )
+                }
+                {
+                  ((videoLoad || playVideoLoad) && !videoLoadErr ) &&
+                  <View style={styles.videoPlayIconCont}>
                     <View
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <View
-                        style={{
-                          width: SIZE(200),
-                          height: SIZE(100),
-                          backgroundColor: '#00000030',
-                          borderRadius: SIZE(100),
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>{
-                          <ActivityIndicator size="large" color='white' />
-                        }
-                      </View>
+                      style={styles.videoPlayIconChild}>
+                      <ActivityIndicator size="large" color='white' />
                     </View>
-                  )}
+                  </View>
+                }
+                {
+                  videoLoadErr &&
+                  <View style={styles.videoPlayIconCont}>
+                    <View style={{ backgroundColor: "rgba(0,0,0,0.5)" }} >
+                      <TouchableOpacity onPress={() => {
+                        setVideoLoadErr(false)
+                        setVideoKey(videoKey + 1)
+                      }} style={{ paddingHorizontal: 15, paddingVertical: 10 }} >
+                        <Text style={styles.retry} >Retry Loading</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                }
+               
               </View>
             ) : (
               <C_Image

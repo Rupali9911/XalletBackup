@@ -170,9 +170,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     textAlign: "center",
     color: "#707a83",
-    marginTop: 0, 
-    paddingHorizontal: 0, 
-    marginBottom: 0, 
+    marginTop: 0,
+    paddingHorizontal: 0,
+    marginBottom: 0,
     fontWeight: "bold"
   },
   moreView: {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color: colors.GREY4,
     marginLeft: wp(2),
   },
-  dollarText:{
+  dollarText: {
     fontSize: RF(1.7)
   },
   price: {
@@ -264,6 +264,37 @@ const styles = StyleSheet.create({
     top: SIZE(10),
     right: SIZE(10)
   },
+  videoPlayIconChild: {
+    width: SIZE(100),
+    height: SIZE(100),
+    backgroundColor: '#00000030',
+    borderRadius: SIZE(100),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  videoPlayIconCont: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  video: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  retry: {
+    fontSize: 20,
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center"
+  }
 });
 
 export default styles;
