@@ -154,15 +154,15 @@ const PaymentNow = props => {
       // return_url: "https://testnet.xanalia.com/",
       expected_payment_method_type: 'card',
       use_stripe_sdk: true,
-      webauthn_uvpa_available: false,
-      spc_eligible: false,
+      // webauthn_uvpa_available: false,
+      // spc_eligible: false,
       key: environment.stripeKey.p_key,
       client_secret: clientSecret,
     };
-
+console.log(params, "confirm confirm confirm")
     StripeApiRequest(`payment_intents/${paymentIntentId}/confirm`, params)
       .then(response => {
-        console.log('165_confirmPayment response', JSON.stringify(response));
+        console.log('165_confirmPayment response', response);
         if (response) {
           if (response.status === 'requires_action') {
             manageOnRequireAction(response.client_secret);
@@ -181,7 +181,7 @@ const PaymentNow = props => {
   };
 
   const chargePayment = (paymentIntentId, clientSecret) => {
-    const url = `payment_intents/${paymentIntentId}?key=${environment.stripeKey.p_key}&is_stripe_sdk=true&client_secret=${clientSecret}`;
+    const url = `payment_intents/${paymentIntentId}?key=${environment.stripeKey.p_key}&is_stripe_sdk=false&client_secret=${clientSecret}`;
     console.log('url', url);
     StripeApiRequest(url, null, 'GET')
       .then(_response => {
@@ -246,13 +246,11 @@ const PaymentNow = props => {
         console.log('246 transactionSuccess: success_res', success_res);
         if (success_res.success) {
           alertWithSingleBtn(translate('common.tansactionSuccessFull'));
-          onPaymentDone();
-          setLoading(false);
         } else {
           alertWithSingleBtn(success_res.data);
-          onPaymentDone();
-          setLoading(false);
         }
+        onPaymentDone();
+        setLoading(false);
       })
       .catch(err => {
         console.log('err', err);
@@ -517,7 +515,7 @@ const PaymentNow = props => {
                     }).obfuscated
                   }
                 </Text>
-              )}
+              )} 
               <TouchableOpacity
                 style={styles.editContainer}
                 onPress={() => {
