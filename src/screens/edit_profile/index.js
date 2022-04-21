@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { TouchableOpacity, SafeAreaView, Keyboard, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import ActionSheet from '@alessiocancian/react-native-actionsheet';
+import ActionSheet from 'react-native-actionsheet';
 import { Field, reduxForm } from 'redux-form';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector, useDispatch } from 'react-redux';
