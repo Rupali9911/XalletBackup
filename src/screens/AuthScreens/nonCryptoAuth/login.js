@@ -113,7 +113,9 @@ const LoginCrypto = ({ route, navigation }) => {
                                 //     errorRend.email = translate("common.emailUserRequired")
                                 // }
                                 setError(errorRend)
-                            }
+                            },
+                            autoCompleteType: 'username',
+                            importantForAutofill:'yes'
                         }}
                         error={error["email"]}
                     />
@@ -129,7 +131,9 @@ const LoginCrypto = ({ route, navigation }) => {
                                 //     errorRend.password = translate("common.passwordReq")
                                 // }
                                 setError(errorRend)
-                            }
+                            },
+                            autoCompleteType: 'password',
+                            importantForAutofill:'yes'
                         }}
                         error={error["password"]}
                     />

@@ -44,8 +44,7 @@ const TokenDetail = ({ route, navigation }) => {
     //         console.log('err', err);
     //         setLoading(false);
     //     });
-
-    getTransactionsByType(wallet?.address, item.network.toLowerCase());
+      getTransactionsByType(wallet?.address, item.network.toLowerCase());
   }, []);
 
   const getBalance = () => {
@@ -160,8 +159,7 @@ const TokenDetail = ({ route, navigation }) => {
     console.log('address, type', address, type, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}`)
     return new Promise((resolve, reject) => {
       fetch(
-        `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}
-        &networkType=${networkType}`,
+        `${BASE_URL}/xanawallet/fetch-transactionsfetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}`,
       )
         .then(response => {
            console.log('response', response);
