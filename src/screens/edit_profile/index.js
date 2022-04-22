@@ -156,37 +156,12 @@ function Profile(props) {
   const onSave = () => {
     Keyboard.dismiss()
     let validateNum = 0;
+
     if (maxLength50(username)) {
       setErrUsername(maxLength50(username));
     } else {
       validateNum++;
     }
-    if (maxLength20(firstName)) {
-      setErrFirstname(maxLength50(firstName));
-    } else {
-      validateNum++;
-    }
-    if (maxLength20(lastName)) {
-      setErrLastname(maxLength50(lastName));
-    } else {
-      validateNum++;
-    }
-    if (maxLength100(address)) {
-      setErrAddress(maxLength100(address));
-    } else {
-      validateNum++;
-    }
-    if (maxLength13(phoneNumber)) {
-      setErrPhoneNo(maxLength13(phoneNumber));
-    } else {
-      validateNum++;
-    }
-    if (maxLength50(title)) {
-      setErrTitle(maxLength50(title));
-    } else {
-      validateNum++;
-    }
-
     if (maxLength50(email)) {
       setErrEmail(maxLength50(email));
     } else {
@@ -246,39 +221,57 @@ function Profile(props) {
         validateNum++;
       }
     }
-
-    if (maxLength100(facebook)) {
-      setErrFacebook(maxLength100(facebook));
-    } else {
-      if (validateFacebookURL(facebook)) {
-        setErrFacebook(validateFacebookURL(facebook));
-      } else {
-        validateNum++;
-      }
-    }
-    if (maxLength50(zoomLink)) {
-      setErrZoomLink(maxLength50(zoomLink));
-    } else {
-      if (validateZoomLinkURL(zoomLink)) {
-        setErrZoomLink(validateZoomLinkURL(zoomLink));
-      } else {
-        validateNum++;
-      }
-    }
-
     if (maxLength200(about)) {
       setErrAbout(maxLength200(about));
     } else {
       validateNum++;
     }
+    // if (maxLength20(firstName)) {
+    //   setErrFirstname(maxLength50(firstName));
+    // } else {
+    //   validateNum++;
+    // }
+    // if (maxLength20(lastName)) {
+    //   setErrLastname(maxLength50(lastName));
+    // } else {
+    //   validateNum++;
+    // }
+    // if (maxLength100(address)) {
+    //   setErrAddress(maxLength100(address));
+    // } else {
+    //   validateNum++;
+    // }
+    // if (maxLength13(phoneNumber)) {
+    //   setErrPhoneNo(maxLength13(phoneNumber));
+    // } else {
+    //   validateNum++;
+    // }
+    // if (maxLength50(title)) {
+    //   setErrTitle(maxLength50(title));
+    // } else {
+    //   validateNum++;
+    // }
+    // if (maxLength100(facebook)) {
+    //   setErrFacebook(maxLength100(facebook));
+    // } else {
+    //   if (validateFacebookURL(facebook)) {
+    //     setErrFacebook(validateFacebookURL(facebook));
+    //   } else {
+    //     validateNum++;
+    //   }
+    // }
+    // if (maxLength50(zoomLink)) {
+    //   setErrZoomLink(maxLength50(zoomLink));
+    // } else {
+    //   if (validateZoomLinkURL(zoomLink)) {
+    //     setErrZoomLink(validateZoomLinkURL(zoomLink));
+    //   } else {
+    //     validateNum++;
+    //   }
+    // }
 
     const req_body = {
-      firstName,
-      lastName,
-      address,
-      phoneNumber,
       username,
-      title,
       crypto: true,
       email,
       website,
@@ -286,12 +279,17 @@ function Profile(props) {
       twitter,
       youtube,
       instagram,
-      facebook,
-      zoomLink,
       about
+      // firstName,
+      // lastName,
+      // address,
+      // phoneNumber,
+      // title,
+      // facebook,
+      // zoomLink,
     }
 
-    if (validateNum === 15) {
+    if (validateNum === 8) {
 
       if (photo?.uri !== UserReducer.data.user.profile_image) {
         let formData = new FormData();
@@ -334,7 +332,7 @@ function Profile(props) {
           </CenterWrap>
           <BorderView />
 
-          <LimitableInput
+          {/* <LimitableInput
             value={firstName}
             onChange={(text) => { setFirstName(text); setErrFirstname(false); }}
             label={translate("common.firstName")}
@@ -342,8 +340,7 @@ function Profile(props) {
             validate={[maxLength20]}
             editable={true}
             error={errfirstname}
-          />
-          <LimitableInput
+          /> <LimitableInput
             value={lastName}
             onChange={(text) => { setLastName(text); setErrLastname(false); }}
             label={translate("common.lastName")}
@@ -351,8 +348,7 @@ function Profile(props) {
             validate={[maxLength20]}
             editable={true}
             error={errLastname}
-          />
-          <LimitableInput
+          /> <LimitableInput
             value={address}
             onChange={(text) => { setAddress(text); setErrAddress(false); }}
             label={translate("common.address")}
@@ -360,8 +356,7 @@ function Profile(props) {
             validate={[maxLength50]}
             editable={true}
             error={errAddress}
-          />
-          <LimitableInput
+          /> <LimitableInput
             value={phoneNumber}
             onChange={(text) => { setPhoneNo(text); setErrPhoneNo(false); }}
             label={translate("common.phoneNumber")}
@@ -369,7 +364,30 @@ function Profile(props) {
             validate={[maxLength13]}
             editable={true}
             error={errphoneNo}
+          /> <LimitableInput
+            value={title}
+            onChange={(text) => { setTitle(text); setErrTitle(false); }}
+            label={translate("common.artistname")}
+            placeholder={translate("common.artistname")}
+            validate={[maxLength50]}
+            error={errTitle}
           />
+            <LimitableInput
+            value={facebook}
+            onChange={(text) => { setFacebook(text); setErrFacebook(false); }}
+            label={translate("common.facebook")}
+            placeholder={translate("common.facebook")}
+            validate={[maxLength100, validateFacebookURL]}
+            error={errFacebook}
+          /> 
+            <LimitableInput
+            value={zoomLink}
+            onChange={(text) => { setZoomLink(text); setErrZoomLink(false); }}
+            label={translate("common.zoomMail")}
+            placeholder={translate("common.zoomMail")}
+            validate={[maxLength50, validateEmail]}
+            error={errZoomLink}
+          /> */}
           <LimitableInput
             value={username}
             onChange={(text) => { setUsername(text); setErrUsername(false); }}
@@ -379,23 +397,16 @@ function Profile(props) {
             editable={userRole === 'crypto' ? false : true}
             error={errUsername}
           />
-          <LimitableInput
-            value={title}
-            onChange={(text) => { setTitle(text); setErrTitle(false); }}
-            label={translate("common.artistname")}
-            placeholder={translate("common.artistname")}
-            validate={[maxLength50]}
-            error={errTitle}
-          />
-          <LimitableInput
-            value={email}
-            onChange={(text) => { setEmail(text); setErrEmail(false); }}
-            label={translate("common.email")}
-            placeholder={translate("common.email")}
-            validate={[maxLength50, validateEmail]}
-            error={errEmail}
-            editable={userRole === 'crypto' ? true : false}
-          />
+          {UserReducer.data.user?.role === 'non_crypto' &&
+            <LimitableInput
+              value={email}
+              onChange={(text) => { setEmail(text); setErrEmail(false); }}
+              label={translate("common.email")}
+              placeholder={translate("common.email")}
+              validate={[maxLength50, validateEmail]}
+              error={errEmail}
+              editable={userRole === 'crypto' ? true : false}
+            />}
           <LimitableInput
             value={website}
             onChange={(text) => { setWebsite(text); setErrWebsite(false) }}
@@ -436,22 +447,16 @@ function Profile(props) {
             validate={[maxLength100, validateInstagramURL]}
             error={errInstagram}
           />
-          <LimitableInput
-            value={facebook}
-            onChange={(text) => { setFacebook(text); setErrFacebook(false); }}
-            label={translate("common.facebook")}
-            placeholder={translate("common.facebook")}
-            validate={[maxLength100, validateFacebookURL]}
-            error={errFacebook}
-          />
-          <LimitableInput
-            value={zoomLink}
-            onChange={(text) => { setZoomLink(text); setErrZoomLink(false); }}
-            label={translate("common.zoomMail")}
-            placeholder={translate("common.zoomMail")}
-            validate={[maxLength50, validateEmail]}
-            error={errZoomLink}
-          />
+          {UserReducer.data.user?.role === 'crypto' &&
+            <LimitableInput
+              value={email}
+              onChange={(text) => { setEmail(text); setErrEmail(false); }}
+              label={translate("common.email")}
+              placeholder={translate("common.email")}
+              validate={[maxLength50, validateEmail]}
+              error={errEmail}
+              editable={false}
+            />}
           <SpaceView mTop={SIZE(12)} />
           <LimitableInput
             multiLine

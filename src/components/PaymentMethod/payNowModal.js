@@ -88,10 +88,10 @@ const PaymentNow = props => {
 
   const nftErrorMessage = (message) => {
     let msg = '';
-    if(message === 'NFT not on sell'){
-        msg = translate('common.nftNotOnSell');
+    if (message === 'NFT not on sell') {
+      msg = translate('common.nftNotOnSell');
     } else {
-        msg = message;
+      msg = message;
     }
     return msg;
   };
@@ -328,13 +328,13 @@ const PaymentNow = props => {
                   paymentObject?.currency?.order,
                 )
                   .then(bnbBalance => {
-                    console.log('approve bnbBalance', bnbBalance);
+                    console.log('approve bnbBalance 331', bnbBalance);
                     // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                     onPaymentDone();
                     setLoading(false);
                   })
                   .catch(err => {
-                    console.log('payByWallet_err payByWallet', err);
+                    console.log('payByWallet_err payByWallet 339', err);
                     showErrorAlert("");
                     setLoading(false);
                   });
@@ -356,13 +356,13 @@ const PaymentNow = props => {
               paymentObject?.currency?.order,
             )
               .then(bnbBalance => {
-                console.log('bnbBalance', bnbBalance);
+                console.log('bnbBalance 361', bnbBalance);
                 // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                 onPaymentDone();
                 setLoading(false);
               })
               .catch(err => {
-                  console.log('payByWallet_err payByWallet', err);
+                console.log('payByWallet_err payByWallet 367', err);
                 setLoading(false);
                 showErrorAlert("");
                 setLoading(false);
@@ -370,7 +370,7 @@ const PaymentNow = props => {
           }
         })
         .catch(err => {
-          console.log('err', err);
+          console.log('err 375', err);
           setLoading(false);
         });
     } else {
