@@ -5,13 +5,24 @@ import {
   NFT_DATA_COLLECTION_SUCCESS,
   NFT_DATA_COLLECTION_PAGE_CHANGE,
   NFT_DATA_COLLECTION_LIST_UPDATE,
+
+  NFT_BLIND_SERIES_COLLECTION_START,
+  NFT_BLIND_SERIES_COLLECTION_SUCCESS,
+  NFT_BLIND_SERIES_COLLECTION_LIST_RESET,
+  NFT_BLIND_SERIES_COLLECTION_FAIL,
+  NFT_BLIND_SERIES_COLLECTION_PAGE_CHANGE,
 } from '../types';
 
 const initialState = {
   nftDataCollectionLoading: false,
   nftDataCollectionList: [],
   nftDataCollectionPage: 1,
-  nftDataCollectionTotalCount: 0
+  nftDataCollectionTotalCount: 0,
+
+  nftBlindSeriesCollectionLoading: false,
+  nftBlindSeriesCollectionList: [],
+  nftBlindSeriesCollectionPage: 1,
+  nftBlindSeriesCollectionTotalCount: 0
 }
 
 export default function nftDataCollectionReducer(state = initialState, action) {
@@ -39,6 +50,27 @@ export default function nftDataCollectionReducer(state = initialState, action) {
 
     case NFT_DATA_COLLECTION_PAGE_CHANGE:
       return state = { ...state, nftDataCollectionPage: action.payload };
+
+
+    case NFT_BLIND_SERIES_COLLECTION_START:
+      return state = { ...state, nftBlindSeriesCollectionLoading: true };
+
+    case NFT_BLIND_SERIES_COLLECTION_SUCCESS:
+      return state = {
+        ...state,
+        nftBlindSeriesCollectionList: [...state.nftBlindSeriesCollectionList, ...action.payload.data],
+        nftBlindSeriesCollectionTotalCount: action.payload.count,
+        nftBlindSeriesCollectionLoading: false,
+      };
+
+    case NFT_BLIND_SERIES_COLLECTION_LIST_RESET:
+      return state = { ...state, nftBlindSeriesCollectionList: [] };
+
+    case NFT_BLIND_SERIES_COLLECTION_FAIL:
+      return state = { ...state, nftBlindSeriesCollectionLoading: false };
+
+    case NFT_BLIND_SERIES_COLLECTION_PAGE_CHANGE:
+      return state = { ...state, nftBlindSeriesCollectionPage: action.payload };
 
     default:
       return state;

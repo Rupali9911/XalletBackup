@@ -403,7 +403,7 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-              {/* <Tab.Screen
+              <Tab.Screen
                 name={translate('wallet.common.collection')}
                 component={Collection}
                 listeners={({ navigation, route }) => {
@@ -411,7 +411,7 @@ const HomeScreen = ({ navigation }) => {
                     setCurrentTab(7);
                   }
                 }}
-              /> */}
+              />
             </Tab.Navigator>
           ))}
       </SafeAreaView>

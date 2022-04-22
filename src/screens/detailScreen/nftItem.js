@@ -91,7 +91,8 @@ const nftItem = ({ item, index, minHeight }) => {
   const [isArtistProfile, setisArtistProfile] = useState(true);
   const [loader, setLoader] = useState(false);
 
-  let params = item.tokenId.toString().split('-');
+  const nft = item.tokenId || item.collectionAdd;
+  let params = nft.toString().split('-');
   let chainType,
     tokenId,
     collectionAddress,
@@ -105,7 +106,7 @@ const nftItem = ({ item, index, minHeight }) => {
   if (params.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
-    tokenId = params[2]
+    tokenId = params[2];
 
     let getBlockChainConfig = blockChainConfig.find(v => v.key.toLowerCase() === chainType.toLowerCase());
     ERC721Abi = getBlockChainConfig.erc721ConConfig.abi;
@@ -418,7 +419,7 @@ const nftItem = ({ item, index, minHeight }) => {
   const getTokenDetailsApi = async (isCryptoOwner = true) => {
     let category = '2D';
     let data = {
-      tokenId: item.tokenId,
+      tokenId: nft,
       networkType: networkType,
       type: category,
       chain: chainType,

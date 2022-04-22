@@ -87,7 +87,26 @@ const styles = StyleSheet.create({
     },
     fabItemStyle: {
         backgroundColor: Colors.white
-    }
+    },
+    collectionTab: {
+        width: '100%',
+        height: SIZE(40),
+        borderColor: '#eee',
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        flexDirection: 'row',
+    },
+    collectionTabItem: {
+        height: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopWidth: SIZE(1),
+    },
+    collectionTabItemLabel: {
+        fontSize: SIZE(12),
+        color: colors.GREY1,
+    },
 })
 
 export default styles;

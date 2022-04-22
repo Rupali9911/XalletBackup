@@ -8,7 +8,8 @@ import { basePriceTokens } from '../../web3/config/basePriceTokens';
 import { SvgUri } from 'react-native-svg';
 import { translate } from '../../walletUtils';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
 
 export default function NFTItem(props) {
   const {
@@ -20,6 +21,7 @@ export default function NFTItem(props) {
     index,
     isMeCollection,
     isBlind,
+    nftChain,
   } = props;
 
   const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
@@ -27,6 +29,7 @@ export default function NFTItem(props) {
 
   const dispatch = useDispatch();
   const [isDisable, setIsDisable] = useState(false)
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   let imageUri = isMeCollection ? (item.iconImage ? item.iconImage : null)
     : item.thumbnailUrl !== undefined || item.thumbnailUrl
@@ -91,6 +94,46 @@ export default function NFTItem(props) {
     return null;
   };
 
+  const getDollarPrice = async (price = Number(price), baseCurrency) => {
+    let finalPrice = '';
+    let i;
+    switch (nftChain) {
+      case 'Binance':
+        i = 0
+        break;
+      case 'polygon':
+        i = 1
+        break;
+      case 'ethereum':
+        i = 2
+        break;
+    }
+
+    let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto)
+    switch (baseCurrency) {
+      case "BNB":
+        finalPrice = price * currencyPrices?.BNB;
+        break;
+
+      case "ALIA":
+        finalPrice = price * currencyPrices?.ALIA;
+        break;
+
+      case "ETH":
+        finalPrice = price * currencyPrices?.ETH;
+        break;
+
+      case "MATIC":
+        finalPrice = price * currencyPrices?.MATIC;
+        break;
+
+      default:
+        finalPrice = price * 1;
+        break;
+    }
+    return insertComma(parseFloat(finalPrice, true).toFixed(2))
+  };
+
   let uriType, checkVideoUrl;
   if (imageUri) {
     uriType = imageUri.split('.')[imageUri.split('.').length - 1];
@@ -135,8 +178,19 @@ export default function NFTItem(props) {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'flex-end',
+                  justifyContent: 'space-between',
                 }}>
+                <Text
+                  numberOfLines={1}
+                  style={{ fontSize: SIZE(12) }}>
+                  {item.creatorObj && item.creatorObj[0]
+                    ? item.creatorObj[0].title
+                      ? item.creatorObj[0].title
+                      : item.creatorObj[0].username.includes('0x') ?
+                        item.creatorObj[0].username.substring(0, 6) :
+                        item.creatorObj[0].username
+                      : ""}
+                </Text>
                 {item.newprice &&
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (
@@ -174,7 +228,91 @@ export default function NFTItem(props) {
                   </Text>
                 )}
               </View>
-              {chainType(item.nftChain)}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                {chainType(item.nftChain)}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {item.newprice && item.newprice?.endTime ? (
+                    new Date(item.newprice.endTime) < new Date().getTime() ? (
+                      item.price ? (
+                        <View
+                          style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text
+                            numberOfLines={1}
+                            style={{
+                              color: '#60c083',
+                              marginRight: SIZE(2),
+                              fontSize: SIZE(12),
+                            }}>
+                            {
+                              insertComma(parseFloat(item?.price, true).toFixed(0))
+                            }
+                          </Text>
+                          {renderIcon()}
+                        </View>
+                      ) : null
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: SIZE(12),
+                          color: '#8E9BBA',
+                        }}>
+                        {getAuctionTimeRemain(item)}
+                      </Text>
+                    )
+                  ) : (
+                    <>
+                      {item?.lastpriceTraded ? (
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text
+                            style={{
+                              color: '#aaa',
+                              fontSize: SIZE(10),
+                            }}>
+                            Last:{' '}
+                          </Text>
+                          <Text
+                            style={{
+                              color: '#aaa',
+                              marginRight: SIZE(2),
+                              fontSize: SIZE(10),
+                            }}>
+                            {item?.lastCurrencyTraded === 'ALIA'
+                              ? insertComma(
+                                parseFloat(
+                                  item?.lastpriceTraded,
+                                  true,
+                                ).toFixed(0),
+                              )
+                              : insertComma(item?.lastpriceTraded, true)}
+                          </Text>
+                          {/* <Text
+                            style={{
+                              color: '#aaa',
+                              fontSize: SIZE(10)
+                            }}>
+                            {item?.lastCurrencyTraded}
+                            (~{selectedLanguageItem.language_name !=="ja" ?"$" : null}
+                                {
+                                getDollarPrice(
+                                  item?.lastpriceTraded,
+                                  item?.lastCurrencyTraded)
+                                } 
+                                {selectedLanguageItem.language_name ==="ja" ?" ドル" : null}
+                              )
+                          </Text> */}
+                        </View>
+                      ) : (
+                        null
+                      )}
+                    </>
+                  )}
+                </View>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -199,17 +337,19 @@ export default function NFTItem(props) {
             </View>
             <View style={styles.collectionWrapper}>
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text
                 numberOfLines={1}
                 style={{ fontSize: SIZE(12) }}>
                 {item.creatorObj && item.creatorObj[0]
                   ? item.creatorObj[0].title
                     ? item.creatorObj[0].title
-                    : item.creatorObj[0].username
-                  : ''}
+                    : item.creatorObj[0].username.includes('0x') ?
+                      item.creatorObj[0].username.substring(0, 6) :
+                      item.creatorObj[0].username
+                    : ""}
               </Text>
-              <View
-                style={{ alignItems: 'flex-end' }}>
                 {item.newprice &&
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (

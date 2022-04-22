@@ -63,5 +63,3 @@ buck-out/
 /yarn.lock
 /package-lock.json
 /ios/Podfile.lock
-
-

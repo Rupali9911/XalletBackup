@@ -9,9 +9,27 @@ export const getBaseCurrency = (chain, order) => {
 };
 
 export function parseNftObject(obj) {
+
+  function imageURL (obj) {
+    if (obj?.metaData?.image) {
+      if (obj?.metaData?.image.includes("mp4") || obj?.metaData?.image.includes("MOV")) {
+        if(obj?.metaData?.oldthumbnft) {
+          return obj?.metaData?.oldthumbnft
+        }
+        else {
+          return obj?.metaData?.thumbnft
+        }
+      }
+      return obj?.metaData?.image
+    }
+    else {
+      return obj?.imageUrl
+    }
+  }
+  
   let nftObj = {
     name: obj?.metaData?.name,
-    image: obj?.metaData?.image ? obj?.metaData?.image : obj?.imageUrl,
+    image: imageURL(obj),
     description: obj?.metaData?.description
       ? obj?.metaData?.description
       : obj?.description,
@@ -21,7 +39,7 @@ export function parseNftObject(obj) {
       : obj?.type,
     price: obj?.price,
     like: obj?.like,
-    rating: obj?.rating || obj?.rating === 0 ? obj?.rating : obj?.like_count,
+    rating: obj?.rating || obj?.rating===0 ? obj?.rating : obj?.like_count,
     thumbnailUrl: obj?.thumbnailUrl ? obj?.thumbnailUrl : obj?.thumbnail,
     newprice: obj?.newprice,
     awardPage: obj?.metaData ? false : true,
@@ -34,13 +52,13 @@ export function parseNftObject(obj) {
         ? "dollar"
         : "alia",
 
-    nftChain: obj.tokenId.toString().split("-")[0],
-    id: obj.tokenId.toString().split("-")[2]
-      ? obj.tokenId.toString().split("-")[2]
+    nftChain: obj.tokenId?.toString().split("-")[0],
+    id: obj.tokenId?.toString().split("-")[2]
+      ? obj.tokenId?.toString().split("-")[2]
       : obj?._id,
     polygonId: "",
-    collection: obj.tokenId.toString().split("-")[1]
-      ? obj.tokenId.toString().split("-")[1]
+    collection: obj.tokenId?.toString().split("-")[1]
+      ? obj.tokenId?.toString().split("-")[1]
       : "",
     collectionAdd: obj.tokenId,
     baseCurrency:
@@ -60,10 +78,13 @@ export function parseNftObject(obj) {
         : obj.newpriceTraded?.currency_type === "dollar"
           ? "1"
           : "0",
-    isAddedToMuseum: obj.isAddedToMuseum
+    isAddedToMuseum: obj.isAddedToMuseum,
+
+    lastTradeType: obj.newprice2 && obj.newprice2?.type==='auction' ? "auction" : "sell",
+    mongoId: obj._id
   };
   nftObj.approval = obj.approval;
-  nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
+  nftObj.logoImg = `https://ik.imagekit.io/xanalia/Images/XANALIA-ICON.svg`;
   nftObj.baseCurrency = getBaseCurrency(nftObj.nftChain, nftObj.baseCurrency);
   nftObj.lastCurrencyTraded = getBaseCurrency(
     nftObj.nftChain,

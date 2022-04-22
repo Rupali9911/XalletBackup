@@ -13,7 +13,7 @@ import { myCollectionList, myCollectionPageChange } from '../../store/actions/my
 
 import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
 
-import { nftDataCollectionList, nftDataCollectionPageChange, } from '../../store/actions/nftDataCollectionAction';
+import { nftBlindSeriesCollectionList, nftDataCollectionList, nftDataCollectionPageChange, } from '../../store/actions/nftDataCollectionAction';
 
 import styles from './styles';
 import { colors } from '../../res';
@@ -60,7 +60,9 @@ const DetailItemScreen = (props) => {
                                     AuthReducer.screenName == 'movieNFT' ?
                                         dispatch(movieNFTList(page, null, sort)) :
                                         AuthReducer.screenName == "dataCollection" ?
-                                            dispatch(nftDataCollectionList(page, collectionAddress, collectionType)) : null;
+                                            dispatch(nftDataCollectionList(page, collectionAddress, collectionType)) :
+                                            AuthReducer.screenName == 'blindSeriesCollection' ?
+                                                dispatch(nftBlindSeriesCollectionList(page, collectionAddress, collectionType)) : null;
 
     }, []);
 
@@ -83,7 +85,9 @@ const DetailItemScreen = (props) => {
                                     AuthReducer.screenName == 'movieNFT' ?
                                         dispatch(pageChange(page)) :
                                         AuthReducer.screenName == "dataCollection" ?
-                                            dispatch(nftDataCollectionPageChange(page)) : null;
+                                            dispatch(nftDataCollectionPageChange(page)) : 
+                                            AuthReducer.screenName == 'blindSeriesCollection' ?
+                                                dispatch(nftDataCollectionPageChange(page)) : null;
 
     });
 
@@ -104,7 +108,9 @@ const DetailItemScreen = (props) => {
                                 AuthReducer.screenName == 'movieNFT' ?
                                     ListReducer.nftListLoading :
                                     AuthReducer.screenName == "dataCollection" ?
-                                        NftDataCollectionReducer.nftDataCollectionLoading : false;
+                                        NftDataCollectionReducer.nftDataCollectionLoading :
+                                        AuthReducer.screenName == 'blindSeriesCollection' ?
+                                            NftDataCollectionReducer.nftBlindSeriesCollectionLoading: false;
 
     let page = AuthReducer.screenName == "Hot" ?
         ListReducer.page :
@@ -123,7 +129,9 @@ const DetailItemScreen = (props) => {
                                 AuthReducer.screenName == 'movieNFT' ?
                                     ListReducer.page :
                                     AuthReducer.screenName == "dataCollection" ?
-                                        NftDataCollectionReducer.nftDataCollectionPage : 1;
+                                        NftDataCollectionReducer.nftDataCollectionPage :
+                                        AuthReducer.screenName == 'blindSeriesCollection' ?
+                                            NftDataCollectionReducer.nftBlindSeriesCollectionPage : 1;
 
     let totalCount = AuthReducer.screenName == "Hot" ?
         ListReducer.totalCount :
@@ -142,7 +150,9 @@ const DetailItemScreen = (props) => {
                                 AuthReducer.screenName == 'movieNFT' ?
                                     ListReducer.totalCount :
                                     AuthReducer.screenName == "dataCollection" ?
-                                        NftDataCollectionReducer.nftDataCollectionTotalCount : 1;
+                                        NftDataCollectionReducer.nftDataCollectionTotalCount :
+                                        AuthReducer.screenName == 'blindSeriesCollection' ?
+                                            NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount: 1;
 
     const data = AuthReducer.screenName == "Hot" ?
         ListReducer.nftList :
@@ -161,7 +171,9 @@ const DetailItemScreen = (props) => {
                                 AuthReducer.screenName == 'movieNFT' ?
                                     ListReducer.movieList :
                                     AuthReducer.screenName == "dataCollection" ?
-                                        NftDataCollectionReducer.nftDataCollectionList : [];
+                                        NftDataCollectionReducer.nftDataCollectionList :
+                                        AuthReducer.screenName == 'blindSeriesCollection' ?
+                                            NftDataCollectionReducer.nftBlindSeriesCollectionList : [];
 
     const renderFooter = () => {
         if (!loading) return null;
@@ -171,10 +183,11 @@ const DetailItemScreen = (props) => {
     }
 
     const renderItem = ({ item, index }) => {
-        let findIndex = data.findIndex(x => x.id === item.id);
+        if (AuthReducer.screenName == 'blindSeriesCollection') item.metaData = item;
+        console.log('===========item', item);
         if (item.metaData) {
             return (
-                <NftItem videoStatus={stopVideos} item={item} index={findIndex} minHeight={true} />
+                <NftItem videoStatus={stopVideos} item={item} index={index} minHeight={true} />
             )
         }
     }
@@ -201,7 +214,7 @@ const DetailItemScreen = (props) => {
                         <FlatList
                             scrollEnabled={true}
                             initialNumToRender={1}
-                            data={data.slice(route.params.index, route.params.index + 1)}
+                            data={[data[index]]}
                             // onScrollEndDrag={() => console.log("end")}
                             // onScrollBeginDrag={() => console.log("start")}
                             renderItem={renderItem}
