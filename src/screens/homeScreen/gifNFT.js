@@ -53,7 +53,7 @@ const GifNFT = () => {
   };
 
   const renderFooter = () => {
-    if (!ListReducer.nftListLoading) return null;
+    if (!ListReducer.isGifNftLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
@@ -94,11 +94,11 @@ const GifNFT = () => {
             dispatch(nftLoadStart());
             refreshFunc();
           }}
-          refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
+          refreshing={ListReducer.page === 1 && ListReducer.isGifNftLoading}
           renderItem={memoizedValue}
           onEndReached={() => {
             if (
-              !ListReducer.nftListLoading &&
+              !ListReducer.isGifNftLoading &&
               ListReducer.gifList.length !== ListReducer.totalCount
             ) {
               let num = ListReducer.page + 1;

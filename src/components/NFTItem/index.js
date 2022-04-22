@@ -199,21 +199,17 @@ export default function NFTItem(props) {
             </View>
             <View style={styles.collectionWrapper}>
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
-                <Text
-                  numberOfLines={1}
-                  style={{ fontSize: SIZE(12), width: SIZE(80) }}>
-                  {item.creatorObj && item.creatorObj[0]
+              <Text
+                numberOfLines={1}
+                style={{ fontSize: SIZE(12) }}>
+                {item.creatorObj && item.creatorObj[0]
+                  ? item.creatorObj[0].title
                     ? item.creatorObj[0].title
-                      ? item.creatorObj[0].title
-                      : item.creatorObj[0].username
-                    : ''}
-                </Text>
+                    : item.creatorObj[0].username
+                  : ''}
+              </Text>
+              <View
+                style={{ alignItems: 'flex-end' }}>
                 {item.newprice &&
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (

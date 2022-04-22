@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView, Keyboard} from 'react-native';
+import { TouchableOpacity, SafeAreaView, Keyboard, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
@@ -35,7 +35,6 @@ import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { openSettings } from 'react-native-permissions';
 import { confirmationAlert } from '../../common/function';
-import { TextInput } from 'react-native-gesture-handler';
 
 function Profile(props) {
   const { navigation, handleSubmit } = props;
@@ -113,12 +112,14 @@ function Profile(props) {
           cropping: true,
         }).then(image => {
           if (image.height <= 512 && image.width <= 512) {
+            let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+            let uri = Platform.OS == 'android' ? image.path : image.sourceURL
             let temp = {
               image: image,
               path: image.path,
-              uri: image.sourceURL,
+              uri: uri,
               type: image.mime,
-              fileName: image.filename
+              fileName: filename
             }
             setPhoto(temp)
           }
@@ -137,12 +138,14 @@ function Profile(props) {
         cropping: true
       }).then(image => {
         if (image.height <= 512 && image.width <= 512) {
+          let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+          let uri = Platform.OS == 'android' ? image.path : image.sourceURL
           let temp = {
             image: image,
             path: image.path,
-            uri: image.sourceURL,
+            uri: uri,
             type: image.mime,
-            fileName: image.filename
+            fileName: filename
           }
           setPhoto(temp)
         }
@@ -151,7 +154,7 @@ function Profile(props) {
   }
 
   const onSave = () => {
-      Keyboard.dismiss()
+    Keyboard.dismiss()
     let validateNum = 0;
     if (maxLength50(username)) {
       setErrUsername(maxLength50(username));
@@ -290,9 +293,9 @@ function Profile(props) {
 
     if (validateNum === 15) {
 
-      if (photo.uri !== UserReducer.data.user.profile_image) {
+      if (photo?.uri !== UserReducer.data.user.profile_image) {
         let formData = new FormData();
-        formData.append('profile_image', { uri: photo.uri, name: photo.fileName, type: photo.type });
+        formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type });
         dispatch(updateProfileImage(formData));
       }
 

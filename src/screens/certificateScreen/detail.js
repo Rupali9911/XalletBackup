@@ -29,7 +29,7 @@ import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import { hp } from '../../constants/responsiveFunct';
+import { hp, wp } from '../../constants/responsiveFunct';
 import {
   getAllCards,
   setPaymentObject,
@@ -387,8 +387,7 @@ const DetailScreen = ({ navigation, route }) => {
     return finalPrice;
   };
 
-  currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
-  // console.log("🚀 ~ file: detail.js ~ line 261 ~ useEffect ~ baseCurrency?.key", baseCurrency?.key, payableIn)
+  // currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
 
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
@@ -1876,12 +1875,11 @@ const DetailScreen = ({ navigation, route }) => {
           <Text style={styles.nftName}>{item.metaData.name}</Text>
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
-              <View style={[{ flex: 1, flexDirection: "row", alignItems: "center" }]}>
-                <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}</Text>
-                <Text style={styles.priceUnit}>
-                  {baseCurrency?.key}<Text style={styles.dollarText}>
+              <View style={[{ flex: 1, flexDirection: "row", alignItems: "center", marginRight: wp(2) }]}>
+                <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}<Text style={styles.priceUnit}>
+                  {` ${baseCurrency?.key}`}<Text style={styles.dollarText}>
                     {` ($${parseFloat(priceInDollar, true).toFixed(2)})`}
-                  </Text>
+                  </Text></Text>
                 </Text>
                 {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
               </View>
@@ -2038,7 +2036,11 @@ const DetailScreen = ({ navigation, route }) => {
               </View> :
               <NFTDetailDropdown
                 title={translate('common.tradingHistory')}
-                containerChildStyles={{ height: hp(47.6)}}
+                containerChildStyles={{
+                  height: tradingTableData.length == 0 ? hp(19) :
+                    tradingTableData.length < 5 ?
+                      hp(16) + (hp(6) * tradingTableData.length) : hp(47.6)
+                }}
                 icon={trading}>
                 <Filters />
                 <ScrollView

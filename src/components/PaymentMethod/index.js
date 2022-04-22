@@ -141,22 +141,22 @@ const PaymentMethod = props => {
               {userRole === 'crypto' ?
                 selectedMethod
                   ?
-                  numberWithCommas(parseFloat(Number(price).toFixed(4)))
-                  + ' '
-                  + currencyLabel
-                  + ' = '
-                  + '$ '
-                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
+                  (numberWithCommas(parseFloat(Number(price).toFixed(4)))
+                    + ' '
+                    + currencyLabel
+                    + ' = '
+                    + (Number(priceInDollar).toFixed(2).toString().length > 8 ? '\n$ ' : '$ ')
+                    + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))))
                   :
-                  '$ '
-                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
-                  + ' = '
-                  + numberWithCommas(parseFloat(Number(price).toFixed(4)))
-                  + ' '
-                  + currencyLabel
+                  ('$ '
+                    + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
+                    + ' = '
+                    + numberWithCommas(parseFloat(Number(price).toFixed(4)))
+                    + ' '
+                    + currencyLabel)
                 :
-                '$ '
-                + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
+                ('$ '
+                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))))
               }
             </Text>
           </View>
@@ -278,6 +278,8 @@ const styles = StyleSheet.create({
     fontSize: RF(2.3),
     fontFamily: Fonts.ARIAL_BOLD,
     color: Colors.themeColor,
+    width: wp('68%'),
+    textAlign: 'right'
   },
 });
 

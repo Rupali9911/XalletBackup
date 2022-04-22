@@ -373,7 +373,6 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
 
   const { data } = getState().UserReducer;
   axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-
   axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
   await axios
     .post(`${BASE_URL}/user/update-profile-image`, formData)

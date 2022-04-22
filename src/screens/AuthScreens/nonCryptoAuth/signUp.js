@@ -40,10 +40,11 @@ const SignupCrypto = ({ route }) => {
         if (errorRend.hasOwnProperty('signUpScreen')) {
             delete errorRend.signUpScreen
         }
-        if (!v) {
-            errorRend.email = translate("wallet.common.error.emailRequired")
-        } else if (!regEmail.test(v)) {
-            errorRend.email = translate("wallet.common.error.invalidEmail")
+        // if (!v) {
+        //     errorRend.email = translate("wallet.common.error.emailRequired")
+        // } else
+            if (v && !regEmail.test(v)) {
+            errorRend.email = translate("common.emailval")
         } else {
             if (errorRend.hasOwnProperty('email')) {
                 delete errorRend.email
@@ -109,13 +110,13 @@ const SignupCrypto = ({ route }) => {
                                 if (errorRend.hasOwnProperty('signUpScreen')) {
                                     delete errorRend.signUpScreen
                                 }
-                                if (!v) {
-                                    errorRend.name = translate("wallet.common.error.fieldRequired")
-                                } else {
+                                // if (!v) {
+                                //     errorRend.name = translate("wallet.common.error.fieldRequired")
+                                // } else {
                                     if (errorRend.hasOwnProperty('name')) {
                                         delete errorRend.name
                                     }
-                                }
+                               // }
                                 setError(errorRend)
                             }
                         }}
@@ -142,9 +143,10 @@ const SignupCrypto = ({ route }) => {
                                 if (errorRend.hasOwnProperty('signUpScreen')) {
                                     delete errorRend.signUpScreen
                                 }
-                                if (!v) {
-                                    errorRend.password = translate("common.passwordReq")
-                                } else if (!passwordRegex.test(v)) {
+                                // if (!v) {
+                                //     errorRend.password = translate("common.passwordReq")
+                                // } else
+                                    if (v && !passwordRegex.test(v)) {
                                     errorRend.password = translate("common.PassVal")
                                 } else {
                                     if (errorRend.hasOwnProperty('password')) {
@@ -167,10 +169,11 @@ const SignupCrypto = ({ route }) => {
                                 if (errorRend.hasOwnProperty('signUpScreen')) {
                                     delete errorRend.signUpScreen
                                 }
-                                if (!v) {
-                                    errorRend.cPassword = translate("wallet.common.error.confirmPasswordRequired")
-                                } else if (v !== password) {
-                                    errorRend.cPassword = translate("wallet.common.error.passwordNotMatch")
+                                // if (!v) {
+                                //     errorRend.cPassword = translate("wallet.common.error.confirmPasswordRequired")
+                                // } else
+                                    if (v && v !== password) {
+                                    errorRend.cPassword = translate("common.passwordmismatch")
                                 } else {
                                     if (errorRend.hasOwnProperty('cPassword')) {
                                         delete errorRend.cPassword
