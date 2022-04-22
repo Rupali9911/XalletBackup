@@ -366,7 +366,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, contractAddr,
 }
 
 export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, order) => {
-  console.log('params', publicKey, privKey, nftId, chainType, gasPr, gasLmt);
+  console.log('buyNft params 369', publicKey, privKey, nftId, chainType, gasPr, gasLmt);
   return new Promise(async (resolve, reject) => {
     console.log('chainType', chainType);
     let rpcURL;
@@ -389,20 +389,21 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
       reject('invalid chainType');
       return;
     }
-
+    console.log("392 - buy nft if-else",rpcURL,abiArray,contractAddress)
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         rpcURL
       )
     );
-
+    console.log("398 - buy nft web,3",web3)
     const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
+    console.log("🚀 ~ file: index.js ~ line 400 buyNFT ~ txCount", txCount)
     if (txCount.error) reject(txCount.error);
     var customGasLimit = gasLmt;
     customGasPrice = gasPr * 1000000000;
     // const contractAddress = chainType === "polygon" ? blockChainConfig[1].marketConConfig.add : binanceNftDex;
     // const abiArray = chainType === "polygon" ? environment.polygonNftAbi : binanceNftAbi;
-    console.log('contractAddress', contractAddress);
+    console.log('406 - contractAddress', contractAddress);
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey
     });
@@ -423,6 +424,7 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
     };
 
     let common = null;
+    console.log("line 427 ~ buyNFT ~ common")
     if (chainType === 'binance') {
       common = Common.forCustomChain('mainnet', {
         name: 'bnb',
@@ -442,7 +444,7 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
         chainId: getChainId(chainType)
       }, 'petersburg');
     }
-
+    console.log("447 - common if-else",common)
     console.log('txObject', txObject);
     const tx = new EthereumTx(txObject, { common });
     privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
@@ -455,16 +457,19 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
-        console.log(txHash)
-        console.log("resp noncrypto function", new Date().getTime());
+        console.log("460 - txHash",txHash)
+        console.log("461 resp noncrypto function", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
         console.log(err);
         reject(err.message);
       }
     }).once('receipt', (receipt) => {
+      console.log("468 - receipt",receipt)
       resolve({ success: true, status: 200, data: receipt });
+      console.log("470 - resolve")
     }).catch(e => {
+      console.log("Catch 472",e)
       reject(e);
     })
 
@@ -748,7 +753,7 @@ export const getBalanceInDollar = () => {
 }
 
 export const createColection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
-
+  console.log("COLLECTION")
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
@@ -758,6 +763,7 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
 
     let txCount = "";
     try {
+      console.log('txCount')
       txCount = await web3.eth.getTransactionCount(publicKey, "pending")
     } catch (e) {
       console.log(e, "reject tx count create collection")
@@ -765,6 +771,7 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     }
 
     var customGasLimit = gasLmt;
+    console.log("🚀 ~ file: index.js ~ line 769 ~ returnnewPromise ~ customGasLimit", customGasLimit)
     customGasPrice = gasPr * 1000000000;
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey
@@ -811,9 +818,10 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
     const raw = "0x" + serializedTx.toString("hex");
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
-    console.log(txHash, "tx hash count create collection", err)
+      console.log(txHash, "tx hash count create collection", err)
 
       if (txHash) {
+        console.log("🚀 ~ file: index.js ~ line 819 ~ awaitweb3.eth.sendSignedTransaction ~ txHash", txHash)
         const interval = setInterval(() => checkingProgressTransaction(), 10000)
         const checkingProgressTransaction = async () => {
           try {

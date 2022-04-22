@@ -384,7 +384,6 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         collectionSymbol
       ).then(async (transactionData) => {
         if (transactionData.success) {
-
           const { collectionAddress } = transactionData.data;
           setCollectionAdd(collectionAddress);
           console.log(collectionAddress, "transactionData")
