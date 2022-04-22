@@ -295,7 +295,7 @@ function Profile(props) {
 
       if (photo?.uri !== UserReducer.data.user.profile_image) {
         let formData = new FormData();
-        formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type });
+        formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type});
         dispatch(updateProfileImage(formData));
       }
 

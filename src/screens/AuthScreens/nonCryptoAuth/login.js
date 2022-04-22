@@ -114,6 +114,7 @@ const LoginCrypto = ({ route, navigation }) => {
                                 // }
                                 setError(errorRend)
                             },
+                            textContentType: 'username',
                             autoCompleteType: 'username',
                             importantForAutofill:'yes'
                         }}
@@ -132,7 +133,8 @@ const LoginCrypto = ({ route, navigation }) => {
                                 // }
                                 setError(errorRend)
                             },
-                            autoCompleteType: 'password',
+                            textContentType: 'password' || 'newPassword',
+                            autoCompleteType: 'password' ,
                             importantForAutofill:'yes'
                         }}
                         error={error["password"]}
