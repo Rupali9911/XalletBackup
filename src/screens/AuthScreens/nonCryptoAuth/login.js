@@ -133,7 +133,7 @@ const LoginCrypto = ({ route, navigation }) => {
                                 // }
                                 setError(errorRend)
                             },
-                            textContentType: 'password' || 'newPassword',
+                            textContentType: 'password',
                             autoCompleteType: 'password' ,
                             importantForAutofill:'yes'
                         }}
