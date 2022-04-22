@@ -197,6 +197,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [videoKey, setVideoKey] = useState(1);
   const [videoURL, setVideoURI] = useState(video);
   const [playVideo, toggleVideoPlay] = useState(false);
+  const [artistRole, setArtistRole] = useState("");
 
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
@@ -637,7 +638,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .utc(res.data.data[i].timestamp * 1000).local()
                   .format("YYYY/MM/DD HH:mm:ss"),
-                 dateTime: res.data.data[i].timestamp
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -654,8 +655,8 @@ const DetailScreen = ({ navigation, route }) => {
                   : res.data.data[i].returnValues.ownerId,
                 owner: "",
                 sellDateTime: moment
-                .utc(res.data.data[i].timestamp).local()
-                .format("YYYY/MM/DD HH:mm:ss"),
+                  .utc(res.data.data[i].timestamp).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
@@ -686,7 +687,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .utc(res.data.data[i].timestamp * 1000).local()
                   .format("YYYY/MM/DD HH:mm:ss"),
-                  dateTime: res.data.data[i].timestamp
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -779,7 +780,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .utc(res.data.data[i].timestamp * 1000).local()
                   .format("YYYY/MM/DD HH:mm:ss"),
-                  dateTime: res.data.data[i].timestamp
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -799,12 +800,12 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .utc(res.data.data[i].timestamp * 1000).local()
                   .format("YYYY/MM/DD HH:mm:ss"),
-                  dateTime: res.data.data[i].timestamp
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
             if (
-              res.data.data[i].event === 'transferFrom' 
+              res.data.data[i].event === 'transferFrom'
             ) {
               let obj = {
                 translatedEvent: translate('wallet.common.transferFrom'),
@@ -814,7 +815,7 @@ const DetailScreen = ({ navigation, route }) => {
                 sellDateTime: moment
                   .utc(res.data.data[i].timestamp * 1000).local()
                   .format("YYYY/MM/DD HH:mm:ss"),
-                  dateTime: res.data.data[i].timestamp
+                dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -831,7 +832,7 @@ const DetailScreen = ({ navigation, route }) => {
               bidsArray.push(Object.values(obj));
             }
           }
-         
+
           let arr = [];
           for (let i = 0; i < bids.length; i++) {
             const obj = bids[i];
@@ -967,25 +968,27 @@ const DetailScreen = ({ navigation, route }) => {
       await getTokenDetailsApi();
     }
   };
- const showSeller = (detail) => {
-    // if (this.state.artistId === detail.seller) {
-    //   if (this.state.artistRole === "crypto" && this.state.title) {
-    //     return this.state.title;
-    //   } else if (
-    //     this.state.artistRole === "non_crypto" &&
-    //     this.state.nameUser
-    //   ) {
-    //     return this.state.nameUser.includes("0x")
-    //       ? this.state.nameUser.substring(0, 6)
-    //       : this.state.nameUser;
-    //   }
-    // } else {
-    //   return detail.seller && detail.seller.includes("0x")
-    //     ? detail.seller.substring(0, 6)
-    //     : this.state.ownerDetails._id === detail.seller ?
-    //       this.state.ownerDetails.username :
-    //       detail.seller;
-    // }
+  const showSeller = (seller) => {
+    let sellerName = "";
+    // console.log(artist === seller, artist ,seller)
+    if (artist === seller) {
+      if (artistRole === "crypto" && artistDetail.hasOwnProperty("title") && artistDetail.title) {
+        sellerName = artistDetail.title;
+      } else if (
+        artistRole === "non_crypto" &&
+        artistDetail.hasOwnProperty("username") && artistDetail.username
+      ) {
+        sellerName = artistDetail.username.includes("0x")
+          ? artistDetail.username.substring(0, 6)
+          : artistDetail.username;
+      } else {
+        sellerName = seller
+      }
+    } else {
+      sellerName = (seller && seller.includes("0x")) ? seller.substring(0, 6) : ownerDataN._id === seller ?
+        ownerDataN.username : seller;
+    }
+    return sellerName;
   }
 
   const getOwnerDetailsById = async (id) => {
@@ -1007,9 +1010,9 @@ const DetailScreen = ({ navigation, route }) => {
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
     // setOwnerId(userId);
     let profile = await axios.get(profileUrl);
-    // console.log(profile.data, "userIduserIduserIduserId")
-
+    console.log(profile.data, "userIduserIduserIduserId")
     if (profile.data.success) {
+      setArtistRole(type ? "crypto" : "non_crypto")
       // console.log(profile?.data?.data, "crypto")
       setOwnerDataN(profile.data.data);
       setOwnerN(userId);
@@ -1236,35 +1239,41 @@ const DetailScreen = ({ navigation, route }) => {
 
           let data = await getNFTDetails(res.data[0]);
           setLike(data.like)
-          if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
-            let collection = data.offchain
-              ? data.collectionOffChainId
-              : data.collectionAdd.toString().split("-")[1];
-            // console.log("yahoo")
-            getCollectionByAddress(collection);
-            let req_data = {
-              owner: res.data[0]?.returnValues?.to?.toLowerCase(),
-              token: 'HubyJ*%qcqR0',
-            };
+          // if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
+          let collection = data.offchain
+            ? data.collectionOffChainId
+            : data.collectionAdd.toString().split("-")[1];
+          // console.log("yahoo")
+          getCollectionByAddress(collection);
+          let req_data = {
+            owner: res.data[0]?.returnValues?.to?.toLowerCase(),
+            token: 'HubyJ*%qcqR0',
+          };
 
-            let body = {
-              method: 'POST',
-              body: JSON.stringify(req_data),
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-            };
-            await fetch(`${BASE_URL}/xanalia/getProfile`, body)
-              .then(response => response.json())
-              .then(response => {
-                // console.log(response.data, "///////", item.metaData.name)
+          let body = {
+            method: 'POST',
+            body: JSON.stringify(req_data),
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          };
+          await fetch(`${BASE_URL}/xanalia/getProfile`, body)
+            .then(response => response.json())
+            .then(response => {
+              // res?.data?.success
+              if (response.success) {
                 if (response.data) {
                   setArtist(res.data[0]?.returnValues?.to?.toLowerCase());
                   setArtistData(response.data);
+                  setArtistRole(response.data !== "No record found" ? (
+                    response.data.role ? response.data.role : "crypto"
+                  ) : "")
                 }
-              });
-          }
+              }
+              console.log(response, "///////", item.metaData.name)
+            });
+          // }
           // console.log('NFT Detail', data, data.newprice);
           if (data.newprice && data.newprice.allowedCurrencies) {
             let currArray = data.newprice.allowedCurrencies.split('');
@@ -2082,7 +2091,7 @@ const DetailScreen = ({ navigation, route }) => {
                                   key={cellIndex}
                                   data={cellIndex == 2 || cellIndex == 3 ?
                                     <TouchableOpacity onPress={() => cellData && cellData !== "Null Address" ? navigation.push('ArtistDetail', { id: cellData }) : null}>
-                                      <Text style={[styles.text, { color: "#00a8ff" }]}>{cellData}</Text>
+                                      <Text style={[styles.text, { color: "#00a8ff" }]}>{(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}</Text>
                                     </TouchableOpacity>
                                     : cellData}
                                   // cellIndex === 3 ? element(cellData, index) : 
