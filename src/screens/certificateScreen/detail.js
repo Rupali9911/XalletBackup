@@ -211,7 +211,8 @@ const DetailScreen = ({ navigation, route }) => {
   const [isLike, setLike] = useState(item.like);
   const [currenciesInDollar, setCurrenciesInDollar] = useState(null);
 
-  let params = item.tokenId.toString().split('-');
+  const nft = item.tokenId || item.collectionAdd;
+  let params = nft.toString().split('-');
   let chainType,
     _tokenId,
     collectionAddress,
@@ -299,6 +300,7 @@ const DetailScreen = ({ navigation, route }) => {
         finalPrice = item.price * 1;
         break;
     }
+    console.log('=======finalPrice', currencyPrices, finalPrice);
     setPriceInDollar(finalPrice);
   };
 
@@ -422,7 +424,7 @@ const DetailScreen = ({ navigation, route }) => {
         : 'https://api.xanalia.com/xanalia/getMoreItems';
     await axios
       .post(url, {
-        tokenId: item.tokenId,
+        tokenId: nft,
         networkType,
       })
       .then(res => {
@@ -478,7 +480,7 @@ const DetailScreen = ({ navigation, route }) => {
         : 'https://api.xanalia.com/xanalia/getEventHistory';
     await axios
       .post(url, {
-        tokenId: item.tokenId,
+        tokenId: nft,
         networkType,
         filter: filterArray,
       })
@@ -1190,7 +1192,7 @@ const DetailScreen = ({ navigation, route }) => {
   const getTokenDetailsApi = async () => {
     let category = '2D';
     let data = {
-      tokenId: item.tokenId,
+      tokenId: nft,
       networkType: networkType,
       type: category,
       chain: chainType,
@@ -1793,11 +1795,16 @@ const DetailScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={collectionClick()}
-              onPress={() => collectCreatData ?
-                collectCreatData.blind ?
-                  navigation.navigate('CollectionDetail', { isBlind: true, collectionId: collectCreatData.collectionId, isHotCollection: false })
-                  :
-                  navigation.navigate('CollectionDetail', { isBlind: false, collectionId: collectCreatData._id, isHotCollection: true }) : null}
+              onPress={() => {
+                if (collectCreatData) {
+                  if (collectCreatData.blind) {
+                    console.log('========collection tab => blind2', collectCreatData.blind, collectCreatData.collectionId)
+                    navigation.push('CollectionDetail', { isBlind: true, collectionId: collectCreatData._id, isHotCollection: false });
+                  } else {
+                    navigation.push('CollectionDetail', { isBlind: false, collectionId: collectCreatData._id, isHotCollection: true });
+                  }
+                }
+              }}
               style={styles.personType}>
               <Image
                 style={styles.iconsImage}
@@ -2094,7 +2101,7 @@ const DetailScreen = ({ navigation, route }) => {
         priceInDollar={priceInDollar}
         chain={chainType}
         NftId={_tokenId}
-        IdWithChain={item.tokenId}
+        IdWithChain={nft}
         ownerId={nonCryptoOwnerId}
         ownerAddress={
           ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto

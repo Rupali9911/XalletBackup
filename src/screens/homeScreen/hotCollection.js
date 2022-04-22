@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import HotcollectionItem from '../../components/HotCollectionItem';
+import CollectionItem from '../../components/CollectionItem';
 import {
   hotCollectionListReset,
   hotCollectionLoadStart,
@@ -55,7 +55,7 @@ const HotCollection = () => {
 
   const renderItem = ({ item }) => {
     return (
-      <HotcollectionItem
+      <CollectionItem
         bannerImage={item.bannerImage}
         chainType={item.chainType}
         items={item.items}

@@ -1,16 +1,17 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   StatusBar,
   Text,
   View,
+  TouchableOpacity
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import HotcollectionItem from '../../components/HotCollectionItem';
+import CollectionItem from '../../components/CollectionItem';
 import {
   collectionListReset,
   collectionLoadStart,
@@ -22,24 +23,19 @@ import styles from './styles';
 
 const Collection = () => {
   const { CollectionReducer } = useSelector(state => state);
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [isSelectTab, setSelectTab] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused && isFirstRender) {
-      console.log("collection")
       dispatch(collectionLoadStart());
       dispatch(collectionListReset());
-      getCollection(1);
+      getCollection(1, isSelectTab);
       dispatch(collectionPageChange(1));
-      setIsFirstRender(false)
-    }
-  }, [isFocused]);
+  }, [isSelectTab]);
 
-  const getCollection = useCallback((page) => {
-    dispatch(collectionList(page));
+  const getCollection = useCallback((page, isSelectTab) => {
+    dispatch(collectionList(page, isSelectTab));
   }, []);
 
   const handleRefresh = () => {
@@ -55,7 +51,7 @@ const Collection = () => {
 
   const renderItem = ({ item }) => {
     return (
-      <HotcollectionItem
+      <CollectionItem
         bannerImage={item.bannerImage}
         chainType={item.chainType || 'polygon'}
         items={item.items}
@@ -66,7 +62,7 @@ const Collection = () => {
         blind={item.blind}
         onPress={() => {
           if (item.blind) {
-            console.log('========collection tab => blind', item.blind, item.collectionId)
+            console.log('========collection tab => blind1', item.blind, item.collectionId)
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
           } else {
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
@@ -76,14 +72,25 @@ const Collection = () => {
     );
   };
 
-  const memoizedValue = useMemo(
-    () => renderItem,
-    [CollectionReducer.collectionList],
-  );
-
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <View style={styles.collectionTab}>
+        <TouchableOpacity
+          onPress={() => setSelectTab(true)}
+          style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
+          <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
+            {'Collection'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setSelectTab(false)}
+          style={[styles.collectionTabItem, { borderTopColor: !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
+          <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
+            {'Mystery Box'}
+          </Text>
+        </TouchableOpacity>
+      </View>
       {CollectionReducer.collectionPage === 1 &&
         CollectionReducer.collectionLoading ? (
         <Loader />
@@ -101,7 +108,7 @@ const Collection = () => {
             CollectionReducer.collectionPage === 1 &&
             CollectionReducer.collectionLoading
           }
-          renderItem={memoizedValue}
+          renderItem={renderItem}
           onEndReached={() => {
             if (
               !CollectionReducer.collectionLoading &&
@@ -109,7 +116,7 @@ const Collection = () => {
               CollectionReducer.collectionList.length
             ) {
               let num = CollectionReducer.collectionPage + 1;
-              getCollection(num);
+              getCollection(num, isSelectTab);
               dispatch(collectionPageChange(num));
             }
           }}

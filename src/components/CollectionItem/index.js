@@ -12,7 +12,7 @@ const {
   BitmapIcon,
 } = SVGS;
 
-export default function HotcollectionItem(props) {
+export default function CollectionItem(props) {
   const { bannerImage, chainType, items, iconImage, collectionName, creatorInfo, onPress, creator, blind, isCollection } = props;
 
   const chainIcon = (type) => {

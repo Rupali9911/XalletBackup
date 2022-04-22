@@ -18,63 +18,98 @@ import {
   nftDataCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
+  nftBlindSeriesCollectionList,
+  nftBlindSeriesCollectionLoadStart,
+  nftBlindSeriesCollectionReset,
+  nftBlindSeriesCollectionPageChange,
 } from '../../store/actions/nftDataCollectionAction';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
-import HotcollectionItem from '../../components/HotCollectionItem';
+import CollectionItem from '../../components/CollectionItem';
 
 const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
+const BLIND_SERIES_COLLECTION_TYPE = ['minted2', 'onsale', 'notonsale', 'owned'];
 const { height } = Dimensions.get('window');
 
 const Collections = (props) => {
-  const { collectionAddress, collectionType, isBlind, isHotCollection } = props;
+  const { nftChain, collectionAddress, collectionType, isBlind, isHotCollection, isSeries, collectionId, userCollection } = props;
   const { NftDataCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  const isLoading = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading : NftDataCollectionReducer.nftDataCollectionLoading;
+  const collectionList = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionList : NftDataCollectionReducer.nftDataCollectionList;
+  const page = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionPage : NftDataCollectionReducer.nftDataCollectionPage;
+  const totalCount = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount : NftDataCollectionReducer.nftDataCollectionTotalCount;
+
   useEffect(() => {
-    dispatch(nftDataCollectionLoadStart());
-    dispatch(nftDataCollectionListReset());
-    getNFTlist(1);
-    dispatch(nftDataCollectionPageChange(1));
-  }, [collectionType]);
+    if (isSeries) {
+      dispatch(nftBlindSeriesCollectionLoadStart());
+      dispatch(nftBlindSeriesCollectionReset());
+      getNFTlist(1);
+      dispatch(nftBlindSeriesCollectionPageChange(1));
+    } else {
+      dispatch(nftDataCollectionLoadStart());
+      dispatch(nftDataCollectionListReset());
+      getNFTlist(1);
+      dispatch(nftDataCollectionPageChange(1));
+    }
+  }, [collectionType, userCollection]);
 
   const getNFTlist = useCallback((page) => {
     if (!isBlind) {
-      dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionAddress));
+      dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], userCollection && userCollection.includes('0x') ? collectionId : null));
+    } else if (isSeries) {
+      dispatch(nftBlindSeriesCollectionList(page, collectionAddress, BLIND_SERIES_COLLECTION_TYPE[collectionType]));
     } else {
       dispatch(nftBlindDataCollectionList(collectionAddress));
     }
     // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
-  }, [collectionType]);
+  }, [collectionType, userCollection]);
 
   const refreshFunc = () => {
-    dispatch(nftDataCollectionListReset());
-    getNFTlist(1);
-    dispatch(nftDataCollectionPageChange(1));
+    if (isSeries) {
+      dispatch(nftBlindSeriesCollectionReset());
+      getNFTlist(1);
+      dispatch(nftBlindSeriesCollectionPageChange(1));
+    } else {
+      dispatch(nftDataCollectionListReset());
+      getNFTlist(1);
+      dispatch(nftDataCollectionPageChange(1));
+    }
   };
 
   const renderFooter = () => {
-    if (!NftDataCollectionReducer.nftDataCollectionLoading) return null;
+    if (!isLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
   const renderItem = ({ item, index }) => {
-    let findIndex = NftDataCollectionReducer.nftDataCollectionList.findIndex(x => x.id === item.id);
+    let findIndex = collectionList.findIndex(x => x.id === item.id);
     if (isHotCollection) {
       return (
         <NFTItem
           item={item}
           index={index}
           image={item.iconImage}
+          nftChain={nftChain}
           onPress={() => {
-            dispatch(changeScreenName('dataCollection'));
-            navigation.push('DetailItem', {
-              index: findIndex,
-              collectionType: COLLECTION_TYPES[collectionType],
-              collectionAddress,
-            });
+            if (!isSeries) {
+              dispatch(changeScreenName('dataCollection'));
+              navigation.push('DetailItem', {
+                index: findIndex,
+                collectionType: COLLECTION_TYPES[collectionType],
+                collectionAddress,
+              });
+            } else {
+              dispatch(changeScreenName('blindSeriesCollection'));
+              navigation.push('DetailItem', {
+                index: findIndex,
+                collectionType: BLIND_SERIES_COLLECTION_TYPE[collectionType],
+                collectionAddress,
+              });
+            }
           }}
           isCollection
           isBlind
@@ -82,7 +117,7 @@ const Collections = (props) => {
         )
     }
     return (
-      <HotcollectionItem
+      <CollectionItem
         bannerImage={item.bannerImage}
         chainType={item.chainType || 'polygon'}
         items={item.items}
@@ -93,48 +128,48 @@ const Collections = (props) => {
         blind={item.blind}
         isCollection={!isHotCollection}
         onPress={() => {
-          if (item.blind) {
-            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: !item.blind });
+          if (isBlind) {
+            navigation.push('CollectionDetail', { isBlind: true, collectionId: collectionAddress, nftId: item._id, isHotCollection: !item.blind });
           } else {
-            console.log('======blind', item._id, item.collectionId, item.blind, isHotCollection)
-              if (item.collectionId) {
-                  navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-              }
+            if (item.collectionId) {
+              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+            }
           }
         }}
       />
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, [NftDataCollectionReducer.nftDataCollectionList]);
+  const memoizedValue = useMemo(() => renderItem, [collectionList]);
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {NftDataCollectionReducer.nftDataCollectionPage === 1 && NftDataCollectionReducer.nftDataCollectionLoading ? (
+      {page === 1 && isLoading ? (
         <View style={{ marginTop: height / 8 }}>
           <Loader />
         </View>
-      ) : NftDataCollectionReducer.nftDataCollectionList.length !== 0 ? (
+      ) : collectionList.length !== 0 ? (
         <FlatList
-          data={NftDataCollectionReducer.nftDataCollectionList}
+          data={collectionList}
           horizontal={false}
           numColumns={2}
-          initialNumToRender={15}
+          initialNumToRender={isSeries ? 6 : 15}
           onRefresh={() => {
             dispatch(nftDataCollectionLoadStart());
             refreshFunc();
           }}
-          refreshing={NftDataCollectionReducer.nftDataCollectionPage === 1 && NftDataCollectionReducer.nftDataCollectionLoading}
+          refreshing={page === 1 && isLoading}
           renderItem={memoizedValue}
           onEndReached={() => {
-            if (
-              !NftDataCollectionReducer.nftDataCollectionLoading &&
-              NftDataCollectionReducer.nftDataCollectionList.length !== NftDataCollectionReducer.nftDataCollectionTotalCount
-            ) {
-              let num = NftDataCollectionReducer.nftDataCollectionPage + 1;
+            if (!isLoading && collectionList.length !== totalCount) {
+              let num = page + 1;
               getNFTlist(num);
-              dispatch(nftDataCollectionPageChange(num));
+              if (isSeries) {
+                dispatch(nftBlindSeriesCollectionPageChange(num));
+              } else {
+                dispatch(nftDataCollectionPageChange(num));
+              }
             }
           }}
           onEndReachedThreshold={0.4}

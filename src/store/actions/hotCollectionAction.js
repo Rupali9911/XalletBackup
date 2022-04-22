@@ -52,5 +52,17 @@ export const getHotCollectionDetail = (collectionId, isBlind) => {
 }
 
 export const getBoxes = (id) => {
-  return axios.get(`${BASE_URL}/view-blind-series-info?collectionAddress=${id}&frontend=true`);
+  return axios.get(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${id}&frontend=true`);
+}
+
+export const getBoxStatsDetails = (boxId, collectionId) => {
+  return axios.get(`${BASE_URL}/blindBox/blindbox-series-stats?collectionAddress=${collectionId}&seriesInfoId=${boxId}`);
+}
+
+export const getUserWhiteList = (token) => {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+  return axios.get(`${BASE_URL}/user/ultraman-whitelist-status`, { headers: headers });
 }

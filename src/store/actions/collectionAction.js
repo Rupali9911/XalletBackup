@@ -31,29 +31,33 @@ export const collectionPageChange = (data) => ({
   payload: data
 });
 
-export const collectionList = (page) => {
+export const collectionList = (page, isSelectTab) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
+    console.log('======isSelectTab', isSelectTab)
 
-    const limit = page === 1 ? 13 : 15;
+    const limit = 15;
 
     const url = networkType === 'testnet'
-      ? `${BASE_URL}/user/actual-collections?page=${page}&limit=${limit}`
-      : `${BASE_URL}/user/live-actual-collections?page=${page}&limit=${limit}`;
+      ? `${BASE_URL}/user/actual-collections?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`
+      : `${BASE_URL}/user/live-actual-collections-type?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`;
 
     fetch(url)
       .then(response => response.json())
       .then(json => {
-        if (page === 1) {
-          const newData = [...cardsDefaultData, ...json.data];
-          const index = newData.findIndex(item => item._id === "62113e1774d1af3e04bc313d");
-          if(index) {
-            newData.splice(0, 0, newData.splice(index, 1)[0]);
+        if (isSelectTab) {
+          dispatch(collectionLoadSuccess(json));
+        } else {
+          if (page === 1) {
+            const newData = [...cardsDefaultData, ...json.data];
+            const index = newData.findIndex(item => item._id === "62113e1774d1af3e04bc313d");
+            if(index) {
+              newData.splice(0, 0, newData.splice(index, 1)[0]);
+            }
+            json.data = newData;
           }
-          json.data = newData;
+          dispatch(collectionLoadSuccess(json));
         }
-        dispatch(collectionLoadSuccess(json));
-
       }).catch(err => {
         dispatch(collectionLoadFail());
       })
