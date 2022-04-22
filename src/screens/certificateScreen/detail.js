@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import { Row, Rows, Table } from 'react-native-table-component';
+import { Row, Rows, Table, Cell, TableWrapper } from 'react-native-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import details from '../../../assets/images/details.png';
@@ -469,15 +469,9 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const getNFTSellDetails = async (id, filterArray = []) => {
-    function comparator(a, b) {
-      return parseInt(b['sellDateTime'], 10) - parseInt(a['sellDateTime'], 10);
-    }
 
     setTradingTableLoader(true)
-    let url =
-      networkType === 'testnet'
-        ? 'https://testapi.xanalia.com/xanalia/getEventHistory'
-        : 'https://api.xanalia.com/xanalia/getEventHistory';
+    let url = `${BASE_URL}/xanalia/getEventHistory`;
     await axios
       .post(url, {
         tokenId: nft,
@@ -501,14 +495,13 @@ const DetailScreen = ({ navigation, route }) => {
               let tradeCurr = getTradeCurrency(baseCurrency, dollarPrice)
 
               let obj = {
-                //event: 'SellNFT',
                 translatedEvent: translate('common.sales'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
-                seller: res.data.data[i].returnValues.seller.slice(0, 6),
+                seller: res.data.data[i].returnValues.seller,
                 owner: '',
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
@@ -525,14 +518,13 @@ const DetailScreen = ({ navigation, route }) => {
                 : "ALIA"
 
               let obj = {
-                //event: 'SellNFT',
-                translatedEvent: translate('common.sales'),
+                translatedEvent: translate('wallet.common.OfferAccept'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
-                seller: res.data.data[i].returnValues.from.slice(0, 6),
+                seller: res.data.data[i].returnValues.from,
                 owner: res.data.data[i].returnValues.to,
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
@@ -559,14 +551,14 @@ const DetailScreen = ({ navigation, route }) => {
               let tradeCurr = getTradeCurrency(baseCurrency, newDollarPrice)
 
               let obj = {
-                translatedEvent: "UpdatePrice",
+                translatedEvent: translate('wallet.common.updatePrice'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
-                seller: sellEvent?.returnValues?.seller.slice(0, 6),
+                seller: sellEvent?.returnValues?.seller,
                 owner: "",
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                dateTime: res.data.data[i].timestamp
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                dateTime: res.data.data[i].timestamp * 1000
               };
               bids = [obj, ...bids];
             }
@@ -580,12 +572,11 @@ const DetailScreen = ({ navigation, route }) => {
                 //event: 'OnAuction',
                 translatedEvent: translate('common.OnAuction'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
-                seller: res.data.data[i].returnValues.seller.slice(0, 6),
+                seller: res.data.data[i].returnValues.seller,
                 owner: '',
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                //currency_type: 'alia',
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
@@ -608,15 +599,13 @@ const DetailScreen = ({ navigation, route }) => {
               let tradeCurr = getTradeCurrency(baseCurrency, priceDollar)
 
               let obj = {
-                //event: 'OnAuction',
                 translatedEvent: translate('common.OnAuction'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: seller,
                 owner: '',
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                //currency_type: 'dollar',
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
@@ -645,12 +634,30 @@ const DetailScreen = ({ navigation, route }) => {
                 //event: 'Bid',
                 translatedEvent: translate('common.Bids'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
-                seller: res.data.data[i].returnValues.bidder.slice(0, 6),
+                seller: res.data.data[i].returnValues.bidder,
                 owner: '',
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                //currency_type: 'alia',
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                 dateTime: res.data.data[i].timestamp
+              };
+              bids = [obj, ...bids];
+            }
+
+            if (res.data.data[i].event === "BidAward") {
+              let { amount } = res.data.data[i].returnValues;
+
+              let priceCond = getPrice(amount, null);
+              let tradeCurr = "$";
+              let obj = {
+                event: translate('wallet.common.bidaward'),
+                price: convertPrice(priceCond, res.data.data[i], tradeCurr),
+                seller: res.data.data[i].returnValues.bidder ? res.data.data[i].returnValues.bidder
+                  : res.data.data[i].returnValues.ownerId,
+                owner: "",
+                sellDateTime: moment
+                .utc(res.data.data[i].timestamp).local()
+                .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
@@ -674,16 +681,14 @@ const DetailScreen = ({ navigation, route }) => {
                 : "ALIA"
 
               let obj = {
-                //event: 'Claim',
                 translatedEvent: translate('common.Claim'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
                 seller: seller,
-                owner: res.data.data[i].returnValues.bidder.slice(0, 6),
+                owner: res.data.data[i].returnValues.bidder,
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                //currency_type: 'alia',
-                dateTime: res.data.data[i].timestamp
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                  dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -756,30 +761,27 @@ const DetailScreen = ({ navigation, route }) => {
                     : "ALIA"
 
               let obj = {
-                // 'BuyNFT',
                 translatedEvent: translate('common.Buys'),
                 price: convertPrice(priceCond, res.data.data[i], tradeCurr),
-                seller: sellEvent?.returnValues?.seller.slice(0, 6),
-                owner: res.data.data[i].returnValues.buyer.slice(0, 6),
+                seller: sellEvent?.returnValues?.seller,
+                owner: res.data.data[i].returnValues.buyer,
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
             if (res.data.data[i].event === 'CancelSell') {
               let obj = {
-                //event: 'CancelSell',
                 translatedEvent: translate('common.cancelSell'),
                 price: '',
-                seller: res.data.data[i].returnValues.from.slice(0, 6),
+                seller: res.data.data[i].returnValues.from,
                 owner: '',
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                dateTime: res.data.data[i].timestamp
-                //currency_type: '',
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                  dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
@@ -789,7 +791,6 @@ const DetailScreen = ({ navigation, route }) => {
               res.data.data[i].event === 'MintWithTokenURINonCrypto'
             ) {
               let obj = {
-                //event: 'MintWithTokenURI',
                 translatedEvent: translate('common.minted'),
                 price: '',
                 seller: 'Null Address',
@@ -798,20 +799,32 @@ const DetailScreen = ({ navigation, route }) => {
                     res.data.data[i].returnValues.to :
                     res.data.data[i].returnValues.from,
                 sellDateTime: moment
-                  .unix(res.data.data[i].timestamp)
-                  .format('DD-MM-YYYY HH:mm:ss'),
-                dateTime: res.data.data[i].timestamp
-                //currency_type: '',
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                  dateTime: res.data.data[i].timestamp
+              };
+              bids = [obj, ...bids];
+            }
+            if (
+              res.data.data[i].event === 'transferFrom' 
+            ) {
+              let obj = {
+                translatedEvent: translate('wallet.common.transferFrom'),
+                price: '',
+                seller: res.data.data[i].returnValues.from,
+                owner: res.data.data[i].returnValues.to,
+                sellDateTime: moment
+                  .utc(res.data.data[i].timestamp * 1000).local()
+                  .format("YYYY/MM/DD HH:mm:ss"),
+                  dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
             }
           }
-          bids.sort(comparator);
 
           let _bidHistory = bids.filter(item => item.event === 'Bid');
-          // console.log(_bidHistory, "_bidHistory")
+          console.log(_bidHistory, "_bidHistory", bids)
           if (_bidHistory.length > 0) {
-            // setBidHistory(_bidHistory);
             var array = [];
             array = _bidHistory.filter(item => delete item['event']);
             let bidsArray = [];
@@ -819,26 +832,15 @@ const DetailScreen = ({ navigation, route }) => {
               const obj = array[i];
               bidsArray.push(Object.values(obj));
             }
-            // setTableData(bidsArray);
           }
-          // setSellDetails(bids);
-          let dataSorted = bids.sort((a, b) => {
-            const dateA = new Date(a.dateTime).valueOf();
-            const dateB = new Date(b.dateTime).valueOf();
-            // console.log(dateA, dateB, "aaaa")
-            if (dateA > dateB) {
-              return -1; // return -1 here for DESC order
-            }
-            return 1 // return 1 here for DESC Order
-          });
-          // console.log(bids, "bids333333", dataSorted)
+         
           let arr = [];
-          for (let i = 0; i < dataSorted.length; i++) {
-            const obj = dataSorted[i];
+          for (let i = 0; i < bids.length; i++) {
+            const obj = bids[i];
             arr.push(Object.values(obj));
           }
           // console.log(arr)
-          setTradingTableData(arr);
+          setTradingTableData(arr.reverse());
           setTimeout(() => {
             setTradingTableLoader(false)
             setLoader(false)
@@ -967,6 +969,26 @@ const DetailScreen = ({ navigation, route }) => {
       await getTokenDetailsApi();
     }
   };
+ const showSeller = (detail) => {
+    // if (this.state.artistId === detail.seller) {
+    //   if (this.state.artistRole === "crypto" && this.state.title) {
+    //     return this.state.title;
+    //   } else if (
+    //     this.state.artistRole === "non_crypto" &&
+    //     this.state.nameUser
+    //   ) {
+    //     return this.state.nameUser.includes("0x")
+    //       ? this.state.nameUser.substring(0, 6)
+    //       : this.state.nameUser;
+    //   }
+    // } else {
+    //   return detail.seller && detail.seller.includes("0x")
+    //     ? detail.seller.substring(0, 6)
+    //     : this.state.ownerDetails._id === detail.seller ?
+    //       this.state.ownerDetails.username :
+    //       detail.seller;
+    // }
+  }
 
   const getOwnerDetailsById = async (id) => {
     const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
@@ -1674,10 +1696,10 @@ const DetailScreen = ({ navigation, route }) => {
             let status = !playVideo;
             if (showThumb) {
               setVideoLoad(true)
-            }else{
+            } else {
               setPlayVideoLoad(true)
             }
-            if(!status){
+            if (!status) {
               setVideoLoad(false);
               setPlayVideoLoad(false)
             }
@@ -1701,8 +1723,8 @@ const DetailScreen = ({ navigation, route }) => {
                   playInBackground={false}
                   paused={!playVideo}
                   onProgress={r => {
-                      setVideoLoad(false)
-                      setPlayVideoLoad(false)
+                    setVideoLoad(false)
+                    setPlayVideoLoad(false)
                   }}
                   resizeMode={'cover'}
                   onError={(error) => {
@@ -1728,7 +1750,7 @@ const DetailScreen = ({ navigation, route }) => {
                 )
                 }
                 {
-                  ((videoLoad || playVideoLoad) && !videoLoadErr ) &&
+                  ((videoLoad || playVideoLoad) && !videoLoadErr) &&
                   <View style={styles.videoPlayIconCont}>
                     <View
                       style={styles.videoPlayIconChild}>
@@ -2031,7 +2053,7 @@ const DetailScreen = ({ navigation, route }) => {
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
-                  style={{ marginTop: hp(2) }}>
+                  style={{ marginVertical: hp(2) }}>
                   <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                     <Row
                       data={tradingTableHead}
@@ -2039,17 +2061,52 @@ const DetailScreen = ({ navigation, route }) => {
                       textStyle={styles.text}
                       widthArr={[90, 100, 140, 130, 150]}
                     />
-                    {tradingTableData.length > 0 ? (
-                      <Rows
-                        data={tradingTableData}
-                        textStyle={styles.text}
-                        widthArr={[90, 100, 140, 130, 150]}
-                      />
-                    ) : (
-                      <Text style={styles.emptyData}>
-                        {translate('common.noDataFound')}
-                      </Text>
-                    )}
+
+                    {tradingTableData.length > 0 ?
+                      tradingTableData.map((rowData, rowIndex) => {
+                        rowData.pop();
+                        return (
+                          <TableWrapper key={rowIndex} style={{ flexDirection: "row" }}>
+                            {
+                              rowData.map((cellData, cellIndex) => {
+                                let wid;
+                                if (cellIndex === 0) {
+                                  wid = 90
+                                }
+                                if (cellIndex === 1) {
+                                  wid = 100
+                                }
+                                if (cellIndex === 2) {
+                                  wid = 140
+                                }
+                                if (cellIndex === 3) {
+                                  wid = 130
+                                }
+                                if (cellIndex === 4) {
+                                  wid = 150
+                                }
+                                return <Cell
+                                  key={cellIndex}
+                                  data={cellIndex == 2 || cellIndex == 3 ?
+                                    <TouchableOpacity onPress={() => cellData && cellData !== "Null Address" ? navigation.push('ArtistDetail', { id: cellData }) : null}>
+                                      <Text style={[styles.text, { color: "#00a8ff" }]}>{cellData}</Text>
+                                    </TouchableOpacity>
+                                    : cellData}
+                                  // cellIndex === 3 ? element(cellData, index) : 
+                                  textStyle={styles.text}
+                                  width={wid}
+                                />
+                              }
+                              )
+                            }
+                          </TableWrapper>
+                        )
+                      })
+                      : (
+                        <Text style={styles.emptyData}>
+                          {translate('common.noDataFound')}
+                        </Text>
+                      )}
                   </Table>
                 </ScrollView>
               </NFTDetailDropdown>
