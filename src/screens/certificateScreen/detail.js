@@ -2055,7 +2055,7 @@ const DetailScreen = ({ navigation, route }) => {
                 containerChildStyles={{
                   height: tradingTableData.length == 0 ? hp(19) :
                     tradingTableData.length < 5 ?
-                      hp(16) + (hp(6) * tradingTableData.length) : hp(47.6)
+                      hp(16) + (hp(4) * tradingTableData.length) : hp(35.7)
                 }}
                 icon={trading}>
                 <Filters />
@@ -2068,37 +2068,45 @@ const DetailScreen = ({ navigation, route }) => {
                       data={tradingTableHead}
                       style={styles.head}
                       textStyle={styles.text}
-                      widthArr={[90, 100, 140, 130, 150]}
+                      widthArr={[145, 130, 180, 180, 160]}
                     />
 
                     {tradingTableData.length > 0 ?
                       tradingTableData.map((rowData, rowIndex) => {
                         rowData.pop();
                         return (
-                          <TableWrapper key={rowIndex} style={{ flexDirection: "row" }}>
+                          <TableWrapper key={rowIndex} style={{ flexDirection: "row", }}>
                             {
                               rowData.map((cellData, cellIndex) => {
                                 let wid;
                                 if (cellIndex === 0) {
-                                  wid = 90
+                                  wid = 145
                                 }
                                 if (cellIndex === 1) {
-                                  wid = 100
-                                }
-                                if (cellIndex === 2) {
-                                  wid = 140
-                                }
-                                if (cellIndex === 3) {
                                   wid = 130
                                 }
+                                if (cellIndex === 2) {
+                                  wid = 180
+                                }
+                                if (cellIndex === 3) {
+                                  wid = 180
+                                }
                                 if (cellIndex === 4) {
-                                  wid = 150
+                                  wid = 160
                                 }
                                 return <Cell
                                   key={cellIndex}
                                   data={cellIndex == 2 || cellIndex == 3 ?
-                                    <TouchableOpacity onPress={() => cellData && cellData !== "Null Address" ? navigation.push('ArtistDetail', { id: cellData }) : null}>
-                                      <Text style={[styles.text, { color: "#00a8ff" }]}>{(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}</Text>
+                                    <TouchableOpacity
+                                      onPress={() =>
+                                        cellData && cellData !== "Null Address" ?
+                                          navigation.push('ArtistDetail', { id: cellData }) : null
+                                      }>
+                                      <Text
+                                        numberOfLines={1}
+                                        style={[styles.text, { color: "#00a8ff" }]}>
+                                        {(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}
+                                      </Text>
                                     </TouchableOpacity>
                                     : cellData}
                                   // cellIndex === 3 ? element(cellData, index) : 

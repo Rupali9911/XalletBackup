@@ -368,88 +368,95 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   const saveCollection = () => {
     const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
+
+    console.log("🚀 ~ file: collection.js ~ line 370 ~ saveCollection ~ publicAddress", privKey, publicAddress)
     changeLoadingState(true);
     if (publicAddress && data.token) {
 
-      createColection(
-        publicAddress,
-        privKey,
-        networkType.value,
-        providerUrl,
-        MarketPlaceAbi,
-        MarketContractAddress,
-        gasFee,
-        gasLimit,
-        collectionName,
-        collectionSymbol
-      ).then(async (transactionData) => {
-        if (transactionData.success) {
-          const { collectionAddress } = transactionData.data;
-          setCollectionAdd(collectionAddress);
-          console.log(collectionAddress, "transactionData")
+      console.log("create Collection Public 376"),
+        createColection(
+          publicAddress,
+          privKey,
+          networkType.value,
+          providerUrl,
+          MarketPlaceAbi,
+          MarketContractAddress,
+          gasFee,
+          gasLimit,
+          collectionName,
+          collectionSymbol
+        ).then(async (transactionData) => {
+          console.log("389 - then>>>>>", transactionData)
+          if (transactionData.success) {
+            const { collectionAddress } = transactionData.data;
+            setCollectionAdd(collectionAddress);
+            console.log(collectionAddress, "transactionData")
 
-          let res = await uploadFileToStorage(
-            bannerImage,
-            iconImage,
-            'banner_image',
-            'icon_image',
-            data.token
-          );
+            console.log("RES!@#$$. 395", res)
+            let res = await uploadFileToStorage(
+              bannerImage,
+              iconImage,
+              'banner_image',
+              'icon_image',
+              data.token
+            );
 
-          if (res) {
+            if (res) {
+              console.log("RES. 405", res)
+              let url = `${BASE_URL}/user/create-collection`
 
-            let url = `${BASE_URL}/user/create-collection`
+              axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+              axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-            axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-            axios.defaults.headers.post['Content-Type'] = 'application/json';
+              let obj = {
+                collectionAddress,
+                collectionName,
+                collectionDesc: collectionDes,
+                bannerImage: res.banner_image,
+                iconImage: res.icon_image,
+                collectionSymbol,
+                chainType: networkType.value,
+              };
 
-            let obj = {
-              collectionAddress,
-              collectionName,
-              collectionDesc: collectionDes,
-              bannerImage: res.banner_image,
-              iconImage: res.icon_image,
-              collectionSymbol,
-              chainType: networkType.value,
-            };
+              axios.post(url, obj)
+                .then(collectionData => {
+                  changeLoadingState(false);
+                  console.log(collectionData, "collectionData success 424")
 
-            axios.post(url, obj)
-              .then(collectionData => {
-                changeLoadingState(false);
-                console.log(collectionData, "collectionData success")
+                  if (collectionData.data.success) {
+                    cancel()
+                    alertWithSingleBtn(
+                      "Success Message",
+                      "Collection Created Successfully"
+                    );
+                  } else {
+                    alertWithSingleBtn(
+                      translate("wallet.common.alert"),
+                      translate("wallet.common.error.apiFailed")
+                    )
+                  }
 
-                if (collectionData.data.success) {
-                  cancel()
-                  alertWithSingleBtn(
-                    "Success Message",
-                    "Collection Created Successfully"
-                  );
-                } else {
-                  alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.error.apiFailed")
-                  )
-                }
-
-              })
-              .catch(e => {
-                changeLoadingState(false);
-                console.log(e.response, "uploading collection data to database");
-                // alertWithSingleBtn(
-                //   translate("wallet.common.alert"),
-                //   translate("wallet.common.error.networkFailed")
-                // );
-              })
+                })
+                .catch(e => {
+                  console.log("441 .catch !!")
+                  changeLoadingState(false);
+                  console.log(e.response, "uploading collection data to database 443");
+                  // alertWithSingleBtn(
+                  //   translate("wallet.common.alert"),
+                  //   translate("wallet.common.error.networkFailed")
+                  // );
+                })
+            }
           }
-        }
-      }).catch(e => {
-        changeLoadingState(false);
-        console.log("testing collection error", e.response)
-        alertWithSingleBtn(
-          translate("wallet.common.alert"),
-          translate("wallet.common.insufficientFunds")
-        );
-      })
+        }).catch(e => {
+          console.log("452 catch last")
+          changeLoadingState(false);
+          console.log("testing collection error 454", e.response)
+          alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("wallet.common.insufficientFunds")
+          );
+        })
     }
   }
 

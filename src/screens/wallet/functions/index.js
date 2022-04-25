@@ -753,25 +753,27 @@ export const getBalanceInDollar = () => {
 }
 
 export const createColection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
-  console.log("COLLECTION")
+console.log("🚀 ~ file: index.js ~ line 759 ~ createColection", publicKey, providerUrl)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         providerUrl
       )
     );
+    console.log("🚀 ~ file: index.js ~ line 766 ~ returnnewPromise ~ web3", web3)
 
     let txCount = "";
     try {
-      console.log('txCount')
+      console.log('txCount 770',txCount)
       txCount = await web3.eth.getTransactionCount(publicKey, "pending")
+      console.log('txCount 772',txCount)
     } catch (e) {
-      console.log(e, "reject tx count create collection")
+      console.log(e, "reject tx count create collection 773")
       return reject(e)
     }
 
     var customGasLimit = gasLmt;
-    console.log("🚀 ~ file: index.js ~ line 769 ~ returnnewPromise ~ customGasLimit", customGasLimit)
+    console.log("🚀 ~ file: index.js ~ line 769 ~ customGasLimit")
     customGasPrice = gasPr * 1000000000;
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey
