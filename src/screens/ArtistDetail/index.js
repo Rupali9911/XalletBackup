@@ -68,15 +68,12 @@ import {
     widthPercentageToDP as wp,
     responsiveFontSize as RF
 } from '../../common/responsiveFunction';
-import getLanguage from '../../utils/languageSupport';
 import { colors } from '../../res';
 import { translate } from '../../walletUtils';
 import axios from 'axios';
 import AppBackground from '../../components/appBackground';
 import Hyperlink from "react-native-hyperlink";
 import NFTItem from '../../components/NFTItem';
-
-const langObj = getLanguage();
 
 const {
     GIRL,

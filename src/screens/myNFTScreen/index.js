@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { FlatList, View, Text, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -13,10 +12,7 @@ import styles from './styles';
 import { colors, fonts } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
 import { responsiveFontSize as FS } from '../../common/responsiveFunction';
-import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
-
-const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -274,12 +270,12 @@ const MyNFTScreen = () => {
                     }
                 }} >
                     <Tab.Screen
-                        name={langObj.common.NFT}
+                        name={translate("common.NFT")}
                         options={{ tabBarLabel: translate("common.NFT") }}
                         component={NFT}
                     />
                     <Tab.Screen
-                        name={langObj.common.myCollection}
+                        name={translate("common.myCollection") }
                         options={{ tabBarLabel: translate("common.myCollection") }}
                         component={Collection}
                     />

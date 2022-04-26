@@ -8,11 +8,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
-import { images, colors } from '../../res';
+import {colors } from '../../res';
 import { AppHeader } from '../../components';
-
-import getLanguage from '../../utils/languageSupport';
-import { SIZE } from '../../common/responsiveFunction';
 import { translate } from '../../walletUtils';
 
 const PayScreen = ({

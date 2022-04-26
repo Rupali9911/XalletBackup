@@ -646,7 +646,8 @@
         "hoursLeft":"残り時間",
         "minutesLeft":"残り分",
         "secondsLeft":"残り秒数",
-        "passwordlengthshort":"パスワードは8文字以上でなければならない。"
+        "passwordlengthshort":"パスワードは8文字以上でなければならない。",
+        "blindboxCollections":"ミステリーボックス"
     },
     "AwardPage": {},
     "wallet": {

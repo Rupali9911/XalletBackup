@@ -80,14 +80,14 @@ const Collection = () => {
           onPress={() => setSelectTab(true)}
           style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
           <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-            {'Collection'}
+              {translate('wallet.common.collection')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setSelectTab(false)}
           style={[styles.collectionTabItem, { borderTopColor: !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
           <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-            {'Mystery Box'}
+              {translate('common.blindboxCollections')}
           </Text>
         </TouchableOpacity>
       </View>

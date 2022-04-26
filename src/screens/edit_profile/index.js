@@ -111,6 +111,7 @@ function Profile(props) {
           width: 512,
           cropping: true,
         }).then(image => {
+          console.log('Response from camera',image )
           if (image.height <= 512 && image.width <= 512) {
             let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
             let uri = Platform.OS == 'android' ? image.path : image.sourceURL
@@ -137,6 +138,7 @@ function Profile(props) {
         width: 512,
         cropping: true
       }).then(image => {
+          console.log('Response from camera',image )
         if (image.height <= 512 && image.width <= 512) {
           let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
           let uri = Platform.OS == 'android' ? image.path : image.sourceURL
@@ -292,6 +294,7 @@ function Profile(props) {
     if (validateNum === 8) {
 
       if (photo?.uri !== UserReducer.data.user.profile_image) {
+        console.log('photo', photo)
         let formData = new FormData();
         formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type});
         dispatch(updateProfileImage(formData));
@@ -379,7 +382,7 @@ function Profile(props) {
             placeholder={translate("common.facebook")}
             validate={[maxLength100, validateFacebookURL]}
             error={errFacebook}
-          /> 
+          />
             <LimitableInput
             value={zoomLink}
             onChange={(text) => { setZoomLink(text); setErrZoomLink(false); }}

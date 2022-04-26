@@ -646,7 +646,8 @@
         "hoursLeft":"剩余小時數",
         "minutesLeft":"還剩幾分鐘",
         "secondsLeft":"剩餘秒數",
-        "passwordlengthshort":"密碼長度必須至少為八個字符。"
+        "passwordlengthshort":"密碼長度必須至少為八個字符。",
+        "blindboxCollections":"神秘盒子"
     },
     "AwardPage": {},
     "wallet": {
