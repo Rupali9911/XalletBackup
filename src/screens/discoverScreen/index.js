@@ -1,16 +1,11 @@
 import * as React from 'react';
 import { SafeAreaView, StatusBar, ScrollView, View, Text, Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
 import TwoDArt from './twoDArt';
-
-import styles from './styles';
 import { colors, fonts } from '../../res';
 import { AppHeader } from '../../components';
-import getLanguage from '../../utils/languageSupport';
 import { translate } from '../../walletUtils';
 
-const langObj = getLanguage();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -70,19 +65,19 @@ const DiscoverScreen = () => {
                     }
                 }} >
                     <Tab.Screen
-                        name={langObj.common.twoDArt}
+                        name={translate("common.twoDArt") }
                         component={TwoDArt}
                     />
                     <Tab.Screen
-                        name={langObj.common.GIFArt}
+                        name={translate("common.GIFArt")}
                         component={GIFArt}
                     />
                     <Tab.Screen
-                        name={langObj.common.threeDAssets}
+                        name={translate("common.threeDAssets")}
                         component={ThreeDAsset}
                     />
                     <Tab.Screen
-                        name={langObj.common.land}
+                        name={translate("common.land")}
                         component={Land}
                     />
                 </Tab.Navigator>

@@ -646,7 +646,8 @@
         "hoursLeft":"남은 시간",
         "minutesLeft":"남은 시간(분)",
         "secondsLeft":"남은 시간(초)",
-        "passwordlengthshort":"비밀번호는 8자 이상이어야 합니다."
+        "passwordlengthshort":"비밀번호는 8자 이상이어야 합니다.",
+        "blindboxCollections":"블라인드 박스"
     },
     "AwardPage": {},
     "wallet": {
