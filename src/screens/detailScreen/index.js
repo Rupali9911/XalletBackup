@@ -185,7 +185,7 @@ const DetailItemScreen = (props) => {
     const renderItem = ({ item, index }) => {
         if (AuthReducer.screenName == 'blindSeriesCollection') item.metaData = item;
         console.log('===========item', item);
-        if (item.metaData) {
+        if (item && item.hasOwnProperty("metaData") && item.metaData) {
             return (
                 <NftItem videoStatus={stopVideos} item={item} index={index} minHeight={true} />
             )

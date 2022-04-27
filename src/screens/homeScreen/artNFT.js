@@ -48,7 +48,7 @@ const ArtNFT = () => {
 
     const renderItem = ({ item }) => {
         let findIndex = NewNFTListReducer.newNftList.findIndex(x => x.id === item.id);
-        if (item.metaData) {
+        if (item && item.hasOwnProperty("metaData") && item.metaData) {
             let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
 
             return (

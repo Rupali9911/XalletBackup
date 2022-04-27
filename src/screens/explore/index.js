@@ -70,7 +70,7 @@ function ExploreScreen() {
   };
 
   const renderItem = ({ item }) => {
-    if (item.metaData) {
+    if (item && item.hasOwnProperty("metaData") && item.metaData) {
       return <NftItem item={item} />;
     }
   };

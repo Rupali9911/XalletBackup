@@ -122,7 +122,7 @@ const Created = ({ route }) => {
 
     const renderItem = ({ item }) => {
         let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-        if (item.metaData) {
+        if (item && item.hasOwnProperty("metaData") && item.metaData) {
             let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
 
             return (
@@ -223,7 +223,7 @@ const Collection = ({ route }) => {
 
     const renderItem = ({ item }) => {
         let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
-        if (item.metaData) {
+        if (item && item.hasOwnProperty("metaData") && item.metaData) {
             let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
 
             return (
