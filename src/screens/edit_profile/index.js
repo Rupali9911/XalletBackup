@@ -110,17 +110,18 @@ function Profile(props) {
           height: 512,
           width: 512,
           cropping: true,
+            includeBase64: true
         }).then(image => {
           console.log('Response from camera',image )
           if (image.height <= 512 && image.width <= 512) {
             let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
             let uri = Platform.OS == 'android' ? image.path : image.sourceURL
             let temp = {
-              image: image,
               path: image.path,
               uri: uri,
               type: image.mime,
-              fileName: filename
+              fileName: filename,
+                base64: image.data
             }
             setPhoto(temp)
           }
@@ -136,18 +137,19 @@ function Profile(props) {
         mediaType: "photo",
         height: 512,
         width: 512,
-        cropping: true
+        cropping: true,
+          includeBase64: true
       }).then(image => {
           console.log('Response from camera',image )
         if (image.height <= 512 && image.width <= 512) {
           let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
           let uri = Platform.OS == 'android' ? image.path : image.sourceURL
           let temp = {
-            image: image,
             path: image.path,
             uri: uri,
             type: image.mime,
-            fileName: filename
+            fileName: filename,
+              base64: image.data
           }
           setPhoto(temp)
         }
@@ -292,14 +294,18 @@ function Profile(props) {
     }
 
     if (validateNum === 8) {
-
       if (photo?.uri !== UserReducer.data.user.profile_image) {
         console.log('photo', photo)
         let formData = new FormData();
-        formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type});
+          let photoObj = {
+              uri: photo.path,
+              type: 'image/jpeg',
+              filename: 'photo.jpg',
+          };
+          console.log('photoObj', photoObj)
+        formData.append('profile_image', photoObj);
         dispatch(updateProfileImage(formData));
       }
-
       dispatch(updateProfile(req_body, () => navigation.goBack()));
     }
   }

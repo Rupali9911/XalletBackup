@@ -372,11 +372,16 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
   dispatch(startLoading());
 
   const { data } = getState().UserReducer;
-  axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-  axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+  // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+  // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.token}`,
+    };
   await axios
-    .post(`${BASE_URL}/user/update-profile-image`, formData)
+    .post(`${BASE_URL}/user/update-profile-image`, formData, {headers: headers})
     .then(res => {
+      console.log('Response from update-profile-image', res)
       dispatch(upateUserData(res.data.data));
     })
     .catch(err => {
