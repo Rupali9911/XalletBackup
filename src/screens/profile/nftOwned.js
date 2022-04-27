@@ -41,7 +41,7 @@ const NFTOwned = ({ route, navigation }) => {
     const renderItem = ({ item }) => {
         let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
 
-        if (item.metaData) {
+        if (item && item.hasOwnProperty("metaData") && item.metaData) {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem

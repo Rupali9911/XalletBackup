@@ -82,7 +82,7 @@ const Collection = () => {
                                 refreshing={MyCollectionReducer.myCollectionListLoading}
                                 renderItem={({ item }) => {
                                     let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
-                                    if (item.metaData) {
+                                    if (item && item.hasOwnProperty("metaData") && item.metaData) {
                                         return (
                                             <TouchableOpacity onPress={() => {
                                                 dispatch(changeScreenName("myCollection"))
@@ -195,7 +195,7 @@ const NFT = () => {
                                 refreshing={MyNFTReducer.myNftListLoading}
                                 renderItem={({ item }) => {
                                     let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
-                                    if (item.metaData) {
+                                    if (item && item.hasOwnProperty("metaData") && item.metaData) {
                                         return (
                                             <TouchableOpacity onPress={() => {
                                                 dispatch(changeScreenName("myNFT"))

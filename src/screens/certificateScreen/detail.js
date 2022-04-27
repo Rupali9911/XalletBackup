@@ -1355,7 +1355,7 @@ const DetailScreen = ({ navigation, route }) => {
                   ) : "")
                 }
               }
-              console.log(response, "///////", item.metaData.name)
+              console.log(response, "///////")
             });
           // }
           // console.log('NFT Detail', data, data.newprice);
@@ -1581,11 +1581,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const renderItem = ({ item }) => {
     // let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item.metaData) {
+    if (item && item.hasOwnProperty("metaData") && item.metaData) {
       // it's temporary fix
       const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
 
-      const image = item.metaData.image || item.thumbnailUrl;
+      const image =  item.metaData.image || item.thumbnailUrl;
       const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
       // console.log(fileType, item.metaData.name, "item.metaData.name")
       return (

@@ -59,7 +59,7 @@ const MovieNFT = () => {
 
   const renderItem = ({ item, index }) => {
     let findIndex = ListReducer.movieList.findIndex(x => x.id === item.id);
-    if (item.metaData) {
+    if (item && item.hasOwnProperty("metaData") && item.metaData) {
       let imageUri =
         item.thumbnailUrl !== undefined || item.thumbnailUrl
           ? item.thumbnailUrl
