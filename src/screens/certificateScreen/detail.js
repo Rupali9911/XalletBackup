@@ -207,6 +207,9 @@ const DetailScreen = ({ navigation, route }) => {
     translate('common.date') + ' (DD/MM/YYYY)',
   ]);
   // const [tableData, setTableData] = useState([]);
+  const [filterTableList, setFilterTableList] = useState([]);
+  const [tradingTableData1, setTradingTableData1] = useState([]);
+  const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(item.like);
@@ -263,6 +266,16 @@ const DetailScreen = ({ navigation, route }) => {
   useEffect(() => {
     getCurrencyPrice();
   }, [wallet, baseCurrency])
+
+  useEffect(() => {
+
+    if (tradingTableData.length !== 0) {
+      let filterValue = tradingTableData1.filter(o1 => filterTableValue.some(o2 => o1[0] === o2));
+      
+      setTradingTableData(filterValue)
+    }
+
+  }, [filterTableValue])
 
   const getCurrencyPrice = async () => {
     let finalPrice = '';
@@ -482,6 +495,7 @@ const DetailScreen = ({ navigation, route }) => {
       .then(async res => {
         // console.log('transactoinhistory: ', res.data.data);
         if (res.data.data.length > 0) {
+          let filterList = [];
           let bids = [];
           for (let i = 0; i < res.data.data.length; i++) {
             if (
@@ -506,6 +520,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.sales'),
+                value: translate('common.sales')
+              })
             }
 
             if (
@@ -529,6 +547,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('wallet.common.OfferAccept'),
+                value: translate('wallet.common.OfferAccept')
+              })
             }
 
             if (
@@ -562,6 +584,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp * 1000
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('wallet.common.updatePrice'),
+                value: translate('wallet.common.updatePrice')
+              })
             }
 
             if (res.data.data[i].event === 'OnAuction') {
@@ -581,6 +607,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.OnAuction'),
+                value: translate('common.OnAuction')
+              })
             }
 
             if (res.data.data[i].event === 'awardAuctionNFT') {
@@ -610,6 +640,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.OnAuction'),
+                value: translate('common.OnAuction')
+              })
             }
 
             if (res.data.data[i].event === 'Bid') {
@@ -643,6 +677,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.Bids'),
+                value: translate('common.Bids')
+              })
             }
 
             if (res.data.data[i].event === "BidAward") {
@@ -662,6 +700,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('wallet.common.bidaward'),
+                value: translate('wallet.common.bidaward')
+              })
             }
 
             if (res.data.data[i].event === 'Claim') {
@@ -692,6 +734,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.Claim'),
+                value: translate('common.Claim')
+              })
             }
 
             if (
@@ -772,6 +818,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.Buys'),
+                value: translate('common.Buys')
+              })
             }
             if (res.data.data[i].event === 'CancelSell') {
               let obj = {
@@ -785,6 +835,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.cancelSell'),
+                value: translate('common.cancelSell')
+              })
             }
 
             if (
@@ -805,6 +859,10 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('common.minted'),
+                value: translate('common.minted')
+              })
             }
             if (
               res.data.data[i].event === 'transferFrom'
@@ -820,11 +878,30 @@ const DetailScreen = ({ navigation, route }) => {
                 dateTime: res.data.data[i].timestamp
               };
               bids = [obj, ...bids];
+              filterList.push({
+                label: translate('wallet.common.transferFrom'),
+                value: translate('wallet.common.transferFrom')
+              })
             }
           }
 
+          function getUnique(array, key) {
+            if (typeof key !== 'function') {
+              const property = key;
+              key = function (item) { return item[property]; };
+            }
+            return Array.from(array.reduce(function (map, item) {
+              const k = key(item);
+              if (!map.has(k)) map.set(k, item);
+              return map;
+            }, new Map()).values());
+          }
+
+          let value = getUnique(filterList, 'value');
+          setFilterTableList(value);
+
           let _bidHistory = bids.filter(item => item.event === 'Bid');
-          console.log(_bidHistory, "_bidHistory", bids)
+          // console.log(_bidHistory, "_bidHistory", bids)
           if (_bidHistory.length > 0) {
             var array = [];
             array = _bidHistory.filter(item => delete item['event']);
@@ -838,10 +915,15 @@ const DetailScreen = ({ navigation, route }) => {
           let arr = [];
           for (let i = 0; i < bids.length; i++) {
             const obj = bids[i];
-            arr.push(Object.values(obj));
+            let convertArr = Object.values(obj);
+            convertArr.pop()
+            arr.push(convertArr);
           }
-          // console.log(arr)
-          setTradingTableData(arr.reverse());
+          let fDArray = arr.reverse();
+          console.log(fDArray, "fDArray")
+          setTradingTableData1(fDArray)
+
+          setTradingTableData(fDArray);
           setTimeout(() => {
             setTradingTableLoader(false)
             setLoader(false)
@@ -1540,34 +1622,18 @@ const DetailScreen = ({ navigation, route }) => {
 
   const Filters = props => {
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState([]);
-    const [items, setItems] = useState([
-      { label: translate('common.minted'), value: translate('common.minted') },
-      { label: translate('common.sales'), value: translate('common.sales') },
-      { label: translate('common.Bids'), value: translate('common.Bids') },
-      { label: translate('common.Buys'), value: translate('common.Buys') },
-      { label: translate('common.Claim'), value: translate('common.Claim') },
-      {
-        label: translate('common.OnAuction'),
-        value: translate('common.OnAuction'),
-      },
-      {
-        label: translate('common.cancelSell'),
-        value: translate('common.cancelSell'),
-      },
-    ]);
 
     return (
       <DropDownPicker
         open={open}
-        value={value}
-        items={items}
+        value={props.value}
+        items={props.data}
         multiple={true}
         min={0}
         mode={'BADGE'}
         setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
+        setValue={props.setValue}
+        setItems={props.setData}
         closeAfterSelecting={true}
         style={styles.tokenPicker}
         dropDownContainerStyle={styles.dropDownContainer}
@@ -2058,7 +2124,12 @@ const DetailScreen = ({ navigation, route }) => {
                       hp(16) + (hp(6) * tradingTableData.length) : hp(47.6)
                 }}
                 icon={trading}>
-                <Filters />
+                <Filters
+                  value={filterTableValue}
+                  setValue={setFilterTableValue}
+                  setData={setFilterTableList}
+                  data={filterTableList}
+                />
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
@@ -2073,7 +2144,6 @@ const DetailScreen = ({ navigation, route }) => {
 
                     {tradingTableData.length > 0 ?
                       tradingTableData.map((rowData, rowIndex) => {
-                        rowData.pop();
                         return (
                           <TableWrapper key={rowIndex} style={{ flexDirection: "row" }}>
                             {
@@ -2098,7 +2168,7 @@ const DetailScreen = ({ navigation, route }) => {
                                   key={cellIndex}
                                   data={cellIndex == 2 || cellIndex == 3 ?
                                     <TouchableOpacity onPress={() => cellData && cellData !== "Null Address" ? navigation.push('ArtistDetail', { id: cellData }) : null}>
-                                      <Text style={[styles.text, { color: "#00a8ff" }]}>{(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}</Text>
+                                      <Text style={{ ...styles.text, color: "#00a8ff" }}>{(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}</Text>
                                     </TouchableOpacity>
                                     : cellData}
                                   // cellIndex === 3 ? element(cellData, index) : 
