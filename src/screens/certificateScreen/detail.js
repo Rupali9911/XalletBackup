@@ -182,6 +182,7 @@ const DetailScreen = ({ navigation, route }) => {
   // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   // const [bidHistory, setBidHistory] = useState([]);
   const [priceInDollar, setPriceInDollar] = useState('');
+  const [payableInDollar, setpayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -198,7 +199,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [videoURL, setVideoURI] = useState(video);
   const [playVideo, toggleVideoPlay] = useState(false);
   const [artistRole, setArtistRole] = useState("");
-
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
     translate('common.price'),
@@ -210,7 +210,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData, setTradingTableData] = useState([]);
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(item.like);
-  const [currenciesInDollar, setCurrenciesInDollar] = useState(null);
 
   const nft = item.tokenId || item.collectionAdd;
   let params = nft.toString().split('-');
@@ -262,7 +261,15 @@ const DetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getCurrencyPrice();
-  }, [wallet, baseCurrency])
+    getPayablePrice();
+  }, [wallet, baseCurrency, availableTokens])
+
+  const getPayablePrice = async () => {
+    if (availableTokens.length !== 0) {
+      let res = await calculatePrice(availableTokens[0]);
+      console.log("🚀 ~ line 275 ", res)
+    }
+  };
 
   const getCurrencyPrice = async () => {
     let finalPrice = '';
@@ -304,93 +311,6 @@ const DetailScreen = ({ navigation, route }) => {
     console.log('=======finalPrice', currencyPrices, finalPrice);
     setPriceInDollar(finalPrice);
   };
-
-  const getPaybleInPrice = (prices, paybleInCurrency) => {
-    let finalPrice = '';
-    switch (paybleInCurrency) {
-      case "BNB":
-        finalPrice = item.price * prices?.BNB;
-        break;
-
-      case "ALIA":
-        finalPrice = item.price * prices?.ALIA;
-        break;
-
-      case "ETH":
-        finalPrice = item.price * prices?.ETH;
-        break;
-
-      case "MATIC":
-        finalPrice = item.price * prices?.MATIC;
-        break;
-
-      default:
-        finalPrice = item.price * 1;
-        break;
-    }
-    return finalPrice;
-  };
-
-  const currencyConversion = (prices, baseCurrency, paybleInCurrency) => {
-    // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
-    let finalPrice = '';
-
-    let temp = currConversion(baseCurrency) / currConversion(paybleInCurrency)
-    // console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
-    temp = temp * item?.price
-    // console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
-
-    switch (paybleInCurrency) {
-      case "BNB":
-        finalPrice = temp * prices?.BNB;
-        break;
-
-      case "ALIA":
-        finalPrice = temp * prices?.ALIA;
-        break;
-
-      case "ETH":
-        finalPrice = temp * prices?.ETH;
-        break;
-
-      case "MATIC":
-        finalPrice = temp * prices?.MATIC;
-        break;
-
-      default:
-        finalPrice = temp * 1;
-        break;
-    }
-    // return finalPrice;
-  };
-
-  const currConversion = (key) => {
-    let finalPrice = '';
-    switch (key) {
-      case "BNB":
-        finalPrice = currenciesInDollar?.BNB;
-        break;
-
-      case "ALIA":
-        finalPrice = currenciesInDollar?.ALIA;
-        break;
-
-      case "ETH":
-        finalPrice = currenciesInDollar?.ETH;
-        break;
-
-      case "MATIC":
-        finalPrice = currenciesInDollar?.MATIC;
-        break;
-
-      default:
-        finalPrice = 1;
-        break;
-    }
-    return finalPrice;
-  };
-
-  // currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
 
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
@@ -1405,27 +1325,41 @@ const DetailScreen = ({ navigation, route }) => {
     //     setDiscountValue(res ? res / 10 : 0);
     //   });
   };
-
-  const calculatePrice = async (price1, tradeCurr, owner, _baseCurrency) => {
+  const calculatePrice = async (tradeCurr) => {
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
     );
 
+    console.log("🚀 ~ file: line 1341 calculatePrice",
+      priceNFTString,
+      baseCurrency.order,
+      tradeCurr.order,
+      _tokenId,
+      wallet.address,
+      collectionAddress
+    )
+
     let res = await MarketPlaceContract.methods
       .calculatePrice(
-        price1,
-        _baseCurrency.order,
-        tradeCurr,
+        priceNFTString,
+        baseCurrency.order,
+        tradeCurr.order,
         _tokenId,
-        owner,
+        wallet.address,
         collectionAddress,
       )
       .call();
-    // console.log('calculate price response', res, price);
-    if (res) return res;
-    else return '';
+
+    if (res) {
+      console.log("🚀 ~ file: detail.js ~ line 1361 ~ calculatePrice ~ res", res)
+      setpayableInDollar(res / 1e18)
+      return res / 1e18;
+    } else {
+      setpayableInDollar('')
+      return ''
+    };
   };
 
   const bidingTimeEnded = () => {
@@ -2156,7 +2090,7 @@ const DetailScreen = ({ navigation, route }) => {
         payableIn={payableIn}
         price={item.price ? item.price : 0}
         priceStr={priceNFTString}
-        priceInDollar={payableIn ? getPaybleInPrice(currenciesInDollar, payableIn) : priceInDollar}
+        priceInDollar={payableIn ? payableInDollar : priceInDollar}
         baseCurrency={baseCurrency}
         allowedTokens={availableTokens}
         ownerAddress={
@@ -2172,7 +2106,7 @@ const DetailScreen = ({ navigation, route }) => {
       <PaymentNow
         visible={showPaymentNow}
         price={item.price ? item.price : 0}
-        priceInDollar={priceInDollar}
+        priceInDollar={payableIn ? payableInDollar : priceInDollar}
         chain={chainType}
         NftId={_tokenId}
         IdWithChain={nft}
@@ -2203,9 +2137,10 @@ const DetailScreen = ({ navigation, route }) => {
         }}
         data={{ data: availableTokens }}
         title={translate('common.allowedcurrency')}
-        itemPress={v => {
-          setPayableIn(v.name);
-          setAllowedTokenModal(false);
+        itemPress={async (tradeCurr) => {
+          await calculatePrice(tradeCurr)
+          setPayableIn(tradeCurr.name)
+          setAllowedTokenModal(false)
         }}
         renderItemName={'name'}
       />
