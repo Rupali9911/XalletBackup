@@ -12,8 +12,6 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 import { colors } from '../../res';
 import { Loader, NoInternetModal, C_Image } from '../../components';
-import getLanguage from '../../utils/languageSupport';
-const langObj = getLanguage();
 
 const TwoDArt = () => {
 

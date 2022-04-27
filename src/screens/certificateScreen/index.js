@@ -2,11 +2,9 @@ import React from 'react';
 import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import AppHeader from '../../components/appHeader';
 import {images} from '../../res';
-import getLanguage from '../../utils/languageSupport';
 import {translate} from '../../walletUtils';
 import styles from './styles';
 
-const langObj = getLanguage();
 
 const CertificateScreen = ({navigation}) => {
   return (

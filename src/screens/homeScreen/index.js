@@ -358,15 +358,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-              <Tab.Screen
-                name={translate('common.hotcollection')}
-                component={HotCollection}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(0);
-                  }
-                }}
-              />
+                <Tab.Screen
+                    name={translate('wallet.common.collection')}
+                    component={Collection}
+                    listeners={({ navigation, route }) => {
+                        if (navigation.isFocused()) {
+                            setCurrentTab(7);
+                        }
+                    }}
+                />
               <Tab.Screen
                 name={translate('common.2DArt')}
                 component={ArtNFT}
@@ -403,15 +403,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-              <Tab.Screen
-                name={translate('wallet.common.collection')}
-                component={Collection}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(7);
-                  }
-                }}
-              />
+                <Tab.Screen
+                    name={translate('common.hotcollection')}
+                    component={HotCollection}
+                    listeners={({ navigation, route }) => {
+                        if (navigation.isFocused()) {
+                            setCurrentTab(0);
+                        }
+                    }}
+                />
             </Tab.Navigator>
           ))}
       </SafeAreaView>
@@ -458,7 +458,7 @@ const HomeScreen = ({ navigation }) => {
         ) : null}
       </AppModal>
       {
-        currentTab !== 0 &&
+        currentTab !== 0 && currentTab !== 7 &&
         <FilterComponent/>
       }
     </>
