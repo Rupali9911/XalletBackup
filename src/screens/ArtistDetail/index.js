@@ -350,7 +350,7 @@ function ArtistDetail({
         fetch(url, body)
             .then(response => response.json())
             .then(res => {
-                console.log(res.data, "res.data testing", route.params.id)
+                // console.log(res.data, "res.data testing", route.params.id)
                 if (isMounted.current) {
                     if (res.data) {
                         setData(res.data);

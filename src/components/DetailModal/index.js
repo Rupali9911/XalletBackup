@@ -93,7 +93,7 @@ const DetailModal = ({ isModalVisible, toggleModal, data, index }) => {
       },
     };
 
-    console.log('/xanalia/getDetailNFT called')
+    // console.log('/xanalia/getDetailNFT called')
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(res => {
