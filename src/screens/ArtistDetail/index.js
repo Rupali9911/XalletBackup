@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { BASE_URL } from '../../common/constants';
 import {
     ActivityIndicator,
@@ -54,12 +54,14 @@ import {
     myNftLoadStart,
     myPageChange,
     myNftListReset,
+    myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 import {
     myCollectionList,
     myCollectionLoadStart,
     myCollectionPageChange,
     myCollectionListReset,
+    myCollectionLoadFail,
 } from '../../store/actions/myCollection';
 import { changeScreenName } from '../../store/actions/authAction';
 import { handleFollow } from '../../store/actions/nftTrendList';
@@ -85,23 +87,31 @@ const {
 } = SVGS;
 
 const Created = ({ route }) => {
+    const isFocusedHistory = useIsFocused();
 
     const { id } = route.params;
     const { MyNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     // const [modalData, setModalData] = useState();
+    const [isFirstRender, setIsFirstRender] = useState(true);
     // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        dispatch(myNftLoadStart());
-        dispatch(myNftListReset());
-        getNFTlist(1);
-        dispatch(myPageChange(1));
-        return () => {
-            dispatch(myNftLoadStart());
+        if (isFocusedHistory) {
+            if (MyNFTReducer?.myList?.length === 0) {
+                refreshFunc()
+            } else {
+                if (id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
+                    dispatch(myNftLoadFail())
+                } else {
+                    dispatch(myNftListReset());
+                    refreshFunc()
+                }
+            }
+            setIsFirstRender(false)
         }
-    }, [])
+    }, [isFocusedHistory])
 
     const getNFTlist = useCallback((page) => {
         dispatch(myNFTList(page, id));
@@ -109,8 +119,8 @@ const Created = ({ route }) => {
 
     const refreshFunc = () => {
         dispatch(myNftListReset());
-        getNFTlist(1);
         dispatch(myPageChange(1));
+        getNFTlist(1);
     }
 
     const renderFooter = () => {
@@ -146,63 +156,74 @@ const Created = ({ route }) => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                    MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
-                    <Loader /> :
-                    MyNFTReducer.myNftTotalCount !== 0 ?
-                        <FlatList
-                            data={MyNFTReducer.myList}
-                            horizontal={false}
-                            numColumns={2}
-                            initialNumToRender={14}
-                            onRefresh={() => {
-                                dispatch(myNftLoadStart())
-                                refreshFunc()
-                            }}
-                            refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
-                            renderItem={renderItem}
-                            onEndReached={() => {
-                                if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
-                                    let num = MyNFTReducer.myListPage + 1;
-                                    getNFTlist(num);
-                                    dispatch(myPageChange(num));
-                                }
-                            }}
-                            ListFooterComponent={renderFooter}
-                            onEndReachedThreshold={0.5}
-                            keyExtractor={(v, i) => "item_" + i}
-                        />
-                        :
-                        <View style={styles.sorryMessageCont} >
-                            <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
-                        </View>
+                isFirstRender ? isFirstRender : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
+                    <Loader />
+                ) : MyNFTReducer.myNftTotalCount !== 0 ?
+                    <FlatList
+                        data={MyNFTReducer.myList}
+                        horizontal={false}
+                        numColumns={2}
+                        initialNumToRender={14}
+                        onRefresh={() => {
+                            dispatch(myNftLoadStart())
+                            refreshFunc()
+                        }}
+                        refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
+                        renderItem={renderItem}
+                        onEndReached={() => {
+                            if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
+                                let num = MyNFTReducer.myListPage + 1;
+                                getNFTlist(num);
+                                dispatch(myPageChange(num));
+                            }
+                        }}
+                        ListFooterComponent={renderFooter}
+                        onEndReachedThreshold={0.5}
+                        keyExtractor={(v, i) => "item_" + i}
+                    />
+                    :
+                    <View style={styles.sorryMessageCont} >
+                        <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>
+                    </View>
             }
             {/*{*/}
-                {/*modalData &&*/}
-                {/*<DetailModal*/}
-                    {/*data={modalData}*/}
-                    {/*isModalVisible={isModalVisible}*/}
-                    {/*toggleModal={() => setModalVisible(false)}*/}
-                {/*/>*/}
+            {/*modalData &&*/}
+            {/*<DetailModal*/}
+            {/*data={modalData}*/}
+            {/*isModalVisible={isModalVisible}*/}
+            {/*toggleModal={() => setModalVisible(false)}*/}
+            {/*/>*/}
             {/*}*/}
         </View>
     )
 }
 
 const Collection = ({ route }) => {
+    const isFocusedHistory = useIsFocused();
 
     const { id } = route.params;
     const { MyCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const [isFirstRender, setIsFirstRender] = useState(true);
     // const [modalData, setModalData] = useState();
     // const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        dispatch(myCollectionLoadStart());
-        dispatch(myCollectionListReset());
-        getNFTlist(1);
-        dispatch(myCollectionPageChange(1));
-    }, [])
+        if (isFocusedHistory) {
+            if (MyCollectionReducer?.myCollection?.length === 0) {
+                refreshFunc()
+            } else {
+                if (id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
+                    dispatch(myCollectionLoadFail())
+                } else {
+                    dispatch(myCollectionListReset());
+                    refreshFunc()
+                }
+            }
+            setIsFirstRender(false)
+        }
+    }, [isFocusedHistory])
 
     const getNFTlist = useCallback((page) => {
         dispatch(myCollectionList(page, id));
@@ -210,8 +231,8 @@ const Collection = ({ route }) => {
 
     const refreshFunc = () => {
         dispatch(myCollectionListReset());
-        getNFTlist(1);
         dispatch(myCollectionPageChange(1));
+        getNFTlist(1);
     }
 
     const renderFooter = () => {
@@ -247,7 +268,7 @@ const Collection = ({ route }) => {
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
             {
-                MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
+                isFirstRender ? isFirstRender : MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
                     MyCollectionReducer.myCollectionTotalCount !== 0 ?
                         <FlatList
@@ -278,12 +299,12 @@ const Collection = ({ route }) => {
                         </View>
             }
             {/*{*/}
-                {/*modalData &&*/}
-                {/*<DetailModal*/}
-                    {/*data={modalData}*/}
-                    {/*isModalVisible={isModalVisible}*/}
-                    {/*toggleModal={() => setModalVisible(false)}*/}
-                {/*/>*/}
+            {/*modalData &&*/}
+            {/*<DetailModal*/}
+            {/*data={modalData}*/}
+            {/*isModalVisible={isModalVisible}*/}
+            {/*toggleModal={() => setModalVisible(false)}*/}
+            {/*/>*/}
             {/*}*/}
         </View>
     )
