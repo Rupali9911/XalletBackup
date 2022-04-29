@@ -176,13 +176,16 @@ const DetailScreen = ({ navigation, route }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
+
   // const [discount, setDiscount] = useState(false);
   // const [discountValue, setDiscountValue] = useState('');
   // const [sellDetails, setSellDetails] = useState([]);
   // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   // const [bidHistory, setBidHistory] = useState([]);
+  const [currencyPrices, setCurrencyPrices] = useState({});
   const [priceInDollar, setPriceInDollar] = useState('');
-  const [payableInDollar, setpayableInDollar] = useState('');
+  const [payableInCurrency, setPayableInCurrency] = useState('');
+  const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -287,6 +290,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
 
     let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto)
+    setCurrencyPrices(currencyPrices)
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = item.price * currencyPrices?.BNB;
@@ -780,6 +784,7 @@ const DetailScreen = ({ navigation, route }) => {
         // setSellDetailsFiltered([]);
       });
   };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // getRealtedNFT();
@@ -789,6 +794,7 @@ const DetailScreen = ({ navigation, route }) => {
       unsubscribe();
     };
   }, []);
+
   useEffect(() => {
     if (paymentObject) {
       setShowPaymentNow(true);
@@ -1332,12 +1338,14 @@ const DetailScreen = ({ navigation, route }) => {
       MarketContractAddress,
     );
 
+    let ownerAddress = data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto
+
     console.log("🚀 ~ file: line 1341 calculatePrice",
       priceNFTString,
-      baseCurrency.order,
-      tradeCurr.order,
+      baseCurrency,
+      tradeCurr,
       _tokenId,
-      wallet.address,
+      ownerAddress,
       collectionAddress
     )
 
@@ -1347,17 +1355,40 @@ const DetailScreen = ({ navigation, route }) => {
         baseCurrency.order,
         tradeCurr.order,
         _tokenId,
-        wallet.address,
+        ownerAddress,
         collectionAddress,
       )
       .call();
 
     if (res) {
-      console.log("🚀 ~ file: detail.js ~ line 1361 ~ calculatePrice ~ res", res)
-      setpayableInDollar(res / 1e18)
-      return res / 1e18;
+      let currPay = res / 1e18;
+      let finalPrice = '';
+      switch (tradeCurr.key) {
+        case "BNB":
+          finalPrice = currPay * currencyPrices?.BNB;
+          break;
+
+        case "ALIA":
+          finalPrice = currPay * currencyPrices?.ALIA;
+          break;
+
+        case "ETH":
+          finalPrice = currPay * currencyPrices?.ETH;
+          break;
+
+        case "MATIC":
+          finalPrice = currPay * currencyPrices?.MATIC;
+          break;
+
+        default:
+          finalPrice = currPay * 1;
+          break;
+      }
+      console.log("🚀 ~ line 1361 ~ calculatePrice ~ res", res, currPay, finalPrice)
+      setPayableInCurrency(currPay)
+      setPayableInDollar(finalPrice)
+      return currPay;
     } else {
-      setpayableInDollar('')
       return ''
     };
   };
@@ -2088,7 +2119,7 @@ const DetailScreen = ({ navigation, route }) => {
       <PaymentMethod
         visible={showPaymentMethod}
         payableIn={payableIn}
-        price={item.price ? item.price : 0}
+        price={payableIn ? payableInCurrency : item.price ? item.price : 0}
         priceStr={priceNFTString}
         priceInDollar={payableIn ? payableInDollar : priceInDollar}
         baseCurrency={baseCurrency}
@@ -2105,7 +2136,7 @@ const DetailScreen = ({ navigation, route }) => {
       />
       <PaymentNow
         visible={showPaymentNow}
-        price={item.price ? item.price : 0}
+        price={payableIn ? payableInCurrency : item.price ? item.price : 0}
         priceInDollar={payableIn ? payableInDollar : priceInDollar}
         chain={chainType}
         NftId={_tokenId}

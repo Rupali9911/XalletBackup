@@ -321,7 +321,7 @@ console.log(params, "confirm confirm confirm")
                   NftId,
                   chain || 'binance',
                   10,
-                  600000,
+                  1000000,
                   collectionAddress,
                   paymentObject?.currency?.order,
                 )
@@ -391,7 +391,7 @@ console.log(params, "confirm confirm confirm")
       NftId,
       chain || 'binance',
       10,
-      600000,
+      1000000,
       collectionAddress,
       addedFivePercent,
     )

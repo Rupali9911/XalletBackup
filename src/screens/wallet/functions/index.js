@@ -458,7 +458,7 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
         console.log("460 - txHash",txHash)
-        console.log("461 resp noncrypto function", new Date().getTime());
+        console.log("461 resp crypto function", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
         console.log(err);
