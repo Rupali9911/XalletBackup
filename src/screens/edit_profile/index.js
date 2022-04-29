@@ -44,19 +44,24 @@ function Profile(props) {
   const { navigation, handleSubmit } = props;
 
   const { UserReducer } = useSelector(state => state);
-  const [firstName, setFirstName] = useState(UserReducer.data.user?.firstName);
-  const [errfirstname, setErrFirstname] = useState(false);
-  const [lastName, setLastName] = useState(UserReducer.data.user?.lastName);
-  const [errLastname, setErrLastname] = useState(false);
-  const [address, setAddress] = useState(UserReducer.data.user?.address);
-  const [errAddress, setErrAddress] = useState(false);
-  const [phoneNumber, setPhoneNo] = useState(UserReducer.data.user?.phoneNumber);
-  const [errphoneNo, setErrPhoneNo] = useState(false);
+  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  // const [firstName, setFirstName] = useState(UserReducer.data.user?.firstName);
+  // const [errfirstname, setErrFirstname] = useState(false);
+  // const [lastName, setLastName] = useState(UserReducer.data.user?.lastName);
+  // const [errLastname, setErrLastname] = useState(false);
+  // const [address, setAddress] = useState(UserReducer.data.user?.address);
+  // const [errAddress, setErrAddress] = useState(false);
+  // const [phoneNumber, setPhoneNo] = useState(UserReducer.data.user?.phoneNumber);
+  // const [errphoneNo, setErrPhoneNo] = useState(false);
+  // const [facebook, setFacebook] = useState(UserReducer.data.user.links?.facebook);
+  // const [errFacebook, setErrFacebook] = useState(false);
+  // const [zoomLink, setZoomLink] = useState(UserReducer.data.user.links?.zoomLink);
+  // const [errZoomLink, setErrZoomLink] = useState(false);
+  // const [title, setTitle] = useState(UserReducer.data.user.title);
+  // const [errTitle, setErrTitle] = useState(false);
   const [photo, setPhoto] = useState({ uri: UserReducer.data.user.profile_image });
-  const [username, setUsername] = useState(UserReducer.data.user.username);
+  const [username, setUsername] = useState(userRole === 'crypto' ? UserReducer.data.user.title : UserReducer.data.user.username);
   const [errUsername, setErrUsername] = useState(false);
-  const [title, setTitle] = useState(UserReducer.data.user.title);
-  const [errTitle, setErrTitle] = useState(false);
   const [email, setEmail] = useState(UserReducer.data.user.email);
   const [errEmail, setErrEmail] = useState(false);
   const [website, setWebsite] = useState(UserReducer.data.user.links?.website);
@@ -69,14 +74,9 @@ function Profile(props) {
   const [errYoutube, setErrYoutube] = useState(false);
   const [instagram, setInstagram] = useState(UserReducer.data.user.links?.instagram);
   const [errInstagram, setErrInstagram] = useState(false);
-  const [facebook, setFacebook] = useState(UserReducer.data.user.links?.facebook);
-  const [errFacebook, setErrFacebook] = useState(false);
-  const [zoomLink, setZoomLink] = useState(UserReducer.data.user.links?.zoomLink);
-  const [errZoomLink, setErrZoomLink] = useState(false);
   const [about, setAbout] = useState(UserReducer.data.user.about);
   const [errAbout, setErrAbout] = useState(false);
   const actionSheetRef = useRef(null);
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
   const dispatch = useDispatch();
 
   const OPEN_CAMERA = 0;
@@ -94,7 +94,7 @@ function Profile(props) {
 
     if (index === OPEN_CAMERA) {
       const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-
+      console.log(isGranted, "isGranted")
       if (!isGranted) {
         confirmationAlert(
           translate("wallet.common.cameraPermissionHeader"),
@@ -105,6 +105,7 @@ function Profile(props) {
           () => null
         )
       } else {
+        console.log("isGranted else")
         // launchCamera(options, (response) => {
         //   if (response.assets) {
         //     setPhoto(response.assets[0]);
@@ -276,24 +277,36 @@ function Profile(props) {
     //   }
     // }
 
-    const req_body = {
-      username,
-      crypto: true,
-      email,
-      website,
-      discord,
-      twitter,
-      youtube,
-      instagram,
-      about
-      // firstName,
-      // lastName,
-      // address,
-      // phoneNumber,
-      // title,
-      // facebook,
-      // zoomLink,
-    }
+    const req_body = userRole === 'crypto' ?
+      {
+        title: username,
+        crypto: true,
+        email,
+        website,
+        discord,
+        twitter,
+        youtube,
+        instagram,
+        about
+      } :
+      {
+        username,
+        crypto: false,
+        email,
+        website,
+        discord,
+        twitter,
+        youtube,
+        instagram,
+        about
+        // firstName,
+        // lastName,
+        // address,
+        // phoneNumber,
+        // title,
+        // facebook,
+        // zoomLink,
+      }
 
     if (validateNum === 8) {
       if (photo?.uri !== UserReducer.data.user.profile_image) {
@@ -305,7 +318,7 @@ function Profile(props) {
               name: photo.fileName,
           };
           console.log('photo.image', photo.image)
-        formData.append('profile_image', photo.image);
+        formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type });
         dispatch(updateProfileImage(formData));
       }
       dispatch(updateProfile(req_body, () => navigation.goBack()));
@@ -405,7 +418,7 @@ function Profile(props) {
             label={translate("common.UserName")}
             placeholder={translate("common.UserName")}
             validate={[maxLength50]}
-            editable={userRole === 'crypto' ? false : true}
+            editable={true}
             error={errUsername}
           />
           {UserReducer.data.user?.role === 'non_crypto' &&

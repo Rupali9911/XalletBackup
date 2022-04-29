@@ -458,7 +458,7 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
         console.log("460 - txHash",txHash)
-        console.log("461 resp noncrypto function", new Date().getTime());
+        console.log("461 resp crypto function", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else if (err) {
         console.log(err);
@@ -753,25 +753,27 @@ export const getBalanceInDollar = () => {
 }
 
 export const createColection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
-  console.log("COLLECTION")
+console.log("🚀 ~ file: index.js ~ line 759 ~ createColection", publicKey, providerUrl)
   return new Promise(async (resolve, reject) => {
     const web3 = new Web3(
       new Web3.providers.HttpProvider(
         providerUrl
       )
     );
+    console.log("🚀 ~ file: index.js ~ line 766 ~ returnnewPromise ~ web3", web3)
 
     let txCount = "";
     try {
-      console.log('txCount')
+      console.log('txCount 770',txCount)
       txCount = await web3.eth.getTransactionCount(publicKey, "pending")
+      console.log('txCount 772',txCount)
     } catch (e) {
-      console.log(e, "reject tx count create collection")
+      console.log(e, "reject tx count create collection 773")
       return reject(e)
     }
 
     var customGasLimit = gasLmt;
-    console.log("🚀 ~ file: index.js ~ line 769 ~ returnnewPromise ~ customGasLimit", customGasLimit)
+    console.log("🚀 ~ file: index.js ~ line 769 ~ customGasLimit")
     customGasPrice = gasPr * 1000000000;
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey

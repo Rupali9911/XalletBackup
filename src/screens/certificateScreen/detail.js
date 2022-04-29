@@ -175,12 +175,16 @@ const DetailScreen = ({ navigation, route }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
+
   // const [discount, setDiscount] = useState(false);
   // const [discountValue, setDiscountValue] = useState('');
   // const [sellDetails, setSellDetails] = useState([]);
   // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   // const [bidHistory, setBidHistory] = useState([]);
+  const [currencyPrices, setCurrencyPrices] = useState({});
   const [priceInDollar, setPriceInDollar] = useState('');
+  const [payableInCurrency, setPayableInCurrency] = useState('');
+  const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -197,7 +201,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [videoURL, setVideoURI] = useState(video);
   const [playVideo, toggleVideoPlay] = useState(false);
   const [artistRole, setArtistRole] = useState("");
-
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
     translate('common.price'),
@@ -212,7 +215,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData, setTradingTableData] = useState([]);
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(item.like);
-  const [currenciesInDollar, setCurrenciesInDollar] = useState(null);
 
   const nft = item.tokenId || item.collectionAdd;
   let params = nft.toString().split('-');
@@ -264,7 +266,15 @@ const DetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getCurrencyPrice();
-  }, [wallet, baseCurrency])
+    getPayablePrice();
+  }, [wallet, baseCurrency, availableTokens])
+
+  const getPayablePrice = async () => {
+    if (availableTokens.length !== 0) {
+      let res = await calculatePrice(availableTokens[0]);
+      console.log("🚀 ~ line 275 ", res)
+    }
+  };
 
   useEffect(() => {
 
@@ -292,6 +302,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
 
     let currencyPrices = await priceInDollars(data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto)
+    setCurrencyPrices(currencyPrices)
     switch (baseCurrency?.key) {
       case "BNB":
         finalPrice = item.price * currencyPrices?.BNB;
@@ -316,93 +327,6 @@ const DetailScreen = ({ navigation, route }) => {
     console.log('=======finalPrice', currencyPrices, finalPrice);
     setPriceInDollar(finalPrice);
   };
-
-  const getPaybleInPrice = (prices, paybleInCurrency) => {
-    let finalPrice = '';
-    switch (paybleInCurrency) {
-      case "BNB":
-        finalPrice = item.price * prices?.BNB;
-        break;
-
-      case "ALIA":
-        finalPrice = item.price * prices?.ALIA;
-        break;
-
-      case "ETH":
-        finalPrice = item.price * prices?.ETH;
-        break;
-
-      case "MATIC":
-        finalPrice = item.price * prices?.MATIC;
-        break;
-
-      default:
-        finalPrice = item.price * 1;
-        break;
-    }
-    return finalPrice;
-  };
-
-  const currencyConversion = (prices, baseCurrency, paybleInCurrency) => {
-    // console.log("🚀 ~ file: detail.js ~ line 332 ~ currencyConversion", prices, baseCurrency, paybleInCurrency)
-    let finalPrice = '';
-
-    let temp = currConversion(baseCurrency) / currConversion(paybleInCurrency)
-    // console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
-    temp = temp * item?.price
-    // console.log("🚀 ~ file: detail.js ~ line 334 ~ currencyConversion ~ temp", temp)
-
-    switch (paybleInCurrency) {
-      case "BNB":
-        finalPrice = temp * prices?.BNB;
-        break;
-
-      case "ALIA":
-        finalPrice = temp * prices?.ALIA;
-        break;
-
-      case "ETH":
-        finalPrice = temp * prices?.ETH;
-        break;
-
-      case "MATIC":
-        finalPrice = temp * prices?.MATIC;
-        break;
-
-      default:
-        finalPrice = temp * 1;
-        break;
-    }
-    // return finalPrice;
-  };
-
-  const currConversion = (key) => {
-    let finalPrice = '';
-    switch (key) {
-      case "BNB":
-        finalPrice = currenciesInDollar?.BNB;
-        break;
-
-      case "ALIA":
-        finalPrice = currenciesInDollar?.ALIA;
-        break;
-
-      case "ETH":
-        finalPrice = currenciesInDollar?.ETH;
-        break;
-
-      case "MATIC":
-        finalPrice = currenciesInDollar?.MATIC;
-        break;
-
-      default:
-        finalPrice = 1;
-        break;
-    }
-    return finalPrice;
-  };
-
-  // currencyConversion(currenciesInDollar, baseCurrency?.key, payableIn);
 
   const priceInDollars = (pubKey) => {
     return new Promise((resolve, reject) => {
@@ -941,6 +865,7 @@ const DetailScreen = ({ navigation, route }) => {
         // setSellDetailsFiltered([]);
       });
   };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // getRealtedNFT();
@@ -950,6 +875,7 @@ const DetailScreen = ({ navigation, route }) => {
       unsubscribe();
     };
   }, []);
+
   useEffect(() => {
     if (paymentObject) {
       setShowPaymentNow(true);
@@ -1486,27 +1412,66 @@ const DetailScreen = ({ navigation, route }) => {
     //     setDiscountValue(res ? res / 10 : 0);
     //   });
   };
-
-  const calculatePrice = async (price1, tradeCurr, owner, _baseCurrency) => {
+  const calculatePrice = async (tradeCurr) => {
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
     );
 
+    let ownerAddress = data?.user?.role === 'crypto' ? wallet?.address : blockChainConfig[i]?.walletAddressForNonCrypto
+
+    console.log("🚀 ~ file: line 1341 calculatePrice",
+      priceNFTString,
+      baseCurrency,
+      tradeCurr,
+      _tokenId,
+      ownerAddress,
+      collectionAddress
+    )
+
     let res = await MarketPlaceContract.methods
       .calculatePrice(
-        price1,
-        _baseCurrency.order,
-        tradeCurr,
+        priceNFTString,
+        baseCurrency.order,
+        tradeCurr.order,
         _tokenId,
-        owner,
+        ownerAddress,
         collectionAddress,
       )
       .call();
-    // console.log('calculate price response', res, price);
-    if (res) return res;
-    else return '';
+
+    if (res) {
+      let currPay = res / 1e18;
+      let finalPrice = '';
+      switch (tradeCurr.key) {
+        case "BNB":
+          finalPrice = currPay * currencyPrices?.BNB;
+          break;
+
+        case "ALIA":
+          finalPrice = currPay * currencyPrices?.ALIA;
+          break;
+
+        case "ETH":
+          finalPrice = currPay * currencyPrices?.ETH;
+          break;
+
+        case "MATIC":
+          finalPrice = currPay * currencyPrices?.MATIC;
+          break;
+
+        default:
+          finalPrice = currPay * 1;
+          break;
+      }
+      console.log("🚀 ~ line 1361 ~ calculatePrice ~ res", res, currPay, finalPrice)
+      setPayableInCurrency(currPay)
+      setPayableInDollar(finalPrice)
+      return currPay;
+    } else {
+      return ''
+    };
   };
 
   const bidingTimeEnded = () => {
@@ -2119,7 +2084,7 @@ const DetailScreen = ({ navigation, route }) => {
                 containerChildStyles={{
                   height: tradingTableData.length == 0 ? hp(19) :
                     tradingTableData.length < 5 ?
-                      hp(16) + (hp(6) * tradingTableData.length) : hp(47.6)
+                      hp(16) + (hp(4) * tradingTableData.length) : hp(35.7)
                 }}
                 icon={trading}>
                 <Filters
@@ -2137,39 +2102,47 @@ const DetailScreen = ({ navigation, route }) => {
                       data={tradingTableHead}
                       style={styles.head}
                       textStyle={styles.text}
-                      widthArr={[90, 100, 140, 130, 150]}
+                      widthArr={[145, 130, 180, 180, 160]}
                     />
 
                     {tradingTableData.length > 0 ?
                       tradingTableData.map((rowData, rowIndex) => {
                         return (
-                          <TableWrapper key={rowIndex} style={{ flexDirection: "row" }}>
+                          <TableWrapper key={rowIndex} style={{ flexDirection: "row", }}>
                             {
                               rowData.map((cellData, cellIndex) => {
                                 let wid;
                                 if (cellIndex === 0) {
-                                  wid = 90
+                                  wid = 145
                                 }
                                 if (cellIndex === 1) {
-                                  wid = 100
-                                }
-                                if (cellIndex === 2) {
-                                  wid = 140
-                                }
-                                if (cellIndex === 3) {
                                   wid = 130
                                 }
+                                if (cellIndex === 2) {
+                                  wid = 180
+                                }
+                                if (cellIndex === 3) {
+                                  wid = 180
+                                }
                                 if (cellIndex === 4) {
-                                  wid = 150
+                                  wid = 160
                                 }
                                 return <Cell
                                   key={cellIndex}
                                   data={cellIndex == 2 || cellIndex == 3 ?
-                                    <TouchableOpacity onPress={() => cellData && cellData !== "Null Address" ? navigation.push('ArtistDetail', { id: cellData }) : null}>
-                                      <Text style={{ ...styles.text, color: "#00a8ff" }}>{(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}</Text>
+                                    <TouchableOpacity
+                                      onPress={() =>
+                                        cellData && cellData !== "Null Address" ?
+                                          navigation.push('ArtistDetail', { id: cellData }) : null
+                                      }>
+                                      <Text
+                                        numberOfLines={1}
+                                        style={[styles.text, { color: "#00a8ff" }]}>
+                                        {(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}
+                                      </Text>
                                     </TouchableOpacity>
                                     : cellData}
-                                  // cellIndex === 3 ? element(cellData, index) : 
+                                  // cellIndex === 3 ? element(cellData, index) :
                                   textStyle={styles.text}
                                   width={wid}
                                 />
@@ -2214,9 +2187,9 @@ const DetailScreen = ({ navigation, route }) => {
       <PaymentMethod
         visible={showPaymentMethod}
         payableIn={payableIn}
-        price={item.price ? item.price : 0}
+        price={payableIn ? payableInCurrency : item.price ? item.price : 0}
         priceStr={priceNFTString}
-        priceInDollar={payableIn ? getPaybleInPrice(currenciesInDollar, payableIn) : priceInDollar}
+        priceInDollar={payableIn ? payableInDollar : priceInDollar}
         baseCurrency={baseCurrency}
         allowedTokens={availableTokens}
         ownerAddress={
@@ -2231,8 +2204,8 @@ const DetailScreen = ({ navigation, route }) => {
       />
       <PaymentNow
         visible={showPaymentNow}
-        price={item.price ? item.price : 0}
-        priceInDollar={priceInDollar}
+        price={payableIn ? payableInCurrency : item.price ? item.price : 0}
+        priceInDollar={payableIn ? payableInDollar : priceInDollar}
         chain={chainType}
         NftId={_tokenId}
         IdWithChain={nft}
@@ -2263,9 +2236,10 @@ const DetailScreen = ({ navigation, route }) => {
         }}
         data={{ data: availableTokens }}
         title={translate('common.allowedcurrency')}
-        itemPress={v => {
-          setPayableIn(v.name);
-          setAllowedTokenModal(false);
+        itemPress={async (tradeCurr) => {
+          await calculatePrice(tradeCurr)
+          setPayableIn(tradeCurr.name)
+          setAllowedTokenModal(false)
         }}
         renderItemName={'name'}
       />
