@@ -60,48 +60,92 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const nftDataCollectionList = (page, collectionAddress, type, collectionId) => {
+export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore) => {
   return (dispatch, getState) => {
 
-    const { data, wallet } = getState().UserReducer;
-    const owner = data?.user?._id || wallet?.address;
+    if (isStore) {
+      const data = {
+        filterType: type,
+        limit: 10,
+        packName: 'Monkey King',
+        page,
+      };
 
-    const _collectionAddress = collectionId || collectionAddress;
+      const fetch_data_body = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      };
 
-    console.log('======nft-data-collection', type, collectionAddress, owner);
-
-    fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${_collectionAddress}&page=${page}&limit=10&owner=${owner}`)
-      .then(response => response.json())
-      .then(json => {
-        const nftData = [];
-
-        // if (!json.count) {
-        //   json.data = [];
-        // } else {
-        json.data.map(item => {
-          const parsedNFT = parseNftObject(item);
-          const data = {
-            ...parsedNFT,
-            totalSupply: item?.metaData?.totalSupply,
-            properties: {
-              type: item?.metaData?.properties?.type,
-            },
-            externalLink: item?.metaData?.externalLink,
-            // thumbnft: item?.metaData?.thumbnft,
-            thumbnft: item?.thumbnailUrl,
-            tokenURI: item?.catInfo?.tokenUri,
-            thumbnailUrl: item?.metaData.thumbnft,
-            ...item,
-          };
-          nftData.push(data);
+      fetch(`${BASE_URL}/user/fetch-pack-data`, fetch_data_body)
+        .then(response => response.json())
+        .then(json => {
+          const selectedPack = json.data
+          const nftData = [];
+          for (let i = 0; i < selectedPack.length; i++) {
+            console.log('======selectedPack', selectedPack[i].nftDetail?.metaData?.image);
+            nftData.push({
+              name: `MKC${i < 99 ? `0${i + 1}` : i + 1}`,
+              description: `悟空101头像MKC${i < 99 ? `0${i + 1}` : i + 1}`,
+              image: selectedPack[i].nftDetail?.metaData?.image,
+              properties: {
+                type: selectedPack[i].nftDetail?.metaData?.properties?.type,
+              },
+              totalSupply: selectedPack[i].nftDetail?.metaData?.totalSupply,
+              externalLink: selectedPack[i].nftDetail?.metaData?.externalLink,
+              thumbnft: selectedPack[i].nftDetail?.metaData?.thumbnft,
+              tokenURI: "QmQVkzVkBGxgodX6jefYN7Tir9xNr1U4gpGVgtMoTuJ7Xv",
+              nftChain: "binance",
+            });
+          }
+          json.data = nftData;
+          dispatch(nftDataCollectionLoadSuccess(json));
+        })
+        .catch(err => {
+          dispatch(nftDataCollectionLoadFail());
         });
-        // }
-        json.data = nftData;
-        dispatch(nftDataCollectionLoadSuccess(json));
-
-      }).catch(err => {
-        dispatch(nftDataCollectionLoadFail());
-      })
+    } else {
+      const { data, wallet } = getState().UserReducer;
+      const owner = data?.user?._id || wallet?.address;
+  
+      const _collectionAddress = collectionId || collectionAddress;
+    
+      fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${_collectionAddress}&page=${page}&limit=10&owner=${owner}`)
+        .then(response => response.json())
+        .then(json => {
+          const nftData = [];
+  
+          // if (!json.count) {
+          //   json.data = [];
+          // } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              totalSupply: item?.metaData?.totalSupply,
+              properties: {
+                type: item?.metaData?.properties?.type,
+              },
+              externalLink: item?.metaData?.externalLink,
+              // thumbnft: item?.metaData?.thumbnft,
+              thumbnft: item?.thumbnailUrl,
+              tokenURI: item?.catInfo?.tokenUri,
+              thumbnailUrl: item?.metaData.thumbnft,
+              ...item,
+            };
+            nftData.push(data);
+          });
+          // }
+          json.data = nftData;
+          dispatch(nftDataCollectionLoadSuccess(json));
+  
+        }).catch(err => {
+          dispatch(nftDataCollectionLoadFail());
+        })
+    }
   }
 }
 

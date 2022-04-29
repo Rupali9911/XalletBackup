@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import {C_Image} from '../../components';
-import {getBoxes, getBoxStatsDetails, getHotCollectionDetail} from '../../store/actions/hotCollectionAction';
+import {getBoxes, getBoxStatsDetails, getHotCollectionDetail, getStoreCollectioDetail} from '../../store/actions/hotCollectionAction';
 import ImageSrc from '../../constants/Images';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -37,7 +37,6 @@ import { SvgUri } from 'react-native-svg';
 import Video from 'react-native-fast-video';
 import { currencyInDollar } from '../wallet/functions';
 
-const Tab = createMaterialTopTabNavigator();
 const {TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon} = SVGS;
 
 let MarketPlaceAbi = "";
@@ -67,12 +66,13 @@ const imageToChainKey = {
 
 function CollectionDetail(props) {
   const {route} = props;
-  const {collectionId, nftId, isBlind, isHotCollection} = route.params;
+  const {collectionId, nftId, isBlind, isHotCollection, isStore} = route.params;
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
   const [descTab, setDescTab] = useState(true);
   const [collectionType, setCollectionType] = useState(0);
   const [collectionAddress, setCollectionAddress] = useState(null);
+  const [storeCollection, setStoreCollection] = useState({});
 
   const [blindboxList, setBlindboxList] = useState([]);
   const [statsDetails, setStatsDetails] = useState([]);
@@ -172,11 +172,17 @@ function CollectionDetail(props) {
 
   const getCollection = async () => {
     try {
-      const collectionArray = await getHotCollectionDetail(
-        collectionId,
-        isBlind,
-      );
-      if (isBlind) {
+      if (isStore) {
+        const collectionArray = await getStoreCollectioDetail();
+        const filterId = '614faf6668449e8d13a1f1b0';
+        const storeCollectionDetail = _.filter(collectionArray.data.data, item => item._id === filterId);
+        setStoreCollection(storeCollectionDetail[0] || {});
+        setLoading(false);
+      } else if (isBlind) {
+        const collectionArray = await getHotCollectionDetail(
+          collectionId,
+          isBlind,
+        );
         setCollectionAddress(collectionArray?.data.data._id);
         setCollection(collectionArray?.data.data);
         if (isBlind && nftId) {
@@ -185,6 +191,10 @@ function CollectionDetail(props) {
           setLoading(false);
         }
       } else {
+        const collectionArray = await getHotCollectionDetail(
+          collectionId,
+          isBlind,
+        );
         setCollectionAddress(collectionArray?.data.data[0].collectionAddress);
         setCollection(collectionArray?.data.data[0]);
         setLoading(false);
@@ -398,7 +408,9 @@ function CollectionDetail(props) {
 
   const renderBanner = () => {
     let bannerUrl = '';
-    if (isBlind && nftId) {
+    if (isStore) {
+      bannerUrl = 'https://ik.imagekit.io/xanalia/nftData/1632151483313.jpg';
+    } else if (isBlind && nftId) {
       bannerUrl = selectedBlindBox
         ? selectedBlindBox.seriesURIMetaInfo?.banner_image
         : "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg";
@@ -416,6 +428,17 @@ function CollectionDetail(props) {
   }
 
   const renderSubBanner = () => {
+    if (String(isStore).includes('MONKEY_KING')) {
+      return (
+        <View style={{ paddingHorizontal: SIZE(15), marginTop: SIZE(5) }}>
+          <C_Image
+            uri={storeCollection.image}
+            type={'jpg'}
+            imageStyle={{ width: '100%', height: SIZE(300) }}
+          />
+        </View>
+      )
+    }
     let bannerUrl = '';
     if (isBlind && nftId) {
       bannerUrl = selectedBlindBox
@@ -466,6 +489,7 @@ function CollectionDetail(props) {
   };
 
   const blindBoxInfo = () => {
+    if (isStore) return null;
     if (isBlind && nftId) {
       return (
         <>
@@ -503,7 +527,7 @@ function CollectionDetail(props) {
   }
 
   const renderDescription = () => {
-    if (isBlind && nftId) {
+    if (isBlind && nftId && !isStore) {
       return (
         <>
           <View style={styles.descriptionTabWrapper}>
@@ -527,6 +551,40 @@ function CollectionDetail(props) {
           </View>
         </>
       )
+    }
+
+    if (isStore) {
+      return (
+        <>
+          <View style={[styles.description, { marginTop: SIZE(-15)}]}>
+            <ScrollView>
+              <Text style={styles.descriptionText}>
+                {storeCollection[`${selectedLanguageItem.language_name}_description`]}
+              </Text>
+            </ScrollView>
+          </View>
+          <View style={{ padding: SIZE(15), paddingTop: 0 }}>
+            <View style={styles.sellButton}>
+              <Text style={{ color: 'white'}}>{'Sold Out'}</Text>
+            </View>
+            <Text style={styles.storeCollectionName}>
+              {storeCollection[`${selectedLanguageItem.language_name}_artistName`]}
+            </Text>
+            <Text style={styles.descriptionText}>
+              {storeCollection[`${selectedLanguageItem.language_name}_artistDescription`]}
+            </Text>
+            <Text style={[styles.descriptionText, { marginVertical: SIZE(15) }]}>
+              {translate('common.creator')}
+            </Text>
+            <Text style={styles.storeCollectionName}>
+              {storeCollection[`${selectedLanguageItem.language_name}_creatorName`]}
+            </Text>
+            <Text style={styles.descriptionText}>
+              {storeCollection[`${selectedLanguageItem.language_name}_creatorDescription`]}
+            </Text>
+          </View>
+        </>
+      );
     }
 
     return (
@@ -621,6 +679,7 @@ function CollectionDetail(props) {
   });
 
   const renderDetailList = () => {
+    if (isStore) return null;
     if (!isBlind || isBlind && nftId) {
       const items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length;
       const owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : '--';
@@ -677,6 +736,7 @@ function CollectionDetail(props) {
   }
 
   const renderChainList = () => {
+    if (isStore) return null;
     if (!isBlind || isBlind && nftId) {
       return (
         <View style={styles.chainListWrap}>
@@ -704,6 +764,29 @@ function CollectionDetail(props) {
         </View>
       );
     }
+  }
+
+  const renderTitle = () => {
+    if(isStore) {
+      return (
+        <View style={{ padding: SIZE(15) }}>
+          <Text style={[styles.storeCollectionName, { color: '#636363' }]}>
+            {storeCollection[`${selectedLanguageItem.language_name}_title`]}
+          </Text>
+          <Text style={[styles.storeCollectionName, { color: 'red' }]}>
+            {'Blindbox'}
+          </Text>
+          <Text style={styles.storeCollectionName}>
+            {`$${storeCollection.usdPrice}`}
+          </Text>
+        </View>
+      )
+    }
+    return (
+      <Text style={styles.collectionName}>
+        {collection?.collectionName}
+      </Text>
+    );
   }
 
   return (
@@ -744,12 +827,8 @@ function CollectionDetail(props) {
         {renderSocialLinks()}
         {renderSubBanner()}
 
-        <View>
-          <Text style={styles.collectionName}>
-            {collection?.collectionName}
-          </Text>
-          {renderDetailList()}
-        </View>
+        {renderTitle()}
+        {renderDetailList()}
 
         {renderChainList()}
         {blindBoxInfo()}
@@ -842,7 +921,7 @@ function CollectionDetail(props) {
               </View>
             </ScrollView>
           ) : null}
-          {collectionAddress && (
+          {collectionAddress || isStore && (
             <Collections
               collectionAddress={isBlind && nftId ? nftId : collectionAddress}
               collectionType={collectionType}
@@ -851,6 +930,7 @@ function CollectionDetail(props) {
               isBlind={isBlind}
               isSeries={isBlind && nftId}
               nftChain={nftChain}
+              isStore={isStore}
               userCollection={collection?.userCollection}
             />
           )}
