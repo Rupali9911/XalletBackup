@@ -375,7 +375,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
   // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
     const headers = {
-        "Content-Type": "application/json",
+        "Content-Type": 'multipart/form-data',
         Authorization: `Bearer ${data.token}`,
     };
   await axios

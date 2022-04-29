@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView, Keyboard, Platform } from 'react-native';
+import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
@@ -8,7 +8,7 @@ import { Field, reduxForm } from 'redux-form';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CenterWrap, SpaceView, BorderView } from 'src/styles/common.styles';
+import {CenterWrap, SpaceView, BorderView, RowWrap} from 'src/styles/common.styles';
 import { SIZE } from 'src/constants';
 import { C_Image, LimitableInput } from 'src/components';
 import { Avatar, ChangeAvatar, DoneText } from './styled';
@@ -35,6 +35,10 @@ import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { openSettings } from 'react-native-permissions';
 import { confirmationAlert } from '../../common/function';
+import {responsiveFontSize as RF} from "../../common/responsiveFunction";
+import fonts from "../../res/fonts";
+import colors from "../../res/colors";
+import {View} from "native-base";
 
 function Profile(props) {
   const { navigation, handleSubmit } = props;
@@ -109,8 +113,7 @@ function Profile(props) {
         ImagePicker.openCamera({
           height: 512,
           width: 512,
-          cropping: true,
-            includeBase64: true
+          cropping: true
         }).then(image => {
           console.log('Response from camera',image )
           if (image.height <= 512 && image.width <= 512) {
@@ -121,7 +124,7 @@ function Profile(props) {
               uri: uri,
               type: image.mime,
               fileName: filename,
-                base64: image.data
+                image: image
             }
             setPhoto(temp)
           }
@@ -137,8 +140,7 @@ function Profile(props) {
         mediaType: "photo",
         height: 512,
         width: 512,
-        cropping: true,
-          includeBase64: true
+        cropping: true
       }).then(image => {
           console.log('Response from camera',image )
         if (image.height <= 512 && image.width <= 512) {
@@ -149,7 +151,7 @@ function Profile(props) {
             uri: uri,
             type: image.mime,
             fileName: filename,
-              base64: image.data
+              image: image
           }
           setPhoto(temp)
         }
@@ -298,12 +300,12 @@ function Profile(props) {
         console.log('photo', photo)
         let formData = new FormData();
           let photoObj = {
-              uri: photo.path,
-              type: 'image/jpeg',
-              filename: 'photo.jpg',
+              uri: photo.uri || photo.path,
+              type:  photo.type,
+              name: photo.fileName,
           };
-          console.log('photoObj', photoObj)
-        formData.append('profile_image', photoObj);
+          console.log('photo.image', photo.image)
+        formData.append('profile_image', photo.image);
         dispatch(updateProfileImage(formData));
       }
       dispatch(updateProfile(req_body, () => navigation.goBack()));
@@ -467,14 +469,16 @@ function Profile(props) {
               editable={false}
             />}
           <SpaceView mTop={SIZE(12)} />
-          <LimitableInput
+            <LimitableInput
             multiLine
             value={about}
-            onChange={(text) => { setAbout(text); setErrAbout(false); }}
+            onChange={(text) => {about.length <= 200 ? setAbout(text.slice(0, 200)) : null; setErrAbout(false); }}
             label={translate("wallet.common.aboutMe")}
             placeholder={translate("wallet.common.aboutMe")}
             validate={[maxLength200]}
             error={errAbout}
+            maxLength={200}
+            about={about}
           />
         </KeyboardAwareScrollView>
 

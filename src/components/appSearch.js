@@ -113,7 +113,7 @@ export default function AppSearch() {
   return (
     <View style={styles.container}>
       <Searchbar
-        style={styles.searchbar}
+        style={styles.searchBar}
         inputStyle={styles.inputStyle}
         selectionColor={Colors.BLACK1}
         placeholder={translate('wallet.common.searchHint')}
@@ -141,7 +141,7 @@ export default function AppSearch() {
                 } else if (searchData[index - 1].type !== item.type) {
                   withTag = true;
                 }
-                return ( 
+                return (
                   <ResultItem
                     item={item}
                     index={index}
@@ -223,20 +223,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  searchbar: {
+  searchBar: {
     borderWidth: 1,
     borderColor: Colors.borderLightColor3,
     borderRadius: hp('3%'),
-    marginHorizontal: wp('2'),
-    marginTop: wp('2%'),
-    width: wp('88%'),
-    height: hp('4.3%'),
+    // marginHorizontal: wp('2'),
+    // marginTop: wp('2%'),
+    width: wp('90%'),
+    height: hp('5%'),
     paddingVertical: 0,
   },
   inputStyle: {
     fontSize: RF(1.8),
     fontFamily: Fonts.PINGfANG,
     color: Colors.BLACK1,
+      height: '100%',
+      margin: 0,
+      padding:0
   },
   listContainer: {
     flex: 1,

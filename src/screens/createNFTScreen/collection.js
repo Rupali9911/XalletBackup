@@ -580,6 +580,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                 placeholder: translate("wallet.common.typeSomething"),
                 multiline: true,
                 value: collectionDes,
+                  maxLength: 150,
                 onChangeText: e => collectionDes.length <= 150 ? setCollectionDes(e.slice(0, 150)) : null
               }}
               contStyle={{ height: hp('20%'), backgroundColor: disableAll ? colors.GREY10 : colors.white }}

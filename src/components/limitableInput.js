@@ -16,6 +16,9 @@ import {
 import {
     NormalText,
 } from 'src/styles/text.styles';
+import {responsiveFontSize as RF} from "../common/responsiveFunction";
+import fonts from "../res/fonts";
+import colors from "../res/colors";
 
 const EditableInput = styled.TextInput`
     width: ${SIZE(239)}px;
@@ -45,18 +48,22 @@ const WhiteText = styled.Text`
 
 const MultiLineEditableInput = styled.TextInput`
     flex: 1;
-    maxHeight: ${SIZE(100)}px;
-    border-bottom-width: 0.8px;
+    border-width: 0.8px;
     border-color: ${COLORS.WHITE3};
-    padding-bottom: ${SIZE(12)}px;
+    padding: ${SIZE(12)}px;
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
-    padding-right: ${SIZE(19)}px;
+    color: ${COLORS.BLACK1};
+`;
+
+const TextLimit = styled.Text`
+    font-size: ${FONT(14)}px;
+    font-family: ${FONTS.ARIAL};
     color: ${COLORS.BLACK1};
 `;
 
 const LimitableInput = (props) => {
-    const { multiLine, label, value, onChange, error, ...inputProps } = props;
+    const { multiLine, label, value, onChange,about, error, ...inputProps } = props;
     return (
         <View>
             {!multiLine ? (
@@ -80,6 +87,7 @@ const LimitableInput = (props) => {
                         <NormalText>
                             {label}
                         </NormalText>
+                        <TextLimit> ({about.length} / 200)</TextLimit>
                     </RowWrap>
                     <SpaceView mTop={SIZE(12)} />
                     <RowWrap>
