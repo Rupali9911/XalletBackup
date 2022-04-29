@@ -1,17 +1,17 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {
   ActivityIndicator,
   FlatList,
   StatusBar,
   Text,
   View,
-  Dimensions
+  Dimensions,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '../../components';
-import { colors } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {Loader} from '../../components';
+import {colors} from '../../res';
+import {changeScreenName} from '../../store/actions/authAction';
 import {
   nftBlindDataCollectionList,
   nftDataCollectionList,
@@ -23,25 +23,48 @@ import {
   nftBlindSeriesCollectionReset,
   nftBlindSeriesCollectionPageChange,
 } from '../../store/actions/nftDataCollectionAction';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 import CollectionItem from '../../components/CollectionItem';
 
 const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
-const BLIND_SERIES_COLLECTION_TYPE = ['minted2', 'onsale', 'notonsale', 'owned'];
-const { height } = Dimensions.get('window');
+const BLIND_SERIES_COLLECTION_TYPE = [
+  'minted2',
+  'onsale',
+  'notonsale',
+  'owned',
+];
+const {height} = Dimensions.get('window');
 
-const Collections = (props) => {
-  const { nftChain, collectionAddress, collectionType, isBlind, isHotCollection, isSeries, collectionId, userCollection } = props;
-  const { NftDataCollectionReducer } = useSelector(state => state);
+const Collections = props => {
+  const {
+    nftChain,
+    collectionAddress,
+    collectionType,
+    isBlind,
+    isHotCollection,
+    isSeries,
+    collectionId,
+    userCollection,
+    isStore,
+  } = props;
+  const {NftDataCollectionReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const isLoading = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading : NftDataCollectionReducer.nftDataCollectionLoading;
-  const collectionList = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionList : NftDataCollectionReducer.nftDataCollectionList;
-  const page = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionPage : NftDataCollectionReducer.nftDataCollectionPage;
-  const totalCount = isSeries ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount : NftDataCollectionReducer.nftDataCollectionTotalCount;
+  const isLoading = isSeries
+    ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
+    : NftDataCollectionReducer.nftDataCollectionLoading;
+  const collectionList = isSeries
+    ? NftDataCollectionReducer.nftBlindSeriesCollectionList
+    : NftDataCollectionReducer.nftDataCollectionList;
+  const page = isSeries
+    ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
+    : NftDataCollectionReducer.nftDataCollectionPage;
+  const totalCount = isSeries
+    ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
+    : NftDataCollectionReducer.nftDataCollectionTotalCount;
 
   useEffect(() => {
     if (isSeries) {
@@ -57,16 +80,36 @@ const Collections = (props) => {
     }
   }, [collectionType, userCollection]);
 
-  const getNFTlist = useCallback((page) => {
-    if (!isBlind) {
-      dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], userCollection && userCollection.includes('0x') ? collectionId : null));
-    } else if (isSeries) {
-      dispatch(nftBlindSeriesCollectionList(page, collectionAddress, BLIND_SERIES_COLLECTION_TYPE[collectionType]));
-    } else {
-      dispatch(nftBlindDataCollectionList(collectionAddress));
-    }
-    // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
-  }, [collectionType, userCollection]);
+  const getNFTlist = useCallback(
+    page => {
+      if (isStore) {
+        dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true));
+      } else if (!isBlind) {
+        dispatch(
+          nftDataCollectionList(
+            page,
+            collectionAddress,
+            COLLECTION_TYPES[collectionType],
+            userCollection && userCollection.includes('0x')
+              ? collectionId
+              : null,
+          ),
+        );
+      } else if (isSeries) {
+        dispatch(
+          nftBlindSeriesCollectionList(
+            page,
+            collectionAddress,
+            BLIND_SERIES_COLLECTION_TYPE[collectionType],
+          ),
+        );
+      } else {
+        dispatch(nftBlindDataCollectionList(collectionAddress));
+      }
+      // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
+    },
+    [collectionType, userCollection],
+  );
 
   const refreshFunc = () => {
     if (isSeries) {
@@ -85,8 +128,36 @@ const Collections = (props) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({item, index}) => {
     let findIndex = collectionList.findIndex(x => x.id === item.id);
+    if (isStore) {
+      <NFTItem
+        item={item}
+        index={index}
+        image={item.image}
+        nftChain={nftChain}
+        isStore={isStore}
+        onPress={() => {
+          if (!isSeries) {
+            dispatch(changeScreenName('dataCollection'));
+            navigation.push('DetailItem', {
+              index: findIndex,
+              collectionType: COLLECTION_TYPES[collectionType],
+              collectionAddress,
+            });
+          } else {
+            dispatch(changeScreenName('blindSeriesCollection'));
+            navigation.push('DetailItem', {
+              index: findIndex,
+              collectionType: BLIND_SERIES_COLLECTION_TYPE[collectionType],
+              collectionAddress,
+            });
+          }
+        }}
+        isCollection
+        isBlind
+      />
+    }
     if (isHotCollection) {
       return (
         <NFTItem
@@ -114,30 +185,40 @@ const Collections = (props) => {
           isCollection
           isBlind
         />
-        )
-    }
-    return (
-      <CollectionItem
-        bannerImage={item.bannerImage}
-        chainType={item.chainType || 'polygon'}
-        items={item.items}
-        iconImage={item.iconImage}
-        collectionName={item.collectionName}
-        creator={item.creator}
-        creatorInfo={item.creatorInfo}
-        blind={item.blind}
-        isCollection={!isHotCollection}
-        onPress={() => {
-          if (isBlind) {
-            navigation.push('CollectionDetail', { isBlind: true, collectionId: collectionAddress, nftId: item._id, isHotCollection: !item.blind });
-          } else {
-            if (item.collectionId) {
-              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+      );
+    } else {
+      return (
+        <CollectionItem
+          bannerImage={item.bannerImage}
+          chainType={item.chainType || 'polygon'}
+          items={item.items}
+          iconImage={item.iconImage}
+          collectionName={item.collectionName}
+          creator={item.creator}
+          creatorInfo={item.creatorInfo}
+          blind={item.blind}
+          isCollection={!isHotCollection}
+          onPress={() => {
+            if (isBlind) {
+              navigation.push('CollectionDetail', {
+                isBlind: true,
+                collectionId: collectionAddress,
+                nftId: item._id,
+                isHotCollection: !item.blind,
+              });
+            } else {
+              if (item.collectionId) {
+                navigation.push('CollectionDetail', {
+                  isBlind: false,
+                  collectionId: item._id,
+                  isHotCollection: true,
+                });
+              }
             }
-          }
-        }}
-      />
-    );
+          }}
+        />
+      );
+    }
   };
 
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
@@ -146,7 +227,7 @@ const Collections = (props) => {
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       {page === 1 && isLoading ? (
-        <View style={{ marginTop: height / 8 }}>
+        <View style={{marginTop: height / 8}}>
           <Loader />
         </View>
       ) : collectionList.length !== 0 ? (
@@ -177,7 +258,7 @@ const Collections = (props) => {
           ListFooterComponent={renderFooter}
         />
       ) : (
-        <View style={{ marginTop: height / 8 }}>
+        <View style={{marginTop: height / 8}}>
           <View style={styles.sorryMessageCont}>
             <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
           </View>

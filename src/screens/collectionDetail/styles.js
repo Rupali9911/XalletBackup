@@ -1,11 +1,12 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
+import {SIZE, FONTS} from 'src/constants';
+import {colors, fonts} from '../../res';
 import {
-  SIZE,
-  FONTS
-} from 'src/constants';
-import { colors, fonts } from '../../res';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF } from '../../common/responsiveFunction';
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+  responsiveFontSize as RF,
+} from '../../common/responsiveFunction';
 
 const styles = StyleSheet.create({
   backIcon: {
@@ -49,6 +50,13 @@ const styles = StyleSheet.create({
     marginTop: SIZE(44),
     fontFamily: fonts.ARIAL,
     marginBottom: SIZE(5),
+  },
+  storeCollectionName: {
+    fontSize: SIZE(22),
+    fontWeight: '500',
+    textAlign: 'left',
+    fontFamily: fonts.ARIAL,
+    marginBottom: SIZE(15),
   },
   collectionTable: {
     alignSelf: 'center',
@@ -124,8 +132,8 @@ const styles = StyleSheet.create({
   },
   sorryMessageCont: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sorryMessage: {
     fontSize: 15,
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
   },
   trendCont: {
     backgroundColor: colors.white,
-    flex: 1
+    flex: 1,
   },
   tabBarItem: {
     width: SIZE(84),
@@ -148,7 +156,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.SegoeUIRegular,
     textTransform: 'capitalize',
   },
-  socialLinksWrap : {
+  socialLinksWrap: {
     alignItems: 'center',
     marginRight: 10,
     marginTop: 10,
@@ -183,7 +191,7 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   chainListButtonText: {
     fontSize: SIZE(12),
@@ -200,6 +208,15 @@ const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold',
   },
-})
+  sellButton: {
+    width: '100%',
+    height: SIZE(38),
+    backgroundColor: 'black',
+    borderRadius: SIZE(2),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SIZE(15),
+  },
+});
 
 export default styles;

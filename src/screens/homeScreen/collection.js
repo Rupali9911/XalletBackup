@@ -61,7 +61,16 @@ const Collection = () => {
         creatorInfo={item.creatorInfo}
         blind={item.blind}
         onPress={() => {
-          if (item.blind) {
+          console.log('========', item);
+          if (item.redirect) {
+            navigation.push('CollectionDetail',
+            {
+              isBlind: false,
+              collectionId: item._id,
+              isHotCollection: true,
+              isStore: item.redirect,
+            });
+          } else if (item.blind) {
             console.log('========collection tab => blind1', item.blind, item.collectionId)
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
           } else {
