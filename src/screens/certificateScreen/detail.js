@@ -43,7 +43,6 @@ import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import { BASE_URL } from '../../common/constants';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
@@ -243,8 +242,9 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    if (chainType) {
-      if (isFocused) {
+    console.log(isFocused, "isFocusedisFocusedisFocusedisFocusedisFocused")
+    if (isFocused) {
+      if (chainType) {
         if (chainAvailable) {
           setBuyLoading(true);
           checkNFTOnAuction();
@@ -258,9 +258,8 @@ const DetailScreen = ({ navigation, route }) => {
             });
         }
       }
+      getRealtedNFT();
     }
-
-    getRealtedNFT();
   }, [isFocused]);
 
   useEffect(() => {
@@ -271,7 +270,7 @@ const DetailScreen = ({ navigation, route }) => {
 
     if (tradingTableData.length !== 0) {
       let filterValue = tradingTableData1.filter(o1 => filterTableValue.some(o2 => o1[0] === o2));
-      
+
       setTradingTableData(filterValue)
     }
 
@@ -1585,7 +1584,7 @@ const DetailScreen = ({ navigation, route }) => {
       // it's temporary fix
       const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
 
-      const image =  item.metaData.image || item.thumbnailUrl;
+      const image = item.metaData.image || item.thumbnailUrl;
       const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
       // console.log(fileType, item.metaData.name, "item.metaData.name")
       return (
@@ -1860,7 +1859,6 @@ const DetailScreen = ({ navigation, route }) => {
             onPress={() => {
               setLike(!isLike);
               handleLikeMethod()
-              // dispatch(handleLikeDislike(item, index));
             }}
             style={styles.likeButton}>
             {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}

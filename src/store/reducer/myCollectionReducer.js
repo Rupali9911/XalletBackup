@@ -3,6 +3,7 @@ import {
     MY_COLLECTION_LOAD_START,
     MY_COLLECTION_LOAD_SUCCESS,
     MY_COLLECTION_PAGE_CHANGE,
+    SET_COLLECTION_USER_ADDRESS,
     MY_COLLECTION_LOAD_RESET,
     MY_COLLECTION_LIST_UPDATE
 } from '../types';
@@ -11,12 +12,16 @@ const initialState = {
     myCollectionListLoading: false,
     myCollection: [],
     favorite: [],
+    collectionUserAdd: "",
     myCollectionPage: 1,
     myCollectionTotalCount: 0
 }
 
 export default function MyCollectionReducer(state = initialState, action) {
     switch (action.type) {
+
+        case SET_COLLECTION_USER_ADDRESS:
+            return state = { ...state, collectionUserAdd: action.payload };
 
         case MY_COLLECTION_PAGE_CHANGE:
             return state = { ...state, myCollectionPage: action.payload };

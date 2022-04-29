@@ -13,20 +13,28 @@ import NFTItem from '../../components/NFTItem';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import { translate } from '../../walletUtils';
-import { myCollectionList, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
+import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 
 const NFTOwned = ({ route, navigation }) => {
     const isFocusedHistory = useIsFocused();
 
     const { id } = route?.params;
     const { MyCollectionReducer } = useSelector(state => state);
-    const { MyNFTReducer } = useSelector(state => state);
-    const [isFirstRender, setIsFirstRender] = useState(true);
     const dispatch = useDispatch();
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
     useEffect(() => {
-        if (isFocusedHistory && !MyCollectionReducer?.myCollection?.length > 0) {
-            pressToggle("owned")
+        if (isFocusedHistory) {
+            if (MyCollectionReducer?.myCollection?.length === 0) {
+                pressToggle()
+            } else {
+                if (id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
+                    dispatch(myCollectionLoadFail())
+                } else {
+                    dispatch(myCollectionListReset());
+                    pressToggle()
+                }
+            }
             setIsFirstRender(false)
         }
     }, [isFocusedHistory]);
@@ -45,15 +53,16 @@ const NFTOwned = ({ route, navigation }) => {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem
-                    item={item}
+                screenName="myCollection"
+                item={item}
                     image={image}
                     // onLongPress={() => {
                     //     setModalData(item);
                     //     setModalVisible(true);
                     // }}
                     onPress={() => {
-                        dispatch(changeScreenName('myCollection'));
-                        navigation.navigate('DetailItem', { index: findIndex, owner: id });
+                        // dispatch(changeScreenName('myCollection'));
+                        navigation.navigate('DetailItem', { index: findIndex, sName: "myCollection" });
                     }}
                 />
             );
@@ -74,7 +83,7 @@ const NFTOwned = ({ route, navigation }) => {
 
             {/* { isFocusedHistory &&console.log("🚀 ~ file: nftOwned.js ~ line 85 ~ NFTOwned ~ MyCollectionReducer", MyCollectionReducer)} */}
             {
-               isFirstRender ? isFirstRender : MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
+                isFirstRender ? isFirstRender : MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
                     <Loader /> :
                     MyCollectionReducer?.myCollection.length !== 0 ?
                         <FlatList

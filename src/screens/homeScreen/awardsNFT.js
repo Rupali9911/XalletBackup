@@ -70,11 +70,12 @@ const AwardsNFT = () => {
 
       return (
         <NFTItem
+          screenName="awards"
           item={item}
           image={imageUri}
           onPress={() => {
-            dispatch(changeScreenName('awards'));
-            navigation.push('DetailItem', { index: findIndex });
+            // dispatch(changeScreenName('awards'));
+            navigation.push('DetailItem', { index: findIndex, sName: "awards" });
           }}
         />
       );

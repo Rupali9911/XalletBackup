@@ -45,16 +45,22 @@ const NFTCreated = ({ route }) => {
     const { data, wallet } = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const [isFirstRender, setIsFirstRender] = useState(true); 
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
     useEffect(() => {
-        if (isFocusedHistory && !MyNFTReducer?.myList?.length > 0) {
-            pressToggle("created");
+        if (isFocusedHistory) {
+            if (MyNFTReducer?.myList?.length === 0) {
+                pressToggle()
+            } else {
+                if (id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
+                    dispatch(myNftLoadFail())
+                } else {
+                    dispatch(myNftListReset());
+                    pressToggle()
+                }
+            }
             setIsFirstRender(false)
         }
-        // return () => {
-        //     // dispatch(myNftLoadStart());
-        // }
 
     }, [isFocusedHistory]);
 
@@ -70,15 +76,16 @@ const NFTCreated = ({ route }) => {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem
-                    item={item}
+                screenName="myNFT"
+                item={item}
                     image={image}
                     // onLongPress={() => {
                     //     setModalData(item);
                     //     setModalVisible(true);
                     // }}
                     onPress={() => {
-                        dispatch(changeScreenName('myNFT'));
-                        navigation.navigate('DetailItem', { index: findIndex, owner: id });
+                        // dispatch(changeScreenName('myNFT'));
+                        navigation.navigate('DetailItem', { index: findIndex, sName: "myNFT" });
                     }}
                 />
             );
@@ -91,18 +98,18 @@ const NFTCreated = ({ route }) => {
         dispatch(myNFTList(page, id));
     }, []);
 
-    const pressToggle = s => {
-        dispatch(myNftLoadStart());
+    const pressToggle = () => {
         dispatch(myNftListReset());
         dispatch(myPageChange(1));
         getNFTlist(1);
     };
 
+
     return (
         <View style={styles.trendCont}>
             {/* {console.log("🚀 ~ file: nftCreated.js ~ line 135 ~ NFTCreated ~ MyNFTReducer", MyNFTReducer)} */}
             {
-              isFirstRender ? isFirstRender : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
+                isFirstRender ? isFirstRender : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
                     <Loader />
                 ) : MyNFTReducer.myList?.length !== 0 ? (
                     <FlatList
@@ -110,7 +117,7 @@ const NFTCreated = ({ route }) => {
                         horizontal={false}
                         numColumns={2}
                         initialNumToRender={15}
-                        onRefresh={() => pressToggle("created")}
+                        onRefresh={pressToggle}
                         refreshing={MyNFTReducer.myListPage === 1 &&
                             MyNFTReducer.myNftListLoading}
                         renderItem={memoizedValue}

@@ -10,6 +10,7 @@ import {
   MY_COLLECTION_PAGE_CHANGE,
   MY_COLLECTION_LOAD_RESET,
   MY_COLLECTION_LOAD_SUCCESS,
+  SET_COLLECTION_USER_ADDRESS,
 } from '../types';
 
 export const myCollectionLoadStart = () => ({
@@ -26,6 +27,10 @@ export const myCollectionListReset = () => ({
 
 export const myCollectionPageChange = data => ({
   type: MY_COLLECTION_PAGE_CHANGE,
+  payload: data,
+});
+export const setCollectionUserAddress = data => ({
+  type: SET_COLLECTION_USER_ADDRESS,
   payload: data,
 });
 
@@ -45,8 +50,10 @@ export const myCollectionList = (page, ownerId) => {
 
     if (user?.role === 'crypto') {
       body_data.owner = ownerId.toUpperCase();
+      dispatch(setCollectionUserAddress(ownerId.toLowerCase()));
     } else {
       body_data.status = 'my_collection'
+      dispatch(setCollectionUserAddress(""));
     }
 
     if (user) {

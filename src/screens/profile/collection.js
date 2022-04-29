@@ -55,6 +55,7 @@ const Collection = ({ route }) => {
     const renderItem = ({ item }) => {
         return (
             <NFTItem
+                screenName="collection"
                 item={item}
                 image={item.iconImage}
                 onPress={() => navigation.navigate("Create", { name: "collection", data: item, status: toggle })}

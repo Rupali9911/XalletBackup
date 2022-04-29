@@ -49,7 +49,7 @@ const {
   ThreeDotsVerticalIcon,
 } = SVGS;
 
-const nftItem = ({ item, index, minHeight }) => {
+const nftItem = ({ item, index, minHeight, screenName }) => {
   const dispatch = useDispatch();
   const { AuthReducer } = useSelector(state => state);
   const { data, wallet } = useSelector(state => state.UserReducer);
@@ -436,7 +436,7 @@ const nftItem = ({ item, index, minHeight }) => {
       },
     };
     // console.log("getTokenDetailsApi")
-    console.log('/xanalia/getDetailNFT called')
+    // console.log('/xanalia/getDetailNFT called')
     await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
@@ -755,7 +755,7 @@ const nftItem = ({ item, index, minHeight }) => {
                 <View style={styles.buttons}>
                   <TouchableOpacity
                     onPress={() => {
-                      dispatch(handleLikeDislike(item, index));
+                      dispatch(handleLikeDislike(item, index, screenName));
                     }}>
                     {isLike ? <HeartActiveIcon /> : <HeartIcon />}
                   </TouchableOpacity>

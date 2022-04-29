@@ -65,10 +65,11 @@ const PhotoNFT = () => {
       return (
         <NFTItem
           item={item}
+          screenName="photoNFT"
           image={imageUri}
           onPress={() => {
-            dispatch(changeScreenName('photoNFT'));
-            navigation.push('DetailItem', { index: findIndex });
+            // dispatch(changeScreenName('photoNFT'));
+            navigation.push('DetailItem', { index: findIndex, sName: "photoNFT" });
           }}
         />
       );

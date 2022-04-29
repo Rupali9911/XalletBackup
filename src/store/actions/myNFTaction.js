@@ -4,6 +4,7 @@ import { parseNftObject } from '../../utils/parseNFTObj';
 import {
   FAVORITE_NFT_SUCCESS,
   FAVORITE_PAGE_CHANGE,
+  SET_NFT_USER_ADDRESS,
   MY_NFT_LOAD_FAIL,
   MY_NFT_LOAD_RESET,
   MY_NFT_LOAD_START,
@@ -33,11 +34,17 @@ export const favoritePageChange = data => ({
   payload: data,
 });
 
+export const setNFTUserAddress = data => ({
+  type: SET_NFT_USER_ADDRESS,
+  payload: data,
+});
+
 export const myNFTList = (page, ownerId) => {
   return (dispatch, getState) => {
 
     const { data, wallet } = getState().UserReducer;
     let user = data.user;
+    dispatch(myNftLoadStart());
 
     let body_data = {
       limit: 24,
@@ -48,8 +55,10 @@ export const myNFTList = (page, ownerId) => {
 
     if (user?.role==='crypto') {
       body_data.owner = ownerId.toUpperCase();
+      dispatch(setNFTUserAddress(ownerId.toLowerCase()));
     } else {
       body_data.status ='my_nft'
+      dispatch(setNFTUserAddress(""));
     }
 
     if (user) {
