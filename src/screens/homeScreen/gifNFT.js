@@ -66,11 +66,12 @@ const GifNFT = () => {
           : item.metaData.image;
       return (
         <NFTItem
+          screenName="gitNFT"
           item={item}
           image={imageUri}
           onPress={() => {
-            dispatch(changeScreenName('gitNFT'));
-            navigation.push('DetailItem', { index: findIndex });
+            // dispatch(changeScreenName('gitNFT'));
+            navigation.push('DetailItem', { index: findIndex, sName: "gitNFT" });
           }}
         />
       );

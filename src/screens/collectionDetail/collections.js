@@ -90,31 +90,31 @@ const Collections = (props) => {
     if (isHotCollection) {
       return (
         <NFTItem
+          screenName="dataCollection"
           item={item}
           index={index}
           image={item.iconImage}
           nftChain={nftChain}
           onPress={() => {
             if (!isSeries) {
-              dispatch(changeScreenName('dataCollection'));
+              // dispatch(changeScreenName('dataCollection'));
               navigation.push('DetailItem', {
                 index: findIndex,
-                collectionType: COLLECTION_TYPES[collectionType],
-                collectionAddress,
+                sName: "dataCollection"
               });
+
             } else {
-              dispatch(changeScreenName('blindSeriesCollection'));
+              // dispatch(changeScreenName('blindSeriesCollection'));
               navigation.push('DetailItem', {
                 index: findIndex,
-                collectionType: BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                collectionAddress,
+                sName: "blindSeriesCollection"
               });
             }
           }}
           isCollection
           isBlind
         />
-        )
+      )
     }
     return (
       <CollectionItem

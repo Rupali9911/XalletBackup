@@ -76,15 +76,16 @@ const NFTCreated = ({ route }) => {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem
-                    item={item}
+                screenName="myNFT"
+                item={item}
                     image={image}
                     // onLongPress={() => {
                     //     setModalData(item);
                     //     setModalVisible(true);
                     // }}
                     onPress={() => {
-                        dispatch(changeScreenName('myNFT'));
-                        navigation.navigate('DetailItem', { index: findIndex, owner: id });
+                        // dispatch(changeScreenName('myNFT'));
+                        navigation.navigate('DetailItem', { index: findIndex, sName: "myNFT" });
                     }}
                 />
             );

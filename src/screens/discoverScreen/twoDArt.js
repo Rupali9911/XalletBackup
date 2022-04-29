@@ -54,8 +54,8 @@ const TwoDArt = () => {
                                 let findIndex = TwoDReducer.twoDNftList.findIndex(x => x.id === item.id);
                                 return (
                                     <TouchableOpacity onPress={() => {
-                                        dispatch(changeScreenName("twoDArt"))
-                                        navigation.navigate("DetailItem", { index: findIndex })
+                                        // dispatch(changeScreenName("twoDArt"))
+                                        navigation.navigate("DetailItem", { index: findIndex, sName: "twoDArt" })
                                     }} style={styles.listItem} >
                                         {
                                             item.thumbnailUrl !== undefined || item.thumbnailUrl ?

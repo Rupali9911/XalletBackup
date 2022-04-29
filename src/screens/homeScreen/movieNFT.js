@@ -66,11 +66,12 @@ const MovieNFT = () => {
           : item.metaData.image;
       return (
         <NFTItem
+          screenName="movieNFT"
           item={item}
           image={imageUri}
           onPress={() => {
-            dispatch(changeScreenName('movieNFT'));
-            navigation.push('DetailItem', { index: findIndex });
+            // dispatch(changeScreenName('movieNFT'));
+            navigation.push('DetailItem', { index: findIndex, sName: "movieNFT" });
           }}
         />
       );

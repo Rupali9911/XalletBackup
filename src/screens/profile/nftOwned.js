@@ -53,15 +53,16 @@ const NFTOwned = ({ route, navigation }) => {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem
-                    item={item}
+                screenName="myCollection"
+                item={item}
                     image={image}
                     // onLongPress={() => {
                     //     setModalData(item);
                     //     setModalVisible(true);
                     // }}
                     onPress={() => {
-                        dispatch(changeScreenName('myCollection'));
-                        navigation.navigate('DetailItem', { index: findIndex, owner: id });
+                        // dispatch(changeScreenName('myCollection'));
+                        navigation.navigate('DetailItem', { index: findIndex, sName: "myCollection" });
                     }}
                 />
             );

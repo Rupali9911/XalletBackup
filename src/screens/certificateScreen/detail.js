@@ -43,7 +43,6 @@ import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import { BASE_URL } from '../../common/constants';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
@@ -1860,7 +1859,6 @@ const DetailScreen = ({ navigation, route }) => {
             onPress={() => {
               setLike(!isLike);
               handleLikeMethod()
-              // dispatch(handleLikeDislike(item, index));
             }}
             style={styles.likeButton}>
             {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}

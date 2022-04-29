@@ -85,8 +85,8 @@ const Collection = () => {
                                     if (item && item.hasOwnProperty("metaData") && item.metaData) {
                                         return (
                                             <TouchableOpacity onPress={() => {
-                                                dispatch(changeScreenName("myCollection"))
-                                                navigation.navigate("DetailItem", { index: findIndex })
+                                                // dispatch(changeScreenName("myCollection"))
+                                                navigation.navigate("DetailItem", { index: findIndex, sName: "myCollection" })
                                             }} style={styles.listItem} >
                                                 {
                                                     item.thumbnailUrl !== undefined || item.thumbnailUrl ?
@@ -198,8 +198,8 @@ const NFT = () => {
                                     if (item && item.hasOwnProperty("metaData") && item.metaData) {
                                         return (
                                             <TouchableOpacity onPress={() => {
-                                                dispatch(changeScreenName("myNFT"))
-                                                navigation.navigate("DetailItem", { index: findIndex })
+                                                // dispatch(changeScreenName("myNFT"))
+                                                navigation.navigate("DetailItem", { index: findIndex, sName: "myNFT" })
                                             }} style={styles.listItem} >
                                                 {
                                                     item.thumbnailUrl !== undefined || item.thumbnailUrl ?

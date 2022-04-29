@@ -67,10 +67,11 @@ const HotNFT = () => {
             return (
                 <NFTItem
                     item={item}
+                    screenName="Hot"
                     image={imageUri}
                     onPress={() => {
-                        dispatch(changeScreenName('Hot'));
-                        navigation.push('DetailItem', { index: findIndex });
+                        // dispatch(changeScreenName('Hot'));
+                        navigation.push('DetailItem', { index: findIndex, sName: "Hot" });
                     }}
                 />
             );

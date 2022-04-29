@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 
 export default function NFTItem(props) {
-  const {
+  const { 
     item,
     image,
     onPress,
@@ -22,6 +22,7 @@ export default function NFTItem(props) {
     isMeCollection,
     isBlind,
     nftChain,
+    screenName
   } = props;
 
   const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
@@ -161,7 +162,7 @@ export default function NFTItem(props) {
           style={styles.collectionListItem}>
           <View style={styles.listItemContainer}>
             <TouchableOpacity
-              onPress={() => dispatch(handleLikeDislike(item, index))}
+              onPress={() => dispatch(handleLikeDislike(item, index, screenName))}
               style={styles.likeButton}>
               {item.like ? <HeartActiveIcon /> : <HeartWhiteIcon />}
             </TouchableOpacity>
@@ -324,7 +325,7 @@ export default function NFTItem(props) {
           style={styles.collectionListItem}>
           <View style={styles.listItemContainer}>
             <TouchableOpacity
-              onPress={() => dispatch(handleLikeDislike(item, index))}
+              onPress={() => dispatch(handleLikeDislike(item, index, screenName))}
               style={styles.likeButton}>
               {item.like ? <HeartActiveIcon /> : <HeartWhiteIcon />}
             </TouchableOpacity>

@@ -37,9 +37,8 @@ const DetailItemScreen = (props) => {
     const { sort } = useSelector(state => state.ListReducer);
     const dispatch = useDispatch();
 
-    const { collectionType, index, collectionAddress, showNFT } = route.params;
+    const { index, sName } = route.params;
 
-    const [owner, setOwner] = React.useState(route.params.owner);
     const [stopVideos, setStopVideos] = React.useState(true);
     const [listNFT, setNFTList] = React.useState([]);
     const [nftLoad, setNFTLoad] = React.useState(false);
@@ -49,30 +48,30 @@ const DetailItemScreen = (props) => {
             setNFTLoad(true)
             loadData()
         }
-        console.log(AuthReducer.screenName, "isFocusedHistoryisFocusedHistory", index)
+        console.log(sName, "isFocusedHistoryisFocusedHistory", index)
     }, [isFocusedHistory])
 
     const loadData = () => {
 
-        const data = AuthReducer.screenName == "Hot" ?
+        const data = sName == "Hot" ?
             ListReducer.nftList :
-            AuthReducer.screenName == "newNFT" ?
+            sName == "newNFT" ?
                 NewNFTListReducer.newNftList :
-                AuthReducer.screenName == "myNFT" ?
+                sName == "myNFT" ?
                     MyNFTReducer.myList :
-                    AuthReducer.screenName == "myCollection" ?
+                    sName == "myCollection" ?
                         MyCollectionReducer.myCollection :
-                        AuthReducer.screenName == "awards" ?
+                        sName == "awards" ?
                             AwardsNFTReducer.awardsNftList :
-                            AuthReducer.screenName == 'photoNFT' ?
+                            sName == 'photoNFT' ?
                                 NewNFTListReducer.favoriteNftList :
-                                AuthReducer.screenName == 'gitNFT' ?
+                                sName == 'gitNFT' ?
                                     ListReducer.gifList :
-                                    AuthReducer.screenName == 'movieNFT' ?
+                                    sName == 'movieNFT' ?
                                         ListReducer.movieList :
-                                        AuthReducer.screenName == "dataCollection" ?
+                                        sName == "dataCollection" ?
                                             NftDataCollectionReducer.nftDataCollectionList :
-                                            AuthReducer.screenName == 'blindSeriesCollection' ?
+                                            sName == 'blindSeriesCollection' ?
                                                 NftDataCollectionReducer.nftBlindSeriesCollectionList : [];
 
         setNFTList(data)
@@ -81,10 +80,10 @@ const DetailItemScreen = (props) => {
     }
 
     const renderItem = (item) => {
-        if (AuthReducer.screenName == 'blindSeriesCollection') item.metaData = item;
+        if (sName == 'blindSeriesCollection') item.metaData = item;
         if (item && item.hasOwnProperty("metaData") && item.metaData) {
             return (
-                <NftItem videoStatus={stopVideos} item={item} index={index} minHeight={true} />
+                <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
             )
         }
     }

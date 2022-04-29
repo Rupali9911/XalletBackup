@@ -308,9 +308,8 @@ export const getAllArtist = () => {
   };
 };
 
-export const handleLikeDislike = (item, index) => {
+export const handleLikeDislike = (item, index, screenName) => {
   return (dispatch, getState) => {
-    const { screenName } = getState().AuthReducer;
     const { data, wallet } = getState().UserReducer;
     let oldNFTS =
       screenName == 'Hot'

@@ -53,11 +53,12 @@ const ArtNFT = () => {
 
             return (
                 <NFTItem
+                    screenName="newNFT"
                     item={item}
                     image={imageUri}
                     onPress={() => {
-                        dispatch(changeScreenName('newNFT'));
-                        navigation.push('DetailItem', { index: findIndex });
+                        // dispatch(changeScreenName('newNFT'));
+                        navigation.push('DetailItem', { index: findIndex, sName: "newNFT" });
                     }}
                 />
             )

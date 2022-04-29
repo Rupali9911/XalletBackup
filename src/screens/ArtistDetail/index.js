@@ -138,14 +138,15 @@ const Created = ({ route }) => {
             return (
                 <NFTItem
                     item={item}
+                    screenName="myNFT"
                     image={imageUri}
                     // onLongPress={() => {
                     //     setModalData(item);
                     //     setModalVisible(true);
                     // }}
                     onPress={() => {
-                        dispatch(changeScreenName("myNFT"));
-                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single' });
+                        // dispatch(changeScreenName("myNFT"));
+                        navigation.push("DetailItem", { index: findIndex, sName: "myNFT" });
                     }}
                 />
             )
@@ -249,6 +250,7 @@ const Collection = ({ route }) => {
 
             return (
                 <NFTItem
+                    screenName="myCollection"
                     item={item}
                     image={imageUri}
                     // onLongPress={() => {
@@ -256,8 +258,8 @@ const Collection = ({ route }) => {
                     //     setModalVisible(true);
                     // }}
                     onPress={() => {
-                        dispatch(changeScreenName("myCollection"));
-                        navigation.push("DetailItem", { index: findIndex, owner: id, showNFT: 'single' });
+                        // dispatch(changeScreenName("myCollection"));
+                        navigation.push("DetailItem", { index: findIndex, sName: "myCollection" });
                     }}
                 />
             )
