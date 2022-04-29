@@ -1423,8 +1423,8 @@ const DetailScreen = ({ navigation, route }) => {
 
     console.log("🚀 ~ file: line 1341 calculatePrice",
       priceNFTString,
-      baseCurrency,
-      tradeCurr,
+      baseCurrency.order,
+      tradeCurr.order,
       _tokenId,
       ownerAddress,
       collectionAddress
