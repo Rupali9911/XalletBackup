@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
-import { SIZE, SVGS } from 'src/constants';
+import {SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL, COLORS} from 'src/constants';
 import insertComma from '../../utils/insertComma';
 import { basePriceTokens } from '../../web3/config/basePriceTokens';
 import { SvgUri } from 'react-native-svg';
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 
 export default function NFTItem(props) {
-  const { 
+  const {
     item,
     image,
     onPress,
@@ -37,12 +37,14 @@ export default function NFTItem(props) {
       ? item.thumbnailUrl : item.metaData?.image;
 
   const chainType = type => {
+    if (item.isForAward) return <Ethereum />; //Hardcoded as per web requirements
     if (type === 'polygon') return <PolygonIcon />;
     if (type === 'ethereum') return <Ethereum />;
     if (type === 'binance') return <BitmapIcon />;
   };
 
   const nftCurrencyIcon = (CurrencyFlag, chainType) => {
+    if (item.isForAward) return basePriceTokens[1].icon; //Hardcoded as per web requirements
     let chainTypeFlag = chainType;
     let found = basePriceTokens.find(
       token => token.value === CurrencyFlag && token.chain === chainTypeFlag,
@@ -66,6 +68,21 @@ export default function NFTItem(props) {
       else return <Image source={{ uri: uri }} />;
     }
   };
+
+    const getAwardsIcon = (awardType) => {
+        switch (awardType) {
+            case "GOLD_Award":
+                return AWARD_GOLD
+            case "BRONZE_Award":
+                return AWARD_BRONZE
+            case "SILVER_Award":
+                return AWARD_SILVER
+            case "Special_Award":
+                return AWARD_SPECIAL
+            default:
+                return AWARD_SPECIAL
+        }
+    };
 
   const getAuctionTimeRemain = item => {
     if (item.newprice && item.newprice.endTime) {
@@ -197,7 +214,7 @@ export default function NFTItem(props) {
                   new Date(item.newprice.endTime) < new Date().getTime() ? (
                   <Text
                     style={{
-                      color: '#60C083',
+                      color: COLORS.greenLight,
                       fontSize: SIZE(12),
                       marginVertical: SIZE(10),
                     }}>
@@ -207,7 +224,7 @@ export default function NFTItem(props) {
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text
                       style={{
-                        color: '#60c083',
+                        color: COLORS.greenLight,
                         marginVertical: SIZE(10),
                         marginRight: SIZE(2),
                         fontSize: SIZE(12),
@@ -221,7 +238,7 @@ export default function NFTItem(props) {
                 ) : (
                   <Text
                     style={{
-                      color: '#60C083',
+                      color: COLORS.greenLight,
                       fontSize: SIZE(12),
                       marginVertical: SIZE(10),
                     }}>
@@ -245,7 +262,7 @@ export default function NFTItem(props) {
                           <Text
                             numberOfLines={1}
                             style={{
-                              color: '#60c083',
+                              color: COLORS.greenLight,
                               marginRight: SIZE(2),
                               fontSize: SIZE(12),
                             }}>
@@ -260,7 +277,7 @@ export default function NFTItem(props) {
                       <Text
                         style={{
                           fontSize: SIZE(12),
-                          color: '#8E9BBA',
+                          color: COLORS.grayLight,
                         }}>
                         {getAuctionTimeRemain(item)}
                       </Text>
@@ -302,7 +319,7 @@ export default function NFTItem(props) {
                                 getDollarPrice(
                                   item?.lastpriceTraded,
                                   item?.lastCurrencyTraded)
-                                } 
+                                }
                                 {selectedLanguageItem.language_name ==="ja" ?" ドル" : null}
                               )
                           </Text> */}
@@ -338,27 +355,28 @@ export default function NFTItem(props) {
             </View>
             <View style={styles.collectionWrapper}>
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
+                <Text
+                    numberOfLines={1}
+                    style={{ fontSize: SIZE(12), fontWeight: '700' }}>
+                    {item.creatorObj && item.creatorObj[0]
+                        ? item.creatorObj[0].title
+                            ? item.creatorObj[0].title
+                            : item.creatorObj[0].username.includes('0x') ?
+                                item.creatorObj[0].username.substring(0, 6) :
+                                item.creatorObj[0].username
+                        : ""}
+                </Text>
               <View
-                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text
-                numberOfLines={1}
-                style={{ fontSize: SIZE(12) }}>
-                {item.creatorObj && item.creatorObj[0]
-                  ? item.creatorObj[0].title
-                    ? item.creatorObj[0].title
-                    : item.creatorObj[0].username.includes('0x') ?
-                      item.creatorObj[0].username.substring(0, 6) :
-                      item.creatorObj[0].username
-                    : ""}
-              </Text>
+                style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {item.newprice &&
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (
                   <Text
                     numberOfLines={1}
                     style={{
-                      color: '#60C083',
+                      color: COLORS.greenLight,
                       fontSize: SIZE(12),
+                        fontWeight: '700'
                     }}>
                     {translate('common.auctionended')}
                   </Text>
@@ -367,7 +385,7 @@ export default function NFTItem(props) {
                     <Text
                       numberOfLines={1}
                       style={{
-                        color: '#60c083',
+                        color: COLORS.greenLight,
                         marginRight: SIZE(2),
                         fontSize: SIZE(12),
                       }}>
@@ -380,7 +398,7 @@ export default function NFTItem(props) {
                 ) : (
                   <Text
                     style={{
-                      color: '#60C083',
+                      color: COLORS.greenLight,
                       fontSize: SIZE(12),
                     }}>
                     {translate('common.soldout')}
@@ -393,7 +411,10 @@ export default function NFTItem(props) {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
+                <View style={{flexDirection: 'row'}}>
                 {chainType(item?.nftChain)}
+                  {item.isForAward ? <Image style={{height: 20, width: 20, left: 2}} source={{uri: getAwardsIcon(item?.award_type)}} /> : null}
+                  </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   {item.newprice && item.newprice?.endTime ? (
                     new Date(item.newprice.endTime) < new Date().getTime() ? (
@@ -403,7 +424,7 @@ export default function NFTItem(props) {
                           <Text
                             numberOfLines={1}
                             style={{
-                              color: '#60c083',
+                                color: COLORS.grayLight,
                               marginRight: SIZE(2),
                               fontSize: SIZE(12),
                             }}>
@@ -418,7 +439,7 @@ export default function NFTItem(props) {
                       <Text
                         style={{
                           fontSize: SIZE(12),
-                          color: '#8E9BBA',
+                          color: COLORS.grayLight,
                         }}>
                         {getAuctionTimeRemain(item)}
                       </Text>
