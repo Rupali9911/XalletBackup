@@ -139,7 +139,30 @@ export default function NFTItem(props) {
     uriType = imageUri.split('.')[imageUri.split('.').length - 1];
     checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
   }
-  // console.log(item.name, "/////////")
+
+  let creatorName = item?.creatorObj && typeof item?.creatorObj[0] === 'object' ?
+    item.creatorObj[0]?.role === 'crypto' ?
+      item.creatorObj[0]?.title?.trim() ? item.creatorObj[0].title :
+        item.creatorObj[0]?.name?.trim() ? item.creatorObj[0].name :
+          item.creatorObj[0]?.username?.trim() ? item.creatorObj[0].username.includes('0x') ?
+            item.creatorObj[0].username.substring(0, 6) : item.creatorObj[0].username :
+            item.creatorObj[0]?._id ? item.creatorObj[0]._id : ""
+
+      : item.creatorObj[0]?.username?.trim() ? item.creatorObj[0].username :
+        item.creatorObj[0]?.name?.trim() ? item.creatorObj[0].name :
+          item.creatorObj[0]?.title?.trim() ? item.creatorObj[0].title :
+            item.creatorObj[0]?._id ? item.creatorObj[0]._id : ""
+    : item?.creatorObj && item?.creatorObj[0]?._id ? item.creatorObj[0]._id : ""
+
+  // let creatorName = item.creatorObj && item.creatorObj[0]
+  // ? item.creatorObj[0].title
+  // ? item.creatorObj[0].title
+  // : item.creatorObj[0].username.includes('0x') ?
+  // item.creatorObj[0].username.substring(0, 6) :
+  // item.creatorObj[0].username
+  // : ""
+
+  // console.log("🚀 ~ file: line 143 ~ NFTItem ~ item", item, creatorName)
   return (
     <>
       {isMeCollection ? (
@@ -183,13 +206,7 @@ export default function NFTItem(props) {
                 <Text
                   numberOfLines={1}
                   style={{ fontSize: SIZE(12) }}>
-                  {item.creatorObj && item.creatorObj[0]
-                    ? item.creatorObj[0].title
-                      ? item.creatorObj[0].title
-                      : item.creatorObj[0].username.includes('0x') ?
-                        item.creatorObj[0].username.substring(0, 6) :
-                        item.creatorObj[0].username
-                      : ""}
+                  {creatorName}
                 </Text>
                 {item.newprice &&
                   item.newprice.endTime &&
@@ -339,17 +356,11 @@ export default function NFTItem(props) {
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text
-                numberOfLines={1}
-                style={{ fontSize: SIZE(12) }}>
-                {item.creatorObj && item.creatorObj[0]
-                  ? item.creatorObj[0].title
-                    ? item.creatorObj[0].title
-                    : item.creatorObj[0].username.includes('0x') ?
-                      item.creatorObj[0].username.substring(0, 6) :
-                      item.creatorObj[0].username
-                    : ""}
-              </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{ fontSize: SIZE(12) }}>
+                  {creatorName}
+                </Text>
                 {item.newprice &&
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (

@@ -216,36 +216,58 @@ const HomeScreen = ({ navigation }) => {
         translate('common.comingSoon'))
   }
 
-    const fab = () =>{
-        return (
-            <FAB.Group
-                open={openState}
-                icon={
-                    openState
-                        ? 'close'
-                        : props => (
-                            <FontAwesome5
-                                name={'sort-amount-down'}
-                                color={props.color}
-                                size={props.size}
-                            />
-                        )
-                }
-                fabStyle={{backgroundColor: Colors.themeColor}}
-                actions={fabActions}
-                onStateChange={onStateChange}
-                onPress={() => {
-                    if (openState) {
-                        // do something if the speed dial is open
-                    }
-                }}
-            />
-        )
-    }
-
-    const FilterComponent = React.memo(fab);
-
+  const fab = () => {
     return (
+      <FAB.Group
+        open={openState}
+        icon={
+          openState
+            ? 'close'
+            : props => (
+              <FontAwesome5
+                name={'sort-amount-down'}
+                color={props.color}
+                size={props.size}
+              />
+            )
+        }
+        fabStyle={{ backgroundColor: Colors.themeColor }}
+        actions={fabActions}
+        onStateChange={onStateChange}
+        onPress={() => {
+          if (openState) {
+            // do something if the speed dial is open
+          }
+        }}
+      />
+    )
+  }
+
+  const FilterComponent = React.memo(fab);
+
+  const getArtistName = (item) => {
+    // let creatorName = item.title || item.username
+    let creatorName = item && typeof item === 'object' ?
+      item?.role === 'crypto' ?
+        item?.title?.trim() ? item.title :
+          item?.name?.trim() ? item.name :
+            item?.username?.trim() ? item.username :
+              item?._id ? item._id : ""
+
+        : item?.username?.trim() ? item.username :
+          item?.name?.trim() ? item.name :
+            item?.title?.trim() ? item.title :
+              item?._id ? item._id : ""
+      : item?._id ? item._id : ""
+
+    // console.log("🚀 ~ file: index.js ~ line 265 ~ getArtistName ~ creatorName",  item?.role, creatorName, item)
+    return creatorName;
+  }
+
+  // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
+
+
+  return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <AppHeader
@@ -299,7 +321,7 @@ const HomeScreen = ({ navigation }) => {
                         />
                       </View>
                       <Text numberOfLines={1} style={styles.userText}>
-                        {item.title || item.username}
+                        {getArtistName(item)}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -358,15 +380,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-                <Tab.Screen
-                    name={translate('wallet.common.collection')}
-                    component={Collection}
-                    listeners={({ navigation, route }) => {
-                        if (navigation.isFocused()) {
-                            setCurrentTab(7);
-                        }
-                    }}
-                />
+              <Tab.Screen
+                name={translate('wallet.common.collection')}
+                component={Collection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(7);
+                  }
+                }}
+              />
               <Tab.Screen
                 name={translate('common.2DArt')}
                 component={ArtNFT}
@@ -403,15 +425,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-                <Tab.Screen
-                    name={translate('common.hotcollection')}
-                    component={HotCollection}
-                    listeners={({ navigation, route }) => {
-                        if (navigation.isFocused()) {
-                            setCurrentTab(0);
-                        }
-                    }}
-                />
+              <Tab.Screen
+                name={translate('common.hotcollection')}
+                component={HotCollection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
+                  }
+                }}
+              />
             </Tab.Navigator>
           ))}
       </SafeAreaView>
@@ -459,7 +481,7 @@ const HomeScreen = ({ navigation }) => {
       </AppModal>
       {
         currentTab !== 0 && currentTab !== 7 &&
-        <FilterComponent/>
+        <FilterComponent />
       }
     </>
   );

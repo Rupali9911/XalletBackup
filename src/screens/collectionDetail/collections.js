@@ -86,6 +86,7 @@ const Collections = (props) => {
   };
 
   const renderItem = ({ item, index }) => {
+  console.log("🚀 ~ file: collections.js ~ line 89 ~ renderItem ~ item", item)
     let findIndex = collectionList.findIndex(x => x.id === item.id);
     if (isHotCollection) {
       return (
