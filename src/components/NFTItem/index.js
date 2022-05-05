@@ -36,6 +36,8 @@ export default function NFTItem(props) {
     : item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl : item.metaData?.image;
 
+  let mediaUrl = item?.metaData?.image ;
+
   const chainType = type => {
     if (item.isForAward) return <Ethereum />; //Hardcoded as per web requirements
     if (type === 'polygon') return <PolygonIcon />;
@@ -193,14 +195,10 @@ export default function NFTItem(props) {
             <View style={styles.collectionWrapper}>
               <Text numberOfLines={1}>{item.name}</Text>
               <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}>
+                style={styles.titleView}>
                 <Text
                   numberOfLines={1}
-                  style={{ fontSize: SIZE(12) }}>
+                  style={styles.titleText}>
                   {item.creatorObj && item.creatorObj[0]
                     ? item.creatorObj[0].title
                       ? item.creatorObj[0].title
@@ -213,22 +211,13 @@ export default function NFTItem(props) {
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (
                   <Text
-                    style={{
-                      color: COLORS.greenLight,
-                      fontSize: SIZE(12),
-                      marginVertical: SIZE(10),
-                    }}>
+                    style={styles.AuctionText}>
                     {translate('common.auctionended')}
                   </Text>
                 ) : item?.price ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={styles.priceView}>
                     <Text
-                      style={{
-                        color: COLORS.greenLight,
-                        marginVertical: SIZE(10),
-                        marginRight: SIZE(2),
-                        fontSize: SIZE(12),
-                      }}>
+                      style={styles.priceText}>
                       {item?.baseCurrency === 'ALIA'
                         ? insertComma(parseFloat(item?.price, true).toFixed(0))
                         : insertComma(item?.price, true)}
@@ -237,35 +226,23 @@ export default function NFTItem(props) {
                   </View>
                 ) : (
                   <Text
-                    style={{
-                      color: COLORS.greenLight,
-                      fontSize: SIZE(12),
-                      marginVertical: SIZE(10),
-                    }}>
+                    style={styles.soldOutText}>
                     {translate('common.soldout')}
                   </Text>
                 )}
               </View>
               <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
+                style={styles.chainView}>
                 {chainType(item.nftChain)}
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={styles.endTimeView}>
                   {item.newprice && item.newprice?.endTime ? (
                     new Date(item.newprice.endTime) < new Date().getTime() ? (
                       item.price ? (
                         <View
-                          style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          style={styles.endTimeView}>
                           <Text
                             numberOfLines={1}
-                            style={{
-                              color: COLORS.greenLight,
-                              marginRight: SIZE(2),
-                              fontSize: SIZE(12),
-                            }}>
+                            style={styles.priceText1}>
                             {
                               insertComma(parseFloat(item?.price, true).toFixed(0))
                             }
@@ -275,30 +252,20 @@ export default function NFTItem(props) {
                       ) : null
                     ) : (
                       <Text
-                        style={{
-                          fontSize: SIZE(12),
-                          color: COLORS.grayLight,
-                        }}>
+                        style={styles.auctionTimeRemainText}>
                         {getAuctionTimeRemain(item)}
                       </Text>
                     )
                   ) : (
                     <>
                       {item?.lastpriceTraded ? (
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={styles.endTimeView}>
                           <Text
-                            style={{
-                              color: '#aaa',
-                              fontSize: SIZE(10),
-                            }}>
+                            style={styles.lastText}>
                             Last:{' '}
                           </Text>
                           <Text
-                            style={{
-                              color: '#aaa',
-                              marginRight: SIZE(2),
-                              fontSize: SIZE(10),
-                            }}>
+                            style={styles.lastPriceText}>
                             {item?.lastCurrencyTraded === 'ALIA'
                               ? insertComma(
                                 parseFloat(
@@ -357,7 +324,7 @@ export default function NFTItem(props) {
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
                 <Text
                     numberOfLines={1}
-                    style={{ fontSize: SIZE(12), fontWeight: '700' }}>
+                    style={styles.titleText}>
                     {item.creatorObj && item.creatorObj[0]
                         ? item.creatorObj[0].title
                             ? item.creatorObj[0].title
@@ -367,67 +334,54 @@ export default function NFTItem(props) {
                         : ""}
                 </Text>
               <View
-                style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                style={styles.newPrice}>
                 {item.newprice &&
                   item.newprice.endTime &&
                   new Date(item.newprice.endTime) < new Date().getTime() ? (
                   <Text
                     numberOfLines={1}
-                    style={{
-                      color: COLORS.greenLight,
-                      fontSize: SIZE(12),
-                        fontWeight: '700'
-                    }}>
+                    style={styles.auctionEnded}>
                     {translate('common.auctionended')}
                   </Text>
                 ) : item?.price ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={styles.endTimeView}>
                     <Text
                       numberOfLines={1}
-                      style={{
-                        color: COLORS.greenLight,
-                        marginRight: SIZE(2),
-                        fontSize: SIZE(12),
-                      }}>
+                      style={styles.priceText1}>
                       {
-                        insertComma(parseFloat(item?.price, true).toFixed(2))
+                       // insertComma(parseFloat(item?.price, true).toFixed(2))
+                          item?.price < 1
+                            ? Math.round((item?.price) * 100) / 100
+                                ? Math.round((item?.price) * 100) / 100
+                                : insertComma(parseFloat(item?.price, true).toFixed(2))
+                            : insertComma(parseFloat(item?.price, true).toFixed(0))
+                            // : insertComma(item?.price, true)
                       }
                     </Text>
                     {renderIcon()}
                   </View>
                 ) : (
-                  <Text
-                    style={{
-                      color: COLORS.greenLight,
-                      fontSize: SIZE(12),
-                    }}>
-                    {translate('common.soldout')}
-                  </Text>
+                    <Text
+                        style={styles.soldOutText1}>
+                        {translate('common.soldout')}
+                    </Text>
                 )}
               </View>
               <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
+                style={styles.chainView}>
                 <View style={{flexDirection: 'row'}}>
                 {chainType(item?.nftChain)}
-                  {item.isForAward ? <Image style={{height: 20, width: 20, left: 2}} source={{uri: getAwardsIcon(item?.award_type)}} /> : null}
+                  {item.isForAward ? <Image style={styles.awadImage} source={{uri: getAwardsIcon(item?.award_type)}} /> : null}
                   </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={styles.endTimeView}>
                   {item.newprice && item.newprice?.endTime ? (
                     new Date(item.newprice.endTime) < new Date().getTime() ? (
                       item.price ? (
                         <View
-                          style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          style={styles.endTimeView}>
                           <Text
                             numberOfLines={1}
-                            style={{
-                                color: COLORS.grayLight,
-                              marginRight: SIZE(2),
-                              fontSize: SIZE(12),
-                            }}>
+                            style={styles.priceText1}>
                             {
                               insertComma(parseFloat(item?.price, true).toFixed(0))
                             }
@@ -437,10 +391,7 @@ export default function NFTItem(props) {
                       ) : null
                     ) : (
                       <Text
-                        style={{
-                          fontSize: SIZE(12),
-                          color: COLORS.grayLight,
-                        }}>
+                        style={styles.auctionTimeRemainText}>
                         {getAuctionTimeRemain(item)}
                       </Text>
                     )
@@ -448,20 +399,13 @@ export default function NFTItem(props) {
                     <>
                       {item?.lastpriceTraded ? (
                         <View
-                          style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          style={styles.endTimeView}>
                           <Text
-                            style={{
-                              color: '#aaa',
-                              fontSize: SIZE(12),
-                            }}>
+                            style={styles.lastText}>
                             Last:{' '}
                           </Text>
                           <Text
-                            style={{
-                              color: '#aaa',
-                              marginRight: SIZE(2),
-                              fontSize: SIZE(12),
-                            }}>
+                            style={styles.lastPriceText}>
                             {item?.lastCurrencyTraded === 'ALIA'
                               ? insertComma(
                                 parseFloat(

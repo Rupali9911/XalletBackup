@@ -64,6 +64,7 @@ const TextLimit = styled.Text`
 
 const LimitableInput = (props) => {
     const { multiLine, label, value, onChange,about, error, ...inputProps } = props;
+    console.log('about', about)
     return (
         <View>
             {!multiLine ? (
@@ -87,7 +88,7 @@ const LimitableInput = (props) => {
                         <NormalText>
                             {label}
                         </NormalText>
-                        <TextLimit> ({about.length} / 200)</TextLimit>
+                        <TextLimit> ({about? about.length : 0} / 200)</TextLimit>
                     </RowWrap>
                     <SpaceView mTop={SIZE(12)} />
                     <RowWrap>

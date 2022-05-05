@@ -485,7 +485,7 @@ function Profile(props) {
             <LimitableInput
             multiLine
             value={about}
-            onChange={(text) => {about.length <= 200 ? setAbout(text.slice(0, 200)) : null; setErrAbout(false); }}
+            onChange={(text) => {setAbout(text.slice(0, 200)); setErrAbout(false); }}
             label={translate("wallet.common.aboutMe")}
             placeholder={translate("wallet.common.aboutMe")}
             validate={[maxLength200]}

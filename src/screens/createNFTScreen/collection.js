@@ -175,6 +175,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
       Authorization: `Bearer ${userToken}`,
     };
 
+    console.log('bannerImage & iconImage', bannerImage, iconImage)
     let formDataFile = new FormData();
 
     if (iconImage.hasOwnProperty("mime")) {
@@ -244,7 +245,6 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     const privKey = wallet.privateKey;
     changeLoadingState(true);
     if (publicAddress && data.token) {
-
       createColection(
         publicAddress,
         privKey,
