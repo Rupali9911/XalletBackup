@@ -567,23 +567,70 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
 
   let disableCreator = false;
 
-  let artistName = artistData && artist
-    ? artist.includes("0x")
-      ? artistData.hasOwnProperty("title") && artistData.title ?
-        artistData.title
-        : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
-          ? (
-            disableCreator = true,
-            collectCreat?.creator
-          )
-          : artist.substring(0, 6)
-      : artistData === "No record found" ?
-        artist.substring(0, 6) :
-        artistData.hasOwnProperty("username") && artistData.username ?
-          artistData.username.substring(0, 6) : artist.substring(0, 6)
-    : artist.substring(0, 6)
+  let artistName = artistData && typeof artistData === 'object' ?
+    artistData?.role === 'crypto' ?
+      artistData?.title?.trim() ? artistData.title :
+        artistData?.name?.trim() ? artistData.name :
+          artistData?.username?.trim() ? artistData.username :
+            (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+              || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+              || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
+              || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
+              ? (
+                disableCreator = true,
+                collectCreatData?.creator
+              ) : artist ? artist?.substring(0, 6) : ""
+      : artistData?.username?.trim() ? artistData.username :
+        artistData?.name?.trim() ? artistData.name :
+          artistData?.title?.trim() ? artistData.title : artist ? artist?.substring(0, 6) : ""
+    : artist ? artist?.substring(0, 6) : ""
+
+  // console.log("🚀 ~ file: nftItem.js ~ line 571", artistData, '</>', artist, '>>>>')
+  // console.log("🚀 ~ file: nftItem.js ~ line 572 ~ nftItem ~ artistName", artistName)
+
+  let ownerName = ownerData && typeof ownerData === 'object' ?
+    ownerData?.role === 'crypto' ?
+      ownerData?.title?.trim() ? ownerData.title :
+        ownerData?.name?.trim() ? ownerData.name :
+          ownerData?.username?.trim() ? ownerData.username : owner ? owner.substring(0, 6) : ""
+      : ownerData?.username?.trim() ? ownerData.username :
+        ownerData?.name?.trim() ? ownerData.name :
+          ownerData?.title?.trim() ? ownerData.title : owner ? owner.substring(0, 6) : ""
+    : owner ? owner.substring(0, 6) : ""
+
+  // console.log("🚀 ~ file: nftItem.js ~ line 573", ownerData, '</>', owner, '>>>>')
+  // console.log("🚀 ~ file: nftItem.js ~ line 574 ~ nftItem ~ ownerName", ownerName)
+
+  // let ownerName = ownerData ? (
+  //   ownerData.role === 'crypto' ?
+  //     ownerData.title ?
+  //       ownerData.title :
+  //       owner.includes("0x")
+  //         ? owner.substring(0, 6)
+  //         : owner.substring(0, 6) :
+  //     ownerData.role === 'non_crypto' ?
+  //       ownerData.username ?
+  //         ownerData.username : ""
+  //       : owner) :
+  //   owner
+
+  // let artistName = artistData && artist
+  //   ? artist.includes("0x")
+  //     ? artistData.hasOwnProperty("title") && artistData.title ?
+  //       artistData.title
+  //       : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+  //         || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+  //         || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+  //         ? (
+  //           disableCreator = true,
+  //           collectCreat?.creator
+  //         )
+  //         : artist.substring(0, 6)
+  //     : artistData === "No record found" ?
+  //       artist.substring(0, 6) :
+  //       artistData.hasOwnProperty("username") && artistData.username ?
+  //         artistData.username.substring(0, 6) : artist.substring(0, 6)
+  //   : artist.substring(0, 6)
 
   return (
     <>
@@ -614,13 +661,9 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                   </Text>
                   <Text
                     numberOfLines={1}
-                    style={[
-                      styles.iconLabel,
-                      { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
-                    ]}>
-                    {
-                      artistName
-                    }
+                    style={[styles.iconLabel, { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 }]}
+                  >
+                    {artistName}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -639,20 +682,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                   <Text
                     numberOfLines={1}
                     style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
-                    {
-                      ownerData ? (
-                        ownerData.role === 'crypto' ?
-                          ownerData.title ?
-                            ownerData.title :
-                            owner.includes("0x")
-                              ? owner.substring(0, 6)
-                              : owner.substring(0, 6) :
-                          ownerData.role === 'non_crypto' ?
-                            ownerData.username ?
-                              ownerData.username : ""
-                            : owner) :
-                        owner
-                    }
+                    {ownerName}
                   </Text>
                 </View>
               </TouchableOpacity>

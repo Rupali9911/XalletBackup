@@ -29,6 +29,9 @@ import { getAllCards } from '../../store/reducer/paymentReducer';
 import { endMainLoading, _logout } from '../../store/reducer/userReducer';
 import { languageArray, translate } from '../../walletUtils';
 import styles from './styled';
+
+import { setI18nConfig } from "../../walletUtils";
+
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
   imageColor: '#e00606', // Android
@@ -106,6 +109,21 @@ function Setting({ navigation }) {
   useEffect(() => {
     dispatch(getAllCards(data.token));
   }, []);
+
+  const updateLanguage =(language)=> {
+      if (selectedLanguageItem.language_name !== language.language_name) {
+          dispatch(setAppLanguage(language));
+          setShowLanguage(false);
+          // setI18nConfig(selectedLanguageItem.language_name);
+          // navigation.goBack()
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'Me' }],
+            }),
+          );
+      }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -203,16 +221,7 @@ function Setting({ navigation }) {
                 <TouchableOpacity
                   key={i}
                   onPress={() => {
-                    if (selectedLanguageItem.language_name !== v.language_name) {
-                      dispatch(setAppLanguage(v));
-                      setShowLanguage(false);
-                      navigation.dispatch(
-                        CommonActions.reset({
-                          index: 0,
-                          routes: [{ name: 'Home' }],
-                        }),
-                      );
-                    }
+                   updateLanguage(v)
                   }}
                   style={{ ...styles.centerProfileCont, flex: null }}>
                   <Text style={styles.listLabel}>

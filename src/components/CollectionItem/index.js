@@ -22,14 +22,25 @@ export default function CollectionItem(props) {
   };
 
   const getByUser = () => {
-    if (creator) return creator;
-    if (creatorInfo[0].title) return creatorInfo[0].title;
-    if (creatorInfo[0].role === 'crypto') {
-      return creatorInfo[0].username.slice(0, 6);
-    } else {
-      return creatorInfo[0].username;
-    }
+    // if (creator) return creator;
+    // if (creatorInfo[0].title) return creatorInfo[0].title;
+    // if (creatorInfo[0].role === ‘crypto’) {
+    //   return creatorInfo[0].username.slice(0, 6);
+    // } else {
+    //   return creatorInfo[0].username;
+    // }
+    let creatorName = creatorInfo && typeof creatorInfo[0] === 'object' ?
+      creatorInfo[0]?.role === 'crypto' ?
+        creatorInfo[0]?.title?.trim() ? creatorInfo[0].title :
+          creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
+            creatorInfo[0]?.username?.trim() ? creatorInfo[0].username : creator ? creator : ""
+        : creatorInfo[0]?.username?.trim() ? creatorInfo[0].username :
+          creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
+            creatorInfo[0]?.title?.trim() ? creatorInfo[0].title : creator ? creator : ""
+      : creator ? creator : ""
+    return creatorName;
   }
+  // console.log("🚀 ~ file: index.js ~ line 34 ~ getByUser ~ creatorInfo", creatorInfo, getByUser())
 
   let uriType = bannerImage?.split('.')[bannerImage?.split('.').length - 1]
   const checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
@@ -38,8 +49,8 @@ export default function CollectionItem(props) {
     if (blind) {
       return (
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <BitmapIcon style={{ marginRight: SIZE(8)}} />
-          <PolygonIcon style={{ marginRight: SIZE(8)}} />
+          <BitmapIcon style={{ marginRight: SIZE(8) }} />
+          <PolygonIcon style={{ marginRight: SIZE(8) }} />
           <Ethereum />
         </View>
       );

@@ -1497,11 +1497,11 @@ const DetailScreen = ({ navigation, route }) => {
     } else if (
       priceNFT ||
       (nFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase())
+        auctionInitiatorAdd?.toLowerCase() !== wallet?.address.toLowerCase())
     ) {
       if (
         nFTOnAuction &&
-        auctionInitiatorAdd.toLowerCase() !== wallet?.address.toLowerCase() &&
+        auctionInitiatorAdd?.toLowerCase() !== wallet?.address.toLowerCase() &&
         bidingTimeEnded() !== true
       ) {
         // console.log('set NftStatus 4');
@@ -1681,26 +1681,72 @@ const DetailScreen = ({ navigation, route }) => {
     getNonCryptoNFTOwner();
   }
   let disableCreator = false;
-  let creatorName = artistDetail && artist
-    ? artist.includes("0x")
-      ? artistDetail.hasOwnProperty("title") && artistDetail.title ?
-        artistDetail.title
-        : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
-          || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
-          ? (
-            disableCreator = true,
-            collectCreatData?.creator
-          )
-          : artist.substring(0, 6)
-      : artistDetail === "No record found" ?
-        artist.substring(0, 6) :
-        artistDetail.hasOwnProperty("username") && artistDetail.username ?
-          artistDetail.username.substring(0, 6) : artist.substring(0, 6)
-    : artist ? artist?.substring(0, 6) : "";
-  // console.log(item, "/////////")
-  // console.log(isLike, item)
+
+  // console.log("🚀 ~ line 1629 ~ lastOwnerOfNFT ~ ownerDataN", ownerDataN, ownerN)
+  // console.log("🚀 ~ line 1630 ~ lastOwnerOfNFT ~ artistDetail", artistDetail, artist)
+
+  let ownerName = ownerDataN && typeof ownerDataN === 'object' ?
+    ownerDataN?.role === 'crypto' ?
+      ownerDataN?.title?.trim() ? ownerDataN.title :
+        ownerDataN?.name?.trim() ? ownerDataN.name :
+          ownerDataN?.username?.trim() ? ownerDataN.username : ownerN ? ownerN.substring(0, 6) : ""
+      : ownerDataN?.username?.trim() ? ownerDataN.username :
+        ownerDataN?.name?.trim() ? ownerDataN.name :
+          ownerDataN?.title?.trim() ? ownerDataN.title : ownerN ? ownerN.substring(0, 6) : ""
+    : ownerN ? ownerN.substring(0, 6) : ""
+
+  //     Crypto user: title/name/username
+  // Non Crypto user: username/name/title
+
+  let creatorName = artistDetail && typeof artistDetail === 'object' ?
+    artistDetail?.role === 'crypto' ?
+      artistDetail?.title?.trim() ? artistDetail.title :
+        artistDetail?.name?.trim() ? artistDetail.name :
+          artistDetail?.username?.trim() ? artistDetail.username :
+            (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+              || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+              || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
+              || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
+              ? (
+                disableCreator = true,
+                collectCreatData?.creator
+              ) : artist ? artist?.substring(0, 6) : ""
+      : artistDetail?.username?.trim() ? artistDetail.username :
+        artistDetail?.name?.trim() ? artistDetail.name :
+          artistDetail?.title?.trim() ? artistDetail.title : artist ? artist?.substring(0, 6) : ""
+    : artist ? artist?.substring(0, 6) : ""
+
+  // let ownerName = ownerDataN && (
+  //   ownerDataN.role === 'crypto' ?
+  //     ownerDataN.title ?
+  //       ownerDataN.title :
+  //       ownerN?.includes("0x")
+  //         ? ownerN?.substring(0, 6)
+  //         : ownerN?.substring(0, 6) :
+  //     ownerDataN.role === 'non_crypto' ?
+  //       ownerDataN.username ?
+  //         ownerDataN.username : ""
+  //       : "")
+
+  // let creatorName = artistDetail && artist
+  //   ? artist.includes("0x")
+  //     ? artistDetail.hasOwnProperty("title") && artistDetail.title ?
+  //       artistDetail.title
+  // : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+  //   || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+  //   || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
+  //   || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
+  //   ? (
+  //     disableCreator = true,
+  //     collectCreatData?.creator
+  //   )
+  //   : artist.substring(0, 6)
+  //     : artistDetail === "No record found" ?
+  //       artist.substring(0, 6) :
+  //       artistDetail.hasOwnProperty("username") && artistDetail.username ?
+  //         artistDetail.username.substring(0, 6) : artist.substring(0, 6)
+  //   : artist ? artist?.substring(0, 6) : "";
+
   return (
     <>
       {
@@ -1847,9 +1893,7 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('common.creator')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {
-                    creatorName
-                  }
+                  {creatorName}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -1877,12 +1921,11 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('wallet.common.collection')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {collectCreatData &&
-                    collectCreatData.collectionName
-                  }
+                  {collectCreatData && collectCreatData.collectionName}
                 </Text>
               </View>
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => onProfile(true)}
               style={styles.personType}>
@@ -1897,19 +1940,7 @@ const DetailScreen = ({ navigation, route }) => {
                   {translate('common.owner')}
                 </Text>
                 <Text numberOfLines={1} style={styles.personName}>
-                  {
-                    ownerDataN && (
-                      ownerDataN.role === 'crypto' ?
-                        ownerDataN.title ?
-                          ownerDataN.title :
-                          ownerN?.includes("0x")
-                            ? ownerN?.substring(0, 6)
-                            : ownerN?.substring(0, 6) :
-                        ownerDataN.role === 'non_crypto' ?
-                          ownerDataN.username ?
-                            ownerDataN.username : ""
-                          : "")
-                  }
+                  {ownerName}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -2039,6 +2070,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
           </NFTDetailDropdown>
+
           <NFTDetailDropdown
             title={translate('wallet.common.detail')}
             icon={details}>
