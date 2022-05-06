@@ -155,8 +155,8 @@ export default function NFTItem(props) {
   };
 
   let uriType, checkVideoUrl;
-  if (imageUri) {
-    uriType = imageUri.split('.')[imageUri.split('.').length - 1];
+  if (mediaUrl) {
+    uriType = mediaUrl.split('.')[mediaUrl.split('.').length - 1];
     checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
   }
   // console.log(item.name, "/////////")
@@ -169,7 +169,7 @@ export default function NFTItem(props) {
           style={styles.listItem}>
           <C_Image
             uri={imageUri}
-            type={uriType}
+            type={item?.type}
             imageStyle={styles.listImage}
           />
         </TouchableOpacity>
@@ -187,7 +187,7 @@ export default function NFTItem(props) {
             </TouchableOpacity>
             <View>
               <C_Image
-                type={uriType}
+                type={item?.type}
                 uri={imageUri}
                 imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
               />

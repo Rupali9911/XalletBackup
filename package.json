@@ -77,7 +77,7 @@
     "react-native-os": "^1.0.1",
     "react-native-pager-view": "^5.4.9",
     "react-native-paper": "^4.9.2",
-    "react-native-permissions": "^2.2.2",
+    "react-native-permissions": "^3.3.1",
     "react-native-popup-menu": "^0.15.12",
     "react-native-progress": "^4.1.2",
     "react-native-push-notification": "^8.1.1",

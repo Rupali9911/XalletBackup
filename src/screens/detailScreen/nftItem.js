@@ -563,7 +563,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const imageUri = item?.thumbnailUrl;
 
   const image = item.metaData.image || item.thumbnailUrl;
-  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
+  const fileType = videoUri ? videoUri?.split('.')[videoUri?.split('.').length - 1] : '';
 
   let disableCreator = false;
 
@@ -682,7 +682,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                 }}>
                 {fileType === 'mp4' ||
                   fileType === 'MP4' ||
-                  fileType === 'mov' ||
+                  fileType === 'mov' || fileType === 'movie' ||
                   fileType === 'MOV' ? (
                   <View style={styles.modalImage}>
                     <Video
