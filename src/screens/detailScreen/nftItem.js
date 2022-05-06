@@ -571,7 +571,7 @@ const nftItem = ({ item, index, minHeight }) => {
     artistData?.role === 'crypto' ?
       artistData?.title?.trim() ? artistData.title :
         artistData?.name?.trim() ? artistData.name :
-          artistData?.username?.trim() ? artistData.username :
+          artistData?.username?.trim() ? artistData.username.substring(0, 6) :
             (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
               || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
               || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
@@ -592,7 +592,7 @@ const nftItem = ({ item, index, minHeight }) => {
     ownerData?.role === 'crypto' ?
       ownerData?.title?.trim() ? ownerData.title :
         ownerData?.name?.trim() ? ownerData.name :
-          ownerData?.username?.trim() ? ownerData.username : owner ? owner.substring(0, 6) : ""
+          ownerData?.username?.trim() ? ownerData.username.substring(0, 6) : owner ? owner.substring(0, 6) : ""
       : ownerData?.username?.trim() ? ownerData.username :
         ownerData?.name?.trim() ? ownerData.name :
           ownerData?.title?.trim() ? ownerData.title : owner ? owner.substring(0, 6) : ""

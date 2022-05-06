@@ -1624,7 +1624,7 @@ const DetailScreen = ({ navigation, route }) => {
     ownerDataN?.role === 'crypto' ?
       ownerDataN?.title?.trim() ? ownerDataN.title :
         ownerDataN?.name?.trim() ? ownerDataN.name :
-          ownerDataN?.username?.trim() ? ownerDataN.username : ownerN ? ownerN.substring(0, 6) : ""
+          ownerDataN?.username?.trim() ? ownerDataN.username.substring(0, 6) : ownerN ? ownerN.substring(0, 6) : ""
       : ownerDataN?.username?.trim() ? ownerDataN.username :
         ownerDataN?.name?.trim() ? ownerDataN.name :
           ownerDataN?.title?.trim() ? ownerDataN.title : ownerN ? ownerN.substring(0, 6) : ""
@@ -1637,7 +1637,7 @@ const DetailScreen = ({ navigation, route }) => {
     artistDetail?.role === 'crypto' ?
       artistDetail?.title?.trim() ? artistDetail.title :
         artistDetail?.name?.trim() ? artistDetail.name :
-          artistDetail?.username?.trim() ? artistDetail.username :
+          artistDetail?.username?.trim() ? artistDetail.username.substring(0, 6) :
             (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
               || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
               || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
@@ -2151,9 +2151,9 @@ const DetailScreen = ({ navigation, route }) => {
       <PaymentMethod
         visible={showPaymentMethod}
         payableIn={payableIn}
-        price={payableIn ? payableInCurrency : item.price ? item.price : 0}
+        price={payableIn && data?.user?.role === 'crypto' ? payableInCurrency : item.price ? item.price : 0}
         priceStr={priceNFTString}
-        priceInDollar={payableIn ? payableInDollar : priceInDollar}
+        priceInDollar={payableIn && data?.user?.role === 'crypto' ? payableInDollar : priceInDollar}
         baseCurrency={baseCurrency}
         allowedTokens={availableTokens}
         ownerAddress={
@@ -2168,8 +2168,8 @@ const DetailScreen = ({ navigation, route }) => {
       />
       <PaymentNow
         visible={showPaymentNow}
-        price={payableIn ? payableInCurrency : item.price ? item.price : 0}
-        priceInDollar={payableIn ? payableInDollar : priceInDollar}
+        price={payableIn && data?.user?.role === 'crypto' ? payableInCurrency : item.price ? item.price : 0}
+        priceInDollar={payableIn && data?.user?.role === 'crypto' ? payableInDollar : priceInDollar}
         chain={chainType}
         NftId={_tokenId}
         IdWithChain={nft}
