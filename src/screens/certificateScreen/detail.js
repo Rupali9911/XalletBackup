@@ -2047,7 +2047,7 @@ const DetailScreen = ({ navigation, route }) => {
                 {translate('wallet.common.contractAddress')}
               </TextView>
               <TextView
-                style={[styles.rowText, { color: Colors.themeColor }]}
+                style={[styles.rowTextcontractaddress, { color: Colors.themeColor }]}
                 ellipsizeMode="middle"
                 numberOfLines={1}>
                 {MarketContractAddress}
