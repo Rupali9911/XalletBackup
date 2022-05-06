@@ -796,7 +796,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
               <View style={styles.separator} />
               <View>
                 <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
-                  {item.metaData.description}
+                  {textShown ? item.metaData.description : item.metaData.description.replaceAll('\n', '')}
                   {lengthMore && textShown && (
                     <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
                       <Text style={styles.readMore}>{translate('common.Readless')}</Text>
