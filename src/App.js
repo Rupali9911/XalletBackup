@@ -72,7 +72,7 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const {data, } = useSelector(state => state.UserReducer);
 
   React.useEffect(() => { }, [selectedLanguageItem.language_name]);
 
@@ -131,7 +131,7 @@ const TabComponent = () => {
         component={ExploreScreen}
         options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
-      {userRole === 'crypto' &&
+      {data?.user?.role === 'crypto' &&
         <Tab.Screen
           name={'Wallet'}
           options={{ tabBarLabel: translate('wallet.common.wallet') }}
@@ -179,7 +179,11 @@ const AppRoutes = () => {
 
   React.useEffect(() => {
     AsyncStorage.getItem('@passcode')
-      .then(val => dispatch(setPasscodeAsync(JSON.parse(val))))
+      .then(val => {
+        if (val) {
+          dispatch(setPasscodeAsync(JSON.parse(val)))
+        }
+      })
   }, []);
 
   const linking = {

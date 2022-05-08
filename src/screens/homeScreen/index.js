@@ -40,7 +40,7 @@ import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
-import { updateCreateState } from '../../store/reducer/userReducer';
+import { passShowStatusCall, updateCreateState } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awardsNFT';
@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess, passcodeAsync, data } = useSelector(state => state.UserReducer);
+  const { showSuccess, passcodeAsync, data, passShowStatus } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -75,10 +75,9 @@ const HomeScreen = ({ navigation }) => {
 
   const appStateChange = async nextAppState => {
     const languageCheck = await AsyncStorage.getItem('languageCheck');
-    const asyncPassCalled = await AsyncStorage.getItem('@asyncPassCalled');
-    const asyncPassCalledParse = JSON.parse(asyncPassCalled);
     let parseLanguageCheck = JSON.parse(languageCheck);
-    var pass = passcodeAsync;
+    // var pass = passcodeAsync;
+    // console.log(  passcodeAsync)
     if (nextAppState === 'active') {
       if (parseLanguageCheck) {
         if (parseLanguageCheck.cameraPermission) {
@@ -90,12 +89,9 @@ const HomeScreen = ({ navigation }) => {
           return;
         }
       }
-
-      // if (pass && !asyncPassCalledParse) {
-      //   navigation.navigate('PasscodeScreen', { screen: 'active' });
-      // } else {
-      //   AsyncStorage.setItem('@asyncPassCalled', JSON.stringify(false));
-      // }
+      if (passcodeAsync) {
+        navigation.navigate('PasscodeScreen', { screen: 'active' })
+      }
     }
   };
 
@@ -216,36 +212,36 @@ const HomeScreen = ({ navigation }) => {
         translate('common.comingSoon'))
   }
 
-    const fab = () =>{
-        return (
-            <FAB.Group
-                open={openState}
-                icon={
-                    openState
-                        ? 'close'
-                        : props => (
-                            <FontAwesome5
-                                name={'sort-amount-down'}
-                                color={props.color}
-                                size={props.size}
-                            />
-                        )
-                }
-                fabStyle={{backgroundColor: Colors.themeColor}}
-                actions={fabActions}
-                onStateChange={onStateChange}
-                onPress={() => {
-                    if (openState) {
-                        // do something if the speed dial is open
-                    }
-                }}
-            />
-        )
-    }
-
-    const FilterComponent = React.memo(fab);
-
+  const fab = () => {
     return (
+      <FAB.Group
+        open={openState}
+        icon={
+          openState
+            ? 'close'
+            : props => (
+              <FontAwesome5
+                name={'sort-amount-down'}
+                color={props.color}
+                size={props.size}
+              />
+            )
+        }
+        fabStyle={{ backgroundColor: Colors.themeColor }}
+        actions={fabActions}
+        onStateChange={onStateChange}
+        onPress={() => {
+          if (openState) {
+            // do something if the speed dial is open
+          }
+        }}
+      />
+    )
+  }
+
+  const FilterComponent = React.memo(fab);
+
+  return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <AppHeader
@@ -358,15 +354,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-                <Tab.Screen
-                    name={translate('wallet.common.collection')}
-                    component={Collection}
-                    listeners={({ navigation, route }) => {
-                        if (navigation.isFocused()) {
-                            setCurrentTab(7);
-                        }
-                    }}
-                />
+              <Tab.Screen
+                name={translate('wallet.common.collection')}
+                component={Collection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(7);
+                  }
+                }}
+              />
               <Tab.Screen
                 name={translate('common.2DArt')}
                 component={ArtNFT}
@@ -403,15 +399,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-                <Tab.Screen
-                    name={translate('common.hotcollection')}
-                    component={HotCollection}
-                    listeners={({ navigation, route }) => {
-                        if (navigation.isFocused()) {
-                            setCurrentTab(0);
-                        }
-                    }}
-                />
+              <Tab.Screen
+                name={translate('common.hotcollection')}
+                component={HotCollection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
+                  }
+                }}
+              />
             </Tab.Navigator>
           ))}
       </SafeAreaView>
@@ -459,7 +455,7 @@ const HomeScreen = ({ navigation }) => {
       </AppModal>
       {
         currentTab !== 0 && currentTab !== 7 &&
-        <FilterComponent/>
+        <FilterComponent />
       }
     </>
   );

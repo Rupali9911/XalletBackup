@@ -1,15 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
     View,
     Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-    hideSplash, loadFromAsync,
-    setPasscodeAsync,
-    startMainLoading,
+    loadFromAsync,
 } from '../store/reducer/userReducer';
 import { getAllLanguages, setAppLanguage } from '../store/reducer/languageReducer';
 import { languageArray } from '../walletUtils';
@@ -43,16 +40,12 @@ const appSplash = () => {
                         let value = JSON.parse(result[1]);
                         asyncData[name] = value;
 
-                        // if (name == 'passcode') {
-                        //     dispatch(setPasscodeAsync(value));
-                        // }
                         if (name == 'language') {
                             dispatch(setAppLanguage(value));
                         }
                     });
                     dispatch(loadFromAsync(asyncData));
                 });
-                AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
 
             } else {
                 let item = languageArray.find(
@@ -60,7 +53,6 @@ const appSplash = () => {
                 );
                 dispatch(setAppLanguage(item));
                 dispatch(loadFromAsync());
-                AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
             }
         });
     }
