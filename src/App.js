@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import { Image, Linking, LogBox } from 'react-native';
+import { Image, Linking, LogBox, View } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
@@ -56,6 +56,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setPasscodeAsync } from './store/reducer/userReducer';
 import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
+import Images from './constants/Images';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -72,7 +73,7 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const {data, } = useSelector(state => state.UserReducer);
+  const { data, } = useSelector(state => state.UserReducer);
 
   React.useEffect(() => { }, [selectedLanguageItem.language_name]);
 
@@ -159,6 +160,8 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const navigatorRef = React.useRef(null);
   let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
+  const [pass, setPass] = React.useState(null);
+  const [renderPass, toggle] = React.useState(false);
 
   React.useEffect(() => {
     LogBox.ignoreAllLogs();
@@ -180,9 +183,7 @@ const AppRoutes = () => {
   React.useEffect(() => {
     AsyncStorage.getItem('@passcode')
       .then(val => {
-        if (val) {
-          dispatch(setPasscodeAsync(JSON.parse(val)))
-        }
+        setPass(val)
       })
   }, []);
 
@@ -212,9 +213,22 @@ const AppRoutes = () => {
     //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
     // },
   };
-
-  if (mainLoader || showSplash) return <AppSplash />;
-  if (!mainLoader && !showSplash) SplashScreen.hide();
+  console.log(!mainLoader && !showSplash)
+  if (showSplash) return <AppSplash />;
+  if (!showSplash) {
+    SplashScreen.hide()
+    if (!renderPass && pass) {
+      dispatch(setPasscodeAsync(JSON.parse(pass)))
+      toggle(true)
+    }
+  };
+  if (mainLoader) {
+    return (
+      <View style={{ flex: 1 , justifyContent: "center", alignItems: "center" }}>
+        <Image source={Images.loadergif} />
+      </View>
+    )
+  }
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
       {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data?.user?.role === "non_crypto") ? (
