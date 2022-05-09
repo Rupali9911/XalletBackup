@@ -53,6 +53,7 @@ import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
 import { alertWithSingleBtn } from '../../utils';
+import LaunchPad from './launchPad';
 
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
@@ -362,6 +363,15 @@ const HomeScreen = ({ navigation }) => {
                 }
               }}
             >
+              <Tab.Screen
+                name={translate('common.launchPad')}
+                component={LaunchPad}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
+                  }
+                }}
+              />
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}

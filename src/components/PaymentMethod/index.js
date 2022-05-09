@@ -150,7 +150,7 @@ const PaymentMethod = props => {
                   :
                   ('$ '
                     + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
-                    + ' = '
+                    + (Number(priceInDollar).toFixed(2).toString().length > 8 ? '\n = ' : ' = ')
                     + numberWithCommas(parseFloat(Number(price).toFixed(4)))
                     + ' '
                     + currencyLabel)
