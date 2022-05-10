@@ -40,7 +40,7 @@ import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
-import { updateCreateState } from '../../store/reducer/userReducer';
+import { passShowStatusCall, updateCreateState } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awardsNFT';
@@ -53,6 +53,7 @@ import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
 import { alertWithSingleBtn } from '../../utils';
+import LaunchPad from './launchPad';
 
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
@@ -60,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess, passcodeAsync, data } = useSelector(state => state.UserReducer);
+  const { showSuccess, passcodeAsync, data, passShowStatus } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -75,10 +76,9 @@ const HomeScreen = ({ navigation }) => {
 
   const appStateChange = async nextAppState => {
     const languageCheck = await AsyncStorage.getItem('languageCheck');
-    const asyncPassCalled = await AsyncStorage.getItem('@asyncPassCalled');
-    const asyncPassCalledParse = JSON.parse(asyncPassCalled);
     let parseLanguageCheck = JSON.parse(languageCheck);
-    var pass = passcodeAsync;
+    // var pass = passcodeAsync;
+    // console.log(  passcodeAsync)
     if (nextAppState === 'active') {
       if (parseLanguageCheck) {
         if (parseLanguageCheck.cameraPermission) {
@@ -90,12 +90,9 @@ const HomeScreen = ({ navigation }) => {
           return;
         }
       }
-
-      // if (pass && !asyncPassCalledParse) {
-      //   navigation.navigate('PasscodeScreen', { screen: 'active' });
-      // } else {
-      //   AsyncStorage.setItem('@asyncPassCalled', JSON.stringify(false));
-      // }
+      if (passcodeAsync) {
+        navigation.navigate('PasscodeScreen', { screen: 'active' })
+      }
     }
   };
 
@@ -362,6 +359,15 @@ const HomeScreen = ({ navigation }) => {
                 }
               }}
             >
+              <Tab.Screen
+                name={translate('common.launchPad')}
+                component={LaunchPad}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
+                  }
+                }}
+              />
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}

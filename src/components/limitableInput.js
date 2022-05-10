@@ -100,6 +100,7 @@ const LimitableInput = (props) => {
                             multiline
                             autoCapitalize= 'none'
                             placeholderTextColor={'grey'} />
+                        <SpaceView mRight={SIZE(19)} />
                     </RowWrap>
                 </>
             )}
