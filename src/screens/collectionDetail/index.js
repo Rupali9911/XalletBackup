@@ -934,7 +934,7 @@ function CollectionDetail(props) {
                             </View>
                         </ScrollView>
                     ) : null}
-                    {(collectionAddress || isStore ) && !loading && (
+                    {(collectionAddress || isStore) && !loading && (
                         <Collections
                             collectionAddress={(isBlind && nftId) ? nftId : collectionAddress}
                             collectionType={collectionType}
@@ -945,6 +945,7 @@ function CollectionDetail(props) {
                             nftChain={nftChain}
                             isStore={isStore}
                             userCollection={collection?.userCollection}
+                            manualColl={collection.manualColl}
                         />
                     )}
                 </View>

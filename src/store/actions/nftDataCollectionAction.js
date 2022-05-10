@@ -60,7 +60,7 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore) => {
+export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl) => {
   return (dispatch, getState) => {
 
     if (isStore) {
@@ -110,10 +110,19 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
     } else {
       const { data, wallet } = getState().UserReducer;
       const owner = data?.user?._id || wallet?.address;
-  
-      const _collectionAddress = collectionId || collectionAddress;
+
+      let url = `${BASE_URL}/user/nft-data-collection?type=${type}&page=${page}&limit=10&owner=${owner}`;
+      if (manualColl) {
+        url = url.concat(`&collectionId=${collectionId}`);
+        url = url.concat(`&collectionAddress=${collectionId}`);
+      } else if (collectionId) {
+        url = url.concat(`&collectionId=${collectionId}`);
+        url = url.concat(`&collectionAddress=${collectionAddress}`);
+      } else {
+        url = url.concat(`&collectionAddress=${collectionAddress}`);
+      }
     
-      fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${_collectionAddress}&page=${page}&limit=10&owner=${owner}&collectionId=${collectionId}`)
+      fetch(url)
         .then(response => response.json())
         .then(json => {
           const nftData = [];
