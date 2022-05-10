@@ -51,6 +51,15 @@ export const getHotCollectionDetail = (collectionId, isBlind) => {
   return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
 }
 
+export const getStoreCollectioDetail = () => {
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
+  const req_body = {
+    limit: 10,
+    page: 1,
+  };
+  return axios.post(`${BASE_URL}/user/fetch-blind-data`, req_body);
+}
+
 export const getBoxes = (id) => {
   return axios.get(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${id}&frontend=true`);
 }

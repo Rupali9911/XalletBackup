@@ -145,4 +145,6 @@ export default {
   optionTextColor: '#707070',
   receiveColor: '#2DAE6C',
   sendColor: '#F94A42',
+    greenLight: '#60C083',
+    grayLight: '#8E9BBA'
 };

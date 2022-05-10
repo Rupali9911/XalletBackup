@@ -95,6 +95,12 @@ const API_BASE_URL =
   'https://staging-tms-dispatch.logisfleet.com/';
 // 'https://tms-dispatch-api.wasteporter.com/';
 
+
+const AWARD_GOLD ='https://ik.imagekit.io/xanalia/Images/GoldAward.png'
+const AWARD_BRONZE = "https://ik.imagekit.io/xanalia/Images/BtonzeAward.png"
+const AWARD_SILVER = "https://ik.imagekit.io/xanalia/Images/SilverAward.png"
+const AWARD_SPECIAL = "https://ik.imagekit.io/xanalia/Images/SpecialAward.png"
+
 export {
   PLATFORM,
   WIDTH,
@@ -132,4 +138,8 @@ export {
   JOB_DETAILS_LIMIT,
   SIGNATURE_WRAP_RATIO,
   API_BASE_URL,
+    AWARD_GOLD,
+    AWARD_BRONZE,
+    AWARD_SILVER,
+    AWARD_SPECIAL
 };

@@ -17,12 +17,21 @@ function LanguageSel(props) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(selectedLanguageItem.language_name);
 
+    const JapaneseLangTrans = {
+        en: '英語（イギリス）',
+        ko: '韓国語',
+        ja: '日本語',
+        tw: '中国語（繁体）',
+        ch: '中国語（簡体）',
+    };
+
+
     const items = [];
     languageArray.map((item) => {
-        items.push({
-            label: item.language_display,
-            value: item.language_name
-        });
+           items.push({
+               label: selectedLanguageItem?.language_name === 'ja' ? JapaneseLangTrans[item.language_name] : item.language_display,
+               value:  item.language_name
+           });
     });
 
     useEffect(() => {

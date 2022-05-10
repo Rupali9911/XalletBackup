@@ -26,7 +26,7 @@ export function parseNftObject(obj) {
       return obj?.imageUrl
     }
   }
-  
+
   let nftObj = {
     name: obj?.metaData?.name,
     image: imageURL(obj),
@@ -81,7 +81,8 @@ export function parseNftObject(obj) {
     isAddedToMuseum: obj.isAddedToMuseum,
 
     lastTradeType: obj.newprice2 && obj.newprice2?.type==='auction' ? "auction" : "sell",
-    mongoId: obj._id
+    mongoId: obj._id,
+      award_type:obj.award_type? obj.award_type : null
   };
   nftObj.approval = obj.approval;
   nftObj.logoImg = `https://ik.imagekit.io/xanalia/Images/XANALIA-ICON.svg`;

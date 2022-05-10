@@ -53,6 +53,7 @@ import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
 import { alertWithSingleBtn } from '../../utils';
+import LaunchPad from './launchPad';
 
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
@@ -241,6 +242,28 @@ const HomeScreen = ({ navigation }) => {
 
   const FilterComponent = React.memo(fab);
 
+  const getArtistName = (item) => {
+    // let creatorName = item.title || item.username
+    let creatorName = item && typeof item === 'object' ?
+      item?.role === 'crypto' ?
+        item?.title?.trim() ? item.title :
+          item?.name?.trim() ? item.name :
+            item?.username?.trim() ? item.username :
+              item?._id ? item._id : ""
+
+        : item?.username?.trim() ? item.username :
+          item?.name?.trim() ? item.name :
+            item?.title?.trim() ? item.title :
+              item?._id ? item._id : ""
+      : item?._id ? item._id : ""
+
+    // console.log("🚀 ~ file: index.js ~ line 265 ~ getArtistName ~ creatorName",  item?.role, creatorName, item)
+    return creatorName;
+  }
+
+  // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
+
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -295,7 +318,7 @@ const HomeScreen = ({ navigation }) => {
                         />
                       </View>
                       <Text numberOfLines={1} style={styles.userText}>
-                        {item.title || item.username}
+                        {getArtistName(item)}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -336,6 +359,15 @@ const HomeScreen = ({ navigation }) => {
                 }
               }}
             >
+              <Tab.Screen
+                name={translate('common.launchPad')}
+                component={LaunchPad}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
+                  }
+                }}
+              />
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}

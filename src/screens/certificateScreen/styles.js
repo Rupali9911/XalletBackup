@@ -243,7 +243,13 @@ const styles = StyleSheet.create({
     fontSize: RF(1.65),
     maxWidth: wp('35%'),
   },
-  head: { height: SIZE(35) },
+    rowTextcontractaddress: {
+    color: colors.black,
+    fontSize: RF(1.65),
+    maxWidth: wp('40%'),
+  },
+
+  head: { height: SIZE(40) },
   text: { margin: SIZE(10), fontSize: SIZE(12) },
   emptyData: {
     alignSelf: 'center',

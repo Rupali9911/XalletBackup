@@ -572,12 +572,12 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
       if (txHash) {
-        console.log(txHash)
-        console.log("resp noncrypto function", new Date().getTime());
+        console.log('575 txHash',txHash)
+        console.log("resp noncrypto function 576", new Date().getTime());
         // resolve({ success: true, status: 200, data: txHash });
       } else
         if (err) {
-          console.log(err);
+          console.log('res else noncrypto function 580', err);
           reject(err.message);
         }
     }).once('receipt', (receipt) => {
@@ -820,7 +820,7 @@ console.log("🚀 ~ file: index.js ~ line 759 ~ createColection", publicKey, pro
     const raw = "0x" + serializedTx.toString("hex");
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
-      console.log(txHash, "tx hash count create collection", err)
+      console.log(txHash, "tx hash count create collection 823", err)
 
       if (txHash) {
         console.log("🚀 ~ file: index.js ~ line 819 ~ awaitweb3.eth.sendSignedTransaction ~ txHash", txHash)
@@ -843,13 +843,13 @@ console.log("🚀 ~ file: index.js ~ line 759 ~ createColection", publicKey, pro
               }
             }
           } catch (error) {
-            console.log(error, " create nft sendSignedTransaction error");
+            console.log(error, " create nft sendSignedTransaction error 846");
             reject(error)
           }
         }
 
       } else if (err) {
-        console.log(err, "transactionReceipt sendSignedTransaction error ");
+        console.log(err, "transactionReceipt sendSignedTransaction error 852");
         reject(err);
       }
     })

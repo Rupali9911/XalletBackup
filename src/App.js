@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import { Image, Linking, LogBox, View } from 'react-native';
+import { Image, Keyboard, Linking, LogBox, View } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
@@ -73,9 +73,32 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const { data, } = useSelector(state => state.UserReducer);
+  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
-  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
+  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setIsBottomTabVisible(false); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setIsBottomTabVisible(true); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+  const { data } = useSelector(state => state.UserReducer);
+
 
   return (
     <Tab.Navigator
@@ -91,6 +114,7 @@ const TabComponent = () => {
         activeTintColor: Colors.themeColor,
       }}
       screenOptions={({ route }) => ({
+        tabBarVisible: isBottomTabVisible,
         tabBarIcon: ({ focused, color }) => {
           let iconName;
 
