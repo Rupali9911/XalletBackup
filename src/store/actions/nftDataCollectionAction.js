@@ -85,20 +85,23 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
         .then(json => {
           const selectedPack = json.data
           const nftData = [];
-          for (let i = 0; i < selectedPack.length; i++) {
-            console.log('======selectedPack', selectedPack[i].nftDetail?.metaData?.image);
+          for (let i = 0; i < selectedPack?.length; i++) {
+            selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
+            selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
+            let parsedNFT = parseNftObject(selectedPack[i]);
             nftData.push({
-              name: `MKC${i < 99 ? `0${i + 1}` : i + 1}`,
-              description: `悟空101头像MKC${i < 99 ? `0${i + 1}` : i + 1}`,
-              image: selectedPack[i].nftDetail?.metaData?.image,
+              ...parsedNFT,
               properties: {
-                type: selectedPack[i].nftDetail?.metaData?.properties?.type,
+                type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
               },
-              totalSupply: selectedPack[i].nftDetail?.metaData?.totalSupply,
-              externalLink: selectedPack[i].nftDetail?.metaData?.externalLink,
-              thumbnft: selectedPack[i].nftDetail?.metaData?.thumbnft,
-              tokenURI: "QmQVkzVkBGxgodX6jefYN7Tir9xNr1U4gpGVgtMoTuJ7Xv",
-              nftChain: "binance",
+              totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
+              externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
+              thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
+              tokenURI: selectedPack[i]?.catInfo?.tokenUri,
+              price:
+                selectedPack[i]?.price?.toString() === "0"
+                  ? selectedPack[i]?.usdPrice?.toString()
+                  : selectedPack[i]?.price?.toString(),
             });
           }
           json.data = nftData;

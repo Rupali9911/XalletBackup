@@ -22,7 +22,8 @@ export default function NFTItem(props) {
     isMeCollection,
     isBlind,
     nftChain,
-    screenName
+    screenName,
+    isStore,
   } = props;
 
   const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
@@ -32,7 +33,7 @@ export default function NFTItem(props) {
   const [isDisable, setIsDisable] = useState(false)
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-  let imageUri = isMeCollection ? (item.iconImage ? item.iconImage : null)
+  let imageUri = isStore ? image : isMeCollection ? (item.iconImage ? item.iconImage : null)
     : item.thumbnailUrl !== undefined || item.thumbnailUrl
       ? item.thumbnailUrl : item.metaData?.image;
 
