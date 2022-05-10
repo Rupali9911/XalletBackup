@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   SafeAreaView,
   View,
@@ -8,15 +8,15 @@ import {
   BackHandler,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Loader, AppHeader} from '../../components';
+import { Loader, AppHeader } from '../../components';
 import styles from './styled';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../common/responsiveFunction';
-import {colors} from '../../res';
+import { colors } from '../../res';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   setPasscode as SPasscode,
@@ -27,7 +27,7 @@ import {
 import Toast from 'react-native-toast-message';
 
 const toastConfig = {
-  my_custom_type: ({text1, props, ...rest}) => (
+  my_custom_type: ({ text1, props, ...rest }) => (
     <View
       style={{
         paddingHorizontal: wp('20%'),
@@ -36,7 +36,7 @@ const toastConfig = {
         backgroundColor: colors.GREY5,
       }}>
       <Text
-        style={{color: colors.white, fontWeight: 'bold', textAlign: 'center'}}>
+        style={{ color: colors.white, fontWeight: 'bold', textAlign: 'center' }}>
         {text1}
       </Text>
     </View>
@@ -51,19 +51,20 @@ const toastConfigSetting = label => ({
   autoHide: true,
 });
 
-function PasscodeScreen({route, navigation}) {
-  const {screen} = route.params;
-  const {passcodeAsync} = useSelector(state => state.UserReducer);
+function PasscodeScreen({ route, navigation }) {
+  const { screen } = route.params;
+  const { passcodeAsync } = useSelector(state => state.UserReducer);
 
   const [loading, setLoading] = useState(true);
   const [passcode, setpasscode] = useState([]);
   const [reEnterpasscode, setReenterpasscode] = useState([]);
   const [status, setStatus] = useState(false);
+
   const [oldPasscode, setoldPasscode] = useState('');
   const toastRef = useRef(null);
 
   const dispatch = useDispatch();
-  let numberArr = Array.from({length: 9}, (_, i) => i + 1);
+  let numberArr = Array.from({ length: 9 }, (_, i) => i + 1);
   numberArr.push(0);
   numberArr.push('');
 
@@ -100,12 +101,20 @@ function PasscodeScreen({route, navigation}) {
     };
   }, []);
 
+  useEffect(() => {
+    if (screen == 'active' && passcodeAsync) {
+      navigation.setOptions({
+        gestureEnabled: false
+      })
+    }
+  }, [passcode])
+
   const addItem = v => {
     let active = status
       ? 'passcode'
       : passcode.length === 6
-      ? 'reEnter'
-      : 'passcode';
+        ? 'reEnter'
+        : 'passcode';
     let pass = active == 'passcode' ? [...passcode] : [...reEnterpasscode];
     if (pass.length < 7) {
       pass.push(String(v));
@@ -131,8 +140,9 @@ function PasscodeScreen({route, navigation}) {
             }
           } else if (screen === 'active') {
             // this will run when application close and reOpen
+
             if (pass.join('') == oldPasscode) {
-              navigation.goBack();
+              navigation.goBack()
             } else {
               toastRef.current.show(
                 toastConfigSetting(
@@ -188,8 +198,8 @@ function PasscodeScreen({route, navigation}) {
     let active = status
       ? 'passcode'
       : passcode.length === 6
-      ? 'reEnter'
-      : 'passcode';
+        ? 'reEnter'
+        : 'passcode';
 
     let pass = active == 'passcode' ? [...passcode] : [...reEnterpasscode];
 
@@ -200,11 +210,11 @@ function PasscodeScreen({route, navigation}) {
   let label = status
     ? translate('wallet.common.enterPasscode1')
     : passcode.length === 6
-    ? translate('wallet.common.enterPasscode2')
-    : translate('wallet.common.enterPasscode');
+      ? translate('wallet.common.enterPasscode2')
+      : translate('wallet.common.enterPasscode');
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       {loading ? (
         <Loader />
       ) : (
@@ -213,15 +223,15 @@ function PasscodeScreen({route, navigation}) {
             title={''}
             showBackButton={screen == 'security' ? true : false}
           />
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.circleCont}>
               {[...Array(6).keys()].map((v, i) => {
                 let active = status
                   ? passcode
                   : passcode.length === 6
-                  ? reEnterpasscode
-                  : passcode;
+                    ? reEnterpasscode
+                    : passcode;
 
                 return (
                   <View
@@ -239,10 +249,10 @@ function PasscodeScreen({route, navigation}) {
               })}
             </View>
           </View>
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <View style={styles.sep} />
 
-            <View style={{...styles.keypadCont}}>
+            <View style={{ ...styles.keypadCont }}>
               {numberArr.map((v, i) => {
                 if (v === '') {
                   return (

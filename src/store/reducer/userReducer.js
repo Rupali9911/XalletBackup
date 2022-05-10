@@ -75,8 +75,7 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         passcode: action.payload,
-        passcodeAsync: action.payload,
-        // loading: true,
+        passcodeAsync: action.payload
       };
     case UPDATE_ASYNC_PASSCODE:
       return {
