@@ -113,7 +113,7 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
   
       const _collectionAddress = collectionId || collectionAddress;
     
-      fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${_collectionAddress}&page=${page}&limit=10&owner=${owner}`)
+      fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${_collectionAddress}&page=${page}&limit=10&owner=${owner}&collectionId=${collectionId}`)
         .then(response => response.json())
         .then(json => {
           const nftData = [];
