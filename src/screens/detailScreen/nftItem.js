@@ -8,7 +8,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView
 } from 'react-native';
 import Video from 'react-native-fast-video';
 import { basePriceTokens } from '../../web3/config/availableTokens';
@@ -541,11 +542,12 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   };
 
   const onTextLayout = useCallback(e => {
+    const {lines} = e.nativeEvent
     if (
-      e.nativeEvent.lines.length >= 2 &&
-      e.nativeEvent.lines[1].width > width - SIZE(40)
+      lines.length >= 2 &&
+      lines[1].width > width - SIZE(40)
     )
-      setLengthMore(true);
+      setLengthMore(true);   
   }, []);
 
   const onProfile = isOwner => {
@@ -563,74 +565,27 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const imageUri = item?.thumbnailUrl;
 
   const image = item.metaData.image || item.thumbnailUrl;
-  const fileType = videoUri ? videoUri?.split('.')[videoUri?.split('.').length - 1] : '';
+  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
 
   let disableCreator = false;
 
-  let artistName = artistData && typeof artistData === 'object' ?
-    artistData?.role === 'crypto' ?
-      artistData?.title?.trim() ? artistData.title :
-        artistData?.name?.trim() ? artistData.name :
-          artistData?.username?.trim() ? artistData.username.substring(0, 6) :
-            (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-              || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-              || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
-              || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
-              ? (
-                disableCreator = true,
-                collectCreatData?.creator
-              ) : artist ? artist?.substring(0, 6) : ""
-      : artistData?.username?.trim() ? artistData.username :
-        artistData?.name?.trim() ? artistData.name :
-          artistData?.title?.trim() ? artistData.title : artist ? artist?.substring(0, 6) : ""
-    : artist ? artist?.substring(0, 6) : ""
-
-  // console.log("🚀 ~ file: nftItem.js ~ line 571", artistData, '</>', artist, '>>>>')
-  // console.log("🚀 ~ file: nftItem.js ~ line 572 ~ nftItem ~ artistName", artistName)
-
-  let ownerName = ownerData && typeof ownerData === 'object' ?
-    ownerData?.role === 'crypto' ?
-      ownerData?.title?.trim() ? ownerData.title :
-        ownerData?.name?.trim() ? ownerData.name :
-          ownerData?.username?.trim() ? ownerData.username.substring(0, 6) : owner ? owner.substring(0, 6) : ""
-      : ownerData?.username?.trim() ? ownerData.username :
-        ownerData?.name?.trim() ? ownerData.name :
-          ownerData?.title?.trim() ? ownerData.title : owner ? owner.substring(0, 6) : ""
-    : owner ? owner.substring(0, 6) : ""
-
-  // console.log("🚀 ~ file: nftItem.js ~ line 573", ownerData, '</>', owner, '>>>>')
-  // console.log("🚀 ~ file: nftItem.js ~ line 574 ~ nftItem ~ ownerName", ownerName)
-
-  // let ownerName = ownerData ? (
-  //   ownerData.role === 'crypto' ?
-  //     ownerData.title ?
-  //       ownerData.title :
-  //       owner.includes("0x")
-  //         ? owner.substring(0, 6)
-  //         : owner.substring(0, 6) :
-  //     ownerData.role === 'non_crypto' ?
-  //       ownerData.username ?
-  //         ownerData.username : ""
-  //       : owner) :
-  //   owner
-
-  // let artistName = artistData && artist
-  //   ? artist.includes("0x")
-  //     ? artistData.hasOwnProperty("title") && artistData.title ?
-  //       artistData.title
-  //       : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-  //         || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-  //         || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
-  //         ? (
-  //           disableCreator = true,
-  //           collectCreat?.creator
-  //         )
-  //         : artist.substring(0, 6)
-  //     : artistData === "No record found" ?
-  //       artist.substring(0, 6) :
-  //       artistData.hasOwnProperty("username") && artistData.username ?
-  //         artistData.username.substring(0, 6) : artist.substring(0, 6)
-  //   : artist.substring(0, 6)
+  let artistName = artistData && artist
+    ? artist.includes("0x")
+      ? artistData.hasOwnProperty("title") && artistData.title ?
+        artistData.title
+        : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+          || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+          || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+          ? (
+            disableCreator = true,
+            collectCreat?.creator
+          )
+          : artist.substring(0, 6)
+      : artistData === "No record found" ?
+        artist.substring(0, 6) :
+        artistData.hasOwnProperty("username") && artistData.username ?
+          artistData.username.substring(0, 6) : artist.substring(0, 6)
+    : artist.substring(0, 6)
 
   return (
     <>
@@ -641,7 +596,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
             <Image source={Images.loadergif} />
           </View>
           :
-          <View>
+          <ScrollView>
             <View style={styles.modalSectCont}>
               <TouchableOpacity
                 onPress={() => {
@@ -661,9 +616,13 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                   </Text>
                   <Text
                     numberOfLines={1}
-                    style={[styles.iconLabel, { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 }]}
-                  >
-                    {artistName}
+                    style={[
+                      styles.iconLabel,
+                      { maxWidth: Platform.OS === 'ios' ? width * 0.35 : width * 0.4 },
+                    ]}>
+                    {
+                      artistName
+                    }
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -682,7 +641,20 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                   <Text
                     numberOfLines={1}
                     style={[styles.iconLabel, { maxWidth: width * 0.35 }]}>
-                    {ownerName}
+                    {
+                      ownerData ? (
+                        ownerData.role === 'crypto' ?
+                          ownerData.title ?
+                            ownerData.title :
+                            owner.includes("0x")
+                              ? owner.substring(0, 6)
+                              : owner.substring(0, 6) :
+                          ownerData.role === 'non_crypto' ?
+                            ownerData.username ?
+                              ownerData.username : ""
+                            : owner) :
+                        owner
+                    }
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -712,7 +684,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                 }}>
                 {fileType === 'mp4' ||
                   fileType === 'MP4' ||
-                  fileType === 'mov' || fileType === 'movie' ||
+                  fileType === 'mov' ||
                   fileType === 'MOV' ? (
                   <View style={styles.modalImage}>
                     <Video
@@ -824,24 +796,24 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
               <SpaceView mTop={SIZE(6)} />
               <Text style={styles.modalLabel}>{item.metaData.name}</Text>
               <View style={styles.separator} />
-              <View>
+              {!!item?.metaData && !!item.metaData.description && <View style={{marginBottom: 20}}>
                 <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
-                  {textShown ? item.metaData?.description : item.metaData?.description?.replaceAll('\n', '')}
+                  {textShown ? item.metaData.description : item.metaData.description?.replaceAll('\n', '')}
+                </Text>
                   {lengthMore && textShown && (
-                    <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
+                    <TouchableOpacity activeOpacity={1} style={[styles.readLessWrap]} onPress={() => setTextShown(false)}>
                       <Text style={styles.readMore}>{translate('common.Readless')}</Text>
                     </TouchableOpacity>
                   )}
-                </Text>
                 {lengthMore && !textShown && (
                   <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
                     <Text style={styles.threeDot}>{'...'}</Text>
                     <Text style={styles.readMore}>{translate('common.Readmore')}</Text>
                   </TouchableOpacity>
                 )}
-              </View>
+              </View>}
             </View>
-          </View>
+          </ScrollView>
       }
     </>
   );
