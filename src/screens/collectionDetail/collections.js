@@ -48,6 +48,7 @@ const Collections = props => {
         collectionId,
         userCollection,
         isStore,
+        manualColl,
     } = props;
     const {NftDataCollectionReducer} = useSelector(state => state);
     const dispatch = useDispatch();
@@ -93,6 +94,8 @@ const Collections = props => {
                         userCollection && userCollection.includes('0x')
                             ? collectionId
                             : null,
+                            false,
+                            manualColl
                     ),
                 );
             } else if (isSeries) {
