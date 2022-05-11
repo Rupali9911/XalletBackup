@@ -1,4 +1,4 @@
-package com.xanalia.app;
+package com.xanaliaMarketplace.app;
 
 import android.app.Application;
 import android.content.Context;
