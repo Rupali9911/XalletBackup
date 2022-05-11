@@ -53,7 +53,7 @@ import Store from './store';
 import { setRequestAppId } from './store/reducer/walletReducer';
 import { environment, translate } from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setPasscodeAsync } from './store/reducer/userReducer';
+import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer';
 import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
@@ -237,11 +237,11 @@ const AppRoutes = () => {
     //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
     // },
   };
-  console.log(!mainLoader && !showSplash)
   if (showSplash) return <AppSplash />;
   if (!showSplash) {
     SplashScreen.hide()
     if (!renderPass && pass) {
+      dispatch(updatePassStatus(true))
       dispatch(setPasscodeAsync(JSON.parse(pass)))
       toggle(true)
     }
@@ -257,7 +257,6 @@ const AppRoutes = () => {
     <NavigationContainer ref={navigatorRef} linking={linking}>
       {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data?.user?.role === "non_crypto") ? (
         <Stack.Navigator
-          // initialRouteName={"Create"}
           initialRouteName={initialRoute}
           headerMode="none"
           screenOptions={{
