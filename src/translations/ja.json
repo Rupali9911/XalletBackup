@@ -648,7 +648,7 @@
         "secondsLeft":"残り秒数",
         "passwordlengthshort":"パスワードは8文字以上でなければならない。",
         "blindboxCollections":"ミステリーボックス",
-         "zoomMail": "Zoomメール",
+         "zoomMail": "Zoomメール"
     },
     "AwardPage": {},
     "wallet": {
@@ -929,7 +929,9 @@
             "bidHistory": "入札履歴",
             "collectionHint": "このコレクションの他作品",
             "cameraPermissionHeader": "この機能には、カメラへのアクセスが必要です",
+            "storagePermissionHeader": "このアプリはあなたの写真ライブラリへのアクセスを必要とします。",
             "cameraPermissionMessage": "アクセスするには、［設定］をタップし［カメラ］をオンにします。",
+            "storagePermissionMessage": "アクセスを有効にするには、[設定]をタップして写真を有効にします。",
             "settings": "設定",
             "about": "に関しては",
             "noCollection": "コレクションがありません",

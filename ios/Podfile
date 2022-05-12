@@ -12,6 +12,7 @@ target 'showcase' do
     :hermes_enabled => false
   )
   permissions_path = '../node_modules/react-native-permissions/ios'
+    pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
 
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
