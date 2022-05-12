@@ -1,3 +1,5 @@
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import _ from 'lodash';
 import React, {useEffect, useState} from 'react';
 import {
@@ -41,6 +43,7 @@ import {networkType} from '../../common/networkType';
 import {SvgUri} from 'react-native-svg';
 import Video from 'react-native-fast-video';
 import {currencyInDollar} from '../wallet/functions';
+
 
 const {TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon} = SVGS;
 
@@ -647,7 +650,7 @@ function CollectionDetail(props) {
                     </View>
                 )}
                 <View style={styles.description}>
-                    <ScrollView>
+                    <ScrollView nestedScrollEnabled={true}>
                         {descTab ? (
                             <View>
                                 {isBlind ? (
