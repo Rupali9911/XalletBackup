@@ -417,6 +417,7 @@ function CollectionDetail(props) {
         if (isStore) {
             bannerUrl = 'https://ik.imagekit.io/xanalia/nftData/1632151483313.jpg';
         } else if (isBlind && nftId) {
+            console.log('selectedBlindBox',selectedBlindBox)
             bannerUrl = selectedBlindBox
                 ? selectedBlindBox.seriesURIMetaInfo?.banner_image
                 : "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg";

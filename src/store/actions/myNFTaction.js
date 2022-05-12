@@ -40,6 +40,8 @@ export const setNFTUserAddress = data => ({
 });
 
 export const myNFTList = (page, ownerId) => {
+
+  console.log('myNFTList, ownerId', ownerId)
   return (dispatch, getState) => {
 
     const { data, wallet } = getState().UserReducer;
@@ -54,8 +56,8 @@ export const myNFTList = (page, ownerId) => {
     };
 
     if (user?.role==='crypto') {
-      body_data.owner = ownerId.toUpperCase();
-      dispatch(setNFTUserAddress(ownerId.toLowerCase()));
+      body_data.owner = typeof ownerId === 'string' ? ownerId.toUpperCase() : ownerId;
+      dispatch(setNFTUserAddress(typeof ownerId === 'string' ? ownerId.toLowerCase() : ownerId));
     } else {
       body_data.status ='my_nft'
       dispatch(setNFTUserAddress(""));

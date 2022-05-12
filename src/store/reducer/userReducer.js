@@ -332,6 +332,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
                 );
                 resolve();
               } else {
+                  console.log('error 1', err);
                 dispatch(endLoading());
                 reject(_response);
               }
@@ -342,6 +343,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
               reject(err);
             });
         } else {
+            console.log('error 3', err);
           dispatch(endLoading());
           reject(response);
         }
