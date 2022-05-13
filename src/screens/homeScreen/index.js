@@ -34,13 +34,13 @@ import {
 import { AppHeader, C_Image } from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
-import SuccessModal from '../../components/successModal';
+import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
-import { passShowStatusCall, updateCreateState } from '../../store/reducer/userReducer';
+import { passShowStatusCall, updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awardsNFT';
@@ -58,10 +58,11 @@ import LaunchPad from './launchPad';
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess, passcodeAsync, data, passShowStatus } = useSelector(state => state.UserReducer);
+  const { showSuccess, data } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -77,8 +78,8 @@ const HomeScreen = ({ navigation }) => {
   const appStateChange = async nextAppState => {
     const languageCheck = await AsyncStorage.getItem('languageCheck');
     let parseLanguageCheck = JSON.parse(languageCheck);
-    // var pass = passcodeAsync;
-    // console.log(  passcodeAsync)
+    const passCheck = await AsyncStorage.getItem('@passcode');
+    let passVal = JSON.parse(passCheck);
     if (nextAppState === 'active') {
       if (parseLanguageCheck) {
         if (parseLanguageCheck.cameraPermission) {
@@ -90,7 +91,10 @@ const HomeScreen = ({ navigation }) => {
           return;
         }
       }
-      if (passcodeAsync) {
+      if (passVal && !passcodeAsyncStatus) {
+        setSuccessVisible(false)
+        setModalVisible(false)
+      dispatch(updatePassStatus(false))
         navigation.navigate('PasscodeScreen', { screen: 'active' })
       }
     }
@@ -262,7 +266,6 @@ const HomeScreen = ({ navigation }) => {
   }
 
   // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
-
 
   return (
     <>
@@ -447,7 +450,7 @@ const HomeScreen = ({ navigation }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         {isSuccessVisible ? (
-          <SuccessModal
+          <SuccessModalContent
             onClose={() => {
               setModalVisible(false);
               dispatch(updateCreateState());
