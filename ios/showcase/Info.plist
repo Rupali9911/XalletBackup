@@ -50,6 +50,7 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>${NSCameraUsageDscription}</string>
+
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -57,7 +58,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>For better AR experience</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>For better AR experience</string>
+	<string>This app requires access to the photo library.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SegoeUI.ttf</string>

@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text} from 'react-native';
+import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text,PermissionsAndroid} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import { Field, reduxForm } from 'redux-form';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector, useDispatch } from 'react-redux';
@@ -77,7 +78,11 @@ function Profile(props) {
   const [about, setAbout] = useState(UserReducer.data.user.about);
   const [errAbout, setErrAbout] = useState(false);
   const actionSheetRef = useRef(null);
+  //const [conformpermission,setConformpermission]=useState(true)
   const dispatch = useDispatch();
+
+  const [showPermission, setShowPermission] = useState(false);
+
 
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
@@ -94,8 +99,11 @@ function Profile(props) {
 
     if (index === OPEN_CAMERA) {
       const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-      console.log(isGranted, "isGranted")
-      if (!isGranted) {
+
+      //const isGranted =await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+      console.log(isGranted, "#####isGranted")
+      if (isGranted===false) {
+       // setShowPermission(true)
         confirmationAlert(
           translate("wallet.common.cameraPermissionHeader"),
           translate("wallet.common.cameraPermissionMessage"),
@@ -105,7 +113,7 @@ function Profile(props) {
           () => null
         )
       } else {
-        console.log("isGranted else")
+        console.log("isGranted ? ",isGranted)
         // launchCamera(options, (response) => {
         //   if (response.assets) {
         //     setPhoto(response.assets[0]);
@@ -117,15 +125,17 @@ function Profile(props) {
           cropping: true
         }).then(image => {
           console.log('Response from camera',image )
+
           if (image.height <= 512 && image.width <= 512) {
-            let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
-            let uri = Platform.OS == 'android' ? image.path : image.sourceURL
+            let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+            let uri = Platform.OS === 'android' ? image.path : image.sourceURL
+
             let temp = {
               path: image.path,
               uri: uri,
               type: image.mime,
               fileName: filename,
-                image: image
+              image: image
             }
             setPhoto(temp)
           }
@@ -137,27 +147,47 @@ function Profile(props) {
       //     setPhoto(response.assets[0]);
       //   }
       // });
-      ImagePicker.openPicker({
-        mediaType: "photo",
-        height: 512,
-        width: 512,
-        cropping: true
-      }).then(image => {
-          console.log('Response from camera',image )
-        if (image.height <= 512 && image.width <= 512) {
-          let filename = Platform.OS == 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
-          let uri = Platform.OS == 'android' ? image.path : image.sourceURL
-          let temp = {
-            path: image.path,
-            uri: uri,
-            type: image.mime,
-            fileName: filename,
+      const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
+      console.log("Storage permission Report " + isGranted)
+
+      if (isGranted === false) {
+        // setShowPermission(true)
+        confirmationAlert(
+            translate("wallet.common.storagePermissionHeader"),
+            translate("wallet.common.storagePermissionMessage"),
+            translate("common.Cancel"),
+            translate("wallet.common.settings"),
+            () => openSettings(),
+            () => null
+        )
+      } else {
+        ImagePicker.openPicker({
+          mediaType: "photo",
+          height: 512,
+          width: 512,
+          cropping: true
+        }).then(image => {
+          console.log('Response from storage', image)
+
+          if (image.height <= 512 && image.width <= 512) {
+
+            let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+
+            let uri = Platform.OS === 'android' ? image.path : image.sourceURL
+
+            let temp = {
+              path: image.path,
+              uri: uri,
+              type: image.mime,
+              fileName: filename,
               image: image
+            }
+            setPhoto(temp)
           }
-          setPhoto(temp)
-        }
-      })
+        })
+      }
     }
+
   }
 
   const onSave = () => {
@@ -311,14 +341,16 @@ function Profile(props) {
     if (validateNum === 8) {
       if (photo?.uri !== UserReducer.data.user.profile_image) {
         console.log('photo', photo)
+
         let formData = new FormData();
           let photoObj = {
               uri: photo.uri || photo.path,
               type:  photo.type,
               name: photo.fileName,
           };
-          console.log('photo.image', photo.image)
-        formData.append('profile_image', { uri: photo.uri, name: photo?.fileName, type: photo?.type });
+
+
+        formData.append('profile_image', { uri: photo?.path ? photo.path : photo.uri, name: photo?.fileName, type: photo?.type });
         dispatch(updateProfileImage(formData));
       }
       dispatch(updateProfile(req_body, () => navigation.goBack()));
@@ -502,6 +534,8 @@ function Profile(props) {
           cancelButtonIndex={2}
           onPress={selectActionSheet}
         />
+
+        {showPermission ? showpermissionalert() : null}
       </SafeAreaView>
     </AppBackground>
   )

@@ -13,6 +13,7 @@ import LanguageReducer from './languageReducer';
 import PaymentReducer from './paymentReducer';
 import AsyncReducer from './asyncStorageReducer';
 import PermissionReducer from './cameraPermission';
+import PermissionsReducer from './storagepermission';
 import HotCollectionReducer from './hotCollectionReducer';
 import NftDataCollectionReducer from './nftDataCollectionReducer';
 import CollectionReducer from './collectionReducer';
@@ -32,6 +33,7 @@ const RootReducer = combineReducers({
     PaymentReducer,
     AsyncReducer,
     PermissionReducer,
+    PermissionsReducer,
     HotCollectionReducer,
     NftDataCollectionReducer,
     CollectionReducer,

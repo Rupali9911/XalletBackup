@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp('1.5%'),
     paddingHorizontal: wp("5%"),
   },
-  listLabel: {
+  listLabel1: {
     fontFamily: fonts.ARIAL,
     fontSize: RF(1.9),
     color: colors.BLACK8,
