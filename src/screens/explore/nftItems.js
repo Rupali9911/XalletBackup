@@ -134,8 +134,9 @@ function NftItem({
 
     const onTextLayout = useCallback(e => {
         if (
-            e.nativeEvent.lines.length >= 2 &&
-            e.nativeEvent.lines[1].width > width - SIZE(40)
+            e.nativeEvent.lines.length >= 2 
+            // &&
+            // e.nativeEvent.lines[1].width > width - SIZE(40)
         )
             setLengthMore(true);
     }, []);
@@ -309,11 +310,11 @@ function NftItem({
                         {/* {nftItem.metaData.description} */}
                         {textShown ? nftItem.metaData.description : nftItem.metaData.description?.replaceAll('\n', '')}
                     </RNText>
-                        {lengthMore && textShown && (
-                            <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
-                                <Text style={styles.readMore}>{translate('common.Readless')}</Text>
-                            </TouchableOpacity>
-                        )}
+                    {lengthMore && textShown && (
+                        <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
+                            <Text style={styles.readMore}>{translate('common.Readless')}</Text>
+                        </TouchableOpacity>
+                    )}
                     {lengthMore && !textShown && (
                         <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
                             <RNText style={styles.threeDot}>{'...'}</RNText>
