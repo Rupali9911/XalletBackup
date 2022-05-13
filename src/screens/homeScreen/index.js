@@ -362,15 +362,15 @@ const HomeScreen = ({ navigation }) => {
                 }
               }}
             >
-              <Tab.Screen
-                name={translate('common.launchPad')}
-                component={LaunchPad}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(0);
-                  }
-                }}
-              />
+              {/*<Tab.Screen*/}
+                {/*name={translate('common.launchPad')}*/}
+                {/*component={LaunchPad}*/}
+                {/*listeners={({ navigation, route }) => {*/}
+                  {/*if (navigation.isFocused()) {*/}
+                    {/*setCurrentTab(0);*/}
+                  {/*}*/}
+                {/*}}*/}
+              {/*/>*/}
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}
