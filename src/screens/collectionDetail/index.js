@@ -798,7 +798,7 @@ function CollectionDetail(props) {
                         {'Blindbox'}
                     </Text>
                     <Text style={styles.storeCollectionName}>
-                        {`$${storeCollection.usdPrice}`}
+                        {`$${storeCollection.usdPrice || 0}`}
                     </Text>
                 </View>
             )
