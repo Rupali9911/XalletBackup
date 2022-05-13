@@ -221,7 +221,7 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
       fetch(url, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        if(json.data) {
+        if(json.data && json.count) {
           dispatch(nftBlindSeriesCollectionLoadSuccess(json));
         } else {
           dispatch(nftBlindSeriesCollectionLoadFail());
