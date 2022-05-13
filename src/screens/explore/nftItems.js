@@ -304,22 +304,23 @@ function NftItem({
                 </HStack>
                 <Text mt={2} fontFamily={fonts.ARIAL_BOLD} color="black" fontWeight="bold" fontSize={"12"} >{`${numberWithCommas(nftItem.rating)} ${translate('common.Likes')}`}</Text>
                 <Text mt={2} fontFamily={fonts.ARIAL_BOLD} color="black" fontWeight="bold" fontSize={"lg"} >{nftItem.metaData.name}</Text>
-                <View>
+                {!!nftItem?.metaData && !!nftItem?.metaData.description && <View>
                     <RNText onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
-                        {nftItem.metaData.description}
+                        {/* {nftItem.metaData.description} */}
+                        {textShown ? nftItem.metaData.description : nftItem.metaData.description?.replaceAll('\n', '')}
+                    </RNText>
                         {lengthMore && textShown && (
                             <TouchableOpacity activeOpacity={1} style={styles.readLessWrap} onPress={() => setTextShown(false)}>
                                 <Text style={styles.readMore}>{translate('common.Readless')}</Text>
                             </TouchableOpacity>
                         )}
-                    </RNText>
                     {lengthMore && !textShown && (
                         <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
                             <RNText style={styles.threeDot}>{'...'}</RNText>
                             <RNText style={styles.readMore}>{translate('common.Readmore')}</RNText>
                         </TouchableOpacity>
                     )}
-                </View>
+                </View>}
             </Box>
         </Box>
     );
