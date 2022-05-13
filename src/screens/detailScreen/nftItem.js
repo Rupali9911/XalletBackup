@@ -544,8 +544,9 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const onTextLayout = useCallback(e => {
     const {lines} = e.nativeEvent
     if (
-      lines.length >= 2 &&
-      lines[1].width > width - SIZE(40)
+      lines.length >= 2 
+      // &&
+      // lines[1].width > width - SIZE(40)
     )
       setLengthMore(true);
   }, []);
