@@ -248,17 +248,17 @@ const Collections = props => {
                     }}
                     refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
-                    onEndReached={() => {
-                        if (!isLoading && collectionList.length !== totalCount) {
-                            let num = page + 1;
-                            getNFTlist(num);
-                            if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionPageChange(num));
-                            } else {
-                                dispatch(nftDataCollectionPageChange(num));
-                            }
-                        }
-                    }}
+                    // onEndReached={() => {
+                    //     if (!isLoading && collectionList.length !== totalCount) {
+                    //         let num = page + 1;
+                    //         getNFTlist(num);
+                    //         if (isSeries) {
+                    //             dispatch(nftBlindSeriesCollectionPageChange(num));
+                    //         } else {
+                    //             dispatch(nftDataCollectionPageChange(num));
+                    //         }
+                    //     }
+                    // }}
                     onEndReachedThreshold={0.4}
                     keyExtractor={(v, i) => 'item_' + i}
                     ListFooterComponent={renderFooter}
