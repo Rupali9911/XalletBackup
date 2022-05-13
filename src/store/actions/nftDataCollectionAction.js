@@ -195,15 +195,19 @@ export const nftBlindDataCollectionList = (collectionAddress) => {
 export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
-    const owner = data.user._id;
+    const owner = wallet.address ||  data.user._id;
     
     if (type === 'owned') {
+      let url = `${BASE_URL}/user/my-collection`;
+      if (wallet.address) url = `${BASE_URL}/xanalia/mydata`;
+
       const req_body = {
         limit: 6,
         loggedIn: owner,
         networkType,
         nftType: 'mycollection',
         page,
+        owner,
       }
 
       const fetch_data_body = {
@@ -214,7 +218,7 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
           'Content-Type': 'application/json',
         },
       };
-      fetch(`${BASE_URL}/user/my-collection`, fetch_data_body)
+      fetch(url, fetch_data_body)
       .then(response => response.json())
       .then(json => {
         if(json.data) {
