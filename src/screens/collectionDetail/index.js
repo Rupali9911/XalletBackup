@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -9,40 +9,41 @@ import {
     Linking,
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import {C_Image} from '../../components';
+import { C_Image } from '../../components';
 import {
     getBoxes,
+    getBlindBoxSeriesSum,
     getBoxStatsDetails,
     getHotCollectionDetail,
     getStoreCollectioDetail
 } from '../../store/actions/hotCollectionAction';
 import ImageSrc from '../../constants/Images';
 import styles from './styles';
-import {useNavigation} from '@react-navigation/native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Collections from './collections';
-import {colors, fonts} from '../../res';
-import {translate} from '../../walletUtils';
-import {useSelector} from 'react-redux';
-import {SVGS} from 'src/constants';
-import {SIZE} from '../../constants';
+import { colors, fonts } from '../../res';
+import { translate } from '../../walletUtils';
+import { useSelector } from 'react-redux';
+import { SVGS } from 'src/constants';
+import { SIZE } from '../../constants';
 import {
     Menu,
     MenuOptions,
     MenuOption,
     MenuTrigger,
 } from 'react-native-popup-menu';
-import {alertWithSingleBtn} from '../../common/function';
-import {convertValue, divideNo, numberWithCommas} from '../../utils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
+import { alertWithSingleBtn } from '../../common/function';
+import { convertValue, divideNo, numberWithCommas } from '../../utils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
 import Web3 from 'web3';
-import {blockChainConfig} from '../../web3/config/blockChainConfig';
-import {networkType} from '../../common/networkType';
-import {SvgUri} from 'react-native-svg';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { networkType } from '../../common/networkType';
+import { SvgUri } from 'react-native-svg';
 import Video from 'react-native-fast-video';
-import {currencyInDollar} from '../wallet/functions';
+import { currencyInDollar } from '../wallet/functions';
 
-const {TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon} = SVGS;
+const { TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon } = SVGS;
 
 let MarketPlaceAbi = "";
 let MarketContractAddress = "";
@@ -70,14 +71,16 @@ const imageToChainKey = {
 };
 
 function CollectionDetail(props) {
-    const {route} = props;
-    const {collectionId, nftId, isBlind, isHotCollection, isStore} = route.params;
+    const { route } = props;
+    const { collectionId, nftId, isBlind, isHotCollection, isStore } = route.params;
+    console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
     const [collectionType, setCollectionType] = useState(0);
     const [collectionAddress, setCollectionAddress] = useState(null);
     const [storeCollection, setStoreCollection] = useState({});
+    const [sumBlindBox, setSumBlindBox] = useState({});
 
     const [blindboxList, setBlindboxList] = useState([]);
     const [statsDetails, setStatsDetails] = useState([]);
@@ -92,8 +95,8 @@ function CollectionDetail(props) {
     const [priceOnDollar, setPriceOnDollar] = useState(0);
     const [selectedPack, setSelectedPack] = useState();
     const navigation = useNavigation();
-    const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-    const {data, wallet} = useSelector(state => state.UserReducer);
+    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+    const { data, wallet } = useSelector(state => state.UserReducer);
 
     useEffect(() => {
         getCollection();
@@ -190,8 +193,10 @@ function CollectionDetail(props) {
                 );
                 setCollectionAddress(collectionArray?.data?.data?._id);
                 setCollection(collectionArray?.data?.data);
-                if (isBlind && nftId) {
-                    setBlindBoxes(collectionArray);
+
+                console.log("🚀 ~ file: index.js ~ line 195 ~ getCollection ~ isBlind", isBlind, nftId, collectionArray?.data?.data?._id)
+                if (isBlind) {
+                    nftId ? setBlindBoxes(collectionArray) : getSeriesSum(collectionArray?.data?.data?._id)
                 } else {
                     setLoading(false);
                 }
@@ -212,11 +217,14 @@ function CollectionDetail(props) {
     };
 
     const setBlindBoxes = async (collectionArray) => {
+        console.log("🚀 ~ file: index.js ~ line 243 ~ ~", collectionArray)
+
         const boxes = await getBoxes(collectionArray?.data.data._id);
         if (!_.isEmpty(boxes)) {
             const filteredBlindBoxCollection = _.filter(boxes.data.data, item => item._id === nftId);
 
             setBlindboxList(boxes.data.data);
+            console.log("🚀 ~ file: index.js ~ line 220 ~ ~ boxes.data.data", boxes.data.data, filteredBlindBoxCollection)
 
             if (filteredBlindBoxCollection && filteredBlindBoxCollection[0]) {
                 setSelectedBlindBox(filteredBlindBoxCollection[0]);
@@ -229,13 +237,27 @@ function CollectionDetail(props) {
 
                     chainInfo(filteredBlindBoxCollection[0]);
                 } catch (err) {
-                    console.log('====setBlindBoxes Error', err);
+                    console.log('=== Error 238', err);
                     setLoading(false);
                 }
             }
+            setLoading(false);
         } else {
             setLoading(false);
         }
+    }
+
+    const getSeriesSum = (collectionAddress) => {
+        getBlindBoxSeriesSum(collectionAddress)
+            .then(sumData => {
+                console.log("🚀 ~ file: index.js ~ line 255 ~ ~ sumData", sumData)
+                setSumBlindBox(sumData)
+                setLoading(false);
+            })
+            .catch(err => {
+                console.log("🚀 ~ file: index.js ~ line 260 ~ ~ err", err)
+                setLoading(false);
+            })
     }
 
     useEffect(() => {
@@ -331,6 +353,8 @@ function CollectionDetail(props) {
     };
 
     const chainInfo = async (blindBox) => {
+        console.log("🚀 ~ file: index.js ~ line 394 ~ chainInfo ~ chainInfo", blindBox)
+
         let index = "";
         let _availableChains = [];
         for (let i = 0; i < blindBox.seriesChain.length; i++) {
@@ -436,11 +460,11 @@ function CollectionDetail(props) {
     const renderSubBanner = () => {
         if (String(isStore).includes('MONKEY_KING')) {
             return (
-                <View style={{paddingHorizontal: SIZE(15), marginTop: SIZE(5)}}>
+                <View style={{ paddingHorizontal: SIZE(15), marginTop: SIZE(5) }}>
                     <C_Image
                         uri={storeCollection.image}
                         type={'jpg'}
-                        imageStyle={{width: '100%', height: SIZE(300)}}
+                        imageStyle={{ width: '100%', height: SIZE(300) }}
                     />
                 </View>
             )
@@ -457,7 +481,7 @@ function CollectionDetail(props) {
         return (
             <View style={styles.bannerIconWrap}>
                 <Image
-                    source={{uri: bannerUrl}}
+                    source={{ uri: bannerUrl }}
                     style={styles.bannerIcon}
                 />
             </View>
@@ -469,25 +493,25 @@ function CollectionDetail(props) {
             <View style={styles.socialLinksWrap}>
                 {collection?.userInfo?.links?.twitter ? (
                     <TouchableOpacity
-                        style={{marginRight: 10}}
-                        hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
+                        style={{ marginRight: 10 }}
+                        hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
                         onPress={() => Linking.openURL(collection?.userInfo?.links?.twitter)}>
-                        <TwiiterIcon/>
+                        <TwiiterIcon />
                     </TouchableOpacity>
                 ) : null}
                 {collection?.userInfo?.links?.instagram ? (
                     <TouchableOpacity
-                        hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
-                        style={{marginRight: 6}}
+                        hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+                        style={{ marginRight: 6 }}
                         onPress={() => Linking.openURL(collection?.userInfo?.links?.instagram)}>
-                        <InstagramIcon/>
+                        <InstagramIcon />
                     </TouchableOpacity>
                 ) : null}
                 {collection?.userInfo?.links?.facebook ? (
                     <TouchableOpacity
-                        hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
+                        hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
                         onPress={() => Linking.openURL(collection?.userInfo?.links?.facebook)}>
-                        <FacebookIcon/>
+                        <FacebookIcon />
                     </TouchableOpacity>
                 ) : null}
             </View>
@@ -499,23 +523,23 @@ function CollectionDetail(props) {
         if (isBlind && nftId) {
             return (
                 <>
-                    <View style={{padding: SIZE(10)}}>
+                    <View style={{ padding: SIZE(10) }}>
                         {selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
                             <Video
-                                source={{uri: selectedBlindBox?.packVideo}}
+                                source={{ uri: selectedBlindBox?.packVideo }}
                                 repeat={true}
                                 resizeMode={'cover'}
-                                style={styles.selectBlindBoxVideo}/>
+                                style={styles.selectBlindBoxVideo} />
                         ) : (
                             <Image
-                                source={{uri: selectedBlindBox?.packVideo}}
+                                source={{ uri: selectedBlindBox?.packVideo }}
                                 style={styles.selectBlindBoxVideo}
                             />
                         )}
                         <Text style={styles.selectBlindBoxName}>
                             {selectedBlindBox.name}
                         </Text>
-                        <View style={{flexDirection: 'row', alignItems: 'flex-end', marginTop: SIZE(5)}}>
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: SIZE(5) }}>
                             <Text style={{
                                 fontSize: SIZE(22),
                                 fontWeight: 'bold',
@@ -577,16 +601,16 @@ function CollectionDetail(props) {
         if (isStore) {
             return (
                 <>
-                    <View style={[styles.description, {marginTop: SIZE(-15)}]}>
+                    <View style={[styles.description, { marginTop: SIZE(-15) }]}>
                         <ScrollView>
                             <Text style={styles.descriptionText}>
                                 {storeCollection[`${selectedLanguageItem.language_name}_description`]}
                             </Text>
                         </ScrollView>
                     </View>
-                    <View style={{padding: SIZE(15), paddingTop: 0}}>
+                    <View style={{ padding: SIZE(15), paddingTop: 0 }}>
                         <View style={styles.sellButton}>
-                            <Text style={{color: 'white'}}>{'Sold Out'}</Text>
+                            <Text style={{ color: 'white' }}>{'Sold Out'}</Text>
                         </View>
                         <Text style={styles.storeCollectionName}>
                             {storeCollection[`${selectedLanguageItem.language_name}_artistName`]}
@@ -594,7 +618,7 @@ function CollectionDetail(props) {
                         <Text style={styles.descriptionText}>
                             {storeCollection[`${selectedLanguageItem.language_name}_artistDescription`]}
                         </Text>
-                        <Text style={[styles.descriptionText, {marginVertical: SIZE(15)}]}>
+                        <Text style={[styles.descriptionText, { marginVertical: SIZE(15) }]}>
                             {translate('common.creator')}
                         </Text>
                         <Text style={styles.storeCollectionName}>
@@ -653,7 +677,7 @@ function CollectionDetail(props) {
                                     <Text
                                         style={[
                                             styles.descriptionText,
-                                            {fontSize: SIZE(16), fontWeight: 'bold'},
+                                            { fontSize: SIZE(16), fontWeight: 'bold' },
                                         ]}>
                                         {collection.collectionName}
                                     </Text>
@@ -666,14 +690,14 @@ function CollectionDetail(props) {
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
-                                    ] || collection.userInfo.about}
+                                ] || collection.userInfo.about}
                             </Text>
                         ) : (
                             <View>
                                 <Text
                                     style={[
                                         styles.descriptionText,
-                                        {fontSize: SIZE(16), fontWeight: 'bold'},
+                                        { fontSize: SIZE(16), fontWeight: 'bold' },
                                     ]}>
                                     {collection.creatorName}
                                 </Text>
@@ -700,60 +724,72 @@ function CollectionDetail(props) {
     });
 
     const renderDetailList = () => {
+        console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
+        console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", collection, statsDetails)
         if (isStore) return null;
+        let items = ''
+        let owners = ''
+        let floorPrice = ''
+        let volTraded = ''
+
         if (!isBlind || isBlind && nftId) {
-            const items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length;
-            const owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : '--';
-            const floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
+            items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length;
+            owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : '--';
+            floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(3) : statsDetails?.floorPriceInDollar <= 40
                 ? formatter.format(statsDetails.floorPrice)
                 : statsDetails?.floorPrice?.toFixed(3);
-            const volTraded = !isBlind ? Number(collection?.volTraded).toFixed(2) : statsDetails?.volumeTradeInETH
+            volTraded = !isBlind ? Number(collection?.volTraded).toFixed(3) : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
                 : '--'
-
-            return (
-                <View style={styles.collectionTable}>
-                    <View style={styles.collectionTableRow}>
-                        <Text style={styles.collectionTableRowText}>
-                            {items}
-                        </Text>
-                        <Text style={styles.collectionTableRowDec}>
-                            {translate('common.itemsCollection')}
-                        </Text>
-                    </View>
-                    <View style={styles.collectionTableRow}>
-                        <Text style={styles.collectionTableRowText}>
-                            {owners}
-                        </Text>
-                        <Text style={styles.collectionTableRowDec}>
-                            {translate('common.owners')}
-                        </Text>
-                    </View>
-                    <View style={styles.collectionTableRow}>
-                        <View style={{flexDirection: 'row'}}>
-                            <Image source={ImageSrc.etherium} style={styles.cryptoIcon}/>
-                            <Text style={styles.collectionTableRowText}>
-                                {floorPrice}
-                            </Text>
-                        </View>
-                        <Text style={styles.collectionTableRowDec}>
-                            {translate('common.floorPrice')}
-                        </Text>
-                    </View>
-                    <View style={styles.collectionTableRow}>
-                        <View style={{flexDirection: 'row'}}>
-                            <Image source={ImageSrc.etherium} style={styles.cryptoIcon}/>
-                            <Text style={styles.collectionTableRowText}>
-                                {volTraded}
-                            </Text>
-                        </View>
-                        <Text style={styles.collectionTableRowDec}>
-                            {translate('common.volumeTraded')}
-                        </Text>
-                    </View>
-                </View>
-            )
+        } else if (isBlind && !nftId && sumBlindBox) {
+            items = sumBlindBox?.itemsCount
+            owners = sumBlindBox?.OwnerCount
+            floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
+            volTraded = sumBlindBox?.volumeTradeInETH?.toFixed(3)
         }
+
+        return (
+            <View style={styles.collectionTable}>
+                <View style={styles.collectionTableRow}>
+                    <Text style={styles.collectionTableRowText}>
+                        {items}
+                    </Text>
+                    <Text style={styles.collectionTableRowDec}>
+                        {translate('common.itemsCollection')}
+                    </Text>
+                </View>
+                <View style={styles.collectionTableRow}>
+                    <Text style={styles.collectionTableRowText}>
+                        {owners}
+                    </Text>
+                    <Text style={styles.collectionTableRowDec}>
+                        {translate('common.owners')}
+                    </Text>
+                </View>
+                <View style={styles.collectionTableRow}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                        <Text style={styles.collectionTableRowText}>
+                            {floorPrice}
+                        </Text>
+                    </View>
+                    <Text style={styles.collectionTableRowDec}>
+                        {translate('common.floorPrice')}
+                    </Text>
+                </View>
+                <View style={styles.collectionTableRow}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                        <Text style={styles.collectionTableRowText}>
+                            {volTraded}
+                        </Text>
+                    </View>
+                    <Text style={styles.collectionTableRowDec}>
+                        {translate('common.volumeTraded')}
+                    </Text>
+                </View>
+            </View>
+        )
     }
 
     const renderChainList = () => {
@@ -768,7 +804,7 @@ function CollectionDetail(props) {
                             : `https://ik.imagekit.io/xanalia/Images/${imageToChainKey[item].inactive}`;
                         return (
                             <TouchableOpacity
-                                style={[styles.chainListButton, {backgroundColor: isSelected ? 'black' : 'white'}]}
+                                style={[styles.chainListButton, { backgroundColor: isSelected ? 'black' : 'white' }]}
                                 key={item}
                                 onPress={() => setNftChain(item)}>
                                 <SvgUri
@@ -776,7 +812,7 @@ function CollectionDetail(props) {
                                     height={SIZE(12)}
                                     uri={chainTypeImage}
                                 />
-                                <Text style={[styles.chainListButtonText, {color: !isSelected ? 'black' : 'white'}]}>
+                                <Text style={[styles.chainListButtonText, { color: !isSelected ? 'black' : 'white' }]}>
                                     {item.substr(0, 1).toUpperCase() + item.substr(1, item.length)}
                                 </Text>
                             </TouchableOpacity>
@@ -790,11 +826,11 @@ function CollectionDetail(props) {
     const renderTitle = () => {
         if (isStore) {
             return (
-                <View style={{padding: SIZE(15)}}>
-                    <Text style={[styles.storeCollectionName, {color: '#636363'}]}>
+                <View style={{ padding: SIZE(15) }}>
+                    <Text style={[styles.storeCollectionName, { color: '#636363' }]}>
                         {storeCollection[`${selectedLanguageItem.language_name}_title`]}
                     </Text>
-                    <Text style={[styles.storeCollectionName, {color: 'red'}]}>
+                    <Text style={[styles.storeCollectionName, { color: 'red' }]}>
                         {'Blindbox'}
                     </Text>
                     <Text style={styles.storeCollectionName}>
@@ -816,7 +852,7 @@ function CollectionDetail(props) {
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={styles.backButtonWrap}>
-                    <Image style={styles.backIcon} source={ImageSrc.backArrow}/>
+                    <Image style={styles.backIcon} source={ImageSrc.backArrow} />
                 </TouchableOpacity>
                 <View
                     style={styles.headerContent}>
@@ -829,15 +865,15 @@ function CollectionDetail(props) {
                                     : translate('common.userBlocked'),
                             );
                         }}>
-                        <MenuTrigger children={<ThreeDotsVerticalIcon/>}/>
+                        <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                         <MenuOptions>
                             <MenuOption value={1}>
-                                <Text style={{marginVertical: 10}}>
+                                <Text style={{ marginVertical: 10 }}>
                                     {translate('common.reportCollection')}
                                 </Text>
                             </MenuOption>
                             <MenuOption value={2}>
-                                <Text style={{marginVertical: 10}}>
+                                <Text style={{ marginVertical: 10 }}>
                                     {translate('common.blockUser')}
                                 </Text>
                             </MenuOption>
@@ -855,10 +891,10 @@ function CollectionDetail(props) {
                 {blindBoxInfo()}
                 {renderDescription()}
 
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                     {!isBlind || (isBlind && nftId) ? (
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View style={{flexDirection: 'row'}}>
+                            <View style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity
                                     onPress={() => setCollectionType(0)}
                                     style={[
@@ -877,6 +913,7 @@ function CollectionDetail(props) {
                                         {isBlind && nftId ? 'All' : translate('common.onSale')}
                                     </Text>
                                 </TouchableOpacity>
+
                                 <TouchableOpacity
                                     onPress={() => setCollectionType(1)}
                                     style={[
@@ -933,7 +970,65 @@ function CollectionDetail(props) {
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>
-                    ) : null}
+                    ) : isBlind && !nftId ?
+                        <View style={{ flexDirection: 'row' }}>
+
+                            {/* // {isHotCollection ? */}
+                            <View style={styles.intoMystery}>
+                                {console.log("🚀 ~ file: index.js ~ line 867 ~ CollectionDetail ~ intoMystery", isBlind, nftId)}
+
+                                <TouchableOpacity
+                                    onPress={() => setCollectionType(0)}
+                                    style={[
+                                        styles.tabBarItem,
+                                        {
+                                            borderTopColor: collectionType === 0 ? colors.BLUE4 : 'white',
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={[
+                                            styles.tabBarLabel,
+                                            {
+                                                color: collectionType === 0 ? colors.BLUE4 : colors.GREY1,
+                                            },
+                                        ]}>
+                                        {isBlind && nftId ? translate('common.owned') : translate('common.gallery')}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() => setCollectionType(1)}
+                                    style={[
+                                        styles.tabBarItem,
+                                        {
+                                            borderTopColor: collectionType === 1 ? colors.BLUE4 : 'white',
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={[
+                                            styles.tabBarLabel,
+                                            {
+                                                color: collectionType === 1 ? colors.BLUE4 : colors.GREY1,
+                                            },
+                                        ]}>
+                                        {translate('common.blindboxCollections')}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                {/* <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={{ borderTopColor: 'transparent' }}>
+                            <Text style={[styles.collectionTabItemLabel, { color: colors.BLUE1 }]}>
+                                {translate('common.blindboxCollections')}
+                            </Text>
+                        </TouchableOpacity> */}
+                            </View>
+
+                        </View>
+                        : null}
+
+                    {console.log("🚀 ~ file: index.js ~ line 1004 ~ CollectionDetail ~ isBlind", isBlind, isBlind && nftId, nftId)}
+
                     {(collectionAddress || isStore) && !loading && (
                         <Collections
                             collectionAddress={(isBlind && nftId) ? nftId : collectionAddress}

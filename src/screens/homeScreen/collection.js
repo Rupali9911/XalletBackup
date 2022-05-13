@@ -28,10 +28,10 @@ const Collection = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-      dispatch(collectionLoadStart());
-      dispatch(collectionListReset());
-      getCollection(1, isSelectTab);
-      dispatch(collectionPageChange(1));
+    dispatch(collectionLoadStart());
+    dispatch(collectionListReset());
+    getCollection(1, isSelectTab);
+    dispatch(collectionPageChange(1));
   }, [isSelectTab]);
 
   const getCollection = useCallback((page, isSelectTab) => {
@@ -61,21 +61,38 @@ const Collection = () => {
         creatorInfo={item.creatorInfo}
         blind={item.blind}
         onPress={() => {
-          console.log('========', item);
+          console.log('========', item, item.redirect, item.isBlind, isSelectTab);
           if (item.redirect) {
             navigation.push('CollectionDetail',
-            {
-              isBlind: false,
-              collectionId: item._id,
-              isHotCollection: true,
-              isStore: item.redirect,
-            });
+              {
+                isBlind: false,
+                collectionId: item._id,
+                isHotCollection: true,
+                isStore: item.redirect,
+              });
           } else if (item.blind) {
             console.log('========collection tab => blind1', item.blind, item.collectionId)
-            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+            // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
+            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false});
           } else {
+          console.log("🚀 ~ file: collection.js ~ line 77 ~ renderItem ~ else")
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
           }
+          // if (!isSelectTab) {
+          //   navigation.push('CollectionDetail',
+          //   {
+          //     isBlind: false,
+          //     collectionId: item._id,
+          //     isHotCollection: true,
+          //     isStore: item.redirect,
+          //   });
+          // } else if (item.blind) {
+          //   console.log('========collection tab => blind1', item.blind, item.collectionId)
+          //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: true });
+          // } else {
+          //   console.log("Else ")
+          //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: false });
+          // }
         }}
       />
     );
@@ -89,14 +106,14 @@ const Collection = () => {
           onPress={() => setSelectTab(true)}
           style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
           <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-              {translate('wallet.common.collection')}
+            {translate('wallet.common.collection')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setSelectTab(false)}
           style={[styles.collectionTabItem, { borderTopColor: !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
           <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-              {translate('common.blindboxCollections')}
+            {translate('common.blindboxCollections')}
           </Text>
         </TouchableOpacity>
       </View>
