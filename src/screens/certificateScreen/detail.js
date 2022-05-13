@@ -1860,7 +1860,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             ) : (
               <C_Image
-                uri={item.thumbnailUrl}
+                uri={item.thumbnailUrl || item.metaData.image}
                 imageStyle={styles.modalImage}
                 isContain
               />

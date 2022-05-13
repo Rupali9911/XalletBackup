@@ -562,7 +562,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const videoUri = nftDetail ?
     nftDetail?.metaData?.image :
     item ? item?.metaData?.image?.replace('nftdata', 'nftData') : item?.thumbnailUrl;
-  const imageUri = item?.thumbnailUrl;
+  const imageUri = item?.thumbnailUrl || item.metaData.image;
 
   const image = item.metaData.image || item.thumbnailUrl;
     const fileType = videoUri ? videoUri?.split('.')[videoUri?.split('.').length - 1] : '';

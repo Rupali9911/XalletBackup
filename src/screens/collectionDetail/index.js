@@ -802,7 +802,7 @@ function CollectionDetail(props) {
                         {'Blindbox'}
                     </Text>
                     <Text style={styles.storeCollectionName}>
-                        {`$${storeCollection.usdPrice}`}
+                        {`$${storeCollection.usdPrice || 0}`}
                     </Text>
                 </View>
             )
@@ -878,7 +878,7 @@ function CollectionDetail(props) {
                                                 color: collectionType === 0 ? colors.BLUE4 : colors.GREY1,
                                             },
                                         ]}>
-                                        {isBlind && nftId ? 'All' : translate('common.onSale')}
+                                        {isBlind && nftId ? translate('common.gallery') : translate('common.onSale')}
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity

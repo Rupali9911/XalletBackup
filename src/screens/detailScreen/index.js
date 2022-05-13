@@ -81,7 +81,7 @@ const DetailItemScreen = (props) => {
 
     const renderItem = (item) => {
         console.log('renderItem', item)
-        if (sName == 'blindSeriesCollection' && item) {
+        if (sName == 'blindSeriesCollection' || sName == 'dataCollection' && item) {
            item.metaData = item;
         }
         if (item && item.hasOwnProperty("metaData") && item.metaData) {
