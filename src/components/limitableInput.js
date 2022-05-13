@@ -64,7 +64,6 @@ const TextLimit = styled.Text`
 
 const LimitableInput = (props) => {
     const { multiLine, label, value, onChange,about, error, ...inputProps } = props;
-    console.log('about', about)
     return (
         <View>
             {!multiLine ? (

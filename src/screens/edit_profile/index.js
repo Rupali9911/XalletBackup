@@ -98,34 +98,12 @@ function Profile(props) {
     };
 
     if (index === OPEN_CAMERA) {
-      const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-
-      //const isGranted =await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-      console.log(isGranted, "#####isGranted")
-      if (isGranted===false) {
-       // setShowPermission(true)
-        confirmationAlert(
-          translate("wallet.common.cameraPermissionHeader"),
-          translate("wallet.common.cameraPermissionMessage"),
-          translate("common.Cancel"),
-          translate("wallet.common.settings"),
-          () => openSettings(),
-          () => null
-        )
-      } else {
-        console.log("isGranted ? ",isGranted)
-        // launchCamera(options, (response) => {
-        //   if (response.assets) {
-        //     setPhoto(response.assets[0]);
-        //   }
-        // });
         ImagePicker.openCamera({
           height: 512,
           width: 512,
           cropping: true
         }).then(image => {
           console.log('Response from camera',image )
-
           if (image.height <= 512 && image.width <= 512) {
             let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL
@@ -139,28 +117,24 @@ function Profile(props) {
             }
             setPhoto(temp)
           }
+        }).catch(async e => {
+            console.log('Error from openCamera', e, e.code)
+            if (e.code && (e.code === 'E_NO_CAMERA_PERMISSION' || e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR'))
+            {
+                // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+                // if (isGranted===false) {
+                    confirmationAlert(
+                        translate("wallet.common.cameraPermissionHeader"),
+                        translate("wallet.common.cameraPermissionMessage"),
+                        translate("common.Cancel"),
+                        translate("wallet.common.settings"),
+                        () => openSettings(),
+                        () => null
+                    )
+                // }
+            }
         })
-      }
     } else if (index === OPEN_GALLERY) {
-      // launchImageLibrary(options, (response) => {
-      //   if (response.assets) {
-      //     setPhoto(response.assets[0]);
-      //   }
-      // });
-      const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
-      console.log("Storage permission Report " + isGranted)
-
-      if (isGranted === false) {
-        // setShowPermission(true)
-        confirmationAlert(
-            translate("wallet.common.storagePermissionHeader"),
-            translate("wallet.common.storagePermissionMessage"),
-            translate("common.Cancel"),
-            translate("wallet.common.settings"),
-            () => openSettings(),
-            () => null
-        )
-      } else {
         ImagePicker.openPicker({
           mediaType: "photo",
           height: 512,
@@ -184,10 +158,23 @@ function Profile(props) {
             }
             setPhoto(temp)
           }
+        }).catch(async e => {
+            console.log('Error from openPicker', e)
+            if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'){
+                // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
+                // if (isGranted === false) {
+                    confirmationAlert(
+                        translate("wallet.common.storagePermissionHeader"),
+                        translate("wallet.common.storagePermissionMessage"),
+                        translate("common.Cancel"),
+                        translate("wallet.common.settings"),
+                        () => openSettings(),
+                        () => null
+                    )
+                // }
+            }
         })
       }
-    }
-
   }
 
   const onSave = () => {
@@ -340,17 +327,10 @@ function Profile(props) {
 
     if (validateNum === 8) {
       if (photo?.uri !== UserReducer.data.user.profile_image) {
-        console.log('photo', photo)
-
         let formData = new FormData();
-          let photoObj = {
-              uri: photo.uri || photo.path,
-              type:  photo.type,
-              name: photo.fileName,
-          };
-
-
         formData.append('profile_image', { uri: photo?.path ? photo.path : photo.uri, name: photo?.fileName, type: photo?.type });
+
+        console.log('formData', formData._parts)
         dispatch(updateProfileImage(formData));
       }
       dispatch(updateProfile(req_body, () => navigation.goBack()));
