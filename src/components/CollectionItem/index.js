@@ -7,6 +7,7 @@ import {translate} from '../../walletUtils';
 
 const {PolygonIcon, Ethereum, BitmapIcon} = SVGS;
 
+var isFirstPressDone= false;
 export default function CollectionItem(props) {
   const {
     bannerImage,
@@ -20,7 +21,6 @@ export default function CollectionItem(props) {
     blind,
     isCollection,
   } = props;
-
   const chainIcon = type => {
     if (type === 'polygon') {
       return <PolygonIcon />;
@@ -75,8 +75,17 @@ export default function CollectionItem(props) {
     }
   };
 
+  const handleOnPress = () => {
+    if(!isFirstPressDone){
+      onPress();
+      isFirstPressDone=true;
+    }else{
+      isFirstPressDone=false;
+    }
+  }
+  
   return (
-    <TouchableOpacity onPress={onPress} style={styles.collectionListItem}>
+    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
