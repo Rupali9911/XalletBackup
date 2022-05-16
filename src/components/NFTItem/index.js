@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
-import {SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL, COLORS} from 'src/constants';
+import { SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL, COLORS } from 'src/constants';
 import insertComma from '../../utils/insertComma';
 import { basePriceTokens } from '../../web3/config/basePriceTokens';
 import { SvgUri } from 'react-native-svg';
@@ -25,6 +25,7 @@ export default function NFTItem(props) {
     screenName,
     isStore,
   } = props;
+  // console.log("🚀 ~ file: index.js ~ line 28 ~ NFTItem ~ item", item, image)
 
   const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
     SVGS;
@@ -35,9 +36,9 @@ export default function NFTItem(props) {
 
   let imageUri = isStore ? image : isMeCollection ? (item.iconImage ? item.iconImage : null)
     : item.thumbnailUrl !== undefined || item.thumbnailUrl
-      ? item.thumbnailUrl : item.metaData?.image;
+      ? item.thumbnailUrl : isBlind ? item.metaData?.thumbnft : item.metaData?.image;
 
-  let mediaUrl = item?.metaData?.image ;
+  let mediaUrl = item?.metaData?.image;
 
   const chainType = type => {
     if (item.isForAward) return <Ethereum />; //Hardcoded as per web requirements
@@ -72,20 +73,20 @@ export default function NFTItem(props) {
     }
   };
 
-    const getAwardsIcon = (awardType) => {
-        switch (awardType) {
-            case "GOLD_Award":
-                return AWARD_GOLD
-            case "BRONZE_Award":
-                return AWARD_BRONZE
-            case "SILVER_Award":
-                return AWARD_SILVER
-            case "Special_Award":
-                return AWARD_SPECIAL
-            default:
-                return AWARD_SPECIAL
-        }
-    };
+  const getAwardsIcon = (awardType) => {
+    switch (awardType) {
+      case "GOLD_Award":
+        return AWARD_GOLD
+      case "BRONZE_Award":
+        return AWARD_BRONZE
+      case "SILVER_Award":
+        return AWARD_SILVER
+      case "Special_Award":
+        return AWARD_SPECIAL
+      default:
+        return AWARD_SPECIAL
+    }
+  };
 
   const getAuctionTimeRemain = item => {
     if (item.newprice && item.newprice.endTime) {
@@ -211,18 +212,18 @@ export default function NFTItem(props) {
             </TouchableOpacity>
             <View>
               <C_Image
-                type={item?.type}
+                type={isBlind ? uriType : item?.type}
                 uri={imageUri}
                 imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
               />
             </View>
             <View style={styles.collectionWrapper}>
-              <Text numberOfLines={1}>{item.name}</Text>
-                <Text
-                    numberOfLines={1}
-                    style={styles.titleText}>
-                    {creatorName}
-                </Text>
+              <Text numberOfLines={1}>{isBlind ? item?.metaData?.name : item.name}</Text>
+              <Text
+                numberOfLines={1}
+                style={styles.titleText}>
+                {creatorName}
+              </Text>
               <View
                 style={styles.newPrice}>
                 {item.newprice &&
@@ -340,11 +341,11 @@ export default function NFTItem(props) {
             </View>
             <View style={styles.collectionWrapper}>
               <Text numberOfLines={1}>{item.metaData?.name}</Text>
-                <Text
-                    numberOfLines={1}
-                    style={styles.titleText}>
-                    {creatorName}
-                </Text>
+              <Text
+                numberOfLines={1}
+                style={styles.titleText}>
+                {creatorName}
+              </Text>
               <View
                 style={styles.newPrice}>
                 {item.newprice &&
@@ -361,30 +362,30 @@ export default function NFTItem(props) {
                       numberOfLines={1}
                       style={styles.priceText1}>
                       {
-                       // insertComma(parseFloat(item?.price, true).toFixed(2))
-                          item?.price < 1
+                        // insertComma(parseFloat(item?.price, true).toFixed(2))
+                        item?.price < 1
+                          ? Math.round((item?.price) * 100) / 100
                             ? Math.round((item?.price) * 100) / 100
-                                ? Math.round((item?.price) * 100) / 100
-                                : insertComma(parseFloat(item?.price, true).toFixed(2))
-                            : insertComma(parseFloat(item?.price, true).toFixed(0))
-                            // : insertComma(item?.price, true)
+                            : insertComma(parseFloat(item?.price, true).toFixed(2))
+                          : insertComma(parseFloat(item?.price, true).toFixed(0))
+                        // : insertComma(item?.price, true)
                       }
                     </Text>
                     {renderIcon()}
                   </View>
                 ) : (
-                    <Text
-                        style={styles.soldOutText1}>
-                        {translate('common.soldout')}
-                    </Text>
+                  <Text
+                    style={styles.soldOutText1}>
+                    {translate('common.soldout')}
+                  </Text>
                 )}
               </View>
               <View
                 style={styles.chainView}>
-                <View style={{flexDirection: 'row'}}>
-                {chainType(item?.nftChain)}
-                  {item.isForAward ? <Image style={styles.awadImage} source={{uri: getAwardsIcon(item?.award_type)}} /> : null}
-                  </View>
+                <View style={{ flexDirection: 'row' }}>
+                  {chainType(item?.nftChain)}
+                  {item.isForAward ? <Image style={styles.awadImage} source={{ uri: getAwardsIcon(item?.award_type) }} /> : null}
+                </View>
                 <View style={styles.endTimeView}>
                   {item.newprice && item.newprice?.endTime ? (
                     new Date(item.newprice.endTime) < new Date().getTime() ? (

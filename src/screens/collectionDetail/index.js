@@ -73,7 +73,7 @@ const imageToChainKey = {
 function CollectionDetail(props) {
     const { route } = props;
     const { collectionId, nftId, isBlind, isHotCollection, isStore } = route.params;
-    console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
+    // console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
@@ -194,7 +194,7 @@ function CollectionDetail(props) {
                 setCollectionAddress(collectionArray?.data?.data?._id);
                 setCollection(collectionArray?.data?.data);
 
-                console.log("🚀 ~ file: index.js ~ line 195 ~ getCollection ~ isBlind", isBlind, nftId, collectionArray?.data?.data?._id)
+                // console.log("🚀 ~ file: index.js ~ line 195 ~ getCollection ~ isBlind", isBlind, nftId, collectionArray?.data?.data?._id)
                 if (isBlind) {
                     nftId ? setBlindBoxes(collectionArray) : getSeriesSum(collectionArray?.data?.data?._id)
                 } else {
@@ -217,14 +217,14 @@ function CollectionDetail(props) {
     };
 
     const setBlindBoxes = async (collectionArray) => {
-        console.log("🚀 ~ file: index.js ~ line 243 ~ ~", collectionArray)
+        // console.log("🚀 ~ file: index.js ~ line 243 ~ ~", collectionArray)
 
         const boxes = await getBoxes(collectionArray?.data.data._id);
         if (!_.isEmpty(boxes)) {
             const filteredBlindBoxCollection = _.filter(boxes.data.data, item => item._id === nftId);
 
             setBlindboxList(boxes.data.data);
-            console.log("🚀 ~ file: index.js ~ line 220 ~ ~ boxes.data.data", boxes.data.data, filteredBlindBoxCollection)
+            // console.log("🚀 ~ file: index.js ~ line 220 ~ ~ boxes.data.data", boxes.data.data, filteredBlindBoxCollection)
 
             if (filteredBlindBoxCollection && filteredBlindBoxCollection[0]) {
                 setSelectedBlindBox(filteredBlindBoxCollection[0]);
@@ -250,12 +250,12 @@ function CollectionDetail(props) {
     const getSeriesSum = (collectionAddress) => {
         getBlindBoxSeriesSum(collectionAddress)
             .then(sumData => {
-                console.log("🚀 ~ file: index.js ~ line 255 ~ ~ sumData", sumData)
+                // console.log("🚀 ~ file: index.js ~ line 255 ~ ~ sumData", sumData)
                 setSumBlindBox(sumData)
                 setLoading(false);
             })
             .catch(err => {
-                console.log("🚀 ~ file: index.js ~ line 260 ~ ~ err", err)
+                // console.log("🚀 ~ file: index.js ~ line 260 ~ ~ err", err)
                 setLoading(false);
             })
     }
@@ -353,7 +353,7 @@ function CollectionDetail(props) {
     };
 
     const chainInfo = async (blindBox) => {
-        console.log("🚀 ~ file: index.js ~ line 394 ~ chainInfo ~ chainInfo", blindBox)
+        // console.log("🚀 ~ file: index.js ~ line 394 ~ chainInfo ~ chainInfo", blindBox)
 
         let index = "";
         let _availableChains = [];
@@ -724,8 +724,8 @@ function CollectionDetail(props) {
     });
 
     const renderDetailList = () => {
-        console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
-        console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", collection, statsDetails)
+        // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
+        // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", collection, statsDetails)
         if (isStore) return null;
         let items = ''
         let owners = ''
@@ -975,7 +975,7 @@ function CollectionDetail(props) {
 
                             {/* // {isHotCollection ? */}
                             <View style={styles.intoMystery}>
-                                {console.log("🚀 ~ file: index.js ~ line 867 ~ CollectionDetail ~ intoMystery", isBlind, nftId)}
+                                {/* {console.log("🚀 ~ file: index.js ~ line 867 ~ CollectionDetail ~ intoMystery", isBlind, nftId)} */}
 
                                 <TouchableOpacity
                                     onPress={() => setCollectionType(0)}
@@ -1027,7 +1027,7 @@ function CollectionDetail(props) {
                         </View>
                         : null}
 
-                    {console.log("🚀 ~ file: index.js ~ line 1004 ~ CollectionDetail ~ isBlind", isBlind, isBlind && nftId, nftId)}
+                    {/* {console.log("🚀 ~ file: index.js ~ line 1004 ~ CollectionDetail ~ isBlind", isBlind, isBlind && nftId, nftId)} */}
 
                     {(collectionAddress || isStore) && !loading && (
                         <Collections

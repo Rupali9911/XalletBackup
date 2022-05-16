@@ -108,14 +108,14 @@ const Collections = props => {
                 );
             } else {
                 let temp = {
-                    collectionAddress: "62113e1774d1af3e04bc313d",
+                    collectionAddress: collectionAddress,
                     filterType: "minted2",
-                    limit: 40,
+                    limit: 24,
                     loggedIn: null,
                     owner: null,
                     page: 1
                 }
-                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType));
+                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
         },
@@ -171,7 +171,12 @@ const Collections = props => {
                     isBlind
                 />)
         }
-        if (isHotCollection) {
+
+        // console.log("🚀 ~ file: collections.js ~ line 176 ~ renderItem ~ ",
+        //     isHotCollection, isBlind, collectionType,
+        //     isHotCollection || isBlind && collectionType == 0
+        // )
+        if (isHotCollection || isBlind && collectionType == 0) {
             return (
                 <NFTItem
                     screenName="dataCollection"
@@ -235,6 +240,7 @@ const Collections = props => {
     };
 
     const memoizedValue = useMemo(() => renderItem, [collectionList]);
+    // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isHotCollection) }
 
     return (
         <View style={styles.trendCont}>
