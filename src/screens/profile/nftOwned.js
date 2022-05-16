@@ -28,7 +28,7 @@ const NFTOwned = ({ route, navigation }) => {
             if (MyCollectionReducer?.myCollection?.length === 0) {
                 pressToggle()
             } else {
-                if (id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
+                if (id && id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
                     dispatch(myCollectionLoadFail())
                 } else {
                     dispatch(myCollectionListReset());

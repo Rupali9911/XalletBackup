@@ -57,7 +57,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>For better AR experience</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>For better AR experience</string>
+	<string>This app requires access to the photo library.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SegoeUI.ttf</string>

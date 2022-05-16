@@ -249,9 +249,9 @@ const UploadNFT = ({
     if (modalScreen === "uploadNFT" && datePickerData) {
       if (datePickerData !== "closed") {
         if (activeModal === "startTime") {
-          setStartTimeDate(moment(datePickerData).format("YYYY-MM-DD HH:mm:ss"))
+          setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm:ss"))
         } else if (activeModal === "endTime") {
-          setEndTimeDate(moment(datePickerData).format("YYYY-MM-DD HH:mm:ss"))
+          setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm:ss"))
         }
         setActiveModal("")
       } else {

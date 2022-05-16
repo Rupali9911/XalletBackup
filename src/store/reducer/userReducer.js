@@ -4,6 +4,7 @@ import axios from 'axios';
 import {
   AUTH_SUCCESS,
   HIDE_SPLASH,
+  UPDATE_PASS_ASYNC,
   AUTH_LOADING_START,
   AUTH_LOADING_END,
   MAIN_LOADING_END,
@@ -31,6 +32,7 @@ const initialState = {
   data: {},
   passcode: '',
   passcodeAsync: '',
+  passcodeAsyncStatus: false,
   isBackup: false,
   showSuccess: false,
 };
@@ -46,6 +48,11 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         showSplash: false,
+      };
+    case UPDATE_PASS_ASYNC:
+      return {
+        ...state,
+        passcodeAsyncStatus: action.payload,
       };
 
     case MAIN_LOADING_END:
@@ -127,6 +134,10 @@ export default UserReducer = (state = initialState, action) => {
 
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
+});
+export const updatePassStatus = (data) => ({
+  type: UPDATE_PASS_ASYNC,
+  payload: data,
 });
 export const hideSplash = () => ({
   type: HIDE_SPLASH,
@@ -332,6 +343,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
                 );
                 resolve();
               } else {
+                  console.log('error 1', err);
                 dispatch(endLoading());
                 reject(_response);
               }
@@ -342,6 +354,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
               reject(err);
             });
         } else {
+            console.log('error 3', err);
           dispatch(endLoading());
           reject(response);
         }

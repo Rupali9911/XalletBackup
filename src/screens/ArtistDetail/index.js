@@ -102,7 +102,7 @@ const Created = ({ route }) => {
             if (MyNFTReducer?.myList?.length === 0) {
                 refreshFunc()
             } else {
-                if (id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
+                if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
                     dispatch(myNftLoadFail())
                 } else {
                     dispatch(myNftListReset());
@@ -114,6 +114,7 @@ const Created = ({ route }) => {
     }, [isFocusedHistory])
 
     const getNFTlist = useCallback((page) => {
+        console.log('getNFTlist, id', id)
         dispatch(myNFTList(page, id));
     }, []);
 
@@ -215,7 +216,7 @@ const Collection = ({ route }) => {
             if (MyCollectionReducer?.myCollection?.length === 0) {
                 refreshFunc()
             } else {
-                if (id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
+                if (id && id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
                     dispatch(myCollectionLoadFail())
                 } else {
                     dispatch(myCollectionListReset());
@@ -338,6 +339,7 @@ function ArtistDetail({
     const isMounted = useIsMounted();
 
     useEffect(() => {
+        console.log('route.params.id', route.params.id)
         const url = route.params.id.includes('0x') ?
             `${BASE_URL}/user/get-public-profile?publicAddress=${route.params.id}` :
             `${BASE_URL}/user/get-public-profile?userId=${route.params.id}`
@@ -352,7 +354,7 @@ function ArtistDetail({
         fetch(url, body)
             .then(response => response.json())
             .then(res => {
-                // console.log(res.data, "res.data testing", route.params.id)
+                 console.log(res.data, "res.data testing", res, isMounted.current)
                 if (isMounted.current) {
                     if (res.data) {
                         setData(res.data);

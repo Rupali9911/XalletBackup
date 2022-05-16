@@ -1,3 +1,5 @@
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import {
@@ -441,6 +443,7 @@ function CollectionDetail(props) {
         if (isStore) {
             bannerUrl = 'https://ik.imagekit.io/xanalia/nftData/1632151483313.jpg';
         } else if (isBlind && nftId) {
+            console.log('selectedBlindBox',selectedBlindBox)
             bannerUrl = selectedBlindBox
                 ? selectedBlindBox.seriesURIMetaInfo?.banner_image
                 : "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg";
@@ -670,7 +673,7 @@ function CollectionDetail(props) {
                     </View>
                 )}
                 <View style={styles.description}>
-                    <ScrollView>
+                    <ScrollView nestedScrollEnabled={true}>
                         {descTab ? (
                             <View>
                                 {isBlind ? (
@@ -834,7 +837,7 @@ function CollectionDetail(props) {
                         {'Blindbox'}
                     </Text>
                     <Text style={styles.storeCollectionName}>
-                        {`$${storeCollection.usdPrice}`}
+                        {`$${storeCollection.usdPrice || 0}`}
                     </Text>
                 </View>
             )
@@ -910,7 +913,7 @@ function CollectionDetail(props) {
                                                 color: collectionType === 0 ? colors.BLUE4 : colors.GREY1,
                                             },
                                         ]}>
-                                        {isBlind && nftId ? 'All' : translate('common.onSale')}
+                                        {isBlind && nftId ? translate('common.gallery') : translate('common.onSale')}
                                     </Text>
                                 </TouchableOpacity>
 

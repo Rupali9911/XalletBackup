@@ -152,18 +152,20 @@ const Collections = props => {
                     onPress={() => {
                         console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
                         if (!isSeries) {
-                            dispatch(changeScreenName('dataCollection'));
+                            // dispatch(changeScreenName('dataCollection'));
                             navigation.push('DetailItem', {
                                 index: findIndex,
                                 collectionType: COLLECTION_TYPES[collectionType],
                                 collectionAddress,
+                                sName: "dataCollection"
                             });
                         } else {
-                            dispatch(changeScreenName('blindSeriesCollection'));
+                            // dispatch(changeScreenName('blindSeriesCollection'));
                             navigation.push('DetailItem', {
                                 index: findIndex,
                                 collectionType: BLIND_SERIES_COLLECTION_TYPE[collectionType],
                                 collectionAddress,
+                                sName: "blindSeriesCollection"
                             });
                         }
                     }}

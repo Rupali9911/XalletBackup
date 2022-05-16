@@ -52,7 +52,7 @@ const NFTCreated = ({ route }) => {
             if (MyNFTReducer?.myList?.length === 0) {
                 pressToggle()
             } else {
-                if (id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
+                if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
                     dispatch(myNftLoadFail())
                 } else {
                     dispatch(myNftListReset());
@@ -95,6 +95,7 @@ const NFTCreated = ({ route }) => {
     const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myList]);
 
     const getNFTlist = useCallback(page => {
+        console.log('getNFTlist, id', id)
         dispatch(myNFTList(page, id));
     }, []);
 

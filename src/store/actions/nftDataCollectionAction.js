@@ -216,15 +216,19 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
 export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
-    const owner = data.user._id;
-
+    const owner = wallet.address ||  data.user._id;
+    
     if (type === 'owned') {
+      let url = `${BASE_URL}/user/my-collection`;
+      if (wallet.address) url = `${BASE_URL}/xanalia/mydata`;
+
       const req_body = {
         limit: 6,
         loggedIn: owner,
         networkType,
         nftType: 'mycollection',
         page,
+        owner,
       }
 
       const fetch_data_body = {
@@ -235,6 +239,7 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
           'Content-Type': 'application/json',
         },
       };
+<<<<<<< HEAD
       fetch(`${BASE_URL}/user/my-collection`, fetch_data_body)
         .then(response => response.json())
         .then(json => {
@@ -246,6 +251,14 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
         })
         .catch(err => {
           console.log('=====blind_series_my_collection_err', err);
+=======
+      fetch(url, fetch_data_body)
+      .then(response => response.json())
+      .then(json => {
+        if(json.data && json.count) {
+          dispatch(nftBlindSeriesCollectionLoadSuccess(json));
+        } else {
+>>>>>>> de55f4302cc5f1be48fca502be01f72360699171
           dispatch(nftBlindSeriesCollectionLoadFail());
         });
     } else {

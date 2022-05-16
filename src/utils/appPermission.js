@@ -5,13 +5,18 @@ const PLATFORM_CAMERA_PERMISSIONS = {
   ios: PERMISSIONS.IOS.CAMERA,
   android: PERMISSIONS.ANDROID.CAMERA,
 };
-
+const PLATFORM_STORAGE_PERMISSIONS = {
+  ios: PERMISSIONS.IOS.PHOTO_LIBRARY,
+  android: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+};
 const REQUEST_PERMISSION_TYPE = {
   camera: PLATFORM_CAMERA_PERMISSIONS,
+  storage:PLATFORM_STORAGE_PERMISSIONS
 };
 
 const PERMISSION_TYPE = {
   camera: 'camera',
+  storage:'storage',
 };
 
 class AppPermission {
@@ -25,8 +30,11 @@ class AppPermission {
     try {
       const result = await check(permissions);
       console.log('AppPermission checkPermission result:', result);
-      if (result === RESULTS.DENIED) return true;
+      console.log('App Runing PLatform:', Platform.OS);
+      if (result === RESULTS.DENIED) return false;
       if (result === RESULTS.GRANTED) return true;
+      if (result === RESULTS.UNAVAILABLE) return false;
+      if (result === RESULTS.LIMITED) return true;
       if (result === RESULTS.BLOCKED) return false;
       return false;
     } catch (error) {
