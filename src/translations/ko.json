@@ -648,7 +648,8 @@
         "secondsLeft": "남은 시간(초)",
         "passwordlengthshort": "비밀번호는 8자 이상이어야 합니다.",
         "blindboxCollections": "블라인드 박스",
-        "zoomMail": "줌 메일"
+        "zoomMail": "줌 메일",
+        "amountMoreThen": "금액은 $999,999.99 이하여야 합니다."
     },
     "AwardPage": {},
     "wallet": {

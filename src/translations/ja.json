@@ -649,7 +649,8 @@
         "passwordlengthshort": "パスワードは8文字以上でなければならない。",
         "blindboxCollections": "ミステリーボックス",
         "zoomMail": "Zoomメール",
-        "hotcollection": "推奨コレクション"
+        "hotcollection": "推奨コレクション",
+        "amountMoreThen": "金額は$999,999.99以下でなければなりません"
     },
     "AwardPage": {},
     "wallet": {
