@@ -218,6 +218,7 @@ const Collections = props => {
                     creatorInfo={item.creatorInfo}
                     blind={item.blind}
                     isCollection={!isHotCollection}
+                    cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
