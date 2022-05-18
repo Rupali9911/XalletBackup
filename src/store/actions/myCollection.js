@@ -12,6 +12,7 @@ import {
   MY_COLLECTION_LOAD_SUCCESS,
   SET_COLLECTION_USER_ADDRESS,
 } from '../types';
+import {setNFTUserAddress} from "./myNFTaction";
 
 export const myCollectionLoadStart = () => ({
   type: MY_COLLECTION_LOAD_START,
@@ -49,8 +50,8 @@ export const myCollectionList = (page, ownerId) => {
     };
 
     if (user?.role === 'crypto') {
-      body_data.owner = ownerId.toUpperCase();
-      dispatch(setCollectionUserAddress(ownerId.toLowerCase()));
+      body_data.owner = typeof ownerId === 'string' ? ownerId.toUpperCase() : ownerId;
+      dispatch(setCollectionUserAddress((typeof ownerId === 'string' ? ownerId.toLowerCase() : ownerId)));
     } else {
       body_data.status = 'my_collection'
       dispatch(setCollectionUserAddress(""));

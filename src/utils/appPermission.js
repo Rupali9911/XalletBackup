@@ -33,6 +33,8 @@ class AppPermission {
       console.log('App Runing PLatform:', Platform.OS);
       if (result === RESULTS.DENIED) return false;
       if (result === RESULTS.GRANTED) return true;
+      if (result === RESULTS.UNAVAILABLE) return false;
+      if (result === RESULTS.LIMITED) return true;
       if (result === RESULTS.BLOCKED) return false;
       return false;
     } catch (error) {

@@ -16,7 +16,7 @@ const C_Image = (props) => {
     let [loadImage, setLoadImage] = useState(false);
     let [brokenUrl, setBrokenUrl] = useState(false);
 
-    const checkVideoUrl = props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV';
+    const checkVideoUrl = props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' || props.type === 'movie';
 
     return (
         <>
@@ -25,38 +25,38 @@ const C_Image = (props) => {
                     <ActivityIndicator size="small" color={Colors.themeColor} />
                 </View>
             }{
-                checkVideoUrl ?
-                    Platform.OS === "ios" ?
-                        <Video
-                            source={{ uri: props.uri }}
-                            paused={true}
-                            resizeMode={'cover'}
-                            style={props.imageStyle} />
-                        :
-                        // <Video
-                        //     source={{ uri: props.uri }}
-                        //     resizeMode={'cover'}
-                        //     paused={true}
-                        //     onError={(e) => console.log("error", e)}
-                        //     style={props.imageStyle} />
-                        <FastImage
-                            style={props.imageStyle}
-                            onLoadStart={() => setLoadImage(true)}
-                            onLoadEnd={() => setLoadImage(false)}
-                            onError={({ nativeEvent }) => {
-                                console.log(nativeEvent, "errror", props.uri)
-                                setBrokenUrl(true)
-                            }}
-                            source={props.uri ?
-                                brokenUrl ?
-                                    IMAGES.brokenIcon :
-                                    {
-                                        uri: props.uri,
-                                        priority: FastImage.priority.high,
-                                    } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
-                            resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
-                        />
-                    :
+                // checkVideoUrl ?
+                //     Platform.OS === "ios" ?
+                //         <Video
+                //             source={{ uri: props.uri }}
+                //             paused={true}
+                //             resizeMode={'cover'}
+                //             style={props.imageStyle} />
+                //         :
+                //         // <Video
+                //         //     source={{ uri: props.uri }}
+                //         //     resizeMode={'cover'}
+                //         //     paused={true}
+                //         //     onError={(e) => console.log("error", e)}
+                //         //     style={props.imageStyle} />
+                //         <FastImage
+                //             style={props.imageStyle}
+                //             onLoadStart={() => setLoadImage(true)}
+                //             onLoadEnd={() => setLoadImage(false)}
+                //             onError={({ nativeEvent }) => {
+                //                 console.log(nativeEvent, "errror", props.uri)
+                //                 setBrokenUrl(true)
+                //             }}
+                //             source={props.uri ?
+                //                 brokenUrl ?
+                //                     IMAGES.brokenIcon :
+                //                     {
+                //                         uri: props.uri,
+                //                         priority: FastImage.priority.high,
+                //                     } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
+                //             resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
+                //         />
+                //     :
                     <FastImage
                         style={props.imageStyle}
                         onLoadStart={() => setLoadImage(true)}

@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     color: '#909090',
   },
   readLessWrap: {
-    marginBottom: -3 
+    // marginBottom: -3 
   },
   readMore: {
     fontSize: SIZE(13),
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     bottom: hp('1.5%'),
+    padding: SIZE(1),
     right: 0,
     backgroundColor: 'white'
   },

@@ -36,8 +36,9 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 1,
+
 borderRadius: wp("5"),
+
     elevation: 5,
   },
   nftListItem: {
@@ -86,5 +87,66 @@ borderRadius: wp("5"),
     height: (hp('100%') / 8) ,
     justifyContent: 'space-between'
   },
+    titleView:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    titleText:{
+        fontSize: SIZE(12),
+        fontWeight: '700'
+    },
+    AuctionText:{
+        color: COLORS.greenLight,
+        fontSize: SIZE(12),
+        marginVertical: SIZE(10),
+    },
+    priceView:{ flexDirection: 'row', alignItems: 'center' },
+    priceText:{
+        color: COLORS.greenLight,
+        marginVertical: SIZE(10),
+        marginRight: SIZE(2),
+        fontSize: SIZE(12),
+    },
+    soldOutText:{
+        color: COLORS.greenLight,
+        fontSize: SIZE(12),
+        marginVertical: SIZE(10),
+    },
+    chainView:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    endTimeView:{ flexDirection: 'row', alignItems: 'center' },
+    priceText1:{
+        color: COLORS.grayLight,
+        marginRight: SIZE(2),
+        fontSize: SIZE(12),
+    },
+    auctionTimeRemainText:{
+        fontSize: SIZE(12),
+        color: COLORS.grayLight,
+    },
+    lastText:{
+        color: '#aaa',
+        fontSize: SIZE(12),
+    },
+    lastPriceText:{
+        color: '#aaa',
+        marginRight: SIZE(2),
+        fontSize: SIZE(12),
+    },
+    awadImage:{height: 20, width: 20, left: 2},
+    soldOutText1:{
+        color: COLORS.greenLight,
+        fontSize: SIZE(12),
+    },
+    auctionEnded:{
+        color: COLORS.greenLight,
+        fontSize: SIZE(12),
+        fontWeight: '700'
+    },
+    newPrice: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }
 });
 export default styles;

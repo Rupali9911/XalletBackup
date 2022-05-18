@@ -87,7 +87,7 @@ const LimitableInput = (props) => {
                         <NormalText>
                             {label}
                         </NormalText>
-                        <TextLimit> ({about.length} / 200)</TextLimit>
+                        <TextLimit> ({about? about.length : 0} / 200)</TextLimit>
                     </RowWrap>
                     <SpaceView mTop={SIZE(12)} />
                     <RowWrap>
@@ -99,6 +99,7 @@ const LimitableInput = (props) => {
                             multiline
                             autoCapitalize= 'none'
                             placeholderTextColor={'grey'} />
+                        <SpaceView mRight={SIZE(19)} />
                     </RowWrap>
                 </>
             )}

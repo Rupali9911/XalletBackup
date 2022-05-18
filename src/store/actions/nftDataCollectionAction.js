@@ -60,48 +60,104 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const nftDataCollectionList = (page, collectionAddress, type, collectionId) => {
+export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl) => {
   return (dispatch, getState) => {
 
-    const { data, wallet } = getState().UserReducer;
-    const owner = data?.user?._id || wallet?.address;
+    if (isStore) {
+      const data = {
+        filterType: type,
+        limit: 10,
+        packName: 'Monkey King',
+        page,
+      };
 
-    const _collectionAddress = collectionId || collectionAddress;
+      const fetch_data_body = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      };
 
-    console.log('======nft-data-collection', type, collectionAddress, owner);
-
-    fetch(`${BASE_URL}/user/nft-data-collection?type=${type}&collectionAddress=${_collectionAddress}&page=${page}&limit=10&owner=${owner}`)
-      .then(response => response.json())
-      .then(json => {
-        const nftData = [];
-
-        // if (!json.count) {
-        //   json.data = [];
-        // } else {
-        json.data.map(item => {
-          const parsedNFT = parseNftObject(item);
-          const data = {
-            ...parsedNFT,
-            totalSupply: item?.metaData?.totalSupply,
-            properties: {
-              type: item?.metaData?.properties?.type,
-            },
-            externalLink: item?.metaData?.externalLink,
-            // thumbnft: item?.metaData?.thumbnft,
-            thumbnft: item?.thumbnailUrl,
-            tokenURI: item?.catInfo?.tokenUri,
-            thumbnailUrl: item?.metaData.thumbnft,
-            ...item,
-          };
-          nftData.push(data);
+      fetch(`${BASE_URL}/user/fetch-pack-data`, fetch_data_body)
+        .then(response => response.json())
+        .then(json => {
+          const selectedPack = json.data
+          const nftData = [];
+          for (let i = 0; i < selectedPack?.length; i++) {
+            selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
+            selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
+            let parsedNFT = parseNftObject(selectedPack[i]);
+            nftData.push({
+              ...parsedNFT,
+              properties: {
+                type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
+              },
+              totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
+              externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
+              thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
+              tokenURI: selectedPack[i]?.catInfo?.tokenUri,
+              price:
+                selectedPack[i]?.price?.toString() === "0"
+                  ? selectedPack[i]?.usdPrice?.toString()
+                  : selectedPack[i]?.price?.toString(),
+            });
+          }
+          json.data = nftData;
+          dispatch(nftDataCollectionLoadSuccess(json));
+        })
+        .catch(err => {
+          dispatch(nftDataCollectionLoadFail());
         });
-        // }
-        json.data = nftData;
-        dispatch(nftDataCollectionLoadSuccess(json));
+    } else {
+      const { data, wallet } = getState().UserReducer;
+      const owner = data?.user?._id || wallet?.address;
 
-      }).catch(err => {
-        dispatch(nftDataCollectionLoadFail());
-      })
+      let url = `${BASE_URL}/user/nft-data-collection?type=${type}&page=${page}&limit=10&owner=${owner}`;
+      if (manualColl) {
+        url = url.concat(`&collectionId=${collectionId}`);
+        url = url.concat(`&collectionAddress=${collectionId}`);
+      } else if (collectionId) {
+        url = url.concat(`&collectionId=${collectionId}`);
+        url = url.concat(`&collectionAddress=${collectionAddress}`);
+      } else {
+        url = url.concat(`&collectionAddress=${collectionAddress}`);
+      }
+    
+      fetch(url)
+        .then(response => response.json())
+        .then(json => {
+          const nftData = [];
+  
+          // if (!json.count) {
+          //   json.data = [];
+          // } else {
+          json.data.map(item => {
+            const parsedNFT = parseNftObject(item);
+            const data = {
+              ...parsedNFT,
+              totalSupply: item?.metaData?.totalSupply,
+              properties: {
+                type: item?.metaData?.properties?.type,
+              },
+              externalLink: item?.metaData?.externalLink,
+              // thumbnft: item?.metaData?.thumbnft,
+              thumbnft: item?.thumbnailUrl,
+              tokenURI: item?.catInfo?.tokenUri,
+              thumbnailUrl: item?.metaData.thumbnft,
+              ...item,
+            };
+            nftData.push(data);
+          });
+          // }
+          json.data = nftData;
+          dispatch(nftDataCollectionLoadSuccess(json));
+  
+        }).catch(err => {
+          dispatch(nftDataCollectionLoadFail());
+        })
+    }
   }
 }
 
@@ -139,15 +195,19 @@ export const nftBlindDataCollectionList = (collectionAddress) => {
 export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
-    const owner = data.user._id;
+    const owner = wallet.address ||  data.user._id;
     
     if (type === 'owned') {
+      let url = `${BASE_URL}/user/my-collection`;
+      if (wallet.address) url = `${BASE_URL}/xanalia/mydata`;
+
       const req_body = {
         limit: 6,
         loggedIn: owner,
         networkType,
         nftType: 'mycollection',
         page,
+        owner,
       }
 
       const fetch_data_body = {
@@ -158,10 +218,10 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
           'Content-Type': 'application/json',
         },
       };
-      fetch(`${BASE_URL}/user/my-collection`, fetch_data_body)
+      fetch(url, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        if(json.data) {
+        if(json.data && json.count) {
           dispatch(nftBlindSeriesCollectionLoadSuccess(json));
         } else {
           dispatch(nftBlindSeriesCollectionLoadFail());

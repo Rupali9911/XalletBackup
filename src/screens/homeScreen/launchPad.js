@@ -21,7 +21,7 @@ import {
 import { translate } from '../../walletUtils';
 import styles from './styles';
 
-const Collection = () => {
+const LaunchPad = () => {
   const { CollectionReducer } = useSelector(state => state);
   const [isSelectTab, setSelectTab] = useState(true);
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const Collection = () => {
         creatorInfo={item.creatorInfo}
         blind={item.blind}
         onPress={() => {
-          console.log('========', item);
+          console.log('LaunchPad ========', item);
           if (item.redirect) {
             navigation.push('CollectionDetail',
             {
@@ -71,7 +71,7 @@ const Collection = () => {
               isStore: item.redirect,
             });
           } else if (item.blind) {
-            console.log('========collection tab => blind1', item.blind, item.collectionId)
+            console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
           } else {
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
@@ -84,8 +84,8 @@ const Collection = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View style={styles.collectionTab}>
-        <TouchableOpacity
+      <View style={{flex:1}}>
+        {/* <TouchableOpacity
           onPress={() => setSelectTab(true)}
           style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
           <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
@@ -98,7 +98,7 @@ const Collection = () => {
           <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
               {translate('common.blindboxCollections')}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {CollectionReducer.collectionPage === 1 &&
         CollectionReducer.collectionLoading ? (
@@ -142,4 +142,4 @@ const Collection = () => {
   );
 };
 
-export default Collection;
+export default LaunchPad;

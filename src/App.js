@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import * as React from 'react';
-import { Image, Linking, LogBox } from 'react-native';
+import { Image, Keyboard, Linking, LogBox, View } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
@@ -53,9 +53,10 @@ import Store from './store';
 import { setRequestAppId } from './store/reducer/walletReducer';
 import { environment, translate } from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setPasscodeAsync } from './store/reducer/userReducer';
+import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer';
 import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
+import Images from './constants/Images';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -73,8 +74,31 @@ const deepLinkData = {
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
-  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
+  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setIsBottomTabVisible(false); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setIsBottomTabVisible(true); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+  const { data } = useSelector(state => state.UserReducer);
+
 
   return (
     <Tab.Navigator
@@ -90,6 +114,7 @@ const TabComponent = () => {
         activeTintColor: Colors.themeColor,
       }}
       screenOptions={({ route }) => ({
+        tabBarVisible: isBottomTabVisible,
         tabBarIcon: ({ focused, color }) => {
           let iconName;
 
@@ -131,7 +156,7 @@ const TabComponent = () => {
         component={ExploreScreen}
         options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
-      {userRole === 'crypto' &&
+      {data?.user?.role === 'crypto' &&
         <Tab.Screen
           name={'Wallet'}
           options={{ tabBarLabel: translate('wallet.common.wallet') }}
@@ -159,6 +184,8 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const navigatorRef = React.useRef(null);
   let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
+  const [pass, setPass] = React.useState(null);
+  const [renderPass, toggle] = React.useState(false);
 
   React.useEffect(() => {
     LogBox.ignoreAllLogs();
@@ -179,7 +206,9 @@ const AppRoutes = () => {
 
   React.useEffect(() => {
     AsyncStorage.getItem('@passcode')
-      .then(val => dispatch(setPasscodeAsync(JSON.parse(val))))
+      .then(val => {
+        setPass(val)
+      })
   }, []);
 
   const linking = {
@@ -208,14 +237,26 @@ const AppRoutes = () => {
     //   // You can also reuse the default logic by importing `getPathFromState` from `@react-navigation/native`
     // },
   };
-
-  if (mainLoader || showSplash) return <AppSplash />;
-  if (!mainLoader && !showSplash) SplashScreen.hide();
+  if (showSplash) return <AppSplash />;
+  if (!showSplash) {
+    SplashScreen.hide()
+    if (!renderPass && pass) {
+      dispatch(updatePassStatus(true))
+      dispatch(setPasscodeAsync(JSON.parse(pass)))
+      toggle(true)
+    }
+  };
+  if (mainLoader) {
+    return (
+      <View style={{ flex: 1 , justifyContent: "center", alignItems: "center" }}>
+        <Image source={Images.loadergif} />
+      </View>
+    )
+  }
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
       {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data?.user?.role === "non_crypto") ? (
         <Stack.Navigator
-          // initialRouteName={"Create"}
           initialRouteName={initialRoute}
           headerMode="none"
           screenOptions={{

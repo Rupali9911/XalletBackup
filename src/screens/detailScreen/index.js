@@ -80,7 +80,10 @@ const DetailItemScreen = (props) => {
     }
 
     const renderItem = (item) => {
-        if (sName == 'blindSeriesCollection') item.metaData = item;
+        console.log('renderItem', item)
+        if (sName == 'blindSeriesCollection' || sName == 'dataCollection' && item) {
+           item.metaData = item;
+        }
         if (item && item.hasOwnProperty("metaData") && item.metaData) {
             return (
                 <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />

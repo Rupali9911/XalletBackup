@@ -170,11 +170,13 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   };
 
   const uploadFileToStorage = async (bannerImage, iconImage, key1, key2, userToken) => {
+    console.log("🚀 ~ file: collection.js ~ line 173 ~ uploadFileToStorage ", bannerImage, iconImage, key1, key2, userToken)
     const headers = {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${userToken}`,
     };
 
+    console.log('bannerImage & iconImage', bannerImage, iconImage)
     let formDataFile = new FormData();
 
     if (iconImage.hasOwnProperty("mime")) {
@@ -183,6 +185,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     if (bannerImage.hasOwnProperty("mime")) {
       formDataFile.append(key1, { uri: bannerImage.path, name: bannerImage.path.split("/").pop(), type: bannerImage.mime });
     }
+    console.log("🚀 ~ file: collection.js ~ line 180 ~ uploadFileToStorage ~ formDataFile", formDataFile)
 
     var res = null;
 
@@ -194,6 +197,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           headers: headers,
         })
         .then(res => {
+          console.log("🚀 ~ file: collection.js ~ line 198 ~ uploadFileToStorage ~ res", res)
           if (res.data.success) {
             let imageObj = { ...res.data.data };
             for (var key in imageObj) {
@@ -218,6 +222,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         .catch(err => {
           changeLoadingState(false);
           if (err.response.status === 401) {
+            console.log("🚀 ~ file: collection.js ~ line 223 ~ uploadFileToStorage ~ err", err)
             alertWithSingleBtn(
               translate("wallet.common.alert"),
               translate("common.sessionexpired")
@@ -234,6 +239,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         banner_image: bannerImage.path,
         icon_image: iconImage.path
       }
+      console.log("🚀 ~ file: collection.js ~ line 237 ~ uploadFileToStorage ~ res", res)
     }
 
     return res;
@@ -244,7 +250,6 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     const privKey = wallet.privateKey;
     changeLoadingState(true);
     if (publicAddress && data.token) {
-
       createColection(
         publicAddress,
         privKey,
@@ -262,7 +267,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
           const { collectionAddress, transactionHash } = transactionData.data;
           setCollectionAdd(collectionAddress);
-          console.log(collectionAddress, "transactionData")
+          console.log(collectionAddress, "transactionData 265")
 
           let res = await uploadFileToStorage(
             bannerImage,
@@ -291,7 +296,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
             axios.post(editDraftUrl, editDraftObj)
               .then(collectionData => {
-                console.log(collectionData, "collectionData edit save success")
+                console.log(collectionData, "collectionData edit save success 294")
 
                 if (collectionData.data.success) {
 
@@ -305,7 +310,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
                   axios.post(url, statusObj)
                     .then(draftSaveRes => {
-                      console.log(draftSaveRes, "draftSaveRes save success")
+                      console.log(draftSaveRes, "draftSaveRes save success 308")
                       changeLoadingState(false);
 
                       if (draftSaveRes.data.success) {
@@ -326,7 +331,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                     })
                     .catch(e => {
                       changeLoadingState(false);
-                      console.log(e.response, "draftSaveRes data to database error");
+                      console.log(e.response, "draftSaveRes data to database error 329");
                       // alertWithSingleBtn(
                       //   translate("wallet.common.alert"),
                       //   translate("wallet.common.error.networkFailed")
@@ -344,7 +349,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               })
               .catch(e => {
                 changeLoadingState(false);
-                console.log(e.response, "uploading draft collection data to database error");
+                console.log(e.response, "uploading draft collection data to database error 347");
                 // alertWithSingleBtn(
                 //   translate("wallet.common.alert"),
                 //   translate("wallet.common.error.networkFailed")
@@ -386,13 +391,12 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           collectionName,
           collectionSymbol
         ).then(async (transactionData) => {
-          console.log("389 - then>>>>>", transactionData)
+          console.log("🚀 ~ file: collection.js ~ line 390 ~ transactionData", transactionData)
           if (transactionData.success) {
             const { collectionAddress } = transactionData.data;
             setCollectionAdd(collectionAddress);
-            console.log(collectionAddress, "transactionData")
+            console.log(collectionAddress, "transactionData 393")
 
-            console.log("RES!@#$$. 395", res)
             let res = await uploadFileToStorage(
               bannerImage,
               iconImage,
@@ -401,8 +405,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               data.token
             );
 
+            console.log("🚀 ~ file: collection.js ~ line 404 ~ res", res)
             if (res) {
-              console.log("RES. 405", res)
               let url = `${BASE_URL}/user/create-collection`
 
               axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
@@ -449,9 +453,9 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             }
           }
         }).catch(e => {
-          console.log("452 catch last")
+          console.log("collection last catch 452")
           changeLoadingState(false);
-          console.log("testing collection error 454", e.response)
+          console.log("testing collection error 454", e.response, e)
           alertWithSingleBtn(
             translate("wallet.common.alert"),
             translate("wallet.common.insufficientFunds")
@@ -501,7 +505,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
       axios.post(url, obj)
         .then(collectionData => {
           changeLoadingState(false);
-          console.log(collectionData, "save as draft or edit")
+          console.log(collectionData, "save as draft or edit 504")
           if (collectionData.data.success) {
             screenStatus == "draft" || screenStatus == "created" ?
               navigation.goBack() : cancel();
@@ -522,7 +526,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         })
         .catch(e => {
           changeLoadingState(false);
-          console.log(e, "uploading collection data to database");
+          console.log(e, "uploading collection data to database 525");
           // alertWithSingleBtn(
           //   translate("wallet.common.alert"),
           //   translate("wallet.common.error.networkFailed")

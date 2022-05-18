@@ -34,13 +34,13 @@ import {
 import { AppHeader, C_Image } from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
-import SuccessModal from '../../components/successModal';
+import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import { colors, fonts } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
-import { updateCreateState } from '../../store/reducer/userReducer';
+import { passShowStatusCall, updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awardsNFT';
@@ -53,14 +53,16 @@ import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
 import { alertWithSingleBtn } from '../../utils';
+import LaunchPad from './launchPad';
 
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess, passcodeAsync, data } = useSelector(state => state.UserReducer);
+  const { showSuccess, data } = useSelector(state => state.UserReducer);
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
@@ -75,10 +77,9 @@ const HomeScreen = ({ navigation }) => {
 
   const appStateChange = async nextAppState => {
     const languageCheck = await AsyncStorage.getItem('languageCheck');
-    const asyncPassCalled = await AsyncStorage.getItem('@asyncPassCalled');
-    const asyncPassCalledParse = JSON.parse(asyncPassCalled);
     let parseLanguageCheck = JSON.parse(languageCheck);
-    var pass = passcodeAsync;
+    const passCheck = await AsyncStorage.getItem('@passcode');
+    let passVal = JSON.parse(passCheck);
     if (nextAppState === 'active') {
       if (parseLanguageCheck) {
         if (parseLanguageCheck.cameraPermission) {
@@ -90,12 +91,12 @@ const HomeScreen = ({ navigation }) => {
           return;
         }
       }
-
-      // if (pass && !asyncPassCalledParse) {
-      //   navigation.navigate('PasscodeScreen', { screen: 'active' });
-      // } else {
-      //   AsyncStorage.setItem('@asyncPassCalled', JSON.stringify(false));
-      // }
+      if (passVal && !passcodeAsyncStatus) {
+        setSuccessVisible(false)
+        setModalVisible(false)
+      dispatch(updatePassStatus(false))
+        navigation.navigate('PasscodeScreen', { screen: 'active' })
+      }
     }
   };
 
@@ -216,36 +217,57 @@ const HomeScreen = ({ navigation }) => {
         translate('common.comingSoon'))
   }
 
-    const fab = () =>{
-        return (
-            <FAB.Group
-                open={openState}
-                icon={
-                    openState
-                        ? 'close'
-                        : props => (
-                            <FontAwesome5
-                                name={'sort-amount-down'}
-                                color={props.color}
-                                size={props.size}
-                            />
-                        )
-                }
-                fabStyle={{backgroundColor: Colors.themeColor}}
-                actions={fabActions}
-                onStateChange={onStateChange}
-                onPress={() => {
-                    if (openState) {
-                        // do something if the speed dial is open
-                    }
-                }}
-            />
-        )
-    }
-
-    const FilterComponent = React.memo(fab);
-
+  const fab = () => {
     return (
+      <FAB.Group
+        open={openState}
+        icon={
+          openState
+            ? 'close'
+            : props => (
+              <FontAwesome5
+                name={'sort-amount-down'}
+                color={props.color}
+                size={props.size}
+              />
+            )
+        }
+        fabStyle={{ backgroundColor: Colors.themeColor }}
+        actions={fabActions}
+        onStateChange={onStateChange}
+        onPress={() => {
+          if (openState) {
+            // do something if the speed dial is open
+          }
+        }}
+      />
+    )
+  }
+
+  const FilterComponent = React.memo(fab);
+
+  const getArtistName = (item) => {
+    // let creatorName = item.title || item.username
+    let creatorName = item && typeof item === 'object' ?
+      item?.role === 'crypto' ?
+        item?.title?.trim() ? item.title :
+          item?.name?.trim() ? item.name :
+            item?.username?.trim() ? item.username :
+              item?._id ? item._id : ""
+
+        : item?.username?.trim() ? item.username :
+          item?.name?.trim() ? item.name :
+            item?.title?.trim() ? item.title :
+              item?._id ? item._id : ""
+      : item?._id ? item._id : ""
+
+    // console.log("🚀 ~ file: index.js ~ line 265 ~ getArtistName ~ creatorName",  item?.role, creatorName, item)
+    return creatorName;
+  }
+
+  // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
+
+  return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <AppHeader
@@ -299,7 +321,7 @@ const HomeScreen = ({ navigation }) => {
                         />
                       </View>
                       <Text numberOfLines={1} style={styles.userText}>
-                        {item.title || item.username}
+                        {getArtistName(item)}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -340,6 +362,15 @@ const HomeScreen = ({ navigation }) => {
                 }
               }}
             >
+              {/*<Tab.Screen*/}
+                {/*name={translate('common.launchPad')}*/}
+                {/*component={LaunchPad}*/}
+                {/*listeners={({ navigation, route }) => {*/}
+                  {/*if (navigation.isFocused()) {*/}
+                    {/*setCurrentTab(0);*/}
+                  {/*}*/}
+                {/*}}*/}
+              {/*/>*/}
               <Tab.Screen
                 name={'Awards 2021'}
                 component={AwardsNFT}
@@ -358,15 +389,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-                <Tab.Screen
-                    name={translate('wallet.common.collection')}
-                    component={Collection}
-                    listeners={({ navigation, route }) => {
-                        if (navigation.isFocused()) {
-                            setCurrentTab(7);
-                        }
-                    }}
-                />
+              <Tab.Screen
+                name={translate('wallet.common.collection')}
+                component={Collection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(7);
+                  }
+                }}
+              />
               <Tab.Screen
                 name={translate('common.2DArt')}
                 component={ArtNFT}
@@ -403,15 +434,15 @@ const HomeScreen = ({ navigation }) => {
                   }
                 }}
               />
-                <Tab.Screen
-                    name={translate('common.hotcollection')}
-                    component={HotCollection}
-                    listeners={({ navigation, route }) => {
-                        if (navigation.isFocused()) {
-                            setCurrentTab(0);
-                        }
-                    }}
-                />
+              <Tab.Screen
+                name={translate('common.hotcollection')}
+                component={HotCollection}
+                listeners={({ navigation, route }) => {
+                  if (navigation.isFocused()) {
+                    setCurrentTab(0);
+                  }
+                }}
+              />
             </Tab.Navigator>
           ))}
       </SafeAreaView>
@@ -419,7 +450,7 @@ const HomeScreen = ({ navigation }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         {isSuccessVisible ? (
-          <SuccessModal
+          <SuccessModalContent
             onClose={() => {
               setModalVisible(false);
               dispatch(updateCreateState());
@@ -459,7 +490,7 @@ const HomeScreen = ({ navigation }) => {
       </AppModal>
       {
         currentTab !== 0 && currentTab !== 7 &&
-        <FilterComponent/>
+        <FilterComponent />
       }
     </>
   );

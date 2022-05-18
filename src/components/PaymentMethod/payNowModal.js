@@ -128,7 +128,7 @@ const PaymentNow = props => {
           // }
 
           _confirmPayment(res.data.id, res.data.client_secret);
-          console.log("131_getPaymentIntent: response",res.data.id, res.data.client_secret);
+          console.log("131_getPaymentIntent: response", res.data.id, res.data.client_secret);
           // initializePaymentSheet({
           //     paymentIntent: res.data.client_secret,
           //     customer: res.data.customer
@@ -159,7 +159,7 @@ const PaymentNow = props => {
       key: environment.stripeKey.p_key,
       client_secret: clientSecret,
     };
-console.log(params, "confirm confirm confirm")
+    console.log(params, "162_confirmPayment")
     StripeApiRequest(`payment_intents/${paymentIntentId}/confirm`, params)
       .then(response => {
         console.log('165_confirmPayment response', response);
@@ -333,13 +333,27 @@ console.log(params, "confirm confirm confirm")
                   })
                   .catch(err => {
                     console.log('payByWallet_err payByWallet 339', err);
-                    showErrorAlert("");
+                    if (typeof err === 'string' && err.includes('transaction underpriced')) {
+                      alertWithSingleBtn(
+                        translate('wallet.common.alert'),
+                        translate('common.blanceLow'),
+                      );
+                    } else {
+                      showErrorAlert("");
+                    }
                     setLoading(false);
                   });
               })
               .catch(err => {
-                console.log('approve_err', err);
-                showErrorAlert('');
+                console.log('approve_err 341', err);
+                if (typeof err === 'string' && err.includes('transaction underpriced')) {
+                  alertWithSingleBtn(
+                    translate('wallet.common.alert'),
+                    translate('common.blanceLow'),
+                  );
+                } else {
+                  showErrorAlert('');
+                }
                 setLoading(false);
               });
           } else {
@@ -362,8 +376,14 @@ console.log(params, "confirm confirm confirm")
               .catch(err => {
                 console.log('payByWallet_err payByWallet 367', err);
                 setLoading(false);
-                showErrorAlert("");
-                setLoading(false);
+                if (typeof err === 'string' && err.includes('transaction underpriced')) {
+                  alertWithSingleBtn(
+                    translate('wallet.common.alert'),
+                    translate('common.blanceLow'),
+                  );
+                } else {
+                  showErrorAlert("");
+                }
               });
           }
         })
@@ -396,21 +416,22 @@ console.log(params, "confirm confirm confirm")
       addedFivePercent,
     )
       .then(bnbBalance => {
-        console.log('_bnbBalance', bnbBalance);
+        console.log('_bnbBalance 398', bnbBalance);
         // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
         onPaymentDone();
         setLoading(false);
       })
       .catch(err => {
-        console.log('payByWallet_err _buyNFTBnb', err);
+        console.log('payByWallet_err _buyNFTBnb 404', err);
         setLoading(false);
+        if (typeof err === 'string' && err.includes('transaction underpriced')) {
+          alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('common.blanceLow'),
+          );
+        } else {
           showErrorAlert("");
-        // if (err.includes('transaction underpriced')){
-        //     alertWithSingleBtn(
-        //         translate('wallet.common.alert'),
-        //         translate('common.blanceLow'),
-        //     );
-        // }
+        }
       });
   };
 
@@ -515,7 +536,7 @@ console.log(params, "confirm confirm confirm")
                     }).obfuscated
                   }
                 </Text>
-              )} 
+              )}
               <TouchableOpacity
                 style={styles.editContainer}
                 onPress={() => {
@@ -541,7 +562,7 @@ console.log(params, "confirm confirm confirm")
               {paymentObject && paymentObject.type == 'wallet'
                 ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4)))
                 : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
-                {' '}{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type}` : ''}
+              {' '}{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type}` : ''}
             </Text>
           </View>
 

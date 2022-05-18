@@ -132,13 +132,13 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.xanalia.app"
-        // minSdkVersion rootProject.ext.minSdkVersion
+        applicationId "com.xanaliaMarketplace.app"
+        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        minSdkVersion 24
+        // minSdkVersion 24
         multiDexEnabled true
         versionCode 1
-        versionName "2.5.13"
+        versionName "2.5.27"
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true
