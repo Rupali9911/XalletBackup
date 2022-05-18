@@ -473,7 +473,8 @@ const styles = StyleSheet.create({
         borderColor: Colors.lightBorder,
         borderWidth: 1,
         borderRadius: wp("1%"),
-        paddingVertical: wp("1%")
+        paddingVertical: wp("1%"),
+
     },
     buttonContainer: {
         // flex: 1,
@@ -523,7 +524,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.separatorText,
         borderStyle: 'dashed',
         borderRadius: 5,
-        paddingHorizontal: wp("2%")
+        paddingHorizontal: wp("2%"),
     },
     chargesRow: {
         flexDirection: 'row',

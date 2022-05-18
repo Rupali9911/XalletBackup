@@ -651,7 +651,7 @@ function Profile(props) {
         cropping: true
       }).then(image => {
         console.log('Response from camera',image )
-        console.log('Response from camera',image )
+       // console.log('Response from camera',image )
         if (image.height <= 512 && image.width <= 512) {
           let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
           let uri = Platform.OS === 'android' ? image.path : image.sourceURL
@@ -719,8 +719,8 @@ function Profile(props) {
 
         //if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'||'E_FAILED_TO_SHOW_PICKER'){
         if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'){
-           const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
-        // console.log('#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@', isGranted)
+           const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage)
+        //console.log('#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@', isGranted)
           // if (isGranted === false) {
           confirmationAlert(
               translate("wallet.common.storagePermissionHeader"),
