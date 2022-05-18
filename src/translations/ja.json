@@ -650,7 +650,7 @@
         "blindboxCollections": "ミステリーボックス",
         "zoomMail": "Zoomメール",
         "hotcollection": "推奨コレクション",
-        "amountMoreThen": "金額は$999,999.99以下でなければなりません"
+        "amountMoreThan": "金額は$999,999.99以下でなければなりません"
     },
     "AwardPage": {},
     "wallet": {
