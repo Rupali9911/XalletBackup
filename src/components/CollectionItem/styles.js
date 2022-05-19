@@ -92,5 +92,10 @@ borderRadius:wp("5"),
     fontSize: SIZE(14),
     marginBottom: SIZE(8),
   },
+  soldOutText:{
+    color: COLORS.greenLight,
+    fontSize: SIZE(12),
+    marginVertical: SIZE(10),
+},
 });
 export default styles;
