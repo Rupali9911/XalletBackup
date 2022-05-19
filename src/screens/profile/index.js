@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect}from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import _ from 'lodash';
 import {
@@ -8,9 +8,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+    RefreshControl
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
 import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
 import { Container, RowWrap, SpaceView } from 'src/styles/common.styles';
 import { SmallBoldText, SmallNormalText } from 'src/styles/text.styles';
@@ -20,7 +23,7 @@ import {
 } from '../../common/responsiveFunction';
 import { AppHeader, C_Image } from '../../components';
 import { fonts } from '../../res';
-import { translate } from '../../walletUtils';
+import {languageArray, translate} from '../../walletUtils';
 import {
   DescriptionView,
   EditButton,
@@ -34,6 +37,10 @@ import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
 import Draft from './draft';
 import colors from "../../res/colors";
+import {upateUserData,loadFromAsync} from "../../store/reducer/userReducer";
+import {getAllLanguages, setAppLanguage} from "../../store/reducer/languageReducer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Colors from "../../constants/Colors";
 
 const { ConnectSmIcon, SettingIcon } = SVGS;
 
@@ -42,9 +49,19 @@ const Tab = createMaterialTopTabNavigator();
 function Profile({ navigation, connector }) {
 
   const { UserReducer } = useSelector(state => state);
+    const dispatch = useDispatch();
 
   const id = UserReducer?.wallet?.address || UserReducer?.data?.user?.username;
   const { about, title, links, username,role } = UserReducer?.data?.user;
+    // useEffect(() => {
+    //     // Update the document title using the browser API
+    //     UserReducer.data.user.profile_image,
+    //     UserReducer.data.user.about,
+    //     UserReducer.data.user.title,
+    //     UserReducer.data.user.links,
+    //     UserReducer.data.user.username,
+    //     UserReducer.data.user.role
+    // });
 
   const renderTabView = () => {
     return (
@@ -57,10 +74,12 @@ function Profile({ navigation, connector }) {
             elevation: 0,
             borderBottomColor: '#EFEFEF',
             borderBottomWidth: 1,
+
           },
           tabBarItemStyle: {
             height: SIZE(42),
             marginTop: SIZE(-10),
+
           },
           tabBarLabelStyle: {
             fontSize: FONT(12),
@@ -95,8 +114,50 @@ function Profile({ navigation, connector }) {
     );
   };
 
+    const loadAllData = async () => {
+        await AsyncStorage.getAllKeys((err, keys) => {
+            if (keys.length !== 0) {
+                AsyncStorage.multiGet(keys, (err, values) => {
+                    let asyncData = {};
+                    values.map(result => {
+                        let name = result[0].replace(/[^a-zA-Z ]/g, '');
+                        let value = JSON.parse(result[1]);
+                        asyncData[name] = value;
+                    });
+                    dispatch(loadFromAsync(asyncData));
+                });
+                AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
+
+            } else {
+                dispatch(loadFromAsync());
+                AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
+            }
+        });
+    }
+    const [refreshing, setRefreshing] = React.useState(false);
+    const wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+    const onRefresh = () => {
+        setRefreshing(true);
+        console.log("######################updating data through Refresh control",loadAllData())
+
+        wait(2000).then(() =>{ loadAllData()},setRefreshing(false))
+
+    }
+
   return (
     <Container>
+        <ScrollView
+            contentContainerStyle={styles.scrollView}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor={Colors.themeColor}
+                />
+            }
+        >
       <AppHeader
         title={translate('wallet.common.myPage')}
         showRightButton
@@ -189,6 +250,7 @@ function Profile({ navigation, connector }) {
       </RowWrap>
       <SpaceView mTop={SIZE(16)} />
       {renderTabView()}
+        </ScrollView>
     </Container>
   );
 }
@@ -231,4 +293,8 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK1,
     fontFamily: FONTS.PINGfANG_SBOLD,
   },
+    scrollView: {
+        flex: 1,
+
+    },
 });
