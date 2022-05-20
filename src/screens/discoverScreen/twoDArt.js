@@ -39,6 +39,31 @@ const TwoDArt = () => {
         dispatch(twoPageChange(1))
     }
 
+    const renderFlatListItem = ({ item }) => {
+        let findIndex = TwoDReducer.twoDNftList.findIndex(x => x.id === item.id);
+        return (
+            <TouchableOpacity onPress={() => {
+                // dispatch(changeScreenName("twoDArt"))
+                navigation.navigate("DetailItem", { index: findIndex, sName: "twoDArt" })
+            }} style={styles.listItem} >
+                {
+                    item.thumbnailUrl !== undefined || item.thumbnailUrl ?
+                        <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
+                        : <View style={styles.sorryMessageCont}>
+                            <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
+                        </View>
+                }
+            </TouchableOpacity>
+        )
+    }
+
+    const handleFlastListEndReached = () => {
+        let num = TwoDReducer.page + 1;
+        getNFTlist(num)
+        dispatch(twoPageChange(num))
+    }
+    const keyExtractor = (item, index) => { return 'item_' + index }
+
     return (
         <View style={styles.trendCont} >
             <StatusBar barStyle='dark-content' backgroundColor={colors.white} />
@@ -50,30 +75,10 @@ const TwoDArt = () => {
                             data={TwoDReducer.twoDNftList}
                             horizontal={false}
                             numColumns={3}
-                            renderItem={({ item }) => {
-                                let findIndex = TwoDReducer.twoDNftList.findIndex(x => x.id === item.id);
-                                return (
-                                    <TouchableOpacity onPress={() => {
-                                        // dispatch(changeScreenName("twoDArt"))
-                                        navigation.navigate("DetailItem", { index: findIndex, sName: "twoDArt" })
-                                    }} style={styles.listItem} >
-                                        {
-                                            item.thumbnailUrl !== undefined || item.thumbnailUrl ?
-                                                <C_Image uri={item.thumbnailUrl} imageStyle={styles.listImage} />
-                                                : <View style={styles.sorryMessageCont}>
-                                                    <Text style={{ textAlign: "center" }} >{translate("wallet.common.error.noImage")}</Text>
-                                                </View>
-                                        }
-                                    </TouchableOpacity>
-                                )
-                            }}
-                            onEndReached={() => {
-                                let num = TwoDReducer.page + 1;
-                                getNFTlist(num)
-                                dispatch(twoPageChange(num))
-                            }}
+                            renderItem={renderFlatListItem}
+                            onEndReached={handleFlastListEndReached}
                             onEndReachedThreshold={1}
-                            keyExtractor={(v, i) => "item_" + i}
+                            keyExtractor={keyExtractor}
                         /> :
                         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
                             <Text style={styles.sorryMessage} >{translate("common.noNFT")}</Text>

@@ -276,6 +276,9 @@ const Filter = ({
     (filterActive.filter_type === "Number" ?
       filterActive.filter_value2 : true)
   const addNewFilterDisable = collection && collection.collectionName.toLowerCase() == "xanalia";
+
+  const keyExtractor = (item, index) => { return 'item_' + index }
+  const handleItemSeparatorComponent = () => (<View style={styles.separator} />)
   return (
     <View style={styles.childCont}>
       <CardCont>
@@ -300,8 +303,8 @@ const Filter = ({
               <FlatList
                 data={filterList}
                 renderItem={renderListItem}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                keyExtractor={(v, i) => 'item_' + i}
+                ItemSeparatorComponent={handleItemSeparatorComponent}
+                keyExtractor={ keyExtractor }
               /> : null
         }
 

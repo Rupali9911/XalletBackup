@@ -79,7 +79,22 @@ const GifNFT = () => {
   };
 
   const memoizedValue = useMemo(() => renderItem, [ListReducer.gifList]);
-
+  
+  const handleFlatlistRefresh = () => {
+    dispatch(nftLoadStart());
+    refreshFunc();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !ListReducer.isGifNftLoading &&
+      ListReducer.gifList.length !== ListReducer.totalCount
+    ) {
+      let num = ListReducer.page + 1;
+      getNFTlist(num);
+      dispatch(pageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -91,24 +106,12 @@ const GifNFT = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(nftLoadStart());
-            refreshFunc();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={ListReducer.page === 1 && ListReducer.isGifNftLoading}
           renderItem={memoizedValue}
-          onEndReached={() => {
-            if (
-              !ListReducer.isGifNftLoading &&
-              ListReducer.gifList.length !== ListReducer.totalCount
-            ) {
-              let num = ListReducer.page + 1;
-              getNFTlist(num);
-              dispatch(pageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}
@@ -122,4 +125,4 @@ const GifNFT = () => {
   );
 };
 
-export default GifNFT;
+export default React.memo(GifNFT);

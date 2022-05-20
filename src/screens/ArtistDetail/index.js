@@ -154,6 +154,19 @@ const Created = ({ route }) => {
         }
     }
 
+    const handleFlatlistRefresh = () => {
+        dispatch(myNftLoadStart())
+        refreshFunc()
+    }
+    const handleFlastListEndReached = () => {
+        if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
+            let num = MyNFTReducer.myListPage + 1;
+            getNFTlist(num);
+            dispatch(myPageChange(num));
+        }
+    }
+    const keyExtractor = (item, index) => { return 'item_' + index }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle='dark-content' backgroundColor={COLORS.WHITE1} />
@@ -166,22 +179,13 @@ const Created = ({ route }) => {
                         horizontal={false}
                         numColumns={2}
                         initialNumToRender={14}
-                        onRefresh={() => {
-                            dispatch(myNftLoadStart())
-                            refreshFunc()
-                        }}
+                        onRefresh={handleFlatlistRefresh}
                         refreshing={MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading}
                         renderItem={renderItem}
-                        onEndReached={() => {
-                            if (!MyNFTReducer.myNftListLoading && MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount) {
-                                let num = MyNFTReducer.myListPage + 1;
-                                getNFTlist(num);
-                                dispatch(myPageChange(num));
-                            }
-                        }}
+                        onEndReached={handleFlastListEndReached}
                         ListFooterComponent={renderFooter}
                         onEndReachedThreshold={0.5}
-                        keyExtractor={(v, i) => "item_" + i}
+                        keyExtractor={keyExtractor}
                     />
                     :
                     <View style={styles.sorryMessageCont} >
@@ -266,6 +270,19 @@ const Collection = ({ route }) => {
             )
         }
     }
+    const handleFlatlistRefresh = () => {
+        dispatch(myNftLoadStart())
+        refreshFunc()
+    }
+    const handleFlastListEndReached = () => {
+        if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollection.length !== MyCollectionReducer.myCollectionTotalCount) {
+            let num = MyCollectionReducer.myCollectionPage + 1;
+            getNFTlist(num);
+            dispatch(myCollectionPageChange(num));
+        }
+    }
+    const keyExtractor = (item, index) => { return 'item_' + index }
+
 
     return (
         <View style={styles.trendCont}>
@@ -279,22 +296,13 @@ const Collection = ({ route }) => {
                             horizontal={false}
                             numColumns={2}
                             initialNumToRender={14}
-                            onRefresh={() => {
-                                dispatch(myNftLoadStart())
-                                refreshFunc()
-                            }}
+                            onRefresh={handleFlatlistRefresh}
                             refreshing={MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading}
                             renderItem={renderItem}
-                            onEndReached={() => {
-                                if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollection.length !== MyCollectionReducer.myCollectionTotalCount) {
-                                    let num = MyCollectionReducer.myCollectionPage + 1;
-                                    getNFTlist(num);
-                                    dispatch(myCollectionPageChange(num));
-                                }
-                            }}
+                            onEndReached={handleFlastListEndReached}
                             ListFooterComponent={renderFooter}
                             onEndReachedThreshold={1}
-                            keyExtractor={(v, i) => "item_" + i}
+                            keyExtractor={keyExtractor}
                         />
                         :
                         <View style={styles.sorryMessageCont} >

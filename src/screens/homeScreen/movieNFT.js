@@ -80,6 +80,22 @@ const MovieNFT = () => {
 
   const memoizedValue = useMemo(() => renderItem, [ListReducer.movieList]);
 
+  const handleFlatlistRefresh = () => {
+    dispatch(nftLoadStart());
+    refreshFunc();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !ListReducer.isMovieNftLoading &&
+      ListReducer.movieList.length !== ListReducer.totalCount
+    ) {
+      let num = ListReducer.page + 1;
+      getNFTlist(num);
+      dispatch(pageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -91,24 +107,12 @@ const MovieNFT = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(nftLoadStart());
-            refreshFunc();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={ListReducer.page === 1 && ListReducer.isMovieNftLoading}
           renderItem={memoizedValue}
-          onEndReached={() => {
-            if (
-              !ListReducer.isMovieNftLoading &&
-              ListReducer.movieList.length !== ListReducer.totalCount
-            ) {
-              let num = ListReducer.page + 1;
-              getNFTlist(num);
-              dispatch(pageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}
@@ -122,4 +126,4 @@ const MovieNFT = () => {
   );
 };
 
-export default MovieNFT;
+export default React.memo(MovieNFT);

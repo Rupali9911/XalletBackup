@@ -229,6 +229,14 @@ const Collections = props => {
 
     const memoizedValue = useMemo(() => renderItem, [collectionList]);
 
+    const handleFlatlistRefresh = () => {
+        dispatch(nftDataCollectionLoadStart());
+        refreshFunc();
+    }
+
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -242,10 +250,7 @@ const Collections = props => {
                     horizontal={false}
                     numColumns={2}
                     initialNumToRender={isSeries ? 6 : 15}
-                    onRefresh={() => {
-                        dispatch(nftDataCollectionLoadStart());
-                        refreshFunc();
-                    }}
+                    onRefresh={handleFlatlistRefresh}
                     refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
                     // onEndReached={() => {
@@ -260,7 +265,7 @@ const Collections = props => {
                     //     }
                     // }}
                     onEndReachedThreshold={0.4}
-                    keyExtractor={(v, i) => 'item_' + i}
+                    keyExtractor={keyExtractor}
                     ListFooterComponent={renderFooter}
                 />
             ) : (

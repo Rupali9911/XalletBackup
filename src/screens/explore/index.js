@@ -83,6 +83,19 @@ function ExploreScreen() {
 
   const memoizedValue = useMemo(() => renderItem, [discoverNFTList]);
   console.log(discoverNFTList, "discoverNFTList")
+
+  const handleFlastListEndReached = () => {
+    if (!noMore) {
+      if (!footerLoader && discoverNFTList.length !== count) {
+        setFooterLoader(true)
+        let pageI = page + 1;
+        setPage(pageI)
+        loadNFTList(pageI)
+      }
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
   return (
     <Container>
       <View style={{ flex: 1 }}>
@@ -97,20 +110,11 @@ function ExploreScreen() {
               renderItem={memoizedValue}
               onRefresh={onRefresh}
               refreshing={isFetching}
-              onEndReached={() => {
-                if (!noMore) {
-                  if (!footerLoader && discoverNFTList.length !== count) {
-                    setFooterLoader(true)
-                    let pageI = page + 1;
-                    setPage(pageI)
-                    loadNFTList(pageI)
-                  }
-                }
-              }}
+              onEndReached={handleFlastListEndReached}
               ItemSeparatorComponent={() => <Divider />}
               ListFooterComponent={renderFooter}
               onEndReachedThreshold={0.1}
-              keyExtractor={(v, i) => 'item_' + i}
+              keyExtractor={keyExtractor}
             />
           )}
         </View>

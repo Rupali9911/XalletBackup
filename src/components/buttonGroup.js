@@ -19,24 +19,28 @@ import Separator from './separator';
 const ButtonGroup = props => {
   const {buttons, separatorColor, selectable, selectedIndex} = props;
 
+  const handleFlatListRenderItem = ({item, index}) => {
+    const isCheck = selectable && index == selectedIndex;
+    return selectable ? (
+      <SelectableButton item={item} isCheck={isCheck} />
+    ) : (
+      <NavButton item={item} />
+    );
+  }
+
+  const handleItemSeparatorComponent = () => (
+    <Separator
+      style={separatorColor ? {backgroundColor: separatorColor} : {}}
+    />
+  )
+  const keyExtractor = (item, index) => { return `_${index}` }
   return (
     <View style={[styles.container, props.style]}>
       <FlatList
         data={buttons || []}
-        renderItem={({item, index}) => {
-          const isCheck = selectable && index == selectedIndex;
-          return selectable ? (
-            <SelectableButton item={item} isCheck={isCheck} />
-          ) : (
-            <NavButton item={item} />
-          );
-        }}
-        keyExtractor={(item, index) => `_${index}`}
-        ItemSeparatorComponent={() => (
-          <Separator
-            style={separatorColor ? {backgroundColor: separatorColor} : {}}
-          />
-        )}
+        renderItem={handleFlatListRenderItem}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={handleItemSeparatorComponent}
       />
     </View>
   );

@@ -289,6 +289,21 @@ const NFTList = ({
   let showList = (toggle == "mint" && nftListCreated.length !== 0) ?
     nftListCreated : (toggle == "draft" && nftListDraft.length !== 0) ?
       nftListDraft : []
+
+  const handleFlastListEndReached = () => {
+    let num;
+    if (toggle == "mint") {
+      num = nftListPage + 1;
+      setNftListPage(num)
+    } else {
+      num = nftListDraftPage + 1;
+      setNftListDraftPage(num)
+    }
+    getNftList(collection, toggle, num)
+  }    
+
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
   return (
     <View style={styles.childCont}>
 
@@ -332,19 +347,9 @@ const NFTList = ({
               initialNumToRender={50}
               renderItem={renderListItem}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              onEndReached={() => {
-                let num;
-                if (toggle == "mint") {
-                  num = nftListPage + 1;
-                  setNftListPage(num)
-                } else {
-                  num = nftListDraftPage + 1;
-                  setNftListDraftPage(num)
-                }
-                getNftList(collection, toggle, num)
-              }}
+              onEndReached={handleFlastListEndReached}
               onEndReachedThreshold={0.4}
-              keyExtractor={(v, i) => 'item_' + i}
+              keyExtractor={keyExtractor}
             />
           }
 

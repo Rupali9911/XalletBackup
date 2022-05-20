@@ -20,7 +20,6 @@ import {
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
-
 const AwardsNFT = () => {
   const { AwardsNFTReducer } = useSelector(state => state);
   const { sort } = useSelector(state => state.ListReducer);
@@ -29,7 +28,6 @@ const AwardsNFT = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
   useEffect(() => {
     if (isFocused && (isFirstRender || isSort !== sort)) {
       console.log("award nft")
@@ -41,51 +39,67 @@ const AwardsNFT = () => {
       setIsSort(sort)
     }
   }, [sort, isFocused]);
-
   const getNFTlist = useCallback((page, limit, _sort) => {
     // console.log('__sort',_sort);
     dispatch(getAwardsNftList(page, limit, _sort));
   }, []);
-
   const handleRefresh = () => {
     dispatch(awardsNftListReset());
     getNFTlist(1, null, sort);
     dispatch(awardsNftPageChange(1));
   };
-
   const renderFooter = () => {
     if (!AwardsNFTReducer.awardsNftLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
-
-  const renderItem = ({ item }) => {
+  const renderItemFIndIndex = (item) => {
     let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
       x => x.id === item.id,
     );
+    return findIndex
+  }
+  const renderItem = ({ item }) => {
+    // let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
+    //   x => x.id === item.id,
+    // );
     if (item && item.hasOwnProperty("metaData") && item.metaData) {
       let imageUri =
         item.thumbnailUrl !== undefined || item.thumbnailUrl
           ? item.thumbnailUrl
           : item.metaData.image;
-
       return (
         <NFTItem
           screenName="awards"
           item={item}
-          image={imageUri}
+          // image={imageUri}
           onPress={() => {
             // dispatch(changeScreenName('awards'));
-            navigation.push('DetailItem', { index: findIndex, sName: "awards" });
+            navigation.push('DetailItem', { index: renderItemFIndIndex(item), sName: "awards" });
           }}
         />
       );
     }
   };
-
   const memoizedValue = useMemo(
     () => renderItem,
     [AwardsNFTReducer.awardsNftList],
   );
+  const handleFlatlistRefresh = () => {
+    dispatch(awardsNftLoadStart());
+    handleRefresh();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !AwardsNFTReducer.awardsNftLoading &&
+      AwardsNFTReducer.awardsTotalCount !==
+      AwardsNFTReducer.awardsNftList.length
+    ) {
+      let num = AwardsNFTReducer.awardsNftPage + 1;
+      getNFTlist(num);
+      dispatch(awardsNftPageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
 
   return (
     <View style={styles.trendCont}>
@@ -99,31 +113,24 @@ const AwardsNFT = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(awardsNftLoadStart());
-            handleRefresh();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={
             AwardsNFTReducer.awardsNftPage === 1 &&
             AwardsNFTReducer.awardsNftLoading
           }
           renderItem={memoizedValue}
-          onEndReached={() => {
-            if (
-              !AwardsNFTReducer.awardsNftLoading &&
-              AwardsNFTReducer.awardsTotalCount !==
-              AwardsNFTReducer.awardsNftList.length
-            ) {
-              let num = AwardsNFTReducer.awardsNftPage + 1;
-              getNFTlist(num);
-              dispatch(awardsNftPageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}
+          // removeClippedSubviews={true}
+          // maxToRenderPerBatch = {30}
+          // windowSize = {30}
+          // updateCellsBatchingPeriod={70}
+          // disableVirtualization={false}
+          // legacyImplementation={true}
         />
       ) : (
         <View style={styles.sorryMessageCont}>
@@ -133,5 +140,4 @@ const AwardsNFT = () => {
     </View>
   );
 };
-
-export default AwardsNFT;
+export default React.memo(AwardsNFT);

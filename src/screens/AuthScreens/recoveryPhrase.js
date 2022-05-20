@@ -146,6 +146,19 @@ const RecoveryPhrase = ({route, navigation}) => {
     setUserTyping(false);
     setShowSuggestions(false);
   };
+
+  const handleFlatListRenderItem = ({item, index}) => (
+    <TouchableOpacity
+      style={styles.suggestionContainer}
+      onPress={() => setPhraseText(item.word)}>
+      <Text style={styles.suggestionText}>
+        {item.word}
+      </Text>
+    </TouchableOpacity>
+  )
+
+  const keyExtractor = (item, index) => { return `_${index}` }
+
   return (
     <AppBackground isBusy={loading}>
       <AppHeader
@@ -225,16 +238,8 @@ const RecoveryPhrase = ({route, navigation}) => {
                         data={suggestions}
                         horizontal
                         keyboardShouldPersistTaps="always"
-                        renderItem={({item, index}) => (
-                          <TouchableOpacity
-                            style={styles.suggestionContainer}
-                            onPress={() => setPhraseText(item.word)}>
-                            <Text style={styles.suggestionText}>
-                              {item.word}
-                            </Text>
-                          </TouchableOpacity>
-                        )}
-                        keyExtractor={(item, index) => `_${index}`}
+                        renderItem={handleFlatListRenderItem}
+                        keyExtractor={keyExtractor}
                         showsHorizontalScrollIndicator={false}
                       />
                     </View>
