@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 1,
-
+borderRadius:wp("5"),
     elevation: 5,
   },
   nftListItem: {
@@ -92,5 +92,10 @@ const styles = StyleSheet.create({
     fontSize: SIZE(14),
     marginBottom: SIZE(8),
   },
+  soldOutText:{
+    color: COLORS.greenLight,
+    fontSize: SIZE(12),
+    marginVertical: SIZE(10),
+},
 });
 export default styles;

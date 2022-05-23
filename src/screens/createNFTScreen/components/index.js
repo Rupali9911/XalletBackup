@@ -29,6 +29,7 @@ export const CardLabel = props => {
 
 export const CardField = props => {
   let pressable = props.pressable ? false : true;
+
   return (
     <TouchableOpacity
       onPress={props.onPress}
@@ -41,14 +42,15 @@ export const CardField = props => {
               ? 'flex-start'
               : 'center'
             : 'center',
-            justifyContent: "space-between"
+            justifyContent: "space-between",
+          borderColor:props.inputProps.value
         },
         props.contStyle,
       ]}>
       <TextInput
         editable={pressable}
         {...props.inputProps}
-        style={[styles.field, { 
+        style={[styles.field, {
           flex: !pressable ? null : 1,
           paddingVertical: !pressable? 0 : hp("2%"),
         }]}

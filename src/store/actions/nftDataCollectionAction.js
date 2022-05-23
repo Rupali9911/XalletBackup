@@ -124,12 +124,10 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
       } else {
         url = url.concat(`&collectionAddress=${collectionAddress}`);
       }
-    
       fetch(url)
         .then(response => response.json())
         .then(json => {
           const nftData = [];
-  
           // if (!json.count) {
           //   json.data = [];
           // } else {
@@ -153,7 +151,6 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
           // }
           json.data = nftData;
           dispatch(nftDataCollectionLoadSuccess(json));
-  
         }).catch(err => {
           dispatch(nftDataCollectionLoadFail());
         })
@@ -161,30 +158,54 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
   }
 }
 
-export const nftBlindDataCollectionList = (collectionAddress) => {
+export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
+    console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
+    const url = collectionType == 0 ?
+      `${BASE_URL}/blindBox/view-blind-all-series-token-info` :
+      `${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`
 
-    fetch(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`)
+    const requestOptions = collectionType == 0 ? {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req_body)
+    } : {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    fetch(url, requestOptions)
       .then(response => response.json())
       .then(json => {
 
         const data = json.data;
-        let nftData = [];
-        for (let i = 0; i < data.length; i++) {
-          nftData.push({
-            ...data[i],
-            collectionName: data[i]?.boxURIMetaInfo?.name,
-            bannerImage: data[i]?.boxURIMetaInfo?.banner_image,
-            iconImage: data[i]?.boxURIMetaInfo?.image,
-            items: data[i]?.maxBoxes,
-          });
-        }
 
-        json.count = json.data.length;
-        json.data = nftData;
-        dispatch(nftDataCollectionLoadSuccess(json));
+        if (collectionType == 0) {
+          dispatch(nftDataCollectionLoadSuccess(json));
+        } else {
+          let nftData = [];
+
+          for (let i = 0; i < data.length; i++) {
+            nftData.push({
+              ...data[i],
+              collectionName: data[i]?.boxURIMetaInfo?.name,
+              bannerImage: data[i]?.boxURIMetaInfo?.banner_image,
+              iconImage: data[i]?.boxURIMetaInfo?.image,
+              items: data[i]?.maxBoxes,
+            });
+          }
+
+          json.count = json.data.length;
+          json.data = nftData;
+          dispatch(nftDataCollectionLoadSuccess(json));
+        }
       })
       .catch(err => {
         dispatch(nftDataCollectionLoadFail());
@@ -195,11 +216,11 @@ export const nftBlindDataCollectionList = (collectionAddress) => {
 export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
-    const owner = wallet.address ||  data.user._id;
-    
+    const owner = wallet?.address || data?.user?._id;
+
     if (type === 'owned') {
       let url = `${BASE_URL}/user/my-collection`;
-      if (wallet.address) url = `${BASE_URL}/xanalia/mydata`;
+      if (wallet?.address) url = `${BASE_URL}/xanalia/mydata`;
 
       const req_body = {
         limit: 6,
@@ -218,19 +239,32 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
           'Content-Type': 'application/json',
         },
       };
+
+      // fetch(`${BASE_URL}/user/my-collection`, fetch_data_body)
+      //   .then(response => response.json())
+      //   .then(json => {
+      //     if (json.data) {
+      //       dispatch(nftBlindSeriesCollectionLoadSuccess(json));
+      //     } else {
+      //       dispatch(nftBlindSeriesCollectionLoadFail());
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log('=====blind_series_my_collection_err', err);
+
       fetch(url, fetch_data_body)
-      .then(response => response.json())
-      .then(json => {
-        if(json.data && json.count) {
-          dispatch(nftBlindSeriesCollectionLoadSuccess(json));
-        } else {
-          dispatch(nftBlindSeriesCollectionLoadFail());
-        }
-      })
-      .catch(err => {
-        console.log('=====blind_series_my_collection_err', err);
-        dispatch(nftBlindSeriesCollectionLoadFail());
-      });
+        .then(response => response.json())
+        .then(json => {
+          if (json.data && json.count) {
+            dispatch(nftBlindSeriesCollectionLoadSuccess(json));
+          } else {
+            dispatch(nftBlindSeriesCollectionLoadFail());
+          }
+        })
+        .catch(err => {
+          console.log('=====blind_series_my_collection_err', err);
+        });
+
     } else {
       const req_body = {
         limit: 6,
@@ -251,37 +285,37 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
       };
 
       fetch(`${BASE_URL}/blindBox/view-blind-series-token-info`, fetch_data_body)
-      .then(response => response.json())
-      .then(json => {
-        const nftData = [];
-        let obj = json.data;
+        .then(response => response.json())
+        .then(json => {
+          const nftData = [];
+          let obj = json.data;
 
-        if (obj !== "No record found" && obj !== "404 Not Found") {
-          for (let i = 0; i < obj?.length; i++) {
-            let parsedNFT = parseNftObject(obj[i]);
-            nftData.push({
-              ...parsedNFT,
-              properties: {
-                type: obj[i]?.metaData?.properties?.type,
-              },
-              totalSupply: obj[i]?.metaData?.totalSupply,
-              externalLink: obj[i]?.metaData?.externalLink,
-              thumbnft: obj[i]?.metaData?.thumbnft,
-              thumbnailUrl: obj[i]?.metaData?.thumbnft,
-              tokenURI: obj[i]?.returnValues?.tokenURI,
-              price: obj[i]?.price?.toString(),
-            });
+          if (obj !== "No record found" && obj !== "404 Not Found") {
+            for (let i = 0; i < obj?.length; i++) {
+              let parsedNFT = parseNftObject(obj[i]);
+              nftData.push({
+                ...parsedNFT,
+                properties: {
+                  type: obj[i]?.metaData?.properties?.type,
+                },
+                totalSupply: obj[i]?.metaData?.totalSupply,
+                externalLink: obj[i]?.metaData?.externalLink,
+                thumbnft: obj[i]?.metaData?.thumbnft,
+                thumbnailUrl: obj[i]?.metaData?.thumbnft,
+                tokenURI: obj[i]?.returnValues?.tokenURI,
+                price: obj[i]?.price?.toString(),
+              });
+            }
+            json.data = nftData;
+            dispatch(nftBlindSeriesCollectionLoadSuccess(json));
+          } else {
+            dispatch(nftBlindSeriesCollectionLoadFail());
           }
-          json.data = nftData;
-          dispatch(nftBlindSeriesCollectionLoadSuccess(json));
-        } else {
+        })
+        .catch(err => {
+          console.log('=====blind_series_err', err);
           dispatch(nftBlindSeriesCollectionLoadFail());
-        }
-      })
-      .catch(err => {
-        console.log('=====blind_series_err', err);
-        dispatch(nftBlindSeriesCollectionLoadFail());
-      });
+        });
     }
   }
 }

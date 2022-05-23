@@ -1,7 +1,7 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import {SIZE, FONTS} from 'src/constants';
-import {colors, fonts} from '../../res';
+import { SIZE, FONTS } from 'src/constants';
+import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: SIZE(86),
     height: SIZE(46),
-    alignItems: 'center',
+    //alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     marginLeft: -1,
@@ -217,6 +217,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: SIZE(15),
   },
+  intoMystery: { 
+    alignItems: 'center', 
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
+    width: wp('100%') }
 });
 
 export default styles;

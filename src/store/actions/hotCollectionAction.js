@@ -7,6 +7,7 @@ import {
   HOT_COLLECTION_SUCCESS,
   HOT_COLLECTION_PAGE_CHANGE,
 } from '../types';
+import { ApiRequest } from '../../helpers/ApiRequest';
 
 export const hotCollectionLoadSuccess = (data) => ({
   type: HOT_COLLECTION_SUCCESS,
@@ -46,7 +47,7 @@ export const hotCollectionList = (page) => {
 
 export const getHotCollectionDetail = (collectionId, isBlind) => {
   axios.defaults.headers.post['Content-Type'] = 'application/json';
-  
+
   const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
   return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
 }
@@ -74,4 +75,17 @@ export const getUserWhiteList = (token) => {
     Authorization: `Bearer ${token}`,
   };
   return axios.get(`${BASE_URL}/user/ultraman-whitelist-status`, { headers: headers });
+}
+
+export const getBlindBoxSeriesSum = (collectionId) => {
+  return new Promise((resolve, reject) => {
+    ApiRequest(`${BASE_URL}/blindbox/blindbox-series-sum?collectionAddress=${collectionId}`, 'GET', null, null)
+      .then(response => {
+        if (response?.data?.length > 0)
+          resolve(response?.data[0]);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }

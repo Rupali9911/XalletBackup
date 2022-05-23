@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import {View, SafeAreaView, Text, TouchableOpacity, Platform} from 'react-native';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import { AppHeader, LoaderIndicator } from '../../components';
 import { TabView, TabBar } from 'react-native-tab-view';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -152,7 +154,7 @@ const CreateNFTScreen = ({ route }) => {
     index == 1 ? translate("wallet.common.NFTList") :
       index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
 
-  return (
+    return (
     <View style={styles.mainContainer}>
       {loading ? <LoaderIndicator /> : null}
       <SafeAreaView style={styles.mainContainer}>
@@ -207,20 +209,23 @@ const CreateNFTScreen = ({ route }) => {
             />
             : null
         }
-        <DateTimePickerModal
-          isVisible={dateVisible}
-          mode="datetime"
-          minimumDate={miniDate}
-          onConfirm={date => {
-            setDate(date)
-            setDateVisible(false)
-          }}
-          onCancel={() => {
-            setDate("closed")
-            setDateVisible(false)
-          }
-          }
-        />
+
+              <DateTimePickerModal
+                  isVisible={dateVisible}
+                  mode="datetime"
+                  minimumDate={miniDate}
+
+                  onConfirm={date => {
+                      setDate(date)
+                      setDateVisible(false)
+                  }}
+                  onCancel={() => {
+                      setDate("closed")
+                      setDateVisible(false)
+                  }
+                  }
+              />
+
       </SafeAreaView>
     </View>
   );

@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
+
   },
   childrenContainer:{
     paddingVertical: hp(1.5),
