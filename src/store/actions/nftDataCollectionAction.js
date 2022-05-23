@@ -159,7 +159,7 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
 }
 
 export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
+  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
@@ -213,7 +213,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
   }
 }
 
-export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
+export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seriesInfoId, chainType) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user._id;
@@ -266,14 +266,22 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
         });
 
     } else {
-      const req_body = {
-        limit: 6,
-        filterType: type,
-        loggedIn: owner,
-        owner,
-        page,
-        seriesInfoId: collectionAddress,
-      }
+      const req_body = seriesInfoId == "61aa058d504d60a828f80113" ?
+        {
+          limit: 6,
+          filterType: type == "minted2" && seriesInfoId == "61aa058d504d60a828f80113" ? "gallery" : type,
+          chainType: chainType,
+          page,
+          seriesInfoId: seriesInfoId,
+        } :
+        {
+          limit: 6,
+          filterType: type,
+          loggedIn: owner,
+          owner,
+          page,
+          seriesInfoId: collectionAddress,
+        }
 
       const fetch_data_body = {
         method: 'POST',
