@@ -216,7 +216,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
 export const nftBlindSeriesCollectionList = (page, collectionAddress, type) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
-    const owner = wallet?.address || data?.user._id;
+    const owner = wallet?.address || data?.user?._id;
 
     if (type === 'owned') {
       let url = `${BASE_URL}/user/my-collection`;

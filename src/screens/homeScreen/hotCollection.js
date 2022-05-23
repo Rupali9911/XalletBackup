@@ -75,6 +75,23 @@ const HotCollection = () => {
     [HotCollectionReducer.hotCollectionList],
   );
 
+  const handleFlatlistRefresh = () => {
+    dispatch(hotCollectionLoadStart());
+    handleRefresh();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !HotCollectionReducer.hotCollectionLoading &&
+      HotCollectionReducer.hotCollectionTotalCount !==
+      HotCollectionReducer.hotCollectionList.length
+    ) {
+      let num = HotCollectionReducer.hotCollectionPage + 1;
+      getHotCollection(num);
+      dispatch(hotCollectionPageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -87,28 +104,15 @@ const HotCollection = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(hotCollectionLoadStart());
-            handleRefresh();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={
             HotCollectionReducer.hotCollectionPage === 1 &&
             HotCollectionReducer.hotCollectionLoading
           }
           renderItem={memoizedValue}
-          onEndReached={() => {
-            if (
-              !HotCollectionReducer.hotCollectionLoading &&
-              HotCollectionReducer.hotCollectionTotalCount !==
-              HotCollectionReducer.hotCollectionList.length
-            ) {
-              let num = HotCollectionReducer.hotCollectionPage + 1;
-              getHotCollection(num);
-              dispatch(hotCollectionPageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}

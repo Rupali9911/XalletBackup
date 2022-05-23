@@ -74,6 +74,20 @@ const ArtNFT = () => {
             <ActivityIndicator size='small' color={colors.themeR} />
         )
     }
+    const handleFlatlistRefresh = () => {
+        dispatch(newNftLoadStart('art'));
+        handleRefresh();
+    }
+
+    const handleFlastListEndReached = () => {
+        if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newNftList.length) {
+            let num = NewNFTListReducer.newListPage + 1;
+            getNFTlist(num);
+            dispatch(newPageChange(num));
+        }
+    }
+
+      const keyExtractor = (item, index) => { return 'item_' + index }
 
     return (
         <View style={styles.trendCont}>
@@ -87,21 +101,12 @@ const ArtNFT = () => {
                             horizontal={false}
                             numColumns={2}
                             initialNumToRender={14}
-                            onRefresh={() => {
-                                dispatch(newNftLoadStart('art'));
-                                handleRefresh();
-                            }}
+                            onRefresh={handleFlatlistRefresh}
                             refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
                             renderItem={memoizedValue}
-                            onEndReached={() => {
-                                if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newNftList.length) {
-                                    let num = NewNFTListReducer.newListPage + 1;
-                                    getNFTlist(num);
-                                    dispatch(newPageChange(num));
-                                }
-                            }}
+                            onEndReached={handleFlastListEndReached}
                             onEndReachedThreshold={0.4}
-                            keyExtractor={(v, i) => "item_" + i}
+                            keyExtractor={keyExtractor}
                             ListFooterComponent={renderFooter}
                             pagingEnabled={false}
                             legacyImplementation={false}
@@ -114,4 +119,4 @@ const ArtNFT = () => {
     )
 }
 
-export default ArtNFT;
+export default React.memo(ArtNFT);

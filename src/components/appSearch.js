@@ -110,6 +110,48 @@ export default function AppSearch() {
     setSearchData(array);
   };
 
+  const handleFlatListRenderItem = ({item, index}) => {
+    let withTag = false;
+    if (index == 0) {
+      withTag = true;
+    } else if (searchData[index - 1].type !== item.type) {
+      withTag = true;
+    }
+    return (
+      <ResultItem
+        item={item}
+        index={index}
+        withTag={withTag}
+        onPress={item => {
+          if (item.type == 'NFT') {
+            const image = item.metaData.image || item.thumbnailUrl;
+            const fileType = image
+              ? image.substring(image.lastIndexOf('.') + 1)
+              : '';
+              navigation.navigate('CertificateDetail', {
+              video: item.metaData.image,
+              fileType: fileType,
+              item: item,
+              routeName: "Search"
+            });
+          } else if (item.type == 'Artist') {
+            const id =
+              item.role === 'crypto' ? item.username : item._id;
+            navigation.navigate('ArtistDetail', {id: id});
+          }else if (item.type == 'Collections') {
+            if (item.blind) {
+              console.log('========collection search => blind', item.blind, item)
+              navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
+            } else {
+              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+            }
+          }
+        }}
+      />
+    );}
+
+  const keyExtractor = (item, index) => { return `_${index}` }
+
   return (
     <View style={styles.container}>
       <Searchbar
@@ -134,47 +176,8 @@ export default function AppSearch() {
               data={searchData}
               keyboardShouldPersistTaps={'handled'}
               style={styles.flatlistStyle}
-              renderItem={({item, index}) => {
-                let withTag = false;
-                if (index == 0) {
-                  withTag = true;
-                } else if (searchData[index - 1].type !== item.type) {
-                  withTag = true;
-                }
-                return (
-                  <ResultItem
-                    item={item}
-                    index={index}
-                    withTag={withTag}
-                    onPress={item => {
-                      if (item.type == 'NFT') {
-                        const image = item.metaData.image || item.thumbnailUrl;
-                        const fileType = image
-                          ? image.substring(image.lastIndexOf('.') + 1)
-                          : '';
-                          navigation.navigate('CertificateDetail', {
-                          video: item.metaData.image,
-                          fileType: fileType,
-                          item: item,
-                          routeName: "Search"
-                        });
-                      } else if (item.type == 'Artist') {
-                        const id =
-                          item.role === 'crypto' ? item.username : item._id;
-                        navigation.navigate('ArtistDetail', {id: id});
-                      }else if (item.type == 'Collections') {
-                        if (item.blind) {
-                          console.log('========collection search => blind', item.blind, item)
-                          navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
-                        } else {
-                          navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-                        }
-                      }
-                    }}
-                  />
-                );
-              }}
-              keyExtractor={(item, index) => `_${index}`}
+              renderItem={handleFlatListRenderItem}
+              keyExtractor={keyExtractor}
             />
           ) : null}
         </View>

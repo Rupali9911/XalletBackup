@@ -98,6 +98,22 @@ const Collection = () => {
     );
   };
 
+  const handleFlatlistRefresh = () => {
+    dispatch(collectionLoadStart());
+    handleRefresh();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !CollectionReducer.collectionLoading &&
+      CollectionReducer.collectionTotalCount !==
+      CollectionReducer.collectionList.length
+    ) {
+      let num = CollectionReducer.collectionPage + 1;
+      getCollection(num, isSelectTab);
+      dispatch(collectionPageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -126,28 +142,15 @@ const Collection = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(collectionLoadStart());
-            handleRefresh();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={
             CollectionReducer.collectionPage === 1 &&
             CollectionReducer.collectionLoading
           }
           renderItem={renderItem}
-          onEndReached={() => {
-            if (
-              !CollectionReducer.collectionLoading &&
-              CollectionReducer.collectionTotalCount !==
-              CollectionReducer.collectionList.length
-            ) {
-              let num = CollectionReducer.collectionPage + 1;
-              getCollection(num, isSelectTab);
-              dispatch(collectionPageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}
@@ -161,4 +164,4 @@ const Collection = () => {
   );
 };
 
-export default Collection;
+export default React.memo(Collection);
