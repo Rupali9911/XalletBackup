@@ -49,7 +49,9 @@ const Collections = props => {
         userCollection,
         isStore,
         manualColl,
+        seriesInfoId
     } = props;
+    // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
     const { NftDataCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -84,8 +86,10 @@ const Collections = props => {
     const getNFTlist = useCallback(
         page => {
             if (isStore) {
+                // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
                 dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true));
             } else if (!isBlind) {
+                // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
                 dispatch(
                     nftDataCollectionList(
                         page,
@@ -99,11 +103,13 @@ const Collections = props => {
                     ),
                 );
             } else if (isSeries) {
+                // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
                 dispatch(
                     nftBlindSeriesCollectionList(
                         page,
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
+                        seriesInfoId, nftChain
                     ),
                 );
             } else {
@@ -115,6 +121,7 @@ const Collections = props => {
                     owner: null,
                     page: 1
                 }
+                // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
                 dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
@@ -141,7 +148,8 @@ const Collections = props => {
 
     const renderItem = ({ item, index }) => {
         let findIndex = collectionList.findIndex(x => x.id === item.id);
-        if (isStore) {
+        // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
+        if (isStore || seriesInfoId) {
             return (
                 <NFTItem
                     item={item}
@@ -150,7 +158,7 @@ const Collections = props => {
                     nftChain={nftChain}
                     isStore={isStore}
                     onPress={() => {
-                        console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
+                        // console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
                         if (!isSeries) {
                             // dispatch(changeScreenName('dataCollection'));
                             navigation.push('DetailItem', {
@@ -207,6 +215,7 @@ const Collections = props => {
                 />
             );
         } else {
+            console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
             return (
                 <CollectionItem
                     bannerImage={item.bannerImage}
@@ -220,10 +229,11 @@ const Collections = props => {
                     isCollection={!isHotCollection}
                     cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
+                        console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item)
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
                                 isBlind: true,
-                                collectionId: collectionAddress,
+                                collectionId: collectionId,
                                 nftId: item._id,
                                 isHotCollection: !item.blind,
                             });

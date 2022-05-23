@@ -55,7 +55,8 @@ export const cardsDefaultData = [
     chainType: "polygon",
     collectionDesc:
       "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
-    collectionName: "Underground City",
+      collectionId: "61aa04803035bdb9917871cf",
+      collectionName: "Underground City",
     creatorInfo: [
       {
         title: "China Wuan Studio",
