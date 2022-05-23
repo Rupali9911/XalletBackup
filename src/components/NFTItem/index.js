@@ -189,7 +189,7 @@ export default function NFTItem(props) {
     token => item?.newpriceTraded?.mainChain == token?.chain && item?.newpriceTraded?.baseCurrency == token.order
   );
   let iconNftChain = isBlind ? item.nftChain : item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0] : ''
-  console.log("🚀 ~ file: index.js ~ line 193 ~ ", isBlind ? item?.metaData ? item?.metaData.name : item.name : item.name, item, item?.mainTokenId, iconNftChain, item.chainType)
+  // console.log("🚀 ~ file: index.js ~ line 193 ~ ", isBlind ? item?.metaData ? item?.metaData.name : item.name : item.name, item, item?.mainTokenId, iconNftChain, item.chainType)
   // console.log("🚀 ~ file: index.js ~ line 191 ~", lastCurrency)
   return (
     <>
