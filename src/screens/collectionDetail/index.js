@@ -950,7 +950,7 @@ function CollectionDetail(props) {
                                                 color: collectionType === 2 ? colors.BLUE4 : colors.GREY1,
                                             },
                                         ]}>
-                                        {isBlind && nftId ? translate('common.notforsale') : translate('common.owned')}
+                                        {isBlind && nftId ? translate('common.notforsale') : translate('wallet.common.owned')}
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
@@ -968,7 +968,7 @@ function CollectionDetail(props) {
                                                 color: collectionType === 3 ? colors.BLUE4 : colors.GREY1,
                                             },
                                         ]}>
-                                        {isBlind && nftId ? translate('common.owned') : translate('common.gallery')}
+                                        {isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
