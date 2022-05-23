@@ -110,6 +110,8 @@ const MovieNFT = () => {
           onEndReachedThreshold={0.4}
           keyExtractor={(v, i) => 'item_' + i}
           ListFooterComponent={renderFooter}
+          pagingEnabled={false}
+          legacyImplementation={false}
         />
       ) : (
         <View style={styles.sorryMessageCont}>

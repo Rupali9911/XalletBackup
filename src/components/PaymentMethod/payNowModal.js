@@ -136,7 +136,8 @@ const PaymentNow = props => {
         } else {
           if (res.error) {
             // alertWithSingleBtn(translate(`common.${res.error.code}`));
-            alertWithSingleBtn(nftErrorMessage(res.message));
+            // alertWithSingleBtn(nftErrorMessage(res.message));
+            alertWithSingleBtn(translate('common.amountMoreThan')); 
           } else {
             alertWithSingleBtn(nftErrorMessage(res.data));
           }

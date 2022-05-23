@@ -648,7 +648,8 @@
         "secondsLeft": "剩餘秒數",
         "passwordlengthshort": "密碼長度必須至少為八個字符。",
         "blindboxCollections": "神秘盒子",
-        "zoomMail": "縮放郵件"
+        "zoomMail": "縮放郵件",
+        "amountMoreThan": "金額不得超過 999,999.99 美元"
     },
     "AwardPage": {},
     "wallet": {

@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: SIZE(86),
     height: SIZE(46),
-    alignItems: 'center',
+    //alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     marginLeft: -1,
