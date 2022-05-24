@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
@@ -7,7 +7,6 @@ import { translate } from '../../walletUtils';
 
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
-var isFirstPressDone= false;
 export default function CollectionItem(props) {
   const {
     bannerImage,
@@ -22,6 +21,7 @@ export default function CollectionItem(props) {
     isCollection,
     cryptoAllowed,
   } = props;
+  const [onPressButton,setOnPressButton] = useState(false);
   const chainIcon = type => {
     if (type === 'polygon') {
       return <PolygonIcon />;
@@ -84,13 +84,17 @@ export default function CollectionItem(props) {
     }
   };
 
-  const handleOnPress = () => {
-    if(!isFirstPressDone){
+  useEffect(()=>{
+    if(onPressButton){
       onPress();
-      isFirstPressDone=true;
-    }else{
-      isFirstPressDone=false;
+      setTimeout(()=>{
+        setOnPressButton(false);
+      },1000)
     }
+  },[onPressButton])
+
+  const handleOnPress = () => {
+    setOnPressButton(true);
   }
   
   return (
