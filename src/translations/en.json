@@ -984,7 +984,8 @@
             "OfferAccept": "Offer Accept",
             "updatePrice": "Price Updated",
             "bidaward": "Bid Award",
-            "transferFrom": "Transfer"
+            "transferFrom": "Transfer",
+            "closeTimeWarn": "Close time should be greater than open time"
         },
         "backendmessage": {
             "error": {},

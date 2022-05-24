@@ -987,7 +987,8 @@
             "OfferAccept": "제안 수락",
             "updatePrice": "가격 업데이트됨",
             "bidaward": "입찰 낙찰",
-            "transferFrom": "옮기다"
+            "transferFrom": "옮기다",
+            "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다."
         },
         "backendmessage": {
             "error": {},

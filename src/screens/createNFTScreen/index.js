@@ -22,6 +22,7 @@ import NFTList from './nftList';
 import UploadNFT from './uploadNft';
 import { TabModal } from './components';
 import { useSelector } from 'react-redux';
+import moment from "moment";
 
 const CreateNFTScreen = ({ route }) => {
 
@@ -36,7 +37,7 @@ const CreateNFTScreen = ({ route }) => {
 
   const [dateVisible, setDateVisible] = useState(false);
   const [miniDate, setMiniDate] = useState(new Date());
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
   const [nftListDefault, setnftListDefault] = useState(null);
   const [nftItem, setnftItem] = useState(null);
 
@@ -209,13 +210,19 @@ const CreateNFTScreen = ({ route }) => {
             />
             : null
         }
-
-              <DateTimePickerModal
-                  isVisible={dateVisible}
+          {dateVisible &&
+              <DatePicker
+                  modal={modalScreen}
+                  open={dateVisible}
+                  date={miniDate}
                   mode="datetime"
                   minimumDate={miniDate}
-
-                  onConfirm={date => {
+                  androidVariant={"iosClone"}
+                    // timeZoneOffsetInMinutes={-390}
+                    // locale={"en"}
+                    // is24hourSource={"locale"}
+                    onConfirm={date => {
+                       console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))
                       setDate(date)
                       setDateVisible(false)
                   }}
@@ -224,7 +231,29 @@ const CreateNFTScreen = ({ route }) => {
                       setDateVisible(false)
                   }
                   }
-              />
+              />}
+          {/*{dateVisible &&*/}
+          {/*<DatePicker*/}
+          {/*    modal={modalScreen}*/}
+          {/*    open={dateVisible}*/}
+          {/*    date={miniDate}*/}
+          {/*    mode="datetime"*/}
+          {/*    minimumDate={miniDate}*/}
+          {/*    androidVariant={"iosClone"}*/}
+          {/*    // timeZoneOffsetInMinutes={-390}*/}
+          {/*    // locale={"en"}*/}
+          {/*    // is24hourSource={"locale"}*/}
+          {/*    onConfirm={date => {*/}
+          {/*        console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))*/}
+          {/*        setDate(date)*/}
+          {/*        setDateVisible(false)*/}
+          {/*    }}*/}
+          {/*    onCancel={() => {*/}
+          {/*        setDate("closed")*/}
+          {/*        setDateVisible(false)*/}
+          {/*    }*/}
+          {/*    }*/}
+          {/*/>}*/}
 
       </SafeAreaView>
     </View>

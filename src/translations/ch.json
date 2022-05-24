@@ -987,7 +987,8 @@
             "OfferAccept": "报价接受",
             "updatePrice": "价格更新",
             "bidaward": "中标",
-            "transferFrom": "转移"
+            "transferFrom": "转移",
+            "closeTimeWarn": "关闭时间应大于打开时间"
         },
         "backendmessage": {
             "error": {},

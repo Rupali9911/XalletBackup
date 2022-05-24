@@ -52,7 +52,6 @@ borderRadius: wp("5"),
     },
     shadowOpacity: 0.25,
     shadowRadius: 1,
-
     elevation: 5,
   },
   listItemContainer: {
