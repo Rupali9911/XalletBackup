@@ -646,7 +646,8 @@
         "secondsLeft": "Seconds Left",
         "passwordlengthshort": "Password must be at least eight characters long.",
         "blindboxCollections": "Mystery Box",
-        "zoomMail": "Zoom Mail"
+        "zoomMail": "Zoom Mail",
+        "amountMoreThan": "Amount must be no more than $999,999.99"
     },
     "AwardPage": {},
     "wallet": {

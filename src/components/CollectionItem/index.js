@@ -1,12 +1,13 @@
-import React from 'react';
-import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
-import {C_Image} from '../../components';
+import React, { useEffect } from 'react';
+import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
+import { C_Image } from '../../components';
 import styles from './styles';
-import {SIZE, SVGS} from 'src/constants';
-import {translate} from '../../walletUtils';
+import { SIZE, SVGS } from 'src/constants';
+import { translate } from '../../walletUtils';
 
-const {PolygonIcon, Ethereum, BitmapIcon} = SVGS;
+const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
+var isFirstPressDone= false;
 export default function CollectionItem(props) {
   const {
     bannerImage,
@@ -19,8 +20,8 @@ export default function CollectionItem(props) {
     creator,
     blind,
     isCollection,
+    cryptoAllowed,
   } = props;
-
   const chainIcon = type => {
     if (type === 'polygon') {
       return <PolygonIcon />;
@@ -70,13 +71,30 @@ export default function CollectionItem(props) {
           <Ethereum />
         </View>
       );
+    } else if (isCollection) {
+      return (
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(8) }} />}
+          {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
+          {cryptoAllowed?.ethereum && <Ethereum />}
+        </View>
+      );
     } else {
       return chainIcon(chainType);
     }
   };
 
+  const handleOnPress = () => {
+    if(!isFirstPressDone){
+      onPress();
+      isFirstPressDone=true;
+    }else{
+      isFirstPressDone=false;
+    }
+  }
+  
   return (
-    <TouchableOpacity onPress={onPress} style={styles.collectionListItem}>
+    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
@@ -106,9 +124,12 @@ export default function CollectionItem(props) {
             )}
           </View>
           <View style={styles.bottomWrap}>
-            {!isCollection ? renderChain() : <View />}
-            <Text style={{fontSize: SIZE(12), color: '#8e9bba'}}>
+            {/* {!isCollection ? renderChain() : <View />} */}
+            {renderChain()}
+            <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
+              <Text style={{ marginRight: 50 }}>
+              </Text>
             </Text>
           </View>
         </View>
