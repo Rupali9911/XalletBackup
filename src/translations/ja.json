@@ -989,7 +989,8 @@
             "OfferAccept": "オファー受入れる",
             "updatePrice": "販売価格の変更",
             "bidaward": "入札アワード",
-            "transferFrom": "転送"
+            "transferFrom": "転送",
+            "closeTimeWarn": "閉店時間は開店時間より長くする必要があります"
         },
         "backendmessage": {
             "error": {},

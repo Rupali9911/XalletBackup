@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontSize: RF(1.5),
     color: colors.BLUE5,
+    padding:"0.5%",
     fontFamily: fonts.PINGfANG_SBOLD,
     marginTop: hp('1%'),
   },

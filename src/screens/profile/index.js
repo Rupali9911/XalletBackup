@@ -142,7 +142,7 @@ function Profile({ navigation, connector }) {
         setRefreshing(true);
         console.log("######################updating data through Refresh control",loadAllData())
 
-        wait(2000).then(() =>{ loadAllData()},setRefreshing(false))
+        wait(4000).then(() =>{ loadAllData(),setRefreshing(false)})
 
     }
 

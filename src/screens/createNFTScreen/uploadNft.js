@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView, ToastAndroid, Text, Image, TouchableOpacity, Platform} from 'react-native';
+import {View, ScrollView, Text, Image, TouchableOpacity, Platform} from 'react-native';
 import {colors} from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useSelector} from 'react-redux';
@@ -24,6 +24,7 @@ import {translate} from '../../walletUtils';
 import {setApprovalForAll, nftMakingMethods} from '../wallet/functions';
 import {RF} from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
+import {value} from "lodash/seq";
 
 const Web3 = require('web3');
 
@@ -90,6 +91,7 @@ const UploadNFT = ({
     const [startTimeDate, setStartTimeDate] = useState("");
     const [endTimeDate, setEndTimeDate] = useState("");
 
+    const[date,setDate]=useState(new Date())
     const [nftSupply, setNftSupply] = useState(1); //--------------
     const [nftExternalLink, setnftExternalLink] = useState(""); //-------------
 
@@ -249,12 +251,13 @@ const UploadNFT = ({
     }, [modalItem])
 
     useEffect(() => {
+
         if (modalScreen === "uploadNFT" && datePickerData) {
             if (datePickerData !== "closed") {
                 if (activeModal === "startTime") {
-                    setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm:ss"))
+                    setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
                 } else if (activeModal === "endTime") {
-                    setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm:ss"))
+                    setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
                 }
                 setActiveModal("")
             } else {
@@ -855,7 +858,7 @@ const UploadNFT = ({
             setFixedPrice(v)
         }
     }
-
+        const dateis=date
     let disableBtn = collection && nftName && nftDesc && nftImageType &&
         nftImage && basePrice && (
             toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate)
@@ -1194,13 +1197,9 @@ const UploadNFT = ({
                                 <>
                                     <CardLabel>{translate("wallet.common.auctionTime")}</CardLabel>
 
-                                    <CardLabel style={startTimeDate > new Date() ? {
-                                        fontFamily: fonts.PINGfANG,
-                                        color: 'red'
-                                    } : {
-                                        fontFamily: fonts.PINGfANG,
-                                        color: 'black'
-                                    }}>{translate("wallet.common.openTime")}</CardLabel>
+                                    <CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                        {translate("wallet.common.openTime")}
+                                    </CardLabel>
                                     <CardField
 
                                         inputProps={{value: startTimeDate}}
@@ -1211,24 +1210,24 @@ const UploadNFT = ({
                                         }}
                                         pressable
                                         showRight/>
-                                    {Platform.OS == "android" ? endTimeDate >= startTimeDate ?
-                                            <CardLabel style={{fontFamily: fonts.PINGfANG}}>
-                                                {translate("wallet.common.closeTime")}
-                                            </CardLabel> : <CardLabel style={{fontFamily: fonts.PINGfANG, color: 'red'}}>
-                                                {translate("wallet.common.closeTime")}*(Close time should be greater than
-                                                Open Time)</CardLabel> :
-                                        <CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                    {Platform.OS==="android"? startTimeDate>endTimeDate?
+                                        <CardLabel style={{fontFamily: fonts.PINGfANG,color:"red"}}>
+                                            {translate("wallet.common.closeTime")+"* ("+translate("wallet.common.closeTimeWarn")+")"}
+                                        </CardLabel>:<CardLabel style={{fontFamily: fonts.PINGfANG}}>
                                             {translate("wallet.common.closeTime")}
-                                        </CardLabel>}
+                                        </CardLabel>:<CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                        {translate("wallet.common.closeTime")}
+                                    </CardLabel>
+                                    }
                                     <CardField
                                         inputProps={{
-                                            value: endTimeDate,
+                                            value: endTimeDate
                                         }}
+
                                         onPress={() => {
                                             setActiveModal("endTime")
-                                            datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date())
+                                           Platform.OS==="ios"?datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date()):  datePickerPress( new Date())
                                         }}
-                                        border={() => endTimeDate >= startTimeDate ? colors.RED1 : colors.black}
                                         pressable
                                         showRight/>
                                     <CardField
@@ -1264,8 +1263,6 @@ const UploadNFT = ({
                         />
                         <CardButton
                             onPress={handleCreate}
-                            //onPress={()=>endTimeDate>=startTimeDate? ToastAndroid.show("Close time must be greater than start time  ", ToastAndroid.SHORT):handleCreate}
-
                             disable={!disableBtn}
                             border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
                             buttonCont={{width: '48%'}}
