@@ -85,7 +85,7 @@ const NFTCreated = ({ route }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName('myNFT'));
-                        navigation.navigate('DetailItem', { index: findIndex, sName: "myNFT" });
+                        navigation.navigate('DetailItem', {id: id, index: findIndex, sName: "myNFT" });
                     }}
                 />
             );
