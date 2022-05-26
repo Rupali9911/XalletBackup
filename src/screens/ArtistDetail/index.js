@@ -147,7 +147,7 @@ const Created = ({ route }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName("myNFT"));
-                        navigation.push("DetailItem", { index: findIndex, sName: "myNFT" });
+                        navigation.push("DetailItem", {id: id, index: findIndex, sName: "myNFT" });
                     }}
                 />
             )
@@ -264,7 +264,7 @@ const Collection = ({ route }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName("myCollection"));
-                        navigation.push("DetailItem", { index: findIndex, sName: "myCollection" });
+                        navigation.push("DetailItem", {id: id, index: findIndex, sName: "myCollection" });
                     }}
                 />
             )

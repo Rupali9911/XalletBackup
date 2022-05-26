@@ -62,7 +62,7 @@ const NFTOwned = ({ route, navigation }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName('myCollection'));
-                        navigation.navigate('DetailItem', { index: findIndex, sName: "myCollection" });
+                        navigation.navigate('DetailItem', {id:id, index: findIndex, sName: "myCollection" });
                     }}
                 />
             );
