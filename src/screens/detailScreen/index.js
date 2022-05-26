@@ -86,15 +86,21 @@ const DetailItemScreen = (props) => {
     }
 
     const renderItem = (item) => {
-        if (sName == 'blindSeriesCollection' || sName == 'dataCollection' && item) {
-           item.metaData = item;
-        }
+        console.log('renderItem 83', item, sName)
+        // if (sName == 'blindSeriesCollection' || sName == 'dataCollection' && item) {
+        //     // if (item && item.hasOwnProperty("metaData")) {
+        //         item.metaData = item
+        //     // }
+        // }
         if (item && item.hasOwnProperty("metaData") && item.metaData) {
             return (
                 <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
             )
         }
     }
+
+    const memoizedValue = React.useMemo(() => renderItem(objNft), [objNft]);
+    // console.log("🚀 ~ file: index.js ~ line 78 ~ listNFT", listNFT, index, sName)
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
@@ -104,12 +110,7 @@ const DetailItemScreen = (props) => {
                     titleComponent={<View style={styles.headerTextView}>
                     </View>}
                 />
-                {
-                    nftLoad ?
-                        <Loader /> :
-                        renderItem(objNft)
-                        // renderItem(listNFT[index])
-                }
+                {nftLoad ? <Loader /> : memoizedValue}
             </View>
         </SafeAreaView>
     );

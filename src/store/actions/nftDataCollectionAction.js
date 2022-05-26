@@ -188,6 +188,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
         const data = json.data;
 
         if (collectionType == 0) {
+          console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
           dispatch(nftDataCollectionLoadSuccess(json));
         } else {
           let nftData = [];
@@ -204,6 +205,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
 
           json.count = json.data.length;
           json.data = nftData;
+          console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
           dispatch(nftDataCollectionLoadSuccess(json));
         }
       })
@@ -295,26 +297,27 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seri
       fetch(`${BASE_URL}/blindBox/view-blind-series-token-info`, fetch_data_body)
         .then(response => response.json())
         .then(json => {
-          const nftData = [];
+          // const nftData = [];
           let obj = json.data;
 
           if (obj !== "No record found" && obj !== "404 Not Found") {
-            for (let i = 0; i < obj?.length; i++) {
-              let parsedNFT = parseNftObject(obj[i]);
-              nftData.push({
-                ...parsedNFT,
-                properties: {
-                  type: obj[i]?.metaData?.properties?.type,
-                },
-                totalSupply: obj[i]?.metaData?.totalSupply,
-                externalLink: obj[i]?.metaData?.externalLink,
-                thumbnft: obj[i]?.metaData?.thumbnft,
-                thumbnailUrl: obj[i]?.metaData?.thumbnft,
-                tokenURI: obj[i]?.returnValues?.tokenURI,
-                price: obj[i]?.price?.toString(),
-              });
-            }
-            json.data = nftData;
+            // for (let i = 0; i < obj?.length; i++) {
+            //   let parsedNFT = parseNftObject(obj[i]);
+            //   nftData.push({
+            //     ...parsedNFT,
+            //     properties: {
+            //       type: obj[i]?.metaData?.properties?.type,
+            //     },
+            //     totalSupply: obj[i]?.metaData?.totalSupply,
+            //     externalLink: obj[i]?.metaData?.externalLink,
+            //     thumbnft: obj[i]?.metaData?.thumbnft,
+            //     thumbnailUrl: obj[i]?.metaData?.thumbnft,
+            //     tokenURI: obj[i]?.returnValues?.tokenURI,
+            //     price: obj[i]?.price?.toString(),
+            //   });
+            // }
+            // json.data = nftData;
+            console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 319 ~ return ~ json", json)
             dispatch(nftBlindSeriesCollectionLoadSuccess(json));
           } else {
             dispatch(nftBlindSeriesCollectionLoadFail());
