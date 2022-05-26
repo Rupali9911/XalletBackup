@@ -67,7 +67,7 @@ const ListItems = (props) => {
             }
         }
 
-        singleSocket && singleSocket.onSendMessage(_data);
+        singleSocket &&  singleSocket.isConnected && singleSocket.onSendMessage(_data);
     }
 
     return (
