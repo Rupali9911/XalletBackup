@@ -151,7 +151,7 @@ const LoginCrypto = ({ route, navigation }) => {
                             <Text style={styles.loginBTxt} >{translate("common.createNewAccount")}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate("CryptoForget")} >
-                            <Text style={styles.loginBTxt} >{translate("common.ForgottenUser")}?</Text>
+                            <Text style={styles.loginBTxt} >{translate("common.ForgottenUser")}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

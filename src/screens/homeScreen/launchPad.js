@@ -88,6 +88,23 @@ const LaunchPad = () => {
     );
   };
 
+  const handleFlatlistRefresh = () => {
+    dispatch(collectionLoadStart());
+    handleRefresh();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !CollectionReducer.collectionLoading &&
+      CollectionReducer.collectionTotalCount !==
+      CollectionReducer.collectionList.length
+    ) {
+      let num = CollectionReducer.collectionPage + 1;
+      getCollection(num, isSelectTab);
+      dispatch(collectionPageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -109,6 +126,7 @@ const LaunchPad = () => {
       </View>
 
         <FlatList
+
             //data={CollectionReducer.collectionList}
             data={launchpadData}
             horizontal={false}
@@ -139,6 +157,24 @@ const LaunchPad = () => {
             ListFooterComponent={renderFooter}
             pagingEnabled={false}
             legacyImplementation={false}
+
+          // data={CollectionReducer.collectionList}
+          // horizontal={false}
+          // numColumns={2}
+          // initialNumToRender={14}
+          // onRefresh={handleFlatlistRefresh}
+          // refreshing={
+          //   CollectionReducer.collectionPage === 1 &&
+          //   CollectionReducer.collectionLoading
+          // }
+          // renderItem={renderItem}
+          // onEndReached={handleFlastListEndReached}
+          // onEndReachedThreshold={0.4}
+          // keyExtractor={keyExtractor}
+          // ListFooterComponent={renderFooter}
+          // pagingEnabled={false}
+          // legacyImplementation={false}
+
         />
       {/*)}*/}
     </View>

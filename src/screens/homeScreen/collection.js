@@ -61,8 +61,18 @@ const Collection = () => {
         creatorInfo={item.creatorInfo}
         blind={item.blind}
         onPress={() => {
-          console.log('========', item, item.redirect, item.isBlind, isSelectTab);
+          // console.log('========', item, item.redirect, item.isBlind, isSelectTab);
+          if (item.redirect === '/collection/underground_city') {
+            console.log("========collection tab => item.redirect 60", item, item.redirect,item.blind)
+            navigation.push('CollectionDetail', {
+              isBlind: true,
+              collectionId: item?.collectionId,
+              nftId: item._id,
+              // isHotCollection: !item.blind,
+          });
+          } else 
           if (item.redirect) {
+            console.log("========collection tab => item.redirect 66", item.redirect)
             navigation.push('CollectionDetail',
               {
                 isBlind: false,
@@ -71,11 +81,11 @@ const Collection = () => {
                 isStore: item.redirect,
               });
           } else if (item.blind) {
-            console.log('========collection tab => blind1', item.blind, item.collectionId)
+            console.log('========collection tab => blind1 75', item.blind, item.collectionId)
             // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
           } else {
-            console.log("🚀 ~ file: collection.js ~ line 77 ~ renderItem ~ else")
+            console.log("🚀 ~ file: collection.js ~ line 79 ~ renderItem ~ else")
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
           }
           // if (!isSelectTab) {
@@ -98,6 +108,22 @@ const Collection = () => {
     );
   };
 
+  const handleFlatlistRefresh = () => {
+    dispatch(collectionLoadStart());
+    handleRefresh();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !CollectionReducer.collectionLoading &&
+      CollectionReducer.collectionTotalCount !==
+      CollectionReducer.collectionList.length
+    ) {
+      let num = CollectionReducer.collectionPage + 1;
+      getCollection(num, isSelectTab);
+      dispatch(collectionPageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -117,6 +143,7 @@ const Collection = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      {console.log("🚀 ~ file: collection.js ~ line 126 ~ ", CollectionReducer.collectionList)}
       {CollectionReducer.collectionPage === 1 &&
         CollectionReducer.collectionLoading ? (
         <Loader />
@@ -126,28 +153,15 @@ const Collection = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(collectionLoadStart());
-            handleRefresh();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={
             CollectionReducer.collectionPage === 1 &&
             CollectionReducer.collectionLoading
           }
           renderItem={renderItem}
-          onEndReached={() => {
-            if (
-              !CollectionReducer.collectionLoading &&
-              CollectionReducer.collectionTotalCount !==
-              CollectionReducer.collectionList.length
-            ) {
-              let num = CollectionReducer.collectionPage + 1;
-              getCollection(num, isSelectTab);
-              dispatch(collectionPageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}
@@ -161,4 +175,4 @@ const Collection = () => {
   );
 };
 
-export default Collection;
+export default React.memo(Collection);

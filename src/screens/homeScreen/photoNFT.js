@@ -86,6 +86,23 @@ const PhotoNFT = () => {
     [NewNFTListReducer.favoriteNftList],
   );
 
+  const handleFlatlistRefresh = () => {
+    dispatch(newNftLoadStart('photo'));
+    handleRefresh();
+  }
+  const handleFlastListEndReached = () => {
+    if (
+      !NewNFTListReducer.isPhotoNftLoading &&
+      NewNFTListReducer.newTotalCount !==
+      NewNFTListReducer.favoriteNftList.length
+    ) {
+      let num = NewNFTListReducer.newListPage + 1;
+      getNFTlist(num);
+      dispatch(newPageChange(num));
+    }
+  }
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -98,28 +115,15 @@ const PhotoNFT = () => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(newNftLoadStart('photo'));
-            handleRefresh();
-          }}
+          onRefresh={handleFlatlistRefresh}
           refreshing={
             NewNFTListReducer.newListPage === 1 &&
             NewNFTListReducer.isPhotoNftLoading
           }
           renderItem={memoizedValue}
-          onEndReached={() => {
-            if (
-              !NewNFTListReducer.isPhotoNftLoading &&
-              NewNFTListReducer.newTotalCount !==
-              NewNFTListReducer.favoriteNftList.length
-            ) {
-              let num = NewNFTListReducer.newListPage + 1;
-              getNFTlist(num);
-              dispatch(newPageChange(num));
-            }
-          }}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}

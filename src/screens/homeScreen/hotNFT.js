@@ -80,6 +80,22 @@ const HotNFT = () => {
 
     const memoizedValue = useMemo(() => renderItem, [ListReducer.nftList]);
 
+    const handleFlatlistRefresh = () => {
+        dispatch(nftLoadStart());
+        refreshFunc();
+    }
+    const handleFlastListEndReached = () => {
+        if (
+            !ListReducer.nftListLoading &&
+            ListReducer.nftList.length !== ListReducer.totalCount
+        ) {
+            let num = ListReducer.page + 1;
+            getNFTlist(num);
+            dispatch(pageChange(num));
+        }
+    }
+    const keyExtractor = (item, index) => { return 'item_' + index }
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -91,24 +107,12 @@ const HotNFT = () => {
                     horizontal={false}
                     numColumns={2}
                     initialNumToRender={15}
-                    onRefresh={() => {
-                        dispatch(nftLoadStart());
-                        refreshFunc();
-                    }}
+                    onRefresh={handleFlatlistRefresh}
                     refreshing={ListReducer.page === 1 && ListReducer.nftListLoading}
                     renderItem={memoizedValue}
-                    onEndReached={() => {
-                        if (
-                            !ListReducer.nftListLoading &&
-                            ListReducer.nftList.length !== ListReducer.totalCount
-                        ) {
-                            let num = ListReducer.page + 1;
-                            getNFTlist(num);
-                            dispatch(pageChange(num));
-                        }
-                    }}
+                    onEndReached={handleFlastListEndReached}
                     onEndReachedThreshold={0.4}
-                    keyExtractor={(v, i) => 'item_' + i}
+                    keyExtractor={keyExtractor}
                     ListFooterComponent={renderFooter}
                     pagingEnabled={false}
                     legacyImplementation={false}
@@ -122,4 +126,4 @@ const HotNFT = () => {
     );
 };
 
-export default HotNFT;
+export default React.memo(HotNFT);

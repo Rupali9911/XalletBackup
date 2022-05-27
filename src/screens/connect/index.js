@@ -67,7 +67,7 @@ const ListItems = (props) => {
             }
         }
 
-        singleSocket && singleSocket.onSendMessage(_data);
+        singleSocket &&  singleSocket.isConnected && singleSocket.onSendMessage(_data);
     }
 
     return (
@@ -349,6 +349,17 @@ const Connect = ({ route, navigation }) => {
         singleSocket.onSendMessage(data);
     }
 
+    const handleListEmptyComponent = () => {
+        return (
+            <View style={styles.emptyView}>
+                <Image source={ImagesSrc.noApp} style={styles.emptyImage} />
+                <TextView style={styles.noData}>
+                    {translate('wallet.common.noAppConnect')}
+                </TextView>
+            </View>
+        );
+    }
+
     return (
         <AppBackground>
             <AppHeader
@@ -362,16 +373,7 @@ const Connect = ({ route, navigation }) => {
                         data={connectedApps}
                         renderItem={renderApps}
                         keyExtractor={keyExtractor}
-                        ListEmptyComponent={() => {
-                            return (
-                                <View style={styles.emptyView}>
-                                    <Image source={ImagesSrc.noApp} style={styles.emptyImage} />
-                                    <TextView style={styles.noData}>
-                                        {translate('wallet.common.noAppConnect')}
-                                    </TextView>
-                                </View>
-                            );
-                        }}
+                        ListEmptyComponent={handleListEmptyComponent}
                     />
                 </View>
 

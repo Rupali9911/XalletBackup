@@ -15,6 +15,7 @@ function addComma(n, addDecimalPart = false) {
   let x = num
     ?.toString()
     ?.split("") // transform the string to array with every digit becoming an element in the array
+    ?.reverse() 
     ?.map((digit, index) =>
       index !== 0 && index % 3 === 0 ? `${digit},` : digit
     )

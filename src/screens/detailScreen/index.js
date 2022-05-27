@@ -37,19 +37,22 @@ const DetailItemScreen = (props) => {
     const { sort } = useSelector(state => state.ListReducer);
     const dispatch = useDispatch();
 
-    const { index, sName } = route.params;
+    const {id, index, sName } = route.params;
 
     const [stopVideos, setStopVideos] = React.useState(true);
     const [listNFT, setNFTList] = React.useState([]);
     const [nftLoad, setNFTLoad] = React.useState(false);
+    const [objNft, setObjNft] = React.useState({});
+    const [ownerID, setOwnerID] = React.useState('');
 
     React.useEffect(() => {
         if (isFocusedHistory) {
-            setNFTLoad(true)
-            loadData()
+            setOwnerID(id);
+            setNFTLoad(true);
+            loadData();
         }
         console.log(sName, "isFocusedHistoryisFocusedHistory", index)
-    }, [isFocusedHistory])
+    }, [isFocusedHistory, id])
 
     const loadData = () => {
 
@@ -74,13 +77,15 @@ const DetailItemScreen = (props) => {
                                             sName == 'blindSeriesCollection' ?
                                                 NftDataCollectionReducer.nftBlindSeriesCollectionList : [];
 
-        setNFTList(data)
+        // setNFTList(data)
+        if (ownerID == '' || ownerID !== id) {
+            setObjNft(data[index]);
+        }
         setNFTLoad(false)
 
     }
 
     const renderItem = (item) => {
-        console.log('renderItem', item)
         if (sName == 'blindSeriesCollection' || sName == 'dataCollection' && item) {
            item.metaData = item;
         }
@@ -102,7 +107,8 @@ const DetailItemScreen = (props) => {
                 {
                     nftLoad ?
                         <Loader /> :
-                        renderItem(listNFT[index])
+                        renderItem(objNft)
+                        // renderItem(listNFT[index])
                 }
             </View>
         </SafeAreaView>

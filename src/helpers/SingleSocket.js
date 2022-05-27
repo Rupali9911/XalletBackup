@@ -8,10 +8,6 @@ export default class SingleSocket extends Component {
     super(props);
     this.state = {};
     this.webSocketBridge;
-    this.jwt;
-    this.userId;
-    this.subject;
-    this.socketChecker;
   }
 
   static myInstance = null;
