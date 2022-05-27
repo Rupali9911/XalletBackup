@@ -66,8 +66,10 @@ const LaunchPad = () => {
         blind={item.blind}x
         onPress={() => {
           console.log('LaunchPad ========', item);
-
+          if(item.status && item.status !== 'comingSoon'){
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
+          }
+            
             //   if (item.redirect) {
             //   navigation.push('CollectionDetail',
             //   {

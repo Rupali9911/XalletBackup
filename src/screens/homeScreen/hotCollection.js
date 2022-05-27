@@ -110,7 +110,7 @@ const HotCollection = () => {
             HotCollectionReducer.hotCollectionLoading
           }
           renderItem={memoizedValue}
-          onEndReached={handleFlastListEndReached}
+          // onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
           keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
