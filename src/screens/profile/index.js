@@ -133,6 +133,7 @@ function Profile({ navigation, connector }) {
                 AsyncStorage.setItem("@asyncPassCalled", JSON.stringify(true));
             }
         });
+
     }
     const [refreshing, setRefreshing] = React.useState(false);
     const wait = (timeout) => {
@@ -140,7 +141,7 @@ function Profile({ navigation, connector }) {
     }
     const onRefresh = () => {
         setRefreshing(true);
-        console.log("######################updating data through Refresh control",loadAllData())
+        //console.log("######################updating data through Refresh control",loadAllData())
 
         wait(4000).then(() =>{ loadAllData(),setRefreshing(false)})
 
