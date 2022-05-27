@@ -75,7 +75,8 @@ const imageToChainKey = {
 function CollectionDetail(props) {
     const { route } = props;
     const { collectionId, nftId, isBlind, isHotCollection, isStore } = route.params;
-    // console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
+     console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
+     console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail### ~ ",collectionId, isBlind, isHotCollection)
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
@@ -83,7 +84,6 @@ function CollectionDetail(props) {
     const [collectionAddress, setCollectionAddress] = useState(null);
     const [storeCollection, setStoreCollection] = useState({});
     const [sumBlindBox, setSumBlindBox] = useState({});
-
     const [blindboxList, setBlindboxList] = useState([]);
     const [statsDetails, setStatsDetails] = useState([]);
     const [nftChain, setNftChain] = useState('polygon');
@@ -193,6 +193,7 @@ function CollectionDetail(props) {
     };
 
     const getCollection = async () => {
+        console.log("isStore==",isStore,"isBlind===",isBlind)
         try {
             if (isStore) {
                 console.log("index.js line collectionDetail 186 isStore", isStore)
