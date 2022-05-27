@@ -75,8 +75,8 @@ export default {
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),
         "mastercard": require("../../assets/images/mastercard.png"),
-        "american-express": require("../../assets/images/american-express.png"),
-        "diners-club": require("../../assets/images/diners-club.png"),
+        "americanExpress": require("../../assets/images/american-express.png"),
+        "dinersClub": require("../../assets/images/diners-club.png"),
         "discover": require("../../assets/images/discover.png"),
         "jcb": require("../../assets/images/jcb.png"),
         "unionpay": require("../../assets/images/unionpay.png"),
