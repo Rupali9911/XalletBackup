@@ -20,6 +20,9 @@ import {
 } from '../../store/actions/collectionAction';
 import { translate } from '../../walletUtils';
 import styles from './styles';
+import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
+import {launchpadData} from "../LaunchPadDetail/launchpadData";
+import {networkType} from "../../common/networkType";
 
 const LaunchPad = () => {
   const { CollectionReducer } = useSelector(state => state);
@@ -51,31 +54,35 @@ const LaunchPad = () => {
 
   const renderItem = ({ item }) => {
     return (
-      <CollectionItem
+      <LaunchPadItemData
         bannerImage={item.bannerImage}
         chainType={item.chainType || 'polygon'}
         items={item.items}
         iconImage={item.iconImage}
         collectionName={item.collectionName}
         creator={item.creator}
+        status={item.status}
         creatorInfo={item.creatorInfo}
-        blind={item.blind}
+        blind={item.blind}x
         onPress={() => {
           console.log('LaunchPad ========', item);
-          if (item.redirect) {
-            navigation.push('CollectionDetail',
-            {
-              isBlind: false,
-              collectionId: item._id,
-              isHotCollection: true,
-              isStore: item.redirect,
-            });
-          } else if (item.blind) {
-            console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
-            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-          } else {
-            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-          }
+
+            navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
+            //   if (item.redirect) {
+            //   navigation.push('CollectionDetail',
+            //   {
+            //     isBlind: false,
+            //     collectionId: item._id,
+            //     isHotCollection: true,
+            //     isStore: item.redirect,
+            //   });
+            // } else if (item.blind) {
+            //   console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
+            //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+            // } else {
+            //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+            // }
+
         }}
       />
     );
@@ -100,46 +107,40 @@ const LaunchPad = () => {
           </Text>
         </TouchableOpacity> */}
       </View>
-      {CollectionReducer.collectionPage === 1 &&
-        CollectionReducer.collectionLoading ? (
-        <Loader />
-      ) : CollectionReducer.collectionList.length !== 0 ? (
+
         <FlatList
-          data={CollectionReducer.collectionList}
-          horizontal={false}
-          numColumns={2}
-          initialNumToRender={14}
-          onRefresh={() => {
-            dispatch(collectionLoadStart());
-            handleRefresh();
-          }}
-          refreshing={
-            CollectionReducer.collectionPage === 1 &&
-            CollectionReducer.collectionLoading
-          }
-          renderItem={renderItem}
-          onEndReached={() => {
-            if (
-              !CollectionReducer.collectionLoading &&
-              CollectionReducer.collectionTotalCount !==
-              CollectionReducer.collectionList.length
-            ) {
-              let num = CollectionReducer.collectionPage + 1;
-              getCollection(num, isSelectTab);
-              dispatch(collectionPageChange(num));
-            }
-          }}
-          onEndReachedThreshold={0.4}
-          keyExtractor={(v, i) => 'item_' + i}
-          ListFooterComponent={renderFooter}
-          pagingEnabled={false}
-          legacyImplementation={false}
+            //data={CollectionReducer.collectionList}
+            data={launchpadData}
+            horizontal={false}
+            numColumns={2}
+            initialNumToRender={14}
+            // onRefresh={() => {
+            //     dispatch(collectionLoadStart());
+            //     handleRefresh();
+            // }}
+            // refreshing={
+            //     CollectionReducer.collectionPage === 1 &&
+            //     CollectionReducer.collectionLoading
+            // }
+            renderItem={renderItem}
+            // onEndReached={() => {
+            //     if (
+            //         !CollectionReducer.collectionLoading &&
+            //         CollectionReducer.collectionTotalCount !==
+            //         CollectionReducer.collectionList.length
+            //     ) {
+            //         let num = CollectionReducer.collectionPage + 1;
+            //         getCollection(num, isSelectTab);
+            //         dispatch(collectionPageChange(num));
+            //     }
+            // }}
+            onEndReachedThreshold={0.4}
+            keyExtractor={(v, i) => 'item_' + i}
+            ListFooterComponent={renderFooter}
+            pagingEnabled={false}
+            legacyImplementation={false}
         />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
+      {/*)}*/}
     </View>
   );
 };

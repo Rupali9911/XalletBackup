@@ -61,6 +61,7 @@
     "react-native-create-thumbnail": "^1.5.1",
     "react-native-crypto": "^2.2.0",
     "react-native-date-picker": "^4.2.2",
+    "react-native-debugger": "^1.1.0",
     "react-native-device-info": "^8.4.1",
     "react-native-dropdown-picker": "^5.1.23",
     "react-native-fast-image": "^8.5.11",
