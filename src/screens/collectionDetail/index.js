@@ -563,6 +563,7 @@ function CollectionDetail(props) {
     };
 
     const blindBoxInfo = () => {
+        console.log('selectedBlindBox1', selectedBlindBox)
         if (isStore) return null;
         if (isBlind && nftId) {
             return (
