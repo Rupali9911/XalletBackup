@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.5),
     fontFamily: fonts.ARIAL_BOLD,
     marginTop: SIZE(15),
-    width: SIZE(80),
+    width: wp('100%'),
     paddingHorizontal: SIZE(12),
     color: colors.PINK1,
     textTransform: 'uppercase',
