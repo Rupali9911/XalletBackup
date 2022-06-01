@@ -1245,7 +1245,7 @@ const DetailScreen = ({ navigation, route }) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        // console.log('getDetailNFT_res', res);
+         console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
 
           let data = await getNFTDetails(res.data[0]);
