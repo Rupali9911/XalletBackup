@@ -91,7 +91,7 @@ const UploadNFT = ({
     const [startTimeDate, setStartTimeDate] = useState("");
     const [endTimeDate, setEndTimeDate] = useState("");
 
-    const[date,setDate]=useState(new Date())
+    const [date, setDate] = useState(new Date())
     const [nftSupply, setNftSupply] = useState(1); //--------------
     const [nftExternalLink, setnftExternalLink] = useState(""); //-------------
 
@@ -554,14 +554,14 @@ const UploadNFT = ({
             changeLoadingState(true);
 
             const imageRes = await uploadImageToStorage();
-            console.log(imageRes, "imageRes--------")
+            console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+",imageRes)
             if (imageRes) {
 
                 const infuraRes = await handleInfura(imageRes.image1, imageRes.image2);
 
                 if (infuraRes) {
                     let hashResp = infuraRes.data;
-                    console.log(hashResp, "infura res")
+                    console.log("#@#@#@#@#@#@ infura res #@#@#@#@#@#@#@",hashResp)
                     let web3 = new Web3(providerUrl);
 
                     let approvalCheckContract = new web3.eth.Contract(
@@ -571,7 +571,8 @@ const UploadNFT = ({
                     approvalCheckContract.methods
                         .isApprovedForAll(wallet?.address, MarketContractAddress)
                         .call((err, res) => {
-                            console.log(res, err, "approval response")
+                            console.log(res,":::::::approval response")
+                            console.log(err,":::::::error")
                             if (!err) {
 
                                 if (!res) {
@@ -587,6 +588,7 @@ const UploadNFT = ({
                                         , 10, 6000000)
                                         .then((_) => {
                                             console.log(_, "__approval set__")
+                                            console.log("####################toggleButton#################", toggleButton)
 
                                             if (toggleButton == "fixPrice") {
                                                 putNftOnSale(hashResp);
@@ -604,8 +606,9 @@ const UploadNFT = ({
                                     });
 
                                 } else {
+                                    console.log("####################toggle Button#################", toggleButton)
 
-                                    if (toggleButton == "fixPrice") {
+                                    if (toggleButton === "fixPrice") {
                                         putNftOnSale(hashResp);
                                     } else {
                                         putNftOnAuction(hashResp);
@@ -615,7 +618,7 @@ const UploadNFT = ({
 
                             } else {
                                 changeLoadingState(false);
-                                console.log("err in balanceOf", err);
+                                console.log("@#@#@#@#@#@#@#@ err in balanceOf @#@#@#@#@#@#@#@#@#", err);
                             }
                         })
                 }
@@ -761,7 +764,6 @@ const UploadNFT = ({
                     switchToNFTList("mint", collection)
                 } else {
                     changeLoadingState(false);
-
                 }
 
             }).catch((err) => {
@@ -858,7 +860,7 @@ const UploadNFT = ({
             setFixedPrice(v)
         }
     }
-        const dateis=date
+    const dateis = date
     let disableBtn = collection && nftName && nftDesc && nftImageType &&
         nftImage && basePrice && (
             toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate)
@@ -1210,12 +1212,12 @@ const UploadNFT = ({
                                         }}
                                         pressable
                                         showRight/>
-                                    {Platform.OS==="android"? startTimeDate>endTimeDate?
-                                        <CardLabel style={{fontFamily: fonts.PINGfANG,color:"red"}}>
-                                            {translate("wallet.common.closeTime")+"* ("+translate("wallet.common.closeTimeWarn")+")"}
-                                        </CardLabel>:<CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                    {Platform.OS === "android" ? startTimeDate > endTimeDate ?
+                                        <CardLabel style={{fontFamily: fonts.PINGfANG, color: "red"}}>
+                                            {translate("wallet.common.closeTime") + "* (" + translate("wallet.common.closeTimeWarn") + ")"}
+                                        </CardLabel> : <CardLabel style={{fontFamily: fonts.PINGfANG}}>
                                             {translate("wallet.common.closeTime")}
-                                        </CardLabel>:<CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                        </CardLabel> : <CardLabel style={{fontFamily: fonts.PINGfANG}}>
                                         {translate("wallet.common.closeTime")}
                                     </CardLabel>
                                     }
@@ -1226,7 +1228,7 @@ const UploadNFT = ({
 
                                         onPress={() => {
                                             setActiveModal("endTime")
-                                           Platform.OS==="ios"?datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date()):  datePickerPress( new Date())
+                                            Platform.OS === "ios" ? datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date()) : datePickerPress(new Date())
                                         }}
                                         pressable
                                         showRight/>

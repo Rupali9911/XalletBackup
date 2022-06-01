@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
   },
   collectionName: {
     fontSize: SIZE(22),
-    fontWeight: '500',
+    fontWeight: '600',
+    color:'#000',
     textAlign: 'center',
     marginTop: SIZE(44),
     fontFamily: fonts.ARIAL,
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   storeCollectionName: {
     fontSize: SIZE(22),
-    fontWeight: '500',
+    fontWeight: '600',
     textAlign: 'left',
     fontFamily: fonts.ARIAL,
     marginBottom: SIZE(15),
@@ -73,19 +74,21 @@ const styles = StyleSheet.create({
     borderColor: '#eeeeee',
   },
   collectionTableRowText: {
-    fontSize: SIZE(12),
+    fontSize: SIZE(16),
     fontFamily: fonts.ARIAL,
+    fontWeight:'600',
   },
   collectionTableRowDec: {
-    fontSize: SIZE(10),
+    fontSize: SIZE(11),
     color: '#7B848D',
     marginTop: SIZE(2),
     fontFamily: fonts.ARIAL,
   },
   cryptoIcon: {
-    width: SIZE(8),
-    height: SIZE(12),
+    width: SIZE(15),
+    height: SIZE(20),
     marginRight: SIZE(4),
+    resizeMode:"contain"
   },
   descriptionTabWrapper: {
     flexDirection: 'row',
@@ -113,6 +116,7 @@ const styles = StyleSheet.create({
   descriptionTabText: {
     fontSize: SIZE(13),
     color: '#575e64',
+    fontWeight:"bold",
     fontFamily: fonts.ARIAL,
   },
   description: {
@@ -126,8 +130,10 @@ const styles = StyleSheet.create({
     marginBottom: SIZE(16),
   },
   descriptionText: {
-    fontSize: SIZE(13),
+    fontSize: SIZE(12.5),
+    lineHeight:18,
     fontFamily: fonts.ARIAL,
+
     color: '#212529',
   },
   sorryMessageCont: {
@@ -155,6 +161,9 @@ const styles = StyleSheet.create({
     fontSize: RF(1.6),
     fontFamily: fonts.SegoeUIRegular,
     textTransform: 'capitalize',
+    fontWeight:"400",
+    color:'#212529'
+
   },
   socialLinksWrap: {
     alignItems: 'center',
@@ -217,10 +226,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: SIZE(15),
   },
-  intoMystery: { 
-    alignItems: 'center', 
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
+  intoMystery: {
+    alignItems: 'center',
+    flexDirection: 'row',
+
+    justifyContent: 'space-around',
     width: wp('100%') }
 });
 

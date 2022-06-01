@@ -8,7 +8,7 @@ import {COLORS} from "../../constants";
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.RED1,
+        //backgroundColor: colors.RED1,
     },
     trendCont: {
         backgroundColor: colors.white,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: (wp('100%') / 3) - wp('1%'),
         resizeMode: 'stretch',
-        backgroundColor:"red",
+       // backgroundColor:"red",
         borderTopRightRadius: SIZE(12),
         borderTopLeftRadius: SIZE(12),
     },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     chainitem:{
-        backgroundColor:'red'
+        //backgroundColor:'red'
     },
     renderchainstyle:{
         flexDirection:'row',

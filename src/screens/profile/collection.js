@@ -1,5 +1,5 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -7,22 +7,22 @@ import {
     Text,
     View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
-import { Loader } from '../../components';
+import {useSelector} from 'react-redux';
+import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
-import { colors, fonts } from '../../res';
-import { translate } from '../../walletUtils';
+import {colors, fonts} from '../../res';
+import {translate} from '../../walletUtils';
 
-import { CardButton } from "../createNFTScreen/components";
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
+import {CardButton} from "../createNFTScreen/components";
+import {BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {alertWithSingleBtn} from '../../utils';
 import axios from 'axios';
 
-const Collection = ({ route }) => {
+const Collection = ({route}) => {
     const isFocusedHistory = useIsFocused();
 
-    const { data } = useSelector(
+    const {data} = useSelector(
         state => state.UserReducer
     );
     const navigation = useNavigation();
@@ -49,16 +49,16 @@ const Collection = ({ route }) => {
 
     const renderFooter = () => {
         if (!childLoader) return null;
-        return <ActivityIndicator size="small" color={colors.themeR} />;
+        return <ActivityIndicator size="small" color={colors.themeR}/>;
     };
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({item}) => {
         return (
             <NFTItem
                 screenName="collection"
                 item={item}
                 image={item.iconImage}
-                onPress={() => navigation.navigate("Create", { name: "collection", data: item, status: toggle })}
+                onPress={() => navigation.navigate("Create", {name: "collection", data: item, status: toggle})}
                 isMeCollection
             />
         );
@@ -86,7 +86,7 @@ const Collection = ({ route }) => {
             Authorization: `Bearer ${data.token}`,
         };
 
-        axios.post(url, obj, { headers: headers })
+        axios.post(url, obj, {headers: headers})
             .then(res => {
                 setChildLoader(false);
                 setMainLoader(false);
@@ -129,7 +129,7 @@ const Collection = ({ route }) => {
 
             {
                 mainLoader ?
-                    <Loader /> :
+                    <Loader/> :
                     collectionCreatedList.length !== 0 ?
                         <FlatList
                             data={collectionCreatedList}

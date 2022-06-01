@@ -1,184 +1,84 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  Text,
-  View,
-  TouchableOpacity
+    ActivityIndicator,
+    FlatList,
+    StatusBar,
+    Text,
+    View,
+    TouchableOpacity,
+    Linking
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '../../components';
-import { colors } from '../../res';
-import CollectionItem from '../../components/CollectionItem';
-import {
-  collectionListReset,
-  collectionLoadStart,
-  collectionPageChange,
-  collectionList,
-} from '../../store/actions/collectionAction';
-import { translate } from '../../walletUtils';
+
+import {colors} from '../../res';
+
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
 import {launchpadData} from "../LaunchPadDetail/launchpadData";
-import {networkType} from "../../common/networkType";
+
 
 const LaunchPad = () => {
-  const { CollectionReducer } = useSelector(state => state);
-  const [isSelectTab, setSelectTab] = useState(true);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
+    const navigation = useNavigation();
+    const renderItem = ({item}) => {
+        return (
+            <LaunchPadItemData
+                bannerImage={item.bannerImage}
+                chainType={item.chainType || 'polygon'}
+                items={item.items}
+                iconImage={item.iconImage}
+                collectionName={item.collectionName}
+                creator={item.creator}
+                status={item.status}
+                creatorInfo={item.creatorInfo}
+                blind={item.blind}
+                onPress={() => {
+                    console.log('LaunchPad ========', item);
 
-  useEffect(() => {
-      dispatch(collectionLoadStart());
-      dispatch(collectionListReset());
-      getCollection(1, isSelectTab);
-      dispatch(collectionPageChange(1));
-  }, [isSelectTab]);
+                    //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
 
-  const getCollection = useCallback((page, isSelectTab) => {
-    dispatch(collectionList(page, isSelectTab));
-  }, []);
+                    item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://testnet.xanalia.com/xanalia_nftart_award_2021') : navigation.push('CollectionDetail', {
+                        isBlind: true,
+                        collectionId: item._id,
+                        isHotCollection: false
+                    });
 
-  const handleRefresh = () => {
-    dispatch(collectionListReset());
-    getCollection(1);
-    dispatch(collectionPageChange(1));
-  };
+                    //   if (item.redirect) {
+                    //   navigation.push('CollectionDetail',
+                    //   {
+                    //     isBlind: false,
+                    //     collectionId: item._id,
+                    //     isHotCollection: true,
+                    //     isStore: item.redirect,
+                    //   });
+                    // } else if (item.blind) {
+                    //   console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
+                    //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+                    // } else {
+                    //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+                    // }
 
-  const renderFooter = () => {
-    if (!CollectionReducer.collectionLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const renderItem = ({ item }) => {
+                }}
+            />
+        );
+    };
     return (
-      <LaunchPadItemData
-        bannerImage={item.bannerImage}
-        chainType={item.chainType || 'polygon'}
-        items={item.items}
-        iconImage={item.iconImage}
-        collectionName={item.collectionName}
-        creator={item.creator}
-        status={item.status}
-        creatorInfo={item.creatorInfo}
-        blind={item.blind}x
-        onPress={() => {
-          console.log('LaunchPad ========', item);
+        <View style={styles.trendCont}>
+            <StatusBar barStyle="dark-content" backgroundColor={colors.white}/>
 
-            navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
-            //   if (item.redirect) {
-            //   navigation.push('CollectionDetail',
-            //   {
-            //     isBlind: false,
-            //     collectionId: item._id,
-            //     isHotCollection: true,
-            //     isStore: item.redirect,
-            //   });
-            // } else if (item.blind) {
-            //   console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
-            //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-            // } else {
-            //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-            // }
+            <FlatList
 
-        }}
-      />
+                data={launchpadData}
+                horizontal={false}
+                numColumns={2}
+                renderItem={renderItem}
+                keyExtractor={(v, i) => 'item_' + i}
+
+                pagingEnabled={false}
+                legacyImplementation={false}
+            />
+
+        </View>
     );
-  };
-
-  const handleFlatlistRefresh = () => {
-    dispatch(collectionLoadStart());
-    handleRefresh();
-  }
-  const handleFlastListEndReached = () => {
-    if (
-      !CollectionReducer.collectionLoading &&
-      CollectionReducer.collectionTotalCount !==
-      CollectionReducer.collectionList.length
-    ) {
-      let num = CollectionReducer.collectionPage + 1;
-      getCollection(num, isSelectTab);
-      dispatch(collectionPageChange(num));
-    }
-  }
-  const keyExtractor = (item, index) => { return 'item_' + index }
-
-  return (
-    <View style={styles.trendCont}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View style={{flex:1}}>
-        {/* <TouchableOpacity
-          onPress={() => setSelectTab(true)}
-          style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
-          <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-              {translate('wallet.common.collection')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setSelectTab(false)}
-          style={[styles.collectionTabItem, { borderTopColor: !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
-          <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-              {translate('common.blindboxCollections')}
-          </Text>
-        </TouchableOpacity> */}
-      </View>
-
-        <FlatList
-
-            //data={CollectionReducer.collectionList}
-            data={launchpadData}
-            horizontal={false}
-            numColumns={2}
-            initialNumToRender={14}
-            // onRefresh={() => {
-            //     dispatch(collectionLoadStart());
-            //     handleRefresh();
-            // }}
-            // refreshing={
-            //     CollectionReducer.collectionPage === 1 &&
-            //     CollectionReducer.collectionLoading
-            // }
-            renderItem={renderItem}
-            // onEndReached={() => {
-            //     if (
-            //         !CollectionReducer.collectionLoading &&
-            //         CollectionReducer.collectionTotalCount !==
-            //         CollectionReducer.collectionList.length
-            //     ) {
-            //         let num = CollectionReducer.collectionPage + 1;
-            //         getCollection(num, isSelectTab);
-            //         dispatch(collectionPageChange(num));
-            //     }
-            // }}
-            onEndReachedThreshold={0.4}
-            keyExtractor={(v, i) => 'item_' + i}
-            ListFooterComponent={renderFooter}
-            pagingEnabled={false}
-            legacyImplementation={false}
-
-          // data={CollectionReducer.collectionList}
-          // horizontal={false}
-          // numColumns={2}
-          // initialNumToRender={14}
-          // onRefresh={handleFlatlistRefresh}
-          // refreshing={
-          //   CollectionReducer.collectionPage === 1 &&
-          //   CollectionReducer.collectionLoading
-          // }
-          // renderItem={renderItem}
-          // onEndReached={handleFlastListEndReached}
-          // onEndReachedThreshold={0.4}
-          // keyExtractor={keyExtractor}
-          // ListFooterComponent={renderFooter}
-          // pagingEnabled={false}
-          // legacyImplementation={false}
-
-        />
-      {/*)}*/}
-    </View>
-  );
 };
 
 export default LaunchPad;
