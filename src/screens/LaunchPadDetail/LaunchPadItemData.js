@@ -5,7 +5,6 @@ import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import {launchpadData} from "./launchpadData";
-import {networkType} from "../../common/networkType";
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -22,6 +21,7 @@ export default function LaunchPadItemData(props) {
         blind,
         isCollection,
         cryptoAllowed,
+        disabled
     } = props;
     const [onPressButton, setOnPressButton] = useState(false)
     const chainIcon = type => {
@@ -126,7 +126,7 @@ export default function LaunchPadItemData(props) {
     return (
 
         <TouchableOpacity
-            disabled={networkType!=="testnet"?false:true}
+            disabled={disabled}
             onPress={handleOnPress}
                           style={styles.collectionListItem}>
             <View style={styles.listItemContainer}>

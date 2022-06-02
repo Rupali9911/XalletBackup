@@ -74,7 +74,7 @@ export const launchpadData = [
        // status: 0,
         userId: "61c2f7973cdaa90d7dcd31c3",
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
-        _id: "61c44353e5622d1a2e053f3e",
+        _id: "626a31e427d3b54671fd9ea3",
         status: "Ongoing",
        // redirect: networkType === 'testnet' ? "https://mainnet.xanalia.com/collections/blindbox/626a31e427d3b54671fd9ea3" : "https://xanalia.com/collections/blindbox/626a31e427d3b54671fd9ea3",
     },
@@ -291,7 +291,7 @@ export const launchpadData = [
         userId: "61c2f7973cdaa90d7dcd31c3",
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
         _id: "61c44353e5622d1a2e053f3e",
-        status: "comingSoon",
+        status: "Ongoing",
        // redirect: "/xanalia_nftart_award_2021",
     },
     {
