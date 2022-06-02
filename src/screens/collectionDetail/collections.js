@@ -215,7 +215,7 @@ const Collections = props => {
                 />
             );
         } else {
-            console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
+            // console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
             return (
                 <CollectionItem
                     bannerImage={item.bannerImage}
@@ -253,14 +253,14 @@ const Collections = props => {
     };
 
     const memoizedValue = useMemo(() => renderItem, [collectionList]);
-    // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isHotCollection) }
+    // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isSeries, isHotCollection) }
 
     const handleFlatlistRefresh = () => {
         dispatch(nftDataCollectionLoadStart());
         refreshFunc();
     }
 
-  const keyExtractor = (item, index) => { return 'item_' + index }
+    const keyExtractor = (item, index) => { return 'item_' + index }
 
 
     return (
@@ -290,7 +290,7 @@ const Collections = props => {
                     //         }
                     //     }
                     // }}
-                    onEndReachedThreshold={0.4}
+                    // onEndReachedThreshold={0.4}
                     keyExtractor={keyExtractor}
                     ListFooterComponent={renderFooter}
                 />

@@ -21,36 +21,36 @@ import {
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
-import {launchpadData} from "../LaunchPadDetail/launchpadData";
-import {networkType} from "../../common/networkType";
+import { launchpadData } from "../LaunchPadDetail/launchpadData";
+import { networkType } from "../../common/networkType";
 
 const LaunchPad = () => {
-  const { CollectionReducer } = useSelector(state => state);
-  const [isSelectTab, setSelectTab] = useState(true);
-  const dispatch = useDispatch();
+  // const { CollectionReducer } = useSelector(state => state);
+  // const [isSelectTab, setSelectTab] = useState(true);
+  // const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  useEffect(() => {
-      dispatch(collectionLoadStart());
-      dispatch(collectionListReset());
-      getCollection(1, isSelectTab);
-      dispatch(collectionPageChange(1));
-  }, [isSelectTab]);
+  // useEffect(() => {
+  //     dispatch(collectionLoadStart());
+  //     dispatch(collectionListReset());
+  //     getCollection(1, isSelectTab);
+  //     dispatch(collectionPageChange(1));
+  // }, [isSelectTab]);
 
-  const getCollection = useCallback((page, isSelectTab) => {
-    dispatch(collectionList(page, isSelectTab));
-  }, []);
+  // const getCollection = useCallback((page, isSelectTab) => {
+  //   dispatch(collectionList(page, isSelectTab));
+  // }, []);
 
-  const handleRefresh = () => {
-    dispatch(collectionListReset());
-    getCollection(1);
-    dispatch(collectionPageChange(1));
-  };
+  // const handleRefresh = () => {
+  //   dispatch(collectionListReset());
+  //   getCollection(1);
+  //   dispatch(collectionPageChange(1));
+  // };
 
-  const renderFooter = () => {
-    if (!CollectionReducer.collectionLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
+  // const renderFooter = () => {
+  //   if (!CollectionReducer.collectionLoading) return null;
+  //   return <ActivityIndicator size="small" color={colors.themeR} />;
+  // };
 
   const renderItem = ({ item }) => {
     return (
@@ -63,55 +63,53 @@ const LaunchPad = () => {
         creator={item.creator}
         status={item.status}
         creatorInfo={item.creatorInfo}
-        blind={item.blind}x
+        blind={item.blind}
         onPress={() => {
           console.log('LaunchPad ========', item);
-          if(item.status && item.status !== 'comingSoon'){
+          if (item.status && item.status !== 'comingSoon') {
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
           }
-            
-            //   if (item.redirect) {
-            //   navigation.push('CollectionDetail',
-            //   {
-            //     isBlind: false,
-            //     collectionId: item._id,
-            //     isHotCollection: true,
-            //     isStore: item.redirect,
-            //   });
-            // } else if (item.blind) {
-            //   console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
-            //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-            // } else {
-            //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-            // }
-
+          //   if (item.redirect) {
+          //   navigation.push('CollectionDetail',
+          //   {
+          //     isBlind: false,
+          //     collectionId: item._id,
+          //     isHotCollection: true,
+          //     isStore: item.redirect,
+          //   });
+          // } else if (item.blind) {
+          //   console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
+          //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+          // } else {
+          //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          // }
         }}
       />
     );
   };
 
-  const handleFlatlistRefresh = () => {
-    dispatch(collectionLoadStart());
-    handleRefresh();
-  }
-  const handleFlastListEndReached = () => {
-    if (
-      !CollectionReducer.collectionLoading &&
-      CollectionReducer.collectionTotalCount !==
-      CollectionReducer.collectionList.length
-    ) {
-      let num = CollectionReducer.collectionPage + 1;
-      getCollection(num, isSelectTab);
-      dispatch(collectionPageChange(num));
-    }
-  }
-  const keyExtractor = (item, index) => { return 'item_' + index }
+  // const handleFlatlistRefresh = () => {
+  //   dispatch(collectionLoadStart());
+  //   handleRefresh();
+  // }
+  // const handleFlastListEndReached = () => {
+  //   if (
+  //     !CollectionReducer.collectionLoading &&
+  //     CollectionReducer.collectionTotalCount !==
+  //     CollectionReducer.collectionList.length
+  //   ) {
+  //     let num = CollectionReducer.collectionPage + 1;
+  //     getCollection(num, isSelectTab);
+  //     dispatch(collectionPageChange(num));
+  //   }
+  // }
+  // const keyExtractor = (item, index) => { return 'item_' + index }
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View style={{flex:1}}>
-        {/* <TouchableOpacity
+      {/*  <View style={{ flex: 1 }}>
+       <TouchableOpacity
           onPress={() => setSelectTab(true)}
           style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
           <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
@@ -124,60 +122,59 @@ const LaunchPad = () => {
           <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
               {translate('common.blindboxCollections')}
           </Text>
-        </TouchableOpacity> */}
-      </View>
+        </TouchableOpacity> 
+      </View>*/}
 
-        <FlatList
+      <FlatList
+        //data={CollectionReducer.collectionList}
+        data={launchpadData}
+        horizontal={false}
+        numColumns={2}
+        initialNumToRender={14}
+        // onRefresh={() => {
+        //     dispatch(collectionLoadStart());
+        //     handleRefresh();
+        // }}
+        // refreshing={
+        //     CollectionReducer.collectionPage === 1 &&
+        //     CollectionReducer.collectionLoading
+        // }
+        renderItem={renderItem}
+        // onEndReached={() => {
+        //     if (
+        //         !CollectionReducer.collectionLoading &&
+        //         CollectionReducer.collectionTotalCount !==
+        //         CollectionReducer.collectionList.length
+        //     ) {
+        //         let num = CollectionReducer.collectionPage + 1;
+        //         getCollection(num, isSelectTab);
+        //         dispatch(collectionPageChange(num));
+        //     }
+        // }}
+        // onEndReachedThreshold={0.4}
+        keyExtractor={(v, i) => 'item_' + i}
+        // ListFooterComponent={renderFooter}
+        pagingEnabled={false}
+        legacyImplementation={false}
 
-            //data={CollectionReducer.collectionList}
-            data={launchpadData}
-            horizontal={false}
-            numColumns={2}
-            initialNumToRender={14}
-            // onRefresh={() => {
-            //     dispatch(collectionLoadStart());
-            //     handleRefresh();
-            // }}
-            // refreshing={
-            //     CollectionReducer.collectionPage === 1 &&
-            //     CollectionReducer.collectionLoading
-            // }
-            renderItem={renderItem}
-            // onEndReached={() => {
-            //     if (
-            //         !CollectionReducer.collectionLoading &&
-            //         CollectionReducer.collectionTotalCount !==
-            //         CollectionReducer.collectionList.length
-            //     ) {
-            //         let num = CollectionReducer.collectionPage + 1;
-            //         getCollection(num, isSelectTab);
-            //         dispatch(collectionPageChange(num));
-            //     }
-            // }}
-            onEndReachedThreshold={0.4}
-            keyExtractor={(v, i) => 'item_' + i}
-            ListFooterComponent={renderFooter}
-            pagingEnabled={false}
-            legacyImplementation={false}
+      // data={CollectionReducer.collectionList}
+      // horizontal={false}
+      // numColumns={2}
+      // initialNumToRender={14}
+      // onRefresh={handleFlatlistRefresh}
+      // refreshing={
+      //   CollectionReducer.collectionPage === 1 &&
+      //   CollectionReducer.collectionLoading
+      // }
+      // renderItem={renderItem}
+      // onEndReached={handleFlastListEndReached}
+      // onEndReachedThreshold={0.4}
+      // keyExtractor={keyExtractor}
+      // ListFooterComponent={renderFooter}
+      // pagingEnabled={false}
+      // legacyImplementation={false}
 
-          // data={CollectionReducer.collectionList}
-          // horizontal={false}
-          // numColumns={2}
-          // initialNumToRender={14}
-          // onRefresh={handleFlatlistRefresh}
-          // refreshing={
-          //   CollectionReducer.collectionPage === 1 &&
-          //   CollectionReducer.collectionLoading
-          // }
-          // renderItem={renderItem}
-          // onEndReached={handleFlastListEndReached}
-          // onEndReachedThreshold={0.4}
-          // keyExtractor={keyExtractor}
-          // ListFooterComponent={renderFooter}
-          // pagingEnabled={false}
-          // legacyImplementation={false}
-
-        />
+      />
       {/*)}*/}
     </View>
   );

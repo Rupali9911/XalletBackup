@@ -832,7 +832,7 @@ function CollectionDetail(props) {
         maximumFractionDigits: 3,
     });
 
-    console.log('.........', collection)
+    // console.log('.........', collection)
 
     const renderDetailList = () => {
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)

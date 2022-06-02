@@ -2,7 +2,7 @@ export const cardsDefaultData = [
   {
     bannerImage:
       "https://ik.imagekit.io/xanalia/CollectionMainData/Monkeyking3.png",
-    chainType: "binance",
+    chainType: ["ethereum", "binance"],
     collectionDesc:
       "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
     collectionId: "61c44353e5622d1a2e053f3e",
@@ -52,7 +52,7 @@ export const cardsDefaultData = [
   {
     bannerImage:
       "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg?tr=w-600,tr=h-400",
-    chainType: "polygon",
+    chainType: ["ethereum", "binance"],
     collectionDesc:
       "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
       collectionId: "61aa04803035bdb9917871cf",
