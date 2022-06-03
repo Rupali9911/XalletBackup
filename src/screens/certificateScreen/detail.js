@@ -216,6 +216,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(item.like);
   const [updateComponent, setUpdateComponent] = useState(false);
+  const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
   const nft = item.tokenId || item.collectionAdd;
@@ -246,7 +247,6 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    console.log(isFocused, "isFocusedisFocusedisFocusedisFocusedisFocused")
     if (isFocused) {
       if (chainType) {
         if (chainAvailable) {
@@ -911,6 +911,7 @@ const DetailScreen = ({ navigation, route }) => {
       .call(async (err, res) => {
         // console.log('checkNFTOnAuction_res', res);
         if (!err) {
+          setHighestBidderAddValue(res[3]);
           let baseCurrency = [];
           if (res[6]) {
             baseCurrency = basePriceTokens.filter(
@@ -1991,13 +1992,14 @@ const DetailScreen = ({ navigation, route }) => {
           {getAuctionTimeRemain(item) ? (
             <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
               {isBiddingTimeEnd ? 
-                <Text style={{ fontSize: 11, }}>{translate('common.biddingTime')}</Text>
+                <Text style={{ fontSize: 14, }}>{translate('common.biddingTime')}</Text>
               :
               <View style={{flexDirection: 'row'}}>
-                <Text style={{ fontSize: 11, }}>{translate('common.saleEndIn')} :</Text>
+                <Text style={{ fontSize: 14, }}>{translate('common.saleEndIn')} :</Text>
                 <Text style={{ fontSize: 14, fontWeight: 'bold'}}>{getAuctionTimeRemain(item)}</Text>
               </View>
               }
+              <Text style={{ fontSize: 11, }}>{translate('common.highhestBidder')}:{" "}{highestBidderAddValue ? highestBidderAddValue.toUpperCase().substring(0, 6) : "0X0000"}{" "}</Text>
             </View>
           ) : null}
 
