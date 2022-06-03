@@ -46,15 +46,15 @@ export const collectionList = (page, isSelectTab) => {
       .then(response => response.json())
       .then(json => {
         if (isSelectTab) {
-         let newData = json?.data?.map((item) => {
-            if (item.chainType) {
-              item.chainType = ["ethereum", "binance"]
-            } else {
-              item = { ...item, chainType: ["ethereum", "binance"] }
-            }
-            return item;
-          })
-          json.data = newData;
+        //  let newData = json?.data?.map((item) => {
+        //     if (item.chainType) {
+        //       item.chainType = ["ethereum", "binance"]
+        //     } else {
+        //       item = { ...item, chainType: ["ethereum", "binance"] }
+        //     }
+        //     return item;
+        //   })
+        //   json.data = newData;
           dispatch(collectionLoadSuccess(json));
         } else {
           if (page === 1) {

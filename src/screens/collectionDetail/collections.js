@@ -109,7 +109,8 @@ const Collections = props => {
                         page,
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                        seriesInfoId, nftChain
+                        seriesInfoId, 
+                        nftChain
                     ),
                 );
             } else {
