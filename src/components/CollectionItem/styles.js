@@ -57,7 +57,7 @@ borderRadius:wp("5"),
     height: SIZE(46),
     borderRadius: SIZE(23),
     marginTop: SIZE(-33),
-    backgroundColor: '#d8d8d8',
+    // backgroundColor: '#d8d8d8',
   },
   collectionWrapper: {
     padding: SIZE(10),

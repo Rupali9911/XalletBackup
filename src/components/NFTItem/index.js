@@ -28,9 +28,7 @@ export default function NFTItem(props) {
   } = props;
   // console.log("🚀 ~ file: index.js ~ line 28 ~ NFTItem ~ item", item?.newpriceTraded?.priceConversion)
 
-  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } =
-    SVGS;
-
+  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
   const dispatch = useDispatch();
   const [isDisable, setIsDisable] = useState(false)
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
@@ -54,18 +52,26 @@ export default function NFTItem(props) {
     let found = basePriceTokens.find(
       token => token.value === CurrencyFlag && token.chain === chainTypeFlag,
     );
+    let search = basePriceTokens.find(
+      token => token.order === CurrencyFlag && token.chain === chainTypeFlag,
+    )
     if (found) {
       return found.icon;
+    } else if (search) {
+      return search.icon
     }
   };
 
   const renderIcon = () => {
-    const uri = nftCurrencyIcon(item?.baseCurrency, item?.nftChain);
+    const baseCurrency = item?.baseCurrency ? item.baseCurrency : item?.newprice?.baseCurrency ? item.newprice.baseCurrency : 0
+    const nftChain = item?.nftChain ? item?.nftChain : item?.newprice?.mainChain
+    const uri = nftCurrencyIcon(baseCurrency, nftChain);
+
     if (uri) {
       if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
         return (
           <SvgUri
-            uri={nftCurrencyIcon(item?.baseCurrency, item?.nftChain)}
+            uri={nftCurrencyIcon(baseCurrency, nftChain)}
             width={SIZE(12)}
             height={SIZE(12)}
           />
@@ -188,9 +194,13 @@ export default function NFTItem(props) {
   let lastCurrency = availableTokens.filter(
     token => item?.newpriceTraded?.mainChain == token?.chain && item?.newpriceTraded?.baseCurrency == token.order
   );
-  let iconNftChain = isBlind ? item.nftChain : item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0] : ''
-  // console.log("🚀 ~ file: index.js ~ line 193 ~ ", isBlind ? item?.metaData ? item?.metaData.name : item.name : item.name, item, item?.mainTokenId, iconNftChain, item.chainType)
-  // console.log("🚀 ~ file: index.js ~ line 191 ~", lastCurrency)
+  let iconNftChain = isBlind ?
+    item?.newpriceTraded ?
+      item?.Chain ? item.Chain : item?.mainTokenId?.toString().split("-")[0] :
+      item?.nftChain ? item.nftChain : item?.mainTokenId?.toString().split("-")[0] :
+    item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0]
+      : ''
+
   return (
     <>
       {isMeCollection ? (
@@ -245,7 +255,10 @@ export default function NFTItem(props) {
                       style={styles.priceText}>
                       {item?.baseCurrency === 'ALIA'
                         ? insertComma(parseFloat(item?.price, true).toFixed(0))
-                        : insertComma(item?.price, true)}
+                        : item?.price % 1 != 0 ?
+                          insertComma(parseFloat(item?.price, true).toFixed(2)) :
+                          insertComma(parseFloat(item?.price, true).toFixed(0))
+                      }
                     </Text>
                     {renderIcon()}
                   </View>
@@ -261,7 +274,7 @@ export default function NFTItem(props) {
                 <View
                   style={styles.chainViewColumn}>
                   <View style={{ marginBottom: 5, marginHorizontal: 5 }}>
-                    {chainType(item.chain)}
+                    {chainType(iconNftChain)}
                   </View>
                   {/* <View style={styles.endTimeView}> */}
                   <View style={styles.endTimeView}>
@@ -279,7 +292,10 @@ export default function NFTItem(props) {
                             true,
                           ).toFixed(0),
                         )
-                        : insertComma(item?.newpriceTraded?.priceConversion, true)}
+                        : item?.price ?
+                          insertComma(item.price, true) :
+                          insertComma(item?.newpriceTraded?.priceConversion, true)
+                      }
                     </Text>
                     <Text style={styles.lastPriceText}>{lastCurrency[0]?.key}</Text>
                     {/* </View> */}

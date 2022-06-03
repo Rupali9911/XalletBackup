@@ -21,7 +21,7 @@ const C_Image = (props) => {
     return (
         <>
             {
-                loadImage && <View style={[styles.imageCont, { backgroundColor: Colors.GREY8 }]}>
+                loadImage && <View style={[styles.imageCont, { backgroundColor: Colors.transparent }]}>
                     <ActivityIndicator size="small" color={Colors.themeColor} />
                 </View>
             }{
