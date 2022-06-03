@@ -20,7 +20,7 @@ import {launchpadData} from "../LaunchPadDetail/launchpadData";
 const LaunchPad = () => {
     const navigation = useNavigation();
     const renderItem = ({item}) => {
-        return (
+      return (
             <LaunchPadItemData
                 bannerImage={item.bannerImage}
                 chainType={item.chainType || 'polygon'}
