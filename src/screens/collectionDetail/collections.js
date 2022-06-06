@@ -61,13 +61,17 @@ const Collections = props => {
         : NftDataCollectionReducer.nftDataCollectionLoading;
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : NftDataCollectionReducer.nftDataCollectionList;
+        : collectionType == 1 ?
+            NftDataCollectionReducer.mysteryBoxCollectionList :
+            NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : NftDataCollectionReducer.nftDataCollectionTotalCount;
+        : collectionType == 1 ?
+            NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
+            NftDataCollectionReducer.nftDataCollectionTotalCount;
 
     useEffect(() => {
         if (isSeries) {
@@ -109,7 +113,7 @@ const Collections = props => {
                         page,
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                        seriesInfoId, 
+                        seriesInfoId,
                         nftChain
                     ),
                 );

@@ -75,8 +75,8 @@ const imageToChainKey = {
 function CollectionDetail(props) {
     const { route } = props;
     const { collectionId, nftId, isBlind, isHotCollection, isStore } = route.params;
-     console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
-     console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail### ~ ",collectionId, isBlind, isHotCollection)
+    //  console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
+    //  console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail### ~ ",collectionId, isBlind, isHotCollection)
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
@@ -193,24 +193,24 @@ function CollectionDetail(props) {
     };
 
     const getCollection = async () => {
-        console.log("isStore==",isStore,"isBlind===",isBlind)
+        // console.log("isStore==",isStore,"isBlind===",isBlind)
         try {
             if (isStore) {
-                console.log("index.js line collectionDetail 186 isStore", isStore)
+                // console.log("index.js line collectionDetail 186 isStore", isStore)
                 const collectionArray = await getStoreCollectioDetail();
                 const filterId = '614faf6668449e8d13a1f1b0';
                 const storeCollectionDetail = _.filter(collectionArray.data.data, item => item._id === filterId);
                 setStoreCollection(storeCollectionDetail[0] || {});
                 setLoading(false);
             } else if (isBlind) {
-                console.log("index.js line 192 collectionDetail else if ", collectionId)
+                // console.log("index.js line 192 collectionDetail else if ", collectionId)
                 const collectionArray = await getHotCollectionDetail(
                     collectionId,
                     isBlind);
                 setCollectionAddress(collectionArray?.data?.data?._id);
                 setCollection(collectionArray?.data?.data);
 
-                console.log("🚀 ~ file: index.js ~ line 195 ~  collectionDetail ~ isBlind", isBlind, nftId, collectionArray?.data?.data)
+                // console.log("🚀 ~ file: index.js ~ line 195 ~  collectionDetail ~ isBlind", isBlind, nftId, collectionArray?.data?.data)
                 if (isBlind) {
                     nftId ? setBlindBoxes(collectionArray) : getSeriesSum(collectionArray?.data?.data?._id)
                     // nftId ? getSeriesSum(collectionArray?.data?.data?._id) : setBlindBoxes(collectionArray)
@@ -220,12 +220,12 @@ function CollectionDetail(props) {
                     setLoading(false);
                 }
             } else {
-                console.log("index.js line 208 else")
+                // console.log("index.js line 208 else")
                 const collectionArray = await getHotCollectionDetail(
                     collectionId,
                     isBlind,
                 );
-                console.log('collectionArray', collectionArray?.data?.data[0]?.collectionAddress, collectionArray?.data?.data[0])
+                // console.log('collectionArray', collectionArray?.data?.data[0]?.collectionAddress, collectionArray?.data?.data[0])
                 setCollectionAddress(collectionArray?.data?.data[0]?.collectionAddress);
                 setCollection(collectionArray?.data?.data[0]);
                 setLoading(false);
@@ -236,12 +236,10 @@ function CollectionDetail(props) {
         }
     };
     const setBlindBoxes = async (collectionArray) => {
-
-        console.log("🚀 aayush", collectionArray)
         let boxes;
         if (collectionArray?.data?.data?._id === '61aa04803035bdb9917871cf') {
             boxes = await getBoxes(collectionArray?.data.data?.collectionAddress, true);
-            console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~ collectionArray?.data.data?.collectionAddress", boxes)
+            // console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~", boxes)
         }
         else {
             boxes = await getBoxes(collectionArray?.data.data?._id);
@@ -252,14 +250,14 @@ function CollectionDetail(props) {
             const filteredBlindBoxCollection = _.filter(boxes.data.data, item => item._id === nftId);
 
             setBlindboxList(boxes.data.data);
-            console.log("🚀 ~ file: index.js ~ line 242 ~ setBlindBoxes ~ boxes.data.data", boxes.data.data[0])
+            // console.log("🚀 ~ file: index.js ~ line 242 ~ setBlindBoxes ~ boxes.data.data", boxes.data.data[0])
             if (boxes.data.data) {
                 let baseCurrency = basePriceTokens.filter(
                     (token) =>
                         token.chain === boxes.data.data[0]?.nftChain &&
                         token.order === boxes.data.data[0]?.baseCurrency
                 );
-                console.log("🚀 ~ file: index.js ~ line 249 ~ setBlindBoxes ~ baseCurrency", baseCurrency)
+                // console.log("🚀 ~ file: index.js ~ line 249 ~ setBlindBoxes ~ baseCurrency", baseCurrency)
                 setBaseCurrency(baseCurrency[0]);
             }
 
@@ -289,12 +287,12 @@ function CollectionDetail(props) {
     const getSeriesSum = (collectionAddress) => {
         getBlindBoxSeriesSum(collectionAddress)
             .then(sumData => {
-                console.log("🚀 ~ file: index.js ~ line 255 ~ collectionDetail ~ sumData", sumData)
+                // console.log("🚀 ~ file: index.js ~ line 255 ~ collectionDetail ~ sumData", sumData)
                 setSumBlindBox(sumData)
                 setLoading(false);
             })
             .catch(err => {
-                console.log("🚀 ~ file: index.js ~ line 260 ~ collectionDetail ~ err", err)
+                console.log('=== Error 295', err);
                 setLoading(false);
             })
     }
@@ -438,9 +436,9 @@ function CollectionDetail(props) {
         setBaseCurrency(baseCurrency[0]);
         setPriceOnChain(_priceOnChain);
         setAvailableTokens(_availableTokens);
-        console.log('==========1111111', _availableChains.sort());
+        // console.log('==========1111111', _availableChains.sort());
         setAvailableChains(_availableChains.sort());
-        console.log('==========_availableChains.sort()', _availableChains.sort());
+        // console.log('==========_availableChains.sort()', _availableChains.sort());
 
         // let w = new Web3(providerUrl);
         // const calculatedPrice = await calculatePrice(
@@ -478,19 +476,19 @@ function CollectionDetail(props) {
     const renderBanner = () => {
         let bannerUrl = '';
         if (isStore) {
-            console.log("🚀 ~ file: index.js ~ line 449 ~ renderBanner ~ isStore")
+            // console.log("🚀 ~ file: index.js ~ line 449 ~ renderBanner ~ isStore")
             bannerUrl = 'https://ik.imagekit.io/xanalia/nftData/1632151483313.jpg';
         } else if (isBlind && nftId) {
-            console.log('selectedBlindBox 452', selectedBlindBox)
+            // console.log('selectedBlindBox 452', selectedBlindBox)
             bannerUrl = selectedBlindBox
                 ? selectedBlindBox.seriesURIMetaInfo?.banner_image
                 : "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg";
         } else {
             bannerUrl = collection?.bannerImage;
-            console.log("🚀 ~ file: index.js ~ line 457 ~ renderBanner ~ collection", collection)
+            // console.log("🚀 ~ file: index.js ~ line 457 ~ renderBanner ~ collection", collection)
         }
 
-        console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
+        // console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
         return (
             <C_Image
                 uri={bannerUrl ? bannerUrl : collection?.bannerImage}
@@ -564,7 +562,7 @@ function CollectionDetail(props) {
     };
 
     const blindBoxInfo = () => {
-        console.log('selectedBlindBox1', selectedBlindBox)
+        // console.log('selectedBlindBox1', selectedBlindBox)
         if (isStore) return null;
         if (isBlind && nftId) {
             return (
@@ -585,7 +583,6 @@ function CollectionDetail(props) {
                         <Text style={styles.selectBlindBoxName}>
                             {selectedBlindBox?.name ? selectedBlindBox?.name : blindboxList[0]?.name}
                         </Text>
-                        {console.log("Blind", blindboxList[0])}
                         <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: SIZE(5) }}>
                             <Text style={{
                                 fontSize: SIZE(22),
@@ -618,7 +615,6 @@ function CollectionDetail(props) {
                                     {chainIcon(blindboxList[0]?.nftChain)}
                                 </View>
                             }
-                            {console.log("🚀 ~ file: index.js ~ line 612 ~ blindBoxInfo ~ priceOnDollar", priceOnDollar)}
                         </View>
                     </View>
                 </>
@@ -832,8 +828,6 @@ function CollectionDetail(props) {
         maximumFractionDigits: 3,
     });
 
-    // console.log('.........', collection)
-
     const renderDetailList = () => {
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", collection, statsDetails)
@@ -844,8 +838,6 @@ function CollectionDetail(props) {
         let volTraded = ''
 
         if (!isBlind || isBlind && nftId) {
-            console.log("Venom if", Number(blindboxList[0]?.floorPrice).toFixed(2))
-
             items = !isBlind ? collection?.nftCount : blindboxList[0]?.boxInfo?.length || selectedBlindBox.boxInfo?.length;
             owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
             floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
@@ -856,7 +848,6 @@ function CollectionDetail(props) {
                 : Number(blindboxList[0]?.volTraded).toFixed(3) || '--'
 
         } else if (isBlind && !nftId && sumBlindBox) {
-            console.log("Venom else", blindboxList)
             items = sumBlindBox?.itemsCount
             owners = sumBlindBox?.OwnerCount
             floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
