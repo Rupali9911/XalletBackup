@@ -186,12 +186,16 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
 
     fetch(url, requestOptions)
       .then(response => response.json())
-      .then(json => {
+      .then(jsonData => {
+        let json = {
+          ...jsonData,
+          mysteryBox: collectionType == 1 ? true : false
+        }
 
         const data = json.data;
 
         if (collectionType == 0) {
-          console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
+          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
           dispatch(nftDataCollectionLoadSuccess(json));
         } else {
           let nftData = [];
@@ -208,7 +212,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
 
           json.count = json.data.length;
           json.data = nftData;
-          console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
+          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
           dispatch(nftDataCollectionLoadSuccess(json));
         }
       })

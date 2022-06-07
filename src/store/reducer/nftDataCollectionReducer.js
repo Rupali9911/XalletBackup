@@ -16,8 +16,10 @@ import {
 const initialState = {
   nftDataCollectionLoading: false,
   nftDataCollectionList: [],
+  mysteryBoxCollectionList: [],
   nftDataCollectionPage: 1,
   nftDataCollectionTotalCount: 0,
+  mysteryBoxCollectionTotalCount: 0,
 
   nftBlindSeriesCollectionLoading: false,
   nftBlindSeriesCollectionList: [],
@@ -32,18 +34,39 @@ export default function nftDataCollectionReducer(state = initialState, action) {
       return state = { ...state, nftDataCollectionLoading: true };
 
     case NFT_DATA_COLLECTION_SUCCESS:
-      return state = {
-        ...state,
-        nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
-        nftDataCollectionTotalCount: action.payload.count,
-        nftDataCollectionLoading: false,
-      };
+      return state = action.payload.mysteryBox ?
+        {
+          ...state,
+          mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
+          mysteryBoxCollectionTotalCount: action.payload.count,
+          nftDataCollectionLoading: false,
+        } : {
+          ...state,
+          nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
+          nftDataCollectionTotalCount: action.payload.count,
+          nftDataCollectionLoading: false,
+        };
+    // if (action.payload.mysteryBox) {
+    //   return state = {
+    //     ...state,
+    //     mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
+    //     mysteryBoxCollectionTotalCount: action.payload.count,
+    //     nftDataCollectionLoading: false,
+    //   };
+    // } else {
+    //   return state = {
+    //     ...state,
+    //     nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
+    //     nftDataCollectionTotalCount: action.payload.count,
+    //     nftDataCollectionLoading: false,
+    //   };
+    // }
 
     case NFT_DATA_COLLECTION_LIST_UPDATE:
       return state = { ...state, nftDataCollectionList: [...action.payload] };
 
     case NFT_DATA_COLLECTION_LIST_RESET:
-      return state = { ...state, nftDataCollectionList: [] };
+      return state = { ...state, nftDataCollectionList: [], mysteryBoxCollectionList: [] };
 
     case NFT_DATA_COLLECTION_FAIL:
       return state = { ...state, nftDataCollectionLoading: false };

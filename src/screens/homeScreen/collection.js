@@ -85,7 +85,7 @@ const Collection = () => {
             // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
           } else {
-            console.log("🚀 ~ file: collection.js ~ line 79 ~ renderItem ~ else")
+            console.log("========collection tab => ~ line 79")
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
           }
           // if (!isSelectTab) {
