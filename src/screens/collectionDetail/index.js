@@ -51,8 +51,7 @@ let MarketPlaceAbi = "";
 let MarketContractAddress = "";
 
 let OffChainBlindBoxAbi = "";
-let OffChainBlindBoxAddress = "";
-
+let OffChainBlindBoxAddress = ""
 let ApproveAbi = "";
 let providerUrl = "";
 let walletAddressForNonCrypto = "";
@@ -214,7 +213,7 @@ function CollectionDetail(props) {
                 if (isBlind) {
                     nftId ? setBlindBoxes(collectionArray) : getSeriesSum(collectionArray?.data?.data?._id)
                     // nftId ? getSeriesSum(collectionArray?.data?.data?._id) : setBlindBoxes(collectionArray)
-                    // setBlindBoxes(collectionArray) 
+                    // setBlindBoxes(collectionArray)
                     //  getSeriesSum(collectionArray?.data?.data?._id)
                 } else {
                     setLoading(false);
@@ -667,7 +666,7 @@ function CollectionDetail(props) {
                                         <Text
                                             style={[
                                                 styles.descriptionText,
-                                                { fontSize: SIZE(16), fontWeight: 'bold' },
+                                                { fontSize: SIZE(16), fontWeight: 'bold', },
                                             ]}>
                                             {collection.collectionName}
                                         </Text>
@@ -782,7 +781,7 @@ function CollectionDetail(props) {
                                     <Text
                                         style={[
                                             styles.descriptionText,
-                                            { fontSize: SIZE(16), fontWeight: 'bold' },
+                                            { fontSize: SIZE(18), fontWeight: 'bold',marginBottom:10 },
                                         ]}>
                                         {collection.collectionName}
                                     </Text>
@@ -1122,7 +1121,7 @@ function CollectionDetail(props) {
                                         style={[
                                             styles.tabBarLabel,
                                             {
-                                                color: collectionType === 1 ? colors.BLUE4 : colors.GREY1,
+                                                color: collectionType === 1 ? colors.BLUE4 : colors.BLACK8,
                                             },
                                         ]}>
                                         {translate('common.blindboxCollections')}

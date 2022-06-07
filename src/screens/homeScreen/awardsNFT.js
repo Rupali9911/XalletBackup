@@ -74,6 +74,7 @@ const AwardsNFT = () => {
           // image={imageUri}
           onPress={() => {
             // dispatch(changeScreenName('awards'));
+            // console.log("#####Award NFT Navigation######")
             navigation.push('DetailItem', { index: renderItemFIndIndex(item), sName: "awards" });
           }}
         />

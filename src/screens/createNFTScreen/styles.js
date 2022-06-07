@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
     backgroundColor: colors.GREY8,
+    paddingTop: 50
   },
   sectionContainer: {
     flex: 1,

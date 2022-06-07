@@ -215,7 +215,10 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData, setTradingTableData] = useState([]);
   const [tradingTableLoader, setTradingTableLoader] = useState(false);
   const [isLike, setLike] = useState(item.like);
-
+  const [updateComponent, setUpdateComponent] = useState(false);
+  const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
+  let isBiddingTimeEnd = false;
+  let doComponentUpdate = false;
   const nft = item.tokenId || item.collectionAdd;
   let params = nft.toString().split('-');
   let chainType,
@@ -244,7 +247,6 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    console.log(isFocused, "isFocusedisFocusedisFocusedisFocusedisFocused")
     if (isFocused) {
       if (chainType) {
         if (chainAvailable) {
@@ -909,6 +911,7 @@ const DetailScreen = ({ navigation, route }) => {
       .call(async (err, res) => {
         // console.log('checkNFTOnAuction_res', res);
         if (!err) {
+          setHighestBidderAddValue(res[3]);
           let baseCurrency = [];
           if (res[6]) {
             baseCurrency = basePriceTokens.filter(
@@ -1243,7 +1246,7 @@ const DetailScreen = ({ navigation, route }) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        // console.log('getDetailNFT_res', res);
+         console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
 
           let data = await getNFTDetails(res.data[0]);
@@ -1632,9 +1635,15 @@ const DetailScreen = ({ navigation, route }) => {
       }
     }
   }
+  useEffect(() => {
+    if(doComponentUpdate){
+      setTimeout(()=> {setUpdateComponent(!updateComponent)},1000)
+    }
+  })
 
   const getAuctionTimeRemain = item => {
     if (item.newprice && item.newprice.endTime && new Date(item.newprice.endTime) < new Date().getTime()) {
+      isBiddingTimeEnd = true;
       return translate('common.biddingTime');
     }
     if (item.newprice && item.newprice.endTime) {
@@ -1643,21 +1652,20 @@ const DetailScreen = ({ navigation, route }) => {
       if (diff <= 0) {
         return null;
       } else {
-        let days = parseInt(diff / (1000 * 60 * 60 * 24));
-        let hours = parseInt(diff / (1000 * 60 * 60));
-        let mins = parseInt(diff / (1000 * 60));
-        let secs = parseInt(diff / 1000);
-
-        if (days > 0) {
-          return `${translate('common.saleEndIn')} : ${days} ${translate('common.day')}`;
-        } else if (hours > 0) {
-          return `${translate('common.saleEndIn')} : ${hours} ${translate('common.hours')}`;
-        } else if (mins > 0) {
-          return `${translate('common.saleEndIn')} : ${mins} ${translate('common.min')}`;
-        } else if (secs > 0) {
-          return `${translate('common.saleEndIn')} : ${secs} ${translate('common.sec')}`;
+        isBiddingTimeEnd = false;
+        let daysDiff =(new Date(item.newprice.endTime).getTime() - new Date().getTime()) /(1000 * 60 * 60 * 24);
+        let hoursDiff = (daysDiff - parseInt(daysDiff)) * 24;
+        let minDiff = (hoursDiff - parseInt(hoursDiff)) * 60;
+        let secDiff = (minDiff - parseInt(minDiff)) * 60;
+        const daysLeft = (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / ((24 * 60 * 60 * 1000));
+        const hourLeft = (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
+        const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
+        const secLeft = (parseInt(secDiff) * 1000)/ 1000;
+        if (daysLeft > 0) {
+          return ` ${daysLeft >= 10 ? daysLeft : "0"+daysLeft} ${translate('common.day')}`;
         } else {
-          return `${translate('common.saleEndIn')} ${hours}:${mins}:${secs} `;
+          doComponentUpdate = true
+          return ` ${hourLeft >= 10 ? hourLeft : "0"+hourLeft} ${translate('common.hours')}  ${minLeft >= 10 ? minLeft : "0"+minLeft} ${translate('common.min')}  ${secLeft >= 10 ? secLeft : "0"+secLeft} ${translate('common.sec')}`;
         }
       }
     }
@@ -1945,7 +1953,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={styles.nftTitle} ellipsizeMode="tail" numberOfLines={1}>
+          <Text style={styles.nftTitle} ellipsizeMode="tail" >
             {creatorName}
           </Text>
           <Text style={styles.nftName}>{item.metaData.name}</Text>
@@ -1983,7 +1991,15 @@ const DetailScreen = ({ navigation, route }) => {
           <Text style={styles.description}>{item.metaData.description}</Text>
           {getAuctionTimeRemain(item) ? (
             <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
-              <Text style={{ fontSize: 11, }}>{getAuctionTimeRemain(item)}</Text>
+              {isBiddingTimeEnd ? 
+                <Text style={{ fontSize: 14, }}>{translate('common.biddingTime')}</Text>
+              :
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{ fontSize: 14, }}>{translate('common.saleEndIn')} :</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold'}}>{getAuctionTimeRemain(item)}</Text>
+              </View>
+              }
+              <Text style={{ fontSize: 11, }}>{translate('common.highhestBidder')}:{" "}{highestBidderAddValue ? highestBidderAddValue.toUpperCase().substring(0, 6) : "0X0000"}{" "}</Text>
             </View>
           ) : null}
 

@@ -4,6 +4,7 @@ import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
+import CommonStyles from '../../constants/styles';
 
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
@@ -121,11 +122,13 @@ export default function CollectionItem(props) {
           />
         </View>
         <View style={styles.collectionWrapper}>
+          <View style={CommonStyles.center}>
           <C_Image
             type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
             uri={iconImage}
             imageStyle={styles.iconImage}
           />
+          </View>
           <View style={styles.bottomCenterWrap}>
             <Text numberOfLines={1} style={styles.collectionName}>
               {collectionName}

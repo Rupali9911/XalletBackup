@@ -92,10 +92,18 @@ const DetailItemScreen = (props) => {
         //         item.metaData = item
         //     // }
         // }
-        if (item && item.hasOwnProperty("metaData") && item.metaData) {
-            return (
-                <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
-            )
+        if(Object.keys(item).length){
+            if (item && item.hasOwnProperty("metaData") && item.metaData) {
+                return (
+                    <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
+                )
+            }else{
+                item.metaData = {description: item.description, externalLink: item.externalLink, image: item.image, name: item.name, properties: item.properties, thumbnft: item.thumbnft, totalSupply: item.totalSupply}
+                item.tokenId = item.newprice?.tokenId
+                return (
+                    <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
+                ) 
+            }
         }
     }
 
