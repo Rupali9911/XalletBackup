@@ -251,13 +251,14 @@ const UploadNFT = ({
     }, [modalItem])
 
     useEffect(() => {
-
+        
         if (modalScreen === "uploadNFT" && datePickerData) {
+            
             if (datePickerData !== "closed") {
                 if (activeModal === "startTime") {
-                    setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
+                     setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
                 } else if (activeModal === "endTime") {
-                    setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
+                    setEndTimeDate(moment(datePickerData).format('MMMM Do YYYY, hh:mm a').toUpperCase())
                 }
                 setActiveModal("")
             } else {
@@ -1204,7 +1205,9 @@ const UploadNFT = ({
                                     </CardLabel>
                                     <CardField
 
-                                        inputProps={{value: startTimeDate}}
+                                        
+
+                                        inputProps={{value: ( startTimeDate ? moment(startTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " " )}}
                                         onPress={() => {
                                             setActiveModal("startTime")
                                             setEndTimeDate("")
