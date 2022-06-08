@@ -85,7 +85,7 @@ function CollectionDetail(props) {
     const [sumBlindBox, setSumBlindBox] = useState({});
     const [blindboxList, setBlindboxList] = useState([]);
     const [statsDetails, setStatsDetails] = useState([]);
-    const [nftChain, setNftChain] = useState('polygon');
+    const [nftChain, setNftChain] = useState('ethereum');
     const [baseCurrency, setBaseCurrency] = useState();
     const [priceOnChain, setPriceOnChain] = useState();
     const [availableTokens, setAvailableTokens] = useState();
@@ -403,7 +403,7 @@ function CollectionDetail(props) {
             }
         }
 
-        const _nftChain = _availableChains[0];
+        const _nftChain = _availableChains[2];
         setNftChain(_nftChain);
 
         for (let i = 0; i < blindBox.seriesChain.length; i++) {
@@ -781,7 +781,7 @@ function CollectionDetail(props) {
                                     <Text
                                         style={[
                                             styles.descriptionText,
-                                            { fontSize: SIZE(18), fontWeight: 'bold',marginBottom:10 },
+                                            { fontSize: SIZE(18), fontWeight: 'bold', marginBottom: 10 },
                                         ]}>
                                         {collection.collectionName}
                                     </Text>
