@@ -652,9 +652,8 @@ function Profile(props) {
         cropping: true
       }).then(image => {
         console.log('Response from camera',image )
-       // console.log('Response from camera',image )
         if (image.height <= 512 && image.width <= 512) {
-          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename  ? image.filename : image.path.substring(image.path.lastIndexOf('/') + 1)
           let uri = Platform.OS === 'android' ? image.path : image.sourceURL
 
             let temp = {
