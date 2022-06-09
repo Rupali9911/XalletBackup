@@ -38,6 +38,7 @@ import Tokens from '../wallet/components/Tokens';
 import { balance, currencyInDollar } from '../wallet/functions';
 import { SIZE } from 'src/constants';
 import { alertWithSingleBtn } from '../../common/function';
+import { Loader } from '../../components';
 
 const ethers = require('ethers');
 
@@ -474,7 +475,7 @@ const WalletPay = ({ route, navigation }) => {
             BUSD: responses[2],
             // ALIA: responses[3],
           };
-          // console.log('BSC 440 balances',responses);
+          // console.log('BSC 440 balances', responses);
           dispatch(updateBSCBalances(balances));
           setBalances(balances);
           setLoading(false);
@@ -662,119 +663,124 @@ const WalletPay = ({ route, navigation }) => {
   // console.log(tokens)
   // console.log(basePriceTokens)
   return (
-    <AppBackground isBusy={balances ? loading : true}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButtonWrap}>
-        <Image style={styles.backIcon} source={ImagesSrc.backArrow} />
-      </TouchableOpacity>
-      <GradientBackground>
-        <View style={styles.gradient}>
-          <AppHeader
-            title={translate('wallet.common.pay')}
-            titleStyle={styles.title}
-          />
-
-          <View style={styles.balanceContainer}>
-            <PriceText
-              price={setBalanceField()}
-              isWhite
-              isDollar
-              containerStyle={styles.priceCont}
+    (typeof balances === 'object' ? loading : true) ?
+      <Loader />
+      :
+      <AppBackground
+      // isBusy={typeof balances === 'object' ? loading : true}
+      >
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButtonWrap}>
+          <Image style={styles.backIcon} source={ImagesSrc.backArrow} />
+        </TouchableOpacity>
+        <GradientBackground>
+          <View style={styles.gradient}>
+            <AppHeader
+              title={translate('wallet.common.pay')}
+              titleStyle={styles.title}
             />
-            <TextView style={styles.balanceLabel}>
-              {translate('wallet.common.mainWallet')}
-            </TextView>
+
+            <View style={styles.balanceContainer}>
+              <PriceText
+                price={setBalanceField()}
+                isWhite
+                isDollar
+                containerStyle={styles.priceCont}
+              />
+              <TextView style={styles.balanceLabel}>
+                {translate('wallet.common.mainWallet')}
+              </TextView>
+            </View>
+
+            <View style={[styles.headerBtns, styles.headerBottomCont]}>
+              <HeaderBtns
+                image={ImagesSrc.receive}
+                label={translate('wallet.common.receive')}
+                onPress={() => {
+                  // setIsSend(false); setSelectTokenVisible(true)
+                }}
+              />
+              <HeaderBtns
+                onPress={() => { }}
+                image={ImagesSrc.topup}
+                label={translate('wallet.common.buy')}
+              />
+            </View>
           </View>
+        </GradientBackground>
 
-          <View style={[styles.headerBtns, styles.headerBottomCont]}>
-            <HeaderBtns
-              image={ImagesSrc.receive}
-              label={translate('wallet.common.receive')}
-              onPress={() => {
-                // setIsSend(false); setSelectTokenVisible(true)
-              }}
-            />
-            <HeaderBtns
-              onPress={() => { }}
-              image={ImagesSrc.topup}
-              label={translate('wallet.common.buy')}
-            />
-          </View>
-        </View>
-      </GradientBackground>
-
-      <Tokens
-        values={balances}
-        network={network}
-        // allowedTokens={payableIn ? tokens.filter((item) => item.type == payableIn): tokens}
-        allowedTokens={activeTokens}
-        onTokenPress={currencySelect}
-        onRefresh={onRefreshToken}
-      />
-      <Separator style={styles.separator} />
-
-      {selectedObject && (
-        <View style={styles.totalContainer}>
-          <View style={styles.payObject}>
-            <Text style={styles.totalLabel}>{translate('wallet.common.total')}</Text>
-            <Text style={styles.value}>
-              {numberWithCommas(parseFloat(Number(priceInToken || price).toFixed(4)))} {selectedObject.type}
-            </Text>
-          </View>
-          {!IsActiveToPay() && (
-            <TextView style={styles.alertMsg}>
-              {translate('wallet.common.insufficientToken', {
-                token: chainType === 'polygon' ? 'TAL' : 'TNFT',
-              })}
-            </TextView>
-          )}
-        </View>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <AppButton
-          label={translate('wallet.common.next')}
-          containerStyle={CommonStyles.button}
-          labelStyle={CommonStyles.buttonLabel}
-          onPress={() => {
-              // navigation.navigate("AddCard")
-                  if (
-                      selectedObject &&
-                      selectedObject.tokenValue !== '0' &&
-                      priceInToken < selectedObject?.tokenValue
-                  ) {
-                      navigation.goBack();
-                      dispatch(
-                          setPaymentObject({
-                              item: selectedObject,
-                              currency: tradeCurrency,
-                              priceInToken,
-                              type: 'wallet',
-                          }),
-                      );
-                  } else {
-                      alertWithSingleBtn(
-                          translate('wallet.common.alert'),
-                          translate('common.blanceLow'),
-                      );
-                  }
-              }}
-          // view={!IsActiveToPay()}
-          view={isNextDisabled}
+        <Tokens
+          values={balances}
+          network={network}
+          // allowedTokens={payableIn ? tokens.filter((item) => item.type == payableIn): tokens}
+          allowedTokens={activeTokens}
+          onTokenPress={currencySelect}
+          onRefresh={onRefreshToken}
         />
-      </View>
+        <Separator style={styles.separator} />
 
-      <NetworkPicker
-        visible={pickerVisible}
-        onRequestClose={setPickerVisible}
-        network={network}
-        onItemSelect={item => {
-          setNetwork(item);
-          setPickerVisible(false);
-        }}
-      />
-    </AppBackground>
+        {selectedObject && (
+          <View style={styles.totalContainer}>
+            <View style={styles.payObject}>
+              <Text style={styles.totalLabel}>{translate('wallet.common.total')}</Text>
+              <Text style={styles.value}>
+                {numberWithCommas(parseFloat(Number(priceInToken || price).toFixed(4)))} {selectedObject.type}
+              </Text>
+            </View>
+            {!IsActiveToPay() && (
+              <TextView style={styles.alertMsg}>
+                {translate('wallet.common.insufficientToken', {
+                  token: chainType === 'polygon' ? 'TAL' : 'TNFT',
+                })}
+              </TextView>
+            )}
+          </View>
+        )}
+
+        <View style={styles.buttonContainer}>
+          <AppButton
+            label={translate('wallet.common.next')}
+            containerStyle={CommonStyles.button}
+            labelStyle={CommonStyles.buttonLabel}
+            onPress={() => {
+              // navigation.navigate("AddCard")
+              if (
+                selectedObject &&
+                selectedObject.tokenValue !== '0' &&
+                priceInToken < selectedObject?.tokenValue
+              ) {
+                navigation.goBack();
+                dispatch(
+                  setPaymentObject({
+                    item: selectedObject,
+                    currency: tradeCurrency,
+                    priceInToken,
+                    type: 'wallet',
+                  }),
+                );
+              } else {
+                alertWithSingleBtn(
+                  translate('wallet.common.alert'),
+                  translate('common.blanceLow'),
+                );
+              }
+            }}
+            // view={!IsActiveToPay()}
+            view={isNextDisabled}
+          />
+        </View>
+
+        <NetworkPicker
+          visible={pickerVisible}
+          onRequestClose={setPickerVisible}
+          network={network}
+          onItemSelect={item => {
+            setNetwork(item);
+            setPickerVisible(false);
+          }}
+        />
+      </AppBackground>
   );
 };
 

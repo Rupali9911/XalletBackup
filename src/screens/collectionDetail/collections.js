@@ -152,7 +152,7 @@ const Collections = props => {
     };
 
     const renderItem = ({ item, index }) => {
-        let findIndex = collectionList.findIndex(x => x.id === item.id);
+        let findIndex = collectionList.findIndex(x => x?._id === item?._id);
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         if (isStore || seriesInfoId) {
             return (

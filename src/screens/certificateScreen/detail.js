@@ -183,6 +183,7 @@ const DetailScreen = ({ navigation, route }) => {
   // const [bidHistory, setBidHistory] = useState([]);
   const [currencyPrices, setCurrencyPrices] = useState({});
   const [priceInDollar, setPriceInDollar] = useState('');
+  const [nftPrice, setNFTPrice] = useState(item?.price ? item.price : '');
   const [payableInCurrency, setPayableInCurrency] = useState('');
   const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
@@ -307,23 +308,23 @@ const DetailScreen = ({ navigation, route }) => {
     setCurrencyPrices(currencyPrices)
     switch (baseCurrency?.key) {
       case "BNB":
-        finalPrice = item.price * currencyPrices?.BNB;
+        finalPrice = nftPrice * currencyPrices?.BNB;
         break;
 
       case "ALIA":
-        finalPrice = item.price * currencyPrices?.ALIA;
+        finalPrice = nftPrice * currencyPrices?.ALIA;
         break;
 
       case "ETH":
-        finalPrice = item.price * currencyPrices?.ETH;
+        finalPrice = nftPrice * currencyPrices?.ETH;
         break;
 
       case "MATIC":
-        finalPrice = item.price * currencyPrices?.MATIC;
+        finalPrice = nftPrice * currencyPrices?.MATIC;
         break;
 
       default:
-        finalPrice = item.price * 1;
+        finalPrice = nftPrice * 1;
         break;
     }
     console.log('=======finalPrice', currencyPrices, finalPrice);
@@ -1246,9 +1247,9 @@ const DetailScreen = ({ navigation, route }) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-         console.log('getDetailNFT_res', res);
+        console.log('getDetailNFT_res', res);
         if (res.data.length > 0 && res.data !== 'No record found') {
-
+          setNFTPrice(res.data[0]?.price)
           let data = await getNFTDetails(res.data[0]);
           setLike(data.like)
           // if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
@@ -1636,8 +1637,8 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }
   useEffect(() => {
-    if(doComponentUpdate){
-      setTimeout(()=> {setUpdateComponent(!updateComponent)},1000)
+    if (doComponentUpdate) {
+      setTimeout(() => { setUpdateComponent(!updateComponent) }, 1000)
     }
   })
 
@@ -1653,19 +1654,19 @@ const DetailScreen = ({ navigation, route }) => {
         return null;
       } else {
         isBiddingTimeEnd = false;
-        let daysDiff =(new Date(item.newprice.endTime).getTime() - new Date().getTime()) /(1000 * 60 * 60 * 24);
+        let daysDiff = (new Date(item.newprice.endTime).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
         let hoursDiff = (daysDiff - parseInt(daysDiff)) * 24;
         let minDiff = (hoursDiff - parseInt(hoursDiff)) * 60;
         let secDiff = (minDiff - parseInt(minDiff)) * 60;
         const daysLeft = (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / ((24 * 60 * 60 * 1000));
         const hourLeft = (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
         const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
-        const secLeft = (parseInt(secDiff) * 1000)/ 1000;
+        const secLeft = (parseInt(secDiff) * 1000) / 1000;
         if (daysLeft > 0) {
-          return ` ${daysLeft >= 10 ? daysLeft : "0"+daysLeft} ${translate('common.day')}`;
+          return ` ${daysLeft >= 10 ? daysLeft : "0" + daysLeft} ${translate('common.day')}`;
         } else {
           doComponentUpdate = true
-          return ` ${hourLeft >= 10 ? hourLeft : "0"+hourLeft} ${translate('common.hours')}  ${minLeft >= 10 ? minLeft : "0"+minLeft} ${translate('common.min')}  ${secLeft >= 10 ? secLeft : "0"+secLeft} ${translate('common.sec')}`;
+          return ` ${hourLeft >= 10 ? hourLeft : "0" + hourLeft} ${translate('common.hours')}  ${minLeft >= 10 ? minLeft : "0" + minLeft} ${translate('common.min')}  ${secLeft >= 10 ? secLeft : "0" + secLeft} ${translate('common.sec')}`;
         }
       }
     }
@@ -1960,7 +1961,7 @@ const DetailScreen = ({ navigation, route }) => {
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center", marginRight: wp(2) }]}>
-                <Text style={styles.price}>{item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0}<Text style={styles.priceUnit}>
+                <Text style={styles.price}>{nftPrice ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4))) : 0}<Text style={styles.priceUnit}>
                   {` ${baseCurrency?.key}`}<Text style={styles.dollarText}>
                     {` ($${parseFloat(priceInDollar, true).toFixed(2)})`}
                   </Text></Text>
@@ -1991,13 +1992,13 @@ const DetailScreen = ({ navigation, route }) => {
           <Text style={styles.description}>{item.metaData.description}</Text>
           {getAuctionTimeRemain(item) ? (
             <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
-              {isBiddingTimeEnd ? 
+              {isBiddingTimeEnd ?
                 <Text style={{ fontSize: 14, }}>{translate('common.biddingTime')}</Text>
-              :
-              <View style={{flexDirection: 'row'}}>
-                <Text style={{ fontSize: 14, }}>{translate('common.saleEndIn')} :</Text>
-                <Text style={{ fontSize: 14, fontWeight: 'bold'}}>{getAuctionTimeRemain(item)}</Text>
-              </View>
+                :
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontSize: 14, }}>{translate('common.saleEndIn')} :</Text>
+                  <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{getAuctionTimeRemain(item)}</Text>
+                </View>
               }
               <Text style={{ fontSize: 11, }}>{translate('common.highhestBidder')}:{" "}{highestBidderAddValue ? highestBidderAddValue.toUpperCase().substring(0, 6) : "0X0000"}{" "}</Text>
             </View>
@@ -2048,7 +2049,7 @@ const DetailScreen = ({ navigation, route }) => {
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <AppButton
-                  label={(item.price ? numberWithCommas(parseFloat(Number(item.price).toFixed(4))) : 0) + ' ' + baseCurrency?.key}
+                  label={(nftPrice ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4))) : 0) + ' ' + baseCurrency?.key}
                   containerStyle={[styles.button, CommonStyles.outlineButton]}
                   labelStyle={[CommonStyles.outlineButtonLabel]}
                   onPress={() => { }}
@@ -2235,7 +2236,7 @@ const DetailScreen = ({ navigation, route }) => {
       <PaymentMethod
         visible={showPaymentMethod}
         payableIn={payableIn}
-        price={payableIn && data?.user?.role === 'crypto' ? payableInCurrency : item.price ? item.price : 0}
+        price={payableIn && data?.user?.role === 'crypto' ? payableInCurrency : nftPrice ? nftPrice : 0}
         priceStr={priceNFTString}
         priceInDollar={payableIn && data?.user?.role === 'crypto' ? payableInDollar : priceInDollar}
         baseCurrency={baseCurrency}
@@ -2252,7 +2253,7 @@ const DetailScreen = ({ navigation, route }) => {
       />
       <PaymentNow
         visible={showPaymentNow}
-        price={payableIn && data?.user?.role === 'crypto' ? payableInCurrency : item.price ? item.price : 0}
+        price={payableIn && data?.user?.role === 'crypto' ? payableInCurrency : nftPrice ? nftPrice : 0}
         priceInDollar={payableIn && data?.user?.role === 'crypto' ? payableInDollar : priceInDollar}
         chain={chainType}
         NftId={_tokenId}
