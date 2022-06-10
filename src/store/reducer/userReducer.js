@@ -22,6 +22,8 @@ import { BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 import { setConnectedApps } from './walletReducer';
+import { reject } from 'lodash';
+import { resolve } from 'path-browserify';
 
 const initialState = {
   loading: false,
@@ -225,16 +227,8 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     apps && dispatch(setConnectedApps(apps));
     const _wallet = wallet;
 
-    console.log('========userData.user._id', userData?.user);
-    console.log('========_wallet?.address', _wallet?.address);
-
-    // userData.user.username => 0xD55468830878d9dB7D0D36380421880Ef391a6Af
-    // _wallet.address => 0xd55468830878d9db7d0d36380421880ef391a6af
-    // actually username is same as address but different is string case. why response is dfference in between username and address.
-
     let req_data = {
       owner: userData.user.username || _wallet?.address,
-      //owner:  userData.user._id,
       token: 'HubyJ*%qcqR0',
     };
 
@@ -258,11 +252,6 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
       .catch(e => {
         dispatch(hideSplash());
         dispatch(endMainLoading());
-
-        // alertWithSingleBtn(
-        //   translate('wallet.common.alert'),
-        //   translate('wallet.common.error.networkFailed'),
-        // );
       });
   } else {
     dispatch(hideSplash());
@@ -270,36 +259,9 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
   }
 };
 
-export const loadProfileFromAsync = asyncData => (dispatch, getState) => {
-  if (asyncData && (asyncData.wallet || asyncData.userData)) {
-    const { wallet, userData, BackedUp, apps } = asyncData;
-
-    if (wallet) {
-      wallet.address = String(wallet?.address).toLowerCase();
-    }
-    // dispatch(
-    //     setUserData({
-    //       data: userData,
-    //       wallet: wallet ? wallet : null,
-    //       isCreate: false,
-    //       showSuccess: false,
-    //     }),
-    // );
-
-    BackedUp && dispatch(setBackup(BackedUp));
-    apps && dispatch(setConnectedApps(apps));
-    const _wallet = wallet;
-
-    console.log('========userData.user._id', userData?.user);
-    console.log('========_wallet?.address', _wallet?.address);
-
-    // userData.user.username => 0xD55468830878d9dB7D0D36380421880Ef391a6Af
-    // _wallet.address => 0xd55468830878d9db7d0d36380421880ef391a6af
-    // actually username is same as address but different is string case. why response is dfference in between username and address.
-
+export const loadProfileFromAsync = id => (dispatch) => {
     let req_data = {
-      owner: userData.user.username || _wallet?.address,
-      //owner:  userData.user._id,
+      owner: id,
       token: 'HubyJ*%qcqR0',
     };
 
@@ -316,26 +278,13 @@ export const loadProfileFromAsync = asyncData => (dispatch, getState) => {
         .then(res => {
           if (typeof (res.data) !== 'string' && res.data) {
             dispatch(upateUserData(res.data));
-
           }
-          dispatch(endMainLoading());
-          dispatch(hideSplash());
+          resolve()
         })
         .catch(e => {
-          dispatch(hideSplash());
-          dispatch(endMainLoading());
-
-          // alertWithSingleBtn(
-          //   translate('wallet.common.alert'),
-          //   translate('wallet.common.error.networkFailed'),
-          // );
+          reject()
         });
-  } else {
-    dispatch(hideSplash());
-    dispatch(endMainLoading());
   }
-};
-
 
 export const setUserAuthData =
   (data, isCreate = false) =>

@@ -649,7 +649,8 @@
         "passwordlengthshort": "비밀번호는 8자 이상이어야 합니다.",
         "blindboxCollections": "블라인드 박스",
         "zoomMail": "줌 메일",
-        "amountMoreThan": "금액은 $999,999.99 이하여야 합니다."
+        "amountMoreThan": "금액은 $999,999.99 이하여야 합니다.",
+        "toFilter": "에게"
     },
     "AwardPage": {},
     "wallet": {
@@ -989,7 +990,8 @@
             "updatePrice": "가격 업데이트됨",
             "bidaward": "입찰 낙찰",
             "transferFrom": "옮기다",
-            "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다."
+            "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다.",
+            "descriptionCreate": "컬렉션 설명"
         },
         "backendmessage": {
             "error": {},

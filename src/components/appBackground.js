@@ -11,11 +11,11 @@ import Colors from '../constants/Colors';
 import FetchingIndicator from './fetchingIndicator';
 
 const AppBackground = (props) => {
-    return(
+    return (
         <>
-            {props.hideSafeArea?null:<SafeAreaView style={[styles.safeArea, props.safeAreaColor && {backgroundColor: props.safeAreaColor}]}/>}
+            {props.hideSafeArea ? null : <SafeAreaView style={[styles.safeArea, props.safeAreaColor && { backgroundColor: props.safeAreaColor }]} />}
             <View style={[styles.backgroundContainer, props.containerStyle]}>
-                <StatusBar hidden={false} barStyle={props.lightStatus?'light-content':'dark-content'} />
+                <StatusBar hidden={false} barStyle={props.lightStatus ? 'light-content' : 'dark-content'} />
                 {
                     props.isBusy && <FetchingIndicator />
                 }
@@ -23,9 +23,9 @@ const AppBackground = (props) => {
                     props.children
                 }
             </View>
-            {props.hideBottomSafeArea?null:<SafeAreaView style={[styles.safeArea, props.safeAreaColor && {backgroundColor: props.safeAreaColor}]}/>}
+            {props.hideBottomSafeArea ? null : <SafeAreaView style={[styles.safeArea, props.safeAreaColor && { backgroundColor: props.safeAreaColor }]} />}
         </>
-    );  
+    );
 }
 
 const styles = StyleSheet.create({

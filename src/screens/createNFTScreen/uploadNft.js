@@ -995,7 +995,7 @@ const UploadNFT = ({
                             }}
                             showRight
                             pressable/>
-                        <CardLabel>{translate("wallet.common.description")}</CardLabel>
+                        <CardLabel>{translate("wallet.common.descriptionCreate")}</CardLabel>
                         <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
                         <CardField
                             inputProps={{
