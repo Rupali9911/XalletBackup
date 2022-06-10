@@ -291,7 +291,7 @@ export const launchpadData = [
         userId: "61c2f7973cdaa90d7dcd31c3",
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
         _id: "61c44353e5622d1a2e053f3e",
-        status: "Ongoing",
+        status: "comingSoon",
        // redirect: "/xanalia_nftart_award_2021",
     },
     {

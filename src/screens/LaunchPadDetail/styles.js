@@ -8,10 +8,12 @@ import {COLORS} from "../../constants";
 
 const styles = StyleSheet.create({
     container: {
-        //backgroundColor: colors.RED1,
+
+        backgroundColor: colors.white,
+
     },
     trendCont: {
-        backgroundColor: colors.white,
+        backgroundColor: colors.WHITE1,
         flex: 1
     },
     imageListCont: {
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
         alignSelf: 'baseline'
     },
     fabItemStyle: {
-        backgroundColor: Colors.white
+        backgroundColor: Colors.WHITE1
     },
     collectionTab: {
         width: '100%',
@@ -148,7 +150,9 @@ const styles = StyleSheet.create({
         width: '100%',
         height: (wp('100%') / 3) - wp('1%'),
         resizeMode: 'stretch',
-       // backgroundColor:"red",
+
+        backgroundColor:Colors.WHITE1,
+
         borderTopRightRadius: SIZE(12),
         borderTopLeftRadius: SIZE(12),
     },
@@ -184,7 +188,9 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     chainitem:{
-        //backgroundColor:'red'
+
+        backgroundColor:Colors.WHITE1
+
     },
     renderchainstyle:{
         flexDirection:'row',

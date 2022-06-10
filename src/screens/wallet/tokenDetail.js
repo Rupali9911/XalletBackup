@@ -18,6 +18,7 @@ import {
   addAllEthTransactions,
   addAllMaticTransactions,
 } from '../../store/reducer/walletReducer';
+import testnet from "../../common/networkType"
 import { environment, IsTestNet, translate } from '../../walletUtils';
 import { HeaderBtns } from './components/HeaderButtons';
 import History from './components/History';
@@ -44,7 +45,8 @@ const TokenDetail = ({ route, navigation }) => {
     //         console.log('err', err);
     //         setLoading(false);
     //     });
-      getTransactionsByType(wallet?.address, item.network.toLowerCase());
+      getTransactionsByType(wallet?.address, item.network.toLowerCase(),item.type.toLowerCase());
+      console.log("0101010101010",item.network)
   }, []);
 
   const getBalance = () => {
@@ -55,8 +57,13 @@ const TokenDetail = ({ route, navigation }) => {
 
     switch (item.type) {
       case 'ETH':
-        rpc = environment.ethRpc;
-        type = 'eth';
+        if (item.network!=="Polygon") {
+          rpc = environment.ethRpc;
+          type = 'eth';
+        }else{
+          rpc = environment.polRpc;
+          type = 'eth';
+        }
         break;
       case 'BNB':
         rpc = environment.bnbRpc;
@@ -90,6 +97,12 @@ const TokenDetail = ({ route, navigation }) => {
         rpc = environment.polRpc;
         type = 'usdc';
         break;
+      case 'WETH':
+        cont = environment.wethCont;
+        abi = environment.wethAbi;
+        rpc = environment.polRpc;
+        type = 'weth';
+        break;
       default:
     }
     return balance(wallet?.address, cont, abi, rpc, type);
@@ -101,7 +114,7 @@ const TokenDetail = ({ route, navigation }) => {
 
       Promise.all(requests)
         .then(responses => {
-          console.log('responses', responses);
+          console.log('responses ###############', responses);
           const balance = responses[0];
           let _item = item;
           _item.tokenValue = balance;
@@ -118,6 +131,7 @@ const TokenDetail = ({ route, navigation }) => {
   const getTokenValue = () => {
     let totalValue = 0;
     if (item.type == 'ETH' && item.network !== 'Polygon') {
+      console.log("Item network",item.network)
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
       totalValue = value;
     } else if (item.type == 'BNB') {
@@ -126,22 +140,27 @@ const TokenDetail = ({ route, navigation }) => {
     } else if (item.type == 'Matic') {
       let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
-    } else if (item.type == 'TNFT') {
+    } else if (item.type === 'TNFT') {
+      console.log("Item network",item.network)
       let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type == 'TAL') {
+      console.log("Item network",item.network)
       let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type === 'ETH' && item.network === 'Polygon') {
+      console.log("Item network",item.network)
       let value = parseFloat(`${wethBalance}`); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.network === 'BSC' && item.type == 'ALIA') {
+      console.log("Item network",item.network)
       let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.network === 'Polygon' && item.type == 'ALIA') {
+      console.log("Item network",item.network)
       let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type == 'BUSD') {
@@ -155,14 +174,18 @@ const TokenDetail = ({ route, navigation }) => {
     return totalValue;
   };
 
-  const getTransactionsByType = (address, type) => {
-    console.log('address, type', address, type, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}`)
+  const getTransactionsByType = (address, type,coin) => {
+    console.log("tal condition",coin)
+
+    //coin === "tnft"||coin === "tal" ? coin = "alia" : coin
+
+    console.log('address,type,coin', address, type,coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
     return new Promise((resolve, reject) => {
       fetch(
-        `${BASE_URL}/xanawallet/fetch-transactionsfetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}`,
+        `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type==="ethereum"?type="eth":type}&networkType=${networkType}&coin=${coin}`,
       )
         .then(response => {
-           console.log('response', response);
+           console.log('response1234512345', response);
           return response.json();
         })
         .then(res => {
@@ -174,7 +197,7 @@ const TokenDetail = ({ route, navigation }) => {
               res.data.map(_item => {
                 array.push({
                   ..._item,
-                  value: Web3.utils.fromWei(trx.value, 'ether'),
+                  //value: Web3.utils.fromWei(trx.value, 'ether'),
                   type:
                     _item.from == wallet?.address
                       ? 'OUT'
@@ -185,6 +208,7 @@ const TokenDetail = ({ route, navigation }) => {
               });
               array.reverse();
               dispatch(addAllEthTransactions(array));
+
             } else if (type == 'bsc') {
               const _array = [];
               res.data.map(_item => {
@@ -199,7 +223,7 @@ const TokenDetail = ({ route, navigation }) => {
                 });
               });
               _array.reverse();
-              console.log('_array', _array);
+              console.log('_array#########', _array);
               dispatch(addAllBnbTransactions(_array));
             } else if (type == 'polygon') {
               const __array = [];
@@ -215,7 +239,9 @@ const TokenDetail = ({ route, navigation }) => {
                 });
               });
               __array.reverse();
+              console.log("ARRAY 987654321",__array)
               dispatch(addAllMaticTransactions(__array));
+
             }
           }
           resolve();

@@ -206,7 +206,7 @@ const Wallet = ({ route, navigation }) => {
         setTotalValue(value);
       }
     }
-  }, [networkType, ethBalance, bnbBalance, maticBalance]);
+  }, [networkType, wethBalance, bnbBalance, maticBalance]);
 
   const setBalanceField = () => {
     let totalValue = 0;
@@ -233,8 +233,8 @@ const Wallet = ({ route, navigation }) => {
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
       let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
-      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-      let value = maticValue + talValue + usdctValue + wethValue;
+      let ethValue = parseFloat(ethBalance) * currencyPriceDollar?.ETH;
+      let value = maticValue + talValue + usdctValue + ethValue;
       totalValue = value;
     }
     return totalValue;
@@ -321,7 +321,7 @@ const Wallet = ({ route, navigation }) => {
             BNB: responses[0],
             ETH: responses[1],
             MATIC: responses[2],
-            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+            ALIA: parseFloat(responses[0])/ parseFloat(responses[3]),
           };
           setCurrencyPriceDollar(balances);
           setLoading(false);
@@ -401,12 +401,13 @@ const Wallet = ({ route, navigation }) => {
           environment.wethCont,
           environment.wethAbi,
           environment.polRpc,
-          'weth',
+          'eth',
         ),
       ];
 
       Promise.all(balanceRequests)
         .then(responses => {
+
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
@@ -417,6 +418,7 @@ const Wallet = ({ route, navigation }) => {
           setBalances(balances);
           setLoading(false);
           resolve();
+          console.log("balance po######",balances)
         })
         .catch(err => {
           console.log('err', err);
@@ -468,6 +470,7 @@ const Wallet = ({ route, navigation }) => {
             environment.bnbRpc,
             'busd',
           ),
+
           // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
           // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
         ];
@@ -599,7 +602,7 @@ const Wallet = ({ route, navigation }) => {
         values={balances}
         network={networkType}
         onTokenPress={item => {
-          console.log('Token details transfered', item);
+          console.log('Token details transfered######', item);
           navigation.navigate('tokenDetail', { item });
         }}
         onRefresh={onRefreshToken}

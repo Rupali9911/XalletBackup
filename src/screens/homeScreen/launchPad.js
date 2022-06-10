@@ -34,8 +34,6 @@ const LaunchPad = () => {
                 onPress={() => {
                     console.log('LaunchPad ========', item);
 
-                    //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
-
                     item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://testnet.xanalia.com/xanalia_nftart_award_2021') : navigation.push('CollectionDetail', {
                         isBlind: true,
                         collectionId: item._id,
@@ -62,11 +60,11 @@ const LaunchPad = () => {
         );
     };
     return (
+// <<<<<<< HEAD
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white}/>
 
             <FlatList
-
                 data={launchpadData}
                 horizontal={false}
                 numColumns={2}
@@ -76,6 +74,26 @@ const LaunchPad = () => {
                 pagingEnabled={false}
                 legacyImplementation={false}
             />
+{/*=======*/}
+{/*      <LaunchPadItemData*/}
+{/*        bannerImage={item.bannerImage}*/}
+{/*        chainType={item.chainType || 'polygon'}*/}
+{/*        items={item.items}*/}
+{/*        iconImage={item.iconImage}*/}
+{/*        collectionName={item.collectionName}*/}
+{/*        creator={item.creator}*/}
+{/*        status={item.status}*/}
+{/*        creatorInfo={item.creatorInfo}*/}
+{/*        blind={item.blind}x*/}
+{/*        onPress={() => {*/}
+{/*          console.log('LaunchPad ========', item);*/}
+{/*          if(item.status && item.status !== 'comingSoon'){*/}
+{/*            navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });*/}
+{/*          }*/}
+
+{/*>>>>>>> e1d15eed61ad117c53f8ba8c34986887501ac7b6*/}
+
+
 
         </View>
     );

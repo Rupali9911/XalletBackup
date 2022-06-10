@@ -9835,8 +9835,8 @@ export const tokens = [
     network: 'Polygon'
   },
   {
-    type: 'ETH',
-    tokenName: IsTestNet ? 'ETH' : 'WETH',
+    type: IsTestNet?'ETH':'WETH',
+    tokenName: IsTestNet?'ETH':'WETH',
     icon: ImagesSrc.ethnew,
     amount: "$387.41",
     percent: "+10.49%",

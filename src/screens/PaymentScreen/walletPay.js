@@ -343,7 +343,8 @@ const WalletPay = ({ route, navigation }) => {
             case 'USDC':
               totalValue = totalValue + usdcValue;
               break;
-            case IsTestNet ? 'ETH' : 'WETH':
+           // case IsTestNet ? 'ETH' : 'WETH':
+            case 'WETH':
               totalValue = totalValue + wethValue;
               break;
           }
@@ -595,7 +596,7 @@ const WalletPay = ({ route, navigation }) => {
               USDT: responses[5],
               BUSD: responses[6],
               // ALIA: responses[5],
-              // USDC: responses[6],
+               USDC: responses[6],
             };
             dispatch(updateBalances(balances));
             setBalances(balances);

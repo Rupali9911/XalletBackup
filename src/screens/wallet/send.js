@@ -25,6 +25,8 @@ import { openSettings } from 'react-native-permissions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
+import {chain} from "lodash/seq";
+import {networkType} from "../../common/networkType";
 
 const { height } = Dimensions.get('window');
 
@@ -96,7 +98,7 @@ const transferAmount = async () => {
     switch (type) {
         case 'ETH':
             // let ethBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
                 console.log("ethBalance", ethBalance);
                 if (ethBalance.success) {
                     showSuccessAlert();
@@ -111,7 +113,7 @@ const transferAmount = async () => {
             return;
         case 'USDT':
             // let usdtBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "usdt","ethereum", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
                 console.log("usdtBalance", usdtBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -123,7 +125,7 @@ const transferAmount = async () => {
             return;
         case 'BNB':
             // let bnbBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "bnb", "binance", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
                 console.log("bnbBalance", bnbBalance);
                 if (bnbBalance.success) {
                     showSuccessAlert();
@@ -138,7 +140,7 @@ const transferAmount = async () => {
             return;
         case 'BUSD':
             // let busdBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "busd","binance", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
                 console.log("busdBalance", busdBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -150,7 +152,7 @@ const transferAmount = async () => {
             return;
         case 'ALIA':
             // let aliaBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "alia","", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
                 console.log("aliaBalance", aliaBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -162,7 +164,7 @@ const transferAmount = async () => {
             return;
         case 'Matic':
             // let maticBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", "", environment.polRpc, 10, 21000).then((maticBalance) => {
                 console.log("maticBalance", maticBalance);
                 if (maticBalance.success) {
                     showSuccessAlert();
@@ -177,7 +179,7 @@ const transferAmount = async () => {
             return;
         case 'USDC':
             // let usdcBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "usdc",'polygon', environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
                 console.log("usdcBalance", usdcBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -321,7 +323,7 @@ const SendScreen = (props) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { wallet } = useSelector(state => state.UserReducer);
-    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
+    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance,busdBalance,usdtBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
     const [address, setAddress] = useState(props.address);
     const [amount, setAmount] = useState(props.amount);
     const [transfering, setTransfering] = useState(false);
@@ -343,6 +345,14 @@ const SendScreen = (props) => {
             let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
             console.log('BSC value', value);
             totalValue = value;
+        } else if (item.type == 'BUSD') {
+            let value = parseFloat(busdBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+            console.log('BUSD value', value);
+            totalValue = value;
+        } else if (item.type == 'USDT') {
+            let value = parseFloat(usdtBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+            console.log('USDT value', value);
+            totalValue = value;
         } else if (item.type == 'Matic') {
             let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
@@ -359,7 +369,7 @@ const SendScreen = (props) => {
             let value = parseFloat(usdcBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
             totalValue = value;
-        } else if (item.type == 'ETH' && item.network === 'Polygon') {
+        } else if (item.type ==networkType=="testnet"? 'ETH':"WETH" && item.network === 'Polygon') {
             let value = parseFloat(wethBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
             totalValue = value;
@@ -371,13 +381,33 @@ const SendScreen = (props) => {
         const publicAddress = wallet?.address;
         const privKey = wallet.privateKey;
         const toAddress = address;
+        const { item, type, setLoading } = props;
+
+        console.log("&&&&&&&& PRIVATE KEY",privKey)
+        console.log("&&&&&&&& PUBLIC KEY",publicAddress)
+
         setLoading(true);
         switch (type) {
+
             case 'ETH':
                 // let ethBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
-                    console.log("ethBalance", ethBalance);
-                    if (ethBalance.success) {
+                    transfer(publicAddress, privKey, amount, toAddress, "eth", item.network=="Ethereum"?"ethereum":"polygon", "", "",environment.ethRpc, 10, 21000).then((ethBalance) => {
+                        console.log("ethBalance", ethBalance);
+                        if (ethBalance.success) {
+                            showSuccessAlert();
+                        }
+                        setLoading(false);
+                    }).catch((err) => {
+                        console.log("err", err);
+                        setLoading(false);
+                        showErrorAlert(err.msg);
+                    });
+                    return;
+            case 'USDT':
+                // let usdtBalance = await
+                transfer(publicAddress, privKey, amount, toAddress, "usdt","ethereum", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
+                    console.log("usdtBalance", usdtBalance);
+                    if (usdtBalance.success) {
                         showSuccessAlert();
                     }
                     setLoading(false);
@@ -388,21 +418,9 @@ const SendScreen = (props) => {
                 });
 
                 return;
-            case 'USDT':
-                // let usdtBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
-                    console.log("usdtBalance", usdtBalance);
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
-                return;
             case 'BNB':
                 // let bnbBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "bnb", "binance", "","", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
                     console.log("bnbBalance", bnbBalance);
                     if (bnbBalance.success) {
                         showSuccessAlert();
@@ -416,9 +434,11 @@ const SendScreen = (props) => {
 
                 return;
             case 'BUSD':
+                console.log("BUSD Send Calls %&%&%&%&%&%&%&%&%&%&%&%&%&%&%&===", type)
                 // let busdBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
-                    console.log("busdBalance", busdBalance);
+                transfer(publicAddress, privKey, amount, toAddress, "busd","binance", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
+                    console.log("busdBalance@@@@", busdBalance);
+                    showSuccessAlert();
                     setLoading(false);
                 }).catch((err) => {
                     console.log("err", err);
@@ -427,21 +447,21 @@ const SendScreen = (props) => {
                 });
 
                 return;
-            case 'ALIA':
-                // let aliaBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
-                    console.log("aliaBalance", aliaBalance);
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
-                return;
+            // case 'ALIA':
+            //     // let aliaBalance = await
+            //     transfer(publicAddress, privKey, amount, toAddress, "alia",item.network=="BSC"?"binance":'polygon', environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
+            //         console.log("aliaBalance======>", aliaBalance);
+            //         setLoading(false);
+            //     }).catch((err) => {
+            //         console.log("err", err);
+            //         setLoading(false);
+            //         showErrorAlert(err.msg);
+            //     });
+            //
+            //     return;
             case 'Matic':
                 // let maticBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", ""," ", environment.polRpc, 10, 21000).then((maticBalance) => {
                     console.log("maticBalance", maticBalance);
                     if (maticBalance.success) {
                         showSuccessAlert();
@@ -456,8 +476,9 @@ const SendScreen = (props) => {
                 return;
             case 'USDC':
                 // let usdcBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "usdc","polygon",environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
                     console.log("usdcBalance", usdcBalance);
+                    showSuccessAlert();
                     setLoading(false);
                 }).catch((err) => {
                     console.log("err", err);
@@ -468,8 +489,8 @@ const SendScreen = (props) => {
                 return;
             case 'TNFT':
                 // let aliaBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
-                    console.log("tnftBalance", tnftBalance);
+                transfer(publicAddress, privKey, amount, toAddress, "tnft","binance", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
+                    console.log("tnftBalance======>", tnftBalance);
                     setLoading(false);
                     if (tnftBalance.success) {
                         showSuccessAlert();
@@ -482,8 +503,8 @@ const SendScreen = (props) => {
 
             case 'TAL':
                 // let aliaBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
-                    console.log("talBalance", talBalance);
+                transfer(publicAddress, privKey, amount, toAddress,"tal","polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
+                    console.log("talBalance=====>", talBalance);
                     setLoading(false);
                     if (talBalance.success) {
                         showSuccessAlert();
@@ -493,6 +514,20 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
+            // case 'ETH':
+            //     // let aliaBalance = await
+            //     transfer(publicAddress, privKey, amount, toAddress, networkType=="testnet"?"eth":"weth","polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((wethBalance) => {
+            //
+            //         console.log("ethBalance", wethBalance);
+            //         setLoading(false);
+            //         if (talBalance.success) {
+            //             showSuccessAlert();
+            //         }
+            //     }).catch((err) => {
+            //         console.log("err", err);
+            //         setLoading(false);
+            //         showErrorAlert(err.msg);
+            //     });
 
 
             default:
@@ -587,7 +622,6 @@ const SendScreen = (props) => {
 const Send = ({ route, navigation }) => {
 
     const { item, type } = route.params;
-
     const [loading, setLoading] = useState(false);
     const [sendToAddress, setSendToAddress] = useState(null);
     const [amountToSend, setAmountToSend] = useState('');
@@ -597,7 +631,6 @@ const Send = ({ route, navigation }) => {
         { key: 'Send', title: translate("wallet.common.send") },
         { key: 'Scan', title: translate("wallet.common.scan") },
     ]);
-
     const setResult = (address, amount) => {
         setAmountToSend(amount);
         setSendToAddress(address);

@@ -563,6 +563,7 @@ function CollectionDetail(props) {
     };
 
     const blindBoxInfo = () => {
+        console.log('selectedBlindBox1', selectedBlindBox)
         if (isStore) return null;
         if (isBlind && nftId) {
             return (
@@ -844,25 +845,15 @@ function CollectionDetail(props) {
         if (!isBlind || isBlind && nftId) {
             console.log("Venom if", Number(blindboxList[0]?.floorPrice).toFixed(2))
 
-            items = !isBlind ? collection?.nftCount ? blindboxList[0]?.boxInfo?.length : selectedBlindBox.boxInfo?.length : blindboxList[0]?.boxInfo?.length;
-            // items = !isBlind ? collection?.nftCount ? blindboxList[0]?.boxInfo?.length : collection?.nftCount : selectedBlindBox.boxInfo?.length;
-            // owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : '--';
-            owners = !isBlind ? blindboxList ? blindboxList[0]?.owners : collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners;
-            // floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(3) : statsDetails?.floorPriceInDollar <= 40
-            //     ? formatter.format(statsDetails.floorPrice)
-            //     : statsDetails?.floorPrice?.toFixed(3);
-            // console.log("Blind 222",  Number(collection?.floorPrice).toFixed(3) , formatter.format(statsDetails.floorPrice))
-
-            floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(3) : statsDetails?.floorPriceInDollar <= 40
+            items = !isBlind ? collection?.nftCount : blindboxList[0]?.boxInfo?.length || selectedBlindBox.boxInfo?.length;
+            owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
+            floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
                 ? formatter.format(statsDetails.floorPrice)
                 : statsDetails?.floorPrice?.toFixed(3) || blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3);
-
-            // volTraded = !isBlind ? Number(collection?.volTraded).toFixed(3) : statsDetails?.volumeTradeInETH
-            //     ? convertValue(statsDetails?.volumeTradeInETH)
-            //     : '--'
-            volTraded = !isBlind ? blindboxList ? Number(blindboxList[0]?.volTraded).toFixed(3) : Number(collection?.volTraded).toFixed(3) : statsDetails?.volumeTradeInETH
+            volTraded = !isBlind ? Number(collection?.volTraded).toFixed(2) : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
-                : Number(blindboxList[0]?.volTraded).toFixed(3)
+                : Number(blindboxList[0]?.volTraded).toFixed(3) || '--'
+
         } else if (isBlind && !nftId && sumBlindBox) {
             console.log("Venom else", blindboxList)
             items = sumBlindBox?.itemsCount
