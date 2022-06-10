@@ -72,6 +72,26 @@ const LaunchPad = () => {
                 pagingEnabled={false}
                 legacyImplementation={false}
             />
+{/*=======*/}
+{/*      <LaunchPadItemData*/}
+{/*        bannerImage={item.bannerImage}*/}
+{/*        chainType={item.chainType || 'polygon'}*/}
+{/*        items={item.items}*/}
+{/*        iconImage={item.iconImage}*/}
+{/*        collectionName={item.collectionName}*/}
+{/*        creator={item.creator}*/}
+{/*        status={item.status}*/}
+{/*        creatorInfo={item.creatorInfo}*/}
+{/*        blind={item.blind}x*/}
+{/*        onPress={() => {*/}
+{/*          console.log('LaunchPad ========', item);*/}
+{/*          if(item.status && item.status !== 'comingSoon'){*/}
+{/*            navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });*/}
+{/*          }*/}
+
+{/*>>>>>>> e1d15eed61ad117c53f8ba8c34986887501ac7b6*/}
+
+
 
         </View>
     );

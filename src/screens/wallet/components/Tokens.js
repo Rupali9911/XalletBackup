@@ -128,11 +128,13 @@ const Tokens = (props) => {
     }
 
     const renderItems = ({ item, index }) => {
+
         return (
             <ListItems item={item} onPress={props.onTokenPress} />
         );
     }
-
+//console.log("Checking network#############",network ? balance_Data.filter((_) => _.network == network.name) : balance_Data)
+//console.log("Checking network#############",balance_Data)
     return (
         <View style={[styles.scene]} >
             <FlatList

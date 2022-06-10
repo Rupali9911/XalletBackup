@@ -245,6 +245,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
       .then(res => {
         if (typeof (res.data) !== 'string' && res.data) {
           dispatch(upateUserData(res.data));
+
         }
         dispatch(endMainLoading());
         dispatch(hideSplash());
