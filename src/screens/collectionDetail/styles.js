@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   collectionName: {
     fontSize: SIZE(22),
     fontWeight: '600',
-    color:'#000',
+    color: '#000',
     textAlign: 'center',
     marginTop: SIZE(44),
     fontFamily: fonts.ARIAL,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   collectionTableRowText: {
     fontSize: SIZE(16),
     fontFamily: fonts.ARIAL,
-    fontWeight:'600',
+    fontWeight: '600',
   },
   collectionTableRowDec: {
     fontSize: SIZE(11),
@@ -86,9 +86,9 @@ const styles = StyleSheet.create({
   },
   cryptoIcon: {
     width: SIZE(15),
-    height: SIZE(20),
-    marginRight: SIZE(4),
-    resizeMode:"contain"
+    height: SIZE(15),
+    marginRight: SIZE(2),
+    resizeMode: "contain"
   },
   descriptionTabWrapper: {
     flexDirection: 'row',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   descriptionTabText: {
     fontSize: SIZE(13),
     color: '#575e64',
-    fontWeight:"bold",
+    fontWeight: "bold",
     fontFamily: fonts.ARIAL,
   },
   description: {
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: SIZE(12.5),
-    lineHeight:18,
+    lineHeight: 18,
     fontFamily: fonts.ARIAL,
 
     color: '#212529',
@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
     fontSize: RF(1.6),
     fontFamily: fonts.SegoeUIRegular,
     textTransform: 'capitalize',
-    fontWeight:"400",
-    color:'#212529'
+    fontWeight: "400",
+    color: '#212529'
 
   },
   socialLinksWrap: {
@@ -229,9 +229,9 @@ const styles = StyleSheet.create({
   intoMystery: {
     alignItems: 'center',
     flexDirection: 'row',
-
     justifyContent: 'space-around',
-    width: wp('100%') }
+    width: wp('100%')
+  }
 });
 
 export default styles;
