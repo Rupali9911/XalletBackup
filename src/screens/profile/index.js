@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React, { useEffect } from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import _ from 'lodash';
 import {
     Linking,
@@ -11,19 +11,19 @@ import {
     RefreshControl
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
-import {Container, RowWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText, SmallNormalText} from 'src/styles/text.styles';
+import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
+import { Container, RowWrap, SpaceView } from 'src/styles/common.styles';
+import { SmallBoldText, SmallNormalText } from 'src/styles/text.styles';
 import {
     responsiveFontSize as RF,
     widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader, C_Image} from '../../components';
-import {fonts} from '../../res';
-import {languageArray, translate} from '../../walletUtils';
+import { AppHeader, C_Image } from '../../components';
+import { fonts } from '../../res';
+import { languageArray, translate } from '../../walletUtils';
 import {
     DescriptionView,
     EditButton,
@@ -37,22 +37,22 @@ import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
 import Draft from './draft';
 import colors from "../../res/colors";
-import {upateUserData, loadFromAsync, loadProfileFromAsync} from "../../store/reducer/userReducer";
-import {getAllLanguages, setAppLanguage} from "../../store/reducer/languageReducer";
+import { upateUserData, loadFromAsync, loadProfileFromAsync } from "../../store/reducer/userReducer";
+import { getAllLanguages, setAppLanguage } from "../../store/reducer/languageReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../../constants/Colors";
 
-const {ConnectSmIcon, SettingIcon} = SVGS;
+const { ConnectSmIcon, SettingIcon } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
 
-function Profile({navigation, connector}) {
+function Profile({ navigation, connector }) {
 
-    const {UserReducer} = useSelector(state => state);
+    const { UserReducer } = useSelector(state => state);
     const dispatch = useDispatch();
 
     const id = UserReducer?.wallet?.address || UserReducer?.data?.user?.username;
-    const {about, title, links, username, role} = UserReducer?.data?.user;
+    const { about, title, links, username, role, profile_image } = UserReducer?.data?.user;
     useEffect(() => {
         // Update the document title using the browser API
         // UserReducer.data.user.profile_image,
@@ -62,7 +62,7 @@ function Profile({navigation, connector}) {
         // UserReducer.data.user.username,
         // UserReducer.data.user.role
 
-        console.log('UserReducer.data.user ', UserReducer.data.user)
+         console.log('UserReducer.data.user.profile_image ', UserReducer.data.user.profile_image)
     });
 
     const renderTabView = () => {
@@ -95,28 +95,28 @@ function Profile({navigation, connector}) {
                 <Tab.Screen
                     name={translate('wallet.common.profileCreated')}
                     component={NFTCreated}
-                    initialParams={{id: id}}
+                    initialParams={{ id: id }}
                 />
                 <Tab.Screen
                     name={translate('wallet.common.owned')}
                     component={NFTOwned}
-                    initialParams={{id: id}}
+                    initialParams={{ id: id }}
                 />
                 {role === 'crypto' && <Tab.Screen
                     name={translate('wallet.common.collection')}
                     component={Collection}
-                    initialParams={{id: id}}
+                    initialParams={{ id: id }}
                 />}
                 {role === 'crypto' && <Tab.Screen
                     name={translate('common.saveAsDraft')}
                     component={Draft}
-                    initialParams={{id: id}}
+                    initialParams={{ id: id }}
                 />}
             </Tab.Navigator>
         );
     };
 
-   
+
     const [refreshing, setRefreshing] = React.useState(false);
     const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -126,13 +126,14 @@ function Profile({navigation, connector}) {
         loadAllData()
     }
 
-    const loadAllData = async () => {
-        dispatch(loadProfileFromAsync(id)).then(() => {
-            setRefreshing(false)
-         }
-        ) .catch(e => {
-            setRefreshing(false)
-          });
+    const loadAllData = () => {
+        dispatch(loadProfileFromAsync(id))
+            .then(() => {
+                setRefreshing(false)
+            })
+            .catch((err) => {
+                setRefreshing(false)
+            });
     }
 
     return (
@@ -152,10 +153,10 @@ function Profile({navigation, connector}) {
                     showRightButton
                     // showBackButton
                     rightButtonComponent={
-                        <SettingIcon width={SIZE(23)} height={SIZE(23)}/>
+                        <SettingIcon width={SIZE(23)} height={SIZE(23)} />
                     }
                     onPressRight={() =>
-                        navigation.navigate('Setting', {connector: connector})
+                        navigation.navigate('Setting', { connector: connector })
                     }
                 />
                 <View
@@ -166,7 +167,7 @@ function Profile({navigation, connector}) {
                     }}>
                     <UserImageView>
                         <C_Image
-                            uri={UserReducer.data.user.profile_image}
+                            uri={profile_image}
                             imageStyle={{
                                 width: '100%',
                                 height: '100%',
@@ -182,15 +183,15 @@ function Profile({navigation, connector}) {
                             style={{
                                 flexDirection: 'row',
                             }}>
-                            <View style={{alignItems: 'center', width: wp("17")}}>
+                            <View style={{ alignItems: 'center', width: wp("17") }}>
                                 <Text style={styles.countLabel1}>{'0'}</Text>
                                 <SmallText>{translate('wallet.common.post')}</SmallText>
                             </View>
-                            <View style={{alignItems: 'center', width: wp("17")}}>
+                            <View style={{ alignItems: 'center', width: wp("17") }}>
                                 <Text style={styles.countLabel1}>{'0'}</Text>
                                 <SmallText>{translate('common.followers')}</SmallText>
                             </View>
-                            <View style={{alignItems: 'center', width: wp("17")}}>
+                            <View style={{ alignItems: 'center', width: wp("17") }}>
                                 <Text style={styles.countLabel1}>{'0'}</Text>
                                 <SmallText>{translate('common.following')}</SmallText>
                             </View>
@@ -198,19 +199,19 @@ function Profile({navigation, connector}) {
                     </View>
                 </View>
                 <DescriptionView>
-                    <SpaceView mTop={SIZE(12)}/>
+                    <SpaceView mTop={SIZE(12)} />
                     <SmallBoldText>{title || username}</SmallBoldText>
-                    <SpaceView mTop={SIZE(8)}/>
+                    <SpaceView mTop={SIZE(8)} />
                     {!_.isEmpty(about) && (
-                        <ScrollView style={{maxHeight: SIZE(70), padding: 5}}>
+                        <ScrollView style={{ maxHeight: SIZE(70), padding: 5 }}>
                             <Hyperlink
                                 onPress={(url, text) => Linking.openURL(url)}
-                                linkStyle={{color: COLORS.BLUE2}}>
+                                linkStyle={{ color: COLORS.BLUE2 }}>
                                 <SmallNormalText>{about}</SmallNormalText>
                             </Hyperlink>
                         </ScrollView>
                     )}
-                    <SpaceView mTop={SIZE(8)}/>
+                    <SpaceView mTop={SIZE(8)} />
                     {links && !_.isEmpty(links.website) && (
                         <TouchableOpacity
                             onPress={() => {
@@ -219,7 +220,7 @@ function Profile({navigation, connector}) {
                                     : Linking.openURL(`https://${links.website}`);
                             }}>
                             <RowWrap>
-                                <ConnectSmIcon/>
+                                <ConnectSmIcon />
                                 <WebsiteLink>
                                     {links.website.includes('://')
                                         ? links.website.split('/')[2]
@@ -229,15 +230,15 @@ function Profile({navigation, connector}) {
                         </TouchableOpacity>
                     )}
                 </DescriptionView>
-                <SpaceView mTop={SIZE(14)}/>
+                <SpaceView mTop={SIZE(14)} />
                 <RowWrap>
-                    <SpaceView mLeft={SIZE(15)}/>
+                    <SpaceView mLeft={SIZE(15)} />
                     <EditButton onPress={() => navigation.navigate('EditProfile')}>
                         <EditButtonText>{translate('wallet.common.edit')}</EditButtonText>
                     </EditButton>
-                    <SpaceView mRight={SIZE(15)}/>
+                    <SpaceView mRight={SIZE(15)} />
                 </RowWrap>
-                <SpaceView mTop={SIZE(16)}/>
+                <SpaceView mTop={SIZE(16)} />
                 {renderTabView()}
             </ScrollView>
         </Container>

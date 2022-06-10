@@ -546,7 +546,7 @@
 
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text,PermissionsAndroid} from 'react-native';
+import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text, PermissionsAndroid } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
@@ -555,7 +555,7 @@ import { Field, reduxForm } from 'redux-form';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector, useDispatch } from 'react-redux';
 
-import {CenterWrap, SpaceView, BorderView, RowWrap} from 'src/styles/common.styles';
+import { CenterWrap, SpaceView, BorderView, RowWrap } from 'src/styles/common.styles';
 import { SIZE } from 'src/constants';
 import { C_Image, LimitableInput } from 'src/components';
 import { Avatar, ChangeAvatar, DoneText } from './styled';
@@ -582,10 +582,10 @@ import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { openSettings } from 'react-native-permissions';
 import { confirmationAlert } from '../../common/function';
-import {responsiveFontSize as RF} from "../../common/responsiveFunction";
+import { responsiveFontSize as RF } from "../../common/responsiveFunction";
 import fonts from "../../res/fonts";
 import colors from "../../res/colors";
-import {View} from "native-base";
+import { View } from "native-base";
 
 function Profile(props) {
   const { navigation, handleSubmit } = props;
@@ -651,106 +651,105 @@ function Profile(props) {
         width: 512,
         cropping: true
       }).then(image => {
-        console.log('Response from camera',image )
+        console.log('Response from camera', image)
         if (image.height <= 512 && image.width <= 512) {
-          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename  ? image.filename : image.path.substring(image.path.lastIndexOf('/') + 1)
+          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename ? image.filename : image.path.substring(image.path.lastIndexOf('/') + 1)
           let uri = Platform.OS === 'android' ? image.path : image.sourceURL
 
-            let temp = {
-              path: image.path,
-              uri: uri,
-              type: image.mime,
-              fileName: filename,
-              image: image
-            }
-            setPhoto(temp)
+          let temp = {
+            path: image.path,
+            uri: uri,
+            type: image.mime,
+            fileName: filename,
+            image: image
           }
-        }).catch(async e => {
-            console.log('Error from openCamera', e, e.code)
-            if (e.code && (e.code === 'E_NO_CAMERA_PERMISSION' || e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR'))
-            {
-                // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-                // if (isGranted===false) {
-                    confirmationAlert(
-                        translate("wallet.common.cameraPermissionHeader"),
-                        translate("wallet.common.cameraPermissionMessage"),
-                        translate("common.Cancel"),
-                        translate("wallet.common.settings"),
-                        () => openSettings(),
-                        () => null
-                    )
-                // }
-            }
-        })
+          setPhoto(temp)
+        }
+      }).catch(async e => {
+        console.log('Error from openCamera', e, e.code)
+        if (e.code && (e.code === 'E_NO_CAMERA_PERMISSION' || e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR')) {
+          // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+          // if (isGranted===false) {
+          confirmationAlert(
+            translate("wallet.common.cameraPermissionHeader"),
+            translate("wallet.common.cameraPermissionMessage"),
+            translate("common.Cancel"),
+            translate("wallet.common.settings"),
+            () => openSettings(),
+            () => null
+          )
+          // }
+        }
+      })
     } else if (index === OPEN_GALLERY) {
-        ImagePicker.openPicker({
-          mediaType: "photo",
-          height: 512,
-          width: 512,
-          cropping: true
-        }).then(image => {
-          console.log('Response from storage', image)
+      ImagePicker.openPicker({
+        mediaType: "photo",
+        height: 512,
+        width: 512,
+        cropping: true
+      }).then(image => {
+        console.log('Response from storage', image)
 
-          if (image.height <= 512 && image.width <= 512) {
+        if (image.height <= 512 && image.width <= 512) {
 
-            let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
 
-            let uri = Platform.OS === 'android' ? image.path : image.sourceURL
+          let uri = Platform.OS === 'android' ? image.path : image.sourceURL
 
-            let temp = {
-              path: image.path,
-              uri: uri,
-              type: image.mime,
-              fileName: filename,
-              image: image
-            }
-            setPhoto(temp)
+          let temp = {
+            path: image.path,
+            uri: uri,
+            type: image.mime,
+            fileName: filename,
+            image: image
           }
-// <<<<<<< HEAD
-//           setPhoto(temp)
-//         }
-//
-//       //}
-//       }).catch(async e => {
-//
-//         console.log('Error from openPicker', e)
-//
-//         //if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'||'E_FAILED_TO_SHOW_PICKER'){
-//         if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'){
-//            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage)
-//         //console.log('#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@', isGranted)
-//           // if (isGranted === false) {
-//           confirmationAlert(
-//               translate("wallet.common.storagePermissionHeader"),
-//               translate("wallet.common.storagePermissionMessage"),
-//               translate("common.Cancel"),
-//               translate("wallet.common.settings"),
-//               () => openSettings(),
-//               () => null
-//           )
-//           // }
-//         }
-//       })
-//     }
-// =======
-        }).catch(async e => {
-            console.log('Error from openPicker', e)
-            if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'){
-                // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
-                // if (isGranted === false) {
-                    confirmationAlert(
-                        translate("wallet.common.storagePermissionHeader"),
-                        translate("wallet.common.storagePermissionMessage"),
-                        translate("common.Cancel"),
-                        translate("wallet.common.settings"),
-                        () => openSettings(),
-                        () => null
-                    )
-                // }
-            }
-        })
-      }
-// >>>>>>> development
+          setPhoto(temp)
+        }
+        // <<<<<<< HEAD
+        //           setPhoto(temp)
+        //         }
+        //
+        //       //}
+        //       }).catch(async e => {
+        //
+        //         console.log('Error from openPicker', e)
+        //
+        //         //if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'||'E_FAILED_TO_SHOW_PICKER'){
+        //         if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'){
+        //            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage)
+        //         //console.log('#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@', isGranted)
+        //           // if (isGranted === false) {
+        //           confirmationAlert(
+        //               translate("wallet.common.storagePermissionHeader"),
+        //               translate("wallet.common.storagePermissionMessage"),
+        //               translate("common.Cancel"),
+        //               translate("wallet.common.settings"),
+        //               () => openSettings(),
+        //               () => null
+        //           )
+        //           // }
+        //         }
+        //       })
+        //     }
+        // =======
+      }).catch(async e => {
+        console.log('Error from openPicker', e)
+        if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
+          // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
+          // if (isGranted === false) {
+          confirmationAlert(
+            translate("wallet.common.storagePermissionHeader"),
+            translate("wallet.common.storagePermissionMessage"),
+            translate("common.Cancel"),
+            translate("wallet.common.settings"),
+            () => openSettings(),
+            () => null
+          )
+          // }
+        }
+      })
+    }
+    // >>>>>>> development
   }
 
   const onSave = () => {
@@ -871,35 +870,35 @@ function Profile(props) {
     // }
 
     const req_body = userRole === 'crypto' ?
-        {
-          title: username,
-          crypto: true,
-          email,
-          website,
-          discord,
-          twitter,
-          youtube,
-          instagram,
-          about
-        } :
-        {
-          username,
-          crypto: false,
-          email,
-          website,
-          discord,
-          twitter,
-          youtube,
-          instagram,
-          about
-          // firstName,
-          // lastName,
-          // address,
-          // phoneNumber,
-          // title,
-          // facebook,
-          // zoomLink,
-        }
+      {
+        title: username,
+        crypto: true,
+        email,
+        website,
+        discord,
+        twitter,
+        youtube,
+        instagram,
+        about
+      } :
+      {
+        username,
+        crypto: false,
+        email,
+        website,
+        discord,
+        twitter,
+        youtube,
+        instagram,
+        about
+        // firstName,
+        // lastName,
+        // address,
+        // phoneNumber,
+        // title,
+        // facebook,
+        // zoomLink,
+      }
 
     if (validateNum === 8) {
       if (photo?.uri !== UserReducer.data.user.profile_image) {
@@ -907,46 +906,53 @@ function Profile(props) {
         formData.append('profile_image', { uri: photo?.path ? photo.path : photo.uri, name: photo?.fileName, type: photo?.type });
 
         console.log('formData', formData._parts)
-        dispatch(updateProfileImage(formData));
+        dispatch(updateProfileImage(formData)).then(() => {
+          dispatch(updateProfile(req_body, () => navigation.goBack()));
+        })
+          .catch((err) => {
+            dispatch(updateProfile(req_body, () => navigation.goBack()));
+          });
+      } else {
+        dispatch(updateProfile(req_body, () => navigation.goBack()));
       }
-      dispatch(updateProfile(req_body, () => navigation.goBack()));
     }
   }
+  
 
   return (
-      <AppBackground isBusy={UserReducer.loading}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <AppHeader
-              title={translate("wallet.common.profileSettings")}
-              showBackButton
-              showRightButton={true}
-              onPressRight={onSave}
-              rightButtonComponent={<DoneText>{translate("wallet.common.done")}</DoneText>}
-          />
+    <AppBackground isBusy={UserReducer.loading}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <AppHeader
+          title={translate("wallet.common.profileSettings")}
+          showBackButton
+          showRightButton={true}
+          onPressRight={onSave}
+          rightButtonComponent={<DoneText>{translate("wallet.common.done")}</DoneText>}
+        />
 
-          <KeyboardAwareScrollView extraScrollHeight={hp('7%')}>
-            <CenterWrap>
-              <SpaceView mTop={SIZE(10)} />
-              <Avatar>
-                <C_Image
-                    uri={photo?.path ? photo.path : photo.uri}
-                    imageType="profile"
-                    imageStyle={{ width: '100%', height: '100%' }}
-                />
-              </Avatar>
-              <SpaceView mTop={SIZE(7)} />
-              <TouchableOpacity
-                  hitSlop={{top: 15, bottom: 15, left: 40, right: 40}}
-                  onPress={() => actionSheetRef.current.show()}>
-                <ChangeAvatar>
-                  {translate("wallet.common.changeprofilephoto")}
-                </ChangeAvatar>
-              </TouchableOpacity>
-              <SpaceView mTop={SIZE(17)} />
-            </CenterWrap>
-            <BorderView />
+        <KeyboardAwareScrollView extraScrollHeight={hp('7%')}>
+          <CenterWrap>
+            <SpaceView mTop={SIZE(10)} />
+            <Avatar>
+              <C_Image
+                uri={photo?.path ? photo.path : photo.uri}
+                imageType="profile"
+                imageStyle={{ width: '100%', height: '100%' }}
+              />
+            </Avatar>
+            <SpaceView mTop={SIZE(7)} />
+            <TouchableOpacity
+              hitSlop={{ top: 15, bottom: 15, left: 40, right: 40 }}
+              onPress={() => actionSheetRef.current.show()}>
+              <ChangeAvatar>
+                {translate("wallet.common.changeprofilephoto")}
+              </ChangeAvatar>
+            </TouchableOpacity>
+            <SpaceView mTop={SIZE(17)} />
+          </CenterWrap>
+          <BorderView />
 
-            {/* <LimitableInput
+          {/* <LimitableInput
             value={firstName}
             onChange={(text) => { setFirstName(text); setErrFirstname(false); }}
             label={translate("common.firstName")}
@@ -1002,100 +1008,100 @@ function Profile(props) {
             validate={[maxLength50, validateEmail]}
             error={errZoomLink}
           /> */}
-            <LimitableInput
-                value={username}
-                onChange={(text) => { setUsername(text); setErrUsername(false); }}
-                label={translate("common.UserName")}
-                placeholder={translate("common.UserName")}
-                validate={[maxLength50]}
-                editable={true}
-                error={errUsername}
-            />
-            {UserReducer.data.user?.role === 'non_crypto' &&
-            <LimitableInput
-                value={email}
-                onChange={(text) => { setEmail(text); setErrEmail(false); }}
-                label={translate("common.email")}
-                placeholder={translate("common.email")}
-                validate={[maxLength50, validateEmail]}
-                error={errEmail}
-                editable={userRole === 'crypto' ? true : false}
-            />}
-            <LimitableInput
-                value={website}
-                onChange={(text) => { setWebsite(text); setErrWebsite(false) }}
-                label={translate("common.website")}
-                placeholder={translate("common.website")}
-                validate={[maxLength100, validateWebsiteURL]}
-                error={errWebsite}
-            />
-            <LimitableInput
-                value={discord}
-                onChange={(text) => { setDiscord(text); setErrDiscord(false); }}
-                label={translate("common.discord")}
-                placeholder={translate("common.discord")}
-                validate={[maxLength100, validateDiscordURL]}
-                error={errDiscord}
-            />
-            <LimitableInput
-                value={twitter}
-                onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
-                label={translate("common.twitter")}
-                placeholder={translate("common.twitter")}
-                validate={[maxLength100, validateTwitterURL]}
-                error={errTwitter}
-            />
-            <LimitableInput
-                value={youtube}
-                onChange={(text) => { setYoutube(text); setErrYoutube(false); }}
-                label={translate("common.youtube")}
-                placeholder={translate("common.youtube")}
-                validate={[maxLength100, validateYoutubeURL]}
-                error={errYoutube}
-            />
-            <LimitableInput
-                value={instagram}
-                onChange={(text) => { setInstagram(text); setErrInstagram(false); }}
-                label={translate("common.instagram")}
-                placeholder={translate("common.instagram")}
-                validate={[maxLength100, validateInstagramURL]}
-                error={errInstagram}
-            />
-            {UserReducer.data.user?.role === 'crypto' &&
-            <LimitableInput
-                value={email}
-                onChange={(text) => { setEmail(text); setErrEmail(false); }}
-                label={translate("common.email")}
-                placeholder={translate("common.email")}
-                validate={[maxLength50, validateEmail]}
-                error={errEmail}
-                editable={false}
-            />}
-            <SpaceView mTop={SIZE(12)} />
-            <LimitableInput
-                multiLine
-                value={about}
-                onChange={(text) => {setAbout(text.slice(0, 200)); setErrAbout(false); }}
-                label={translate("wallet.common.aboutMe")}
-                placeholder={translate("wallet.common.aboutMe")}
-                validate={[maxLength200]}
-                error={errAbout}
-                maxLength={200}
-                about={about}
-            />
-          </KeyboardAwareScrollView>
-
-          <ActionSheet
-              ref={actionSheetRef}
-              title={translate("wallet.common.choosePhoto")}
-              options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
-              cancelButtonIndex={2}
-              onPress={selectActionSheet}
+          <LimitableInput
+            value={username}
+            onChange={(text) => { setUsername(text); setErrUsername(false); }}
+            label={translate("common.UserName")}
+            placeholder={translate("common.UserName")}
+            validate={[maxLength50]}
+            editable={true}
+            error={errUsername}
           />
+          {UserReducer.data.user?.role === 'non_crypto' &&
+            <LimitableInput
+              value={email}
+              onChange={(text) => { setEmail(text); setErrEmail(false); }}
+              label={translate("common.email")}
+              placeholder={translate("common.email")}
+              validate={[maxLength50, validateEmail]}
+              error={errEmail}
+              editable={userRole === 'crypto' ? true : false}
+            />}
+          <LimitableInput
+            value={website}
+            onChange={(text) => { setWebsite(text); setErrWebsite(false) }}
+            label={translate("common.website")}
+            placeholder={translate("common.website")}
+            validate={[maxLength100, validateWebsiteURL]}
+            error={errWebsite}
+          />
+          <LimitableInput
+            value={discord}
+            onChange={(text) => { setDiscord(text); setErrDiscord(false); }}
+            label={translate("common.discord")}
+            placeholder={translate("common.discord")}
+            validate={[maxLength100, validateDiscordURL]}
+            error={errDiscord}
+          />
+          <LimitableInput
+            value={twitter}
+            onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
+            label={translate("common.twitter")}
+            placeholder={translate("common.twitter")}
+            validate={[maxLength100, validateTwitterURL]}
+            error={errTwitter}
+          />
+          <LimitableInput
+            value={youtube}
+            onChange={(text) => { setYoutube(text); setErrYoutube(false); }}
+            label={translate("common.youtube")}
+            placeholder={translate("common.youtube")}
+            validate={[maxLength100, validateYoutubeURL]}
+            error={errYoutube}
+          />
+          <LimitableInput
+            value={instagram}
+            onChange={(text) => { setInstagram(text); setErrInstagram(false); }}
+            label={translate("common.instagram")}
+            placeholder={translate("common.instagram")}
+            validate={[maxLength100, validateInstagramURL]}
+            error={errInstagram}
+          />
+          {UserReducer.data.user?.role === 'crypto' &&
+            <LimitableInput
+              value={email}
+              onChange={(text) => { setEmail(text); setErrEmail(false); }}
+              label={translate("common.email")}
+              placeholder={translate("common.email")}
+              validate={[maxLength50, validateEmail]}
+              error={errEmail}
+              editable={false}
+            />}
+          <SpaceView mTop={SIZE(12)} />
+          <LimitableInput
+            multiLine
+            value={about}
+            onChange={(text) => { setAbout(text.slice(0, 200)); setErrAbout(false); }}
+            label={translate("wallet.common.aboutMe")}
+            placeholder={translate("wallet.common.aboutMe")}
+            validate={[maxLength200]}
+            error={errAbout}
+            maxLength={200}
+            about={about}
+          />
+        </KeyboardAwareScrollView>
 
-          {showPermission ? showpermissionalert() : null}
-        </SafeAreaView>
-      </AppBackground>
+        <ActionSheet
+          ref={actionSheetRef}
+          title={translate("wallet.common.choosePhoto")}
+          options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
+          cancelButtonIndex={2}
+          onPress={selectActionSheet}
+        />
+
+        {showPermission ? showpermissionalert() : null}
+      </SafeAreaView>
+    </AppBackground>
   )
 }
 

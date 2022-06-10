@@ -259,7 +259,8 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
   }
 };
 
-export const loadProfileFromAsync = id => (dispatch) => {
+export const loadProfileFromAsync = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
     let req_data = {
       owner: id,
       token: 'HubyJ*%qcqR0',
@@ -282,9 +283,9 @@ export const loadProfileFromAsync = id => (dispatch) => {
           resolve()
         })
         .catch(e => {
-          reject()
+          reject(e)
         });
-  }
+})
 
 export const setUserAuthData =
   (data, isCreate = false) =>
@@ -409,7 +410,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
   await axios
     .post(`${BASE_URL}/user/update-profile-image`, formData, {headers: headers})
     .then(res => {
-      console.log('Response from update-profile-image', res)
+      console.log('Response from update-profile-image', res.data.data)
       dispatch(upateUserData(res.data.data));
     })
     .catch(err => {
@@ -451,6 +452,7 @@ export const updateProfile =
 
     await axios(config)
       .then(res => {
+        console.log('res.data.data updateProfile', res.data.data)
         let data = res.data.data;
         dispatch(upateUserData(data));
         dispatch(endLoading());
