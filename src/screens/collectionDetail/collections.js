@@ -234,7 +234,7 @@ const Collections = props => {
                     isCollection={!isHotCollection}
                     cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
-                        console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item)
+                        // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
                                 isBlind: true,
