@@ -256,9 +256,9 @@ const UploadNFT = ({
             
             if (datePickerData !== "closed") {
                 if (activeModal === "startTime") {
-                     setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
+                    setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
                 } else if (activeModal === "endTime") {
-                    setEndTimeDate(moment(datePickerData).format('MMMM Do YYYY, hh:mm a').toUpperCase())
+                    setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
                 }
                 setActiveModal("")
             } else {
@@ -1226,7 +1226,7 @@ const UploadNFT = ({
                                     }
                                     <CardField
                                         inputProps={{
-                                            value: endTimeDate
+                                            value: ( endTimeDate ? moment(endTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " " )
                                         }}
 
                                         onPress={() => {
