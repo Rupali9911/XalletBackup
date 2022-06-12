@@ -647,7 +647,8 @@
         "passwordlengthshort": "Password must be at least eight characters long.",
         "blindboxCollections": "Mystery Box",
         "zoomMail": "Zoom Mail",
-        "amountMoreThan": "Amount must be no more than $999,999.99"
+        "amountMoreThan": "Amount must be no more than $999,999.99",
+        "toFilter": "To"
     },
     "AwardPage": {},
     "wallet": {
@@ -986,7 +987,8 @@
             "updatePrice": "Price Updated",
             "bidaward": "Bid Award",
             "transferFrom": "Transfer",
-            "closeTimeWarn": "Close time should be greater than open time"
+            "closeTimeWarn": "Close time should be greater than open time",
+            "descriptionCreate": "Description"
         },
         "backendmessage": {
             "error": {},

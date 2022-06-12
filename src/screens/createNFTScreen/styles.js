@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet,Platform } from 'react-native';
 
 import { colors, fonts } from '../../res';
 import {
@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
     backgroundColor: colors.GREY8,
+    paddingTop: Platform.OS === 'ios' ? 50 : 0,
   },
   sectionContainer: {
     flex: 1,

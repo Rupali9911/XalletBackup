@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     Linking
 } from 'react-native';
-
+import {networkType} from "../../common/networkType";
 import {colors} from '../../res';
 
 import styles from './styles';
@@ -20,7 +20,7 @@ import {launchpadData} from "../LaunchPadDetail/launchpadData";
 const LaunchPad = () => {
     const navigation = useNavigation();
     const renderItem = ({item}) => {
-        return (
+      return (
             <LaunchPadItemData
                 bannerImage={item.bannerImage}
                 chainType={item.chainType || 'polygon'}
@@ -31,14 +31,21 @@ const LaunchPad = () => {
                 status={item.status}
                 creatorInfo={item.creatorInfo}
                 blind={item.blind}
+                disabled={(networkType === "testnet" || item.status ===  "comingSoon") ? true : false}
                 onPress={() => {
                     console.log('LaunchPad ========', item);
+//<<<<<<< HEAD
 
-                    item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://testnet.xanalia.com/xanalia_nftart_award_2021') : navigation.push('CollectionDetail', {
+           //         item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://testnet.xanalia.com/xanalia_nftart_award_2021') : navigation.push('CollectionDetail', {
+// =======
+                  item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021') : item.status !==  "comingSoon" ? navigation.push('CollectionDetail', {
+// >>>>>>> ce88bf819e0785f28bfcaf86baf49f7f4ff833c4
                         isBlind: true,
                         collectionId: item._id,
                         isHotCollection: false
-                    });
+                    }):null
+                //: null;
+                    //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
 
                     //   if (item.redirect) {
                     //   navigation.push('CollectionDetail',
@@ -61,16 +68,17 @@ const LaunchPad = () => {
     };
     return (
 // <<<<<<< HEAD
+// // <<<<<<< HEAD
+// =======
+// >>>>>>> ce88bf819e0785f28bfcaf86baf49f7f4ff833c4
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white}/>
-
             <FlatList
                 data={launchpadData}
                 horizontal={false}
                 numColumns={2}
                 renderItem={renderItem}
                 keyExtractor={(v, i) => 'item_' + i}
-
                 pagingEnabled={false}
                 legacyImplementation={false}
             />

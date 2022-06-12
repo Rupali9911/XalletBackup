@@ -34,7 +34,7 @@ export const collectionPageChange = (data) => ({
 export const collectionList = (page, isSelectTab) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
-    console.log('======isSelectTab', isSelectTab)
+    console.log('collectionList ====== isSelectTab 37', page, isSelectTab)
 
     const limit = 15;
 
@@ -46,12 +46,21 @@ export const collectionList = (page, isSelectTab) => {
       .then(response => response.json())
       .then(json => {
         if (isSelectTab) {
+        //  let newData = json?.data?.map((item) => {
+        //     if (item.chainType) {
+        //       item.chainType = ["ethereum", "binance"]
+        //     } else {
+        //       item = { ...item, chainType: ["ethereum", "binance"] }
+        //     }
+        //     return item;
+        //   })
+        //   json.data = newData;
           dispatch(collectionLoadSuccess(json));
         } else {
           if (page === 1) {
             const newData = [...cardsDefaultData, ...json.data];
             const index = newData.findIndex(item => item._id === "62113e1774d1af3e04bc313d");
-            if(index) {
+            if (index) {
               newData.splice(0, 0, newData.splice(index, 1)[0]);
             }
             json.data = newData;

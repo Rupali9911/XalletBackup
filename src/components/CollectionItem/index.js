@@ -4,6 +4,7 @@ import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
+import CommonStyles from '../../constants/styles';
 
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
@@ -21,7 +22,7 @@ export default function CollectionItem(props) {
     isCollection,
     cryptoAllowed,
   } = props;
-  const [onPressButton,setOnPressButton] = useState(false);
+  const [onPressButton, setOnPressButton] = useState(false);
   const chainIcon = type => {
     if (type === 'polygon') {
       return <PolygonIcon />;
@@ -51,6 +52,7 @@ export default function CollectionItem(props) {
           creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
             creatorInfo[0]?.title?.trim() ? creatorInfo[0].title : creator ? creator : ""
       : creator ? creator : ""
+    creatorName = creatorName?.includes('0x') ? creatorName.substring(0, 6) : creatorName;
     return creatorName;
   }
   // console.log("🚀 ~ file: index.js ~ line 34 ~ getByUser ~ creatorInfo", creatorInfo, getByUser())
@@ -63,12 +65,18 @@ export default function CollectionItem(props) {
     uriType === 'MOV';
 
   const renderChain = () => {
-    if (blind) {
+    if (
+      blind || Array.isArray(chainType) && chainType?.length > 0 &&
+      chainType?.includes("ethereum") && chainType?.includes("binance") &&
+      !chainType?.includes("polygon")
+    ) {
       return (
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <BitmapIcon style={{ marginRight: SIZE(8) }} />
+          {/* <BitmapIcon style={{ marginRight: SIZE(8) }} />
           <PolygonIcon style={{ marginRight: SIZE(8) }} />
-          <Ethereum />
+          <Ethereum style={{ marginRight: SIZE(8) }} /> */}
+          <Ethereum style={{ marginRight: SIZE(8) }} />
+          <BitmapIcon />
         </View>
       );
     } else if (isCollection) {
@@ -84,19 +92,19 @@ export default function CollectionItem(props) {
     }
   };
 
-  useEffect(()=>{
-    if(onPressButton){
+  useEffect(() => {
+    if (onPressButton) {
       onPress();
-      setTimeout(()=>{
+      setTimeout(() => {
         setOnPressButton(false);
-      },1000)
+      }, 1000)
     }
-  },[onPressButton])
+  }, [onPressButton])
 
   const handleOnPress = () => {
     setOnPressButton(true);
   }
-  
+
   return (
     <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem}>
       <View style={styles.listItemContainer}>
@@ -114,11 +122,13 @@ export default function CollectionItem(props) {
           />
         </View>
         <View style={styles.collectionWrapper}>
+          <View style={CommonStyles.center}>
           <C_Image
             type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
             uri={iconImage}
             imageStyle={styles.iconImage}
           />
+          </View>
           <View style={styles.bottomCenterWrap}>
             <Text numberOfLines={1} style={styles.collectionName}>
               {collectionName}

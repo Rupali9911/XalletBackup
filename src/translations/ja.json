@@ -650,7 +650,8 @@
         "blindboxCollections": "ミステリーボックス",
         "zoomMail": "Zoomメール",
         "hotcollection": "推奨コレクション",
-        "amountMoreThan": "金額は$999,999.99以下でなければなりません"
+        "amountMoreThan": "金額は$999,999.99以下でなければなりません",
+        "toFilter": "から"
     },
     "AwardPage": {},
     "wallet": {
@@ -938,14 +939,14 @@
             "about": "に関しては",
             "noCollection": "コレクションがありません",
             "owned": "所有中",
-            "NFTList": "NFTリスト",
-            "uploadNFT": "NFT のアップロード",
+            "NFTList": "NFT一覧",
+            "uploadNFT": "NFTアップロード",
             "collectionChangeNetwork": "このコレクションを編集するには、ネットワークを {{networkType}} に変更してください",
             "collectionName": "コレクション名",
             "collectionSymbol": "コレクションシンボル",
             "collectionDes": "コレクションの説明",
-            "bannerImage": "バナー画像",
-            "iconImage": "アイコン画像",
+            "bannerImage": "バナーイメージ",
+            "iconImage": "アイコンイメージ",
             "maxSize": "最大サイズ",
             "saveAsDraft": "下書きとして保存",
             "editDraft": "下書きを編集",
@@ -990,7 +991,8 @@
             "updatePrice": "販売価格の変更",
             "bidaward": "入札アワード",
             "transferFrom": "転送",
-            "closeTimeWarn": "閉店時間は開店時間より長くする必要があります"
+            "closeTimeWarn": "閉店時間は開店時間より長くする必要があります",
+            "descriptionCreate": "作品の詳細"
         },
         "backendmessage": {
             "error": {},

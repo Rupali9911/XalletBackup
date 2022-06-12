@@ -61,13 +61,17 @@ const Collections = props => {
         : NftDataCollectionReducer.nftDataCollectionLoading;
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : NftDataCollectionReducer.nftDataCollectionList;
+        : collectionType == 1 ?
+            NftDataCollectionReducer.mysteryBoxCollectionList :
+            NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : NftDataCollectionReducer.nftDataCollectionTotalCount;
+        : collectionType == 1 ?
+            NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
+            NftDataCollectionReducer.nftDataCollectionTotalCount;
 
     useEffect(() => {
         if (isSeries) {
@@ -109,7 +113,8 @@ const Collections = props => {
                         page,
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                        seriesInfoId, nftChain
+                        seriesInfoId,
+                        nftChain
                     ),
                 );
             } else {
@@ -147,7 +152,7 @@ const Collections = props => {
     };
 
     const renderItem = ({ item, index }) => {
-        let findIndex = collectionList.findIndex(x => x.id === item.id);
+        let findIndex = collectionList.findIndex(x => x?._id === item?._id);
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         if (isStore || seriesInfoId) {
             return (
@@ -215,7 +220,7 @@ const Collections = props => {
                 />
             );
         } else {
-            console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
+            // console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
             return (
                 <CollectionItem
                     bannerImage={item.bannerImage}
@@ -253,14 +258,14 @@ const Collections = props => {
     };
 
     const memoizedValue = useMemo(() => renderItem, [collectionList]);
-    // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isHotCollection) }
+    // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isSeries, isHotCollection) }
 
     const handleFlatlistRefresh = () => {
         dispatch(nftDataCollectionLoadStart());
         refreshFunc();
     }
 
-  const keyExtractor = (item, index) => { return 'item_' + index }
+    const keyExtractor = (item, index) => { return 'item_' + index }
 
 
     return (
@@ -290,7 +295,7 @@ const Collections = props => {
                     //         }
                     //     }
                     // }}
-                    onEndReachedThreshold={0.4}
+                    // onEndReachedThreshold={0.4}
                     keyExtractor={keyExtractor}
                     ListFooterComponent={renderFooter}
                 />

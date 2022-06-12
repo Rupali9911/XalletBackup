@@ -534,7 +534,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UU2MB56ZR2;
+				DEVELOPMENT_TEAM = 8XG8724LH8;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -569,7 +569,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = UU2MB56ZR2;
+				DEVELOPMENT_TEAM = 8XG8724LH8;
 				INFOPLIST_FILE = showcaseTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -599,8 +599,8 @@
 				CODE_SIGN_ENTITLEMENTS = showcase/showcase.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UU2MB56ZR2;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 8XG8724LH8;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -689,7 +689,7 @@
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nb.xanalia;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
@@ -713,8 +713,8 @@
 				CODE_SIGN_ENTITLEMENTS = showcase/showcase.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UU2MB56ZR2;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 8XG8724LH8;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -803,7 +803,7 @@
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.app.xanalia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nb.xanalia;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";

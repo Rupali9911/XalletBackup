@@ -63,13 +63,13 @@ const Collection = () => {
         onPress={() => {
           // console.log('========', item, item.redirect, item.isBlind, isSelectTab);
           if (item.redirect === '/collection/underground_city') {
-            console.log("========collection tab => item.redirect 60", item, item.redirect,item.blind)
+            console.log("========collection tab => item.redirect 60", item, item.redirect, item.blind)
             navigation.push('CollectionDetail', {
               isBlind: true,
               collectionId: item?.collectionId,
               nftId: item._id,
               // isHotCollection: !item.blind,
-          });
+            });
           } else 
           if (item.redirect) {
             console.log("========collection tab => item.redirect 66", item.redirect)
@@ -85,7 +85,7 @@ const Collection = () => {
             // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
             navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
           } else {
-            console.log("🚀 ~ file: collection.js ~ line 79 ~ renderItem ~ else")
+            console.log("========collection tab => ~ line 79")
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
           }
           // if (!isSelectTab) {
@@ -112,18 +112,30 @@ const Collection = () => {
     dispatch(collectionLoadStart());
     handleRefresh();
   }
+
   const handleFlastListEndReached = () => {
     if (
       !CollectionReducer.collectionLoading &&
       CollectionReducer.collectionTotalCount !==
-      CollectionReducer.collectionList.length
+      CollectionReducer.collectionList.length && isSelectTab
+    ) {
+      let num = CollectionReducer.collectionPage + 1;
+      getCollection(num, isSelectTab);
+      dispatch(collectionPageChange(num));
+    } else if (
+      !CollectionReducer.collectionLoading &&
+      CollectionReducer.collectionTotalCount !==
+      CollectionReducer.collectionList.length - 2 && !isSelectTab
     ) {
       let num = CollectionReducer.collectionPage + 1;
       getCollection(num, isSelectTab);
       dispatch(collectionPageChange(num));
     }
   }
+
   const keyExtractor = (item, index) => { return 'item_' + index }
+  // {console.log("🚀 ~ file: collection.js ~ line 126 ~ ", CollectionReducer.collectionList)}
+
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -143,7 +155,6 @@ const Collection = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      {console.log("🚀 ~ file: collection.js ~ line 126 ~ ", CollectionReducer.collectionList)}
       {CollectionReducer.collectionPage === 1 &&
         CollectionReducer.collectionLoading ? (
         <Loader />

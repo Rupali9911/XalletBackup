@@ -387,7 +387,7 @@ const Filter = ({
                     contStyle={{ width: '38%' }}
                   />
                   <View style={styles.centerFieldCont}>
-                    <Text style={styles.titleDes}>{translate("common.to")}</Text>
+                    <Text style={styles.titleDes}>{translate("common.toFilter")}</Text>
                   </View>
                   <CardField
                     inputProps={{

@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {TouchableOpacity, View, Text, Image, Platform, FlatList} from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import {launchpadData} from "./launchpadData";
-import {networkType} from "../../common/networkType";
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
-var isFirstPressDone= false;
 export default function LaunchPadItemData(props) {
     const {
         bannerImage,
@@ -23,7 +21,9 @@ export default function LaunchPadItemData(props) {
         blind,
         isCollection,
         cryptoAllowed,
+        disabled
     } = props;
+    const [onPressButton, setOnPressButton] = useState(false)
     const chainIcon = type => {
         if (type === 'polygon') {
             return <PolygonIcon />;
@@ -111,20 +111,22 @@ export default function LaunchPadItemData(props) {
                 return chainTypeIcon(chainType)
         }
     };
-
-    const handleOnPress = () => {
-        // if(!isFirstPressDone){
-        //     onPress();
-        //     isFirstPressDone=true;
-        // }else{
-        //     isFirstPressDone=false;
-        // }
-        onPress();
-    }
+    useEffect(()=>{
+        if(onPressButton){
+          onPress();
+          setTimeout(()=>{
+            setOnPressButton(false);
+          },1000)
+        }
+      },[onPressButton])
+    
+      const handleOnPress = () => {
+        setOnPressButton(true);
+      }
     return (
 
         <TouchableOpacity
-            disabled={networkType!=="testnet"?false:true}
+            disabled={disabled}
             onPress={handleOnPress}
                           style={styles.collectionListItem}>
             <View style={styles.listItemContainer}>
