@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Linking,
+    Dimensions,
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import { C_Image, GroupButton } from '../../components';
@@ -27,8 +28,8 @@ import Collections from './collections';
 import { colors, fonts } from '../../res';
 import { translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
-import { SVGS } from 'src/constants';
-import { SIZE } from '../../constants';
+import { SVGS, FONTS, FONT } from 'src/constants';
+import { COLORS, SIZE } from '../../constants';
 import {
     Menu,
     MenuOptions,
@@ -44,8 +45,15 @@ import { networkType } from '../../common/networkType';
 import { SvgUri } from 'react-native-svg';
 import Video from 'react-native-fast-video';
 import { currencyInDollar } from '../wallet/functions';
+import Gallery from './gallery';
+import Owned from './owned';
+import OnSale from './onSale';
+import NotOnSale from './notOnSale';
+
+const { height } = Dimensions.get('window');
 
 const { TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon, PolygonIcon, Ethereum, BitmapIcon } = SVGS;
+const Tab = createMaterialTopTabNavigator();
 
 let MarketPlaceAbi = "";
 let MarketContractAddress = "";
@@ -982,9 +990,131 @@ function CollectionDetail(props) {
         );
     }
 
+    const renderTabView = (tab) => {
+        let tabProps = {
+            collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+            collectionType: collectionType,
+            isHotCollection: isHotCollection,
+            collectionId: collectionId,
+            isBlind: isBlind,
+            isSeries: isBlind && nftId,
+            nftChain: nftChain,
+            isStore: isStore,
+            userCollection: collection?.userCollection,
+            manualColl: collection.manualColl,
+            seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+        }
+        // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ tabProps", tabProps)
+        return (
+            <Tab.Navigator
+                // tabBar={props => <CustomTabBar {...props} />}
+                // tabBar={props => <MyTabBar {...props} />}
+                screenOptions={{
+                    tabBarActiveTintColor: COLORS.BLUE2,
+                    tabBarInactiveTintColor: COLORS.BLACK5,
+                    tabBarStyle: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderBottomColor: '#EFEFEF',
+                        borderBottomWidth: 1,
+                    },
+                    tabBarItemStyle: {
+                        height: SIZE(42),
+                        marginTop: SIZE(-10),
+
+                    },
+                    tabBarLabelStyle: {
+                        fontSize: FONT(12),
+                        textTransform: 'none',
+                    },
+                    tabBarIndicatorStyle: {
+                        backgroundColor: COLORS.BLUE4,
+                        height: 2,
+                    }
+                }}>
+                <Tab.Screen
+                    // name={translate('wallet.common.profileCreated')}
+                    name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
+                    component={Gallery}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 0,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                    }}
+                />
+                <Tab.Screen
+                    name={tab ? isBlind && nftId ? translate('common.onSale') : translate('common.notforsale') : translate('common.blindboxCollections')}
+                    component={Owned}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 1,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                    }}
+                />
+                {tab && <Tab.Screen
+                    name={isBlind && nftId ? translate('common.notforsale') : translate('wallet.common.owned')}
+                    component={OnSale}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 2,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                    }}
+                />}
+                {tab && <Tab.Screen
+                    name={isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')}
+                    component={NotOnSale}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 3,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                    }}
+                />}
+            </Tab.Navigator>
+        );
+    };
+
     return (
         <AppBackground isBusy={loading}>
-            <ScrollView>
+            <ScrollView
+                nestedScrollEnabled={true}
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    // paddingBottom:height/4
+                }}
+                style={{ flex: 1 }}
+            >
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={styles.backButtonWrap}>
@@ -1032,7 +1162,7 @@ function CollectionDetail(props) {
                     <Text>{'Buy'}</Text>
                 </TouchableOpacity> */}
 
-                <View style={{ flex: 1 }}>
+                {/* <View style={{ flex: 1 }}>
                     {!isBlind || (isBlind && nftId) ? (
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={{ flexDirection: 'row' }}>
@@ -1118,9 +1248,8 @@ function CollectionDetail(props) {
                     ) : isBlind && !nftId ?
                         <View style={{ flexDirection: 'row' }}>
 
-                            {/* // {isHotCollection ? */}
+                           
                             <View style={styles.intoMystery}>
-                                {/* {console.log("🚀 ~ file: index.js ~ line 867 ~ CollectionDetail ~ intoMystery", isBlind, nftId)} */}
 
                                 <TouchableOpacity
                                     disabled={isLoading}
@@ -1167,8 +1296,6 @@ function CollectionDetail(props) {
                         </View>
                         : null}
 
-                    {/* {console.log("🚀 ~ file: index.js ~ line 1004 ~ CollectionDetail ~ isBlind", isBlind, isBlind && nftId, nftId)} */}
-
                     {(collectionAddress || isStore) && !loading && (
                         <Collections
                             collectionAddress={(isBlind && nftId) ? nftId : collectionAddress}
@@ -1184,7 +1311,17 @@ function CollectionDetail(props) {
                             seriesInfoId={blindboxList?.length > 0 ? blindboxList[0]?._id : false}
                         />
                     )}
+                </View> */}
+
+                <View style={{ height: height / 1.5 }}>
+                    {!isBlind || (isBlind && nftId) ?
+                        renderTabView(true)
+                        : isBlind && !nftId ?
+                            renderTabView(false)
+                            : null
+                    }
                 </View>
+
             </ScrollView>
         </AppBackground>
     );

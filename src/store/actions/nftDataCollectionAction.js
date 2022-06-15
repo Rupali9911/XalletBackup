@@ -61,9 +61,9 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
 });
 
 export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
   return (dispatch, getState) => {
-
-    if (isStore) {
+    if (isStore && type !== 'owned') {
       const data = {
         filterType: type,
         limit: 10,
@@ -162,11 +162,11 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
 }
 
 export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body) => {
-  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
-    console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
+    // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
     const url = collectionType == 0 ?
       `${BASE_URL}/blindBox/view-blind-all-series-token-info` :
       `${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`
