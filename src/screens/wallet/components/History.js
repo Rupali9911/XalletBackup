@@ -22,6 +22,9 @@ import CommonStyles from '../../../constants/styles';
 
 import {environment, polRpc, translate} from '../../../walletUtils';
 import {chain} from "lodash/seq";
+import {networkType} from "../../../common/networkType";
+
+var coinType = '';
 
 const ListItems = props => {
     const {item,type} = props;
@@ -54,8 +57,8 @@ const ListItems = props => {
             <View style={{flex: 1, ...CommonStyles.center, alignItems: 'flex-end'}}>
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
                 <NumberFormat
-                    //value={item.value * 1e9}
-                    value={coin.props==="USDC"?item.value * 1e9:item.value}
+                    value={coinType.coin.type=="USDC"||coinType.coin.type=="USDT"?item.value*1e9:item.value}
+
                     displayType={'text'}
                     decimalScale={8}
                     thousandSeparator={true}
@@ -72,7 +75,9 @@ const ListItems = props => {
                                 },
                             ]}>
                             {item.direction == 'in' ? '+' : '-'}
+
                             {formattedValue}
+
                         </Text>
                     )} // <--- Don't forget this!
                 />
@@ -85,6 +90,7 @@ const ListItems = props => {
 };
 
 const History = props => {
+        coinType = props;
     const {
         ethTransactions,
         bnbTransactions,
@@ -118,7 +124,8 @@ const History = props => {
 
     const getTransactions = () => {
         console.log('transection coin type=====>', coin.type, "  ")
-        if (coin.type === 'ETH') {
+        console.log('transection coin network=====>', coin.network, "  ")
+        if (coin.type === 'ETH' && coin.network!=="Polygon") {
             return ethTransactions;
         } else if (coin.type === 'BNB') {
             return bnbTransactions;
@@ -134,12 +141,11 @@ const History = props => {
             return usdtTransactions;
         } else if (coin.type === 'TAL') {
             return talTransactions;
-        }else if (coin.type === 'ETH') {
+        }else if (coin.type ==='WETH'&& coin.network==="Polygon") {
             return wethTransactions;
                 }
                 return [];
-            }
-            ;
+            };
             console.log("Transaction (get transaction)", getTransactions())
             return (
                 <View style={[styles.scene]}>

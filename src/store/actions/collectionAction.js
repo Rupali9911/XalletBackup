@@ -34,7 +34,7 @@ export const collectionPageChange = (data) => ({
 export const collectionList = (page, isSelectTab) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
-    console.log('collectionList ====== isSelectTab 37', page, isSelectTab)
+    //console.log('collectionList ====== isSelectTab 37', page, isSelectTab)
 
     const limit = 15;
 

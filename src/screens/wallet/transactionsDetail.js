@@ -17,7 +17,7 @@ import {environment, translate} from '../../walletUtils';
 export default function transactionsDetail({route}) {
   const transactionInfo = route?.params?.data;
   const coin = route?.params?.coin;
-
+console.log("Checking coin type",coin.type)
   const copyAddress = () => {
     Clipboard.setString(
       transactionInfo?.direction == 'in'
@@ -58,7 +58,7 @@ export default function transactionsDetail({route}) {
             : translate('wallet.common.remittanceQuantity')}
         </TextView>
         <NumberFormat
-          value={coin=='USDC'?transactionInfo?.value* 1e6:transactionInfo?.value}
+          value={coin.type=='USDC'||coin.type=="USDT"?transactionInfo?.value* 1e9:transactionInfo?.value}
           displayType={'text'}
           decimalScale={8}
           thousandSeparator={true}

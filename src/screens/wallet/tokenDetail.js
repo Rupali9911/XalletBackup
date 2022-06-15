@@ -56,14 +56,9 @@ const TokenDetail = ({ route, navigation }) => {
     let type = '';
 
     switch (item.type) {
-      case 'ETH':
-        if (item.network!=="Polygon") {
+      case 'ETH' :
           rpc = environment.ethRpc;
           type = 'eth';
-        }else{
-          rpc = environment.polRpc;
-          type = 'eth';
-        }
         break;
       case 'BNB':
         rpc = environment.bnbRpc;
@@ -97,11 +92,11 @@ const TokenDetail = ({ route, navigation }) => {
         rpc = environment.polRpc;
         type = 'usdc';
         break;
-      case 'WETH':
+      case "WETH":
         cont = environment.wethCont;
         abi = environment.wethAbi;
         rpc = environment.polRpc;
-        type = 'weth';
+        type ='weth';
         break;
       default:
     }
@@ -134,7 +129,11 @@ const TokenDetail = ({ route, navigation }) => {
       console.log("Item network",item.network)
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
       totalValue = value;
-    } else if (item.type == 'BNB') {
+    } else if (item.type == 'ETH' && item.network === 'Polygon') {
+      console.log("Item network",item.network)
+      let value = parseFloat(wethBalance); //+ parseFloat(balances.USDT)
+      totalValue = value;
+    } else  if (item.type == 'BNB') {
       let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
       totalValue = value;
     } else if (item.type == 'Matic') {
@@ -151,7 +150,7 @@ const TokenDetail = ({ route, navigation }) => {
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
-    } else if (item.type === 'ETH' && item.network === 'Polygon') {
+    } else if (item.type ==='WETH' && item.network==="Polygon") {
       console.log("Item network",item.network)
       let value = parseFloat(`${wethBalance}`); //+ parseFloat(balances.USDC)
       totalValue = value;
@@ -175,10 +174,11 @@ const TokenDetail = ({ route, navigation }) => {
   };
 
   const getTransactionsByType = (address, type,coin) => {
-    console.log("tal condition",coin)
+    console.log("Getting Datat from API for coin ",coin)
+    console.log("Getting Datat from API for address ",address)
+    console.log("Getting Datat from API for type ",type)
 
-    //coin === "tnft"||coin === "tal" ? coin = "alia" : coin
-
+    coin === "tnft"||coin === "tal" ? coin = "alia" : coin
     console.log('address,type,coin', address, type,coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
     return new Promise((resolve, reject) => {
       fetch(
