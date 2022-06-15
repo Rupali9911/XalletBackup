@@ -5,6 +5,7 @@ import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import {launchpadData} from "./launchpadData";
+import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -125,7 +126,7 @@ export default function LaunchPadItemData(props) {
       }
     return (
 
-        <TouchableOpacity
+        <FixedTouchableHighlight
             disabled={disabled}
             onPress={handleOnPress}
                           style={styles.collectionListItem}>
@@ -164,13 +165,13 @@ export default function LaunchPadItemData(props) {
                         </View>
                         <Text style={{ fontSize: SIZE(12), color: '#ff6e44',marginVertical:"3%" }}>
                             {/*{`${items} ` + translate('common.itemsCollection')}*/}
-                            {status}
+                            {status == 'Ongoing' ? translate('common.ongoinglaunch') : ''}
                             <Text style={{ marginRight: 50 }}>
                             </Text>
                         </Text>
                     </View>
                 </View>
             </View>
-        </TouchableOpacity>
+        </FixedTouchableHighlight>
     );
 }

@@ -650,7 +650,8 @@
         "blindboxCollections": "神秘盒子",
         "zoomMail": "缩放邮件",
         "amountMoreThan": "金额不得超过 999,999.99 美元",
-        "toFilter": "到"
+        "toFilter": "到",
+        "ongoinglaunch": "进行中"
     },
     "AwardPage": {},
     "wallet": {
@@ -991,7 +992,8 @@
             "bidaward": "中标",
             "transferFrom": "转移",
             "closeTimeWarn": "关闭时间应大于打开时间",
-            "descriptionCreate": "描述"
+            "descriptionCreate": "描述",
+            "reflectInHistory": "（完成后会反映在交易记录中）"
         },
         "backendmessage": {
             "error": {},

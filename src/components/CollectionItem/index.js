@@ -5,7 +5,7 @@ import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
-
+import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function CollectionItem(props) {
@@ -106,7 +106,7 @@ export default function CollectionItem(props) {
   }
 
   return (
-    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem}>
+    <FixedTouchableHighlight onPress={handleOnPress} style={styles.collectionListItem}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
@@ -148,6 +148,6 @@ export default function CollectionItem(props) {
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </FixedTouchableHighlight>
   );
 }

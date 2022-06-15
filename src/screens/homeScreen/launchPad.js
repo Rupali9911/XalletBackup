@@ -34,10 +34,10 @@ const LaunchPad = () => {
                 disabled={(networkType === "testnet" || item.status ===  "comingSoon") ? true : false}
                 onPress={() => {
                     console.log('LaunchPad ========', item);
-                    item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021') : item.status !==  "comingSoon" ? navigation.push('CollectionDetail', {
-                        isBlind: true,
+                item.status !==  "comingSoon" ? navigation.push('CollectionDetail', {
+                        isBlind: item.isBlind,
                         collectionId: item._id,
-                        isHotCollection: false
+                        isHotCollection: item.isHotCollection
                     }): null;
                     //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
 
