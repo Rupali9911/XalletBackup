@@ -17,6 +17,7 @@ import {environment, translate} from '../../walletUtils';
 export default function transactionsDetail({route}) {
   const transactionInfo = route?.params?.data;
   const coin = route?.params?.coin;
+
   const copyAddress = () => {
     Clipboard.setString(
       transactionInfo?.direction == 'in'
@@ -38,6 +39,7 @@ export default function transactionsDetail({route}) {
         Linking.openURL(`${environment.ethereumScanURL}${transactionInfo?.hash}`);
       }
     };
+  console.log(coin,"coin #########")
     {console.log(transactionInfo)}
     return (
     <AppBackground>
@@ -56,7 +58,7 @@ export default function transactionsDetail({route}) {
             : translate('wallet.common.remittanceQuantity')}
         </TextView>
         <NumberFormat
-          value={transactionInfo?.value}
+          value={coin=='USDC'?transactionInfo?.value* 1e6:transactionInfo?.value}
           displayType={'text'}
           decimalScale={8}
           thousandSeparator={true}
@@ -163,6 +165,7 @@ const styles = StyleSheet.create({
   transactionInfoContainer: {
     paddingHorizontal: wp('3%'),
     marginVertical: hp('1%'),
+
   },
   rowContainer: {
     flexDirection: 'row',
