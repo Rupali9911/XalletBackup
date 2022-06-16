@@ -76,12 +76,10 @@ function Profile({ navigation, connector }) {
                         elevation: 0,
                         borderBottomColor: '#EFEFEF',
                         borderBottomWidth: 1,
-
                     },
                     tabBarItemStyle: {
                         height: SIZE(42),
                         marginTop: SIZE(-10),
-
                     },
                     tabBarLabelStyle: {
                         fontSize: FONT(12),

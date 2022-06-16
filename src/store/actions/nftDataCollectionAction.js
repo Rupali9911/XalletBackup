@@ -61,9 +61,9 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
 });
 
 export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
   return (dispatch, getState) => {
-
-    if (isStore) {
+    if (isStore && type !== 'owned') {
       const data = {
         filterType: type,
         limit: 10,
@@ -86,23 +86,40 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
           const selectedPack = json.data
           const nftData = [];
           for (let i = 0; i < selectedPack?.length; i++) {
-            selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
-            selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
-            let parsedNFT = parseNftObject(selectedPack[i]);
-            nftData.push({
-              ...parsedNFT,
-              properties: {
-                type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
-              },
-              totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
-              externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
-              thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
-              tokenURI: selectedPack[i]?.catInfo?.tokenUri,
-              price:
-                selectedPack[i]?.price?.toString() === "0"
-                  ? selectedPack[i]?.usdPrice?.toString()
-                  : selectedPack[i]?.price?.toString(),
-            });
+            if (selectedPack?.length > 0 && selectedPack[0]?.tokenUri) {
+              nftData.push({
+                ...selectedPack[i]?.tokenUri?.metaData,
+                properties: {
+                  type: selectedPack[i]?.tokenUri?.metaData?.properties?.type,
+                },
+                totalSupply: selectedPack[i]?.tokenUri?.metaData?.totalSupply,
+                externalLink: selectedPack[i]?.tokenUri?.metaData?.externalLink,
+                thumbnft: selectedPack[i]?.tokenUri?.metaData?.thumbnft,
+                tokenURI: selectedPack[i]?.tokenUri?.tokenUri,
+                nftChain: 'binance',
+                price: selectedPack[i]?.price,
+              });
+              // }
+            } else {
+              // for (let i = 0; i < selectedPack?.length; i++) {
+              selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
+              selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
+              let parsedNFT = parseNftObject(selectedPack[i]);
+              nftData.push({
+                ...parsedNFT,
+                properties: {
+                  type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
+                },
+                totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
+                externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
+                thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
+                tokenURI: selectedPack[i]?.catInfo?.tokenUri,
+                price:
+                  selectedPack[i]?.price?.toString() === "0"
+                    ? selectedPack[i]?.usdPrice?.toString()
+                    : selectedPack[i]?.price?.toString(),
+              });
+            }
           }
           json.data = nftData;
           dispatch(nftDataCollectionLoadSuccess(json));
@@ -162,11 +179,11 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
 }
 
 export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body) => {
-  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
-    console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
+    // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
     const url = collectionType == 0 ?
       `${BASE_URL}/blindBox/view-blind-all-series-token-info` :
       `${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${collectionAddress}&frontend=true&owner=${owner}`

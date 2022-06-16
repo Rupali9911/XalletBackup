@@ -34,9 +34,11 @@ export default function NFTItem(props) {
   const [isDisable, setIsDisable] = useState(false)
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
-  let imageUri = isStore ? image : isMeCollection ? (item.iconImage ? item.iconImage : null)
-    : item.thumbnailUrl !== undefined || item.thumbnailUrl
-      ? item.thumbnailUrl : isBlind ? item.metaData?.thumbnft : item.metaData?.image;
+  let imageUri = isStore ? image ?
+    image : item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData?.image
+    : isMeCollection ? (item.iconImage ? item.iconImage : null)
+      : item.thumbnailUrl !== undefined || item.thumbnailUrl
+        ? item.thumbnailUrl : isBlind ? item.metaData?.thumbnft : item.metaData?.image;
 
   let mediaUrl = item?.metaData?.image;
 
@@ -200,7 +202,9 @@ export default function NFTItem(props) {
       item?.Chain ? item.Chain : item?.mainTokenId?.toString().split("-")[0] :
       item?.nftChain ? item.nftChain : item?.mainTokenId?.toString().split("-")[0] :
     item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0]
-      : ''
+      : item?.nftChain ? item.nftChain : ''
+
+  // console.log("🚀 ~ file: index.js ~ line 179 37 ~ ", isBlind ? item?.metaData ? item?.metaData.name : item.name : item.name, imageUri, item?.type, uriType, isStore)
 
   return (
     <>
