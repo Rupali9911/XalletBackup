@@ -260,92 +260,34 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
   }
 };
 
-
-export const loadProfileFromAsync = asyncData => (dispatch, getState) => {
-  if (asyncData && (asyncData.wallet || asyncData.userData)) {
-    const { wallet, userData, BackedUp, apps } = asyncData;
-
-    if (wallet) {
-      wallet.address = String(wallet?.address).toLowerCase();
-    }
-    // dispatch(
-    //     setUserData({
-    //       data: userData,
-    //       wallet: wallet ? wallet : null,
-    //       isCreate: false,
-    //       showSuccess: false,
-    //     }),
-    // );
-
-    BackedUp && dispatch(setBackup(BackedUp));
-    apps && dispatch(setConnectedApps(apps));
-    const _wallet = wallet;
-
-    console.log('========userData.user._id', userData?.user);
-    console.log('========_wallet?.address', _wallet?.address);
-
-    // userData.user.username => 0xD55468830878d9dB7D0D36380421880Ef391a6Af
-    // _wallet.address => 0xd55468830878d9db7d0d36380421880ef391a6af
-    // actually username is same as address but different is string case. why response is dfference in between username and address.
-
+export const loadProfileFromAsync = (id) => (dispatch) =>
+  new Promise((resolve, reject) => {
     let req_data = {
-      owner: userData.user.username || _wallet?.address,
-      //owner:  userData.user._id,
+      owner: id,
+      token: 'HubyJ*%qcqR0',
+    };
 
-// export const loadProfileFromAsync = (id) => (dispatch) =>
-//   new Promise((resolve, reject) => {
-//     let req_data = {
-//       owner: id,
-// >>>>>>> ce88bf819e0785f28bfcaf86baf49f7f4ff833c4
-//       token: 'HubyJ*%qcqR0',
-//     };
-//
-//     let body = {
-//       method: 'POST',
-//       body: JSON.stringify(req_data),
-//       headers: {
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json',
-//       },
-//     };
-//     fetch(`${BASE_URL}/xanalia/getProfile`, body)
-//         .then(response => response.json())
-//         .then(res => {
-//           if (typeof (res.data) !== 'string' && res.data) {
-//             dispatch(upateUserData(res.data));
-// <<<<<<< HEAD
-//
-//           }
-//           dispatch(endMainLoading());
-//           dispatch(hideSplash());
-//         })
-//         .catch(e => {
-//           dispatch(hideSplash());
-//           dispatch(endMainLoading());
-//
-//           // alertWithSingleBtn(
-//           //   translate('wallet.common.alert'),
-//           //   translate('wallet.common.error.networkFailed'),
-//           // );
-//         });
-//   } else {
-//     dispatch(hideSplash());
-//     dispatch(endMainLoading());
-//   }
-// };
-// =======
-//           }
-//           resolve()
-//         })
-//         .catch(e => {
-//           reject(e)
-//         });
- }
-  }
-}
+    let body = {
+      method: 'POST',
+      body: JSON.stringify(req_data),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+    fetch(`${BASE_URL}/xanalia/getProfile`, body)
+        .then(response => response.json())
+        .then(res => {
+          if (typeof (res.data) !== 'string' && res.data) {
+            dispatch(upateUserData(res.data));
+          }
+          resolve()
+        })
+        .catch(e => {
+          reject(e)
+        });
+})
 
-//
-// >>>>>>> ce88bf819e0785f28bfcaf86baf49f7f4ff833c4
 export const setUserAuthData =
   (data, isCreate = false) =>
     dispatch =>

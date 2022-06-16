@@ -58,7 +58,6 @@ const ListItems = props => {
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
                 <NumberFormat
                     value={coinType.coin.type=="USDC"||coinType.coin.type=="USDT"?item.value*1e9:item.value}
-
                     displayType={'text'}
                     decimalScale={8}
                     thousandSeparator={true}

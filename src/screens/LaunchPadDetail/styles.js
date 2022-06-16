@@ -1,14 +1,12 @@
 import { StyleSheet } from 'react-native';
-
 import { colors, fonts } from '../../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
 import CommonStyles from '../../constants/styles';
 import Colors from '../../constants/Colors';
 import {COLORS} from "../../constants";
-
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.white,
+        //backgroundColor: colors.RED1,
     },
     trendCont: {
         backgroundColor: colors.WHITE1,
@@ -134,21 +132,18 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 1,
-
         elevation: 5,
     },
     listItemContainer: {
-
         width: "100%",
         borderRadius: SIZE(20),
         overflow: 'hidden',
-
     },
     collectionListImage: {
         width: '100%',
         height: (wp('100%') / 3) - wp('1%'),
         resizeMode: 'stretch',
-        backgroundColor:Colors.WHITE1,
+       // backgroundColor:"red",
         borderTopRightRadius: SIZE(12),
         borderTopLeftRadius: SIZE(12),
     },
@@ -184,7 +179,7 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     chainitem:{
-        backgroundColor:Colors.WHITE1
+        //backgroundColor:'red'
     },
     renderchainstyle:{
         flexDirection:'row',

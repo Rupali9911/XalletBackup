@@ -11,7 +11,7 @@ import {
     Linking,
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import { C_Image } from '../../components';
+import { C_Image, GroupButton } from '../../components';
 import {
     getBoxes,
     getBlindBoxSeriesSum,
@@ -98,6 +98,11 @@ function CollectionDetail(props) {
     const navigation = useNavigation();
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
     const { data, wallet } = useSelector(state => state.UserReducer);
+    const { NftDataCollectionReducer } = useSelector(state => state);
+
+    const isLoading = isBlind && nftId
+        ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
+        : NftDataCollectionReducer.nftDataCollectionLoading;
 
     useEffect(() => {
         getCollection();
@@ -403,7 +408,8 @@ function CollectionDetail(props) {
             }
         }
 
-        const _nftChain = _availableChains[2];
+        const indexEth = _availableChains.indexOf("ethereum")
+        const _nftChain = _availableChains[indexEth];
         setNftChain(_nftChain);
 
         for (let i = 0; i < blindBox.seriesChain.length; i++) {
@@ -615,6 +621,25 @@ function CollectionDetail(props) {
                                 </View>
                             }
                         </View>
+                        {/* <View style={{ paddingTop: SIZE(10) }}>
+                            <GroupButton
+                                leftDisabled={false}
+                                leftText={
+                                    parseInt(selectedBlindBox?.startTime) * 1000 <= new Date().getTime() ?
+                                        parseInt(selectedBlindBox?.endTime) * 1000 <= new Date().getTime() ?
+                                            // selectedBlindBox?. 
+                                            'The sale has ended'
+                                            : selectedBlindBox?.buyBoxCount &&
+                                                parseInt(selectedBlindBox?.buyBoxCount[nftChain]) <
+                                                parseInt(selectedBlindBox?.maxBoxesChain[nftChain]) ?
+                                                null
+                                                : 'Sold Out'
+                                        : 'CountDown'
+                                }
+                                // onLeftPress={() => { alert('okay') }}
+                                rightHide
+                            />
+                        </View> */}
                     </View>
                 </>
             )
@@ -625,7 +650,6 @@ function CollectionDetail(props) {
         if (isBlind && nftId && !isStore) {
             return (
                 <>
-
                     {!isBlind ?
                         <>
                             <View style={styles.descriptionTabWrapper}>
@@ -837,7 +861,9 @@ function CollectionDetail(props) {
         let volTraded = ''
 
         if (!isBlind || isBlind && nftId) {
-            items = !isBlind ? collection?.nftCount : blindboxList[0]?.boxInfo?.length || selectedBlindBox.boxInfo?.length;
+            // console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
+
+            items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length;
             owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
             floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
                 ? formatter.format(statsDetails.floorPrice)
@@ -847,6 +873,8 @@ function CollectionDetail(props) {
                 : Number(blindboxList[0]?.volTraded).toFixed(3) || '--'
 
         } else if (isBlind && !nftId && sumBlindBox) {
+            // console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
+
             items = sumBlindBox?.itemsCount
             owners = sumBlindBox?.OwnerCount
             floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
@@ -873,7 +901,7 @@ function CollectionDetail(props) {
                 </View>
                 <View style={styles.collectionTableRow}>
                     <View style={{ flexDirection: 'row' }}>
-                        <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                        <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
                         <Text style={styles.collectionTableRowText}>
                             {floorPrice}
                         </Text>
@@ -884,7 +912,7 @@ function CollectionDetail(props) {
                 </View>
                 <View style={styles.collectionTableRow}>
                     <View style={{ flexDirection: 'row' }}>
-                        <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                        <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
                         <Text style={styles.collectionTableRowText}>
                             {volTraded}
                         </Text>
@@ -1009,6 +1037,7 @@ function CollectionDetail(props) {
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(0)}
                                     style={[
                                         styles.tabBarItem,
@@ -1028,6 +1057,7 @@ function CollectionDetail(props) {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(1)}
                                     style={[
                                         styles.tabBarItem,
@@ -1046,6 +1076,7 @@ function CollectionDetail(props) {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(2)}
                                     style={[
                                         styles.tabBarItem,
@@ -1064,6 +1095,7 @@ function CollectionDetail(props) {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(3)}
                                     style={[
                                         styles.tabBarItem,
@@ -1091,6 +1123,7 @@ function CollectionDetail(props) {
                                 {/* {console.log("🚀 ~ file: index.js ~ line 867 ~ CollectionDetail ~ intoMystery", isBlind, nftId)} */}
 
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(0)}
                                     style={[
                                         styles.tabBarItem,
@@ -1110,6 +1143,7 @@ function CollectionDetail(props) {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(1)}
                                     style={[
                                         styles.tabBarItem,
@@ -1128,13 +1162,6 @@ function CollectionDetail(props) {
                                     </Text>
                                 </TouchableOpacity>
 
-                                {/* <TouchableOpacity
-                            onPress={() => navigation.goBack()}
-                            style={{ borderTopColor: 'transparent' }}>
-                            <Text style={[styles.collectionTabItemLabel, { color: colors.BLUE1 }]}>
-                                {translate('common.blindboxCollections')}
-                            </Text>
-                        </TouchableOpacity> */}
                             </View>
 
                         </View>
