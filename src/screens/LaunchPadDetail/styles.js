@@ -1,11 +1,9 @@
 import { StyleSheet } from 'react-native';
-
 import { colors, fonts } from '../../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
 import CommonStyles from '../../constants/styles';
 import Colors from '../../constants/Colors';
 import {COLORS} from "../../constants";
-
 const styles = StyleSheet.create({
     container: {
         //backgroundColor: colors.RED1,
@@ -134,15 +132,12 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 1,
-
         elevation: 5,
     },
     listItemContainer: {
-
         width: "100%",
         borderRadius: SIZE(20),
         overflow: 'hidden',
-
     },
     collectionListImage: {
         width: '100%',

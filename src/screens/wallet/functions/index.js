@@ -7,6 +7,7 @@ var Accounts = require('web3-eth-accounts');
 const EthereumTx = require('ethereumjs-tx').Transaction;
 // import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
+
 import {Transaction} from '@ethereumjs/tx'
 import {
     binanceNftAbi_new,
@@ -241,9 +242,50 @@ export const currencyInDollar = async (pubkey, type) => {
     })
 }
 
+// export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
+//   // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
+//   //  console.log('pubKey', pubKey)
+//   return new Promise(async (resolve, reject) => {
+//       const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
+//       if (contractAddr) {
+//           const contract = new web3.eth.Contract(contractAbi, contractAddr);
+//           let reserves = {};
+//           await contract.methods.balanceOf(pubKey).call().then(function (result) {
+//               console.log('Results from balance of', result)
+//               if (type == 'usdc') {
+//                   // resolve(web3.utils.fromWei(result.toString(), "ether"));
+//                   resolve(web3.utils.fromWei(result.toString(), "mwei"));
+//               } else if (type == 'alia') {
+//                   resolve(web3.utils.fromWei(result.toString(), "ether"));
+//               } else if (type == 'usdt') {
+//                   resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
+//               } else if (type == 'busd') {
+//                   resolve(web3.utils.fromWei(result.toString(), "ether"));
+//               } else if (type == 'weth') {
+//                   resolve(web3.utils.fromWei(result.toString(), 'ether'));
+//               }
+//           }).catch(function (error) {
+//               console.log(error + ' is the error');
+//               reject(error);
+//           })
+//       } else {
+//           await web3.eth.getBalance(pubKey, function (error, ethbalance) {
+//               console.log('ETH BALANCE', ethbalance)
+//               if (error) {
+//                   reject(error);
+// //>>>>>>> ce88bf819e0785f28bfcaf86baf49f7f4ff833c4
+//               } else {
+//                   reject({success: false, data: 'Smart contract not deployed to detected network.'});
+//               }
+//           })
+//       }
+//   })
+// }
+
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
-    // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
+     console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
     //  console.log('pubKey', pubKey)
+
     return new Promise(async (resolve, reject) => {
         const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
         if (contractAddr) {
@@ -260,7 +302,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
                     resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
                 } else if (type == 'busd') {
                     resolve(web3.utils.fromWei(result.toString(), "ether"));
-                } else if (type == 'eth') {
+                } else if (type == 'weth') {
                     resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
                 }
             }).catch(function (error) {
@@ -281,7 +323,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
 }
 
 export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, contractAddr, contractAbi, rpc, gasPr, gasLmt) => {
-    console.log('params_________', pubkey, privkey, amount, toAddress,chainType, type, contractAddr, contractAbi, rpc, gasPr, gasLmt)
+    console.log('params_________', pubkey, privkey, amount, toAddress,type,chainType, contractAddr, contractAbi, rpc, gasPr, gasLmt)
     return new Promise(async (resolve, reject) => {
 
         const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
@@ -329,7 +371,6 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                 if (type == 'usdc') {
                     txObject.chainId = getChainId(chainType);
                     txObject.networkId = getNetworkId(chainType);
-                    convertto6decimal = parseFloat(amount).toFixed(6);
                     common = Common.forCustomChain('mainnet', {
                         name: 'matic',
                         networkId: getNetworkId(chainType),
@@ -339,7 +380,6 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                 if (type == 'usdt') {
                     txObject.chainId = getChainId(chainType);
                     txObject.networkId = getNetworkId(chainType);
-                    convertto6decimal = parseFloat(amount).toFixed(6);
                     common = Common.forCustomChain('mainnet', {
                         name: 'ethereum',
                         networkId: getNetworkId(chainType),
@@ -374,14 +414,15 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                 var amountToSendAlia = web3.utils.toWei(amount.toString(), 'ether');
                 amountToSendAlia = web3.utils.toHex(amountToSendAlia);
                 txObject.value = "0x0";
+
                 txObject.data = contract.methods.transfer(toAddress, amountToSendAlia).encodeABI();
                 txObject.to = contractAddr;
                 txObject.gasPrice = web3.utils.toHex(35000000000)
-                    common = Common.forCustomChain('mainnet', {
-                        name: 'bnb',
-                        networkId: getNetworkId(chainType),
-                        chainId: getChainId(chainType)
-                    }, 'petersburg');
+                common = Common.forCustomChain('mainnet', {
+                    name: 'bnb',
+                    networkId: getNetworkId(chainType),
+                    chainId: getChainId(chainType)
+                }, 'petersburg');
             } else if (type === 'tal') {
                 var amountToSendAlia = web3.utils.toWei(amount.toString(), 'ether');
                 amountToSendAlia = web3.utils.toHex(amountToSendAlia);
@@ -390,10 +431,10 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                 txObject.to = contractAddr;
                 txObject.gasPrice = web3.utils.toHex(35000000000)
                 common = Common.forCustomChain('mainnet', {
-                        name: 'matic',
-                        networkId: getNetworkId(chainType),
-                        chainId: getChainId(chainType)
-                    }, 'petersburg');
+                    name: 'matic',
+                    networkId: getNetworkId(chainType),
+                    chainId: getChainId(chainType)
+                }, 'petersburg');
             } else if (type == 'bnb') {
                 txObject.to = toAddress
                 txObject.value = web3.utils.toHex(amountToSend)
@@ -404,7 +445,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                     networkId: getNetworkId(chainType),
                     chainId: getChainId(chainType)
                 }, 'petersburg');
-            } else if (type == 'eth') {
+            } else if (type == 'eth' ||type == 'weth') {
                 txObject.to = toAddress
                 txObject.networkId = getNetworkId(chainType);
                 txObject.chainId = getChainId(chainType);
@@ -418,7 +459,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                     }, 'petersburg');
                     console.log("ETHEREUM ETH CAllED")
                 }
-               if(chainType==="polygon"){
+                if(chainType==="polygon"){
                     common = Common.forCustomChain('mainnet', {
                         name: 'matic',
                         networkId: getNetworkId(chainType),
@@ -429,7 +470,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
             }
 
             const tx = new EthereumTx(txObject, {common})
-           // const tx =new EthereumTx(txObject, type == 'eth' ? {chain: 'kovan'}:{common} );
+            // const tx =new EthereumTx(txObject, type == 'eth' ? {chain: 'kovan'}:{common} );
             // const common = new Common({ chain: Chain.Ropsten });
             // const tx = Transaction.fromTxData(txObject, {common});
 
@@ -1200,4 +1241,3 @@ export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlace
         // return result
     })
 }
-
