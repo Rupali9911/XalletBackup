@@ -86,23 +86,40 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
           const selectedPack = json.data
           const nftData = [];
           for (let i = 0; i < selectedPack?.length; i++) {
-            selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
-            selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
-            let parsedNFT = parseNftObject(selectedPack[i]);
-            nftData.push({
-              ...parsedNFT,
-              properties: {
-                type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
-              },
-              totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
-              externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
-              thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
-              tokenURI: selectedPack[i]?.catInfo?.tokenUri,
-              price:
-                selectedPack[i]?.price?.toString() === "0"
-                  ? selectedPack[i]?.usdPrice?.toString()
-                  : selectedPack[i]?.price?.toString(),
-            });
+            if (selectedPack?.length > 0 && selectedPack[0]?.tokenUri) {
+              nftData.push({
+                ...selectedPack[i]?.tokenUri?.metaData,
+                properties: {
+                  type: selectedPack[i]?.tokenUri?.metaData?.properties?.type,
+                },
+                totalSupply: selectedPack[i]?.tokenUri?.metaData?.totalSupply,
+                externalLink: selectedPack[i]?.tokenUri?.metaData?.externalLink,
+                thumbnft: selectedPack[i]?.tokenUri?.metaData?.thumbnft,
+                tokenURI: selectedPack[i]?.tokenUri?.tokenUri,
+                nftChain: 'binance',
+                price: selectedPack[i]?.price,
+              });
+              // }
+            } else {
+              // for (let i = 0; i < selectedPack?.length; i++) {
+              selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
+              selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
+              let parsedNFT = parseNftObject(selectedPack[i]);
+              nftData.push({
+                ...parsedNFT,
+                properties: {
+                  type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
+                },
+                totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
+                externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
+                thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
+                tokenURI: selectedPack[i]?.catInfo?.tokenUri,
+                price:
+                  selectedPack[i]?.price?.toString() === "0"
+                    ? selectedPack[i]?.usdPrice?.toString()
+                    : selectedPack[i]?.price?.toString(),
+              });
+            }
           }
           json.data = nftData;
           dispatch(nftDataCollectionLoadSuccess(json));

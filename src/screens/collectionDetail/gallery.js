@@ -64,7 +64,7 @@ const Gallery = ({ route }) => {
         : NftDataCollectionReducer.nftDataCollectionLoading;
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : collectionType == 1 ?
+        : collectionType == 1 && blind ?
             NftDataCollectionReducer.mysteryBoxCollectionList :
             NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
@@ -72,17 +72,14 @@ const Gallery = ({ route }) => {
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : collectionType == 1 ?
+        : collectionType == 1 && blind ?
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
 
     useEffect(() => {
         if (isFocused) {
-            console.log("🚀 ~ file: collection ~ line 53 ~", route?.params)
+            // console.log("🚀 ~ file: collection ~ line 53 ~", route?.params)
         }
-    }, [isFocused, route?.params]);
-
-    useEffect(() => {
         if (isFocused && !isDetailScreen) {
             if (isSeries) {
                 dispatch(nftBlindSeriesCollectionLoadStart());
@@ -307,18 +304,18 @@ const Gallery = ({ route }) => {
                             if (!isLoading && collectionList.length !== totalCount) {
                                 let num = page + 1;
 
-                            if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionLoadStart());
-                            } else {
-                                dispatch(nftDataCollectionLoadStart());
-                            }
+                                if (isSeries) {
+                                    dispatch(nftBlindSeriesCollectionLoadStart());
+                                } else {
+                                    dispatch(nftDataCollectionLoadStart());
+                                }
 
-                            getNFTlist(num);
-                            if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionPageChange(num));
-                            } else {
-                                dispatch(nftDataCollectionPageChange(num));
-                            }
+                                getNFTlist(num);
+                                if (isSeries) {
+                                    dispatch(nftBlindSeriesCollectionPageChange(num));
+                                } else {
+                                    dispatch(nftDataCollectionPageChange(num));
+                                }
                             }
                         }}
                         onEndReachedThreshold={0.4}

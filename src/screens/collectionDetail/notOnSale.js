@@ -62,7 +62,7 @@ const NotOnSale = ({ route }) => {
         : NftDataCollectionReducer.nftDataCollectionLoading;
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : collectionType == 1 ?
+        : collectionType == 1 && blind ?
             NftDataCollectionReducer.mysteryBoxCollectionList :
             NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
@@ -70,25 +70,26 @@ const NotOnSale = ({ route }) => {
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : collectionType == 1 ?
+        : collectionType == 1 && blind ?
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
 
     useEffect(() => {
         if (isFocused) {
-            console.log("🚀 ~ file: notOnSale.js ~ line 53 ~", route?.params,
-                // nftChain,
-                // collectionAddress,
-                // collectionType,
-                // isBlind,
-                // isHotCollection,
-                // isSeries,
-                // collectionId,
-                // userCollection,
-                // isStore,
-                // manualColl,
-                // seriesInfoId
-            )
+            // console.log("🚀 ~ file: notOnSale.js ~ line 53 ~", 
+            // route?.params,
+            // nftChain,
+            // collectionAddress,
+            // collectionType,
+            // isBlind,
+            // isHotCollection,
+            // isSeries,
+            // collectionId,
+            // userCollection,
+            // isStore,
+            // manualColl,
+            // seriesInfoId
+            // )
             if (isSeries) {
                 dispatch(nftBlindSeriesCollectionLoadStart());
                 dispatch(nftBlindSeriesCollectionReset());
@@ -283,6 +284,7 @@ const NotOnSale = ({ route }) => {
 
     const keyExtractor = (item, index) => { return 'item_' + index }
 
+    // console.log("🚀 ~ file: notOnSale.js ~ line 297 ~ ~ collectionList", collectionList, NftDataCollectionReducer, NftDataCollectionReducer.nftBlindSeriesCollectionList, NftDataCollectionReducer.mysteryBoxCollectionList, NftDataCollectionReducer.nftDataCollectionList)
 
     return (
         <View style={styles.trendCont}>

@@ -63,10 +63,9 @@ const Owned = (props) => {
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
         : NftDataCollectionReducer.nftDataCollectionLoading;
-    console.log("🚀 ~ file: Owned.js ~ line 66 ~ Owned ~", NftDataCollectionReducer.nftDataCollectionLoading, NftDataCollectionReducer.nftBlindSeriesCollectionLoading)
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : collectionType == 1 ?
+        : collectionType == 1 && isBlind ?
             NftDataCollectionReducer.mysteryBoxCollectionList :
             NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
@@ -74,25 +73,27 @@ const Owned = (props) => {
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : collectionType == 1 ?
+        : collectionType == 1 && isBlind ?
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
 
+    // console.log("🚀 ~ file: Owned.js ~ line 66 ~ Owned ~", NftDataCollectionReducer.nftDataCollectionLoading, NftDataCollectionReducer.nftBlindSeriesCollectionLoading)
     useEffect(() => {
         if (isFocused) {
-            console.log("🚀 ~ file: Owned.js ~ line 53 ~", route?.params
-                // nftChain,
-                // collectionAddress,
-                // collectionType,
-                // isBlind,
-                // isHotCollection,
-                // isSeries,
-                // collectionId,
-                // userCollection,
-                // isStore,
-                // manualColl,
-                // seriesInfoId
-            )
+            // console.log("🚀 ~ file: Owned.js ~ line 53 ~",
+            // route?.params
+            // nftChain,
+            // collectionAddress,
+            // collectionType,
+            // isBlind,
+            // isHotCollection,
+            // isSeries,
+            // collectionId,
+            // userCollection,
+            // isStore,
+            // manualColl,
+            // seriesInfoId
+            // )
             if (isSeries) {
                 dispatch(nftBlindSeriesCollectionLoadStart());
                 dispatch(nftBlindSeriesCollectionReset());
@@ -110,10 +111,10 @@ const Owned = (props) => {
     const getNFTlist = useCallback(
         page => {
             if (isStore) {
-                console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
+                // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
                 dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true));
             } else if (!isBlind) {
-                console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
+                // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
                 dispatch(
                     nftDataCollectionList(
                         page,
@@ -127,7 +128,7 @@ const Owned = (props) => {
                     ),
                 );
             } else if (isSeries) {
-                console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
+                // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
                 dispatch(
                     nftBlindSeriesCollectionList(
                         page,
@@ -146,7 +147,7 @@ const Owned = (props) => {
                     owner: null,
                     page: 1
                 }
-                console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
+                // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
                 dispatch(nftBlindDataCollectionList(collectionAddress, 1, temp));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
@@ -295,8 +296,6 @@ const Owned = (props) => {
     }
 
     const keyExtractor = (item, index) => { return 'item_' + index }
-
-    console.log("🚀 ~ file: Owned.js ~ line 297 ~ Owned ~ collectionList", collectionList)
 
     return (
         <View style={styles.trendCont}>
