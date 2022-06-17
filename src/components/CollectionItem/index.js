@@ -51,7 +51,7 @@ export default function CollectionItem(props) {
         : creatorInfo[0]?.username?.trim() ? creatorInfo[0].username :
           creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
             creatorInfo[0]?.title?.trim() ? creatorInfo[0].title : creator ? creator : ""
-      : creator ? creator : ""
+      : creator ? creator : collectionName ? collectionName : ""
     creatorName = creatorName?.includes('0x') ? creatorName.substring(0, 6) : creatorName;
     return creatorName;
   }
@@ -123,11 +123,11 @@ export default function CollectionItem(props) {
         </View>
         <View style={styles.collectionWrapper}>
           <View style={CommonStyles.center}>
-          <C_Image
-            type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
-            uri={iconImage}
-            imageStyle={styles.iconImage}
-          />
+            <C_Image
+              type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+              uri={iconImage}
+              imageStyle={styles.iconImage}
+            />
           </View>
           <View style={styles.bottomCenterWrap}>
             <Text numberOfLines={1} style={styles.collectionName}>
