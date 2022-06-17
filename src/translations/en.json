@@ -649,7 +649,9 @@
         "zoomMail": "Zoom Mail",
         "amountMoreThan": "Amount must be no more than $999,999.99",
         "toFilter": "To",
-        "ongoinglaunch": "Ongoing"
+        "ongoinglaunch": "Ongoing",
+        "CNcreatorname":"Creator Name",
+        "CNcreatordesc":"Creator Description"
     },
     "AwardPage": {},
     "wallet": {

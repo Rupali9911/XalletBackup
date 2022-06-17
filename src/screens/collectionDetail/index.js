@@ -809,7 +809,7 @@ function CollectionDetail(props) {
                     <ScrollView nestedScrollEnabled={true}>
                         {descTab ? (
                             <View>
-                                {isBlind ? (
+                                {!isBlind ? (
                                     <Text
                                         style={[
                                             styles.descriptionText,
@@ -826,7 +826,7 @@ function CollectionDetail(props) {
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
-                                ] || collection.userInfo.about}
+                                    ] || collection.userInfo.about}
                             </Text>
                         ) : (
                             <View>

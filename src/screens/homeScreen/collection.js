@@ -170,7 +170,7 @@ const Collection = () => {
             CollectionReducer.collectionLoading
           }
           renderItem={renderItem}
-          onEndReached={handleFlastListEndReached}
+         // onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
           keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}
