@@ -1551,9 +1551,9 @@ const DetailScreen = ({ navigation, route }) => {
     // let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item && item.hasOwnProperty("metaData") && item.metaData) {
       // it's temporary fix
-      const imageUri = item.metaData?.image?.replace('nftdata', 'nftData') || item.thumbnailUr;
+      const imageUri = item.thumbnailUrl || item.metaData?.image?.replace('nftdata', 'nftData');
 
-      const image = item.metaData.image || item.thumbnailUrl;
+      const image = item.thumbnailUrl || item.metaData.image;
       const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
       // console.log(fileType, item.metaData.name, "item.metaData.name")
       return (
