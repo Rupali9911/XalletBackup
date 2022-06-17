@@ -1002,7 +1002,7 @@ function CollectionDetail(props) {
             manualColl: collection.manualColl,
             seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
         }
-        // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ tabProps", tabProps)
+        // console.log("🚀 ~ file: index.js ~ line 1008 collections.js ~ line  ~", collection?.userCollection, (isBlind && nftId), nftId, collectionAddress, loading)
         return (
             <Tab.Navigator
                 // tabBar={props => <CustomTabBar {...props} />}
@@ -1296,7 +1296,7 @@ function CollectionDetail(props) {
 
                     {(collectionAddress || isStore) && !loading && (
                         <Collections
-                            collectionAddress={(isBlind && nftId) ? nftId : collectionAddress}
+                            collectionAddress={ (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId}
                             collectionType={collectionType}
                             isHotCollection={isHotCollection}
                             collectionId={collectionId}
@@ -1312,9 +1312,9 @@ function CollectionDetail(props) {
                 </View> */}
 
                 <View style={{ height: height / 1.5 }}>
-                    {!isBlind || (isBlind && nftId) ?
+                    {(!isBlind || (isBlind && nftId)) && !loading ?
                         renderTabView(true)
-                        : isBlind && !nftId ?
+                        : isBlind && !nftId && !loading ?
                             renderTabView(false)
                             : null
                     }
