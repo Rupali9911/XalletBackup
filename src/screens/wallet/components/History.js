@@ -74,9 +74,7 @@ const ListItems = props => {
                                 },
                             ]}>
                             {item.direction == 'in' ? '+' : '-'}
-
                             {formattedValue}
-
                         </Text>
                     )} // <--- Don't forget this!
                 />
@@ -101,18 +99,13 @@ const History = props => {
         usdcTransactions,
         wethTransactions,
     } = useSelector(state => state.WalletReducer);
-
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
-
     const {coin} = props;
 
     useEffect(() => {
-        // setBalanceData([]);
     }, []);
-
     const navigation = useNavigation();
-
     const onRefresh = () => {
         setRefreshing(true);
         props.onRefresh &&
@@ -122,9 +115,9 @@ const History = props => {
     };
 
     const getTransactions = () => {
-        console.log('transection coin type=====>', coin.type, "  ")
+        console.log('transection coin type=====> setBalance', coin.type, "  ")
         console.log('transection coin network=====>', coin.network, "  ")
-        if (coin.type === 'ETH' && coin.network!=="Polygon") {
+        if (coin.type === 'ETH') {
             return ethTransactions;
         } else if (coin.type === 'BNB') {
             return bnbTransactions;
@@ -140,7 +133,7 @@ const History = props => {
             return usdtTransactions;
         } else if (coin.type === 'TAL') {
             return talTransactions;
-        }else if (coin.type ==='WETH'&& coin.network==="Polygon") {
+        }else if (coin.type ==='WETH') {
             return wethTransactions;
                 }
                 return [];
@@ -203,7 +196,6 @@ const History = props => {
             },
             profileCont: {
                 ...CommonStyles.circle('8'),
-
             },
             profileImage: {
                 ...CommonStyles.imageStyles(8),
@@ -214,7 +206,6 @@ const History = props => {
                 paddingVertical: hp('1.8%'),
                 flexDirection: 'row',
                 alignItems: 'center',
-
             },
             priceTxt: {
                 fontSize: RF(2.3),
