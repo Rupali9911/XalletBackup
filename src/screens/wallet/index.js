@@ -218,7 +218,6 @@ const Wallet = ({ route, navigation }) => {
     } else if (networkType.name == 'BSC') {
       // for mainnet
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-
       // for testing
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
       let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
@@ -228,13 +227,13 @@ const Wallet = ({ route, navigation }) => {
     } else if (networkType.name == 'Polygon') {
       //for mainnet
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-
       // for testing
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
       let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
-      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-      let value = maticValue + talValue + usdctValue + wethValue;
+      //let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+      let value = maticValue + talValue + usdctValue ;
+     // let value = maticValue + talValue + usdctValue + wethValue ;
       totalValue = value;
     }
     return totalValue;
