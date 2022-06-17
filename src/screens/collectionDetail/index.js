@@ -822,7 +822,7 @@ function CollectionDetail(props) {
                                     {collection?.collectionDesc}
                                 </Text>
                             </View>
-                        ) : !isBlind ? (
+                        ) : !isBlind && isHotCollection && collection?.userInfo ? (
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
@@ -835,10 +835,10 @@ function CollectionDetail(props) {
                                         styles.descriptionText,
                                         { fontSize: SIZE(16), fontWeight: 'bold' },
                                     ]}>
-                                    {collection.creatorName}
+                                    {collection?.creatorName}
                                 </Text>
                                 <Text style={styles.descriptionText}>
-                                    {collection.creatorDescription}
+                                    {collection?.creatorDescription}
                                 </Text>
                             </View>
                         )}
@@ -871,7 +871,7 @@ function CollectionDetail(props) {
         if (!isBlind || isBlind && nftId) {
             // console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
 
-            items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length;
+            items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length || blindboxList[0]?.boxInfo.length;
             owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
             floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
                 ? formatter.format(statsDetails.floorPrice)
