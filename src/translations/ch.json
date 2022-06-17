@@ -650,7 +650,9 @@
         "blindboxCollections": "神秘盒子",
         "zoomMail": "缩放邮件",
         "amountMoreThan": "金额不得超过 999,999.99 美元",
-        "toFilter": "到"
+        "toFilter": "到",
+        "CNcreatorname":"创作者姓名",
+        "CNcreatordesc":"创作者描述"
     },
     "AwardPage": {},
     "wallet": {
@@ -992,6 +994,7 @@
             "transferFrom": "转移",
             "closeTimeWarn": "关闭时间应大于打开时间",
             "descriptionCreate": "描述"
+
         },
         "backendmessage": {
             "error": {},

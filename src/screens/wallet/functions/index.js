@@ -891,8 +891,8 @@ export const getBalanceInDollar = () => {
     return normalizedPrice
 }
 
-export const createColection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
-    console.log("🚀 ~ file: index.js ~ line 759 ~ createColection", publicKey, providerUrl)
+export const createCollection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
+    console.log("🚀 ~ file: index.js ~ line 759 ~ createCollection", publicKey, providerUrl)
     return new Promise(async (resolve, reject) => {
         const web3 = new Web3(
             new Web3.providers.HttpProvider(
@@ -913,7 +913,7 @@ export const createColection = async (publicKey, privKey, chainType, providerUrl
 
         var customGasLimit = gasLmt;
         console.log("🚀 ~ file: index.js ~ line 769 ~ customGasLimit")
-        customGasPrice = gasPr * 1000000000;
+        var customGasPrice = gasPr * 1000000000;
         var contract = new web3.eth.Contract(abiArray, contractAddress, {
             from: publicKey
         });

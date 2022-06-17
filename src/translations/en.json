@@ -1,5 +1,7 @@
 {
     "common": {
+        "CNcreatorname":"Creator Name",
+        "CNcreatordesc":"Creator Description",
         "totalValue": "Total Value Locked (TVL)",
         "Copyaddress": " Copy address",
         "Logout": "Logout",
@@ -649,6 +651,7 @@
         "zoomMail": "Zoom Mail",
         "amountMoreThan": "Amount must be no more than $999,999.99",
         "toFilter": "To"
+
     },
     "AwardPage": {},
     "wallet": {

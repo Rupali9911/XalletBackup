@@ -651,7 +651,10 @@
         "zoomMail": "Zoomメール",
         "hotcollection": "推奨コレクション",
         "amountMoreThan": "金額は$999,999.99以下でなければなりません",
-        "toFilter": "から"
+        "toFilter": "から",
+        "CNcreatorname":"作者名",
+        "CNcreatordesc":"作品の詳細"
+
     },
     "AwardPage": {},
     "wallet": {

@@ -650,7 +650,9 @@
         "blindboxCollections": "블라인드 박스",
         "zoomMail": "줌 메일",
         "amountMoreThan": "금액은 $999,999.99 이하여야 합니다.",
-        "toFilter": "에게"
+        "toFilter": "에게",
+        "CNcreatorname":"작성자 이름",
+        "CNcreatordesc":"작성자 설명"
     },
     "AwardPage": {},
     "wallet": {
@@ -992,6 +994,7 @@
             "transferFrom": "옮기다",
             "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다.",
             "descriptionCreate": "컬렉션 설명"
+
         },
         "backendmessage": {
             "error": {},

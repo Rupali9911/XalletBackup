@@ -801,7 +801,7 @@ function CollectionDetail(props) {
                     <ScrollView nestedScrollEnabled={true}>
                         {descTab ? (
                             <View>
-                                {isBlind ? (
+                                {!isBlind ? (
                                     <Text
                                         style={[
                                             styles.descriptionText,
@@ -815,24 +815,25 @@ function CollectionDetail(props) {
                                 </Text>
                             </View>
                         ) : !isBlind ? (
+                                <View>
+                                    <Text
+                                        style={[
+                                            styles.descriptionText,
+                                            { fontSize: SIZE(18), fontWeight: 'bold', marginBottom: 10 },
+                                        ]}>
+                                        {collection?.creatorName}
+                                    </Text>
+                                    <Text style={styles.descriptionText}>
+                                        {collection?.creatorDescription}
+                                    </Text>
+                                </View>
+
+                        ) : (
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
-                                ] || collection.userInfo.about}
+                                    ] || collection.userInfo.about}
                             </Text>
-                        ) : (
-                            <View>
-                                <Text
-                                    style={[
-                                        styles.descriptionText,
-                                        { fontSize: SIZE(16), fontWeight: 'bold' },
-                                    ]}>
-                                    {collection.creatorName}
-                                </Text>
-                                <Text style={styles.descriptionText}>
-                                    {collection.creatorDescription}
-                                </Text>
-                            </View>
                         )}
                     </ScrollView>
                 </View>
