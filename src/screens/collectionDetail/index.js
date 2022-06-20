@@ -809,7 +809,7 @@ function CollectionDetail(props) {
                     <ScrollView nestedScrollEnabled={true}>
                         {descTab ? (
                             <View>
-                                {!isBlind ? (
+                                {isBlind ? (
                                     <Text
                                         style={[
                                             styles.descriptionText,
