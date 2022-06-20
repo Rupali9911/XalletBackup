@@ -159,33 +159,6 @@ function Profile(props) {
           }
           setPhoto(temp)
         }
-        // <<<<<<< HEAD
-        //           setPhoto(temp)
-        //         }
-        //
-        //       //}
-        //       }).catch(async e => {
-        //
-        //         console.log('Error from openPicker', e)
-        //
-        //         //if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'||'E_FAILED_TO_SHOW_PICKER'){
-        //         if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION'){
-        //            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage)
-        //         //console.log('#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@', isGranted)
-        //           // if (isGranted === false) {
-        //           confirmationAlert(
-        //               translate("wallet.common.storagePermissionHeader"),
-        //               translate("wallet.common.storagePermissionMessage"),
-        //               translate("common.Cancel"),
-        //               translate("wallet.common.settings"),
-        //               () => openSettings(),
-        //               () => null
-        //           )
-        //           // }
-        //         }
-        //       })
-        //     }
-        // =======
       }).catch(async e => {
         console.log('Error from openPicker', e)
         if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
@@ -203,7 +176,6 @@ function Profile(props) {
         }
       })
     }
-    // >>>>>>> development
   }
 
   const onSave = () => {

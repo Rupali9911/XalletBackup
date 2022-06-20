@@ -994,13 +994,8 @@
             "bidaward": "中标",
             "transferFrom": "转移",
             "closeTimeWarn": "关闭时间应大于打开时间",
-<<<<<<< HEAD
             "descriptionCreate": "描述",
             "reflectInHistory": "（完成后会反映在交易记录中）"
-=======
-            "descriptionCreate": "描述"
-
->>>>>>> 481d5143b237ffffeed4b9566e85946b60cd8640
         },
         "backendmessage": {
             "error": {},

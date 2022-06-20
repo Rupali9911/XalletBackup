@@ -994,13 +994,8 @@
             "bidaward": "입찰 낙찰",
             "transferFrom": "옮기다",
             "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다.",
-<<<<<<< HEAD
             "descriptionCreate": "컬렉션 설명",
             "reflectInHistory": "(완료 후 거래 내역에 반영됩니다)"
-=======
-            "descriptionCreate": "컬렉션 설명"
-
->>>>>>> 481d5143b237ffffeed4b9566e85946b60cd8640
         },
         "backendmessage": {
             "error": {},
