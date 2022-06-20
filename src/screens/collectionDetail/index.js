@@ -814,26 +814,25 @@ function CollectionDetail(props) {
                                     {collection?.collectionDesc}
                                 </Text>
                             </View>
-                        ) : !isBlind ? (
-                                <View>
-                                    <Text
-                                        style={[
-                                            styles.descriptionText,
-                                            { fontSize: SIZE(18), fontWeight: 'bold', marginBottom: 10 },
-                                        ]}>
-                                        {collection?.creatorName}
-                                    </Text>
-                                    <Text style={styles.descriptionText}>
-                                        {collection?.creatorDescription}
-                                    </Text>
-                                </View>
-
-                        ) : (
+                        ) : !isBlind && isHotCollection && collection?.userInfo ? (
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
                                     ] || collection.userInfo.about}
                             </Text>
+                        ) : (
+                            <View>
+                                <Text
+                                    style={[
+                                        styles.descriptionText,
+                                        { fontSize: SIZE(18), fontWeight: 'bold', marginBottom: 10 },
+                                    ]}>
+                                    {collection.creatorName}
+                                </Text>
+                                <Text style={styles.descriptionText}>
+                                    {collection.creatorDescription}
+                                </Text>
+                            </View>
                         )}
                     </ScrollView>
                 </View>
