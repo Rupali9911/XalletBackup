@@ -1004,7 +1004,7 @@ function CollectionDetail(props) {
             manualColl: collection.manualColl,
             seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
         }
-        // console.log("🚀 ~ file: index.js ~ line 1008 collections.js ~ line  ~", collection?.userCollection, (isBlind && nftId), nftId, collectionAddress, loading)
+        // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
         return (
             <Tab.Navigator
                 // tabBar={props => <CustomTabBar {...props} />}
@@ -1033,7 +1033,6 @@ function CollectionDetail(props) {
                     }
                 }}>
                 <Tab.Screen
-                    // name={translate('wallet.common.profileCreated')}
                     name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
                     component={Gallery}
                     initialParams={{
@@ -1047,7 +1046,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')
                     }}
                 />
                 <Tab.Screen
@@ -1064,7 +1064,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: tab ? isBlind && nftId ? translate('common.onSale') : translate('common.notforsale') : translate('common.blindboxCollections')
                     }}
                 />
                 {tab && <Tab.Screen
@@ -1081,7 +1082,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: isBlind && nftId ? translate('common.notforsale') : translate('wallet.common.owned')
                     }}
                 />}
                 {tab && <Tab.Screen
@@ -1098,7 +1100,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')
                     }}
                 />}
             </Tab.Navigator>
@@ -1298,7 +1301,7 @@ function CollectionDetail(props) {
 
                     {(collectionAddress || isStore) && !loading && (
                         <Collections
-                            collectionAddress={ (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId}
+                            collectionAddress={(isBlind && nftId) ? nftId : collectionAddress}
                             collectionType={collectionType}
                             isHotCollection={isHotCollection}
                             collectionId={collectionId}

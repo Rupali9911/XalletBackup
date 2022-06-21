@@ -49,7 +49,8 @@ const Gallery = ({ route }) => {
         userCollection,
         isStore,
         manualColl,
-        seriesInfoId
+        seriesInfoId,
+        tabTitle
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
@@ -57,7 +58,6 @@ const Gallery = ({ route }) => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const [isDetailScreen, setDetailScreen] = useState(false);
-
 
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
@@ -76,18 +76,19 @@ const Gallery = ({ route }) => {
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
 
+    // console.log("🚀 ~ file: gallery.js ~ line 40 ~ ~ ~ Gallery ~ isSeries", isSeries, route?.params, NftDataCollectionReducer)
     useEffect(() => {
         if (isFocused) {
             // console.log("🚀 ~ file: collection ~ line 53 ~", route?.params)
         }
         if (isFocused && !isDetailScreen) {
             if (isSeries) {
-                dispatch(nftBlindSeriesCollectionLoadStart());
+                dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
                 dispatch(nftBlindSeriesCollectionReset());
                 getNFTlist(1);
                 dispatch(nftBlindSeriesCollectionPageChange(1));
             } else {
-                dispatch(nftDataCollectionLoadStart());
+                dispatch(nftDataCollectionLoadStart(tabTitle));
                 dispatch(nftDataCollectionListReset());
                 getNFTlist(1);
                 dispatch(nftDataCollectionPageChange(1));
@@ -101,7 +102,7 @@ const Gallery = ({ route }) => {
         page => {
             if (isStore) {
                 // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
-                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true));
+                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
             } else if (!isBlind) {
                 // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
                 dispatch(
@@ -113,7 +114,9 @@ const Gallery = ({ route }) => {
                             ? collectionId
                             : null,
                         false,
-                        manualColl
+                        manualColl,
+                        null,
+                        tabTitle
                     ),
                 );
             } else if (isSeries) {
@@ -124,7 +127,9 @@ const Gallery = ({ route }) => {
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
                         seriesInfoId,
-                        nftChain
+                        nftChain,
+                        null,
+                        tabTitle
                     ),
                 );
             } else {
@@ -137,7 +142,7 @@ const Gallery = ({ route }) => {
                     page: page
                 }
                 // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
-                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp));
+                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp, tabTitle));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
         },
@@ -305,9 +310,9 @@ const Gallery = ({ route }) => {
                                 let num = page + 1;
 
                                 if (isSeries) {
-                                    dispatch(nftBlindSeriesCollectionLoadStart());
+                                    dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
                                 } else {
-                                    dispatch(nftDataCollectionLoadStart());
+                                    dispatch(nftDataCollectionLoadStart(tabTitle));
                                 }
 
                                 getNFTlist(num);
@@ -320,15 +325,11 @@ const Gallery = ({ route }) => {
                         }}
                         onEndReachedThreshold={0.4}
                         keyExtractor={keyExtractor}
-                        // ListFooterComponent={renderFooter}
-                        style={{ height: '90%' }}
+                        ListFooterComponent={renderFooter}
                     />
-                    {isLoading && <View style={{ height: '10%' }}>
-                        <ActivityIndicator size='small' color={colors.themeR} />
-                    </View>}
                 </>
             ) : (
-                <View style={{ marginTop: height / 8 }}>
+                <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>
                         <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
                     </View>

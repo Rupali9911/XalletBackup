@@ -24,27 +24,32 @@ const initialState = {
   nftBlindSeriesCollectionLoading: false,
   nftBlindSeriesCollectionList: [],
   nftBlindSeriesCollectionPage: 1,
-  nftBlindSeriesCollectionTotalCount: 0
+  nftBlindSeriesCollectionTotalCount: 0,
+  tabTitle: ''
 }
 
 export default function nftDataCollectionReducer(state = initialState, action) {
   switch (action.type) {
 
     case NFT_DATA_COLLECTION_START:
-      return state = { ...state, nftDataCollectionLoading: true };
+      return state = { ...state, nftDataCollectionLoading: true, tabTitle: action.payload };
 
     case NFT_DATA_COLLECTION_SUCCESS:
+      // console.log("🚀 ~ file: nftDataCollectionReducer.js ~ line 40 ~ ~ ", state, action.payload)
       return state = action.payload.mysteryBox ?
         {
           ...state,
           mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
           mysteryBoxCollectionTotalCount: action.payload.count,
           nftDataCollectionLoading: false,
-        } : {
+        } :
+        (action.payload.tabTitle === state.tabTitle) ? {
           ...state,
           nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
           nftDataCollectionTotalCount: action.payload.count,
           nftDataCollectionLoading: false,
+        } : {
+          ...state,
         };
     // if (action.payload.mysteryBox) {
     //   return state = {
@@ -76,14 +81,16 @@ export default function nftDataCollectionReducer(state = initialState, action) {
 
 
     case NFT_BLIND_SERIES_COLLECTION_START:
-      return state = { ...state, nftBlindSeriesCollectionLoading: true };
+      return state = { ...state, nftBlindSeriesCollectionLoading: true, tabTitle: action.payload };
 
     case NFT_BLIND_SERIES_COLLECTION_SUCCESS:
-      return state = {
+      return state = (action.payload.tabTitle === state.tabTitle) ? {
         ...state,
         nftBlindSeriesCollectionList: [...state.nftBlindSeriesCollectionList, ...action.payload.data],
         nftBlindSeriesCollectionTotalCount: action.payload.count,
         nftBlindSeriesCollectionLoading: false,
+      } : {
+        ...state,
       };
 
     case NFT_BLIND_SERIES_COLLECTION_LIST_RESET:
