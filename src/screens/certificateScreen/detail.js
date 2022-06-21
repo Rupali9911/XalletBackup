@@ -153,6 +153,7 @@ const DetailScreen = ({ navigation, route }) => {
     video,
     fileType,
     item,
+    detailitem,
     index,
     setNftItem
   } = route.params;
@@ -178,8 +179,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
-  const[resdata, setResdata]=useState([]);
-
   // const [discount, setDiscount] = useState(false);
   // const [discountValue, setDiscountValue] = useState('');
   // const [sellDetails, setSellDetails] = useState([]);
@@ -1255,8 +1254,6 @@ const DetailScreen = ({ navigation, route }) => {
       .then(async res => {
         console.log('getDetailNFT_res 1255', res.data[0]);
 
-        setResdata(res.data[0])
-
         if (res.data.length > 0 && res.data !== 'No record found') {
           setNFTPrice(res.data[0]?.price)
           let data = await getNFTDetails(res.data[0]);
@@ -1967,7 +1964,7 @@ const DetailScreen = ({ navigation, route }) => {
             {creatorName}
           </Text>
           <Text style={styles.nftName}>
-            {resdata[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}
+            {detailitem[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}
           </Text>
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
@@ -2001,7 +1998,7 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>
-            {resdata[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description
+            {detailitem[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description
             }
           </Text>
           {getAuctionTimeRemain(item) ? (

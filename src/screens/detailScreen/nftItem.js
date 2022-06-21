@@ -70,7 +70,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
-  const [resdata, setResdata]=useState([])
+  const [getDetailNFT, setgetDetailNFT]=useState([])
   const navigation = useNavigation();
   const refVideo = useRef(null);
   const refVideoPlay = useRef(null);
@@ -444,7 +444,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       .then(async res => {
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
-          setResdata(res.data[0])
+          setgetDetailNFT(res.data[0])
 
           setNFTDetail(temp)
           if (temp.offchain) {
@@ -464,7 +464,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
             );
             getDiscount();
           }
-
           let newData = await getNFTDetails(res.data[0]);
           setLike(newData.like)
           // console.log(newData, "newDatanewDatanewData")
@@ -715,6 +714,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                       artistData: artistData,
                       video: videoUri,
                       fileType: fileType,
+                      detailitem:getDetailNFT,
                       item: item,
                       index: index,
                     })
@@ -821,11 +821,11 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
               <SpaceView mTop={SIZE(8)} />
               <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
               <SpaceView mTop={SIZE(6)} />
-              <Text style={styles.modalLabel}>{resdata[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}</Text>
+              <Text style={styles.modalLabel}>{getDetailNFT[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}</Text>
               <View style={styles.separator} />
               {!!item?.metaData && !!item.metaData.description && <View style={{marginBottom: 20}}>
                 <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
-                  {textShown ? resdata[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : resdata[`${selectedLanguageItem.language_name}_nft_description`]?.replaceAll('\n', '') || item.metaData.description?.replaceAll('\n', '')}
+                  {textShown ? getDetailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : getDetailNFT[`${selectedLanguageItem.language_name}_nft_description`]?.replaceAll('\n', '') || item.metaData.description?.replaceAll('\n', '')}
 
                 </Text>
                   {lengthMore && textShown && (
