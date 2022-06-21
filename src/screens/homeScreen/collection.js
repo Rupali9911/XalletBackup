@@ -61,7 +61,7 @@ const Collection = () => {
         creatorInfo={item.creatorInfo}
         blind={item.blind}
         onPress={() => {
-          // console.log('========', item, item.redirect, item.isBlind, isSelectTab);
+           console.log('========', item, item.redirect, item.isBlind, isSelectTab);
           if (item.redirect === '/collection/underground_city') {
             console.log("========collection tab => item.redirect 60", item, item.redirect, item.blind)
             navigation.push('CollectionDetail', {
@@ -170,7 +170,7 @@ const Collection = () => {
             CollectionReducer.collectionLoading
           }
           renderItem={renderItem}
-          onEndReached={handleFlastListEndReached}
+         // onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
           keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}

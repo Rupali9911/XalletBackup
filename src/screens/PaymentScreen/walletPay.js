@@ -344,8 +344,8 @@ const WalletPay = ({ route, navigation }) => {
             case 'USDC':
               totalValue = totalValue + usdcValue;
               break;
-           // case IsTestNet ? 'ETH' : 'WETH':
             case 'WETH':
+           // case 'WETH':
               totalValue = totalValue + wethValue;
               break;
           }

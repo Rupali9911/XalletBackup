@@ -169,7 +169,12 @@ const Gallery = ({ route }) => {
     };
 
     const renderItem = ({ item, index }) => {
-        let findIndex = collectionList.findIndex(x => x?._id === item?._id);
+        let findIndex
+        if (item?._id) {
+            findIndex = collectionList.findIndex(x => x?._id === item?._id);
+        }else{
+            findIndex = collectionList.findIndex(x => x?.id === item?.id);
+        }
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         if (isStore || seriesInfoId) {
             return (

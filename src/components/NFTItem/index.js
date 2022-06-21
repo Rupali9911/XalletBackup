@@ -11,6 +11,7 @@ import { translate } from '../../walletUtils';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useDispatch, useSelector } from 'react-redux';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 
 export default function NFTItem(props) {
   const {
@@ -208,7 +209,7 @@ export default function NFTItem(props) {
   return (
     <>
       {isMeCollection ? (
-        <TouchableOpacity
+        <FixedTouchableHighlight
           onLongPress={onLongPress}
           onPress={onPress}
           style={styles.listItem}>
@@ -217,9 +218,9 @@ export default function NFTItem(props) {
             type={item?.type}
             imageStyle={styles.listImage}
           />
-        </TouchableOpacity>
+        </FixedTouchableHighlight>
       ) : isCollection ? (
-        <TouchableOpacity
+        <FixedTouchableHighlight
           // disabled={isDisable}
           onLongPress={onLongPress}
           onPress={onPress}
@@ -373,9 +374,9 @@ export default function NFTItem(props) {
                 </View>}
             </View>
           </View>
-        </TouchableOpacity>
+        </FixedTouchableHighlight>
       ) : (
-        <TouchableOpacity
+        <FixedTouchableHighlight
           // disabled={isDisable}
           onLongPress={onLongPress}
           onPress={onPress}
@@ -491,7 +492,7 @@ export default function NFTItem(props) {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
+        </FixedTouchableHighlight>
       )}
     </>
   );

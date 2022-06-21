@@ -22,6 +22,9 @@ import CommonStyles from '../../../constants/styles';
 
 import {environment, polRpc, translate} from '../../../walletUtils';
 import {chain} from "lodash/seq";
+import {networkType} from "../../../common/networkType";
+
+var coinType = '';
 
 const ListItems = props => {
     const {item,type} = props;
@@ -54,8 +57,7 @@ const ListItems = props => {
             <View style={{flex: 1, ...CommonStyles.center, alignItems: 'flex-end'}}>
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
                 <NumberFormat
-                    value={item.value}
-                    // value={coin.props==="USDC"?item.value * 1e9:item.value}
+                    value={coinType.coin.type=="USDC"||coinType.coin.type=="USDT"?item.value*1e9:item.value}
                     displayType={'text'}
                     decimalScale={8}
                     thousandSeparator={true}
@@ -85,6 +87,7 @@ const ListItems = props => {
 };
 
 const History = props => {
+        coinType = props;
     const {
         ethTransactions,
         bnbTransactions,
@@ -96,18 +99,13 @@ const History = props => {
         usdcTransactions,
         wethTransactions,
     } = useSelector(state => state.WalletReducer);
-
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
-
     const {coin} = props;
 
     useEffect(() => {
-        // setBalanceData([]);
     }, []);
-
     const navigation = useNavigation();
-
     const onRefresh = () => {
         setRefreshing(true);
         props.onRefresh &&
@@ -117,7 +115,8 @@ const History = props => {
     };
 
     const getTransactions = () => {
-        console.log('transection coin type=====>', coin.type, "  ")
+        console.log('transection coin type=====> setBalance', coin.type, "  ")
+        console.log('transection coin network=====>', coin.network, "  ")
         if (coin.type === 'ETH') {
             return ethTransactions;
         } else if (coin.type === 'BNB') {
@@ -134,12 +133,11 @@ const History = props => {
             return usdtTransactions;
         } else if (coin.type === 'TAL') {
             return talTransactions;
-        }else if (coin.type === 'ETH') {
+        }else if (coin.type ==='WETH') {
             return wethTransactions;
                 }
                 return [];
-            }
-            ;
+            };
             console.log("Transaction (get transaction)", getTransactions())
             return (
                 <View style={[styles.scene]}>
@@ -198,7 +196,6 @@ const History = props => {
             },
             profileCont: {
                 ...CommonStyles.circle('8'),
-
             },
             profileImage: {
                 ...CommonStyles.imageStyles(8),
@@ -209,7 +206,6 @@ const History = props => {
                 paddingVertical: hp('1.8%'),
                 flexDirection: 'row',
                 alignItems: 'center',
-
             },
             priceTxt: {
                 fontSize: RF(2.3),

@@ -813,7 +813,7 @@ function CollectionDetail(props) {
                                     <Text
                                         style={[
                                             styles.descriptionText,
-                                            { fontSize: SIZE(18), fontWeight: 'bold', marginBottom: 10 },
+                                            styles.descriptionTabData
                                         ]}>
                                         {collection.collectionName}
                                     </Text>
@@ -826,7 +826,7 @@ function CollectionDetail(props) {
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
-                                ] || collection.userInfo.about}
+                                    ] || collection.userInfo.about}
                             </Text>
                         ) : (
                             <View>
@@ -873,16 +873,14 @@ function CollectionDetail(props) {
 
             items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length || blindboxList[0]?.boxInfo.length;
             owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
-            floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
-                ? formatter.format(statsDetails.floorPrice)
-                : statsDetails?.floorPrice?.toFixed(3) || blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3);
-            volTraded = !isBlind ? Number(collection?.volTraded).toFixed(2) : statsDetails?.volumeTradeInETH
+            floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(2) : '--') : statsDetails?.floorPriceInDollar <= 40
+                ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '--')
+                : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '--') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
+            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(2) : '--') : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
-                : Number(blindboxList[0]?.volTraded).toFixed(3) || '--'
-
+                : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '--') || '--'
         } else if (isBlind && !nftId && sumBlindBox) {
             // console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
-
             items = sumBlindBox?.itemsCount
             owners = sumBlindBox?.OwnerCount
             floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
@@ -908,24 +906,24 @@ function CollectionDetail(props) {
                     </Text>
                 </View>
                 <View style={styles.collectionTableRow}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.floorPriceVw}>
                         <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
-                        <Text style={styles.collectionTableRowText}>
+                        <Text style={styles.collectionTableRowText} numberOfLines={1}>
                             {floorPrice}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec}>
+                    <Text style={styles.collectionTableRowDec} numberOfLines={1}>
                         {translate('common.floorPrice')}
                     </Text>
                 </View>
                 <View style={styles.collectionTableRow}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.floorPriceVw}>
                         <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
-                        <Text style={styles.collectionTableRowText}>
+                        <Text style={styles.collectionTableRowText} numberOfLines={1}>
                             {volTraded}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec}>
+                    <Text style={styles.collectionTableRowDec} numberOfLines={1}>
                         {translate('common.volumeTraded')}
                     </Text>
                 </View>

@@ -250,7 +250,7 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seri
       let url = `${BASE_URL}/user/my-collection`;
       if (wallet?.address) url = `${BASE_URL}/xanalia/mydata`;
       const req_body = {
-        limit: 6,
+        limit: 20,
         loggedIn: owner,
         networkType,
         nftType: 'mycollection',

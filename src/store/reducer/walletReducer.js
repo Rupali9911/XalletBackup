@@ -131,9 +131,9 @@ export default walletReducer = (state = initialState, action) => {
                 maticTransactions: [...action.payload],
                 talTransactions: [...action.payload],
                 usdcTransactions: [...action.payload],
-                ethTransactions: [...action.payload],
-                wethTransactions: [...action.payload]
+                wethTransactions: [...action.payload],
             };
+
 
         case UPDATE_BALANCES:
             return {
@@ -169,7 +169,7 @@ export default walletReducer = (state = initialState, action) => {
                 maticBalance: action.payload.Matic,
                 talBalance: action.payload.TAL, // for testnet only,
                 usdcBalance: action.payload.USDC,
-                wethBalance: action.payload.WETH
+                wethBalance: action.payload.WETH,
             }
 
         case SET_CONNECTED_APPS:

@@ -369,7 +369,7 @@ const SendScreen = (props) => {
             let value = parseFloat(usdcBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
             totalValue = value;
-        } else if (item.type ==networkType=="testnet"? 'ETH':"WETH" && item.network === 'Polygon') {
+        } else if (item.type =="WETH" && item.network === 'Polygon') {
             let value = parseFloat(wethBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
             totalValue = value;
@@ -391,7 +391,8 @@ const SendScreen = (props) => {
 
             case 'ETH':
                 // let ethBalance = await
-                    transfer(publicAddress, privKey, amount, toAddress, "eth", item.network=="Ethereum"?"ethereum":"polygon", "", "",environment.ethRpc, 10, 21000).then((ethBalance) => {
+
+                    transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", "",environment.ethRpc, 10, 21000).then((ethBalance) => {
                         console.log("ethBalance", ethBalance);
                         if (ethBalance.success) {
                             showSuccessAlert();
@@ -445,10 +446,8 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-
                 return;
             // case 'ALIA':
-            //     // let aliaBalance = await
             //     transfer(publicAddress, privKey, amount, toAddress, "alia",item.network=="BSC"?"binance":'polygon', environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
             //         console.log("aliaBalance======>", aliaBalance);
             //         setLoading(false);
@@ -457,7 +456,6 @@ const SendScreen = (props) => {
             //         setLoading(false);
             //         showErrorAlert(err.msg);
             //     });
-            //
             //     return;
             case 'Matic':
                 // let maticBalance = await
@@ -514,20 +512,20 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-            // case 'ETH':
-            //     // let aliaBalance = await
-            //     transfer(publicAddress, privKey, amount, toAddress, networkType=="testnet"?"eth":"weth","polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((wethBalance) => {
-            //
-            //         console.log("ethBalance", wethBalance);
-            //         setLoading(false);
-            //         if (talBalance.success) {
-            //             showSuccessAlert();
-            //         }
-            //     }).catch((err) => {
-            //         console.log("err", err);
-            //         setLoading(false);
-            //         showErrorAlert(err.msg);
-            //     });
+            case 'WETH':
+                // let aliaBalance = await
+                transfer(publicAddress, privKey, amount, toAddress, "weth","polygon", environment.wethCont, environment.wethAbi, environment.polRpc, 10, 81778).then((wethBalance) => {
+
+                    console.log("ethBalance", wethBalance);
+                    setLoading(false);
+                    if (talBalance.success) {
+                        showSuccessAlert();
+                    }
+                }).catch((err) => {
+                    console.log("err", err);
+                    setLoading(false);
+                    showErrorAlert(err.msg);
+                });
 
 
             default:
@@ -537,7 +535,7 @@ const SendScreen = (props) => {
     const showSuccessAlert = () => {
         Alert.alert(
             translate("wallet.common.transferInProgress", { token: `${amount} ${type}` }),
-            '',
+            translate("wallet.common.reflectInHistory", { token: `${amount} ${type}` }),
             [
                 {
                     text: 'OK',
