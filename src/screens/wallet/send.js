@@ -535,7 +535,7 @@ const SendScreen = (props) => {
     const showSuccessAlert = () => {
         Alert.alert(
             translate("wallet.common.transferInProgress", { token: `${amount} ${type}` }),
-            '',
+            translate("wallet.common.reflectInHistory", { token: `${amount} ${type}` }),
             [
                 {
                     text: 'OK',

@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import {
     ActivityIndicator,
@@ -37,7 +37,9 @@ const BLIND_SERIES_COLLECTION_TYPE = [
 ];
 const { height } = Dimensions.get('window');
 
-const Collections = props => {
+const Owned = (props) => {
+    // console.log("🚀 ~ file: Owned.js ~ line 41 ~ Owned ~ props", props)
+    const { route } = props;
     const {
         nftChain,
         collectionAddress,
@@ -50,18 +52,20 @@ const Collections = props => {
         isStore,
         manualColl,
         seriesInfoId
-    } = props;
+    } = route?.params;
+
     // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
     const { NftDataCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
 
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
         : NftDataCollectionReducer.nftDataCollectionLoading;
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : collectionType == 1 ?
+        : collectionType == 1 && isBlind ?
             NftDataCollectionReducer.mysteryBoxCollectionList :
             NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
@@ -69,23 +73,40 @@ const Collections = props => {
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : collectionType == 1 ?
+        : collectionType == 1 && isBlind ?
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
 
+    // console.log("🚀 ~ file: Owned.js ~ line 66 ~ Owned ~", NftDataCollectionReducer.nftDataCollectionLoading, NftDataCollectionReducer.nftBlindSeriesCollectionLoading)
     useEffect(() => {
-        if (isSeries) {
-            dispatch(nftBlindSeriesCollectionLoadStart());
-            dispatch(nftBlindSeriesCollectionReset());
-            getNFTlist(1);
-            dispatch(nftBlindSeriesCollectionPageChange(1));
-        } else {
-            dispatch(nftDataCollectionLoadStart());
-            dispatch(nftDataCollectionListReset());
-            getNFTlist(1);
-            dispatch(nftDataCollectionPageChange(1));
+        if (isFocused) {
+            // console.log("🚀 ~ file: Owned.js ~ line 53 ~",
+            // route?.params
+            // nftChain,
+            // collectionAddress,
+            // collectionType,
+            // isBlind,
+            // isHotCollection,
+            // isSeries,
+            // collectionId,
+            // userCollection,
+            // isStore,
+            // manualColl,
+            // seriesInfoId
+            // )
+            if (isSeries) {
+                dispatch(nftBlindSeriesCollectionLoadStart());
+                dispatch(nftBlindSeriesCollectionReset());
+                getNFTlist(1);
+                dispatch(nftBlindSeriesCollectionPageChange(1));
+            } else {
+                dispatch(nftDataCollectionLoadStart());
+                dispatch(nftDataCollectionListReset());
+                getNFTlist(1);
+                dispatch(nftDataCollectionPageChange(1));
+            }
         }
-    }, [collectionType, userCollection]);
+    }, [collectionType, userCollection, isFocused]);
 
     const getNFTlist = useCallback(
         page => {
@@ -127,7 +148,7 @@ const Collections = props => {
                     page: 1
                 }
                 // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
-                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp));
+                dispatch(nftBlindDataCollectionList(collectionAddress, 1, temp));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
         },
@@ -136,10 +157,12 @@ const Collections = props => {
 
     const refreshFunc = () => {
         if (isSeries) {
+            dispatch(nftBlindSeriesCollectionLoadStart());
             dispatch(nftBlindSeriesCollectionReset());
             getNFTlist(1);
             dispatch(nftBlindSeriesCollectionPageChange(1));
         } else {
+            dispatch(nftDataCollectionLoadStart());
             dispatch(nftDataCollectionListReset());
             getNFTlist(1);
             dispatch(nftDataCollectionPageChange(1));
@@ -147,8 +170,15 @@ const Collections = props => {
     };
 
     const renderFooter = () => {
+        // if (!isLoading) {
+        //     return (
+        //         <ActivityIndicator size='small' color={colors.themeR} />
+        //     )
+        // }
         if (!isLoading) return null;
-        return <ActivityIndicator size="small" color={colors.themeR} />;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        )
     };
 
     const renderItem = ({ item, index }) => {
@@ -158,9 +188,7 @@ const Collections = props => {
         }else{
             findIndex = collectionList.findIndex(x => x?.id === item?.id);
         }
-         
-       // console.log('findIndex', findIndex, 'collectionList', collectionList)
-        // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
+                // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         if (isStore || seriesInfoId) {
             return (
                 <NFTItem
@@ -274,7 +302,6 @@ const Collections = props => {
 
     const keyExtractor = (item, index) => { return 'item_' + index }
 
-
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -284,25 +311,33 @@ const Collections = props => {
                 </View>
             ) : collectionList.length !== 0 ? (
                 <FlatList
+                    nestedScrollEnabled={true}
                     data={collectionList}
                     horizontal={false}
                     numColumns={2}
                     initialNumToRender={isSeries ? 6 : 15}
-                    onRefresh={handleFlatlistRefresh}
-                    refreshing={page === 1 && isLoading}
+                    // onRefresh={handleFlatlistRefresh}
+                    // refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
-                    // onEndReached={() => {
-                    //     if (!isLoading && collectionList.length !== totalCount) {
-                    //         let num = page + 1;
-                    //         getNFTlist(num);
-                    //         if (isSeries) {
-                    //             dispatch(nftBlindSeriesCollectionPageChange(num));
-                    //         } else {
-                    //             dispatch(nftDataCollectionPageChange(num));
-                    //         }
-                    //     }
-                    // }}
-                    // onEndReachedThreshold={0.4}
+                    onEndReached={() => {
+                        if (!isLoading && collectionList.length !== totalCount) {
+                            let num = page + 1;
+
+                            if (isSeries) {
+                                dispatch(nftBlindSeriesCollectionLoadStart());
+                            } else {
+                                dispatch(nftDataCollectionLoadStart());
+                            }
+
+                            getNFTlist(num);
+                            if (isSeries) {
+                                dispatch(nftBlindSeriesCollectionPageChange(num));
+                            } else {
+                                dispatch(nftDataCollectionPageChange(num));
+                            }
+                        }
+                    }}
+                    onEndReachedThreshold={0.4}
                     keyExtractor={keyExtractor}
                     ListFooterComponent={renderFooter}
                 />
@@ -317,4 +352,4 @@ const Collections = props => {
     );
 };
 
-export default Collections;
+export default Owned;

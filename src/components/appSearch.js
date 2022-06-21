@@ -163,6 +163,7 @@ export default function AppSearch() {
           setSearchTxt(txt);
         }}
         value={searchTxt}
+        multiline={false}
       />
 
       {loading || searchData?.length ? (
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: hp('3%'),
     // marginHorizontal: wp('2'),
     // marginTop: wp('2%'),
-    width: wp('90%'),
+    width: wp('95%'),
     height: hp('5%'),
     paddingVertical: 0,
   },

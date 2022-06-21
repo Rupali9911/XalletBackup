@@ -652,9 +652,9 @@
         "hotcollection": "推奨コレクション",
         "amountMoreThan": "金額は$999,999.99以下でなければなりません",
         "toFilter": "から",
+        "ongoinglaunch": "進行中",
         "CNcreatorname":"作者名",
         "CNcreatordesc":"作品の詳細"
-
     },
     "AwardPage": {},
     "wallet": {
@@ -748,7 +748,7 @@
             "transactionsHint": "ここで取引が表示されます。",
             "copied": "コピーが完了しました",
             "transferSuccess": "{{token}}を正常に転送",
-            "transferInProgress": "送金中",
+            "transferInProgress": "送信中",
             "requirePhrase": "あなたの財布を回復するためにフレーズを入力してください",
             "insufficientFunds": "取引のために必要な残高が足りません",
             "search": "検索",
@@ -995,7 +995,8 @@
             "bidaward": "入札アワード",
             "transferFrom": "転送",
             "closeTimeWarn": "閉店時間は開店時間より長くする必要があります",
-            "descriptionCreate": "作品の詳細"
+            "descriptionCreate": "作品の詳細",
+            "reflectInHistory": "（完了後、取引履歴に反映されます）"
         },
         "backendmessage": {
             "error": {},

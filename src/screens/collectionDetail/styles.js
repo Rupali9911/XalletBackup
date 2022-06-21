@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { SIZE, FONTS } from 'src/constants';
+import { SIZE } from '../../common/responsiveFunction';
 import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
@@ -65,18 +65,19 @@ const styles = StyleSheet.create({
   },
   collectionTableRow: {
     alignItems: 'center',
-    width: SIZE(86),
+    // width: SIZE(86),
     height: SIZE(46),
-    //alignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     marginLeft: -1,
     borderColor: '#eeeeee',
+    paddingHorizontal:SIZE(15)
   },
   collectionTableRowText: {
-    fontSize: SIZE(16),
+    fontSize: SIZE(14),
     fontFamily: fonts.ARIAL,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   collectionTableRowDec: {
     fontSize: SIZE(11),
@@ -85,14 +86,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
   },
   cryptoIcon: {
-    width: SIZE(15),
-    height: SIZE(15),
+    width: SIZE(14),
+    height: SIZE(14),
     marginRight: SIZE(2),
     resizeMode: "contain"
   },
   descriptionTabWrapper: {
     flexDirection: 'row',
-    paddingHorizontal: SIZE(5),
+    // paddingHorizontal: SIZE(5),
     marginTop: SIZE(20),
   },
   descriptionTab: {
@@ -124,16 +125,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: SIZE(90),
     marginHorizontal: SIZE(5),
-    borderTopWidth: 0,
+    // borderTopWidth: 0,
     paddingHorizontal: SIZE(15),
-    paddingVertical: SIZE(9),
+    paddingVertical: SIZE(12),
     marginBottom: SIZE(16),
   },
   descriptionText: {
     fontSize: SIZE(12.5),
     lineHeight: 18,
     fontFamily: fonts.ARIAL,
-
     color: '#212529',
   },
   sorryMessageCont: {
@@ -231,6 +231,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: wp('100%')
+  },
+  descriptionTabData: {
+    fontSize: SIZE(18),
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 5
+  },
+  floorPriceVw:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

@@ -651,6 +651,7 @@
         "zoomMail": "縮放郵件",
         "amountMoreThan": "金額不得超過 999,999.99 美元",
         "toFilter": "到",
+        "ongoinglaunch": "進行中",
         "CNcreatorname":"創作者姓名",
         "CNcreatordesc":"創作者描述"
     },
@@ -993,7 +994,8 @@
             "bidaward": "中標",
             "transferFrom": "轉移",
             "closeTimeWarn": "關閉時間應大於打開時間",
-            "descriptionCreate": "描述"
+            "descriptionCreate": "描述",    
+            "reflectInHistory": "（完成後會反映在交易記錄中）"
         },
         "backendmessage": {
             "error": {},

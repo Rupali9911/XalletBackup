@@ -1,7 +1,5 @@
 {
     "common": {
-        "CNcreatorname":"Creator Name",
-        "CNcreatordesc":"Creator Description",
         "totalValue": "Total Value Locked (TVL)",
         "Copyaddress": " Copy address",
         "Logout": "Logout",
@@ -650,8 +648,10 @@
         "blindboxCollections": "Mystery Box",
         "zoomMail": "Zoom Mail",
         "amountMoreThan": "Amount must be no more than $999,999.99",
-        "toFilter": "To"
-
+        "toFilter": "To",
+        "ongoinglaunch": "Ongoing",
+        "CNcreatorname":"Creator Name",
+        "CNcreatordesc":"Creator Description"
     },
     "AwardPage": {},
     "wallet": {
@@ -991,7 +991,8 @@
             "bidaward": "Bid Award",
             "transferFrom": "Transfer",
             "closeTimeWarn": "Close time should be greater than open time",
-            "descriptionCreate": "Description"
+            "descriptionCreate": "Description",
+            "reflectInHistory": "(After completion, it will be reflected in the transaction history)"
         },
         "backendmessage": {
             "error": {},
