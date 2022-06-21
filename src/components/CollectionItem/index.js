@@ -140,11 +140,11 @@ export default function CollectionItem(props) {
           <View style={styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
+            {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
               <Text style={{ marginRight: 50 }}>
               </Text>
-            </Text>
+            </Text>}
           </View>
         </View>
       </View>

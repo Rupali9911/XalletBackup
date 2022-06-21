@@ -39,7 +39,7 @@ export const hotCollectionList = (page) => {
       .then(json => {
         const obj = {
           bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/NFTAward.png",
-          chainType: "binance",
+          chainType: "",
           collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
           collectionId: "61c44353e5622d1a2e053f3e",
           collectionName: "NFTART AWARD 2021",
