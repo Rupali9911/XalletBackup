@@ -54,9 +54,8 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const dispatch = useDispatch();
   const { AuthReducer } = useSelector(state => state);
   const { data, wallet } = useSelector(state => state.UserReducer);
-
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const [creatorAddress, setCreatorAddress] = useState("");
-
   const [isPlay, setPlay] = useState(false);
   const [isLike, setLike] = useState(item.like);
   const [singleNFT, setSingleNFT] = useState({});
@@ -71,9 +70,11 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
+  const [getDetailNFT, setgetDetailNFT]=useState([])
   const navigation = useNavigation();
   const refVideo = useRef(null);
   const refVideoPlay = useRef(null);
+
 
   // haris change these states
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
@@ -443,6 +444,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       .then(async res => {
         if (res.data.length > 0 && res.data !== 'No record found') {
           const temp = res.data[0];
+          setgetDetailNFT(res.data[0])
 
           setNFTDetail(temp)
           if (temp.offchain) {
@@ -462,7 +464,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
             );
             getDiscount();
           }
-
           let newData = await getNFTDetails(res.data[0]);
           setLike(newData.like)
           // console.log(newData, "newDatanewDatanewData")
@@ -713,6 +714,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                       artistData: artistData,
                       video: videoUri,
                       fileType: fileType,
+                      detailitem:getDetailNFT,
                       item: item,
                       index: index,
                     })
@@ -735,24 +737,13 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                         refVideoPlay.current = true;
                       }}
                       style={{
-                        flex: 1,
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
+                        flex: 1,position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                       }}
                     />
                     {!isPlay && (
                       <View
                         style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center',
                         }}>
                         <View
                           style={{
@@ -762,6 +753,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                             borderRadius: SIZE(100),
                             alignItems: 'center',
                             justifyContent: 'center',
+
                           }}>
                           <TouchableOpacity onPress={() => {
                             if (refVideoPlay.current) {
@@ -829,11 +821,12 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
               <SpaceView mTop={SIZE(8)} />
               <SmallBoldText>{`${numberWithCommas(item.rating)} ${translate('common.Likes')}`}</SmallBoldText>
               <SpaceView mTop={SIZE(6)} />
-              <Text style={styles.modalLabel}>{item.metaData.name}</Text>
+              <Text style={styles.modalLabel}>{getDetailNFT[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}</Text>
               <View style={styles.separator} />
               {!!item?.metaData && !!item.metaData.description && <View style={{marginBottom: 20}}>
                 <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
-                  {textShown ? item.metaData.description : item.metaData.description?.replaceAll('\n', '')}
+                  {textShown ? getDetailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : getDetailNFT[`${selectedLanguageItem.language_name}_nft_description`]?.replaceAll('\n', '') || item.metaData.description?.replaceAll('\n', '')}
+
                 </Text>
                   {lengthMore && textShown && (
                     <TouchableOpacity activeOpacity={1} style={[styles.readLessWrap]} onPress={() => setTextShown(false)}>

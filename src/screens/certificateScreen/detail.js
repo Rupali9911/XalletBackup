@@ -53,6 +53,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
+
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
 import addComma from '../../utils/insertComma';
 import { handleLike } from '../explore/nftItems';
@@ -138,6 +139,8 @@ const DetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const { paymentObject } = useSelector(state => state.PaymentReducer);
   const { data, wallet } = useSelector(state => state.UserReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
@@ -150,6 +153,7 @@ const DetailScreen = ({ navigation, route }) => {
     video,
     fileType,
     item,
+    detailitem,
     index,
     setNftItem
   } = route.params;
@@ -175,7 +179,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
-
   // const [discount, setDiscount] = useState(false);
   // const [discountValue, setDiscountValue] = useState('');
   // const [sellDetails, setSellDetails] = useState([]);
@@ -218,6 +221,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [isLike, setLike] = useState(item.like);
   const [updateComponent, setUpdateComponent] = useState(false);
   const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
+
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
   const nft = item.tokenId || item.collectionAdd;
@@ -248,6 +252,7 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    console.log("Detail item###",item)
     if (isFocused) {
       if (chainType) {
         if (chainAvailable) {
@@ -1247,7 +1252,8 @@ const DetailScreen = ({ navigation, route }) => {
     fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
-        console.log('getDetailNFT_res', res);
+        console.log('getDetailNFT_res 1255', res.data[0]);
+
         if (res.data.length > 0 && res.data !== 'No record found') {
           setNFTPrice(res.data[0]?.price)
           let data = await getNFTDetails(res.data[0]);
@@ -1957,7 +1963,9 @@ const DetailScreen = ({ navigation, route }) => {
           <Text style={styles.nftTitle} ellipsizeMode="tail" >
             {creatorName}
           </Text>
-          <Text style={styles.nftName}>{item.metaData.name}</Text>
+          <Text style={styles.nftName}>
+            {detailitem[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}
+          </Text>
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: "row", paddingHorizontal: SIZE(12) }} >
               <View style={[{ flex: 1, flexDirection: "row", alignItems: "center", marginRight: wp(2) }]}>
@@ -1989,7 +1997,10 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </View>
           )}
-          <Text style={styles.description}>{item.metaData.description}</Text>
+          <Text style={styles.description}>
+            {detailitem[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description
+            }
+          </Text>
           {getAuctionTimeRemain(item) ? (
             <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>
               {isBiddingTimeEnd ?

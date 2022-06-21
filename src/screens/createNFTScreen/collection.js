@@ -104,6 +104,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
         setcreatorDescription(collectData.creatorDescription);
         setBannerImage({ path: collectData.bannerImage });
         setIconImage({ path: collectData.iconImage })
+        console.log("CollectionAddress######",collectionAdd)
         if (collectData.chainType !== networkType.value) {
           let networktype = collectData.chainType.toLowerCase() == "binance" ?
               translate("common.BinanceNtwk") :
@@ -402,6 +403,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
             console.log("🚀 ~ file: collection.js ~ line 390 ~ transactionData", transactionData)
             if (transactionData.success) {
               const { collectionAddress } = transactionData.data;
+              console.log("CollectionAddress is @@@@@@@@", transactionData.data)
               setCollectionAdd(collectionAddress);
               console.log(collectionAddress, "transactionData 393")
 
