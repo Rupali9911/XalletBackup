@@ -25,6 +25,7 @@ import {setApprovalForAll, nftMakingMethods} from '../wallet/functions';
 import {RF} from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import {value} from "lodash/seq";
+import { _logout } from '../../store/reducer/userReducer';
 
 const Web3 = require('web3');
 
@@ -366,6 +367,13 @@ const UploadNFT = ({
                     //   translate("wallet.common.alert"),
                     //   translate("wallet.common.error.networkFailed")
                     // );
+
+                    if (e?.response?.status === 401) {
+                        alertWithSingleBtn(
+                            translate("wallet.common.alert"),
+                            translate('common.sessionexpired')
+                        )
+                      }
                 })
         }
     };

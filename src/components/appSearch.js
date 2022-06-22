@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     width: '100%',
+    top: hp('1.5%')
   },
   searchBar: {
     borderWidth: 1,

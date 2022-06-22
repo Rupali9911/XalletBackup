@@ -833,7 +833,7 @@ function CollectionDetail(props) {
                                 <Text
                                     style={[
                                         styles.descriptionText,
-                                        { fontSize: SIZE(16), fontWeight: 'bold' },
+                                        styles.descriptionTabData,
                                     ]}>
                                     {collection?.creatorName}
                                 </Text>
@@ -873,12 +873,12 @@ function CollectionDetail(props) {
 
             items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length || blindboxList[0]?.boxInfo.length;
             owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
-            floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(2) : '--') : statsDetails?.floorPriceInDollar <= 40
-                ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '--')
-                : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '--') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
-            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(2) : '--') : statsDetails?.volumeTradeInETH
+            floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(2) : '0.00') : statsDetails?.floorPriceInDollar <= 40
+                ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
+                : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
+            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(2) : '0') : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
-                : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '--') || '--'
+                : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '0') || '--'
         } else if (isBlind && !nftId && sumBlindBox) {
             // console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
             items = sumBlindBox?.itemsCount

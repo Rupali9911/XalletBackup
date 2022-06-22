@@ -154,8 +154,11 @@ const styles = StyleSheet.create({
     fontSize: RF(2),
     fontFamily: fonts.ARIAL,
     color: colors.themeR,
-    lineHeight: SIZE(14.06),
+    // lineHeight: SIZE(14.06),
     maxWidth: SIZE(130),
+    height: SIZE(20),
+    alignSelf: 'center',
+    justifyContent: 'center'
   },
   description: {
     fontSize: RF(1.4),

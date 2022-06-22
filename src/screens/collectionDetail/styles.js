@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: SIZE(12.5),
-    lineHeight: 18,
+    // lineHeight: 18,
     fontFamily: fonts.ARIAL,
     color: '#212529',
   },
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
 });
 
 export default styles;

@@ -307,6 +307,7 @@ const NotOnSale = ({ route }) => {
                     // onRefresh={handleFlatlistRefresh}
                     // refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
+                    nestedScrollEnabled={true}
                     onEndReached={() => {
                         if (!isLoading && collectionList.length !== totalCount) {
                             let num = page + 1;
