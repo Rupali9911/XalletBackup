@@ -1,5 +1,5 @@
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -49,13 +49,15 @@ const NotOnSale = ({ route }) => {
         userCollection,
         isStore,
         manualColl,
-        seriesInfoId
+        seriesInfoId,
+        tabTitle
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
+    const [isDetailScreen, setDetailScreen] = useState(false);
 
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
@@ -90,16 +92,20 @@ const NotOnSale = ({ route }) => {
             // manualColl,
             // seriesInfoId
             // )
-            if (isSeries) {
-                dispatch(nftBlindSeriesCollectionLoadStart());
-                dispatch(nftBlindSeriesCollectionReset());
-                getNFTlist(1);
-                dispatch(nftBlindSeriesCollectionPageChange(1));
+            if (isFocused && !isDetailScreen) {
+                if (isSeries) {
+                    dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
+                    dispatch(nftBlindSeriesCollectionReset());
+                    getNFTlist(1);
+                    dispatch(nftBlindSeriesCollectionPageChange(1));
+                } else {
+                    dispatch(nftDataCollectionLoadStart(tabTitle));
+                    dispatch(nftDataCollectionListReset());
+                    getNFTlist(1);
+                    dispatch(nftDataCollectionPageChange(1));
+                }
             } else {
-                dispatch(nftDataCollectionLoadStart());
-                dispatch(nftDataCollectionListReset());
-                getNFTlist(1);
-                dispatch(nftDataCollectionPageChange(1));
+                isFocused && setDetailScreen(false)
             }
         }
     }, [collectionType, userCollection, isFocused]);
@@ -107,10 +113,10 @@ const NotOnSale = ({ route }) => {
     const getNFTlist = useCallback(
         page => {
             if (isStore) {
-                console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
-                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true));
+                // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
+                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
             } else if (!isBlind) {
-                console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
+                // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
                 dispatch(
                     nftDataCollectionList(
                         page,
@@ -120,18 +126,22 @@ const NotOnSale = ({ route }) => {
                             ? collectionId
                             : null,
                         false,
-                        manualColl
+                        manualColl,
+                        null,
+                        tabTitle
                     ),
                 );
             } else if (isSeries) {
-                console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
+                // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
                 dispatch(
                     nftBlindSeriesCollectionList(
                         page,
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
                         seriesInfoId,
-                        nftChain
+                        nftChain,
+                        null,
+                        tabTitle
                     ),
                 );
             } else {
@@ -141,10 +151,10 @@ const NotOnSale = ({ route }) => {
                     limit: 24,
                     loggedIn: null,
                     owner: null,
-                    page: 1
+                    page: page
                 }
                 // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
-                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp));
+                dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp, tabTitle));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
         },
@@ -185,6 +195,7 @@ const NotOnSale = ({ route }) => {
                     nftChain={nftChain}
                     isStore={isStore}
                     onPress={() => {
+                        setDetailScreen(true)
                         // console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
                         if (!isSeries) {
                             // dispatch(changeScreenName('dataCollection'));
@@ -222,6 +233,7 @@ const NotOnSale = ({ route }) => {
                     image={item.iconImage}
                     nftChain={nftChain}
                     onPress={() => {
+                        setDetailScreen(true)
                         if (!isSeries) {
                             // dispatch(changeScreenName('dataCollection'));
                             navigation.push('DetailItem', {
@@ -256,6 +268,7 @@ const NotOnSale = ({ route }) => {
                     isCollection={!isHotCollection}
                     cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
+                        setDetailScreen(true)
                         // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
@@ -313,9 +326,9 @@ const NotOnSale = ({ route }) => {
                             let num = page + 1;
 
                             if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionLoadStart());
+                                dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
                             } else {
-                                dispatch(nftDataCollectionLoadStart());
+                                dispatch(nftDataCollectionLoadStart(tabTitle));
                             }
 
                             getNFTlist(num);
@@ -331,7 +344,7 @@ const NotOnSale = ({ route }) => {
                     ListFooterComponent={renderFooter}
                 />
             ) : (
-                <View style={{ marginTop: height / 8 }}>
+                <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>
                         <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
                     </View>

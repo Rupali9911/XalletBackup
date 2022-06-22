@@ -20,8 +20,9 @@ export const nftDataCollectionLoadSuccess = (data) => ({
   payload: data
 });
 
-export const nftDataCollectionLoadStart = () => ({
-  type: NFT_DATA_COLLECTION_START
+export const nftDataCollectionLoadStart = (tabTitle) => ({
+  type: NFT_DATA_COLLECTION_START,
+  payload: tabTitle
 });
 
 export const nftDataCollectionLoadFail = () => ({
@@ -38,8 +39,9 @@ export const nftDataCollectionPageChange = (data) => ({
 });
 
 
-export const nftBlindSeriesCollectionLoadStart = () => ({
+export const nftBlindSeriesCollectionLoadStart = (tabTitle) => ({
   type: NFT_BLIND_SERIES_COLLECTION_START,
+  payload: tabTitle
 });
 
 export const nftBlindSeriesCollectionLoadSuccess = (data) => ({
@@ -60,7 +62,7 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId) => {
+export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
   return (dispatch, getState) => {
     if (isStore && type !== 'owned') {
@@ -122,7 +124,7 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
             }
           }
           json.data = nftData;
-          dispatch(nftDataCollectionLoadSuccess(json));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         })
         .catch(err => {
           dispatch(nftDataCollectionLoadFail());
@@ -131,7 +133,7 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
       const { data, wallet } = getState().UserReducer;
       const owner = data?.user?._id || wallet?.address;
       if (type === 'owned') {
-        dispatch(nftBlindSeriesCollectionList(page, collectionAddress, type, seriesInfoId, '', 'nftDataCollectionList'));
+        dispatch(nftBlindSeriesCollectionList(page, collectionAddress, type, seriesInfoId, '', 'nftDataCollectionList', tabTitle));
       } else {
         let url = `${BASE_URL}/user/nft-data-collection?type=${type}&page=${page}&limit=10&owner=${owner}`;
         if (manualColl) {
@@ -169,7 +171,7 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
             });
             // }
             json.data = nftData;
-            dispatch(nftDataCollectionLoadSuccess(json));
+            dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
           }).catch(err => {
             dispatch(nftDataCollectionLoadFail());
           })
@@ -178,8 +180,8 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
   }
 }
 
-export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body)
+export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body, tabTitle) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body, tabTitle)
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
@@ -213,7 +215,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
 
         if (collectionType == 0) {
           // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
-          dispatch(nftDataCollectionLoadSuccess(json));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         } else {
           let nftData = [];
 
@@ -230,7 +232,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
           json.count = json.data.length;
           json.data = nftData;
           // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
-          dispatch(nftDataCollectionLoadSuccess(json));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         }
       })
       .catch(err => {
@@ -239,7 +241,7 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
   }
 }
 
-export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seriesInfoId, chainType, callFrom) => {
+export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seriesInfoId, chainType, callFrom, tabTitle) => {
   return (dispatch, getState) => {
     const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
@@ -282,9 +284,9 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seri
         .then(json => {
           if (json.data && json.count) {
             if (callFrom) {
-              dispatch(nftDataCollectionLoadSuccess(json));
+              dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
             } else {
-              dispatch(nftBlindSeriesCollectionLoadSuccess(json));
+              dispatch(nftBlindSeriesCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
             }
           } else {
             dispatch(nftBlindSeriesCollectionLoadFail());
@@ -297,14 +299,14 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seri
     } else {
       const req_body = seriesInfoId == "61aa058d504d60a828f80113" ?
         {
-          limit: 6,
+          limit: 10,
           filterType: type == "minted2" && seriesInfoId == "61aa058d504d60a828f80113" ? "gallery" : type,
           chainType: chainType,
           page,
           seriesInfoId: seriesInfoId,
         } :
         {
-          limit: 6,
+          limit: 10,
           filterType: type,
           loggedIn: owner,
           owner,
@@ -344,8 +346,8 @@ export const nftBlindSeriesCollectionList = (page, collectionAddress, type, seri
             //   });
             // }
             // json.data = nftData;
-            console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 319 ~ return ~ json", json)
-            dispatch(nftBlindSeriesCollectionLoadSuccess(json));
+            // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 319 ~ return ~ json", json)
+            dispatch(nftBlindSeriesCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
           } else {
             dispatch(nftBlindSeriesCollectionLoadFail());
           }

@@ -1,5 +1,5 @@
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -51,7 +51,8 @@ const Owned = (props) => {
         userCollection,
         isStore,
         manualColl,
-        seriesInfoId
+        seriesInfoId,
+        tabTitle
     } = route?.params;
 
     // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
@@ -59,6 +60,7 @@ const Owned = (props) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
+    const [isDetailScreen, setDetailScreen] = useState(false);
 
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
@@ -94,16 +96,20 @@ const Owned = (props) => {
             // manualColl,
             // seriesInfoId
             // )
-            if (isSeries) {
-                dispatch(nftBlindSeriesCollectionLoadStart());
-                dispatch(nftBlindSeriesCollectionReset());
-                getNFTlist(1);
-                dispatch(nftBlindSeriesCollectionPageChange(1));
+            if (isFocused && !isDetailScreen) {
+                if (isSeries) {
+                    dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
+                    dispatch(nftBlindSeriesCollectionReset());
+                    getNFTlist(1);
+                    dispatch(nftBlindSeriesCollectionPageChange(1));
+                } else {
+                    dispatch(nftDataCollectionLoadStart(tabTitle));
+                    dispatch(nftDataCollectionListReset());
+                    getNFTlist(1);
+                    dispatch(nftDataCollectionPageChange(1));
+                }
             } else {
-                dispatch(nftDataCollectionLoadStart());
-                dispatch(nftDataCollectionListReset());
-                getNFTlist(1);
-                dispatch(nftDataCollectionPageChange(1));
+                isFocused && setDetailScreen(false)
             }
         }
     }, [collectionType, userCollection, isFocused]);
@@ -112,7 +118,7 @@ const Owned = (props) => {
         page => {
             if (isStore) {
                 // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
-                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true));
+                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
             } else if (!isBlind) {
                 // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
                 dispatch(
@@ -124,7 +130,9 @@ const Owned = (props) => {
                             ? collectionId
                             : null,
                         false,
-                        manualColl
+                        manualColl,
+                        null,
+                        tabTitle
                     ),
                 );
             } else if (isSeries) {
@@ -135,7 +143,9 @@ const Owned = (props) => {
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
                         seriesInfoId,
-                        nftChain
+                        nftChain,
+                        null,
+                        tabTitle
                     ),
                 );
             } else {
@@ -148,7 +158,7 @@ const Owned = (props) => {
                     page: 1
                 }
                 // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
-                dispatch(nftBlindDataCollectionList(collectionAddress, 1, temp));
+                dispatch(nftBlindDataCollectionList(collectionAddress, 1, temp, tabTitle));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
         },
@@ -198,6 +208,7 @@ const Owned = (props) => {
                     nftChain={nftChain}
                     isStore={isStore}
                     onPress={() => {
+                        setDetailScreen(true)
                         // console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
                         if (!isSeries) {
                             // dispatch(changeScreenName('dataCollection'));
@@ -235,6 +246,7 @@ const Owned = (props) => {
                     image={item.iconImage}
                     nftChain={nftChain}
                     onPress={() => {
+                        setDetailScreen(true)
                         if (!isSeries) {
                             // dispatch(changeScreenName('dataCollection'));
                             navigation.push('DetailItem', {
@@ -269,6 +281,7 @@ const Owned = (props) => {
                     isCollection={!isHotCollection}
                     cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
+                        setDetailScreen(true)
                         // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
@@ -324,9 +337,9 @@ const Owned = (props) => {
                             let num = page + 1;
 
                             if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionLoadStart());
+                                dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
                             } else {
-                                dispatch(nftDataCollectionLoadStart());
+                                dispatch(nftDataCollectionLoadStart(tabTitle));
                             }
 
                             getNFTlist(num);
@@ -342,7 +355,7 @@ const Owned = (props) => {
                     ListFooterComponent={renderFooter}
                 />
             ) : (
-                <View style={{ marginTop: height / 8 }}>
+                <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>
                         <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
                     </View>
