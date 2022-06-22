@@ -108,10 +108,12 @@ const History = props => {
     const navigation = useNavigation();
     const onRefresh = () => {
         setRefreshing(true);
-        props.onRefresh &&
-            props.onRefresh().then(() => {
-                setRefreshing(false);
-            });
+        setTimeout(() => {
+            props.onRefresh &&
+                props.onRefresh().then(() => {
+                    setRefreshing(false);
+                });
+        }, 2000);
     };
 
     const getTransactions = () => {
