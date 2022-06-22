@@ -432,6 +432,7 @@
         "currentprice": " 目前的价格",
         "lastprice": "最后价格 ",
         "noNFT": "没有可用的 NFT ",
+        "noNFTsFound": "未找到 NFT", 
         "Selectcardtopay": "选择要支付的卡",
         "Selectbasecurrency": "选择货币类型（ALIA 或 USD） ",
         "profileupdate": "更新成功！",

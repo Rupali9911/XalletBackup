@@ -336,7 +336,7 @@ const Gallery = ({ route }) => {
             ) : (
                 <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>
-                        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+                        <Text style={styles.sorryMessage}>{translate('common.noNFTsFound')}</Text>
                     </View>
                 </View>
             )}

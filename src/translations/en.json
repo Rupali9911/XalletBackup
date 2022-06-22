@@ -431,6 +431,7 @@
         "currentprice": "Current price",
         "lastprice": "Last Price",
         "noNFT": "No NFT Available",
+        "noNFTsFound": "No NFTs Found", 
         "Selectcardtopay": "Select a Card to Pay",
         "Selectbasecurrency": "Select base currency to fix the price ALIA or US$",
         "profileupdate": "Updated Successfully",
