@@ -98,6 +98,7 @@ const History = props => {
         usdtTransactions,
         usdcTransactions,
         wethTransactions,
+        aliaTransactions,
     } = useSelector(state => state.WalletReducer);
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
@@ -135,7 +136,9 @@ const History = props => {
             return talTransactions;
         }else if (coin.type ==='WETH') {
             return wethTransactions;
-                }
+        }else if (coin.type ==='ALIA') {
+            return aliaTransactions;
+        }
                 return [];
             };
             console.log("Transaction (get transaction)", getTransactions())

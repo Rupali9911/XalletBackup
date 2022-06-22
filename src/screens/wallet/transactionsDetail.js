@@ -69,15 +69,15 @@ console.log("Checking coin type",coin.type)
           )}
         />
         <View style={styles.directionContainer}>
-          {transactionInfo?.txreceipt_status === "1" && (
+          {transactionInfo?.hash!=="" && (
             <Image style={styles.checkImage} source={check} />
           )}
           <TextView
             style={[
               styles.recieveText,
-              transactionInfo?.txreceipt_status === "0" && {color: Colors.RED2},
+              transactionInfo?.hash=="" && {color: Colors.RED2},
             ]}>
-            {transactionInfo?.txreceipt_status == "1"
+            {transactionInfo?.hash!==""
               ? translate('wallet.common.paymentComplete')
               : transactionInfo?.direction == 'in' ? translate('wallet.common.paymentFailed'):translate('wallet.common.remittanceFailure')}
           </TextView>

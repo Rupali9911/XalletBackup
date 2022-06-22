@@ -140,10 +140,6 @@ const TokenDetail = ({route, navigation}) => {
             console.log("Item network", item.network)
             let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
             totalValue = value;
-        } else if (item.type == 'ETH' && item.network === 'Polygon') {
-            console.log("Item network", item.network)
-            let value = parseFloat(wethBalance); //+ parseFloat(balances.USDT)
-            totalValue = value;
         } else if (item.type == 'BNB') {
             let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
             totalValue = value;
@@ -163,7 +159,7 @@ const TokenDetail = ({route, navigation}) => {
             totalValue = value;
         } else if (item.type === 'WETH' && item.network === "Polygon") {
             console.log("Item network", item.network)
-            let value = parseFloat(`${wethBalance}`); //+ parseFloat(balances.USDC)
+            let value = parseFloat(wethBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.network === 'BSC' && item.type == 'ALIA') {
             console.log("Item network", item.network)
