@@ -304,6 +304,7 @@ const Gallery = ({ route }) => {
                 <>
                     <FlatList
                         data={collectionList}
+                        nestedScrollEnabled = {true}
                         horizontal={false}
                         numColumns={2}
                         initialNumToRender={isSeries ? 6 : 15}
