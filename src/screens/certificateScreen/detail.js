@@ -280,11 +280,12 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-
-    if (tradingTableData.length !== 0) {
+    if (filterTableValue?.length) {
       let filterValue = tradingTableData1.filter(o1 => filterTableValue.some(o2 => o1[0] === o2));
 
       setTradingTableData(filterValue)
+    }else{
+      setTradingTableData(tradingTableData1)
     }
 
   }, [filterTableValue])
@@ -2142,72 +2143,73 @@ const DetailScreen = ({ navigation, route }) => {
                   setData={setFilterTableList}
                   data={filterTableList}
                 />
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  style={{ marginVertical: hp(2) }}>
-                  <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-                    <Row
-                      data={tradingTableHead}
-                      style={styles.head}
-                      textStyle={styles.text}
-                      widthArr={[145, 130, 180, 180, 160]}
-                    />
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    // nestedScrollEnabled={true}
+                    style={{ marginVertical: hp(2) }}>
+                    <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+                      <Row
+                        data={tradingTableHead}
+                        style={styles.head}
+                        textStyle={styles.text}
+                        widthArr={[145, 130, 180, 180, 160]}
+                      />
 
-                    {tradingTableData.length > 0 ?
-                      tradingTableData.map((rowData, rowIndex) => {
-                        return (
-                          <TableWrapper key={rowIndex} style={{ flexDirection: "row", }}>
-                            {
-                              rowData.map((cellData, cellIndex) => {
-                                let wid;
-                                if (cellIndex === 0) {
-                                  wid = 145
+                      {tradingTableData.length > 0 ?
+                        tradingTableData.map((rowData, rowIndex) => {
+                          return (
+                            <TableWrapper key={rowIndex} style={{ flexDirection: "row", }}>
+                              {
+                                rowData.map((cellData, cellIndex) => {
+                                  let wid;
+                                  if (cellIndex === 0) {
+                                    wid = 145
+                                  }
+                                  if (cellIndex === 1) {
+                                    wid = 130
+                                  }
+                                  if (cellIndex === 2) {
+                                    wid = 180
+                                  }
+                                  if (cellIndex === 3) {
+                                    wid = 180
+                                  }
+                                  if (cellIndex === 4) {
+                                    wid = 160
+                                  }
+                                  return <Cell
+                                    key={cellIndex}
+                                    data={cellIndex == 2 || cellIndex == 3 ?
+                                      <TouchableOpacity
+                                        onPress={() =>
+                                          cellData && cellData !== "Null Address" ?
+                                            navigation.push('ArtistDetail', { id: cellData }) : null
+                                        }>
+                                        <Text
+                                          numberOfLines={1}
+                                          style={[styles.text, { color: "#00a8ff" }]}>
+                                          {(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}
+                                        </Text>
+                                      </TouchableOpacity>
+                                      : cellData}
+                                    // cellIndex === 3 ? element(cellData, index) :
+                                    textStyle={styles.text}
+                                    width={wid}
+                                  />
                                 }
-                                if (cellIndex === 1) {
-                                  wid = 130
-                                }
-                                if (cellIndex === 2) {
-                                  wid = 180
-                                }
-                                if (cellIndex === 3) {
-                                  wid = 180
-                                }
-                                if (cellIndex === 4) {
-                                  wid = 160
-                                }
-                                return <Cell
-                                  key={cellIndex}
-                                  data={cellIndex == 2 || cellIndex == 3 ?
-                                    <TouchableOpacity
-                                      onPress={() =>
-                                        cellData && cellData !== "Null Address" ?
-                                          navigation.push('ArtistDetail', { id: cellData }) : null
-                                      }>
-                                      <Text
-                                        numberOfLines={1}
-                                        style={[styles.text, { color: "#00a8ff" }]}>
-                                        {(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}
-                                      </Text>
-                                    </TouchableOpacity>
-                                    : cellData}
-                                  // cellIndex === 3 ? element(cellData, index) :
-                                  textStyle={styles.text}
-                                  width={wid}
-                                />
+                                )
                               }
-                              )
-                            }
-                          </TableWrapper>
-                        )
-                      })
-                      : (
-                        <Text style={styles.emptyData}>
-                          {translate('common.noDataFound')}
-                        </Text>
-                      )}
-                  </Table>
-                </ScrollView>
+                            </TableWrapper>
+                          )
+                        })
+                        : (
+                          <Text style={styles.emptyData}>
+                            {translate('common.noDataFound')}
+                          </Text>
+                        )}
+                    </Table>
+                  </ScrollView>
               </NFTDetailDropdown>
           }
 
