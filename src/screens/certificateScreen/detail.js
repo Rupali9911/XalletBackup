@@ -1753,46 +1753,30 @@ const DetailScreen = ({navigation, route}) => {
   });
 
   const getAuctionTimeRemain = item => {
-    if (
-      item.newprice &&
-      item.newprice.endTime &&
-      new Date(item.newprice.endTime) < new Date().getTime()
-    ) {
+    if (item?.newprice && item?.newprice?.endTime && new Date(item?.newprice?.endTime) < new Date().getTime()) {
       isBiddingTimeEnd = true;
       return translate('common.biddingTime');
     }
-    if (item.newprice && item.newprice.endTime) {
+    if (item?.newprice && item?.newprice?.endTime) {
       const diff =
-        new Date(item.newprice.endTime).getTime() - new Date().getTime();
+        new Date(item?.newprice?.endTime).getTime() - new Date().getTime();
       if (diff <= 0) {
         return null;
       } else {
         isBiddingTimeEnd = false;
-        let daysDiff =
-          (new Date(item.newprice.endTime).getTime() - new Date().getTime()) /
-          (1000 * 60 * 60 * 24);
+        let daysDiff = (new Date(item?.newprice?.endTime).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
         let hoursDiff = (daysDiff - parseInt(daysDiff)) * 24;
         let minDiff = (hoursDiff - parseInt(hoursDiff)) * 60;
         let secDiff = (minDiff - parseInt(minDiff)) * 60;
-        const daysLeft =
-          (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000);
-        const hourLeft =
-          (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
+        const daysLeft = (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / ((24 * 60 * 60 * 1000));
+        const hourLeft = (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
         const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
         const secLeft = (parseInt(secDiff) * 1000) / 1000;
         if (daysLeft > 0) {
-          return ` ${daysLeft >= 10 ? daysLeft : '0' + daysLeft} ${translate(
-            'common.day',
-          )}`;
+          return ` ${daysLeft >= 10 ? daysLeft : "0"+daysLeft} ${translate('common.day').toUpperCase()}`;
         } else {
-          doComponentUpdate = true;
-          return ` ${hourLeft >= 10 ? hourLeft : '0' + hourLeft} ${translate(
-            'common.hours',
-          )}  ${minLeft >= 10 ? minLeft : '0' + minLeft} ${translate(
-            'common.min',
-          )}  ${secLeft >= 10 ? secLeft : '0' + secLeft} ${translate(
-            'common.sec',
-          )}`;
+          doComponentUpdate = true
+          return ` ${hourLeft >= 10 ? hourLeft : "0" + hourLeft} ${translate('common.hours')}  ${minLeft >= 10 ? minLeft : "0" + minLeft} ${translate('common.min')}  ${secLeft >= 10 ? secLeft : "0" + secLeft} ${translate('common.sec')}`;
         }
       }
     }
@@ -2274,30 +2258,22 @@ const DetailScreen = ({navigation, route}) => {
           )}
           <Text style={styles.description}>{item.metaData.description}</Text>
           {getAuctionTimeRemain(item) ? (
-            <View
-              style={{
-                padding: 10,
-                borderWidth: 1,
-                borderColor: '#eeeeee',
-                borderRadius: 4,
-                marginHorizontal: 15,
-                marginBottom: 10,
-              }}>
+            <View style={styles.bidTimeContainer}>
               {isBiddingTimeEnd ? (
                 <Text style={{fontSize: 14}}>
                   {translate('common.biddingTime')}
                 </Text>
               ) : (
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={{fontSize: 14}}>
+                <View style={styles?.bidTitleView}>
+                  <Text style={styles.bidTitleTxt}>
                     {translate('common.saleEndIn')} :
                   </Text>
-                  <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+                  <Text style={styles.bidTimeTxt}>
                     {getAuctionTimeRemain(item)}
                   </Text>
                 </View>
               )}
-              <Text style={{fontSize: 11}}>
+              <Text style={styles.highestBidTxt}>
                 {translate('common.highhestBidder')}:{' '}
                 {highestBidderAddValue
                   ? highestBidderAddValue.toUpperCase().substring(0, 6)
@@ -2511,7 +2487,10 @@ const DetailScreen = ({navigation, route}) => {
                 ]}
                 ellipsizeMode="middle"
                 numberOfLines={1}>
-                {MarketContractAddress}
+                {/* {MarketContractAddress} */}
+                {item?.collection.substring(0, 5) +
+                  ' ... ' +
+                  item?.collection.slice([item?.collection.length - 4])}
               </TextView>
             </View>
             <View style={styles.rowContainer}>
