@@ -979,6 +979,7 @@ const DetailScreen = ({navigation, route}) => {
       lastBidAmount = '',
       isNFTOnAuction = false,
     ) => {
+      setHighestBidderAddValue(highestBidderAdd);
       setIsNFTOnAuction(isNFTOnAuction);
       setAuctionInitiatorAdd(auctionInitiatorAdd);
       setAuctionETime(auctionETime);
@@ -996,7 +997,6 @@ const DetailScreen = ({navigation, route}) => {
       .call(async (err, res) => {
         // console.log('checkNFTOnAuction_res', res);
         if (!err) {
-          setHighestBidderAddValue(res[3]);
           let baseCurrency = [];
           if (res[6]) {
             baseCurrency = basePriceTokens.filter(
@@ -1403,7 +1403,13 @@ const DetailScreen = ({navigation, route}) => {
             // console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
           }
-
+          let lastBid = data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
+              ? data?.newprice.bidData[data?.newprice?.bidData?.length - 1]
+              : "";
+          let highestBidderAdd = lastBid
+            ? lastBid?.bidder
+            : "0x0000000000000000000000000000000000000000";
+          setHighestBidderAddValue(highestBidderAdd)
           setSingleNFT(data);
           setIsForAward(
             res?.data[0]?.award
@@ -1986,6 +1992,14 @@ const DetailScreen = ({navigation, route}) => {
       : showDate(detail?.sellDateTime);
   };
 
+  const showContractAddress = (item) =>{
+    return (item?.collection
+      ? item.collection.substring(0, 5) +
+        ' ... ' +
+        item.collection.slice([item.collection.length - 4])
+      : MarketContractAddress)
+  }
+
   return (
     <>
       {loader && <FetchingIndicator />}
@@ -2267,7 +2281,7 @@ const DetailScreen = ({navigation, route}) => {
             {detailitem ? detailitem[`${selectedLanguageItem?.language_name}_nft_description`] || item?.metaData?.description : item?.metaData?.description
             }
           </Text>
-          {getAuctionTimeRemain(item) ? (
+          {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
             <View style={styles.bidTimeContainer}>
               {isBiddingTimeEnd ? (
                 <Text style={{fontSize: 14}}>
@@ -2279,7 +2293,7 @@ const DetailScreen = ({navigation, route}) => {
                     {translate('common.saleEndIn')} :
                   </Text>
                   <Text style={styles.bidTimeTxt}>
-                    {getAuctionTimeRemain(item)}
+                    {getAuctionTimeRemain(item?.newprice ? item : singleNFT)}
                   </Text>
                 </View>
               )}
@@ -2498,9 +2512,7 @@ const DetailScreen = ({navigation, route}) => {
                 ellipsizeMode="middle"
                 numberOfLines={1}>
                 {/* {MarketContractAddress} */}
-                {item?.collection?.substring(0, 5) +
-                  ' ... ' +
-                  item?.collection?.slice([item?.collection?.length - 4])}
+                {showContractAddress(item?.collection ? item : singleNFT)}
               </TextView>
             </View>
             <View style={styles.rowContainer}>
