@@ -2498,9 +2498,9 @@ const DetailScreen = ({navigation, route}) => {
                 ellipsizeMode="middle"
                 numberOfLines={1}>
                 {/* {MarketContractAddress} */}
-                {item?.collection.substring(0, 5) +
+                {item?.collection?.substring(0, 5) +
                   ' ... ' +
-                  item?.collection.slice([item?.collection.length - 4])}
+                  item?.collection?.slice([item?.collection?.length - 4])}
               </TextView>
             </View>
             <View style={styles.rowContainer}>
