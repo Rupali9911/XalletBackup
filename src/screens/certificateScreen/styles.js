@@ -303,6 +303,21 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     textAlign: "center"
+  },
+  bidTimeContainer:{
+    padding: SIZE(10),
+    borderWidth: SIZE(1),
+    borderColor: '#eeeeee',
+    borderRadius: SIZE(4),
+    marginHorizontal: SIZE(15),
+    marginBottom: SIZE(10),
+  },
+  bidTitleView:{flexDirection: 'row' },
+  bidTitleTxt:{fontSize: SIZE(14)},
+  bidTimeTxt:{fontSize: SIZE(16), fontWeight: 'bold'},
+  highestBidTxt:{
+    fontSize: SIZE(13),
+    top: SIZE(5)
   }
 });
 
