@@ -6,6 +6,8 @@ import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
+import { Verifiedcollections } from '../verifiedCollection';
+import { IMAGES } from '../../constants';
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function CollectionItem(props) {
@@ -21,6 +23,7 @@ export default function CollectionItem(props) {
     blind,
     isCollection,
     cryptoAllowed,
+    colId
   } = props;
   const [onPressButton, setOnPressButton] = useState(false);
   const chainIcon = type => {
@@ -127,7 +130,13 @@ export default function CollectionItem(props) {
               type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
               uri={iconImage}
               imageStyle={styles.iconImage}
+              />
+              {Verifiedcollections.find((id) => id === colId)  && (
+                <Image
+                style={styles.verifyIcon}
+                source={IMAGES.tweetPng}
             />
+              )}
           </View>
           <View style={styles.bottomCenterWrap}>
             <Text numberOfLines={1} style={styles.collectionName}>

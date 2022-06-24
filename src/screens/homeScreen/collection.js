@@ -60,6 +60,7 @@ const Collection = () => {
         creator={item.creator}
         creatorInfo={item.creatorInfo}
         blind={item.blind}
+        colId={item._id}
         onPress={() => {
            console.log('========', item, item.redirect, item.isBlind, isSelectTab);
           if (item.redirect === '/collection/underground_city') {

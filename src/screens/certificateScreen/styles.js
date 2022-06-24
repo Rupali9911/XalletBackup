@@ -150,6 +150,19 @@ const styles = StyleSheet.create({
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(70),
   },
+  collectionName: {
+    fontSize: RF(1.4),
+    fontFamily: fonts.ARIAL_BOLD,
+    color: colors.black,
+    lineHeight: SIZE(14.06),
+    maxWidth: SIZE(53),
+    marginRight: 5
+  },
+  verifyIcon: {
+    width: SIZE(15),
+    height: SIZE(15),
+    borderRadius: SIZE(10)
+  },
   creatorName: {
     fontSize: RF(2),
     fontFamily: fonts.ARIAL,
@@ -243,7 +256,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.65),
     maxWidth: wp('35%'),
   },
-    rowTextcontractaddress: {
+  rowTextcontractaddress: {
     color: colors.black,
     fontSize: RF(1.65),
     maxWidth: wp('40%'),

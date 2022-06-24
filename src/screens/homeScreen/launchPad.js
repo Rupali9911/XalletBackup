@@ -28,6 +28,7 @@ const LaunchPad = () => {
                 status={item.status}
                 creatorInfo={item.creatorInfo}
                 blind={item.blind}
+                collectionId={item._id}
                 disabled={(networkType === "testnet" || item.status ===  "comingSoon") ? true : false}
                 onPress={() => {
                     console.log('LaunchPad ========', item);

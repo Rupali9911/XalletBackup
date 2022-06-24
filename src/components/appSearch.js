@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
+import {IMAGES, SIZE} from '../constants';
 import Colors from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 import Images from '../constants/Images';
@@ -20,6 +21,7 @@ import CommonStyles from '../constants/styles';
 import {searchNFT, updateNftDetail} from '../store/actions/newNFTActions';
 import {translate} from '../walletUtils';
 import LoadingView from './LoadingView';
+import { Verifiedcollections } from './verifiedCollection';
 
 export default function AppSearch() {
   const dispatch = useDispatch();
@@ -35,35 +37,35 @@ export default function AppSearch() {
     setSearchTxt('');
   }, [isFocused]);
 
-    useEffect(() => {
-        if (searchTxt !== '') {
-            setloading(true);
-        const delayDebounceFn = setTimeout(() => {
-            console.log(searchTxt)
-                dispatch(searchNFT(searchTxt))
-                    .then(response => {
-                        console.log('search response', response);
-                        setloading(false);
-                        if (response.success) {
-                            setDataToList(response.data);
-                        } else {
-                            setSearchData([]);
-                        }
-                    })
-                    .catch(err => {
-                        console.log('search response error', err);
-                        setloading(false);
-                        setSearchData([]);
-                    });
-        }, 1000)
-            return () => clearTimeout(delayDebounceFn)
-        } else {
+  useEffect(() => {
+    if (searchTxt !== '') {
+      setloading(true);
+      const delayDebounceFn = setTimeout(() => {
+        console.log(searchTxt)
+        dispatch(searchNFT(searchTxt))
+          .then(response => {
+            console.log('search response', response);
+            setloading(false);
+            if (response.success) {
+              setDataToList(response.data);
+            } else {
+              setSearchData([]);
+            }
+          })
+          .catch(err => {
+            console.log('search response error', err);
             setloading(false);
             setSearchData([]);
-        }
-    }, [searchTxt])
+          });
+      }, 1000)
+      return () => clearTimeout(delayDebounceFn)
+    } else {
+      setloading(false);
+      setSearchData([]);
+    }
+  }, [searchTxt])
 
-    const searchNftType = txt => {
+  const searchNftType = txt => {
     if (txt !== '') {
       setloading(true);
       dispatch(searchNFT(txt))
@@ -95,12 +97,12 @@ export default function AppSearch() {
         type: 'Artist',
       });
     });
-      list[1]?.collections?.map((item, index) => {
-          array.push({
-              ...item,
-              type: 'Collections',
-          });
+    list[1]?.collections?.map((item, index) => {
+      array.push({
+        ...item,
+        type: 'Collections',
       });
+    });
     list[2]?.nft?.map((item, index) => {
       array.push({
         ...item,
@@ -128,7 +130,7 @@ export default function AppSearch() {
             const fileType = image
               ? image.substring(image.lastIndexOf('.') + 1)
               : '';
-              navigation.navigate('CertificateDetail', {
+            navigation.navigate('CertificateDetail', {
               video: item.metaData.image,
               fileType: fileType,
               item: item,
@@ -199,8 +201,8 @@ const ResultItem = ({item, index, withTag, onPress}) => {
               item.type == 'NFT'
                 ? {uri: item.thumbnailUrl}
                 : item.type == 'Collections' ? {uri: item.iconImage} : item.profile_image
-                ? {uri: item.profile_image}
-                : Images.default_user
+                  ? {uri: item.profile_image}
+                  : Images.default_user
             }
             style={styles.image}
             resizeMode={'cover'}
@@ -213,6 +215,13 @@ const ResultItem = ({item, index, withTag, onPress}) => {
         </View>
         <Text style={styles.name} numberOfLines={1}>
           {item.type == 'NFT' ? item.metaData?.name : item.type == 'Collections' ? item.collectionName : item?.title ? item.title : item?.username}
+          <View style={{ paddingLeft: 5 }}>{Verifiedcollections.find((id) => id === item._id) && (
+            <Image
+              style={styles.verifyIcon}
+              source={IMAGES.tweetPng}
+            />
+          )}
+          </View>
         </Text>
       </TouchableOpacity>
     </View>
@@ -237,13 +246,18 @@ const styles = StyleSheet.create({
     height: hp('5%'),
     paddingVertical: 0,
   },
+  verifyIcon: {
+    width: SIZE(10),
+    height: SIZE(10),
+    borderRadius: SIZE(10)
+  },
   inputStyle: {
     fontSize: RF(1.8),
     fontFamily: Fonts.PINGfANG,
     color: Colors.BLACK1,
-      height: '100%',
-      margin: 0,
-      padding:0
+    height: '100%',
+    margin: 0,
+    padding:0
   },
   listContainer: {
     flex: 1,

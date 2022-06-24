@@ -29,7 +29,7 @@ import { colors, fonts } from '../../res';
 import { translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
 import { SVGS, FONTS, FONT } from 'src/constants';
-import { COLORS, SIZE } from '../../constants';
+import { COLORS, IMAGES, SIZE } from '../../constants';
 import {
     Menu,
     MenuOptions,
@@ -49,6 +49,7 @@ import Gallery from './gallery';
 import Owned from './owned';
 import OnSale from './onSale';
 import NotOnSale from './notOnSale';
+import { Verifiedcollections } from '../../components/verifiedCollection';
 
 const { height } = Dimensions.get('window');
 
@@ -540,6 +541,14 @@ function CollectionDetail(props) {
                     source={{ uri: bannerUrl ? bannerUrl : collection?.iconImage }}
                     style={styles.bannerIcon}
                 />
+                {Verifiedcollections.find((id) => id === collectionId) && (
+                    <View>
+                       <Image
+                            style={styles.verifyIcon}
+                            source={IMAGES.tweetPng}
+                        />
+                    </View>
+                )}
             </View>
         )
     }
@@ -826,7 +835,7 @@ function CollectionDetail(props) {
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
-                                    ] || collection.userInfo.about}
+                                ] || collection.userInfo.about}
                             </Text>
                         ) : (
                             <View>
@@ -971,6 +980,12 @@ function CollectionDetail(props) {
                 <View style={{ padding: SIZE(15) }}>
                     <Text style={[styles.storeCollectionName, { color: '#636363' }]}>
                         {storeCollection[`${selectedLanguageItem.language_name}_title`]}
+                        <View style={{paddingLeft:5}}>
+                        <Image
+                            style={styles.verifyIcon1}
+                            source={IMAGES.tweetPng}
+                        />
+                        </View>
                     </Text>
                     <Text style={[styles.storeCollectionName, { color: 'red' }]}>
                         {'Blindbox'}
