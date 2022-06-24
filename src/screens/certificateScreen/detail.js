@@ -63,6 +63,7 @@ import {
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
 import addComma from '../../utils/insertComma';
 import {handleLike} from '../explore/nftItems';
+import { isChinaApp } from '../../web3/config/networkType';
 
 const Web3 = require('web3');
 
@@ -143,9 +144,9 @@ export function trimZeroFromTheEnd(val) {
 
 const DetailScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { data, wallet } = useSelector(state => state.UserReducer);
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const {paymentObject} = useSelector(state => state.PaymentReducer);
+  const {data, wallet} = useSelector(state => state.UserReducer);
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
@@ -233,7 +234,7 @@ const DetailScreen = ({navigation, route}) => {
   const [isLike, setLike] = useState(item.like);
   const [loaderSell, setLoaderSell] = useState(false);
   const [updateComponent, setUpdateComponent] = useState(false);
-  const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
+  const [highestBidderAddValue, setHighestBidderAddValue] = useState('');
 
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
@@ -267,7 +268,7 @@ const DetailScreen = ({navigation, route}) => {
   }
 
   useEffect(() => {
-    console.log("Detail item###",item)
+    console.log('Detail item###', item);
     if (isFocused) {
       if (chainType) {
         if (chainAvailable) {
@@ -301,11 +302,13 @@ const DetailScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (filterTableValue?.length) {
-      let filterValue = tradingTableData1.filter(o1 => filterTableValue.some(o2 => o1[0] === o2));
+      let filterValue = tradingTableData1.filter(o1 =>
+        filterTableValue.some(o2 => o1[0] === o2),
+      );
 
-      setTradingTableData(filterValue)
-    }else{
-      setTradingTableData(tradingTableData1)
+      setTradingTableData(filterValue);
+    } else {
+      setTradingTableData(tradingTableData1);
     }
   }, [filterTableValue]);
 
@@ -1403,13 +1406,14 @@ const DetailScreen = ({navigation, route}) => {
             // console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
           }
-          let lastBid = data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
+          let lastBid =
+            data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
               ? data?.newprice.bidData[data?.newprice?.bidData?.length - 1]
-              : "";
+              : '';
           let highestBidderAdd = lastBid
             ? lastBid?.bidder
-            : "0x0000000000000000000000000000000000000000";
-          setHighestBidderAddValue(highestBidderAdd)
+            : '0x0000000000000000000000000000000000000000';
+          setHighestBidderAddValue(highestBidderAdd);
           setSingleNFT(data);
           setIsForAward(
             res?.data[0]?.award
@@ -1764,7 +1768,11 @@ const DetailScreen = ({navigation, route}) => {
   });
 
   const getAuctionTimeRemain = item => {
-    if (item?.newprice && item?.newprice?.endTime && new Date(item?.newprice?.endTime) < new Date().getTime()) {
+    if (
+      item?.newprice &&
+      item?.newprice?.endTime &&
+      new Date(item?.newprice?.endTime) < new Date().getTime()
+    ) {
       isBiddingTimeEnd = true;
       return translate('common.biddingTime');
     }
@@ -1775,19 +1783,31 @@ const DetailScreen = ({navigation, route}) => {
         return null;
       } else {
         isBiddingTimeEnd = false;
-        let daysDiff = (new Date(item?.newprice?.endTime).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24);
+        let daysDiff =
+          (new Date(item?.newprice?.endTime).getTime() - new Date().getTime()) /
+          (1000 * 60 * 60 * 24);
         let hoursDiff = (daysDiff - parseInt(daysDiff)) * 24;
         let minDiff = (hoursDiff - parseInt(hoursDiff)) * 60;
         let secDiff = (minDiff - parseInt(minDiff)) * 60;
-        const daysLeft = (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / ((24 * 60 * 60 * 1000));
-        const hourLeft = (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
+        const daysLeft =
+          (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000);
+        const hourLeft =
+          (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
         const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
         const secLeft = (parseInt(secDiff) * 1000) / 1000;
         if (daysLeft > 0) {
-          return ` ${daysLeft >= 10 ? daysLeft : "0"+daysLeft} ${translate('common.day').toUpperCase()}`;
+          return ` ${daysLeft >= 10 ? daysLeft : '0' + daysLeft} ${translate(
+            'common.day',
+          ).toUpperCase()}`;
         } else {
-          doComponentUpdate = true
-          return ` ${hourLeft >= 10 ? hourLeft : "0" + hourLeft} ${translate('common.hours')}  ${minLeft >= 10 ? minLeft : "0" + minLeft} ${translate('common.min')}  ${secLeft >= 10 ? secLeft : "0" + secLeft} ${translate('common.sec')}`;
+          doComponentUpdate = true;
+          return ` ${hourLeft >= 10 ? hourLeft : '0' + hourLeft} ${translate(
+            'common.hours',
+          )}  ${minLeft >= 10 ? minLeft : '0' + minLeft} ${translate(
+            'common.min',
+          )}  ${secLeft >= 10 ? secLeft : '0' + secLeft} ${translate(
+            'common.sec',
+          )}`;
         }
       }
     }
@@ -1846,16 +1866,17 @@ const DetailScreen = ({navigation, route}) => {
   //     Crypto user: title/name/username
   // Non Crypto user: username/name/title
 
-  const getArtistName = (artistId) => {
-    return (artistId === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-    || artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-    || artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
-    || artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
-    ? (
-        disableCreator = true,
-        collectCreat?.creator
-    ) : artistId ? artistId?.substring(0, 6) : ""
-  }
+  const getArtistName = artistId => {
+    return artistId ===
+      '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase() ||
+      artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase() ||
+      artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase() ||
+      artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase()
+      ? ((disableCreator = true), collectCreat?.creator)
+      : artistId
+      ? artistId?.substring(0, 6)
+      : '';
+  };
 
   let creatorName =
     artistDetail && typeof artistDetail === 'object'
@@ -1876,7 +1897,7 @@ const DetailScreen = ({navigation, route}) => {
         : artist
         ? artist?.substring(0, 6)
         : ''
-      : getArtistName(artist)
+      : getArtistName(artist);
 
   // let ownerName = ownerDataN && (
   //   ownerDataN.role === 'crypto' ?
@@ -1914,30 +1935,56 @@ const DetailScreen = ({navigation, route}) => {
       ':rocket: ~ file: detail.js ~ line 1792 ~ firstCellData ~ detail',
       detail,
     );
-    return detail && detail?.price
-      ? detail?.currency_type === 'dollar'
-        ? '$ ' +
-          addComma(
-            trimZeroFromTheEnd(
-              showActualValue(
-                parseFloat(detail?.price?.toString()),
-                4,
-                'number',
-              ),
-              true,
-            ),
-            true,
-          )
-        : addComma(
-            trimZeroFromTheEnd(
-              showActualValue(detail?.price, 6, 'number'),
-              true,
-            ),
-            true,
-          ) +
-          ' ' +
-          detail?.tradeCurrency
-      : '';
+    if(detail && detail?.price && detail?.currency_type ){
+      return('$ ' +
+      addComma(
+        trimZeroFromTheEnd(
+          showActualValue(
+            parseFloat(detail?.price?.toString()),
+            4,
+            'number',
+          ),
+          true,
+        ),
+        true,
+      )) 
+    }else if(detail && detail?.price && detail?.tradeCurrency){
+      return(addComma(
+        trimZeroFromTheEnd(
+          showActualValue(detail?.price, 6, 'number'),
+          true,
+        ),
+        true,
+      ) +
+      ' ' +
+      detail?.tradeCurrency)
+    }else{
+      return detail?.price;
+    }
+    // return detail && detail?.price
+    //   ? (detail?.currency_type && detail?.tradeCurrency)
+    //     ? '$ ' +
+    //       addComma(
+    //         trimZeroFromTheEnd(
+    //           showActualValue(
+    //             parseFloat(detail?.price?.toString()),
+    //             4,
+    //             'number',
+    //           ),
+    //           true,
+    //         ),
+    //         true,
+    //       )
+    //     : addComma(
+    //         trimZeroFromTheEnd(
+    //           showActualValue(detail?.price, 6, 'number'),
+    //           true,
+    //         ),
+    //         true,
+    //       ) +
+    //       ' ' +
+    //       detail?.tradeCurrency
+    //   : '';
   };
 
   goToOwnerProfile = (id, profile) => {
@@ -1989,16 +2036,17 @@ const DetailScreen = ({navigation, route}) => {
   const fourthCellData = detail => {
     return detail?.buy
       ? showDate(detail?.buyDateTime)
-      : showDate(detail?.sellDateTime);
+      : detail?.sellDateTime;
   };
 
-  const showContractAddress = (item) =>{
-    return (item?.collection
+  const showContractAddress = item => {
+    return item?.collection
       ? item.collection.substring(0, 5) +
-        ' ... ' +
-        item.collection.slice([item.collection.length - 4])
-      : MarketContractAddress)
-  }
+          ' ... ' +
+          item.collection.slice([item.collection.length - 4])
+      : MarketContractAddress;
+  };
+  console.log('sellDetails---->', sellDetails);
 
   return (
     <>
@@ -2228,7 +2276,10 @@ const DetailScreen = ({navigation, route}) => {
             {creatorName}
           </Text>
           <Text style={styles.nftName}>
-            {detailitem ? detailitem[`${selectedLanguageItem?.language_name}_nft_name`] || item?.metaData?.name : item?.metaData?.name}
+            {detailitem
+              ? detailitem[`${selectedLanguageItem?.language_name}_nft_name`] ||
+                item?.metaData?.name
+              : item?.metaData?.name}
           </Text>
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{flexDirection: 'row', paddingHorizontal: SIZE(12)}}>
@@ -2248,7 +2299,9 @@ const DetailScreen = ({navigation, route}) => {
                   <Text style={styles.priceUnit}>
                     {` ${baseCurrency?.key}`}
                     <Text style={styles.dollarText}>
-                      {priceInDollar ? ' $'+parseFloat(priceInDollar, true).toFixed(2) : ''}
+                      {priceInDollar
+                        ? ' $' + parseFloat(priceInDollar, true).toFixed(2)
+                        : ''}
                     </Text>
                   </Text>
                 </Text>
@@ -2278,8 +2331,11 @@ const DetailScreen = ({navigation, route}) => {
             </View>
           )}
           <Text style={styles.description}>
-            {detailitem ? detailitem[`${selectedLanguageItem?.language_name}_nft_description`] || item?.metaData?.description : item?.metaData?.description
-            }
+            {detailitem
+              ? detailitem[
+                  `${selectedLanguageItem?.language_name}_nft_description`
+                ] || item?.metaData?.description
+              : item?.metaData?.description}
           </Text>
           {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
             <View style={styles.bidTimeContainer}>
@@ -2388,13 +2444,13 @@ const DetailScreen = ({navigation, route}) => {
               // containerStyles={{ marginTop: hp(2) }}
               containerChildStyles={{
                 height:
-                  sellDetails.filter(detail => detail?.event === 'Bid')
+                  sellDetails.filter(detail => detail?.event === 'Bid' || detail?.event === 'Bid Award' )
                     ?.length === 0
-                    ? hp(15)
+                    ? hp(19)
                     : sellDetails.length < 5
                     ? hp(16) + hp(4) * sellDetails.length
                     : hp(35.7),
-              }}>
+                }}>
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -2408,10 +2464,15 @@ const DetailScreen = ({navigation, route}) => {
                     widthArr={[130, 180, 180, 160]}
                   />
                   {sellDetails?.length > 0 &&
-                  sellDetails.filter(detail => detail?.event === 'Bid')
-                    ?.length !== 0 ? (
+                  sellDetails.filter(
+                    detail =>
+                      detail?.event === 'Bid' || detail?.event === 'Bid Award',
+                  )?.length !== 0 ? (
                     sellDetails?.map((rowData, rowIndex) => {
-                      if (rowData?.event === 'Bid') {
+                      if (
+                        rowData?.event === 'Bid' ||
+                        rowData.event === 'Bid Award'
+                      ) {
                         return (
                           <TableWrapper
                             key={rowIndex}
@@ -2536,94 +2597,111 @@ const DetailScreen = ({navigation, route}) => {
               </TextView>
             </View>
           </NFTDetailDropdown>
-          {
-            tradingTableLoader ?
-              <View style={{ paddingVertical: 10, }} >
-                <ActivityIndicator size={"small"} />
-              </View> :
-              <NFTDetailDropdown
-                title={translate('common.tradingHistory')}
-                containerChildStyles={{
-                  height: tradingTableData.length == 0 ? hp(19) :
-                    tradingTableData.length < 5 ?
-                      hp(16) + (hp(4) * tradingTableData.length) : hp(35.7)
-                }}
-                icon={trading}>
-                <Filters
-                  value={filterTableValue}
-                  setValue={setFilterTableValue}
-                  setData={setFilterTableList}
-                  data={filterTableList}
-                />
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    // nestedScrollEnabled={true}
-                    style={{ marginVertical: hp(2) }}>
-                    <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-                      <Row
-                        data={tradingTableHead}
-                        style={styles.head}
-                        textStyle={styles.text}
-                        widthArr={[145, 130, 180, 180, 160]}
-                      />
+          {tradingTableLoader ? (
+            <View style={{paddingVertical: 10}}>
+              <ActivityIndicator size={'small'} />
+            </View>
+          ) : (
+            <NFTDetailDropdown
+              title={translate('common.tradingHistory')}
+              containerChildStyles={{
+                height:
+                  tradingTableData.length == 0
+                    ? hp(19)
+                    : tradingTableData.length < 5
+                    ? hp(16) + hp(4) * tradingTableData.length
+                    : hp(35.7),
+              }}
+              icon={trading}>
+              <Filters
+                value={filterTableValue}
+                setValue={setFilterTableValue}
+                setData={setFilterTableList}
+                data={filterTableList}
+              />
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                // nestedScrollEnabled={true}
+                style={{marginVertical: hp(2)}}>
+                <Table
+                  borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                  <Row
+                    data={tradingTableHead}
+                    style={styles.head}
+                    textStyle={styles.text}
+                    widthArr={[145, 130, 180, 180, 160]}
+                  />
 
-                      {tradingTableData.length > 0 ?
-                        tradingTableData.map((rowData, rowIndex) => {
-                          return (
-                            <TableWrapper key={rowIndex} style={{ flexDirection: "row", }}>
-                              {
-                                rowData.map((cellData, cellIndex) => {
-                                  let wid;
-                                  if (cellIndex === 0) {
-                                    wid = 145
-                                  }
-                                  if (cellIndex === 1) {
-                                    wid = 130
-                                  }
-                                  if (cellIndex === 2) {
-                                    wid = 180
-                                  }
-                                  if (cellIndex === 3) {
-                                    wid = 180
-                                  }
-                                  if (cellIndex === 4) {
-                                    wid = 160
-                                  }
-                                  return <Cell
-                                    key={cellIndex}
-                                    data={cellIndex == 2 || cellIndex == 3 ?
-                                      <TouchableOpacity
-                                        onPress={() =>
-                                          cellData && cellData !== "Null Address" ?
-                                            navigation.push('ArtistDetail', { id: cellData }) : null
-                                        }>
-                                        <Text
-                                          numberOfLines={1}
-                                          style={[styles.text, { color: "#00a8ff" }]}>
-                                          {(cellData !== "Null Address" && cellData) ? showSeller(cellData) : cellData}
-                                        </Text>
-                                      </TouchableOpacity>
-                                      : cellData}
-                                    // cellIndex === 3 ? element(cellData, index) :
-                                    textStyle={styles.text}
-                                    width={wid}
-                                  />
+                  {tradingTableData.length > 0 ? (
+                    tradingTableData.map((rowData, rowIndex) => {
+                      return (
+                        <TableWrapper
+                          key={rowIndex}
+                          style={{flexDirection: 'row'}}>
+                          {rowData.map((cellData, cellIndex) => {
+                            let wid;
+                            if (cellIndex === 0) {
+                              wid = 145;
+                            }
+                            if (cellIndex === 1) {
+                              wid = 130;
+                            }
+                            if (cellIndex === 2) {
+                              wid = 180;
+                            }
+                            if (cellIndex === 3) {
+                              wid = 180;
+                            }
+                            if (cellIndex === 4) {
+                              wid = 160;
+                            }
+                            return (
+                              <Cell
+                                key={cellIndex}
+                                data={
+                                  cellIndex == 2 || cellIndex == 3 ? (
+                                    <TouchableOpacity
+                                      onPress={() =>
+                                        cellData && cellData !== 'Null Address'
+                                          ? navigation.push('ArtistDetail', {
+                                              id: cellData,
+                                            })
+                                          : null
+                                      }>
+                                      <Text
+                                        numberOfLines={1}
+                                        style={[
+                                          styles.text,
+                                          {color: '#00a8ff'},
+                                        ]}>
+                                        {cellData !== 'Null Address' && cellData
+                                          ? showSeller(cellData)
+                                          : cellData}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  ) : (
+                                    cellData
+                                  )
                                 }
-                                )
-                              }
-                            </TableWrapper>
-                          )
-                        })
-                        : (
-                          <Text style={styles.emptyData}>
-                            {translate('common.noDataFound')}
-                          </Text>
-                        )}
-                    </Table>
-                  </ScrollView>
-              </NFTDetailDropdown>
-          }
+                                // cellIndex === 3 ? element(cellData, index) :
+                                textStyle={styles.text}
+                                width={wid}
+                              />
+                            );
+                          })}
+                        </TableWrapper>
+                      );
+                    })
+                  ) : (
+                    <Text style={styles.emptyData}>
+                      {translate('common.noDataFound')}
+                    </Text>
+                  )}
+                </Table>
+              </ScrollView>
+            </NFTDetailDropdown>
+          )}
 
           <NFTDetailDropdown
             title={translate('wallet.common.collectionHint')}
