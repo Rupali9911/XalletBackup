@@ -1998,8 +1998,7 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>
-            {detailitem[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description
-            }
+            {detailitem[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description}
           </Text>
           {getAuctionTimeRemain(item) ? (
             <View style={{ padding: 10, borderWidth: 1, borderColor: '#eeeeee', borderRadius: 4, marginHorizontal: 15, marginBottom: 10 }}>

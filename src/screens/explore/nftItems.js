@@ -225,14 +225,17 @@ function NftItem({
                     onPress={() => {
                         isPlay
                             ? setPlay(!isPlay)
-                            : navigation.navigate('CertificateDetail', {
+                            :
+                            console.log("333###333###" , item)
+                        navigation.navigate('CertificateDetail', {
                                 owner: nftItem.buyerUser,
                                 ownerData: ownerObj,
                                 artistId: nftItem.creator,
-                                collectCreat: nftItem.collectionObj[0],
+                                //collectCreat: nftItem.collectionObj[0],
                                 artistData: creatorObj,
                                 video: videoUri,
                                 fileType: fileType,
+                                detailitem: item,
                                 item: item,
                                 setNftItem
                             })
