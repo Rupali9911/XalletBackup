@@ -182,7 +182,12 @@ export default function AppSearch() {
             />
           ) : null}
         </View>
-      ) : null}
+      ) :
+      searchTxt ?
+        <View style={[styles.listContainer, styles.noDataFoundStyle]}>
+          <Text>{translate('common.noDataFound')}</Text>
+        </View>
+        : null}
     </View>
   );
 }
@@ -226,6 +231,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     width: '100%',
+    top: hp('1.5%')
   },
   searchBar: {
     borderWidth: 1,
@@ -258,7 +264,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-
     elevation: 5,
   },
   name: {
@@ -293,5 +298,11 @@ const styles = StyleSheet.create({
   },
   loaderContainer: {
     padding: wp('2%'),
+  },
+  noDataFoundStyle: {
+    width:'95%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 });

@@ -160,7 +160,7 @@ export default ExploreScreen;
 
 const styles = StyleSheet.create({
   listContainer: {
-    paddingTop: hp('6%'),
+    paddingTop: hp('8%'),
     width: '100%',
     height: '100%',
   },

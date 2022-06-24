@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Linking,
   StatusBar,
   Text,
   View,
@@ -66,12 +67,16 @@ const HotCollection = () => {
         onPress={() => {
           if (item.collectionName !== 'NFTART AWARD 2021') {
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          } else {
+            Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021')
+              .catch(err => {
+                console.error("Failed opening page because: ", err)
+              })
           }
         }}
       />
     );
-  };
-
+  }; 
   const memoizedValue = useMemo(
     () => renderItem,
     [HotCollectionReducer.hotCollectionList],

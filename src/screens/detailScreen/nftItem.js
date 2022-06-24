@@ -560,6 +560,17 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
     }
   };
 
+  const getArtistName = (artistId) => {
+    return (artistId === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+    || artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+    || artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
+    || artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
+    ? (
+        disableCreator = true,
+        collectCreat?.creator
+    ) : artistId ? artistId?.substring(0, 6) : ""
+  }
+
   // it's temporary fix
   const videoUri = nftDetail ?
     nftDetail?.metaData?.image :
@@ -576,18 +587,11 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
             artistData?.title?.trim() ? artistData.title :
                 artistData?.name?.trim() ? artistData.name :
                     artistData?.username?.trim() ? artistData.username.substring(0, 6) :
-                        (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-                            || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-                            || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
-                            || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
-                            ? (
-                                disableCreator = true,
-                                    collectCreatData?.creator
-                            ) : artist ? artist?.substring(0, 6) : ""
+                    getArtistName(artist)
             : artistData?.username?.trim() ? artistData.username :
             artistData?.name?.trim() ? artistData.name :
                 artistData?.title?.trim() ? artistData.title : artist ? artist?.substring(0, 6) : ""
-        : artist ? artist?.substring(0, 6) : ""
+        : getArtistName(artist);
 
     // console.log("🚀 ~ file: nftItem.js ~ line 571", artistData, '</>', artist, '>>>>')
     // console.log("🚀 ~ file: nftItem.js ~ line 572 ~ nftItem ~ artistName", artistName)

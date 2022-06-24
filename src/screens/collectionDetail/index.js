@@ -833,7 +833,7 @@ function CollectionDetail(props) {
                                 <Text
                                     style={[
                                         styles.descriptionText,
-                                        { fontSize: SIZE(16), fontWeight: 'bold' },
+                                        styles.descriptionTabData,
                                     ]}>
                                     {collection?.creatorName}
                                 </Text>
@@ -873,12 +873,12 @@ function CollectionDetail(props) {
 
             items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length || blindboxList[0]?.boxInfo.length;
             owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
-            floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(2) : '--') : statsDetails?.floorPriceInDollar <= 40
-                ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '--')
-                : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '--') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
-            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(2) : '--') : statsDetails?.volumeTradeInETH
+            floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(3) : '0.00') : statsDetails?.floorPriceInDollar <= 40
+                ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
+                : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
+            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(3) : '0') : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
-                : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '--') || '--'
+                : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '0') || '--'
         } else if (isBlind && !nftId && sumBlindBox) {
             // console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
             items = sumBlindBox?.itemsCount
@@ -1002,7 +1002,7 @@ function CollectionDetail(props) {
             manualColl: collection.manualColl,
             seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
         }
-        // console.log("🚀 ~ file: index.js ~ line 1008 collections.js ~ line  ~", collection?.userCollection, (isBlind && nftId), nftId, collectionAddress, loading)
+        // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
         return (
             <Tab.Navigator
                 // tabBar={props => <CustomTabBar {...props} />}
@@ -1031,7 +1031,6 @@ function CollectionDetail(props) {
                     }
                 }}>
                 <Tab.Screen
-                    // name={translate('wallet.common.profileCreated')}
                     name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
                     component={Gallery}
                     initialParams={{
@@ -1045,7 +1044,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')
                     }}
                 />
                 <Tab.Screen
@@ -1062,7 +1062,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: tab ? isBlind && nftId ? translate('common.onSale') : translate('common.notforsale') : translate('common.blindboxCollections')
                     }}
                 />
                 {tab && <Tab.Screen
@@ -1079,7 +1080,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: isBlind && nftId ? translate('common.notforsale') : translate('wallet.common.owned')
                     }}
                 />}
                 {tab && <Tab.Screen
@@ -1096,7 +1098,8 @@ function CollectionDetail(props) {
                         isStore: isStore,
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
-                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')
                     }}
                 />}
             </Tab.Navigator>
@@ -1296,7 +1299,7 @@ function CollectionDetail(props) {
 
                     {(collectionAddress || isStore) && !loading && (
                         <Collections
-                            collectionAddress={ (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId}
+                            collectionAddress={(isBlind && nftId) ? nftId : collectionAddress}
                             collectionType={collectionType}
                             isHotCollection={isHotCollection}
                             collectionId={collectionId}
