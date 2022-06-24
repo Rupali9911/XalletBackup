@@ -313,6 +313,7 @@ const OnSale = ({ route }) => {
                 </View>
             ) : collectionList.length !== 0 ? (
                 <FlatList
+                    nestedScrollEnabled={true}
                     data={collectionList}
                     horizontal={false}
                     numColumns={2}

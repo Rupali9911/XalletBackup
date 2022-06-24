@@ -47,6 +47,7 @@ export default function NFTDetailDropdown({
       {children && isExpanded && (
         <ScrollView
           showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
           style={[styles.childrenContainer, containerChildStyles]}>
           {children}
         </ScrollView>

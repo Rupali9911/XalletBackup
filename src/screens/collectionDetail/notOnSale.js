@@ -317,6 +317,7 @@ const NotOnSale = ({ route }) => {
                     horizontal={false}
                     numColumns={2}
                     initialNumToRender={isSeries ? 6 : 15}
+                    nestedScrollEnabled={true}
                     // onRefresh={handleFlatlistRefresh}
                     // refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
