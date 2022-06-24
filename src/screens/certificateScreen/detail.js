@@ -2234,7 +2234,7 @@ const DetailScreen = ({navigation, route}) => {
                   <Text style={styles.priceUnit}>
                     {` ${baseCurrency?.key}`}
                     <Text style={styles.dollarText}>
-                      {priceInDollar ? ' $'+parseFloat(priceInDollar, true).toFixed(2) : ''}
+                      {priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(2)})` : ''}
                     </Text>
                   </Text>
                 </Text>
