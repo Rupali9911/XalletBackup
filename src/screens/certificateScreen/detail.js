@@ -62,8 +62,9 @@ import {
 
 const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
 import addComma from '../../utils/insertComma';
-import {handleLike} from '../explore/nftItems';
 import { isChinaApp } from '../../web3/config/networkType';
+import { handleLike } from '../explore/nftItems';
+import { Verifiedcollections } from '../../components/verifiedCollection';
 
 const Web3 = require('web3');
 
@@ -2243,9 +2244,17 @@ const DetailScreen = ({navigation, route}) => {
                 <Text style={styles.personTypeText}>
                   {translate('wallet.common.collection')}
                 </Text>
-                <Text numberOfLines={1} style={styles.personName}>
-                  {collectCreatData && collectCreatData.collectionName}
-                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text numberOfLines={1} style={styles.collectionName}>
+                    {collectCreatData && collectCreatData.collectionName}
+                  </Text>
+                  {Verifiedcollections.find((id) => id === collectCreat?._id) && (
+                    <Image
+                      style={styles.verifyIcon}
+                      source={IMAGES.tweetPng}
+                    />
+                  )}
+                </View>
               </View>
             </TouchableOpacity>
 

@@ -64,6 +64,7 @@ const HotCollection = () => {
         collectionName={item.collectionName}
         creatorInfo={item.creatorInfo}
         blind={item.blind}
+        colId={item._id}
         onPress={() => {
           if (item.collectionName !== 'NFTART AWARD 2021') {
             navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
