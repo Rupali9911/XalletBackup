@@ -60,7 +60,8 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 
-const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } = SVGS;
+const {PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon} =
+  SVGS;
 import addComma from '../../utils/insertComma';
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../explore/nftItems';
@@ -236,6 +237,7 @@ const DetailScreen = ({navigation, route}) => {
   const [loaderSell, setLoaderSell] = useState(false);
   const [updateComponent, setUpdateComponent] = useState(false);
   const [highestBidderAddValue, setHighestBidderAddValue] = useState('');
+  const [bidPriceInDollar, setBidPriceInDollar] = useState('');
 
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
@@ -1018,6 +1020,7 @@ const DetailScreen = ({navigation, route}) => {
           }
 
           if (parseInt(res[5]) * 1000 > 0) {
+            calculateBidPriceDollar(res[4], res[0]);
             setAuctionVariables(
               res[0],
               res[3],
@@ -1597,6 +1600,47 @@ const DetailScreen = ({navigation, route}) => {
       return '';
     }
   };
+  useEffect(() => {
+    checkNFTOnAuction();
+  }, [singleNFT]);
+
+  const calculateBidPriceDollar = async (price, owner) => {
+    let dollarToken = basePriceTokens.filter(
+      token => token.chain === singleNFT.nftChain && token.dollarCurrency,
+    );
+    let rs = await calculatePriceWeb(price, dollarToken[0].order, owner);
+    if (rs) {
+      let res = divideNo(rs);
+      setBidPriceInDollar(res);
+    }
+  };
+
+  const calculatePriceWeb = async (price, tradeCurr, owner) => {
+    let collectionAddress = singleNFT?.collection
+      ? singleNFT?.collection
+      : ERC721Address;
+    let web3 = new Web3(providerUrl);
+    let MarketPlaceContract = new web3.eth.Contract(
+      MarketPlaceAbi,
+      MarketContractAddress,
+    );
+    let res = await MarketPlaceContract.methods
+      .calculatePrice(
+        price,
+        baseCurrency.order,
+        tradeCurr,
+        singleNFT.id,
+        owner,
+        collectionAddress,
+      )
+      .call()
+      .then(res => res)
+      .catch(err => {
+        console.log(err);
+      });
+    if (res) return res;
+    else return '';
+  };
 
   const bidingTimeEnded = () => {
     return new Date().getTime() > new Date(auctionETime).getTime();
@@ -1936,30 +1980,27 @@ const DetailScreen = ({navigation, route}) => {
       ':rocket: ~ file: detail.js ~ line 1792 ~ firstCellData ~ detail',
       detail,
     );
-    if(detail && detail?.price && detail?.currency_type ){
-      return('$ ' +
-      addComma(
-        trimZeroFromTheEnd(
-          showActualValue(
-            parseFloat(detail?.price?.toString()),
-            4,
-            'number',
+    if (detail && detail?.price && detail?.currency_type) {
+      return (
+        '$ ' +
+        addComma(
+          trimZeroFromTheEnd(
+            showActualValue(parseFloat(detail?.price?.toString()), 4, 'number'),
+            true,
           ),
           true,
-        ),
-        true,
-      )) 
-    }else if(detail && detail?.price && detail?.tradeCurrency){
-      return(addComma(
-        trimZeroFromTheEnd(
-          showActualValue(detail?.price, 6, 'number'),
+        )
+      );
+    } else if (detail && detail?.price && detail?.tradeCurrency) {
+      return (
+        addComma(
+          trimZeroFromTheEnd(showActualValue(detail?.price, 6, 'number'), true),
           true,
-        ),
-        true,
-      ) +
-      ' ' +
-      detail?.tradeCurrency)
-    }else{
+        ) +
+        ' ' +
+        detail?.tradeCurrency
+      );
+    } else {
       return detail?.price;
     }
     // return detail && detail?.price
@@ -2035,9 +2076,7 @@ const DetailScreen = ({navigation, route}) => {
     return s?.toString();
   };
   const fourthCellData = detail => {
-    return detail?.buy
-      ? showDate(detail?.buyDateTime)
-      : detail?.sellDateTime;
+    return detail?.buy ? showDate(detail?.buyDateTime) : detail?.sellDateTime;
   };
 
   const showContractAddress = item => {
@@ -2308,7 +2347,10 @@ const DetailScreen = ({navigation, route}) => {
                   <Text style={styles.priceUnit}>
                     {` ${baseCurrency?.key}`}
                     <Text style={styles.dollarText}>
-                      {priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(2)})` : ''}
+                      {(nFTOnAuction && lBidAmount === '0.000000000000000000')
+                        ? bidPriceInDollar ? ` ($${addComma(parseFloat(bidPriceInDollar, true).toFixed(3))})` : ''
+                        : priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(3)})`
+                        : ''}
                     </Text>
                   </Text>
                 </Text>
@@ -2451,13 +2493,15 @@ const DetailScreen = ({navigation, route}) => {
               // containerStyles={{ marginTop: hp(2) }}
               containerChildStyles={{
                 height:
-                  sellDetails.filter(detail => detail?.event === 'Bid' || detail?.event === 'Bid Award' )
-                    ?.length === 0
+                  sellDetails.filter(
+                    detail =>
+                      detail?.event === 'Bid' || detail?.event === 'Bid Award',
+                  )?.length === 0
                     ? hp(19)
                     : sellDetails.length < 5
                     ? hp(16) + hp(4) * sellDetails.length
                     : hp(35.7),
-                }}>
+              }}>
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
