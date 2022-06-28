@@ -57,7 +57,7 @@ const TokenDetail = ({route, navigation}) => {
         //         setLoading(false);
         //     });
         getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase());
-        console.log("0101010101010", item.network)
+        // console.log("0101010101010", item.network)
     }, []);
 
     const getBalance = () => {
@@ -116,21 +116,30 @@ const TokenDetail = ({route, navigation}) => {
 
     const getData = () => {
         return new Promise((resolve, reject) => {
-            const requests = [getBalance()];
+            getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase()) .then(responses => {
+                console.log('responses', responses)
+                resolve();
+            })
+            .catch(err => {
+                console.log('err', err);
+                reject();
+            });
 
-            Promise.all(requests)
-                .then(responses => {
-                    console.log('responses ###############', responses);
-                    const balance = responses[0];
-                    let _item = item;
-                    _item.tokenValue = balance;
-                    setItem(_item);
-                    resolve();
-                })
-                .catch(err => {
-                    console.log('err', err);
-                    reject();
-                });
+
+            // const requests = [getBalance()];
+            // Promise.all(requests)
+            //     .then(responses => {
+            //         console.log('responses ###############', responses);
+            //         const balance = responses[0];
+            //         let _item = item;
+            //         _item.tokenValue = balance;
+            //         setItem(_item);
+            //         resolve();
+            //     })
+            //     .catch(err => {
+            //         console.log('err', err);
+            //         reject();
+            //     });
         });
     };
 
@@ -185,10 +194,6 @@ const TokenDetail = ({route, navigation}) => {
     };
 
     const getTransactionsByType = (address, type, coin) => {
-        console.log("Getting Datat from API for coin ", coin)
-        console.log("Getting Datat from API for address ", address)
-        console.log("Getting Datat from API for type ", type)
-
         coin === "tnft" || coin === "tal" ? coin = "alia" : coin
         console.log('address,type,coin', address, type, coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
         return new Promise((resolve, reject) => {
@@ -196,63 +201,19 @@ const TokenDetail = ({route, navigation}) => {
                 `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type === "ethereum" ? type = "eth" : type}&networkType=${networkType}&coin=${coin}`,
             )
                 .then(response => {
-                    console.log('response1234512345', response);
+                    // console.log('response1234512345', response);
                     return response.json();
                 })
                 .then(res => {
-                    console.log('res', res);
+                    console.log('response of xanawallet/fetch-transactions', res);
                     setLoading(false);
                     if (res.success) {
                         if (type == 'eth') {
-                            const array = [];
-                            res.data.map(_item => {
-                                array.push({
-                                    ..._item,
-                                    //value: Web3.utils.fromWei(trx.value, 'ether'),
-                                    type:
-                                        _item.from == wallet?.address
-                                            ? 'OUT'
-                                            : _item.to == wallet?.address
-                                                ? 'IN'
-                                                : '',
-                                });
-                            });
-                            array.reverse();
-                            dispatch(addAllEthTransactions(array));
-
+                            dispatch(addAllEthTransactions(res.data));
                         } else if (type == 'bsc') {
-                            const _array = [];
-                            res.data.map(_item => {
-                                _array.push({
-                                    ..._item,
-                                    type:
-                                        _item.from == wallet?.address
-                                            ? 'OUT'
-                                            : _item.to == wallet?.address
-                                                ? 'IN'
-                                                : '',
-                                });
-                            });
-                            _array.reverse();
-                            console.log('_array#########', _array);
-                            dispatch(addAllBnbTransactions(_array));
+                            dispatch(addAllBnbTransactions(res.data));
                         } else if (type == 'polygon') {
-                            const __array = [];
-                            res.data.map(_item => {
-                                __array.push({
-                                    ..._item,
-                                    type:
-                                        _item.from == wallet?.address
-                                            ? 'OUT'
-                                            : _item.to == wallet?.address
-                                                ? 'IN'
-                                                : '',
-                                });
-                            });
-                            __array.reverse();
-                            console.log("ARRAY 987654321", __array)
-                            dispatch(addAllMaticTransactions(__array));
-
+                            dispatch(addAllMaticTransactions(res.data));
                         }
                     }
                     resolve();

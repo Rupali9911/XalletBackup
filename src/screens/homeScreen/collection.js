@@ -60,6 +60,7 @@ const Collection = () => {
         creator={item.creator}
         creatorInfo={item.creatorInfo}
         blind={item.blind}
+        colId={item._id}
         onPress={() => {
            console.log('========', item, item.redirect, item.isBlind, isSelectTab);
           if (item.redirect === '/collection/underground_city') {
@@ -170,7 +171,7 @@ const Collection = () => {
             CollectionReducer.collectionLoading
           }
           renderItem={renderItem}
-         // onEndReached={handleFlastListEndReached}
+         onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
           keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}

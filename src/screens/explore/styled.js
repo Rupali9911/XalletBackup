@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
         fontFamily: fonts.PINGfANG,
         color: '#909090',
         marginTop: hp('1%'),
+        marginBottom: hp('1%'),
       },
 })
 

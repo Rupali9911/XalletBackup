@@ -218,6 +218,14 @@ const styles = StyleSheet.create({
         fontSize: SIZE(12),
         marginVertical: SIZE(10),
     },
+    verifyIcon:{
+        position: 'absolute',
+        top: 9,
+        right: 72,
+        width: SIZE(14),
+        height: SIZE(14),
+        borderRadius: SIZE(10)
+    }
 })
 
 export default styles;

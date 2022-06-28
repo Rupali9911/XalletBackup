@@ -39,7 +39,7 @@ export const hotCollectionList = (page) => {
       .then(json => {
         const obj = {
           bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/NFTAward.png",
-          chainType: "binance",
+          chainType: "",
           collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
           collectionId: "61c44353e5622d1a2e053f3e",
           collectionName: "NFTART AWARD 2021",
@@ -61,7 +61,7 @@ export const hotCollectionList = (page) => {
               _id: "61c2f7973cdaa90d7dcd31c3",
             }
           ],
-          iconImage: "",
+          iconImage: "https://ik.imagekit.io/xanalia/Images/XANALIA-ICON.png",
           innerInfo: { _id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5' },
           items: null,
           status: 0,

@@ -6,6 +6,8 @@ import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import {launchpadData} from "./launchpadData";
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
+import { Verifiedcollections } from '../../components/verifiedCollection';
+import { IMAGES } from '../../constants';
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -22,7 +24,8 @@ export default function LaunchPadItemData(props) {
         blind,
         isCollection,
         cryptoAllowed,
-        disabled
+        disabled,
+        collectionId
     } = props;
     const [onPressButton, setOnPressButton] = useState(false)
     const chainIcon = type => {
@@ -100,36 +103,36 @@ export default function LaunchPadItemData(props) {
             );
         } else
             if (isCollection) {
-            return (
-                <View style={{ flexDirection: 'row', justifyContent: 'center',marginBottom: SIZE(10) }}>
-                    {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(10) }} />}
-                    {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
-                    {cryptoAllowed?.ethereum && <Ethereum />}
-                </View>
-            );
-        } else {
-             //return chainIcon(chainType);
+                return (
+                    <View style={{ flexDirection: 'row', justifyContent: 'center',marginBottom: SIZE(10) }}>
+                        {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(10) }} />}
+                        {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
+                        {cryptoAllowed?.ethereum && <Ethereum />}
+                    </View>
+                );
+            } else {
+                //return chainIcon(chainType);
                 return chainTypeIcon(chainType)
-        }
+            }
     };
     useEffect(()=>{
         if(onPressButton){
-          onPress();
-          setTimeout(()=>{
-            setOnPressButton(false);
-          },1000)
+            onPress();
+            setTimeout(()=>{
+                setOnPressButton(false);
+            },1000)
         }
-      },[onPressButton])
-    
-      const handleOnPress = () => {
+    },[onPressButton])
+
+    const handleOnPress = () => {
         setOnPressButton(true);
-      }
+    }
     return (
 
         <FixedTouchableHighlight
             disabled={disabled}
             onPress={handleOnPress}
-                          style={styles.collectionListItem}>
+            style={styles.collectionListItem}>
             <View style={styles.listItemContainer}>
                 <View>
                     <C_Image
@@ -150,6 +153,12 @@ export default function LaunchPadItemData(props) {
                         uri={iconImage}
                         imageStyle={styles.iconImage}
                     />
+                    {Verifiedcollections.find((id) => id === collectionId) && (
+                        <Image
+                            style={styles.verifyIcon}
+                            source={IMAGES.tweetPng}
+                        />
+                    )}
                     <View style={styles.bottomCenterWrap}>
                         <Text numberOfLines={1} style={styles.collectionName}>
                             {collectionName}
@@ -161,7 +170,7 @@ export default function LaunchPadItemData(props) {
                     <View style={styles.bottomWrap}>
                         {/* {!isCollection ? renderChain() : <View />} */}
                         <View style={styles.renderchainstyle}>
-                        {renderChain()}
+                            {renderChain()}
                         </View>
                         <Text style={{ fontSize: SIZE(12), color: '#ff6e44',marginVertical:"3%" }}>
                             {/*{`${items} ` + translate('common.itemsCollection')}*/}

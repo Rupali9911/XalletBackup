@@ -52,6 +52,19 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     marginBottom: SIZE(5),
   },
+  verifyIcon: {
+    position: 'absolute',
+    bottom: 2,
+    left: 23,
+    width: SIZE(22),
+    height: SIZE(22),
+    borderRadius: SIZE(10)
+  },
+  verifyIcon1: {
+    width: SIZE(15),
+    height: SIZE(15),
+    borderRadius: SIZE(10),
+  },
   storeCollectionName: {
     fontSize: SIZE(22),
     fontWeight: '600',
@@ -67,12 +80,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // width: SIZE(86),
     height: SIZE(46),
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     marginLeft: -1,
     borderColor: '#eeeeee',
-    paddingHorizontal:SIZE(15)
+    paddingHorizontal: SIZE(15)
   },
   collectionTableRowText: {
     fontSize: SIZE(14),
@@ -132,7 +145,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: SIZE(12.5),
-    lineHeight: 18,
+    // lineHeight: 18,
     fontFamily: fonts.ARIAL,
     color: '#212529',
   },
@@ -238,11 +251,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 5
   },
-  floorPriceVw:{
+  floorPriceVw: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
 });
 
 export default styles;

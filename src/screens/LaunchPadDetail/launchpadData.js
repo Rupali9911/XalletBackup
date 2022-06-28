@@ -1,13 +1,12 @@
 import { networkType } from "../../common/networkType";
-import {translate } from '../../walletUtils';
 export const launchpadData = [
     {
         bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/Presscopy7.png",
-        //chainType: "binance",
-        chainType : [
-            { "id" : 1, "type" : "binance"},
-            { "id" : 2, "type" : "polygon"},
-            { "id" : 3, "type" : "ethereum"},
+        // chainType: "binance",
+        chainType: [
+            { "id": 1, "type": "binance" },
+            { "id": 2, "type": "polygon" },
+            { "id": 3, "type": "ethereum" },
         ],
         collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
         collectionId: "62113e1774d1af3e04bc313d",
@@ -21,7 +20,7 @@ export const launchpadData = [
                 createdAt: 1640167319857,
                 followers: 0,
                 following: 0,
-                links: {facebook: '', website: '', discord: '', twitter: '', instagram: ''},
+                links: { facebook: '', website: '', discord: '', twitter: '', instagram: '' },
                 nonce: null,
                 profile_image: "https://xanalia.s3.ap-southeast-1.amazonaws.com/userProfile/1640167427821.jpg",
                 role: "crypto",
@@ -31,22 +30,23 @@ export const launchpadData = [
             }
         ],
         iconImage: "https://ik.imagekit.io/xanalia/CollectionMainData/ultraman-profile-pic.jpg",
-        innerInfo: {_id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5'},
+        innerInfo: { _id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5' },
         items: 0,
+        status: 0,
         userId: "61c2f7973cdaa90d7dcd31c3",
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
         _id: "62113e1774d1af3e04bc313d",
         status: 'Ongoing',
         //redirect: networkType === 'testnet' ? "https://mainnet.xanalia.com/collections/blindbox/62113e1774d1af3e04bc313d" : "/collections/blindbox/62113e1774d1af3e04bc313d",
-        isBlind: true,
-        isHotCollection: false
+        blind: true,
+        // isHotCollection: false
     },
     {
         bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/AstroboyThumbnail.png",
         // chainType: "binance",
-        chainType : [
-            { "id" : 1, "type" : "binance"},
-            { "id" : 3, "type" : "ethereum"},
+        chainType: [
+            { "id": 1, "type": "binance" },
+            { "id": 3, "type": "ethereum" },
         ],
         collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
         collectionId: "61c44353e5622d1a2e053f3e",
@@ -60,7 +60,7 @@ export const launchpadData = [
                 createdAt: 1640167319857,
                 followers: 0,
                 following: 0,
-                links: {facebook: '', website: '', discord: '', twitter: '', instagram: ''},
+                links: { facebook: '', website: '', discord: '', twitter: '', instagram: '' },
                 nonce: null,
                 profile_image: "https://xanalia.s3.ap-southeast-1.amazonaws.com/userProfile/1640167427821.jpg",
                 role: "crypto",
@@ -70,22 +70,23 @@ export const launchpadData = [
             }
         ],
         iconImage: "https://ik.imagekit.io/xanalia/CollectionMainData/AstroboyIcon.png",
-        innerInfo: {_id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5'},
+        innerInfo: { _id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5' },
         items: 0,
+        status: 0,
         userId: "61c2f7973cdaa90d7dcd31c3",
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
         _id: "626a31e427d3b54671fd9ea3",
         status: 'Ongoing',
-       // redirect: networkType === 'testnet' ? "https://mainnet.xanalia.com/collections/blindbox/626a31e427d3b54671fd9ea3" : "https://xanalia.com/collections/blindbox/626a31e427d3b54671fd9ea3",
-       isBlind: true,
-       isHotCollection: false
-     },
+        // redirect: networkType === 'testnet' ? "https://mainnet.xanalia.com/collections/blindbox/626a31e427d3b54671fd9ea3" : "https://xanalia.com/collections/blindbox/626a31e427d3b54671fd9ea3",
+        blind: true,
+        // isHotCollection: false
+    },
     {
         bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/RoasterFighterThumbnail.png",
-       // chainType: "binance",
-        chainType : [
-            { "id" : 1, "type" : "binance"},
-            { "id" : 3, "type" : "ethereum"},
+        // chainType: "binance",
+        chainType: [
+            { "id": 1, "type": "binance" },
+            { "id": 3, "type": "ethereum" },
         ],
         collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
         collectionId: "624d51f705901f306d552f25",
@@ -99,7 +100,7 @@ export const launchpadData = [
                 createdAt: 1640167319857,
                 followers: 0,
                 following: 0,
-                links: {facebook: '', website: '', discord: '', twitter: '', instagram: ''},
+                links: { facebook: '', website: '', discord: '', twitter: '', instagram: '' },
                 nonce: null,
                 profile_image: "https://xanalia.s3.ap-southeast-1.amazonaws.com/userProfile/1640167427821.jpg",
                 role: "crypto",
@@ -109,22 +110,23 @@ export const launchpadData = [
             }
         ],
         iconImage: "https://ik.imagekit.io/xanalia/CollectionMainData/RoosteFighterIcon.png",
-        innerInfo: {_id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5'},
+        innerInfo: { _id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5' },
         items: 0,
+        status: 0,
         userId: "61c2f7973cdaa90d7dcd31c3",
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
         _id: "624d51f705901f306d552f25",
         status: 'Ongoing',
         onlyEth: true,
-     //   redirect: networkType === 'testnet' ? "https://mainnet.xanalia.com/collections/blindbox/624d51f705901f306d552f25?tab=blind&page=1" : "/collections/blindbox/624d51f705901f306d552f25?tab=blind&page=1",
-     isBlind: false,
-     isHotCollection: true 
+        //   redirect: networkType === 'testnet' ? "https://mainnet.xanalia.com/collections/blindbox/624d51f705901f306d552f25?tab=blind&page=1" : "/collections/blindbox/624d51f705901f306d552f25?tab=blind&page=1",
+        blind: true,
+        // isHotCollection: true
     },
     {
         bannerImage: "https://ik.imagekit.io/xanalia/Images/image.png",
         // chainType: "binance",
-        chainType : [
-            { "id" : 1, "type" : "binance"},
+        chainType: [
+            { "id": 1, "type": "binance" },
         ],
         collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
         collectionId: "628dc1fea333d6192d25eb66",
@@ -155,13 +157,12 @@ export const launchpadData = [
         _id: "628dc1fea333d6192d25eb66",
         status: 'Ongoing',
         // redirect: "/collection-details/628dc1fea333d6192d25eb66/0x737727Fe6919499108De1436EDd5Fe7107D9a2Ff?page=1&tab=normal",
-       isBlind: false,
-       isHotCollection: true
+        blind: false
     },
     {
         bannerImage: `https://ik.imagekit.io/xanalia/Images/HIROKOKOSHINOANOTHERONE.jpg`,
-        chainType : [
-            { "id" : 1, "type" : "binance"},
+        chainType: [
+            { "id": 1, "type": "binance" },
         ],
         // chainType: "binance",
         collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
@@ -192,9 +193,8 @@ export const launchpadData = [
         userObjectId: "61c2f7973cdaa90d7dcd31c3",
         _id: "629f4b4c1257420dd4c68b21",
         status: 'Ongoing',
-       // redirect: "/collection-details/629f4b4c1257420dd4c68b21/0xB1cD4c2A0D65F337Ee39853e2954951Df8f30715",
-       isBlind: false,
-       isHotCollection: true
+        // redirect: "/collection-details/629f4b4c1257420dd4c68b21/0xB1cD4c2A0D65F337Ee39853e2954951Df8f30715",
+        blind: false
     },
     // {
     //     bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/Monkeyking3.png",
@@ -230,4 +230,4 @@ export const launchpadData = [
     //     redirect: "/store/MONKEY_KING",
     // },
 
-  ];
+];

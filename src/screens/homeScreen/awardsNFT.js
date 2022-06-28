@@ -105,7 +105,7 @@ const AwardsNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {AwardsNFTReducer.awardsNftPage === 1 &&
+      {isFirstRender ? isFirstRender : AwardsNFTReducer.awardsNftPage === 1 &&
         AwardsNFTReducer.awardsNftLoading ? (
         <Loader />
       ) : AwardsNFTReducer.awardsNftList.length !== 0 ? (
