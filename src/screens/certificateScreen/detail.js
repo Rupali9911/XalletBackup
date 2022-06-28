@@ -445,8 +445,8 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const getNFTSellDetails = async (id, filterArray = []) => {
-    setTradingTableLoader(true);
-    setLoaderSell(true);
+    // setTradingTableLoader(true);
+    // setLoaderSell(true);
     let url = `${BASE_URL}/xanalia/getEventHistory`;
     await axios
       .post(url, {
@@ -1531,6 +1531,8 @@ const DetailScreen = ({navigation, route}) => {
     //   });
   };
   const calculatePrice = async tradeCurr => {
+    setPayableIn(tradeCurr.name);
+    setAllowedTokenModal(false);
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
@@ -2536,6 +2538,7 @@ const DetailScreen = ({navigation, route}) => {
                                     // showCellData(rowData, rowIndex)
                                     firstCellData(rowData)
                                   }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
                                   textStyle={styles.text}
                                   width={130}
                                 />
@@ -2545,6 +2548,7 @@ const DetailScreen = ({navigation, route}) => {
                                     // showCellData(rowData, rowIndex)
                                     secondCellData(rowData)
                                   }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
                                   textStyle={styles.text}
                                   width={180}
                                 />
@@ -2554,6 +2558,7 @@ const DetailScreen = ({navigation, route}) => {
                                     // showCellData(rowData, rowIndex)
                                     thirdCellData(rowData)
                                   }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
                                   textStyle={styles.text}
                                   width={180}
                                 />
@@ -2563,6 +2568,7 @@ const DetailScreen = ({navigation, route}) => {
                                     // showCellData(rowData, rowIndex)
                                     fourthCellData(rowData)
                                   }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
                                   textStyle={styles.text}
                                   width={160}
                                 />
@@ -2849,9 +2855,7 @@ const DetailScreen = ({navigation, route}) => {
         data={{data: availableTokens}}
         title={translate('common.allowedcurrency')}
         itemPress={async tradeCurr => {
-          await calculatePrice(tradeCurr);
-          setPayableIn(tradeCurr.name);
-          setAllowedTokenModal(false);
+          await calculatePrice(tradeCurr); 
         }}
         renderItemName={'name'}
       />
