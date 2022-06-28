@@ -2514,7 +2514,7 @@ const DetailScreen = ({navigation, route}) => {
                     data={bidHistoryTableHead}
                     style={styles.head}
                     textStyle={styles.text}
-                    widthArr={[130, 180, 180, 160]}
+                    widthArr={[130, 180, 180, 200]}
                   />
                   {sellDetails?.length > 0 &&
                   sellDetails.filter(
@@ -2570,7 +2570,7 @@ const DetailScreen = ({navigation, route}) => {
                                   }
                                   borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
                                   textStyle={styles.text}
-                                  width={160}
+                                  width={200}
                                 />
                               </>
                             }
@@ -2687,7 +2687,7 @@ const DetailScreen = ({navigation, route}) => {
                     data={tradingTableHead}
                     style={styles.head}
                     textStyle={styles.text}
-                    widthArr={[145, 130, 180, 180, 160]}
+                    widthArr={[145, 130, 180, 180, 200]}
                   />
 
                   {tradingTableData.length > 0 ? (
@@ -2711,7 +2711,7 @@ const DetailScreen = ({navigation, route}) => {
                               wid = 180;
                             }
                             if (cellIndex === 4) {
-                              wid = 160;
+                              wid = 200;
                             }
                             return (
                               <Cell
