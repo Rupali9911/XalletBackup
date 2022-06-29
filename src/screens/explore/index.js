@@ -64,12 +64,12 @@ function ExploreScreen() {
                       en_nft_description: selectedPack[i]?.metaData?.description,
                       ja_nft_description: selectedPack[i]?.metaData?.description,
                       ko_nft_description: selectedPack[i]?.metaData?.description,
-                      ch_nft_description: selectedPack[i]?.metaData?.description,
+                      zh_nft_description: selectedPack[i]?.metaData?.description,
                       zh_ch_nft_description: selectedPack[i]?.metaData?.description,
                       en_nft_name: selectedPack[i]?.metaData?.name,
                       ja_nft_name: selectedPack[i]?.metaData?.name,
                       ko_nft_name: selectedPack[i]?.metaData?.name,
-                      ch_nft_name: selectedPack[i]?.metaData?.name,
+                      zh_nft_name: selectedPack[i]?.metaData?.name,
                       zh_ch_nft_name: selectedPack[i]?.metaData?.name
                     });
                   }
@@ -114,7 +114,6 @@ function ExploreScreen() {
   }
 
   const memoizedValue = useMemo(() => renderItem, [discoverNFTList]);
-  console.log(discoverNFTList, "discoverNFTList")
 
   const handleFlastListEndReached = () => {
     if (!noMore) {
@@ -127,7 +126,7 @@ function ExploreScreen() {
     }
   }
   const keyExtractor = (item, index) => { return 'item_' + index }
-
+  
   return (
     <Container>
       <View style={{ flex: 1 }}>

@@ -103,7 +103,7 @@ export const handleLike = (wallet, data, nftItem) => {
             'Content-Type': 'application/json',
         },
     };
-   return Promise.all([
+    return Promise.all([
         fetch(url1, fetch_like_body).then(res => res.json()),
         fetch(url2, fetch_rating_body).then(res => res.json()),
     ])
@@ -134,15 +134,15 @@ function NftItem({
 
     const onTextLayout = useCallback(e => {
         if (
-            e.nativeEvent.lines.length >= 2 
+            e.nativeEvent.lines.length >= 2
             // &&
             // e.nativeEvent.lines[1].width > width - SIZE(40)
         )
             setLengthMore(true);
     }, []);
 
-    const creatorObj = nftItem.creatorObj[0];
-    const ownerObj = nftItem.buyerObj[0];
+    const creatorObj = Array.isArray(nftItem?.creatorObj) ? nftItem.creatorObj[0] : nftItem?.creatorObj;
+    const ownerObj =  Array.isArray(nftItem?.buyerObj) ? nftItem.buyerObj[0] : nftItem?.buyerObj;
 
     let creatorImageStatus;
     let creatorName;
@@ -226,16 +226,13 @@ function NftItem({
                         isPlay
                             ? setPlay(!isPlay)
                             :
-                            console.log("333###333###" , item)
-                        navigation.navigate('CertificateDetail', {
+                            navigation.navigate('CertificateDetail', {
                                 owner: nftItem.buyerUser,
                                 ownerData: ownerObj,
                                 artistId: nftItem.creator,
-                                //collectCreat: nftItem.collectionObj[0],
                                 artistData: creatorObj,
                                 video: videoUri,
                                 fileType: fileType,
-                                detailitem: item,
                                 item: item,
                                 setNftItem
                             })

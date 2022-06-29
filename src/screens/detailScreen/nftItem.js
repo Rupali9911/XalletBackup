@@ -718,7 +718,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                       artistData: artistData,
                       video: videoUri,
                       fileType: fileType,
-                      detailitem:getDetailNFT,
                       item: item,
                       index: index,
                     })
