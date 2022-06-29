@@ -202,7 +202,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [loader, setLoader] = useState(false);
   const [payableIn, setPayableIn] = useState('');
-  const [collectCreatData, setcollectCreat] = useState();
+  const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState(artistData);
   const [artist, setArtist] = useState(artistId);
 
@@ -1733,7 +1733,7 @@ const DetailScreen = ({ navigation, route }) => {
               owner: ownerN,
               ownerData: ownerDataN,
               artistId: artist,
-              collectCreat: collectCreatData,
+              collectCreat: collectCreat,
               artistData: artistDetail,
               video: item.metaData.image,
               fileType: fileType,
@@ -1781,11 +1781,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    // console.log('collectCreat', collectCreatData?.collectionName)
-    if (collectCreatData?.userId === '0') {
+    // console.log('collectCreat', collectCreat?.collectionName)
+    if (collectCreat?.userId === '0') {
       return true;
     } else {
-      switch (collectCreatData?.collectionName) {
+      switch (collectCreat?.collectionName) {
         case 'ULTRAMAN':
           return true;
         case 'MONKEY COSER 101':
@@ -1917,7 +1917,7 @@ const DetailScreen = ({ navigation, route }) => {
       || artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
       ? (
         disableCreator = true,
-        collectCreatData?.creator
+        collectCreat?.creator
       ) : artistId ? artistId?.substring(0, 6) : ""
   }
 
@@ -1964,7 +1964,7 @@ const DetailScreen = ({ navigation, route }) => {
   //   || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
   //   ? (
   //     disableCreator = true,
-  //     collectCreatData?.creator
+  //     collectCreat?.creator
   //   )
   //   : artist.substring(0, 6)
   //     : artistDetail === "No record found" ?
@@ -2246,22 +2246,22 @@ const DetailScreen = ({ navigation, route }) => {
             <TouchableOpacity
               disabled={collectionClick()}
               onPress={() => {
-                if (collectCreatData) {
-                  if (collectCreatData.blind) {
+                if (collectCreat) {
+                  if (collectCreat.blind) {
                     console.log(
                       '========collection tab => blind2',
-                      collectCreatData.blind,
-                      collectCreatData.collectionId,
+                      collectCreat.blind,
+                      collectCreat.collectionId,
                     );
                     navigation.push('CollectionDetail', {
                       isBlind: true,
-                      collectionId: collectCreatData._id,
+                      collectionId: collectCreat._id,
                       isHotCollection: false,
                     });
                   } else {
                     navigation.push('CollectionDetail', {
                       isBlind: false,
-                      collectionId: collectCreatData._id,
+                      collectionId: collectCreat._id,
                       isHotCollection: true,
                     });
                   }
@@ -2271,8 +2271,8 @@ const DetailScreen = ({ navigation, route }) => {
               <Image
                 style={styles.iconsImage}
                 source={
-                  collectCreatData
-                    ? { uri: collectCreatData.iconImage }
+                  collectCreat
+                    ? { uri: collectCreat.iconImage }
                     : IMAGES.DEFAULTPROFILE
                 }
               />
@@ -2282,7 +2282,7 @@ const DetailScreen = ({ navigation, route }) => {
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <Text numberOfLines={1} style={styles.collectionName}>
-                    {collectCreatData && collectCreatData.collectionName}
+                    {collectCreat && collectCreat.collectionName}
                   </Text>
                   {Verifiedcollections.find((id) => id === collectCreat?._id) && (
                     <Image
