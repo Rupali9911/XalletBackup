@@ -1,7 +1,7 @@
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -20,14 +20,14 @@ import {
   Cell,
   TableWrapper,
 } from 'react-native-table-component';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
 import details from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import history from '../../../assets/images/history.png';
 import trading from '../../../assets/images/trading.png';
-import {networkType} from '../../common/networkType';
-import {AppHeader, C_Image, GroupButton} from '../../components';
+import { networkType } from '../../common/networkType';
+import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
@@ -35,24 +35,24 @@ import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import {hp, wp} from '../../constants/responsiveFunct';
+import { hp, wp } from '../../constants/responsiveFunct';
 import {
   getAllCards,
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import {alertWithSingleBtn, divideNo, numberWithCommas} from '../../utils';
-import {translate} from '../../walletUtils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
-import {CardField, TabModal} from '../createNFTScreen/components';
+import { alertWithSingleBtn, divideNo, numberWithCommas } from '../../utils';
+import { translate } from '../../walletUtils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
+import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL} from '../../common/constants';
-import {ActivityIndicator} from 'react-native-paper';
+import { BASE_URL } from '../../common/constants';
+import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
-import {currencyInDollar} from '../wallet/functions';
-import {getBaseCurrency} from '../../utils/parseNFTObj';
+import { currencyInDollar } from '../wallet/functions';
+import { getBaseCurrency } from '../../utils/parseNFTObj';
 import {
   Menu,
   MenuOptions,
@@ -60,7 +60,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 
-const {PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon} =
+const { PlayButtonIcon, HeartWhiteIcon, HeartActiveIcon, ThreeDotsVerticalIcon } =
   SVGS;
 import addComma from '../../utils/insertComma';
 import { isChinaApp } from '../../web3/config/networkType';
@@ -144,11 +144,11 @@ export function trimZeroFromTheEnd(val) {
   return str;
 }
 
-const DetailScreen = ({navigation, route}) => {
+const DetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
-  const {data, wallet} = useSelector(state => state.UserReducer);
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
+  const { data, wallet } = useSelector(state => state.UserReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
@@ -238,6 +238,7 @@ const DetailScreen = ({navigation, route}) => {
   const [updateComponent, setUpdateComponent] = useState(false);
   const [highestBidderAddValue, setHighestBidderAddValue] = useState('');
   const [bidPriceInDollar, setBidPriceInDollar] = useState('');
+  const [minBidPrice, setMinBidPrice] = useState('')
 
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
@@ -281,7 +282,7 @@ const DetailScreen = ({navigation, route}) => {
         }
         if (data.token) {
           dispatch(getAllCards(data.token))
-            .then(() => {})
+            .then(() => { })
             .catch(err => {
               console.log('error====', err);
             });
@@ -292,9 +293,13 @@ const DetailScreen = ({navigation, route}) => {
   }, [isFocused]);
 
   useEffect(() => {
-    getCurrencyPrice();
     getPayablePrice();
   }, [wallet, baseCurrency, availableTokens]);
+
+  useEffect(() => {
+    getCurrencyPrice(item?.price ? item.price : priceNFT);
+  }, [wallet, baseCurrency, availableTokens, priceNFT]);
+
 
   const getPayablePrice = async () => {
     if (availableTokens.length !== 0) {
@@ -315,9 +320,11 @@ const DetailScreen = ({navigation, route}) => {
     }
   }, [filterTableValue]);
 
-  const getCurrencyPrice = async () => {
+  const getCurrencyPrice = async (value) => {
+    console.log("🚀 ~ file: detail.js ~ line 325 ~ getCurrencyPrice ~ value", value)
     let finalPrice = '';
     let i;
+    let price = value ? value : nftPrice
     switch (chainType) {
       case 'BinanceNtwk':
         i = 0;
@@ -338,26 +345,26 @@ const DetailScreen = ({navigation, route}) => {
     setCurrencyPrices(currencyPrices);
     switch (baseCurrency?.key) {
       case 'BNB':
-        finalPrice = nftPrice * currencyPrices?.BNB;
+        finalPrice = price * currencyPrices?.BNB;
         break;
 
       case 'ALIA':
-        finalPrice = nftPrice * currencyPrices?.ALIA;
+        finalPrice = price * currencyPrices?.ALIA;
         break;
 
       case 'ETH':
-        finalPrice = nftPrice * currencyPrices?.ETH;
+        finalPrice = price * currencyPrices?.ETH;
         break;
 
       case 'MATIC':
-        finalPrice = nftPrice * currencyPrices?.MATIC;
+        finalPrice = price * currencyPrices?.MATIC;
         break;
 
       default:
-        finalPrice = nftPrice * 1;
+        finalPrice = price * 1;
         break;
     }
-    console.log('=======finalPrice', currencyPrices, finalPrice);
+    console.log('=======finalPrice', currencyPrices, finalPrice, value);
     setPriceInDollar(finalPrice);
   };
 
@@ -411,18 +418,18 @@ const DetailScreen = ({navigation, route}) => {
     let data = price2
       ? detail.currency_type === 'dollar'
         ? addComma(
-            trimZeroFromTheEnd(
-              showActualValue(parseFloat(price2.toString()), 4, 'number'),
-              true,
-            ),
+          trimZeroFromTheEnd(
+            showActualValue(parseFloat(price2.toString()), 4, 'number'),
             true,
-          )
+          ),
+          true,
+        )
         : addComma(
-            trimZeroFromTheEnd(showActualValue(price2, 6, 'number'), true),
-            true,
-          ) +
-          ' ' +
-          tradeCurrency
+          trimZeroFromTheEnd(showActualValue(price2, 6, 'number'), true),
+          true,
+        ) +
+        ' ' +
+        tradeCurrency
       : '';
 
     return data;
@@ -432,16 +439,16 @@ const DetailScreen = ({navigation, route}) => {
     return aPrice && parseFloat(divideNo(parseInt(aPrice?._hex, 16))) > 0
       ? divideNo(parseInt(aPrice._hex, 16))
       : bPrice
-      ? divideNo(parseInt(bPrice._hex, 16))
-      : '';
+        ? divideNo(parseInt(bPrice._hex, 16))
+        : '';
   };
 
   const getTradeCurrency = (baseCurrency, dollarPrice) => {
     return baseCurrency
       ? getBaseCurrency(chainType, parseInt(baseCurrency._hex, 16))
       : dollarPrice && parseFloat(divideNo(parseInt(dollarPrice?._hex, 16))) > 0
-      ? '$'
-      : 'ALIA';
+        ? '$'
+        : 'ALIA';
   };
 
   const getNFTSellDetails = async (id, filterArray = []) => {
@@ -464,7 +471,7 @@ const DetailScreen = ({navigation, route}) => {
               res.data.data[i].event === 'SellNFT' ||
               res.data.data[i].event === 'SellNFTNonCrypto'
             ) {
-              let {dollarPrice, price, baseCurrency} =
+              let { dollarPrice, price, baseCurrency } =
                 res.data.data[i].returnValues;
 
               let priceCond = getPrice(dollarPrice, price);
@@ -490,16 +497,16 @@ const DetailScreen = ({navigation, route}) => {
             }
 
             if (res.data.data[i].event === 'OfferAccept') {
-              let {amount} = res.data.data[i].returnValues;
+              let { amount } = res.data.data[i].returnValues;
               let priceCond = getPrice(amount, null);
               let tradeCurr = res.data.data[i].returnValues.currencyType
                 ? getBaseCurrency(
-                    chainType,
-                    parseInt(
-                      res.data.data[i].returnValues.currencyType._hex,
-                      16,
-                    ),
-                  )
+                  chainType,
+                  parseInt(
+                    res.data.data[i].returnValues.currencyType._hex,
+                    16,
+                  ),
+                )
                 : 'ALIA';
 
               let obj = {
@@ -533,7 +540,7 @@ const DetailScreen = ({navigation, route}) => {
                 }
               }
 
-              let {newDollarPrice, newPrice, baseCurrency} =
+              let { newDollarPrice, newPrice, baseCurrency } =
                 res.data.data[i].returnValues;
               let priceCond = getPrice(newDollarPrice, newPrice);
               let tradeCurr = getTradeCurrency(baseCurrency, newDollarPrice);
@@ -557,7 +564,7 @@ const DetailScreen = ({navigation, route}) => {
             }
 
             if (res.data.data[i].event === 'OnAuction') {
-              let {startPrice, baseCurrency, dollarPrice} =
+              let { startPrice, baseCurrency, dollarPrice } =
                 res.data.data[i].returnValues;
               let priceCond = getPrice(startPrice, null);
               let tradeCurr = getTradeCurrency(baseCurrency, dollarPrice);
@@ -590,7 +597,7 @@ const DetailScreen = ({navigation, route}) => {
                 }
               }
 
-              let {startPrice, priceDollar, baseCurrency} =
+              let { startPrice, priceDollar, baseCurrency } =
                 res.data.data[i].returnValues;
 
               let priceCond = getPrice(startPrice, priceDollar);
@@ -624,16 +631,16 @@ const DetailScreen = ({navigation, route}) => {
                 }
               }
 
-              let {amount} = res.data.data[i].returnValues;
+              let { amount } = res.data.data[i].returnValues;
 
               let priceCond = getPrice(amount, null);
 
               let tradeCurr =
                 lastAuction && lastAuction.returnValues.baseCurrency
                   ? getBaseCurrency(
-                      chainType,
-                      parseInt(lastAuction.returnValues.baseCurrency._hex, 16),
-                    )
+                    chainType,
+                    parseInt(lastAuction.returnValues.baseCurrency._hex, 16),
+                  )
                   : 'ALIA';
 
               let obj = {
@@ -656,7 +663,7 @@ const DetailScreen = ({navigation, route}) => {
             }
 
             if (res.data.data[i].event === 'BidAward') {
-              let {amount} = res.data.data[i].returnValues;
+              let { amount } = res.data.data[i].returnValues;
 
               let priceCond = getPrice(amount, null);
               let tradeCurr = '$';
@@ -689,17 +696,17 @@ const DetailScreen = ({navigation, route}) => {
                 }
               }
 
-              let {amount} = res.data.data[i].returnValues;
+              let { amount } = res.data.data[i].returnValues;
 
               let priceCond = getPrice(amount, null);
               let tradeCurr = res.data.data[i].returnValues.baseCurrency
                 ? getBaseCurrency(
-                    chainType,
-                    parseInt(
-                      res.data.data[i].returnValues.baseCurrency._hex,
-                      16,
-                    ),
-                  )
+                  chainType,
+                  parseInt(
+                    res.data.data[i].returnValues.baseCurrency._hex,
+                    16,
+                  ),
+                )
                 : 'ALIA';
 
               let obj = {
@@ -745,52 +752,10 @@ const DetailScreen = ({navigation, route}) => {
 
               let priceCond = res.data.data[i].returnValues.calculated
                 ? divideNo(
-                    parseInt(res.data.data[i].returnValues.calculated._hex, 16),
-                  )
+                  parseInt(res.data.data[i].returnValues.calculated._hex, 16),
+                )
                 : updateEvent
-                ? updateEvent.returnValues.newDollarPrice &&
-                  parseFloat(
-                    divideNo(
-                      parseInt(
-                        updateEvent.returnValues.newDollarPrice?._hex,
-                        16,
-                      ),
-                    ),
-                  ) > 0
-                  ? divideNo(
-                      parseInt(
-                        updateEvent.returnValues.newDollarPrice._hex,
-                        16,
-                      ),
-                    )
-                  : divideNo(
-                      parseInt(updateEvent.returnValues.newPrice._hex, 16),
-                    )
-                : sellEvent.returnValues.dollarPrice &&
-                  parseFloat(
-                    divideNo(
-                      parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
-                    ),
-                  ) > 0
-                ? divideNo(
-                    parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
-                  )
-                : divideNo(parseInt(sellEvent.returnValues.price._hex, 16));
-              let tradeCurr = res.data.data[i].returnValues.currencyType
-                ? getBaseCurrency(
-                    chainType,
-                    parseInt(
-                      res.data.data[i].returnValues.currencyType._hex,
-                      16,
-                    ),
-                  )
-                : updateEvent
-                ? updateEvent.returnValues.baseCurrency
-                  ? getBaseCurrency(
-                      chainType,
-                      parseInt(updateEvent.returnValues.baseCurrency._hex, 16),
-                    )
-                  : updateEvent.returnValues.newDollarPrice &&
+                  ? updateEvent.returnValues.newDollarPrice &&
                     parseFloat(
                       divideNo(
                         parseInt(
@@ -799,16 +764,58 @@ const DetailScreen = ({navigation, route}) => {
                         ),
                       ),
                     ) > 0
-                  ? '$'
-                  : 'ALIA'
-                : sellEvent.returnValues.dollarPrice &&
-                  parseInt(
-                    divideNo(
+                    ? divideNo(
+                      parseInt(
+                        updateEvent.returnValues.newDollarPrice._hex,
+                        16,
+                      ),
+                    )
+                    : divideNo(
+                      parseInt(updateEvent.returnValues.newPrice._hex, 16),
+                    )
+                  : sellEvent.returnValues.dollarPrice &&
+                    parseFloat(
+                      divideNo(
+                        parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
+                      ),
+                    ) > 0
+                    ? divideNo(
                       parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
-                    ),
-                  ) > 0
-                ? '$'
-                : 'ALIA';
+                    )
+                    : divideNo(parseInt(sellEvent.returnValues.price._hex, 16));
+              let tradeCurr = res.data.data[i].returnValues.currencyType
+                ? getBaseCurrency(
+                  chainType,
+                  parseInt(
+                    res.data.data[i].returnValues.currencyType._hex,
+                    16,
+                  ),
+                )
+                : updateEvent
+                  ? updateEvent.returnValues.baseCurrency
+                    ? getBaseCurrency(
+                      chainType,
+                      parseInt(updateEvent.returnValues.baseCurrency._hex, 16),
+                    )
+                    : updateEvent.returnValues.newDollarPrice &&
+                      parseFloat(
+                        divideNo(
+                          parseInt(
+                            updateEvent.returnValues.newDollarPrice?._hex,
+                            16,
+                          ),
+                        ),
+                      ) > 0
+                      ? '$'
+                      : 'ALIA'
+                  : sellEvent.returnValues.dollarPrice &&
+                    parseInt(
+                      divideNo(
+                        parseInt(sellEvent.returnValues.dollarPrice._hex, 16),
+                      ),
+                    ) > 0
+                    ? '$'
+                    : 'ALIA';
 
               let obj = {
                 translatedEvent: translate('common.Buys'),
@@ -858,8 +865,8 @@ const DetailScreen = ({navigation, route}) => {
                   ? res.data.data[i].returnValues.minter
                   : res.data.data[i].returnValues.from.toLowerCase() ===
                     walletAddressForNonCrypto.toLocaleLowerCase()
-                  ? res.data.data[i].returnValues.to
-                  : res.data.data[i].returnValues.from,
+                    ? res.data.data[i].returnValues.to
+                    : res.data.data[i].returnValues.from,
                 sellDateTime: moment
                   .utc(res.data.data[i].timestamp * 1000)
                   .local()
@@ -933,7 +940,6 @@ const DetailScreen = ({navigation, route}) => {
             arr.push(convertArr);
           }
           let fDArray = arr.reverse();
-          console.log(fDArray, 'fDArray');
           setTradingTableData1(fDArray);
           setSellDetails(bids.reverse());
           setTradingTableData(fDArray);
@@ -987,6 +993,7 @@ const DetailScreen = ({navigation, route}) => {
     ) => {
       setHighestBidderAddValue(highestBidderAdd);
       setIsNFTOnAuction(isNFTOnAuction);
+      setMinBidPrice(minBidPrice)
       setAuctionInitiatorAdd(auctionInitiatorAdd);
       setAuctionETime(auctionETime);
       setLastBidAmount(lastBidAmount);
@@ -1098,8 +1105,8 @@ const DetailScreen = ({navigation, route}) => {
         seller && seller.includes('0x')
           ? seller.substring(0, 6)
           : ownerDataN._id === seller
-          ? ownerDataN.username
-          : seller;
+            ? ownerDataN.username
+            : seller;
     }
     return sellerName;
   };
@@ -1178,7 +1185,7 @@ const DetailScreen = ({navigation, route}) => {
                       res[1] !== '') ||
                       (data &&
                         _data.owner_address.toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -1192,7 +1199,7 @@ const DetailScreen = ({navigation, route}) => {
                       res[1] !== '') ||
                       (data &&
                         res[0].toLowerCase() ===
-                          walletAddressForNonCrypto.toLowerCase() &&
+                        walletAddressForNonCrypto.toLowerCase() &&
                         res[1] !== '' &&
                         nonCryptoOwnerId.toLowerCase() === data.user._id)
                       ? true
@@ -1222,6 +1229,24 @@ const DetailScreen = ({navigation, route}) => {
                   setIsContractOwner(false);
                 }
               }
+              // if (res[0] !== "0x0000000000000000000000000000000000000000") {
+              //   // calculateBidPriceDollar(res[1], walletAddressForNonCrypto);
+              //   let dollarToken = basePriceTokens.filter(
+              //     (token) =>
+              //       token.chain === singleNFT.nftChain &&
+              //       token.dollarCurrency
+              //   );
+              //   let rs = await this.calculatePrice(
+              //     res[1],
+              //     dollarToken[0].order,
+              //     // this.state.nonCryptoOwnerId
+              //     walletAddressForNonCrypto
+              //   );
+              //   if (rs) {
+              //     let res = divideNo(rs);
+              //     setPriceInDollar(res);
+              //   }
+              // }
 
               setOwnerAddress(nonCryptoOwner);
             } else {
@@ -1251,7 +1276,7 @@ const DetailScreen = ({navigation, route}) => {
         // console.log('owner_address', res);
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
-          .call((err, res) => {
+          .call(async (err, res) => {
             // console.log('getSellDetail public', res, item.metaData.name);
             if (!err) {
               let priceOfNft = res[1] / 1e18;
@@ -1266,6 +1291,20 @@ const DetailScreen = ({navigation, route}) => {
                       ? true
                       : false,
                   );
+                  // let dollarToken = basePriceTokens.filter(
+                  //   (token) =>
+                  //     token.chain === singleNFT.nftChain &&
+                  //     token.dollarCurrency
+                  // );
+                  // let rs = await this.calculatePrice(
+                  //   res[1],
+                  //   dollarToken[0].order,
+                  //   res[0]
+                  // );
+                  // if (rs) {
+                  //   let res = divideNo(rs);
+                  //   setPriceInDollar(res);
+                  // }
                 } else {
                   getPublicProfile(_ownerAddress, true);
                   setIsOwner(
@@ -1353,6 +1392,7 @@ const DetailScreen = ({navigation, route}) => {
         console.log('getDetailNFT_res 1255', res.data[0]);
 
         if (res.data.length > 0 && res.data !== 'No record found') {
+          console.log("Hello nft price =======>", res.data)
           setNFTPrice(res.data[0]?.price);
           let data = await getNFTDetails(res.data[0]);
           setLike(data.like);
@@ -1423,8 +1463,8 @@ const DetailScreen = ({navigation, route}) => {
             res?.data[0]?.award
               ? res?.data[0]?.award
               : res?.data[1]?.award
-              ? res?.data[1]?.award
-              : false,
+                ? res?.data[1]?.award
+                : false,
           );
           // console.log('calling');
           //checkNFTOnAuction();
@@ -1705,15 +1745,15 @@ const DetailScreen = ({navigation, route}) => {
   const onProfile = ownerStatus => {
     if (ownerStatus) {
       if (ownerN) {
-        navigation.push('ArtistDetail', {id: ownerN});
+        navigation.push('ArtistDetail', { id: ownerN });
       }
     } else {
       if (artist) {
-        navigation.push('ArtistDetail', {id: artist});
+        navigation.push('ArtistDetail', { id: artist });
       }
     }
   };
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     // let findIndex = moreData.findIndex(x => x.id === item.id);
     if (item && item.hasOwnProperty('metaData') && item.metaData) {
       // it's temporary fix
@@ -1747,7 +1787,7 @@ const DetailScreen = ({navigation, route}) => {
           <C_Image
             type={
               item.metaData.image.split('.')[
-                item.metaData.image.split('.').length - 1
+              item.metaData.image.split('.').length - 1
               ]
             }
             uri={imageUri}
@@ -1862,7 +1902,7 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const handleLikeMethod = async () => {
-    let nftItem = {...item, like: isLike};
+    let nftItem = { ...item, like: isLike };
     const handleLikeM = await handleLike(wallet, data, nftItem);
     if (handleLikeM) {
       if (
@@ -1891,24 +1931,24 @@ const DetailScreen = ({navigation, route}) => {
         ? ownerDataN?.title?.trim()
           ? ownerDataN.title
           : ownerDataN?.name?.trim()
-          ? ownerDataN.name
-          : ownerDataN?.username?.trim()
-          ? ownerDataN.username.substring(0, 6)
-          : ownerN
-          ? ownerN.substring(0, 6)
-          : ''
+            ? ownerDataN.name
+            : ownerDataN?.username?.trim()
+              ? ownerDataN.username.substring(0, 6)
+              : ownerN
+                ? ownerN.substring(0, 6)
+                : ''
         : ownerDataN?.username?.trim()
-        ? ownerDataN.username
-        : ownerDataN?.name?.trim()
-        ? ownerDataN.name
-        : ownerDataN?.title?.trim()
-        ? ownerDataN.title
-        : ownerN
-        ? ownerN.substring(0, 6)
-        : ''
+          ? ownerDataN.username
+          : ownerDataN?.name?.trim()
+            ? ownerDataN.name
+            : ownerDataN?.title?.trim()
+              ? ownerDataN.title
+              : ownerN
+                ? ownerN.substring(0, 6)
+                : ''
       : ownerN
-      ? ownerN.substring(0, 6)
-      : '';
+        ? ownerN.substring(0, 6)
+        : '';
 
   //     Crypto user: title/name/username
   // Non Crypto user: username/name/title
@@ -1921,8 +1961,8 @@ const DetailScreen = ({navigation, route}) => {
       artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase()
       ? ((disableCreator = true), collectCreat?.creator)
       : artistId
-      ? artistId?.substring(0, 6)
-      : '';
+        ? artistId?.substring(0, 6)
+        : '';
   };
 
   let creatorName =
@@ -1931,19 +1971,19 @@ const DetailScreen = ({navigation, route}) => {
         ? artistDetail?.title?.trim()
           ? artistDetail.title
           : artistDetail?.name?.trim()
-          ? artistDetail.name
-          : artistDetail?.username?.trim()
-          ? artistDetail.username.substring(0, 6)
-          : getArtistName(artist)
+            ? artistDetail.name
+            : artistDetail?.username?.trim()
+              ? artistDetail.username.substring(0, 6)
+              : getArtistName(artist)
         : artistDetail?.username?.trim()
-        ? artistDetail.username
-        : artistDetail?.name?.trim()
-        ? artistDetail.name
-        : artistDetail?.title?.trim()
-        ? artistDetail.title
-        : artist
-        ? artist?.substring(0, 6)
-        : ''
+          ? artistDetail.username
+          : artistDetail?.name?.trim()
+            ? artistDetail.name
+            : artistDetail?.title?.trim()
+              ? artistDetail.title
+              : artist
+                ? artist?.substring(0, 6)
+                : ''
       : getArtistName(artist);
 
   // let ownerName = ownerDataN && (
@@ -2036,7 +2076,7 @@ const DetailScreen = ({navigation, route}) => {
       return;
     }
     if (profile === 'pro') {
-      navigation.push('ArtistDetail', {id: id});
+      navigation.push('ArtistDetail', { id: id });
     }
   };
   const secondCellData = detail => {
@@ -2048,7 +2088,7 @@ const DetailScreen = ({navigation, route}) => {
               goToOwnerProfile(detail?.seller, 'pro');
             }
           }}>
-          <Text numberOfLines={1} style={[styles.text, {color: '#00A8FF'}]}>
+          <Text numberOfLines={1} style={[styles.text, { color: '#00A8FF' }]}>
             {detail?.seller ? showSeller(detail?.seller) : 'Null Address'}
           </Text>
         </TouchableOpacity>
@@ -2063,7 +2103,7 @@ const DetailScreen = ({navigation, route}) => {
             goToOwnerProfile(detail?.owner, 'pro');
           }
         }}>
-        <Text numberOfLines={1} style={[styles.text, {color: '#00A8FF'}]}>
+        <Text numberOfLines={1} style={[styles.text, { color: '#00A8FF' }]}>
           {detail?.owner
             ? detail?.owner?.includes('0x')
               ? detail?.owner?.substring(0, 6)
@@ -2084,8 +2124,8 @@ const DetailScreen = ({navigation, route}) => {
   const showContractAddress = item => {
     return item?.collection
       ? item.collection.substring(0, 5) +
-          ' ... ' +
-          item.collection.slice([item.collection.length - 4])
+      ' ... ' +
+      item.collection.slice([item.collection.length - 4])
       : MarketContractAddress;
   };
   console.log('sellDetails---->', sellDetails);
@@ -2098,7 +2138,7 @@ const DetailScreen = ({navigation, route}) => {
           showBackButton
           title={translate('wallet.common.detail')}
           showRightComponent={
-            <View style={{paddingRight: 10}}>
+            <View style={{ paddingRight: 10 }}>
               <Menu
                 onSelect={value => {
                   alertWithSingleBtn(
@@ -2111,12 +2151,12 @@ const DetailScreen = ({navigation, route}) => {
                 <MenuTrigger children={<ThreeDotsVerticalIcon />} />
                 <MenuOptions>
                   <MenuOption value={1}>
-                    <Text style={{marginVertical: 10}}>
+                    <Text style={{ marginVertical: 10 }}>
                       {translate('common.reportNft')}
                     </Text>
                   </MenuOption>
                   <MenuOption value={2}>
-                    <Text style={{marginVertical: 10}}>
+                    <Text style={{ marginVertical: 10 }}>
                       {translate('common.blockUser')}
                     </Text>
                   </MenuOption>
@@ -2142,8 +2182,8 @@ const DetailScreen = ({navigation, route}) => {
               toggleVideoPlay(status);
             }}>
             {fileType.toLowerCase() === 'mp4' ||
-            fileType.toLowerCase() === 'mov' ? (
-              <View style={{...styles.modalImage}}>
+              fileType.toLowerCase() === 'mov' ? (
+              <View style={{ ...styles.modalImage }}>
                 {showThumb && (
                   <C_Image
                     uri={item.metaData.thumbnft}
@@ -2154,7 +2194,7 @@ const DetailScreen = ({navigation, route}) => {
                 <Video
                   key={videoKey}
                   ref={refVideo}
-                  source={{uri: videoURL}}
+                  source={{ uri: videoURL }}
                   repeat
                   playInBackground={false}
                   paused={!playVideo}
@@ -2192,13 +2232,13 @@ const DetailScreen = ({navigation, route}) => {
                 )}
                 {videoLoadErr && (
                   <View style={styles.videoPlayIconCont}>
-                    <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                    <View style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                       <TouchableOpacity
                         onPress={() => {
                           setVideoLoadErr(false);
                           setVideoKey(videoKey + 1);
                         }}
-                        style={{paddingHorizontal: 15, paddingVertical: 10}}>
+                        style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
                         <Text style={styles.retry}>Retry Loading</Text>
                       </TouchableOpacity>
                     </View>
@@ -2233,9 +2273,9 @@ const DetailScreen = ({navigation, route}) => {
                 style={styles.iconsImage}
                 source={
                   artistDetail &&
-                  artistDetail.hasOwnProperty('profile_image') &&
-                  artistDetail.profile_image
-                    ? {uri: artistDetail.profile_image}
+                    artistDetail.hasOwnProperty('profile_image') &&
+                    artistDetail.profile_image
+                    ? { uri: artistDetail.profile_image }
                     : IMAGES.DEFAULTPROFILE
                 }
               />
@@ -2277,7 +2317,7 @@ const DetailScreen = ({navigation, route}) => {
                 style={styles.iconsImage}
                 source={
                   collectCreatData
-                    ? {uri: collectCreatData.iconImage}
+                    ? { uri: collectCreatData.iconImage }
                     : IMAGES.DEFAULTPROFILE
                 }
               />
@@ -2306,9 +2346,9 @@ const DetailScreen = ({navigation, route}) => {
                 style={styles.iconsImage}
                 source={
                   ownerDataN &&
-                  ownerDataN.hasOwnProperty('profile_image') &&
-                  ownerDataN.profile_image
-                    ? {uri: ownerDataN.profile_image}
+                    ownerDataN.hasOwnProperty('profile_image') &&
+                    ownerDataN.profile_image
+                    ? { uri: ownerDataN.profile_image }
                     : IMAGES.DEFAULTPROFILE
                 }
               />
@@ -2328,11 +2368,11 @@ const DetailScreen = ({navigation, route}) => {
           <Text style={styles.nftName}>
             {detailitem
               ? detailitem[`${selectedLanguageItem?.language_name}_nft_name`] ||
-                item?.metaData?.name
+              item?.metaData?.name
               : item?.metaData?.name}
           </Text>
           {setNFTStatus() !== 'notOnSell' && (
-            <View style={{flexDirection: 'row', paddingHorizontal: SIZE(12)}}>
+            <View style={{ flexDirection: 'row', paddingHorizontal: SIZE(12) }}>
               <View
                 style={[
                   {
@@ -2345,20 +2385,36 @@ const DetailScreen = ({navigation, route}) => {
                 <Text style={styles.price}>
                   {nftPrice
                     ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4)))
-                    : 0}
+                    : (nFTOnAuction && lBidAmount === '0.000000000000000000') ?
+                      minBidPrice ? numberWithCommas(parseFloat(Number(minBidPrice).toFixed(4))) : ''
+                      : priceNFT ?
+                        numberWithCommas(parseFloat(Number(priceNFT).toFixed(4)))
+                        // addComma(
+                        //   trimZeroFromTheEnd(
+                        //     showActualValue(
+                        //       divideNo(priceNFTString),
+                        //       6,
+                        //       "number"
+                        //     ),
+                        //     true
+                        //   ),
+                        //   true
+                        // )
+                        : ''
+                  }
                   <Text style={styles.priceUnit}>
                     {` ${baseCurrency?.key}`}
                     <Text style={styles.dollarText}>
                       {(nFTOnAuction && lBidAmount === '0.000000000000000000')
                         ? bidPriceInDollar ? ` ($${addComma(parseFloat(bidPriceInDollar, true).toFixed(3))})` : ''
                         : priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(3)})`
-                        : ''}
+                          : ''}
                     </Text>
                   </Text>
                 </Text>
                 {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
               </View>
-              <View style={{flex: 0.4}}>
+              <View style={{ flex: 0.4 }}>
                 {availableTokens.length > 0 &&
                   setNFTStatus() !== 'notOnSell' &&
                   setNFTStatus() !== 'onSell' &&
@@ -2368,13 +2424,13 @@ const DetailScreen = ({navigation, route}) => {
                         {translate('wallet.common.buyerpayin')}
                       </Text>
                       <CardField
-                        inputProps={{value: payableIn}}
+                        inputProps={{ value: payableIn }}
                         onPress={() => {
                           setAllowedTokenModal(true);
                         }}
                         pressable
                         showRight
-                        contStyle={{height: hp('5%')}}
+                        contStyle={{ height: hp('5%') }}
                       />
                     </>
                   )}
@@ -2384,14 +2440,14 @@ const DetailScreen = ({navigation, route}) => {
           <Text style={styles.description}>
             {detailitem
               ? detailitem[
-                  `${selectedLanguageItem?.language_name}_nft_description`
-                ] || item?.metaData?.description
+              `${selectedLanguageItem?.language_name}_nft_description`
+              ] || item?.metaData?.description
               : item?.metaData?.description}
           </Text>
           {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
             <View style={styles.bidTimeContainer}>
               {isBiddingTimeEnd ? (
-                <Text style={{fontSize: 14}}>
+                <Text style={{ fontSize: 14 }}>
                   {translate('common.biddingTime')}
                 </Text>
               ) : (
@@ -2420,14 +2476,14 @@ const DetailScreen = ({navigation, route}) => {
                   setNFTStatus() === 'onSell'
                     ? translate('common.cancelSell')
                     : setNFTStatus() === 'sell'
-                    ? singleNFT?.secondarySales
-                      ? translate('wallet.common.reSell')
-                      : translate('common.sell')
-                    : setNFTStatus() === 'buy'
-                    ? translate('common.buy')
-                    : setNFTStatus() === 'notOnSell'
-                    ? translate('common.soonOnSell')
-                    : translate('common.buy')
+                      ? singleNFT?.secondarySales
+                        ? translate('wallet.common.reSell')
+                        : translate('common.sell')
+                      : setNFTStatus() === 'buy'
+                        ? translate('common.buy')
+                        : setNFTStatus() === 'notOnSell'
+                          ? translate('common.soonOnSell')
+                          : translate('common.buy')
                 }
                 rightText={translate('wallet.common.offerPrice')}
                 leftDisabled={
@@ -2435,7 +2491,6 @@ const DetailScreen = ({navigation, route}) => {
                 }
                 leftLoading={buyLoading}
                 onLeftPress={() => {
-                  // console.log('priceOfNft', priceNFT);
                   if (buyLoading) return;
                   // navigation.navigate('WalletConnect')
                   // if(price && price > 0){
@@ -2449,7 +2504,7 @@ const DetailScreen = ({navigation, route}) => {
                     setShowPaymentMethod(true);
                     // }
                   } else if (setNFTStatus() === 'sell') {
-                    navigation.navigate('sellNft', {nftDetail: singleNFT});
+                    navigation.navigate('sellNft', { nftDetail: singleNFT });
                   }
                   // }
                 }}
@@ -2460,32 +2515,32 @@ const DetailScreen = ({navigation, route}) => {
             )}
             {setNFTStatus() === 'onSell' && (
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <AppButton
                   label={
                     (nftPrice
                       ? numberWithCommas(
-                          parseFloat(Number(nftPrice).toFixed(4)),
-                        )
+                        parseFloat(Number(nftPrice).toFixed(4)),
+                      )
                       : 0) +
                     ' ' +
                     baseCurrency?.key
                   }
                   containerStyle={[styles.button, CommonStyles.outlineButton]}
                   labelStyle={[CommonStyles.outlineButtonLabel]}
-                  onPress={() => {}}
+                  onPress={() => { }}
                 />
                 <AppButton
                   label={translate('common.editPrice')}
                   containerStyle={styles.button}
                   labelStyle={CommonStyles.buttonLabel}
-                  onPress={() => {}}
+                  onPress={() => { }}
                 />
               </View>
             )}
           </View>
           {loaderSell ? (
-            <View style={{paddingVertical: 10}}>
+            <View style={{ paddingVertical: 10 }}>
               <ActivityIndicator size={'small'} />
             </View>
           ) : (
@@ -2501,15 +2556,15 @@ const DetailScreen = ({navigation, route}) => {
                   )?.length === 0
                     ? hp(19)
                     : sellDetails.length < 5
-                    ? hp(16) + hp(4) * sellDetails.length
-                    : hp(35.7),
+                      ? hp(16) + hp(4) * sellDetails.length
+                      : hp(35.7),
               }}>
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
-                style={{marginVertical: hp(2)}}>
+                style={{ marginVertical: hp(2) }}>
                 <Table
-                  borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                   <Row
                     data={bidHistoryTableHead}
                     style={styles.head}
@@ -2517,10 +2572,10 @@ const DetailScreen = ({navigation, route}) => {
                     widthArr={[130, 180, 180, 200]}
                   />
                   {sellDetails?.length > 0 &&
-                  sellDetails.filter(
-                    detail =>
-                      detail?.event === 'Bid' || detail?.event === 'Bid Award',
-                  )?.length !== 0 ? (
+                    sellDetails.filter(
+                      detail =>
+                        detail?.event === 'Bid' || detail?.event === 'Bid Award',
+                    )?.length !== 0 ? (
                     sellDetails?.map((rowData, rowIndex) => {
                       if (
                         rowData?.event === 'Bid' ||
@@ -2529,7 +2584,7 @@ const DetailScreen = ({navigation, route}) => {
                         return (
                           <TableWrapper
                             key={rowIndex}
-                            style={{flexDirection: 'row'}}>
+                            style={{ flexDirection: 'row' }}>
                             {
                               <>
                                 <Cell
@@ -2601,9 +2656,9 @@ const DetailScreen = ({navigation, route}) => {
                 style={styles.creatorImage}
                 source={
                   artistDetail &&
-                  artistDetail.hasOwnProperty('profile_image') &&
-                  artistDetail.profile_image
-                    ? {uri: artistDetail.profile_image}
+                    artistDetail.hasOwnProperty('profile_image') &&
+                    artistDetail.profile_image
+                    ? { uri: artistDetail.profile_image }
                     : IMAGES.DEFAULTPROFILE
                 }
               />
@@ -2625,7 +2680,7 @@ const DetailScreen = ({navigation, route}) => {
               <TextView
                 style={[
                   styles.rowTextcontractaddress,
-                  {color: Colors.themeColor},
+                  { color: Colors.themeColor },
                 ]}
                 ellipsizeMode="middle"
                 numberOfLines={1}>
@@ -2649,13 +2704,13 @@ const DetailScreen = ({navigation, route}) => {
               <TextView style={styles.rowText}>
                 {translate('wallet.common.blockChainType')}
               </TextView>
-              <TextView style={[styles.rowText, {textTransform: 'uppercase'}]}>
+              <TextView style={[styles.rowText, { textTransform: 'uppercase' }]}>
                 {chainType}
               </TextView>
             </View>
           </NFTDetailDropdown>
           {tradingTableLoader ? (
-            <View style={{paddingVertical: 10}}>
+            <View style={{ paddingVertical: 10 }}>
               <ActivityIndicator size={'small'} />
             </View>
           ) : (
@@ -2666,8 +2721,8 @@ const DetailScreen = ({navigation, route}) => {
                   tradingTableData.length == 0
                     ? hp(19)
                     : tradingTableData.length < 5
-                    ? hp(16) + hp(4) * tradingTableData.length
-                    : hp(35.7),
+                      ? hp(16) + hp(4) * tradingTableData.length
+                      : hp(35.7),
               }}
               icon={trading}>
               <Filters
@@ -2680,9 +2735,9 @@ const DetailScreen = ({navigation, route}) => {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 // nestedScrollEnabled={true}
-                style={{marginVertical: hp(2)}}>
+                style={{ marginVertical: hp(2) }}>
                 <Table
-                  borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                   <Row
                     data={tradingTableHead}
                     style={styles.head}
@@ -2695,7 +2750,7 @@ const DetailScreen = ({navigation, route}) => {
                       return (
                         <TableWrapper
                           key={rowIndex}
-                          style={{flexDirection: 'row'}}>
+                          style={{ flexDirection: 'row' }}>
                           {rowData.map((cellData, cellIndex) => {
                             let wid;
                             if (cellIndex === 0) {
@@ -2722,15 +2777,15 @@ const DetailScreen = ({navigation, route}) => {
                                       onPress={() =>
                                         cellData && cellData !== 'Null Address'
                                           ? navigation.push('ArtistDetail', {
-                                              id: cellData,
-                                            })
+                                            id: cellData,
+                                          })
                                           : null
                                       }>
                                       <Text
                                         numberOfLines={1}
                                         style={[
                                           styles.text,
-                                          {color: '#00a8ff'},
+                                          { color: '#00a8ff' },
                                         ]}>
                                         {cellData !== 'Null Address' && cellData
                                           ? showSeller(cellData)
@@ -2788,9 +2843,10 @@ const DetailScreen = ({navigation, route}) => {
         price={
           payableIn && data?.user?.role === 'crypto'
             ? payableInCurrency
-            : nftPrice
-            ? nftPrice
-            : 0
+            : priceNFT
+            //  nftPrice
+            //   ? nftPrice
+            //   : 0
         }
         priceStr={priceNFTString}
         priceInDollar={
@@ -2816,8 +2872,8 @@ const DetailScreen = ({navigation, route}) => {
           payableIn && data?.user?.role === 'crypto'
             ? payableInCurrency
             : nftPrice
-            ? nftPrice
-            : 0
+              ? nftPrice
+                : 0
         }
         priceInDollar={
           payableIn && data?.user?.role === 'crypto'
@@ -2852,10 +2908,10 @@ const DetailScreen = ({navigation, route}) => {
             setAllowedTokenModal(false);
           },
         }}
-        data={{data: availableTokens}}
+        data={{ data: availableTokens }}
         title={translate('common.allowedcurrency')}
         itemPress={async tradeCurr => {
-          await calculatePrice(tradeCurr); 
+          await calculatePrice(tradeCurr);
         }}
         renderItemName={'name'}
       />
