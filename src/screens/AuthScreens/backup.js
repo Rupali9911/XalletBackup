@@ -25,8 +25,8 @@ const ethers = require('ethers');
 const Backup = ({ navigation }) => {
 
     const dispatch = useDispatch();
-    const { loading } = useSelector(state => state.UserReducer);
-
+    // const { loading } = useSelector(state => state.UserReducer);
+    const [loading, setLoading] = useState(true);
     const [openPicker, setOpenPicker] = useState(false);
     const [isCheck, setCheck] = useState(false);
     const [wallet, setWallet] = useState(null);
@@ -36,8 +36,7 @@ const Backup = ({ navigation }) => {
     }, []);
 
     const getPhraseData = async () => {
-        dispatch(startLoader()).then(async () => {
-            var randomSeed = ethers.Wallet.createRandom();
+        var randomSeed = ethers.Wallet.createRandom();
             const account = {
                 mnemonic: randomSeed.mnemonic,
                 address: randomSeed.address,
@@ -47,8 +46,7 @@ const Backup = ({ navigation }) => {
             console.log(randomSeed.address);
             console.log(randomSeed.privateKey);
             setWallet(account);
-            dispatch(endLoader());
-        });
+            setLoading(false);
     }
 
     const saveWallet = () => {
