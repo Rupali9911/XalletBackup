@@ -200,7 +200,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
   const [payableIn, setPayableIn] = useState('');
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState(artistData);
@@ -1319,7 +1319,8 @@ const DetailScreen = ({ navigation, route }) => {
       .then(response => {
         // console.log('response from collection info', response.data)
         if (response.data) {
-          setcollectCreat(response.data.data);
+          setcollectCreat(response.data.data)
+          setLoader(false)
         }
       })
       .catch(err => {
@@ -2087,7 +2088,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   return (
     <>
-      {loader && <FetchingIndicator />}
+      {loader ? <FetchingIndicator /> :
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
           showBackButton
@@ -2770,7 +2771,7 @@ const DetailScreen = ({ navigation, route }) => {
     )}
   </NFTDetailDropdown>
         </ScrollView >
-      </SafeAreaView >
+      </SafeAreaView >}
 
       <PaymentMethod
         visible={showPaymentMethod}
