@@ -53,6 +53,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
+import AppBackground from '../../components/appBackground'
 import {
   Menu,
   MenuOptions,
@@ -166,6 +167,8 @@ const DetailScreen = ({ navigation, route }) => {
     index,
     setNftItem,
   } = route.params;
+    console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ ownerData", ownerData)
+    console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ artistData ", artistData)
 
   const [ownerDataN, setOwnerDataN] = useState(ownerData);
   const [ownerN, setOwnerN] = useState(owner);
@@ -200,7 +203,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [loader, setLoader] = useState(true);
+  const [load, setLoad] = useState(true);
   const [payableIn, setPayableIn] = useState('');
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState(artistData);
@@ -939,18 +942,18 @@ const DetailScreen = ({ navigation, route }) => {
           setTimeout(() => {
             setTradingTableLoader(false);
             setLoaderSell(false);
-            setLoader(false);
+            setLoad(false);
           }, 1000);
         } else {
           setSellDetails([]);
           // setSellDetailsFiltered([]);
           setTradingTableLoader(false);
           setLoaderSell(false);
-          setLoader(false);
+          setLoad(false);
         }
       })
       .catch(err => {
-        setLoader(false);
+        setLoad(false);
         setLoaderSell(false);
         setTradingTableLoader(false);
         setSellDetails([]);
@@ -1062,7 +1065,7 @@ const DetailScreen = ({ navigation, route }) => {
             lastOwnerOfNFT();
             await getTokenDetailsApi();
           } else if (err) {
-            setLoader(false);
+            setLoad(false);
             console.log('error----->', err);
           }
         });
@@ -1111,7 +1114,7 @@ const DetailScreen = ({ navigation, route }) => {
       setOwnerDataN(profile?.data?.data);
       setOwnerN(id);
     } catch (err) {
-      setLoader(false);
+      setLoad(false);
     }
   };
 
@@ -1224,7 +1227,7 @@ const DetailScreen = ({ navigation, route }) => {
 
               setOwnerAddress(nonCryptoOwner);
             } else {
-              setLoader(false);
+              setLoad(false);
             }
             setBuyLoading(false);
           });
@@ -1299,7 +1302,7 @@ const DetailScreen = ({ navigation, route }) => {
               }
               setOwnerAddress(_ownerAddress);
             } else {
-              setLoader(false);
+              setLoad(false);
             }
             setBuyLoading(false);
           });
@@ -1320,7 +1323,7 @@ const DetailScreen = ({ navigation, route }) => {
         // console.log('response from collection info', response.data)
         if (response.data) {
           setcollectCreat(response.data.data)
-          setLoader(false)
+          setLoad(false)
         }
       })
       .catch(err => {
@@ -1430,12 +1433,12 @@ const DetailScreen = ({ navigation, route }) => {
           //checkNFTOnAuction();
           getNFTSellDetails();
         } else if (res.data === 'No record found') {
-          setLoader(false);
+          setLoad(false);
           // console.log('res.data.data', res.data);
         }
       })
       .catch(err => {
-        setLoader(false);
+        setLoad(false);
         // console.log(err)
       });
   };
@@ -1874,7 +1877,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   const closeSuccess = () => {
     setSuccessModalVisible(false);
-    setLoader(true);
+    setLoad(true);
     // console.log("yahoo")
     getNonCryptoNFTOwner();
   };
@@ -2088,7 +2091,6 @@ const DetailScreen = ({ navigation, route }) => {
 
   return (
     <>
-      {loader ? <FetchingIndicator /> :
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
           showBackButton
@@ -2121,6 +2123,7 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           }
         />
+        <AppBackground isBusy={load}>
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
           <TouchableOpacity
             activeOpacity={1}
@@ -2203,7 +2206,7 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             ) : (
               <C_Image
-                uri={item.thumbnailUrl || item.metaData.image}
+                uri={!load && (item.thumbnailUrl || item.metaData.image)}
                 imageStyle={styles.modalImage}
                 isContain
               />
@@ -2217,7 +2220,7 @@ const DetailScreen = ({ navigation, route }) => {
             style={styles.likeButton}>
             {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
           </TouchableOpacity>
-          <View style={styles.person}>
+          {!load && <View style={styles.person}>
             <TouchableOpacity
               onPress={() => {
                 if (!disableCreator) {
@@ -2317,13 +2320,13 @@ const DetailScreen = ({ navigation, route }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-          </View>
-          <Text style={styles.nftTitle} ellipsizeMode="tail">
+          </View>}
+          {!load && <Text style={styles.nftTitle} ellipsizeMode="tail">
             {creatorName}
-          </Text>
-          <Text style={styles.nftName}>
+          </Text>}
+          {!load && <Text style={styles.nftName}>
             {detailNFT ? detailNFT[`${selectedLanguageItem?.language_name}_nft_name`] || item?.metaData?.name : item?.metaData?.name}
-          </Text >
+          </Text >}
           {setNFTStatus() !== 'notOnSell' && (
             <View style={{ flexDirection: 'row', paddingHorizontal: SIZE(12) }}>
               <View
@@ -2335,7 +2338,7 @@ const DetailScreen = ({ navigation, route }) => {
                     marginRight: wp(2),
                   },
                 ]}>
-                <Text style={styles.price}>
+                {!load && <Text style={styles.price}>
                   {nftPrice
                     ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4)))
                     : 0}
@@ -2348,7 +2351,7 @@ const DetailScreen = ({ navigation, route }) => {
                           : ''}
                     </Text>
                   </Text>
-                </Text>
+                </Text>}
                 {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
               </View>
               <View style={{ flex: 0.4 }}>
@@ -2374,9 +2377,9 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             </View>
           )}
-          <Text style={styles.description}>
+          {!load && <Text style={styles.description}>
             {detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description}
-          </Text >
+          </Text >}
           {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
             <View style={styles.bidTimeContainer}>
               {isBiddingTimeEnd ? (
@@ -2403,7 +2406,7 @@ const DetailScreen = ({ navigation, route }) => {
           ) : null}
 
           <View style={styles.bottomView}>
-            {setNFTStatus() !== undefined && (
+            {!load && setNFTStatus() !== undefined && (
               <GroupButton
                 leftText={
                   setNFTStatus() === 'onSell'
@@ -2447,7 +2450,7 @@ const DetailScreen = ({ navigation, route }) => {
                 onRightPress={() => navigation.navigate('MakeBid')}
               />
             )}
-            {setNFTStatus() === 'onSell' && (
+            {!load && setNFTStatus() === 'onSell' && (
               <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <AppButton
@@ -2474,7 +2477,7 @@ const DetailScreen = ({ navigation, route }) => {
             )}
           </View>
           {
-            loaderSell ? (
+            !load && loaderSell ? (
               <View style={{ paddingVertical: 10 }}>
                 <ActivityIndicator size={'small'} />
               </View>
@@ -2771,7 +2774,9 @@ const DetailScreen = ({ navigation, route }) => {
     )}
   </NFTDetailDropdown>
         </ScrollView >
-      </SafeAreaView >}
+        </AppBackground> 
+      </SafeAreaView >
+      
 
       <PaymentMethod
         visible={showPaymentMethod}

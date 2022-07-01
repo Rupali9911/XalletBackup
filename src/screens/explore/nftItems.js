@@ -143,13 +143,14 @@ function NftItem({
 
     const creatorObj = Array.isArray(nftItem?.creatorObj) ? nftItem.creatorObj[0] : nftItem?.creatorObj;
     const ownerObj =  Array.isArray(nftItem?.buyerObj) ? nftItem.buyerObj[0] : nftItem?.buyerObj;
+    console.log(nftItem)
 
     let creatorImageStatus;
     let creatorName;
     if (creatorObj) {
         creatorImageStatus = creatorObj.hasOwnProperty("profile_image");
         creatorName = (creatorObj.hasOwnProperty("title") && creatorObj.title) ? creatorObj.title :
-            creatorObj.username.substring(0, 10);
+            creatorObj.username.substring(0, 6);
     } else {
         creatorImageStatus = false
         creatorName = "---"
@@ -160,7 +161,7 @@ function NftItem({
     if (ownerObj) {
         ownerImageStatus = ownerObj.hasOwnProperty("profile_image");
         ownerName = (ownerObj.hasOwnProperty("title") && ownerObj.title) ? ownerObj.title :
-            ownerObj.username.substring(0, 10);
+        ownerObj.username.substring(0, 6);
     } else {
         ownerImageStatus = false
         ownerName = "---"
