@@ -922,46 +922,48 @@ function CollectionDetail(props) {
         }
 
         return (
-            <View style={styles.collectionTable}>
-                <View style={styles.collectionTableRow}>
-                    <Text style={styles.collectionTableRowText}>
-                        {items}
-                    </Text>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.itemsCollection')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <Text style={styles.collectionTableRowText}>
-                        {owners}
-                    </Text>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.owners')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <View style={styles.floorPriceVw}>
-                        <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
-                        <Text style={styles.collectionTableRowText} numberOfLines={1}>
-                            {floorPrice}
+            (items && owners && floorPrice && volTraded &&
+                <View style={styles.collectionTable}>
+                    <View style={styles.collectionTableRow}>
+                        <Text style={styles.collectionTableRowText}>
+                            {items}
+                        </Text>
+                        <Text style={styles.collectionTableRowDec}>
+                            {translate('common.itemsCollection')}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec} numberOfLines={1}>
-                        {translate('common.floorPrice')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <View style={styles.floorPriceVw}>
-                        <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
-                        <Text style={styles.collectionTableRowText} numberOfLines={1}>
-                            {volTraded}
+                    <View style={styles.collectionTableRow}>
+                        <Text style={styles.collectionTableRowText}>
+                            {owners}
+                        </Text>
+                        <Text style={styles.collectionTableRowDec}>
+                            {translate('common.owners')}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec} numberOfLines={1}>
-                        {translate('common.volumeTraded')}
-                    </Text>
+                    <View style={styles.collectionTableRow}>
+                        <View style={styles.floorPriceVw}>
+                            <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
+                            <Text style={styles.collectionTableRowText} numberOfLines={1}>
+                                {floorPrice}
+                            </Text>
+                        </View>
+                        <Text style={styles.collectionTableRowDec} numberOfLines={1}>
+                            {translate('common.floorPrice')}
+                        </Text>
+                    </View>
+                    <View style={styles.collectionTableRow}>
+                        <View style={styles.floorPriceVw}>
+                            <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
+                            <Text style={styles.collectionTableRowText} numberOfLines={1}>
+                                {volTraded}
+                            </Text>
+                        </View>
+                        <Text style={styles.collectionTableRowDec} numberOfLines={1}>
+                            {translate('common.volumeTraded')}
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            )
         )
     }
 
@@ -1359,7 +1361,7 @@ function CollectionDetail(props) {
                         renderTabView(true)
                         : isBlind && !nftId && !loading ?
                             renderTabView(false)
-                            : <Loader/>
+                            : <Loader />
                     }
                 </View>
 

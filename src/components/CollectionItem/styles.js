@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     color: '#23262f',
     fontSize: SIZE(14),
     marginBottom: SIZE(8),
+    marginHorizontal: SIZE(5)
   },
   soldOutText: {
     color: COLORS.greenLight,
