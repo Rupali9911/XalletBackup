@@ -62,6 +62,37 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
+export const activityHistoryList = (page, collectionId, type, tabTitle) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+  return (dispatch, getState) => {
+    const data = {
+      collectionId,
+      filterType: type,
+      limit: 10,
+      networkType,
+      page
+    };
+
+    const body = {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+
+    fetch(`${BASE_URL}/xanalia/getActivityHistory`, body)
+      .then(response => response.json())
+      .then(json => {
+        dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+      })
+      .catch(err => {
+        dispatch(nftDataCollectionLoadFail());
+      });
+  }
+}
+
 export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
   return (dispatch, getState) => {

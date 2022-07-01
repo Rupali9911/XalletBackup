@@ -78,6 +78,7 @@ const Owned = (props) => {
         : collectionType == 1 && isBlind ?
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
+    const reducerTabTitle = NftDataCollectionReducer.tabTitle
 
     // console.log("🚀 ~ file: Owned.js ~ line 66 ~ Owned ~", NftDataCollectionReducer.nftDataCollectionLoading, NftDataCollectionReducer.nftBlindSeriesCollectionLoading)
     useEffect(() => {
@@ -318,7 +319,7 @@ const Owned = (props) => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {page === 1 && isLoading ? (
+            {(tabTitle !== reducerTabTitle) || (page === 1 && isLoading) ? (
                 <View style={{ marginTop: height / 8 }}>
                     <Loader />
                 </View>

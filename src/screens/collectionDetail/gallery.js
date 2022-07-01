@@ -75,6 +75,7 @@ const Gallery = ({ route }) => {
         : collectionType == 1 && blind ?
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
+    const reducerTabTitle = NftDataCollectionReducer.tabTitle
 
     // console.log("🚀 ~ file: gallery.js ~ line 40 ~ ~ ~ Gallery ~ isSeries", isSeries, route?.params, NftDataCollectionReducer)
     useEffect(() => {
@@ -172,7 +173,7 @@ const Gallery = ({ route }) => {
         let findIndex
         if (item?._id) {
             findIndex = collectionList.findIndex(x => x?._id === item?._id);
-        }else{
+        } else {
             findIndex = collectionList.findIndex(x => x?.id === item?.id);
         }
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
@@ -292,48 +293,45 @@ const Gallery = ({ route }) => {
 
     const keyExtractor = (item, index) => { return 'item_' + index }
 
-
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {page === 1 && isLoading ? (
+            {(tabTitle !== reducerTabTitle) || (page === 1 && isLoading) ? (
                 <View style={{ marginTop: height / 8 }}>
                     <Loader />
                 </View>
             ) : collectionList.length !== 0 ? (
-                <>
-                    <FlatList
-                        data={collectionList}
-                        nestedScrollEnabled = {true}
-                        horizontal={false}
-                        numColumns={2}
-                        initialNumToRender={isSeries ? 6 : 15}
-                        // onRefresh={handleFlatlistRefresh}
-                        // refreshing={page === 1 && isLoading}
-                        renderItem={memoizedValue}
-                        onEndReached={() => {
-                            if (!isLoading && collectionList.length !== totalCount) {
-                                let num = page + 1;
+                <FlatList
+                    data={collectionList}
+                    nestedScrollEnabled={true}
+                    horizontal={false}
+                    numColumns={2}
+                    initialNumToRender={isSeries ? 6 : 15}
+                    // onRefresh={handleFlatlistRefresh}
+                    // refreshing={page === 1 && isLoading}
+                    renderItem={memoizedValue}
+                    onEndReached={() => {
+                        if (!isLoading && collectionList.length !== totalCount) {
+                            let num = page + 1;
 
-                                if (isSeries) {
-                                    dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
-                                } else {
-                                    dispatch(nftDataCollectionLoadStart(tabTitle));
-                                }
-
-                                getNFTlist(num);
-                                if (isSeries) {
-                                    dispatch(nftBlindSeriesCollectionPageChange(num));
-                                } else {
-                                    dispatch(nftDataCollectionPageChange(num));
-                                }
+                            if (isSeries) {
+                                dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
+                            } else {
+                                dispatch(nftDataCollectionLoadStart(tabTitle));
                             }
-                        }}
-                        onEndReachedThreshold={0.4}
-                        keyExtractor={keyExtractor}
-                        ListFooterComponent={renderFooter}
-                    />
-                </>
+
+                            getNFTlist(num);
+                            if (isSeries) {
+                                dispatch(nftBlindSeriesCollectionPageChange(num));
+                            } else {
+                                dispatch(nftDataCollectionPageChange(num));
+                            }
+                        }
+                    }}
+                    onEndReachedThreshold={0.4}
+                    keyExtractor={keyExtractor}
+                    ListFooterComponent={renderFooter}
+                />
             ) : (
                 <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>
