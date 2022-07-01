@@ -170,10 +170,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     bottomWrap: {
-        //flexDirection: 'row',
         marginTop:'1%',
-        height:"35%",
-        //backgroundColor:'red',
+        height:"33%",
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%'
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     bottomCenterWrap: {
-
         position: 'absolute',
         top: 0,
         right: 0,
@@ -205,13 +202,12 @@ const styles = StyleSheet.create({
     byUser: {
         color: '#4b5fff',
         fontSize: SIZE(12),
-        marginBottom: SIZE(25),
+        marginBottom: SIZE(28),
     },
     collectionName: {
         color: '#23262f',
         fontSize: SIZE(14),
-        marginBottom: SIZE(6),
-
+        marginBottom: SIZE(4),
     },
     soldOutText:{
         color: COLORS.greenLight,

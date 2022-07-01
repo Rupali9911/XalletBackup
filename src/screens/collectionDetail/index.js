@@ -10,9 +10,10 @@ import {
     ScrollView,
     Linking,
     Dimensions,
+    BackHandler
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import { C_Image, GroupButton } from '../../components';
+import { C_Image, GroupButton, Loader } from '../../components';
 import {
     getBoxes,
     getBlindBoxSeriesSum,
@@ -50,6 +51,7 @@ import Owned from './owned';
 import OnSale from './onSale';
 import NotOnSale from './notOnSale';
 import { Verifiedcollections } from '../../components/verifiedCollection';
+import CommonStyles from '../../constants/styles';
 
 const { height } = Dimensions.get('window');
 
@@ -108,14 +110,21 @@ function CollectionDetail(props) {
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
     const { data, wallet } = useSelector(state => state.UserReducer);
     const { NftDataCollectionReducer } = useSelector(state => state);
+    const [loadImage, setLoadImage] = useState([]);
 
     const isLoading = isBlind && nftId
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
         : NftDataCollectionReducer.nftDataCollectionLoading;
 
     useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton)
         getCollection();
-    }, []);
+    }, [BackHandler.removeEventListener('hardwareBackPress', handleBackButton)]);
+
+    const handleBackButton = () => {
+        navigation.goBack();
+        return true;
+    }
 
     const chainIcon = type => {
         if (type === 'polygon') {
@@ -543,7 +552,7 @@ function CollectionDetail(props) {
                 />
                 {Verifiedcollections.find((id) => id === collectionId) && (
                     <View>
-                       <Image
+                        <Image
                             style={styles.verifyIcon}
                             source={IMAGES.tweetPng}
                         />
@@ -590,18 +599,34 @@ function CollectionDetail(props) {
             return (
                 <>
                     <View style={{ padding: SIZE(10) }}>
-                        {selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
-                            <Video
-                                source={{ uri: selectedBlindBox?.packVideo }}
-                                repeat={true}
-                                resizeMode={'cover'}
-                                style={styles.selectBlindBoxVideo} />
-                        ) : (
-                            <Image
-                                source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
-                                style={styles.selectBlindBoxVideo}
-                            />
-                        )}
+                        {!selectedBlindBox?.packVideo ? null :
+                            selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
+                                <View style={CommonStyles.center}>
+                                    {loadImage &&
+                                        <Loader style={styles.blindBoxLoader} />
+                                    }
+                                    <Video
+                                        source={{ uri: selectedBlindBox?.packVideo }}
+                                        repeat={true}
+                                        resizeMode={'cover'}
+                                        style={styles.selectBlindBoxVideo}
+                                        onLoadStart={() => setLoadImage(true)}
+                                        onReadyForDisplay={() => setLoadImage(false)}
+                                    />
+                                </View>
+                            ) : (
+                                <View>
+                                    {loadImage &&
+                                        <Loader style={styles.blindBoxLoader} />
+                                    }
+                                    <Image
+                                        source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
+                                        style={styles.selectBlindBoxVideo}
+                                        onLoadStart={() => setLoadImage(true)}
+                                        onLoadEnd={() => setLoadImage(false)}
+                                    />
+                                </View>
+                            )}
                         <Text style={styles.selectBlindBoxName}>
                             {selectedBlindBox?.name ? selectedBlindBox?.name : blindboxList[0]?.name}
                         </Text>
@@ -980,11 +1005,11 @@ function CollectionDetail(props) {
                 <View style={{ padding: SIZE(15) }}>
                     <Text style={[styles.storeCollectionName, { color: '#636363' }]}>
                         {storeCollection[`${selectedLanguageItem.language_name}_title`]}
-                        <View style={{paddingLeft:5}}>
-                        <Image
-                            style={styles.verifyIcon1}
-                            source={IMAGES.tweetPng}
-                        />
+                        <View style={{ paddingLeft: 5 }}>
+                            <Image
+                                style={styles.verifyIcon1}
+                                source={IMAGES.tweetPng}
+                            />
                         </View>
                     </Text>
                     <Text style={[styles.storeCollectionName, { color: 'red' }]}>
@@ -1334,7 +1359,7 @@ function CollectionDetail(props) {
                         renderTabView(true)
                         : isBlind && !nftId && !loading ?
                             renderTabView(false)
-                            : null
+                            : <Loader/>
                     }
                 </View>
 

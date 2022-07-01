@@ -15,7 +15,7 @@ import Video from 'react-native-fast-video';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { C_Image } from 'src/components';
+import { C_Image, Loader } from 'src/components';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import { RowBetweenWrap, SpaceView } from 'src/styles/common.styles';
 import { SmallBoldText } from 'src/styles/text.styles';
@@ -74,7 +74,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const navigation = useNavigation();
   const refVideo = useRef(null);
   const refVideoPlay = useRef(null);
-
+  const [videoLoader, setVideoLoader]=useState(true)
 
   // haris change these states
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
@@ -91,7 +91,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
 
   const [nftDetail, setNFTDetail] = useState();
   const [isArtistProfile, setisArtistProfile] = useState(true);
-  const [loader, setLoader] = useState(false);
+  const [mainLoader, setMainLoader] = useState(false);
 
   const nft = item.tokenId || item.collectionAdd;
   let params = nft.toString().split('-');
@@ -138,7 +138,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
         MarketContractAddress,
       );
 
-      setLoader(true)
+      setMainLoader(true)
       if (MarketPlaceContract.methods.getNonCryptoOwner) {
         MarketPlaceContract.methods
           .getNonCryptoOwner(collectionAddress, tokenId)
@@ -165,7 +165,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
     const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
     try {
       let profile = await axios.get(profileUrl);
-      setLoader(false)
+      setMainLoader(false)
       // console.log(profile, "non_crypto", item.metaData.name)
       setOwnerData(profile?.data?.data)
       setOwner(id);
@@ -185,7 +185,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       // console.log(profile?.data?.data, "crypto")
       setOwnerData(profile.data.data);
       setArtistRole("crypto")
-      setLoader(false)
+      setMainLoader(false)
       setOwner(userId);
       // setOwner(profile?.data?.data?.title ? profile?.data?.data?.title : profile?.data?.data?.username);
       // setOwnerImage(profile.data.data.profile_image);
@@ -643,7 +643,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   return (
     <>
       {
-        loader ?
+        mainLoader ?
           <View style={[styles.mainLoaderView, { minHeight: minHeight ? hp(78) : 200 }]}>
             {/* <ActivityIndicator size={"small"} /> */}
             <Image source={Images.loadergif} />
@@ -735,16 +735,18 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                       playInBackground={false}
                       paused={!isPlay}
                       resizeMode={'cover'}
-                      onLoad={() => refVideo.current.seek(0)}
+                      onLoad={() => {refVideo.current.seek(0); setVideoLoader(false)}}
                       onEnd={() => {
                         setPlay(false);
                         refVideoPlay.current = true;
                       }}
+                      onLoadStart={() => setVideoLoader(true)}
                       style={{
                         flex: 1,position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                       }}
                     />
                     {!isPlay && (
+                      videoLoader ? <Loader/> :
                       <View
                         style={{
                           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center',

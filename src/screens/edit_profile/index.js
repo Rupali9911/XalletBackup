@@ -30,6 +30,7 @@ import {
   validateInstagramURL,
   validateFacebookURL,
   validateZoomLinkURL,
+  validateUserName
 } from '../../utils';
 import { updateProfile, updateProfileImage } from '../../store/reducer/userReducer';
 import { hp } from '../../constants/responsiveFunct';
@@ -185,7 +186,11 @@ function Profile(props) {
     if (maxLength50(username)) {
       setErrUsername(maxLength50(username));
     } else {
-      validateNum++;
+      if(validateUserName(username)){
+        setErrUsername(validateUserName(username))
+      }else{
+        validateNum++;
+      }
     }
     if (maxLength50(email)) {
       setErrEmail(maxLength50(email));
@@ -439,7 +444,7 @@ function Profile(props) {
             onChange={(text) => { setUsername(text); setErrUsername(false); }}
             label={translate("common.UserName")}
             placeholder={translate("common.UserName")}
-            validate={[maxLength50]}
+            validate={[maxLength50, validateUserName]}
             editable={true}
             error={errUsername}
           />
@@ -451,7 +456,7 @@ function Profile(props) {
               placeholder={translate("common.email")}
               validate={[maxLength50, validateEmail]}
               error={errEmail}
-              editable={userRole === 'crypto' ? true : false}
+              editable={false}
             />}
           <LimitableInput
             value={website && website.trimStart()}

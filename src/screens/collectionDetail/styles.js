@@ -256,6 +256,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  blindBoxLoader: {
+    position:"absolute",
+    alignSelf:'center'
+  }
 });
 
 export default styles;
