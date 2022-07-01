@@ -52,6 +52,8 @@ import OnSale from './onSale';
 import NotOnSale from './notOnSale';
 import { Verifiedcollections } from '../../components/verifiedCollection';
 import CommonStyles from '../../constants/styles';
+import Activity from './activity';
+import { RF, wp } from '../../constants/responsiveFunct';
 
 const { height } = Dimensions.get('window');
 
@@ -513,11 +515,13 @@ function CollectionDetail(props) {
 
         // console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
         return (
-            <C_Image
-                uri={bannerUrl ? bannerUrl : collection?.bannerImage}
-                type={'jpg'}
-                imageStyle={styles.bannerImage}
-            />
+            <View style={styles.bannerView}>
+                <C_Image
+                    uri={bannerUrl ? bannerUrl : collection?.bannerImage}
+                    type={'jpg'}
+                    imageStyle={styles.bannerImage}
+                />
+            </View>
         )
     }
 
@@ -1047,9 +1051,8 @@ function CollectionDetail(props) {
         // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
         return (
             <Tab.Navigator
-                // tabBar={props => <CustomTabBar {...props} />}
-                // tabBar={props => <MyTabBar {...props} />}
                 screenOptions={{
+                    tabBarScrollEnabled: true,
                     tabBarActiveTintColor: COLORS.BLUE2,
                     tabBarInactiveTintColor: COLORS.BLACK5,
                     tabBarStyle: {
@@ -1061,7 +1064,12 @@ function CollectionDetail(props) {
                     tabBarItemStyle: {
                         height: SIZE(42),
                         marginTop: SIZE(-10),
-
+                        width: tab ? wp('25%') : wp('50%'),
+                        paddingHorizontal: wp('1%'),
+                        justifyContent: 'center',
+                        // // fontSize: RF(1.4),
+                        fontFamily: fonts.SegoeUIRegular,
+                        textTransform: 'capitalize',
                     },
                     tabBarLabelStyle: {
                         fontSize: FONT(12),
@@ -1070,8 +1078,10 @@ function CollectionDetail(props) {
                     tabBarIndicatorStyle: {
                         backgroundColor: COLORS.BLUE4,
                         height: 2,
+                        // marginBottom: SIZE(39),
                     }
-                }}>
+                }}
+            >
                 <Tab.Screen
                     name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
                     component={Gallery}
@@ -1144,6 +1154,24 @@ function CollectionDetail(props) {
                         tabTitle: isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')
                     }}
                 />}
+                {/* {tab && !isBlind && <Tab.Screen
+                    name={translate('common.activity')}
+                    component={Activity}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 4,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: translate('common.activity')
+                    }}
+                />} */}
             </Tab.Navigator>
         );
     };

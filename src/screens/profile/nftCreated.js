@@ -70,7 +70,7 @@ const NFTCreated = ({ route }) => {
     };
 
     const renderItem = ({ item }) => {
-        let findIndex = MyNFTReducer.myList.findIndex(x => x.id === item.id);
+        let findIndex = MyNFTReducer.myList.findIndex(x => x._id === item._id);
 
         if (item && item.hasOwnProperty("metaData") && item.metaData) {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
@@ -105,6 +105,7 @@ const NFTCreated = ({ route }) => {
         getNFTlist(1);
     };
 
+    console.log("🚀 ~ file: nftCreated.js ~ line 118 ~ NFTCreated ~ MyNFTReducer?.myList", MyNFTReducer?.myList)
 
     return (
         <View style={styles.trendCont}>

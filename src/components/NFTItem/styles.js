@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
 
-borderRadius: wp("5"),
+    borderRadius: wp("5"),
 
     elevation: 5,
   },
@@ -135,6 +135,12 @@ borderRadius: wp("5"),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  chainView1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5
   },
   chainViewColumn: {
     flexDirection: 'row',
