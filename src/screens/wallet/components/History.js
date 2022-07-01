@@ -138,7 +138,6 @@ const History = props => {
             return talTransactions;
         } else if (coin.type === 'WETH') {
             return wethTransactions;
-// <<<<<<< HEAD
         }else if (coin.type ==='ALIA') {
             return aliaTransactions;
         }

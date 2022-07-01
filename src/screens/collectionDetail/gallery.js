@@ -59,6 +59,8 @@ const Gallery = ({ route }) => {
     const isFocused = useIsFocused();
     const [isDetailScreen, setDetailScreen] = useState(false);
 
+
+
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
         : NftDataCollectionReducer.nftDataCollectionLoading;
@@ -76,7 +78,6 @@ const Gallery = ({ route }) => {
             NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
             NftDataCollectionReducer.nftDataCollectionTotalCount;
     const reducerTabTitle = NftDataCollectionReducer.tabTitle
-
     // console.log("🚀 ~ file: gallery.js ~ line 40 ~ ~ ~ Gallery ~ isSeries", isSeries, route?.params, NftDataCollectionReducer)
     useEffect(() => {
         if (isFocused) {
@@ -170,6 +171,7 @@ const Gallery = ({ route }) => {
     };
 
     const renderItem = ({ item, index }) => {
+    
         let findIndex
         if (item?._id) {
             findIndex = collectionList.findIndex(x => x?._id === item?._id);
@@ -244,7 +246,8 @@ const Gallery = ({ route }) => {
                     isBlind
                 />
             );
-        } else {
+        } 
+        else {
             // console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
             return (
                 <CollectionItem
