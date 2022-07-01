@@ -239,6 +239,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
   const [bidPriceInDollar, setBidPriceInDollar] = useState('');
   const [detailNFT, setDetailNFT] = useState({});
+  const [minBidPrice, setMinBidPrice] = useState('')
 
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
@@ -292,9 +293,13 @@ const DetailScreen = ({ navigation, route }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    getCurrencyPrice();
     getPayablePrice();
   }, [wallet, baseCurrency, availableTokens]);
+
+  useEffect(() => {
+    getCurrencyPrice(item?.price ? item.price : priceNFT);
+  }, [wallet, baseCurrency, availableTokens, priceNFT]);
+
 
   const getPayablePrice = async () => {
     if (availableTokens.length !== 0) {
@@ -315,9 +320,11 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [filterTableValue]);
 
-  const getCurrencyPrice = async () => {
+  const getCurrencyPrice = async (value) => {
+    console.log("🚀 ~ file: detail.js ~ line 325 ~ getCurrencyPrice ~ value", value)
     let finalPrice = '';
     let i;
+    let price = value ? value : nftPrice
     switch (chainType) {
       case 'BinanceNtwk':
         i = 0;
@@ -338,26 +345,26 @@ const DetailScreen = ({ navigation, route }) => {
     setCurrencyPrices(currencyPrices);
     switch (baseCurrency?.key) {
       case 'BNB':
-        finalPrice = nftPrice * currencyPrices?.BNB;
+        finalPrice = price * currencyPrices?.BNB;
         break;
 
       case 'ALIA':
-        finalPrice = nftPrice * currencyPrices?.ALIA;
+        finalPrice = price * currencyPrices?.ALIA;
         break;
 
       case 'ETH':
-        finalPrice = nftPrice * currencyPrices?.ETH;
+        finalPrice = price * currencyPrices?.ETH;
         break;
 
       case 'MATIC':
-        finalPrice = nftPrice * currencyPrices?.MATIC;
+        finalPrice = price * currencyPrices?.MATIC;
         break;
 
       default:
-        finalPrice = nftPrice * 1;
+        finalPrice = price * 1;
         break;
     }
-    console.log('=======finalPrice', currencyPrices, finalPrice);
+    console.log('=======finalPrice', currencyPrices, finalPrice, value);
     setPriceInDollar(finalPrice);
   };
 
@@ -932,7 +939,6 @@ const DetailScreen = ({ navigation, route }) => {
             arr.push(convertArr);
           }
           let fDArray = arr.reverse();
-          console.log(fDArray, 'fDArray');
           setTradingTableData1(fDArray);
           setSellDetails(bids.reverse());
           setTradingTableData(fDArray);
@@ -986,6 +992,7 @@ const DetailScreen = ({ navigation, route }) => {
     ) => {
       setHighestBidderAddValue(highestBidderAdd);
       setIsNFTOnAuction(isNFTOnAuction);
+      setMinBidPrice(minBidPrice)
       setAuctionInitiatorAdd(auctionInitiatorAdd);
       setAuctionETime(auctionETime);
       setLastBidAmount(lastBidAmount);
@@ -1221,6 +1228,24 @@ const DetailScreen = ({ navigation, route }) => {
                   setIsContractOwner(false);
                 }
               }
+              // if (res[0] !== "0x0000000000000000000000000000000000000000") {
+              //   // calculateBidPriceDollar(res[1], walletAddressForNonCrypto);
+              //   let dollarToken = basePriceTokens.filter(
+              //     (token) =>
+              //       token.chain === singleNFT.nftChain &&
+              //       token.dollarCurrency
+              //   );
+              //   let rs = await this.calculatePrice(
+              //     res[1],
+              //     dollarToken[0].order,
+              //     // this.state.nonCryptoOwnerId
+              //     walletAddressForNonCrypto
+              //   );
+              //   if (rs) {
+              //     let res = divideNo(rs);
+              //     setPriceInDollar(res);
+              //   }
+              // }
 
               setOwnerAddress(nonCryptoOwner);
             } else {
@@ -1250,7 +1275,7 @@ const DetailScreen = ({ navigation, route }) => {
         // console.log('owner_address', res);
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, _tokenId)
-          .call((err, res) => {
+          .call(async (err, res) => {
             // console.log('getSellDetail public', res, item.metaData.name);
             if (!err) {
               let priceOfNft = res[1] / 1e18;
@@ -1265,6 +1290,20 @@ const DetailScreen = ({ navigation, route }) => {
                       ? true
                       : false,
                   );
+                  // let dollarToken = basePriceTokens.filter(
+                  //   (token) =>
+                  //     token.chain === singleNFT.nftChain &&
+                  //     token.dollarCurrency
+                  // );
+                  // let rs = await this.calculatePrice(
+                  //   res[1],
+                  //   dollarToken[0].order,
+                  //   res[0]
+                  // );
+                  // if (rs) {
+                  //   let res = divideNo(rs);
+                  //   setPriceInDollar(res);
+                  // }
                 } else {
                   getPublicProfile(_ownerAddress, true);
                   setIsOwner(
@@ -1353,6 +1392,7 @@ const DetailScreen = ({ navigation, route }) => {
         console.log('getDetailNFT_res 1255', res.data[0]);
 
         if (res.data.length > 0 && res.data !== 'No record found') {
+          console.log("Hello nft price =======>", res.data)
           setNFTPrice(res.data[0]?.price);
           setDetailNFT(res.data[0])
           let data = await getNFTDetails(res.data[0]);
@@ -1911,16 +1951,17 @@ const DetailScreen = ({ navigation, route }) => {
   //     Crypto user: title/name/username
   // Non Crypto user: username/name/title
 
-  const getArtistName = (artistId) => {
-    return (artistId === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-      || artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-      || artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
-      || artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
-      ? (
-        disableCreator = true,
-        collectCreat?.creator
-      ) : artistId ? artistId?.substring(0, 6) : ""
-  }
+  const getArtistName = artistId => {
+    return artistId ===
+      '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase() ||
+      artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase() ||
+      artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase() ||
+      artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase()
+      ? ((disableCreator = true), collectCreat?.creator)
+      : artistId
+        ? artistId?.substring(0, 6)
+        : '';
+  };
 
   let creatorName =
     artistDetail && typeof artistDetail === 'object'
@@ -1941,7 +1982,7 @@ const DetailScreen = ({ navigation, route }) => {
               : artist
                 ? artist?.substring(0, 6)
                 : ''
-      : getArtistName(artist)
+      : getArtistName(artist);
 
   // let ownerName = ownerDataN && (
   //   ownerDataN.role === 'crypto' ?
@@ -2338,7 +2379,23 @@ const DetailScreen = ({ navigation, route }) => {
                 <Text style={styles.price}>
                   {nftPrice
                     ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4)))
-                    : 0}
+                    : (nFTOnAuction && lBidAmount === '0.000000000000000000') ?
+                      minBidPrice ? numberWithCommas(parseFloat(Number(minBidPrice).toFixed(4))) : ''
+                      : priceNFT ?
+                        numberWithCommas(parseFloat(Number(priceNFT).toFixed(4)))
+                        // addComma(
+                        //   trimZeroFromTheEnd(
+                        //     showActualValue(
+                        //       divideNo(priceNFTString),
+                        //       6,
+                        //       "number"
+                        //     ),
+                        //     true
+                        //   ),
+                        //   true
+                        // )
+                        : ''
+                  }
                   <Text style={styles.priceUnit}>
                     {` ${baseCurrency?.key}`}
                     <Text style={styles.dollarText}>
@@ -2375,7 +2432,7 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           )}
           <Text style={styles.description}>
-            {detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description}
+            {detailNFT ? detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : item?.metaData?.description}
           </Text >
           {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
             <View style={styles.bidTimeContainer}>
@@ -2424,7 +2481,6 @@ const DetailScreen = ({ navigation, route }) => {
                 }
                 leftLoading={buyLoading}
                 onLeftPress={() => {
-                  // console.log('priceOfNft', priceNFT);
                   if (buyLoading) return;
                   // navigation.navigate('WalletConnect')
                   // if(price && price > 0){
@@ -2473,113 +2529,111 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             )}
           </View>
-          {
-            loaderSell ? (
-              <View style={{ paddingVertical: 10 }}>
-                <ActivityIndicator size={'small'} />
-              </View>
-            ) : (
-              <NFTDetailDropdown
-                title={translate('wallet.common.bidHistory')}
-                icon={details}
-                // containerStyles={{ marginTop: hp(2) }}
-                containerChildStyles={{
-                  height:
+          {loaderSell ? (
+            <View style={{ paddingVertical: 10 }}>
+              <ActivityIndicator size={'small'} />
+            </View>
+          ) : (
+            <NFTDetailDropdown
+              title={translate('wallet.common.bidHistory')}
+              icon={details}
+              // containerStyles={{ marginTop: hp(2) }}
+              containerChildStyles={{
+                height:
+                  sellDetails.filter(
+                    detail =>
+                      detail?.event === 'Bid' || detail?.event === 'Bid Award',
+                  )?.length === 0
+                    ? hp(19)
+                    : sellDetails.length < 5
+                      ? hp(16) + hp(4) * sellDetails.length
+                      : hp(35.7),
+              }}>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                style={{ marginVertical: hp(2) }}>
+                <Table
+                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+                  <Row
+                    data={bidHistoryTableHead}
+                    style={styles.head}
+                    textStyle={styles.text}
+                    widthArr={[130, 180, 180, 200]}
+                  />
+                  {sellDetails?.length > 0 &&
                     sellDetails.filter(
                       detail =>
                         detail?.event === 'Bid' || detail?.event === 'Bid Award',
-                    )?.length === 0
-                      ? hp(19)
-                      : sellDetails.length < 5
-                        ? hp(16) + hp(4) * sellDetails.length
-                        : hp(35.7),
-                }}>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  style={{ marginVertical: hp(2) }}>
-                  <Table
-                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-                    <Row
-                      data={bidHistoryTableHead}
-                      style={styles.head}
-                      textStyle={styles.text}
-                      widthArr={[130, 180, 180, 200]}
-                    />
-                    {sellDetails?.length > 0 &&
-                      sellDetails.filter(
-                        detail =>
-                          detail?.event === 'Bid' || detail?.event === 'Bid Award',
-                      )?.length !== 0 ? (
-                      sellDetails?.map((rowData, rowIndex) => {
-                        if (
-                          rowData?.event === 'Bid' ||
-                          rowData.event === 'Bid Award'
-                        ) {
-                          return (
-                            <TableWrapper
-                              key={rowIndex}
-                              style={{ flexDirection: 'row' }}>
-                              {
-                                <>
-                                  <Cell
-                                    key={rowIndex}
-                                    data={
-                                      // showCellData(rowData, rowIndex)
-                                      firstCellData(rowData)
-                                    }
-                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                    textStyle={styles.text}
-                                    width={130}
-                                  />
-                                  <Cell
-                                    key={rowIndex}
-                                    data={
-                                      // showCellData(rowData, rowIndex)
-                                      secondCellData(rowData)
-                                    }
-                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                    textStyle={styles.text}
-                                    width={180}
-                                  />
-                                  <Cell
-                                    key={rowIndex}
-                                    data={
-                                      // showCellData(rowData, rowIndex)
-                                      thirdCellData(rowData)
-                                    }
-                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                    textStyle={styles.text}
-                                    width={180}
-                                  />
-                                  <Cell
-                                    key={rowIndex}
-                                    data={
-                                      // showCellData(rowData, rowIndex)
-                                      fourthCellData(rowData)
-                                    }
-                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                    textStyle={styles.text}
-                                    width={200}
-                                  />
-                                </>
-                              }
-                            </TableWrapper>
-                          );
-                        } else {
-                          return <></>;
-                        }
-                      })
-                    ) : (
-                      <Text style={styles.emptyData}>
-                        {translate('common.noDataFound')}
-                      </Text>
-                    )}
-                  </Table>
-                </ScrollView>
-              </NFTDetailDropdown>
-            )
-          }
+                    )?.length !== 0 ? (
+                    sellDetails?.map((rowData, rowIndex) => {
+                      if (
+                        rowData?.event === 'Bid' ||
+                        rowData.event === 'Bid Award'
+                      ) {
+                        return (
+                          <TableWrapper
+                            key={rowIndex}
+                            style={{ flexDirection: 'row' }}>
+                            {
+                              <>
+                                <Cell
+                                  key={rowIndex}
+                                  data={
+                                    // showCellData(rowData, rowIndex)
+                                    firstCellData(rowData)
+                                  }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                  textStyle={styles.text}
+                                  width={130}
+                                />
+                                <Cell
+                                  key={rowIndex}
+                                  data={
+                                    // showCellData(rowData, rowIndex)
+                                    secondCellData(rowData)
+                                  }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                  textStyle={styles.text}
+                                  width={180}
+                                />
+                                <Cell
+                                  key={rowIndex}
+                                  data={
+                                    // showCellData(rowData, rowIndex)
+                                    thirdCellData(rowData)
+                                  }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                  textStyle={styles.text}
+                                  width={180}
+                                />
+                                <Cell
+                                  key={rowIndex}
+                                  data={
+                                    // showCellData(rowData, rowIndex)
+                                    fourthCellData(rowData)
+                                  }
+                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                  textStyle={styles.text}
+                                  width={200}
+                                />
+                              </>
+                            }
+                          </TableWrapper>
+                        );
+                      } else {
+                        return <></>;
+                      }
+                    })
+                  ) : (
+                    <Text style={styles.emptyData}>
+                      {translate('common.noDataFound')}
+                    </Text>
+                  )}
+                </Table>
+              </ScrollView>
+            </NFTDetailDropdown>
+          )}
           <NFTDetailDropdown title={translate('common.creator')} icon={details}>
             <TouchableOpacity
               onPress={() => {
@@ -2646,7 +2700,7 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           </NFTDetailDropdown>
           {tradingTableLoader ? (
-            <View style={{paddingVertical: 10}}>
+            <View style={{ paddingVertical: 10 }}>
               <ActivityIndicator size={'small'} />
             </View>
           ) : (
@@ -2657,8 +2711,8 @@ const DetailScreen = ({ navigation, route }) => {
                   tradingTableData.length == 0
                     ? hp(19)
                     : tradingTableData.length < 5
-                    ? hp(16) + hp(4) * tradingTableData.length
-                    : hp(35.7),
+                      ? hp(16) + hp(4) * tradingTableData.length
+                      : hp(35.7),
               }}
               icon={trading}>
               <Filters
@@ -2671,9 +2725,9 @@ const DetailScreen = ({ navigation, route }) => {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 // nestedScrollEnabled={true}
-                style={{marginVertical: hp(2)}}>
+                style={{ marginVertical: hp(2) }}>
                 <Table
-                  borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                   <Row
                     data={tradingTableHead}
                     style={styles.head}
@@ -2686,7 +2740,7 @@ const DetailScreen = ({ navigation, route }) => {
                       return (
                         <TableWrapper
                           key={rowIndex}
-                          style={{flexDirection: 'row'}}>
+                          style={{ flexDirection: 'row' }}>
                           {rowData.map((cellData, cellIndex) => {
                             let wid;
                             if (cellIndex === 0) {
@@ -2713,15 +2767,15 @@ const DetailScreen = ({ navigation, route }) => {
                                       onPress={() =>
                                         cellData && cellData !== 'Null Address'
                                           ? navigation.push('ArtistDetail', {
-                                              id: cellData,
-                                            })
+                                            id: cellData,
+                                          })
                                           : null
                                       }>
                                       <Text
                                         numberOfLines={1}
                                         style={[
                                           styles.text,
-                                          {color: '#00a8ff'},
+                                          { color: '#00a8ff' },
                                         ]}>
                                         {cellData !== 'Null Address' && cellData
                                           ? showSeller(cellData)
@@ -2779,9 +2833,10 @@ const DetailScreen = ({ navigation, route }) => {
         price={
           payableIn && data?.user?.role === 'crypto'
             ? payableInCurrency
-            : nftPrice
-              ? nftPrice
-              : 0
+            : priceNFT
+            //  nftPrice
+            //   ? nftPrice
+            //   : 0
         }
         priceStr={priceNFTString}
         priceInDollar={
@@ -2808,7 +2863,7 @@ const DetailScreen = ({ navigation, route }) => {
             ? payableInCurrency
             : nftPrice
               ? nftPrice
-              : 0
+                : 0
         }
         priceInDollar={
           payableIn && data?.user?.role === 'crypto'
@@ -2846,7 +2901,7 @@ const DetailScreen = ({ navigation, route }) => {
         data={{ data: availableTokens }}
         title={translate('common.allowedcurrency')}
         itemPress={async tradeCurr => {
-          await calculatePrice(tradeCurr); 
+          await calculatePrice(tradeCurr);
         }}
         renderItemName={'name'}
       />
