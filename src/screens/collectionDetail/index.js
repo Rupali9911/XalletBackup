@@ -619,7 +619,7 @@ function CollectionDetail(props) {
                                     />
                                 </View>
                             ) : (
-                                <View>
+                                <View style={CommonStyles.center}>
                                     {loadImage &&
                                         <Loader style={styles.blindBoxLoader} />
                                     }
