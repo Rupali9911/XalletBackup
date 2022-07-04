@@ -74,7 +74,16 @@ const deepLinkData = {
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
+
+  React.useEffect(() => {
+    if(showSuccess || isCreate || connectModalState) {
+      setIsBottomTabVisible(false)
+    } else {
+      setIsBottomTabVisible(true)
+    }  
+  }, [showSuccess, isCreate, connectModalState])
 
   React.useEffect(() => {}, [selectedLanguageItem.language_name]);
 

@@ -64,11 +64,12 @@ const HomeScreen = ({ navigation }) => {
     state => state.ListReducer,
   );
   const { showSuccess, data } = useSelector(state => state.UserReducer);
+  const modalState = Platform.OS === 'android' ? false : showSuccess;
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
-  const [modalVisible, setModalVisible] = useState(showSuccess);
-  const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
+  const [modalVisible, setModalVisible] = useState(modalState);
+  const [isSuccessVisible, setSuccessVisible] = useState(modalState);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
   const [openState, setOpenState] = useState(false);
@@ -133,6 +134,15 @@ const HomeScreen = ({ navigation }) => {
       removeNetInfoSubscription();
     };
   }, [requestAppId]);
+
+  useEffect(() => {
+    if( Platform.OS === 'android') {
+      setTimeout(() => {
+        setModalVisible(showSuccess);
+        setSuccessVisible(showSuccess);
+      }, 1000)
+    }
+  }, [showSuccess])
 
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
