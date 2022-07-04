@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { colors } from '../res';
 
-const Loader = () => {
+const Loader = (props) => {
     return (
-        <View style={styles.loaderCont} >
+        <View style={props.style ? props.style : styles.loaderCont} >
             <ActivityIndicator size="large" color={colors.themeR} />
         </View>
     )

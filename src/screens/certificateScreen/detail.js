@@ -53,6 +53,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import FetchingIndicator from '../../components/fetchingIndicator';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
+import AppBackground from '../../components/appBackground'
 import {
   Menu,
   MenuOptions,
@@ -157,15 +158,17 @@ const DetailScreen = ({ navigation, route }) => {
     owner,
     ownerData,
     artistId,
-    collectCreat,
+    // collectCreat,
     artistData,
     video,
     fileType,
     item,
-    detailitem,
+    // detailitem,
     index,
     setNftItem,
   } = route.params;
+  console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ ownerData", ownerData)
+  console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ artistData ", artistData)
 
   const [ownerDataN, setOwnerDataN] = useState(ownerData);
   const [ownerN, setOwnerN] = useState(owner);
@@ -200,9 +203,9 @@ const DetailScreen = ({ navigation, route }) => {
   const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
   const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  const [loader, setLoader] = useState(false);
+  const [load, setLoad] = useState(true);
   const [payableIn, setPayableIn] = useState('');
-  const [collectCreatData, setcollectCreat] = useState(collectCreat);
+  const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState(artistData);
   const [artist, setArtist] = useState(artistId);
 
@@ -236,8 +239,9 @@ const DetailScreen = ({ navigation, route }) => {
   const [isLike, setLike] = useState(item.like);
   const [loaderSell, setLoaderSell] = useState(false);
   const [updateComponent, setUpdateComponent] = useState(false);
-  const [highestBidderAddValue, setHighestBidderAddValue] = useState('');
+  const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
   const [bidPriceInDollar, setBidPriceInDollar] = useState('');
+  const [detailNFT, setDetailNFT] = useState({});
   const [minBidPrice, setMinBidPrice] = useState('')
 
   let isBiddingTimeEnd = false;
@@ -272,7 +276,6 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    console.log('Detail item###', item);
     if (isFocused) {
       if (chainType) {
         if (chainAvailable) {
@@ -314,9 +317,9 @@ const DetailScreen = ({ navigation, route }) => {
         filterTableValue.some(o2 => o1[0] === o2),
       );
 
-      setTradingTableData(filterValue);
+      setTradingTableData(filterValue)
     } else {
-      setTradingTableData(tradingTableData1);
+      setTradingTableData(tradingTableData1)
     }
   }, [filterTableValue]);
 
@@ -462,7 +465,6 @@ const DetailScreen = ({ navigation, route }) => {
         filter: filterArray,
       })
       .then(async res => {
-        // console.log('transactoinhistory: ', res.data.data);
         if (res.data.data.length > 0) {
           let filterList = [];
           let bids = [];
@@ -946,18 +948,18 @@ const DetailScreen = ({ navigation, route }) => {
           setTimeout(() => {
             setTradingTableLoader(false);
             setLoaderSell(false);
-            setLoader(false);
+            setLoad(false);
           }, 1000);
         } else {
           setSellDetails([]);
           // setSellDetailsFiltered([]);
           setTradingTableLoader(false);
           setLoaderSell(false);
-          setLoader(false);
+          setLoad(false);
         }
       })
       .catch(err => {
-        setLoader(false);
+        setLoad(false);
         setLoaderSell(false);
         setTradingTableLoader(false);
         setSellDetails([]);
@@ -1070,7 +1072,7 @@ const DetailScreen = ({ navigation, route }) => {
             lastOwnerOfNFT();
             await getTokenDetailsApi();
           } else if (err) {
-            setLoader(false);
+            setLoad(false);
             console.log('error----->', err);
           }
         });
@@ -1119,7 +1121,7 @@ const DetailScreen = ({ navigation, route }) => {
       setOwnerDataN(profile?.data?.data);
       setOwnerN(id);
     } catch (err) {
-      setLoader(false);
+      setLoad(false);
     }
   };
 
@@ -1250,7 +1252,7 @@ const DetailScreen = ({ navigation, route }) => {
 
               setOwnerAddress(nonCryptoOwner);
             } else {
-              setLoader(false);
+              setLoad(false);
             }
             setBuyLoading(false);
           });
@@ -1339,7 +1341,7 @@ const DetailScreen = ({ navigation, route }) => {
               }
               setOwnerAddress(_ownerAddress);
             } else {
-              setLoader(false);
+              setLoad(false);
             }
             setBuyLoading(false);
           });
@@ -1359,7 +1361,8 @@ const DetailScreen = ({ navigation, route }) => {
       .then(response => {
         // console.log('response from collection info', response.data)
         if (response.data) {
-          setcollectCreat(response.data.data);
+          setcollectCreat(response.data.data)
+          setLoad(false)
         }
       })
       .catch(err => {
@@ -1394,6 +1397,7 @@ const DetailScreen = ({ navigation, route }) => {
         if (res.data.length > 0 && res.data !== 'No record found') {
           console.log("Hello nft price =======>", res.data)
           setNFTPrice(res.data[0]?.price);
+          setDetailNFT(res.data[0])
           let data = await getNFTDetails(res.data[0]);
           setLike(data.like);
           // if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
@@ -1450,10 +1454,9 @@ const DetailScreen = ({ navigation, route }) => {
             // console.log('availableTokens F', availableTokens);
             setAvailableTokens([]);
           }
-          let lastBid =
-            data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
-              ? data?.newprice.bidData[data?.newprice?.bidData?.length - 1]
-              : '';
+          let lastBid = data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
+            ? data?.newprice.bidData[data?.newprice?.bidData?.length - 1]
+            : "";
           let highestBidderAdd = lastBid
             ? lastBid?.bidder
             : '0x0000000000000000000000000000000000000000';
@@ -1470,12 +1473,12 @@ const DetailScreen = ({ navigation, route }) => {
           //checkNFTOnAuction();
           getNFTSellDetails();
         } else if (res.data === 'No record found') {
-          setLoader(false);
+          setLoad(false);
           // console.log('res.data.data', res.data);
         }
       })
       .catch(err => {
-        setLoader(false);
+        setLoad(false);
         // console.log(err)
       });
   };
@@ -1774,7 +1777,7 @@ const DetailScreen = ({ navigation, route }) => {
               owner: ownerN,
               ownerData: ownerDataN,
               artistId: artist,
-              collectCreat: collectCreatData,
+              collectCreat: collectCreat,
               artistData: artistDetail,
               video: item.metaData.image,
               fileType: fileType,
@@ -1822,11 +1825,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const collectionClick = () => {
-    // console.log('collectCreat', collectCreatData?.collectionName)
-    if (collectCreatData?.userId === '0') {
+    // console.log('collectCreat', collectCreat?.collectionName)
+    if (collectCreat?.userId === '0') {
       return true;
     } else {
-      switch (collectCreatData?.collectionName) {
+      switch (collectCreat?.collectionName) {
         case 'ULTRAMAN':
           return true;
         case 'MONKEY COSER 101':
@@ -1883,9 +1886,7 @@ const DetailScreen = ({ navigation, route }) => {
         const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
         const secLeft = (parseInt(secDiff) * 1000) / 1000;
         if (daysLeft > 0) {
-          return ` ${daysLeft >= 10 ? daysLeft : '0' + daysLeft} ${translate(
-            'common.day',
-          ).toUpperCase()}`;
+          return ` ${daysLeft >= 10 ? daysLeft : "0" + daysLeft} ${translate('common.day').toUpperCase()}`;
         } else {
           doComponentUpdate = true;
           return ` ${hourLeft >= 10 ? hourLeft : '0' + hourLeft} ${translate(
@@ -1916,7 +1917,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   const closeSuccess = () => {
     setSuccessModalVisible(false);
-    setLoader(true);
+    setLoad(true);
     // console.log("yahoo")
     getNonCryptoNFTOwner();
   };
@@ -2008,7 +2009,7 @@ const DetailScreen = ({ navigation, route }) => {
   //   || artist === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
   //   ? (
   //     disableCreator = true,
-  //     collectCreatData?.creator
+  //     collectCreat?.creator
   //   )
   //   : artist.substring(0, 6)
   //     : artistDetail === "No record found" ?
@@ -2121,18 +2122,16 @@ const DetailScreen = ({ navigation, route }) => {
     return detail?.buy ? showDate(detail?.buyDateTime) : detail?.sellDateTime;
   };
 
-  const showContractAddress = item => {
-    return item?.collection
+  const showContractAddress = (item) => {
+    return (item?.collection
       ? item.collection.substring(0, 5) +
       ' ... ' +
       item.collection.slice([item.collection.length - 4])
-      : MarketContractAddress;
-  };
-  console.log('sellDetails---->', sellDetails);
+      : MarketContractAddress)
+  }
 
   return (
     <>
-      {loader && <FetchingIndicator />}
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
           showBackButton
@@ -2165,677 +2164,675 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
           }
         />
-        <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => {
-              let status = !playVideo;
-              if (showThumb) {
-                setVideoLoad(true);
-              } else {
-                setPlayVideoLoad(true);
-              }
-              if (!status) {
-                setVideoLoad(false);
-                setPlayVideoLoad(false);
-              }
-              toggleVideoPlay(status);
-            }}>
-            {fileType.toLowerCase() === 'mp4' ||
-              fileType.toLowerCase() === 'mov' ? (
-              <View style={{ ...styles.modalImage }}>
-                {showThumb && (
-                  <C_Image
-                    uri={item.metaData.thumbnft}
-                    imageStyle={styles.modalImage}
-                    isContain
-                  />
-                )}
-                <Video
-                  key={videoKey}
-                  ref={refVideo}
-                  source={{ uri: videoURL }}
-                  repeat
-                  playInBackground={false}
-                  paused={!playVideo}
-                  onProgress={r => {
-                    setVideoLoad(false);
-                    setPlayVideoLoad(false);
-                  }}
-                  resizeMode={'cover'}
-                  onError={error => {
-                    console.log(error);
-                    setVideoLoadErr(true);
-                  }}
-                  onReadyForDisplay={() => {
-                    toggleThumb(false);
-                  }}
-                  onLoad={data => {
-                    refVideo.current.seek(0);
-                  }}
-                  style={[styles.video]}
-                />
-
-                {!playVideo && !videoLoad && (
-                  <View style={styles.videoPlayIconCont}>
-                    <View style={styles.videoPlayIconChild}>
-                      <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                    </View>
-                  </View>
-                )}
-                {(videoLoad || playVideoLoad) && !videoLoadErr && (
-                  <View style={styles.videoPlayIconCont}>
-                    <View style={styles.videoPlayIconChild}>
-                      <ActivityIndicator size="large" color="white" />
-                    </View>
-                  </View>
-                )}
-                {videoLoadErr && (
-                  <View style={styles.videoPlayIconCont}>
-                    <View style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setVideoLoadErr(false);
-                          setVideoKey(videoKey + 1);
-                        }}
-                        style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
-                        <Text style={styles.retry}>Retry Loading</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                )}
-              </View>
-            ) : (
-              <C_Image
-                uri={item.thumbnailUrl || item.metaData.image}
-                imageStyle={styles.modalImage}
-                isContain
-              />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setLike(!isLike);
-              handleLikeMethod();
-            }}
-            style={styles.likeButton}>
-            {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
-          </TouchableOpacity>
-          <View style={styles.person}>
+        <AppBackground isBusy={load}>
+          <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
             <TouchableOpacity
+              activeOpacity={1}
               onPress={() => {
-                if (!disableCreator) {
-                  onProfile(false);
+                let status = !playVideo;
+                if (showThumb) {
+                  setVideoLoad(true);
+                } else {
+                  setPlayVideoLoad(true);
                 }
-              }}
-              style={styles.personType}>
-              <Image
-                style={styles.iconsImage}
-                source={
-                  artistDetail &&
-                    artistDetail.hasOwnProperty('profile_image') &&
-                    artistDetail.profile_image
-                    ? { uri: artistDetail.profile_image }
-                    : IMAGES.DEFAULTPROFILE
+                if (!status) {
+                  setVideoLoad(false);
+                  setPlayVideoLoad(false);
                 }
-              />
-              <View>
-                <Text style={styles.personTypeText}>
-                  {translate('common.creator')}
-                </Text>
-                <Text numberOfLines={1} style={styles.personName}>
-                  {creatorName}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={collectionClick()}
-              onPress={() => {
-                if (collectCreatData) {
-                  if (collectCreatData.blind) {
-                    console.log(
-                      '========collection tab => blind2',
-                      collectCreatData.blind,
-                      collectCreatData.collectionId,
-                    );
-                    navigation.push('CollectionDetail', {
-                      isBlind: true,
-                      collectionId: collectCreatData._id,
-                      isHotCollection: false,
-                    });
-                  } else {
-                    navigation.push('CollectionDetail', {
-                      isBlind: false,
-                      collectionId: collectCreatData._id,
-                      isHotCollection: true,
-                    });
-                  }
-                }
-              }}
-              style={styles.personType}>
-              <Image
-                style={styles.iconsImage}
-                source={
-                  collectCreatData
-                    ? { uri: collectCreatData.iconImage }
-                    : IMAGES.DEFAULTPROFILE
-                }
-              />
-              <View>
-                <Text style={styles.personTypeText}>
-                  {translate('wallet.common.collection')}
-                </Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text numberOfLines={1} style={styles.collectionName}>
-                    {collectCreatData && collectCreatData.collectionName}
-                  </Text>
-                  {Verifiedcollections.find((id) => id === collectCreat?._id) && (
-                    <Image
-                      style={styles.verifyIcon}
-                      source={IMAGES.tweetPng}
+                toggleVideoPlay(status);
+              }}>
+              {fileType.toLowerCase() === 'mp4' ||
+                fileType.toLowerCase() === 'mov' ? (
+                <View style={{ ...styles.modalImage }}>
+                  {showThumb && (
+                    <C_Image
+                      uri={item.metaData.thumbnft}
+                      imageStyle={styles.modalImage}
+                      isContain
                     />
                   )}
+                  <Video
+                    key={videoKey}
+                    ref={refVideo}
+                    source={{ uri: videoURL }}
+                    repeat
+                    playInBackground={false}
+                    paused={!playVideo}
+                    onProgress={r => {
+                      setVideoLoad(false);
+                      setPlayVideoLoad(false);
+                    }}
+                    resizeMode={'cover'}
+                    onError={error => {
+                      console.log(error);
+                      setVideoLoadErr(true);
+                    }}
+                    onReadyForDisplay={() => {
+                      toggleThumb(false);
+                    }}
+                    onLoad={data => {
+                      refVideo.current.seek(0);
+                    }}
+                    style={[styles.video]}
+                  />
+
+                  {!playVideo && !videoLoad && (
+                    <View style={styles.videoPlayIconCont}>
+                      <View style={styles.videoPlayIconChild}>
+                        <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                      </View>
+                    </View>
+                  )}
+                  {(videoLoad || playVideoLoad) && !videoLoadErr && (
+                    <View style={styles.videoPlayIconCont}>
+                      <View style={styles.videoPlayIconChild}>
+                        <ActivityIndicator size="large" color="white" />
+                      </View>
+                    </View>
+                  )}
+                  {videoLoadErr && (
+                    <View style={styles.videoPlayIconCont}>
+                      <View style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setVideoLoadErr(false);
+                            setVideoKey(videoKey + 1);
+                          }}
+                          style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+                          <Text style={styles.retry}>Retry Loading</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              ) : (
+                <C_Image
+                  uri={!load && (item.thumbnailUrl || item.metaData.image)}
+                  imageStyle={styles.modalImage}
+                  isContain
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setLike(!isLike);
+                handleLikeMethod();
+              }}
+              style={styles.likeButton}>
+              {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+            </TouchableOpacity>
+            {!load && <View style={styles.person}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!disableCreator) {
+                    onProfile(false);
+                  }
+                }}
+                style={styles.personType}>
+                <Image
+                  style={styles.iconsImage}
+                  source={
+                    artistDetail &&
+                      artistDetail.hasOwnProperty('profile_image') &&
+                      artistDetail.profile_image
+                      ? { uri: artistDetail.profile_image }
+                      : IMAGES.DEFAULTPROFILE
+                  }
+                />
+                <View>
+                  <Text style={styles.personTypeText}>
+                    {translate('common.creator')}
+                  </Text>
+                  <Text numberOfLines={1} style={styles.personName}>
+                    {creatorName}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                disabled={collectionClick()}
+                onPress={() => {
+                  if (collectCreat) {
+                    if (collectCreat.blind) {
+                      console.log(
+                        '========collection tab => blind2',
+                        collectCreat.blind,
+                        collectCreat.collectionId,
+                      );
+                      navigation.push('CollectionDetail', {
+                        isBlind: true,
+                        collectionId: collectCreat._id,
+                        isHotCollection: false,
+                      });
+                    } else {
+                      navigation.push('CollectionDetail', {
+                        isBlind: false,
+                        collectionId: collectCreat._id,
+                        isHotCollection: true,
+                      });
+                    }
+                  }
+                }}
+                style={styles.personType}>
+                <Image
+                  style={styles.iconsImage}
+                  source={
+                    collectCreat
+                      ? { uri: collectCreat.iconImage }
+                      : IMAGES.DEFAULTPROFILE
+                  }
+                />
+                <View>
+                  <Text style={styles.personTypeText}>
+                    {translate('wallet.common.collection')}
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text numberOfLines={1} style={styles.collectionName}>
+                      {collectCreat && collectCreat.collectionName}
+                    </Text>
+                    {Verifiedcollections.find((id) => id === collectCreat?._id) && (
+                      <Image
+                        style={styles.verifyIcon}
+                        source={IMAGES.tweetPng}
+                      />
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => onProfile(true)}
+                style={styles.personType}>
+                <Image
+                  style={styles.iconsImage}
+                  source={
+                    ownerDataN &&
+                      ownerDataN.hasOwnProperty('profile_image') &&
+                      ownerDataN.profile_image
+                      ? { uri: ownerDataN.profile_image }
+                      : IMAGES.DEFAULTPROFILE
+                  }
+                />
+                <View>
+                  <Text style={styles.personTypeText}>
+                    {translate('common.owner')}
+                  </Text>
+                  <Text numberOfLines={1} style={styles.personName}>
+                    {ownerName}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>}
+            {!load && <Text style={styles.nftTitle} ellipsizeMode="tail">
+              {creatorName}
+            </Text>}
+            {!load && <Text style={styles.nftName}>
+              {detailNFT ? detailNFT[`${selectedLanguageItem?.language_name}_nft_name`] || item?.metaData?.name : item?.metaData?.name}
+            </Text >}
+            {setNFTStatus() !== 'notOnSell' && (
+              <View style={{ flexDirection: 'row', paddingHorizontal: SIZE(12) }}>
+                <View
+                  style={[
+                    {
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginRight: wp(2),
+                    },
+                  ]}>
+                  {!load && <Text style={styles.price}>
+                    {nftPrice
+                      ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4)))
+                      : (nFTOnAuction && lBidAmount === '0.000000000000000000') ?
+                        minBidPrice ? numberWithCommas(parseFloat(Number(minBidPrice).toFixed(4))) : ''
+                        : priceNFT ?
+                          numberWithCommas(parseFloat(Number(priceNFT).toFixed(4)))
+                          // addComma(
+                          //   trimZeroFromTheEnd(
+                          //     showActualValue(
+                          //       divideNo(priceNFTString),
+                          //       6,
+                          //       "number"
+                          //     ),
+                          //     true
+                          //   ),
+                          //   true
+                          // )
+                          : ''
+                    }
+                    <Text style={styles.priceUnit}>
+                      {` ${baseCurrency?.key}`}
+                      <Text style={styles.dollarText}>
+                        {(nFTOnAuction && lBidAmount === '0.000000000000000000')
+                          ? bidPriceInDollar ? ` ($${addComma(parseFloat(bidPriceInDollar, true).toFixed(3))})` : ''
+                          : priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(3)})`
+                            : ''}
+                      </Text>
+                    </Text>
+                  </Text>}
+                  {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
+                </View>
+                <View style={{ flex: 0.4 }}>
+                  {availableTokens.length > 0 &&
+                    setNFTStatus() !== 'notOnSell' &&
+                    setNFTStatus() !== 'onSell' &&
+                    data?.user?.role === 'crypto' && (
+                      <>
+                        <Text style={[styles.payIn]}>
+                          {translate('wallet.common.buyerpayin')}
+                        </Text>
+                        <CardField
+                          inputProps={{ value: payableIn }}
+                          onPress={() => {
+                            setAllowedTokenModal(true);
+                          }}
+                          pressable
+                          showRight
+                          contStyle={{ height: hp('5%') }}
+                        />
+                      </>
+                    )}
                 </View>
               </View>
-            </TouchableOpacity>
+            )}
+            {!load && <Text style={styles.description}>
+              {detailNFT ? detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : item?.metaData?.description}
+            </Text >
+            }
 
-            <TouchableOpacity
-              onPress={() => onProfile(true)}
-              style={styles.personType}>
-              <Image
-                style={styles.iconsImage}
-                source={
-                  ownerDataN &&
-                    ownerDataN.hasOwnProperty('profile_image') &&
-                    ownerDataN.profile_image
-                    ? { uri: ownerDataN.profile_image }
-                    : IMAGES.DEFAULTPROFILE
-                }
-              />
-              <View>
-                <Text style={styles.personTypeText}>
-                  {translate('common.owner')}
-                </Text>
-                <Text numberOfLines={1} style={styles.personName}>
-                  {ownerName}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.nftTitle} ellipsizeMode="tail">
-            {creatorName}
-          </Text>
-          <Text style={styles.nftName}>
-            {detailitem
-              ? detailitem[`${selectedLanguageItem?.language_name}_nft_name`] ||
-              item?.metaData?.name
-              : item?.metaData?.name}
-          </Text>
-          {setNFTStatus() !== 'notOnSell' && (
-            <View style={{ flexDirection: 'row', paddingHorizontal: SIZE(12) }}>
-              <View
-                style={[
-                  {
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginRight: wp(2),
-                  },
-                ]}>
-                <Text style={styles.price}>
-                  {nftPrice
-                    ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4)))
-                    : (nFTOnAuction && lBidAmount === '0.000000000000000000') ?
-                      minBidPrice ? numberWithCommas(parseFloat(Number(minBidPrice).toFixed(4))) : ''
-                      : priceNFT ?
-                        numberWithCommas(parseFloat(Number(priceNFT).toFixed(4)))
-                        // addComma(
-                        //   trimZeroFromTheEnd(
-                        //     showActualValue(
-                        //       divideNo(priceNFTString),
-                        //       6,
-                        //       "number"
-                        //     ),
-                        //     true
-                        //   ),
-                        //   true
-                        // )
-                        : ''
-                  }
-                  <Text style={styles.priceUnit}>
-                    {` ${baseCurrency?.key}`}
-                    <Text style={styles.dollarText}>
-                      {(nFTOnAuction && lBidAmount === '0.000000000000000000')
-                        ? bidPriceInDollar ? ` ($${addComma(parseFloat(bidPriceInDollar, true).toFixed(3))})` : ''
-                        : priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(3)})`
-                          : ''}
+            {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
+              <View style={styles.bidTimeContainer}>
+                {isBiddingTimeEnd ? (
+                  <Text style={{ fontSize: 14 }}>
+                    {translate('common.biddingTime')}
+                  </Text>
+                ) : (
+                  <View style={styles?.bidTitleView}>
+                    <Text style={styles.bidTitleTxt}>
+                      {translate('common.saleEndIn')} :
                     </Text>
-                  </Text>
+                    <Text style={styles.bidTimeTxt}>
+                      {getAuctionTimeRemain(item?.newprice ? item : singleNFT)}
+                    </Text>
+                  </View>
+                )}
+                <Text style={styles.highestBidTxt}>
+                  {translate('common.highhestBidder')}:{' '}
+                  {highestBidderAddValue
+                    ? highestBidderAddValue.toUpperCase().substring(0, 6)
+                    : '0X0000'}{' '}
                 </Text>
-                {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
               </View>
-              <View style={{ flex: 0.4 }}>
-                {availableTokens.length > 0 &&
-                  setNFTStatus() !== 'notOnSell' &&
-                  setNFTStatus() !== 'onSell' &&
-                  data?.user?.role === 'crypto' && (
-                    <>
-                      <Text style={[styles.payIn]}>
-                        {translate('wallet.common.buyerpayin')}
-                      </Text>
-                      <CardField
-                        inputProps={{ value: payableIn }}
-                        onPress={() => {
-                          setAllowedTokenModal(true);
-                        }}
-                        pressable
-                        showRight
-                        contStyle={{ height: hp('5%') }}
-                      />
-                    </>
-                  )}
-              </View>
-            </View>
-          )}
-          <Text style={styles.description}>
-            {detailitem
-              ? detailitem[
-              `${selectedLanguageItem?.language_name}_nft_description`
-              ] || item?.metaData?.description
-              : item?.metaData?.description}
-          </Text>
-          {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? (
-            <View style={styles.bidTimeContainer}>
-              {isBiddingTimeEnd ? (
-                <Text style={{ fontSize: 14 }}>
-                  {translate('common.biddingTime')}
-                </Text>
-              ) : (
-                <View style={styles?.bidTitleView}>
-                  <Text style={styles.bidTitleTxt}>
-                    {translate('common.saleEndIn')} :
-                  </Text>
-                  <Text style={styles.bidTimeTxt}>
-                    {getAuctionTimeRemain(item?.newprice ? item : singleNFT)}
-                  </Text>
+            ) : null}
+
+            <View style={styles.bottomView}>
+              {!load && setNFTStatus() !== undefined && (
+                <GroupButton
+                  leftText={
+                    setNFTStatus() === 'onSell'
+                      ? translate('common.cancelSell')
+                      : setNFTStatus() === 'sell'
+                        ? singleNFT?.secondarySales
+                          ? translate('wallet.common.reSell')
+                          : translate('common.sell')
+                        : setNFTStatus() === 'buy'
+                          ? translate('common.buy')
+                          : setNFTStatus() === 'notOnSell'
+                            ? translate('common.soonOnSell')
+                            : translate('common.buy')
+                  }
+                  rightText={translate('wallet.common.offerPrice')}
+                  leftDisabled={
+                    setNFTStatus() === '' || setNFTStatus() === 'notOnSell'
+                  }
+                  leftLoading={buyLoading}
+                  onLeftPress={() => {
+                    if (buyLoading) return;
+                    // navigation.navigate('WalletConnect')
+                    // if(price && price > 0){
+                    if (setNFTStatus() === 'buy') {
+                      // if (payableIn === translate('common.allowedcurrency')) {
+                      //   alertWithSingleBtn(
+                      //     translate('wallet.common.alert'),
+                      //     translate('common.Selectcurrencypopup'),
+                      //   );
+                      // } else {
+                      setShowPaymentMethod(true);
+                      // }
+                    } else if (setNFTStatus() === 'sell') {
+                      navigation.navigate('sellNft', { nftDetail: singleNFT });
+                    }
+                    // }
+                  }}
+                  leftHide={setNFTStatus() === undefined}
+                  rightHide
+                  onRightPress={() => navigation.navigate('MakeBid')}
+                />
+              )}
+              {!load && setNFTStatus() === 'onSell' && (
+                <View
+                  style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <AppButton
+                    label={
+                      (nftPrice
+                        ? numberWithCommas(
+                          parseFloat(Number(nftPrice).toFixed(4)),
+                        )
+                        : 0) +
+                      ' ' +
+                      baseCurrency?.key
+                    }
+                    containerStyle={[styles.button, CommonStyles.outlineButton]}
+                    labelStyle={[CommonStyles.outlineButtonLabel]}
+                    onPress={() => { }}
+                  />
+                  <AppButton
+                    label={translate('common.editPrice')}
+                    containerStyle={styles.button}
+                    labelStyle={CommonStyles.buttonLabel}
+                    onPress={() => { }}
+                  />
                 </View>
               )}
-              <Text style={styles.highestBidTxt}>
-                {translate('common.highhestBidder')}:{' '}
-                {highestBidderAddValue
-                  ? highestBidderAddValue.toUpperCase().substring(0, 6)
-                  : '0X0000'}{' '}
-              </Text>
             </View>
-          ) : null}
-
-          <View style={styles.bottomView}>
-            {setNFTStatus() !== undefined && (
-              <GroupButton
-                leftText={
-                  setNFTStatus() === 'onSell'
-                    ? translate('common.cancelSell')
-                    : setNFTStatus() === 'sell'
-                      ? singleNFT?.secondarySales
-                        ? translate('wallet.common.reSell')
-                        : translate('common.sell')
-                      : setNFTStatus() === 'buy'
-                        ? translate('common.buy')
-                        : setNFTStatus() === 'notOnSell'
-                          ? translate('common.soonOnSell')
-                          : translate('common.buy')
-                }
-                rightText={translate('wallet.common.offerPrice')}
-                leftDisabled={
-                  setNFTStatus() === '' || setNFTStatus() === 'notOnSell'
-                }
-                leftLoading={buyLoading}
-                onLeftPress={() => {
-                  if (buyLoading) return;
-                  // navigation.navigate('WalletConnect')
-                  // if(price && price > 0){
-                  if (setNFTStatus() === 'buy') {
-                    // if (payableIn === translate('common.allowedcurrency')) {
-                    //   alertWithSingleBtn(
-                    //     translate('wallet.common.alert'),
-                    //     translate('common.Selectcurrencypopup'),
-                    //   );
-                    // } else {
-                    setShowPaymentMethod(true);
-                    // }
-                  } else if (setNFTStatus() === 'sell') {
-                    navigation.navigate('sellNft', { nftDetail: singleNFT });
-                  }
-                  // }
-                }}
-                leftHide={setNFTStatus() === undefined}
-                rightHide
-                onRightPress={() => navigation.navigate('MakeBid')}
-              />
-            )}
-            {setNFTStatus() === 'onSell' && (
-              <View
-                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <AppButton
-                  label={
-                    (nftPrice
-                      ? numberWithCommas(
-                        parseFloat(Number(nftPrice).toFixed(4)),
-                      )
-                      : 0) +
-                    ' ' +
-                    baseCurrency?.key
-                  }
-                  containerStyle={[styles.button, CommonStyles.outlineButton]}
-                  labelStyle={[CommonStyles.outlineButtonLabel]}
-                  onPress={() => { }}
-                />
-                <AppButton
-                  label={translate('common.editPrice')}
-                  containerStyle={styles.button}
-                  labelStyle={CommonStyles.buttonLabel}
-                  onPress={() => { }}
-                />
+            {!load && loaderSell ? (
+              <View style={{ paddingVertical: 10 }}>
+                <ActivityIndicator size={'small'} />
               </View>
-            )}
-          </View>
-          {loaderSell ? (
-            <View style={{ paddingVertical: 10 }}>
-              <ActivityIndicator size={'small'} />
-            </View>
-          ) : (
-            <NFTDetailDropdown
-              title={translate('wallet.common.bidHistory')}
-              icon={details}
-              // containerStyles={{ marginTop: hp(2) }}
-              containerChildStyles={{
-                height:
-                  sellDetails.filter(
-                    detail =>
-                      detail?.event === 'Bid' || detail?.event === 'Bid Award',
-                  )?.length === 0
-                    ? hp(19)
-                    : sellDetails.length < 5
-                      ? hp(16) + hp(4) * sellDetails.length
-                      : hp(35.7),
-              }}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                style={{ marginVertical: hp(2) }}>
-                <Table
-                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-                  <Row
-                    data={bidHistoryTableHead}
-                    style={styles.head}
-                    textStyle={styles.text}
-                    widthArr={[130, 180, 180, 200]}
-                  />
-                  {sellDetails?.length > 0 &&
+            ) : (
+              <NFTDetailDropdown
+                title={translate('wallet.common.bidHistory')}
+                icon={details}
+                // containerStyles={{ marginTop: hp(2) }}
+                containerChildStyles={{
+                  height:
                     sellDetails.filter(
                       detail =>
                         detail?.event === 'Bid' || detail?.event === 'Bid Award',
-                    )?.length !== 0 ? (
-                    sellDetails?.map((rowData, rowIndex) => {
-                      if (
-                        rowData?.event === 'Bid' ||
-                        rowData.event === 'Bid Award'
-                      ) {
+                    )?.length === 0
+                      ? hp(19)
+                      : sellDetails.length < 5
+                        ? hp(16) + hp(4) * sellDetails.length
+                        : hp(35.7),
+                }}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  style={{ marginVertical: hp(2) }}>
+                  <Table
+                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+                    <Row
+                      data={bidHistoryTableHead}
+                      style={styles.head}
+                      textStyle={styles.text}
+                      widthArr={[130, 180, 180, 200]}
+                    />
+                    {sellDetails?.length > 0 &&
+                      sellDetails.filter(
+                        detail =>
+                          detail?.event === 'Bid' || detail?.event === 'Bid Award',
+                      )?.length !== 0 ? (
+                      sellDetails?.map((rowData, rowIndex) => {
+                        if (
+                          rowData?.event === 'Bid' ||
+                          rowData.event === 'Bid Award'
+                        ) {
+                          return (
+                            <TableWrapper
+                              key={rowIndex}
+                              style={{ flexDirection: 'row' }}>
+                              {
+                                <>
+                                  <Cell
+                                    key={rowIndex}
+                                    data={
+                                      // showCellData(rowData, rowIndex)
+                                      firstCellData(rowData)
+                                    }
+                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                    textStyle={styles.text}
+                                    width={130}
+                                  />
+                                  <Cell
+                                    key={rowIndex}
+                                    data={
+                                      // showCellData(rowData, rowIndex)
+                                      secondCellData(rowData)
+                                    }
+                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                    textStyle={styles.text}
+                                    width={180}
+                                  />
+                                  <Cell
+                                    key={rowIndex}
+                                    data={
+                                      // showCellData(rowData, rowIndex)
+                                      thirdCellData(rowData)
+                                    }
+                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                    textStyle={styles.text}
+                                    width={180}
+                                  />
+                                  <Cell
+                                    key={rowIndex}
+                                    data={
+                                      // showCellData(rowData, rowIndex)
+                                      fourthCellData(rowData)
+                                    }
+                                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                    textStyle={styles.text}
+                                    width={200}
+                                  />
+                                </>
+                              }
+                            </TableWrapper>
+                          );
+                        } else {
+                          return <></>;
+                        }
+                      })
+                    ) : (
+                      <Text style={styles.emptyData}>
+                        {translate('common.noDataFound')}
+                      </Text>
+                    )}
+                  </Table>
+                </ScrollView>
+              </NFTDetailDropdown>
+            )}
+            <NFTDetailDropdown title={translate('common.creator')} icon={details}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!disableCreator) {
+                    onProfile(false);
+                  }
+                }}
+                style={styles.personType}>
+                <Image
+                  style={styles.creatorImage}
+                  source={
+                    artistDetail &&
+                      artistDetail.hasOwnProperty('profile_image') &&
+                      artistDetail.profile_image
+                      ? { uri: artistDetail.profile_image }
+                      : IMAGES.DEFAULTPROFILE
+                  }
+                />
+                <View>
+                  <Text numberOfLines={1} style={styles.creatorName}>
+                    {creatorName}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </NFTDetailDropdown>
+
+            <NFTDetailDropdown
+              title={translate('wallet.common.detail')}
+              icon={details}>
+              <View style={styles.rowContainer}>
+                <TextView style={styles.rowText}>
+                  {translate('wallet.common.contractAddress')}
+                </TextView>
+                <TextView
+                  style={[
+                    styles.rowTextcontractaddress,
+                    { color: Colors.themeColor },
+                  ]}
+                  ellipsizeMode="middle"
+                  numberOfLines={1}>
+                  {/* {MarketContractAddress} */}
+                  {showContractAddress(item?.collection ? item : singleNFT)}
+                </TextView>
+              </View>
+              <View style={styles.rowContainer}>
+                <TextView style={styles.rowText}>
+                  {translate('wallet.common.nftId')}
+                </TextView>
+                <TextView style={styles.rowText}>{_tokenId}</TextView>
+              </View>
+              <View style={styles.rowContainer}>
+                <TextView style={styles.rowText}>
+                  {translate('wallet.common.tokenStandard')}
+                </TextView>
+                <TextView style={styles.rowText}>ERC721</TextView>
+              </View>
+              <View style={styles.rowContainer}>
+                <TextView style={styles.rowText}>
+                  {translate('wallet.common.blockChainType')}
+                </TextView>
+                <TextView style={[styles.rowText, { textTransform: 'uppercase' }]}>
+                  {chainType}
+                </TextView>
+              </View>
+            </NFTDetailDropdown>
+            {tradingTableLoader ? (
+              <View style={{ paddingVertical: 10 }}>
+                <ActivityIndicator size={'small'} />
+              </View>
+            ) : (
+              <NFTDetailDropdown
+                title={translate('common.tradingHistory')}
+                containerChildStyles={{
+                  height:
+                    tradingTableData.length == 0
+                      ? hp(19)
+                      : tradingTableData.length < 5
+                        ? hp(16) + hp(4) * tradingTableData.length
+                        : hp(35.7),
+                }}
+                icon={trading}>
+                <Filters
+                  value={filterTableValue}
+                  setValue={setFilterTableValue}
+                  setData={setFilterTableList}
+                  data={filterTableList}
+                />
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  // nestedScrollEnabled={true}
+                  style={{ marginVertical: hp(2) }}>
+                  <Table
+                    borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+                    <Row
+                      data={tradingTableHead}
+                      style={styles.head}
+                      textStyle={styles.text}
+                      widthArr={[145, 130, 180, 180, 200]}
+                    />
+
+                    {tradingTableData.length > 0 ? (
+                      tradingTableData.map((rowData, rowIndex) => {
                         return (
                           <TableWrapper
                             key={rowIndex}
                             style={{ flexDirection: 'row' }}>
-                            {
-                              <>
+                            {rowData.map((cellData, cellIndex) => {
+                              let wid;
+                              if (cellIndex === 0) {
+                                wid = 145;
+                              }
+                              if (cellIndex === 1) {
+                                wid = 130;
+                              }
+                              if (cellIndex === 2) {
+                                wid = 180;
+                              }
+                              if (cellIndex === 3) {
+                                wid = 180;
+                              }
+                              if (cellIndex === 4) {
+                                wid = 200;
+                              }
+                              return (
                                 <Cell
-                                  key={rowIndex}
+                                  key={cellIndex}
                                   data={
-                                    // showCellData(rowData, rowIndex)
-                                    firstCellData(rowData)
+                                    cellIndex == 2 || cellIndex == 3 ? (
+                                      <TouchableOpacity
+                                        onPress={() =>
+                                          cellData && cellData !== 'Null Address'
+                                            ? navigation.push('ArtistDetail', {
+                                              id: cellData,
+                                            })
+                                            : null
+                                        }>
+                                        <Text
+                                          numberOfLines={1}
+                                          style={[
+                                            styles.text,
+                                            { color: '#00a8ff' },
+                                          ]}>
+                                          {cellData !== 'Null Address' && cellData
+                                            ? showSeller(cellData)
+                                            : cellData}
+                                        </Text>
+                                      </TouchableOpacity>
+                                    ) : (
+                                      cellData
+                                    )
                                   }
-                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+                                  // cellIndex === 3 ? element(cellData, index) :
                                   textStyle={styles.text}
-                                  width={130}
+                                  width={wid}
                                 />
-                                <Cell
-                                  key={rowIndex}
-                                  data={
-                                    // showCellData(rowData, rowIndex)
-                                    secondCellData(rowData)
-                                  }
-                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                  textStyle={styles.text}
-                                  width={180}
-                                />
-                                <Cell
-                                  key={rowIndex}
-                                  data={
-                                    // showCellData(rowData, rowIndex)
-                                    thirdCellData(rowData)
-                                  }
-                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                  textStyle={styles.text}
-                                  width={180}
-                                />
-                                <Cell
-                                  key={rowIndex}
-                                  data={
-                                    // showCellData(rowData, rowIndex)
-                                    fourthCellData(rowData)
-                                  }
-                                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-                                  textStyle={styles.text}
-                                  width={200}
-                                />
-                              </>
-                            }
+                              );
+                            })}
                           </TableWrapper>
                         );
-                      } else {
-                        return <></>;
-                      }
-                    })
-                  ) : (
-                    <Text style={styles.emptyData}>
-                      {translate('common.noDataFound')}
-                    </Text>
-                  )}
-                </Table>
-              </ScrollView>
-            </NFTDetailDropdown>
-          )}
-          <NFTDetailDropdown title={translate('common.creator')} icon={details}>
-            <TouchableOpacity
-              onPress={() => {
-                if (!disableCreator) {
-                  onProfile(false);
-                }
-              }}
-              style={styles.personType}>
-              <Image
-                style={styles.creatorImage}
-                source={
-                  artistDetail &&
-                    artistDetail.hasOwnProperty('profile_image') &&
-                    artistDetail.profile_image
-                    ? { uri: artistDetail.profile_image }
-                    : IMAGES.DEFAULTPROFILE
-                }
-              />
-              <View>
-                <Text numberOfLines={1} style={styles.creatorName}>
-                  {creatorName}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </NFTDetailDropdown>
-
-          <NFTDetailDropdown
-            title={translate('wallet.common.detail')}
-            icon={details}>
-            <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>
-                {translate('wallet.common.contractAddress')}
-              </TextView>
-              <TextView
-                style={[
-                  styles.rowTextcontractaddress,
-                  { color: Colors.themeColor },
-                ]}
-                ellipsizeMode="middle"
-                numberOfLines={1}>
-                {/* {MarketContractAddress} */}
-                {showContractAddress(item?.collection ? item : singleNFT)}
-              </TextView>
-            </View>
-            <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>
-                {translate('wallet.common.nftId')}
-              </TextView>
-              <TextView style={styles.rowText}>{_tokenId}</TextView>
-            </View>
-            <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>
-                {translate('wallet.common.tokenStandard')}
-              </TextView>
-              <TextView style={styles.rowText}>ERC721</TextView>
-            </View>
-            <View style={styles.rowContainer}>
-              <TextView style={styles.rowText}>
-                {translate('wallet.common.blockChainType')}
-              </TextView>
-              <TextView style={[styles.rowText, { textTransform: 'uppercase' }]}>
-                {chainType}
-              </TextView>
-            </View>
-          </NFTDetailDropdown>
-          {tradingTableLoader ? (
-            <View style={{ paddingVertical: 10 }}>
-              <ActivityIndicator size={'small'} />
-            </View>
-          ) : (
-            <NFTDetailDropdown
-              title={translate('common.tradingHistory')}
-              containerChildStyles={{
-                height:
-                  tradingTableData.length == 0
-                    ? hp(19)
-                    : tradingTableData.length < 5
-                      ? hp(16) + hp(4) * tradingTableData.length
-                      : hp(35.7),
-              }}
-              icon={trading}>
-              <Filters
-                value={filterTableValue}
-                setValue={setFilterTableValue}
-                setData={setFilterTableList}
-                data={filterTableList}
-              />
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                // nestedScrollEnabled={true}
-                style={{ marginVertical: hp(2) }}>
-                <Table
-                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-                  <Row
-                    data={tradingTableHead}
-                    style={styles.head}
-                    textStyle={styles.text}
-                    widthArr={[145, 130, 180, 180, 200]}
-                  />
-
-                  {tradingTableData.length > 0 ? (
-                    tradingTableData.map((rowData, rowIndex) => {
-                      return (
-                        <TableWrapper
-                          key={rowIndex}
-                          style={{ flexDirection: 'row' }}>
-                          {rowData.map((cellData, cellIndex) => {
-                            let wid;
-                            if (cellIndex === 0) {
-                              wid = 145;
-                            }
-                            if (cellIndex === 1) {
-                              wid = 130;
-                            }
-                            if (cellIndex === 2) {
-                              wid = 180;
-                            }
-                            if (cellIndex === 3) {
-                              wid = 180;
-                            }
-                            if (cellIndex === 4) {
-                              wid = 200;
-                            }
-                            return (
-                              <Cell
-                                key={cellIndex}
-                                data={
-                                  cellIndex == 2 || cellIndex == 3 ? (
-                                    <TouchableOpacity
-                                      onPress={() =>
-                                        cellData && cellData !== 'Null Address'
-                                          ? navigation.push('ArtistDetail', {
-                                            id: cellData,
-                                          })
-                                          : null
-                                      }>
-                                      <Text
-                                        numberOfLines={1}
-                                        style={[
-                                          styles.text,
-                                          { color: '#00a8ff' },
-                                        ]}>
-                                        {cellData !== 'Null Address' && cellData
-                                          ? showSeller(cellData)
-                                          : cellData}
-                                      </Text>
-                                    </TouchableOpacity>
-                                  ) : (
-                                    cellData
-                                  )
-                                }
-                                // cellIndex === 3 ? element(cellData, index) :
-                                textStyle={styles.text}
-                                width={wid}
-                              />
-                            );
-                          })}
-                        </TableWrapper>
-                      );
-                    })
-                  ) : (
-                    <Text style={styles.emptyData}>
-                      {translate('common.noDataFound')}
-                    </Text>
-                  )}
-                </Table>
-              </ScrollView>
-            </NFTDetailDropdown>
-          )}
-
-          <NFTDetailDropdown
-            title={translate('wallet.common.collectionHint')}
-            icon={grid}>
-            {moreData.length !== 0 ? (
-              <FlatList
-                data={moreData}
-                numColumns={3}
-                horizontal={false}
-                renderItem={renderItem}
-                keyExtractor={(v, i) => 'item_' + i}
-              />
-            ) : (
-              <View style={styles.sorryMessageCont}>
-                <Text style={styles.sorryMessage}>
-                  {translate('common.noNFT')}
-                </Text>
-              </View>
+                      })
+                    ) : (
+                      <Text style={styles.emptyData}>
+                        {translate('common.noDataFound')}
+                      </Text>
+                    )}
+                  </Table>
+                </ScrollView>
+              </NFTDetailDropdown>
             )}
-          </NFTDetailDropdown>
-        </ScrollView>
-      </SafeAreaView>
+
+            <NFTDetailDropdown
+              title={translate('wallet.common.collectionHint')}
+              icon={grid}>
+              {moreData.length !== 0 ? (
+                <FlatList
+                  data={moreData}
+                  numColumns={3}
+                  horizontal={false}
+                  renderItem={renderItem}
+                  keyExtractor={(v, i) => 'item_' + i}
+                />
+              ) : (
+                <View style={styles.sorryMessageCont}>
+                  <Text style={styles.sorryMessage}>
+                    {translate('common.noNFT')}
+                  </Text>
+                </View>
+              )}
+            </NFTDetailDropdown>
+          </ScrollView >
+        </AppBackground>
+      </SafeAreaView >
+
 
       <PaymentMethod
         visible={showPaymentMethod}
@@ -2844,9 +2841,9 @@ const DetailScreen = ({ navigation, route }) => {
           payableIn && data?.user?.role === 'crypto'
             ? payableInCurrency
             : priceNFT
-            //  nftPrice
-            //   ? nftPrice
-            //   : 0
+          //  nftPrice
+          //   ? nftPrice
+          //   : 0
         }
         priceStr={priceNFTString}
         priceInDollar={
@@ -2873,7 +2870,7 @@ const DetailScreen = ({ navigation, route }) => {
             ? payableInCurrency
             : nftPrice
               ? nftPrice
-                : 0
+              : 0
         }
         priceInDollar={
           payableIn && data?.user?.role === 'crypto'

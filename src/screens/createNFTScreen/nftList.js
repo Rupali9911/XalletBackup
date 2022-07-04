@@ -247,11 +247,9 @@ const NFTList = ({
   }
 
   const pressToggle = (v, collect) => {
-    changeLoadingState(true)
     setToggle(v);
-    v == "mint" ?
-      setNftListPage(1) : setNftListDraftPage(1);
-    getNftList(collect, v, 1)
+    {collect && ((v == "mint" ?
+    setNftListPage(1) : setNftListDraftPage(1)), getNftList(collect, v, 1), changeLoadingState(true))}
   }
 
   const selectItem = (v) => {

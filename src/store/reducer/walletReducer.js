@@ -23,7 +23,6 @@ import ImagesSrc from "../../constants/Images";
 // import {BASE_URL} from "../../helpers/ApiRequest";
 import { BASE_URL } from '../../common/constants';
 
-
 const initialState = {
     ethTransactions: [],
     ethBalance: "0",
@@ -36,6 +35,8 @@ const initialState = {
     tnftBalance: "0",
     talTransactions: [],
     talBalance: "0",
+    aliaTransactions:[],
+    aliaBalance: "0",
     busdTransactions: [],
     busdBalance: "0",
     usdtTransactions: [],
@@ -101,13 +102,13 @@ export default walletReducer = (state = initialState, action) => {
                 }
             }
 
-
         case ADD_ALL_BNB_TRANSACTIONS:
             return {
                 ...state,
                 bnbTransactions: [...action.payload],
                 tnftTransactions: [...action.payload],
-                busdTransactions: [...action.payload]
+                busdTransactions: [...action.payload],
+                aliaTransactions: [...action.payload]
 
             };
 
@@ -132,6 +133,7 @@ export default walletReducer = (state = initialState, action) => {
                 talTransactions: [...action.payload],
                 usdcTransactions: [...action.payload],
                 wethTransactions: [...action.payload],
+                aliaTransactions: [...action.payload],
             };
 
 
@@ -146,6 +148,7 @@ export default walletReducer = (state = initialState, action) => {
                 usdtBalance: action.payload.USDT,
                 busdBalance: action.payload.BUSD,
                 wethBalance: action.payload.WETH,
+                aliaBalance: action.payload.ALIA
             }
 
         case UPDATE_ETH_BALANCES:
@@ -170,6 +173,7 @@ export default walletReducer = (state = initialState, action) => {
                 talBalance: action.payload.TAL, // for testnet only,
                 usdcBalance: action.payload.USDC,
                 wethBalance: action.payload.WETH,
+                //aliaBalance: action.payload.ALIA,
             }
 
         case SET_CONNECTED_APPS:

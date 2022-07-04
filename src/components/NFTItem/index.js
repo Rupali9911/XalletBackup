@@ -308,7 +308,7 @@ export default function NFTItem(props) {
                 </View>
                 :
                 <View
-                  style={styles.chainView}>
+                  style={styles.chainView1}>
                   {chainType(iconNftChain)}
                   <View style={styles.endTimeView}>
                     {item.newprice && item.newprice?.endTime ? (

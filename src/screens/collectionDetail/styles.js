@@ -26,9 +26,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: SIZE(13),
   },
-  bannerImage: {
+  bannerView: {
     width: '100%',
     height: SIZE(200),
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
     resizeMode: 'contain',
   },
   bannerIconWrap: {
@@ -256,6 +260,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  blindBoxLoader: {
+    position:"absolute",
+    alignSelf:'center'
+  }
 });
 
 export default styles;

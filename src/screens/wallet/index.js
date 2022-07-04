@@ -231,10 +231,15 @@ const Wallet = ({ route, navigation }) => {
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
       let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
-      //let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-      let value = maticValue + talValue + usdctValue ;
-     // let value = maticValue + talValue + usdctValue + wethValue ;
+      let value=""
+      if (networkType=='testnet'){
+         value = maticValue + talValue + usdctValue ;
+      }else{
+        let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+        value = maticValue + talValue + usdctValue + wethValue ;
+      }
       totalValue = value;
+
     }
     return totalValue;
   };
@@ -352,7 +357,6 @@ const Wallet = ({ route, navigation }) => {
           environment.bnbRpc,
           'busd',
         ),
-        // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
       ];
 
       Promise.all(balanceRequests)
@@ -362,7 +366,7 @@ const Wallet = ({ route, navigation }) => {
             BNB: responses[0],
             TNFT: responses[1],
             BUSD: responses[2],
-            // ALIA: responses[3],
+            ALIA: responses[3],
           };
           dispatch(updateBSCBalances(balances));
           setBalances(balances);
@@ -411,7 +415,7 @@ const Wallet = ({ route, navigation }) => {
             Matic: responses[0],
             TAL: responses[1],
             USDC: responses[2],
-            ETH: responses[3],
+            WETH: responses[3],
           };
 
           dispatch(updatePolygonBalances(balances));

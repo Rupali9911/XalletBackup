@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
         fontSize: SIZE(13),
         fontFamily: fonts.PINGfANG,
         color: '#909090',
-        marginTop: hp('1%'),
-        marginBottom: hp('1%'),
+        paddingTop: 5,
+        paddingBottom: 5,
       },
 })
 

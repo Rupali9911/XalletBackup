@@ -10,9 +10,10 @@ import {
     ScrollView,
     Linking,
     Dimensions,
+    BackHandler
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import { C_Image, GroupButton } from '../../components';
+import { C_Image, GroupButton, Loader } from '../../components';
 import {
     getBoxes,
     getBlindBoxSeriesSum,
@@ -50,6 +51,9 @@ import Owned from './owned';
 import OnSale from './onSale';
 import NotOnSale from './notOnSale';
 import { Verifiedcollections } from '../../components/verifiedCollection';
+import CommonStyles from '../../constants/styles';
+import Activity from './activity';
+import { RF, wp } from '../../constants/responsiveFunct';
 
 const { height } = Dimensions.get('window');
 
@@ -108,14 +112,21 @@ function CollectionDetail(props) {
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
     const { data, wallet } = useSelector(state => state.UserReducer);
     const { NftDataCollectionReducer } = useSelector(state => state);
+    const [loadImage, setLoadImage] = useState([]);
 
     const isLoading = isBlind && nftId
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
         : NftDataCollectionReducer.nftDataCollectionLoading;
 
     useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton)
         getCollection();
-    }, []);
+    }, [BackHandler.removeEventListener('hardwareBackPress', handleBackButton)]);
+
+    const handleBackButton = () => {
+        navigation.goBack();
+        return true;
+    }
 
     const chainIcon = type => {
         if (type === 'polygon') {
@@ -504,11 +515,13 @@ function CollectionDetail(props) {
 
         // console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
         return (
-            <C_Image
-                uri={bannerUrl ? bannerUrl : collection?.bannerImage}
-                type={'jpg'}
-                imageStyle={styles.bannerImage}
-            />
+            <View style={styles.bannerView}>
+                <C_Image
+                    uri={bannerUrl ? bannerUrl : collection?.bannerImage}
+                    type={'jpg'}
+                    imageStyle={styles.bannerImage}
+                />
+            </View>
         )
     }
 
@@ -543,7 +556,7 @@ function CollectionDetail(props) {
                 />
                 {Verifiedcollections.find((id) => id === collectionId) && (
                     <View>
-                       <Image
+                        <Image
                             style={styles.verifyIcon}
                             source={IMAGES.tweetPng}
                         />
@@ -590,18 +603,34 @@ function CollectionDetail(props) {
             return (
                 <>
                     <View style={{ padding: SIZE(10) }}>
-                        {selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
-                            <Video
-                                source={{ uri: selectedBlindBox?.packVideo }}
-                                repeat={true}
-                                resizeMode={'cover'}
-                                style={styles.selectBlindBoxVideo} />
-                        ) : (
-                            <Image
-                                source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
-                                style={styles.selectBlindBoxVideo}
-                            />
-                        )}
+                        {!selectedBlindBox?.packVideo ? null :
+                            selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
+                                <View style={CommonStyles.center}>
+                                    {loadImage &&
+                                        <Loader style={styles.blindBoxLoader} />
+                                    }
+                                    <Video
+                                        source={{ uri: selectedBlindBox?.packVideo }}
+                                        repeat={true}
+                                        resizeMode={'cover'}
+                                        style={styles.selectBlindBoxVideo}
+                                        onLoadStart={() => setLoadImage(true)}
+                                        onReadyForDisplay={() => setLoadImage(false)}
+                                    />
+                                </View>
+                            ) : (
+                                <View style={CommonStyles.center}>
+                                    {loadImage &&
+                                        <Loader style={styles.blindBoxLoader} />
+                                    }
+                                    <Image
+                                        source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
+                                        style={styles.selectBlindBoxVideo}
+                                        onLoadStart={() => setLoadImage(true)}
+                                        onLoadEnd={() => setLoadImage(false)}
+                                    />
+                                </View>
+                            )}
                         <Text style={styles.selectBlindBoxName}>
                             {selectedBlindBox?.name ? selectedBlindBox?.name : blindboxList[0]?.name}
                         </Text>
@@ -897,46 +926,48 @@ function CollectionDetail(props) {
         }
 
         return (
-            <View style={styles.collectionTable}>
-                <View style={styles.collectionTableRow}>
-                    <Text style={styles.collectionTableRowText}>
-                        {items}
-                    </Text>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.itemsCollection')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <Text style={styles.collectionTableRowText}>
-                        {owners}
-                    </Text>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.owners')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <View style={styles.floorPriceVw}>
-                        <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
-                        <Text style={styles.collectionTableRowText} numberOfLines={1}>
-                            {floorPrice}
+            (items && owners && floorPrice && volTraded &&
+                <View style={styles.collectionTable}>
+                    <View style={styles.collectionTableRow}>
+                        <Text style={styles.collectionTableRowText}>
+                            {items}
+                        </Text>
+                        <Text style={styles.collectionTableRowDec}>
+                            {translate('common.itemsCollection')}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec} numberOfLines={1}>
-                        {translate('common.floorPrice')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <View style={styles.floorPriceVw}>
-                        <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
-                        <Text style={styles.collectionTableRowText} numberOfLines={1}>
-                            {volTraded}
+                    <View style={styles.collectionTableRow}>
+                        <Text style={styles.collectionTableRowText}>
+                            {owners}
+                        </Text>
+                        <Text style={styles.collectionTableRowDec}>
+                            {translate('common.owners')}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec} numberOfLines={1}>
-                        {translate('common.volumeTraded')}
-                    </Text>
+                    <View style={styles.collectionTableRow}>
+                        <View style={styles.floorPriceVw}>
+                            <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
+                            <Text style={styles.collectionTableRowText} numberOfLines={1}>
+                                {floorPrice}
+                            </Text>
+                        </View>
+                        <Text style={styles.collectionTableRowDec} numberOfLines={1}>
+                            {translate('common.floorPrice')}
+                        </Text>
+                    </View>
+                    <View style={styles.collectionTableRow}>
+                        <View style={styles.floorPriceVw}>
+                            <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
+                            <Text style={styles.collectionTableRowText} numberOfLines={1}>
+                                {volTraded}
+                            </Text>
+                        </View>
+                        <Text style={styles.collectionTableRowDec} numberOfLines={1}>
+                            {translate('common.volumeTraded')}
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            )
         )
     }
 
@@ -980,11 +1011,11 @@ function CollectionDetail(props) {
                 <View style={{ padding: SIZE(15) }}>
                     <Text style={[styles.storeCollectionName, { color: '#636363' }]}>
                         {storeCollection[`${selectedLanguageItem.language_name}_title`]}
-                        <View style={{paddingLeft:5}}>
-                        <Image
-                            style={styles.verifyIcon1}
-                            source={IMAGES.tweetPng}
-                        />
+                        <View style={{ paddingLeft: 5 }}>
+                            <Image
+                                style={styles.verifyIcon1}
+                                source={IMAGES.tweetPng}
+                            />
                         </View>
                     </Text>
                     <Text style={[styles.storeCollectionName, { color: 'red' }]}>
@@ -1020,9 +1051,8 @@ function CollectionDetail(props) {
         // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
         return (
             <Tab.Navigator
-                // tabBar={props => <CustomTabBar {...props} />}
-                // tabBar={props => <MyTabBar {...props} />}
                 screenOptions={{
+                    tabBarScrollEnabled: true,
                     tabBarActiveTintColor: COLORS.BLUE2,
                     tabBarInactiveTintColor: COLORS.BLACK5,
                     tabBarStyle: {
@@ -1034,7 +1064,12 @@ function CollectionDetail(props) {
                     tabBarItemStyle: {
                         height: SIZE(42),
                         marginTop: SIZE(-10),
-
+                        width: tab ? wp('25%') : wp('50%'),
+                        paddingHorizontal: wp('1%'),
+                        justifyContent: 'center',
+                        // // fontSize: RF(1.4),
+                        fontFamily: fonts.SegoeUIRegular,
+                        textTransform: 'capitalize',
                     },
                     tabBarLabelStyle: {
                         fontSize: FONT(12),
@@ -1043,8 +1078,10 @@ function CollectionDetail(props) {
                     tabBarIndicatorStyle: {
                         backgroundColor: COLORS.BLUE4,
                         height: 2,
+                        // marginBottom: SIZE(39),
                     }
-                }}>
+                }}
+            >
                 <Tab.Screen
                     name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
                     component={Gallery}
@@ -1117,6 +1154,24 @@ function CollectionDetail(props) {
                         tabTitle: isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')
                     }}
                 />}
+                {/* {tab && !isBlind && <Tab.Screen
+                    name={translate('common.activity')}
+                    component={Activity}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 4,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: translate('common.activity')
+                    }}
+                />} */}
             </Tab.Navigator>
         );
     };
@@ -1334,7 +1389,7 @@ function CollectionDetail(props) {
                         renderTabView(true)
                         : isBlind && !nftId && !loading ?
                             renderTabView(false)
-                            : null
+                            : <Loader />
                     }
                 </View>
 

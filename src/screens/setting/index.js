@@ -84,7 +84,7 @@ const ListItem = props => {
             size={RF(2.5)}
             color={Colors.GREY8}
             name="chevron-right"
-            />
+          />
         )}
       </View>
     </TouchableOpacity>
@@ -110,19 +110,19 @@ function Setting({ navigation }) {
     dispatch(getAllCards(data.token));
   }, []);
 
-  const updateLanguage =(language)=> {
-      if (selectedLanguageItem.language_name !== language.language_name) {
-          dispatch(setAppLanguage(language));
-          setShowLanguage(false);
-          // setI18nConfig(selectedLanguageItem.language_name);
-          // navigation.goBack()
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'Me' }],
-            }),
-          );
-      }
+  const updateLanguage = (language) => {
+    if (selectedLanguageItem.language_name !== language.language_name) {
+      dispatch(setAppLanguage(language));
+      setShowLanguage(false);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Me' }],
+        }),
+      );
+    } else {
+      setShowLanguage(false);
+    }
   }
 
   return (
@@ -210,7 +210,8 @@ function Setting({ navigation }) {
         animationInTiming={600}
         animationOutTiming={600}
         backdropTransitionInTiming={600}
-        backdropTransitionOutTiming={600}>
+        backdropTransitionOutTiming={600}
+        onRequestClose={() => { setShowLanguage(false) }}>
         <View style={styles.modalCont}>
           <Text style={styles.modalTitle}>
             {translate('wallet.common.selectLanguage')}
@@ -221,7 +222,7 @@ function Setting({ navigation }) {
                 <TouchableOpacity
                   key={i}
                   onPress={() => {
-                   updateLanguage(v)
+                    updateLanguage(v)
                   }}
                   style={{ ...styles.centerProfileCont, flex: null }}>
                   <Text style={styles.listLabel}>

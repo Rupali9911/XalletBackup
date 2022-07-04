@@ -373,8 +373,18 @@ const SendScreen = (props) => {
             let value = parseFloat(wethBalance) //+ parseFloat(balances.USDC)
             console.log('Polygon value', value);
             totalValue = value;
+        } else if (item.network === 'BSC' && item.type == 'ALIA') {
+            console.log("Item network", item.network)
+            let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
+            totalValue = value;
+        } else if (item.network === 'Polygon' && item.type == 'ALIA') {
+            console.log("Item network", item.network)
+            let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
+            totalValue = value;
+            console.log("Total value is ",totalValue)
         }
         return totalValue;
+
     }
 
     const transferAmount = async () => {
@@ -385,7 +395,6 @@ const SendScreen = (props) => {
 
         console.log("&&&&&&&& PRIVATE KEY",privKey)
         console.log("&&&&&&&& PUBLIC KEY",publicAddress)
-
         setLoading(true);
         switch (type) {
 
@@ -447,16 +456,30 @@ const SendScreen = (props) => {
                     showErrorAlert(err.msg);
                 });
                 return;
-            // case 'ALIA':
-            //     transfer(publicAddress, privKey, amount, toAddress, "alia",item.network=="BSC"?"binance":'polygon', environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
-            //         console.log("aliaBalance======>", aliaBalance);
-            //         setLoading(false);
-            //     }).catch((err) => {
-            //         console.log("err", err);
-            //         setLoading(false);
-            //         showErrorAlert(err.msg);
-            //     });
-            //     return;
+            case 'ALIA':
+                item.network==="BSC"?
+                    transfer(publicAddress, privKey, amount, toAddress, "alia","binance", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
+                        console.log("tnftBalance======>", tnftBalance);
+                        setLoading(false);
+                        if (tnftBalance.success) {
+                            showSuccessAlert();
+                        }
+                    }).catch((err) => {
+                        console.log("err", err);
+                        setLoading(false);
+                        showErrorAlert(err.msg);
+                    }):transfer(publicAddress, privKey, amount, toAddress,"alia","polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
+                        console.log("talBalance=====>", talBalance);
+                        setLoading(false);
+                        if (talBalance.success) {
+                            showSuccessAlert();
+                        }
+                    }).catch((err) => {
+                        console.log("err", err);
+                        setLoading(false);
+                        showErrorAlert(err.msg);
+                    });
+                return;
             case 'Matic':
                 // let maticBalance = await
                 transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", ""," ", environment.polRpc, 10, 21000).then((maticBalance) => {
@@ -713,7 +736,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexGrow: 1,
-        padding: wp("5%")
+        padding: wp("5%"),
     },
     scene: {
         flex: 1,

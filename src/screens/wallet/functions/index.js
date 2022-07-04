@@ -410,7 +410,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                     chainId: getChainId(chainType)
                 }, 'petersburg');
 
-            } else if (type === 'tnft') {
+            } else if (type === 'tnft'|| type==='alia'&& chainType==="binance") {
                 var amountToSendAlia = web3.utils.toWei(amount.toString(), 'ether');
                 amountToSendAlia = web3.utils.toHex(amountToSendAlia);
                 txObject.value = "0x0";
@@ -423,7 +423,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                     networkId: getNetworkId(chainType),
                     chainId: getChainId(chainType)
                 }, 'petersburg');
-            } else if (type === 'tal') {
+            } else if (type === 'tal'|| type==='alia'&& chainType==="polygon") {
                 var amountToSendAlia = web3.utils.toWei(amount.toString(), 'ether');
                 amountToSendAlia = web3.utils.toHex(amountToSendAlia);
                 txObject.value = "0x0";
@@ -465,7 +465,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type,chainType, con
                         networkId: getNetworkId(chainType),
                         chainId: getChainId(chainType)
                     }, 'petersburg');
-                    console.log("POLYGON ETH CAllED",chainType)
+                    console.log("POLYGON WETH CAllED",chainType)
                 }
             }
 
@@ -1080,9 +1080,8 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
         // return result
     })
 }
-export const nftMakingMethods = async (
-    data
-) => {
+
+export const nftMakingMethods = async (data) => {
     return new Promise(async (resolve, reject) => {
 
         const web3 = new Web3(
