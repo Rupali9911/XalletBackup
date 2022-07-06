@@ -59,7 +59,7 @@ import launchPad from "./launchPad"
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
-  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
+  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
@@ -96,7 +96,7 @@ const HomeScreen = ({ navigation }) => {
       if (passVal && !passcodeAsyncStatus) {
         setSuccessVisible(false)
         setModalVisible(false)
-      dispatch(updatePassStatus(false))
+        dispatch(updatePassStatus(false))
         navigation.navigate('PasscodeScreen', { screen: 'active' })
       }
     }
@@ -136,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
   }, [requestAppId]);
 
   useEffect(() => {
-    if( Platform.OS === 'android') {
+    if (Platform.OS === 'android') {
       setTimeout(() => {
         setModalVisible(showSuccess);
         setSuccessVisible(showSuccess);
@@ -278,6 +278,10 @@ const HomeScreen = ({ navigation }) => {
 
   // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
 
+  const renderCollectionTab = () => {
+    return <Collection />
+  }
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -345,6 +349,9 @@ const HomeScreen = ({ navigation }) => {
           (showSuccess ? null : (
             <Tab.Navigator
               screenOptions={{
+                lazy: false,
+                removeClippedSubviews: true,
+                tabBarBounces: false,
                 tabBarScrollEnabled: true,
                 tabBarActiveTintColor: colors.BLUE4,
                 tabBarInactiveTintColor: colors.GREY1,
@@ -402,7 +409,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name={translate('wallet.common.collection')}
-                component={Collection}
+                component={() => renderCollectionTab()}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(7);
