@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import {
+  CONNECT_MODAL_STATE,
   AUTH_SUCCESS,
   HIDE_SPLASH,
   UPDATE_PASS_ASYNC,
@@ -37,6 +38,7 @@ const initialState = {
   passcodeAsyncStatus: false,
   isBackup: false,
   showSuccess: false,
+  connectModalState: false
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -51,6 +53,11 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         showSplash: false,
       };
+      case CONNECT_MODAL_STATE:
+        return {
+          ...state,
+          connectModalState: action.payload,
+        };
     case UPDATE_PASS_ASYNC:
       return {
         ...state,
@@ -143,6 +150,11 @@ export const updatePassStatus = (data) => ({
 });
 export const hideSplash = () => ({
   type: HIDE_SPLASH,
+});
+
+export const connectStateModal = (data) => ({
+  type: CONNECT_MODAL_STATE,
+  payload: data
 });
 
 export const endLoading = () => ({
