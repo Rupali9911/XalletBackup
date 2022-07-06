@@ -156,10 +156,10 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
   const {
     owner,
-    ownerData,
-    artistId,
+    // ownerData,
+    // artistId,
     // collectCreat,
-    artistData,
+    // artistData,
     video,
     fileType,
     item,
@@ -167,10 +167,10 @@ const DetailScreen = ({ navigation, route }) => {
     index,
     setNftItem,
   } = route.params;
-  console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ ownerData", ownerData)
-  console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ artistData ", artistData)
+  // console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ ownerData", ownerData)
+  // console.log("🚀 ~ file: detail.js ~ line 170 ~ DetailScreen ~ artistData ", artistData)
 
-  const [ownerDataN, setOwnerDataN] = useState(ownerData);
+  const [ownerDataN, setOwnerDataN] = useState();
   const [ownerN, setOwnerN] = useState(owner);
 
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
@@ -206,8 +206,8 @@ const DetailScreen = ({ navigation, route }) => {
   const [load, setLoad] = useState(true);
   const [payableIn, setPayableIn] = useState('');
   const [collectCreat, setcollectCreat] = useState();
-  const [artistDetail, setArtistData] = useState(artistData);
-  const [artist, setArtist] = useState(artistId);
+  const [artistDetail, setArtistData] = useState();
+  const [artist, setArtist] = useState();
 
   const [showThumb, toggleThumb] = useState(true);
   const [videoLoad, setVideoLoad] = useState(false);
@@ -948,18 +948,18 @@ const DetailScreen = ({ navigation, route }) => {
           setTimeout(() => {
             setTradingTableLoader(false);
             setLoaderSell(false);
-            setLoad(false);
+            // setLoad(false);
           }, 1000);
         } else {
           setSellDetails([]);
           // setSellDetailsFiltered([]);
           setTradingTableLoader(false);
           setLoaderSell(false);
-          setLoad(false);
+          // setLoad(false);
         }
       })
       .catch(err => {
-        setLoad(false);
+        // setLoad(false);
         setLoaderSell(false);
         setTradingTableLoader(false);
         setSellDetails([]);
@@ -1072,7 +1072,7 @@ const DetailScreen = ({ navigation, route }) => {
             lastOwnerOfNFT();
             await getTokenDetailsApi();
           } else if (err) {
-            setLoad(false);
+            // setLoad(false);
             console.log('error----->', err);
           }
         });
@@ -1121,7 +1121,7 @@ const DetailScreen = ({ navigation, route }) => {
       setOwnerDataN(profile?.data?.data);
       setOwnerN(id);
     } catch (err) {
-      setLoad(false);
+      // setLoad(false);
     }
   };
 
@@ -1252,7 +1252,7 @@ const DetailScreen = ({ navigation, route }) => {
 
               setOwnerAddress(nonCryptoOwner);
             } else {
-              setLoad(false);
+              // setLoad(false);
             }
             setBuyLoading(false);
           });
@@ -1341,7 +1341,7 @@ const DetailScreen = ({ navigation, route }) => {
               }
               setOwnerAddress(_ownerAddress);
             } else {
-              setLoad(false);
+              // setLoad(false);
             }
             setBuyLoading(false);
           });
@@ -1362,8 +1362,8 @@ const DetailScreen = ({ navigation, route }) => {
         // console.log('response from collection info', response.data)
         if (response.data) {
           setcollectCreat(response.data.data)
-          setLoad(false)
-        }
+          // setLoad(false)
+        } 
       })
       .catch(err => {
         console.log('err from collection info', err);
@@ -1427,6 +1427,8 @@ const DetailScreen = ({ navigation, route }) => {
                 if (response.data) {
                   setArtist(res.data[0]?.returnValues?.to?.toLowerCase());
                   setArtistData(response.data);
+                    setLoad(false)
+                  // setLoad(false)
                   setArtistRole(
                     response.data !== 'No record found'
                       ? response.data.role
@@ -1436,7 +1438,7 @@ const DetailScreen = ({ navigation, route }) => {
                   );
                 }
               }
-              console.log(response, '///////');
+              // console.log(response, '///////');
             });
           // }
           // console.log('NFT Detail', data, data.newprice);
@@ -1478,7 +1480,7 @@ const DetailScreen = ({ navigation, route }) => {
         }
       })
       .catch(err => {
-        setLoad(false);
+        // setLoad(false);
         // console.log(err)
       });
   };
@@ -1774,11 +1776,11 @@ const DetailScreen = ({ navigation, route }) => {
           onPress={() => {
             setVideoURI(null);
             navigation.push('CertificateDetail', {
-              owner: ownerN,
-              ownerData: ownerDataN,
-              artistId: artist,
-              collectCreat: collectCreat,
-              artistData: artistDetail,
+              // owner: ownerN,
+              // ownerData: ownerDataN,
+              // artistId: artist,
+              // collectCreat: collectCreat,
+              // artistData: artistDetail,
               video: item.metaData.image,
               fileType: fileType,
               item: item,
