@@ -263,7 +263,7 @@ function CollectionDetail(props) {
         let boxes;
         if (collectionArray?.data?.data?._id === '61aa04803035bdb9917871cf') {
             boxes = await getBoxes(collectionArray?.data.data?.collectionAddress, true);
-            // console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~", boxes)
+                        // console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~", boxes)
         }
         else {
             boxes = await getBoxes(collectionArray?.data.data?._id);
@@ -909,8 +909,8 @@ function CollectionDetail(props) {
         if (!isBlind || isBlind && nftId) {
             // console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
 
-            items = !isBlind ? collection?.nftCount : selectedBlindBox.boxInfo?.length || blindboxList[0]?.boxInfo.length;
-            owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
+            items = !isBlind ? String(collection?.nftCount) : String(selectedBlindBox.boxInfo?.length) || String(blindboxList[0]?.boxInfo.length);
+            owners = !isBlind ? String(collection?.owners) :String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
             floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(3) : '0.00') : statsDetails?.floorPriceInDollar <= 40
                 ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
                 : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');

@@ -66,7 +66,7 @@ const CreateNFTScreen = ({ route }) => {
   const collection = routeParams?.data;
 
   const onViewCollection = () => {
-    navigation.navigate('CollectionDetail', { collectionId: routeParams.data?._id })
+    navigation.navigate('CollectionDetail', { collectionId: routeParams.data?._id, isBlind: false, isHotCollection: true, isSeries: false })
   }
 
   const _renderScene = ({ route, jumpTo, position }) => {
@@ -155,7 +155,7 @@ const CreateNFTScreen = ({ route }) => {
     index == 1 ? translate("wallet.common.NFTList") :
       index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
 
-    return (
+  return (
     <View style={styles.mainContainer}>
       {loading ? <LoaderIndicator /> : null}
       <SafeAreaView style={styles.mainContainer}>
@@ -210,50 +210,50 @@ const CreateNFTScreen = ({ route }) => {
             />
             : null
         }
-          {dateVisible &&
-              <DatePicker
-                  modal={modalScreen}
-                  open={dateVisible}
-                  date={miniDate}
-                  mode="datetime"
-                  minimumDate={miniDate}
-                  androidVariant={"iosClone"}
-                    // timeZoneOffsetInMinutes={-390}
-                    // locale={"en"}
-                    // is24hourSource={"locale"}
-                    onConfirm={date => {
-                       console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))
-                      setDate(date)
-                      setDateVisible(false)
-                  }}
-                  onCancel={() => {
-                      setDate("closed")
-                      setDateVisible(false)
-                  }
-                  }
-              />}
-          {/*{dateVisible &&*/}
-          {/*<DatePicker*/}
-          {/*    modal={modalScreen}*/}
-          {/*    open={dateVisible}*/}
-          {/*    date={miniDate}*/}
-          {/*    mode="datetime"*/}
-          {/*    minimumDate={miniDate}*/}
-          {/*    androidVariant={"iosClone"}*/}
-          {/*    // timeZoneOffsetInMinutes={-390}*/}
-          {/*    // locale={"en"}*/}
-          {/*    // is24hourSource={"locale"}*/}
-          {/*    onConfirm={date => {*/}
-          {/*        console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))*/}
-          {/*        setDate(date)*/}
-          {/*        setDateVisible(false)*/}
-          {/*    }}*/}
-          {/*    onCancel={() => {*/}
-          {/*        setDate("closed")*/}
-          {/*        setDateVisible(false)*/}
-          {/*    }*/}
-          {/*    }*/}
-          {/*/>}*/}
+        {dateVisible &&
+          <DatePicker
+            modal={modalScreen}
+            open={dateVisible}
+            date={miniDate}
+            mode="datetime"
+            minimumDate={miniDate}
+            androidVariant={"iosClone"}
+            // timeZoneOffsetInMinutes={-390}
+            // locale={"en"}
+            // is24hourSource={"locale"}
+            onConfirm={date => {
+              console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))
+              setDate(date)
+              setDateVisible(false)
+            }}
+            onCancel={() => {
+              setDate("closed")
+              setDateVisible(false)
+            }
+            }
+          />}
+        {/*{dateVisible &&*/}
+        {/*<DatePicker*/}
+        {/*    modal={modalScreen}*/}
+        {/*    open={dateVisible}*/}
+        {/*    date={miniDate}*/}
+        {/*    mode="datetime"*/}
+        {/*    minimumDate={miniDate}*/}
+        {/*    androidVariant={"iosClone"}*/}
+        {/*    // timeZoneOffsetInMinutes={-390}*/}
+        {/*    // locale={"en"}*/}
+        {/*    // is24hourSource={"locale"}*/}
+        {/*    onConfirm={date => {*/}
+        {/*        console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))*/}
+        {/*        setDate(date)*/}
+        {/*        setDateVisible(false)*/}
+        {/*    }}*/}
+        {/*    onCancel={() => {*/}
+        {/*        setDate("closed")*/}
+        {/*        setDateVisible(false)*/}
+        {/*    }*/}
+        {/*    }*/}
+        {/*/>}*/}
 
       </SafeAreaView>
     </View>
