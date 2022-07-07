@@ -59,16 +59,17 @@ import launchPad from "./launchPad"
 const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
-  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
+  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
   const { showSuccess, data } = useSelector(state => state.UserReducer);
+  const modalState = Platform.OS === 'android' ? false : showSuccess;
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
-  const [modalVisible, setModalVisible] = useState(showSuccess);
-  const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
+  const [modalVisible, setModalVisible] = useState(modalState);
+  const [isSuccessVisible, setSuccessVisible] = useState(modalState);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
   const [openState, setOpenState] = useState(false);
@@ -95,7 +96,7 @@ const HomeScreen = ({ navigation }) => {
       if (passVal && !passcodeAsyncStatus) {
         setSuccessVisible(false)
         setModalVisible(false)
-      dispatch(updatePassStatus(false))
+        dispatch(updatePassStatus(false))
         navigation.navigate('PasscodeScreen', { screen: 'active' })
       }
     }
@@ -133,6 +134,15 @@ const HomeScreen = ({ navigation }) => {
       removeNetInfoSubscription();
     };
   }, [requestAppId]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      setTimeout(() => {
+        setModalVisible(showSuccess);
+        setSuccessVisible(showSuccess);
+      }, 1000)
+    }
+  }, [showSuccess])
 
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
@@ -268,6 +278,10 @@ const HomeScreen = ({ navigation }) => {
 
   // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
 
+  const renderCollectionTab = () => {
+    return <Collection />
+  }
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -335,6 +349,9 @@ const HomeScreen = ({ navigation }) => {
           (showSuccess ? null : (
             <Tab.Navigator
               screenOptions={{
+                lazy: false,
+                removeClippedSubviews: true,
+                tabBarBounces: false,
                 tabBarScrollEnabled: true,
                 tabBarActiveTintColor: colors.BLUE4,
                 tabBarInactiveTintColor: colors.GREY1,
@@ -392,7 +409,7 @@ const HomeScreen = ({ navigation }) => {
               />
               <Tab.Screen
                 name={translate('wallet.common.collection')}
-                component={Collection}
+                component={() => renderCollectionTab()}
                 listeners={({ navigation, route }) => {
                   if (navigation.isFocused()) {
                     setCurrentTab(7);

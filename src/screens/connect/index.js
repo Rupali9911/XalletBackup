@@ -28,6 +28,7 @@ import AppModal from '../../components/appModal';
 import ApproveModalContent from '../../components/approveAppModal';
 import { alertWithSingleBtn } from '../../utils';
 import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOpenStatus } from '../../store/reducer/walletReducer';
+import { connectStateModal } from '../../store/reducer/userReducer';
 import { getSig } from '../wallet/functions';
 import NotificationActionModal from '../../components/notificationActionModal';
 import {BASE_URL} from "../../common/constants";
@@ -142,6 +143,18 @@ const Connect = ({ route, navigation }) => {
     //         navigation.navigate('PasscodeScreen',{screen: "security"});
     //     }
     // },[]);
+
+    useEffect(() => {
+        if(Platform.OS === 'android') {
+            dispatch(connectStateModal(approveModal));
+        }
+    }, [approveModal]);
+
+    useEffect(() => {
+        if(Platform.OS === 'android') {
+            dispatch(connectStateModal(showConnectionSuccess));
+        }
+    }, [showConnectionSuccess]);
 
     useEffect(() => {
         console.log('useEffect, passcode', passcode, !passcode, socketOpen)
