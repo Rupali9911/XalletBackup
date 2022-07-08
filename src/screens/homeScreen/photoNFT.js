@@ -32,15 +32,18 @@ const PhotoNFT = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== sort)) {
-      console.log("PhotoNFT")
-      dispatch(newNftLoadStart('photo'));
-      dispatch(newNftListReset('photo'));
-      getNFTlist(1, null, sort);
-      setIsFirstRender(false)
-      dispatch(newPageChange(1));
-      setIsSort(sort)
-    }
+    const timer = setTimeout(() => {
+      if (isFocused && (isFirstRender || isSort !== sort)) {
+        console.log("PhotoNFT")
+        dispatch(newNftLoadStart('photo'));
+        dispatch(newNftListReset('photo'));
+        getNFTlist(1, null, sort);
+        setIsFirstRender(false)
+        dispatch(newPageChange(1));
+        setIsSort(sort)
+      }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
@@ -137,4 +140,4 @@ const PhotoNFT = () => {
   );
 };
 
-export default PhotoNFT;
+export default React.memo(PhotoNFT);

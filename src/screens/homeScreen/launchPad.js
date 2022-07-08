@@ -60,4 +60,4 @@ const LaunchPad = () => {
     );
 };
 
-export default LaunchPad;
+export default React.memo(LaunchPad);

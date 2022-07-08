@@ -29,14 +29,17 @@ const HotCollection = () => {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
-    if (isFocused && isFirstRender) {
-      console.log("hot collection",)
-      dispatch(hotCollectionLoadStart());
-      dispatch(hotCollectionListReset());
-      getHotCollection(1);
-      dispatch(hotCollectionPageChange(1))
-      setIsFirstRender(false)
-    }
+    const timer = setTimeout(() => {
+      if (isFocused && isFirstRender) {
+        console.log("hot collection",)
+        dispatch(hotCollectionLoadStart());
+        dispatch(hotCollectionListReset());
+        getHotCollection(1);
+        dispatch(hotCollectionPageChange(1))
+        setIsFirstRender(false)
+      }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [isFocused]);
 
   const getHotCollection = useCallback((page) => {
@@ -77,7 +80,7 @@ const HotCollection = () => {
         }}
       />
     );
-  }; 
+  };
   const memoizedValue = useMemo(
     () => renderItem,
     [HotCollectionReducer.hotCollectionList],
@@ -134,4 +137,4 @@ const HotCollection = () => {
   );
 };
 
-export default HotCollection;
+export default React.memo(HotCollection);

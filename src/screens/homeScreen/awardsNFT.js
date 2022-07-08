@@ -29,15 +29,18 @@ const AwardsNFT = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== sort)) {
-      console.log("award nft")
-      dispatch(awardsNftLoadStart());
-      dispatch(awardsNftListReset());
-      getNFTlist(1, null, sort);
-      dispatch(awardsNftPageChange(1));
-      setIsFirstRender(false)
-      setIsSort(sort)
-    }
+    const timer = setTimeout(() => {
+      if (isFocused && (isFirstRender || isSort !== sort)) {
+        console.log("award nft")
+        dispatch(awardsNftLoadStart());
+        dispatch(awardsNftListReset());
+        getNFTlist(1, null, sort);
+        dispatch(awardsNftPageChange(1));
+        setIsFirstRender(false)
+        setIsSort(sort)
+      }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [sort, isFocused]);
   const getNFTlist = useCallback((page, limit, _sort) => {
     // console.log('__sort',_sort);
@@ -126,12 +129,12 @@ const AwardsNFT = () => {
           ListFooterComponent={renderFooter}
           pagingEnabled={false}
           legacyImplementation={false}
-          // removeClippedSubviews={true}
-          // maxToRenderPerBatch = {30}
-          // windowSize = {30}
-          // updateCellsBatchingPeriod={70}
-          // disableVirtualization={false}
-          // legacyImplementation={true}
+        // removeClippedSubviews={true}
+        // maxToRenderPerBatch = {30}
+        // windowSize = {30}
+        // updateCellsBatchingPeriod={70}
+        // disableVirtualization={false}
+        // legacyImplementation={true}
         />
       ) : (
         <View style={styles.sorryMessageCont}>
