@@ -24,15 +24,18 @@ const ArtNFT = () => {
     const isFocused = useIsFocused();
 
     useEffect(() => {
-        if (isFocused && (isFirstRender || isSort !== sort)) {
-            console.log("artNFT")
-            dispatch(newNftLoadStart('art'));
-            dispatch(newNftListReset('art'));
-            getNFTlist(1, null, sort);
-            dispatch(newPageChange(1));
-            setIsFirstRender(false)
-            setIsSort(sort)
-        }
+        const timer = setTimeout(() => {
+            if (isFocused && (isFirstRender || isSort !== sort)) {
+                console.log("artNFT")
+                dispatch(newNftLoadStart('art'));
+                dispatch(newNftListReset('art'));
+                getNFTlist(1, null, sort);
+                dispatch(newPageChange(1));
+                setIsFirstRender(false)
+                setIsSort(sort)
+            }
+        }, 100);
+        return () => clearTimeout(timer);
     }, [sort, isFocused])
 
     const getNFTlist = useCallback((page, limit, _sort) => {
@@ -87,7 +90,7 @@ const ArtNFT = () => {
         }
     }
 
-      const keyExtractor = (item, index) => { return 'item_' + index }
+    const keyExtractor = (item, index) => { return 'item_' + index }
 
     return (
         <View style={styles.trendCont}>

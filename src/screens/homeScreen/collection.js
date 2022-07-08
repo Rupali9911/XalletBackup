@@ -28,10 +28,16 @@ const Collection = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    dispatch(collectionLoadStart());
-    dispatch(collectionListReset());
-    getCollection(1, isSelectTab);
-    dispatch(collectionPageChange(1));
+    const timer = setTimeout(() => {
+      dispatch(collectionLoadStart());
+      dispatch(collectionListReset());
+      getCollection(1, isSelectTab);
+      dispatch(collectionPageChange(1));
+    }, 100);
+    return () => {
+      console.log("@@@ collection component good bye")
+      clearTimeout(timer)
+    };
   }, [isSelectTab]);
 
   const getCollection = useCallback((page, isSelectTab) => {
@@ -62,7 +68,7 @@ const Collection = () => {
         blind={item.blind}
         colId={item._id}
         onPress={() => {
-           console.log('========', item, item.redirect, item.isBlind, isSelectTab);
+          console.log('========', item, item.redirect, item.isBlind, isSelectTab);
           if (item.redirect === '/collection/underground_city') {
             console.log("========collection tab => item.redirect 60", item, item.redirect, item.blind)
             navigation.push('CollectionDetail', {
@@ -71,24 +77,24 @@ const Collection = () => {
               nftId: item._id,
               // isHotCollection: !item.blind,
             });
-          } else 
-          if (item.redirect) {
-            console.log("========collection tab => item.redirect 66", item.redirect)
-            navigation.push('CollectionDetail',
-              {
-                isBlind: false,
-                collectionId: item._id,
-                isHotCollection: true,
-                isStore: item.redirect,
-              });
-          } else if (item.blind) {
-            console.log('========collection tab => blind1 75', item.blind, item.collectionId)
-            // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
-            navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-          } else {
-            console.log("========collection tab => ~ line 79")
-            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-          }
+          } else
+            if (item.redirect) {
+              console.log("========collection tab => item.redirect 66", item.redirect)
+              navigation.push('CollectionDetail',
+                {
+                  isBlind: false,
+                  collectionId: item._id,
+                  isHotCollection: true,
+                  isStore: item.redirect,
+                });
+            } else if (item.blind) {
+              console.log('========collection tab => blind1 75', item.blind, item.collectionId)
+              // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
+              navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+            } else {
+              console.log("========collection tab => ~ line 79")
+              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+            }
           // if (!isSelectTab) {
           //   navigation.push('CollectionDetail',
           //   {
@@ -171,7 +177,7 @@ const Collection = () => {
             CollectionReducer.collectionLoading
           }
           renderItem={renderItem}
-         onEndReached={handleFlastListEndReached}
+          onEndReached={handleFlastListEndReached}
           onEndReachedThreshold={0.4}
           keyExtractor={keyExtractor}
           ListFooterComponent={renderFooter}

@@ -30,15 +30,18 @@ const GifNFT = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
-      console.log("gifnft")
-      dispatch(nftLoadStart());
-      dispatch(nftListReset('gif'));
-      getNFTlist(1, null, ListReducer.sort);
-      dispatch(pageChange(1));
-      setIsFirstRender(false)
-      setIsSort(ListReducer.sort)
-    }
+    const timer = setTimeout(() => {
+      if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+        console.log("gifnft")
+        dispatch(nftLoadStart());
+        dispatch(nftListReset('gif'));
+        getNFTlist(1, null, ListReducer.sort);
+        dispatch(pageChange(1));
+        setIsFirstRender(false)
+        setIsSort(ListReducer.sort)
+      }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [ListReducer.sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {
@@ -79,7 +82,7 @@ const GifNFT = () => {
   };
 
   const memoizedValue = useMemo(() => renderItem, [ListReducer.gifList]);
-  
+
   const handleFlatlistRefresh = () => {
     dispatch(nftLoadStart());
     refreshFunc();
