@@ -30,15 +30,18 @@ const MovieNFT = () => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
-      console.log('MovieNFT')
-      dispatch(nftLoadStart());
-      dispatch(nftListReset('movie'));
-      getNFTlist(1, null, ListReducer.sort);
-      dispatch(pageChange(1));
-      setIsFirstRender(false)
-      setIsSort(ListReducer.sort)
-    }
+    const timer = setTimeout(() => {
+      if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+        console.log('MovieNFT')
+        dispatch(nftLoadStart());
+        dispatch(nftListReset('movie'));
+        getNFTlist(1, null, ListReducer.sort);
+        dispatch(pageChange(1));
+        setIsFirstRender(false)
+        setIsSort(ListReducer.sort)
+      }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [ListReducer.sort, isFocused]);
 
   const getNFTlist = useCallback((page, limit, _sort) => {

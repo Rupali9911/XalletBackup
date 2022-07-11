@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    headerView:{
+    headerView: {
         maxWidth: wp('20%')
     },
     userCircle: {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         margin: 2
     },
     headerMenuContainer: {
-        flex:1,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -106,6 +106,30 @@ const styles = StyleSheet.create({
     collectionTabItemLabel: {
         fontSize: SIZE(12),
         color: colors.GREY1,
+    },
+    tabbar: {
+        elevation: 0,
+        borderTopColor: '#EFEFEF',
+        borderTopWidth: 1,
+        shadowOpacity: 0,
+        backgroundColor: 'white',
+    },
+    indicator: {
+        borderBottomColor: colors.BLUE4,
+        height: 1,
+        marginBottom: SIZE(39),
+        backgroundColor: colors.BLUE4
+    },
+    label: {
+        fontSize: RF(1.4),
+        fontFamily: fonts.SegoeUIRegular,
+        textTransform: 'capitalize',
+    },
+    tabStyle: {
+        height: SIZE(40),
+        width: wp('30%'),
+        paddingHorizontal: wp('1%'),
+        justifyContent: 'center',
     },
 })
 
