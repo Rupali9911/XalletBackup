@@ -263,7 +263,7 @@ function CollectionDetail(props) {
         let boxes;
         if (collectionArray?.data?.data?._id === '61aa04803035bdb9917871cf') {
             boxes = await getBoxes(collectionArray?.data.data?.collectionAddress, true);
-                        // console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~", boxes)
+            // console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~", boxes)
         }
         else {
             boxes = await getBoxes(collectionArray?.data.data?._id);
@@ -910,7 +910,7 @@ function CollectionDetail(props) {
             // console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
 
             items = !isBlind ? String(collection?.nftCount) : String(selectedBlindBox.boxInfo?.length) || String(blindboxList[0]?.boxInfo.length);
-            owners = !isBlind ? String(collection?.owners) :String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
+            owners = !isBlind ? String(collection?.owners) : String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
             floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(3) : '0.00') : statsDetails?.floorPriceInDollar <= 40
                 ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
                 : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
@@ -930,7 +930,7 @@ function CollectionDetail(props) {
                 <View style={styles.collectionTable}>
                     <View style={styles.collectionTableRow}>
                         <Text style={styles.collectionTableRowText}>
-                            {items}
+                            {items === 'undefined' ? '--' : items}
                         </Text>
                         <Text style={styles.collectionTableRowDec}>
                             {translate('common.itemsCollection')}
@@ -938,7 +938,7 @@ function CollectionDetail(props) {
                     </View>
                     <View style={styles.collectionTableRow}>
                         <Text style={styles.collectionTableRowText}>
-                            {owners}
+                            {owners === 'undefined' ? '--' : owners}
                         </Text>
                         <Text style={styles.collectionTableRowDec}>
                             {translate('common.owners')}

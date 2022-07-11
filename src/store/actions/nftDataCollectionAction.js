@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { parseNftObject } from '../../utils/parseNFTObj';
@@ -211,6 +212,28 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
   }
 }
 
+const handleCollectionList = (url, collectionType, req_body) => {
+  return new Promise(async (resolve, reject) => {
+    if (global.cancelToken) {
+      global.cancelToken.cancel("Operations cancelled due to new request");
+    }
+    global.cancelToken = axios.CancelToken.source();
+    await axios({
+      method: collectionType == 0 ? 'post' : 'get',
+      url: url,
+      data: collectionType == 0 ? req_body : {},
+      cancelToken: global.cancelToken.token
+    }).then(result => {
+      // console.log("🚀 ~ line 230 ~ returnnewPromise ~ result", result.data.data)
+      resolve(result)
+      // return result;
+    }).catch(error => {
+      // console.log("🚀 ~ line 234 ~ returnnewPromise ~ error", error)
+      reject("result error", error)
+    })
+  })
+}
+
 export const nftBlindDataCollectionList = (collectionAddress, collectionType, req_body, tabTitle) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body, tabTitle)
   return (dispatch, getState) => {
@@ -234,40 +257,78 @@ export const nftBlindDataCollectionList = (collectionAddress, collectionType, re
       }
     };
 
-    fetch(url, requestOptions)
-      .then(response => response.json())
+    // try {
+    // let jsonData = handleCollectionList(url, collectionType, req_body);
+    // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 263 ~ return ~ jsonData", jsonData)
+
+    // let json = {
+    //   ...jsonData.data,
+    //   mysteryBox: collectionType == 1 ? true : false
+    // }
+
+    // const data = json.data;
+
+    //   if (collectionType == 0) {
+    //     // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
+    //     dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+    //   } else {
+    //     let nftData = [];
+
+    //     for (let i = 0; i < data.length; i++) {
+    //       nftData.push({
+    //         ...data[i],
+    //         collectionName: data[i]?.boxURIMetaInfo?.name,
+    //         bannerImage: data[i]?.boxURIMetaInfo?.banner_image,
+    //         iconImage: data[i]?.boxURIMetaInfo?.image,
+    //         items: data[i]?.maxBoxes,
+    //       });
+    //     }
+
+    //     json.count = json.data.length;
+    //     json.data = nftData;
+    //     // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
+    //     dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+    //   }
+    // } catch (error) {
+    //   // console.log(error)
+    //   console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 294 ~ return ~ error", error)
+    // }
+    // }
+
+    handleCollectionList(url, collectionType, req_body)
       .then(jsonData => {
         let json = {
-          ...jsonData,
+          ...jsonData.data,
           mysteryBox: collectionType == 1 ? true : false
         }
 
-        const data = json.data;
+        const tempData = json.data;
 
         if (collectionType == 0) {
-          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
           dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         } else {
           let nftData = [];
 
-          for (let i = 0; i < data.length; i++) {
+          for (let i = 0; i < tempData.length; i++) {
             nftData.push({
-              ...data[i],
-              collectionName: data[i]?.boxURIMetaInfo?.name,
-              bannerImage: data[i]?.boxURIMetaInfo?.banner_image,
-              iconImage: data[i]?.boxURIMetaInfo?.image,
-              items: data[i]?.maxBoxes,
+              ...tempData[i],
+              collectionName: tempData[i]?.boxURIMetaInfo?.name,
+              bannerImage: tempData[i]?.boxURIMetaInfo?.banner_image,
+              iconImage: tempData[i]?.boxURIMetaInfo?.image,
+              items: tempData[i]?.maxBoxes,
             });
           }
 
           json.count = json.data.length;
           json.data = nftData;
-          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
           dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         }
       })
       .catch(err => {
-        dispatch(nftDataCollectionLoadFail());
+        console.log("🚀 ~ line 335 ~ nftBlindDataCollectionList ~ err", err)
+        if (!global.cancelToken) {
+          dispatch(nftDataCollectionLoadFail());
+        }
       })
   }
 }
