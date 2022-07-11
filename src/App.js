@@ -78,14 +78,14 @@ const TabComponent = () => {
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
   React.useEffect(() => {
-    if(showSuccess || isCreate || connectModalState) {
+    if (showSuccess || isCreate || connectModalState) {
       setIsBottomTabVisible(false)
     } else {
       setIsBottomTabVisible(true)
-    }  
+    }
   }, [showSuccess, isCreate, connectModalState])
 
-  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
 
   React.useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -257,7 +257,7 @@ const AppRoutes = () => {
   };
   if (mainLoader) {
     return (
-      <View style={{ flex: 1 , justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Image source={Images.loadergif} />
       </View>
     )
@@ -284,25 +284,15 @@ const AppRoutes = () => {
             gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
-          <Stack.Screen
-            name="PasscodeScreen"
-            initialParams={{ screen: 'Auth' }}
-            component={PasscodeScreen}
-          />
+          <Stack.Screen name="PasscodeScreen" initialParams={{ screen: 'Auth' }} component={PasscodeScreen} />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-          <Stack.Screen
-            name="CertificateDetail"
-            component={CertificateDetailScreen}
-          />
+          <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen}/>
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
-          <Stack.Screen
-            name="transactionsDetail"
-            component={transactionsDetail}
-          />
+          <Stack.Screen name="transactionsDetail" component={transactionsDetail}/>
           <Stack.Screen name="send" component={Send} />
           <Stack.Screen name="scanToConnect" component={ScanToConnect} />
           <Stack.Screen name="Create" component={CreateNFTScreen} />
