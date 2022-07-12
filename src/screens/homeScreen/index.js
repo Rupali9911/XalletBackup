@@ -37,10 +37,10 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
-import { colors, fonts } from '../../res';
+import { colors } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { setCameraPermission } from '../../store/reducer/cameraPermission';
-import { passShowStatusCall, updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
+import { updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awardsNFT';
@@ -53,7 +53,6 @@ import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
 import { alertWithSingleBtn } from '../../utils';
-import LaunchPadItem from '../LaunchPadDetail/LaunchPadItem';
 import LaunchPad from "./launchPad"
 import {
   TabView,
@@ -465,7 +464,7 @@ const HomeScreen = ({ navigation }) => {
   }
   const FilterComponent = React.memo(fab);
 
-  //=====================(Main Render Function)=============================
+  //=====================(Main return Function)=============================
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

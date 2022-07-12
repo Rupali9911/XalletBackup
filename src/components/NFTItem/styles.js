@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomRightRadius: SIZE(12),
     borderBottomLeftRadius: SIZE(12),
-    height: (hp('100%') / 8),
+    height: (hp('100%') / 7),
     justifyContent: 'space-between'
   },
   collectionWrapperBlind: {
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    bottom: SIZE(7)
   },
   chainView1: {
     flexDirection: 'row',
@@ -183,6 +184,6 @@ const styles = StyleSheet.create({
     fontSize: SIZE(12),
     fontWeight: '700'
   },
-  newPrice: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }
+  newPrice: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', bottom: SIZE(5) }
 });
 export default styles;
