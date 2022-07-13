@@ -10,7 +10,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
 import {
   favoriteNFTList,
   newNftListReset,
@@ -21,16 +20,20 @@ import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
-
 const PhotoNFT = () => {
-  const { NewNFTListReducer } = useSelector(state => state);
-  const { sort } = useSelector(state => state.ListReducer);
-  const [isFirstRender, setIsFirstRender] = useState(true)
-  const [isSort, setIsSort] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
+  // =============== Getting data from reducer ========================
+  const { NewNFTListReducer } = useSelector(state => state);
+  const { sort } = useSelector(state => state.ListReducer);
+
+  //================== Components State Declaration ===================
+  const [isFirstRender, setIsFirstRender] = useState(true)
+  const [isSort, setIsSort] = useState(null);
+
+  //===================== UseEffect Function =========================
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isFocused && (isFirstRender || isSort !== sort)) {
@@ -46,14 +49,73 @@ const PhotoNFT = () => {
     return () => clearTimeout(timer);
   }, [sort, isFocused]);
 
+  //===================== Dispatch Action to Fetch Photo NFT List =========================
   const getNFTlist = useCallback((page, limit, _sort) => {
     dispatch(favoriteNFTList(page, limit, _sort));
   }, []);
+
+  // ===================== Render Photo NFT Flatlist ===================================
+  const renderPhotoNFTList = () => {
+    return (
+      <FlatList
+        data={NewNFTListReducer.favoriteNftList}
+        horizontal={false}
+        numColumns={2}
+        initialNumToRender={14}
+        onRefresh={handleFlatlistRefresh}
+        refreshing={
+          NewNFTListReducer.newListPage === 1 &&
+          NewNFTListReducer.isPhotoNftLoading
+        }
+        renderItem={memoizedValue}
+        onEndReached={handleFlastListEndReached}
+        onEndReachedThreshold={0.4}
+        keyExtractor={keyExtractor}
+        ListFooterComponent={renderFooter}
+        pagingEnabled={false}
+        legacyImplementation={false}
+      />
+    )
+  }
+
+  // ===================== Render No NFT Function ===================================
+  const renderNoNFT = () => {
+    return (
+      <View style={styles.sorryMessageCont}>
+        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+      </View>
+    )
+  }
+
+  //=================== Flatlist Functions ====================
+  const handleFlatlistRefresh = () => {
+    dispatch(newNftLoadStart('photo'));
+    handleRefresh();
+  }
 
   const handleRefresh = () => {
     dispatch(newNftListReset());
     getNFTlist(1, null, sort);
     dispatch(newPageChange(1));
+  };
+
+  const handleFlastListEndReached = () => {
+    if (
+      !NewNFTListReducer.isPhotoNftLoading &&
+      NewNFTListReducer.newTotalCount !==
+      NewNFTListReducer.favoriteNftList.length
+    ) {
+      let num = NewNFTListReducer.newListPage + 1;
+      getNFTlist(num);
+      dispatch(newPageChange(num));
+    }
+  }
+
+  const keyExtractor = (item, index) => { return 'item_' + index }
+
+  const renderFooter = () => {
+    if (!NewNFTListReducer.isPhotoNftLoading) return null;
+    return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
   const renderItem = ({ item }) => {
@@ -79,63 +141,19 @@ const PhotoNFT = () => {
     }
   };
 
-  const renderFooter = () => {
-    if (!NewNFTListReducer.isPhotoNftLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
   const memoizedValue = useMemo(
     () => renderItem,
     [NewNFTListReducer.favoriteNftList],
   );
 
-  const handleFlatlistRefresh = () => {
-    dispatch(newNftLoadStart('photo'));
-    handleRefresh();
-  }
-  const handleFlastListEndReached = () => {
-    if (
-      !NewNFTListReducer.isPhotoNftLoading &&
-      NewNFTListReducer.newTotalCount !==
-      NewNFTListReducer.favoriteNftList.length
-    ) {
-      let num = NewNFTListReducer.newListPage + 1;
-      getNFTlist(num);
-      dispatch(newPageChange(num));
-    }
-  }
-  const keyExtractor = (item, index) => { return 'item_' + index }
-
+  //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       {isFirstRender ? isFirstRender : NewNFTListReducer.newListPage === 1 &&
         NewNFTListReducer.isPhotoNftLoading ? (
         <Loader />
-      ) : NewNFTListReducer.favoriteNftList.length !== 0 ? (
-        <FlatList
-          data={NewNFTListReducer.favoriteNftList}
-          horizontal={false}
-          numColumns={2}
-          initialNumToRender={14}
-          onRefresh={handleFlatlistRefresh}
-          refreshing={
-            NewNFTListReducer.newListPage === 1 &&
-            NewNFTListReducer.isPhotoNftLoading
-          }
-          renderItem={memoizedValue}
-          onEndReached={handleFlastListEndReached}
-          onEndReachedThreshold={0.4}
-          keyExtractor={keyExtractor}
-          ListFooterComponent={renderFooter}
-          pagingEnabled={false}
-          legacyImplementation={false}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
+      ) : NewNFTListReducer.favoriteNftList.length !== 0 ? renderPhotoNFTList() : renderNoNFT()}
     </View>
   );
 };

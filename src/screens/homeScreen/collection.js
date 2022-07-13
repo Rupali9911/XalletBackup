@@ -22,11 +22,16 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 
 const Collection = () => {
-  const { CollectionReducer } = useSelector(state => state);
-  const [isSelectTab, setSelectTab] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  // =============== Getting data from reducer ========================
+  const { CollectionReducer } = useSelector(state => state);
+
+  //================== Components State Declaration ===================
+  const [isSelectTab, setSelectTab] = useState(true);
+
+  //===================== UseEffect Function =========================
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch(collectionLoadStart());
@@ -40,85 +45,79 @@ const Collection = () => {
     };
   }, [isSelectTab]);
 
+  //===================== Dispatch Action to Fetch Collection NFT List =========================
   const getCollection = useCallback((page, isSelectTab) => {
     dispatch(collectionList(page, isSelectTab));
   }, []);
 
+  // ===================== Render Collection Tab ===================================
+  const renderCollectionTab = () => {
+    return (
+      <View style={styles.collectionTab}>
+        {renderSelectedTab(true)}
+        {renderSelectedTab(false)}
+      </View>
+    )
+  }
+
+  const renderSelectedTab = (isCollectionTab) => {
+    return (
+      <TouchableOpacity
+        onPress={() => setSelectTab(isCollectionTab)}
+        style={[styles.collectionTabItem, { borderTopColor: isCollectionTab ? isSelectTab ? colors.BLUE4 : 'transparent' : !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
+        {isCollectionTab && <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
+          {translate('wallet.common.collection')}
+        </Text>}
+        {!isCollectionTab && <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
+          {translate('common.blindboxCollections')}
+        </Text>}
+      </TouchableOpacity>
+    )
+  }
+
+  // ===================== Render Hot Collectio NFT Flatlist ===================================
+  const renderHotCollectioNFTList = () => {
+    return (
+      <FlatList
+        data={CollectionReducer.collectionList}
+        horizontal={false}
+        numColumns={2}
+        initialNumToRender={14}
+        onRefresh={handleFlatlistRefresh}
+        refreshing={
+          CollectionReducer.collectionPage === 1 &&
+          CollectionReducer.collectionLoading
+        }
+        renderItem={renderItem}
+        onEndReached={handleFlastListEndReached}
+        onEndReachedThreshold={0.4}
+        keyExtractor={keyExtractor}
+        ListFooterComponent={renderFooter}
+        pagingEnabled={false}
+        legacyImplementation={false}
+      />
+    )
+  }
+
+  // ===================== Render No NFT Function ===================================
+  const renderNoNFT = () => {
+    return (
+      <View style={styles.sorryMessageCont}>
+        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+      </View>
+    )
+  }
+
+  //=================== Flatlist Functions ====================
+  const handleFlatlistRefresh = () => {
+    dispatch(collectionLoadStart());
+    handleRefresh();
+  }
   const handleRefresh = () => {
     dispatch(collectionListReset());
     getCollection(1);
     dispatch(collectionPageChange(1));
   };
-
-  const renderFooter = () => {
-    if (!CollectionReducer.collectionLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const renderItem = ({ item }) => {
-    return (
-      <CollectionItem
-        bannerImage={item.bannerImage}
-        chainType={item.chainType || 'polygon'}
-        items={item.items}
-        iconImage={item.iconImage}
-        collectionName={item.collectionName}
-        creator={item.creator}
-        creatorInfo={item.creatorInfo}
-        blind={item.blind}
-        colId={item._id}
-        onPress={() => {
-          console.log('========', item, item.redirect, item.isBlind, isSelectTab);
-          if (item.redirect === '/collection/underground_city') {
-            console.log("========collection tab => item.redirect 60", item, item.redirect, item.blind)
-            navigation.push('CollectionDetail', {
-              isBlind: true,
-              collectionId: item?.collectionId,
-              nftId: item._id,
-              // isHotCollection: !item.blind,
-            });
-          } else
-            if (item.redirect) {
-              console.log("========collection tab => item.redirect 66", item.redirect)
-              navigation.push('CollectionDetail',
-                {
-                  isBlind: false,
-                  collectionId: item._id,
-                  isHotCollection: true,
-                  isStore: item.redirect,
-                });
-            } else if (item.blind) {
-              console.log('========collection tab => blind1 75', item.blind, item.collectionId)
-              // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
-              navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-            } else {
-              console.log("========collection tab => ~ line 79")
-              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-            }
-          // if (!isSelectTab) {
-          //   navigation.push('CollectionDetail',
-          //   {
-          //     isBlind: false,
-          //     collectionId: item._id,
-          //     isHotCollection: true,
-          //     isStore: item.redirect,
-          //   });
-          // } else if (item.blind) {
-          //   console.log('========collection tab => blind1', item.blind, item.collectionId)
-          //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: true });
-          // } else {
-          //   console.log("Else ")
-          //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: false });
-          // }
-        }}
-      />
-    );
-  };
-
-  const handleFlatlistRefresh = () => {
-    dispatch(collectionLoadStart());
-    handleRefresh();
-  }
 
   const handleFlastListEndReached = () => {
     if (
@@ -141,55 +140,76 @@ const Collection = () => {
   }
 
   const keyExtractor = (item, index) => { return 'item_' + index }
-  // {console.log("🚀 ~ file: collection.js ~ line 126 ~ ", CollectionReducer.collectionList)}
+
+  const renderFooter = () => {
+    if (!CollectionReducer.collectionLoading) return null;
+    return <ActivityIndicator size="small" color={colors.themeR} />;
+  };
+
+  const renderItem = ({ item }) => {
+    return (
+      <CollectionItem
+        bannerImage={item.bannerImage}
+        chainType={item.chainType || 'polygon'}
+        items={item.items}
+        iconImage={item.iconImage}
+        collectionName={item.collectionName}
+        creator={item.creator}
+        creatorInfo={item.creatorInfo}
+        blind={item.blind}
+        colId={item._id}
+        onPress={() => {
+          if (item.redirect === '/collection/underground_city') {
+            navigation.push('CollectionDetail', {
+              isBlind: true,
+              collectionId: item?.collectionId,
+              nftId: item._id,
+              // isHotCollection: !item.blind,
+            });
+          } else
+            if (item.redirect) {
+              navigation.push('CollectionDetail',
+                {
+                  isBlind: false,
+                  collectionId: item._id,
+                  isHotCollection: true,
+                  isStore: item.redirect,
+                });
+            } else if (item.blind) {
+              // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
+              navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+            } else {
+              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+            }
+          // if (!isSelectTab) {
+          //   navigation.push('CollectionDetail',
+          //   {
+          //     isBlind: false,
+          //     collectionId: item._id,
+          //     isHotCollection: true,
+          //     isStore: item.redirect,
+          //   });
+          // } else if (item.blind) {
+          //   console.log('========collection tab => blind1', item.blind, item.collectionId)
+          //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: true });
+          // } else {
+          //   console.log("Else ")
+          //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: false });
+          // }
+        }}
+      />
+    );
+  };
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View style={styles.collectionTab}>
-        <TouchableOpacity
-          onPress={() => setSelectTab(true)}
-          style={[styles.collectionTabItem, { borderTopColor: isSelectTab ? colors.BLUE4 : 'transparent' }]}>
-          <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-            {translate('wallet.common.collection')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setSelectTab(false)}
-          style={[styles.collectionTabItem, { borderTopColor: !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
-          <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-            {translate('common.blindboxCollections')}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {renderCollectionTab()}
       {CollectionReducer.collectionPage === 1 &&
         CollectionReducer.collectionLoading ? (
         <Loader />
-      ) : CollectionReducer.collectionList.length !== 0 ? (
-        <FlatList
-          data={CollectionReducer.collectionList}
-          horizontal={false}
-          numColumns={2}
-          initialNumToRender={14}
-          onRefresh={handleFlatlistRefresh}
-          refreshing={
-            CollectionReducer.collectionPage === 1 &&
-            CollectionReducer.collectionLoading
-          }
-          renderItem={renderItem}
-          onEndReached={handleFlastListEndReached}
-          onEndReachedThreshold={0.4}
-          keyExtractor={keyExtractor}
-          ListFooterComponent={renderFooter}
-          pagingEnabled={false}
-          legacyImplementation={false}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
-    </View>
+      ) : CollectionReducer.collectionList.length !== 0 ? renderHotCollectioNFTList() : renderNoNFT()}
+    </View >
   );
 };
 
