@@ -57,35 +57,19 @@ export default function NFTItem(props) {
 
   //======== Render NFT Collection Items Collection Images Function ============
   const renderNFTCollectionItem = (isCollection) => {
-    if (isCollection) {
-      return (
-        <FixedTouchableHighlight
-          // disabled={isDisable}
-          onLongPress={onLongPress}
-          onPress={onPress}
-          style={styles.collectionListItem}>
-          <View style={styles.listItemContainer}>
-            {renderHeartIcon()}
-            {renderCollectionImageNvideo(true)}
-            {renderCollectionWrapper(true)}
-          </View>
-        </FixedTouchableHighlight>
-      )
-    } else {
-      return (
-        <FixedTouchableHighlight
-          // disabled={isDisable}
-          onLongPress={onLongPress}
-          onPress={onPress}
-          style={styles.collectionListItem}>
-          <View style={styles.listItemContainer}>
-            {renderHeartIcon()}
-            {renderCollectionImageNvideo(false)}
-            {renderCollectionWrapper(false)}
-          </View>
-        </FixedTouchableHighlight>
-      )
-    }
+    return (
+      <FixedTouchableHighlight
+        // disabled={isDisable}
+        onLongPress={onLongPress}
+        onPress={onPress}
+        style={styles.collectionListItem}>
+        <View style={styles.listItemContainer}>
+          {renderHeartIcon()}
+          {renderCollectionImageNvideo(isCollection)}
+          {renderCollectionWrapper(isCollection)}
+        </View>
+      </FixedTouchableHighlight>
+    )
   }
 
   //================== Render Heart Icon Function ===================
@@ -101,27 +85,15 @@ export default function NFTItem(props) {
 
   //================== Render Collection List Image/video Function ===================
   const renderCollectionImageNvideo = (isCollection) => {
-    if (isCollection) {
-      return (
-        <View>
-          <C_Image
-            type={isBlind ? uriType : item?.type}
-            uri={getImageUri()}
-            imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
-          />
-        </View>
-      )
-    } else {
-      return (
-        <View>
-          <C_Image
-            type={uriType}
-            uri={getImageUri()}
-            imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
-          />
-        </View>
-      )
-    }
+    return (
+      <View>
+        <C_Image
+          type={isCollection ? isBlind ? uriType : item?.type : uriType}
+          uri={getImageUri()}
+          imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
+        />
+      </View>
+    )
   }
 
   //================== Render Collection wrapper Function ======================
