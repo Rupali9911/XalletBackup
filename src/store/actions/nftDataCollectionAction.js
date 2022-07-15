@@ -15,6 +15,17 @@ import {
   NFT_BLIND_SERIES_COLLECTION_PAGE_CHANGE,
 } from '../types';
 
+import Big from "big.js";
+const divideNo = (res) => {
+  if (typeof res === "string" && res === "") {
+    res = "0";
+  }
+  let bigNo = new Big(res);
+  let bigNo1 = new Big(Math.pow(10, 18));
+  let number = bigNo.div(bigNo1)?.toFixed(18);
+  return number;
+};
+
 export const nftDataCollectionLoadSuccess = (data) => ({
   type: NFT_DATA_COLLECTION_SUCCESS,
   payload: data
@@ -62,13 +73,13 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const activityHistoryList = (page, collectionId, type, tabTitle) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+export const activityHistoryList = (page, collectionId, type, tabTitle,limit) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
   return (dispatch, getState) => {
     const data = {
       collectionId,
       filterType: type,
-      limit: 10,
+      limit: limit,
       networkType,
       page
     };
@@ -84,8 +95,66 @@ export const activityHistoryList = (page, collectionId, type, tabTitle) => {
 
     fetch(`${BASE_URL}/xanalia/getActivityHistory`, body)
       .then(response => response.json())
-      .then(json => {
-        dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+      .then(res => {
+
+        console.log()
+        
+        if (tabTitle === 'Activity') {
+          console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
+          let bids = []
+          for (let i = 0; i < res.data.length; i++) {
+            // console.log(res.data, '?????????????')
+            // if (
+            //   res.data[i].event === "SellNFT" ||
+            //   res.data[i].event === "SellNFTNonCrypto"
+            // ){
+              // let price = res.data.data[i].returnValues.dollarPrice &&
+              // parseInt(
+              //   divideNo(
+              //     parseInt(res.data.data[i].returnValues.dollarPrice?._hex)
+              //   )
+              // ) > 0
+              // ? divideNo(
+              //   parseInt(
+              //     res.data.data[i].returnValues.dollarPrice._hex,
+              //     16
+              //   )
+              // )
+              // : divideNo(
+              //   parseInt(res.data.data[i].returnValues.price._hex, 16)
+              // )
+
+              let obj = [
+                res.data[i]?.metaData
+                  ? res.data[i]?.metaData?.thumbnft
+                  : res.data[i]?.nftInfo[0].metaData?.thumbnft
+                    ? res.data[i]?.nftInfo[0].metaData?.thumbnft
+                    : res.data[i]?.nftInfo[0].metaData?.image,
+                res.data[i]?.nftInfo[0]?.en_nft_name
+                  ? res.data[i]?.nftInfo[0]?.en_nft_name
+                  : res.data[i]?.metaData?.name
+                    ? res.data[i]?.metaData?.name
+                    : res.data[i]?.nftInfo[0]?.metaData?.name,
+                    res?.data[i]?.event,
+                res.data[i].returnValues.price && res.data[i].returnValues.price._hex,
+                res.data[i].returnValues.seller && res.data[i].returnValues.seller,
+                res.data[i].sellData && res.data[i].sellData.owner,
+                res.data[i].timestamp,
+              ]
+              bids.push(obj)
+            // }
+          }
+
+          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 90 ~ return ~ bids", bids)
+
+          let temp = {
+            ...res,
+            data: bids
+          };
+          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 159 ~ return ~ temp", temp)
+          dispatch(nftDataCollectionLoadSuccess({ ...temp, tabTitle: tabTitle }));
+        }
+
       })
       .catch(err => {
         dispatch(nftDataCollectionLoadFail());

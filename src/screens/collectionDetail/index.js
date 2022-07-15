@@ -1154,7 +1154,7 @@ function CollectionDetail(props) {
                         tabTitle: isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')
                     }}
                 />}
-                {/* {tab && !isBlind && <Tab.Screen
+                {tab && !isBlind && <Tab.Screen
                     name={translate('common.activity')}
                     component={Activity}
                     initialParams={{
@@ -1171,7 +1171,7 @@ function CollectionDetail(props) {
                         seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.activity')
                     }}
-                />} */}
+                />}
             </Tab.Navigator>
         );
     };
