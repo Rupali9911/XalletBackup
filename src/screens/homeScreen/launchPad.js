@@ -10,8 +10,12 @@ import { colors } from '../../res';
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
 import { launchpadData } from "../LaunchPadDetail/launchpadData";
+
 const LaunchPad = () => {
+
     const navigation = useNavigation();
+
+    //=====================(Render Flatlist Item Function)=============================
     const renderItem = ({ item }) => {
         return (
             <LaunchPadItemData
@@ -41,6 +45,8 @@ const LaunchPad = () => {
             />
         );
     };
+
+    //=====================(Main return Function)=============================
     return (
         <View style={styles.trendCont}>
             <StatusBar

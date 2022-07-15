@@ -161,7 +161,7 @@ function NftItem({
     if (ownerObj) {
         ownerImageStatus = ownerObj.hasOwnProperty("profile_image");
         ownerName = (ownerObj.hasOwnProperty("title") && ownerObj.title) ? ownerObj.title :
-        ownerObj.username.substring(0, 6);
+        ownerObj?.username?.substring(0, 6);
     } else {
         ownerImageStatus = false
         ownerName = "---"
@@ -207,7 +207,7 @@ function NftItem({
                 <Flex flex={1}>
                     <Pressable onPress={() => avatarpress("owner")} _pressed={{ opacity: 60 }} >
                         <HStack >
-                            <AvatarImage creatorImageStatus={ownerImageStatus ? ownerObj.profile_image : false} />
+                            <AvatarImage creatorImageStatus={ownerImageStatus ? ownerObj?.profile_image : false} />
                             <Box px="3">
                                 <Label label={translate('common.owner')} />
                                 <Name label={ownerName} />

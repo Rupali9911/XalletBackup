@@ -61,6 +61,7 @@ const Owned = (props) => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const [isDetailScreen, setDetailScreen] = useState(false);
+    const [isBack, setBack] = useState(false);
 
     const isLoading = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
@@ -196,10 +197,10 @@ const Owned = (props) => {
         let findIndex
         if (item?._id) {
             findIndex = collectionList.findIndex(x => x?._id === item?._id);
-        }else{
+        } else {
             findIndex = collectionList.findIndex(x => x?.id === item?.id);
         }
-                // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
+        // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         if (isStore || seriesInfoId) {
             return (
                 <NFTItem
@@ -283,6 +284,7 @@ const Owned = (props) => {
                     cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
                         setDetailScreen(true)
+                        setBack(true)
                         // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
@@ -319,7 +321,7 @@ const Owned = (props) => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {(tabTitle !== reducerTabTitle) || (page === 1 && isLoading) ? (
+            {(tabTitle === 'Mystery Box' && isBack ? !isBack : tabTitle !== reducerTabTitle) || (page === 1 && isLoading) ? (
                 <View style={{ marginTop: height / 8 }}>
                     <Loader />
                 </View>
