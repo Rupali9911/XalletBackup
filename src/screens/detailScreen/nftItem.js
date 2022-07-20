@@ -70,11 +70,11 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const [ownerAddress, setOwnerAddress] = useState('');
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
-  const [getDetailNFT, setgetDetailNFT]=useState([])
+  const [getDetailNFT, setgetDetailNFT] = useState([])
   const navigation = useNavigation();
   const refVideo = useRef(null);
   const refVideoPlay = useRef(null);
-  const [videoLoader, setVideoLoader]=useState(true)
+  const [videoLoader, setVideoLoader] = useState(true)
 
   // haris change these states
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
@@ -92,6 +92,8 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const [nftDetail, setNFTDetail] = useState();
   const [isArtistProfile, setisArtistProfile] = useState(true);
   const [mainLoader, setMainLoader] = useState(false);
+
+  let timer = null
 
   const nft = item.tokenId || item.collectionAdd;
   let params = nft.toString().split('-');
@@ -156,6 +158,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
         getDetail()
       }
     }
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -165,7 +168,9 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
     const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
     try {
       let profile = await axios.get(profileUrl);
-      setMainLoader(false)
+      timer = setTimeout(() => {
+        setMainLoader(false)
+      }, 100);
       // console.log(profile, "non_crypto", item.metaData.name)
       setOwnerData(profile?.data?.data)
       setOwner(id);
@@ -185,7 +190,9 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       // console.log(profile?.data?.data, "crypto")
       setOwnerData(profile.data.data);
       setArtistRole("crypto")
-      setMainLoader(false)
+      timer = setTimeout(() => {
+        setMainLoader(false)
+      }, 100);
       setOwner(userId);
       // setOwner(profile?.data?.data?.title ? profile?.data?.data?.title : profile?.data?.data?.username);
       // setOwnerImage(profile.data.data.profile_image);
@@ -543,7 +550,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   };
 
   const onTextLayout = useCallback(e => {
-    const {lines} = e.nativeEvent
+    const { lines } = e.nativeEvent
     if (
       lines.length >= 2
       // &&
@@ -562,13 +569,13 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
 
   const getArtistName = (artistId) => {
     return (artistId === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-    || artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-    || artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
-    || artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
-    ? (
+      || artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+      || artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase()
+      || artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase())
+      ? (
         disableCreator = true,
         collectCreat?.creator
-    ) : artistId ? artistId?.substring(0, 6) : ""
+      ) : artistId ? artistId?.substring(0, 6) : ""
   }
 
   // it's temporary fix
@@ -578,67 +585,67 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
   const imageUri = item?.thumbnailUrl || item.metaData.image;
 
   const image = item.metaData.image || item.thumbnailUrl;
-    const fileType = videoUri ? videoUri?.split('.')[videoUri?.split('.').length - 1] : '';
+  const fileType = videoUri ? videoUri?.split('.')[videoUri?.split('.').length - 1] : '';
 
   let disableCreator = false;
 
-    let artistName = artistData && typeof artistData === 'object' ?
-        artistData?.role === 'crypto' ?
-            artistData?.title?.trim() ? artistData.title :
-                artistData?.name?.trim() ? artistData.name :
-                    artistData?.username?.trim() ? artistData.username.substring(0, 6) :
-                    getArtistName(artist)
-            : artistData?.username?.trim() ? artistData.username :
-            artistData?.name?.trim() ? artistData.name :
-                artistData?.title?.trim() ? artistData.title : artist ? artist?.substring(0, 6) : ""
-        : getArtistName(artist);
+  let artistName = artistData && typeof artistData === 'object' ?
+    artistData?.role === 'crypto' ?
+      artistData?.title?.trim() ? artistData.title :
+        artistData?.name?.trim() ? artistData.name :
+          artistData?.username?.trim() ? artistData.username.substring(0, 6) :
+            getArtistName(artist)
+      : artistData?.username?.trim() ? artistData.username :
+        artistData?.name?.trim() ? artistData.name :
+          artistData?.title?.trim() ? artistData.title : artist ? artist?.substring(0, 6) : ""
+    : getArtistName(artist);
 
-    // console.log("🚀 ~ file: nftItem.js ~ line 571", artistData, '</>', artist, '>>>>')
-    // console.log("🚀 ~ file: nftItem.js ~ line 572 ~ nftItem ~ artistName", artistName)
+  // console.log("🚀 ~ file: nftItem.js ~ line 571", artistData, '</>', artist, '>>>>')
+  // console.log("🚀 ~ file: nftItem.js ~ line 572 ~ nftItem ~ artistName", artistName)
 
-    let ownerName = ownerData && typeof ownerData === 'object' ?
-        ownerData?.role === 'crypto' ?
-            ownerData?.title?.trim() ? ownerData.title :
-                ownerData?.name?.trim() ? ownerData.name :
-                    ownerData?.username?.trim() ? ownerData.username.substring(0, 6) : owner ? owner.substring(0, 6) : ""
-            : ownerData?.username?.trim() ? ownerData.username :
-            ownerData?.name?.trim() ? ownerData.name :
-                ownerData?.title?.trim() ? ownerData.title : owner ? owner.substring(0, 6) : ""
-        : owner ? owner.substring(0, 6) : ""
+  let ownerName = ownerData && typeof ownerData === 'object' ?
+    ownerData?.role === 'crypto' ?
+      ownerData?.title?.trim() ? ownerData.title :
+        ownerData?.name?.trim() ? ownerData.name :
+          ownerData?.username?.trim() ? ownerData.username.substring(0, 6) : owner ? owner.substring(0, 6) : ""
+      : ownerData?.username?.trim() ? ownerData.username :
+        ownerData?.name?.trim() ? ownerData.name :
+          ownerData?.title?.trim() ? ownerData.title : owner ? owner.substring(0, 6) : ""
+    : owner ? owner.substring(0, 6) : ""
 
-    // console.log("🚀 ~ file: nftItem.js ~ line 573", ownerData, '</>', owner, '>>>>')
-    // console.log("🚀 ~ file: nftItem.js ~ line 574 ~ nftItem ~ ownerName", ownerName)
+  // console.log("🚀 ~ file: nftItem.js ~ line 573", ownerData, '</>', owner, '>>>>')
+  // console.log("🚀 ~ file: nftItem.js ~ line 574 ~ nftItem ~ ownerName", ownerName)
 
-    // let ownerName = ownerData ? (
-    //   ownerData.role === 'crypto' ?
-    //     ownerData.title ?
-    //       ownerData.title :
-    //       owner.includes("0x")
-    //         ? owner.substring(0, 6)
-    //         : owner.substring(0, 6) :
-    //     ownerData.role === 'non_crypto' ?
-    //       ownerData.username ?
-    //         ownerData.username : ""
-    //       : owner) :
-    //   owner
+  // let ownerName = ownerData ? (
+  //   ownerData.role === 'crypto' ?
+  //     ownerData.title ?
+  //       ownerData.title :
+  //       owner.includes("0x")
+  //         ? owner.substring(0, 6)
+  //         : owner.substring(0, 6) :
+  //     ownerData.role === 'non_crypto' ?
+  //       ownerData.username ?
+  //         ownerData.username : ""
+  //       : owner) :
+  //   owner
 
-    // let artistName = artistData && artist
-    //   ? artist.includes("0x")
-    //     ? artistData.hasOwnProperty("title") && artistData.title ?
-    //       artistData.title
-    //       : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
-    //         || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
-    //         || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
-    //         ? (
-    //           disableCreator = true,
-    //           collectCreat?.creator
-    //         )
-    //         : artist.substring(0, 6)
-    //     : artistData === "No record found" ?
-    //       artist.substring(0, 6) :
-    //       artistData.hasOwnProperty("username") && artistData.username ?
-    //         artistData.username.substring(0, 6) : artist.substring(0, 6)
-    //   : artist.substring(0, 6)
+  // let artistName = artistData && artist
+  //   ? artist.includes("0x")
+  //     ? artistData.hasOwnProperty("title") && artistData.title ?
+  //       artistData.title
+  //       : (artist === '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase()
+  //         || artist === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase()
+  //         || artist === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase())
+  //         ? (
+  //           disableCreator = true,
+  //           collectCreat?.creator
+  //         )
+  //         : artist.substring(0, 6)
+  //     : artistData === "No record found" ?
+  //       artist.substring(0, 6) :
+  //       artistData.hasOwnProperty("username") && artistData.username ?
+  //         artistData.username.substring(0, 6) : artist.substring(0, 6)
+  //   : artist.substring(0, 6)
 
   return (
     <>
@@ -724,7 +731,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                 }}>
                 {fileType === 'mp4' ||
                   fileType === 'MP4' ||
-                fileType === 'mov' || fileType === 'movie' ||
+                  fileType === 'mov' || fileType === 'movie' ||
                   fileType === 'MOV' ? (
                   <View style={styles.modalImage}>
                     <Video
@@ -734,43 +741,43 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                       playInBackground={false}
                       paused={!isPlay}
                       resizeMode={'cover'}
-                      onLoad={() => {refVideo.current.seek(0); setVideoLoader(false)}}
+                      onLoad={() => { refVideo.current.seek(0); setVideoLoader(false) }}
                       onEnd={() => {
                         setPlay(false);
                         refVideoPlay.current = true;
                       }}
                       onLoadStart={() => setVideoLoader(true)}
                       style={{
-                        flex: 1,position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                        flex: 1, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                       }}
                     />
                     {!isPlay && (
-                      videoLoader ? <Loader/> :
-                      <View
-                        style={{
-                          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center',
-                        }}>
+                      videoLoader ? <Loader /> :
                         <View
                           style={{
-                            width: SIZE(100),
-                            height: SIZE(100),
-                            backgroundColor: '#00000030',
-                            borderRadius: SIZE(100),
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center',
+                          }}>
+                          <View
+                            style={{
+                              width: SIZE(100),
+                              height: SIZE(100),
+                              backgroundColor: '#00000030',
+                              borderRadius: SIZE(100),
+                              alignItems: 'center',
+                              justifyContent: 'center',
 
-                          }}>
-                          <TouchableOpacity onPress={() => {
-                            if (refVideoPlay.current) {
-                              refVideo.current.seek(0);
-                            }
-                            refVideoPlay.current = false;
-                            setPlay(true);
-                          }}>
-                            <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                          </TouchableOpacity>
+                            }}>
+                            <TouchableOpacity onPress={() => {
+                              if (refVideoPlay.current) {
+                                refVideo.current.seek(0);
+                              }
+                              refVideoPlay.current = false;
+                              setPlay(true);
+                            }}>
+                              <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                      </View>
                     )}
                   </View>
                 ) : (
@@ -828,16 +835,16 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
               <SpaceView mTop={SIZE(6)} />
               <Text style={styles.modalLabel}>{getDetailNFT[`${selectedLanguageItem.language_name}_nft_name`] || item.metaData.name}</Text>
               <View style={styles.separator} />
-              {!!item?.metaData && !!item.metaData.description && <View style={{marginBottom: 20}}>
+              {!!item?.metaData && !!item.metaData.description && <View style={{ marginBottom: 20 }}>
                 <Text onTextLayout={onTextLayout} numberOfLines={textShown ? null : 2} style={styles.description}>
                   {textShown ? getDetailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : getDetailNFT[`${selectedLanguageItem.language_name}_nft_description`]?.replaceAll('\n', '') || item.metaData.description?.replaceAll('\n', '')}
 
                 </Text>
-                  {lengthMore && textShown && (
-                    <TouchableOpacity activeOpacity={1} style={[styles.readLessWrap]} onPress={() => setTextShown(false)}>
-                      <Text style={styles.readMore}>{translate('common.Readless')}</Text>
-                    </TouchableOpacity>
-                  )}
+                {lengthMore && textShown && (
+                  <TouchableOpacity activeOpacity={1} style={[styles.readLessWrap]} onPress={() => setTextShown(false)}>
+                    <Text style={styles.readMore}>{translate('common.Readless')}</Text>
+                  </TouchableOpacity>
+                )}
                 {lengthMore && !textShown && (
                   <TouchableOpacity activeOpacity={1} style={styles.readMoreWrap} onPress={() => setTextShown(true)}>
                     <Text style={styles.threeDot}>{'...'}</Text>
