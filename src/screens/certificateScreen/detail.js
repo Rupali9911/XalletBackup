@@ -1151,6 +1151,7 @@ const DetailScreen = ({ navigation, route }) => {
         data={{ data: availableTokens }}
         title={translate('common.allowedcurrency')}
         itemPress={async tradeCurr => {
+          setAllowedTokenModal(false);
           await calculatePrice(tradeCurr);
         }}
         renderItemName={'name'}
@@ -2352,7 +2353,6 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const calculatePrice = async tradeCurr => {
     setPayableIn(tradeCurr.name);
-    setAllowedTokenModal(false);
     let web3 = new Web3(providerUrl);
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,

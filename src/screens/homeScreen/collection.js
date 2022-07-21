@@ -24,6 +24,7 @@ import styles from './styles';
 const Collection = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  let timer = null;
 
   // =============== Getting data from reducer ========================
   const { CollectionReducer } = useSelector(state => state);
@@ -33,16 +34,14 @@ const Collection = () => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    const timer = setTimeout(() => {
+    timer = setTimeout(() => {
       dispatch(collectionLoadStart());
       dispatch(collectionListReset());
       getCollection(1, isSelectTab);
       dispatch(collectionPageChange(1));
     }, 100);
-    return () => {
-      console.log("@@@ collection component good bye")
-      clearTimeout(timer)
-    };
+
+    return () => clearTimeout(timer)
   }, [isSelectTab]);
 
   //===================== Dispatch Action to Fetch Collection NFT List =========================

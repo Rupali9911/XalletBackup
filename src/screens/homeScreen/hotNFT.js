@@ -24,6 +24,7 @@ const HotNFT = () => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const navigation = useNavigation();
+    let timer = null;
 
     // =============== Getting data from reducer ========================
     const { ListReducer } = useSelector(state => state);
@@ -34,16 +35,16 @@ const HotNFT = () => {
 
     //===================== UseEffect Function =========================
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+        if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+            timer = setTimeout(() => {
                 dispatch(nftLoadStart());
                 dispatch(nftListReset('hot'));
                 getNFTlist(1, null, ListReducer.sort);
                 dispatch(pageChange(1));
                 setIsFirstRender(false)
                 setIsSort(ListReducer.sort)
-            }
-        }, 100);
+            }, 100);
+        }
         return () => clearTimeout(timer);
     }, [ListReducer.sort, isFocused]);
 

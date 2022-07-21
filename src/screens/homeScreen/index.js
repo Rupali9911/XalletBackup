@@ -273,12 +273,13 @@ const HomeScreen = ({ navigation }) => {
   const renderNFTCategoriesTabs = () => {
     return (
       <TabView
-        bounces={false}
         navigationState={{ index, routes }}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
         onIndexChange={handleIndexChange}
+        scrollEnabled={true}
         initialLayout={{ width: Dimensions.get('window').width }}
+        lazy
       />
     )
   }
@@ -288,7 +289,8 @@ const HomeScreen = ({ navigation }) => {
   const renderTabBar = (props) => (
     <TabBar
       {...props}
-      scrollEnabled
+      bounces={false}
+      scrollEnabled={true}
       indicatorStyle={styles.indicator}
       activeColor={colors.BLUE4}
       inactiveColor={colors.GREY1}

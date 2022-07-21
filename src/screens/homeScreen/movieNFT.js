@@ -24,6 +24,7 @@ const MovieNFT = () => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  let timer = null;
 
   // =============== Getting data from reducer ========================
   const { ListReducer } = useSelector(state => state);
@@ -34,8 +35,8 @@ const MovieNFT = () => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+    if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+      timer = setTimeout(() => {
         console.log('MovieNFT')
         dispatch(nftLoadStart());
         dispatch(nftListReset('movie'));
@@ -43,8 +44,8 @@ const MovieNFT = () => {
         dispatch(pageChange(1));
         setIsFirstRender(false)
         setIsSort(ListReducer.sort)
-      }
-    }, 100);
+      }, 100);
+    }
     return () => clearTimeout(timer);
   }, [ListReducer.sort, isFocused]);
 
