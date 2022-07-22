@@ -1,115 +1,108 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import * as React from 'react';
-import { View, FlatList, SafeAreaView, Text, ActivityIndicator } from 'react-native';
+import { View, SafeAreaView, Image } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { newNFTList, newPageChange, favoriteNFTList } from '../../store/actions/newNFTActions';
-
-import { getNFTList, pageChange, gifNFTList, movieNFTList } from '../../store/actions/nftTrendList';
-
-import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
-
-import { myCollectionList, myCollectionPageChange } from '../../store/actions/myCollection';
-
-import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
-
-import { nftBlindSeriesCollectionList, nftDataCollectionList, nftDataCollectionPageChange, } from '../../store/actions/nftDataCollectionAction';
-
 import styles from './styles';
 import { colors } from '../../res';
 import { Loader, AppHeader } from '../../components';
 import NftItem from './nftItem';
+import Images from '../../constants/Images';
+import { hp } from '../../constants/responsiveFunct';
+
+//================= Unused Imports ==============================
+// import { newNFTList, newPageChange, favoriteNFTList } from '../../store/actions/newNFTActions';
+// import { getNFTList, pageChange, gifNFTList, movieNFTList } from '../../store/actions/nftTrendList';
+// import { myNFTList, myPageChange } from '../../store/actions/myNFTaction';
+// import { myCollectionList, myCollectionPageChange } from '../../store/actions/myCollection';
+// import { getAwardsNftList, awardsNftPageChange } from '../../store/actions/awardsAction';
+// import { nftBlindSeriesCollectionList, nftDataCollectionList, nftDataCollectionPageChange, } from '../../store/actions/nftDataCollectionAction';
 
 const DetailItemScreen = (props) => {
-    const { route } = props;
+    const dispatch = useDispatch();
     const isFocusedHistory = useIsFocused();
 
-    const {
-        ListReducer,
-        AuthReducer,
-        NewNFTListReducer,
-        MyNFTReducer,
-        MyCollectionReducer,
-        AwardsNFTReducer,
-        NftDataCollectionReducer
-    } = useSelector(state => state);
+    // =============== Props Destructuring ========================
+    const { id, index, sName } = props.route.params;
 
+    // =============== Getting data from reducer ========================
     const { sort } = useSelector(state => state.ListReducer);
-    const dispatch = useDispatch();
 
-    const {id, index, sName } = route.params;
+    const data = sName == "Hot" ?
+        useSelector(state => state.ListReducer.nftList) :
+        sName == "newNFT" ?
+            useSelector(state => state.NewNFTListReducer.newNftList) :
+            sName == "myNFT" ?
+                useSelector(state => state.MyNFTReducer.myList) :
+                sName == "myCollection" ?
+                    useSelector(state => state.MyCollectionReducer.myCollection) :
+                    sName == "awards" ?
+                        useSelector(state => state.AwardsNFTReducer.awardsNftList) :
+                        sName == 'photoNFT' ?
+                            useSelector(state => state.NewNFTListReducer.favoriteNftList) :
+                            sName == 'gitNFT' ?
+                                useSelector(state => state.ListReducer.gifList) :
+                                sName == 'movieNFT' ?
+                                    useSelector(state => state.ListReducer.movieList) :
+                                    sName == "dataCollection" ?
+                                        useSelector(state => state.NftDataCollectionReducer.nftDataCollectionList) :
+                                        sName == 'blindSeriesCollection' ?
+                                            useSelector(state => state.NftDataCollectionReducer.nftBlindSeriesCollectionList) : [];
 
+    //================== Components State Declaration ===================
     const [stopVideos, setStopVideos] = React.useState(true);
     const [listNFT, setNFTList] = React.useState([]);
-    const [nftLoad, setNFTLoad] = React.useState(false);
+    const [nftLoad, setNFTLoad] = React.useState(true);
     const [objNft, setObjNft] = React.useState({});
-    const [ownerID, setOwnerID] = React.useState('');
+    const [ownerID, setOwnerID] = React.useState(id);
 
+    //===================== UseEffect Function =========================
     React.useEffect(() => {
         if (isFocusedHistory) {
-            setOwnerID(id);
-            setNFTLoad(true);
             loadData();
         }
-        console.log(sName, "isFocusedHistoryisFocusedHistory", index)
     }, [isFocusedHistory, id])
 
     const loadData = () => {
-
-        const data = sName == "Hot" ?
-            ListReducer.nftList :
-            sName == "newNFT" ?
-                NewNFTListReducer.newNftList :
-                sName == "myNFT" ?
-                    MyNFTReducer.myList :
-                    sName == "myCollection" ?
-                        MyCollectionReducer.myCollection :
-                        sName == "awards" ?
-                            AwardsNFTReducer.awardsNftList :
-                            sName == 'photoNFT' ?
-                                NewNFTListReducer.favoriteNftList :
-                                sName == 'gitNFT' ?
-                                    ListReducer.gifList :
-                                    sName == 'movieNFT' ?
-                                        ListReducer.movieList :
-                                        sName == "dataCollection" ?
-                                            NftDataCollectionReducer.nftDataCollectionList :
-                                            sName == 'blindSeriesCollection' ?
-                                                NftDataCollectionReducer.nftBlindSeriesCollectionList : [];
-
-        // setNFTList(data)
-        if (ownerID == '' || ownerID !== id) {
+        if (!ownerID || ownerID !== id) {
             setObjNft(data[index]);
         }
         setNFTLoad(false)
-
     }
 
+    //===================== Render Loader Function =========================
+    const renderLoader = () => {
+        return (
+            <View style={styles.loader}>
+                <Image source={Images.loadergif} />
+            </View>
+        )
+    }
+
+    //===================== Render Item Detail Function =========================
     const renderItem = (item) => {
-        console.log('renderItem 83', item, sName)
         // if (sName == 'blindSeriesCollection' || sName == 'dataCollection' && item) {
         //     // if (item && item.hasOwnProperty("metaData")) {
         //         item.metaData = item
         //     // }
         // }
-        if(Object.keys(item).length){
+        if (Object.keys(item).length) {
             if (item && item.hasOwnProperty("metaData") && item.metaData) {
                 return (
                     <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
                 )
-            }else{
-                item.metaData = {description: item.description, externalLink: item.externalLink, image: item.image, name: item.name, properties: item.properties, thumbnft: item.thumbnft, totalSupply: item.totalSupply}
+            } else {
+                item.metaData = { description: item.description, externalLink: item.externalLink, image: item.image, name: item.name, properties: item.properties, thumbnft: item.thumbnft, totalSupply: item.totalSupply }
                 item.tokenId = item.newprice?.tokenId
                 return (
                     <NftItem screenName={sName} videoStatus={stopVideos} item={item} index={index} minHeight={true} />
-                ) 
+                )
             }
         }
     }
 
     const memoizedValue = React.useMemo(() => renderItem(objNft), [objNft]);
-    // console.log("🚀 ~ file: index.js ~ line 78 ~ listNFT", listNFT, index, sName)
 
+    //=====================(Main return Function)=============================
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
             <View style={styles.modalCont} >
@@ -118,7 +111,7 @@ const DetailItemScreen = (props) => {
                     titleComponent={<View style={styles.headerTextView}>
                     </View>}
                 />
-                {nftLoad ? <Loader /> : memoizedValue}
+                {nftLoad ? renderLoader() : memoizedValue}
             </View>
         </SafeAreaView>
     );

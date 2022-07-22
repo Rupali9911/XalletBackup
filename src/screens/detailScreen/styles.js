@@ -12,10 +12,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
-  mainLoaderView:{ 
+  mainLoaderView: {
     width: "100%",
     justifyContent: "center",
-    alignItems: "center" 
+    alignItems: "center"
   },
   bgImageCont: {
     position: 'absolute',
@@ -177,6 +177,12 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: 'white'
   },
+  loader: {
+    width: "100%",
+    minHeight: hp(78),
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default styles;
