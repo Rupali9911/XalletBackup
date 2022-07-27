@@ -24,6 +24,7 @@ const AwardsNFT = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  let timer = null;
 
   // =============== Getting data from reducer ========================
   const { AwardsNFTReducer } = useSelector(state => state);
@@ -35,16 +36,16 @@ const AwardsNFT = () => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isFocused && (isFirstRender || isSort !== sort)) {
+    if (isFocused && (isFirstRender || isSort !== sort)) {
+      timer = setTimeout(() => {
         dispatch(awardsNftLoadStart());
         dispatch(awardsNftListReset());
         getNFTlist(1, null, sort);
         dispatch(awardsNftPageChange(1));
         setIsFirstRender(false)
         setIsSort(sort)
-      }
-    }, 100);
+      }, 100);
+    }
     return () => clearTimeout(timer);
   }, [sort, isFocused]);
 

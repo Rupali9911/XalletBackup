@@ -135,21 +135,9 @@ const HomeScreen = ({ navigation }) => {
 
   //================== App State Change Function =======================
   const appStateChange = async nextAppState => {
-    const languageCheck = await AsyncStorage.getItem('languageCheck');
-    let parseLanguageCheck = JSON.parse(languageCheck);
     const passCheck = await AsyncStorage.getItem('@passcode');
     let passVal = JSON.parse(passCheck);
     if (nextAppState === 'active') {
-      if (parseLanguageCheck) {
-        if (parseLanguageCheck.cameraPermission) {
-          const granted = await Permission.checkPermission(
-            PERMISSION_TYPE.camera,
-          );
-          dispatch(setCameraPermission(granted));
-          AsyncStorage.removeItem('languageCheck');
-          return;
-        }
-      }
       if (passVal && !passcodeAsyncStatus) {
         setSuccessVisible(false)
         setModalVisible(false)
@@ -273,12 +261,13 @@ const HomeScreen = ({ navigation }) => {
   const renderNFTCategoriesTabs = () => {
     return (
       <TabView
-        bounces={false}
         navigationState={{ index, routes }}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
         onIndexChange={handleIndexChange}
+        scrollEnabled={true}
         initialLayout={{ width: Dimensions.get('window').width }}
+        lazy
       />
     )
   }
@@ -288,7 +277,8 @@ const HomeScreen = ({ navigation }) => {
   const renderTabBar = (props) => (
     <TabBar
       {...props}
-      scrollEnabled
+      bounces={false}
+      scrollEnabled={true}
       indicatorStyle={styles.indicator}
       activeColor={colors.BLUE4}
       inactiveColor={colors.GREY1}

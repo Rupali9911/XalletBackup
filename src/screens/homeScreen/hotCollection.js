@@ -25,6 +25,7 @@ const HotCollection = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  let timer = null;
 
   // =============== Getting data from reducer ========================
   const { HotCollectionReducer } = useSelector(state => state);
@@ -34,16 +35,16 @@ const HotCollection = () => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isFocused && isFirstRender) {
+    if (isFocused && isFirstRender) {
+      timer = setTimeout(() => {
         console.log("hot collection",)
         dispatch(hotCollectionLoadStart());
         dispatch(hotCollectionListReset());
         getHotCollection(1);
         dispatch(hotCollectionPageChange(1))
         setIsFirstRender(false)
-      }
-    }, 100);
+      }, 100);
+    }
     return () => clearTimeout(timer);
   }, [isFocused]);
 
