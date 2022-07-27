@@ -64,6 +64,22 @@ const styles = StyleSheet.create({
     height: SIZE(22),
     borderRadius: SIZE(10)
   },
+  tokenPicker: {
+    borderColor: colors.themeR,
+    width:'90%',
+    height:'10%',
+    alignSelf:'center',
+    borderRadius:0,
+    marginTop:10
+  },
+  dropDownContainer: {
+    borderColor: colors.themeR,
+    backgroundColor: colors.white,
+    marginTop:10,
+    width:'90%',
+    borderRadius:0,
+    alignSelf:'center',
+  },
   verifyIcon1: {
     width: SIZE(15),
     height: SIZE(15),

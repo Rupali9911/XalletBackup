@@ -5,22 +5,24 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const PaginationContainer = (props) => {
 
-
     return (
         <View
-            style={styles.mainContainer(props.width, props.height)}>
+            style={styles.mainContainer(props.width, props.height, props.margin)}>
             <TouchableOpacity onPress={() => props.onPress('prev')} disabled={props.pageNum == 1}>
                 <Icon name='arrow-back-ios' size={props.iconSize} color={props.pageNum == 1 ? 'gray' : 'black'} />
             </TouchableOpacity>
             <View>
                 <TextInput
                     onSubmitEditing={() => {
-                        if(props.pageInput > 0 && props.pageInput <= props.totalPage)
-                        props.setPageNum(props.pageInput), props.onPress(props.pageInput)
+                        if (props.pageInput > 0 && props.pageInput <= props.totalPage) {
+                            props.setPageNum(props.pageInput)
+                            props.onPress(props.pageInput)
+                            console.log(props.pageInput)
+                        }
                     }}
                     value={props.pageInput}
                     onChangeText={(e) => {
-                        if(Number(e) >= 0 && Number(e) <= props.totalPage){
+                        if (Number(e) >= 0 && Number(e) <= props.totalPage) {
                             props.setPageInput(e)
                         }
                     }}
@@ -37,7 +39,7 @@ const PaginationContainer = (props) => {
 }
 
 const styles = StyleSheet.create({
-    mainContainer: (width, height) => ({
+    mainContainer: (width, height, margin) => ({
         width: width,
         height: height,
         flexDirection: 'row',
@@ -45,6 +47,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         backgroundColor: 'white',
+        margin: margin
     }),
     InputContainer: (inputWidth, inputHeight, inputColor, marginBottomInput) => ({
         width: inputWidth,

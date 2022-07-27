@@ -143,7 +143,6 @@ function NftItem({
 
     const creatorObj = Array.isArray(nftItem?.creatorObj) ? nftItem.creatorObj[0] : nftItem?.creatorObj;
     const ownerObj =  Array.isArray(nftItem?.buyerObj) ? nftItem.buyerObj[0] : nftItem?.buyerObj;
-    console.log(nftItem)
 
     let creatorImageStatus;
     let creatorName;

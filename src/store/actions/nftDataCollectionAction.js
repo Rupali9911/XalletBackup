@@ -14,6 +14,11 @@ import {
   NFT_BLIND_SERIES_COLLECTION_LIST_RESET,
   NFT_BLIND_SERIES_COLLECTION_FAIL,
   NFT_BLIND_SERIES_COLLECTION_PAGE_CHANGE,
+  ACTIVITY_NFT_LIST_SUCCESS,
+  ACTIVITY_NFT_LIST_FAIL,
+  ACTIVITY_NFT_LIST_START,
+  ACTIVITY_NFT_LIST_RESET,
+  ACTIVITY_NFT_LIST_PAGE_CHANGE,
 } from '../types';
 
 import Big from "big.js";
@@ -74,7 +79,30 @@ export const nftBlindSeriesCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const activityHistoryList = (page, collectionId, type, tabTitle,limit) => {
+export const activityNftListStart = (tabTitle) => ({
+  type: ACTIVITY_NFT_LIST_START,
+  payload: tabTitle
+});
+
+export const activityNftListSuccess = (data) => ({
+  type: ACTIVITY_NFT_LIST_SUCCESS,
+  payload: data
+});
+
+export const activityNftListFail = () => ({
+  type: ACTIVITY_NFT_LIST_FAIL
+});
+
+export const activityNftListReset = () => ({
+  type: ACTIVITY_NFT_LIST_RESET,
+});
+
+export const activityNftListPageChange = (data) => ({
+  type: ACTIVITY_NFT_LIST_PAGE_CHANGE,
+  payload: data
+});
+
+export const activityHistoryList = (page, collectionId, type, tabTitle, limit) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
   return (dispatch, getState) => {
     const data = {
@@ -99,66 +127,41 @@ export const activityHistoryList = (page, collectionId, type, tabTitle,limit) =>
       .then(res => {
 
         console.log()
-        
+
         if (tabTitle === 'Activity') {
           console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
           let bids = []
           for (let i = 0; i < res.data.length; i++) {
-            // console.log(res.data, '?????????????')
-            // if (
-            //   res.data[i].event === "SellNFT" ||
-            //   res.data[i].event === "SellNFTNonCrypto"
-            // ){
-              // let price = res.data.data[i].returnValues.dollarPrice &&
-              // parseInt(
-              //   divideNo(
-              //     parseInt(res.data.data[i].returnValues.dollarPrice?._hex)
-              //   )
-              // ) > 0
-              // ? divideNo(
-              //   parseInt(
-              //     res.data.data[i].returnValues.dollarPrice._hex,
-              //     16
-              //   )
-              // )
-              // : divideNo(
-              //   parseInt(res.data.data[i].returnValues.price._hex, 16)
-              // )
-
-              let obj = [
-                res.data[i]?.metaData
-                  ? res.data[i]?.metaData?.thumbnft
-                  : res.data[i]?.nftInfo[0].metaData?.thumbnft
-                    ? res.data[i]?.nftInfo[0].metaData?.thumbnft
-                    : res.data[i]?.nftInfo[0].metaData?.image,
-                res.data[i]?.nftInfo[0]?.en_nft_name
-                  ? res.data[i]?.nftInfo[0]?.en_nft_name
-                  : res.data[i]?.metaData?.name
-                    ? res.data[i]?.metaData?.name
-                    : res.data[i]?.nftInfo[0]?.metaData?.name,
-                    res?.data[i]?.event,
-                res.data[i].returnValues.price && res.data[i].returnValues.price._hex,
-                res.data[i].returnValues.seller && res.data[i].returnValues.seller,
-                res.data[i].sellData && res.data[i].sellData.owner,
-                res.data[i].timestamp,
-              ]
-              bids.push(obj)
-            // }
+            let obj = [
+              res.data[i]?.metaData
+                ? res.data[i]?.metaData?.thumbnft
+                : res.data[i]?.nftInfo[0].metaData?.thumbnft
+                  ? res.data[i]?.nftInfo[0].metaData?.thumbnft
+                  : res.data[i]?.nftInfo[0].metaData?.image,
+              res.data[i]?.nftInfo[0]?.en_nft_name
+                ? res.data[i]?.nftInfo[0]?.en_nft_name
+                : res.data[i]?.metaData?.name
+                  ? res.data[i]?.metaData?.name
+                  : res.data[i]?.nftInfo[0]?.metaData?.name,
+              res?.data[i]?.event,
+              res.data[i].returnValues.price && res.data[i].returnValues.price._hex,
+              res.data[i].returnValues.seller && res.data[i].returnValues.seller,
+              res.data[i].sellData && res.data[i].sellData.owner,
+              res.data[i].timestamp,
+            ]
+            bids.push(obj)
           }
-
-          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 90 ~ return ~ bids", bids)
 
           let temp = {
             ...res,
             data: bids
           };
-          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 159 ~ return ~ temp", temp)
-          dispatch(nftDataCollectionLoadSuccess({ ...temp, tabTitle: tabTitle }));
+          dispatch(activityNftListSuccess({ ...temp, tabTitle: tabTitle }))
         }
 
       })
       .catch(err => {
-        dispatch(nftDataCollectionLoadFail());
+        dispatch(activityNftListFail());
       });
   }
 }
