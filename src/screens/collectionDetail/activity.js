@@ -10,6 +10,7 @@ import {
     Dimensions,
     ScrollView,
     Image,
+    TouchableOpacity,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
@@ -91,6 +92,7 @@ const Activity = ({ route }) => {
     const reducerTabTitle = NftDataCollectionReducer.tabTitle
 
     const limit = 6
+    console.log("🚀 ~ file: activity.js ~ line 90 ~ Activity ~ collectionList", collectionList)
 
     const NumOfPages = Math.ceil(totalCount / limit)
     const isArray = Array.isArray(collectionList[0])
@@ -118,7 +120,7 @@ const Activity = ({ route }) => {
                     setValues(values)
                     getNFTlist(1, values)
                 } else {
-                    getNFTlist(1)
+                    getNFTlist(1,[])
                 }
                 setPageNum('1')
                 setPageInput('1')
@@ -136,6 +138,7 @@ const Activity = ({ route }) => {
 
     const getNFTlist = useCallback(
         (page, v) => {
+            console.log(v,'>>>>>>>>>>>> filter')
             dispatch(
                 activityHistoryList(
                     page,
@@ -171,6 +174,19 @@ const Activity = ({ route }) => {
             />
         );
     };
+
+    const getNftData =(index)=>{
+        let nftDetail = collectionList[index]
+        let nftItemDetails = nftDetail[7]
+
+        navigation.push('CertificateDetail', { 
+            item : nftItemDetails,
+            index : index,
+            fileType : nftItemDetails.metaData.image
+        })
+        setDetailScreen(true)
+    }
+
     return (
         <KeyboardAwareScrollView
             contentContainerStyle={{ flex: 1, justifyContent: 'flex-start' }}
@@ -200,6 +216,7 @@ const Activity = ({ route }) => {
                                         textStyle={{ marginLeft: 5 }}
                                         widthArr={[170, 100, 180, 140, 120, 140]}
                                         height={hp(2.5)}
+                                        
                                     />
                                     {isArray && !isLoading && collectionList.length > 0 ? (
                                         collectionList.map((rowData, rowIndex) => {
@@ -234,21 +251,17 @@ const Activity = ({ route }) => {
                                                                 data={
                                                                     // cellIndex == 0 
                                                                     cellIndex == 2 || cellIndex == 1 ? (
-                                                                        <View
-                                                                        // onPress={() =>
-                                                                        //     cellData && cellData !== 'Null Address'
-                                                                        //         ? navigation.push('ArtistDetail', {
-                                                                        //             id: cellData,
-                                                                        //         })
-                                                                        //         : null
-                                                                        // }
+                                                                        <TouchableOpacity
+                                                                        onPress={()=>
+                                                                            getNftData(rowIndex)
+                                                                        }
                                                                         >
                                                                             <Text
                                                                                 numberOfLines={1}
                                                                                 style={[
                                                                                     styles.text,
                                                                                     {
-                                                                                        color: '#00a8ff',
+                                                                                        color: 'black',
                                                                                         marginLeft: hp(1)
                                                                                     },
                                                                                 ]}>
@@ -256,28 +269,25 @@ const Activity = ({ route }) => {
                                                                                     ? cellData.substring(0, 10)
                                                                                     : cellData.substring(0, 10)}
                                                                             </Text>
-                                                                        </View>
+                                                                        </TouchableOpacity>
                                                                     ) :
                                                                         cellIndex == 0 ? (
-                                                                            <View
+                                                                            <TouchableOpacity
                                                                                 style={{
                                                                                     flexDirection: 'row',
                                                                                     justifyContent: 'center',
                                                                                     alignItems: 'center'
                                                                                 }}
-                                                                                onPress={() =>
-                                                                                    cellData && cellData !== 'Null Address'
-                                                                                        ? navigation.push('ArtistDetail', {
-                                                                                            id: cellData,
-                                                                                        })
-                                                                                        : null
-                                                                                }>
+                                                                                onPress={()=>
+                                                                                    getNftData(rowIndex)
+                                                                                }
+                                                                                >
                                                                                 <Image
                                                                                     style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
                                                                                     source={{ uri: cellData }}
                                                                                 />
 
-                                                                            </View>) :
+                                                                            </TouchableOpacity>) :
                                                                             cellIndex === 6 ?
                                                                                 (
                                                                                     setDate(cellData)

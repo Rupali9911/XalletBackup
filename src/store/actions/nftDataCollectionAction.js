@@ -148,6 +148,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               res.data[i].returnValues.seller && res.data[i].returnValues.seller,
               res.data[i].sellData && res.data[i].sellData.owner,
               res.data[i].timestamp,
+              res.data[i]?.nftInfo[0]
             ]
             bids.push(obj)
           }
