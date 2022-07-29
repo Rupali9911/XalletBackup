@@ -92,27 +92,26 @@ const Activity = ({ route }) => {
     const reducerTabTitle = NftDataCollectionReducer.tabTitle
 
     const limit = 6
-    console.log("🚀 ~ file: activity.js ~ line 90 ~ Activity ~ collectionList", collectionList)
 
     const NumOfPages = Math.ceil(totalCount / limit)
     const isArray = Array.isArray(collectionList[0])
 
     useEffect(() => {
         if (isFocused) {
-            console.log("🚀 ~ file: onSale.js ~ line 53 ~",
-                route?.params,
-                nftChain,
-                collectionAddress,
-                collectionType,
-                isBlind,
-                isHotCollection,
-                isSeries,
-                collectionId,
-                userCollection,
-                isStore,
-                manualColl,
-                seriesInfoId
-            )
+            // console.log("🚀 ~ file: onSale.js ~ line 53 ~",
+            //     route?.params,
+            //     nftChain,
+            //     collectionAddress,
+            //     collectionType,
+            //     isBlind,
+            //     isHotCollection,
+            //     isSeries,
+            //     collectionId,
+            //     userCollection,
+            //     isStore,
+            //     manualColl,
+            //     seriesInfoId
+            // )
             if (isFocused && !isDetailScreen) {
                 dispatch(activityNftListStart(tabTitle));
                 dispatch(activityNftListReset());
@@ -120,7 +119,7 @@ const Activity = ({ route }) => {
                     setValues(values)
                     getNFTlist(1, values)
                 } else {
-                    getNFTlist(1,[])
+                    getNFTlist(1, [])
                 }
                 setPageNum('1')
                 setPageInput('1')
@@ -138,7 +137,6 @@ const Activity = ({ route }) => {
 
     const getNFTlist = useCallback(
         (page, v) => {
-            console.log(v,'>>>>>>>>>>>> filter')
             dispatch(
                 activityHistoryList(
                     page,
@@ -175,14 +173,22 @@ const Activity = ({ route }) => {
         );
     };
 
-    const getNftData =(index)=>{
+    const getNftData = (index) => {
         let nftDetail = collectionList[index]
         let nftItemDetails = nftDetail[7]
 
-        navigation.push('CertificateDetail', { 
-            item : nftItemDetails,
-            index : index,
-            fileType : nftItemDetails.metaData.image
+        const videoUri = nftItemDetails ?
+            nftItemDetails?.metaData?.image :
+            nftItemDetails ? nftItemDetails?.metaData?.image?.replace('nftdata', 'nftData') : nftItemDetails?.thumbnailUrl;
+
+        const fileType = videoUri ? videoUri?.split('.')[videoUri?.split('.').length - 1] : '';
+
+        navigation.push('CertificateDetail', {
+            item: nftItemDetails,
+            index: index,
+            fileType: fileType,
+            video: videoUri,
+            artistId: nftItemDetails?.returnValues?.to?.toLowerCase()
         })
         setDetailScreen(true)
     }
@@ -199,12 +205,11 @@ const Activity = ({ route }) => {
                     <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ flex: 1 }}
                     // nestedScrollEnabled={true}
                     >
-                        <View style={{ flex: 1, }}>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                             {(tabTitle !== reducerTabTitle) || isLoading ? (
-                                <View style={{ alignItems: 'center', justifyContent: 'center', height: '90%', width: '100%' }}>
+                                <View style={{ height: Dimensions.get('window').height, width: Dimensions.get('window').width }}>
                                     <Loader />
                                 </View>
                             ) :
@@ -216,7 +221,7 @@ const Activity = ({ route }) => {
                                         textStyle={{ marginLeft: 5 }}
                                         widthArr={[170, 100, 180, 140, 120, 140]}
                                         height={hp(2.5)}
-                                        
+
                                     />
                                     {isArray && !isLoading && collectionList.length > 0 ? (
                                         collectionList.map((rowData, rowIndex) => {
@@ -251,11 +256,7 @@ const Activity = ({ route }) => {
                                                                 data={
                                                                     // cellIndex == 0 
                                                                     cellIndex == 2 || cellIndex == 1 ? (
-                                                                        <TouchableOpacity
-                                                                        onPress={()=>
-                                                                            getNftData(rowIndex)
-                                                                        }
-                                                                        >
+                                                                        <TouchableOpacity onPress={() => getNftData(rowIndex)}>
                                                                             <Text
                                                                                 numberOfLines={1}
                                                                                 style={[
@@ -278,10 +279,8 @@ const Activity = ({ route }) => {
                                                                                     justifyContent: 'center',
                                                                                     alignItems: 'center'
                                                                                 }}
-                                                                                onPress={()=>
-                                                                                    getNftData(rowIndex)
-                                                                                }
-                                                                                >
+                                                                                onPress={() => getNftData(rowIndex)}
+                                                                            >
                                                                                 <Image
                                                                                     style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
                                                                                     source={{ uri: cellData }}
@@ -325,7 +324,7 @@ const Activity = ({ route }) => {
                     </ScrollView>
                 </View>
             </View>
-            
+
             <PaginationContainer width={'60%'}
                 height={'10%'}
                 inputWidth={'70%'}
@@ -354,7 +353,6 @@ const Activity = ({ route }) => {
                         setPageNum(num.toString())
                         setPageInput(num.toString())
                     } else if (arg) {
-                        console.log(arg, '>>>>>>>>>>> Argument')
                         num = arg
                         getNFTlist(num, values)
                     }

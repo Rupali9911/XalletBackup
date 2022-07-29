@@ -129,7 +129,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
         console.log()
 
         if (tabTitle === 'Activity') {
-          console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
+          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
           let bids = []
           for (let i = 0; i < res.data.length; i++) {
             let obj = [
@@ -144,11 +144,11 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
                   ? res.data[i]?.metaData?.name
                   : res.data[i]?.nftInfo[0]?.metaData?.name,
               res?.data[i]?.event,
-              res.data[i].returnValues.price && res.data[i].returnValues.price._hex,
-              res.data[i].returnValues.seller && res.data[i].returnValues.seller,
-              res.data[i].sellData && res.data[i].sellData.owner,
-              res.data[i].timestamp,
-              res.data[i]?.nftInfo[0]
+              res?.data[i].returnValues.price && res.data[i].returnValues.price._hex,
+              res?.data[i].returnValues.seller && res.data[i].returnValues.seller,
+              res?.data[i].sellData && res.data[i].sellData.owner,
+              res?.data[i].timestamp,
+              res?.data[i]?.nftInfo[0]
             ]
             bids.push(obj)
           }

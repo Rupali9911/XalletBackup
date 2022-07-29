@@ -283,7 +283,7 @@ export default function NFTItem(props) {
         <View
           style={styles.chainView}>
           <View style={{ flexDirection: 'row' }}>
-            {chainType(item?.nftChain)}
+            {chainType(item?.nftChain ? item.nftChain : iconNftChain)}
             {item.isForAward ? <Image style={styles.awadImage} source={{ uri: getAwardsIcon(item?.award_type) }} /> : null}
           </View>
           <View style={styles.endTimeView}>
@@ -417,7 +417,7 @@ export default function NFTItem(props) {
 
   let iconNftChain = isBlind ?
     item?.newpriceTraded ?
-      item?.Chain ? item.Chain : item?.mainTokenId?.toString().split("-")[0] :
+      item?.Chain ? item.Chain : item?.chain ? item.chain : item?.mainTokenId?.toString().split("-")[0] :
       item?.nftChain ? item.nftChain : item?.mainTokenId?.toString().split("-")[0] :
     item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0]
       : item?.nftChain ? item.nftChain : ''

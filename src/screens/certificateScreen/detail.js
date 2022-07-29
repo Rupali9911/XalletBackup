@@ -129,7 +129,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData1, setTradingTableData1] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
-  const [isLike, setLike] = useState(item.like);
+  const [isLike, setLike] = useState(item?.like);
   const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
   const [bidPriceInDollar, setBidPriceInDollar] = useState('');
   const [detailNFT, setDetailNFT] = useState({});
@@ -376,7 +376,7 @@ const DetailScreen = ({ navigation, route }) => {
           <View style={{ ...styles.modalImage }}>
             {showThumb && (
               <C_Image
-                uri={item.metaData.thumbnft}
+                uri={item?.metaData?.thumbnft}
                 imageStyle={styles.modalImage}
                 isContain
               />
@@ -437,7 +437,7 @@ const DetailScreen = ({ navigation, route }) => {
           </View>
         ) : (
           <C_Image
-            uri={item.thumbnailUrl || item.metaData.image}
+            uri={item?.thumbnailUrl || item?.metaData?.image}
             imageStyle={styles.modalImage}
             isContain
           />
@@ -638,7 +638,7 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <>
         {!load && <Text style={styles.description}>
-          {detailNFT ? detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item.metaData.description : item?.metaData?.description}
+          {detailNFT ? detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item?.metaData?.description : item?.metaData?.description}
         </Text >}
       </>
     )
@@ -1020,13 +1020,13 @@ const DetailScreen = ({ navigation, route }) => {
 
   const renderItem = ({ item }) => {
     // let findIndex = moreData.findIndex(x => x.id === item.id);
-    if (item && item.hasOwnProperty('metaData') && item.metaData) {
+    if (item && item?.hasOwnProperty('metaData') && item?.metaData) {
       // it's temporary fix
       const imageUri =
-        item.thumbnailUrl ||
-        item.metaData?.image?.replace('nftdata', 'nftData');
+        item?.thumbnailUrl ||
+        item?.metaData?.image?.replace('nftdata', 'nftData');
 
-      const image = item.thumbnailUrl || item.metaData.image;
+      const image = item?.thumbnailUrl || item?.metaData.image;
       const fileType = image
         ? image?.split('.')[image?.split('.').length - 1]
         : '';
@@ -1040,7 +1040,7 @@ const DetailScreen = ({ navigation, route }) => {
               // artistId: artist,
               // collectCreat: collectCreat,
               // artistData: artistDetail,
-              video: item.metaData.image,
+              video: item?.metaData.image,
               fileType: fileType,
               item: item,
               index: index,
@@ -1050,8 +1050,8 @@ const DetailScreen = ({ navigation, route }) => {
           style={styles.listItem}>
           <C_Image
             type={
-              item.metaData.image.split('.')[
-              item.metaData.image.split('.').length - 1
+              item?.metaData.image.split('.')[
+              item?.metaData.image.split('.').length - 1
               ]
             }
             uri={imageUri}
@@ -1175,8 +1175,8 @@ const DetailScreen = ({ navigation, route }) => {
   let disableCreator = false;
   let isBiddingTimeEnd = false;
   let doComponentUpdate = false;
-  const nft = item.tokenId || item.collectionAdd;
-  let params = nft.toString().split('-');
+  const nft = item?.tokenId || item?.collectionAdd;
+  let params = nft?.toString().split('-');
   let chainType,
     _tokenId,
     collectionAddress,
@@ -1187,7 +1187,7 @@ const DetailScreen = ({ navigation, route }) => {
     providerUrl,
     walletAddressForNonCrypto,
     chainAvailable;
-  if (params.length > 2) {
+  if (params?.length > 2) {
     chainType = params[0];
     collectionAddress = params[1];
     _tokenId = params[2];
@@ -2076,7 +2076,7 @@ const DetailScreen = ({ navigation, route }) => {
           let value = getUnique(filterList, 'value');
           setFilterTableList(value);
 
-          let _bidHistory = bids.filter(item => item.event === 'Bid');
+          let _bidHistory = bids.filter(item => item?.event === 'Bid');
           if (_bidHistory.length > 0) {
             var array = [];
             array = _bidHistory.filter(item => delete item['event']);
@@ -2291,7 +2291,7 @@ const DetailScreen = ({ navigation, route }) => {
       type: obj.metaData.properties.type,
       price: obj.price ? obj.price : '',
       rating: obj.rating,
-      like: obj.like,
+      like: obj?.like,
       author: obj.returnValues.to,
       _id: obj._id,
       thumbnailUrl: obj?.thumbnailUrl,
