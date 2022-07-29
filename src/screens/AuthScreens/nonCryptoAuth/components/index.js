@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     },
     buttonCont: {
         height: hp('6%'),
-        borderRadius: wp('1%'),
+        borderRadius: wp('8%'),
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     },
     buttonLabel: {
         fontFamily: fonts.ARIAL_BOLD,
-        fontSize: RF(1.6),
+        fontSize: RF(2),
     },
     inputLabel: {
         fontSize: RF(1.6),
