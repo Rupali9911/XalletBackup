@@ -40,6 +40,7 @@ import { SIZE } from '../../common/responsiveFunction';
 import DropDownPicker from 'react-native-dropdown-picker';
 import PaginationContainer from '../../components/PaginationContainer';
 import moment from 'moment';
+
 const FILTER_TYPE = ['MintWithTokenURI', 'SellNFT', 'Bid', 'BuyNFT', 'Claim', 'OnAuction', 'CancelSell'];
 
 const Activity = ({ route }) => {
@@ -168,7 +169,7 @@ const Activity = ({ route }) => {
                 style={styles.tokenPicker}
                 dropDownContainerStyle={styles.dropDownContainer}
                 placeholder={translate('wallet.common.filter')}
-                maxHeight={hp(40)}
+                maxHeight={hp(45)}
             />
         );
     };
@@ -188,7 +189,7 @@ const Activity = ({ route }) => {
             index: index,
             fileType: fileType,
             video: videoUri,
-            artistId: nftItemDetails?.returnValues?.to?.toLowerCase()
+            artistId: nftItemDetails?.returnValues?.to.toLowerCase()
         })
         setDetailScreen(true)
     }
@@ -201,7 +202,7 @@ const Activity = ({ route }) => {
 
             <View style={{ flex: 1 }}>
                 <Filters />
-                <View style={{ margin: hp(1), marginVertical: (hp(3)), borderWidth: 1, borderColor: Colors.GREY9 }}>
+                <View style={{ margin: hp(1), marginVertical: (hp(3)) }}>
                     <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
@@ -217,10 +218,10 @@ const Activity = ({ route }) => {
 
                                     <Row
                                         data={tradingTableHead}
-                                        style={{ marginBottom: hp(0.5) }}
-                                        textStyle={{ marginLeft: 5 }}
+                                        // style={{ marginBottom: hp(0.5) }}
+                                        textStyle={{ marginLeft: 5, fontSize: SIZE(15) }}
                                         widthArr={[170, 100, 180, 140, 120, 140]}
-                                        height={hp(2.5)}
+                                        height={hp(4)}
 
                                     />
                                     {isArray && !isLoading && collectionList.length > 0 ? (
@@ -248,6 +249,12 @@ const Activity = ({ route }) => {
                                                         }
                                                         if (cellIndex === 5) {
                                                             wid = 120;
+                                                        }
+                                                        if (cellIndex === 6) {
+                                                            wid = 140;
+                                                        }
+                                                        if (cellIndex === 7) {
+                                                            wid = 1;
                                                         }
                                                         return (
 
@@ -287,20 +294,20 @@ const Activity = ({ route }) => {
                                                                                 />
 
                                                                             </TouchableOpacity>) :
-                                                                            cellIndex === 6 ?
+                                                                            cellIndex === 3 ?
                                                                                 (
-                                                                                    setDate(cellData)
+                                                                                    cellData && Number(cellData)
                                                                                 ) :
-                                                                                cellIndex === 3 ?
+                                                                                cellIndex === 4 ?
                                                                                     (
-                                                                                        cellData && Number(cellData)
-                                                                                    ) :
-                                                                                    cellIndex === 4 ? (
                                                                                         cellData && cellData.substring(0, 12)
                                                                                     ) :
-                                                                                        cellIndex === 5 && (
-                                                                                            cellData && cellData.substring(0, 12)
-                                                                                        )
+                                                                                    cellIndex === 5 ? (
+                                                                                        cellData && cellData.substring(0, 12)
+                                                                                    ) :
+                                                                                    cellIndex === 6 && ( 
+                                                                                        setDate(cellData)
+                                                                                    )   
                                                                 }
                                                                 // cellIndex === 3 ? element(cellData, index) :
                                                                 // textStyle={styles.text}
