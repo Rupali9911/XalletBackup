@@ -132,7 +132,8 @@ const Activity = ({ route }) => {
     }, [collectionType, isFocused, values]);
 
     function setDate(t) {
-        var s = moment.utc(t).local().format("YYYY/MM/DD HH:mm:ss");
+        // var s = moment.utc(t).local().format("YYYY/MM/DD HH:mm:ss");
+        var s = moment.unix(t).format("YYYY/MM/DD HH:mm:ss")
         return s.toString();
     }
 
@@ -220,7 +221,7 @@ const Activity = ({ route }) => {
                                         data={tradingTableHead}
                                         // style={{ marginBottom: hp(0.5) }}
                                         textStyle={{ marginLeft: 5, fontSize: SIZE(15) }}
-                                        widthArr={[170, 100, 180, 140, 120, 140]}
+                                        widthArr={[170, 100, 180, 140, 120, 145]}
                                         height={hp(4)}
 
                                     />
@@ -251,7 +252,7 @@ const Activity = ({ route }) => {
                                                             wid = 120;
                                                         }
                                                         if (cellIndex === 6) {
-                                                            wid = 140;
+                                                            wid = 145;
                                                         }
                                                         if (cellIndex === 7) {
                                                             wid = 1;
