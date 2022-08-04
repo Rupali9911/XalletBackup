@@ -39,7 +39,6 @@ import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import { colors } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
-import { setCameraPermission } from '../../store/reducer/cameraPermission';
 import { updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';

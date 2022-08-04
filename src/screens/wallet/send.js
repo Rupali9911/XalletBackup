@@ -12,7 +12,6 @@ import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import { openSettings } from 'react-native-permissions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { setCameraPermission } from '../../store/reducer/cameraPermission';
 const { height } = Dimensions.get('window');
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -211,7 +210,6 @@ const ScanScreen = React.memo((props) => {
     const checkCameraPermission = async () => {
         const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
         if (!granted) {
-            AsyncStorage.setItem("languageCheck", JSON.stringify({ cameraPermission: true }))
             const requestPer = await Permission.requestPermission(PERMISSION_TYPE.camera);
             if (requestPer == false) {
                 confirmationAlert(
@@ -225,7 +223,6 @@ const ScanScreen = React.memo((props) => {
             }
             return
         }
-        dispatch(setCameraPermission(granted))
     }
 
     const onSuccess = (e) => {
