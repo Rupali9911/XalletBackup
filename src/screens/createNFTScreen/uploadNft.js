@@ -25,6 +25,7 @@ import {setApprovalForAll, nftMakingMethods} from '../wallet/functions';
 import {RF} from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import {value} from "lodash/seq";
+import { _logout } from '../../store/reducer/userReducer';
 
 const Web3 = require('web3');
 
@@ -251,8 +252,9 @@ const UploadNFT = ({
     }, [modalItem])
 
     useEffect(() => {
-
+        
         if (modalScreen === "uploadNFT" && datePickerData) {
+            
             if (datePickerData !== "closed") {
                 if (activeModal === "startTime") {
                     setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
@@ -365,6 +367,13 @@ const UploadNFT = ({
                     //   translate("wallet.common.alert"),
                     //   translate("wallet.common.error.networkFailed")
                     // );
+
+                    if (e?.response?.status === 401) {
+                        alertWithSingleBtn(
+                            translate("wallet.common.alert"),
+                            translate('common.sessionexpired')
+                        )
+                      }
                 })
         }
     };
@@ -994,7 +1003,7 @@ const UploadNFT = ({
                             }}
                             showRight
                             pressable/>
-                        <CardLabel>{translate("wallet.common.description")}</CardLabel>
+                        <CardLabel>{translate("wallet.common.descriptionCreate")}</CardLabel>
                         <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
                         <CardField
                             inputProps={{
@@ -1204,7 +1213,9 @@ const UploadNFT = ({
                                     </CardLabel>
                                     <CardField
 
-                                        inputProps={{value: startTimeDate}}
+                                        
+
+                                        inputProps={{value: ( startTimeDate ? moment(startTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " " )}}
                                         onPress={() => {
                                             setActiveModal("startTime")
                                             setEndTimeDate("")
@@ -1223,7 +1234,7 @@ const UploadNFT = ({
                                     }
                                     <CardField
                                         inputProps={{
-                                            value: endTimeDate
+                                            value: ( endTimeDate ? moment(endTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " " )
                                         }}
 
                                         onPress={() => {

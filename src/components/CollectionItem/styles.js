@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 1,
-borderRadius:wp("5"),
+    borderRadius: wp("5"),
     elevation: 5,
   },
   nftListItem: {
@@ -91,11 +91,20 @@ borderRadius:wp("5"),
     color: '#23262f',
     fontSize: SIZE(14),
     marginBottom: SIZE(8),
+    marginHorizontal: SIZE(5)
   },
-  soldOutText:{
+  soldOutText: {
     color: COLORS.greenLight,
     fontSize: SIZE(12),
     marginVertical: SIZE(10),
-},
+  },
+  verifyIcon: {
+    position: 'absolute',
+    bottom: 2,
+    left: 37,
+    width: SIZE(14),
+    height: SIZE(14),
+    borderRadius: SIZE(10)
+  }
 });
 export default styles;

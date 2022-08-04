@@ -5,7 +5,9 @@ import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
 import { translate } from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
-
+import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
+import { Verifiedcollections } from '../verifiedCollection';
+import { IMAGES } from '../../constants';
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function CollectionItem(props) {
@@ -21,6 +23,7 @@ export default function CollectionItem(props) {
     blind,
     isCollection,
     cryptoAllowed,
+    colId
   } = props;
   const [onPressButton, setOnPressButton] = useState(false);
   const chainIcon = type => {
@@ -51,7 +54,7 @@ export default function CollectionItem(props) {
         : creatorInfo[0]?.username?.trim() ? creatorInfo[0].username :
           creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
             creatorInfo[0]?.title?.trim() ? creatorInfo[0].title : creator ? creator : ""
-      : creator ? creator : ""
+      : creator ? creator : collectionName ? collectionName : ""
     creatorName = creatorName?.includes('0x') ? creatorName.substring(0, 6) : creatorName;
     return creatorName;
   }
@@ -106,7 +109,7 @@ export default function CollectionItem(props) {
   }
 
   return (
-    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem}>
+    <FixedTouchableHighlight onPress={handleOnPress} style={styles.collectionListItem}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
@@ -123,11 +126,17 @@ export default function CollectionItem(props) {
         </View>
         <View style={styles.collectionWrapper}>
           <View style={CommonStyles.center}>
-          <C_Image
-            type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
-            uri={iconImage}
-            imageStyle={styles.iconImage}
-          />
+            <C_Image
+              type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+              uri={iconImage}
+              imageStyle={styles.iconImage}
+              />
+              {Verifiedcollections.find((id) => id === colId)  && (
+                <Image
+                style={styles.verifyIcon}
+                source={IMAGES.tweetPng}
+            />
+              )}
           </View>
           <View style={styles.bottomCenterWrap}>
             <Text numberOfLines={1} style={styles.collectionName}>
@@ -140,14 +149,14 @@ export default function CollectionItem(props) {
           <View style={styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
+            {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
               <Text style={{ marginRight: 50 }}>
               </Text>
-            </Text>
+            </Text>}
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </FixedTouchableHighlight>
   );
 }

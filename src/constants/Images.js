@@ -37,6 +37,7 @@ export default {
     //token type icons
     bitcoin: require("../../assets/images/bitcoin.png"),
     etherium: require("../../assets/images/etherium.png"),
+    etherium1: require("../../assets/images/icon-etherium.png"),
     ethPolygon: require("../../assets/images/ETH.png"),
     bnb: require("../../assets/images/bnb.png"),
     smartChain: require("../../assets/images/smartChain.png"),
@@ -71,6 +72,7 @@ export default {
     edit: require("../../assets/images/edit.png"),
     imagePlaceholder: require("../../assets/images/cropped-placeholder.png"),
     brokenIcon: require("../../assets/images/brokenIcon.png"),
+    tweetPng:require("../../assets/images/tweet.png"),
 
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),

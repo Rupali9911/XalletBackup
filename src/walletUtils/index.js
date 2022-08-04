@@ -9834,15 +9834,16 @@ export const tokens = [
     tokenValue: "0",
     network: 'Polygon'
   },
+    networkType=="mainnet"?
   {
-    type: 'ETH',
-    tokenName: IsTestNet ? 'ETH' : 'WETH',
+    type: 'WETH',
+    tokenName: 'WETH',
     icon: ImagesSrc.ethnew,
     amount: "$387.41",
     percent: "+10.49%",
     tokenValue: "0",
     network: 'Polygon'
-  },
+  }:{},
   {
     type: 'BUSD',
     tokenName: 'BUSD',

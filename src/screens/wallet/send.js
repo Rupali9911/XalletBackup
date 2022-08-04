@@ -1,34 +1,30 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, Image, Alert, KeyboardAvoidingView } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Colors from '../../constants/Colors';
-import Fonts from '../../constants/Fonts';
-import ImagesSrc from '../../constants/Images';
+
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate, amountValidation, environment, processScanResult, SCAN_WALLET } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
-import AppBackground from '../../components/appBackground';
-import AppHeader from '../../components/appHeader';
-import TextView from '../../components/appText';
-import AppButton from '../../components/appButton';
-import FetchingIndicator from '../../components/fetchingIndicator';
-import CommonStyles from '../../constants/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { transfer } from './functions';
-import NumberFormat from 'react-number-format';
-import Web3 from 'web3';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import { openSettings } from 'react-native-permissions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setCameraPermission } from '../../store/reducer/cameraPermission';
-
 const { height } = Dimensions.get('window');
-
-let flag = true;
+import Colors from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
+import ImagesSrc from '../../constants/Images';
+import AppBackground from '../../components/appBackground';
+import AppHeader from '../../components/appHeader';
+import TextView from '../../components/appText';
+import AppButton from '../../components/appButton';
+import CommonStyles from '../../constants/styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import NumberFormat from 'react-number-format';
+import Web3 from 'web3';
 
 const verifyAddress = (address) => {
     return new Promise((resolve, reject) => {
@@ -49,7 +45,6 @@ const showErrorAlert = (msg) => {
 }
 
 export const AddressField = (props) => {
-
     return (
         <View style={styles.inputMainCont} >
             <Text style={styles.inputLeft} >{translate("wallet.common.walletAddress")}</Text>
@@ -87,7 +82,6 @@ const getTokenValue = (item) => {
 }
 
 const transferAmount = async () => {
-
     const { wallet } = useSelector(state => state.UserReducer);
     const publicAddress = wallet?.address;
     const privKey = wallet.privateKey;
@@ -95,8 +89,7 @@ const transferAmount = async () => {
     setLoading(true);
     switch (type) {
         case 'ETH':
-            // let ethBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
                 console.log("ethBalance", ethBalance);
                 if (ethBalance.success) {
                     showSuccessAlert();
@@ -107,11 +100,9 @@ const transferAmount = async () => {
                 setLoading(false);
                 showErrorAlert(err.msg);
             });
-
             return;
         case 'USDT':
-            // let usdtBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "usdt", "ethereum", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
                 console.log("usdtBalance", usdtBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -122,8 +113,7 @@ const transferAmount = async () => {
 
             return;
         case 'BNB':
-            // let bnbBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "bnb", "binance", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
                 console.log("bnbBalance", bnbBalance);
                 if (bnbBalance.success) {
                     showSuccessAlert();
@@ -134,11 +124,9 @@ const transferAmount = async () => {
                 setLoading(false);
                 showErrorAlert(err.msg);
             });
-
             return;
         case 'BUSD':
-            // let busdBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "busd", "binance", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
                 console.log("busdBalance", busdBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -146,11 +134,9 @@ const transferAmount = async () => {
                 setLoading(false);
                 showErrorAlert(err.msg);
             });
-
             return;
         case 'ALIA':
-            // let aliaBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "alia", "", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
                 console.log("aliaBalance", aliaBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -158,11 +144,9 @@ const transferAmount = async () => {
                 setLoading(false);
                 showErrorAlert(err.msg);
             });
-
             return;
         case 'Matic':
-            // let maticBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", "", environment.polRpc, 10, 21000).then((maticBalance) => {
                 console.log("maticBalance", maticBalance);
                 if (maticBalance.success) {
                     showSuccessAlert();
@@ -173,11 +157,9 @@ const transferAmount = async () => {
                 setLoading(false);
                 showErrorAlert(err.msg);
             });
-
             return;
         case 'USDC':
-            // let usdcBalance = await
-            transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
+            transfer(publicAddress, privKey, amount, toAddress, "usdc", 'polygon', environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
                 console.log("usdcBalance", usdcBalance);
                 setLoading(false);
             }).catch((err) => {
@@ -185,7 +167,6 @@ const transferAmount = async () => {
                 setLoading(false);
                 showErrorAlert(err.msg);
             });
-
             return;
         default:
     }
@@ -213,19 +194,15 @@ export const PaymentField = (props) => {
     )
 }
 
-const ScanScreen = (props) => {
-    const navigation = useNavigation();
+const ScanScreen = React.memo((props) => {
     let refScanner = null;
     const { camera } = useSelector(state => state.PermissionReducer);
     const dispatch = useDispatch();
-    const [screenLoading, setScreenLoading] = useState(false);
-
-    const { loading, jumpTo, setResult, setLoading, position } = props;
+    const { jumpTo, setResult, position } = props;
 
     useEffect(() => {
         if (position == 1) {
-            setScreenLoading(true)
-            checkCameraPermission()
+            checkCameraPermission();
             refScanner && refScanner.reactivate();
         }
     }, [position, camera]);
@@ -233,13 +210,19 @@ const ScanScreen = (props) => {
     const checkCameraPermission = async () => {
         const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
         if (!granted) {
-            AsyncStorage.setItem("languageCheck", JSON.stringify({ cameraPermission: true }))
             const requestPer = await Permission.requestPermission(PERMISSION_TYPE.camera);
-            setScreenLoading(false)
+            if (requestPer == false) {
+                confirmationAlert(
+                    translate("wallet.common.cameraPermissionHeader"),
+                    translate("wallet.common.cameraPermissionMessage"),
+                    translate("common.Cancel"),
+                    translate("wallet.common.settings"),
+                    () => openSettings(),
+                    () => null,
+                )
+            }
             return
         }
-        setScreenLoading(false)
-        dispatch(setCameraPermission(granted))
     }
 
     const onSuccess = (e) => {
@@ -269,63 +252,50 @@ const ScanScreen = (props) => {
             );
         });
     };
+
+    const cameraNotAuthView = () => {
+        return (
+            <View style={CommonStyles.center}>
+                <Text style={styles.cameraNotAuth} >
+                    {translate("wallet.common.cameraNotAuth")}
+                </Text>
+            </View>
+        )
+    }
+
     return (
         <View style={[styles.scene]} >
-
             {
-                screenLoading ?
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                        <FetchingIndicator />
-                    </View> :
-                    camera ? <QRCodeScanner
-                        ref={(scanner) => refScanner = scanner}
-                        onRead={onSuccess}
-                        permissionDialogTitle={translate("wallet.common.info")}
-                        permissionDialogMessage={translate("wallet.common.needCameraPermission")}
-                        showMarker={true}
-                        notAuthorizedView={<View
-                            style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Text style={styles.cameraNotAuth} >
-                                {translate("wallet.common.cameraNotAuth")}
-                            </Text>
-                        </View>
-                        }
-                        customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
-                            <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
-                        </TouchableOpacity>}
-                        containerStyle={{ flex: 1 }}
-                        cameraStyle={styles.qrCameraStyle}
-                        topViewStyle={{ flex: 0 }}
-                        bottomViewStyle={{ flex: 0 }}
-                    /> :
-                        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                            <Text style={styles.cameraNotAuth} >{translate("wallet.common.cameraNotAuth")}</Text>
-                        </View>
+                <QRCodeScanner
+                    containerStyle={styles.cameraContainer}
+                    ref={(scanner) => refScanner = scanner}
+                    onRead={onSuccess}
+                    showMarker={true}
+                    cameraProps={{
+                        notAuthorizedView: (
+                            cameraNotAuthView()
+                        ),
+                    }}
+                    notAuthorizedView={cameraNotAuthView()}
+                    checkAndroid6Permissions={true}
+                    customMarker={<TouchableOpacity disabled style={{ zIndex: 1000 }} >
+                        <Image style={styles.scanStyle} source={ImagesSrc.scanRectangle} />
+                    </TouchableOpacity>}
+                    cameraStyle={styles.qrCameraStyle}
+                    topViewStyle={{ flex: 0 }}
+                    bottomViewStyle={{ flex: 0 }}
+                />
             }
-            {/* {
-                <TouchableOpacity style={styles.rescan}>
-                    <TextView style={{color:Colors.white}}>Rescan</TextView>
-                </TouchableOpacity>
-            } */}
         </View>
     )
-};
+});
 
-const SendScreen = (props) => {
-
-    const dispatch = useDispatch();
+const SendScreen = React.memo((props) => {
     const navigation = useNavigation();
     const { wallet } = useSelector(state => state.UserReducer);
-    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
+    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
     const [address, setAddress] = useState(props.address);
     const [amount, setAmount] = useState(props.amount);
-    const [transfering, setTransfering] = useState(false);
-
     const { item, type, setLoading, loading } = props;
 
     useEffect(() => {
@@ -336,33 +306,50 @@ const SendScreen = (props) => {
     const getTokenValue = () => {
         let totalValue = 0;
         if (item.type == 'ETH' && item.network !== 'Polygon') {
-            let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
+            let value = parseFloat(ethBalance)
             console.log('Ethereum value', value);
             totalValue = value;
         } else if (item.type == 'BNB') {
-            let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+            let value = parseFloat(bnbBalance)
             console.log('BSC value', value);
             totalValue = value;
+        } else if (item.type == 'BUSD') {
+            let value = parseFloat(busdBalance)
+            console.log('BUSD value', value);
+            totalValue = value;
+        } else if (item.type == 'USDT') {
+            let value = parseFloat(usdtBalance)
+            console.log('USDT value', value);
+            totalValue = value;
         } else if (item.type == 'Matic') {
-            let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
+            let value = parseFloat(maticBalance)
             console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == 'TNFT') {
-            let value = parseFloat(tnftBalance) //+ parseFloat(balances.USDC)
+            let value = parseFloat(tnftBalance)
             console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == 'TAL') {
-            let value = parseFloat(talBalance) //+ parseFloat(balances.USDC)
+            let value = parseFloat(talBalance)
             console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == 'USDC') {
-            let value = parseFloat(usdcBalance) //+ parseFloat(balances.USDC)
+            let value = parseFloat(usdcBalance)
             console.log('Polygon value', value);
             totalValue = value;
-        } else if (item.type == 'ETH' && item.network === 'Polygon') {
-            let value = parseFloat(wethBalance) //+ parseFloat(balances.USDC)
+        } else if (item.type == "WETH" && item.network === 'Polygon') {
+            let value = parseFloat(wethBalance)
             console.log('Polygon value', value);
             totalValue = value;
+        } else if (item.network === 'BSC' && item.type == 'ALIA') {
+            console.log("Item network", item.network)
+            let value = parseFloat(tnftBalance);
+            totalValue = value;
+        } else if (item.network === 'Polygon' && item.type == 'ALIA') {
+            console.log("Item network", item.network)
+            let value = parseFloat(talBalance);
+            totalValue = value;
+            console.log("Total value is ", totalValue)
         }
         return totalValue;
     }
@@ -371,11 +358,12 @@ const SendScreen = (props) => {
         const publicAddress = wallet?.address;
         const privKey = wallet.privateKey;
         const toAddress = address;
+        const { item, type, setLoading } = props;
         setLoading(true);
+
         switch (type) {
             case 'ETH':
-                // let ethBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "eth", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
                     console.log("ethBalance", ethBalance);
                     if (ethBalance.success) {
                         showSuccessAlert();
@@ -386,25 +374,11 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-
                 return;
             case 'USDT':
-                // let usdtBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "usdt", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "usdt", "ethereum", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
                     console.log("usdtBalance", usdtBalance);
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
-                return;
-            case 'BNB':
-                // let bnbBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "bnb", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
-                    console.log("bnbBalance", bnbBalance);
-                    if (bnbBalance.success) {
+                    if (usdtBalance.success) {
                         showSuccessAlert();
                     }
                     setLoading(false);
@@ -415,33 +389,56 @@ const SendScreen = (props) => {
                 });
 
                 return;
-            case 'BUSD':
-                // let busdBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "busd", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
-                    console.log("busdBalance", busdBalance);
+            case 'BNB':
+                transfer(publicAddress, privKey, amount, toAddress, "bnb", "binance", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
+                    console.log("bnbBalance", bnbBalance);
+                    if (bnbBalance.success) {
+                        showSuccessAlert();
+                    }
                     setLoading(false);
                 }).catch((err) => {
                     console.log("err", err);
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-
+                return;
+            case 'BUSD':
+                transfer(publicAddress, privKey, amount, toAddress, "busd", "binance", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
+                    console.log("busdBalance@@@@", busdBalance);
+                    showSuccessAlert();
+                    setLoading(false);
+                }).catch((err) => {
+                    console.log("err", err);
+                    setLoading(false);
+                    showErrorAlert(err.msg);
+                });
                 return;
             case 'ALIA':
-                // let aliaBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
-                    console.log("aliaBalance", aliaBalance);
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
+                item.network === "BSC" ?
+                    transfer(publicAddress, privKey, amount, toAddress, "alia", "binance", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
+                        console.log("tnftBalance======>", tnftBalance);
+                        setLoading(false);
+                        if (tnftBalance.success) {
+                            showSuccessAlert();
+                        }
+                    }).catch((err) => {
+                        console.log("err", err);
+                        setLoading(false);
+                        showErrorAlert(err.msg);
+                    }) : transfer(publicAddress, privKey, amount, toAddress, "alia", "polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
+                        console.log("talBalance=====>", talBalance);
+                        setLoading(false);
+                        if (talBalance.success) {
+                            showSuccessAlert();
+                        }
+                    }).catch((err) => {
+                        console.log("err", err);
+                        setLoading(false);
+                        showErrorAlert(err.msg);
+                    });
                 return;
             case 'Matic':
-                // let maticBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "matic", "", "", environment.polRpc, 10, 21000).then((maticBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", "", " ", environment.polRpc, 10, 21000).then((maticBalance) => {
                     console.log("maticBalance", maticBalance);
                     if (maticBalance.success) {
                         showSuccessAlert();
@@ -455,9 +452,9 @@ const SendScreen = (props) => {
 
                 return;
             case 'USDC':
-                // let usdcBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "usdc", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
+                transfer(publicAddress, privKey, amount, toAddress, "usdc", "polygon", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
                     console.log("usdcBalance", usdcBalance);
+                    showSuccessAlert();
                     setLoading(false);
                 }).catch((err) => {
                     console.log("err", err);
@@ -467,9 +464,8 @@ const SendScreen = (props) => {
 
                 return;
             case 'TNFT':
-                // let aliaBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
-                    console.log("tnftBalance", tnftBalance);
+                transfer(publicAddress, privKey, amount, toAddress, "tnft", "binance", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
+                    console.log("tnftBalance======>", tnftBalance);
                     setLoading(false);
                     if (tnftBalance.success) {
                         showSuccessAlert();
@@ -481,9 +477,8 @@ const SendScreen = (props) => {
                 });
 
             case 'TAL':
-                // let aliaBalance = await
-                transfer(publicAddress, privKey, amount, toAddress, "alia", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
-                    console.log("talBalance", talBalance);
+                transfer(publicAddress, privKey, amount, toAddress, "tal", "polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
+                    console.log("talBalance=====>", talBalance);
                     setLoading(false);
                     if (talBalance.success) {
                         showSuccessAlert();
@@ -493,8 +488,18 @@ const SendScreen = (props) => {
                     setLoading(false);
                     showErrorAlert(err.msg);
                 });
-
-
+            case 'WETH':
+                transfer(publicAddress, privKey, amount, toAddress, "weth", "polygon", environment.wethCont, environment.wethAbi, environment.polRpc, 10, 81778).then((wethBalance) => {
+                    console.log("ethBalance", wethBalance);
+                    setLoading(false);
+                    if (talBalance.success) {
+                        showSuccessAlert();
+                    }
+                }).catch((err) => {
+                    console.log("err", err);
+                    setLoading(false);
+                    showErrorAlert(err.msg);
+                });
             default:
         }
     }
@@ -502,7 +507,7 @@ const SendScreen = (props) => {
     const showSuccessAlert = () => {
         Alert.alert(
             translate("wallet.common.transferInProgress", { token: `${amount} ${type}` }),
-            '',
+            translate("wallet.common.reflectInHistory", { token: `${amount} ${type}` }),
             [
                 {
                     text: 'OK',
@@ -547,6 +552,7 @@ const SendScreen = (props) => {
                             onChangeText={(e) => {
                                 let value = amountValidation(e, amount);
                                 if (value) {
+
                                     setAmount(value);
                                 } else {
                                     setAmount('');
@@ -561,6 +567,7 @@ const SendScreen = (props) => {
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
+
                             if (address && address !== '' && amount > 0) {
                                 if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
                                     setLoading(true);
@@ -582,12 +589,11 @@ const SendScreen = (props) => {
             </KeyboardAwareScrollView>
         </View>
     )
-}
+});
 
 const Send = ({ route, navigation }) => {
 
     const { item, type } = route.params;
-
     const [loading, setLoading] = useState(false);
     const [sendToAddress, setSendToAddress] = useState(null);
     const [amountToSend, setAmountToSend] = useState('');
@@ -597,7 +603,6 @@ const Send = ({ route, navigation }) => {
         { key: 'Send', title: translate("wallet.common.send") },
         { key: 'Scan', title: translate("wallet.common.scan") },
     ]);
-
     const setResult = (address, amount) => {
         setAmountToSend(amount);
         setSendToAddress(address);
@@ -633,6 +638,7 @@ const Send = ({ route, navigation }) => {
                 style={styles.tabItem}
                 inactiveColor={Colors.sectionLabel}
                 activeColor={Colors.scanActive}
+                lazy={true}
             />
         )
     }
@@ -644,37 +650,18 @@ const Send = ({ route, navigation }) => {
                     showBackButton
                     title={translate("wallet.common.send")}
                 />
-
                 <TabView
+                    lazy={true}
                     renderTabBar={renderTabBar}
                     navigationState={{ index, routes }}
                     renderScene={_renderScene}
-                    onIndexChange={async index => {
-                        if (index) {
-                            const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-
-                            if (!isGranted) {
-                                confirmationAlert(
-                                    translate("wallet.common.cameraPermissionHeader"),
-                                    translate("wallet.common.cameraPermissionMessage"),
-                                    translate("common.Cancel"),
-                                    translate("wallet.common.settings"),
-                                    () => openSettings(),
-                                    () => null
-                                )
-                            } else {
-                                setIndex(index);
-                            }
-                        } else {
-                            setIndex(index);
-                        }
+                    onIndexChange={index => {
+                        setIndex(index);
                     }}
                     style={styles.tabItem}
                 />
             </KeyboardAvoidingView>
-
         </AppBackground>
-
     )
 }
 
@@ -682,7 +669,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexGrow: 1,
-        padding: wp("5%")
+        padding: wp("5%"),
     },
     scene: {
         flex: 1,
@@ -784,6 +771,11 @@ const styles = StyleSheet.create({
     cameraNotAuth: {
         textAlign: 'center',
         fontSize: 16,
+    },
+    cameraContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })
 

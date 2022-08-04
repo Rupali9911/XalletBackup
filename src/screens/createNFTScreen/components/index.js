@@ -42,8 +42,8 @@ export const CardField = props => {
               ? 'flex-start'
               : 'center'
             : 'center',
-            justifyContent: "space-between",
-          borderColor:props.inputProps.value
+          justifyContent: "space-between",
+          borderColor: props.inputProps.value
         },
         props.contStyle,
       ]}>
@@ -52,14 +52,14 @@ export const CardField = props => {
         {...props.inputProps}
         style={[styles.field, {
           flex: !pressable ? null : 1,
-          paddingVertical: !pressable? 0 : hp("2%"),
+          paddingVertical: !pressable ? 0 : hp("2%"),
         }]}
       />
       {props.showRight ? (
         props.rightComponent ? (
           props.rightComponent
         ) : (
-          <Image source={IMAGES.downArrow} style={{...styles.imageStyles(3.5), marginRight: wp('3%') }} />
+          <Image source={IMAGES.downArrow} style={{ ...styles.imageStyles(3.5), marginRight: wp('3%') }} />
         )
       ) : null}
     </TouchableOpacity>
@@ -89,6 +89,7 @@ export const CardButton = props => {
 };
 
 export const TabModal = (props) => {
+  const [clicked, setClicked] = React.useState(false)
   return (
     <Modal
       {
@@ -114,17 +115,25 @@ export const TabModal = (props) => {
             return (
               <TouchableOpacity
                 key={i}
-                onPress={() => props.itemPress(v)}
+                disabled={clicked}
+                onPress={() => {
+                  setClicked(true)
+                  props.itemPress(v)
+                  setTimeout(() => {
+                    setClicked(false)
+                  }, 100);
+                }
+                }
                 style={styles.modalItem}>
                 <Text style={styles.listLabel}>
                   {
                     props.data.hasOwnProperty("translate") ?
-                    (v.hasOwnProperty(props.data.translate) ?
-                     translate(v[props.data.translate]) :
-                     v[props.renderItemName] ) :
-                        props.renderItemName ?
-                          v[props.renderItemName] :
-                          v
+                      (v.hasOwnProperty(props.data.translate) ?
+                        translate(v[props.data.translate]) :
+                        v[props.renderItemName]) :
+                      props.renderItemName ?
+                        v[props.renderItemName] :
+                        v
                   }
                 </Text>
               </TouchableOpacity>
@@ -150,7 +159,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     fontSize: RF(1.5),
     color: colors.BLUE5,
-    padding:"0.5%",
+    padding: "0.5%",
     fontFamily: fonts.PINGfANG_SBOLD,
     marginTop: hp('1%'),
   },

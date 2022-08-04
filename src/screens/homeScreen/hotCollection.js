@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Linking,
   StatusBar,
   Text,
   View,
@@ -21,32 +22,96 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 
 const HotCollection = () => {
-  const { HotCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  let timer = null;
+
+  // =============== Getting data from reducer ========================
+  const { HotCollectionReducer } = useSelector(state => state);
+
+  //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
 
+  //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      console.log("hot collection",)
-      dispatch(hotCollectionLoadStart());
-      dispatch(hotCollectionListReset());
-      getHotCollection(1);
-      dispatch(hotCollectionPageChange(1))
-      setIsFirstRender(false)
+      timer = setTimeout(() => {
+        console.log("hot collection",)
+        dispatch(hotCollectionLoadStart());
+        dispatch(hotCollectionListReset());
+        getHotCollection(1);
+        dispatch(hotCollectionPageChange(1))
+        setIsFirstRender(false)
+      }, 100);
     }
+    return () => clearTimeout(timer);
   }, [isFocused]);
 
+  //===================== Dispatch Action to Fetch Hot Collection NFT List =========================
   const getHotCollection = useCallback((page) => {
     dispatch(hotCollectionList(page));
   }, []);
+
+  // ===================== Render Hot Collectio NFT Flatlist ===================================
+  const renderHotCollectioNFTList = () => {
+    return (
+      <FlatList
+        data={HotCollectionReducer.hotCollectionList}
+        horizontal={false}
+        numColumns={2}
+        initialNumToRender={14}
+        onRefresh={handleFlatlistRefresh}
+        refreshing={
+          HotCollectionReducer.hotCollectionPage === 1 &&
+          HotCollectionReducer.hotCollectionLoading
+        }
+        renderItem={memoizedValue}
+        // onEndReached={handleFlastListEndReached}
+        onEndReachedThreshold={0.4}
+        keyExtractor={keyExtractor}
+        ListFooterComponent={renderFooter}
+        pagingEnabled={false}
+        legacyImplementation={false}
+      />
+    )
+  }
+
+  // ===================== Render No NFT Function ===================================
+  const renderNoNFT = () => {
+    return (
+      <View style={styles.sorryMessageCont}>
+        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+      </View>
+    )
+  }
+
+  //=================== Flatlist Functions ====================
+  const handleFlatlistRefresh = () => {
+    dispatch(hotCollectionLoadStart());
+    handleRefresh();
+  }
 
   const handleRefresh = () => {
     dispatch(hotCollectionListReset());
     getHotCollection(1);
     dispatch(hotCollectionPageChange(1));
   };
+
+  //============= This function is not calling from anywhere (Unused) ============
+  const handleFlastListEndReached = () => {
+    if (
+      !HotCollectionReducer.hotCollectionLoading &&
+      HotCollectionReducer.hotCollectionTotalCount !==
+      HotCollectionReducer.hotCollectionList.length
+    ) {
+      let num = HotCollectionReducer.hotCollectionPage + 1;
+      getHotCollection(num);
+      dispatch(hotCollectionPageChange(num));
+    }
+  }
+  //=====================================================
+  const keyExtractor = (item, index) => { return 'item_' + index }
 
   const renderFooter = () => {
     if (!HotCollectionReducer.hotCollectionLoading) return null;
@@ -63,8 +128,16 @@ const HotCollection = () => {
         collectionName={item.collectionName}
         creatorInfo={item.creatorInfo}
         blind={item.blind}
+        colId={item._id}
         onPress={() => {
-          navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          if (item.collectionName !== 'NFTART AWARD 2021') {
+            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          } else {
+            Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021')
+              .catch(err => {
+                console.error("Failed opening page because: ", err)
+              })
+          }
         }}
       />
     );
@@ -75,55 +148,16 @@ const HotCollection = () => {
     [HotCollectionReducer.hotCollectionList],
   );
 
-  const handleFlatlistRefresh = () => {
-    dispatch(hotCollectionLoadStart());
-    handleRefresh();
-  }
-  const handleFlastListEndReached = () => {
-    if (
-      !HotCollectionReducer.hotCollectionLoading &&
-      HotCollectionReducer.hotCollectionTotalCount !==
-      HotCollectionReducer.hotCollectionList.length
-    ) {
-      let num = HotCollectionReducer.hotCollectionPage + 1;
-      getHotCollection(num);
-      dispatch(hotCollectionPageChange(num));
-    }
-  }
-  const keyExtractor = (item, index) => { return 'item_' + index }
-
+  //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       {isFirstRender ? isFirstRender : HotCollectionReducer.hotCollectionPage === 1 &&
         HotCollectionReducer.hotCollectionLoading ? (
         <Loader />
-      ) : HotCollectionReducer.hotCollectionList.length !== 0 ? (
-        <FlatList
-          data={HotCollectionReducer.hotCollectionList}
-          horizontal={false}
-          numColumns={2}
-          initialNumToRender={14}
-          onRefresh={handleFlatlistRefresh}
-          refreshing={
-            HotCollectionReducer.hotCollectionPage === 1 &&
-            HotCollectionReducer.hotCollectionLoading
-          }
-          renderItem={memoizedValue}
-          // onEndReached={handleFlastListEndReached}
-          onEndReachedThreshold={0.4}
-          keyExtractor={keyExtractor}
-          ListFooterComponent={renderFooter}
-          pagingEnabled={false}
-          legacyImplementation={false}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
+      ) : HotCollectionReducer.hotCollectionList.length !== 0 ? renderHotCollectioNFTList() : renderNoNFT()}
     </View>
   );
 };
 
-export default HotCollection;
+export default React.memo(HotCollection);

@@ -61,13 +61,17 @@ const Collections = props => {
         : NftDataCollectionReducer.nftDataCollectionLoading;
     const collectionList = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : NftDataCollectionReducer.nftDataCollectionList;
+        : collectionType == 1 ?
+            NftDataCollectionReducer.mysteryBoxCollectionList :
+            NftDataCollectionReducer.nftDataCollectionList;
     const page = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
         : NftDataCollectionReducer.nftDataCollectionPage;
     const totalCount = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : NftDataCollectionReducer.nftDataCollectionTotalCount;
+        : collectionType == 1 ?
+            NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
+            NftDataCollectionReducer.nftDataCollectionTotalCount;
 
     useEffect(() => {
         if (isSeries) {
@@ -109,7 +113,7 @@ const Collections = props => {
                         page,
                         collectionAddress,
                         BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                        seriesInfoId, 
+                        seriesInfoId,
                         nftChain
                     ),
                 );
@@ -148,7 +152,14 @@ const Collections = props => {
     };
 
     const renderItem = ({ item, index }) => {
-        let findIndex = collectionList.findIndex(x => x.id === item.id);
+        let findIndex
+        if (item?._id) {
+            findIndex = collectionList.findIndex(x => x?._id === item?._id);
+        }else{
+            findIndex = collectionList.findIndex(x => x?.id === item?.id);
+        }
+         
+       // console.log('findIndex', findIndex, 'collectionList', collectionList)
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         if (isStore || seriesInfoId) {
             return (
@@ -230,7 +241,7 @@ const Collections = props => {
                     isCollection={!isHotCollection}
                     cryptoAllowed={item?.cryptoAllowed}
                     onPress={() => {
-                        console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item)
+                        // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
                         if (isBlind) {
                             navigation.push('CollectionDetail', {
                                 isBlind: true,

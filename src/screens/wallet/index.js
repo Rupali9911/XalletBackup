@@ -206,7 +206,7 @@ const Wallet = ({ route, navigation }) => {
         setTotalValue(value);
       }
     }
-  }, [networkType, ethBalance, bnbBalance, maticBalance]);
+  }, [networkType, wethBalance, bnbBalance, maticBalance]);
 
   const setBalanceField = () => {
     let totalValue = 0;
@@ -218,7 +218,6 @@ const Wallet = ({ route, navigation }) => {
     } else if (networkType.name == 'BSC') {
       // for mainnet
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-
       // for testing
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
       let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
@@ -228,14 +227,19 @@ const Wallet = ({ route, navigation }) => {
     } else if (networkType.name == 'Polygon') {
       //for mainnet
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-
       // for testing
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
       let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
-      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-      let value = maticValue + talValue + usdctValue + wethValue;
+      let value=""
+      if (networkType=='testnet'){
+         value = maticValue + talValue + usdctValue ;
+      }else{
+        let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+        value = maticValue + talValue + usdctValue + wethValue ;
+      }
       totalValue = value;
+
     }
     return totalValue;
   };
@@ -321,7 +325,7 @@ const Wallet = ({ route, navigation }) => {
             BNB: responses[0],
             ETH: responses[1],
             MATIC: responses[2],
-            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+            ALIA: parseFloat(responses[0])/ parseFloat(responses[3]),
           };
           setCurrencyPriceDollar(balances);
           setLoading(false);
@@ -353,7 +357,6 @@ const Wallet = ({ route, navigation }) => {
           environment.bnbRpc,
           'busd',
         ),
-        // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
       ];
 
       Promise.all(balanceRequests)
@@ -363,7 +366,7 @@ const Wallet = ({ route, navigation }) => {
             BNB: responses[0],
             TNFT: responses[1],
             BUSD: responses[2],
-            // ALIA: responses[3],
+            ALIA: responses[3],
           };
           dispatch(updateBSCBalances(balances));
           setBalances(balances);
@@ -407,16 +410,19 @@ const Wallet = ({ route, navigation }) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
+
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
             USDC: responses[2],
             WETH: responses[3],
           };
+
           dispatch(updatePolygonBalances(balances));
           setBalances(balances);
           setLoading(false);
           resolve();
+          console.log("balance po######", balances)
         })
         .catch(err => {
           console.log('err', err);
@@ -468,6 +474,7 @@ const Wallet = ({ route, navigation }) => {
             environment.bnbRpc,
             'busd',
           ),
+
           // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
           // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
         ];
@@ -599,7 +606,7 @@ const Wallet = ({ route, navigation }) => {
         values={balances}
         network={networkType}
         onTokenPress={item => {
-          console.log('Token details transfered', item);
+          console.log('Token details transfered######', item);
           navigation.navigate('tokenDetail', { item });
         }}
         onRefresh={onRefreshToken}

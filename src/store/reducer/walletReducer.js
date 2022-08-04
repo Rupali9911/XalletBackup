@@ -4,6 +4,8 @@ import { resolve } from 'path-browserify';
 import {
     ADD_ETH_TRANSACTION,
     ADD_BNB_TRANSACTION,
+   // ADD_TNFT_TRANSACTION,
+    ADD_USDC_TRANSACTION,
     ADD_MATIC_TRANSACTION,
     ADD_ALL_ETH_TRANSACTIONS,
     ADD_ALL_BNB_TRANSACTIONS,
@@ -21,7 +23,6 @@ import ImagesSrc from "../../constants/Images";
 // import {BASE_URL} from "../../helpers/ApiRequest";
 import { BASE_URL } from '../../common/constants';
 
-
 const initialState = {
     ethTransactions: [],
     ethBalance: "0",
@@ -29,10 +30,13 @@ const initialState = {
     bnbBalance: "0",
     maticTransactions: [],
     maticBalance: "0",
-    tnftTransactions: [],
+    Transactions: [],
+    tnftTransactions:[],
     tnftBalance: "0",
     talTransactions: [],
     talBalance: "0",
+    aliaTransactions:[],
+    aliaBalance: "0",
     busdTransactions: [],
     busdBalance: "0",
     usdtTransactions: [],
@@ -69,7 +73,8 @@ export default walletReducer = (state = initialState, action) => {
         case ADD_ALL_ETH_TRANSACTIONS:
             return {
                 ...state,
-                ethTransactions: [...action.payload]
+                ethTransactions: [...action.payload],
+                usdtTransactions: [...action.payload]
             };
 
         case ADD_BNB_TRANSACTION:
@@ -84,11 +89,27 @@ export default walletReducer = (state = initialState, action) => {
                     ...state
                 }
             }
+        case ADD_USDC_TRANSACTION:
+            let isUsdcExist = state.usdcTransactions.findIndex((_item) => _item.hash == action.payload.hash);
+            if (isUsdcExist == -1) {
+                return {
+                    ...state,
+                    usdcTransactions: [...state.usdcTransactions, action.payload]
+                };
+            } else {
+                return {
+                    ...state
+                }
+            }
 
         case ADD_ALL_BNB_TRANSACTIONS:
             return {
                 ...state,
-                bnbTransactions: [...action.payload]
+                bnbTransactions: [...action.payload],
+                tnftTransactions: [...action.payload],
+                busdTransactions: [...action.payload],
+                aliaTransactions: [...action.payload]
+
             };
 
         case ADD_MATIC_TRANSACTION:
@@ -96,7 +117,8 @@ export default walletReducer = (state = initialState, action) => {
             if (isMaticExist == -1) {
                 return {
                     ...state,
-                    maticTransactions: [...state.maticTransactions, action.payload]
+                    maticTransactions: [...state.maticTransactions, action.payload],
+
                 };
             } else {
                 return {
@@ -107,8 +129,13 @@ export default walletReducer = (state = initialState, action) => {
         case ADD_ALL_MATIC_TRANSACTIONS:
             return {
                 ...state,
-                maticTransactions: [...action.payload]
+                maticTransactions: [...action.payload],
+                talTransactions: [...action.payload],
+                usdcTransactions: [...action.payload],
+                wethTransactions: [...action.payload],
+                aliaTransactions: [...action.payload],
             };
+
 
         case UPDATE_BALANCES:
             return {
@@ -119,7 +146,9 @@ export default walletReducer = (state = initialState, action) => {
                 tnftBalance: action.payload.TNFT, // for testnet only
                 talBalance: action.payload.TAL, // for testnet only
                 usdtBalance: action.payload.USDT,
-                busdBalance: action.payload.BUSD
+                busdBalance: action.payload.BUSD,
+                wethBalance: action.payload.WETH,
+                aliaBalance: action.payload.ALIA
             }
 
         case UPDATE_ETH_BALANCES:
@@ -143,7 +172,8 @@ export default walletReducer = (state = initialState, action) => {
                 maticBalance: action.payload.Matic,
                 talBalance: action.payload.TAL, // for testnet only,
                 usdcBalance: action.payload.USDC,
-                wethBalance: action.payload.WETH
+                wethBalance: action.payload.WETH,
+                //aliaBalance: action.payload.ALIA,
             }
 
         case SET_CONNECTED_APPS:
@@ -192,6 +222,10 @@ export const addAllEthTransactions = (data) => ({
 
 export const addBnbTransaction = (data) => ({
     type: ADD_BNB_TRANSACTION,
+    payload: data
+});
+export const addTnftTransaction = (data) => ({
+    type: ADD_TNFT_TRANSACTION,
     payload: data
 });
 
@@ -246,11 +280,12 @@ export const setRequestAppId = (data) => ({
 });
 
 
-export const getTransactions = (address, type) => (dispatch) =>
+export const getTransactions = (address, type,coin) => (dispatch) =>
     new Promise((resolve, reject) => {
         const data = {
             addr: address,
-            type: type
+            type: type,
+            coin:coin
         }
         let fetch_request_param = {
             method: 'GET',

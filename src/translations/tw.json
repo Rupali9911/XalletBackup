@@ -432,6 +432,7 @@
         "currentprice": " 目前的价格",
         "lastprice": "最后价格 ",
         "noNFT": "没有可用的 NFT ",
+        "noNFTsFound": "未找到 NFT", 
         "Selectcardtopay": "选择要支付的卡",
         "Selectbasecurrency": "选择货币类型（ALIA 或 USD） ",
         "profileupdate": "更新成功！",
@@ -591,6 +592,7 @@
         "cmingsoon": "即將推出",
         "gallery": " 畫廊",
         "notforsale": "不出售",
+        "activity": "活動",
         "changeNetword": "钱包在币安智能链（BSC）上可用",
         "blanceLow": "你没有足够的余额。",
         "invalidOtp": "您输入的一次性密码无效",
@@ -649,7 +651,11 @@
         "passwordlengthshort": "密碼長度必須至少為八個字符。",
         "blindboxCollections": "神秘盒子",
         "zoomMail": "縮放郵件",
-        "amountMoreThan": "金額不得超過 999,999.99 美元"
+        "amountMoreThan": "金額不得超過 999,999.99 美元",
+        "toFilter": "到",
+        "ongoinglaunch": "進行中",
+        "CNcreatorname":"創作者姓名",
+        "CNcreatordesc":"創作者描述"
     },
     "AwardPage": {},
     "wallet": {
@@ -989,7 +995,9 @@
             "updatePrice": "價格更新",
             "bidaward": "中標",
             "transferFrom": "轉移",
-            "closeTimeWarn": "關閉時間應大於打開時間"
+            "closeTimeWarn": "關閉時間應大於打開時間",
+            "descriptionCreate": "描述",    
+            "reflectInHistory": "（完成後會反映在交易記錄中）"
         },
         "backendmessage": {
             "error": {},

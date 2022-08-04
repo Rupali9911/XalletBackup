@@ -1,11 +1,9 @@
-import { StyleSheet } from 'react-native';
-
+import { Platform, StyleSheet } from 'react-native';
 import { colors, fonts } from '../../res';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp, responsiveFontSize as RF, SIZE } from '../../common/responsiveFunction';
 import CommonStyles from '../../constants/styles';
 import Colors from '../../constants/Colors';
-import {COLORS} from "../../constants";
-
+import { COLORS } from "../../constants";
 const styles = StyleSheet.create({
     container: {
         //backgroundColor: colors.RED1,
@@ -52,7 +50,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    headerView:{
+    headerView: {
         maxWidth: wp('20%')
     },
     userCircle: {
@@ -72,7 +70,7 @@ const styles = StyleSheet.create({
         margin: 2
     },
     headerMenuContainer: {
-        flex:1,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 1,
-        borderRadius:wp("5"),
+        borderRadius: wp("5"),
         elevation: 5,
     },
     nftListItem: {
@@ -134,21 +132,18 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 1,
-
         elevation: 5,
     },
     listItemContainer: {
-
         width: "100%",
         borderRadius: SIZE(20),
         overflow: 'hidden',
-
     },
     collectionListImage: {
         width: '100%',
         height: (wp('100%') / 3) - wp('1%'),
         resizeMode: 'stretch',
-       // backgroundColor:"red",
+        // backgroundColor:"red",
         borderTopRightRadius: SIZE(12),
         borderTopLeftRadius: SIZE(12),
     },
@@ -170,35 +165,32 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomRightRadius: SIZE(12),
         borderBottomLeftRadius: SIZE(12),
-        height: (wp('100%') / 3) - wp('1%'),
+        height: Platform.OS === 'android' ? (wp('100%') / 2.9) - wp('1%') : (wp('100%') / 3) - wp('1%'),
         justifyContent: 'space-between',
         alignItems: 'center'
     },
     bottomWrap: {
-        //flexDirection: 'row',
-        marginTop:'1%',
-        height:"35%",
-        //backgroundColor:'red',
+        marginTop: '1%',
+        height: Platform.OS === 'android' ? "26%" : "35%",
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%'
     },
-    chainitem:{
+    chainitem: {
         //backgroundColor:'red'
     },
-    renderchainstyle:{
-        flexDirection:'row',
-        width:"50%",
-         justifyContent:'center',
+    renderchainstyle: {
+        flexDirection: 'row',
+        width: "50%",
+        justifyContent: 'center',
 
     },
-    chaintypeflatlist:{
-        width:"100%",
-       justifyContent:"center",
-        alignItems:'center'
+    chaintypeflatlist: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: 'center'
     },
     bottomCenterWrap: {
-
         position: 'absolute',
         top: 0,
         right: 0,
@@ -210,19 +202,27 @@ const styles = StyleSheet.create({
     byUser: {
         color: '#4b5fff',
         fontSize: SIZE(12),
-        marginBottom: SIZE(25),
+        marginBottom: SIZE(24),
     },
     collectionName: {
         color: '#23262f',
         fontSize: SIZE(14),
-        marginBottom: SIZE(6),
-
+        marginBottom: SIZE(3),
+        marginHorizontal: SIZE(5)
     },
-    soldOutText:{
+    soldOutText: {
         color: COLORS.greenLight,
         fontSize: SIZE(12),
         marginVertical: SIZE(10),
     },
+    verifyIcon: {
+        position: 'absolute',
+        top: 9,
+        right: 72,
+        width: SIZE(14),
+        height: SIZE(14),
+        borderRadius: SIZE(10)
+    }
 })
 
 export default styles;

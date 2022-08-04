@@ -1,26 +1,23 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
 import {
-    ActivityIndicator,
     FlatList,
     StatusBar,
-    Text,
     View,
-    TouchableOpacity,
-    Linking
 } from 'react-native';
-import {networkType} from "../../common/networkType";
-import {colors} from '../../res';
-
+import { networkType } from "../../common/networkType";
+import { colors } from '../../res';
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
-import {launchpadData} from "../LaunchPadDetail/launchpadData";
-
+import { launchpadData } from "../LaunchPadDetail/launchpadData";
 
 const LaunchPad = () => {
+
     const navigation = useNavigation();
-    const renderItem = ({item}) => {
-      return (
+
+    //=====================(Render Flatlist Item Function)=============================
+    const renderItem = ({ item }) => {
+        return (
             <LaunchPadItemData
                 bannerImage={item.bannerImage}
                 chainType={item.chainType || 'polygon'}
@@ -31,38 +28,31 @@ const LaunchPad = () => {
                 status={item.status}
                 creatorInfo={item.creatorInfo}
                 blind={item.blind}
-                disabled={(networkType === "testnet" || item.status ===  "comingSoon") ? true : false}
+                collectionId={item._id}
+                disabled={(networkType === "testnet" || item.status === "comingSoon") ? true : false}
                 onPress={() => {
-                    console.log('LaunchPad ========', item);
-                    item.collectionName === 'NFTART AWARD 2021' ? Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021') : item.status !==  "comingSoon" ? navigation.push('CollectionDetail', {
-                        isBlind: true,
-                        collectionId: item._id,
-                        isHotCollection: false
-                    }): null;
-                    //navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
-
-                    //   if (item.redirect) {
-                    //   navigation.push('CollectionDetail',
-                    //   {
-                    //     isBlind: false,
-                    //     collectionId: item._id,
-                    //     isHotCollection: true,
-                    //     isStore: item.redirect,
-                    //   });
-                    // } else if (item.blind) {
-                    //   console.log('LaunchPad ========collection tab => blind1', item.blind, item.collectionId)
-                    //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-                    // } else {
-                    //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-                    // }
-
+                    console.log('========Launch tab =>', item);
+                    if (item.status !== "comingSoon") {
+                        if (item.blind) {
+                            console.log('========Launch tab => blind1 75', { isBlind: true, collectionId: item._id, isHotCollection: false })
+                            navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
+                        } else {
+                            console.log("========Launch tab => ~ line 79", { isBlind: false, collectionId: item._id, isHotCollection: true })
+                            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+                        }
+                    }
                 }}
             />
         );
     };
+
+    //=====================(Main return Function)=============================
     return (
         <View style={styles.trendCont}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.white}/>
+            <StatusBar
+                barStyle="dark-content"
+                backgroundColor={colors.white}
+            />
             <FlatList
                 data={launchpadData}
                 horizontal={false}
@@ -72,9 +62,8 @@ const LaunchPad = () => {
                 pagingEnabled={false}
                 legacyImplementation={false}
             />
-
         </View>
     );
 };
 
-export default LaunchPad;
+export default React.memo(LaunchPad);

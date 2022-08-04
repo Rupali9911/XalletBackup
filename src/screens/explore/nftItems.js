@@ -103,7 +103,7 @@ export const handleLike = (wallet, data, nftItem) => {
             'Content-Type': 'application/json',
         },
     };
-   return Promise.all([
+    return Promise.all([
         fetch(url1, fetch_like_body).then(res => res.json()),
         fetch(url2, fetch_rating_body).then(res => res.json()),
     ])
@@ -134,22 +134,22 @@ function NftItem({
 
     const onTextLayout = useCallback(e => {
         if (
-            e.nativeEvent.lines.length >= 2 
+            e.nativeEvent.lines.length >= 2
             // &&
             // e.nativeEvent.lines[1].width > width - SIZE(40)
         )
             setLengthMore(true);
     }, []);
 
-    const creatorObj = nftItem.creatorObj[0];
-    const ownerObj = nftItem.buyerObj[0];
+    const creatorObj = Array.isArray(nftItem?.creatorObj) ? nftItem.creatorObj[0] : nftItem?.creatorObj;
+    const ownerObj =  Array.isArray(nftItem?.buyerObj) ? nftItem.buyerObj[0] : nftItem?.buyerObj;
 
     let creatorImageStatus;
     let creatorName;
     if (creatorObj) {
         creatorImageStatus = creatorObj.hasOwnProperty("profile_image");
         creatorName = (creatorObj.hasOwnProperty("title") && creatorObj.title) ? creatorObj.title :
-            creatorObj.username.substring(0, 10);
+            creatorObj.username.substring(0, 6);
     } else {
         creatorImageStatus = false
         creatorName = "---"
@@ -160,7 +160,7 @@ function NftItem({
     if (ownerObj) {
         ownerImageStatus = ownerObj.hasOwnProperty("profile_image");
         ownerName = (ownerObj.hasOwnProperty("title") && ownerObj.title) ? ownerObj.title :
-            ownerObj.username.substring(0, 10);
+        ownerObj?.username?.substring(0, 6);
     } else {
         ownerImageStatus = false
         ownerName = "---"
@@ -206,7 +206,7 @@ function NftItem({
                 <Flex flex={1}>
                     <Pressable onPress={() => avatarpress("owner")} _pressed={{ opacity: 60 }} >
                         <HStack >
-                            <AvatarImage creatorImageStatus={ownerImageStatus ? ownerObj.profile_image : false} />
+                            <AvatarImage creatorImageStatus={ownerImageStatus ? ownerObj?.profile_image : false} />
                             <Box px="3">
                                 <Label label={translate('common.owner')} />
                                 <Name label={ownerName} />
@@ -225,11 +225,11 @@ function NftItem({
                     onPress={() => {
                         isPlay
                             ? setPlay(!isPlay)
-                            : navigation.navigate('CertificateDetail', {
+                            :
+                            navigation.navigate('CertificateDetail', {
                                 owner: nftItem.buyerUser,
                                 ownerData: ownerObj,
                                 artistId: nftItem.creator,
-                                collectCreat: nftItem.collectionObj[0],
                                 artistData: creatorObj,
                                 video: videoUri,
                                 fileType: fileType,

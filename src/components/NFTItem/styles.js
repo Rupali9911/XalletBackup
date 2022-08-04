@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
 
-borderRadius: wp("5"),
+    borderRadius: wp("5"),
 
     elevation: 5,
   },
@@ -83,7 +83,7 @@ borderRadius: wp("5"),
     backgroundColor: 'white',
     borderBottomRightRadius: SIZE(12),
     borderBottomLeftRadius: SIZE(12),
-    height: (hp('100%') / 8),
+    height: (hp('100%') / 7),
     justifyContent: 'space-between'
   },
   collectionWrapperBlind: {
@@ -135,6 +135,13 @@ borderRadius: wp("5"),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    bottom: SIZE(7)
+  },
+  chainView1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5
   },
   chainViewColumn: {
     flexDirection: 'row',
@@ -177,6 +184,6 @@ borderRadius: wp("5"),
     fontSize: SIZE(12),
     fontWeight: '700'
   },
-  newPrice: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }
+  newPrice: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', bottom: SIZE(5) }
 });
 export default styles;

@@ -37,6 +37,44 @@ export const hotCollectionList = (page) => {
     fetch(`${BASE_URL}/user/hot-collections?page=${page}&limit=24`)
       .then(response => response.json())
       .then(json => {
+        const obj = {
+          bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/NFTAward.png",
+          chainType: "",
+          collectionDesc: "This series is an exclusive collection of physical artwork/ original paintings exploring a symbiotic relationship between humanity and nature. It repr",
+          collectionId: "61c44353e5622d1a2e053f3e",
+          collectionName: "NFTART AWARD 2021",
+          collectionSymbol: "🎁🎗",
+          createdDate: 1640252243647,
+          creatorInfo: [
+            {
+              title: "XANALIA",
+              about: "I enjoy teaching art to my students, but more than that, I love creating it myself. NFTs are my newest passion, and I want to share my work with the world.",
+              createdAt: 1640167319857,
+              followers: 0,
+              following: 0,
+              links: { facebook: '', website: '', discord: '', twitter: '', instagram: '' },
+              nonce: null,
+              profile_image: "https://xanalia.s3.ap-southeast-1.amazonaws.com/userProfile/1640167427821.jpg",
+              role: "crypto",
+              transalte_again: 1,
+              username: "0x89e0f6dd2012648794aac8bd340dca3246f3da76",
+              _id: "61c2f7973cdaa90d7dcd31c3",
+            }
+          ],
+          iconImage: "https://ik.imagekit.io/xanalia/Images/XANALIA-ICON.png",
+          innerInfo: { _id: '61c9adbfa8a0114d059c89c3', collectionRequest: '61c44353e5622d1a2e053f3e', launchPadApproval: true, launchPadOrder: '5' },
+          items: null,
+          status: 0,
+          userId: "61c2f7973cdaa90d7dcd31c3",
+          userObjectId: "61c2f7973cdaa90d7dcd31c3",
+          _id: "61c44353e5622d1a2e053f3e",
+          status: "ongoinglaunch",
+          redirect: "/xanalia_nftart_award_2021",
+        }
+
+        const newData = [obj, ...json.data];
+        json.data = newData;
+
         dispatch(hotCollectionLoadSuccess(json));
 
       }).catch(err => {
@@ -60,8 +98,8 @@ export const getStoreCollectioDetail = () => {
   return axios.post(`${BASE_URL}/user/fetch-blind-data`, req_body);
 }
 
-export const getBoxes = (id,check) => {
-  if(check){
+export const getBoxes = (id, check) => {
+  if (check) {
     return axios.get(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${id}`)
   }
   return axios.get(`${BASE_URL}/blindBox/view-blind-series-info?collectionAddress=${id}&frontend=true`);

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React, { useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -15,6 +14,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions
 } from 'react-native';
 import { FAB } from 'react-native-paper';
 import {
@@ -37,10 +37,9 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
-import { colors, fonts } from '../../res';
+import { colors } from '../../res';
 import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
-import { setCameraPermission } from '../../store/reducer/cameraPermission';
-import { passShowStatusCall, updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
+import { updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AwardsNFT from './awardsNFT';
@@ -53,54 +52,46 @@ import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
 import { alertWithSingleBtn } from '../../utils';
-import LaunchPadItem from '../LaunchPadDetail/LaunchPadItem';
-import launchPad from "./launchPad"
+import LaunchPad from "./launchPad"
+import {
+  TabView,
+  TabBar,
+} from 'react-native-tab-view';
 
-const Tab = createMaterialTopTabNavigator();
 const HomeScreen = ({ navigation }) => {
+  // =============== Getting data from reducer ========================
   const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
-  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
+  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
   const { artistList, artistLoading, sort } = useSelector(
     state => state.ListReducer,
   );
   const { showSuccess, data } = useSelector(state => state.UserReducer);
+  const modalState = Platform.OS === 'android' ? false : showSuccess;
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
-  const [modalVisible, setModalVisible] = useState(showSuccess);
-  const [isSuccessVisible, setSuccessVisible] = useState(showSuccess);
+  //================== Components State Defination ===================
+  const [modalVisible, setModalVisible] = useState(modalState);
+  const [isSuccessVisible, setSuccessVisible] = useState(modalState);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
   const [openState, setOpenState] = useState(false);
-  const [currentTab, setCurrentTab] = useState(0);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'launch', title: translate('common.launchPad') },
+    { key: 'awards', title: 'Awards 2021' },
+    { key: 'hot', title: translate('common.hot') },
+    { key: 'collect', title: translate('wallet.common.collection') },
+    { key: 'art', title: translate('common.2DArt') },
+    { key: 'photo', title: translate('common.photo') },
+    { key: 'gif', title: 'gif' },
+    { key: 'video', title: translate('common.video') },
+    { key: 'hotCollection', title: translate('common.hotcollection') },
+  ]);
 
   const onStateChange = ({ open }) => setOpenState(open);
 
-  const appStateChange = async nextAppState => {
-    const languageCheck = await AsyncStorage.getItem('languageCheck');
-    let parseLanguageCheck = JSON.parse(languageCheck);
-    const passCheck = await AsyncStorage.getItem('@passcode');
-    let passVal = JSON.parse(passCheck);
-    if (nextAppState === 'active') {
-      if (parseLanguageCheck) {
-        if (parseLanguageCheck.cameraPermission) {
-          const granted = await Permission.checkPermission(
-            PERMISSION_TYPE.camera,
-          );
-          dispatch(setCameraPermission(granted));
-          AsyncStorage.removeItem('languageCheck');
-          return;
-        }
-      }
-      if (passVal && !passcodeAsyncStatus) {
-        setSuccessVisible(false)
-        setModalVisible(false)
-      dispatch(updatePassStatus(false))
-        navigation.navigate('PasscodeScreen', { screen: 'active' })
-      }
-    }
-  };
-
+  //===================== UseEffect Function =========================
   useFocusEffect(
     React.useCallback(() => {
       return () => setOpenState(false);
@@ -122,9 +113,7 @@ const HomeScreen = ({ navigation }) => {
         }
       }
     });
-
     AppState.addEventListener('change', appStateChange);
-
     if (requestAppId) {
       navigation.navigate('Connect', { appId: requestAppId });
     }
@@ -133,6 +122,29 @@ const HomeScreen = ({ navigation }) => {
       removeNetInfoSubscription();
     };
   }, [requestAppId]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      setTimeout(() => {
+        setModalVisible(showSuccess);
+        setSuccessVisible(showSuccess);
+      }, 1000)
+    }
+  }, [showSuccess]);
+
+  //================== App State Change Function =======================
+  const appStateChange = async nextAppState => {
+    const passCheck = await AsyncStorage.getItem('@passcode');
+    let passVal = JSON.parse(passCheck);
+    if (nextAppState === 'active') {
+      if (passVal && !passcodeAsyncStatus) {
+        setSuccessVisible(false)
+        setModalVisible(false)
+        dispatch(updatePassStatus(false))
+        navigation.navigate('PasscodeScreen', { screen: 'active' })
+      }
+    }
+  };
 
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
@@ -144,8 +156,214 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  // ===================== Render Screen Header =================================
+  const renderAppHeader = () => {
+    return (
+      <AppHeader
+        title={translate('common.home')}
+        showRightComponent={
+          <View style={styles.headerMenuContainer}>
+            <TouchableOpacity
+              onPress={() => onClickButton()}
+              hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+              <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onClickButton(userRole === 'crypto' ? 'Create' : '')}
+              hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+              <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
+            </TouchableOpacity>
+          </View>
+        }
+      />
+    )
+  }
+
+  const onClickButton = (from) => {
+    if (from == 'Certificate')
+      navigation.navigate('Certificate')
+    else if (from == 'Create')
+      navigation.navigate('Create')
+    else
+      alertWithSingleBtn(
+        translate('wallet.common.alert'),
+        translate('common.comingSoon'))
+  }
+
+  // ===================== Render Artist List ===================================
+  const renderArtistList = () => {
+    return (
+      <View>
+        {artistLoading ? (
+          <View
+            style={{
+              width: '100%',
+              height: hp('12%'),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="small" color={colors.themeR} />
+          </View>
+        ) : (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {artistList && artistList.length !== 0
+              ? artistList.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    style={styles.headerView}
+                    onPress={() => {
+                      const id =
+                        item.role === 'crypto' ? item.username : item._id;
+                      navigation.navigate('ArtistDetail', { id: id });
+                    }}
+                    key={`_${index}`}>
+                    <View style={styles.userCircle}>
+                      <C_Image
+                        uri={item.profile_image}
+                        type={item.profile_image}
+                        imageType="profile"
+                        imageStyle={{ width: '100%', height: '100%' }}
+                      />
+                    </View>
+                    <Text numberOfLines={1} style={styles.userText}>
+                      {getArtistName(item)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })
+              : null}
+          </ScrollView>
+        )}
+      </View>
+    )
+  }
+
+  const getArtistName = (item) => {
+    // let creatorName = item.title || item.username
+    let creatorName = item && typeof item === 'object' ?
+      item?.role === 'crypto' ?
+        item?.title?.trim() ? item.title :
+          item?.name?.trim() ? item.name :
+            item?.username?.trim() ? item.username :
+              item?._id ? item._id : ""
+
+        : item?.username?.trim() ? item.username :
+          item?.name?.trim() ? item.name :
+            item?.title?.trim() ? item.title :
+              item?._id ? item._id : ""
+      : item?._id ? item._id : ""
+
+    return creatorName;
+  }
+
+  // ===================== Render NFT Categories Tab View =======================
+  const renderNFTCategoriesTabs = () => {
+    return (
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        onIndexChange={handleIndexChange}
+        scrollEnabled={true}
+        initialLayout={{ width: Dimensions.get('window').width }}
+        lazy
+      />
+    )
+  }
+
+  const handleIndexChange = (index) => setIndex(index);
+
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      bounces={false}
+      scrollEnabled={true}
+      indicatorStyle={styles.indicator}
+      activeColor={colors.BLUE4}
+      inactiveColor={colors.GREY1}
+      style={styles.tabbar}
+      labelStyle={styles.label}
+      tabStyle={styles.tabStyle}
+    />
+  );
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'launch':
+        return <LaunchPad />;
+      case 'awards':
+        return <AwardsNFT />;
+      case 'hot':
+        return <HotNFT />;
+      case 'collect':
+        return <Collection />;
+      case 'art':
+        return <ArtNFT />;
+      case 'photo':
+        return <PhotoNFT />;
+      case 'gif':
+        return <GifNFT />;
+      case 'video':
+        return <MovieNFT />;
+      case 'hotCollection':
+        return <HotCollection />;
+      default:
+        return null;
+    }
+  };
+
+
+  // ===================== Render App Modal On Success & Notification) ==============
+  const renderAppModal = () => {
+    return (
+      <AppModal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        {isSuccessVisible ? (
+          <SuccessModalContent
+            onClose={() => {
+              setModalVisible(false);
+              dispatch(updateCreateState());
+            }}
+            onDonePress={() => {
+              setSuccessVisible(false);
+              checkPermissions();
+              dispatch(updateCreateState());
+            }}
+          />
+        ) : null}
+        {isNotificationVisible ? (
+          <NotificationActionModal
+            title={translate('wallet.common.setPushNotification')}
+            hint={translate('wallet.common.notificationHint')}
+            btnText={translate('wallet.common.enable')}
+            onClose={() => setModalVisible(false)}
+            onDonePress={() => {
+              setModalVisible(false);
+              Platform.OS === 'ios'
+                ? checkNotifications().then(({ status, settings }) => {
+                  if (status == 'denied') {
+                    requestNotifications(['alert', 'sound']).then(
+                      ({ status, settings }) => {
+                        console.log(status, settings, 'notification');
+                      },
+                    );
+                  }
+                  if (status == 'blocked') {
+                    Linking.openSettings();
+                  }
+                })
+                : openSettings();
+            }}
+          />
+        ) : null}
+      </AppModal>
+    )
+  }
+
+  //=============== Filter Component Functions =================
   const fabActions = useMemo(() => {
-    if (currentTab === 1) {
+    if (index === 1) {
       return [
         {
           icon: 'sort-variant',
@@ -205,18 +423,7 @@ const HomeScreen = ({ navigation }) => {
         onPress: () => dispatch(setSortBy('onAuction')),
       },
     ];
-  }, [currentTab]);
-
-  const onClickButton = (from) => {
-    if (from == 'Certificate')
-      navigation.navigate('Certificate')
-    else if (from == 'Create')
-      navigation.navigate('Create')
-    else
-      alertWithSingleBtn(
-        translate('wallet.common.alert'),
-        translate('common.comingSoon'))
-  }
+  }, [index]);
 
   const fab = () => {
     return (
@@ -244,253 +451,20 @@ const HomeScreen = ({ navigation }) => {
       />
     )
   }
-
   const FilterComponent = React.memo(fab);
 
-  const getArtistName = (item) => {
-    // let creatorName = item.title || item.username
-    let creatorName = item && typeof item === 'object' ?
-      item?.role === 'crypto' ?
-        item?.title?.trim() ? item.title :
-          item?.name?.trim() ? item.name :
-            item?.username?.trim() ? item.username :
-              item?._id ? item._id : ""
-
-        : item?.username?.trim() ? item.username :
-          item?.name?.trim() ? item.name :
-            item?.title?.trim() ? item.title :
-              item?._id ? item._id : ""
-      : item?._id ? item._id : ""
-
-    // console.log("🚀 ~ file: index.js ~ line 265 ~ getArtistName ~ creatorName",  item?.role, creatorName, item)
-    return creatorName;
-  }
-
-  // console.log("🚀 ~ file: index.js ~ line 283 ~ HomeScreen ~ artistList", artistList)
-
+  //=====================(Main return Function)=============================
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-        <AppHeader
-          title={translate('common.home')}
-          showRightComponent={
-            <View style={styles.headerMenuContainer}>
-              <TouchableOpacity
-                onPress={() => onClickButton()}
-                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
-                <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => onClickButton(userRole === 'crypto' ? 'Create' : '')}
-                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
-                <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
-              </TouchableOpacity>
-            </View>
-          }
-        />
-
-        <View>
-          {artistLoading ? (
-            <View
-              style={{
-                width: '100%',
-                height: hp('12%'),
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <ActivityIndicator size="small" color={colors.themeR} />
-            </View>
-          ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {artistList && artistList.length !== 0
-                ? artistList.map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      style={styles.headerView}
-                      onPress={() => {
-                        const id =
-                          item.role === 'crypto' ? item.username : item._id;
-                        navigation.navigate('ArtistDetail', { id: id });
-                      }}
-                      key={`_${index}`}>
-                      <View style={styles.userCircle}>
-                        <C_Image
-                          uri={item.profile_image}
-                          type={item.profile_image}
-                          imageType="profile"
-                          imageStyle={{ width: '100%', height: '100%' }}
-                        />
-                      </View>
-                      <Text numberOfLines={1} style={styles.userText}>
-                        {getArtistName(item)}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })
-                : null}
-            </ScrollView>
-          )}
-        </View>
+        {renderAppHeader()}
+        {renderArtistList()}
         {online &&
-          (showSuccess ? null : (
-            <Tab.Navigator
-              screenOptions={{
-                tabBarScrollEnabled: true,
-                tabBarActiveTintColor: colors.BLUE4,
-                tabBarInactiveTintColor: colors.GREY1,
-                tabBarLabelStyle: {
-                  fontSize: RF(1.4),
-                  fontFamily: fonts.SegoeUIRegular,
-                  textTransform: 'capitalize',
-                },
-                tabBarIndicatorStyle: {
-                  borderBottomColor: colors.BLUE4,
-                  height: 1,
-                  marginBottom: SIZE(39),
-                },
-                tabBarItemStyle: {
-                  height: SIZE(40),
-                  width: wp('27%'),
-                  paddingHorizontal: wp('1%'),
-                  justifyContent: 'center',
-                },
-                tabBarStyle: {
-                  boxShadow: 'none',
-                  elevation: 0,
-                  borderTopColor: '#EFEFEF',
-                  borderTopWidth: 1,
-                  shadowOpacity: 0,
-                }
-              }}
-            >
-              <Tab.Screen
-                name={translate('common.launchPad')}
-                component={launchPad}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(0);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={'Awards 2021'}
-                component={AwardsNFT}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(1);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={translate('common.hot')}
-                component={HotNFT}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(2);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={translate('wallet.common.collection')}
-                component={Collection}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(7);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={translate('common.2DArt')}
-                component={ArtNFT}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(3);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={translate('common.photo')}
-                component={PhotoNFT}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(4);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name="gif"
-                component={GifNFT}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(5);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={translate('common.video')}
-                component={MovieNFT}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(6);
-                  }
-                }}
-              />
-              <Tab.Screen
-                name={translate('common.hotcollection')}
-                component={HotCollection}
-                listeners={({ navigation, route }) => {
-                  if (navigation.isFocused()) {
-                    setCurrentTab(0);
-                  }
-                }}
-              />
-            </Tab.Navigator>
-          ))}
+          (showSuccess ? null : renderNFTCategoriesTabs())}
       </SafeAreaView>
-      <AppModal
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        {isSuccessVisible ? (
-          <SuccessModalContent
-            onClose={() => {
-              setModalVisible(false);
-              dispatch(updateCreateState());
-            }}
-            onDonePress={() => {
-              setSuccessVisible(false);
-              checkPermissions();
-              dispatch(updateCreateState());
-            }}
-          />
-        ) : null}
-        {isNotificationVisible ? (
-          <NotificationActionModal
-            title={translate('wallet.common.setPushNotification')}
-            hint={translate('wallet.common.notificationHint')}
-            btnText={translate('wallet.common.enable')}
-            onClose={() => setModalVisible(false)}
-            onDonePress={() => {
-              setModalVisible(false);
-              Platform.OS === 'ios'
-                ? checkNotifications().then(({ status, settings }) => {
-                  if (status == 'denied') {
-                    requestNotifications(['alert', 'sound']).then(
-                      ({ status, settings }) => {
-                        console.log(status, settings, 'notification');
-                      },
-                    );
-                  }
-                  if (status == 'blocked') {
-                    Linking.openSettings();
-                  }
-                })
-                : openSettings();
-            }}
-          />
-        ) : null}
-      </AppModal>
+      {renderAppModal()}
       {
-        currentTab !== 0 && currentTab !== 7 &&
+        index !== 0 && index !== 7 &&
         <FilterComponent />
       }
     </>

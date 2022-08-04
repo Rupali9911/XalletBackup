@@ -150,12 +150,28 @@ const styles = StyleSheet.create({
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(70),
   },
+  collectionName: {
+    fontSize: RF(1.4),
+    fontFamily: fonts.ARIAL_BOLD,
+    color: colors.black,
+    lineHeight: SIZE(14.06),
+    maxWidth: SIZE(53),
+    marginRight: 5
+  },
+  verifyIcon: {
+    width: SIZE(15),
+    height: SIZE(15),
+    borderRadius: SIZE(10)
+  },
   creatorName: {
     fontSize: RF(2),
     fontFamily: fonts.ARIAL,
     color: colors.themeR,
-    lineHeight: SIZE(14.06),
+    // lineHeight: SIZE(14.06),
     maxWidth: SIZE(130),
+    height: SIZE(20),
+    alignSelf: 'center',
+    justifyContent: 'center'
   },
   description: {
     fontSize: RF(1.4),
@@ -243,7 +259,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.65),
     maxWidth: wp('35%'),
   },
-    rowTextcontractaddress: {
+  rowTextcontractaddress: {
     color: colors.black,
     fontSize: RF(1.65),
     maxWidth: wp('40%'),
@@ -300,6 +316,21 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     textAlign: "center"
+  },
+  bidTimeContainer:{
+    padding: SIZE(10),
+    borderWidth: SIZE(1),
+    borderColor: '#eeeeee',
+    borderRadius: SIZE(4),
+    marginHorizontal: SIZE(15),
+    marginBottom: SIZE(10),
+  },
+  bidTitleView:{flexDirection: 'row' },
+  bidTitleTxt:{fontSize: SIZE(14)},
+  bidTimeTxt:{fontSize: SIZE(16), fontWeight: 'bold'},
+  highestBidTxt:{
+    fontSize: SIZE(13),
+    top: SIZE(5)
   }
 });
 

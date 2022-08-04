@@ -54,6 +54,7 @@ const MultiLineEditableInput = styled.TextInput`
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
     color: ${COLORS.BLACK1};
+    margin-bottom: ${SIZE(20)}px;
 `;
 
 const TextLimit = styled.Text`

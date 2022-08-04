@@ -9,9 +9,11 @@ import {
     TouchableOpacity,
     ScrollView,
     Linking,
+    Dimensions,
+    BackHandler
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import { C_Image } from '../../components';
+import { C_Image, GroupButton, Loader } from '../../components';
 import {
     getBoxes,
     getBlindBoxSeriesSum,
@@ -27,8 +29,8 @@ import Collections from './collections';
 import { colors, fonts } from '../../res';
 import { translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
-import { SVGS } from 'src/constants';
-import { SIZE } from '../../constants';
+import { SVGS, FONTS, FONT } from 'src/constants';
+import { COLORS, IMAGES, SIZE } from '../../constants';
 import {
     Menu,
     MenuOptions,
@@ -44,8 +46,19 @@ import { networkType } from '../../common/networkType';
 import { SvgUri } from 'react-native-svg';
 import Video from 'react-native-fast-video';
 import { currencyInDollar } from '../wallet/functions';
+import Gallery from './gallery';
+import Owned from './owned';
+import OnSale from './onSale';
+import NotOnSale from './notOnSale';
+import { Verifiedcollections } from '../../components/verifiedCollection';
+import CommonStyles from '../../constants/styles';
+import Activity from './activity';
+import { RF, wp } from '../../constants/responsiveFunct';
+
+const { height } = Dimensions.get('window');
 
 const { TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon, PolygonIcon, Ethereum, BitmapIcon } = SVGS;
+const Tab = createMaterialTopTabNavigator();
 
 let MarketPlaceAbi = "";
 let MarketContractAddress = "";
@@ -74,8 +87,8 @@ const imageToChainKey = {
 function CollectionDetail(props) {
     const { route } = props;
     const { collectionId, nftId, isBlind, isHotCollection, isStore } = route.params;
-     console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
-     console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail### ~ ",collectionId, isBlind, isHotCollection)
+    //  console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
+    //  console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail### ~ ",collectionId, isBlind, isHotCollection)
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
@@ -85,7 +98,7 @@ function CollectionDetail(props) {
     const [sumBlindBox, setSumBlindBox] = useState({});
     const [blindboxList, setBlindboxList] = useState([]);
     const [statsDetails, setStatsDetails] = useState([]);
-    const [nftChain, setNftChain] = useState('polygon');
+    const [nftChain, setNftChain] = useState('ethereum');
     const [baseCurrency, setBaseCurrency] = useState();
     const [priceOnChain, setPriceOnChain] = useState();
     const [availableTokens, setAvailableTokens] = useState();
@@ -98,10 +111,22 @@ function CollectionDetail(props) {
     const navigation = useNavigation();
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
     const { data, wallet } = useSelector(state => state.UserReducer);
+    const { NftDataCollectionReducer } = useSelector(state => state);
+    const [loadImage, setLoadImage] = useState([]);
+
+    const isLoading = isBlind && nftId
+        ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
+        : NftDataCollectionReducer.nftDataCollectionLoading;
 
     useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton)
         getCollection();
-    }, []);
+    }, [BackHandler.removeEventListener('hardwareBackPress', handleBackButton)]);
+
+    const handleBackButton = () => {
+        navigation.goBack();
+        return true;
+    }
 
     const chainIcon = type => {
         if (type === 'polygon') {
@@ -192,24 +217,24 @@ function CollectionDetail(props) {
     };
 
     const getCollection = async () => {
-        console.log("isStore==",isStore,"isBlind===",isBlind)
+        // console.log("isStore==",isStore,"isBlind===",isBlind)
         try {
             if (isStore) {
-                console.log("index.js line collectionDetail 186 isStore", isStore)
+                // console.log("index.js line collectionDetail 186 isStore", isStore)
                 const collectionArray = await getStoreCollectioDetail();
                 const filterId = '614faf6668449e8d13a1f1b0';
                 const storeCollectionDetail = _.filter(collectionArray.data.data, item => item._id === filterId);
                 setStoreCollection(storeCollectionDetail[0] || {});
                 setLoading(false);
             } else if (isBlind) {
-                console.log("index.js line 192 collectionDetail else if ", collectionId)
+                // console.log("index.js line 192 collectionDetail else if ", collectionId)
                 const collectionArray = await getHotCollectionDetail(
                     collectionId,
                     isBlind);
                 setCollectionAddress(collectionArray?.data?.data?._id);
                 setCollection(collectionArray?.data?.data);
 
-                console.log("🚀 ~ file: index.js ~ line 195 ~  collectionDetail ~ isBlind", isBlind, nftId, collectionArray?.data?.data)
+                // console.log("🚀 ~ file: index.js ~ line 195 ~  collectionDetail ~ isBlind", isBlind, nftId, collectionArray?.data?.data)
                 if (isBlind) {
                     nftId ? setBlindBoxes(collectionArray) : getSeriesSum(collectionArray?.data?.data?._id)
                     // nftId ? getSeriesSum(collectionArray?.data?.data?._id) : setBlindBoxes(collectionArray)
@@ -219,12 +244,12 @@ function CollectionDetail(props) {
                     setLoading(false);
                 }
             } else {
-                console.log("index.js line 208 else")
+                // console.log("index.js line 208 else")
                 const collectionArray = await getHotCollectionDetail(
                     collectionId,
                     isBlind,
                 );
-                console.log('collectionArray', collectionArray?.data?.data[0]?.collectionAddress, collectionArray?.data?.data[0])
+                // console.log('collectionArray', collectionArray?.data?.data[0]?.collectionAddress, collectionArray?.data?.data[0])
                 setCollectionAddress(collectionArray?.data?.data[0]?.collectionAddress);
                 setCollection(collectionArray?.data?.data[0]);
                 setLoading(false);
@@ -235,12 +260,10 @@ function CollectionDetail(props) {
         }
     };
     const setBlindBoxes = async (collectionArray) => {
-
-        console.log("🚀 aayush", collectionArray)
         let boxes;
         if (collectionArray?.data?.data?._id === '61aa04803035bdb9917871cf') {
             boxes = await getBoxes(collectionArray?.data.data?.collectionAddress, true);
-            console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~ collectionArray?.data.data?.collectionAddress", boxes)
+            // console.log("🚀 ~ file: index.js ~ line 232 ~ setBlindBoxes ~", boxes)
         }
         else {
             boxes = await getBoxes(collectionArray?.data.data?._id);
@@ -251,14 +274,14 @@ function CollectionDetail(props) {
             const filteredBlindBoxCollection = _.filter(boxes.data.data, item => item._id === nftId);
 
             setBlindboxList(boxes.data.data);
-            console.log("🚀 ~ file: index.js ~ line 242 ~ setBlindBoxes ~ boxes.data.data", boxes.data.data[0])
+            // console.log("🚀 ~ file: index.js ~ line 242 ~ setBlindBoxes ~ boxes.data.data", boxes.data.data[0])
             if (boxes.data.data) {
                 let baseCurrency = basePriceTokens.filter(
                     (token) =>
                         token.chain === boxes.data.data[0]?.nftChain &&
                         token.order === boxes.data.data[0]?.baseCurrency
                 );
-                console.log("🚀 ~ file: index.js ~ line 249 ~ setBlindBoxes ~ baseCurrency", baseCurrency)
+                // console.log("🚀 ~ file: index.js ~ line 249 ~ setBlindBoxes ~ baseCurrency", baseCurrency)
                 setBaseCurrency(baseCurrency[0]);
             }
 
@@ -288,12 +311,12 @@ function CollectionDetail(props) {
     const getSeriesSum = (collectionAddress) => {
         getBlindBoxSeriesSum(collectionAddress)
             .then(sumData => {
-                console.log("🚀 ~ file: index.js ~ line 255 ~ collectionDetail ~ sumData", sumData)
+                // console.log("🚀 ~ file: index.js ~ line 255 ~ collectionDetail ~ sumData", sumData)
                 setSumBlindBox(sumData)
                 setLoading(false);
             })
             .catch(err => {
-                console.log("🚀 ~ file: index.js ~ line 260 ~ collectionDetail ~ err", err)
+                console.log('=== Error 295', err);
                 setLoading(false);
             })
     }
@@ -405,7 +428,8 @@ function CollectionDetail(props) {
             }
         }
 
-        const _nftChain = _availableChains[0];
+        const indexEth = _availableChains.indexOf("ethereum")
+        const _nftChain = _availableChains[indexEth];
         setNftChain(_nftChain);
 
         for (let i = 0; i < blindBox.seriesChain.length; i++) {
@@ -437,9 +461,9 @@ function CollectionDetail(props) {
         setBaseCurrency(baseCurrency[0]);
         setPriceOnChain(_priceOnChain);
         setAvailableTokens(_availableTokens);
-        console.log('==========1111111', _availableChains.sort());
+        // console.log('==========1111111', _availableChains.sort());
         setAvailableChains(_availableChains.sort());
-        console.log('==========_availableChains.sort()', _availableChains.sort());
+        // console.log('==========_availableChains.sort()', _availableChains.sort());
 
         // let w = new Web3(providerUrl);
         // const calculatedPrice = await calculatePrice(
@@ -477,25 +501,27 @@ function CollectionDetail(props) {
     const renderBanner = () => {
         let bannerUrl = '';
         if (isStore) {
-            console.log("🚀 ~ file: index.js ~ line 449 ~ renderBanner ~ isStore")
+            // console.log("🚀 ~ file: index.js ~ line 449 ~ renderBanner ~ isStore")
             bannerUrl = 'https://ik.imagekit.io/xanalia/nftData/1632151483313.jpg';
         } else if (isBlind && nftId) {
-            console.log('selectedBlindBox 452', selectedBlindBox)
+            // console.log('selectedBlindBox 452', selectedBlindBox)
             bannerUrl = selectedBlindBox
                 ? selectedBlindBox.seriesURIMetaInfo?.banner_image
                 : "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg";
         } else {
             bannerUrl = collection?.bannerImage;
-            console.log("🚀 ~ file: index.js ~ line 457 ~ renderBanner ~ collection", collection)
+            // console.log("🚀 ~ file: index.js ~ line 457 ~ renderBanner ~ collection", collection)
         }
 
-        console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
+        // console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
         return (
-            <C_Image
-                uri={bannerUrl ? bannerUrl : collection?.bannerImage}
-                type={'jpg'}
-                imageStyle={styles.bannerImage}
-            />
+            <View style={styles.bannerView}>
+                <C_Image
+                    uri={bannerUrl ? bannerUrl : collection?.bannerImage}
+                    type={'jpg'}
+                    imageStyle={styles.bannerImage}
+                />
+            </View>
         )
     }
 
@@ -528,6 +554,14 @@ function CollectionDetail(props) {
                     source={{ uri: bannerUrl ? bannerUrl : collection?.iconImage }}
                     style={styles.bannerIcon}
                 />
+                {Verifiedcollections.find((id) => id === collectionId) && (
+                    <View>
+                        <Image
+                            style={styles.verifyIcon}
+                            source={IMAGES.tweetPng}
+                        />
+                    </View>
+                )}
             </View>
         )
     }
@@ -563,28 +597,43 @@ function CollectionDetail(props) {
     };
 
     const blindBoxInfo = () => {
-        console.log('selectedBlindBox1', selectedBlindBox)
+        // console.log('selectedBlindBox1', selectedBlindBox)
         if (isStore) return null;
         if (isBlind && nftId) {
             return (
                 <>
                     <View style={{ padding: SIZE(10) }}>
-                        {selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
-                            <Video
-                                source={{ uri: selectedBlindBox?.packVideo }}
-                                repeat={true}
-                                resizeMode={'cover'}
-                                style={styles.selectBlindBoxVideo} />
-                        ) : (
-                            <Image
-                                source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
-                                style={styles.selectBlindBoxVideo}
-                            />
-                        )}
+                        {!selectedBlindBox?.packVideo ? null :
+                            selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
+                                <View style={CommonStyles.center}>
+                                    {loadImage &&
+                                        <Loader style={styles.blindBoxLoader} />
+                                    }
+                                    <Video
+                                        source={{ uri: selectedBlindBox?.packVideo }}
+                                        repeat={true}
+                                        resizeMode={'cover'}
+                                        style={styles.selectBlindBoxVideo}
+                                        onLoadStart={() => setLoadImage(true)}
+                                        onReadyForDisplay={() => setLoadImage(false)}
+                                    />
+                                </View>
+                            ) : (
+                                <View style={CommonStyles.center}>
+                                    {loadImage &&
+                                        <Loader style={styles.blindBoxLoader} />
+                                    }
+                                    <Image
+                                        source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
+                                        style={styles.selectBlindBoxVideo}
+                                        onLoadStart={() => setLoadImage(true)}
+                                        onLoadEnd={() => setLoadImage(false)}
+                                    />
+                                </View>
+                            )}
                         <Text style={styles.selectBlindBoxName}>
                             {selectedBlindBox?.name ? selectedBlindBox?.name : blindboxList[0]?.name}
                         </Text>
-                        {console.log("Blind", blindboxList[0])}
                         <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: SIZE(5) }}>
                             <Text style={{
                                 fontSize: SIZE(22),
@@ -617,8 +666,26 @@ function CollectionDetail(props) {
                                     {chainIcon(blindboxList[0]?.nftChain)}
                                 </View>
                             }
-                            {console.log("🚀 ~ file: index.js ~ line 612 ~ blindBoxInfo ~ priceOnDollar", priceOnDollar)}
                         </View>
+                        {/* <View style={{ paddingTop: SIZE(10) }}>
+                            <GroupButton
+                                leftDisabled={false}
+                                leftText={
+                                    parseInt(selectedBlindBox?.startTime) * 1000 <= new Date().getTime() ?
+                                        parseInt(selectedBlindBox?.endTime) * 1000 <= new Date().getTime() ?
+                                            // selectedBlindBox?. 
+                                            'The sale has ended'
+                                            : selectedBlindBox?.buyBoxCount &&
+                                                parseInt(selectedBlindBox?.buyBoxCount[nftChain]) <
+                                                parseInt(selectedBlindBox?.maxBoxesChain[nftChain]) ?
+                                                null
+                                                : 'Sold Out'
+                                        : 'CountDown'
+                                }
+                                // onLeftPress={() => { alert('okay') }}
+                                rightHide
+                            />
+                        </View> */}
                     </View>
                 </>
             )
@@ -629,7 +696,6 @@ function CollectionDetail(props) {
         if (isBlind && nftId && !isStore) {
             return (
                 <>
-
                     {!isBlind ?
                         <>
                             <View style={styles.descriptionTabWrapper}>
@@ -785,7 +851,7 @@ function CollectionDetail(props) {
                                     <Text
                                         style={[
                                             styles.descriptionText,
-                                            { fontSize: SIZE(18), fontWeight: 'bold',marginBottom:10 },
+                                            styles.descriptionTabData
                                         ]}>
                                         {collection.collectionName}
                                     </Text>
@@ -794,7 +860,7 @@ function CollectionDetail(props) {
                                     {collection?.collectionDesc}
                                 </Text>
                             </View>
-                        ) : !isBlind ? (
+                        ) : !isBlind && isHotCollection && collection?.userInfo ? (
                             <Text style={styles.descriptionText}>
                                 {collection.userInfo[
                                     `${selectedLanguageItem.language_name}_about`
@@ -805,12 +871,12 @@ function CollectionDetail(props) {
                                 <Text
                                     style={[
                                         styles.descriptionText,
-                                        { fontSize: SIZE(16), fontWeight: 'bold' },
+                                        styles.descriptionTabData,
                                     ]}>
-                                    {collection.creatorName}
+                                    {collection?.creatorName}
                                 </Text>
                                 <Text style={styles.descriptionText}>
-                                    {collection.creatorDescription}
+                                    {collection?.creatorDescription}
                                 </Text>
                             </View>
                         )}
@@ -831,8 +897,6 @@ function CollectionDetail(props) {
         maximumFractionDigits: 3,
     });
 
-    // console.log('.........', collection)
-
     const renderDetailList = () => {
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", collection, statsDetails)
@@ -843,19 +907,18 @@ function CollectionDetail(props) {
         let volTraded = ''
 
         if (!isBlind || isBlind && nftId) {
-            console.log("Venom if", Number(blindboxList[0]?.floorPrice).toFixed(2))
+            // console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
 
-            items = !isBlind ? collection?.nftCount : blindboxList[0]?.boxInfo?.length || selectedBlindBox.boxInfo?.length;
-            owners = !isBlind ? collection?.owners : statsDetails?.OwnerCount ? convertValue(statsDetails?.OwnerCount) : blindboxList[0]?.owners || '--';
-            floorPrice = !isBlind ? Number(collection?.floorPrice).toFixed(2) : statsDetails?.floorPriceInDollar <= 40
-                ? formatter.format(statsDetails.floorPrice)
-                : statsDetails?.floorPrice?.toFixed(3) || blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3);
-            volTraded = !isBlind ? Number(collection?.volTraded).toFixed(2) : statsDetails?.volumeTradeInETH
+            items = !isBlind ? String(collection?.nftCount) : String(selectedBlindBox.boxInfo?.length) || String(blindboxList[0]?.boxInfo.length);
+            owners = !isBlind ? String(collection?.owners) : String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
+            floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(3) : '0.00') : statsDetails?.floorPriceInDollar <= 40
+                ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
+                : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
+            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(3) : '0') : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
-                : Number(blindboxList[0]?.volTraded).toFixed(3) || '--'
-
+                : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '0') || '--'
         } else if (isBlind && !nftId && sumBlindBox) {
-            console.log("Venom else", blindboxList)
+            // console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
             items = sumBlindBox?.itemsCount
             owners = sumBlindBox?.OwnerCount
             floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
@@ -863,46 +926,48 @@ function CollectionDetail(props) {
         }
 
         return (
-            <View style={styles.collectionTable}>
-                <View style={styles.collectionTableRow}>
-                    <Text style={styles.collectionTableRowText}>
-                        {items}
-                    </Text>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.itemsCollection')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <Text style={styles.collectionTableRowText}>
-                        {owners}
-                    </Text>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.owners')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+            (items && owners && floorPrice && volTraded &&
+                <View style={styles.collectionTable}>
+                    <View style={styles.collectionTableRow}>
                         <Text style={styles.collectionTableRowText}>
-                            {floorPrice}
+                            {items === 'undefined' ? '--' : items}
+                        </Text>
+                        <Text style={styles.collectionTableRowDec}>
+                            {translate('common.itemsCollection')}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.floorPrice')}
-                    </Text>
-                </View>
-                <View style={styles.collectionTableRow}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Image source={ImageSrc.etherium} style={styles.cryptoIcon} />
+                    <View style={styles.collectionTableRow}>
                         <Text style={styles.collectionTableRowText}>
-                            {volTraded}
+                            {owners === 'undefined' ? '--' : owners}
+                        </Text>
+                        <Text style={styles.collectionTableRowDec}>
+                            {translate('common.owners')}
                         </Text>
                     </View>
-                    <Text style={styles.collectionTableRowDec}>
-                        {translate('common.volumeTraded')}
-                    </Text>
+                    <View style={styles.collectionTableRow}>
+                        <View style={styles.floorPriceVw}>
+                            <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
+                            <Text style={styles.collectionTableRowText} numberOfLines={1}>
+                                {floorPrice}
+                            </Text>
+                        </View>
+                        <Text style={styles.collectionTableRowDec} numberOfLines={1}>
+                            {translate('common.floorPrice')}
+                        </Text>
+                    </View>
+                    <View style={styles.collectionTableRow}>
+                        <View style={styles.floorPriceVw}>
+                            <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
+                            <Text style={styles.collectionTableRowText} numberOfLines={1}>
+                                {volTraded}
+                            </Text>
+                        </View>
+                        <Text style={styles.collectionTableRowDec} numberOfLines={1}>
+                            {translate('common.volumeTraded')}
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            )
         )
     }
 
@@ -946,6 +1011,12 @@ function CollectionDetail(props) {
                 <View style={{ padding: SIZE(15) }}>
                     <Text style={[styles.storeCollectionName, { color: '#636363' }]}>
                         {storeCollection[`${selectedLanguageItem.language_name}_title`]}
+                        <View style={{ paddingLeft: 5 }}>
+                            <Image
+                                style={styles.verifyIcon1}
+                                source={IMAGES.tweetPng}
+                            />
+                        </View>
                     </Text>
                     <Text style={[styles.storeCollectionName, { color: 'red' }]}>
                         {'Blindbox'}
@@ -963,9 +1034,158 @@ function CollectionDetail(props) {
         );
     }
 
+    const renderTabView = (tab) => {
+        let tabProps = {
+            collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+            collectionType: collectionType,
+            isHotCollection: isHotCollection,
+            collectionId: collectionId,
+            isBlind: isBlind,
+            isSeries: isBlind && nftId,
+            nftChain: nftChain,
+            isStore: isStore,
+            userCollection: collection?.userCollection,
+            manualColl: collection.manualColl,
+            seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false
+        }
+        // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
+        return (
+            <Tab.Navigator
+                screenOptions={{
+                    tabBarScrollEnabled: true,
+                    tabBarActiveTintColor: COLORS.BLUE2,
+                    tabBarInactiveTintColor: COLORS.BLACK5,
+                    tabBarStyle: {
+                        boxShadow: 'none',
+                        elevation: 0,
+                        borderBottomColor: '#EFEFEF',
+                        borderBottomWidth: 1,
+                    },
+                    tabBarItemStyle: {
+                        height: SIZE(42),
+                        marginTop: SIZE(-10),
+                        width: tab ? wp('25%') : wp('50%'),
+                        paddingHorizontal: wp('1%'),
+                        justifyContent: 'center',
+                        // // fontSize: RF(1.4),
+                        fontFamily: fonts.SegoeUIRegular,
+                        textTransform: 'capitalize',
+                    },
+                    tabBarLabelStyle: {
+                        fontSize: FONT(12),
+                        textTransform: 'none',
+                    },
+                    tabBarIndicatorStyle: {
+                        backgroundColor: COLORS.BLUE4,
+                        height: 2,
+                        // marginBottom: SIZE(39),
+                    }
+                }}
+            >
+                <Tab.Screen
+                    name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
+                    component={Gallery}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 0,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')
+                    }}
+                />
+                <Tab.Screen
+                    name={tab ? isBlind && nftId ? translate('common.onSale') : translate('common.notforsale') : translate('common.blindboxCollections')}
+                    component={Owned}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 1,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: tab ? isBlind && nftId ? translate('common.onSale') : translate('common.notforsale') : translate('common.blindboxCollections')
+                    }}
+                />
+                {tab && <Tab.Screen
+                    name={isBlind && nftId ? translate('common.notforsale') : translate('wallet.common.owned')}
+                    component={OnSale}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 2,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: isBlind && nftId ? translate('common.notforsale') : translate('wallet.common.owned')
+                    }}
+                />}
+                {tab && <Tab.Screen
+                    name={isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')}
+                    component={NotOnSale}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 3,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: isBlind && nftId ? translate('wallet.common.owned') : translate('common.gallery')
+                    }}
+                />}
+                {tab && !isBlind && <Tab.Screen
+                    name={translate('common.activity')}
+                    component={Activity}
+                    initialParams={{
+                        collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
+                        collectionType: 4,
+                        isHotCollection: isHotCollection,
+                        collectionId: collectionId,
+                        isBlind: isBlind,
+                        isSeries: isBlind && nftId,
+                        nftChain: nftChain,
+                        isStore: isStore,
+                        userCollection: collection?.userCollection,
+                        manualColl: collection.manualColl,
+                        seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
+                        tabTitle: translate('common.activity')
+                    }}
+                />}
+            </Tab.Navigator>
+        );
+    };
+
     return (
         <AppBackground isBusy={loading}>
-            <ScrollView>
+            <ScrollView
+                nestedScrollEnabled={true}
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    // paddingBottom:height/4
+                }}
+                style={{ flex: 1 }}
+            >
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={styles.backButtonWrap}>
@@ -1013,11 +1233,12 @@ function CollectionDetail(props) {
                     <Text>{'Buy'}</Text>
                 </TouchableOpacity> */}
 
-                <View style={{ flex: 1 }}>
+                {/* <View style={{ flex: 1 }}>
                     {!isBlind || (isBlind && nftId) ? (
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(0)}
                                     style={[
                                         styles.tabBarItem,
@@ -1037,6 +1258,7 @@ function CollectionDetail(props) {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(1)}
                                     style={[
                                         styles.tabBarItem,
@@ -1055,6 +1277,7 @@ function CollectionDetail(props) {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(2)}
                                     style={[
                                         styles.tabBarItem,
@@ -1073,6 +1296,7 @@ function CollectionDetail(props) {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(3)}
                                     style={[
                                         styles.tabBarItem,
@@ -1095,11 +1319,11 @@ function CollectionDetail(props) {
                     ) : isBlind && !nftId ?
                         <View style={{ flexDirection: 'row' }}>
 
-                            {/* // {isHotCollection ? */}
+                           
                             <View style={styles.intoMystery}>
-                                {/* {console.log("🚀 ~ file: index.js ~ line 867 ~ CollectionDetail ~ intoMystery", isBlind, nftId)} */}
 
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(0)}
                                     style={[
                                         styles.tabBarItem,
@@ -1119,6 +1343,7 @@ function CollectionDetail(props) {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
+                                    disabled={isLoading}
                                     onPress={() => setCollectionType(1)}
                                     style={[
                                         styles.tabBarItem,
@@ -1137,19 +1362,10 @@ function CollectionDetail(props) {
                                     </Text>
                                 </TouchableOpacity>
 
-                                {/* <TouchableOpacity
-                            onPress={() => navigation.goBack()}
-                            style={{ borderTopColor: 'transparent' }}>
-                            <Text style={[styles.collectionTabItemLabel, { color: colors.BLUE1 }]}>
-                                {translate('common.blindboxCollections')}
-                            </Text>
-                        </TouchableOpacity> */}
                             </View>
 
                         </View>
                         : null}
-
-                    {/* {console.log("🚀 ~ file: index.js ~ line 1004 ~ CollectionDetail ~ isBlind", isBlind, isBlind && nftId, nftId)} */}
 
                     {(collectionAddress || isStore) && !loading && (
                         <Collections
@@ -1166,7 +1382,17 @@ function CollectionDetail(props) {
                             seriesInfoId={blindboxList?.length > 0 ? blindboxList[0]?._id : false}
                         />
                     )}
+                </View> */}
+
+                <View style={{ height: height / 1.5 }}>
+                    {(!isBlind || (isBlind && nftId)) && !loading ?
+                        renderTabView(true)
+                        : isBlind && !nftId && !loading ?
+                            renderTabView(false)
+                            : <Loader />
+                    }
                 </View>
+
             </ScrollView>
         </AppBackground>
     );

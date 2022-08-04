@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { SIZE, FONTS } from 'src/constants';
+import { SIZE } from '../../common/responsiveFunction';
 import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
@@ -26,9 +26,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: SIZE(13),
   },
-  bannerImage: {
+  bannerView: {
     width: '100%',
     height: SIZE(200),
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
     resizeMode: 'contain',
   },
   bannerIconWrap: {
@@ -46,11 +50,40 @@ const styles = StyleSheet.create({
   collectionName: {
     fontSize: SIZE(22),
     fontWeight: '600',
-    color:'#000',
+    color: '#000',
     textAlign: 'center',
     marginTop: SIZE(44),
     fontFamily: fonts.ARIAL,
     marginBottom: SIZE(5),
+  },
+  verifyIcon: {
+    position: 'absolute',
+    bottom: 2,
+    left: 23,
+    width: SIZE(22),
+    height: SIZE(22),
+    borderRadius: SIZE(10)
+  },
+  tokenPicker: {
+    borderColor: colors.themeR,
+    width:'90%',
+    height:'10%',
+    alignSelf:'center',
+    borderRadius:0,
+    marginTop:10
+  },
+  dropDownContainer: {
+    borderColor: colors.themeR,
+    backgroundColor: colors.white,
+    marginTop:10,
+    width:'90%',
+    borderRadius:0,
+    alignSelf:'center',
+  },
+  verifyIcon1: {
+    width: SIZE(15),
+    height: SIZE(15),
+    borderRadius: SIZE(10),
   },
   storeCollectionName: {
     fontSize: SIZE(22),
@@ -65,18 +98,19 @@ const styles = StyleSheet.create({
   },
   collectionTableRow: {
     alignItems: 'center',
-    width: SIZE(86),
+    // width: SIZE(86),
     height: SIZE(46),
-    //alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     marginLeft: -1,
     borderColor: '#eeeeee',
+    paddingHorizontal: SIZE(15)
   },
   collectionTableRowText: {
-    fontSize: SIZE(16),
+    fontSize: SIZE(14),
     fontFamily: fonts.ARIAL,
-    fontWeight:'600',
+    fontWeight: 'bold',
   },
   collectionTableRowDec: {
     fontSize: SIZE(11),
@@ -85,14 +119,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
   },
   cryptoIcon: {
-    width: SIZE(15),
-    height: SIZE(20),
-    marginRight: SIZE(4),
-    resizeMode:"contain"
+    width: SIZE(14),
+    height: SIZE(14),
+    marginRight: SIZE(2),
+    resizeMode: "contain"
   },
   descriptionTabWrapper: {
     flexDirection: 'row',
-    paddingHorizontal: SIZE(5),
+    // paddingHorizontal: SIZE(5),
     marginTop: SIZE(20),
   },
   descriptionTab: {
@@ -116,7 +150,7 @@ const styles = StyleSheet.create({
   descriptionTabText: {
     fontSize: SIZE(13),
     color: '#575e64',
-    fontWeight:"bold",
+    fontWeight: "bold",
     fontFamily: fonts.ARIAL,
   },
   description: {
@@ -124,16 +158,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: SIZE(90),
     marginHorizontal: SIZE(5),
-    borderTopWidth: 0,
+    // borderTopWidth: 0,
     paddingHorizontal: SIZE(15),
-    paddingVertical: SIZE(9),
+    paddingVertical: SIZE(12),
     marginBottom: SIZE(16),
   },
   descriptionText: {
     fontSize: SIZE(12.5),
-    lineHeight:18,
+    // lineHeight: 18,
     fontFamily: fonts.ARIAL,
-
     color: '#212529',
   },
   sorryMessageCont: {
@@ -161,8 +194,8 @@ const styles = StyleSheet.create({
     fontSize: RF(1.6),
     fontFamily: fonts.SegoeUIRegular,
     textTransform: 'capitalize',
-    fontWeight:"400",
-    color:'#212529'
+    fontWeight: "400",
+    color: '#212529'
 
   },
   socialLinksWrap: {
@@ -229,9 +262,24 @@ const styles = StyleSheet.create({
   intoMystery: {
     alignItems: 'center',
     flexDirection: 'row',
-
     justifyContent: 'space-around',
-    width: wp('100%') }
+    width: wp('100%')
+  },
+  descriptionTabData: {
+    fontSize: SIZE(18),
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 5
+  },
+  floorPriceVw: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  blindBoxLoader: {
+    position:"absolute",
+    alignSelf:'center'
+  }
 });
 
 export default styles;

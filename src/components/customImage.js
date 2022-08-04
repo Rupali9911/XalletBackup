@@ -15,6 +15,7 @@ const C_Image = (props) => {
 
     let [loadImage, setLoadImage] = useState(false);
     let [brokenUrl, setBrokenUrl] = useState(false);
+    let [isBroken, setIsBroken] = useState(false);
 
     const checkVideoUrl = props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' || props.type === 'movie';
 
@@ -57,21 +58,39 @@ const C_Image = (props) => {
                 //             resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
                 //         />
                 //     :
+                brokenUrl ?
                     <FastImage
                         style={props.imageStyle}
                         onLoadStart={() => setLoadImage(true)}
                         onLoadEnd={() => setLoadImage(false)}
                         onError={({ nativeEvent }) => {
                             console.log(nativeEvent, "errror", props.uri)
-                            setBrokenUrl(true)
+                            setIsBroken(true)
                         }}
+                        fallback={isBroken ? false : true}
                         source={props.uri ?
-                            brokenUrl ?
+                            isBroken ?
                                 IMAGES.brokenIcon :
                                 {
                                     uri: props.uri,
                                     priority: FastImage.priority.high,
                                 } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
+                        resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
+                    />
+                    :
+                    <FastImage
+                        style={props.imageStyle}
+                        onLoadStart={() => setLoadImage(true)}
+                        onLoadEnd={() => setLoadImage(false)}
+                        onError={({ nativeEvent }) => {
+                            // console.log(nativeEvent, "errror", props.uri)
+                            setBrokenUrl(true)
+                        }}
+                        source={props.uri ?
+                            {
+                                uri: props.uri,
+                                priority: FastImage.priority.high,
+                            } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
                         resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
                     />
             }
