@@ -195,6 +195,10 @@ function Setting({ navigation }) {
             noArrow={true}
             label={translate('common.Logout')}
           />
+          <ListItem
+            onPress={() => navigation.navigate('AiChat')}
+            label={'Chat With AI'}
+          />
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
           {/*<Text>Authenticate with Touch ID</Text>*/}
           {/*</TouchableHighlight>*/}
