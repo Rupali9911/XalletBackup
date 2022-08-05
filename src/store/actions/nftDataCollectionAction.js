@@ -123,10 +123,12 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
           // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
           let bids = []
           for (let i = 0; i < res.data.length; i++) {
-            let event = ''
-            let mainPrice = ''
-            let seller = '' 
+            let event = ""
+            let mainPrice = ""
+            let seller = "" 
+            let owner = ""
             if(res.data[i].event === 'SellNFT'){
+              owner = ""
               seller = res.data[i].returnValues.seller
               event = translate('common.sales')
               let price = divideNo(parseInt(res.data[i].returnValues.price._hex, 16))
@@ -139,6 +141,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
             }
             else if(res.data[i].event === 'OnAuction'){
+              owner = ""
               seller = res.data[i].returnValues.seller
               event = translate('common.OnAuction')
               let price = divideNo(parseInt(res.data[i].returnValues.startPrice._hex, 16))
@@ -159,6 +162,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${price} ${baseCurrency}`
             }
             else if(res.data[i].event === 'Bid'){
+              seller = res.data[i].returnValues.bidder
               event = translate('common.Bids')
               let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
               let baseCurrency = res.data.data[i].returnValues.baseCurrency ? 
@@ -178,8 +182,8 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
             }
             else if(res.data[i].event === 'BuyNFT' ||
             res.data[i].event === "BuyNFTNonCrypto"){
-              event = translate('common.Buys')
               seller = res?.data[i]?.sellData?.seller
+              event = translate('common.Buys')
               let price = res.data[i].sellData?.priceConversion
               let baseCurrency = res.data[i].sellData?.buyCurrencyType
               ? getBaseCurrency(
@@ -200,6 +204,9 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
             }
             else if(res.data[i].event === 'Claim'){
+              seller = res.data[i].sellData
+                  ? res.data[i].sellData.seller
+                  : ""
               event = translate('common.Claim')
               let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
               let baseCurrency = res.data.data[i].returnValues.baseCurrency
@@ -214,6 +221,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
             }
             else if(res.data[i].event === 'CancelSell'){
+              seller =  res.data[i].returnValues.from
               event = translate('common.cancelSell')
               let price= ""
               let baseCurrency = ""
@@ -221,6 +229,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
             }
             else if(res.data[i].event === 'MintWithTokenURI' 
             || res.data[i].event === 'MintWithTokenURINonCrypto'){
+              seller =  res.data[i].returnValues.from
               event = translate('common.minted')
               let price = ""
               let baseCurrency = ""
@@ -240,7 +249,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
                   : res?.data[i]?.nftInfo[0]?.metaData?.name,
               event,
               mainPrice,
-              res?.data[i]?.sellData?.seller,
+              seller,
               res?.data[i]?.sellData && res.data[i].sellData.owner,
               res?.data[i]?.timestamp,
               res?.data[i]?.nftInfo[0]
