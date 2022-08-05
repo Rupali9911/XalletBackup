@@ -209,7 +209,7 @@ const Activity = ({ route }) => {
                         showsHorizontalScrollIndicator={false}
                     // nestedScrollEnabled={true}
                     >
-                        <View style={{ flex: 1, alignItems: 'center',justifyContent:'center' }}>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                             {(tabTitle !== reducerTabTitle) || isLoading ? (
                                 <View style={{
                                     height: Dimensions.get('window').height,
@@ -265,7 +265,7 @@ const Activity = ({ route }) => {
                                                                 key={cellIndex}
                                                                 data={
                                                                     // cellIndex == 0 
-                                                                    cellIndex == 2 || cellIndex == 1 ? (
+                                                                    cellIndex == 1 ? (
                                                                         <TouchableOpacity onPress={() => getNftData(rowIndex)}>
                                                                             <Text
                                                                                 numberOfLines={1}
@@ -308,9 +308,23 @@ const Activity = ({ route }) => {
                                                                                     cellIndex === 5 ? (
                                                                                         cellData && cellData.substring(0, 12)
                                                                                     ) :
-                                                                                        cellIndex === 6 && (
+                                                                                        cellIndex === 6 ? (
                                                                                             setDate(cellData)
-                                                                                        )
+                                                                                        ) :
+                                                                                            cellIndex === 2 && (
+                                                                                                <Text
+                                                                                                    numberOfLines={1}
+                                                                                                    style={[
+                                                                                                        styles.text,
+                                                                                                        {
+                                                                                                            color: 'black',
+                                                                                                            marginLeft: hp(0.5),
+                                                                                                            marginRight: hp(0.5)
+                                                                                                        },
+                                                                                                    ]}>
+                                                                                                    {cellData}
+                                                                                                </Text>
+                                                                                            )
                                                                 }
                                                                 // cellIndex === 3 ? element(cellData, index) :
                                                                 // textStyle={styles.text}
