@@ -143,7 +143,7 @@ const Activity = ({ route }) => {
                 activityHistoryList(
                     page,
                     collectionId,
-                    v?.length !== 0 ? v : values.length !== 0 ? values : FILTER_TYPE,
+                    v ? v : values.length !== 0 ? values : FILTER_TYPE,
                     tabTitle,
                     limit
                 ),
@@ -211,8 +211,10 @@ const Activity = ({ route }) => {
                     >
                         <View style={{ flex: 1, alignItems: 'center',justifyContent:'center' }}>
                             {(tabTitle !== reducerTabTitle) || isLoading ? (
-                                <View style={{ height: Dimensions.get('window').height, 
-                                width: Dimensions.get('window').width }}>
+                                <View style={{
+                                    height: Dimensions.get('window').height,
+                                    width: Dimensions.get('window').width
+                                }}>
                                     <Loader />
                                 </View>
                             ) :
@@ -226,7 +228,7 @@ const Activity = ({ route }) => {
 
                                     />
                                     {isArray && !isLoading && collectionList.length > 0 ? (
-                                        collectionList.map((rowData, rowIndex) => {
+                                        collectionList.reverse().map((rowData, rowIndex) => {
                                             return (
                                                 <TableWrapper
                                                     key={rowIndex}

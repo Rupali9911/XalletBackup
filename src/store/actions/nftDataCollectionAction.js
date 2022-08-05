@@ -94,7 +94,7 @@ export const activityNftListPageChange = (data) => ({
 });
 
 export const activityHistoryList = (page, collectionId, type, tabTitle, limit) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
+  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
   return (dispatch, getState) => {
     const data = {
       collectionId,
@@ -155,6 +155,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               // console.log(price,baseCurrency,mainPrice)
             }
             else if(res.data[i].event === 'awardAuctionNFT'){
+              owner = ""
               seller = res.data[i].returnValues.seller
               event = translate('common.OnAuction')
               let price = divideNo(parseInt(res.data[i].returnValues.priceDollar._hex, 16))
@@ -162,6 +163,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${price} ${baseCurrency}`
             }
             else if(res.data[i].event === 'Bid'){
+              owner= ""
               seller = res.data[i].returnValues.bidder
               event = translate('common.Bids')
               let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
@@ -182,6 +184,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
             }
             else if(res.data[i].event === 'BuyNFT' ||
             res.data[i].event === "BuyNFTNonCrypto"){
+              owner= res?.data[i]?.returnValues?.buyer
               seller = res?.data[i]?.sellData?.seller
               event = translate('common.Buys')
               let price = res.data[i].sellData?.priceConversion
@@ -204,6 +207,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
             }
             else if(res.data[i].event === 'Claim'){
+              owner = res.data[i].returnValues.bidder
               seller = res.data[i].sellData
                   ? res.data[i].sellData.seller
                   : ""
@@ -221,6 +225,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
             }
             else if(res.data[i].event === 'CancelSell'){
+              owner = ""
               seller =  res.data[i].returnValues.from
               event = translate('common.cancelSell')
               let price= ""
@@ -229,6 +234,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
             }
             else if(res.data[i].event === 'MintWithTokenURI' 
             || res.data[i].event === 'MintWithTokenURINonCrypto'){
+              owner = ""
               seller =  res.data[i].returnValues.from
               event = translate('common.minted')
               let price = ""
@@ -250,7 +256,7 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
               event,
               mainPrice,
               seller,
-              res?.data[i]?.sellData && res.data[i].sellData.owner,
+              owner,
               res?.data[i]?.timestamp,
               res?.data[i]?.nftInfo[0]
             ]
