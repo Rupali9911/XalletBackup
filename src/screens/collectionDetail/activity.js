@@ -69,13 +69,13 @@ const Activity = ({ route }) => {
     const [pageInput, setPageInput] = useState(pageNum)
     const [values, setValues] = useState([])
     const [items, setItems] = useState([
-        { label: 'Minted', value: 'MintWithTokenURI' },
-        { label: "Listings(Fixed Price)", value: 'SellNFT' },
-        { label: "Bids", value: 'Bid' },
-        { label: "Buy", value: 'BuyNFT' },
-        { label: "Claim", value: 'Claim' },
-        { label: "Listing(Auction)", value: 'OnAuction' },
-        { label: "Cancel Sell", value: 'CancellSell' },
+        { label: translate('common.minted'), value: 'MintWithTokenURI' },
+        { label: translate('common.sales'), value: 'SellNFT' },
+        { label: translate('common.Bids'), value: 'Bid' },
+        { label: translate('common.Buys'), value: 'BuyNFT' },
+        { label: translate('common.Claim'), value: 'Claim' },
+        { label: translate('common.OnAuction'), value: 'OnAuction' },
+        { label: translate('common.cancelSell'), value: 'CancelSell' },
     ]);
     const [tradingTableHead, setTradingTableHead] = useState([
         'NFT',
@@ -203,25 +203,25 @@ const Activity = ({ route }) => {
 
             <View style={{ flex: 1 }}>
                 <Filters />
-                <View style={{ margin: hp(1), marginVertical: (hp(3)) }}>
+                <View style={{ margin: hp(1), marginVertical: collectionList.length > 0 ? hp(3) : hp(0), }}>
                     <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                     // nestedScrollEnabled={true}
                     >
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={{ flex: 1, alignItems: 'center',justifyContent:'center' }}>
                             {(tabTitle !== reducerTabTitle) || isLoading ? (
-                                <View style={{ height: Dimensions.get('window').height, width: Dimensions.get('window').width }}>
+                                <View style={{ height: Dimensions.get('window').height, 
+                                width: Dimensions.get('window').width }}>
                                     <Loader />
                                 </View>
                             ) :
-                                <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-
+                                (!isLoading && collectionList.length > 0 ? (<Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                                     <Row
                                         data={tradingTableHead}
                                         // style={{ marginBottom: hp(0.5) }}
                                         textStyle={{ marginLeft: 5, fontSize: SIZE(15) }}
-                                        widthArr={[170, 100, 180, 140, 120, 145]}
+                                        widthArr={[195, 140, 180, 140, 120, 145]}
                                         height={hp(4)}
 
                                     />
@@ -237,10 +237,10 @@ const Activity = ({ route }) => {
                                                             wid = 50;
                                                         }
                                                         if (cellIndex === 1) {
-                                                            wid = 120;
+                                                            wid = 145;
                                                         }
                                                         if (cellIndex === 2) {
-                                                            wid = 100;
+                                                            wid = 140;
                                                         }
                                                         if (cellIndex === 3) {
                                                             wid = 180;
@@ -271,12 +271,12 @@ const Activity = ({ route }) => {
                                                                                     styles.text,
                                                                                     {
                                                                                         color: 'black',
-                                                                                        marginLeft: hp(1)
+                                                                                        marginLeft: hp(0.5),
+                                                                                        marginRight: hp(0.5)
                                                                                     },
                                                                                 ]}>
                                                                                 {cellData !== 'Null Address' && cellData
-                                                                                    ? cellData.substring(0, 10)
-                                                                                    : cellData.substring(0, 10)}
+                                                                                }
                                                                             </Text>
                                                                         </TouchableOpacity>
                                                                     ) :
@@ -297,7 +297,7 @@ const Activity = ({ route }) => {
                                                                             </TouchableOpacity>) :
                                                                             cellIndex === 3 ?
                                                                                 (
-                                                                                    cellData && Number(cellData)
+                                                                                    cellData
                                                                                 ) :
                                                                                 cellIndex === 4 ?
                                                                                     (
@@ -306,9 +306,9 @@ const Activity = ({ route }) => {
                                                                                     cellIndex === 5 ? (
                                                                                         cellData && cellData.substring(0, 12)
                                                                                     ) :
-                                                                                    cellIndex === 6 && ( 
-                                                                                        setDate(cellData)
-                                                                                    )   
+                                                                                        cellIndex === 6 && (
+                                                                                            setDate(cellData)
+                                                                                        )
                                                                 }
                                                                 // cellIndex === 3 ? element(cellData, index) :
                                                                 // textStyle={styles.text}
@@ -319,21 +319,36 @@ const Activity = ({ route }) => {
                                                         );
                                                     })}
                                                 </TableWrapper>
-
                                             );
                                         })
-                                    ) : (
-                                        <Text style={styles.emptyData}>
-                                            {translate('common.noDataFound')}
-                                        </Text>
-                                    )}
-                                </Table>}
+                                    ) :
+                                        <></>
+                                    }
+                                </Table>) :
+                                    (
+                                        <View style={{
+                                            width: Dimensions.get('window').width,
+                                            height: Dimensions.get('window').height,
+                                            justifyContent: 'center', alignItems: 'center',
+                                        }}>
+                                            <Text>
+                                                {translate('common.noDataFound')}
+                                            </Text>
+                                        </View>
+
+                                    ))
+                            }
                         </View>
+                        {/* <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                <Text>
+                                    {translate('common.noDataFound')}
+                                </Text>
+                            </View> */}
                     </ScrollView>
                 </View>
             </View>
 
-            <PaginationContainer width={'60%'}
+            {collectionList.length > 0 && <PaginationContainer width={'60%'}
                 height={'10%'}
                 inputWidth={'70%'}
                 iconSize={20}
@@ -369,7 +384,7 @@ const Activity = ({ route }) => {
                     dispatch(activityNftListStart(tabTitle));
                     dispatch(activityNftListReset());
                 }}
-            />
+            />}
         </KeyboardAwareScrollView>
     );
 };
