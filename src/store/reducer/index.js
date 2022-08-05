@@ -17,6 +17,7 @@ import PermissionsReducer from './storagepermission';
 import HotCollectionReducer from './hotCollectionReducer';
 import NftDataCollectionReducer from './nftDataCollectionReducer';
 import CollectionReducer from './collectionReducer';
+import chatReducer from './chatReducer';
 import { reducer as formReducer } from 'redux-form'
 
 const RootReducer = combineReducers({
@@ -37,6 +38,7 @@ const RootReducer = combineReducers({
     HotCollectionReducer,
     NftDataCollectionReducer,
     CollectionReducer,
+    chatReducer,
     form: formReducer
 });
 
