@@ -180,6 +180,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [filterTableValue]);
 
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // getRealtedNFT();

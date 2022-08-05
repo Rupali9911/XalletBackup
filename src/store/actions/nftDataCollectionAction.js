@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
-import { parseNftObject } from '../../utils/parseNFTObj';
+import { divideNo } from '../../utils';
+import { getBaseCurrency, parseNftObject } from '../../utils/parseNFTObj';
+import { translate } from '../../walletUtils'
 import {
   NFT_DATA_COLLECTION_FAIL,
   NFT_DATA_COLLECTION_LIST_RESET,
@@ -20,17 +22,6 @@ import {
   ACTIVITY_NFT_LIST_RESET,
   ACTIVITY_NFT_LIST_PAGE_CHANGE,
 } from '../types';
-
-import Big from "big.js";
-const divideNo = (res) => {
-  if (typeof res === "string" && res === "") {
-    res = "0";
-  }
-  let bigNo = new Big(res);
-  let bigNo1 = new Big(Math.pow(10, 18));
-  let number = bigNo.div(bigNo1)?.toFixed(18);
-  return number;
-};
 
 export const nftDataCollectionLoadSuccess = (data) => ({
   type: NFT_DATA_COLLECTION_SUCCESS,
@@ -103,7 +94,7 @@ export const activityNftListPageChange = (data) => ({
 });
 
 export const activityHistoryList = (page, collectionId, type, tabTitle, limit) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
+  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
   return (dispatch, getState) => {
     const data = {
       collectionId,
@@ -132,22 +123,141 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
           // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
           let bids = []
           for (let i = 0; i < res.data.length; i++) {
+            let event = ""
+            let mainPrice = ""
+            let seller = "" 
+            let owner = ""
+            if(res.data[i].event === 'SellNFT'){
+              owner = ""
+              seller = res.data[i].returnValues.seller
+              event = translate('common.sales')
+              let price = divideNo(parseInt(res.data[i].returnValues.price._hex, 16))
+              let baseCurrency = getBaseCurrency(
+                res?.data[i]?.mainTokenId.toString().split("-")[0],
+                parseInt(
+                  res?.data[i]?.returnValues?.baseCurrency?._hex,
+                  16
+              ))
+              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+            }
+            else if(res.data[i].event === 'OnAuction'){
+              owner = ""
+              seller = res.data[i].returnValues.seller
+              event = translate('common.OnAuction')
+              let price = divideNo(parseInt(res.data[i].returnValues.startPrice._hex, 16))
+              let baseCurrency = getBaseCurrency(
+                res?.data[i]?.mainTokenId.toString().split("-")[0],
+                parseInt(
+                  res?.data[i]?.returnValues?.baseCurrency?._hex,
+                  16
+              ))
+              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+              // console.log(price,baseCurrency,mainPrice)
+            }
+            else if(res.data[i].event === 'awardAuctionNFT'){
+              owner = ""
+              seller = res.data[i].returnValues.seller
+              event = translate('common.OnAuction')
+              let price = divideNo(parseInt(res.data[i].returnValues.priceDollar._hex, 16))
+              let baseCurrency = ""
+              mainPrice = `${price} ${baseCurrency}`
+            }
+            else if(res.data[i].event === 'Bid'){
+              owner= ""
+              seller = res.data[i].returnValues.bidder
+              event = translate('common.Bids')
+              let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
+              let baseCurrency = res.data.data[i].returnValues.baseCurrency ? 
+              res.data.data[i].returnValues.baseCurrency._hex  ?  
+              getBaseCurrency(
+                res?.data[i]?.mainTokenId.toString().split("-")[0],
+                parseInt(
+                  res?.data[i]?.returnValues?.baseCurrency?._hex,
+                  16
+              )) : getBaseCurrency(
+                res?.data[i]?.mainTokenId.toString().split("-")[0],
+                parseInt(
+                  res?.data[i]?.returnValues?.baseCurrency?._hex,
+                  16
+              )) : 'ALIA'
+              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+            }
+            else if(res.data[i].event === 'BuyNFT' ||
+            res.data[i].event === "BuyNFTNonCrypto"){
+              owner= res?.data[i]?.returnValues?.buyer
+              seller = res?.data[i]?.sellData?.seller
+              event = translate('common.Buys')
+              let price = res.data[i].sellData?.priceConversion
+              let baseCurrency = res.data[i].sellData?.buyCurrencyType
+              ? getBaseCurrency(
+                res.data[i]?.mainTokenId.toString().split("-")[0],
+                parseInt(res.data[i].sellData?.buyCurrencyType, 16)
+              )
+              : res.data[i].returnValues?.dollarPrice &&
+                parseInt(
+                  divideNo(
+                    parseInt(
+                      res.data[i].returnValues?.dollarPrice._hex,
+                      16
+                    )
+                  )
+                ) > 0
+                ? "$"
+                : "ALIA"
+              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+            }
+            else if(res.data[i].event === 'Claim'){
+              owner = res.data[i].returnValues.bidder
+              seller = res.data[i].sellData
+                  ? res.data[i].sellData.seller
+                  : ""
+              event = translate('common.Claim')
+              let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
+              let baseCurrency = res.data.data[i].returnValues.baseCurrency
+              ? getBaseCurrency(
+                res.data[i]?.mainTokenId.toString().split("-")[0],
+                parseInt(
+                  res.data[i].returnValues.baseCurrency._hex,
+                  16
+                )
+              )
+              : "ALIA"
+              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+            }
+            else if(res.data[i].event === 'CancelSell'){
+              owner = ""
+              seller =  res.data[i].returnValues.from
+              event = translate('common.cancelSell')
+              let price= ""
+              let baseCurrency = ""
+              mainPrice = `${price} ${baseCurrency}`
+            }
+            else if(res.data[i].event === 'MintWithTokenURI' 
+            || res.data[i].event === 'MintWithTokenURINonCrypto'){
+              owner = ""
+              seller =  res.data[i].returnValues.from
+              event = translate('common.minted')
+              let price = ""
+              let baseCurrency = ""
+              mainPrice = `${price} ${baseCurrency}`
+            }
+
             let obj = [
               res.data[i]?.metaData
-                ? res.data[i]?.metaData?.thumbnft
-                : res.data[i]?.nftInfo[0].metaData?.thumbnft
-                  ? res.data[i]?.nftInfo[0].metaData?.thumbnft
-                  : res.data[i]?.nftInfo[0].metaData?.image,
-              res.data[i]?.nftInfo[0]?.en_nft_name
-                ? res.data[i]?.nftInfo[0]?.en_nft_name
-                : res.data[i]?.metaData?.name
-                  ? res.data[i]?.metaData?.name
-                  : res.data[i]?.nftInfo[0]?.metaData?.name,
-              res?.data[i]?.event,
-              res?.data[i].returnValues.price && res.data[i].returnValues.price._hex,
-              res?.data[i].returnValues.seller && res.data[i].returnValues.seller,
-              res?.data[i].sellData && res.data[i].sellData.owner,
-              res?.data[i].timestamp,
+                ? res?.data[i]?.metaData?.thumbnft
+                : res?.data[i]?.nftInfo[0]?.metaData?.thumbnft
+                  ? res?.data[i]?.nftInfo[0]?.metaData?.thumbnft
+                  : res?.data[i]?.nftInfo[0]?.metaData?.image,
+              res?.data[i]?.nftInfo[0]?.en_nft_name
+                ? res?.data[i]?.nftInfo[0]?.en_nft_name
+                : res?.data[i]?.metaData?.name
+                  ? res?.data[i]?.metaData?.name
+                  : res?.data[i]?.nftInfo[0]?.metaData?.name,
+              event,
+              mainPrice,
+              seller,
+              owner,
+              res?.data[i]?.timestamp,
               res?.data[i]?.nftInfo[0]
             ]
             bids.push(obj)
