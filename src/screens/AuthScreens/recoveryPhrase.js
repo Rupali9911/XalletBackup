@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useKeyboard} from '@react-native-community/hooks';
+import { useKeyboard } from '@react-native-community/hooks';
 import axios from 'axios';
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   FlatList,
   Platform,
@@ -11,9 +11,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, IconButton} from 'react-native-paper';
+import { Button, IconButton } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
@@ -23,9 +23,9 @@ import HintText from '../../components/hintText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {colors} from '../../res';
+import { colors } from '../../res';
 import {
   endLoader,
   getAddressNonce,
@@ -33,11 +33,18 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import {alertWithSingleBtn} from '../../utils';
-import {translate} from '../../walletUtils';
-const ethers = require('ethers');
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
+//================= =================
+import "react-native-get-random-values"
+import "@ethersproject/shims"
+import { ethers } from "ethers";
+import bip39 from 'react-native-bip39'
+import { hdkey } from 'ethereumjs-wallet'
+//================= =================
+
 const toastConfig = {
-  my_custom_type: ({text1, props, ...rest}) => (
+  my_custom_type: ({ text1, props, ...rest }) => (
     <View
       style={{
         paddingHorizontal: wp('20%'),
@@ -45,21 +52,21 @@ const toastConfig = {
         paddingVertical: hp('2%'),
         backgroundColor: colors.GREY5,
       }}>
-      <Text style={{color: colors.white, fontWeight: 'bold'}}>{text1}</Text>
+      <Text style={{ color: colors.white, fontWeight: 'bold' }}>{text1}</Text>
     </View>
   ),
 };
-const RecoveryPhrase = ({route, navigation}) => {
+const RecoveryPhrase = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
-  const {loading} = useSelector(state => state.UserReducer);
-  const {recover} = route.params;
+  const { loading } = useSelector(state => state.UserReducer);
+  const { recover } = route.params;
   const [wallet, setWallet] = useState(route.params.wallet);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
   const [phrase, setPhrase] = useState('');
- // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
+  // const [phrase, setPhrase] = useState("deputy miss kitten kiss episode humor chunk surround know omit disease elder");
   // const [phrase, setPhrase] = useState("tongue grit volume hope rely weird run mixture identify charge then camp");
   const toastRef = useRef(null);
 
@@ -78,15 +85,16 @@ const RecoveryPhrase = ({route, navigation}) => {
       dispatch(startLoader())
         .then(async () => {
           let mnemonic = phrase.trim();
-          let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+          const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
+          const path = "m/44'/60'/0'/0/0";
+          const wallet = hdwallet.derivePath(path).getWallet();
+          const address = `0x${wallet.getAddress().toString('hex')}`;
+          const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
           const account = {
-            mnemonic: mnemonicWallet.mnemonic,
-            address: mnemonicWallet.address,
-            privateKey: mnemonicWallet.privateKey,
-          };
-          console.log(mnemonicWallet.mnemonic);
-          console.log(mnemonicWallet.address);
-          console.log(mnemonicWallet.privateKey);
+            mnemonic: mnemonic,
+            address: address,
+            privateKey: privateKey
+          }
           setWallet(account);
           dispatch(setPasscode(''));
           dispatch(getAddressNonce(account, false, false))
@@ -147,7 +155,7 @@ const RecoveryPhrase = ({route, navigation}) => {
     setShowSuggestions(false);
   };
 
-  const handleFlatListRenderItem = ({item, index}) => (
+  const handleFlatListRenderItem = ({ item, index }) => (
     <TouchableOpacity
       style={styles.suggestionContainer}
       onPress={() => setPhraseText(item.word)}>
@@ -179,7 +187,7 @@ const RecoveryPhrase = ({route, navigation}) => {
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <View style={styles.padding}>
-              <AppLogo/>
+              <AppLogo />
               <TextView style={styles.title}>
                 {translate('wallet.common.yourPhrase')}
               </TextView>
@@ -198,7 +206,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                       multiline={true}
                       value={phrase}
                       autoCorrect={false}
-                      keyboardType= {Platform.OS === 'ios' ? 'default' : 'visible-password'}
+                      keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
                       onChangeText={val => {
                         setPhrase(val);
                         const newWord = val.split(' ').splice(-1);
@@ -222,7 +230,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                         paddingHorizontal: wp('3%'),
                         paddingVertical: hp('1%'),
                       }}>
-                      <Text style={{color: Colors.themeColor}}>
+                      <Text style={{ color: Colors.themeColor }}>
                         {translate('wallet.common.paste')}
                       </Text>
                     </TouchableOpacity>
@@ -249,14 +257,14 @@ const RecoveryPhrase = ({route, navigation}) => {
                 <View style={styles.phraseContainer}>
                   {wallet
                     ? wallet.mnemonic.phrase.split(' ').map((item, index) => {
-                        return (
-                          <WordView
-                            word={item}
-                            index={index + 1}
-                            key={`_${index}`}
-                          />
-                        );
-                      })
+                      return (
+                        <WordView
+                          word={item}
+                          index={index + 1}
+                          key={`_${index}`}
+                        />
+                      );
+                    })
                     : null}
                 </View>
               )}
@@ -265,16 +273,16 @@ const RecoveryPhrase = ({route, navigation}) => {
               {recover
                 ? null
                 : wallet && (
-                    <Button
-                      mode={'text'}
-                      uppercase={false}
-                      color={Colors.labelButtonColor}
-                      onPress={() => {
-                        copyToClipboard();
-                      }}>
-                      {translate('wallet.common.copy')}
-                    </Button>
-                  )}
+                  <Button
+                    mode={'text'}
+                    uppercase={false}
+                    color={Colors.labelButtonColor}
+                    onPress={() => {
+                      copyToClipboard();
+                    }}>
+                    {translate('wallet.common.copy')}
+                  </Button>
+                )}
               {recover ? null : (
                 <View style={styles.alertContainer}>
                   <View style={styles.alert}>
@@ -312,7 +320,7 @@ const RecoveryPhrase = ({route, navigation}) => {
                     recoverWallet();
                   } else {
                     // dispatch(setUserAuthData(wallet, true));
-                    navigation.replace('verifyPhrase', {wallet});
+                    navigation.replace('verifyPhrase', { wallet });
                   }
                 }
               }}
@@ -328,7 +336,7 @@ const WordView = props => {
   return (
     <View style={styles.word}>
       <TextView style={styles.wordTxt}>
-        <Text style={{color: Colors.townTxt}}>{props.index} </Text>
+        <Text style={{ color: Colors.townTxt }}>{props.index} </Text>
         {props.word}
       </TextView>
     </View>
