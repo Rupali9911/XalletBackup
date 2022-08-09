@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 1,
         elevation: 5,
+
     },
     listItemContainer: {
         width: "100%",
@@ -165,25 +166,27 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomRightRadius: SIZE(12),
         borderBottomLeftRadius: SIZE(12),
-        height: Platform.OS === 'android' ? (wp('100%') / 2.9) - wp('1%') : (wp('100%') / 3) - wp('1%'),
-        justifyContent: 'space-between',
+        height: Platform.OS === 'android' ? (wp('100%') / 2.4) - wp('1%') : (wp('100%') / 3) - wp('1%'),
+        // justifyContent: 'space-between',
         alignItems: 'center'
     },
     bottomWrap: {
-        marginTop: '1%',
+        marginTop:SIZE(10),
+        flexDirection:'column',
         height: Platform.OS === 'android' ? "26%" : "35%",
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems:'center',
         width: '100%'
     },
     chainitem: {
         //backgroundColor:'red'
     },
     renderchainstyle: {
-        flexDirection: 'row',
-        width: "50%",
-        justifyContent: 'center',
-
+        marginTop:SIZE(5),
+        width:'75%',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-evenly'
     },
     chaintypeflatlist: {
         width: "100%",
@@ -191,18 +194,19 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     bottomCenterWrap: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        left: 0,
-        bottom: 0,
+        marginTop: SIZE(5),
+        flexDirection:'column',
         justifyContent: 'center',
         alignItems: 'center'
     },
     byUser: {
-        color: '#4b5fff',
+        color: '#56bbf8',
         fontSize: SIZE(12),
-        marginBottom: SIZE(24),
+    },
+    nftCount:{
+        marginTop:SIZE(5),
+        color: Colors.PURPLE,
+        fontSize: SIZE(12),
     },
     collectionName: {
         color: '#23262f',
@@ -216,12 +220,17 @@ const styles = StyleSheet.create({
         marginVertical: SIZE(10),
     },
     verifyIcon: {
-        position: 'absolute',
-        top: 9,
-        right: 72,
         width: SIZE(14),
         height: SIZE(14),
         borderRadius: SIZE(10)
+    },
+    mainNftText : {
+        width : '100%',flexDirection:'row'
+    },
+    statusText:{
+        marginTop: SIZE(5),
+        fontSize: SIZE(12),
+        color: '#ff6e44'
     }
 })
 

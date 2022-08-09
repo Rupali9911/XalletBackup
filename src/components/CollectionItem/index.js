@@ -7,7 +7,7 @@ import { translate } from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../verifiedCollection';
-import { IMAGES } from '../../constants';
+import { COLORS, IMAGES } from '../../constants';
 const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 
 export default function CollectionItem(props) {
@@ -20,23 +20,26 @@ export default function CollectionItem(props) {
     creatorInfo,
     onPress,
     creator,
+    network,
+    count,
     blind,
     isCollection,
     cryptoAllowed,
     colId
   } = props;
   const [onPressButton, setOnPressButton] = useState(false);
-  const chainIcon = type => {
-    if (type === 'polygon') {
-      return <PolygonIcon />;
-    }
-    if (type === 'ethereum') {
-      return <Ethereum />;
-    }
-    if (type === 'binance') {
-      return <BitmapIcon />;
-    }
-  };
+
+  // const chainIcon = type => {
+  //   if (type === 'polygon') {
+  //     return <PolygonIcon />;
+  //   }
+  //   if (type === 'ethereum') {
+  //     return <Ethereum />;
+  //   }
+  //   if (type === 'binance') {
+  //     return <BitmapIcon />;
+  //   }
+  // };
 
   const getByUser = () => {
     // if (creator) return creator;
@@ -67,33 +70,54 @@ export default function CollectionItem(props) {
     uriType === 'mov' ||
     uriType === 'MOV';
 
+  // const renderChain = () => {
+  //   if (
+  //     blind || Array.isArray(chainType) && chainType?.length > 0 &&
+  //     chainType?.includes("ethereum") && chainType?.includes("binance") &&
+  //     !chainType?.includes("polygon")
+  //   ) {
+  //     return (
+  //       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+  //         {/* <BitmapIcon style={{ marginRight: SIZE(8) }} />
+  //         <PolygonIcon style={{ marginRight: SIZE(8) }} />
+  //         <Ethereum style={{ marginRight: SIZE(8) }} /> */}
+  //         <Ethereum style={{ marginRight: SIZE(8) }} />
+  //         <BitmapIcon />
+  //       </View>
+  //     );
+  //   } else if (isCollection) {
+  //     return (
+  //       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+  //         {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(8) }} />}
+  //         {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
+  //         {cryptoAllowed?.ethereum && <Ethereum />}
+  //       </View>
+  //     );
+  //   } else {
+  //     return chainIcon(chainType);
+  //   }
+  // };
+
   const renderChain = () => {
-    if (
-      blind || Array.isArray(chainType) && chainType?.length > 0 &&
-      chainType?.includes("ethereum") && chainType?.includes("binance") &&
-      !chainType?.includes("polygon")
-    ) {
-      return (
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          {/* <BitmapIcon style={{ marginRight: SIZE(8) }} />
-          <PolygonIcon style={{ marginRight: SIZE(8) }} />
-          <Ethereum style={{ marginRight: SIZE(8) }} /> */}
-          <Ethereum style={{ marginRight: SIZE(8) }} />
-          <BitmapIcon />
-        </View>
-      );
-    } else if (isCollection) {
-      return (
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(8) }} />}
-          {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
-          {cryptoAllowed?.ethereum && <Ethereum />}
-        </View>
-      );
-    } else {
-      return chainIcon(chainType);
+    if (network?.networkName === 'Ethereum') {
+      return <Ethereum/>
     }
-  };
+    if (network?.networkName === 'BSC') {
+      return <BitmapIcon/>
+    }
+    if (network?.networkName === 'Polygon') {
+      return <PolygonIcon/>
+    }
+  }
+
+  const renderVerifiedCollection = () => {
+    return (
+            <Image
+                style={styles.verifyIcon}
+                source={IMAGES.tweetPng}
+            />
+    )
+}
 
   useEffect(() => {
     if (onPressButton) {
@@ -130,18 +154,15 @@ export default function CollectionItem(props) {
               type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
               uri={iconImage}
               imageStyle={styles.iconImage}
-              />
-              {Verifiedcollections.find((id) => id === colId)  && (
-                <Image
-                style={styles.verifyIcon}
-                source={IMAGES.tweetPng}
             />
-              )}
           </View>
           <View style={styles.bottomCenterWrap}>
-            <Text numberOfLines={1} style={styles.collectionName}>
-              {collectionName}
-            </Text>
+            <View style={styles.bottomText}>
+              <Text numberOfLines={1} style={styles.collectionName}>
+                {collectionName}
+              </Text>
+              {renderVerifiedCollection()}
+            </View>
             {!isCollection && (
               <Text style={styles.byUser}>{`by ${getByUser()}`}</Text>
             )}
@@ -149,11 +170,10 @@ export default function CollectionItem(props) {
           <View style={styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
+            <Text style={styles.count}>{count} items</Text>
+            {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
-              <Text style={{ marginRight: 50 }}>
-              </Text>
-            </Text>}
+            </Text>} */}
           </View>
         </View>
       </View>

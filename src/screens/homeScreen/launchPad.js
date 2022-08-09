@@ -1,19 +1,63 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
     FlatList,
     StatusBar,
     View,
 } from 'react-native';
+import {
+    launchpadNftLoadStart,
+    launchpadNftListReset,
+    launchpadNftPageChange,
+    launchpadNftLoadSuccess,
+    getLaunchpadNftList
+} from '../../store/actions/launchpadAction'
+import { useDispatch, useSelector } from 'react-redux';
 import { networkType } from "../../common/networkType";
 import { colors } from '../../res';
+import { Loader } from '../../components'
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
-import { launchpadData } from "../LaunchPadDetail/launchpadData";
+// import { launchpadData } from "../LaunchPadDetail/launchpadData";
 
 const LaunchPad = () => {
 
+    const dispatch = useDispatch();
     const navigation = useNavigation();
+
+    // =============== Getting data from reducer ========================
+    const { LaunchpadReducer } = useSelector(state => state);
+
+    const isLoading = LaunchpadReducer.launchpadLoading
+    const launchData = LaunchpadReducer.launchpadList
+    const page = LaunchpadReducer.launchpadPage;
+    const totalCount = LaunchpadReducer.launchpadTotalCount;
+
+    const getLaunchpadNft = useCallback(
+        (page, limit) => {
+            dispatch(getLaunchpadNftList(page, limit))
+        }, []
+    )
+    
+    useEffect(() => {
+        getLaunchpadNft(page,totalCount)
+    }, [])
+
+    console.log(LaunchpadReducer.launchpadList,'>>>>>>> data')
+
+    //=================== Flatlist Functions ====================
+  const handleFlatlistRefresh = () => {
+    dispatch(launchpadNftLoadStart());
+    handleRefresh();
+  }
+
+  const handleRefresh = () => {
+    dispatch(launchpadNftListReset());
+    getLaunchpadNft(page,totalCount);
+    dispatch(launchpadNftPageChange(1));
+  };
+
+
 
     //=====================(Render Flatlist Item Function)=============================
     const renderItem = ({ item }) => {
@@ -23,15 +67,16 @@ const LaunchPad = () => {
                 chainType={item.chainType || 'polygon'}
                 items={item.items}
                 iconImage={item.iconImage}
-                collectionName={item.collectionName}
-                creator={item.creator}
+                collectionName={item.name}
+                creator={item.owner.name}
+                network={item.networks}
+                count={item.totalNft} 
                 status={item.status}
-                creatorInfo={item.creatorInfo}
+                creatorInfo={item.owner.description}
                 blind={item.blind}
                 collectionId={item._id}
                 disabled={(networkType === "testnet" || item.status === "comingSoon") ? true : false}
                 onPress={() => {
-                    console.log('========Launch tab =>', item);
                     if (item.status !== "comingSoon") {
                         if (item.blind) {
                             console.log('========Launch tab => blind1 75', { isBlind: true, collectionId: item._id, isHotCollection: false })
@@ -53,15 +98,20 @@ const LaunchPad = () => {
                 barStyle="dark-content"
                 backgroundColor={colors.white}
             />
-            <FlatList
-                data={launchpadData}
+            {isLoading ? <Loader/> : <FlatList
+                data={launchData}
                 horizontal={false}
                 numColumns={2}
                 renderItem={renderItem}
                 keyExtractor={(v, i) => 'item_' + i}
                 pagingEnabled={false}
                 legacyImplementation={false}
-            />
+                onRefresh={handleFlatlistRefresh}
+                refreshing={
+                    LaunchpadReducer.launchpadPage === 1 &&
+                    LaunchpadReducer.launchpadLoading
+                  }
+            />}
         </View>
     );
 };

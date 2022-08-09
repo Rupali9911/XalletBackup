@@ -30,6 +30,11 @@ const HotCollection = () => {
   // =============== Getting data from reducer ========================
   const { HotCollectionReducer } = useSelector(state => state);
 
+  const isLoading = HotCollectionReducer.hotCollectionLoading
+    const hotCollectionData = HotCollectionReducer.hotCollectionList
+    const page = HotCollectionReducer.hotCollectionPage;
+    const totalCount = HotCollectionReducer.hotCollectionTotalCount;
+
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
 
@@ -40,7 +45,7 @@ const HotCollection = () => {
         console.log("hot collection",)
         dispatch(hotCollectionLoadStart());
         dispatch(hotCollectionListReset());
-        getHotCollection(1);
+        getHotCollection(page,totalCount);
         dispatch(hotCollectionPageChange(1))
         setIsFirstRender(false)
       }, 100);
@@ -49,8 +54,8 @@ const HotCollection = () => {
   }, [isFocused]);
 
   //===================== Dispatch Action to Fetch Hot Collection NFT List =========================
-  const getHotCollection = useCallback((page) => {
-    dispatch(hotCollectionList(page));
+  const getHotCollection = useCallback((page,totalCount) => {
+    dispatch(hotCollectionList(page,totalCount));
   }, []);
 
   // ===================== Render Hot Collectio NFT Flatlist ===================================
@@ -94,7 +99,7 @@ const HotCollection = () => {
 
   const handleRefresh = () => {
     dispatch(hotCollectionListReset());
-    getHotCollection(1);
+    getHotCollection(page,totalCount);
     dispatch(hotCollectionPageChange(1));
   };
 
@@ -122,12 +127,15 @@ const HotCollection = () => {
     return (
       <CollectionItem
         bannerImage={item.bannerImage}
+        creator={item.owner.name}
         chainType={item.chainType}
         items={item.items}
         iconImage={item.iconImage}
-        collectionName={item.collectionName}
+        collectionName={item.name}
         creatorInfo={item.creatorInfo}
         blind={item.blind}
+        count={item.totalNft}
+        network={item.network}
         colId={item._id}
         onPress={() => {
           if (item.collectionName !== 'NFTART AWARD 2021') {

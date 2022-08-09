@@ -11,7 +11,7 @@ const initialState = {
   hotCollectionLoading: false,
   hotCollectionList: [],
   hotCollectionPage: 1,
-  hotCollectionTotalCount: 0
+  hotCollectionTotalCount: 5
 }
 
 export default function HotCollectionReducer(state = initialState, action) {
@@ -23,7 +23,7 @@ export default function HotCollectionReducer(state = initialState, action) {
     case HOT_COLLECTION_SUCCESS:
       return state = {
         ...state,
-        hotCollectionList: [...state.hotCollectionList, ...action.payload.data],
+        hotCollectionList: [...action.payload.listCollectionAllUser],
         hotCollectionTotalCount: action.payload.count,
         hotCollectionLoading: false,
       };

@@ -21,6 +21,8 @@ export default function LaunchPadItemData(props) {
         status,
         onPress,
         creator,
+        network,
+        count,
         blind,
         isCollection,
         cryptoAllowed,
@@ -80,12 +82,10 @@ export default function LaunchPadItemData(props) {
     // ======================= Render Verified Collection Function =======================
     const renderVerifiedCollection = () => {
         return (
-            Verifiedcollections.find((id) => id === collectionId) && (
                 <Image
                     style={styles.verifyIcon}
                     source={IMAGES.tweetPng}
                 />
-            )
         )
     }
 
@@ -93,9 +93,12 @@ export default function LaunchPadItemData(props) {
     const renderCollectionNbyUserName = () => {
         return (
             <View style={styles.bottomCenterWrap}>
-                <Text numberOfLines={1} style={styles.collectionName}>
-                    {collectionName}
-                </Text>
+                <View style={styles.mainNftText}>
+                    <Text numberOfLines={1} style={styles.collectionName}>
+                        {collectionName}
+                    </Text>
+                    {renderVerifiedCollection()}
+                </View>
                 {!isCollection && (
                     <Text style={styles.byUser}>{`by ${getByUser()}`}</Text>
                 )}
@@ -131,75 +134,90 @@ export default function LaunchPadItemData(props) {
                 <View style={styles.renderchainstyle}>
                     {renderChain()}
                 </View>
-                <Text style={{ fontSize: SIZE(12), color: '#ff6e44', marginVertical: "1%" }}>
+                <Text style={styles.nftCount}>{`${count} items`}</Text>
+                <Text style={styles.statusText}>
                     {/*{`${items} ` + translate('common.itemsCollection')}*/}
-                    {status == 'Ongoing' ? translate('common.ongoinglaunch') : ''}
-                    <Text style={{ marginRight: 50 }}>
-                    </Text>
+                    {status === 1 ? translate('common.ongoinglaunch') : ''}
                 </Text>
             </View>
         )
     }
 
-    const renderChain = () => {
-        if (blind) {
-            return (
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: Platform.OS === 'android' ? SIZE(0) : SIZE(5) }}>
-                    <BitmapIcon style={{ marginRight: SIZE(8) }} />
-                    <PolygonIcon style={{ marginRight: SIZE(8) }} />
-                    <Ethereum />
-                </View>
-            );
-        } else
-            if (isCollection) {
-                return (
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: Platform.OS === 'android' ? SIZE(0) : SIZE(5) }}>
-                        {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(10) }} />}
-                        {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
-                        {cryptoAllowed?.ethereum && <Ethereum />}
-                    </View>
-                );
-            } else {
-                //return chainIcon(chainType);
-                return chainTypeIcon(chainType)
-            }
-    };
+    // const renderChain = () => {
+    //     if (blind) {
+    //         return (
+    //             <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: Platform.OS === 'android' ? SIZE(0) : SIZE(5) }}>
+    //                 <BitmapIcon style={{ marginRight: SIZE(8) }} />
+    //                 <PolygonIcon style={{ marginRight: SIZE(8) }} />
+    //                 <Ethereum />
+    //             </View>
+    //         );
+    //     } else
+    //         if (isCollection) {
+    //             return (
+    //                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: Platform.OS === 'android' ? SIZE(0) : SIZE(5) }}>
+    //                     {cryptoAllowed?.binance && <BitmapIcon style={{ marginRight: SIZE(10) }} />}
+    //                     {cryptoAllowed?.polygon && <PolygonIcon style={{ marginRight: SIZE(8) }} />}
+    //                     {cryptoAllowed?.ethereum && <Ethereum />}
+    //                 </View>
+    //             );
+    //         } else {
+    //             //return chainIcon(chainType);
+    //             return chainTypeIcon(chainType)
+    //         }
+    // };
 
-    const chainTypeIcon = type => {
-        return (
-            <FlatList
-                data={type}
-                horizontal={true}
-                contentContainerStyle={styles.chaintypeflatlist}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item, index }) => {
+    const renderChain =()=> {
+        return <View style={styles.renderchainstyle}>
+            {network.map((item)=>{
+                if(item.networkName === 'Ethereum'){
+                    return <Ethereum style={{marginTop:'30%'}}/>
+                }
+                if(item.networkName === 'BSC'){
+                    return <BitmapIcon style={{marginTop:'30%'}}/>
+                }
+                if(item.networkName === 'Polygon'){
+                    return <PolygonIcon style={{marginTop:'30%'}}/>
+                }
+            })}
+        </View>
+    }
 
-                    if (item.type === 'polygon') {
-                        return <PolygonIcon style={{ marginHorizontal: 5 }} />;
-                    }
-                    if (item.type === 'ethereum') {
-                        return <Ethereum style={{ marginHorizontal: 5 }} />;
-                    }
-                    if (item.type === 'binance') {
-                        return <BitmapIcon style={{ marginHorizontal: 5 }} />;
-                    }
-                }}
+    // const chainTypeIcon = type => {
+    //     return (
+    //         <FlatList
+    //             data={type}
+    //             horizontal={true}
+    //             contentContainerStyle={styles.chaintypeflatlist}
+    //             keyExtractor={(item) => item.id}
+    //             renderItem={({ item, index }) => {
 
-            />
-        )
-    };
+    //                 if (item.type === 'polygon') {
+    //                     return <PolygonIcon style={{ marginHorizontal: 5 }} />;
+    //                 }
+    //                 if (item.type === 'ethereum') {
+    //                     return <Ethereum style={{ marginHorizontal: 5 }} />;
+    //                 }
+    //                 if (item.type === 'binance') {
+    //                     return <BitmapIcon style={{ marginHorizontal: 5 }} />;
+    //                 }
+    //             }}
 
-    const chainIcon = type => {
-        if (type === 'polygon') {
-            return <PolygonIcon />;
-        }
-        if (type === 'ethereum') {
-            return <Ethereum />;
-        }
-        if (type === 'binance') {
-            return <BitmapIcon />;
-        }
-    };
+    //         />
+    //     )
+    // };
+
+    // const chainIcon = type => {
+    //     if (type === 'polygon') {
+    //         return <PolygonIcon />;
+    //     }
+    //     if (type === 'ethereum') {
+    //         return <Ethereum />;
+    //     }
+    //     if (type === 'binance') {
+    //         return <BitmapIcon />;
+    //     }
+    // };
 
     //=====================(Other Supporting Function)=============================
     const handleOnPress = () => {
@@ -216,7 +234,6 @@ export default function LaunchPadItemData(props) {
                 {renderBannerImage()}
                 <View style={styles.collectionWrapper}>
                     {renderBannerIconImage()}
-                    {renderVerifiedCollection()}
                     {renderCollectionNbyUserName()}
                     {renderChainIconNstatus()}
                 </View>

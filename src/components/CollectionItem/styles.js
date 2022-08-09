@@ -64,34 +64,30 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomRightRadius: SIZE(12),
     borderBottomLeftRadius: SIZE(12),
-    height: (wp('100%') / 3) - wp('1%'),
+    height: (wp('100%') / 2.7) - wp('1%'),
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   bottomWrap: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
     width: '100%'
   },
   bottomCenterWrap: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
+    width:'100%',
     justifyContent: 'center',
     alignItems: 'center'
   },
   byUser: {
-    color: '#4b5fff',
+    color: '#56bbf8',
     fontSize: SIZE(12),
   },
   collectionName: {
     color: '#23262f',
     fontSize: SIZE(14),
-    marginBottom: SIZE(8),
-    marginHorizontal: SIZE(5)
+    marginBottom: SIZE(4),
+    marginHorizontal: SIZE(5),
   },
   soldOutText: {
     color: COLORS.greenLight,
@@ -105,6 +101,21 @@ const styles = StyleSheet.create({
     width: SIZE(14),
     height: SIZE(14),
     borderRadius: SIZE(10)
+  },
+  verifyIcon: {
+    width: SIZE(14),
+    height: SIZE(14),
+    borderRadius: SIZE(10)
+  },
+  bottomText:{
+    flexDirection:'row',
+    width:'100%',
+    justifyContent:'center'
+  },
+  count:{
+    marginTop:SIZE(5),
+    color: '#a660d8',
+    fontSize: SIZE(12)
   }
 });
 export default styles;
