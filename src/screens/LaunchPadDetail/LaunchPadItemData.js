@@ -7,7 +7,7 @@ import { translate } from '../../walletUtils';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../../components/verifiedCollection';
 import { IMAGES } from '../../constants';
-const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
+const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
 
 export default function LaunchPadItemData(props) {
     // ======================= Props destructing =======================
@@ -82,10 +82,7 @@ export default function LaunchPadItemData(props) {
     // ======================= Render Verified Collection Function =======================
     const renderVerifiedCollection = () => {
         return (
-                <Image
-                    style={styles.verifyIcon}
-                    source={IMAGES.tweetPng}
-                />
+                <VerficationIcon/>  
         )
     }
 
@@ -177,7 +174,7 @@ export default function LaunchPadItemData(props) {
                     return <BitmapIcon style={{marginTop:'30%'}}/>
                 }
                 if(item.networkName === 'Polygon'){
-                    return <PolygonIcon style={{marginTop:'30%'}}/>
+                    return <NewPolygonIcon style={{marginTop:'30%'}}/>
                 }
             })}
         </View>

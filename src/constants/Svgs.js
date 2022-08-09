@@ -74,11 +74,12 @@ import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
 import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
 import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
 import ThreeDotsVerticalIcon from 'src/assets/svgs/icon-three-dots-vertical.svg';
+import VerficationIcon from 'src/assets/svgs/icon-verified-nft.svg';
+import NewPolygonIcon from 'src/assets/svgs/icon-new-polygon.svg'
 
 export default {
   GirlIcon,
   LogoIcon,
-
   HomeIcon,
   SearchIcon,
   FitIcon,
@@ -145,7 +146,8 @@ export default {
   PolygonIcon,
   Ethereum,
   BitmapIcon,
-
+  NewPolygonIcon,
+  VerficationIcon,
   FantaseedIcon,
   TwiiterIcon,
   FacebookIcon,

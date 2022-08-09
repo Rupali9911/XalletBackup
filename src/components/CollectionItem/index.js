@@ -8,7 +8,7 @@ import CommonStyles from '../../constants/styles';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../verifiedCollection';
 import { COLORS, IMAGES } from '../../constants';
-const { PolygonIcon, Ethereum, BitmapIcon } = SVGS;
+const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
 
 export default function CollectionItem(props) {
   const {
@@ -29,17 +29,7 @@ export default function CollectionItem(props) {
   } = props;
   const [onPressButton, setOnPressButton] = useState(false);
 
-  // const chainIcon = type => {
-  //   if (type === 'polygon') {
-  //     return <PolygonIcon />;
-  //   }
-  //   if (type === 'ethereum') {
-  //     return <Ethereum />;
-  //   }
-  //   if (type === 'binance') {
-  //     return <BitmapIcon />;
-  //   }
-  // };
+  
 
   const getByUser = () => {
     // if (creator) return creator;
@@ -61,7 +51,6 @@ export default function CollectionItem(props) {
     creatorName = creatorName?.includes('0x') ? creatorName.substring(0, 6) : creatorName;
     return creatorName;
   }
-  // console.log("🚀 ~ file: index.js ~ line 34 ~ getByUser ~ creatorInfo", creatorInfo, getByUser())
 
   let uriType = bannerImage?.split('.')[bannerImage?.split('.').length - 1];
   const checkVideoUrl =
@@ -106,16 +95,13 @@ export default function CollectionItem(props) {
       return <BitmapIcon/>
     }
     if (network?.networkName === 'Polygon') {
-      return <PolygonIcon/>
+      return <NewPolygonIcon/>
     }
   }
 
   const renderVerifiedCollection = () => {
     return (
-            <Image
-                style={styles.verifyIcon}
-                source={IMAGES.tweetPng}
-            />
+            <VerficationIcon/>
     )
 }
 
