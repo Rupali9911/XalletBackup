@@ -131,9 +131,13 @@ export default function NFTItem(props) {
     } else {
       return (
         <View style={styles.collectionWrapper}>
-          {renderNameNcreatorName(false)}
-          {renderPriceNcurrencyIconContainer(false)}
-          {renderChainViewColumn(false)}
+          <View style={{paddingHorizontal : SIZE(15), paddingVertical:SIZE(10), borderBottomWidth:SIZE(1), borderBottomColor:'#f0f0f0',}}>
+            {renderNameNcreatorName(false)}
+            {renderPriceNcurrencyIconContainer(false)}
+          </View>
+          <View style={{paddingHorizontal : SIZE(15), paddingVertical:SIZE(6)}}>
+            {renderbottomView()}
+          </View>
         </View>
       )
     }
@@ -143,35 +147,36 @@ export default function NFTItem(props) {
   const renderNameNcreatorName = (isCollection) => {
     if (isCollection) {
       return (
-        <>
-          <Text numberOfLines={1}>{isBlind ? item?.metaData ? item?.metaData.name : item.name : item.name}</Text>
-          <Text
+        <View style={styles.nftName}>
+          <Text numberOfLines={1}>{isBlind && item?.name}</Text>
+          {/* <Text
             numberOfLines={1}
             style={isBlind ? styles.titleText2 : styles.titleText}>
             {getCreatorName()}
-          </Text>
-        </>
+          </Text> */}
+        </View>
       )
     } else {
       return (
-        <>
-          <Text numberOfLines={1}>{item.metaData?.name}</Text>
-          <Text
+        <View style={styles.nftName}>
+          <Text numberOfLines={1} style={styles.titleText}>{item?.name}</Text>
+          {/* <Text
             numberOfLines={1}
             style={styles.titleText}>
             {getCreatorName()}
-          </Text>
-        </>
+          </Text> */}
+        </View>
       )
     }
   }
+
 
   //================== Render Price and Currency Icons Function ===================
   const renderPriceNcurrencyIconContainer = (isCollection) => {
     return (
       <View
         style={styles.newPrice}>
-        {item.newprice &&
+        {/* {item.newprice &&
           item.newprice.endTime &&
           new Date(item.newprice.endTime) < new Date().getTime() ? (
           <Text
@@ -183,48 +188,55 @@ export default function NFTItem(props) {
             style={isCollection ? styles.soldOutText : styles.soldOutText1}>
             {translate('common.soldout')}
           </Text>
-        )}
+        )} */}
+        <Text style={item?.tokenPrice !== "" && item?.tokenPriceIcon ? styles.statusOnSale : styles.statusNotOnSale}>{item?.tokenPrice !== "" && item?.tokenPriceIcon ? 'On Sale' : 'Not On Sale'}</Text>
+        <View style={styles.currencyInfoContainer}>
+          <Image style={styles.tokenIcon} source={{ uri: item?.tokenPriceIcon && item.tokenPriceIcon }} />
+          <Text style={styles.price}>
+            {item?.tokenPrice !== "" && item?.price && Number(item.price)}
+          </Text>
+        </View>
       </View>
     )
   }
 
-  const renderPriceNcurrencyIcons = (isCollection) => {
-    if (isCollection) {
-      return (
-        <View style={styles.priceView}>
-          <Text
-            style={styles.priceText}>
-            {item?.baseCurrency === 'ALIA'
-              ? insertComma(parseFloat(item?.price, true).toFixed(0))
-              : item?.price % 1 != 0 ?
-                insertComma(parseFloat(item?.price, true).toFixed(2)) :
-                insertComma(parseFloat(item?.price, true).toFixed(0))
-            }
-          </Text>
-          {renderIcon()}
-        </View>
-      )
-    } else {
-      return (
-        <View style={styles.endTimeView}>
-          <Text
-            numberOfLines={1}
-            style={styles.priceText1}>
-            {
-              // insertComma(parseFloat(item?.price, true).toFixed(2))
-              item?.price < 1
-                ? Math.round((item?.price) * 100) / 100
-                  ? Math.round((item?.price) * 100) / 100
-                  : insertComma(parseFloat(item?.price, true).toFixed(2))
-                : insertComma(parseFloat(item?.price, true).toFixed(0))
-              // : insertComma(item?.price, true)
-            }
-          </Text>
-          {renderIcon()}
-        </View>
-      )
-    }
-  }
+  // const renderPriceNcurrencyIcons = (isCollection) => {
+  //   if (isCollection) {
+  //     return (
+  //       <View style={styles.priceView}>
+  //         <Text
+  //           style={styles.priceText}>
+  //           {item?.baseCurrency === 'ALIA'
+  //             ? insertComma(parseFloat(item?.price, true).toFixed(0))
+  //             : item?.price % 1 != 0 ?
+  //               insertComma(parseFloat(item?.price, true).toFixed(2)) :
+  //               insertComma(parseFloat(item?.price, true).toFixed(0))
+  //           }
+  //         </Text>
+  //         {renderIcon()}
+  //       </View>
+  //     )
+  //   } else {
+  //     return (
+  //       <View style={styles.endTimeView}>
+  //         <Text
+  //           numberOfLines={1}
+  //           style={styles.priceText1}>
+  //           {
+  //             // insertComma(parseFloat(item?.price, true).toFixed(2))
+  //             item?.price < 1
+  //               ? Math.round((item?.price) * 100) / 100
+  //                 ? Math.round((item?.price) * 100) / 100
+  //                 : insertComma(parseFloat(item?.price, true).toFixed(2))
+  //               : insertComma(parseFloat(item?.price, true).toFixed(0))
+  //             // : insertComma(item?.price, true)
+  //           }
+  //         </Text>
+  //         {renderIcon()}
+  //       </View>
+  //     )
+  //   }
+  // }
 
   const renderIcon = () => {
     const baseCurrency = item?.baseCurrency ? item.baseCurrency : item?.newprice?.baseCurrency ? item.newprice.baseCurrency : 0
@@ -243,101 +255,122 @@ export default function NFTItem(props) {
     }
   };
 
+  console.log(item?.network?.avatar,'>>>>>>> large NFT')
+
   //================== Render Chain view column Function ===================
-  const renderChainViewColumn = (isCollection) => {
-    if (isCollection) {
-      return (
-        <View
-          style={styles.chainViewColumn}>
-          <View style={{ marginBottom: 5, marginHorizontal: 5 }}>
-            {chainType(iconNftChain)}
+
+  const renderbottomView =()=> {
+    return <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center',}}>
+        <SvgUri
+            uri={item.network.avatar}
+            style={styles.tokenIcon2}
+          />
+          <View style={{flexDirection:'row', alignItems:'center'}}>
+            <TouchableOpacity >
+              <Image style={styles.creatorIcon} source={{uri:item.creator.avatar}}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginLeft : SIZE(-8)}}>
+            <Image style={styles.ownerIcon} source={{uri:item.owner.avatar}}/>
+            </TouchableOpacity>
           </View>
-          {/* <View style={styles.endTimeView}> */}
-          <View style={styles.endTimeView}>
-            <Text
-              style={styles.lastText}>
-              Last:{' '}
-            </Text>
-            <Text
-              style={styles.lastPriceText}>
-              {item?.newpriceTraded?.PirceC
-                ? insertComma(
-                  parseFloat(
-                    item?.newpriceTraded?.priceConversion,
-                    // item?.lastpriceTraded,
-                    true,
-                  ).toFixed(0),
-                )
-                : item?.price ?
-                  insertComma(item.price, true) :
-                  insertComma(item?.newpriceTraded?.priceConversion, true)
-              }
-            </Text>
-            <Text style={styles.lastPriceText}>{lastCurrency[0]?.key}</Text>
-            {/* </View> */}
-          </View>
-        </View>
-      )
-    } else {
-      return (
-        <View
-          style={styles.chainView}>
-          <View style={{ flexDirection: 'row' }}>
-            {chainType(item?.nftChain ? item.nftChain : iconNftChain)}
-            {item.isForAward ? <Image style={styles.awadImage} source={{ uri: getAwardsIcon(item?.award_type) }} /> : null}
-          </View>
-          <View style={styles.endTimeView}>
-            {item.newprice && item.newprice?.endTime ? (
-              new Date(item.newprice.endTime) < new Date().getTime() ? (
-                item.price ? (
-                  <View
-                    style={styles.endTimeView}>
-                    <Text
-                      numberOfLines={1}
-                      style={styles.priceText1}>
-                      {
-                        insertComma(parseFloat(item?.price, true).toFixed(0))
-                      }
-                    </Text>
-                    {renderIcon()}
-                  </View>
-                ) : null
-              ) : (
-                <Text
-                  style={styles.auctionTimeRemainText}>
-                  {getAuctionTimeRemain(item)}
-                </Text>
-              )
-            ) : (
-              <>
-                {item?.lastpriceTraded ? (
-                  <View
-                    style={styles.endTimeView}>
-                    <Text
-                      style={styles.lastText}>
-                      Last:{' '}
-                    </Text>
-                    <Text
-                      style={styles.lastPriceText}>
-                      {item?.lastCurrencyTraded === 'ALIA'
-                        ? insertComma(
-                          parseFloat(
-                            item?.lastpriceTraded,
-                            true,
-                          ).toFixed(0),
-                        )
-                        : insertComma(item?.lastpriceTraded, true)}
-                    </Text>
-                    {renderIcon()}
-                  </View>
-                ) : null}
-              </>
-            )}
-          </View>
-        </View>
-      )
-    }
+    </View>
   }
+
+
+  // const renderChainViewColumn = (isCollection) => {
+  //   if (isCollection) {
+  //     return (
+  //       <View
+  //         style={styles.chainViewColumn}>
+  //         <View style={{ marginBottom: 5, marginHorizontal: 5 }}>
+  //           {chainType(iconNftChain)}
+  //         </View>
+  //         {/* <View style={styles.endTimeView}> */}
+  //         <View style={styles.endTimeView}>
+  //           <Text
+  //             style={styles.lastText}>
+  //             Last:{' '}
+  //           </Text>
+  //           <Text
+  //             style={styles.lastPriceText}>
+  //             {item?.newpriceTraded?.PirceC
+  //               ? insertComma(
+  //                 parseFloat(
+  //                   item?.newpriceTraded?.priceConversion,
+  //                   // item?.lastpriceTraded,
+  //                   true,
+  //                 ).toFixed(0),
+  //               )
+  //               : item?.price ?
+  //                 insertComma(item.price, true) :
+  //                 insertComma(item?.newpriceTraded?.priceConversion, true)
+  //             }
+  //           </Text>
+  //           <Text style={styles.lastPriceText}>{lastCurrency[0]?.key}</Text>
+  //           {/* </View> */}
+  //         </View>
+  //       </View>
+  //     )
+  //   } else {
+  //     return (
+  //       <View
+  //         style={styles.chainView}>
+  //         <View style={{ flexDirection: 'row' }}>
+  //           {chainType(item?.nftChain ? item.nftChain : iconNftChain)}
+  //           {item.isForAward ? <Image style={styles.awadImage} source={{ uri: getAwardsIcon(item?.award_type) }} /> : null}
+  //         </View>
+  //         <View style={styles.endTimeView}>
+  //           {item.newprice && item.newprice?.endTime ? (
+  //             new Date(item.newprice.endTime) < new Date().getTime() ? (
+  //               item.price ? (
+  //                 <View
+  //                   style={styles.endTimeView}>
+  //                   <Text
+  //                     numberOfLines={1}
+  //                     style={styles.priceText1}>
+  //                     {
+  //                       insertComma(parseFloat(item?.price, true).toFixed(0))
+  //                     }
+  //                   </Text>
+  //                   {renderIcon()}
+  //                 </View>
+  //               ) : null
+  //             ) : (
+  //               <Text
+  //                 style={styles.auctionTimeRemainText}>
+  //                 {getAuctionTimeRemain(item)}
+  //               </Text>
+  //             )
+  //           ) : (
+  //             <>
+  //               {item?.lastpriceTraded ? (
+  //                 <View
+  //                   style={styles.endTimeView}>
+  //                   <Text
+  //                     style={styles.lastText}>
+  //                     Last:{' '}
+  //                   </Text>
+  //                   <Text
+  //                     style={styles.lastPriceText}>
+  //                     {item?.lastCurrencyTraded === 'ALIA'
+  //                       ? insertComma(
+  //                         parseFloat(
+  //                           item?.lastpriceTraded,
+  //                           true,
+  //                         ).toFixed(0),
+  //                       )
+  //                       : insertComma(item?.lastpriceTraded, true)}
+  //                   </Text>
+  //                   {renderIcon()}
+  //                 </View>
+  //               ) : null}
+  //             </>
+  //           )}
+  //         </View>
+  //       </View>
+  //     )
+  //   }
+  // }
 
   //================== Render End Time View Function ===================
   const renderEndTimeView = () => {
@@ -396,11 +429,8 @@ export default function NFTItem(props) {
 
   //================== Other Functions ===================
   const getImageUri = () => {
-    let imageUri = isStore ? image ?
-      image : item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData?.image
-      : isMeCollection ? (item.iconImage ? item.iconImage : null)
-        : item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl : isBlind ? item.metaData?.thumbnft : item.metaData?.image;
+    let imageUri = isStore && image ?
+      image : item.mediaUrl
     return imageUri
   }
 

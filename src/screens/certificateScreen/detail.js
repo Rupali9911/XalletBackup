@@ -926,7 +926,7 @@ const DetailScreen = ({ navigation, route }) => {
     )
   }
 
-  goToOwnerProfile = (id, profile) => {
+  const goToOwnerProfile = (id, profile) => {
     if (id?.toLowerCase() === walletAddressForNonCrypto?.toLowerCase()) {
       return;
     }
@@ -936,6 +936,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const showContractAddress = (item) => {
+    console.log("🚀 ~ file: detail.js ~ line 950 ~ showContractAddress ~ ", item, (item?.collection
+      ? item.collection.substring(0, 5) +
+      ' ... ' +
+      item.collection.slice([item.collection.length - 4])
+      : MarketContractAddress))
     return (item?.collection
       ? item.collection.substring(0, 5) +
       ' ... ' +

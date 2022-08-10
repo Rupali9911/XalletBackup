@@ -36,9 +36,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.25,
-
     borderRadius: wp("5"),
-
     elevation: 5,
   },
   nftListItem: {
@@ -79,12 +77,8 @@ const styles = StyleSheet.create({
     right: SIZE(10)
   },
   collectionWrapper: {
-    padding: SIZE(10),
     backgroundColor: 'white',
-    borderBottomRightRadius: SIZE(12),
-    borderBottomLeftRadius: SIZE(12),
-    height: (hp('100%') / 7),
-    justifyContent: 'space-between'
+    height: Platform.OS === 'android' ? (wp('100%') / 3) - wp('1%') : (wp('100%') / 3) - wp('1%'),
   },
   collectionWrapperBlind: {
     padding: SIZE(10),
@@ -100,8 +94,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleText: {
-    fontSize: SIZE(12),
-    fontWeight: '700'
+    fontFamily: 'Arial',
+    fontSize: SIZE(15),
+    fontWeight: '400'
   },
   titleText2: {
     fontSize: SIZE(12),
@@ -113,7 +108,10 @@ const styles = StyleSheet.create({
     fontSize: SIZE(12),
     marginVertical: SIZE(10),
   },
-  priceView: { flexDirection: 'row', alignItems: 'center' },
+  priceView: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   priceText: {
     color: COLORS.greenLight,
     marginVertical: SIZE(10),
@@ -174,7 +172,11 @@ const styles = StyleSheet.create({
     marginRight: SIZE(2),
     fontSize: SIZE(12),
   },
-  awadImage: { height: 20, width: 20, left: 2 },
+  awadImage: {
+    height: 20,
+    width: 20,
+    left: 2
+  },
   soldOutText1: {
     color: COLORS.greenLight,
     fontSize: SIZE(12),
@@ -184,6 +186,56 @@ const styles = StyleSheet.create({
     fontSize: SIZE(12),
     fontWeight: '700'
   },
-  newPrice: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', bottom: SIZE(5) }
+  newPrice: {
+    marginTop: SIZE(12),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  nftName: {
+    textAlign: 'left',
+  },
+  currencyInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  tokenIcon: {
+    width: SIZE(18),
+    height: SIZE(18),
+    borderRadius: SIZE(18),
+    marginRight: SIZE(3),
+  },
+  price: {
+    color: '#60c083',
+    fontSize: SIZE(13),
+    fontWeight: '700'
+  },
+  statusOnSale: {
+    fontSize: SIZE(13),
+    fontWeight: '700',
+    color: '#56bbf8'
+  },
+  statusNotOnSale: {
+    fontSize: SIZE(13),
+    fontWeight: '700',
+    color: '#ff0125'
+  },
+  tokenIcon2: {
+    width: SIZE(30),
+    height: SIZE(30),
+    borderRadius: SIZE(30),
+  },
+  creatorIcon: {
+    width: SIZE(32),
+    height: SIZE(32),
+    borderRadius: SIZE(28),
+  },
+  ownerIcon: {
+    width: SIZE(38),
+    height: SIZE(38),
+    borderRadius: SIZE(38),
+    borderColor: '#fff',
+    borderWidth: SIZE(3)
+  }
 });
 export default styles;

@@ -45,7 +45,6 @@ const LaunchPad = () => {
         getLaunchpadNft(page,totalCount)
     }, [])
 
-    console.log(LaunchpadReducer.launchpadList,'>>>>>>> data')
 
     //=================== Flatlist Functions ====================
   const handleFlatlistRefresh = () => {

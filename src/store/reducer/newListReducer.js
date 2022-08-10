@@ -31,23 +31,15 @@ export default function NewNFTListReducer(state = initialState, action) {
     case ART_NFT_LOAD_START:
       return (state = {...state, isArtNftLoading: true});
 
-    case NEW_NFT_LOAD_START:
-      switch (action.payload) {
-        case 'art':
-          return (state = {...state, isArtNftLoading: true })
-        case 'photo':
-          return (state = {...state, isPhotoNftLoading: true })
-        default:
+    case NEW_NFT_LOAD_START:        
           return (state = {...state, newNftListLoading: true })
-      }
 
     case NEW_NFT_LOAD_SUCCESS:
       return (state = {
         ...state,
-        newNftList: [...state.newNftList, ...action.payload.data],
+        newNftList: [...action.payload.list],
         newTotalCount: action.payload.count,
         newNftListLoading: false,
-        isArtNftLoading: false,
       });
     case FAVORITE_NFT_LOAD_SUCCESS:
       return (state = {

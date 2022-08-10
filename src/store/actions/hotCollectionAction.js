@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import axios from 'axios';
 import {
   HOT_COLLECTION_FAIL,
@@ -34,7 +34,7 @@ export const hotCollectionPageChange = (data) => ({
 export const hotCollectionList = (page,limit) => {
   return (dispatch) => {
 
-    fetch(`https://prod-backend.xanalia.com/collections/hot?page=${page}&limit=${limit}`)
+    fetch(`${NEW_BASE_URL}/collections/hot?page=${page}&limit=${limit}`)
       .then(response => response.json())
       .then(json => {
         console.log(json, 'mainData')

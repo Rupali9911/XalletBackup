@@ -105,8 +105,7 @@ const ArtNFT = () => {
 
     const renderItem = ({ item }) => {
         let findIndex = NewNFTListReducer.newNftList.findIndex(x => x.id === item.id);
-        if (item && item.hasOwnProperty("metaData") && item.metaData) {
-            let imageUri = item.thumbnailUrl !== undefined || item.thumbnailUrl ? item.thumbnailUrl : item.metaData.image;
+            let imageUri = item?.mediaUrl
 
             return (
                 <NFTItem
@@ -119,7 +118,6 @@ const ArtNFT = () => {
                     }}
                 />
             )
-        }
     }
 
     const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newNftList]);

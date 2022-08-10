@@ -1,3 +1,4 @@
+import { NEW_BASE_URL } from '../../common/constants';
 import {
     LAUNCHPAD_NFT_LIST_FAIL,
     LAUNCHPAD_NFT_LIST_RESET,
@@ -33,7 +34,7 @@ export const launchpadNftLoadSuccess = (data) => ({
 export const getLaunchpadNftList = (page, limit) => {
     return (dispatch) => {
         dispatch(launchpadNftLoadStart())
-        const url = `https://prod-backend.xanalia.com/launchpad?page=${page}&limit=${limit}`
+        const url = `${NEW_BASE_URL}/launchpad?page=${page}&limit=${limit}`
         console.log("🚀 ~ file: launchpadAction.js ~ line 38 ~ ~ url", url)
 
         fetch(url)

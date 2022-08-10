@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL, BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import { alertWithSingleBtn } from '../../utils';
@@ -66,70 +66,91 @@ export const newPageChange = data => ({
   payload: data,
 });
 
-export const newNFTList = (page, limit, sort) => {
-  return (dispatch, getState) => {
-    dispatch(newNftLoadStart());
-    dispatch(isArtNftLoadStart());
-
-    const { data, wallet } = getState().UserReducer;
-    let user = data.user;
-
-    let body_data = {
-      page,
-      limit: limit || 27,
-      networkType: networkType,
-      token: 'HubyJ*%qcqR0',
-      type: '2D',
-      approveStaus: 'approve',
-    };
-
-    if (sort) {
-      body_data.sort = sort;
+export const newNFTList = (category,sort,pageSize,pageNum) => {
+    return (dispatch)=>{
+      dispatch(newNftLoadStart())
+      // dispatch(isArtNftLoadStart())
+      const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=1&pageSize=30&sortFilter=0&categoryFilter=1`
+      fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data,'>>>>> Art Data')
+                dispatch(newNftLoadSuccess(data))
+            })
+            .catch(() => {
+                console.log('err')
+                dispatch(newNftLoadFail())
+                // dispatch(artNftLoadFail());
+            })
     }
+}
 
-    if (user) {
-      body_data.owner = wallet?.address || user?._id;
-    }
-    // console.log('body_data',body_data);
-    let fetch_data_body = {
-      method: 'POST',
-      body: JSON.stringify(body_data),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    };
+// export const newNFTList = (page, limit, sort) => {
+//   return (dispatch, getState) => {
+//     dispatch(newNftLoadStart());
+//     dispatch(isArtNftLoadStart());
 
-    fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
-      .then(response => response.json())
-      .then(json => {
-        //console.log('json', json)
-        let nftData = [];
-        if (!json.count) {
-          json.data = [];
-        } else {
-          json.data.map(item => {
-            const parsedNFT = parseNftObject(item);
-            const data = {
-              ...parsedNFT,
-              ...item,
-            };
-            nftData.push(data);
-          });
-        }
-        json.data = nftData;
-        dispatch(newNftLoadSuccess(json));
-      })
-      .catch(err => {
-        dispatch(newNftLoadFail());
-        dispatch(artNftLoadFail());
-        alertWithSingleBtn(
-          translate('common.error'),
-          translate('wallet.common.error.networkFailed'),
-        );
-      });
-  };
-};
+//     const { data, wallet } = getState().UserReducer;
+//     let user = data.user;
+
+//     let body_data = {
+//       page,
+//       limit: limit || 27,
+//       networkType: networkType,
+//       token: 'HubyJ*%qcqR0',
+//       type: '2D',
+//       approveStaus: 'approve',
+//     };
+
+//     if (sort) {
+//       body_data.sort = sort;
+//     }
+
+//     if (user) {
+//       body_data.owner = wallet?.address || user?._id;
+//     }
+//     // console.log('body_data',body_data);
+//     let fetch_data_body = {
+//       method: 'POST',
+//       body: JSON.stringify(body_data),
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
+//       .then(response => response.json())
+//       .then(json => {
+//         //console.log('json', json)
+//         let nftData = [];
+//         if (!json.count) {
+//           json.data = [];
+//         } else {
+//           json.data.map(item => {
+//             const parsedNFT = parseNftObject(item);
+//             const data = {
+//               ...parsedNFT,
+//               ...item,
+//             };
+//             nftData.push(data);
+//           });
+//         }
+//         json.data = nftData;
+//         dispatch(newNftLoadSuccess(json));
+//       })
+//       .catch(err => {
+//         dispatch(newNftLoadFail());
+//         dispatch(artNftLoadFail());
+//         alertWithSingleBtn(
+//           translate('common.error'),
+//           translate('wallet.common.error.networkFailed'),
+//         );
+//       });
+//   };
+// };
+
+
 export const favoriteNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(newNftLoadStart('photo'));
