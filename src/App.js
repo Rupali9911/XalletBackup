@@ -31,7 +31,7 @@ import ScanToConnect from './screens/connect/scanToConnect';
 import CreateNFTScreen from './screens/createNFTScreen';
 import DetailItemScreen from './screens/detailScreen';
 import EditProfileScreen from './screens/edit_profile';
-import ExploreScreen from './screens/explore';
+import Discover from './screens/discover';
 import HomeScreen from './screens/homeScreen';
 import MakeBidScreen from './screens/makeBidScreen';
 import AddCard from './screens/PaymentScreen/addCard';
@@ -131,7 +131,7 @@ const TabComponent = () => {
             iconName = focused ? images.icons.homeA : images.icons.homeD;
           } else if (route.name === 'Create') {
             iconName = focused ? images.icons.createA : images.icons.createD;
-          } else if (route.name === 'Explore') {
+          } else if (route.name === 'Discover') {
             iconName = focused ? images.icons.exploreA : images.icons.exploreD;
           } else if (route.name === 'Certificate') {
             iconName = focused
@@ -161,8 +161,8 @@ const TabComponent = () => {
         options={{ tabBarLabel: translate('common.home') }}
       />
       <Tab.Screen
-        name={'Explore'}
-        component={ExploreScreen}
+        name={'Discover'}
+        component={Discover}
         options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
       {data?.user?.role === 'crypto' &&
@@ -286,13 +286,13 @@ const AppRoutes = () => {
           <Stack.Screen name="Home" component={TabComponent} />
           <Stack.Screen name="PasscodeScreen" initialParams={{ screen: 'Auth' }} component={PasscodeScreen} />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-          <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen}/>
+          <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
-          <Stack.Screen name="transactionsDetail" component={transactionsDetail}/>
+          <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
           <Stack.Screen name="send" component={Send} />
           <Stack.Screen name="scanToConnect" component={ScanToConnect} />
           <Stack.Screen name="Create" component={CreateNFTScreen} />

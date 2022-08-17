@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-fast-video';
-// import Video from 'react-native-video';
-
-import { SVGS, SIZE, IMAGES } from '../constants';
+import { SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID } from '../constants';
 import Colors from '../constants/Colors';
 
 const {
@@ -17,7 +15,7 @@ const C_Image = (props) => {
     let [brokenUrl, setBrokenUrl] = useState(false);
     let [isBroken, setIsBroken] = useState(false);
 
-    const checkVideoUrl = props.type === 'mp4' || props.type === 'MP4' || props.type === 'mov' || props.type === 'MOV' || props.type === 'movie';
+    const checkVideoUrl = props?.category === NFT_TYPE_TO_ID.video;
 
     return (
         <>

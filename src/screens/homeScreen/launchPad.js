@@ -18,7 +18,6 @@ import { colors } from '../../res';
 import { Loader } from '../../components'
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
-// import { launchpadData } from "../LaunchPadDetail/launchpadData";
 
 const LaunchPad = () => {
 
@@ -38,26 +37,22 @@ const LaunchPad = () => {
             dispatch(getLaunchpadNftList(page, limit))
         }, []
     )
-    
+
     useEffect(() => {
-        getLaunchpadNft(page,totalCount)
+        getLaunchpadNft(page, totalCount);
     }, [])
 
-    console.log(LaunchpadReducer.launchpadList,'>>>>>>> data')
-
     //=================== Flatlist Functions ====================
-  const handleFlatlistRefresh = () => {
-    dispatch(launchpadNftLoadStart());
-    handleRefresh();
-  }
+    const handleFlatlistRefresh = () => {
+        dispatch(launchpadNftLoadStart());
+        handleRefresh();
+    }
 
-  const handleRefresh = () => {
-    dispatch(launchpadNftListReset());
-    getLaunchpadNft(page,totalCount);
-    dispatch(launchpadNftPageChange(1));
-  };
-
-
+    const handleRefresh = () => {
+        dispatch(launchpadNftListReset());
+        getLaunchpadNft(page, totalCount);
+        dispatch(launchpadNftPageChange(1));
+    };
 
     //=====================(Render Flatlist Item Function)=============================
     const renderItem = ({ item }) => {
@@ -70,7 +65,7 @@ const LaunchPad = () => {
                 collectionName={item.name}
                 creator={item.owner.name}
                 network={item.networks}
-                count={item.totalNft} 
+                count={item.totalNft}
                 status={item.status}
                 creatorInfo={item.owner.description}
                 blind={item.blind}
@@ -98,7 +93,7 @@ const LaunchPad = () => {
                 barStyle="dark-content"
                 backgroundColor={colors.white}
             />
-            {isLoading ? <Loader/> : <FlatList
+            {isLoading ? <Loader /> : <FlatList
                 data={launchData}
                 horizontal={false}
                 numColumns={2}
@@ -110,7 +105,7 @@ const LaunchPad = () => {
                 refreshing={
                     LaunchpadReducer.launchpadPage === 1 &&
                     LaunchpadReducer.launchpadLoading
-                  }
+                }
             />}
         </View>
     );

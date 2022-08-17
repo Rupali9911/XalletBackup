@@ -147,7 +147,7 @@ const Created = ({ route }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName("myNFT"));
-                        navigation.push("DetailItem", {id: id, index: findIndex, sName: "myNFT" });
+                        navigation.push("DetailItem", { id: id, index: findIndex, sName: "myNFT" });
                     }}
                 />
             )
@@ -264,7 +264,7 @@ const Collection = ({ route }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName("myCollection"));
-                        navigation.push("DetailItem", {id: id, index: findIndex, sName: "myCollection" });
+                        navigation.push("DetailItem", { id: id, index: findIndex, sName: "myCollection" });
                     }}
                 />
             )
@@ -347,10 +347,10 @@ function ArtistDetail({
     const isMounted = useIsMounted();
 
     useEffect(() => {
-        console.log('route.params.id', route.params.id)
-        const url = route.params.id.includes('0x') ?
-            `${BASE_URL}/user/get-public-profile?publicAddress=${route.params.id}` :
-            `${BASE_URL}/user/get-public-profile?userId=${route.params.id}`
+        console.log('route.params.id', route?.params?.id)
+        const url = route?.params?.id.includes('0x') ?
+            `${BASE_URL}/user/get-public-profile?publicAddress=${route?.params?.id}` :
+            `${BASE_URL}/user/get-public-profile?userId=${route?.params?.id}`
 
         let body = {
             method: 'GET',
@@ -362,7 +362,7 @@ function ArtistDetail({
         fetch(url, body)
             .then(response => response.json())
             .then(res => {
-                 console.log(res.data, "res.data testing", res, isMounted.current)
+                console.log(res.data, "res.data testing", res, isMounted.current)
                 if (isMounted.current) {
                     if (res.data) {
                         setData(res.data);

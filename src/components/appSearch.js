@@ -1,5 +1,5 @@
-import {useIsFocused, useNavigation} from '@react-navigation/core';
-import React, {useEffect, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/core';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,16 +10,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {useDispatch} from 'react-redux';
-import {IMAGES, SIZE} from '../constants';
+import { Searchbar } from 'react-native-paper';
+import { useDispatch } from 'react-redux';
+import { IMAGES, SIZE } from '../constants';
 import Colors from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 import Images from '../constants/Images';
-import {hp, RF, wp} from '../constants/responsiveFunct';
+import { hp, RF, wp } from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
-import {searchNFT, updateNftDetail} from '../store/actions/newNFTActions';
-import {translate} from '../walletUtils';
+import { searchNFT, updateNftDetail } from '../store/actions/newNFTActions';
+import { translate } from '../walletUtils';
 import LoadingView from './LoadingView';
 import { Verifiedcollections } from './verifiedCollection';
 
@@ -46,8 +46,8 @@ export default function AppSearch() {
           .then(response => {
             console.log('search response', response);
             setloading(false);
-            if (response.success) {
-              setDataToList(response.data);
+            if (response?.artistSearch.length > 0 || response?.collectionSearch.length > 0 || response?.nftSearch.length > 0) {
+              setDataToList(response);
             } else {
               setSearchData([]);
             }
@@ -65,45 +65,21 @@ export default function AppSearch() {
     }
   }, [searchTxt])
 
-  const searchNftType = txt => {
-    if (txt !== '') {
-      setloading(true);
-      dispatch(searchNFT(txt))
-        .then(response => {
-          console.log('search response', response);
-          setloading(false);
-          if (response.success) {
-            setDataToList(response.data);
-          } else {
-            setSearchData([]);
-          }
-        })
-        .catch(err => {
-          console.log('search response error', err);
-          setloading(false);
-          setSearchData([]);
-        });
-    } else {
-      setloading(false);
-      setSearchData([]);
-    }
-  };
-
   const setDataToList = list => {
     let array = [];
-    list[0]?.artist?.map((item, index) => {
+    list?.artistSearch?.map((item, index) => {
       array.push({
         ...item,
         type: 'Artist',
       });
     });
-    list[1]?.collections?.map((item, index) => {
+    list?.collectionSearch?.map((item, index) => {
       array.push({
         ...item,
         type: 'Collections',
       });
     });
-    list[2]?.nft?.map((item, index) => {
+    list?.nftSearch?.map((item, index) => {
       array.push({
         ...item,
         type: 'NFT',
@@ -112,7 +88,7 @@ export default function AppSearch() {
     setSearchData(array);
   };
 
-  const handleFlatListRenderItem = ({item, index}) => {
+  const handleFlatListRenderItem = ({ item, index }) => {
     let withTag = false;
     if (index == 0) {
       withTag = true;
@@ -126,31 +102,28 @@ export default function AppSearch() {
         withTag={withTag}
         onPress={item => {
           if (item.type == 'NFT') {
-            const image = item.metaData.image || item.thumbnailUrl;
-            const fileType = image
-              ? image.substring(image.lastIndexOf('.') + 1)
-              : '';
+            const image = item?.largeImage;
+            const fileType = image ? image.substring(image.lastIndexOf('.') + 1) : '';
             navigation.navigate('CertificateDetail', {
-              video: item.metaData.image,
+              video: item?.largeImage,
               fileType: fileType,
               item: item,
               routeName: "Search"
             });
           } else if (item.type == 'Artist') {
-            const id =
-              item.role === 'crypto' ? item.username : item._id;
-            navigation.navigate('ArtistDetail', {id: id});
-          }else if (item.type == 'Collections') {
+            navigation.navigate('ArtistDetail', { id: item?.address });
+          } else if (item.type == 'Collections') {
             if (item.blind) {
               console.log('========collection search => blind', item.blind, item)
-              navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
+              navigation.push('CollectionDetail', { isBlind: true, collectionId: item?.address, isHotCollection: false });
             } else {
-              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+              navigation.push('CollectionDetail', { isBlind: false, collectionId: item?.address, isHotCollection: true });
             }
           }
         }}
       />
-    );}
+    );
+  }
 
   const keyExtractor = (item, index) => { return `_${index}` }
 
@@ -185,16 +158,16 @@ export default function AppSearch() {
           ) : null}
         </View>
       ) :
-      searchTxt ?
-        <View style={[styles.listContainer, styles.noDataFoundStyle]}>
-          <Text>{translate('common.noDataFound')}</Text>
-        </View>
-        : null}
+        searchTxt ?
+          <View style={[styles.listContainer, styles.noDataFoundStyle]}>
+            <Text>{translate('common.noDataFound')}</Text>
+          </View>
+          : null}
     </View>
   );
 }
 
-const ResultItem = ({item, index, withTag, onPress}) => {
+const ResultItem = ({ item, index, withTag, onPress }) => {
   const [loading, setLoading] = useState(false);
   return (
     <View style={[styles.resultItemContainer]}>
@@ -204,9 +177,9 @@ const ResultItem = ({item, index, withTag, onPress}) => {
           <Image
             source={
               item.type == 'NFT'
-                ? {uri: item.thumbnailUrl}
-                : item.type == 'Collections' ? {uri: item.iconImage} : item.profile_image
-                  ? {uri: item.profile_image}
+                ? { uri: item.smallImage }
+                : item.type == 'Collections' ? { uri: item.iconImage } : item.avatar
+                  ? { uri: item.avatar }
                   : Images.default_user
             }
             style={styles.image}
@@ -219,7 +192,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
           {loading && <LoadingView />}
         </View>
         <Text style={styles.name} numberOfLines={1}>
-          {item.type == 'NFT' ? item.metaData?.name : item.type == 'Collections' ? item.collectionName : item?.title ? item.title : item?.username}
+          {item?.name ? item.name : '---'}
           <View style={{ paddingLeft: 5 }}>{Verifiedcollections.find((id) => id === item._id) && (
             <Image
               style={styles.verifyIcon}
@@ -236,7 +209,6 @@ const ResultItem = ({item, index, withTag, onPress}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginVertical: hp("6%"),
     position: 'absolute',
     alignItems: 'center',
     width: '100%',
@@ -246,8 +218,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLightColor3,
     borderRadius: hp('3%'),
-    // marginHorizontal: wp('2'),
-    // marginTop: wp('2%'),
     width: wp('95%'),
     height: hp('5%'),
     paddingVertical: 0,
@@ -263,7 +233,7 @@ const styles = StyleSheet.create({
     color: Colors.BLACK1,
     height: '100%',
     margin: 0,
-    padding:0
+    padding: 0
   },
   listContainer: {
     flex: 1,
@@ -286,7 +256,7 @@ const styles = StyleSheet.create({
   },
   resultItemContainer: {},
   flatlistStyle: {
-    height:Platform.OS === 'ios' ? hp('51%') : hp('48%')
+    height: Platform.OS === 'ios' ? hp('51%') : hp('48%')
   },
   resultItem: {
     padding: wp('2%'),
@@ -314,7 +284,7 @@ const styles = StyleSheet.create({
     padding: wp('2%'),
   },
   noDataFoundStyle: {
-    width:'95%',
+    width: '95%',
     paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center'

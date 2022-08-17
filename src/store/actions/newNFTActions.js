@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import { alertWithSingleBtn } from '../../utils';
@@ -195,14 +195,11 @@ export const favoriteNFTList = (page, limit, sort) => {
 
 export const searchNFT = searchTxt => dispatch =>
   new Promise((resolve, reject) => {
-    let data = {
-      page: 1,
-      limit: 5,
-      searchValue: searchTxt,
-      networkType: networkType,
-    };
-
-    ApiRequest(`${BASE_URL}/xanalia/search-nft-type/`, 'POST', data, null)
+    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MDI5NjcxMiwiZXhwIjoxNjYwMzAwMzEyfQ.3e0qqKvbzJetTZ87qiKh5LnYdo6DndeFirMFJsA7G5Y'
+    let headers = {
+      'Authorization': `Bearer ${token}`
+    }
+    ApiRequest(`${NEW_BASE_URL}/users/search?keyword=${searchTxt}`, 'GET', null, headers)
       .then(response => {
         resolve(response);
       })
