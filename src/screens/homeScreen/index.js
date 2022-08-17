@@ -42,10 +42,10 @@ import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
 import { updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
-import AwardsNFT from './awardsNFT';
-import PhotoNFT from './photoNFT';
+import AllNFT from './allNFT';
+import ImageNFT from './imageNFT';
 import GifNFT from './gifNFT';
-import HotNFT from './hotNFT';
+import Trending from './trending';
 import MovieNFT from './movieNFT';
 import ArtNFT from './artNFT';
 import HotCollection from './hotCollection';
@@ -79,11 +79,11 @@ const HomeScreen = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'launch', title: translate('common.launchPad') },
-    { key: 'awards', title: 'Awards 2021' },
-    { key: 'hot', title: translate('common.hot') },
+    { key: 'allNft', title: "All NFT's" },
+    { key: 'trending', title: "Trending" },
     { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'art', title: translate('common.2DArt') },
-    { key: 'photo', title: translate('common.photo') },
+    { key: 'image', title: "Image" },
     { key: 'gif', title: 'gif' },
     { key: 'video', title: translate('common.video') },
     { key: 'hotCollection', title: translate('common.hotcollection') },
@@ -291,16 +291,16 @@ const HomeScreen = ({ navigation }) => {
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
-      case 'awards':
-        return <AwardsNFT />;
-      case 'hot':
-        return <HotNFT />;
+      case 'allNft':
+        return <AllNFT />;
+      case 'trending':
+        return <Trending />;
       case 'collect':
         return <Collection />;
       case 'art':
         return <ArtNFT />;
-      case 'photo':
-        return <PhotoNFT />;
+      case 'image':
+        return <ImageNFT />;
       case 'gif':
         return <GifNFT />;
       case 'video':

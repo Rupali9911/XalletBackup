@@ -10,38 +10,44 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import {
-  awardsNftListReset,
-  awardsNftLoadStart,
-  awardsNftPageChange,
-  getAwardsNftList,
-} from '../../store/actions/awardsAction';
+// import {
+//   awardsNftListReset,
+//   awardsNftLoadStart,
+//   awardsNftPageChange,
+//   getAwardsNftList,
+// } from '../../store/actions/awardsAction';
+import { newNftLoadStart, newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
+
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 
-const AwardsNFT = () => {
+const AllNFT = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   let timer = null;
 
   // =============== Getting data from reducer ========================
-  const { AwardsNFTReducer } = useSelector(state => state);
+  const { NewNFTListReducer } = useSelector(state => state);
+
   const { sort } = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isSort, setIsSort] = useState(null);
+  const [page, setPage] = useState(1);
 
-  //===================== UseEffect Function =========================
+  const [end, setEnd] = useState()
+
+  // ===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && (isFirstRender || isSort !== sort)) {
       timer = setTimeout(() => {
-        dispatch(awardsNftLoadStart());
-        dispatch(awardsNftListReset());
-        getNFTlist(1, null, sort);
-        dispatch(awardsNftPageChange(1));
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset());
+        getNFTlist(6, 0, 10, page);
+        // dispatch(awardsNftPageChange(1));
         setIsFirstRender(false)
         setIsSort(sort)
       }, 100);
@@ -49,31 +55,36 @@ const AwardsNFT = () => {
     return () => clearTimeout(timer);
   }, [sort, isFocused]);
 
+
+
   //===================== Dispatch Action to Fetch Award NFT List =========================
-  const getNFTlist = useCallback((page, limit, _sort) => {
-    dispatch(getAwardsNftList(page, limit, _sort));
+  const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
+    dispatch(newNFTData('all', category, sort, pageSize, pageNum));
   }, []);
 
   // ===================== Render Award NFT Flatlist ===================================
-  const renderAwardNFTList = () => {
+  const renderAllNFTList = () => {
     return (
       <FlatList
-        data={AwardsNFTReducer.awardsNftList}
+        data={NewNFTListReducer.newAllNftList}
         horizontal={false}
         numColumns={2}
         initialNumToRender={14}
         onRefresh={handleFlatlistRefresh}
-        refreshing={
-          AwardsNFTReducer.awardsNftPage === 1 &&
-          AwardsNFTReducer.awardsNftLoading
-        }
+        refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
         renderItem={memoizedValue}
-        onEndReached={handleFlastListEndReached}
+        onEndReached={() => {
+          if (!end) {
+            handleFlastListEndReached()
+            setEnd(true)
+          }
+        }}
         onEndReachedThreshold={0.4}
         keyExtractor={keyExtractor}
         ListFooterComponent={renderFooter}
         pagingEnabled={false}
         legacyImplementation={false}
+        onMomentumScrollBegin={() => setEnd(false)}
       // removeClippedSubviews={true}
       // maxToRenderPerBatch = {30}
       // windowSize = {30}
@@ -95,24 +106,25 @@ const AwardsNFT = () => {
 
   //=================== Flatlist Functions ====================
   const handleFlatlistRefresh = () => {
-    dispatch(awardsNftLoadStart());
+    dispatch(newNftLoadStart());
     handleRefresh();
   }
+
+
   const handleFlastListEndReached = () => {
-    if (
-      !AwardsNFTReducer.awardsNftLoading &&
-      AwardsNFTReducer.awardsTotalCount !==
-      AwardsNFTReducer.awardsNftList.length
-    ) {
-      let num = AwardsNFTReducer.awardsNftPage + 1;
-      getNFTlist(num);
-      dispatch(awardsNftPageChange(num));
+    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newAllNftList.length) {
+      let pageNum = page + 1
+      getNFTlist(6, 0, 10, pageNum);
+      // dispatch(newPageChange(pageNum))
+      setPage(pageNum)
     }
   }
+
+
   const keyExtractor = (item, index) => { return 'item_' + index }
 
   const renderFooter = () => {
-    if (!AwardsNFTReducer.awardsNftLoading) return null;
+    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newAllNftList.length) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
@@ -120,39 +132,36 @@ const AwardsNFT = () => {
     // let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
     //   x => x.id === item.id,
     // );
-    if (item && item.hasOwnProperty("metaData") && item.metaData) {
-      let imageUri =
-        item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl
-          : item.metaData.image;
-      return (
-        <NFTItem
-          screenName="awards"
-          item={item}
-          // image={imageUri}
-          onPress={() => {
-            // dispatch(changeScreenName('awards'));
-            navigation.push('DetailItem', { index: renderItemFIndIndex(item), sName: "awards" });
-          }}
-        />
-      );
-    }
+    let imageUri = item?.mediaUrl
+    return (
+      <NFTItem
+        screenName="allNft"
+        item={item}
+        image={imageUri}
+        onPress={() => {
+          // dispatch(changeScreenName('awards'));
+          navigation.push('DetailItem', { index: renderItemFIndIndex(item), sName: "allNft" });
+        }}
+      />
+    );
   };
 
   const memoizedValue = useMemo(
     () => renderItem,
-    [AwardsNFTReducer.awardsNftList],
+    [NewNFTListReducer.newAllNftList],
   );
 
   //=================== Other Functions ====================
   const handleRefresh = () => {
-    dispatch(awardsNftListReset());
-    getNFTlist(1, null, sort);
-    dispatch(awardsNftPageChange(1));
-  };
+    dispatch(newNftListReset());
+    getNFTlist(6, 0, 10, 1);
+    setPage(1)
+  }
+
+
 
   const renderItemFIndIndex = (item) => {
-    let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
+    let findIndex = NewNFTListReducer.newAllNftList.findIndex(
       x => x.id === item.id,
     );
     return findIndex
@@ -162,13 +171,13 @@ const AwardsNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? isFirstRender : AwardsNFTReducer.awardsNftPage === 1 &&
-        AwardsNFTReducer.awardsNftLoading ? (
+      {isFirstRender ? isFirstRender : page === 1 &&
+        NewNFTListReducer.newNftListLoading ? (
         <Loader />
-      ) : AwardsNFTReducer.awardsNftList.length !== 0 ? renderAwardNFTList()
+      ) : NewNFTListReducer.newAllNftList.length !== 0 ? renderAllNFTList()
         : renderNoNFT()
       }
     </View >
   );
 };
-export default React.memo(AwardsNFT);
+export default React.memo(AllNFT);

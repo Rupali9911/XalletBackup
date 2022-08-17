@@ -16,6 +16,7 @@ import {
   nftLoadStart,
   pageChange,
 } from '../../store/actions/nftTrendList';
+import { newNftLoadStart, newNFTData, newNftListReset, } from '../../store/actions/newNFTActions';
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
@@ -27,49 +28,58 @@ const GifNFT = () => {
   let timer = null;
 
   // =============== Getting data from reducer ========================
-  const { ListReducer } = useSelector(state => state);
+  const { NewNFTListReducer } = useSelector(state => state);
+  const { sort } = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isSort, setIsSort] = useState(null);
+  const [page, setPage] = useState(1);
+
+  const [end, setEnd] = useState()
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== ListReducer.sort)) {
+    if (isFocused && (isFirstRender || isSort !== sort)) {
       timer = setTimeout(() => {
-        dispatch(nftLoadStart());
-        dispatch(nftListReset('gif'));
-        getNFTlist(1, null, ListReducer.sort);
-        dispatch(pageChange(1));
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset());
+        getNFTlist(3, 0, 10, page);
         setIsFirstRender(false)
-        setIsSort(ListReducer.sort)
+        setIsSort(sort)
       }, 100);
     }
     return () => clearTimeout(timer);
-  }, [ListReducer.sort, isFocused]);
+  }, [sort, isFocused]);
 
   //===================== Dispatch Action to Fetch Gif NFT List =========================
-  const getNFTlist = useCallback((page, limit, _sort) => {
-    dispatch(gifNFTList(page, limit, _sort));
+  const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
+    dispatch(newNFTData('gif', category, sort, pageSize, pageNum));
   }, []);
 
   // ===================== Render Gif NFT Flatlist ===================================
   const renderGifNFTList = () => {
     return (
       <FlatList
-        data={ListReducer.gifList}
+        data={NewNFTListReducer.newGifNftList}
         horizontal={false}
         numColumns={2}
         initialNumToRender={14}
         onRefresh={handleFlatlistRefresh}
-        refreshing={ListReducer.page === 1 && ListReducer.isGifNftLoading}
+        refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
         renderItem={memoizedValue}
-        onEndReached={handleFlastListEndReached}
+        onEndReached={() => {
+          if (!end) {
+            handleFlastListEndReached()
+            setEnd(true)
+          }
+        }}
         onEndReachedThreshold={0.4}
         keyExtractor={keyExtractor}
         ListFooterComponent={renderFooter}
         pagingEnabled={false}
         legacyImplementation={false}
+        onMomentumScrollBegin={() => setEnd(false)}
       />
     )
   }
@@ -85,41 +95,35 @@ const GifNFT = () => {
 
   //=================== Flatlist Functions ====================
   const handleFlatlistRefresh = () => {
-    dispatch(nftLoadStart());
+    dispatch(newNftLoadStart());
     refreshFunc();
   }
 
   const refreshFunc = () => {
-    dispatch(nftListReset('gif'));
-    getNFTlist(1, null, ListReducer.sort);
-    dispatch(pageChange(1));
+    dispatch(newNftListReset());
+    getNFTlist(3, 0, 10, 1);
+    setPage(1)
   };
 
   const handleFlastListEndReached = () => {
-    if (
-      !ListReducer.isGifNftLoading &&
-      ListReducer.gifList.length !== ListReducer.totalCount
-    ) {
-      let num = ListReducer.page + 1;
-      getNFTlist(num);
-      dispatch(pageChange(num));
+    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newGifNftList.length) {
+      let pageNum = page + 1
+      getNFTlist(3, 0, 10, pageNum);
+      // dispatch(newPageChange(pageNum))
+      setPage(pageNum)
     }
   }
 
   const keyExtractor = (item, index) => { return 'item_' + index }
 
   const renderFooter = () => {
-    if (!ListReducer.isGifNftLoading) return null;
+    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newGifNftList.length) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
   const renderItem = ({ item, index }) => {
-    let findIndex = ListReducer.gifList.findIndex(x => x.id === item.id);
-    if (item && item.hasOwnProperty("metaData") && item.metaData) {
-      let imageUri =
-        item.thumbnailUrl !== undefined || item.thumbnailUrl
-          ? item.thumbnailUrl
-          : item.metaData.image;
+    let findIndex = NewNFTListReducer.newGifNftList.findIndex(x => x.id === item.id);
+        let imageUri = item?.mediaUrl
       return (
         <NFTItem
           screenName="gitNFT"
@@ -131,20 +135,21 @@ const GifNFT = () => {
           }}
         />
       );
-    }
   };
 
-  const memoizedValue = useMemo(() => renderItem, [ListReducer.gifList]);
+  const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newGifNftList]);
 
   //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? isFirstRender : ListReducer.page === 1 && ListReducer.isGifNftLoading ? (
-        <Loader />
-      ) : ListReducer.gifList.length !== 0 ? renderGifNFTList() : renderNoNFT()
-      }
-    </View >
+            <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+            {isFirstRender ? isFirstRender : page === 1 &&
+                NewNFTListReducer.newNftListLoading ? (
+                <Loader />
+            ) : NewNFTListReducer.newGifNftList.length !== 0 ? renderGifNFTList()
+                : renderNoNFT()
+            }
+        </View >
   );
 };
 

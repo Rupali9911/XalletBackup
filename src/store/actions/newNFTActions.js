@@ -10,7 +10,14 @@ import {
   ART_NFT_LOAD_FAIL,
   NEW_NFT_LOAD_START,
   ART_NFT_LOAD_START,
-  NEW_NFT_LOAD_SUCCESS,
+  // NEW_NFT_LOAD_SUCCESS,
+  NEW_NFT_ART_LOAD_SUCCESS,
+  NEW_NFT_ALL_LOAD_SUCCESS,
+  NEW_NFT_TRENDING_LOAD_SUCCESS,
+  NEW_NFT_IMAGE_LOAD_SUCCESS,
+  NEW_NFT_GIF_LOAD_SUCCESS,
+  NEW_NFT_MOVIE_LOAD_SUCCESS,
+  NEW_NFT_MUSIC_LOAD_SUCCESS,
   NEW_PAGE_CHANGE,
   UPDATE_ARTIST_DETAIL,
   UPDATE_NFT_DETAIL,
@@ -18,10 +25,31 @@ import {
 } from '../types';
 import { parseNftObject } from '../../utils/parseNFTObj';
 
-export const newNftLoadSuccess = data => ({
-  type: NEW_NFT_LOAD_SUCCESS,
+export const newNftArtLoadSuccess = data => ({
+  type: NEW_NFT_ART_LOAD_SUCCESS,
   payload: data,
 });
+export const newNftAllLoadSuccess = data => ({
+  type: NEW_NFT_ALL_LOAD_SUCCESS,
+  payload: data,
+});
+export const newNftTrendingLoadSuccess = data => ({
+  type: NEW_NFT_TRENDING_LOAD_SUCCESS,
+  payload: data,
+});
+export const newNftImageLoadSuccess = data => ({
+  type: NEW_NFT_IMAGE_LOAD_SUCCESS,
+  payload: data,
+});
+export const newNftGifLoadSuccess = data => ({
+  type: NEW_NFT_GIF_LOAD_SUCCESS,
+  payload: data,
+});
+export const newMovieGifLoadSuccess = data => ({
+  type: NEW_NFT_MOVIE_LOAD_SUCCESS,
+  payload: data,
+});
+
 export const favoriteNftLoadSuccess = data => ({
   type: FAVORITE_NFT_LOAD_SUCCESS,
   payload: data,
@@ -66,23 +94,43 @@ export const newPageChange = data => ({
   payload: data,
 });
 
-export const newNFTList = (category,sort,pageSize,pageNum) => {
-    return (dispatch)=>{
-      dispatch(newNftLoadStart())
-      // dispatch(isArtNftLoadStart())
-      const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=1&pageSize=30&sortFilter=0&categoryFilter=1`
-      fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data,'>>>>> Art Data')
-                dispatch(newNftLoadSuccess(data))
-            })
-            .catch(() => {
-                console.log('err')
-                dispatch(newNftLoadFail())
-                // dispatch(artNftLoadFail());
-            })
-    }
+export const newNFTData = (callFrom, category, sort, pageSize, pageNum) => {
+  console.log("🚀 ~ file: newNFTActions.js ~ line 70 ~ newNFTData ~ ", category, sort, pageSize, pageNum)
+  return (dispatch) => {
+    // let pageSize = 10;
+    dispatch(newNftLoadStart())
+    // dispatch(isArtNftLoadStart())
+    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}`
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (callFrom === 'all') {
+          dispatch(newNftAllLoadSuccess(data))
+        }
+        if (callFrom === 'art') {
+          dispatch(newNftArtLoadSuccess(data))
+        }
+        if (callFrom === 'image') {
+          dispatch(newNftImageLoadSuccess(data))
+        }
+        if (callFrom === 'trending') {
+          dispatch(newNftTrendingLoadSuccess(data))
+        }
+        if (callFrom === 'gif') {
+          dispatch(newNftGifLoadSuccess(data))
+        }
+        if (callFrom === 'movie') {
+          dispatch(newMovieGifLoadSuccess(data))
+        }
+
+        // dispatch(newNftLoadSuccess(data))
+      })
+      .catch(() => {
+        console.log('err')
+        dispatch(newNftLoadFail())
+        // dispatch(artNftLoadFail());
+      })
+  }
 }
 
 // export const newNFTList = (page, limit, sort) => {

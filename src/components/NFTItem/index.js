@@ -11,6 +11,7 @@ import { translate } from '../../walletUtils';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useDispatch, useSelector } from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
+import ProfileImg from '../../assets/pngs/default_profile_img.png'
 
 export default function NFTItem(props) {
   const dispatch = useDispatch();
@@ -88,7 +89,8 @@ export default function NFTItem(props) {
     return (
       <View>
         <C_Image
-          type={isCollection ? isBlind ? uriType : item?.type : uriType}
+          category={item.category}
+          // type={isCollection ? isBlind ? uriType : item?.type : uriType}
           uri={getImageUri()}
           imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
         />
@@ -131,11 +133,11 @@ export default function NFTItem(props) {
     } else {
       return (
         <View style={styles.collectionWrapper}>
-          <View style={{paddingHorizontal : SIZE(15), paddingVertical:SIZE(10), borderBottomWidth:SIZE(1), borderBottomColor:'#f0f0f0',}}>
+          <View style={{ paddingHorizontal: SIZE(15), paddingVertical: SIZE(10), borderBottomWidth: SIZE(1), borderBottomColor: '#f0f0f0', }}>
             {renderNameNcreatorName(false)}
             {renderPriceNcurrencyIconContainer(false)}
           </View>
-          <View style={{paddingHorizontal : SIZE(15), paddingVertical:SIZE(6)}}>
+          <View style={{ paddingHorizontal: SIZE(15), paddingVertical: SIZE(6) }}>
             {renderbottomView()}
           </View>
         </View>
@@ -191,9 +193,9 @@ export default function NFTItem(props) {
         )} */}
         <Text style={item?.tokenPrice !== "" && item?.tokenPriceIcon ? styles.statusOnSale : styles.statusNotOnSale}>{item?.tokenPrice !== "" && item?.tokenPriceIcon ? 'On Sale' : 'Not On Sale'}</Text>
         <View style={styles.currencyInfoContainer}>
-          <Image style={styles.tokenIcon} source={{ uri: item?.tokenPriceIcon && item.tokenPriceIcon }} />
+          <Image style={styles.tokenIcon} source={{ uri: item?.tokenPriceIcon ? item.tokenPriceIcon : null }} />
           <Text style={styles.price}>
-            {item?.tokenPrice !== "" && item?.price && Number(item.price)}
+            {item?.tokenPrice !== "" && item?.tokenPrice !== null && item?.price && Number(item.price)}
           </Text>
         </View>
       </View>
@@ -255,24 +257,29 @@ export default function NFTItem(props) {
     }
   };
 
-  console.log(item?.network?.avatar,'>>>>>>> large NFT')
 
   //================== Render Chain view column Function ===================
 
-  const renderbottomView =()=> {
-    return <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center',}}>
-        <SvgUri
-            uri={item.network.avatar}
-            style={styles.tokenIcon2}
-          />
-          <View style={{flexDirection:'row', alignItems:'center'}}>
-            <TouchableOpacity >
-              <Image style={styles.creatorIcon} source={{uri:item.creator.avatar}}/>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginLeft : SIZE(-8)}}>
-            <Image style={styles.ownerIcon} source={{uri:item.owner.avatar}}/>
-            </TouchableOpacity>
-          </View>
+  const renderbottomView = () => {
+    return <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <SvgUri
+        uri={item?.network?.avatar}
+        style={styles.tokenIcon2}
+      />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity>
+          {item?.creator?.avatar ?
+            <Image style={styles.creatorIcon} source={{ uri: item?.creator?.avatar }} /> :
+            <Image style={styles.creatorIcon} source={ProfileImg} />}
+        </TouchableOpacity>
+        <View style={styles.ownerContainer}>
+          <TouchableOpacity>
+            {item?.owner?.avatar ?
+              <Image style={styles.ownerIcon} source={{ uri: item?.owner?.avatar }} /> :
+              <Image style={styles.ownerIcon} source={ProfileImg} />}
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   }
 
@@ -429,12 +436,11 @@ export default function NFTItem(props) {
 
   //================== Other Functions ===================
   const getImageUri = () => {
-    let imageUri = isStore && image ?
-      image : item.mediaUrl
+    let imageUri = image ? image : item?.mediaUrl
     return imageUri
   }
 
-  let mediaUrl = item?.metaData?.image;
+  let mediaUrl = item?.mediaUrl;
   let uriType, checkVideoUrl;
   if (mediaUrl) {
     uriType = mediaUrl.split('.')[mediaUrl.split('.').length - 1];
@@ -452,11 +458,11 @@ export default function NFTItem(props) {
     item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0]
       : item?.nftChain ? item.nftChain : ''
 
-  const chainType = type => {
-    if (item.isForAward) return <Ethereum />; //Hardcoded as per web requirements
-    if (type === 'polygon') return <PolygonIcon />;
-    if (type === 'ethereum') return <Ethereum />;
-    if (type === 'binance') return <BitmapIcon />;
+  const chainType = (type) => {
+    ; //Hardcoded as per web requirements
+    if (type === 'Polygon') return <PolygonIcon />;
+    if (type === 'Ethereum') return <Ethereum />;
+    if (type === 'BSC') return <BitmapIcon />;
   };
 
   const nftCurrencyIcon = (CurrencyFlag, chainType) => {

@@ -4,6 +4,7 @@ import {
   SIZE,
   COLORS
 } from 'src/constants';
+import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
   listItem: {
@@ -223,19 +224,26 @@ const styles = StyleSheet.create({
   tokenIcon2: {
     width: SIZE(30),
     height: SIZE(30),
-    borderRadius: SIZE(30),
+    borderRadius: SIZE(60/2),
   },
   creatorIcon: {
     width: SIZE(32),
     height: SIZE(32),
-    borderRadius: SIZE(28),
+    borderRadius: SIZE(32),
   },
   ownerIcon: {
-    width: SIZE(38),
-    height: SIZE(38),
-    borderRadius: SIZE(38),
-    borderColor: '#fff',
-    borderWidth: SIZE(3)
+    width: SIZE(32),
+    height: SIZE(32),
+    borderRadius: SIZE(32),
+  },
+  ownerContainer: {
+      backgroundColor: Colors.white,
+      width: SIZE(38),
+      height: SIZE(38),
+      borderRadius: SIZE(38),
+      marginLeft: SIZE(-8),
+      alignItems:'center',
+      justifyContent: 'center'
   }
 });
 export default styles;

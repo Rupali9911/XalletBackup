@@ -166,15 +166,15 @@ export default function LaunchPadItemData(props) {
 
     const renderChain =()=> {
         return <View style={styles.renderchainstyle}>
-            {network.map((item)=>{
+            {network.map((item,index)=>{
                 if(item.networkName === 'Ethereum'){
-                    return <Ethereum style={{marginTop:'30%'}}/>
+                    return <Ethereum key={index} style={{marginTop:'30%'}}/>
                 }
                 if(item.networkName === 'BSC'){
-                    return <BitmapIcon style={{marginTop:'30%'}}/>
+                    return <BitmapIcon key={index} style={{marginTop:'30%'}}/>
                 }
                 if(item.networkName === 'Polygon'){
-                    return <NewPolygonIcon style={{marginTop:'30%'}}/>
+                    return <NewPolygonIcon key={index} style={{marginTop:'30%'}}/>
                 }
             })}
         </View>
