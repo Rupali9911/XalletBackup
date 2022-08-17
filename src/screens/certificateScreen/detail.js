@@ -40,7 +40,7 @@ import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { ActivityIndicator } from 'react-native-paper';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
@@ -49,7 +49,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import addComma from '../../utils/insertComma';
 import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData } from '../../utils/detailHelperFunctions';
 import { isChinaApp } from '../../web3/config/networkType';
-import { handleLike } from '../explore/nftItems';
+import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
 const Web3 = require('web3');
 
@@ -63,7 +63,7 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const { owner, video, fileType, item, index, setNftItem } = route.params;
+  const { owner, video, item, index, setNftItem } = route.params;
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
@@ -72,7 +72,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
-  const [ownerN, setOwnerN] = useState(owner);
+  const [ownerN, setOwnerN] = useState();
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [isContractOwner, setIsContractOwner] = useState(false);
@@ -109,7 +109,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [playVideoLoad, setPlayVideoLoad] = useState(false);
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
-  const [videoURL, setVideoURI] = useState(video);
+  const [videoURL, setVideoURL] = useState(mediaUrl);
   const [playVideo, toggleVideoPlay] = useState(false);
   const [artistRole, setArtistRole] = useState('');
   const [tradingTableHead, setTradingTableHead] = useState([
@@ -129,11 +129,15 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData1, setTradingTableData1] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
-  const [isLike, setLike] = useState(item?.like);
+  const [isLike, setLike] = useState();
   const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
   const [bidPriceInDollar, setBidPriceInDollar] = useState('');
   const [detailNFT, setDetailNFT] = useState({});
   const [minBidPrice, setMinBidPrice] = useState('')
+
+  const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item.mediaUrl;
+  const thumbnailUrl = detailNFT?.thumbnailUrl ? detailNFT.thumbnailUrl : item?.thumbnailUrl
+  const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
 
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
@@ -146,21 +150,22 @@ const DetailScreen = ({ navigation, route }) => {
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused) {
-      if (chainType) {
-        if (chainAvailable) {
-          setBuyLoading(true);
-          checkNFTOnAuction();
-          getNonCryptoNFTOwner();
-        }
-        if (data.token) {
-          dispatch(getAllCards(data.token))
-            .then(() => { })
-            .catch(err => {
-              console.log('error====', err);
-            });
-        }
-      }
-      getRealtedNFT();
+      // // if (chainType) {
+      // // if (chainAvailable) {
+      // setBuyLoading(true);
+      // checkNFTOnAuction();
+      // getNonCryptoNFTOwner();
+      // // }
+      // if (data.token) {
+      //   dispatch(getAllCards(data.token))
+      //     .then(() => { })
+      //     .catch(err => {
+      //       console.log('error====', err);
+      //     });
+      // }
+      // // }
+      // getRealtedNFT();
+      getTokenDetailsApi()
     }
   }, [isFocused]);
 
@@ -198,7 +203,7 @@ const DetailScreen = ({ navigation, route }) => {
   }, [paymentObject]);
 
   useEffect(() => {
-    checkNFTOnAuction();
+    // checkNFTOnAuction();
   }, [singleNFT]);
 
   //===================== API Call Functions =========================
@@ -214,104 +219,130 @@ const DetailScreen = ({ navigation, route }) => {
   };
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const getTokenDetailsApi = async () => {
-    let category = '2D';
-    let data = {
-      tokenId: nft,
-      networkType: networkType,
-      type: category,
-      chain: chainType,
-      owner: wallet?.address,
-    };
 
-    let fetch_data_body = {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    };
-    fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
+    let networkName = item?.network?.networkName
+    let collectionAddress = item?.collection?.address
+    let nftTokenId = item?.tokenId
+    let userId = 3708
+    let url = `${NEW_BASE_URL}/nfts/details?networkName=${networkName}&collectionAddress=${collectionAddress}&nftTokenId=${nftTokenId}&userId=${userId}`
+
+    fetch(url)
       .then(response => response.json())
-      .then(async res => {
-        if (res.data.length > 0 && res.data !== 'No record found') {
-          setNFTPrice(res.data[0]?.price);
-          setDetailNFT(res.data[0])
-          let data = await getNFTDetails(res.data[0]);
-          setLike(data.like);
-          // if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
-          let collection = data.offchain
-            ? data.collectionOffChainId
-            : data.collectionAdd.toString().split('-')[1];
-          getCollectionByAddress(collection);
-          let req_data = {
-            owner: res.data[0]?.returnValues?.to?.toLowerCase(),
-            token: 'HubyJ*%qcqR0',
-          };
+      .then(json => {
+        console.log("🚀 ~ file: detail.js ~ line 223 ~ getTokenDetailsApi ~ json", json)
+        if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
 
-          let body = {
-            method: 'POST',
-            body: JSON.stringify(req_data),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          };
-          await fetch(`${BASE_URL}/xanalia/getProfile`, body)
-            .then(response => response.json())
-            .then(response => {
-              // res?.data?.success
-              if (response.success) {
-                if (response.data) {
-                  setArtist(res.data[0]?.returnValues?.to?.toLowerCase());
-                  setArtistData(response.data);
-                  // setLoad(false)
-                  setArtistRole(
-                    response.data !== 'No record found'
-                      ? response.data.role
-                        ? response.data.role
-                        : 'crypto'
-                      : '',
-                  );
-                }
-              }
-            });
-          if (data.newprice && data.newprice.allowedCurrencies) {
-            let currArray = data.newprice.allowedCurrencies.split('');
-            let availableTokens = basePriceTokens.filter(
-              token =>
-                token.chain === chainType &&
-                currArray.includes(token.order.toString()),
-            );
-            setAvailableTokens(availableTokens);
-            setPayableIn(availableTokens[0].name);
-          } else {
-            setAvailableTokens([]);
-          }
-          let lastBid = data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
-            ? data?.newprice.bidData[data?.newprice?.bidData?.length - 1]
-            : "";
-          let highestBidderAdd = lastBid
-            ? lastBid?.bidder
-            : '0x0000000000000000000000000000000000000000';
-          setHighestBidderAddValue(highestBidderAdd);
-          setSingleNFT(data);
-          setIsForAward(
-            res?.data[0]?.award
-              ? res?.data[0]?.award
-              : res?.data[1]?.award
-                ? res?.data[1]?.award
-                : false,
-          );
-          //checkNFTOnAuction();
-          getNFTSellDetails();
-        } else if (res.data === 'No record found') {
-          setLoad(false);
+          setNFTPrice(json?.price)
+          setDetailNFT(json)
+          setLike(Number(json?.isLike))
+
+          setArtistData(json?.creator)
+          setOwnerDataN(json?.owner)
+          setcollectCreat(json?.collection)
         }
+        setLoad(false);
       })
-      .catch(err => {
-        // setLoad(false);
-      });
+
+
+
+    // let category = '2D';
+    // let data = {
+    //   tokenId: nft,
+    //   networkType: networkType,
+    //   type: category,
+    //   chain: chainType,
+    //   owner: wallet?.address,
+    // };
+
+    // let fetch_data_body = {
+    //   method: 'POST',
+    //   body: JSON.stringify(data),
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    // };
+    // fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
+    //   .then(response => response.json())
+    //   .then(async res => {
+    //     if (res.data.length > 0 && res.data !== 'No record found') {
+    //       setNFTPrice(res.data[0]?.price);
+    //       setDetailNFT(res.data[0])
+    //       let data = await getNFTDetails(res.data[0]);
+    //       setLike(data.like);
+    //       // if (route.params.hasOwnProperty("routeName") && (route.params.routeName === "Search" || "Detail")) {
+    //       let collection = data.offchain
+    //         ? data.collectionOffChainId
+    //         : data.collectionAdd.toString().split('-')[1];
+    //       getCollectionByAddress(collection);
+    //       let req_data = {
+    //         owner: res.data[0]?.returnValues?.to?.toLowerCase(),
+    //         token: 'HubyJ*%qcqR0',
+    //       };
+
+    //       let body = {
+    //         method: 'POST',
+    //         body: JSON.stringify(req_data),
+    //         headers: {
+    //           Accept: 'application/json',
+    //           'Content-Type': 'application/json',
+    //         },
+    //       };
+    //       await fetch(`${BASE_URL}/xanalia/getProfile`, body)
+    //         .then(response => response.json())
+    //         .then(response => {
+    //           // res?.data?.success
+    //           if (response.success) {
+    //             if (response.data) {
+    //               setArtist(res.data[0]?.returnValues?.to?.toLowerCase());
+    //               setArtistData(response.data);
+    //               // setLoad(false)
+    //               setArtistRole(
+    //                 response.data !== 'No record found'
+    //                   ? response.data.role
+    //                     ? response.data.role
+    //                     : 'crypto'
+    //                   : '',
+    //               );
+    //             }
+    //           }
+    //         });
+    //       if (data.newprice && data.newprice.allowedCurrencies) {
+    //         let currArray = data.newprice.allowedCurrencies.split('');
+    //         let availableTokens = basePriceTokens.filter(
+    //           token =>
+    //             token.chain === chainType &&
+    //             currArray.includes(token.order.toString()),
+    //         );
+    //         setAvailableTokens(availableTokens);
+    //         setPayableIn(availableTokens[0].name);
+    //       } else {
+    //         setAvailableTokens([]);
+    //       }
+    //       let lastBid = data?.newprice?.bidData && data?.newprice?.bidData?.length > 0
+    //         ? data?.newprice.bidData[data?.newprice?.bidData?.length - 1]
+    //         : "";
+    //       let highestBidderAdd = lastBid
+    //         ? lastBid?.bidder
+    //         : '0x0000000000000000000000000000000000000000';
+    //       setHighestBidderAddValue(highestBidderAdd);
+    //       setSingleNFT(data);
+    //       setIsForAward(
+    //         res?.data[0]?.award
+    //           ? res?.data[0]?.award
+    //           : res?.data[1]?.award
+    //             ? res?.data[1]?.award
+    //             : false,
+    //       );
+    //       //checkNFTOnAuction();
+    //       getNFTSellDetails();
+    //     } else if (res.data === 'No record found') {
+    //       setLoad(false);
+    //     }
+    //   })
+    //   .catch(err => {
+    //     // setLoad(false);
+    //   });
     setLoad(false)
   };
 
@@ -377,7 +408,7 @@ const DetailScreen = ({ navigation, route }) => {
           <View style={{ ...styles.modalImage }}>
             {showThumb && (
               <C_Image
-                uri={item?.metaData?.thumbnft}
+                uri={thumbnailUrl}
                 imageStyle={styles.modalImage}
                 isContain
               />
@@ -385,7 +416,7 @@ const DetailScreen = ({ navigation, route }) => {
             <Video
               key={videoKey}
               ref={refVideo}
-              source={{ uri: videoURL }}
+              source={{ uri: mediaUrl }} //videoURL
               repeat
               playInBackground={false}
               paused={!playVideo}
@@ -438,7 +469,7 @@ const DetailScreen = ({ navigation, route }) => {
           </View>
         ) : (
           <C_Image
-            uri={item?.thumbnailUrl || item?.metaData?.image}
+            uri={mediaUrl}
             imageStyle={styles.modalImage}
             isContain
           />
@@ -474,6 +505,7 @@ const DetailScreen = ({ navigation, route }) => {
           style={styles.personType}>
           {renderIconImage('creator', false)}
         </TouchableOpacity>
+
         <TouchableOpacity
           disabled={collectionClick(collectCreat)}
           onPress={() => {
@@ -496,6 +528,7 @@ const DetailScreen = ({ navigation, route }) => {
           style={styles.personType}>
           {renderIconImage('collection', false)}
         </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => onProfile(true)}
           style={styles.personType}>
@@ -510,24 +543,21 @@ const DetailScreen = ({ navigation, route }) => {
       <>
         <Image
           style={fromNFT ? styles.creatorImage : styles.iconsImage}
-          source={key === 'creator' ?
-            artistDetail &&
-              artistDetail.hasOwnProperty('profile_image') &&
-              artistDetail.profile_image
-              ? { uri: artistDetail.profile_image }
-              : IMAGES.DEFAULTPROFILE : key === 'collection' ?
-              collectCreat
-                ? { uri: collectCreat.iconImage }
-                : IMAGES.DEFAULTPROFILE : key === 'owner' &&
-                  ownerDataN &&
-                  ownerDataN.hasOwnProperty('profile_image') &&
-                  ownerDataN.profile_image
-                ? { uri: ownerDataN.profile_image }
-                : IMAGES.DEFAULTPROFILE
+          source={
+            key === 'creator' ?
+              artistDetail?.avatar ? { uri: artistDetail.avatar } : IMAGES.DEFAULTPROFILE
+              : key === 'collection'
+                ? collectCreat ? { uri: collectCreat.avatar } : IMAGES.DEFAULTPROFILE
+                : key === 'owner' &&
+                  ownerDataN?.avatar ? { uri: ownerDataN.avatar } : IMAGES.DEFAULTPROFILE
           } />
         <View>
           {!fromNFT && <Text style={styles.personTypeText}>
-            {key === 'creator' ? translate('common.owner') : key === 'collection' ? translate('wallet.common.collection') : key === 'owner' && translate('common.owner')}
+            {key === 'creator'
+              ? translate('common.creator')
+              : key === 'collection'
+                ? translate('wallet.common.collection')
+                : key === 'owner' && translate('common.owner')}
           </Text>}
           {key !== 'collection' ?
             <Text numberOfLines={1} style={fromNFT ? styles.creatorName : styles.personName}>
@@ -536,7 +566,7 @@ const DetailScreen = ({ navigation, route }) => {
             :
             <View style={{ flexDirection: 'row' }}>
               <Text numberOfLines={1} style={styles.collectionName}>
-                {collectCreat && collectCreat.collectionName}
+                {collectionName}
               </Text>
               {Verifiedcollections.find((id) => id === collectCreat?._id) && (
                 <Image
@@ -558,7 +588,7 @@ const DetailScreen = ({ navigation, route }) => {
           {creatorName}
         </Text>}
         {!load && <Text style={styles.nftName}>
-          {detailNFT ? detailNFT[`${selectedLanguageItem?.language_name}_nft_name`] || item?.metaData?.name : item?.metaData?.name}
+          {detailNFT ? detailNFT?.name : item?.name}
         </Text >}
       </>
     )
@@ -579,25 +609,14 @@ const DetailScreen = ({ navigation, route }) => {
           ]}>
           {!load && <Text style={styles.price}>
             {nftPrice
-              ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(4)))
+              ? numberWithCommas(parseFloat(Number(nftPrice).toFixed(2)))
               : (nFTOnAuction && lBidAmount === '0.000000000000000000') ?
                 minBidPrice ? numberWithCommas(parseFloat(Number(minBidPrice).toFixed(4))) : ''
                 : priceNFT ?
                   numberWithCommas(parseFloat(Number(priceNFT).toFixed(4)))
-                  // addComma(
-                  //   trimZeroFromTheEnd(
-                  //     showActualValue(
-                  //       divideNo(priceNFTString),
-                  //       6,
-                  //       "number"
-                  //     ),
-                  //     true
-                  //   ),
-                  //   true
-                  // )
                   : ''
             }
-            <Text style={styles.priceUnit}>
+            {/* <Text style={styles.priceUnit}>
               {` ${baseCurrency?.key}`}
               <Text style={styles.dollarText}>
                 {(nFTOnAuction && lBidAmount === '0.000000000000000000')
@@ -605,7 +624,7 @@ const DetailScreen = ({ navigation, route }) => {
                   : priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(3)})`
                     : ''}
               </Text>
-            </Text>
+            </Text> */}
           </Text>}
           {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
         </View>
@@ -639,7 +658,7 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <>
         {!load && <Text style={styles.description}>
-          {detailNFT ? detailNFT[`${selectedLanguageItem.language_name}_nft_description`] || item?.metaData?.description : item?.metaData?.description}
+          {detailNFT?.description ? detailNFT.description : '---'}
         </Text >}
       </>
     )
@@ -936,16 +955,13 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const showContractAddress = (item) => {
-    console.log("🚀 ~ file: detail.js ~ line 950 ~ showContractAddress ~ ", item, (item?.collection
-      ? item.collection.substring(0, 5) +
-      ' ... ' +
-      item.collection.slice([item.collection.length - 4])
-      : MarketContractAddress))
-    return (item?.collection
-      ? item.collection.substring(0, 5) +
-      ' ... ' +
-      item.collection.slice([item.collection.length - 4])
-      : MarketContractAddress)
+    return (typeof item?.collection === 'object'
+      ? item?.collection?.address
+      : item?.collection ?
+        item?.collection?.substring(0, 5) +
+        ' ... ' +
+        item.collection.slice([item.collection.length - 4])
+        : MarketContractAddress)
   }
 
   //===================== Render Creator NFTDetailDropdown Function =======================
@@ -1039,7 +1055,7 @@ const DetailScreen = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           onPress={() => {
-            setVideoURI(null);
+            setVideoURL(null);
             navigation.push('CertificateDetail', {
               // owner: ownerN,
               // ownerData: ownerDataN,
@@ -1177,6 +1193,7 @@ const DetailScreen = ({ navigation, route }) => {
       </AppModal>
     )
   }
+
   //=================== Other Functions =====================
   let disableCreator = false;
   let isBiddingTimeEnd = false;
@@ -1210,30 +1227,34 @@ const DetailScreen = ({ navigation, route }) => {
     walletAddressForNonCrypto = getBlockChainConfig.walletAddressForNonCrypto;
   }
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  let ownerName =
-    ownerDataN && typeof ownerDataN === 'object'
-      ? ownerDataN?.role === 'crypto'
-        ? ownerDataN?.title?.trim()
-          ? ownerDataN.title
-          : ownerDataN?.name?.trim()
-            ? ownerDataN.name
-            : ownerDataN?.username?.trim()
-              ? ownerDataN.username.substring(0, 6)
-              : ownerN
-                ? ownerN.substring(0, 6)
-                : ''
-        : ownerDataN?.username?.trim()
-          ? ownerDataN.username
-          : ownerDataN?.name?.trim()
-            ? ownerDataN.name
-            : ownerDataN?.title?.trim()
-              ? ownerDataN.title
-              : ownerN
-                ? ownerN.substring(0, 6)
-                : ''
-      : ownerN
-        ? ownerN.substring(0, 6)
-        : '';
+  let ownerName = ownerDataN?.name?.trim()
+    ? ownerDataN.name
+    : ownerDataN?.address?.includes('0x')
+      ? ownerDataN.address.substring(0, 6)
+      : '---'
+  // ownerDataN && typeof ownerDataN === 'object'
+  //   ? ownerDataN?.role === 'crypto'
+  //     ? ownerDataN?.title?.trim()
+  //       ? ownerDataN.title
+  //       : ownerDataN?.name?.trim()
+  //         ? ownerDataN.name
+  //         : ownerDataN?.username?.trim()
+  //           ? ownerDataN.username.substring(0, 6)
+  //           : ownerN
+  //             ? ownerN.substring(0, 6)
+  //             : ''
+  //     : ownerDataN?.username?.trim()
+  //       ? ownerDataN.username
+  //       : ownerDataN?.name?.trim()
+  //         ? ownerDataN.name
+  //         : ownerDataN?.title?.trim()
+  //           ? ownerDataN.title
+  //           : ownerN
+  //             ? ownerN.substring(0, 6)
+  //             : ''
+  //   : ownerN
+  //     ? ownerN.substring(0, 6)
+  //     : '';
 
   // Crypto user: title/name/username
   // Non Crypto user: username/name/title
@@ -1250,26 +1271,36 @@ const DetailScreen = ({ navigation, route }) => {
         : '';
   };
 
-  let creatorName =
-    artistDetail && typeof artistDetail === 'object'
-      ? artistDetail?.role === 'crypto'
-        ? artistDetail?.title?.trim()
-          ? artistDetail.title
-          : artistDetail?.name?.trim()
-            ? artistDetail.name
-            : artistDetail?.username?.trim()
-              ? artistDetail.username.substring(0, 6)
-              : getArtistName(artist)
-        : artistDetail?.username?.trim()
-          ? artistDetail.username
-          : artistDetail?.name?.trim()
-            ? artistDetail.name
-            : artistDetail?.title?.trim()
-              ? artistDetail.title
-              : artist
-                ? artist?.substring(0, 6)
-                : ''
-      : getArtistName(artist);
+  let creatorName = artistDetail?.name?.trim()
+    ? artistDetail.name
+    : artistDetail?.address?.includes('0x')
+      ? artistDetail.address.substring(0, 6)
+      : '---'
+  // artistDetail && typeof artistDetail === 'object'
+  //   ? artistDetail?.role === 'crypto'
+  //     ? artistDetail?.title?.trim()
+  //       ? artistDetail.title
+  //       : artistDetail?.name?.trim()
+  //         ? artistDetail.name
+  //         : artistDetail?.username?.trim()
+  //           ? artistDetail.username.substring(0, 6)
+  //           : getArtistName(artist)
+  //     : artistDetail?.username?.trim()
+  //       ? artistDetail.username
+  //       : artistDetail?.name?.trim()
+  //         ? artistDetail.name
+  //         : artistDetail?.title?.trim()
+  //           ? artistDetail.title
+  //           : artist
+  //             ? artist?.substring(0, 6)
+  //             : ''
+  //   : getArtistName(artist);
+
+  let collectionName = collectCreat?.name
+    ? collectCreat.name
+    : collectCreat?.address?.includes('0x')
+      ? collectCreat.address.substring(0, 6)
+      : '---'
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const checkNFTOnAuction = () => {
@@ -1330,6 +1361,7 @@ const DetailScreen = ({ navigation, route }) => {
         }
       });
   };
+
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const getAuctionTimeRemain = item => {
     if (
@@ -2526,14 +2558,16 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const handleLikeMethod = async () => {
-    let nftItem = { ...item, like: isLike };
-    const handleLikeM = await handleLike(wallet, data, nftItem);
-    if (handleLikeM) {
-      if (
-        route.params.hasOwnProperty('setNftItem') &&
-        route.params.setNftItem
-      ) {
-        route.params.setNftItem(handleLikeM);
+    const nftData = await handleLike(detailNFT);
+    if (nftData) {
+      setDetailNFT(nftData)
+      if (typeof setNftItem == 'function') {
+        let nftItem = {
+          ...item,
+          isLike: nftData?.isLike,
+          totalLike: nftData?.totalLike
+        };
+        setNftItem(nftItem);
       }
     }
   };
@@ -2541,7 +2575,7 @@ const DetailScreen = ({ navigation, route }) => {
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     setLoad(true);
-    getNonCryptoNFTOwner();
+    // getNonCryptoNFTOwner();
   };
 
   // let ownerName = ownerDataN && (
@@ -2587,23 +2621,23 @@ const DetailScreen = ({ navigation, route }) => {
             {renderCreatorAndNFTName()}
             {setNFTStatus() !== 'notOnSell' && renderNFTPriceNToken()}
             {renderDescription()}
-            {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? renderAuctionTimeRemain() : null}
-            <View style={styles.bottomView}>
+            {/* {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? renderAuctionTimeRemain() : null} */}
+            {/* {<View style={styles.bottomView}>
               {!load && setNFTStatus() !== undefined && renderGroupButton()}
               {!load && setNFTStatus() === 'onSell' && renderNFTPriceNeditPriceAppButton()}
             </View>
             {renderBidNTradingHistory('bid')}
             {renderCreatorNFTDetailDropdown()}
-            {renderDetailNFTDetailDropdown()}
+            {renderDetailNFTDetailDropdown()} 
             {renderBidNTradingHistory('trading')}
-            {renderMoreCollection()}
+            {renderMoreCollection()}*/}
           </ScrollView >
         </AppBackground>
       </SafeAreaView >
-      {renderPaymentMethod()}
+      {/* {renderPaymentMethod()}
       {renderPaymentNow()}
       {renderTabModal()}
-      {renderAppModal()}
+      {renderAppModal()} */}
     </>
   );
 };

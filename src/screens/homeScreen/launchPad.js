@@ -20,7 +20,6 @@ import { Loader } from '../../components'
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
 import { translate } from '../../walletUtils';
-// import { launchpadData } from "../LaunchPadDetail/launchpadData";
 
 const LaunchPad = () => {
 
@@ -40,35 +39,31 @@ const LaunchPad = () => {
             dispatch(getLaunchpadNftList(page, limit))
         }, []
     )
-    
+
     useEffect(() => {
-        getLaunchpadNft(page,totalCount)
+        getLaunchpadNft(page, totalCount);
     }, [])
 
-
     //=================== Flatlist Functions ====================
-  const handleFlatlistRefresh = () => {
-    dispatch(launchpadNftLoadStart());
-    handleRefresh();
-  }
+    const handleFlatlistRefresh = () => {
+        dispatch(launchpadNftLoadStart());
+        handleRefresh();
+    }
 
-  const handleRefresh = () => {
-    dispatch(launchpadNftListReset());
-    getLaunchpadNft(page,totalCount);
-    dispatch(launchpadNftPageChange(1));
-  };
+    const handleRefresh = () => {
+        dispatch(launchpadNftListReset());
+        getLaunchpadNft(page, totalCount);
+        dispatch(launchpadNftPageChange(1));
+    };
 
-
-  // ===================== Render No NFT Function ===================================
-  const renderNoNFT = () => {
-    return (
-      <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-      </View>
-    )
-  }
-
-
+    // ===================== Render No NFT Function ===================================
+    const renderNoNFT = () => {
+        return (
+            <View style={styles.sorryMessageCont}>
+                <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+            </View>
+        )
+    }
 
     //=====================(Render Flatlist Item Function)=============================
     const renderItem = ({ item }) => {
@@ -81,7 +76,7 @@ const LaunchPad = () => {
                 collectionName={item.name}
                 creator={item.owner.name}
                 network={item.networks}
-                count={item.totalNft} 
+                count={item.totalNft}
                 status={item.status}
                 creatorInfo={item.owner.description}
                 blind={item.blind}
@@ -109,21 +104,26 @@ const LaunchPad = () => {
                 barStyle="dark-content"
                 backgroundColor={colors.white}
             />
-            {isLoading ? <Loader/> : launchData.length ? <FlatList
-                data={launchData}
-                horizontal={false}
-                numColumns={2}
-                renderItem={launchData.length !==0 ? renderItem : renderNoNFT()}
-                keyExtractor={(v, i) => 'item_' + i}
-                pagingEnabled={false}
-                legacyImplementation={false}
-                onRefresh={handleFlatlistRefresh}
-                refreshing={
-                    LaunchpadReducer.launchpadPage === 1 &&
-                    LaunchpadReducer.launchpadLoading
-                  }
-            /> : renderNoNFT()}
-        </View>
+
+            {isLoading ?
+                <Loader />
+                : launchData.length ?
+                    <FlatList
+                        data={launchData}
+                        horizontal={false}
+                        numColumns={2}
+                        renderItem={launchData.length !== 0 ? renderItem : renderNoNFT()}
+                        keyExtractor={(v, i) => 'item_' + i}
+                        pagingEnabled={false}
+                        legacyImplementation={false}
+                        onRefresh={handleFlatlistRefresh}
+                        refreshing={
+                            LaunchpadReducer.launchpadPage === 1 &&
+                            LaunchpadReducer.launchpadLoading
+                        }
+                    />
+                    : renderNoNFT()}
+        </View >
     );
 };
 
