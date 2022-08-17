@@ -4,6 +4,7 @@ import {
     FlatList,
     StatusBar,
     View,
+    Text
 } from 'react-native';
 import {
     launchpadNftLoadStart,
@@ -18,6 +19,7 @@ import { colors } from '../../res';
 import { Loader } from '../../components'
 import styles from './styles';
 import LaunchPadItemData from "../LaunchPadDetail/LaunchPadItemData";
+import { translate } from '../../walletUtils';
 
 const LaunchPad = () => {
 
@@ -53,6 +55,15 @@ const LaunchPad = () => {
         getLaunchpadNft(page, totalCount);
         dispatch(launchpadNftPageChange(1));
     };
+
+    // ===================== Render No NFT Function ===================================
+    const renderNoNFT = () => {
+        return (
+            <View style={styles.sorryMessageCont}>
+                <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+            </View>
+        )
+    }
 
     //=====================(Render Flatlist Item Function)=============================
     const renderItem = ({ item }) => {
@@ -93,21 +104,26 @@ const LaunchPad = () => {
                 barStyle="dark-content"
                 backgroundColor={colors.white}
             />
-            {isLoading ? <Loader /> : <FlatList
-                data={launchData}
-                horizontal={false}
-                numColumns={2}
-                renderItem={renderItem}
-                keyExtractor={(v, i) => 'item_' + i}
-                pagingEnabled={false}
-                legacyImplementation={false}
-                onRefresh={handleFlatlistRefresh}
-                refreshing={
-                    LaunchpadReducer.launchpadPage === 1 &&
-                    LaunchpadReducer.launchpadLoading
-                }
-            />}
-        </View>
+
+            {isLoading ?
+                <Loader />
+                : launchData.length ?
+                    <FlatList
+                        data={launchData}
+                        horizontal={false}
+                        numColumns={2}
+                        renderItem={launchData.length !== 0 ? renderItem : renderNoNFT()}
+                        keyExtractor={(v, i) => 'item_' + i}
+                        pagingEnabled={false}
+                        legacyImplementation={false}
+                        onRefresh={handleFlatlistRefresh}
+                        refreshing={
+                            LaunchpadReducer.launchpadPage === 1 &&
+                            LaunchpadReducer.launchpadLoading
+                        }
+                    />
+                    : renderNoNFT()}
+        </View >
     );
 };
 

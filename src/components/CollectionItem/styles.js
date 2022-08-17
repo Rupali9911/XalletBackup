@@ -80,10 +80,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   byUser: {
+    marginTop:SIZE(3),
+    fontFamily:'Arial',
+    fontWeight:'400',
     color: '#56bbf8',
     fontSize: SIZE(12),
   },
   collectionName: {
+    fontFamily:'Arial',
+    fontWeight:'400',
     color: '#23262f',
     fontSize: SIZE(14),
     marginBottom: SIZE(4),
@@ -110,10 +115,13 @@ const styles = StyleSheet.create({
   bottomText:{
     flexDirection:'row',
     width:'100%',
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center'
   },
   count:{
-    marginTop:SIZE(5),
+    fontFamily:'Arial',
+    fontWeight:'400',
+    marginTop:SIZE(10),
     color: '#a660d8',
     fontSize: SIZE(12)
   }

@@ -166,14 +166,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomRightRadius: SIZE(12),
         borderBottomLeftRadius: SIZE(12),
-        height: Platform.OS === 'android' ? (wp('100%') / 2.4) - wp('1%') : (wp('100%') / 3) - wp('1%'),
-        // justifyContent: 'space-between',
+        height: Platform.OS === 'android' ? (wp('100%') / 2.25) - wp('1%') : (wp('100%') / 2.35) - wp('1%'),
         alignItems: 'center'
     },
     bottomWrap: {
         marginTop:SIZE(10),
         flexDirection:'column',
-        height: Platform.OS === 'android' ? "26%" : "35%",
+        height: Platform.OS === 'android' ? "20%" : "24%",
         justifyContent: 'center',
         alignItems:'center',
         width: '100%'
@@ -182,7 +181,7 @@ const styles = StyleSheet.create({
         //backgroundColor:'red'
     },
     renderchainstyle: {
-        marginTop:SIZE(5),
+        marginTop:SIZE(10),
         width:'75%',
         flexDirection:'row',
         alignItems:'center',
@@ -194,25 +193,33 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     bottomCenterWrap: {
-        marginTop: SIZE(5),
+        width:'100%',
+        marginTop: SIZE(8),
         flexDirection:'column',
         justifyContent: 'center',
         alignItems: 'center'
     },
     byUser: {
+        marginTop: SIZE(5),
+        fontFamily:"Arial",
+        fontWeight:'400',
         color: '#56bbf8',
         fontSize: SIZE(12),
     },
     nftCount:{
-        marginTop:SIZE(5),
-        color: Colors.PURPLE,
+        fontFamily:"Arial",
+        marginTop:SIZE(10),
+        color: '#a660d8',
         fontSize: SIZE(12),
+        fontWeight:'400',
     },
     collectionName: {
+        fontFamily:"Arial",
         color: '#23262f',
+        fontWeight:'400',
         fontSize: SIZE(14),
         marginBottom: SIZE(3),
-        marginHorizontal: SIZE(5)
+        marginHorizontal: SIZE(5),
     },
     soldOutText: {
         color: COLORS.greenLight,
@@ -225,10 +232,15 @@ const styles = StyleSheet.create({
         borderRadius: SIZE(10)
     },
     mainNftText : {
-        width : '100%',flexDirection:'row'
+        width : '90%',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center'
     },
     statusText:{
-        marginTop: SIZE(5),
+        fontFamily:"Arial",
+        fontWeight:'400',
+        marginTop: SIZE(8),
         fontSize: SIZE(12),
         color: '#ff6e44'
     }
