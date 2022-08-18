@@ -655,7 +655,9 @@
         "toFilter": "から",
         "ongoinglaunch": "進行中",
         "CNcreatorname":"作者名",
-        "CNcreatordesc":"作品の詳細"
+        "CNcreatordesc":"作品の詳細",
+        "AIChat":"AIとチャット",
+        "enterMessage":"メッセージを入力してください"
     },
     "AwardPage": {},
     "wallet": {

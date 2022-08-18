@@ -653,7 +653,9 @@
         "toFilter": "To",
         "ongoinglaunch": "Ongoing",
         "CNcreatorname":"Creator Name",
-        "CNcreatordesc":"Creator Description"
+        "CNcreatordesc":"Creator Description",
+        "AIChat":"Chat with AI",
+        "enterMessage":"Type your message"
     },
     "AwardPage": {},
     "wallet": {

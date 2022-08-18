@@ -655,7 +655,9 @@
         "toFilter": "到",
         "ongoinglaunch": "进行中",
         "CNcreatorname":"创作者姓名",
-        "CNcreatordesc":"创作者描述"
+        "CNcreatordesc":"创作者描述",
+        "AIChat":"与人工智能聊天",
+        "enterMessage":"输入您的信息"
     },
     "AwardPage": {},
     "wallet": {

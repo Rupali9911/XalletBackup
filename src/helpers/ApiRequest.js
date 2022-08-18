@@ -8,7 +8,7 @@ var isAlert = false;
 export const STRIPE_API_URL = "https://api.stripe.com/v1/";
 export const BASE_URL = "https://testapi.xanalia.com/";
 
-export const ApiRequest = async (url, method, body, headers) => {
+export const ApiRequest = async (url, method, body, headers) => {   
 
     const requestOptions = {
         method,
@@ -29,13 +29,13 @@ export const ApiRequest = async (url, method, body, headers) => {
                 fetch(url, requestOptions)
                     .then(response => {
                         const statusCode = response.status;
+                        // return JSON.parse(JSON.stringify(response));
                         // console.log('response from API', response);
-
                         try {
                             return response.json();
                         } catch (err) {
                             if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
-                                throw `Try again !!!`;
+                                throw Error(`Try again !!!`);
                             }
                         };
                         return response.json();
@@ -44,7 +44,7 @@ export const ApiRequest = async (url, method, body, headers) => {
                         resolve(response);
                     })
                     .catch(error => {
-                        reject()
+                        reject(error)
                         // alertWithSingleBtn(
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.apiFailed"),
@@ -70,7 +70,7 @@ export const ApiRequest = async (url, method, body, headers) => {
                 }
             }
         }).catch(err => {
-            reject();
+            reject(err);
             // alertWithSingleBtn(
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),

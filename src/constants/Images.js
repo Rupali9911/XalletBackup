@@ -24,6 +24,7 @@ export default {
     topup: require("../../assets/images/topup.png"),
     transaction: require("../../assets/images/transaction_history.png"),
     loadergif: require("../assets/gifs/loadergif.gif"),
+    sendChatMessage: require("../../assets/images/sendChatMessage.png"),
 
     //tab icons
     wallet: require("../../assets/images/wallet.png"),

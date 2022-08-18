@@ -107,8 +107,6 @@ function Setting({ navigation }) {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const { myCards } = useSelector(state => state.PaymentReducer);
   const { data } = useSelector(state => state.UserReducer);
-  const { chatSuccess, isChatLoading, error } = useSelector(state => state.chatReducer);
-
 
   useEffect(() => {
     dispatch(getAllCards(data.token));
@@ -164,17 +162,16 @@ function Setting({ navigation }) {
             label={translate('wallet.common.notifications')}
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
-          {/* ------------------------- */}
-          {/* dispatch(getPersonalizeChat()) */}
-          <ListItem
-            onPress={() => navigation.navigate('ChatScreen')}
-            label={'Chat with AI'}
-          />
-          <View style={{ ...styles.separator, width: wp('81%') }} />
-          {/* ---------------------------- */}
+
+         
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
+          />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
+          <ListItem
+            onPress={() => navigation.navigate('AiChat')}
+            label={translate('common.AIChat')}
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
@@ -207,16 +204,10 @@ function Setting({ navigation }) {
             noArrow={true}
             label={translate('common.Logout')}
           />
-          <ListItem
-            onPress={() => navigation.navigate('AiChat')}
-            label={'Chat With AI'}
-          />
+          
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
           {/*<Text>Authenticate with Touch ID</Text>*/}
           {/*</TouchableHighlight>*/}
-        </View>
-        <View>
-            {isChatLoading ? <ActivityIndicator color={'red'} size={15} /> : <Text>{chatSuccess}</Text>}
         </View>
         
       </ScrollView>
