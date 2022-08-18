@@ -100,12 +100,13 @@ export const newPageChange = data => ({
 });
 
 export const newNFTData = (callFrom, category, sort, pageSize, pageNum) => {
+  let userId = 16898
   console.log("🚀 ~ file: newNFTActions.js ~ line 70 ~ newNFTData ~ ", category, sort, pageSize, pageNum)
   return (dispatch) => {
     // let pageSize = 10;
     dispatch(newNftLoadStart())
     // dispatch(isArtNftLoadStart())
-    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}`
+    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}&userId=${userId}`
     fetch(url)
       .then(response => response.json())
       .then(data => {

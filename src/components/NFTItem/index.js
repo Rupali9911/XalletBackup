@@ -12,6 +12,7 @@ import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useDispatch, useSelector } from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import ProfileImg from '../../assets/pngs/default_profile_img.png'
+import { handleLike } from '../../screens/discover/discoverItem';
 
 export default function NFTItem(props) {
   const dispatch = useDispatch();
@@ -32,14 +33,14 @@ export default function NFTItem(props) {
   } = props;
 
   // ======================= SVGS Destructing =======================
-  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
+  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIconNew, HeartActiveIconNew } = SVGS;
 
   // =============== Getting data from reducer ========================
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================  
-  const [isDisable, setIsDisable] = useState(false)
-
+  const [isLike, setIsLike] = useState(Number(item.isLike))
+  // const [liked,setLiked]
   //================== Render Me Collection Images Function ===================
   const renderMeCollection = () => {
     return (
@@ -74,12 +75,26 @@ export default function NFTItem(props) {
   }
 
   //================== Render Heart Icon Function ===================
+  const handleLikeMethod = async () => {
+    let nftItem = {
+      ...item,
+      isLike: isLike,
+      // totalLike: nftData?.totalLike
+    };
+    const nftData = await handleLike(nftItem);
+    if (nftData) {
+      setIsLike(!Number(nftItem.isLike))
+      // console.log("🚀 ~ file: index.js ~ line 87 ~ ", item)
+    }
+  };
+
+
   const renderHeartIcon = () => {
     return (
       <TouchableOpacity
-        onPress={() => dispatch(handleLikeDislike(item, index, screenName))}
+        onPress={() => handleLikeMethod()}
         style={styles.likeButton}>
-        {item.like ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+        {isLike ? <HeartActiveIconNew /> : <HeartWhiteIconNew />}
       </TouchableOpacity>
     )
   }
