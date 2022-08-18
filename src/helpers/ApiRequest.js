@@ -31,14 +31,33 @@ export const ApiRequest = async (url, method, body, headers) => {
                         const statusCode = response.status;
                         // return JSON.parse(JSON.stringify(response));
                         // console.log('response from API', response);
-                        try {
+                        if (statusCode == 200) {
                             return response.json();
-                        } catch (err) {
-                            if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
-                                throw Error(`Try again !!!`);
+                        } else {
+                            switch (statusCode) {
+                                case 404:
+                                    console.log('Object not found');
+                                    throw Error(`${statusCode} Object not found`);
+                                case 500:
+                                    console.log('Internal server error');
+                                    if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
+                                        throw Error(`Try again !!!`);
+                                    }
+                                    throw Error(`${statusCode} Internal server error`);
+                                default:
+                                    console.log('Some error occured');
+                                    throw Error(`${statusCode} Some error occured`);
                             }
-                        };
-                        return response.json();
+                        }
+
+                        // try {
+                        //     return response.json();
+                        // } catch (err) {
+                        //     if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
+                        //         throw Error(`Try again !!!`);
+                        //     }
+                        // };
+                        // return response.json();
                     })
                     .then(response => {
                         resolve(response);

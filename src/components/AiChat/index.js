@@ -192,5 +192,5 @@ const AiChat = () => {
   )
 }
 
-export default AiChat
+export default AiChat;
 
