@@ -131,7 +131,7 @@ const GifNFT = () => {
           image={imageUri}
           onPress={() => {
             // dispatch(changeScreenName('gitNFT'));
-            navigation.push('DetailItem', { index: findIndex, sName: "gitNFT" });
+            navigation.push('CertificateDetail', { item : item });
           }}
         />
       );

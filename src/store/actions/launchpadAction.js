@@ -35,7 +35,6 @@ export const getLaunchpadNftList = (page, limit) => {
     return (dispatch) => {
         dispatch(launchpadNftLoadStart())
         const url = `${NEW_BASE_URL}/launchpad?page=${page}&limit=${limit}`
-        console.log("🚀 ~ file: launchpadAction.js ~ line 38 ~ ~ url", url)
 
         fetch(url)
             .then(response => response.json())

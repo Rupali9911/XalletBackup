@@ -44,6 +44,7 @@ import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { translate } from '../../walletUtils';
 import AllNFT from './allNFT';
 import ImageNFT from './imageNFT';
+import MusicNFT from './musicNFT'
 import GifNFT from './gifNFT';
 import Trending from './trending';
 import MovieNFT from './movieNFT';
@@ -84,8 +85,9 @@ const HomeScreen = ({ navigation }) => {
     { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'art', title: translate('common.2DArt') },
     { key: 'image', title: "Image" },
-    { key: 'gif', title: 'gif' },
-    { key: 'video', title: translate('common.video') },
+    { key: 'gif', title: 'Gif' },
+    { key: 'movie', title: translate('common.video') },
+    { key: 'music', title: 'Music'},
     { key: 'hotCollection', title: translate('common.hotcollection') },
   ]);
 
@@ -303,8 +305,10 @@ const HomeScreen = ({ navigation }) => {
         return <ImageNFT />;
       case 'gif':
         return <GifNFT />;
-      case 'video':
+      case 'movie':
         return <MovieNFT />;
+        case 'music':
+        return <MusicNFT />;
       case 'hotCollection':
         return <HotCollection />;
       default:

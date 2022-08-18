@@ -50,29 +50,32 @@ const Collection = () => {
   }, []);
 
   // ===================== Render Collection Tab ===================================
-  const renderCollectionTab = () => {
-    return (
-      <View style={styles.collectionTab}>
-        {renderSelectedTab(true)}
-        {renderSelectedTab(false)}
-      </View>
-    )
-  }
+  // const renderCollectionTab = () => {
+  //   return (
+  //     <View style={styles.collectionTab}>
+  //       {renderSelectedTab(true)}
+  //       {renderSelectedTab(false)}
+  //     </View>
+  //   )
+  // }
 
-  const renderSelectedTab = (isCollectionTab) => {
-    return (
-      <TouchableOpacity
-        onPress={() => setSelectTab(isCollectionTab)}
-        style={[styles.collectionTabItem, { borderTopColor: isCollectionTab ? isSelectTab ? colors.BLUE4 : 'transparent' : !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
-        {isCollectionTab && <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-          {translate('wallet.common.collection')}
-        </Text>}
-        {!isCollectionTab && <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
-          {translate('common.blindboxCollections')}
-        </Text>}
-      </TouchableOpacity>
-    )
-  }
+  // const renderSelectedTab = (isCollectionTab) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => setSelectTab(isCollectionTab)}
+  //       style={[styles.collectionTabItem, { borderTopColor: isCollectionTab ? isSelectTab ? colors.BLUE4 : 'transparent' : !isSelectTab ? colors.BLUE4 : 'transparent' }]}>
+  //       {isCollectionTab && <Text style={[styles.collectionTabItemLabel, { color: isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
+  //         {translate('wallet.common.collection')}
+  //       </Text>}
+  //       {!isCollectionTab && <Text style={[styles.collectionTabItemLabel, { color: !isSelectTab ? colors.BLUE4 : colors.GREY1 }]}>
+  //         {translate('common.blindboxCollections')}
+  //       </Text>}
+  //     </TouchableOpacity>
+  //   )
+  // }
+
+
+  console.log('collection list',CollectionReducer.collectionList)
 
   // ===================== Render Hot Collectio NFT Flatlist ===================================
   const renderHotCollectioNFTList = () => {
@@ -148,15 +151,18 @@ const Collection = () => {
   const renderItem = ({ item }) => {
     return (
       <CollectionItem
-        bannerImage={item.bannerImage}
-        chainType={item.chainType || 'polygon'}
-        items={item.items}
-        iconImage={item.iconImage}
-        collectionName={item.collectionName}
-        creator={item.creator}
-        creatorInfo={item.creatorInfo}
-        blind={item.blind}
-        colId={item._id}
+      bannerImage={item.bannerImage}
+      creator={item.owner}
+      chainType={item.chainType}
+      items={item.items}
+      iconImage={item.iconImage}
+      collectionName={item.name}
+      creatorInfo={item.creatorInfo}
+      blind={item.blind}
+      count={item.totalNft}
+      network={item.network}
+      collectionTab = {isSelectTab}
+      colId={item._id}
         onPress={() => {
           if (item.redirect === '/collection/underground_city') {
             navigation.push('CollectionDetail', {
@@ -203,7 +209,7 @@ const Collection = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {renderCollectionTab()}
+      {/* {renderCollectionTab()} */}
       {CollectionReducer.collectionPage === 1 &&
         CollectionReducer.collectionLoading ? (
         <Loader />

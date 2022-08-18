@@ -108,7 +108,7 @@ const MovieNFT = () => {
   const handleFlastListEndReached = () => {
     if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newMovieNftList.length) {
       let pageNum = page + 1
-      getNFTlist(0, 0, 10, pageNum);
+      getNFTlist(4, 0, 10, pageNum);
       setPage(pageNum)
     }
   }
@@ -121,7 +121,6 @@ const MovieNFT = () => {
   };
 
   const renderItem = ({ item }) => {
-    let findIndex = NewNFTListReducer.newMovieNftList.findIndex(x => x.id === item.id);
     let imageUri = item?.mediaUrl
       return (
         <NFTItem
@@ -130,7 +129,7 @@ const MovieNFT = () => {
           image={imageUri}
           onPress={() => {
             // dispatch(changeScreenName('movieNFT'));
-            navigation.push('DetailItem', { index: findIndex, sName: "movieNFT" });
+            navigation.push('CertificateDetail', { item : item });
           }}
         />
       );

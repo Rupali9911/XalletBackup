@@ -106,7 +106,7 @@ export default function NFTItem(props) {
           {renderNameNcreatorName(true)}
           {renderPriceNcurrencyIconContainer(true)}
           {/* {isBlind && <View style={styles.Line} />} */}
-          {isBlind && item?.newpriceTraded ?
+          {/* {isBlind && item?.newpriceTraded ?
             renderChainViewColumn(true)
             :
             <View
@@ -127,7 +127,7 @@ export default function NFTItem(props) {
                   </>
                 )}
               </View>
-            </View>}
+            </View>} */}
         </View>
       )
     } else {

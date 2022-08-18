@@ -45,10 +45,15 @@ export const newNftGifLoadSuccess = data => ({
   type: NEW_NFT_GIF_LOAD_SUCCESS,
   payload: data,
 });
-export const newMovieGifLoadSuccess = data => ({
+export const newNftMovieLoadSuccess = data => ({
   type: NEW_NFT_MOVIE_LOAD_SUCCESS,
   payload: data,
 });
+export const newNftMusicLoadSuccess = data => ({
+  type: NEW_NFT_MUSIC_LOAD_SUCCESS,
+  payload: data,
+});
+
 
 export const favoriteNftLoadSuccess = data => ({
   type: FAVORITE_NFT_LOAD_SUCCESS,
@@ -120,9 +125,11 @@ export const newNFTData = (callFrom, category, sort, pageSize, pageNum) => {
           dispatch(newNftGifLoadSuccess(data))
         }
         if (callFrom === 'movie') {
-          dispatch(newMovieGifLoadSuccess(data))
+          dispatch(newNftMovieLoadSuccess(data))
         }
-
+        if (callFrom === 'music') {
+          dispatch(newNftMusicLoadSuccess(data))
+        }
         // dispatch(newNftLoadSuccess(data))
       })
       .catch(() => {

@@ -10,19 +10,15 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import {
-  newNftListReset,
-  newNftLoadStart,
-  newNFTData
-} from '../../store/actions/newNFTActions';
+import { newNftLoadStart, newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 
-const ImageNFT = () => {
+const MusicNFT = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const navigation = useNavigation();
   let timer = null;
 
   // =============== Getting data from reducer ========================
@@ -30,20 +26,19 @@ const ImageNFT = () => {
   const { sort } = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
-  const [isFirstRender, setIsFirstRender] = useState(true)
   const [isSort, setIsSort] = useState(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [page, setPage] = useState(1);
 
   const [end, setEnd] = useState()
-
 
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && (isFirstRender || isSort !== sort)) {
       timer = setTimeout(() => {
-        dispatch(newNftListReset());
         dispatch(newNftLoadStart());
-        getNFTlist(2, 0, 10, page);
+        dispatch(newNftListReset());
+        getNFTlist(5, 0, 10, page);
         setIsFirstRender(false)
         setIsSort(sort)
       }, 100);
@@ -51,17 +46,16 @@ const ImageNFT = () => {
     return () => clearTimeout(timer);
   }, [sort, isFocused]);
 
-
-  //===================== Dispatch Action to Fetch Photo NFT List =========================
+  //===================== Dispatch Action to Fetch Movie NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-    dispatch(newNFTData('image', category, sort, pageSize, pageNum));
+    dispatch(newNFTData('music', category, sort, pageSize, pageNum));
   }, []);
 
-  // ===================== Render Photo NFT Flatlist ===================================
-  const renderPhotoNFTList = () => {
+  // ===================== Render Movie NFT Flatlist ===================================
+  const renderMovieNFTList = () => {
     return (
       <FlatList
-        data={NewNFTListReducer.newImageNftList}
+        data={NewNFTListReducer.newMusicNftList}
         horizontal={false}
         numColumns={2}
         initialNumToRender={14}
@@ -96,19 +90,19 @@ const ImageNFT = () => {
   //=================== Flatlist Functions ====================
   const handleFlatlistRefresh = () => {
     dispatch(newNftLoadStart());
-    handleRefresh();
+    refreshFunc();
   }
 
-  const handleRefresh = () => {
+  const refreshFunc = () => {
     dispatch(newNftListReset());
-    getNFTlist(2, 0, 10, 1);
+    getNFTlist(5, 0, 10, 1);
     setPage(1)
   };
 
   const handleFlastListEndReached = () => {
-    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newImageNftList.length) {
+    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newMusicNftList.length) {
       let pageNum = page + 1
-      getNFTlist(2, 0, 10, pageNum);
+      getNFTlist(5, 0, 10, pageNum);
       setPage(pageNum)
     }
   }
@@ -121,43 +115,36 @@ const ImageNFT = () => {
   };
 
   const renderItem = ({ item }) => {
-    let findIndex = NewNFTListReducer.newImageNftList.findIndex(
-      x => x.id === item.id,
-    );
+    let findIndex = NewNFTListReducer.newMusicNftList.findIndex(x => x.id === item.id);
     let imageUri = item?.mediaUrl
-
-    return (
-      <NFTItem
-        item={item}
-        screenName="imageNFT"
-        image={imageUri}
-        onPress={() => {
-          // dispatch(changeScreenName('photoNFT'));
-          navigation.push('CertificateDetail', { item : item });
-        }}
-      />
-    );
+      return (
+        <NFTItem
+          screenName="movieNFT"
+          item={item}
+          image={imageUri}
+          onPress={() => {
+            // dispatch(changeScreenName('movieNFT'));
+            navigation.push('CertificateDetail', { item : item });
+          }}
+        />
+      );
   };
 
-  const memoizedValue = useMemo(
-    () => renderItem,
-    [NewNFTListReducer.newImageNftList],
-  );
-
+  const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newMovieNftList]);
 
 
   //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? isFirstRender :  page === 1 &&
-        NewNFTListReducer.newNftListLoading ? (
-        <Loader />
-      ) : NewNFTListReducer.newImageNftList.length !== 0 ? renderPhotoNFTList()
-        : renderNoNFT()
-      }
-    </View >
+            <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+            {isFirstRender ? isFirstRender : page === 1 &&
+                NewNFTListReducer.newNftListLoading ? (
+                <Loader />
+            ) : NewNFTListReducer.newMusicNftList.length !== 0 ? renderMovieNFTList()
+                : renderNoNFT()
+            }
+        </View >
   );
 };
 
-export default React.memo(ImageNFT);
+export default React.memo(MusicNFT);

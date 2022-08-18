@@ -129,7 +129,7 @@ const ArtNFT = () => {
                 image={imageUri}
                 onPress={() => {
                     // dispatch(changeScreenName('newNFT'));
-                    navigation.push('DetailItem', { index: findIndex });
+                    navigation.push('CertificateDetail', { item : item });
                 }}
             />
         )

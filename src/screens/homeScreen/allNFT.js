@@ -140,7 +140,7 @@ const AllNFT = () => {
         image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('awards'));
-          navigation.push('DetailItem', { index: renderItemFIndIndex(item), sName: "allNft" });
+          navigation.push('CertificateDetail', { item : item });
         }}
       />
     );

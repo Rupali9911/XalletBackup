@@ -8,6 +8,7 @@ import CommonStyles from '../../constants/styles';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../verifiedCollection';
 import { COLORS, IMAGES } from '../../constants';
+import { SvgUri } from 'react-native-svg';
 const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
 
 export default function CollectionItem(props) {
@@ -16,6 +17,7 @@ export default function CollectionItem(props) {
     chainType,
     items,
     iconImage,
+    collectionTab,
     collectionName,
     creatorInfo,
     onPress,
@@ -23,6 +25,7 @@ export default function CollectionItem(props) {
     network,
     count,
     blind,
+    address,
     isCollection,
     cryptoAllowed,
     colId
@@ -39,16 +42,8 @@ export default function CollectionItem(props) {
     // } else {
     //   return creatorInfo[0].username;
     // }
-    let creatorName = creatorInfo && typeof creatorInfo[0] === 'object' ?
-      creatorInfo[0]?.role === 'crypto' ?
-        creatorInfo[0]?.title?.trim() ? creatorInfo[0].title :
-          creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
-            creatorInfo[0]?.username?.trim() ? creatorInfo[0].username : creator ? creator : ""
-        : creatorInfo[0]?.username?.trim() ? creatorInfo[0].username :
-          creatorInfo[0]?.name?.trim() ? creatorInfo[0].name :
-            creatorInfo[0]?.title?.trim() ? creatorInfo[0].title : creator ? creator : ""
-      : creator ? creator : collectionName ? collectionName : ""
-    creatorName = creatorName?.includes('0x') ? creatorName.substring(0, 6) : creatorName;
+    let creatorAddress = `${creator?.address?.substring(0,6)}...${creator?.address?.substring(creator.address.length - 4,creator.address.length)}`
+    let creatorName = creator.name ? creator.name : creatorAddress
     return creatorName;
   }
 
@@ -88,15 +83,20 @@ export default function CollectionItem(props) {
   // };
 
   const renderChain = () => {
-    if (network?.networkName === 'Ethereum') {
-      return <Ethereum/>
-    }
-    if (network?.networkName === 'BSC') {
-      return <BitmapIcon/>
-    }
-    if (network?.networkName === 'Polygon') {
-      return <NewPolygonIcon/>
-    }
+    return <SvgUri
+    width={SIZE(23)}
+    height={SIZE(23)}
+    uri={network.image}
+  />
+    // if (network?.networkName === 'Ethereum') {
+    //   return <Ethereum/>
+    // }
+    // if (network?.networkName === 'BSC') {
+    //   return <BitmapIcon/>
+    // }
+    // if (network?.networkName === 'Polygon') {
+    //   return <NewPolygonIcon />
+    // }
   }
 
   const renderVerifiedCollection = () => {
@@ -147,16 +147,16 @@ export default function CollectionItem(props) {
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
-              {renderVerifiedCollection()}
+              {!collectionTab && renderVerifiedCollection()}
             </View>
             {!isCollection && (
-              <Text style={styles.byUser}>{`by ${getByUser()}`}</Text>
+              <Text style={styles.byUser}>{collectionTab ? `${getByUser()}` : `by ${getByUser()}`}</Text>
             )}
           </View>
-          <View style={styles.bottomWrap}>
+          <View style={collectionTab ? styles.bottomWrap2 :  styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            <Text style={styles.count}>{count} items</Text>
+            <Text style={styles.count}>{count ? count : 0} items</Text>
             {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>} */}
