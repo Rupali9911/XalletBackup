@@ -45,10 +45,15 @@ export const newNftGifLoadSuccess = data => ({
   type: NEW_NFT_GIF_LOAD_SUCCESS,
   payload: data,
 });
-export const newMovieGifLoadSuccess = data => ({
+export const newNftMovieLoadSuccess = data => ({
   type: NEW_NFT_MOVIE_LOAD_SUCCESS,
   payload: data,
 });
+export const newNftMusicLoadSuccess = data => ({
+  type: NEW_NFT_MUSIC_LOAD_SUCCESS,
+  payload: data,
+});
+
 
 export const favoriteNftLoadSuccess = data => ({
   type: FAVORITE_NFT_LOAD_SUCCESS,
@@ -95,12 +100,13 @@ export const newPageChange = data => ({
 });
 
 export const newNFTData = (callFrom, category, sort, pageSize, pageNum) => {
+  let userId = 16898
   console.log("🚀 ~ file: newNFTActions.js ~ line 70 ~ newNFTData ~ ", category, sort, pageSize, pageNum)
   return (dispatch) => {
     // let pageSize = 10;
     dispatch(newNftLoadStart())
     // dispatch(isArtNftLoadStart())
-    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}`
+    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}&userId=${userId}`
     fetch(url)
       .then(response => response.json())
       .then(data => {
@@ -120,9 +126,11 @@ export const newNFTData = (callFrom, category, sort, pageSize, pageNum) => {
           dispatch(newNftGifLoadSuccess(data))
         }
         if (callFrom === 'movie') {
-          dispatch(newMovieGifLoadSuccess(data))
+          dispatch(newNftMovieLoadSuccess(data))
         }
-
+        if (callFrom === 'music') {
+          dispatch(newNftMusicLoadSuccess(data))
+        }
         // dispatch(newNftLoadSuccess(data))
       })
       .catch(() => {

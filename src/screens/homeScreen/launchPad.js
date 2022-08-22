@@ -83,15 +83,7 @@ const LaunchPad = () => {
                 collectionId={item._id}
                 disabled={(networkType === "testnet" || item.status === "comingSoon") ? true : false}
                 onPress={() => {
-                    if (item.status !== "comingSoon") {
-                        if (item.blind) {
-                            console.log('========Launch tab => blind1 75', { isBlind: true, collectionId: item._id, isHotCollection: false })
-                            navigation.push('CollectionDetail', { isBlind: true, collectionId: item._id, isHotCollection: false });
-                        } else {
-                            console.log("========Launch tab => ~ line 79", { isBlind: false, collectionId: item._id, isHotCollection: true })
-                            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-                        }
-                    }
+                    navigation.push('CertificateDetail', { item: item });
                 }}
             />
         );

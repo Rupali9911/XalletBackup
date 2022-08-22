@@ -127,7 +127,7 @@ const HotCollection = () => {
     return (
       <CollectionItem
         bannerImage={item.bannerImage}
-        creator={item.owner.name}
+        creator={item.owner}
         chainType={item.chainType}
         items={item.items}
         iconImage={item.iconImage}

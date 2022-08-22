@@ -74,6 +74,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%'
   },
+  bottomWrap2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%'
+  },
   bottomCenterWrap: {
     width:'100%',
     justifyContent: 'center',

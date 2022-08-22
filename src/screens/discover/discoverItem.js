@@ -72,9 +72,8 @@ export const handleLike = async (nftItem) => {
         }
         let data = {
             nftId: nftItem.nftId,
-            status: Number(nftItem.isLike) ? 0 : 1
+            status: Number(nftItem.isLike) === 1 ? 0 : 1
         };
-
         ApiRequest(`${NEW_BASE_URL}/nfts/like`, 'POST', data, headers)
             .then((response) => {
                 if (response.generatedMaps.length > 0 || response.affected) {

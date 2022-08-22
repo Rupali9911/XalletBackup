@@ -30,6 +30,7 @@ const initialState = {
   newImageNftList: [],
   newGifNftList: [],
   newMovieNftList: [],
+  newMusicNftList: [],
   favoriteNftList: [],
   newListPage: 1,
   newTotalCount: 0,
@@ -87,13 +88,21 @@ export default function NewNFTListReducer(state = initialState, action) {
         newNftListLoading: false,
       });
 
-      case NEW_NFT_MOVIE_LOAD_SUCCESS:
-        return (state = {
-          ...state,
-          newMovieNftList: [...state.newMovieNftList, ...action.payload.list],
-          newTotalCount: action.payload.count,
-          newNftListLoading: false,
-        });
+    case NEW_NFT_MOVIE_LOAD_SUCCESS:
+      return (state = {
+        ...state,
+        newMovieNftList: [...state.newMovieNftList, ...action.payload.list],
+        newTotalCount: action.payload.count,
+        newNftListLoading: false,
+      });
+
+    case NEW_NFT_MUSIC_LOAD_SUCCESS:
+      return (state = {
+        ...state,
+        newMusicNftList: [...state.newMusicNftList, ...action.payload.list],
+        newTotalCount: action.payload.count,
+        newNftListLoading: false,
+      });
 
     case FAVORITE_NFT_LOAD_SUCCESS:
       return (state = {

@@ -23,7 +23,7 @@ export default function CollectionReducer(state = initialState, action) {
     case COLLECTION_SUCCESS:
       return state = {
         ...state,
-        collectionList: [...state.collectionList, ...action.payload.data],
+        collectionList: [...state.collectionList, ...action.payload.listCollectionAllUser],
         collectionTotalCount: action.payload.count,
         collectionLoading: false,
       };

@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../common/constants';
+import {NEW_BASE_URL, BASE_URL } from '../../common/constants';
 import { cardsDefaultData } from '../../web3/config/cardsDefaultData';
 import {
   COLLECTION_FAIL,
@@ -31,16 +31,18 @@ export const collectionPageChange = (data) => ({
   payload: data
 });
 
-export const collectionList = (page, isSelectTab) => {
+export const collectionList = (page,isSelectTab) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
     console.log('collectionList ====== isSelectTab 37', page, isSelectTab)
 
-    const limit = 15;
+    const limit = 10;
 
-    const url = networkType === 'testnet'
-      ? `${BASE_URL}/user/actual-collections?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`
-      : `${BASE_URL}/user/live-actual-collections-type?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`;
+    // const url = networkType === 'testnet'
+    //   ? `${BASE_URL}/user/actual-collections?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`
+    //   : `${BASE_URL}/user/live-actual-collections-type?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`;
+
+    const url = `${NEW_BASE_URL}/collections?page=${page}&limit=${limit}`
 
     fetch(url)
       .then(response => response.json())
@@ -55,16 +57,7 @@ export const collectionList = (page, isSelectTab) => {
         //     return item;
         //   })
         //   json.data = newData;
-          dispatch(collectionLoadSuccess(json));
-        } else {
-          if (page === 1) {
-            const newData = [...cardsDefaultData, ...json.data];
-            const index = newData.findIndex(item => item._id === "62113e1774d1af3e04bc313d");
-            if (index) {
-              newData.splice(0, 0, newData.splice(index, 1)[0]);
-            }
-            json.data = newData;
-          }
+        console.log(json,'collection data')
           dispatch(collectionLoadSuccess(json));
         }
       }).catch(err => {
