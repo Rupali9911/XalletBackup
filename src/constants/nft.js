@@ -71,6 +71,7 @@ export const networks = [
 export const royaltyOptions = [
     { value: 2.5, name: '2.5%' },
     { value: 5, name: '5%' },
+    { value: 7.5, name: '7.5%' },
     { value: 10, name: '10%' },
 ]
 
@@ -188,133 +189,147 @@ export const SALE_NFT_STATUS = {
     MAKE_OFFER_EXPIRED: 4,
 }
 
-// export enum SORT_BID_HISTORY {
-//     PRICE_ASC = 1,
-//     PRICE_DESC = 2,
-//     NEWEST = 3,
-//     OLDEST = 4,
-// }
+export const SORT_BID_HISTORY = {
+    PRICE_ASC: 1,
+    PRICE_DESC: 2,
+    NEWEST: 3,
+    OLDEST: 4,
+}
 
-// export enum SORT_TRADING_HISTORY {
-//     PUT_ON_SALE = 0,
-//     OFFER_MADE = 1,
-//     CANCEL_SALE_NFT = 2,
-//     BUY_NFT = 3,
-//     OFFER_ACCEPTED = 4,
-//     CANCEL_MAKE_OFFER = 9,
-//     RECLAIM_MAKE_OFFER = 10,
-//     MINT_NFT = 15,
-//     EDIT_ORDER = 7,
+export const SORT_TRADING_HISTORY = {
+    PUT_ON_SALE: 0,
+    OFFER_MADE: 1,
+    CANCEL_SALE_NFT: 2,
+    BUY_NFT: 3,
+    OFFER_ACCEPTED: 4,
+    CANCEL_MAKE_OFFER: 9,
+    RECLAIM_MAKE_OFFER: 10,
+    MINT_NFT: 15,
+    EDIT_ORDER: 7,
 
-//     CANCEL_AUCTION = 18,
-//     PUT_AUCTION = 19,
-//     BID_NFT = 20,
-//     BID_EDITED = 21,
-//     CANCEL_BID_NFT = 22,
-//     RECLAIM_BID_NFT = 24,
-//     WINNER_BID_NFT = 23,
-//     ACCEPT_BID_NFT = 25,
-//     NFT_RECLAIMED = 26,
-// }
+    CANCEL_AUCTION: 18,
+    PUT_AUCTION: 19,
+    BID_NFT: 20,
+    BID_EDITED: 21,
+    CANCEL_BID_NFT: 22,
+    RECLAIM_BID_NFT: 24,
+    WINNER_BID_NFT: 23,
+    ACCEPT_BID_NFT: 25,
+    NFT_RECLAIMED: 26,
+}
 
 export const MAX_IMAGE_SIZE = 1024 * 1024 * 100
 export const MAX_THUMBNAIL_SIZE = 1024 * 1024 * 5
 
-// export enum FILTER_NFT_BY_SORT {
-//     MOST_LIKE = 0,
-//     ON_SALE = 1,
-//     RECENTLY_CREATED = 2,
-//     LOW_TO_HIGH = 3,
-//     HIGH_TO_LOW = 4,
-//     ON_AUTION = 5,
-// }
+export const FILTER_NFT_BY_SORT = {
+    MOST_LIKE: 0,
+    ON_SALE: 1,
+    RECENTLY_CREATED: 2,
+    LOW_TO_HIGH: 3,
+    HIGH_TO_LOW: 4,
+    ON_AUTION: 5,
+}
 
-// export enum FILTER_NFT_CATEGORY {
-//     TRENDING = 0,
-//     ART = 1,
-//     IMAGE = 2,
-//     GIF = 3,
-//     MOVIE = 4,
-//     MUSIC = 5,
-// }
+export const FILTER_NFT_CATEGORY = {
+    TRENDING: 0,
+    ART: 1,
+    IMAGE: 2,
+    GIF: 3,
+    MOVIE: 4,
+    MUSIC: 5,
+}
 
 export const SERVICE_FEE = 2.5
 
 export const FILTER_TRADING_HISTORY_OPTIONS = [
     {
-        // label1: 'Minted',
+        label: 'Minted',
+        // label: 'minted',
         value: 15,
-        label: 'MINT_NFT',
+        label1: 'MINT_NFT',
     },
     {
-        // label1: 'Listing (Fixed Price)',
+        label: 'Listing (Fixed Price)',
+        // label: 'sales',
         value: 0,
-        label: 'PUT_ON_SALE',
+        label1: 'PUT_ON_SALE',
     },
     {
-        // label1: 'Listing (Auction)',
+        label: 'Listing (Auction)',
+        // label: 'OnAuction',
         value: 19,
-        label: 'PUT_AUCTION',
+        label1: 'PUT_AUCTION',
     },
     {
-        // label1: 'Cancel Listing',
+        label: 'Cancel Listing (Fixed Price)',
+        // label: 'cancelListingFixed',
         value: 2,
-        label: 'CANCEL_SALE_NFT',
+        label1: 'CANCEL_SALE_NFT',
     },
     // {
-    //     // label1: 'Price Updated',
+    //     label: 'Price Updated',
     //     value: 7,
-    //     label: 'EDIT_ORDER',
+    //     label1: 'EDIT_ORDER',
     // },
     {
-        // label1: 'Sold (Fixed Price)',
+        label: 'Sold (Fixed Price)',
+        // label: 'soldFixed',
         value: 3,
-        label: 'BUY_NFT',
+        label1: 'BUY_NFT',
     },
     {
-        // label1: 'Bid Placed',
+        label: 'Bid Placed',
+        // label: 'bidPlaced',
         value: 20,
-        label: 'BID_NFT',
+        label1: 'BID_NFT',
     },
     {
-        // label1: 'Bid Accepted',
+        label: 'Bid Accepted',
+        // label: 'bidAccepted',
         value: 25,
-        label: 'ACCEPT_BID_NFT',
+        label1: 'ACCEPT_BID_NFT',
     },
     {
-        // label1: 'Bid Canceled',
+        label: 'Cancel Listing (Auction)',
+        // label: 'cancelListingAuction',
         value: 22,
-        label: 'CANCEL_BID_NFT',
+        label1: 'CANCEL_BID_NFT',
     },
     {
-        // label1: 'Bid Reclaimed',
+        label: 'Bid Reclaimed',
+        // label: 'bidReclaimed',
         value: 24,
-        label: 'RECLAIM_BID_NFT',
+        label1: 'RECLAIM_BID_NFT',
     },
     {
-        // label1: 'Offer Made',
+        label: 'Offer Made',
+        // label: 'offerMade',
         value: 1,
-        label: 'OFFER_MADE',
+        label1: 'OFFER_MADE',
     },
     {
-        // label1: 'Offer Accepted',
+        label: 'Offer Accepted',
+        // label: 'offerAccepted',
         value: 4,
-        label: 'OFFER_ACCEPTED',
+        label1: 'OFFER_ACCEPTED',
     },
     {
-        // label1: 'Offer Canceled',
+        label: 'Offer Canceled',
+        // label: 'offerCanceled',
         value: 9,
-        label: 'CANCEL_MAKE_OFFER',
+        label1: 'CANCEL_MAKE_OFFER',
     },
     {
-        // label1: 'Offer Reclaimed',
+        label: 'Offer Reclaimed',
+        // label: 'offerReclaimed',
         value: 10,
-        label: 'RECLAIM_MAKE_OFFER',
+        label1: 'RECLAIM_MAKE_OFFER',
     },
     {
-        // label1: 'NFT Reclaimed',
+        label: 'NFT Reclaimed',
+        // label: 'NFTReclaimed',
         value: 26,
-        label: 'NFT_RECLAIMED',
+        label1: 'NFT_RECLAIMED',
     },
 ]
 

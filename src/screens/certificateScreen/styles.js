@@ -265,6 +265,13 @@ const styles = StyleSheet.create({
     maxWidth: wp('40%'),
   },
 
+  containerChildStyles: {
+    paddingHorizontal: 0,
+    borderRadius: 10,
+    paddingVertical: 0,
+    marginTop: hp(1)
+  },
+
   head: { height: SIZE(40) },
   text: { margin: SIZE(10), fontSize: SIZE(12) },
   emptyData: {
@@ -317,7 +324,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center"
   },
-  bidTimeContainer:{
+  bidTimeContainer: {
     padding: SIZE(10),
     borderWidth: SIZE(1),
     borderColor: '#eeeeee',
@@ -325,13 +332,21 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZE(15),
     marginBottom: SIZE(10),
   },
-  bidTitleView:{flexDirection: 'row' },
-  bidTitleTxt:{fontSize: SIZE(14)},
-  bidTimeTxt:{fontSize: SIZE(16), fontWeight: 'bold'},
-  highestBidTxt:{
+  bidTitleView: { flexDirection: 'row' },
+  bidTitleTxt: { fontSize: SIZE(14) },
+  bidTimeTxt: { fontSize: SIZE(16), fontWeight: 'bold' },
+  highestBidTxt: {
     fontSize: SIZE(13),
     top: SIZE(5)
-  }
+  },
+  socialLinksWrap: {
+    alignItems: 'center',
+    marginRight: 10,
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    zIndex: 2,
+  },
 });
 
 export default styles;
