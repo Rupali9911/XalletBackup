@@ -50,7 +50,9 @@ const Gallery = ({ route }) => {
         isStore,
         manualColl,
         seriesInfoId,
-        tabTitle
+        tabTitle,
+        networkName,
+        contractAddress
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
@@ -69,6 +71,12 @@ const Gallery = ({ route }) => {
         : collectionType == 1 && blind ?
             NftDataCollectionReducer.mysteryBoxCollectionList :
             NftDataCollectionReducer.nftDataCollectionList;
+     const hi = isSeries
+        ? console.log('seris true')
+        : collectionType == 1 && blind ?
+            console.log('collection type true') :
+            console.log('collection type false') ;
+            console.log('Hello : ', hi);
     const page = isSeries
         ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
         : NftDataCollectionReducer.nftDataCollectionPage;
@@ -80,10 +88,12 @@ const Gallery = ({ route }) => {
     const reducerTabTitle = NftDataCollectionReducer.tabTitle
     // console.log("🚀 ~ file: gallery.js ~ line 40 ~ ~ ~ Gallery ~ isSeries", isSeries, route?.params, NftDataCollectionReducer)
     useEffect(() => {
+        console.log('UseEffect hai')
         if (isFocused) {
             // console.log("🚀 ~ file: collection ~ line 53 ~", route?.params)
         }
         if (isFocused && !isDetailScreen) {
+            console.log('Inside useeffect if')
             if (isSeries) {
                 dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
                 dispatch(nftBlindSeriesCollectionReset());
@@ -102,11 +112,12 @@ const Gallery = ({ route }) => {
 
     const getNFTlist = useCallback(
         page => {
+            console.log('THis is getNft')
             if (isStore) {
-                // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
+                console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
                 dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
             } else if (!isBlind) {
-                // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
+                console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
                 dispatch(
                     nftDataCollectionList(
                         page,
@@ -118,11 +129,13 @@ const Gallery = ({ route }) => {
                         false,
                         manualColl,
                         null,
-                        tabTitle
+                        tabTitle,
+                        networkName,
+                        contractAddress
                     ),
                 );
             } else if (isSeries) {
-                // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
+                console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
                 dispatch(
                     nftBlindSeriesCollectionList(
                         page,
@@ -143,7 +156,7 @@ const Gallery = ({ route }) => {
                     owner: null,
                     page: page
                 }
-                // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
+                console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
                 dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp, tabTitle));
             }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
@@ -295,7 +308,8 @@ const Gallery = ({ route }) => {
     }
 
     const keyExtractor = (item, index) => { return 'item_' + index }
-
+console.log('Collection list : ', collectionList);
+console.log('NFTCOLLECTIOn : ', NftDataCollectionReducer.nftDataCollectionList);
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />

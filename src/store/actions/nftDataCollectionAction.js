@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { divideNo } from '../../utils';
 import { getBaseCurrency, parseNftObject } from '../../utils/parseNFTObj';
@@ -277,10 +277,13 @@ export const activityHistoryList = (page, collectionId, type, tabTitle, limit) =
   }
 }
 
-export const nftDataCollectionList = (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+export const nftDataCollectionList =  (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle, networkName, contractAddress) => {
+  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+ 
   return (dispatch, getState) => {
-    if (isStore && type !== 'owned') {
+    console.log('This is main return function');
+    if (isStore && type !== 'owned') { 
+      console.log('is it in if part')
       const data = {
         filterType: type,
         limit: 10,
@@ -345,12 +348,17 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
           dispatch(nftDataCollectionLoadFail());
         });
     } else {
+      console.log('is it in else part')
       const { data, wallet } = getState().UserReducer;
       const owner = data?.user?._id || wallet?.address;
       if (type === 'owned') {
+        console.log('Return if part : ');
         dispatch(nftBlindSeriesCollectionList(page, collectionAddress, type, seriesInfoId, '', 'nftDataCollectionList', tabTitle));
       } else {
-        let url = `${BASE_URL}/user/nft-data-collection?type=${type}&page=${page}&limit=10&owner=${owner}`;
+        console.log('Return else part : ');
+        // `https://prod-backend.xanalia.com/collections/nft/collectionId?page=1&limit=30&networkName=BSC&contractAddress=0xE737d5A35A41fFd6072503BCA9C3013632287305&status=1&userId=3708`
+        let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=30&networkName=${networkName}&contractAddress=${contractAddress}&status=1`;
+        console.log('URL : ', url)
         if (manualColl) {
           url = url.concat(`&collectionId=${collectionId}`);
           url = url.concat(`&collectionAddress=${collectionId}`);
@@ -363,30 +371,41 @@ export const nftDataCollectionList = (page, collectionAddress, type, collectionI
         fetch(url)
           .then(response => response.json())
           .then(json => {
-            const nftData = [];
+            console.log('This is jsonn : ', json, json.list);
+            console.log('JSON PART : ', json);
+
+            // const nftData = [];
             // if (!json.count) {
             //   json.data = [];
             // } else {
-            json.data.map(item => {
-              const parsedNFT = parseNftObject(item);
-              const data = {
-                ...parsedNFT,
-                totalSupply: item?.metaData?.totalSupply,
-                properties: {
-                  type: item?.metaData?.properties?.type,
-                },
-                externalLink: item?.metaData?.externalLink,
-                // thumbnft: item?.metaData?.thumbnft,
-                thumbnft: item?.thumbnailUrl,
-                tokenURI: item?.catInfo?.tokenUri,
-                thumbnailUrl: item?.metaData.thumbnft,
-                ...item,
-              };
-              nftData.push(data);
-            });
+            // json.list.map(item => {
+            //   console.log('Items : ', item);
+            //   const parsedNFT = parseNftObject(item);
+            //   console.log('ParsedNft : ', parsedNFT)
+            //   console.log('kjhkhkhkjkjkjkjh : ')
+
+            //   const data = {
+            //     ...parsedNFT,
+            //     totalSupply: item?.metaData?.totalSupply,
+            //     properties: {
+            //       type: item?.metaData?.properties?.type,
+            //     },
+            //     externalLink: item?.metaData?.externalLink,
+            //     // thumbnft: item?.metaData?.thumbnft,
+            //     thumbnft: item?.thumbnailUrl,
+            //     tokenURI: item?.catInfo?.tokenUri,
+            //     thumbnailUrl: item?.metaData.thumbnft,
+            //     ...item,
+            //   };
+            //   console.log('slkdkjasdjalsdasjdlasdjasl')
+            //   console.log('DATAAA : ', data);
+            //   nftData.push(data);
+            // });
+
             // }
-            json.data = nftData;
-            dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+            // json.list = nftData;
+            // console.log('new json data  : ', json.data)
+            dispatch(nftDataCollectionLoadSuccess({ json:json, tabTitle: tabTitle }));
           }).catch(err => {
             dispatch(nftDataCollectionLoadFail());
           })
