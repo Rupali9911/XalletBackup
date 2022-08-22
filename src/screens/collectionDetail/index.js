@@ -86,8 +86,8 @@ const imageToChainKey = {
 
 function CollectionDetail(props) {
     const { route } = props;
-    const { collectionId, nftId, isBlind, isHotCollection, isStore } = route.params;
-    //  console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore)
+    const { collectionId, nftId, isBlind, isHotCollection, isStore , networkName, contractAddress} = route.params;
+    console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", collectionId, nftId, isBlind, isHotCollection, isStore, networkName, contractAddress);
     //  console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail### ~ ",collectionId, isBlind, isHotCollection)
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
@@ -220,7 +220,7 @@ function CollectionDetail(props) {
         // console.log("isStore==",isStore,"isBlind===",isBlind)
         try {
             if (isStore) {
-                // console.log("index.js line collectionDetail 186 isStore", isStore)
+                console.log("index.js line collectionDetail 186 isStore", isStore)
                 const collectionArray = await getStoreCollectioDetail();
                 const filterId = '614faf6668449e8d13a1f1b0';
                 const storeCollectionDetail = _.filter(collectionArray.data.data, item => item._id === filterId);
@@ -245,13 +245,21 @@ function CollectionDetail(props) {
                 }
             } else {
                 // console.log("index.js line 208 else")
+                // const collectionArray = await getHotCollectionDetail(
+                //     collectionId,
+                //     isBlind,
+                // );
+                //  // console.log('collectionArray', collectionArray?.data?.data[0]?.collectionAddress, collectionArray?.data?.data[0])
+                //  setCollectionAddress(collectionArray?.data?.data[0]?.collectionAddress);
+                //  setCollection(collectionArray?.data?.data[0]);
+                //  setLoading(false);
                 const collectionArray = await getHotCollectionDetail(
-                    collectionId,
-                    isBlind,
+                    networkName,
+                    contractAddress,
                 );
-                // console.log('collectionArray', collectionArray?.data?.data[0]?.collectionAddress, collectionArray?.data?.data[0])
-                setCollectionAddress(collectionArray?.data?.data[0]?.collectionAddress);
-                setCollection(collectionArray?.data?.data[0]);
+                console.log('THis is Collection Array : ', collectionArray);
+                console.log('THis is Collection bannnerimage : ', collectionArray?.data?.bannerImage);
+                setCollection(collectionArray?.data);
                 setLoading(false);
             }
         } catch (err) {
@@ -501,16 +509,17 @@ function CollectionDetail(props) {
     const renderBanner = () => {
         let bannerUrl = '';
         if (isStore) {
-            // console.log("🚀 ~ file: index.js ~ line 449 ~ renderBanner ~ isStore")
+            console.log("🚀 ~ file: index.js ~ line 449 ~ renderBanner ~ isStore")
             bannerUrl = 'https://ik.imagekit.io/xanalia/nftData/1632151483313.jpg';
         } else if (isBlind && nftId) {
-            // console.log('selectedBlindBox 452', selectedBlindBox)
+            console.log('selectedBlindBox 452', selectedBlindBox)
             bannerUrl = selectedBlindBox
                 ? selectedBlindBox.seriesURIMetaInfo?.banner_image
                 : "https://ik.imagekit.io/xanalia/Images/Underground_castle_xanalia.jpg";
         } else {
+            console.log('This is called collection : ', collection);
             bannerUrl = collection?.bannerImage;
-            // console.log("🚀 ~ file: index.js ~ line 457 ~ renderBanner ~ collection", collection)
+            console.log("🚀 ~ file: index.js ~ line 457 ~ renderBanner ~ collection", collection)
         }
 
         // console.log("🚀 ~ file: index.js ~ line 454 ~ renderBanner ~ bannerUrl", bannerUrl, collection?.bannerImage)
@@ -694,6 +703,7 @@ function CollectionDetail(props) {
 
     const renderDescription = () => {
         if (isBlind && nftId && !isStore) {
+            console.log('THiss is first if : :  :')
             return (
                 <>
                     {!isBlind ?
@@ -773,6 +783,7 @@ function CollectionDetail(props) {
         }
 
         if (isStore) {
+            console.log('Thsi is second if ::: ');
             return (
                 <>
                     <View style={[styles.description, { marginTop: SIZE(-15) }]}>
@@ -810,6 +821,7 @@ function CollectionDetail(props) {
             <>
                 {isBlind ? (
                     <View style={styles.descriptionTabWrapper}>
+                                            {console.log('1st return')}
                         <TouchableOpacity
                             onPress={() => setDescTab(false)}
                             style={!descTab ? styles.descriptionTab : styles.selectedDescriptionTab}>
@@ -827,6 +839,8 @@ function CollectionDetail(props) {
                     </View>
                 ) : (
                     <View style={styles.descriptionTabWrapper}>
+                                            {console.log('2nd return')}
+
                         <TouchableOpacity
                             onPress={() => setDescTab(true)}
                             style={descTab ? styles.descriptionTab : styles.selectedDescriptionTab}>
@@ -857,7 +871,7 @@ function CollectionDetail(props) {
                                     </Text>
                                 ) : null}
                                 <Text style={styles.descriptionText}>
-                                    {collection?.collectionDesc}
+                                    {collection?.description}
                                 </Text>
                             </View>
                         ) : !isBlind && isHotCollection && collection?.userInfo ? (
@@ -906,19 +920,38 @@ function CollectionDetail(props) {
         let floorPrice = ''
         let volTraded = ''
 
-        if (!isBlind || isBlind && nftId) {
-            // console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
+        // if (!isBlind || isBlind && nftId) {
+        //     console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
 
-            items = !isBlind ? String(collection?.nftCount) : String(selectedBlindBox.boxInfo?.length) || String(blindboxList[0]?.boxInfo.length);
-            owners = !isBlind ? String(collection?.owners) : String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
+        //     items = !isBlind ? String(collection?.nftCount) : String(selectedBlindBox.boxInfo?.length) || String(blindboxList[0]?.boxInfo.length);
+        //     owners = !isBlind ? String(collection?.owners) : String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
+        //     floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(3) : '0.00') : statsDetails?.floorPriceInDollar <= 40
+        //         ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
+        //         : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
+        //     volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(3) : '0') : statsDetails?.volumeTradeInETH
+        //         ? convertValue(statsDetails?.volumeTradeInETH)
+        //         : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '0') || '--'
+        // } else if (isBlind && !nftId && sumBlindBox) {
+        //     console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
+        //     items = sumBlindBox?.itemsCount
+        //     owners = sumBlindBox?.OwnerCount
+        //     floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
+        //     volTraded = sumBlindBox?.volumeTradeInETH?.toFixed(3)
+        // }
+
+        if (!isBlind || isBlind && nftId) {
+            console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
+
+            items = !isBlind ? String(collection?.totalNft) : String(selectedBlindBox.boxInfo?.length) || String(blindboxList[0]?.boxInfo.length);
+            owners = !isBlind ? String(collection?.totalOwner) : String(statsDetails?.OwnerCount) ? convertValue(statsDetails?.OwnerCount) : String(blindboxList[0]?.owners) || '--';
             floorPrice = !isBlind ? (collection?.floorPrice ? Number(collection?.floorPrice).toFixed(3) : '0.00') : statsDetails?.floorPriceInDollar <= 40
                 ? (statsDetails?.floorPrice ? formatter.format(statsDetails?.floorPrice) : '0.00')
                 : (statsDetails?.floorPrice ? statsDetails?.floorPrice?.toFixed(3) : '0.00') || (blindboxList && blindboxList[0]?.floorPrice ? blindboxList[0]?.floorPrice?.toFixed(blindboxList[0]?.floorPrice == 0 ? 2 : 3) : '--');
-            volTraded = !isBlind ? (collection?.volTraded ? Number(collection?.volTraded).toFixed(3) : '0') : statsDetails?.volumeTradeInETH
+            volTraded = !isBlind ? (collection?.volumeTraded ? Number(collection?.volumeTraded).toFixed(3) : '0') : statsDetails?.volumeTradeInETH
                 ? convertValue(statsDetails?.volumeTradeInETH)
                 : (blindboxList && blindboxList[0]?.volTraded ? Number(blindboxList[0]?.volTraded).toFixed(3) : '0') || '--'
         } else if (isBlind && !nftId && sumBlindBox) {
-            // console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
+            console.log("🚀 ~ file: index.js ~ line 858 ~~ Else")
             items = sumBlindBox?.itemsCount
             owners = sumBlindBox?.OwnerCount
             floorPrice = sumBlindBox?.floorPrice?.toFixed(3)
@@ -1029,7 +1062,7 @@ function CollectionDetail(props) {
         }
         return (
             <Text style={styles.collectionName}>
-                {collection?.collectionName}
+                {collection?.name}
             </Text>
         );
     }
@@ -1083,6 +1116,7 @@ function CollectionDetail(props) {
                 }}
             >
                 <Tab.Screen
+                
                     name={tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')}
                     component={Gallery}
                     initialParams={{
@@ -1097,7 +1131,9 @@ function CollectionDetail(props) {
                         userCollection: collection?.userCollection,
                         manualColl: collection.manualColl,
                         seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
-                        tabTitle: tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection')
+                        tabTitle: tab ? isBlind && nftId ? translate('common.gallery') : translate('common.onSale') : translate('wallet.common.collection'),
+                        networkName: networkName,
+                        contractAddress: contractAddress
                     }}
                 />
                 <Tab.Screen

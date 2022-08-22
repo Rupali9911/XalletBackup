@@ -77,6 +77,7 @@ const NotOnSale = ({ route }) => {
             NftDataCollectionReducer.nftDataCollectionTotalCount;
 
     useEffect(() => {
+        console.log('not on osalfj')
         if (isFocused) {
             // console.log("🚀 ~ file: notOnSale.js ~ line 53 ~", 
             // route?.params,
@@ -306,7 +307,7 @@ const NotOnSale = ({ route }) => {
 
     return (
         <View style={styles.trendCont}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+            {/* <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
             {page === 1 && isLoading ? (
                 <View style={{ marginTop: height / 8 }}>
                     <Loader />
@@ -349,7 +350,8 @@ const NotOnSale = ({ route }) => {
                         <Text style={styles.sorryMessage}>{translate('common.noNFTsFound')}</Text>
                     </View>
                 </View>
-            )}
+            )} */}
+            <Text>notonsale</Text>
         </View>
     );
 };

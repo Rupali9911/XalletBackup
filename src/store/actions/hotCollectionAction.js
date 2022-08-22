@@ -89,10 +89,17 @@ export const hotCollectionList = (page, limit) => {
   }
 }
 
-export const getHotCollectionDetail = (collectionId, isBlind) => {
+// export const getHotCollectionDetail = (collectionId, isBlind) => {
+//   axios.defaults.headers.post['Content-Type'] = 'application/json';
+//   const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
+//   return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
+// }
+
+export const getHotCollectionDetail = (networkName, contractAddress) => {
   axios.defaults.headers.post['Content-Type'] = 'application/json';
-  const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
-  return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
+  // const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
+  return axios.get(`https://prod-backend.xanalia.com/collections/collectionId?networkName=${networkName}&contractAddress=${contractAddress}`);
+
 }
 
 export const getStoreCollectioDetail = () => {
