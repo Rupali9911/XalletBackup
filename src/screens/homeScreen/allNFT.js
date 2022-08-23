@@ -10,19 +10,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-// import {
-//   awardsNftListReset,
-//   awardsNftLoadStart,
-//   awardsNftPageChange,
-//   getAwardsNftList,
-// } from '../../store/actions/awardsAction';
 import { newNftLoadStart, newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
+import { CATEGORY_VALUE } from '../../constants'
 
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 
-const AllNFT = () => {
+const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -31,35 +26,38 @@ const AllNFT = () => {
   // =============== Getting data from reducer ========================
   const { NewNFTListReducer } = useSelector(state => state);
 
-  const { sort } = useSelector(state => state.ListReducer);
+  // const { sort } = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [isSort, setIsSort] = useState(null);
-  const [page, setPage] = useState(1);
-
+  // const [isSort, setIsSort] = useState(null);
   const [end, setEnd] = useState()
+
+  let category = CATEGORY_VALUE.allNft;
+  let limit = 10;
+  let sortCategory = 0;
 
   // ===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== sort)) {
+    if (isFocused && (isFirstRender )) {
       timer = setTimeout(() => {
         dispatch(newNftLoadStart());
-        dispatch(newNftListReset());
-        getNFTlist(6, 0, 10, page);
-        // dispatch(awardsNftPageChange(1));
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+        setSortOption(0)
+        setPage(1)
         setIsFirstRender(false)
-        setIsSort(sort)
+        screen(category)
       }, 100);
     }
     return () => clearTimeout(timer);
-  }, [sort, isFocused]);
+  }, [sortOption, isFocused]);
 
 
 
   //===================== Dispatch Action to Fetch Award NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-    dispatch(newNFTData('all', category, sort, pageSize, pageNum));
+    dispatch(newNFTData(category, sort, pageSize, pageNum));
   }, []);
 
   // ===================== Render Award NFT Flatlist ===================================
@@ -85,12 +83,6 @@ const AllNFT = () => {
         pagingEnabled={false}
         legacyImplementation={false}
         onMomentumScrollBegin={() => setEnd(false)}
-      // removeClippedSubviews={true}
-      // maxToRenderPerBatch = {30}
-      // windowSize = {30}
-      // updateCellsBatchingPeriod={70}
-      // disableVirtualization={false}
-      // legacyImplementation={true}
       />
     )
   }
@@ -114,8 +106,7 @@ const AllNFT = () => {
   const handleFlastListEndReached = () => {
     if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newAllNftList.length) {
       let pageNum = page + 1
-      getNFTlist(6, 0, 10, pageNum);
-      // dispatch(newPageChange(pageNum))
+      getNFTlist(category, sortOption, limit, pageNum);
       setPage(pageNum)
     }
   }
@@ -129,9 +120,6 @@ const AllNFT = () => {
   };
 
   const renderItem = ({ item }) => {
-    // let findIndex = AwardsNFTReducer.awardsNftList.findIndex(
-    //   x => x.id === item.id,
-    // );
     let imageUri = item?.mediaUrl
     return (
       <NFTItem
@@ -139,8 +127,7 @@ const AllNFT = () => {
         item={item}
         image={imageUri}
         onPress={() => {
-          // dispatch(changeScreenName('awards'));
-          navigation.push('CertificateDetail', { item : item });
+          navigation.push('CertificateDetail', { item: item });
         }}
       />
     );
@@ -153,8 +140,8 @@ const AllNFT = () => {
 
   //=================== Other Functions ====================
   const handleRefresh = () => {
-    dispatch(newNftListReset());
-    getNFTlist(6, 0, 10, 1);
+    dispatch(newNftListReset(category));
+    getNFTlist(category, sortCategory, limit, 1);
     setPage(1)
   }
 

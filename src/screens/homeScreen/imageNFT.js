@@ -18,8 +18,9 @@ import {
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
+import { CATEGORY_VALUE } from '../../constants'
 
-const ImageNFT = () => {
+const ImageNFT = ({ screen, sortOption,setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -31,30 +32,35 @@ const ImageNFT = () => {
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true)
-  const [isSort, setIsSort] = useState(null);
-  const [page, setPage] = useState(1);
+  // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState()
+
+  let category = CATEGORY_VALUE.image;
+  let limit = 10;
+  let sortCategory = 0;
 
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== sort)) {
+    if (isFocused && (isFirstRender)) {
       timer = setTimeout(() => {
-        dispatch(newNftListReset());
+        dispatch(newNftListReset(category));
         dispatch(newNftLoadStart());
-        getNFTlist(2, 0, 10, page);
+        getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false)
-        setIsSort(sort)
+        setSortOption(0)
+        setPage(1)
+        screen(category)
       }, 100);
     }
     return () => clearTimeout(timer);
-  }, [sort, isFocused]);
+  }, [sortOption, isFocused]);
 
 
   //===================== Dispatch Action to Fetch Photo NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-    dispatch(newNFTData('image', category, sort, pageSize, pageNum));
+    dispatch(newNFTData(category, sort, pageSize, pageNum));
   }, []);
 
   // ===================== Render Photo NFT Flatlist ===================================
@@ -100,15 +106,15 @@ const ImageNFT = () => {
   }
 
   const handleRefresh = () => {
-    dispatch(newNftListReset());
-    getNFTlist(2, 0, 10, 1);
+    dispatch(newNftListReset(category));
+    getNFTlist(category, sortCategory, limit, 1);
     setPage(1)
   };
 
   const handleFlastListEndReached = () => {
     if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newImageNftList.length) {
       let pageNum = page + 1
-      getNFTlist(2, 0, 10, pageNum);
+      getNFTlist(category, sortOption, limit, pageNum);
       setPage(pageNum)
     }
   }
@@ -133,7 +139,7 @@ const ImageNFT = () => {
         image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('photoNFT'));
-          navigation.push('CertificateDetail', { item : item });
+          navigation.push('CertificateDetail', { item: item });
         }}
       />
     );
@@ -150,7 +156,7 @@ const ImageNFT = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? isFirstRender :  page === 1 &&
+      {isFirstRender ? isFirstRender : page === 1 &&
         NewNFTListReducer.newNftListLoading ? (
         <Loader />
       ) : NewNFTListReducer.newImageNftList.length !== 0 ? renderPhotoNFTList()

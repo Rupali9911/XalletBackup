@@ -230,11 +230,13 @@ const styles = StyleSheet.create({
     width: SIZE(32),
     height: SIZE(32),
     borderRadius: SIZE(32),
+    overlayColor: 'white'
   },
   ownerIcon: {
     width: SIZE(32),
     height: SIZE(32),
     borderRadius: SIZE(32),
+    overlayColor: 'white'
   },
   ownerContainer: {
       backgroundColor: Colors.white,

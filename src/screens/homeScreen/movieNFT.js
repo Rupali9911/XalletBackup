@@ -20,8 +20,9 @@ import { newNftLoadStart, newNFTData, newNftListReset } from '../../store/action
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
+import { CATEGORY_VALUE } from '../../constants'
 
-const MovieNFT = () => {
+const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
@@ -34,27 +35,32 @@ const MovieNFT = () => {
   //================== Components State Declaration ===================
   const [isSort, setIsSort] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [page, setPage] = useState(1);
 
   const [end, setEnd] = useState()
 
+  let category = CATEGORY_VALUE.movie;
+    let limit = 10;
+    let sortCategory = 0;
+
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== sort)) {
+    if (isFocused && (isFirstRender)) {
       timer = setTimeout(() => {
         dispatch(newNftLoadStart());
-        dispatch(newNftListReset());
-        getNFTlist(4, 0, 10, page);
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false)
-        setIsSort(sort)
+        setSortOption(0)
+        setPage(1)
+        screen(category)
       }, 100);
     }
     return () => clearTimeout(timer);
-  }, [sort, isFocused]);
+  }, [sortOption, isFocused]);
 
   //===================== Dispatch Action to Fetch Movie NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-    dispatch(newNFTData('movie', category, sort, pageSize, pageNum));
+    dispatch(newNFTData(category, sort, pageSize, pageNum));
   }, []);
 
   // ===================== Render Movie NFT Flatlist ===================================
@@ -100,15 +106,15 @@ const MovieNFT = () => {
   }
 
   const refreshFunc = () => {
-    dispatch(newNftListReset());
-    getNFTlist(4, 0, 10, 1);
+    dispatch(newNftListReset(category));
+    getNFTlist(category, sortCategory, limit, 1);
     setPage(1)
   };
 
   const handleFlastListEndReached = () => {
     if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newMovieNftList.length) {
       let pageNum = page + 1
-      getNFTlist(4, 0, 10, pageNum);
+      getNFTlist(category, sortOption, limit, pageNum);
       setPage(pageNum)
     }
   }

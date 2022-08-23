@@ -10,19 +10,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-// import {
-//     getNFTList,
-//     nftListReset,
-//     nftLoadStart,
-//     pageChange,
-// } from '../../store/actions/nftTrendList';
 import { newNftLoadStart, newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
 
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
+import { CATEGORY_VALUE } from '../../constants'
 
-const Trending = () => {
+const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const navigation = useNavigation();
@@ -34,29 +29,33 @@ const Trending = () => {
 
     //================== Components State Declaration ===================
     const [isFirstRender, setIsFirstRender] = useState(true);
-    const [isSort, setIsSort] = useState(null);
-    const [page, setPage] = useState(1);
+    // const [isSort, setIsSort] = useState(null);
 
     const [end, setEnd] = useState()
 
+    let category = CATEGORY_VALUE.trending;
+    let limit = 10;
+    let sortCategory = 0;
+
     //===================== UseEffect Function =========================
     useEffect(() => {
-        if (isFocused && (isFirstRender || isSort !== sort)) {
+        if (isFocused && (isFirstRender)) {
             timer = setTimeout(() => {
                 dispatch(newNftLoadStart());
-                dispatch(newNftListReset());
-                getNFTlist(0, 0, 10, page);
-                // dispatch(pageChange(1));
+                dispatch(newNftListReset(category));
+                getNFTlist(category, sortCategory, limit, 1);
                 setIsFirstRender(false)
-                setIsSort(sort)
+                setSortOption(0)
+                setPage(1)
+                screen(category)
             }, 100);
         }
         return () => clearTimeout(timer);
-    }, [sort, isFocused]);
+    }, [isFocused]);
 
     //===================== Dispatch Action to Fetch Hot NFT List =========================
     const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-        dispatch(newNFTData('trending', category, sort, pageSize, pageNum));
+        dispatch(newNFTData(category, sort, pageSize, pageNum));
     }, []);
 
     // ===================== Render Hot NFT Flatlist ===================================
@@ -102,15 +101,15 @@ const Trending = () => {
     }
 
     const refreshFunc = () => {
-        dispatch(newNftListReset());
-        getNFTlist(0, 0, 10, 1);
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
         setPage(1)
     };
 
     const handleFlastListEndReached = () => {
         if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newTrendingNftList.length) {
             let pageNum = page + 1
-            getNFTlist(0, 0, 10, pageNum);
+            getNFTlist(category, sortOption, limit, pageNum);
             setPage(pageNum)
         }
     }
@@ -122,8 +121,7 @@ const Trending = () => {
         return <ActivityIndicator size="small" color={colors.themeR} />;
     };
 
-    const renderItem = ({ item, index }) => {
-        let findIndex = NewNFTListReducer.newTrendingNftList.findIndex(x => x.id === item.id);
+    const renderItem = ({ item }) => {
         let imageUri = item?.mediaUrl
         return (
             <NFTItem
@@ -132,7 +130,7 @@ const Trending = () => {
                 image={imageUri}
                 onPress={() => {
                     // dispatch(changeScreenName('Hot'));
-                    navigation.push('DetailItem', { index: findIndex, sName: "trending" });
+                    navigation.push('CertificateDetail', { item: item });
                 }}
             />
         );

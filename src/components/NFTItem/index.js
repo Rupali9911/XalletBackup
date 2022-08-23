@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
-import { SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL } from 'src/constants';
+import { SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL, NFT_MARKET_STATUS } from 'src/constants';
 import insertComma from '../../utils/insertComma';
 import { basePriceTokens } from '../../web3/config/basePriceTokens';
 import { basePriceTokens as availableTokens } from '../../web3/config/availableTokens';
@@ -12,6 +12,7 @@ import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useDispatch, useSelector } from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import ProfileImg from '../../assets/pngs/default_profile_img.png'
+import Ethereum from '../../assets/pngs/ethereum.png'
 import { handleLike } from '../../screens/discover/discoverItem';
 
 export default function NFTItem(props) {
@@ -189,6 +190,44 @@ export default function NFTItem(props) {
 
 
   //================== Render Price and Currency Icons Function ===================
+  const getSaleStatus = (marketplaceStatus, saleDataAuction) => {
+    switch (marketplaceStatus) {
+      case NFT_MARKET_STATUS.NOT_ON_SALE:
+        return (
+          <Text style={styles.statusNotOnSale}>
+            {translate('common.notforsale')}
+          </Text>
+        )
+      case NFT_MARKET_STATUS.ON_FIX_PRICE:
+        return (
+          <Text style={styles.statusOnSale}>
+            {translate('common.onSale')}
+          </Text>
+        )
+      case NFT_MARKET_STATUS.ON_AUCTION:
+      case NFT_MARKET_STATUS.CANCEL_AUCTION:
+      case NFT_MARKET_STATUS.UPCOMMING_AUCTION:
+      case NFT_MARKET_STATUS.END_AUCTION:
+        if (
+          saleDataAuction &&
+          Number(saleDataAuction.startPrice) ===
+          Number(saleDataAuction.highestPrice)
+        ) {
+          return (
+            <Text style={styles.statusOnSale}>
+              {`${translate('common.min')} ${translate('common.Bids')}`}
+            </Text>
+          )
+        }
+        return (
+          <Text style={styles.statusOnSale}>
+            {translate('common.highestBid')}
+          </Text>
+        )
+    }
+  }
+
+
   const renderPriceNcurrencyIconContainer = (isCollection) => {
     return (
       <View
@@ -206,13 +245,24 @@ export default function NFTItem(props) {
             {translate('common.soldout')}
           </Text>
         )} */}
-        <Text style={item?.tokenPrice !== "" && item?.tokenPriceIcon ? styles.statusOnSale : styles.statusNotOnSale}>{item?.tokenPrice !== "" && item?.tokenPriceIcon ? 'On Sale' : 'Not On Sale'}</Text>
-        <View style={styles.currencyInfoContainer}>
-          <Image style={styles.tokenIcon} source={{ uri: item?.tokenPriceIcon ? item.tokenPriceIcon : null }} />
+        {/* <Text style={item?.tokenPrice !== "" && item?.tokenPriceIcon ? styles.statusOnSale : styles.statusNotOnSale}>{item?.tokenPrice !== "" && item?.tokenPriceIcon ? 'On Sale' : 'Not On Sale'}</Text> */}
+        {getSaleStatus(item?.marketNftStatus, item?.saleData?.auction)}
+        {item.marketNftStatus !== NFT_MARKET_STATUS.NOT_ON_SALE && (<View style={styles.currencyInfoContainer}>
+          {item.saleData?.fixPrice?.tokenPriceIcon ? <Image style={styles.tokenIcon} source={{
+            uri: item.saleData?.fixPrice?.tokenPriceIcon
+          }} /> : item.saleData?.auction?.tokenPriceIcon ? <Image style={styles.tokenIcon} source={{
+            uri: item.saleData?.auction?.tokenPriceIcon
+          }} /> : <Image style={styles.tokenIcon} source={Ethereum} />}
           <Text style={styles.price}>
-            {item?.tokenPrice !== "" && item?.tokenPrice !== null && item?.price && Number(item.price)}
+            {Number(
+              item.saleData?.fixPrice
+                ? item.saleData?.fixPrice?.price
+                : item.saleData?.auction
+                  ? item.saleData?.auction?.highestPrice
+                  : 0,
+            )}
           </Text>
-        </View>
+        </View>)}
       </View>
     )
   }
@@ -395,21 +445,21 @@ export default function NFTItem(props) {
   // }
 
   //================== Render End Time View Function ===================
-  const renderEndTimeView = () => {
-    return (
-      <View
-        style={styles.endTimeView}>
-        <Text
-          numberOfLines={1}
-          style={styles.priceText1}>
-          {
-            insertComma(parseFloat(item?.price, true).toFixed(0))
-          }
-        </Text>
-        {renderIcon()}
-      </View>
-    )
-  }
+  // const renderEndTimeView = () => {
+  //   return (
+  //     <View
+  //       style={styles.endTimeView}>
+  //       <Text
+  //         numberOfLines={1}
+  //         style={styles.priceText1}>
+  //         {
+  //           insertComma(parseFloat(item?.price, true).toFixed(0))
+  //         }
+  //       </Text>
+  //       {renderIcon()}
+  //     </View>
+  //   )
+  // }
 
   //================== Render End Time View Last Price Function ===================
   const renderEndTimeViewLastPrice = () => {

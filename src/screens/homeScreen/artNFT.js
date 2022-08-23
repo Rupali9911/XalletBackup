@@ -8,8 +8,10 @@ import { colors } from '../../res';
 import { Loader } from '../../components';
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
+import { CATEGORY_VALUE } from '../../constants'
 
-const ArtNFT = () => {
+
+const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
@@ -17,37 +19,38 @@ const ArtNFT = () => {
 
     // =============== Getting data from reducer ========================
     const { NewNFTListReducer } = useSelector(state => state);
-    const { sort } = useSelector(state => state.ListReducer);
+    // const { sort } = useSelector(state => state.ListReducer);
 
     //================== Components State Declaration ===================
     const [isFirstRender, setIsFirstRender] = useState(true);
-    const [isSort, setIsSort] = useState(0);
-    const [page, setPage] = useState(1);
+    // const [isSort, setIsSort] = useState(0);
 
     const [end, setEnd] = useState()
 
+    let category = CATEGORY_VALUE.art;
+    let limit = 10;
+    let sortCategory = 0;
 
     //===================== UseEffect Function =========================
 
     useEffect(() => {
-        console.log("🚀 ~ file: artNFT.js ~ line 32 ~ ", isFocused, isFirstRender)
-        if (isFocused && (isFirstRender || isSort !== sort)) {
+        if (isFocused && (isFirstRender)) {
             timer = setTimeout(() => {
-                console.log("artNFT")
                 dispatch(newNftLoadStart());
-                dispatch(newNftListReset());
-                getNFTlist(1, 0, 10, page);
+                dispatch(newNftListReset(category));
+                getNFTlist(category, sortCategory, limit, 1);
                 setIsFirstRender(false)
-                setIsSort(sort)
+                setSortOption(0)
+                setPage(1)
+                screen(category)
             }, 100);
         }
         return () => clearTimeout(timer);
-    }, [sort, isFocused])
+    }, [sortOption, isFocused])
 
     //===================== Dispatch Action to Fetch Art NFT List =========================
     const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-        dispatch(newNFTData('art', category, sort, pageSize, pageNum));
-        // console.log(category,sort,pageSize,pageNum,'>>>>>>. params')
+        dispatch(newNFTData(category, sort, pageSize, pageNum));
     }, []);
 
     // ===================== Render Art NFT Flatlist ===================================
@@ -93,17 +96,14 @@ const ArtNFT = () => {
     }
 
     const handleRefresh = () => {
-        dispatch(newNftListReset());
-        getNFTlist(1, 0, 10, 1);
-        // dispatch(newPageChange(1));
-        setPage(1)
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
     }
 
     const handleFlastListEndReached = () => {
-        if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newNftList.length) {
+        if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newArtNftList.length) {
             let pageNum = page + 1
-            getNFTlist(1, 0, 10, pageNum);
-            // dispatch(newPageChange(pageNum));
+            getNFTlist(category, sortOption, limit, pageNum);
             setPage(pageNum)
         }
     }

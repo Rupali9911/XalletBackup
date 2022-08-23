@@ -13,6 +13,25 @@ export const STANDARD_TYPE = {
     '0': 'ERC-721',
 }
 
+export const CATEGORY_VALUE = {
+    trending : 0,
+    art : 1,
+    image : 2,
+    gif : 3,
+    movie : 4,
+    music : 5,
+    allNft : 6
+}
+
+export const SORT_FILTER_OPTONS = {
+    mostLiked : 0,
+    onSale : 1,
+    recentlyCreated : 2,
+    lowToHighPrice : 3,
+    highToLowPrice : 4,
+    onAuction : 5
+}
+
 export const networks = [
     {
         chainId: 1,

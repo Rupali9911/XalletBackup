@@ -74,9 +74,6 @@ const Collection = () => {
   //   )
   // }
 
-
-  console.log('collection list',CollectionReducer.collectionList)
-
   // ===================== Render Hot Collectio NFT Flatlist ===================================
   const renderHotCollectioNFTList = () => {
     return (

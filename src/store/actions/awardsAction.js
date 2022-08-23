@@ -1,100 +1,100 @@
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
-import { translate } from '../../walletUtils';
-import { parseNftObject } from '../../utils/parseNFTObj';
+// import { BASE_URL } from '../../common/constants';
+// import { networkType } from '../../common/networkType';
+// import { alertWithSingleBtn } from '../../utils';
+// import { translate } from '../../walletUtils';
+// import { parseNftObject } from '../../utils/parseNFTObj';
 
-import {
-	AWARDS_NFT_FAIL,
-	AWARDS_NFT_LIST_RESET,
-	AWARDS_NFT_START,
-	AWARDS_NFT_SUCCESS,
-	AWARDS_PAGE_CHANGE,
-} from '../types';
+// import {
+// 	AWARDS_NFT_FAIL,
+// 	AWARDS_NFT_LIST_RESET,
+// 	AWARDS_NFT_START,
+// 	AWARDS_NFT_SUCCESS,
+// 	AWARDS_PAGE_CHANGE,
+// } from '../types';
 
-export const awardsNftLoadStart = () => ({
-	type: AWARDS_NFT_START
-});
+// export const awardsNftLoadStart = () => ({
+// 	type: AWARDS_NFT_START
+// });
 
-export const awardsNftLoadFail = () => ({
-	type: AWARDS_NFT_FAIL
-});
+// export const awardsNftLoadFail = () => ({
+// 	type: AWARDS_NFT_FAIL
+// });
 
-export const awardsNftListReset = () => ({
-	type: AWARDS_NFT_LIST_RESET
-});
+// export const awardsNftListReset = () => ({
+// 	type: AWARDS_NFT_LIST_RESET
+// });
 
-export const awardsNftPageChange = (data) => ({
-	type: AWARDS_PAGE_CHANGE,
-	payload: data
-});
+// export const awardsNftPageChange = (data) => ({
+// 	type: AWARDS_PAGE_CHANGE,
+// 	payload: data
+// });
 
-export const awardsNftLoadSuccess = (data) => ({
-	type: AWARDS_NFT_SUCCESS,
-	payload: data
-});
+// export const awardsNftLoadSuccess = (data) => ({
+// 	type: AWARDS_NFT_SUCCESS,
+// 	payload: data
+// });
 
 
-export const getAwardsNftList = (page, limit, sort) => {
-	return (dispatch, getState) => {
+// export const getAwardsNftList = (page, limit, sort) => {
+// 	return (dispatch, getState) => {
 
-		dispatch(awardsNftLoadStart());
+// 		dispatch(awardsNftLoadStart());
 
-		const { data, wallet } = getState().UserReducer;
-		let user = data.user;
-		let body_data = {
-			approveStaus: "approve",
-			page,
-			limit: limit || 24,
-			networkType: networkType,
-			token: "HubyJ *% qcqR0",
-			type: "awards2021",
-		}
+// 		const { data, wallet } = getState().UserReducer;
+// 		let user = data.user;
+// 		let body_data = {
+// 			approveStaus: "approve",
+// 			page,
+// 			limit: limit || 24,
+// 			networkType: networkType,
+// 			token: "HubyJ *% qcqR0",
+// 			type: "awards2021",
+// 		}
 
-		if (sort) {
-			body_data.sort = sort
-		}
+// 		if (sort) {
+// 			body_data.sort = sort
+// 		}
 
-		if (user) {
-			body_data.owner = wallet?.address || user._id;
-		}
+// 		if (user) {
+// 			body_data.owner = wallet?.address || user._id;
+// 		}
 
-		console.log('body_data', body_data)
-		let fetch_data_body = {
-			method: 'POST',
-			body: JSON.stringify(body_data),
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			}
-		}
+// 		console.log('body_data', body_data)
+// 		let fetch_data_body = {
+// 			method: 'POST',
+// 			body: JSON.stringify(body_data),
+// 			headers: {
+// 				'Accept': 'application/json',
+// 				'Content-Type': 'application/json',
+// 			}
+// 		}
 
-		fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
-			.then(response => response.json())
-			.then(json => {
-				let nftData = [];
-				if (!json.count) {
-					json.data = [];
-				} else {
-					json.data.map(item => {
-						const parsedNFT = parseNftObject(item);
-						const data = {
-							...parsedNFT,
-							...item,
-						};
-						nftData.push(data);
-					});
-				}
-				json.data = nftData;
-				dispatch(awardsNftLoadSuccess(json));
+// 		fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
+// 			.then(response => response.json())
+// 			.then(json => {
+// 				let nftData = [];
+// 				if (!json.count) {
+// 					json.data = [];
+// 				} else {
+// 					json.data.map(item => {
+// 						const parsedNFT = parseNftObject(item);
+// 						const data = {
+// 							...parsedNFT,
+// 							...item,
+// 						};
+// 						nftData.push(data);
+// 					});
+// 				}
+// 				json.data = nftData;
+// 				dispatch(awardsNftLoadSuccess(json));
 
-			}).catch(err => {
+// 			}).catch(err => {
 
-				dispatch(awardsNftLoadFail())
-				// alertWithSingleBtn(
-				//     translate("wallet.common.alert"),
-				//     translate("wallet.common.error.networkFailed"),
-				// );
-			})
-	}
-}
+// 				dispatch(awardsNftLoadFail())
+// 				// alertWithSingleBtn(
+// 				//     translate("wallet.common.alert"),
+// 				//     translate("wallet.common.error.networkFailed"),
+// 				// );
+// 			})
+// 	}
+// }

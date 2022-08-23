@@ -58,6 +58,8 @@ import {
   TabView,
   TabBar,
 } from 'react-native-tab-view';
+import { SORT_FILTER_OPTONS } from '../../constants'
+import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
 
 const HomeScreen = ({ navigation }) => {
   // =============== Getting data from reducer ========================
@@ -78,6 +80,12 @@ const HomeScreen = ({ navigation }) => {
   const [online, setOnline] = useState(false);
   const [openState, setOpenState] = useState(false);
   const [index, setIndex] = useState(0);
+
+  const [screen, setScreen] = useState('')
+  const [sortOption, setSortOption] = useState(0)
+  const [page, setPage] = useState(1);
+
+
   const [routes] = useState([
     { key: 'launch', title: translate('common.launchPad') },
     { key: 'allNft', title: "All NFT's" },
@@ -157,6 +165,13 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
+
+  const getNFTlist = React.useCallback((category, sort, pageSize, pageNum) => {
+    dispatch(newNftListReset(category))
+    dispatch(newNFTData(category, sort, pageSize, pageNum));
+    setSortOption(sort)
+    setPage(1)
+  }, []);
 
   // ===================== Render Screen Header =================================
   const renderAppHeader = () => {
@@ -294,23 +309,70 @@ const HomeScreen = ({ navigation }) => {
       case 'launch':
         return <LaunchPad />;
       case 'allNft':
-        return <AllNFT />;
+        return <AllNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />;
       case 'trending':
-        return <Trending />;
+        return <Trending
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />;
       case 'collect':
-        return <Collection />;
+        return <Collection
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'art':
-        return <ArtNFT />;
+        return <ArtNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'image':
-        return <ImageNFT />;
+        return <ImageNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'gif':
-        return <GifNFT />;
+        return <GifNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'movie':
-        return <MovieNFT />;
-        case 'music':
-        return <MusicNFT />;
+        return <MovieNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
+      case 'music':
+        return <MusicNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'hotCollection':
-        return <HotCollection />;
+        return <HotCollection
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       default:
         return null;
     }
@@ -367,66 +429,62 @@ const HomeScreen = ({ navigation }) => {
 
   //=============== Filter Component Functions =================
   const fabActions = useMemo(() => {
-    if (index === 1) {
-      return [
-        {
-          icon: 'sort-variant',
-          label: translate('common.mostFavourite'),
-          style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy(null)),
-        },
-        {
-          icon: 'sort-variant',
-          label: translate('common.recentlyCreated'),
-          style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy('mint')),
-        },
-        {
-          icon: 'sort-variant',
-          label: translate('common.onAuction'),
-          style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy('onAuction')),
-        },
-      ];
-    }
     return [
       {
         icon: 'sort-variant',
         label: translate('common.mostFavourite'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy(null)),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.mostLiked, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.recentlyListed'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('sell')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.onSale, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.recentlyCreated'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('mint')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.recentlyCreated, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.priceLowToHigh'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('pricelow')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.lowToHighPrice, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.priceHighToLow'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('pricehigh')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.highToLowPrice, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.onAuction'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('onAuction')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.onAuction, 10, 1)
+          setPage(1)
+        },
       },
-    ];
+    ]
   }, [index]);
 
   const fab = () => {
@@ -468,7 +526,7 @@ const HomeScreen = ({ navigation }) => {
       </SafeAreaView>
       {renderAppModal()}
       {
-        index !== 0 && index !== 7 &&
+        index !== 0 && index !== 9 && index !== 3 &&
         <FilterComponent />
       }
     </>

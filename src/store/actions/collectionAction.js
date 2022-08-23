@@ -34,7 +34,6 @@ export const collectionPageChange = (data) => ({
 export const collectionList = (page,isSelectTab) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
-    console.log('collectionList ====== isSelectTab 37', page, isSelectTab)
 
     const limit = 10;
 
@@ -57,7 +56,6 @@ export const collectionList = (page,isSelectTab) => {
         //     return item;
         //   })
         //   json.data = newData;
-        console.log(json,'collection data')
           dispatch(collectionLoadSuccess(json));
         }
       }).catch(err => {
