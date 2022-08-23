@@ -24,6 +24,7 @@ import "@ethersproject/shims"
 import { ethers } from "ethers";
 import bip39 from 'react-native-bip39'
 import { hdkey } from 'ethereumjs-wallet'
+const Web3 = require('web3');
 
 const Backup = ({ navigation }) => {
 
@@ -45,6 +46,16 @@ const Backup = ({ navigation }) => {
         const wallet = hdwallet.derivePath(path).getWallet();
         const address = `0x${wallet.getAddress().toString('hex')}`;
         const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
+       
+        const Web3 = require("web3");
+         var web3 = new Web3(Web3.givenProvider);
+        // var web3 = new Web3('https://bsc-dataseed.binance.org/');
+        
+
+        console.log('HD wallet ----------------->', hdwallet)
+        console.log('wallet ----------------->', wallet)
+        console.log('address ----------------->', address)
+        console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
         const account = {
             mnemonic: {
                 phrase: randomSeed
