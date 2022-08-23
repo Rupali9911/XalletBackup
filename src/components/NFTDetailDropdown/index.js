@@ -23,6 +23,7 @@ export default function NFTDetailDropdown({
   icon,
   containerStyles = {},
   containerChildStyles = {},
+  containerDropStyles = {},
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleToggle = () => {
@@ -36,7 +37,7 @@ export default function NFTDetailDropdown({
   };
   return (
     <View style={[styles.containerWrapper, containerStyles]}>
-      <TouchableOpacity style={styles.container} onPress={() => handleToggle()}>
+      <TouchableOpacity style={[styles.container, containerDropStyles]} onPress={() => handleToggle()}>
         <Image source={icon} style={styles.icon} />
         <Text style={styles.titleText}>{title}</Text>
         <Image

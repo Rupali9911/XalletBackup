@@ -624,6 +624,20 @@
         "Buys": "Sale",
         "Claim": "Claim",
         "OnAuction": "Listing (Auction) ",
+        
+        "cancelListingFixed": "Cancel Listing (Fixed Price)",
+        "soldFixed": "Sold (Fixed Price)",
+        "bidPlaced": "Bid Placed",
+        "bidAccepted": "Bid Accepted",
+        "cancelListingAuction": "Cancel Listing (Auction)",
+        
+        "bidReclaimed": "Bid Reclaimed",
+        "offerMade": "Offer Made",
+        "offerAccepted": "Offer Accepted",
+        "offerCanceled": "Offer Canceled",
+        "offerReclaimed": "Offer Reclaimed",
+        "NFTReclaimed": "NFT Reclaimed",
+
         "owners": "Owners",
         "floorPrice": "Floor Price",
         "volumeTraded": "Volume Traded",

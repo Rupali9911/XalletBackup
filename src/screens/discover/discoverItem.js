@@ -66,7 +66,7 @@ const Name = ({ label }) => {
 export const handleLike = async (nftItem) => {
     let getNftItem = { ...nftItem };
     return new Promise((resolve, reject) => {
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE2ODk4LCJ1c2VybmFtZSI6IkRpbmVzaCBQYXRpZGFyIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MDgyNTc0OCwiZXhwIjoxNjYwODI5MzQ4fQ.S98UgTGNQtk63LesSfzc4KAi0W92fGerxxRKN7MCA_g'
+        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
         let headers = {
             'Authorization': `Bearer ${token}`
         }
@@ -174,12 +174,6 @@ function discoverItem({
                         isPlay
                             ? setPlay(!isPlay)
                             : navigation.navigate('CertificateDetail', {
-                                // owner: nftItem.buyerUser,
-                                // ownerData: ownerObj,
-                                // artistId: nftItem.creator,
-                                // artistData: creatorObj,
-                                // video: videoUri,
-                                // fileType: fileType,
                                 item: item,
                                 setNftItem
                             })
@@ -203,7 +197,6 @@ function discoverItem({
                                     }}
                                     style={styles.videoContainer}
                                 />
-                                {/* <C_Image uri={imageUri} imageStyle={styles.modalImage} /> */}
                                 {!isPlay && (
                                     <View
                                         style={styles.playBtnCont}>
