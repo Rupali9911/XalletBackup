@@ -60,6 +60,7 @@ import {
 } from 'react-native-tab-view';
 import { SORT_FILTER_OPTONS } from '../../constants'
 import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
+import { FlatList } from 'native-base';
 
 const HomeScreen = ({ navigation }) => {
   // =============== Getting data from reducer ========================
@@ -84,6 +85,9 @@ const HomeScreen = ({ navigation }) => {
   const [screen, setScreen] = useState('')
   const [sortOption, setSortOption] = useState(0)
   const [page, setPage] = useState(1);
+  const [artistPage,setArtistPage] = useState(1)
+
+  let artistLimit = 12
 
 
   const [routes] = useState([
@@ -95,7 +99,7 @@ const HomeScreen = ({ navigation }) => {
     { key: 'image', title: "Image" },
     { key: 'gif', title: 'Gif' },
     { key: 'movie', title: translate('common.video') },
-    { key: 'music', title: 'Music'},
+    { key: 'music', title: 'Music' },
     { key: 'hotCollection', title: translate('common.hotcollection') },
   ]);
 
@@ -119,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
           );
         } else {
           setOnline(true);
-          dispatch(getAllArtist());
+          dispatch(getAllArtist(artistPage,artistLimit));
         }
       }
     });
@@ -208,6 +212,32 @@ const HomeScreen = ({ navigation }) => {
   }
 
   // ===================== Render Artist List ===================================
+  const renderArtistItem = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        style={styles.headerView}
+        // onPress={() => {
+        //   const id =
+        //     item.role === 'crypto' ? item.username : item._id;
+        //   navigation.navigate('ArtistDetail', { id: id });
+        // }}
+        key={`_${index}`}>
+        <View style={styles.userCircle}>
+          <C_Image
+            uri={item?.mediaUrl}
+            type={item.profile_image}
+            imageType="profile"
+            imageStyle={{ width: '100%', height: '100%' }}
+          />
+        </View>
+        <Text numberOfLines={1} style={styles.userText}>
+          {`${item?.name?.substring(0, 8)}...`}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
+
+
   const renderArtistList = () => {
     return (
       <View>
@@ -222,34 +252,46 @@ const HomeScreen = ({ navigation }) => {
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {artistList && artistList.length !== 0
-              ? artistList.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.headerView}
-                    onPress={() => {
-                      const id =
-                        item.role === 'crypto' ? item.username : item._id;
-                      navigation.navigate('ArtistDetail', { id: id });
-                    }}
-                    key={`_${index}`}>
-                    <View style={styles.userCircle}>
-                      <C_Image
-                        uri={item.profile_image}
-                        type={item.profile_image}
-                        imageType="profile"
-                        imageStyle={{ width: '100%', height: '100%' }}
-                      />
-                    </View>
-                    <Text numberOfLines={1} style={styles.userText}>
-                      {getArtistName(item)}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })
-              : null}
-          </ScrollView>
+          <FlatList
+            horizontal={true}
+            data={artistList}
+            renderItem={renderArtistItem}
+            onEndReached={()=>{
+              let pageNum = artistPage + 1
+              dispatch(getAllArtist(pageNum,artistLimit))
+              setArtistPage(pageNum)
+            }}
+            onEndReachedThreshold={0.9}
+
+          />
+          // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          //   {artistList && artistList.length !== 0
+          //     ? artistList.map((item, index) => {
+          //       return (
+          //         <TouchableOpacity
+          //           style={styles.headerView}
+          //           onPress={() => {
+          //             const id =
+          //               item.role === 'crypto' ? item.username : item._id;
+          //             navigation.navigate('ArtistDetail', { id: id });
+          //           }}
+          //           key={`_${index}`}>
+          //           <View style={styles.userCircle}>
+          //             <C_Image
+          //               uri={item?.mediaUrl}
+          //               type={item.profile_image}
+          //               imageType="profile"
+          //               imageStyle={{ width: '100%', height: '100%' }}
+          //             />
+          //           </View>
+          //           <Text numberOfLines={1} style={styles.userText}>
+          //             {getArtistName(item)}
+          //           </Text>
+          //         </TouchableOpacity>
+          //       );
+          //     })
+          //     : null}
+          // </ScrollView>
         )}
       </View>
     )
@@ -270,7 +312,7 @@ const HomeScreen = ({ navigation }) => {
               item?._id ? item._id : ""
       : item?._id ? item._id : ""
 
-    return creatorName;
+    return creatorName.substring(0, 10);
   }
 
   // ===================== Render NFT Categories Tab View =======================

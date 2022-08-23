@@ -86,7 +86,7 @@ const HotCollection = () => {
   const renderNoNFT = () => {
     return (
       <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        <Text style={styles.sorryMessage}>{translate('common.noDataFound')}</Text>
       </View>
     )
   }

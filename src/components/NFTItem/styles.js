@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   collectionWrapper: {
     backgroundColor: 'white',
-    height: Platform.OS === 'android' ? (wp('100%') / 3) - wp('1%') : (wp('100%') / 3) - wp('1%'),
+    height: Platform.OS === 'android' ? (wp('100%') / 3) - wp('1%') : (wp('100%') / 3.3) - wp('1%'),
   },
   collectionWrapperBlind: {
     padding: SIZE(10),
@@ -194,55 +194,60 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   nftName: {
+    fontFamily:'Arial',
     textAlign: 'left',
+    fontSize: SIZE(18),
+    fontWeight: '400',
   },
+
   currencyInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center'
   },
   tokenIcon: {
-    width: SIZE(18),
-    height: SIZE(18),
-    borderRadius: SIZE(18),
+    width: SIZE(16),
+    height: SIZE(16),
+    borderRadius: SIZE(16),
     marginRight: SIZE(3),
   },
   price: {
     color: '#60c083',
-    fontSize: SIZE(13),
+    fontSize: SIZE(12),
     fontWeight: '700'
   },
   statusOnSale: {
-    fontSize: SIZE(13),
+    fontFamily:'Arial',
+    fontSize: SIZE(12),
     fontWeight: '700',
     color: '#56bbf8'
   },
   statusNotOnSale: {
-    fontSize: SIZE(13),
+    fontSize: SIZE(12),
     fontWeight: '700',
     color: '#ff0125'
   },
   tokenIcon2: {
-    width: SIZE(30),
-    height: SIZE(30),
-    borderRadius: SIZE(60/2),
+    width: SIZE(28),
+    height: SIZE(28),
+    borderRadius: SIZE(28),
   },
   creatorIcon: {
-    width: SIZE(32),
-    height: SIZE(32),
-    borderRadius: SIZE(32),
+    width: SIZE(26),
+    height: SIZE(26),
+    borderRadius: SIZE(26),
     overlayColor: 'white'
   },
   ownerIcon: {
-    width: SIZE(32),
-    height: SIZE(32),
-    borderRadius: SIZE(32),
+    width: SIZE(26),
+    height: SIZE(26),
+    borderRadius: SIZE(26),
     overlayColor: 'white'
   },
   ownerContainer: {
       backgroundColor: Colors.white,
-      width: SIZE(38),
-      height: SIZE(38),
-      borderRadius: SIZE(38),
+      width: SIZE(32),
+      height: SIZE(32),
+      borderRadius: SIZE(32),
       marginLeft: SIZE(-8),
       alignItems:'center',
       justifyContent: 'center'

@@ -84,8 +84,8 @@ export default function CollectionItem(props) {
 
   const renderChain = () => {
     return <SvgUri
-    width={SIZE(23)}
-    height={SIZE(23)}
+    width={SIZE(18)}
+    height={SIZE(18)}
     uri={network.image}
   />
     // if (network?.networkName === 'Ethereum') {

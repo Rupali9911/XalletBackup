@@ -61,7 +61,7 @@ export default function NFTItem(props) {
   //======== Render NFT Collection Items Collection Images Function ============
   const renderNFTCollectionItem = (isCollection) => {
     return (
-      <FixedTouchableHighlight
+      <TouchableOpacity
         // disabled={isDisable}
         onLongPress={onLongPress}
         onPress={onPress}
@@ -71,7 +71,7 @@ export default function NFTItem(props) {
           {renderCollectionImageNvideo(isCollection)}
           {renderCollectionWrapper(isCollection)}
         </View>
-      </FixedTouchableHighlight>
+      </TouchableOpacity>
     )
   }
 

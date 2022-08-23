@@ -7,6 +7,7 @@ import { translate } from '../../walletUtils';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../../components/verifiedCollection';
 import { IMAGES } from '../../constants';
+import { SvgUri } from 'react-native-svg';
 const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -167,15 +168,13 @@ export default function LaunchPadItemData(props) {
     const renderChain =()=> {
         return <View style={styles.renderchainstyle}>
             {network.map((item,index)=>{
-                if(item.networkName === 'Ethereum'){
-                    return <Ethereum key={index} style={{marginTop:'30%'}}/>
-                }
-                if(item.networkName === 'BSC'){
-                    return <BitmapIcon key={index} style={{marginTop:'30%'}}/>
-                }
-                if(item.networkName === 'Polygon'){
-                    return <NewPolygonIcon key={index} style={{marginTop:'30%'}}/>
-                }
+                return <SvgUri
+                key={index}
+                uri={item.image}
+                width={SIZE(18)}
+                height={SIZE(18)}
+                style={{marginTop:'20%'}}
+              />
             })}
         </View>
     }
