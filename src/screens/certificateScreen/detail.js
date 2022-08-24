@@ -51,13 +51,13 @@ import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData 
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import { FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
+import { compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
 import { formatAddress } from '../../constants/addressFormat';
+import { getDateString, getExpirationDate } from '../../constants/date';
 const Web3 = require('web3');
-
 // =============== SVGS Destructuring ========================
 const {
   PlayButtonIcon,
@@ -130,13 +130,13 @@ const DetailScreen = ({ navigation, route }) => {
     translate('common.price'),
     translate('common.from'),
     translate('common.to'),
-    translate('common.date') + ' (DD/MM/YYYY)',
+    translate('common.date') + ' (YYYY/MM/DD)',
   ]);
   const [bidHistoryTableHead, setBidHistoryTableHead] = useState([
     translate('common.price'),
     translate('common.from'),
-    translate('common.to'),
-    translate('common.date') + ' (DD/MM/YYYY)',
+    translate('common.date'),
+    translate('common.expiration')
   ]);
   const [filterTableList, setFilterTableList] = useState([]);
   const [tradingTableData1, setTradingTableData1] = useState([]);
@@ -154,9 +154,9 @@ const DetailScreen = ({ navigation, route }) => {
   const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item.mediaUrl;
   const thumbnailUrl = detailNFT?.thumbnailUrl ? detailNFT.thumbnailUrl : item?.thumbnailUrl
   const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
-  const nftTokenId = item?.tokenId
+  const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
-  const network = item?.network
+  const network = detailNFT?.network ? detailNFT.network : item?.network
   const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
 
   //================== Unused State Declaration ===================
@@ -185,7 +185,6 @@ const DetailScreen = ({ navigation, route }) => {
       // }
       // // }
       getTokenDetailsApi();
-      getRealtedNFT();
     }
   }, [isFocused]);
 
@@ -194,23 +193,24 @@ const DetailScreen = ({ navigation, route }) => {
   // }, [wallet, baseCurrency, availableTokens, priceNFT]);
 
   useEffect(() => {
-    if (filterTableValue?.length) {
+    if (filterTableValue?.length && nftId) {
       // let filterValue = tradingTableData1.filter(o1 =>
       //   filterTableValue.some(o2 => o1[0] === o2),
       // );
       setTradingTableData([])
       getHistory('trading', filterTableValue);
       // setTradingTableData(filterValue)
-    } else {
+    } else if (nftId) {
       //   setTradingTableData(tradingTableData1)
       getHistory('trading');
     }
-  }, [filterTableValue]);
+  }, [filterTableValue, nftId]);
 
   useEffect(() => {
     if (nftId) {
       getHistory('bid')
       getOfferList()
+      getRealtedNFT();
     }
   }, [nftId]);
 
@@ -263,6 +263,7 @@ const DetailScreen = ({ navigation, route }) => {
 
           setArtistData(json?.creator)
           setOwnerDataN(json?.owner)
+          setOwnerAddress(json?.owner?.address)
           setcollectCreat(json?.collection)
         }
         setLoad(false);
@@ -619,8 +620,42 @@ const DetailScreen = ({ navigation, route }) => {
 
   //================== Render NFT Price and Tokens Function ==================
   const renderNFTPriceNToken = () => {
+    if (detailNFT.marketNftStatus === NFT_MARKET_STATUS.NOT_ON_SALE) {
+      return null
+    }
+
+    let label, tokenIcon, price, tokenPrice, priceToUsd;
+    if (
+      detailNFT.marketNftStatus === NFT_MARKET_STATUS.ON_AUCTION ||
+      detailNFT.marketNftStatus === NFT_MARKET_STATUS.UPCOMMING_AUCTION ||
+      detailNFT.marketNftStatus === NFT_MARKET_STATUS.CANCEL_AUCTION ||
+      detailNFT.marketNftStatus === NFT_MARKET_STATUS.END_AUCTION
+    ) {
+      label = detailNFT?.saleData?.auction?.highestPrice ===
+        detailNFT?.saleData?.auction?.startPrice
+        ? 'Minimum Bid' : 'Highest Bid'
+      tokenIcon = detailNFT?.saleData?.auction?.tokenIcon
+      price = detailNFT?.saleData?.auction?.highestPrice
+      tokenPrice = detailNFT?.saleData?.auction?.tokenPrice
+      priceToUsd = detailNFT?.saleData?.auction?.priceToUsd
+    } else {
+      tokenIcon = detailNFT?.saleData?.fixPrice?.tokenIcon
+      price = detailNFT?.saleData?.fixPrice?.price
+      tokenPrice = detailNFT?.saleData?.fixPrice?.tokenPrice
+      priceToUsd = detailNFT?.saleData?.fixPrice?.priceToUsd
+    }
+
     return (
-      <View style={{ flexDirection: 'row', paddingHorizontal: SIZE(12) }}>
+      <View style={{ paddingHorizontal: SIZE(12) }}>
+
+        {label && <Text style={[styles.dollarText,
+        {
+          paddingBottom: 5,
+          // fontFamily: fonts.PINGfANG_SBOLD,
+          color: '#909090' // colors.GREY4,
+        }]}>
+          {label}
+        </Text>}
         <View
           style={[
             {
@@ -630,9 +665,8 @@ const DetailScreen = ({ navigation, route }) => {
               marginRight: wp(2),
             },
           ]}>
-
           <Image
-            source={{ uri: detailNFT?.saleData?.fixPrice?.tokenIcon }}
+            source={{ uri: tokenIcon }}
             style={{
               width: SIZE(33),
               height: SIZE(33),
@@ -642,27 +676,16 @@ const DetailScreen = ({ navigation, route }) => {
           />
 
           {!load && <Text style={styles.price}>
-            {detailNFT?.saleData?.fixPrice?.price
-              ? numberWithCommas(Number(detailNFT?.saleData?.fixPrice?.price).toFixed(2))
-              // : (nFTOnAuction && lBidAmount === '0.000000000000000000') ?
-              //   minBidPrice ? numberWithCommas(parseFloat(Number(minBidPrice).toFixed(4))) : ''
-              //   : priceNFT ?
-              //     numberWithCommas(parseFloat(Number(priceNFT).toFixed(4)))
-              : ''
-            }
+            {price ? numberWithCommas(Number(price).toFixed(2)) : ''}
             <Text style={styles.priceUnit}>
-              {` ${detailNFT?.saleData?.fixPrice?.tokenPrice}`}
+              {` ${tokenPrice}`}
               <Text style={styles.dollarText}>
-                {detailNFT?.saleData?.fixPrice?.priceToUsd
-                  ? ` ($${parseFloat(detailNFT?.saleData?.fixPrice?.priceToUsd).toFixed(2)})`
+                {priceToUsd
+                  ? ` ($${parseFloat(priceToUsd).toFixed(2)})`
                   : ''}
               </Text>
-              {/* (nFTOnAuction && lBidAmount === '0.000000000000000000')
-                     ? bidPriceInDollar ? ` ($${addComma(parseFloat(bidPriceInDollar, true).toFixed(3))})` : ''
-                     : priceInDollar ? ` ($${parseFloat(priceInDollar, true).toFixed(3)})` */}
             </Text>
           </Text>}
-          {/* <Text style={styles.priceUnit}>{finalPrice}</Text> */}
         </View>
 
         {/* <View style={{ flex: 0.4 }}>
@@ -699,6 +722,14 @@ const DetailScreen = ({ navigation, route }) => {
         </Text >}
       </>
     )
+    // if (!load && detailNFT?.description) {
+    //   return (
+    //     <Text style={styles.description}>
+    //       {detailNFT?.description}
+    //     </Text>
+    //   )
+    // }
+    // return null;
   }
 
   //================== Render Auction Time Function ==================
@@ -730,6 +761,120 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   //================== Render Group Button Function ==================
+
+  const renderContentAction = () => {
+    switch (detailNFT?.marketNftStatus) {
+      case NFT_MARKET_STATUS.NOT_ON_SALE:
+        return <NotOnSaleAction />
+      case NFT_MARKET_STATUS.ON_FIX_PRICE:
+        return <OnFixPriceAction />
+      // case NFT_MARKET_STATUS.ON_AUCTION:
+      //   return <OnAuctionAction />
+      // case NFT_MARKET_STATUS.CANCEL_AUCTION:
+      // case NFT_MARKET_STATUS.END_AUCTION:
+      //   return <EndAuctionAction />
+      // default:
+      //   return <UpCommingAuctionAction />
+    }
+  }
+
+
+  const NotOnSaleAction = () => {
+    if (compareAddress(wallet?.address, ownerAddress)) {
+      return (
+        <View style={{ flexDirection: 'row' }}>
+          <GroupButton
+            leftText={'SELL'}
+            leftDisabled={false}
+            leftLoading={false}
+            onLeftPress={() => { }}
+            rightHide
+          />
+        </View>
+      )
+    }
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <GroupButton
+          leftText={'MAKE_OFFER'}
+          leftDisabled={false}
+          leftLoading={false}
+          onLeftPress={() => { }}
+          rightHide
+        />
+      </View>
+    )
+  }
+
+  const OnFixPriceAction = () => {
+    if (compareAddress(wallet?.address, ownerAddress)) {
+      return (
+        <View style={{ flexDirection: 'row' }}>
+          <GroupButton
+            leftText={'CANCEL_SELL'}
+            leftDisabled={false}
+            leftLoading={false}
+            onLeftPress={() => { }}
+            //   rightHide
+            // />
+            // <GroupButton
+            rightText={'EDIT_PRICE'}
+            rightDisabled={false}
+            rightLoading={false}
+            onrightPress={() => { }}
+            // rightHide
+            leftStyle={{ marginRight: 5 }}
+            rightStyle={{ marginLeft: 5 }}
+          />
+        </View>
+      )
+    }
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <GroupButton
+          leftText={'BUY'}
+          leftDisabled={false}
+          leftLoading={false}
+          onLeftPress={() => { }}
+          //   rightHide
+          // />
+          // <GroupButton
+          rightText={'EDIT_PRICE'}
+          rightDisabled={false}
+          rightLoading={false}
+          onrightPress={() => { }}
+          // rightHide
+          leftStyle={{ marginRight: 5 }}
+          rightStyle={{ marginLeft: 5 }}
+        />
+      </View>
+    )
+  }
+
+  const OnAuctionAction = () => {
+    return (
+      <View>
+
+      </View>
+    )
+  }
+
+  const EndAuctionAction = () => {
+    return (
+      <View>
+
+      </View>
+    )
+  }
+
+  const UpCommingAuctionAction = () => {
+    return (
+      <View>
+
+      </View>
+    )
+  }
+
   const renderGroupButton = () => {
     return (
       <GroupButton
@@ -806,33 +951,39 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   //===================== Render Bid History Function =======================
+  const noDataRender = () => {
+    return (
+      <Text style={styles.emptyData}>
+        {translate('common.noDataFound')}
+      </Text>
+    )
+  }
   const renderBidNTradingHistory = (history) => {
+    let listData = history === 'bid' ? sellDetails : history === 'offers' ? offerList : tradingTableData
     return (
       <NFTDetailDropdown
-        title={history === 'bid' ? translate('wallet.common.bidHistory') : translate('common.tradingHistory')}
+        title={history === 'bid'
+          ? translate('wallet.common.bidHistory')
+          : history === 'offers'
+            ? 'Offers'
+            : translate('common.tradingHistory')
+        }
         containerChildStyles={{
-          height: history === 'trading' ?
-            tradingTableData.length == 0
-              ? hp(19)
-              : tradingTableData.length < 5
-                ? hp(16) + hp(4) * tradingTableData.length
-                : hp(35.7)
-            : sellDetails.filter(
-              detail =>
-                detail?.event === 'Bid' || detail?.event === 'Bid Award',
-            )?.length === 0
-              ? hp(19)
-              : sellDetails.length < 5
-                ? hp(16) + hp(4) * sellDetails.length
+          height:
+            listData?.length === 0
+              ? history === 'trading' ? hp(28) : hp(19)
+              : listData?.length < 5
+                ? hp(16) + (hp(4) * (history === 'trading' && listData.length <= 3 ? 3 : listData?.length))
                 : hp(35.7),
         }}
         icon={trading}>
-        {history === 'trading' && <Filters
-          value={filterTableValue}
-          setValue={setFilterTableValue}
-          setData={setFilterTableList}
-          data={filterTableList}
-        />}
+        {history === 'trading' &&
+          <Filters
+            value={filterTableValue}
+            setValue={setFilterTableValue}
+            setData={setFilterTableList}
+            data={filterTableList}
+          />}
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -844,102 +995,121 @@ const DetailScreen = ({ navigation, route }) => {
               data={history === 'trading' ? tradingTableHead : bidHistoryTableHead}
               style={styles.head}
               textStyle={styles.text}
-              widthArr={history === 'trading' ? [145, 130, 180, 180, 200] : [130, 180, 180, 200]}
+              widthArr={history === 'trading' ? [200, 130, 180, 180, 200] : [130, 180, 180, 200]}
             />
-            {history === 'bid' ?
-              sellDetails?.length > 0 &&
-                sellDetails.filter(
-                  detail => detail?.event === 'Bid' || detail?.event === 'Bid Award',
-                )?.length !== 0 ? (
-                sellDetails?.map((rowData, rowIndex) => {
-                  if (rowData?.event === 'Bid' || rowData.event === 'Bid Award') {
+            {history === 'bid'
+              ? sellDetails?.length > 0
+                ? (
+                  sellDetails?.map((rowData, rowIndex) => {
                     return (
                       <TableWrapper
                         key={rowIndex}
                         style={{ flexDirection: 'row' }}>
-                        {
-                          <>
-                            {renderCell('1', rowData, rowIndex)}
-                            {renderCell('2', rowData, rowIndex)}
-                            {renderCell('3', rowData, rowIndex)}
-                            {renderCell('4', rowData, rowIndex)}
-                          </>
-                        }
+                        {rowData?.map((cellData, cellIndex) => {
+                          return (
+                            renderOfferCell(cellIndex, cellData, rowIndex)
+                          );
+                        })}
                       </TableWrapper>
                     );
-                  } else {
-                    return <></>;
-                  }
-                })
-              ) : (
-                <Text style={styles.emptyData}>
-                  {translate('common.noDataFound')}
-                </Text>
-              )
-              : tradingTableData.length > 0 ? (
-                tradingTableData?.map((rowData, rowIndex) => {
-                  return (
-                    <TableWrapper
-                      key={rowIndex}
-                      style={{ flexDirection: 'row' }}>
-                      {rowData?.map((cellData, cellIndex) => {
-                        let wid;
-                        if (cellIndex === 0) {
-                          wid = 145;
-                        }
-                        if (cellIndex === 1) {
-                          wid = 130;
-                        }
-                        if (cellIndex === 2) {
-                          wid = 180;
-                        }
-                        if (cellIndex === 3) {
-                          wid = 180;
-                        }
-                        if (cellIndex === 4) {
-                          wid = 200;
-                        }
-                        return (
-                          <Cell
-                            key={cellIndex}
-                            data={
-                              (cellIndex == 2 || cellIndex == 3) && cellData !== 'Null Address' ? (
-                                <TouchableOpacity
-                                  onPress={() =>
-                                    navigation.push('ArtistDetail', {
-                                      id: cellData,
-                                    })
-                                  }>
-                                  <Text
-                                    numberOfLines={1}
-                                    style={[
-                                      styles.text,
-                                      { color: '#00a8ff' },
-                                    ]}>
-                                    {formatAddress(cellData)}
-                                  </Text>
-                                </TouchableOpacity>
-                              ) : (
-                                cellData
-                              )
-                            }
-                            // cellIndex === 3 ? element(cellData, index) :
-                            textStyle={styles.text}
-                            width={wid}
-                          />
-                        );
-                      })}
-                    </TableWrapper>
-                  );
-                })
-              ) : (
-                <Text style={styles.emptyData}>
-                  {translate('common.noDataFound')}
-                </Text>
-              )}
+                  })) : (
+                  noDataRender()
+                )
+              : history === 'offers'
+                ? offerList?.length > 0
+                  ? (offerList?.map((rowData, rowIndex) => {
+                    return (
+                      <TableWrapper
+                        key={rowIndex}
+                        style={{ flexDirection: 'row' }}>
+                        {rowData?.map((cellData, cellIndex) => {
+                          return (
+                            renderOfferCell(cellIndex, cellData, rowIndex)
+                          );
+                        })}
+                      </TableWrapper>
+                    );
+                  })) : (
+                    noDataRender()
+                  )
+                : tradingTableData.length > 0 ? (
+                  tradingTableData?.map((rowData, rowIndex) => {
+                    return (
+                      <TableWrapper
+                        key={rowIndex}
+                        style={{ flexDirection: 'row' }}>
+                        {rowData?.map((cellData, cellIndex) => {
+                          let wid;
+                          if (cellIndex === 0) {
+                            wid = 200;
+                          }
+                          if (cellIndex === 1) {
+                            wid = 130;
+                          }
+                          if (cellIndex === 2) {
+                            wid = 180;
+                          }
+                          if (cellIndex === 3) {
+                            wid = 180;
+                          }
+                          if (cellIndex === 4) {
+                            wid = 200;
+                          }
+                          return (
+                            <Cell
+                              key={cellIndex}
+                              data={
+                                (cellIndex == 2 || cellIndex == 3) && cellData !== 'Null Address' ? (
+                                  renderAddress(cellData)
+                                ) : (
+                                  cellData
+                                )
+                              }
+                              textStyle={styles.text}
+                              width={wid}
+                            />
+                          );
+                        })}
+                      </TableWrapper>
+                    );
+                  })
+                ) : (
+                  noDataRender()
+                )}
           </Table>
         </ScrollView>
       </NFTDetailDropdown>
+    )
+  }
+
+  const renderAddress = (cellData) => {
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.push('ArtistDetail', { id: cellData })
+        }>
+        <Text
+          numberOfLines={1}
+          style={[styles.text, { color: '#00a8ff' }]}>
+          {formatAddress(cellData)}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
+
+  const renderOfferCell = (index, cellData, rowIndex) => {
+    return (
+      <Cell
+        key={rowIndex}
+        data={
+          index === 1
+            ? renderAddress(cellData)
+            : cellData
+        }
+        borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+        textStyle={styles.text}
+        width={index === 0 ? 130 : index === 1 ? 180 : index === 2 ? 180 : 200}
+      />
     )
   }
 
@@ -948,8 +1118,13 @@ const DetailScreen = ({ navigation, route }) => {
       <Cell
         key={rowIndex}
         data={
-          // showCellData(rowData, rowIndex)
-          index === '1' ? firstCellData(rowData) : index === '2' ? renderSecondNThird('2', rowData) : index === '3' ? renderSecondNThird('3', rowData) : fourthCellData(rowData)
+          index === '1'
+            ? firstCellData(rowData)
+            : index === '2'
+              ? renderSecondNThird('2', rowData)
+              : index === '3'
+                ? renderSecondNThird('3', rowData)
+                : fourthCellData(rowData)
         }
         borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
         textStyle={styles.text}
@@ -1112,9 +1287,6 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const renderItem = ({ item }) => {
-    // const [nftLike, setNFTLike] = useState();
-
-
     return (
       <NFTItem
         item={item}
@@ -1648,9 +1820,32 @@ const DetailScreen = ({ navigation, route }) => {
     }
     ApiRequest(url, 'GET', null, headers)
       .then(res => {
-        console.log("🚀 ~ file: detail.js ~ line 1656 ~ ~ res", history, res)
-        if (res?.items?.length > 0) {
-          setOfferList(res?.items)
+        console.log("🚀 ~ file: detail.js ~ line 1677 ~ ~ res", res)
+        if (res?.length > 0) {
+          let tempList = []
+
+          res?.map(item => {
+            let temp = [
+              `${Number(item?.price)} ${item?.receiveToken}`,
+              item.fromUser?.address,
+              getDateString(
+                item.createdAt
+                  ? item.createdAt
+                  : Date.now(),
+              ),
+              item.expired * 1000 > Date.now()
+                ? timeSince(
+                  new Date(
+                    item.expired * 1000,
+                  ),
+                )
+                : 'Expired'
+            ]
+            tempList.push(temp)
+          })
+          console.log("🚀 ~ file: detail.js ~ line 1700 ~  ~ ", tempList)
+
+          setOfferList(tempList)
         }
       })
       .catch(err => {
@@ -1683,7 +1878,20 @@ const DetailScreen = ({ navigation, route }) => {
         console.log("🚀 ~ file: detail.js ~ line 1656 ~ ~ res", history, res)
         if (res?.items?.length > 0) {
           if (history === 'bid') {
-            setSellDetails(res?.items)
+            let tempList = []
+
+            res?.items?.map(item => {
+              let temp = [
+                `${Number(item?.price)} ${item?.receiveToken}`,
+                item?.fromUser?.userWallet?.address,
+                moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
+                getExpirationDate(item?.expired),
+              ]
+              tempList.push(temp)
+            })
+            console.log("🚀 ~ file: detail.js ~ line 1780 ~  ~ ", tempList)
+
+            setSellDetails(tempList)
           } else {
             let tradingList = []
             let filterList = []
@@ -1708,7 +1916,7 @@ const DetailScreen = ({ navigation, route }) => {
               tradingList.push(temp)
               filterList.push(getEventByValue(item?.action))
             })
-            console.log("🚀 ~ file: detail.js ~ line 1680 ~  ~ ", tradingList, filterList)
+            console.log("🚀 ~ file: detail.js ~ line 1680 ~  ~ ", tradingList)
 
             setTradingList(res?.items)
             setTradingTableData(tradingList)
@@ -2806,10 +3014,12 @@ const DetailScreen = ({ navigation, route }) => {
             {renderDescription()}
             {/* {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? renderAuctionTimeRemain() : null} */}
             {<View style={styles.bottomView}>
-              {!load && setNFTStatus() !== undefined && renderGroupButton()}
+              {/* {!load && setNFTStatus() !== undefined && renderGroupButton()} */}
+              {renderContentAction()}
               {/* {!load && setNFTStatus() === 'onSell' && renderNFTPriceNeditPriceAppButton()} */}
             </View>}
             {renderBidNTradingHistory('bid')}
+            {renderBidNTradingHistory('offers')}
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
             {renderBidNTradingHistory('trading')}

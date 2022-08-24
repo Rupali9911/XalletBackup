@@ -331,6 +331,12 @@ export const FILTER_TRADING_HISTORY_OPTIONS = [
         value: 26,
         label1: 'NFT_RECLAIMED',
     },
+    {
+        label: 'Cancel Auction',
+        // label: 'cancelAuction',
+        value: 18,
+        label1: 'CANCEL_AUCTION',
+    },
 ]
 
 export const nftGridClass = 'gx-2 gy-3 gx-lg-3 gy-lg-4'

@@ -13,21 +13,26 @@ const groupButton = ({
     leftHide,
     rightHide,
     leftLoading,
-    rightLoading
+    rightLoading,
+    leftStyle = {},
+    rightStyle = {}
 }) => {
     return (
         <View style={styles.mainContainer}>
             {leftHide ? null : <TouchableOpacity
                 onPress={onLeftPress}
-                style={[styles.leftButton, leftDisabled ? {opacity: 0.4} : null]}
+                style={[styles.leftButton, leftDisabled ? { opacity: 0.4 } : null, leftStyle]}
                 disabled={leftDisabled}>
-                {leftLoading ? <ActivityIndicator color={colors.white} /> : <Text style={styles.buttonText}>
-                    {leftText}
-                </Text>}
+                {leftLoading
+                    ? <ActivityIndicator color={colors.white} />
+                    : <Text style={styles.buttonText}>
+                        {leftText}
+                    </Text>
+                }
             </TouchableOpacity>}
             {rightHide ? null : <TouchableOpacity
                 onPress={onRightPress}
-                style={styles.rightButton}
+                style={[styles.rightButton, rightStyle]}
                 disabled={rightDisabled}>
                 <Text style={styles.buttonText}>
                     {rightText}

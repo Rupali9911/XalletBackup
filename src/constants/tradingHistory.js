@@ -8,7 +8,7 @@ export const getKeyEventByValue = (value) => {
 export const getEventByValue = (action) => {
     const event = FILTER_TRADING_HISTORY_OPTIONS.find(
         option => option.value === action)
-    return event.label1
+    return event?.label
 }
 
 export const getFromAddress = (from, action) => {

@@ -121,6 +121,7 @@
         "from": "從",
         "to": "到",
         "date": "日期",
+        "expiration": "到期",
         "nftDescription": "NFT說明",
         "noRecord": "沒有找到記錄",
         "sell": "賣",
