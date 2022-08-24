@@ -13,6 +13,19 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         flex: 1
     },
+    artistLoader: {
+        width: '100%',
+        height: hp('12%'),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    artistLoader1: {
+        width: '100%',
+        height: hp('12%'),
+        alignItems: 'center',
+        marginTop: hp('3%'),
+        marginLeft:wp('2%')
+    },
     imageListCont: {
         flexDirection: "row",
         flexWrap: "wrap",

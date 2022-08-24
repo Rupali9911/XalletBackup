@@ -364,7 +364,7 @@ const ToggleState = (props) => {
             <View style={{ flex: 0.1 }} />
             <TouchableOpacity disabled style={activeState == AUCTION ? styles.button : styles.outLineButton} onPress={() => onChange(AUCTION)}>
                 <Text style={activeState == AUCTION ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel}>
-                    {translate("common.highestBid")}
+                    {translate("common.auctionnew")}
                 </Text>
                 <Text style={activeState == AUCTION ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel}>
                     {translate("common.auctionToHighest")}

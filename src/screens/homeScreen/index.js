@@ -85,21 +85,24 @@ const HomeScreen = ({ navigation }) => {
   const [screen, setScreen] = useState('')
   const [sortOption, setSortOption] = useState(0)
   const [page, setPage] = useState(1);
-  const [artistPage,setArtistPage] = useState(1)
+
+  const [artistPage, setArtistPage] = useState(1)
+  const [end, setEnd] = useState()
+
 
   let artistLimit = 12
 
 
   const [routes] = useState([
     { key: 'launch', title: translate('common.launchPad') },
-    { key: 'allNft', title: "All NFT's" },
-    { key: 'trending', title: "Trending" },
+    { key: 'allNft', title: translate("common.allNft") },
+    { key: 'trending', title: translate("common.trending") },
     { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'art', title: translate('common.2DArt') },
-    { key: 'image', title: "Image" },
-    { key: 'gif', title: 'Gif' },
+    { key: 'image', title: translate("common.image") },
+    { key: 'gif', title: translate('common.gif') },
     { key: 'movie', title: translate('common.video') },
-    { key: 'music', title: 'Music' },
+    { key: 'music', title: translate('common.music') },
     { key: 'hotCollection', title: translate('common.hotcollection') },
   ]);
 
@@ -123,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
           );
         } else {
           setOnline(true);
-          dispatch(getAllArtist(artistPage,artistLimit));
+          dispatch(getAllArtist(artistPage, artistLimit));
         }
       }
     });
@@ -212,7 +215,7 @@ const HomeScreen = ({ navigation }) => {
   }
 
   // ===================== Render Artist List ===================================
-  const renderArtistItem = ({item, index}) => {
+  const renderArtistItem = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={styles.headerView}
@@ -237,18 +240,22 @@ const HomeScreen = ({ navigation }) => {
     )
   }
 
+  const renderFooter = () => {
+    if (artistLoading) {
+      return <View style={styles.artistLoader1}>
+        <ActivityIndicator size="small" color={colors.themeR} />
+      </View>
+    }
+    return null
+  };
+
 
   const renderArtistList = () => {
     return (
       <View>
-        {artistLoading ? (
+        {artistList.length === 0 && artistLoading ? (
           <View
-            style={{
-              width: '100%',
-              height: hp('12%'),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            style={styles.artistLoader}>
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
@@ -256,13 +263,17 @@ const HomeScreen = ({ navigation }) => {
             horizontal={true}
             data={artistList}
             renderItem={renderArtistItem}
-            onEndReached={()=>{
-              let pageNum = artistPage + 1
-              dispatch(getAllArtist(pageNum,artistLimit))
-              setArtistPage(pageNum)
+            onEndReached={() => {
+              if (!end) {
+                let pageNum = artistPage + 1
+                dispatch(getAllArtist(pageNum, artistLimit))
+                setArtistPage(pageNum)
+                setEnd(true)
+              }
             }}
-            onEndReachedThreshold={0.9}
-
+            onEndReachedThreshold={0.6}
+            ListFooterComponent={renderFooter}
+            onMomentumScrollBegin={() => setEnd(false)}
           />
           // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           //   {artistList && artistList.length !== 0
