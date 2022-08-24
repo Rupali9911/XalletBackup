@@ -100,10 +100,10 @@ const LoginCrypto = ({ route, navigation }) => {
 
                     <AppLogo />
 
-                    <Label label={translate("common.UserLogin")} containerStyle={{ marginTop: hp(6) }} />
+                    <Label label={translate("common.UserLogin")} containerStyle={{ marginTop: hp(4) }} />
 
                     <InputFields
-                        label={translate("common.emailAddressUsername")}
+                        label={translate("common.emailAddress")}
                         inputProps={{
                             value: email,
                             onChangeText: (v) => {
@@ -119,8 +119,10 @@ const LoginCrypto = ({ route, navigation }) => {
                             importantForAutofill:'yes'
                         }}
                         error={error["email"]}
+                        inputMainStyle={{marginTop:hp(4)}}
+                        inputContStyle={{marginTop:hp(3)}}
                     />
-                    <InputFields
+                    {/* <InputFields
                         label={translate("common.password")}
                         inputProps={{
                             secureTextEntry: true,
@@ -138,22 +140,23 @@ const LoginCrypto = ({ route, navigation }) => {
                             importantForAutofill:'yes'
                         }}
                         error={error["password"]}
-                    />
+                    /> */}
                     <FormButton
                         onPress={login}
                         disable={!email || !password || Object.keys(error).length !== 0}
                         gradient={[colors.themeL, colors.themeR]}
-                        label={translate("common.signIn")}
+                        // label={translate("common.signIn")}
+                        label={"Log in / Sign up"}
                     />
 
-                    <View style={styles.bottomLogin} >
+                    {/* <View style={styles.bottomLogin} >
                         <TouchableOpacity onPress={() => navigation.navigate("CryptoSignUp")} >
                             <Text style={styles.loginBTxt} >{translate("common.createNewAccount")}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate("CryptoForget")} >
                             <Text style={styles.loginBTxt} >{translate("common.ForgottenUser")}</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                 </View>
             </KeyboardAwareScrollView>
         </AppBackground>

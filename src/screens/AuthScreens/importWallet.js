@@ -33,8 +33,13 @@ import {
 } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
-
-const ethers = require('ethers');
+//================= =================
+import "react-native-get-random-values"
+import "@ethersproject/shims"
+import { ethers } from "ethers";
+import bip39 from 'react-native-bip39'
+import { hdkey } from 'ethereumjs-wallet'
+//================= =================
 
 const toastConfig = {
   my_custom_type: ({ text1, props, ...rest }) => (
@@ -78,15 +83,16 @@ const ImportWallet = ({ route, navigation }) => {
       dispatch(startLoader())
         .then(async () => {
           let mnemonic = phrase.trim();
-          let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+          const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
+          const path = "m/44'/60'/0'/0/0";
+          const wallet = hdwallet.derivePath(path).getWallet();
+          const address = `0x${wallet.getAddress().toString('hex')}`;
+          const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
           const account = {
-            mnemonic: mnemonicWallet.mnemonic,
-            address: mnemonicWallet.address,
-            privateKey: mnemonicWallet.privateKey,
-          };
-          console.log(mnemonicWallet.mnemonic);
-          console.log(mnemonicWallet.address);
-          console.log(mnemonicWallet.privateKey);
+            mnemonic: mnemonic,
+            address: address,
+            privateKey: privateKey
+          }
           setWallet(account);
           // dispatch(setUserAuthData(account));
           dispatch(setPasscode(''));
