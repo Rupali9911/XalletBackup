@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: RF(1.4),
-        fontFamily: fonts.SegoeUIRegular,
-        textTransform: 'capitalize',
+        fontFamily: 'Arial',
+        textTransform: 'none',
     },
     tabStyle: {
         height: SIZE(40),

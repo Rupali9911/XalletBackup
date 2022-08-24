@@ -308,23 +308,23 @@ const HomeScreen = ({ navigation }) => {
     )
   }
 
-  const getArtistName = (item) => {
-    // let creatorName = item.title || item.username
-    let creatorName = item && typeof item === 'object' ?
-      item?.role === 'crypto' ?
-        item?.title?.trim() ? item.title :
-          item?.name?.trim() ? item.name :
-            item?.username?.trim() ? item.username :
-              item?._id ? item._id : ""
+  // const getArtistName = (item) => {
+  //   let creatorName = item.title || item.username
+  //   let creatorName = item && typeof item === 'object' ?
+  //     item?.role === 'crypto' ?
+  //       item?.title?.trim() ? item.title :
+  //         item?.name?.trim() ? item.name :
+  //           item?.username?.trim() ? item.username :
+  //             item?._id ? item._id : ""
 
-        : item?.username?.trim() ? item.username :
-          item?.name?.trim() ? item.name :
-            item?.title?.trim() ? item.title :
-              item?._id ? item._id : ""
-      : item?._id ? item._id : ""
+  //       : item?.username?.trim() ? item.username :
+  //         item?.name?.trim() ? item.name :
+  //           item?.title?.trim() ? item.title :
+  //             item?._id ? item._id : ""
+  //     : item?._id ? item._id : ""
 
-    return creatorName.substring(0, 10);
-  }
+  //   return creatorName.substring(0, 10);
+  // }
 
   // ===================== Render NFT Categories Tab View =======================
   const renderNFTCategoriesTabs = () => {
