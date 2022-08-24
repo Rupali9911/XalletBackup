@@ -58,6 +58,9 @@ import {
   TabView,
   TabBar,
 } from 'react-native-tab-view';
+import {  SORT_FILTER_OPTONS } from '../../constants'
+import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
+import { FlatList } from 'native-base';
 
 const HomeScreen = ({ navigation }) => {
   // =============== Getting data from reducer ========================
@@ -78,16 +81,28 @@ const HomeScreen = ({ navigation }) => {
   const [online, setOnline] = useState(false);
   const [openState, setOpenState] = useState(false);
   const [index, setIndex] = useState(0);
+
+  const [screen, setScreen] = useState('')
+  const [sortOption, setSortOption] = useState(0)
+  const [page, setPage] = useState(1);
+
+  const [artistPage, setArtistPage] = useState(1)
+  const [end, setEnd] = useState()
+
+
+  let artistLimit = 12
+
+
   const [routes] = useState([
     { key: 'launch', title: translate('common.launchPad') },
-    { key: 'allNft', title: "All NFT's" },
-    { key: 'trending', title: "Trending" },
+    { key: 'allNft', title: translate("common.allNft") },
+    { key: 'trending', title: translate("common.trending") },
     { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'art', title: translate('common.2DArt') },
-    { key: 'image', title: "Image" },
-    { key: 'gif', title: 'Gif' },
+    { key: 'image', title: translate("common.image") },
+    { key: 'gif', title: translate('common.gif') },
     { key: 'movie', title: translate('common.video') },
-    { key: 'music', title: 'Music'},
+    { key: 'music', title: translate('common.music') },
     { key: 'hotCollection', title: translate('common.hotcollection') },
   ]);
 
@@ -111,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
           );
         } else {
           setOnline(true);
-          dispatch(getAllArtist());
+          dispatch(getAllArtist(artistPage, artistLimit));
         }
       }
     });
@@ -158,6 +173,13 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  const getNFTlist = React.useCallback((category, sort, pageSize, pageNum) => {
+    dispatch(newNftListReset(category))
+    dispatch(newNFTData(category, sort, pageSize, pageNum));
+    setSortOption(sort)
+    setPage(1)
+  }, []);
+
   // ===================== Render Screen Header =================================
   const renderAppHeader = () => {
     return (
@@ -193,70 +215,114 @@ const HomeScreen = ({ navigation }) => {
   }
 
   // ===================== Render Artist List ===================================
+  const renderArtistItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={styles.headerView}
+        onPress={() => {
+          navigation.push('CertificateDetail', { item: item });
+        }}
+        key={`_${index}`}>
+        <View style={styles.userCircle}>
+          <C_Image
+            uri={item?.mediaUrl}
+            type={item.profile_image}
+            imageType="profile"
+            imageStyle={{ width: '100%', height: '100%' }}
+          />
+        </View>
+        <Text numberOfLines={1} style={styles.userText}>
+          {`${item?.name?.substring(0, 8)}...`}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
+
+  const renderFooter = () => {
+    if (artistLoading) {
+      return <View style={styles.artistLoader}>
+        <ActivityIndicator size="small" color={colors.themeR} />
+      </View>
+    }
+    return null
+  };
+
+
   const renderArtistList = () => {
     return (
       <View>
-        {artistLoading ? (
+        {artistList.length === 0 && artistLoading ? (
           <View
-            style={{
-              width: '100%',
-              height: hp('12%'),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            style={styles.artistLoader}>
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {artistList && artistList.length !== 0
-              ? artistList.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.headerView}
-                    onPress={() => {
-                      const id =
-                        item.role === 'crypto' ? item.username : item._id;
-                      navigation.navigate('ArtistDetail', { id: id });
-                    }}
-                    key={`_${index}`}>
-                    <View style={styles.userCircle}>
-                      <C_Image
-                        uri={item.profile_image}
-                        type={item.profile_image}
-                        imageType="profile"
-                        imageStyle={{ width: '100%', height: '100%' }}
-                      />
-                    </View>
-                    <Text numberOfLines={1} style={styles.userText}>
-                      {getArtistName(item)}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })
-              : null}
-          </ScrollView>
+          <FlatList
+            horizontal={true}
+            data={artistList}
+            renderItem={renderArtistItem}
+            onEndReached={() => {
+              if (!end) {
+                let pageNum = artistPage + 1
+                dispatch(getAllArtist(pageNum, artistLimit))
+                setArtistPage(pageNum)
+                setEnd(true)
+              }
+            }}
+            onEndReachedThreshold={0.6}
+            ListFooterComponent={renderFooter}
+            onMomentumScrollBegin={() => setEnd(false)}
+          />
+          // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          //   {artistList && artistList.length !== 0
+          //     ? artistList.map((item, index) => {
+          //       return (
+          //         <TouchableOpacity
+          //           style={styles.headerView}
+          //           onPress={() => {
+          //             const id =
+          //               item.role === 'crypto' ? item.username : item._id;
+          //             navigation.navigate('ArtistDetail', { id: id });
+          //           }}
+          //           key={`_${index}`}>
+          //           <View style={styles.userCircle}>
+          //             <C_Image
+          //               uri={item?.mediaUrl}
+          //               type={item.profile_image}
+          //               imageType="profile"
+          //               imageStyle={{ width: '100%', height: '100%' }}
+          //             />
+          //           </View>
+          //           <Text numberOfLines={1} style={styles.userText}>
+          //             {getArtistName(item)}
+          //           </Text>
+          //         </TouchableOpacity>
+          //       );
+          //     })
+          //     : null}
+          // </ScrollView>
         )}
       </View>
     )
   }
 
-  const getArtistName = (item) => {
-    // let creatorName = item.title || item.username
-    let creatorName = item && typeof item === 'object' ?
-      item?.role === 'crypto' ?
-        item?.title?.trim() ? item.title :
-          item?.name?.trim() ? item.name :
-            item?.username?.trim() ? item.username :
-              item?._id ? item._id : ""
+  // const getArtistName = (item) => {
+  //   let creatorName = item.title || item.username
+  //   let creatorName = item && typeof item === 'object' ?
+  //     item?.role === 'crypto' ?
+  //       item?.title?.trim() ? item.title :
+  //         item?.name?.trim() ? item.name :
+  //           item?.username?.trim() ? item.username :
+  //             item?._id ? item._id : ""
 
-        : item?.username?.trim() ? item.username :
-          item?.name?.trim() ? item.name :
-            item?.title?.trim() ? item.title :
-              item?._id ? item._id : ""
-      : item?._id ? item._id : ""
+  //       : item?.username?.trim() ? item.username :
+  //         item?.name?.trim() ? item.name :
+  //           item?.title?.trim() ? item.title :
+  //             item?._id ? item._id : ""
+  //     : item?._id ? item._id : ""
 
-    return creatorName;
-  }
+  //   return creatorName.substring(0, 10);
+  // }
 
   // ===================== Render NFT Categories Tab View =======================
   const renderNFTCategoriesTabs = () => {
@@ -294,23 +360,70 @@ const HomeScreen = ({ navigation }) => {
       case 'launch':
         return <LaunchPad />;
       case 'allNft':
-        return <AllNFT />;
+        return <AllNFT
+          screen={(num)=>setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />;
       case 'trending':
-        return <Trending />;
+        return <Trending
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />;
       case 'collect':
-        return <Collection />;
+        return <Collection
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'art':
-        return <ArtNFT />;
+        return <ArtNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'image':
-        return <ImageNFT />;
+        return <ImageNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'gif':
-        return <GifNFT />;
+        return <GifNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'movie':
-        return <MovieNFT />;
-        case 'music':
-        return <MusicNFT />;
+        return <MovieNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
+      case 'music':
+        return <MusicNFT
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       case 'hotCollection':
-        return <HotCollection />;
+        return <HotCollection
+          screen={(num) => setScreen(num)}
+          page={page}
+          setPage={setPage}
+          sortOption={sortOption}
+          setSortOption={setSortOption} />;
       default:
         return null;
     }
@@ -367,67 +480,63 @@ const HomeScreen = ({ navigation }) => {
 
   //=============== Filter Component Functions =================
   const fabActions = useMemo(() => {
-    if (index === 1) {
-      return [
-        {
-          icon: 'sort-variant',
-          label: translate('common.mostFavourite'),
-          style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy(null)),
-        },
-        {
-          icon: 'sort-variant',
-          label: translate('common.recentlyCreated'),
-          style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy('mint')),
-        },
-        {
-          icon: 'sort-variant',
-          label: translate('common.onAuction'),
-          style: styles.fabItemStyle,
-          onPress: () => dispatch(setSortBy('onAuction')),
-        },
-      ];
-    }
     return [
       {
         icon: 'sort-variant',
         label: translate('common.mostFavourite'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy(null)),
+        onPress: () => {
+          getNFTlist(screen,SORT_FILTER_OPTONS.mostLiked, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.recentlyListed'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('sell')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.onSale, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.recentlyCreated'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('mint')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.recentlyCreated, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.priceLowToHigh'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('pricelow')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.lowToHighPrice, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.priceHighToLow'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('pricehigh')),
+        onPress: () => {
+          getNFTlist(screen,SORT_FILTER_OPTONS.highToLowPrice, 10, 1)
+          setPage(1)
+        },
       },
       {
         icon: 'sort-variant',
         label: translate('common.onAuction'),
         style: styles.fabItemStyle,
-        onPress: () => dispatch(setSortBy('onAuction')),
+        onPress: () => {
+          getNFTlist(screen, SORT_FILTER_OPTONS.onAuction, 10, 1)
+          setPage(1)
+        },
       },
-    ];
-  }, [index]);
+    ]
+  }, [screen]);
 
   const fab = () => {
     return (
@@ -468,7 +577,7 @@ const HomeScreen = ({ navigation }) => {
       </SafeAreaView>
       {renderAppModal()}
       {
-        index !== 0 && index !== 7 &&
+        index !== 0 && index !== 9 && index !== 3 &&
         <FilterComponent />
       }
     </>

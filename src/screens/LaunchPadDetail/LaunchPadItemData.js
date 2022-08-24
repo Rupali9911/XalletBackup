@@ -7,7 +7,8 @@ import { translate } from '../../walletUtils';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../../components/verifiedCollection';
 import { IMAGES } from '../../constants';
-const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
+import { SvgWithCssUri } from 'react-native-svg';
+const { VerficationIcon } = SVGS;
 
 export default function LaunchPadItemData(props) {
     // ======================= Props destructing =======================
@@ -82,7 +83,7 @@ export default function LaunchPadItemData(props) {
     // ======================= Render Verified Collection Function =======================
     const renderVerifiedCollection = () => {
         return (
-                <VerficationIcon/>  
+            <VerficationIcon />
         )
     }
 
@@ -131,7 +132,8 @@ export default function LaunchPadItemData(props) {
                 <View style={styles.renderchainstyle}>
                     {renderChain()}
                 </View>
-                <Text style={styles.nftCount}>{`${count} items`}</Text>
+                {count == 1 ? <Text style={styles.nftCount}>{count ? count : 0} item</Text> :
+                    <Text style={styles.nftCount}>{count ? count : 0} items</Text>}
                 <Text style={styles.statusText}>
                     {/*{`${items} ` + translate('common.itemsCollection')}*/}
                     {status === 1 ? translate('common.ongoinglaunch') : ''}
@@ -164,18 +166,16 @@ export default function LaunchPadItemData(props) {
     //         }
     // };
 
-    const renderChain =()=> {
+    const renderChain = () => {
         return <View style={styles.renderchainstyle}>
-            {network.map((item,index)=>{
-                if(item.networkName === 'Ethereum'){
-                    return <Ethereum key={index} style={{marginTop:'30%'}}/>
-                }
-                if(item.networkName === 'BSC'){
-                    return <BitmapIcon key={index} style={{marginTop:'30%'}}/>
-                }
-                if(item.networkName === 'Polygon'){
-                    return <NewPolygonIcon key={index} style={{marginTop:'30%'}}/>
-                }
+            {network.map((item, index) => {
+                return <SvgWithCssUri
+                    key={index}
+                    uri={item.image}
+                    width={SIZE(18)}
+                    height={SIZE(18)}
+                    style={{ marginTop: '20%' }}
+                />
             })}
         </View>
     }

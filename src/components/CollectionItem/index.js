@@ -8,7 +8,7 @@ import CommonStyles from '../../constants/styles';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import { Verifiedcollections } from '../verifiedCollection';
 import { COLORS, IMAGES } from '../../constants';
-import { SvgUri } from 'react-native-svg';
+import { SvgWithCssUri } from 'react-native-svg';
 const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
 
 export default function CollectionItem(props) {
@@ -24,6 +24,7 @@ export default function CollectionItem(props) {
     creator,
     network,
     count,
+    isHotCollection,
     blind,
     address,
     isCollection,
@@ -33,7 +34,6 @@ export default function CollectionItem(props) {
   const [onPressButton, setOnPressButton] = useState(false);
 
   
-
   const getByUser = () => {
     // if (creator) return creator;
     // if (creatorInfo[0].title) return creatorInfo[0].title;
@@ -83,20 +83,11 @@ export default function CollectionItem(props) {
   // };
 
   const renderChain = () => {
-    return <SvgUri
-    width={SIZE(23)}
-    height={SIZE(23)}
-    uri={network.image}
+    return <SvgWithCssUri
+    width={isHotCollection ? SIZE(18) : SIZE(23)}
+    height={isHotCollection ? SIZE(18) : SIZE(23)}
+    uri={network?.image}
   />
-    // if (network?.networkName === 'Ethereum') {
-    //   return <Ethereum/>
-    // }
-    // if (network?.networkName === 'BSC') {
-    //   return <BitmapIcon/>
-    // }
-    // if (network?.networkName === 'Polygon') {
-    //   return <NewPolygonIcon />
-    // }
   }
 
   const renderVerifiedCollection = () => {
@@ -156,7 +147,8 @@ export default function CollectionItem(props) {
           <View style={collectionTab ? styles.bottomWrap2 :  styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            <Text style={styles.count}>{count ? count : 0} items</Text>
+            {count == 1 ? <Text style={styles.count}>{count ? count : 0} item</Text> :
+            <Text style={styles.count}>{count ? count : 0} items</Text>}
             {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>} */}

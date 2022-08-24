@@ -8,7 +8,7 @@ import {
 } from '../types';
 
 const initialState = {
-  collectionLoading: false,
+  collectionLoading: true,
   collectionList: [],
   collectionPage: 1,
   collectionTotalCount: 0

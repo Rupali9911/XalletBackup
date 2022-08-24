@@ -20,6 +20,8 @@ import {
   UPDATE_OWNER_DETAIL,
 } from '../types';
 
+import { CATEGORY_VALUE } from '../../constants'; 
+
 const initialState = {
   isArtNftLoading: false,
   isPhotoNftLoading: false,
@@ -40,7 +42,6 @@ const initialState = {
 };
 
 export default function NewNFTListReducer(state = initialState, action) {
-  // console.log("🚀 ~ file: newListReducer.js ~ line 41 ~  ~ action", action)
   switch (action.type) {
     case ART_NFT_LOAD_START:
       return (state = { ...state, isArtNftLoading: true });
@@ -125,12 +126,22 @@ export default function NewNFTListReducer(state = initialState, action) {
 
     case NEW_NFT_LIST_RESET:
       switch (action.payload) {
-        case 'art':
-          return (state = { ...state, newNftList: [] })
-        case 'photo':
-          return (state = { ...state, favoriteNftList: [] })
+        case CATEGORY_VALUE.allNft:
+          return (state = { ...state, newAllNftList: [] })
+        case CATEGORY_VALUE.art:
+          return (state = { ...state, newArtNftList: [] })
+        case CATEGORY_VALUE.trending:
+          return (state = { ...state, newTrendingNftList: [] })
+        case CATEGORY_VALUE.image:
+          return (state = { ...state, newImageNftList: [] })
+        case CATEGORY_VALUE.gif:
+          return (state = { ...state, newGifNftList: [] })
+        case CATEGORY_VALUE.movie:
+          return (state = { ...state, newMovieNftList: [] })
+        case CATEGORY_VALUE.music:
+          return (state = { ...state, newMusicNftList: [] })
         default:
-          return (state = { ...state, newNftList: [], favoriteNftList: [] });
+          return (state = { ...state, newNftList: [] });
       }
 
     case NEW_NFT_LIST_UPDATE:

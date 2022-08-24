@@ -13,6 +13,12 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         flex: 1
     },
+    artistLoader: {
+        width: '100%',
+        height: hp('10%'),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     imageListCont: {
         flexDirection: "row",
         flexWrap: "wrap",
@@ -57,8 +63,8 @@ const styles = StyleSheet.create({
     userCircle: {
         width: SIZE(57),
         height: SIZE(57),
-        borderRadius: SIZE(57),
-        marginHorizontal: SIZE(9),
+        // borderRadius: SIZE(57),
+        marginHorizontal: SIZE(5),
         marginBottom: SIZE(8),
         overflow: 'hidden'
     },
@@ -68,7 +74,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: fonts.PINGfANG,
         marginBottom: SIZE(8),
-        margin: 2
+        // margin: 2
     },
     headerMenuContainer: {
         flex: 1,
@@ -122,8 +128,8 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: RF(1.4),
-        fontFamily: fonts.SegoeUIRegular,
-        textTransform: 'capitalize',
+        fontFamily: 'Arial',
+        textTransform: 'none',
     },
     tabStyle: {
         height: SIZE(40),

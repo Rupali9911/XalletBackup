@@ -86,7 +86,7 @@ const HotCollection = () => {
   const renderNoNFT = () => {
     return (
       <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        <Text style={styles.sorryMessage}>{translate('common.noDataFound')}</Text>
       </View>
     )
   }
@@ -133,6 +133,7 @@ const HotCollection = () => {
         iconImage={item.iconImage}
         collectionName={item.name}
         creatorInfo={item.creatorInfo}
+        isHotCollection={item.isHot}
         blind={item.blind}
         count={item.totalNft}
         network={item.network}

@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomRightRadius: SIZE(12),
         borderBottomLeftRadius: SIZE(12),
-        height: Platform.OS === 'android' ? (wp('100%') / 2.25) - wp('1%') : (wp('100%') / 2.35) - wp('1%'),
+        height: Platform.OS === 'android' ? (wp('100%') / 2.2) - wp('1%') : (wp('100%') / 2.3) - wp('1%'),
         alignItems: 'center'
     },
     bottomWrap: {

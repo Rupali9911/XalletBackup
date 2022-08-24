@@ -108,7 +108,7 @@ export default function ListReducer(state = initialState, action) {
       return {...state, artistLoading: true};
 
     case ALL_ARTIST_SUCCESS:
-      return {...state, artistList: action.payload, artistLoading: false};
+      return {...state, artistList: [...state.artistList, ...action.payload.list], artistLoading: false};
 
     case ARTIST_LOADING_END:
       return {...state, artistLoading: false};
