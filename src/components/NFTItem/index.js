@@ -6,7 +6,7 @@ import { SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL, NFT_
 import insertComma from '../../utils/insertComma';
 import { basePriceTokens } from '../../web3/config/basePriceTokens';
 import { basePriceTokens as availableTokens } from '../../web3/config/availableTokens';
-import { SvgUri } from 'react-native-svg';
+import { SvgWithCssUri } from 'react-native-svg';
 import { translate } from '../../walletUtils';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +21,6 @@ export default function NFTItem(props) {
   // ======================= Props Destructing =======================
   const {
     item,
-    image,
     onPress,
     onLongPress,
     isCollection,
@@ -252,7 +251,7 @@ export default function NFTItem(props) {
             uri: item.saleData?.fixPrice?.tokenPriceIcon
           }} /> : item.saleData?.auction?.tokenPriceIcon ? <Image style={styles.tokenIcon} source={{
             uri: item.saleData?.auction?.tokenPriceIcon
-          }} /> : <Image style={styles.tokenIcon} source={Ethereum} />}
+          }} /> : null}
           <Text style={styles.price}>
             {Number(
               item.saleData?.fixPrice
@@ -312,7 +311,7 @@ export default function NFTItem(props) {
     if (uri) {
       if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
         return (
-          <SvgUri
+          <SvgWithCssUri
             uri={nftCurrencyIcon(baseCurrency, nftChain)}
             width={SIZE(12)}
             height={SIZE(12)}
@@ -327,7 +326,7 @@ export default function NFTItem(props) {
 
   const renderbottomView = () => {
     return <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-      <SvgUri
+      <SvgWithCssUri
         uri={item?.network?.avatar}
         style={styles.tokenIcon2}
       />
@@ -501,7 +500,7 @@ export default function NFTItem(props) {
 
   //================== Other Functions ===================
   const getImageUri = () => {
-    let imageUri = image ? image : item?.mediaUrl
+    let imageUri = item?.mediaUrl
     return imageUri
   }
 

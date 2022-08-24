@@ -133,6 +133,7 @@ const HotCollection = () => {
         iconImage={item.iconImage}
         collectionName={item.name}
         creatorInfo={item.creatorInfo}
+        isHotCollection={item.isHot}
         blind={item.blind}
         count={item.totalNft}
         network={item.network}

@@ -42,7 +42,6 @@ const initialState = {
 };
 
 export default function NewNFTListReducer(state = initialState, action) {
-  // console.log("🚀 ~ file: newListReducer.js ~ line 41 ~  ~ action", action)
   switch (action.type) {
     case ART_NFT_LOAD_START:
       return (state = { ...state, isArtNftLoading: true });

@@ -104,7 +104,6 @@ export const newNFTData = (category, sort, limit, pageNum) => {
   return (dispatch) => {
     let pageSize = limit? limit : 10;
     dispatch(newNftLoadStart())
-    // dispatch(isArtNftLoadStart())
     const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}&userId=${userId}`
     fetch(url)
       .then(response => response.json())

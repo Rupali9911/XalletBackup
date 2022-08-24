@@ -58,7 +58,7 @@ import {
   TabView,
   TabBar,
 } from 'react-native-tab-view';
-import { SORT_FILTER_OPTONS } from '../../constants'
+import {  SORT_FILTER_OPTONS } from '../../constants'
 import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
 import { FlatList } from 'native-base';
 
@@ -219,11 +219,9 @@ const HomeScreen = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.headerView}
-        // onPress={() => {
-        //   const id =
-        //     item.role === 'crypto' ? item.username : item._id;
-        //   navigation.navigate('ArtistDetail', { id: id });
-        // }}
+        onPress={() => {
+          navigation.push('CertificateDetail', { item: item });
+        }}
         key={`_${index}`}>
         <View style={styles.userCircle}>
           <C_Image
@@ -242,7 +240,7 @@ const HomeScreen = ({ navigation }) => {
 
   const renderFooter = () => {
     if (artistLoading) {
-      return <View style={styles.artistLoader1}>
+      return <View style={styles.artistLoader}>
         <ActivityIndicator size="small" color={colors.themeR} />
       </View>
     }
@@ -363,7 +361,7 @@ const HomeScreen = ({ navigation }) => {
         return <LaunchPad />;
       case 'allNft':
         return <AllNFT
-          screen={(num) => setScreen(num)}
+          screen={(num)=>setScreen(num)}
           page={page}
           setPage={setPage}
           sortOption={sortOption}
@@ -488,7 +486,7 @@ const HomeScreen = ({ navigation }) => {
         label: translate('common.mostFavourite'),
         style: styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.mostLiked, 10, 1)
+          getNFTlist(screen,SORT_FILTER_OPTONS.mostLiked, 10, 1)
           setPage(1)
         },
       },
@@ -524,7 +522,7 @@ const HomeScreen = ({ navigation }) => {
         label: translate('common.priceHighToLow'),
         style: styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.highToLowPrice, 10, 1)
+          getNFTlist(screen,SORT_FILTER_OPTONS.highToLowPrice, 10, 1)
           setPage(1)
         },
       },
@@ -538,7 +536,7 @@ const HomeScreen = ({ navigation }) => {
         },
       },
     ]
-  }, [index]);
+  }, [screen]);
 
   const fab = () => {
     return (

@@ -53,8 +53,6 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
     return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
 
-
-
   //===================== Dispatch Action to Fetch Award NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
     dispatch(newNFTData(category, sort, pageSize, pageNum));
@@ -120,12 +118,10 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   };
 
   const renderItem = ({ item }) => {
-    let imageUri = item?.mediaUrl
     return (
       <NFTItem
         screenName="allNft"
         item={item}
-        image={imageUri}
         onPress={() => {
           navigation.push('CertificateDetail', { item: item });
         }}
