@@ -61,6 +61,7 @@ export default function NFTItem(props) {
   const renderNFTCollectionItem = (isCollection) => {
     return (
       <TouchableOpacity
+        activeOpacity={1}
         // disabled={isDisable}
         onLongPress={onLongPress}
         onPress={onPress}
@@ -331,13 +332,13 @@ export default function NFTItem(props) {
         style={styles.tokenIcon2}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={1}>
           {item?.creator?.avatar ?
             <Image style={styles.creatorIcon} source={{ uri: item?.creator?.avatar }} /> :
             <Image style={styles.creatorIcon} source={ProfileImg} />}
         </TouchableOpacity>
         <View style={styles.ownerContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity activeOpacity={1}>
             {item?.owner?.avatar ?
               <Image style={styles.ownerIcon} source={{ uri: item?.owner?.avatar }} /> :
               <Image style={styles.ownerIcon} source={ProfileImg} />}

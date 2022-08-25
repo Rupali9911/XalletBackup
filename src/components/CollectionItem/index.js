@@ -110,7 +110,7 @@ export default function CollectionItem(props) {
   }
 
   return (
-    <FixedTouchableHighlight onPress={handleOnPress} style={styles.collectionListItem}>
+    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem} activeOpacity={1}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
@@ -155,6 +155,6 @@ export default function CollectionItem(props) {
           </View>
         </View>
       </View>
-    </FixedTouchableHighlight>
+    </TouchableOpacity>
   );
 }

@@ -88,6 +88,7 @@ const HomeScreen = ({ navigation }) => {
 
   const [artistPage, setArtistPage] = useState(1)
   const [end, setEnd] = useState()
+  const [active,setActive] = useState(0)
 
 
   let artistLimit = 12
@@ -114,6 +115,10 @@ const HomeScreen = ({ navigation }) => {
       return () => setOpenState(false);
     }, [])
   );
+
+  useEffect(()=>{
+    setActive(0)
+  },[screen])
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener(state => {
@@ -218,6 +223,7 @@ const HomeScreen = ({ navigation }) => {
   const renderArtistItem = ({ item, index }) => {
     return (
       <TouchableOpacity
+      activeOpacity={1}
         style={styles.headerView}
         onPress={() => {
           navigation.push('CertificateDetail', { item: item });
@@ -481,62 +487,87 @@ const HomeScreen = ({ navigation }) => {
   //=============== Filter Component Functions =================
   const fabActions = useMemo(() => {
     return [
-      {
+      { id:0,
         icon: 'sort-variant',
         label: translate('common.mostFavourite'),
-        style: styles.fabItemStyle,
+        color : active === SORT_FILTER_OPTONS.mostLiked ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor : active === SORT_FILTER_OPTONS.mostLiked ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle : active === SORT_FILTER_OPTONS.mostLiked ? styles.fabLabelStyle1 : styles.fabLabelStyle,
+        style: active === SORT_FILTER_OPTONS.mostLiked ? styles.fabItemStyle1 : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen,SORT_FILTER_OPTONS.mostLiked, 10, 1)
           setPage(1)
+          setActive(SORT_FILTER_OPTONS.mostLiked)
         },
       },
-      {
+      { id:1,
         icon: 'sort-variant',
         label: translate('common.recentlyListed'),
-        style: styles.fabItemStyle,
+        color : active === SORT_FILTER_OPTONS.onSale ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor : active === SORT_FILTER_OPTONS.onSale ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle : active === SORT_FILTER_OPTONS.onSale ? styles.fabLabelStyle1 : styles.fabLabelStyle,
+        style: active === SORT_FILTER_OPTONS.onSale ? styles.fabItemStyle1 : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.onSale, 10, 1)
           setPage(1)
+          setActive(SORT_FILTER_OPTONS.onSale)
         },
       },
-      {
+      { id:2,
         icon: 'sort-variant',
         label: translate('common.recentlyCreated'),
-        style: styles.fabItemStyle,
+        color : active === SORT_FILTER_OPTONS.recentlyCreated ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor : active === SORT_FILTER_OPTONS.recentlyCreated ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle : active === SORT_FILTER_OPTONS.recentlyCreated ? styles.fabLabelStyle1 : styles.fabLabelStyle,
+        style: active === SORT_FILTER_OPTONS.recentlyCreated ? styles.fabItemStyle1 : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.recentlyCreated, 10, 1)
           setPage(1)
+          setActive(SORT_FILTER_OPTONS.recentlyCreated)
         },
       },
-      {
+      { id:3,
         icon: 'sort-variant',
         label: translate('common.priceLowToHigh'),
-        style: styles.fabItemStyle,
+        color : active === SORT_FILTER_OPTONS.lowToHighPrice ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor : active === SORT_FILTER_OPTONS.lowToHighPrice ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle : active === SORT_FILTER_OPTONS.lowToHighPrice ? styles.fabLabelStyle1 : styles.fabLabelStyle,
+        style: active === SORT_FILTER_OPTONS.lowToHighPrice ? styles.fabItemStyle1 : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.lowToHighPrice, 10, 1)
           setPage(1)
+          setActive(SORT_FILTER_OPTONS.lowToHighPrice)
         },
       },
-      {
+      { id:4,
         icon: 'sort-variant',
         label: translate('common.priceHighToLow'),
-        style: styles.fabItemStyle,
+        color : active === SORT_FILTER_OPTONS.highToLowPrice ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor : active === SORT_FILTER_OPTONS.highToLowPrice ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle : active === SORT_FILTER_OPTONS.highToLowPrice ? styles.fabLabelStyle1 : styles.fabLabelStyle,
+        style: active === SORT_FILTER_OPTONS.highToLowPrice ? styles.fabItemStyle1 : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen,SORT_FILTER_OPTONS.highToLowPrice, 10, 1)
           setPage(1)
+          setActive(SORT_FILTER_OPTONS.highToLowPrice)
         },
       },
       {
+        id:5,
         icon: 'sort-variant',
         label: translate('common.onAuction'),
-        style: styles.fabItemStyle,
+        color : active === SORT_FILTER_OPTONS.onAuction ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor : active === SORT_FILTER_OPTONS.onAuction ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle : active === SORT_FILTER_OPTONS.onAuction ? styles.fabLabelStyle1 : styles.fabLabelStyle,
+        style: active === SORT_FILTER_OPTONS.onAuction ? styles.fabItemStyle1 : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.onAuction, 10, 1)
           setPage(1)
+          setActive(SORT_FILTER_OPTONS.onAuction)
         },
       },
     ]
-  }, [screen]);
+  }, [screen,active]);
 
   const fab = () => {
     return (
@@ -553,7 +584,7 @@ const HomeScreen = ({ navigation }) => {
               />
             )
         }
-        fabStyle={{ backgroundColor: Colors.themeColor }}
+        fabStyle={{ backgroundColor: Colors.themeColor,}}
         actions={fabActions}
         onStateChange={onStateChange}
         onPress={() => {

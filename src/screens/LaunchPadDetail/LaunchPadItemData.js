@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, Platform, FlatList } from 'react-native';
+import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
@@ -223,7 +223,8 @@ export default function LaunchPadItemData(props) {
 
     //=====================(Main return Function)=============================
     return (
-        <FixedTouchableHighlight
+        <TouchableOpacity
+            activeOpacity={1}
             disabled={disabled}
             onPress={handleOnPress}
             style={styles.collectionListItem}>
@@ -235,6 +236,6 @@ export default function LaunchPadItemData(props) {
                     {renderChainIconNstatus()}
                 </View>
             </View>
-        </FixedTouchableHighlight>
+        </TouchableOpacity>
     );
 }

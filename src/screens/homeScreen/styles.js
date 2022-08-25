@@ -92,7 +92,16 @@ const styles = StyleSheet.create({
         alignSelf: 'baseline'
     },
     fabItemStyle: {
-        backgroundColor: Colors.white
+        backgroundColor: Colors.WHITE4,
+    },
+    fabItemStyle1: {
+        backgroundColor: Colors.themeColor,
+    },
+    fabLabelStyle: {
+        backgroundColor: Colors.WHITE4
+    },
+    fabLabelStyle1: {
+        backgroundColor: Colors.themeColor,
     },
     collectionTab: {
         width: '100%',
