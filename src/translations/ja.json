@@ -121,6 +121,7 @@
         "from": "下記ユーザーから",
         "to": "下記ユーザーへ",
         "date": "日付",
+        "expiration": "有効期限",
         "nftDescription": "NFTの説明",
         "noRecord": "レコードが見つかりません",
         "sell": "売る",

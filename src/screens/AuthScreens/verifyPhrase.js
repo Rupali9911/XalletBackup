@@ -15,7 +15,7 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { getAddressNonce, setBackupStatus } from '../../store/reducer/userReducer';
+import { loginExternalWallet, setBackupStatus } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 
@@ -103,7 +103,7 @@ const VerifyPhrase = ({ route, navigation }) => {
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <View style={styles.padding}>
-              <AppLogo/>
+              <AppLogo />
               <TextView style={styles.title}>
                 {translate('wallet.common.verifyPhrase')}
               </TextView>
@@ -174,7 +174,7 @@ const VerifyPhrase = ({ route, navigation }) => {
             } else {
               if (wallet) {
                 setLoading(true);
-                dispatch(getAddressNonce(wallet, true, false))
+                dispatch(loginExternalWallet(wallet, true, false))
                   .then(() => {
                     setLoading(false);
                     dispatch(setBackupStatus(true));
