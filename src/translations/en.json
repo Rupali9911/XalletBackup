@@ -121,6 +121,7 @@
         "from": "From",
         "to": "To",
         "date": "Date",
+        "expiration": "Expiration",
         "nftDescription": "NFT Description",
         "noRecord": "No records Found",
         "sell": "Sell",
@@ -643,6 +644,7 @@
         "offerAccepted": "Offer Accepted",
         "offerCanceled": "Offer Canceled",
         "offerReclaimed": "Offer Reclaimed",
+        "NFTReclaimed": "NFT Reclaimed",
         "NFTReclaimed": "NFT Reclaimed",
 
         "owners": "Owners",

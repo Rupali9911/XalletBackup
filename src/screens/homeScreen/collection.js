@@ -114,7 +114,7 @@ const Collection = () => {
   }
   const handleRefresh = () => {
     dispatch(collectionListReset());
-    getCollection(1);
+    getCollection(1,isSelectTab);
     dispatch(collectionPageChange(1));
   };
 
@@ -156,6 +156,7 @@ const Collection = () => {
       collectionName={item.name}
       creatorInfo={item.creatorInfo}
       blind={item.blind}
+      isHotCollection={item.isHot}
       count={item.totalNft}
       network={item.network}
       collectionTab = {isSelectTab}

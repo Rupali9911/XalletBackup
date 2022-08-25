@@ -121,6 +121,7 @@
         "from": "에서",
         "to": "에게",
         "date": "데이트",
+        "expiration": "만료",
         "nftDescription": "NFT 설명",
         "noRecord": "기록이 없습니다",
         "sell": "팔다",

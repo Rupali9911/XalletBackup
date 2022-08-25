@@ -15,16 +15,9 @@ const styles = StyleSheet.create({
     },
     artistLoader: {
         width: '100%',
-        height: hp('12%'),
+        height: hp('10%'),
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    artistLoader1: {
-        width: '100%',
-        height: hp('12%'),
-        alignItems: 'center',
-        marginTop: hp('3%'),
-        marginLeft:wp('2%')
     },
     imageListCont: {
         flexDirection: "row",
@@ -135,8 +128,8 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: RF(1.4),
-        fontFamily: fonts.SegoeUIRegular,
-        textTransform: 'capitalize',
+        fontFamily: 'Arial',
+        textTransform: 'none',
     },
     tabStyle: {
         height: SIZE(40),
