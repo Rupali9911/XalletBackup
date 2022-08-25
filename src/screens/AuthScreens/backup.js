@@ -13,7 +13,7 @@ import HintText from '../../components/hintText';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
 import { SIZE } from 'src/constants';
-import { startLoader, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
+import { loginExternalWallet } from '../../store/reducer/userReducer';
 import { useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -46,29 +46,26 @@ const Backup = ({ navigation }) => {
         const wallet = hdwallet.derivePath(path).getWallet();
         const address = `0x${wallet.getAddress().toString('hex')}`;
         const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
-       
-        const Web3 = require("web3");
-         var web3 = new Web3(Web3.givenProvider);
-        // var web3 = new Web3('https://bsc-dataseed.binance.org/');
-        
-
-        console.log('HD wallet ----------------->', hdwallet)
-        console.log('wallet ----------------->', wallet)
-        console.log('address ----------------->', address)
-        console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
+        var web3 = new Web3(Web3.givenProvider);
+        const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey);
+        // console.log('HD wallet ----------------->', hdwallet)
+        // console.log('wallet ----------------->', wallet)
+        // console.log('address ----------------->', address)
+        // console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
         const account = {
             mnemonic: {
                 phrase: randomSeed
             },
             address: address,
-            privateKey: privateKey
+            privateKey: privateKey,
+            signature: signature.signature
         }
         setWallet(account);
         setLoading(false);
     }
 
     const saveWallet = () => {
-        dispatch(getAddressNonce(wallet, false, true))
+        dispatch(loginExternalWallet(wallet, false, true))
             .then(() => { })
             .catch((err) => {
                 alertWithSingleBtn(translate('wallet.common.alert'), translate("wallet.common.tryAgain"));

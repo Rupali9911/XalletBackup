@@ -28,7 +28,7 @@ import CommonStyles from '../../constants/styles';
 import { colors } from '../../res';
 import {
   endLoader,
-  getAddressNonce,
+  loginExternalWallet,
   setBackupStatus,
   setPasscode,
   startLoader,
@@ -39,8 +39,9 @@ import { translate } from '../../walletUtils';
 import "react-native-get-random-values"
 import "@ethersproject/shims"
 import { ethers } from "ethers";
-import bip39 from 'react-native-bip39'
-import { hdkey } from 'ethereumjs-wallet'
+import bip39 from 'react-native-bip39';
+import { hdkey } from 'ethereumjs-wallet';
+const Web3 = require('web3');
 //================= =================
 
 const toastConfig = {
@@ -90,14 +91,21 @@ const RecoveryPhrase = ({ route, navigation }) => {
           const wallet = hdwallet.derivePath(path).getWallet();
           const address = `0x${wallet.getAddress().toString('hex')}`;
           const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
+          var web3 = new Web3(Web3.givenProvider);
+          const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey);
+          // console.log('HD wallet ----------------->', hdwallet)
+          // console.log('wallet ----------------->', wallet)
+          // console.log('address ----------------->', address)
+          // console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
           const account = {
             mnemonic: mnemonic,
             address: address,
-            privateKey: privateKey
+            privateKey: privateKey,
+            signature: signature.signature
           }
           setWallet(account);
           dispatch(setPasscode(''));
-          dispatch(getAddressNonce(account, false, false))
+          dispatch(loginExternalWallet(account, false, false))
             .then(() => {
               dispatch(setBackupStatus(true));
             })
