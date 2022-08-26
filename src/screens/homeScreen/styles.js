@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    artistLoader1: {
+        top: hp('3%'),
+        left: wp('2%'),
+        width: '100%',
+    },
     imageListCont: {
         flexDirection: "row",
         flexWrap: "wrap",

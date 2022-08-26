@@ -132,7 +132,7 @@ export default function LaunchPadItemData(props) {
                 <View style={styles.renderchainstyle}>
                     {renderChain()}
                 </View>
-                {count == 1 ? <Text style={styles.nftCount}>{count ? count : 0} item</Text> :
+                {count <= 1 ? <Text style={styles.nftCount}>{count ? count : 0} item</Text> :
                     <Text style={styles.nftCount}>{count ? count : 0} items</Text>}
                 <Text style={styles.statusText}>
                     {/*{`${items} ` + translate('common.itemsCollection')}*/}

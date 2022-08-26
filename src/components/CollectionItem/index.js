@@ -147,7 +147,7 @@ export default function CollectionItem(props) {
           <View style={collectionTab ? styles.bottomWrap2 :  styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            {count == 1 ? <Text style={styles.count}>{count ? count : 0} item</Text> :
+            {count <= 1 ? <Text style={styles.count}>{count ? count : 0} item</Text> :
             <Text style={styles.count}>{count ? count : 0} items</Text>}
             {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}

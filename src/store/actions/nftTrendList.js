@@ -93,7 +93,6 @@ export const getNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -106,7 +105,6 @@ export const getNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        // console.log('json',json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -154,7 +152,6 @@ export const gifNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -167,7 +164,6 @@ export const gifNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        // console.log('json',json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -216,7 +212,6 @@ export const movieNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -229,7 +224,6 @@ export const movieNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        // console.log('json',json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -282,7 +276,6 @@ export const getAllArtist =(page,limit)=> {
     fetch(url)
     .then(response => response.json())
     .then(data=>{
-      console.log(data)
       dispatch(getAllArtistSuccess(data))
     })
     .catch(() => dispatch(artistLoadingEnd()))
