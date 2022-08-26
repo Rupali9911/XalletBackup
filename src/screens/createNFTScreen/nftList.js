@@ -125,7 +125,7 @@ const NFTList = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [selectData, setSelectData] = useState(null);
 
-  const { data } = useSelector(
+  const { userData } = useSelector(
     state => state.UserReducer
   );
   const { networkType } = useSelector(
@@ -169,8 +169,8 @@ const NFTList = ({
   }, [modalItem])
 
   const getCollectionList = async () => {
-    if (data.token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+    if (userData.access_token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
       axios.defaults.headers.post['Content-Type'] = 'application/json';
       const url = `${BASE_URL}/user/view-collection`;
       const body = {
@@ -248,8 +248,10 @@ const NFTList = ({
 
   const pressToggle = (v, collect) => {
     setToggle(v);
-    {collect && ((v == "mint" ?
-    setNftListPage(1) : setNftListDraftPage(1)), getNftList(collect, v, 1), changeLoadingState(true))}
+    {
+      collect && ((v == "mint" ?
+        setNftListPage(1) : setNftListDraftPage(1)), getNftList(collect, v, 1), changeLoadingState(true))
+    }
   }
 
   const selectItem = (v) => {
@@ -298,7 +300,7 @@ const NFTList = ({
       setNftListDraftPage(num)
     }
     getNftList(collection, toggle, num)
-  }    
+  }
 
   const keyExtractor = (item, index) => { return 'item_' + index }
 

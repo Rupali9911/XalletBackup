@@ -33,11 +33,11 @@ const filterTypeList = [
   {
     name: "Text",
     code: "wallet.common.text"
-},
+  },
   {
     name: "Number",
     code: "wallet.common.number"
-}
+  }
 ]
 
 const Filter = ({
@@ -60,7 +60,7 @@ const Filter = ({
 
   const [activeModal, setActiveModal] = useState("");
 
-  const { data } = useSelector(
+  const { userData } = useSelector(
     state => state.UserReducer
   );
   const { networkType } = useSelector(
@@ -97,8 +97,8 @@ const Filter = ({
   }, [modalItem])
 
   const getCollectionList = async () => {
-    if (data.token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+    if (userData.access_token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
       axios.defaults.headers.post['Content-Type'] = 'application/json';
       const url = `${BASE_URL}/user/view-collection`;
       const body = {
@@ -142,7 +142,7 @@ const Filter = ({
     try {
       const headers = {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${data.token}`,
+        Authorization: `Bearer ${userData.access_token}`,
       };
       const url = `${BASE_URL}/user/get-Filter-collection`;
       const dataToSend = {
@@ -169,7 +169,7 @@ const Filter = ({
 
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${data.token}`,
+      Authorization: `Bearer ${userData.access_token}`,
     };
     const url = `${BASE_URL}/user/create-Filter-collection`;
 
@@ -202,7 +202,7 @@ const Filter = ({
 
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${data.token}`,
+      Authorization: `Bearer ${userData.access_token}`,
     };
     const url = `${BASE_URL}/user/delete-Filter-collection`;
 
@@ -231,7 +231,7 @@ const Filter = ({
 
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${data.token}`,
+      Authorization: `Bearer ${userData.access_token}`,
     };
     const url = `${BASE_URL}/user/edit-Filter-collection`;
 
@@ -292,7 +292,7 @@ const Filter = ({
           pressable
           showRight />
       </CardCont>
-      <CardCont style={{ flex: 1}} >
+      <CardCont style={{ flex: 1 }} >
 
         {
           listLoader ?
@@ -304,7 +304,7 @@ const Filter = ({
                 data={filterList}
                 renderItem={renderListItem}
                 ItemSeparatorComponent={handleItemSeparatorComponent}
-                keyExtractor={ keyExtractor }
+                keyExtractor={keyExtractor}
               /> : null
         }
 

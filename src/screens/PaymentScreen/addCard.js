@@ -8,7 +8,7 @@ import { hp, wp, RF } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import { CardNumberInput, DateInput, CvvInput } from '../../components/cardInput';
 import Checkbox from '../../components/checkbox';
 import { LabelInput, CityInput } from './screenComponents';
@@ -27,7 +27,7 @@ import { signOut } from '../../store/reducer/userReducer';
 function AddCard({ route, navigation }) {
 
     const dispatch = useDispatch();
-    const {data} = useSelector(state => state.UserReducer);
+    const { userData } = useSelector(state => state.UserReducer);
     // const { loading } = useSelector(state => state.PayReducer);
     const { myCards } = useSelector(state => state.PaymentReducer);
 
@@ -42,18 +42,18 @@ function AddCard({ route, navigation }) {
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("");
     const [zipcode, setZipcode] = useState("");
-    const [isDefault, setDefault]= useState(false);
+    const [isDefault, setDefault] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const isValidCardNumber = () => {
-        if(cardNumber.length == 0){
+        if (cardNumber.length == 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.reuiredCardNumber")
             );
             return false;
         }
-        else if(cardNumber.length < 12){
+        else if (cardNumber.length < 12) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.invalidCardNumber")
@@ -64,7 +64,7 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidName = () => {
-        if(cardHolderName.trim().length <= 0){
+        if (cardHolderName.trim().length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.nameRequired")
@@ -76,13 +76,13 @@ function AddCard({ route, navigation }) {
 
     const isValidDate = () => {
         const exp = expDate.split('/');
-        if(exp.length != 2){
+        if (exp.length != 2) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidExpiryDate")
             );
             return false;
-        }else if(exp[1].length !== 2){
+        } else if (exp[1].length !== 2) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidExpiryDate")
@@ -93,13 +93,13 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidCvv = () => {
-        if(cvv.length <= 0){
+        if (cvv.length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidCvv")
             );
             return false;
-        }else if(cardType.code.size !== cvv.length){
+        } else if (cardType.code.size !== cvv.length) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidCvv")
@@ -111,13 +111,13 @@ function AddCard({ route, navigation }) {
 
     const isValidEmail = () => {
         var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if(email.length <= 0){
+        if (email.length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.emailRequired")
             );
             return false;
-        }else if(!filter.test(email)){
+        } else if (!filter.test(email)) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.invalidEmail")
@@ -128,7 +128,7 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidAddress = () => {
-        if(address.trim().length <= 0){
+        if (address.trim().length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireAddress")
@@ -139,7 +139,7 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidCountry = () => {
-        if(!country){
+        if (!country) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireCountry")
@@ -151,7 +151,7 @@ function AddCard({ route, navigation }) {
 
     const isValidState = () => {
         console.log('State', state)
-        if(state === null || state.trim().length <= 0){
+        if (state === null || state.trim().length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireState")
@@ -162,7 +162,7 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidCity = () => {
-        if(city.trim().length <= 0){
+        if (city.trim().length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireCity")
@@ -173,7 +173,7 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidZipcode = () => {
-        if(zipcode.trim().length <= 0){
+        if (zipcode.trim().length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireZipcode")
@@ -184,7 +184,7 @@ function AddCard({ route, navigation }) {
     }
 
     const validateInputs = () => {
-        if(
+        if (
             isValidCardNumber() &&
             isValidName() &&
             isValidDate() &&
@@ -195,7 +195,7 @@ function AddCard({ route, navigation }) {
             isValidState() &&
             isValidCity() &&
             isValidZipcode()
-        ){
+        ) {
             getCardToken();
         }
     }
@@ -216,22 +216,22 @@ function AddCard({ route, navigation }) {
             "card[address_country]": country.name
         }
 
-        StripeApiRequest(`tokens`,body).then((response)=>{
+        StripeApiRequest(`tokens`, body).then((response) => {
             console.log('Response from STRIPE', response);
-            if(response.id){
+            if (response.id) {
                 addCustomerCard(response.id);
-            }else if(response.error){
-                console.log("error_code",response.error.code)
+            } else if (response.error) {
+                console.log("error_code", response.error.code)
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
                     translate(`wallet.common.stripeError.${response.error.code}`)
                 )
                 setLoading(false);
             }
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log(err);
-            if(err.error){
-                console.log("error_code1",response.error.code)
+            if (err.error) {
+                console.log("error_code1", response.error.code)
             }
             setLoading(false);
         });
@@ -250,31 +250,31 @@ function AddCard({ route, navigation }) {
             "country": country.name
         }
 
-        dispatch(addCard(data.token, params)).then((response)=>{
-            console.log('response',response);
+        dispatch(addCard(userData.access_token, params)).then((response) => {
+            console.log('response', response);
             setLoading(false);
-            if(response.success){
+            if (response.success) {
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
-                    response.msg_key?translate(response.msg_key):response.data.message === 'user card saved' ? translate("common.cardSaved") : response.data.message ,
+                    response.msg_key ? translate(response.msg_key) : response.data.message === 'user card saved' ? translate("common.cardSaved") : response.data.message,
                     //response.msg_key?translate(response.msg_key):response.data.message ,
                     () => {
                         // navigation.goBack()
-                        if(myCards.length<1){
-                            navigation.dispatch(StackActions.replace('Cards', {price : route?.params?.price, isCardPay: route?.params?.isCardPay}));
-                        }else{
+                        if (myCards.length < 1) {
+                            navigation.dispatch(StackActions.replace('Cards', { price: route?.params?.price, isCardPay: route?.params?.isCardPay }));
+                        } else {
                             navigation.goBack();
                         }
                     }
                 )
-            }else{
+            } else {
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
-                    response.error_code?translate(response.error_code):response.msg
+                    response.error_code ? translate(response.error_code) : response.msg
                 )
             }
-        }).catch((err)=>{
-            console.log('err',err);
+        }).catch((err) => {
+            console.log('err', err);
             setLoading(false);
             if (err.message === 'Unauthorized!') {
                 alertWithSingleBtn(
@@ -305,9 +305,9 @@ function AddCard({ route, navigation }) {
                 showBackButton={true}
                 title={translate("wallet.common.topup.addCardDetails")}
             />
-            <KeyboardAwareScrollView style={[CommonStyles.screenContainer]} contentContainerStyle = {{paddingBottom: wp("10%")}}>
+            <KeyboardAwareScrollView style={[CommonStyles.screenContainer]} contentContainerStyle={{ paddingBottom: wp("10%") }}>
 
-            <Text style={styles.cardHint} >{translate("wallet.common.topup.cardDetailWarning")}</Text>
+                <Text style={styles.cardHint} >{translate("wallet.common.topup.cardDetailWarning")}</Text>
 
                 <CardNumberInput
                     style={styles.inputCont}
@@ -335,7 +335,7 @@ function AddCard({ route, navigation }) {
                         onChangeText={e => setCvv(e)}
                         value={cvv}
                         style={styles.dateContainer}
-                        length={cardType?cardType.code.size:0} />
+                        length={cardType ? cardType.code.size : 0} />
                 </View>
 
                 {/* <View style={styles.checkBoxContainer}>
@@ -347,7 +347,7 @@ function AddCard({ route, navigation }) {
                     />
                 </View> */}
 
-                <Heading title={translate("wallet.common.topup.billingAddress")}/>
+                <Heading title={translate("wallet.common.topup.billingAddress")} />
 
                 <LabelInput
                     label={translate("wallet.common.topup.email")}
@@ -364,12 +364,12 @@ function AddCard({ route, navigation }) {
                 <View style={styles.rowContainer}>
                     <View style={styles.pickerContainer}>
                         <Text style={styles.labelStyle}>{translate("wallet.common.topup.country")}</Text>
-                        <CountryPicker onSetCountry={setCountry}/>
+                        <CountryPicker onSetCountry={setCountry} />
                     </View>
 
                     <View style={styles.pickerContainer}>
                         <Text style={styles.labelStyle}>{translate("wallet.common.topup.state")}</Text>
-                        <StatePicker country={country.code} onSetState={setState}/>
+                        <StatePicker country={country.code} onSetState={setState} />
                     </View>
                 </View>
 

@@ -51,8 +51,8 @@ function Profile({ navigation, connector }) {
     const { UserReducer } = useSelector(state => state);
     const dispatch = useDispatch();
 
-    const id = UserReducer?.wallet?.address || UserReducer?.data?.user?.username;
-    const { about, title, links, username, role, profile_image } = UserReducer?.data?.user;
+    const id = UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
+    // const { about, title, links, username, role, profile_image } = UserReducer?.data?.user;
     useEffect(() => {
         // Update the document title using the browser API
         // UserReducer.data.user.profile_image,
@@ -62,7 +62,7 @@ function Profile({ navigation, connector }) {
         // UserReducer.data.user.username,
         // UserReducer.data.user.role
 
-         console.log('UserReducer.data.user.profile_image ', UserReducer.data.user.profile_image)
+        // console.log('UserReducer.data.user.profile_image ', UserReducer.data.user.profile_image)
     });
 
     const renderTabView = () => {
@@ -157,7 +157,7 @@ function Profile({ navigation, connector }) {
                         navigation.navigate('Setting', { connector: connector })
                     }
                 />
-                <View
+                {/* <View
                     style={{
                         width: '100%',
                         paddingHorizontal: SIZE(14),
@@ -237,7 +237,7 @@ function Profile({ navigation, connector }) {
                     <SpaceView mRight={SIZE(15)} />
                 </RowWrap>
                 <SpaceView mTop={SIZE(16)} />
-                {renderTabView()}
+                {renderTabView()} */}
             </ScrollView>
         </Container>
     );
