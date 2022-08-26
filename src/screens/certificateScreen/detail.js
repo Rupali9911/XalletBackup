@@ -57,6 +57,7 @@ import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
 import { formatAddress } from '../../constants/addressFormat';
 import { getDateString, getExpirationDate } from '../../constants/date';
+import CountDown from 'react-native-countdown-component';
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
@@ -440,7 +441,7 @@ const DetailScreen = ({ navigation, route }) => {
             <Video
               key={videoKey}
               ref={refVideo}
-              source={{ uri: mediaUrl }} //videoURL
+              source={{ uri: mediaUrl }}
               repeat
               playInBackground={false}
               paused={!playVideo}
@@ -588,7 +589,7 @@ const DetailScreen = ({ navigation, route }) => {
               {key === 'creator' ? creatorName : key === 'owner' && ownerName}
             </Text>
             :
-            <View style={{ flexDirection: 'row' }}>
+            <View style={CommonStyles.flexRow}>
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
@@ -633,7 +634,7 @@ const DetailScreen = ({ navigation, route }) => {
     ) {
       label = detailNFT?.saleData?.auction?.highestPrice ===
         detailNFT?.saleData?.auction?.startPrice
-        ? 'Minimum Bid' : 'Highest Bid'
+        ? translate('common.minimumBid') : translate('common.highestBid')
       tokenIcon = detailNFT?.saleData?.auction?.tokenIcon
       price = detailNFT?.saleData?.auction?.highestPrice
       tokenPrice = detailNFT?.saleData?.auction?.tokenPrice
@@ -647,32 +648,14 @@ const DetailScreen = ({ navigation, route }) => {
 
     return (
       <View style={{ paddingHorizontal: SIZE(12) }}>
-
-        {label && <Text style={[styles.dollarText,
-        {
-          paddingBottom: 5,
-          // fontFamily: fonts.PINGfANG_SBOLD,
-          color: '#909090' // colors.GREY4,
-        }]}>
+        {label && <Text style={styles.labelText}>
           {label}
         </Text>}
         <View
-          style={[
-            {
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: wp(2),
-            },
-          ]}>
+          style={styles.priceView}>
           <Image
+            style={styles.tokenIcon}
             source={{ uri: tokenIcon }}
-            style={{
-              width: SIZE(33),
-              height: SIZE(33),
-              borderRadius: SIZE(60 / 2),
-              marginRight: SIZE(7)
-            }}
           />
 
           {!load && <Text style={styles.price}>
@@ -687,28 +670,6 @@ const DetailScreen = ({ navigation, route }) => {
             </Text>
           </Text>}
         </View>
-
-        {/* <View style={{ flex: 0.4 }}>
-          {availableTokens.length > 0 &&
-            setNFTStatus() !== 'notOnSell' &&
-            setNFTStatus() !== 'onSell' &&
-            data?.user?.role === 'crypto' && (
-              <>
-                <Text style={[styles.payIn]}>
-                  {translate('wallet.common.buyerpayin')}
-                </Text>
-                <CardField
-                  inputProps={{ value: payableIn }}
-                  onPress={() => {
-                    setAllowedTokenModal(true);
-                  }}
-                  pressable
-                  showRight
-                  contStyle={{ height: hp('5%') }}
-                />
-              </>
-            )}
-        </View> */}
       </View>
     )
   }
@@ -733,32 +694,32 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   //================== Render Auction Time Function ==================
-  const renderAuctionTimeRemain = () => {
-    return (
-      <View style={styles.bidTimeContainer}>
-        {isBiddingTimeEnd ? (
-          <Text style={{ fontSize: 14 }}>
-            {translate('common.biddingTime')}
-          </Text>
-        ) : (
-          <View style={styles?.bidTitleView}>
-            <Text style={styles.bidTitleTxt}>
-              {translate('common.saleEndIn')} :
-            </Text>
-            <Text style={styles.bidTimeTxt}>
-              {getAuctionTimeRemain(item?.newprice ? item : singleNFT)}
-            </Text>
-          </View>
-        )}
-        <Text style={styles.highestBidTxt}>
-          {translate('common.highhestBidder')}:{' '}
-          {highestBidderAddValue
-            ? highestBidderAddValue.toUpperCase().substring(0, 6)
-            : '0X0000'}{' '}
-        </Text>
-      </View>
-    )
-  }
+  // const renderAuctionTimeRemain = () => {
+  //   return (
+  //     <View style={styles.bidTimeContainer}>
+  //       {isBiddingTimeEnd ? (
+  //         <Text style={{ fontSize: 14 }}>
+  //           {translate('common.biddingTime')}
+  //         </Text>
+  //       ) : (
+  //         <View style={styles?.bidTitleView}>
+  //           <Text style={styles.bidTitleTxt}>
+  //             {translate('common.saleEndIn')} :
+  //           </Text>
+  //           <Text style={styles.bidTimeTxt}>
+  //             {/* {getAuctionTimeRemain(item?.newprice ? item : singleNFT)} */}
+  //           </Text>
+  //         </View>
+  //       )}
+  //       <Text style={styles.highestBidTxt}>
+  //         {translate('common.highhestBidder')}:{' '}
+  //         {highestBidderAddValue
+  //           ? highestBidderAddValue.toUpperCase().substring(0, 6)
+  //           : '0X0000'}{' '}
+  //       </Text>
+  //     </View>
+  //   )
+  // }
 
   //================== Render Group Button Function ==================
 
@@ -768,13 +729,13 @@ const DetailScreen = ({ navigation, route }) => {
         return <NotOnSaleAction />
       case NFT_MARKET_STATUS.ON_FIX_PRICE:
         return <OnFixPriceAction />
-      // case NFT_MARKET_STATUS.ON_AUCTION:
-      //   return <OnAuctionAction />
-      // case NFT_MARKET_STATUS.CANCEL_AUCTION:
-      // case NFT_MARKET_STATUS.END_AUCTION:
-      //   return <EndAuctionAction />
-      // default:
-      //   return <UpCommingAuctionAction />
+      case NFT_MARKET_STATUS.ON_AUCTION:
+        return <OnAuctionAction />
+      case NFT_MARKET_STATUS.CANCEL_AUCTION:
+      case NFT_MARKET_STATUS.END_AUCTION:
+        return <EndAuctionAction />
+      default:
+        return <UpCommingAuctionAction />
     }
   }
 
@@ -782,9 +743,9 @@ const DetailScreen = ({ navigation, route }) => {
   const NotOnSaleAction = () => {
     if (compareAddress(wallet?.address, ownerAddress)) {
       return (
-        <View style={{ flexDirection: 'row' }}>
+        <View style={styles.buybutton}>
           <GroupButton
-            leftText={'SELL'}
+            leftText={translate('common.sell')}
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => { }}
@@ -794,9 +755,9 @@ const DetailScreen = ({ navigation, route }) => {
       )
     }
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={styles.buybutton}>
         <GroupButton
-          leftText={'MAKE_OFFER'}
+          leftText={'Make Offer'}
           leftDisabled={false}
           leftLoading={false}
           onLeftPress={() => { }}
@@ -809,44 +770,116 @@ const DetailScreen = ({ navigation, route }) => {
   const OnFixPriceAction = () => {
     if (compareAddress(wallet?.address, ownerAddress)) {
       return (
-        <View style={{ flexDirection: 'row' }}>
+        <View style={styles.buybutton}>
           <GroupButton
-            leftText={'CANCEL_SELL'}
+            leftText={translate('common.cancelSell')}
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => { }}
-            //   rightHide
-            // />
-            // <GroupButton
-            rightText={'EDIT_PRICE'}
+
+            rightText={translate('common.editPrice')} 
             rightDisabled={false}
             rightLoading={false}
             onrightPress={() => { }}
-            // rightHide
-            leftStyle={{ marginRight: 5 }}
-            rightStyle={{ marginLeft: 5 }}
+            rightStyle={styles.rightButton}
+            rightTextStyle={styles.rightButtonText}
           />
         </View>
       )
     }
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={styles.buybutton}>
         <GroupButton
-          leftText={'BUY'}
+          leftText={translate('common.buy')}
           leftDisabled={false}
           leftLoading={false}
           onLeftPress={() => { }}
-          //   rightHide
-          // />
-          // <GroupButton
-          rightText={'EDIT_PRICE'}
+
+          rightText={'Make Offer'}
           rightDisabled={false}
           rightLoading={false}
           onrightPress={() => { }}
-          // rightHide
-          leftStyle={{ marginRight: 5 }}
-          rightStyle={{ marginLeft: 5 }}
+          rightStyle={styles.rightButton}
+          rightTextStyle={styles.rightButtonText}
         />
+      </View>
+    )
+  }
+
+  const BidInfo = ({ status }) => {
+    const [isWaiting, setIsWaiting] = useState(false);
+    const auction = detailNFT?.saleData?.auction
+    const startTime = auction?.startTime
+    const endTime = auction?.endTime
+
+    const nowTimeStamp = Date.now()
+    const startTimeStamp = new Date(startTime).getTime()
+    const endTimeStamp = new Date(endTime).getTime()
+
+    const finalTime = nowTimeStamp < startTimeStamp
+      ? startTimeStamp : endTimeStamp
+
+    const endCoundownTime = (finalTime - nowTimeStamp) / 1000;
+
+    const CountdownTime = () => {
+      return (
+        <View>
+          <CountDown
+            size={18}
+            until={endCoundownTime}
+            onFinish={() => { }}
+            digitStyle={styles.countDownDigit}
+            digitTxtStyle={styles.countDownText}
+            separatorStyle={styles.countDownText}
+            timeToShow={['D', 'H', 'M', 'S']}
+            timeLabels={{ d: null, h: null, m: null, s: null }}
+            showSeparator
+          />
+        </View>
+      )
+    }
+
+    const renderCoundown = () => {
+      if (status === NFT_MARKET_STATUS.UPCOMMING_AUCTION) {
+        return (
+          <View style={CommonStyles.rowAlign}>
+            {isWaiting ? (
+              <Text style={styles.marginRight}>{'Auction is being updated. Please wait!'}</Text>
+            ) : (
+              <>
+                <Text style={styles.marginRight}>{'Auction will start in'}:</Text>
+                <CountdownTime />
+              </>
+            )}
+          </View>
+        )
+      }
+      if (status === NFT_MARKET_STATUS.ON_AUCTION) {
+        return (
+          <View style={CommonStyles.rowAlign}>
+            {isWaiting ? (
+              <Text style={styles.marginRight}>{'Auction is being updated. Please wait!'}</Text>
+            ) : (
+              <>
+                <Text style={styles.marginRight}>{'Auction will end in'}:</Text>
+                <CountdownTime />
+              </>
+            )}
+          </View>
+        )
+      }
+      return null
+    }
+
+    return (
+      <View style={{ paddingTop: 5, paddingBottom: 10 }}>
+        {renderCoundown()}
+        {auction?.highestBidder ?
+          <Text>
+            {translate('common.highhestBidder')}:{' '}
+            {auction?.highestBidder.slice(0, 7) + '...'}
+          </Text>
+          : null}
       </View>
     )
   }
@@ -854,7 +887,29 @@ const DetailScreen = ({ navigation, route }) => {
   const OnAuctionAction = () => {
     return (
       <View>
-
+        <BidInfo status={NFT_MARKET_STATUS.ON_AUCTION} />
+        {compareAddress(wallet?.address, ownerAddress)
+          ?
+          <View style={CommonStyles.flexRow}>
+            <GroupButton
+              leftText={'Cancel Auction'}
+              leftDisabled={false}
+              leftLoading={false}
+              onLeftPress={() => { }}
+              rightHide
+            />
+          </View>
+          :
+          <View style={CommonStyles.flexRow}>
+            <GroupButton
+              leftText={'Place a bid'}
+              leftDisabled={false}
+              leftLoading={false}
+              onLeftPress={() => { }}
+              rightHide
+            />
+          </View>
+        }
       </View>
     )
   }
@@ -862,7 +917,29 @@ const DetailScreen = ({ navigation, route }) => {
   const EndAuctionAction = () => {
     return (
       <View>
-
+        <BidInfo status={NFT_MARKET_STATUS.CANCEL_AUCTION} />
+        {compareAddress(wallet?.address, ownerAddress)
+          ?
+          <View style={CommonStyles.flexRow}>
+            <GroupButton
+              leftText={'Reclaim NFT'}
+              leftDisabled={false}
+              leftLoading={false}
+              onLeftPress={() => { }}
+              rightHide
+            />
+          </View>
+          :
+          <View style={CommonStyles.flexRow}>
+            <GroupButton
+              leftText={'Auction end'}
+              leftDisabled={false}
+              leftLoading={false}
+              onLeftPress={() => { }}
+              rightHide
+            />
+          </View>
+        }
       </View>
     )
   }
@@ -870,85 +947,93 @@ const DetailScreen = ({ navigation, route }) => {
   const UpCommingAuctionAction = () => {
     return (
       <View>
-
+        <BidInfo status={NFT_MARKET_STATUS.UPCOMMING_AUCTION} />
+        {compareAddress(wallet?.address, ownerAddress) ?
+          <GroupButton
+            leftText={'Cancel Auction'}
+            leftDisabled={false}
+            leftLoading={false}
+            onLeftPress={() => { }}
+            rightHide
+          /> : null}
       </View>
     )
   }
 
-  const renderGroupButton = () => {
-    return (
-      <GroupButton
-        leftText={
-          setNFTStatus() === 'onSell'
-            ? translate('common.cancelSell')
-            : setNFTStatus() === 'sell'
-              ? singleNFT?.secondarySales
-                ? translate('wallet.common.reSell')
-                : translate('common.sell')
-              : setNFTStatus() === 'buy'
-                ? translate('common.buy')
-                : setNFTStatus() === 'notOnSell'
-                  ? translate('common.soonOnSell')
-                  : translate('common.buy')
-        }
-        rightText={translate('wallet.common.offerPrice')}
-        leftDisabled={
-          setNFTStatus() === '' || setNFTStatus() === 'notOnSell'
-        }
-        leftLoading={buyLoading}
-        onLeftPress={() => {
-          if (buyLoading) return;
-          // navigation.navigate('WalletConnect')
-          // if(price && price > 0){
-          if (setNFTStatus() === 'buy') {
-            // if (payableIn === translate('common.allowedcurrency')) {
-            //   alertWithSingleBtn(
-            //     translate('wallet.common.alert'),
-            //     translate('common.Selectcurrencypopup'),
-            //   );
-            // } else {
-            setShowPaymentMethod(true);
-            // }
-          } else if (setNFTStatus() === 'sell') {
-            navigation.navigate('sellNft', { nftDetail: singleNFT });
-          }
-          // }
-        }}
-        leftHide={setNFTStatus() === undefined}
-        rightHide
-        onRightPress={() => navigation.navigate('MakeBid')}
-      />
-    )
-  }
+  // const renderGroupButton = () => {
+  //   return (
+  //     <GroupButton
+  //       leftText={
+  //         setNFTStatus() === 'onSell'
+  //           ? translate('common.cancelSell')
+  //           : setNFTStatus() === 'sell'
+  //             ? singleNFT?.secondarySales
+  //               ? translate('wallet.common.reSell')
+  //               : translate('common.sell')
+  //             : setNFTStatus() === 'buy'
+  //               ? translate('common.buy')
+  //               : setNFTStatus() === 'notOnSell'
+  //                 ? translate('common.soonOnSell')
+  //                 : translate('common.buy')
+  //       }
+  //       rightText={translate('wallet.common.offerPrice')}
+  //       leftDisabled={
+  //         setNFTStatus() === '' || setNFTStatus() === 'notOnSell'
+  //       }
+  //       leftLoading={buyLoading}
+  //       onLeftPress={() => {
+  //         if (buyLoading) return;
+  //         // navigation.navigate('WalletConnect')
+  //         // if(price && price > 0){
+  //         if (setNFTStatus() === 'buy') {
+  //           // if (payableIn === translate('common.allowedcurrency')) {
+  //           //   alertWithSingleBtn(
+  //           //     translate('wallet.common.alert'),
+  //           //     translate('common.Selectcurrencypopup'),
+  //           //   );
+  //           // } else {
+  //           setShowPaymentMethod(true);
+  //           // }
+  //         } else if (setNFTStatus() === 'sell') {
+  //           navigation.navigate('sellNft', { nftDetail: singleNFT });
+  //         }
+  //         // }
+  //       }}
+  //       leftHide={setNFTStatus() === undefined}
+  //       rightHide
+  //       onRightPress={() => navigation.navigate('MakeBid')}
+  //     />
+  //   )
+  // }
 
   //======= Render App Button NFT Price and Edit Price Function ========
-  const renderNFTPriceNeditPriceAppButton = () => {
-    return (
-      <View
-        style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <AppButton
-          label={
-            (nftPrice
-              ? numberWithCommas(
-                parseFloat(Number(nftPrice).toFixed(4)),
-              )
-              : 0) +
-            ' ' +
-            baseCurrency?.key
-          }
-          containerStyle={[styles.button, CommonStyles.outlineButton]}
-          labelStyle={[CommonStyles.outlineButtonLabel]}
-          onPress={() => { }}
-        />
-        <AppButton
-          label={translate('common.editPrice')}
-          containerStyle={styles.button}
-          labelStyle={CommonStyles.buttonLabel}
-          onPress={() => { }}
-        />
-      </View>
-    )
-  }
+  // const renderNFTPriceNeditPriceAppButton = () => {
+  //   return (
+  //     <View
+  //       style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+  //       <AppButton
+  //         label={
+  //           (nftPrice
+  //             ? numberWithCommas(
+  //               parseFloat(Number(nftPrice).toFixed(4)),
+  //             )
+  //             : 0) +
+  //           ' ' +
+  //           baseCurrency?.key
+  //         }
+  //         containerStyle={[styles.button, CommonStyles.outlineButton]}
+  //         labelStyle={[CommonStyles.outlineButtonLabel]}
+  //         onPress={() => { }}
+  //       />
+  //       <AppButton
+  //         label={translate('common.editPrice')}
+  //         containerStyle={styles.button}
+  //         labelStyle={CommonStyles.buttonLabel}
+  //         onPress={() => { }}
+  //       />
+  //     </View>
+  //   )
+  // }
 
   //===================== Render Bid History Function =======================
   const noDataRender = () => {
@@ -990,7 +1075,7 @@ const DetailScreen = ({ navigation, route }) => {
           // nestedScrollEnabled={true}
           style={{ marginVertical: hp(2) }}>
           <Table
-            borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+            borderStyle={styles.cellBorderStyle}>
             <Row
               data={history === 'trading' ? tradingTableHead : bidHistoryTableHead}
               style={styles.head}
@@ -999,32 +1084,33 @@ const DetailScreen = ({ navigation, route }) => {
             />
             {history === 'bid'
               ? sellDetails?.length > 0
-                ? (
-                  sellDetails?.map((rowData, rowIndex) => {
-                    return (
-                      <TableWrapper
-                        key={rowIndex}
-                        style={{ flexDirection: 'row' }}>
-                        {rowData?.map((cellData, cellIndex) => {
-                          return (
-                            renderOfferCell(cellIndex, cellData, rowIndex)
-                          );
-                        })}
-                      </TableWrapper>
-                    );
-                  })) : (
+                ? (sellDetails?.map((rowData, rowIndex) => {
+                  return (
+                    <TableWrapper
+                      key={rowIndex}
+                      style={CommonStyles.flexRow}>
+                      {rowData?.map((cellData, cellIndex) => {
+                        return (
+                          renderCell(cellIndex, cellData, rowIndex)
+                        );
+                      })}
+                    </TableWrapper>
+                  );
+                })) : (
                   noDataRender()
                 )
               : history === 'offers'
                 ? offerList?.length > 0
                   ? (offerList?.map((rowData, rowIndex) => {
+                    let temprowData = rowData.slice(0, 4);
+                    let iconUri = rowData.find((e, i) => i === 4);
                     return (
                       <TableWrapper
                         key={rowIndex}
-                        style={{ flexDirection: 'row' }}>
-                        {rowData?.map((cellData, cellIndex) => {
+                        style={CommonStyles.flexRow}>
+                        {temprowData?.map((cellData, cellIndex) => {
                           return (
-                            renderOfferCell(cellIndex, cellData, rowIndex)
+                            renderCell(cellIndex, cellData, rowIndex, iconUri)
                           );
                         })}
                       </TableWrapper>
@@ -1037,7 +1123,7 @@ const DetailScreen = ({ navigation, route }) => {
                     return (
                       <TableWrapper
                         key={rowIndex}
-                        style={{ flexDirection: 'row' }}>
+                        style={CommonStyles.flexRow}>
                         {rowData?.map((cellData, cellIndex) => {
                           let wid;
                           if (cellIndex === 0) {
@@ -1085,79 +1171,90 @@ const DetailScreen = ({ navigation, route }) => {
   const renderAddress = (cellData) => {
     return (
       <TouchableOpacity
+        disabled={!cellData}
         onPress={() =>
           navigation.push('ArtistDetail', { id: cellData })
         }>
         <Text
           numberOfLines={1}
-          style={[styles.text, { color: '#00a8ff' }]}>
+          style={[styles.text, styles.themeColor]}>
           {formatAddress(cellData)}
         </Text>
       </TouchableOpacity>
     )
   }
 
-  const renderOfferCell = (index, cellData, rowIndex) => {
+  const renderCell = (index, cellData, rowIndex, iconUri) => {
     return (
       <Cell
         key={rowIndex}
         data={
-          index === 1
-            ? renderAddress(cellData)
-            : cellData
+          index === 0 && iconUri ?
+            <View style={CommonStyles.rowAlign}>
+              <Image
+                style={styles.networkIcon}
+                source={{ uri: iconUri }}
+              />
+              <Text>
+                {cellData}
+              </Text>
+            </View>
+            : index === 1
+              ? renderAddress(cellData)
+              : cellData
         }
-        borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
+        borderStyle={styles.cellBorderStyle}
         textStyle={styles.text}
         width={index === 0 ? 130 : index === 1 ? 180 : index === 2 ? 180 : 200}
       />
     )
   }
 
-  const renderCell = (index, rowData, rowIndex) => {
-    return (
-      <Cell
-        key={rowIndex}
-        data={
-          index === '1'
-            ? firstCellData(rowData)
-            : index === '2'
-              ? renderSecondNThird('2', rowData)
-              : index === '3'
-                ? renderSecondNThird('3', rowData)
-                : fourthCellData(rowData)
-        }
-        borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}
-        textStyle={styles.text}
-        width={index === '1' ? 130 : index === '2' ? 180 : index === '3' ? 180 : 200}
-      />
-    )
-  }
+  // const renderCell = (index, rowData, rowIndex) => {
+  //   return (
+  //     <Cell
+  //       key={rowIndex}
+  //       data={
+  //         index === '1'
+  //           ? firstCellData(rowData)
+  //           : index === '2'
+  //             ? renderSecondNThird('2', rowData)
+  //             : index === '3'
+  //               ? renderSecondNThird('3', rowData)
+  //               : fourthCellData(rowData)
+  //       }
+  //       borderStyle={styles.cellBorderStyle}
+  //       textStyle={styles.text}
+  //       width={index === '1' ? 130 : index === '2' ? 180 : index === '3' ? 180 : 200}
+  //     />
+  //   )
+  // }
 
-  const renderSecondNThird = (key, detail) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          key === '2' ? (detail?.seller && !isChinaApp) && goToOwnerProfile(detail?.seller, 'pro') : detail?.owner && goToOwnerProfile(detail?.owner, 'pro');
-        }}>
-        <Text numberOfLines={1} style={[styles.text, { color: '#00A8FF' }]}>
-          {(key === '2' && !isChinaApp) ? detail?.seller ? showSeller(detail?.seller) : 'Null Address' : detail?.owner
-            ? detail?.owner?.includes('0x')
-              ? detail?.owner?.substring(0, 6)
-              : detail?.owner
-            : ''}
-        </Text>
-      </TouchableOpacity>
-    )
-  }
+  // const renderSecondNThird = (key, detail) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         key === '2' ? (detail?.seller && !isChinaApp) && goToOwnerProfile(detail?.seller, 'pro') : detail?.owner && goToOwnerProfile(detail?.owner, 'pro');
+  //       }}>
+  //       <Text numberOfLines={1} style={[styles.text, { color: '#00A8FF' }]}>
+  //         {(key === '2' && !isChinaApp) ? detail?.seller ? showSeller(detail?.seller) : 'Null Address' : detail?.owner
+  //           ? detail?.owner?.includes('0x')
+  //             ? detail?.owner?.substring(0, 6)
+  //             : detail?.owner
+  //           : ''}
+  //       </Text>
+  //     </TouchableOpacity>
+  //   )
+  // }
 
-  const goToOwnerProfile = (id, profile) => {
-    if (id?.toLowerCase() === walletAddressForNonCrypto?.toLowerCase()) {
-      return;
-    }
-    if (profile === 'pro') {
-      navigation.push('ArtistDetail', { id: id });
-    }
-  };
+  // const goToOwnerProfile = (id, profile) => {
+  //   if (id?.toLowerCase() === walletAddressForNonCrypto?.toLowerCase()) {
+  //     return;
+  //   }
+  //   if (profile === 'pro') {
+  //     navigation.push('ArtistDetail', { id: id });
+  //   }
+  // };
 
   const showContractAddress = (item) => {
     return (typeof item?.collection === 'object'
@@ -1188,7 +1285,7 @@ const DetailScreen = ({ navigation, route }) => {
             {detailNFT?.creator?.description}
           </TextView>
           : null}
-        {renderSocialLinks}
+        {renderSocialLinks()}
       </NFTDetailDropdown>
     )
   }
@@ -1198,7 +1295,7 @@ const DetailScreen = ({ navigation, route }) => {
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
           <TouchableOpacity
-            style={{ marginRight: 10 }}
+            style={styles.marginRight}
             hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
             onPress={() => Linking.openURL(detailNFT?.creator?.twitterLink)}>
             <TwiiterIcon />
@@ -1499,17 +1596,17 @@ const DetailScreen = ({ navigation, route }) => {
   // Crypto user: title/name/username
   // Non Crypto user: username/name/title
 
-  const getArtistName = artistId => {
-    return artistId ===
-      '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase() ||
-      artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase() ||
-      artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase() ||
-      artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase()
-      ? ((disableCreator = true), collectCreat?.creator)
-      : artistId
-        ? artistId?.substring(0, 6)
-        : '';
-  };
+  // const getArtistName = artistId => {
+  //   return artistId ===
+  //     '0x913d90bf7e4A2B1Ae54Bd5179cDE2e7cE712214A'.toLowerCase() ||
+  //     artistId === '0xf45C0d38Df3eac6bf6d0fF74D53421Dc34E14C04'.toLowerCase() ||
+  //     artistId === '0x77FFb287573b46AbDdcEB7F2822588A847358933'.toLowerCase() ||
+  //     artistId === '0xfaae9d5b6f4779689bd273ab30f78beab3a0fc8f'.toLowerCase()
+  //     ? ((disableCreator = true), collectCreat?.creator)
+  //     : artistId
+  //       ? artistId?.substring(0, 6)
+  //       : '';
+  // };
 
   let creatorName = artistDetail?.name?.trim()
     ? artistDetail.name
@@ -1543,110 +1640,110 @@ const DetailScreen = ({ navigation, route }) => {
       : '---'
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  const checkNFTOnAuction = () => {
-    const setAuctionVariables = (
-      auctionInitiatorAdd = '',
-      highestBidderAdd = '',
-      minBidPrice = '',
-      auctionSTime = '',
-      auctionETime = '',
-      lastBidAmount = '',
-      isNFTOnAuction = false,
-    ) => {
-      setHighestBidderAddValue(highestBidderAdd);
-      setIsNFTOnAuction(isNFTOnAuction);
-      setMinBidPrice(minBidPrice)
-      setAuctionInitiatorAdd(auctionInitiatorAdd);
-      setAuctionETime(auctionETime);
-      setLastBidAmount(lastBidAmount);
-    };
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    MarketPlaceContract.methods
-      .getSellDetail(collectionAddress, _tokenId)
-      .call(async (err, res) => {
-        if (!err) {
-          let baseCurrency = [];
-          if (res[6]) {
-            baseCurrency = basePriceTokens.filter(
-              token => token.chain === chainType && token.order === 1,
-            );
-            setBaseCurrency(baseCurrency[0]);
-          } else {
-            baseCurrency = basePriceTokens.filter(
-              token =>
-                token.chain === chainType && token.order === parseInt(res[7]),
-            );
-            setBaseCurrency(baseCurrency[0]);
-          }
-          if (parseInt(res[5]) * 1000 > 0) {
-            calculateBidPriceDollar(res[4], res[0]);
-            setAuctionVariables(
-              res[0],
-              res[3],
-              divideNo(res[4]),
-              parseInt(res[5]) * 1000,
-              parseInt(res[2]) * 1000,
-              divideNo(res[1]),
-              true,
-            );
-          } else {
-            setAuctionVariables();
-          }
-        } else {
-          setAuctionVariables();
-        }
-      });
-  };
+  // const checkNFTOnAuction = () => {
+  //   const setAuctionVariables = (
+  //     auctionInitiatorAdd = '',
+  //     highestBidderAdd = '',
+  //     minBidPrice = '',
+  //     auctionSTime = '',
+  //     auctionETime = '',
+  //     lastBidAmount = '',
+  //     isNFTOnAuction = false,
+  //   ) => {
+  //     setHighestBidderAddValue(highestBidderAdd);
+  //     setIsNFTOnAuction(isNFTOnAuction);
+  //     setMinBidPrice(minBidPrice)
+  //     setAuctionInitiatorAdd(auctionInitiatorAdd);
+  //     setAuctionETime(auctionETime);
+  //     setLastBidAmount(lastBidAmount);
+  //   };
+  //   let web3 = new Web3(providerUrl);
+  //   let MarketPlaceContract = new web3.eth.Contract(
+  //     MarketPlaceAbi,
+  //     MarketContractAddress,
+  //   );
+  //   MarketPlaceContract.methods
+  //     .getSellDetail(collectionAddress, _tokenId)
+  //     .call(async (err, res) => {
+  //       if (!err) {
+  //         let baseCurrency = [];
+  //         if (res[6]) {
+  //           baseCurrency = basePriceTokens.filter(
+  //             token => token.chain === chainType && token.order === 1,
+  //           );
+  //           setBaseCurrency(baseCurrency[0]);
+  //         } else {
+  //           baseCurrency = basePriceTokens.filter(
+  //             token =>
+  //               token.chain === chainType && token.order === parseInt(res[7]),
+  //           );
+  //           setBaseCurrency(baseCurrency[0]);
+  //         }
+  //         if (parseInt(res[5]) * 1000 > 0) {
+  //           calculateBidPriceDollar(res[4], res[0]);
+  //           setAuctionVariables(
+  //             res[0],
+  //             res[3],
+  //             divideNo(res[4]),
+  //             parseInt(res[5]) * 1000,
+  //             parseInt(res[2]) * 1000,
+  //             divideNo(res[1]),
+  //             true,
+  //           );
+  //         } else {
+  //           setAuctionVariables();
+  //         }
+  //       } else {
+  //         setAuctionVariables();
+  //       }
+  //     });
+  // };
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  const getAuctionTimeRemain = item => {
-    if (
-      item?.newprice &&
-      item?.newprice?.endTime &&
-      new Date(item?.newprice?.endTime) < new Date().getTime()
-    ) {
-      isBiddingTimeEnd = true;
-      return translate('common.biddingTime');
-    }
-    if (item?.newprice && item?.newprice?.endTime) {
-      const diff =
-        new Date(item?.newprice?.endTime).getTime() - new Date().getTime();
-      if (diff <= 0) {
-        return null;
-      } else {
-        isBiddingTimeEnd = false;
-        let daysDiff =
-          (new Date(item?.newprice?.endTime).getTime() - new Date().getTime()) /
-          (1000 * 60 * 60 * 24);
-        let hoursDiff = (daysDiff - parseInt(daysDiff)) * 24;
-        let minDiff = (hoursDiff - parseInt(hoursDiff)) * 60;
-        let secDiff = (minDiff - parseInt(minDiff)) * 60;
-        const daysLeft =
-          (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000);
-        const hourLeft =
-          (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
-        const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
-        const secLeft = (parseInt(secDiff) * 1000) / 1000;
-        if (daysLeft > 0) {
-          return ` ${daysLeft >= 10 ? daysLeft : "0" + daysLeft} ${translate('common.day').toUpperCase()}`;
-        } else {
-          doComponentUpdate = true;
-          return ` ${hourLeft >= 10 ? hourLeft : '0' + hourLeft} ${translate(
-            'common.hours',
-          )}  ${minLeft >= 10 ? minLeft : '0' + minLeft} ${translate(
-            'common.min',
-          )}  ${secLeft >= 10 ? secLeft : '0' + secLeft} ${translate(
-            'common.sec',
-          )}`;
-        }
-      }
-    }
-    return null;
-  };
+  // const getAuctionTimeRemain = item => {
+  //   if (
+  //     item?.newprice &&
+  //     item?.newprice?.endTime &&
+  //     new Date(item?.newprice?.endTime) < new Date().getTime()
+  //   ) {
+  //     isBiddingTimeEnd = true;
+  //     return translate('common.biddingTime');
+  //   }
+  //   if (item?.newprice && item?.newprice?.endTime) {
+  //     const diff =
+  //       new Date(item?.newprice?.endTime).getTime() - new Date().getTime();
+  //     if (diff <= 0) {
+  //       return null;
+  //     } else {
+  //       isBiddingTimeEnd = false;
+  //       let daysDiff =
+  //         (new Date(item?.newprice?.endTime).getTime() - new Date().getTime()) /
+  //         (1000 * 60 * 60 * 24);
+  //       let hoursDiff = (daysDiff - parseInt(daysDiff)) * 24;
+  //       let minDiff = (hoursDiff - parseInt(hoursDiff)) * 60;
+  //       let secDiff = (minDiff - parseInt(minDiff)) * 60;
+  //       const daysLeft =
+  //         (parseInt(daysDiff) * 24 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000);
+  //       const hourLeft =
+  //         (parseInt(hoursDiff) * 60 * 60 * 1000) / (60 * 60 * 1000);
+  //       const minLeft = (parseInt(minDiff) * 60 * 1000) / (60 * 1000);
+  //       const secLeft = (parseInt(secDiff) * 1000) / 1000;
+  //       if (daysLeft > 0) {
+  //         return ` ${daysLeft >= 10 ? daysLeft : "0" + daysLeft} ${translate('common.day').toUpperCase()}`;
+  //       } else {
+  //         doComponentUpdate = true;
+  //         return ` ${hourLeft >= 10 ? hourLeft : '0' + hourLeft} ${translate(
+  //           'common.hours',
+  //         )}  ${minLeft >= 10 ? minLeft : '0' + minLeft} ${translate(
+  //           'common.min',
+  //         )}  ${secLeft >= 10 ? secLeft : '0' + secLeft} ${translate(
+  //           'common.sec',
+  //         )}`;
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // };
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   // const getNonCryptoNFTOwner = async () => {
@@ -1831,15 +1928,14 @@ const DetailScreen = ({ navigation, route }) => {
               getDateString(
                 item.createdAt
                   ? item.createdAt
-                  : Date.now(),
+                  : Date.now()
               ),
               item.expired * 1000 > Date.now()
                 ? timeSince(
-                  new Date(
-                    item.expired * 1000,
-                  ),
+                  new Date(item.expired * 1000)
                 )
-                : 'Expired'
+                : 'Expired',
+              item?.networkTokenIcon
             ]
             tempList.push(temp)
           })
@@ -1920,8 +2016,8 @@ const DetailScreen = ({ navigation, route }) => {
 
             setTradingList(res?.items)
             setTradingTableData(tradingList)
-            // setTradingTableData1(tradingList)
             setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS)
+            // setTradingTableData1(tradingList)
             // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
           }
         }
@@ -3010,12 +3106,12 @@ const DetailScreen = ({ navigation, route }) => {
             {renderHeartIcon()}
             {!load && renderCreatorCollectionOwnerName()}
             {renderCreatorAndNFTName()}
-            {setNFTStatus() !== 'notOnSell' && renderNFTPriceNToken()}
             {renderDescription()}
+            {setNFTStatus() !== 'notOnSell' && renderNFTPriceNToken()}
             {/* {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? renderAuctionTimeRemain() : null} */}
             {<View style={styles.bottomView}>
               {/* {!load && setNFTStatus() !== undefined && renderGroupButton()} */}
-              {renderContentAction()}
+              {!load && renderContentAction()}
               {/* {!load && setNFTStatus() === 'onSell' && renderNFTPriceNeditPriceAppButton()} */}
             </View>}
             {renderBidNTradingHistory('bid')}

@@ -4,6 +4,7 @@ import {
   SIZE,
   widthPercentageToDP as wp
 } from '../../common/responsiveFunction';
+import Colors from '../../constants/Colors';
 import { hp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { colors, fonts } from '../../res';
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.4),
     fontFamily: fonts.PINGfANG,
     color: colors.GREY1,
-    marginTop: SIZE(30),
+    marginTop: SIZE(5),
     marginBottom: SIZE(20),
     paddingHorizontal: SIZE(12),
   },
@@ -257,7 +258,8 @@ const styles = StyleSheet.create({
   rowText: {
     color: colors.black,
     fontSize: RF(1.65),
-    maxWidth: wp('35%'),
+    marginTop: SIZE(5)
+    // maxWidth: wp('55%'),
   },
   rowTextcontractaddress: {
     color: colors.black,
@@ -274,6 +276,7 @@ const styles = StyleSheet.create({
 
   head: { height: SIZE(40) },
   text: { margin: SIZE(10), fontSize: SIZE(12) },
+  themeColor: { color: Colors.themeColor },
   emptyData: {
     alignSelf: 'center',
     marginVertical: hp('1%'),
@@ -347,6 +350,62 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     zIndex: 2,
   },
+  networkIcon: {
+    height: 26,
+    width: 26,
+    borderRadius: 13,
+    marginHorizontal: 5,
+    alignSelf: 'center'
+  },
+  buybutton: {
+    flexDirection: 'row',
+    paddingTop: SIZE(10)
+  },
+  rowAlign: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  marginRight: {
+    marginRight: 10,
+  },
+  countDownDigit: {
+    borderWidth: 1,
+    height: hp(5),
+    backgroundColor: Colors.white,
+    borderColor: Colors.themeColor
+  },
+  countDownText: { color: Colors.black },
+  cellBorderStyle: {
+    borderWidth: 1,
+    borderColor: Colors.GREY9
+  },
+  labelText: {
+    fontSize: RF(1.7),
+    paddingBottom: 8,
+    fontFamily: fonts.PINGfANG_SBOLD,
+    color: colors.GREY4,
+  },
+  priceView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: wp(2),
+  },
+  tokenIcon: {
+    width: SIZE(33),
+    height: SIZE(33),
+    borderRadius: SIZE(60 / 2),
+    marginRight: SIZE(7)
+  },
+  rightButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.white
+  },
+  rightButtonText: {
+    color: Colors.BLUE3
+  }
+
 });
 
 export default styles;

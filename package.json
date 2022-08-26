@@ -59,6 +59,7 @@
     "react-native-awesome-alerts": "^1.5.2",
     "react-native-camera": "^4.2.1",
     "react-native-config": "^1.4.2",
+    "react-native-countdown-component": "^2.7.1",
     "react-native-create-thumbnail": "^1.5.1",
     "react-native-crypto": "^2.2.0",
     "react-native-date-picker": "^4.2.2",
