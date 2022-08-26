@@ -25,7 +25,7 @@ export default function chatReducer(state = initialState, action) {
     }
 }
 
-export const AIChatResponse = (message,language) => (dispatch) => {
+export const getAiChat = (message,language) => (dispatch) => {
     return new Promise((resolve, reject) => {
       ApiRequest(`http://3.110.38.186:8081/xana-genesis-bot/?text=${message}&language=${language}`, 'GET', null, null)
         .then(response => {

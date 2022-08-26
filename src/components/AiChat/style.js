@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { hp, wp } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import CommonStyles from '../../constants/styles';
@@ -17,13 +17,13 @@ const styles = StyleSheet.create({
     inputContainer: {
         paddingHorizontal: hp(0.1),
         width: '100%',
-        height: hp(10),
+        height: Platform.OS === 'ios' ? hp(10) : hp(8),
         alignItems: 'center',
-        backgroundColor: Colors.themeColor,
-        // bottom: hp(0),
-        // position: 'absolute',
+        backgroundColor:  Colors.themeColor,
+        bottom: 0,
+        //  position: 'absolute',
         // position: 'relative',
-        display: 'flex',
+        // display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
     },
@@ -34,14 +34,13 @@ const styles = StyleSheet.create({
         borderColor: '#fff',
         borderWidth: 2,
         width: '80%',
-        height: 50,
+        height: Platform.OS === 'ios' ? 50 : 40,
         borderRadius: 300 / 2,
         backgroundColor: '#fff',
-        // color: Colors.themeColor
     },
     sendBtn: {
-        width: 50,
-        height: 50,
+        width: Platform.OS === 'ios' ? 50 : 40,
+        height: Platform.OS === 'ios' ? 50 : 40,
         borderRadius: 60 / 2,
         backgroundColor: '#fff',
         justifyContent: 'center',
@@ -78,7 +77,6 @@ const styles = StyleSheet.create({
     talkBubbleAbsoluteLeft: {
         width: 30,
         height: 30,
-        // alignSelf: 'flex-start',
         position: 'absolute',
         backgroundColor: 'transparent',
         borderRadius: 50,
@@ -120,6 +118,21 @@ const styles = StyleSheet.create({
     },
     keyboardShift: {
         flex: 1,
+    },
+    rightBubbleContainer: {
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+        flexDirection: 'row'
+    },
+    leftBubbleContainer: {
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        flexDirection: 'row'
+    },
+    isLoading: {
+        ...CommonStyles.imageStyles(6),
+        flex: 1,
+        justifyContent: 'center',
     },
 
 })

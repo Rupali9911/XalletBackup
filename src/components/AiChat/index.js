@@ -1,15 +1,12 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, FlatList, } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, Image, Platform, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
 import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
-import React, { useState } from 'react';
+import React, { useState, } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AIChatResponse } from '../../store/reducer/chatReducer';
+import { getAiChat } from '../../store/reducer/chatReducer';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
 import styles from './style';
-import { ScrollView } from 'react-native-gesture-handler';
-import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
-
 
 const AiChat = () => {
   const dispatch = useDispatch();
@@ -17,6 +14,8 @@ const AiChat = () => {
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatMessage, setChatMessage] = useState([]);
+  const [disableButton, setDisableButton] = useState(false);
+  const flatList = React.useRef(null);
 
   // =============== Getting data from reducer ========================
   const { chatSuccess, isChatLoading, error } = useSelector(state => state.chatReducer);
@@ -26,15 +25,10 @@ const AiChat = () => {
   const RightBubble = (props) => {
     const { item } = props;
     return (
-      <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', flexDirection: 'row' }}>
+      <View style={styles.rightBubbleContainer}>
         <View
           style={styles.timeFormat}>
-          <Text style={styles.statusText}>
-            {`${item.time.getHours()}:${item.time.getMinutes() < 10
-              ? '0' + item.time.getMinutes()
-              : item.time.getMinutes()
-              }`}
-          </Text>
+          <Text style={styles.statusText}>{item.time}</Text>
         </View>
         <View style={[styles.talkBubble, { marginRight: 10, }]}>
           <View
@@ -62,7 +56,7 @@ const AiChat = () => {
   const LeftBubble = (props) => {
     const { item } = props;
     return (
-      <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'row' }}>
+      <View style={styles.leftBubbleContainer}>
         <View style={[styles.talkBubble, { marginLeft: 10, }]}>
           <View
             style={[
@@ -71,24 +65,23 @@ const AiChat = () => {
           />
           <View
             style={styles.textContainer}>
-            <Text
-              style={{
-                color: Colors.black,
-                fontSize: 14,
-                // fontFamily: Fonts.extralight,
-              }}>
-              {item.message}
-            </Text>
+            {item.type == 'Hold' && item.message == ''
+              ?
+              <Image source={ImagesSrc.typingLoading} style={styles.isLoading} alt="loading..." />
+              :
+              <Text
+                style={{
+                  color: Colors.black,
+                  fontSize: 14,
+                }}>
+                {item.message}
+              </Text>
+            }
           </View>
         </View>
         <View
           style={styles.timeFormat}>
-          <Text style={styles.statusText}>
-            {`${item.time.getHours()}:${item.time.getMinutes() < 10
-              ? '0' + item.time.getMinutes()
-              : item.time.getMinutes()
-              }`}
-          </Text>
+          <Text style={styles.statusText}>{item.time}</Text>
         </View>
       </View>
     );
@@ -108,40 +101,39 @@ const AiChat = () => {
     );
   }
 
-  // ===================== Time Conversion ===================================
-  const convertTime = (time) => {
-    var date, hour, minutes, fullTime;
-    date = time;
-    hour = date.getHours();
-    if (hour > 12)
-      hour = hour - 12;
-    if (hour == 0)
-      hour = 12;
-    minutes = date.getMinutes();
-    if (minutes < 10)
-      minutes = '0' + minutes.toString();
-    fullTime = hour.toString() + ':' + minutes.toString();
-    return fullTime;
-  }
-
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
-    // let Time = convertTime(time)
+    let timeConversion = time.toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     if (msg && msg != '') {
       let sendObj = {
         message: msg,
         type: 'sender',
-        time: time
+        time: timeConversion,
       };
-      setChatMessage([...chatMessage, sendObj]);
-      dispatch(AIChatResponse(msg, selectedLanguageItem.language_display))
+      let holdResp = {
+        message: '',
+        type: 'Hold',
+      }
+      setChatMessage(chatMessage => [...chatMessage, sendObj, holdResp]);
+      setDisableButton(true);
+      console.log('Before Slice : ', chatMessage);
+      dispatch(getAiChat(msg, selectedLanguageItem.language_display))
         .then(chatResp => {
+          // chatMessage.pop();
+          setChatMessage((previousObj) => (previousObj.slice(0, -1)));
           let receiveObj = {
             message: chatResp,
             type: 'receiver',
-            time: time
+            time: timeConversion
           }
-          setChatMessage([...chatMessage, sendObj, receiveObj]);
+          console.log('THis is Receiver Object : ', receiveObj);
+          console.log('chatMessage', chatMessage);
+          setChatMessage(chatMessage => [...chatMessage, receiveObj]);
+          setDisableButton(false);
         })
         .catch(err => {
           console.log('Chat response error', err);
@@ -152,43 +144,56 @@ const AiChat = () => {
   }
 
   //=====================(Main return Function)=============================
+
   return (
     <SafeAreaView style={styles.mainContainer}>
-
       <AppHeader
         title={translate("common.AIChat")}
         showBackButton
         isWhite
-        containerStyle={{ backgroundColor: Colors.themeColor }}
+        containerStyle={{ backgroundColor: Colors.themeColor, }}
       />
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollContent}
-        KeyboardShiftStyle={styles.keyboardShift}>
+      <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : undefined } style={{ flex: 1,  }} enabled 
+        // keyboardVerticalOffset={
+        //   Platform.select({
+        //     ios: () => 0,
+        //     android: () => -200
+        //   })()
+        // }
+        >
         <View style={styles.chatContainer}>
           <FlatList
+            ref={flatList}
+            onContentSizeChange={(item, index) => {
+              flatList.current.scrollToEnd({ animated: true });
+              flatList.current.scrollToOffset({ animated: true, offset: index });
+            }}
             data={chatMessage}
             renderItem={({ item }) => (
               <ShowChatMessage item={item} />
             )}
             keyExtractor={(item, index) => { return `_${index}` }}
+            onLayout={() => flatList.current.scrollToEnd({ animated: true })}
+            showsVerticalScrollIndicator={false}
           />
         </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder={translate("common.enterMessage")}
-            value={message}
-            onChangeText={text => setMessage(text)}
-            placeholderTextColor={Colors.themeColor}
-          />
-          <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage(message, new Date())} >
-            <Image style={[styles.icon, { tintColor: Colors.themeColor }]} source={ImagesSrc.sendChatMessage} />
-          </TouchableOpacity>
-        </View>
-      </KeyboardAwareScrollView>
-
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder={translate("common.enterMessage")}
+              value={message}
+              onChangeText={text => setMessage(text)}
+              placeholderTextColor={Colors.themeColor}
+              // autoCorrect={false}
+              // autoComplete="off"
+            />
+            <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage(message, new Date())} disabled={disableButton}>
+              <Image style={[styles.icon, { tintColor: Colors.themeColor }]} source={ImagesSrc.sendChatMessage} />
+            </TouchableOpacity>  
+          </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
+
   )
 }
 
