@@ -93,7 +93,7 @@ function discoverItem({
     item
 }) {
     // console.log("🚀 ~ file: discoverItem.js ~ line 126 ~ item", item)
-    const { wallet, data } = useSelector(state => state.UserReducer);
+    const { wallet, userData } = useSelector(state => state.UserReducer);
     const navigation = useNavigation();
     const [isPlay, setPlay] = useState(false);
     const refVideo = useRef(null);

@@ -772,7 +772,7 @@ const DetailScreen = ({ navigation, route }) => {
       return (
         <View style={styles.buybutton}>
           <GroupButton
-            leftText={translate('common.cancelSell')}
+            leftText={'Cancel Resell'}
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => { }}

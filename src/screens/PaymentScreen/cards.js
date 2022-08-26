@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,19 +8,19 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {formatWithMask, Masks} from 'react-native-mask-input';
-import {useDispatch, useSelector} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
+import { formatWithMask, Masks } from 'react-native-mask-input';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
-import {CardItem} from './screenComponents';
-import {hp, wp, RF} from '../../constants/responsiveFunct';
+import { CardItem } from './screenComponents';
+import { hp, wp, RF } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import CardView from '../../components/cardView';
 import ImagesSrc from '../../constants/Images';
-import {confirmationAlert, alertWithSingleBtn} from '../../common/function';
+import { confirmationAlert, alertWithSingleBtn } from '../../common/function';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -31,7 +31,7 @@ import {
   getAllCards,
   deleteCard,
 } from '../../store/reducer/paymentReducer';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import { numberWithCommas } from '../../utils';
 
 const PriceBtns = props => {
@@ -42,9 +42,9 @@ const PriceBtns = props => {
   );
 };
 
-const Cards = ({route, navigation}) => {
-  const {data} = useSelector(state => state.UserReducer);
-  const {paymentObject, myCards} = useSelector(state => state.PaymentReducer);
+const Cards = ({ route, navigation }) => {
+  const { userData } = useSelector(state => state.UserReducer);
+  const { paymentObject, myCards } = useSelector(state => state.PaymentReducer);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -52,7 +52,7 @@ const Cards = ({route, navigation}) => {
   const [defaultCard, _setDefaultCard] = useState(route.params.defaultCard);
   const [loading, setLoading] = useState(false);
 
-  const {price, isCardPay} = route.params;
+  const { price, isCardPay } = route.params;
 
   useEffect(() => {
     if (isFocused) {
@@ -69,7 +69,7 @@ const Cards = ({route, navigation}) => {
 
   const getAllMyCards = () => {
     // setLoading(true);
-    dispatch(getAllCards(data.token))
+    dispatch(getAllCards(userData.access_token))
       .then(cards => {
         if (cards.length <= 0) {
         }
@@ -87,7 +87,7 @@ const Cards = ({route, navigation}) => {
     };
     console.log('params', params);
     setLoading(true);
-    dispatch(deleteCard(data.token, params))
+    dispatch(deleteCard(userData.access_token, params))
       .then(response => {
         console.log('delete response', response);
         if (response.success) {
@@ -121,7 +121,7 @@ const Cards = ({route, navigation}) => {
             source={ImagesSrc.addIcon}
             style={[
               CommonStyles.imageStyles(5),
-              {tintColor: Colors.themeColor},
+              { tintColor: Colors.themeColor },
             ]}
           />
         }
@@ -139,7 +139,7 @@ const Cards = ({route, navigation}) => {
         <FlatList
           style={styles.cardList}
           data={myCards}
-          renderItem={({item, index}) => {
+          renderItem={({ item, index }) => {
             return (
               <CardItem
                 isCheck={
@@ -147,7 +147,7 @@ const Cards = ({route, navigation}) => {
                 }
                 details={item}
                 onSelect={() => {
-                  // dispatch(SetDefaultCard({ cardId: item.id }, data.token)).then((response) => {
+                  // dispatch(SetDefaultCard({ cardId: item.id }, userData.access_token)).then((response) => {
                   //     if (response.success) {
                   //         _setDefaultCard(item);
                   //     }
@@ -174,12 +174,12 @@ const Cards = ({route, navigation}) => {
             return <View style={styles.separator} />;
           }}
           ListEmptyComponent={() => (
-            <View style={{marginTop: hp('5%')}}>
+            <View style={{ marginTop: hp('5%') }}>
               <Button
                 mode={'text'}
                 uppercase={false}
                 color={Colors.themeColor}
-                labelStyle={{fontSize: RF(2), fontFamily: Fonts.ARIAL}}
+                labelStyle={{ fontSize: RF(2), fontFamily: Fonts.ARIAL }}
                 onPress={() => navigation.navigate('AddCard')}>
                 {translate('wallet.common.topup.addYourCard')}
               </Button>
@@ -190,7 +190,7 @@ const Cards = ({route, navigation}) => {
       {isCardPay && (
         <>
           <Separator style={styles.separator} />
-          <View style={styles.totalContainer}> 
+          <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>
               {translate('wallet.common.totalAmount')}
             </Text>
@@ -204,7 +204,7 @@ const Cards = ({route, navigation}) => {
               onPress={() => {
                 // navigation.navigate("AddCard")
                 if (defaultCard) {
-                  console.log("4-Default card selected",defaultCard);
+                  console.log("4-Default card selected", defaultCard);
                   dispatch(
                     setPaymentObject({
                       item: defaultCard,

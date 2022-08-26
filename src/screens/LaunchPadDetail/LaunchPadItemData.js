@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, Platform, FlatList } from 'react-native';
+import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import { C_Image } from '../../components';
 import styles from './styles';
 import { SIZE, SVGS } from 'src/constants';
@@ -132,8 +132,8 @@ export default function LaunchPadItemData(props) {
                 <View style={styles.renderchainstyle}>
                     {renderChain()}
                 </View>
-                {count == 1 ? <Text style={styles.nftCount}>{count ? count : 0} item</Text> :
-                    <Text style={styles.nftCount}>{count ? count : 0} items</Text>}
+                {count <= 1 ? <Text style={styles.nftCount}>{count ? count : 0} Item</Text> :
+                    <Text style={styles.nftCount}>{count ? count : 0} Items</Text>}
                 <Text style={styles.statusText}>
                     {/*{`${items} ` + translate('common.itemsCollection')}*/}
                     {status === 1 ? translate('common.ongoinglaunch') : ''}
@@ -223,7 +223,8 @@ export default function LaunchPadItemData(props) {
 
     //=====================(Main return Function)=============================
     return (
-        <FixedTouchableHighlight
+        <TouchableOpacity
+            activeOpacity={1}
             disabled={disabled}
             onPress={handleOnPress}
             style={styles.collectionListItem}>
@@ -235,6 +236,6 @@ export default function LaunchPadItemData(props) {
                     {renderChainIconNstatus()}
                 </View>
             </View>
-        </FixedTouchableHighlight>
+        </TouchableOpacity>
     );
 }

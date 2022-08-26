@@ -15,7 +15,7 @@ import { nftDataCollectionLoadSuccess } from "../../store/actions/nftDataCollect
 import axios from 'axios';
 
 function ExploreScreen() {
-  const { wallet, data } = useSelector(state => state.UserReducer);
+  const { wallet, userData } = useSelector(state => state.UserReducer);
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -24,7 +24,7 @@ function ExploreScreen() {
   const [footerLoader, setFooterLoader] = useState(false);
   const [noMore, setNoMore] = useState(false);
   const [isFetching, toggleFetching] = useState(false);
-  const owner = wallet?.address || data?.user?._id;
+  const owner = wallet?.address || userData?.user?.id;
 
   useEffect(() => {
     setLoader(true)

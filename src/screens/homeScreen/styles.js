@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    artistLoader1: {
+        top: hp('3%'),
+        left: wp('2%'),
+        width: '100%',
+    },
     imageListCont: {
         flexDirection: "row",
         flexWrap: "wrap",
@@ -92,7 +97,16 @@ const styles = StyleSheet.create({
         alignSelf: 'baseline'
     },
     fabItemStyle: {
-        backgroundColor: Colors.white
+        backgroundColor: Colors.WHITE4,
+    },
+    fabItemStyle1: {
+        backgroundColor: Colors.themeColor,
+    },
+    fabLabelStyle: {
+        backgroundColor: Colors.WHITE4
+    },
+    fabLabelStyle1: {
+        backgroundColor: Colors.themeColor,
     },
     collectionTab: {
         width: '100%',

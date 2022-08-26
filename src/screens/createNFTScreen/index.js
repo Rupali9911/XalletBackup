@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, SafeAreaView, Text, TouchableOpacity, Platform} from 'react-native';
+import { View, SafeAreaView, Text, TouchableOpacity, Platform } from 'react-native';
 import styles from './styles';
 import { colors, fonts } from '../../res';
 import { AppHeader, LoaderIndicator } from '../../components';
@@ -27,7 +27,7 @@ import moment from "moment";
 const CreateNFTScreen = ({ route }) => {
 
   const routeParams = route.params;
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const isNonCrypto = useSelector(state => state.UserReducer?.userData?.user?.isNonCrypto);
   const [loading, setLoading] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,7 +42,7 @@ const CreateNFTScreen = ({ route }) => {
   const [nftItem, setnftItem] = useState(null);
 
   const [index, setIndex] = useState(0);
-  const routes = userRole === 'crypto' ?
+  const routes = isNonCrypto === 0 ?
     [
       { key: 'Collection', title: translate("wallet.common.collection") },
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
@@ -222,7 +222,7 @@ const CreateNFTScreen = ({ route }) => {
             // locale={"en"}
             // is24hourSource={"locale"}
             onConfirm={date => {
-              console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))
+              console.log("Date Console on conform", moment(date).format('MMMM Do YYYY, h:mm:ss a'))
               setDate(date)
               setDateVisible(false)
             }}

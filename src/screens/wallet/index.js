@@ -43,7 +43,7 @@ var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
 const Wallet = ({ route, navigation }) => {
-  const { wallet, isCreate, data, isBackup } = useSelector(
+  const { wallet, isCreate, userData, isBackup } = useSelector(
     state => state.UserReducer,
   );
   const {
@@ -99,7 +99,7 @@ const Wallet = ({ route, navigation }) => {
           if (success) console.log('Successfully unsubscribed!');
         });
     }
-    console.log('wallet use effect', data, wallet);
+    console.log('wallet use effect', userData, wallet);
   }, [isFocused]);
 
   useEffect(() => {
@@ -231,12 +231,12 @@ const Wallet = ({ route, navigation }) => {
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
       let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
-      let value=""
-      if (networkType=='testnet'){
-         value = maticValue + talValue + usdctValue ;
-      }else{
+      let value = ""
+      if (networkType == 'testnet') {
+        value = maticValue + talValue + usdctValue;
+      } else {
         let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-        value = maticValue + talValue + usdctValue + wethValue ;
+        value = maticValue + talValue + usdctValue + wethValue;
       }
       totalValue = value;
 
@@ -325,7 +325,7 @@ const Wallet = ({ route, navigation }) => {
             BNB: responses[0],
             ETH: responses[1],
             MATIC: responses[2],
-            ALIA: parseFloat(responses[0])/ parseFloat(responses[3]),
+            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
           };
           setCurrencyPriceDollar(balances);
           setLoading(false);

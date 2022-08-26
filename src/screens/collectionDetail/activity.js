@@ -221,11 +221,10 @@ const Activity = ({ route }) => {
                                 (!isLoading && collectionList.length > 0 ? (<Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                                     <Row
                                         data={tradingTableHead}
-                                        // style={{ marginBottom: hp(0.5) }}
-                                        textStyle={{ marginLeft: 5, fontSize: SIZE(15) }}
-                                        widthArr={[195, 140, 180, 140, 120, 145]}
-                                        height={hp(4)}
-
+                                        style={{ marginBottom: hp(0.5) }}
+                                        textStyle={{ marginLeft: 5 }}
+                                        widthArr={[170, 100, 180, 140, 120, 140]}
+                                        height={hp(2.5)}
                                     />
                                     {isArray && !isLoading && collectionList.length > 0 ? (
                                         collectionList.reverse().map((rowData, rowIndex) => {

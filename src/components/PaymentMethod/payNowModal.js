@@ -45,7 +45,7 @@ const PaymentNow = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { data, wallet } = useSelector(state => state.UserReducer);
+  const { userData, wallet } = useSelector(state => state.UserReducer);
 
   const {
     initPaymentSheet,
@@ -103,7 +103,7 @@ const PaymentNow = props => {
       chainType: chain || 'binance',
     };
     console.log('params', params);
-    dispatch(getPaymentIntent(data.token, params))
+    dispatch(getPaymentIntent(userData.access_token, params))
       .then(async res => {
         console.log('108 _getPaymentIntent :res', res);
         if (res.success) {
@@ -137,7 +137,7 @@ const PaymentNow = props => {
           if (res.error) {
             // alertWithSingleBtn(translate(`common.${res.error.code}`));
             // alertWithSingleBtn(nftErrorMessage(res.message));
-            alertWithSingleBtn(translate('common.amountMoreThan')); 
+            alertWithSingleBtn(translate('common.amountMoreThan'));
           } else {
             alertWithSingleBtn(nftErrorMessage(res.data));
           }
@@ -219,7 +219,7 @@ const PaymentNow = props => {
       chainType: chain || 'binance',
     };
 
-    dispatch(getTransactionHash(data.token, params))
+    dispatch(getTransactionHash(userData.access_token, params))
       .then(_hash_res => {
         console.log('223 CheckPaymentStatus: _hash_res', _hash_res);
         if (_hash_res.success) {
@@ -242,7 +242,7 @@ const PaymentNow = props => {
       previousOwnerId: ownerId,
     };
 
-    dispatch(updateTransactionSuccess(data.token, params))
+    dispatch(updateTransactionSuccess(userData.access_token, params))
       .then(success_res => {
         console.log('246 transactionSuccess: success_res', success_res);
         if (success_res.success) {

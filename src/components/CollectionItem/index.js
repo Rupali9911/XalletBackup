@@ -110,7 +110,7 @@ export default function CollectionItem(props) {
   }
 
   return (
-    <FixedTouchableHighlight onPress={handleOnPress} style={styles.collectionListItem}>
+    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem} activeOpacity={1}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
@@ -147,14 +147,14 @@ export default function CollectionItem(props) {
           <View style={collectionTab ? styles.bottomWrap2 :  styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            {count == 1 ? <Text style={styles.count}>{count ? count : 0} item</Text> :
-            <Text style={styles.count}>{count ? count : 0} items</Text>}
+            {count <= 1 ? <Text style={styles.count}>{count ? count : 0} Item</Text> :
+            <Text style={styles.count}>{count ? count : 0} Items</Text>}
             {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>} */}
           </View>
         </View>
       </View>
-    </FixedTouchableHighlight>
+    </TouchableOpacity>
   );
 }

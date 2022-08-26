@@ -1,5 +1,5 @@
 import
-    React, { useEffect, useState } from 'react';
+React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, ImageBackground } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -13,14 +13,18 @@ import HintText from '../../components/hintText';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
 import { SIZE } from 'src/constants';
-import { startLoader, endLoader, getAddressNonce } from '../../store/reducer/userReducer';
+import { loginExternalWallet } from '../../store/reducer/userReducer';
 import { useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import { alertWithSingleBtn } from '../../common/function';
-
-const ethers = require('ethers');
+import "react-native-get-random-values"
+import "@ethersproject/shims"
+import { ethers } from "ethers";
+import bip39 from 'react-native-bip39'
+import { hdkey } from 'ethereumjs-wallet'
+const Web3 = require('web3');
 
 const Backup = ({ navigation }) => {
 
@@ -36,21 +40,32 @@ const Backup = ({ navigation }) => {
     }, []);
 
     const getPhraseData = async () => {
-        var randomSeed = ethers.Wallet.createRandom();
-            const account = {
-                mnemonic: randomSeed.mnemonic,
-                address: randomSeed.address,
-                privateKey: randomSeed.privateKey
-            }
-            console.log(randomSeed.mnemonic);
-            console.log(randomSeed.address);
-            console.log(randomSeed.privateKey);
-            setWallet(account);
-            setLoading(false);
+        let randomSeed = await bip39.generateMnemonic()
+        const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(randomSeed));
+        const path = "m/44'/60'/0'/0/0";
+        const wallet = hdwallet.derivePath(path).getWallet();
+        const address = `0x${wallet.getAddress().toString('hex')}`;
+        const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
+        var web3 = new Web3(Web3.givenProvider);
+        const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey);
+        // console.log('HD wallet ----------------->', hdwallet)
+        // console.log('wallet ----------------->', wallet)
+        // console.log('address ----------------->', address)
+        // console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
+        const account = {
+            mnemonic: {
+                phrase: randomSeed
+            },
+            address: address,
+            privateKey: privateKey,
+            signature: signature.signature
+        }
+        setWallet(account);
+        setLoading(false);
     }
 
     const saveWallet = () => {
-        dispatch(getAddressNonce(wallet, false, true))
+        dispatch(loginExternalWallet(wallet, false, true))
             .then(() => { })
             .catch((err) => {
                 alertWithSingleBtn(translate('wallet.common.alert'), translate("wallet.common.tryAgain"));

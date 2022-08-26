@@ -106,7 +106,7 @@ const TabComponent = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-  const { data } = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
 
 
   return (
@@ -165,7 +165,7 @@ const TabComponent = () => {
         component={Discover}
         options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
-      {data?.user?.role === 'crypto' &&
+      {userData?.user?.isNonCrypto === 0 &&
         <Tab.Screen
           name={'Wallet'}
           options={{ tabBarLabel: translate('wallet.common.wallet') }}
@@ -187,7 +187,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const { wallet, passcode, mainLoader, showSplash, data } = useSelector(
+  const { wallet, passcode, mainLoader, showSplash, userData } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -264,7 +264,7 @@ const AppRoutes = () => {
   }
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
-      {wallet || (Object.keys(data).length !== 0 && data.hasOwnProperty("user") && data?.user?.role === "non_crypto") ? (
+      {userData ? (
         <Stack.Navigator
           initialRouteName={initialRoute}
           headerMode="none"

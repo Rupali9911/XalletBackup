@@ -27,7 +27,7 @@ const SellNFT = ({ route, navigation }) => {
 
     const { nftDetail } = route.params;
 
-    const { wallet, data } = useSelector(state => state.UserReducer);
+    const { wallet, userData } = useSelector(state => state.UserReducer);
     const [sellFormat, setSellFormat] = useState(FIXED_PRICE);
     const [baseCurrency, setBaseCurrency] = useState(null);
     const [price, setPrice] = useState('');
