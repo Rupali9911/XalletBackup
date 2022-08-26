@@ -23,6 +23,7 @@ import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 import { setConnectedApps } from './walletReducer';
+import { ApiRequest } from '../../helpers/ApiRequest';
 import { reject } from 'lodash';
 import { resolve } from 'path-browserify';
 
@@ -32,7 +33,7 @@ const initialState = {
   mainLoader: false,
   wallet: null,
   isCreate: false,
-  data: {},
+  userData: null,
   passcode: '',
   passcodeAsync: '',
   passcodeAsyncStatus: false,
@@ -103,7 +104,7 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         wallet: action.payload.wallet,
-        data: action.payload.data,
+        userData: action.payload.data,
         isCreate: action.payload.isCreate,
         showSuccess: action.payload.showSuccess,
         loading: false,
@@ -117,11 +118,11 @@ export default UserReducer = (state = initialState, action) => {
       };
 
     case UPDATE_PROFILE:
-      let _data = state.data;
+      let _data = state.userData;
       _data.user = action.payload;
       return {
         ...state,
-        data: { ..._data },
+        userData: { ..._data },
       };
 
     case UPDATE_BACKUP:
@@ -401,25 +402,20 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
   new Promise((resolve, reject) => {
     // console.log("@@@ wallet in loginExternalWallet Func ===========>", wallet)
     const url = `${NEW_BASE_URL}/auth/login-external-wallet`;
-    const params = {
+    const body = {
       signature: wallet.signature,
       address: wallet.address,
       email: null
     };
-    const request = {
-      method: 'POST',
-      body: JSON.stringify(params),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     };
     // console.log("@@@ Body request ===========>", request)
     dispatch(startLoading());
-    fetch(url, request)
-      .then(res => res.json())
+    ApiRequest(url, 'POST', body, headers)
       .then(async response => {
-        // console.log('@@@ response of loginWithExternalWallet API call =========>', response);
+        console.log('@@@ response of loginWithExternalWallet API call =========>', response);
         if (response.access_token) {
           const items = [
             ['@wallet', JSON.stringify(wallet)],

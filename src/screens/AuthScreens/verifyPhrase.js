@@ -22,7 +22,7 @@ import { translate } from '../../walletUtils';
 const VerifyPhrase = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { wallet } = route.params;
-  const { data } = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const [loading, setLoading] = useState(false);
   const [phrase, setPhrase] = useState([]);
   const [covertWallet, setConvertWallet] = useState([]);
@@ -168,7 +168,7 @@ const VerifyPhrase = ({ route, navigation }) => {
           containerStyle={CommonStyles.button}
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
-            if (data && data.user) {
+            if (userData && userData.user) {
               dispatch(setBackupStatus(true));
               navigation.goBack();
             } else {

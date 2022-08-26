@@ -22,7 +22,7 @@ import axios from 'axios';
 const Draft = ({ route }) => {
     const isFocusedHistory = useIsFocused();
 
-    const { data } = useSelector(
+    const { userData } = useSelector(
         state => state.UserReducer
     );
     const navigation = useNavigation();
@@ -82,7 +82,7 @@ const Draft = ({ route }) => {
 
         const headers = {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${data.token}`,
+            Authorization: `Bearer ${userData.access_token}`,
         };
 
         axios.post(url, obj, { headers: headers })

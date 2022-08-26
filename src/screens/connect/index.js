@@ -18,7 +18,7 @@ import Fonts from '../../constants/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
-import {checkNotifications, openSettings, requestNotifications} from 'react-native-permissions';
+import { checkNotifications, openSettings, requestNotifications } from 'react-native-permissions';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { confirmationAlert } from '../../common/function';
 import SingleSocket from '../../helpers/SingleSocket';
@@ -31,7 +31,7 @@ import { setConnectedApps, setConnectedAppsToLocal, setRequestAppId, setSocketOp
 import { connectStateModal } from '../../store/reducer/userReducer';
 import { getSig } from '../wallet/functions';
 import NotificationActionModal from '../../components/notificationActionModal';
-import {BASE_URL} from "../../common/constants";
+import { BASE_URL } from "../../common/constants";
 import axios from "axios";
 const singleSocket = SingleSocket.getInstance();
 
@@ -68,7 +68,7 @@ const ListItems = (props) => {
             }
         }
 
-        singleSocket &&  singleSocket.isConnected && singleSocket.onSendMessage(_data);
+        singleSocket && singleSocket.isConnected && singleSocket.onSendMessage(_data);
     }
 
     return (
@@ -90,7 +90,7 @@ const Connect = ({ route, navigation }) => {
 
     const { appId } = route.params;
     const dispatch = useDispatch();
-    const { wallet, data, passcode } = useSelector(state => state.UserReducer);
+    const { wallet, userData, passcode } = useSelector(state => state.UserReducer);
     const { socketOpen } = useSelector(state => state.WalletReducer);
 
     const [isSocketConnected, setSocketConnected] = useState(false);
@@ -145,13 +145,13 @@ const Connect = ({ route, navigation }) => {
     // },[]);
 
     useEffect(() => {
-        if(Platform.OS === 'android') {
+        if (Platform.OS === 'android') {
             dispatch(connectStateModal(approveModal));
         }
     }, [approveModal]);
 
     useEffect(() => {
-        if(Platform.OS === 'android') {
+        if (Platform.OS === 'android') {
             dispatch(connectStateModal(showConnectionSuccess));
         }
     }, [showConnectionSuccess]);
@@ -233,7 +233,7 @@ const Connect = ({ route, navigation }) => {
                                         console.log(error.response, "Get Nonce error")
 
                                     });
-                            }else if (response.data.isConnected == 'false') {
+                            } else if (response.data.isConnected == 'false') {
                                 singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
                                 });
                             } else {
@@ -244,7 +244,7 @@ const Connect = ({ route, navigation }) => {
                             let id = response.data.appId;
                             if (id) {
                                 if (connectedApps.includes(id)) {
-                                    alertWithSingleBtn( translate("wallet.common.alert"), translate("wallet.common.error.appAlreadyConnected"));
+                                    alertWithSingleBtn(translate("wallet.common.alert"), translate("wallet.common.error.appAlreadyConnected"));
                                 } else {
                                     // let array = [...connectedApps, ids[1]];
                                     // dispatch(setConnectedAppsToLocal(array));
@@ -273,7 +273,7 @@ const Connect = ({ route, navigation }) => {
 
                         } else if (response.type == 'approve') {
                             alertWithSingleBtn('', translate('wallet.common.error.appNotConnected'));
-                        }else if (response.type == 'remove') {
+                        } else if (response.type == 'remove') {
                             setConnectedApps([]);
                             // navigation.setParams({ appId: null });
                         }
@@ -331,7 +331,7 @@ const Connect = ({ route, navigation }) => {
     }
 
     const disconnectApp = (id, name) => {
-        console.log('id from disconnect spp',id)
+        console.log('id from disconnect spp', id)
         confirmationAlert(
             translate('wallet.common.verification'),
             translate('wallet.common.askDisconnect', { appName: name }),
@@ -416,11 +416,11 @@ const Connect = ({ route, navigation }) => {
                     title={translate('wallet.common.connectionEstablished')}
                     hint={translate('wallet.common.openApp')}
                     btnText={translate('common.OK')}
-                        onClose={() => setConnectionSuccess(false)}
-                        onDonePress={() => {
-                            setConnectionSuccess(false);
-                        }}
-                    />
+                    onClose={() => setConnectionSuccess(false)}
+                    onDonePress={() => {
+                        setConnectionSuccess(false);
+                    }}
+                />
             </AppModal>
         </AppBackground>
     );

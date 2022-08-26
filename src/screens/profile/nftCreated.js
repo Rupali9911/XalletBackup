@@ -42,7 +42,7 @@ const NFTCreated = ({ route }) => {
 
     const { id } = route?.params;
     const { MyNFTReducer } = useSelector(state => state);
-    const { data, wallet } = useSelector(state => state.UserReducer);
+    const { userData, wallet } = useSelector(state => state.UserReducer);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [isFirstRender, setIsFirstRender] = useState(true);
@@ -76,8 +76,8 @@ const NFTCreated = ({ route }) => {
             const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem
-                screenName="myNFT"
-                item={item}
+                    screenName="myNFT"
+                    item={item}
                     image={image}
                     // onLongPress={() => {
                     //     setModalData(item);
@@ -85,7 +85,7 @@ const NFTCreated = ({ route }) => {
                     // }}
                     onPress={() => {
                         // dispatch(changeScreenName('myNFT'));
-                        navigation.navigate('DetailItem', {id: id, index: findIndex, sName: "myNFT" });
+                        navigation.navigate('DetailItem', { id: id, index: findIndex, sName: "myNFT" });
                     }}
                 />
             );

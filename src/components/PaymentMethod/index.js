@@ -43,7 +43,7 @@ const PaymentMethod = props => {
   } = props;
   const [opacity, setOpacity] = useState(0.88);
   const [selectedMethod, setSelectedMethod] = useState(0);
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const isNonCrypto = useSelector(state => state.UserReducer?.userData?.user?.isNonCrypto);
   let currencyLabel = payableIn !== '' ? payableIn : baseCurrency?.key;
 
   return (
@@ -87,7 +87,7 @@ const PaymentMethod = props => {
             {translate('wallet.common.selectPaymentMethod')}
           </Text>
           <ButtonGroup
-            buttons={userRole === 'crypto' ?
+            buttons={isNonCrypto === 0 ?
               [
                 {
                   text: translate('wallet.common.payByCreditCard'),
@@ -138,7 +138,7 @@ const PaymentMethod = props => {
               {translate('wallet.common.totalAmount')}
             </Text>
             <Text style={styles.value}>
-              {userRole === 'crypto' ?
+              {isNonCrypto === 0 ?
                 selectedMethod
                   ?
                   (numberWithCommas(parseFloat(Number(price).toFixed(4)))

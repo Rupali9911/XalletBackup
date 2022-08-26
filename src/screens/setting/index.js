@@ -104,10 +104,10 @@ function Setting({ navigation }) {
   const [showLanguage, setShowLanguage] = useState(false);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const { myCards } = useSelector(state => state.PaymentReducer);
-  const { data } = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
 
   useEffect(() => {
-    dispatch(getAllCards(data.token));
+    dispatch(getAllCards(userData.access_token));
   }, []);
 
   const updateLanguage = (language) => {

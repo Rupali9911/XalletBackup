@@ -1,68 +1,68 @@
-import React, {useState, useEffect} from 'react';
-import {View, ScrollView, Text, Image, TouchableOpacity, Platform} from 'react-native';
-import {colors} from '../../res';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text, Image, TouchableOpacity, Platform } from 'react-native';
+import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
-import {useSelector} from 'react-redux';
-import {createThumbnail} from "react-native-create-thumbnail";
+import { useSelector } from 'react-redux';
+import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-fast-video';
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import moment from 'moment';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import styles from './styles';
-import {CardCont, CardField, CardLabel, CardButton} from './components';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from '../../common/responsiveFunction';
-import {IMAGES} from '../../constants';
-import {networkType as networkStatus} from "../../common/networkType";
-import {fonts} from '../../res';
+import { CardCont, CardField, CardLabel, CardButton } from './components';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../common/responsiveFunction';
+import { IMAGES } from '../../constants';
+import { networkType as networkStatus } from "../../common/networkType";
+import { fonts } from '../../res';
 
 import axios from 'axios';
-import {BASE_URL} from '../../common/constants';
-import {alertWithSingleBtn} from '../../utils';
-import {blockChainConfig} from '../../web3/config/blockChainConfig';
-import {translate} from '../../walletUtils';
-import {setApprovalForAll, nftMakingMethods} from '../wallet/functions';
-import {RF} from '../../constants/responsiveFunct';
+import { BASE_URL } from '../../common/constants';
+import { alertWithSingleBtn } from '../../utils';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { translate } from '../../walletUtils';
+import { setApprovalForAll, nftMakingMethods } from '../wallet/functions';
+import { RF } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
-import {value} from "lodash/seq";
+import { value } from "lodash/seq";
 import { _logout } from '../../store/reducer/userReducer';
 
 const Web3 = require('web3');
 
 const PriceUnits = {
-    ethereum: [{order: "1", name: 'ETH'}, {order: "0", name: 'USDT'}],
-    binance: [{order: "0", name: 'ALIA'}, {order: "1", name: 'BUSD'}, {order: "2", name: 'BNB'}],
-    polygon: [{order: "0", name: 'ALIA'}, {order: "1", name: 'USDC'}, {order: "2", name: 'ETH'}, {
+    ethereum: [{ order: "1", name: 'ETH' }, { order: "0", name: 'USDT' }],
+    binance: [{ order: "0", name: 'ALIA' }, { order: "1", name: 'BUSD' }, { order: "2", name: 'BNB' }],
+    polygon: [{ order: "0", name: 'ALIA' }, { order: "1", name: 'USDC' }, { order: "2", name: 'ETH' }, {
         order: "3",
         name: "MATIC"
     }]
 }
 
 const ImageType = [
-    {name: "Art", type: "2D", code: "common.2DArt"},
-    {name: "Photo", type: "portfolio", code: "common.photo"},
-    {name: "GIF", type: "GIF"},
-    {name: "Movie", type: "movie", code: "common.video"},
+    { name: "Art", type: "2D", code: "common.2DArt" },
+    { name: "Photo", type: "portfolio", code: "common.photo" },
+    { name: "GIF", type: "GIF" },
+    { name: "Movie", type: "movie", code: "common.video" },
 ]
 
 const royalityData = ["2.5%", "5%", "10%"];
 
 const UploadNFT = ({
-                       changeLoadingState,
-                       position,
-                       showModal,
-                       modalItem,
-                       modalScreen,
-                       datePickerPress,
-                       datePickerData,
-                       switchToNFTList,
-                       nftItem
-                   }) => {
+    changeLoadingState,
+    position,
+    showModal,
+    modalItem,
+    modalScreen,
+    datePickerPress,
+    datePickerData,
+    switchToNFTList,
+    nftItem
+}) => {
 
-    const {wallet, data} = useSelector(
+    const { wallet, userData } = useSelector(
         state => state.UserReducer
     );
-    const {networkType} = useSelector(
+    const { networkType } = useSelector(
         state => state.WalletReducer
     );
 
@@ -172,7 +172,7 @@ const UploadNFT = ({
                 setImageTList = ImageType.filter(v => v.name == "GIF")
             } else {
                 imageObjSet.mime = "image"
-                setNftImageThumb({path: item.thumbnailImage})
+                setNftImageThumb({ path: item.thumbnailImage })
                 setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie")
             }
             setNftImage(imageObjSet)
@@ -181,7 +181,7 @@ const UploadNFT = ({
             imageObjSet.mime = "video"
             setImageTList = ImageType.filter(v => v.name == "Movie")
             setNftImage(imageObjSet)
-            setNftImageThumb({path: item.thumbnailImage})
+            setNftImageThumb({ path: item.thumbnailImage })
         }
 
         setImageTypeList(setImageTList)
@@ -238,7 +238,7 @@ const UploadNFT = ({
                 } else if (activeModal === "royality") {
                     setRoyality(modalItem)
                 } else if (activeModal == filterSelect) {
-                    let filterItem = {...filterItemActive};
+                    let filterItem = { ...filterItemActive };
                     filterItem[activeModal] = modalItem;
                     setFilterItemActive(filterItem);
                     setFilterSelect("")
@@ -252,9 +252,9 @@ const UploadNFT = ({
     }, [modalItem])
 
     useEffect(() => {
-        
+
         if (modalScreen === "uploadNFT" && datePickerData) {
-            
+
             if (datePickerData !== "closed") {
                 if (activeModal === "startTime") {
                     setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
@@ -295,7 +295,7 @@ const UploadNFT = ({
             let filterArray = filters.filter(
                 item => item.filter_name == filters[i]?.filter_name
             );
-            newArray.push({name: filterName, values: filterArray});
+            newArray.push({ name: filterName, values: filterArray });
         }
         return newArray;
     };
@@ -304,13 +304,13 @@ const UploadNFT = ({
         try {
             const headers = {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${data.token}`,
+                Authorization: `Bearer ${userData.access_token}`,
             };
             const url = `${BASE_URL}/user/get-Filter-collection`;
             const dataToSend = {
                 collectionId: id,
             };
-            let result = await axios.post(url, dataToSend, {headers: headers});
+            let result = await axios.post(url, dataToSend, { headers: headers });
             // console.log(result, "get filter list")
             if (result?.data?.success) {
                 let returnedArr = setMainFiltersData(result?.data?.data);
@@ -327,8 +327,8 @@ const UploadNFT = ({
     }
 
     const getCollectionList = async () => {
-        if (data.token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        if (userData.access_token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
             axios.defaults.headers.post['Content-Type'] = 'application/json';
             const url = `${BASE_URL}/user/view-collection`;
             const body = {
@@ -373,7 +373,7 @@ const UploadNFT = ({
                             translate("wallet.common.alert"),
                             translate('common.sessionexpired')
                         )
-                      }
+                    }
                 })
         }
     };
@@ -435,7 +435,7 @@ const UploadNFT = ({
             .then(response => {
                 cropImage(response)
             })
-            .catch(err => console.log({err}));
+            .catch(err => console.log({ err }));
     }
 
     const changeToggle = (v) => {
@@ -455,10 +455,10 @@ const UploadNFT = ({
             return datares;
 
         } else {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
 
             let formData = new FormData();
-            formData.append('image', {uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime});
+            formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
 
             axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
@@ -528,7 +528,7 @@ const UploadNFT = ({
             name: nftName,
             description: nftDesc,
             image: image1,
-            properties: {type: nftImageType.type},
+            properties: { type: nftImageType.type },
             totalSupply: nftSupply,
             thumbnft: image2,
             externalLink: nftExternalLink,
@@ -559,18 +559,18 @@ const UploadNFT = ({
     }
 
     const handleCreate = async () => {
-        if (data.token) {
+        if (userData.access_token) {
             changeLoadingState(true);
 
             const imageRes = await uploadImageToStorage();
-            console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+",imageRes)
+            console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+", imageRes)
             if (imageRes) {
 
                 const infuraRes = await handleInfura(imageRes.image1, imageRes.image2);
 
                 if (infuraRes) {
                     let hashResp = infuraRes.data;
-                    console.log("#@#@#@#@#@#@ infura res #@#@#@#@#@#@#@",hashResp)
+                    console.log("#@#@#@#@#@#@ infura res #@#@#@#@#@#@#@", hashResp)
                     let web3 = new Web3(providerUrl);
 
                     let approvalCheckContract = new web3.eth.Contract(
@@ -580,8 +580,8 @@ const UploadNFT = ({
                     approvalCheckContract.methods
                         .isApprovedForAll(wallet?.address, MarketContractAddress)
                         .call((err, res) => {
-                            console.log(res,":::::::approval response")
-                            console.log(err,":::::::error")
+                            console.log(res, ":::::::approval response")
+                            console.log(err, ":::::::error")
                             if (!err) {
 
                                 if (!res) {
@@ -606,13 +606,13 @@ const UploadNFT = ({
                                             }
 
                                         }).catch((err) => {
-                                        changeLoadingState(false);
+                                            changeLoadingState(false);
 
-                                        alertWithSingleBtn(
-                                            translate("wallet.common.alert"),
-                                            translate("wallet.common.insufficientFunds")
-                                        );
-                                    });
+                                            alertWithSingleBtn(
+                                                translate("wallet.common.alert"),
+                                                translate("wallet.common.insufficientFunds")
+                                            );
+                                        });
 
                                 } else {
                                     console.log("####################toggle Button#################", toggleButton)
@@ -776,13 +776,13 @@ const UploadNFT = ({
                 }
 
             }).catch((err) => {
-            changeLoadingState(false);
+                changeLoadingState(false);
 
-            alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                translate("wallet.common.insufficientFunds")
-            );
-        });
+                alertWithSingleBtn(
+                    translate("wallet.common.alert"),
+                    translate("wallet.common.insufficientFunds")
+                );
+            });
     }
 
     const getMarketContract = () => {
@@ -797,11 +797,11 @@ const UploadNFT = ({
             MarketContractAddress
         );
 
-        return {marketContract, web3}
+        return { marketContract, web3 }
     }
 
     const saveDraft = async () => {
-        if (data.token) {
+        if (userData.access_token) {
             changeLoadingState(true);
 
             const imageRes = await uploadImageToStorage();
@@ -819,7 +819,7 @@ const UploadNFT = ({
             description: nftDesc,
             image: res,
             thumbnailImage: res2,
-            properties: {type: nftImageType.type},
+            properties: { type: nftImageType.type },
             salesType: toggleButton,
             minPrice: fixedPrice,
             startTime:
@@ -895,10 +895,10 @@ const UploadNFT = ({
                                     nftImage.mime.includes("image") ?
                                         <Image
                                             style={styles.completeImage}
-                                            source={{uri: nftImage.path}}
+                                            source={{ uri: nftImage.path }}
                                         /> :
                                         <Video
-                                            source={{uri: nftImage.path}}
+                                            source={{ uri: nftImage.path }}
                                             style={styles.completeImage}
                                             resizeMode="contain"
                                         />
@@ -915,7 +915,7 @@ const UploadNFT = ({
                                     <Text
                                         style={[
                                             styles.bannerDes,
-                                            {textAlign: 'center'},
+                                            { textAlign: 'center' },
                                         ]}>
                                         {translate("common.mediaOnDevice")}
                                     </Text> : null
@@ -936,7 +936,7 @@ const UploadNFT = ({
                                         <View style={styles.saveBtnGroup}>
                                             <CardButton
                                                 label={translate("wallet.common.remove")}
-                                                buttonCont={{width: '48%'}}
+                                                buttonCont={{ width: '48%' }}
                                                 onPress={() => {
                                                     setNftImage(null);
                                                     setImageError("");
@@ -948,23 +948,23 @@ const UploadNFT = ({
                                             <CardButton
                                                 onPress={onPhoto}
                                                 border={colors.BLUE6}
-                                                buttonCont={{width: '48%'}}
+                                                buttonCont={{ width: '48%' }}
                                                 label={translate("common.change")}
                                             />
                                         </View>
                                         {
                                             !nftImage.mime.includes("gif") ?
-                                                <View style={{flexDirection: "row", marginTop: hp(2)}}>
+                                                <View style={{ flexDirection: "row", marginTop: hp(2) }}>
                                                     <View style={styles.thumbNail}>
                                                         <Image
-                                                            source={nftImageThumb ? {uri: nftImageThumb.path} : IMAGES.imagePlaceholder}
-                                                            style={styles.completeImage}/>
+                                                            source={nftImageThumb ? { uri: nftImageThumb.path } : IMAGES.imagePlaceholder}
+                                                            style={styles.completeImage} />
                                                     </View>
-                                                    <View style={{flex: 1, justifyContent: "center"}}>
+                                                    <View style={{ flex: 1, justifyContent: "center" }}>
                                                         <TouchableOpacity onPress={() => {
                                                             nftImage ? nftImage.mime.includes("image") ?
-                                                                    cropImage(nftImage) :
-                                                                    videoCropping(nftImage)
+                                                                cropImage(nftImage) :
+                                                                videoCropping(nftImage)
                                                                 : null
                                                         }}>
                                                             <Text
@@ -988,11 +988,11 @@ const UploadNFT = ({
                     <CardCont>
                         <CardLabel>{translate("common.nftName")}</CardLabel>
                         <CardField
-                            inputProps={{value: nftName, onChangeText: e => setNftName(e)}}
+                            inputProps={{ value: nftName, onChangeText: e => setNftName(e) }}
                         />
                         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
                         <CardField
-                            inputProps={{value: collection ? collection.collectionName : ""}}
+                            inputProps={{ value: collection ? collection.collectionName : "" }}
                             onPress={() => {
                                 setActiveModal("collection")
                                 showModal({
@@ -1002,7 +1002,7 @@ const UploadNFT = ({
                                 })
                             }}
                             showRight
-                            pressable/>
+                            pressable />
                         <CardLabel>{translate("wallet.common.descriptionCreate")}</CardLabel>
                         <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
                         <CardField
@@ -1012,16 +1012,16 @@ const UploadNFT = ({
                                 value: nftDesc,
                                 onChangeText: e => nftDesc.length <= 150 ? setNftDesc(e.slice(0, 150)) : null
                             }}
-                            contStyle={{height: hp('15%')}}
+                            contStyle={{ height: hp('15%') }}
                         />
                     </CardCont>
 
                     <CardCont>
                         <CardLabel>{translate("wallet.common.network")}</CardLabel>
-                        <CardField inputProps={{value: networkTypeStatus, editable: false}}/>
+                        <CardField inputProps={{ value: networkTypeStatus, editable: false }} />
                         <CardLabel>{translate("wallet.common.basePrice")}</CardLabel>
                         <CardField
-                            inputProps={{value: basePrice ? basePrice.name : translate("wallet.common.selectBasePrice")}}
+                            inputProps={{ value: basePrice ? basePrice.name : translate("wallet.common.selectBasePrice") }}
                             onPress={() => {
                                 setActiveModal("basePrice")
                                 showModal({
@@ -1038,7 +1038,7 @@ const UploadNFT = ({
                                 <>
                                     <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
                                     <CardField
-                                        inputProps={{value: translate("wallet.common.selectCurrency")}}
+                                        inputProps={{ value: translate("wallet.common.selectCurrency") }}
                                         onPress={() => {
                                             setActiveModal("otherCurrency")
                                             let priceList = [...PriceUnits[networkType.value]];
@@ -1091,7 +1091,7 @@ const UploadNFT = ({
                                                                 label={priceObj.name}
                                                             />
                                                             <MaterialIcon style={styles.negIcon}
-                                                                          name="remove-circle-outline"/>
+                                                                name="remove-circle-outline" />
                                                         </View>
                                                     )
                                                 })
@@ -1105,7 +1105,7 @@ const UploadNFT = ({
                     <CardCont>
                         <CardLabel>{translate("wallet.common.nftType")}</CardLabel>
                         <CardField
-                            inputProps={{value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code) : nftImageType.name) : translate("common.type")}}
+                            inputProps={{ value: nftImageType ? (nftImageType.hasOwnProperty("code") ? translate(nftImageType.code) : nftImageType.name) : translate("common.type") }}
                             onPress={() => {
                                 setActiveModal("nftType")
                                 showModal({
@@ -1116,19 +1116,19 @@ const UploadNFT = ({
                                 })
                             }}
                             pressable
-                            showRight/>
+                            showRight />
                         {
                             collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
                                 <>
                                     <CardLabel>{translate("wallet.common.royality")}</CardLabel>
                                     <CardField
-                                        inputProps={{value: royality}}
+                                        inputProps={{ value: royality }}
                                         onPress={() => {
                                             setActiveModal("royality")
-                                            showModal({data: royalityData, title: translate("wallet.common.royality")})
+                                            showModal({ data: royalityData, title: translate("wallet.common.royality") })
                                         }}
                                         pressable
-                                        showRight/>
+                                        showRight />
                                 </>
                                 : null
                         }
@@ -1140,11 +1140,11 @@ const UploadNFT = ({
                                         <CardLabel>{fList.name}</CardLabel>
                                         {fList.values.length == 1 ?
                                             <CardField
-                                                inputProps={{value: fList?.values?.[0].filter_value, editable: false}}
+                                                inputProps={{ value: fList?.values?.[0].filter_value, editable: false }}
                                             />
                                             :
                                             <CardField
-                                                inputProps={{value: filterItemActive.hasOwnProperty(fList.name) ? filterItemActive[fList.name].filter_value : ""}}
+                                                inputProps={{ value: filterItemActive.hasOwnProperty(fList.name) ? filterItemActive[fList.name].filter_value : "" }}
                                                 onPress={() => {
                                                     setActiveModal(fList.name)
                                                     setFilterSelect(fList.name)
@@ -1155,7 +1155,7 @@ const UploadNFT = ({
                                                     })
                                                 }}
                                                 pressable
-                                                showRight/>
+                                                showRight />
                                         }
                                     </View>
                                 )
@@ -1171,12 +1171,12 @@ const UploadNFT = ({
                                 onPress={() => changeToggle("fixPrice")}
                                 border={toggleButton !== "fixPrice" ? colors.BLUE6 : null}
                                 label={translate("common.fixedPrice")}
-                                buttonCont={{width: '48%'}}
+                                buttonCont={{ width: '48%' }}
                             />
                             <CardButton
                                 onPress={() => changeToggle("timeAuction")}
                                 border={toggleButton !== "timeAuction" ? colors.BLUE6 : null}
-                                buttonCont={{width: '48%'}}
+                                buttonCont={{ width: '48%' }}
                                 label={translate("wallet.common.auctionnew")}
                             />
                         </View>
@@ -1188,7 +1188,7 @@ const UploadNFT = ({
                                 <>
                                     <CardLabel>{translate("common.fixedPrice")}</CardLabel>
                                     <CardField
-                                        contStyle={{paddingRight: 0}}
+                                        contStyle={{ paddingRight: 0 }}
                                         inputProps={{
                                             value: fixedPrice,
                                             onChangeText: changePrice,
@@ -1199,7 +1199,7 @@ const UploadNFT = ({
                                         rightComponent={
                                             <CardButton
                                                 disable
-                                                buttonCont={{width: '15%', borderRadius: 0}}
+                                                buttonCont={{ width: '15%', borderRadius: 0 }}
                                                 label={basePrice ? basePrice.name : "ALIA"}
                                             />
                                         }
@@ -1208,33 +1208,33 @@ const UploadNFT = ({
                                 <>
                                     <CardLabel>{translate("wallet.common.auctionTime")}</CardLabel>
 
-                                    <CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                    <CardLabel style={{ fontFamily: fonts.PINGfANG }}>
                                         {translate("wallet.common.openTime")}
                                     </CardLabel>
                                     <CardField
 
-                                        
 
-                                        inputProps={{value: ( startTimeDate ? moment(startTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " " )}}
+
+                                        inputProps={{ value: (startTimeDate ? moment(startTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " ") }}
                                         onPress={() => {
                                             setActiveModal("startTime")
                                             setEndTimeDate("")
                                             datePickerPress(new Date())
                                         }}
                                         pressable
-                                        showRight/>
+                                        showRight />
                                     {Platform.OS === "android" ? startTimeDate > endTimeDate ?
-                                        <CardLabel style={{fontFamily: fonts.PINGfANG, color: "red"}}>
+                                        <CardLabel style={{ fontFamily: fonts.PINGfANG, color: "red" }}>
                                             {translate("wallet.common.closeTime") + "* (" + translate("wallet.common.closeTimeWarn") + ")"}
-                                        </CardLabel> : <CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                        </CardLabel> : <CardLabel style={{ fontFamily: fonts.PINGfANG }}>
                                             {translate("wallet.common.closeTime")}
-                                        </CardLabel> : <CardLabel style={{fontFamily: fonts.PINGfANG}}>
+                                        </CardLabel> : <CardLabel style={{ fontFamily: fonts.PINGfANG }}>
                                         {translate("wallet.common.closeTime")}
                                     </CardLabel>
                                     }
                                     <CardField
                                         inputProps={{
-                                            value: ( endTimeDate ? moment(endTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " " )
+                                            value: (endTimeDate ? moment(endTimeDate).format('MMMM Do YYYY, hh:mm a').toUpperCase() : " ")
                                         }}
 
                                         onPress={() => {
@@ -1242,9 +1242,9 @@ const UploadNFT = ({
                                             Platform.OS === "ios" ? datePickerPress(startTimeDate ? new Date(startTimeDate) : new Date()) : datePickerPress(new Date())
                                         }}
                                         pressable
-                                        showRight/>
+                                        showRight />
                                     <CardField
-                                        contStyle={{paddingRight: 0}}
+                                        contStyle={{ paddingRight: 0 }}
                                         inputProps={{
                                             value: fixedPrice,
                                             onChangeText: changePrice,
@@ -1255,7 +1255,7 @@ const UploadNFT = ({
                                         rightComponent={
                                             <CardButton
                                                 disable
-                                                buttonCont={{width: '15%', borderRadius: 0}}
+                                                buttonCont={{ width: '15%', borderRadius: 0 }}
                                                 label={basePrice ? basePrice.name : "ALIA"}
                                             />
                                         }
@@ -1278,7 +1278,7 @@ const UploadNFT = ({
                             onPress={handleCreate}
                             disable={!disableBtn}
                             border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
-                            buttonCont={{width: '48%'}}
+                            buttonCont={{ width: '48%' }}
                             label={translate("wallet.common.upload")}
                         />
                     </View>
