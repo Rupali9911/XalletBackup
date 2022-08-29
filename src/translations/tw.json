@@ -137,6 +137,8 @@
         "next": "下一个",
         "inCirculation": "流通中",
         "maxIssue": "最高發行量",
+        "ITEMS" : "物品",
+        "ITEM" : "物品",
         "hot": "熱門",
         "launchPad": "發射台",
         "allNft": "所有 NFT" ,

@@ -8,7 +8,8 @@ import {
     Text,
     TouchableOpacity,
     View,
-    RefreshControl
+    RefreshControl,
+    Image
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
 import { useSelector } from 'react-redux';
@@ -41,6 +42,7 @@ import { upateUserData, loadFromAsync, loadProfileFromAsync } from "../../store/
 import { getAllLanguages, setAppLanguage } from "../../store/reducer/languageReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../../constants/Colors";
+import Images from '../../constants/Images';
 
 const { ConnectSmIcon, SettingIcon } = SVGS;
 
@@ -64,6 +66,13 @@ function Profile({ navigation, connector }) {
 
         // console.log('UserReducer.data.user.profile_image ', UserReducer.data.user.profile_image)
     });
+
+
+    // const checkVideoUrl =
+    //     uriType === 'mp4' ||
+    //     uriType === 'MP4' ||
+    //     uriType === 'mov' ||
+    //     uriType === 'MOV';
 
     const renderTabView = () => {
         return (
@@ -134,6 +143,28 @@ function Profile({ navigation, connector }) {
             });
     }
 
+    const renderBannerImage = () => {
+        return (
+            <Image
+                source={Images.default_user}
+                style={styles.collectionListImage}
+            // style = {
+            //     Platform.OS === 'ios'
+            //         ? checkVideoUrl
+            //             ? styles.collectionListVideo
+            //             : styles.collectionListImage
+            //         : styles.collectionListImage
+            // }
+            />
+        )
+    }
+
+    const renderIconImage = () => {
+        return (
+            <Image source={Images.default_user} style={styles.iconImage} />
+        )
+    }
+
     return (
         <Container>
             <ScrollView
@@ -146,7 +177,16 @@ function Profile({ navigation, connector }) {
                     />
                 }
             >
-                <AppHeader
+                <View style={styles.collectionWrapper}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('Setting', { connector: connector }) }>
+                        <SettingIcon width={SIZE(23)} height={SIZE(23)} />
+                    </TouchableOpacity>
+                    {renderBannerImage()}
+                    <View style={styles.iconWrapper}>
+                        {renderIconImage()}
+                    </View>
+                </View>
+                {/* <AppHeader
                     title={translate('wallet.common.myPage')}
                     showRightButton
                     // showBackButton
@@ -156,7 +196,7 @@ function Profile({ navigation, connector }) {
                     onPressRight={() =>
                         navigation.navigate('Setting', { connector: connector })
                     }
-                />
+                /> */}
                 {/* <View
                     style={{
                         width: '100%',
@@ -284,5 +324,29 @@ const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
 
+    },
+    listItemContainer: {
+        width: "100%",
+        overflow: 'hidden',
+    },
+    collectionWrapper: {
+        height: Platform.OS === 'android' ? (wp('100%') / 2.2) - wp('1%') : (wp('100%') / 1.7) - wp('1%'),
+        alignItems: 'center'
+    },
+    iconImage: {
+        width: SIZE(160),
+        height: SIZE(160),
+        borderRadius: SIZE(160),
+    },
+    iconWrapper: {
+        position: 'absolute',
+        marginTop: SIZE(135),
+        backgroundColor: 'red',
+        alignItems: 'center'
+    },
+    collectionListImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'stretch',
     },
 });

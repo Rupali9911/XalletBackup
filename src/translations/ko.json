@@ -137,6 +137,8 @@
         "next": "다음",
         "inCirculation": "유통 중",
         "maxIssue": "최대 문제",
+        "ITEMS" : "아이템",
+        "ITEM" : "아이템",
         "hot": "뜨거운",
         "launchPad": "발사대",
         "allNft": "모든 NFT" ,
