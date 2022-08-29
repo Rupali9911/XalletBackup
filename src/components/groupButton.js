@@ -15,17 +15,21 @@ const groupButton = ({
     leftLoading,
     rightLoading,
     leftStyle = {},
-    rightStyle = {}
+    rightStyle = {},
+    leftTextStyle = {},
+    rightTextStyle = {}
 }) => {
     return (
         <View style={styles.mainContainer}>
             {leftHide ? null : <TouchableOpacity
                 onPress={onLeftPress}
-                style={[styles.leftButton, leftDisabled ? { opacity: 0.4 } : null, leftStyle]}
+                style={[styles.leftButton,
+                leftDisabled ? { opacity: 0.4 } : null, leftStyle, rightText && { marginRight: 5 }
+                ]}
                 disabled={leftDisabled}>
                 {leftLoading
                     ? <ActivityIndicator color={colors.white} />
-                    : <Text style={styles.buttonText}>
+                    : <Text style={[styles.buttonText, leftTextStyle]}>
                         {leftText}
                     </Text>
                 }
@@ -34,9 +38,12 @@ const groupButton = ({
                 onPress={onRightPress}
                 style={[styles.rightButton, rightStyle]}
                 disabled={rightDisabled}>
-                <Text style={styles.buttonText}>
-                    {rightText}
-                </Text>
+                {rightLoading
+                    ? <ActivityIndicator color={colors.white} />
+                    : <Text style={[styles.buttonText, rightTextStyle]}>
+                        {rightText}
+                    </Text>
+                }
             </TouchableOpacity>}
         </View>
     )
@@ -57,16 +64,19 @@ const styles = {
         backgroundColor: colors.BLUE4,
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: SIZE(3.5)
     },
     rightButton: {
         flex: 1,
         backgroundColor: colors.BLUE3,
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: SIZE(3.5),
+        marginLeft: 5
     },
     buttonText: {
         color: colors.white,
         fontSize: RF(1.8),
-        fontFamily: fonts.ARIAL
+        fontFamily: fonts.ARIAL_BOLD
     }
 };

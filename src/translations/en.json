@@ -646,6 +646,7 @@
         "offerCanceled": "Offer Canceled",
         "offerReclaimed": "Offer Reclaimed",
         "NFTReclaimed": "NFT Reclaimed",
+        "cancelAuction": "Cancel Auction",
 
         "owners": "Owners",
         "floorPrice": "Floor Price",

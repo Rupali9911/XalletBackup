@@ -49,6 +49,13 @@ const CommonStyles = StyleSheet.create({
     },
     whiteBackIcon: {
         tintColor: Colors.white,
+    },
+    flexRow: {
+        flexDirection: 'row'
+    },
+    rowAlign: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })
 
