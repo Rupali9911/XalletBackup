@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
+  Linking,
   SafeAreaView,
   ScrollView,
   Text,
@@ -67,7 +68,8 @@ const {
   ThreeDotsVerticalIcon,
   TwiiterIcon,
   FacebookIcon,
-  InstagramIcon
+  InstagramIcon,
+  VerficationIcon
 } = SVGS;
 
 const DetailScreen = ({ navigation, route }) => {
@@ -486,7 +488,7 @@ const DetailScreen = ({ navigation, route }) => {
                       setVideoKey(videoKey + 1);
                     }}
                     style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
-                    <Text style={styles.retry}>Retry Loading</Text>
+                    <Text style={styles.retry}>{translate('common.retryLoading')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -593,12 +595,7 @@ const DetailScreen = ({ navigation, route }) => {
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
-              {Verifiedcollections.find((id) => id === collectCreat?._id) && (
-                <Image
-                  style={styles.verifyIcon}
-                  source={IMAGES.tweetPng}
-                />
-              )}
+              {collectCreat?.isOfficial === 1 && <VerficationIcon />}
             </View>}
         </View>
       </>
@@ -647,7 +644,7 @@ const DetailScreen = ({ navigation, route }) => {
     }
 
     return (
-      <View style={{ paddingHorizontal: SIZE(12) }}>
+      <View style={{ paddingHorizontal: SIZE(12), paddingBottom: SIZE(5) }}>
         {label && <Text style={styles.labelText}>
           {label}
         </Text>}
@@ -676,21 +673,16 @@ const DetailScreen = ({ navigation, route }) => {
 
   //================== Render Description Function ==================
   const renderDescription = () => {
-    return (
-      <>
-        {!load && <Text style={styles.description}>
-          {detailNFT?.description ? detailNFT.description : '---'}
-        </Text >}
-      </>
-    )
-    // if (!load && detailNFT?.description) {
-    //   return (
-    //     <Text style={styles.description}>
-    //       {detailNFT?.description}
-    //     </Text>
-    //   )
-    // }
-    // return null;
+    if (!load && detailNFT?.description) {
+      return (
+        <View>
+          <Text style={styles.description}>
+            {detailNFT?.description.trim()}
+          </Text>
+        </View>
+      )
+    }
+    return null;
   }
 
   //================== Render Auction Time Function ==================
@@ -757,7 +749,7 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <View style={styles.buybutton}>
         <GroupButton
-          leftText={'Make Offer'}
+          leftText={translate('common.makeOffer')}
           leftDisabled={false}
           leftLoading={false}
           onLeftPress={() => { }}
@@ -772,12 +764,12 @@ const DetailScreen = ({ navigation, route }) => {
       return (
         <View style={styles.buybutton}>
           <GroupButton
-            leftText={'Cancel Resell'}
+            leftText={translate('common.cancelResell')}
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => { }}
 
-            rightText={translate('common.editPrice')} 
+            rightText={translate('common.editPrice')}
             rightDisabled={false}
             rightLoading={false}
             onrightPress={() => { }}
@@ -794,8 +786,7 @@ const DetailScreen = ({ navigation, route }) => {
           leftDisabled={false}
           leftLoading={false}
           onLeftPress={() => { }}
-
-          rightText={'Make Offer'}
+          rightText={translate('common.makeOffer')}
           rightDisabled={false}
           rightLoading={false}
           onrightPress={() => { }}
@@ -844,10 +835,10 @@ const DetailScreen = ({ navigation, route }) => {
         return (
           <View style={CommonStyles.rowAlign}>
             {isWaiting ? (
-              <Text style={styles.marginRight}>{'Auction is being updated. Please wait!'}</Text>
+              <Text style={styles.marginRight}>{translate('common.auctionBeingUpdatedPleasewait')}</Text>
             ) : (
               <>
-                <Text style={styles.marginRight}>{'Auction will start in'}:</Text>
+                <Text style={styles.marginRight}>{translate('common.auctionStartIn')}:</Text>
                 <CountdownTime />
               </>
             )}
@@ -858,10 +849,10 @@ const DetailScreen = ({ navigation, route }) => {
         return (
           <View style={CommonStyles.rowAlign}>
             {isWaiting ? (
-              <Text style={styles.marginRight}>{'Auction is being updated. Please wait!'}</Text>
+              <Text style={styles.marginRight}>{translate('common.auctionBeingUpdatedPleasewait')}</Text>
             ) : (
               <>
-                <Text style={styles.marginRight}>{'Auction will end in'}:</Text>
+                <Text style={styles.marginRight}>{translate('common.auctionEndIn')}:</Text>
                 <CountdownTime />
               </>
             )}
@@ -892,7 +883,7 @@ const DetailScreen = ({ navigation, route }) => {
           ?
           <View style={CommonStyles.flexRow}>
             <GroupButton
-              leftText={'Cancel Auction'}
+              leftText={translate('common.cancelAuction')}
               leftDisabled={false}
               leftLoading={false}
               onLeftPress={() => { }}
@@ -902,7 +893,7 @@ const DetailScreen = ({ navigation, route }) => {
           :
           <View style={CommonStyles.flexRow}>
             <GroupButton
-              leftText={'Place a bid'}
+              leftText={translate('common.placeABid')}
               leftDisabled={false}
               leftLoading={false}
               onLeftPress={() => { }}
@@ -922,7 +913,7 @@ const DetailScreen = ({ navigation, route }) => {
           ?
           <View style={CommonStyles.flexRow}>
             <GroupButton
-              leftText={'Reclaim NFT'}
+              leftText={translate('common.reclaimNFT')}
               leftDisabled={false}
               leftLoading={false}
               onLeftPress={() => { }}
@@ -932,7 +923,7 @@ const DetailScreen = ({ navigation, route }) => {
           :
           <View style={CommonStyles.flexRow}>
             <GroupButton
-              leftText={'Auction end'}
+              leftText={translate('common.auctionEnd')}
               leftDisabled={false}
               leftLoading={false}
               onLeftPress={() => { }}
@@ -950,7 +941,7 @@ const DetailScreen = ({ navigation, route }) => {
         <BidInfo status={NFT_MARKET_STATUS.UPCOMMING_AUCTION} />
         {compareAddress(wallet?.address, ownerAddress) ?
           <GroupButton
-            leftText={'Cancel Auction'}
+            leftText={translate('common.cancelAuction')}
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => { }}
@@ -1281,7 +1272,7 @@ const DetailScreen = ({ navigation, route }) => {
         </TouchableOpacity>
 
         {detailNFT?.creator?.description ?
-          <TextView style={styles.rowText}>
+          <TextView style={[styles.rowText, { marginTop: SIZE(10) }]}>
             {detailNFT?.creator?.description}
           </TextView>
           : null}
@@ -3107,17 +3098,17 @@ const DetailScreen = ({ navigation, route }) => {
             {!load && renderCreatorCollectionOwnerName()}
             {renderCreatorAndNFTName()}
             {renderDescription()}
-            {setNFTStatus() !== 'notOnSell' && renderNFTPriceNToken()}
+            {renderNFTPriceNToken()}
             {/* {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? renderAuctionTimeRemain() : null} */}
             {<View style={styles.bottomView}>
               {/* {!load && setNFTStatus() !== undefined && renderGroupButton()} */}
               {!load && renderContentAction()}
               {/* {!load && setNFTStatus() === 'onSell' && renderNFTPriceNeditPriceAppButton()} */}
             </View>}
-            {renderBidNTradingHistory('bid')}
-            {renderBidNTradingHistory('offers')}
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
+            {renderBidNTradingHistory('bid')}
+            {renderBidNTradingHistory('offers')}
             {renderBidNTradingHistory('trading')}
             {renderMoreCollection()}
           </ScrollView >

@@ -147,14 +147,14 @@ const styles = StyleSheet.create({
   personName: {
     fontSize: RF(1.4),
     fontFamily: fonts.ARIAL_BOLD,
-    color: colors.black,
+    color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(70),
   },
   collectionName: {
     fontSize: RF(1.4),
     fontFamily: fonts.ARIAL_BOLD,
-    color: colors.black,
+    color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(53),
     marginRight: 5
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   creatorName: {
     fontSize: RF(2),
-    fontFamily: fonts.ARIAL,
+    fontFamily: fonts.ARIAL_BOLD,
     color: colors.themeR,
     // lineHeight: SIZE(14.06),
     maxWidth: SIZE(130),
@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   description: {
-    fontSize: RF(1.4),
-    fontFamily: fonts.PINGfANG,
-    color: colors.GREY1,
-    marginTop: SIZE(5),
-    marginBottom: SIZE(20),
-    paddingHorizontal: SIZE(12),
+    // fontSize: RF(1.4),
+    fontFamily: fonts.ARIAL,
+    // color: colors.black,
+    // marginTop: SIZE(5),
+    marginBottom: SIZE(15),
+    paddingHorizontal: SIZE(15)
   },
   payIn: {
     fontSize: RF(1.6),
@@ -221,13 +221,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   priceUnit: {
-    fontSize: RF(2.3),
-    fontFamily: fonts.PINGfANG_SBOLD,
+    fontSize: RF(3.1),
+    fontFamily: fonts.ARIAL_BOLD,
     color: colors.GREY4,
     marginLeft: wp(2),
   },
   dollarText: {
-    fontSize: RF(1.7)
+    fontSize: RF(1.8)
   },
   price: {
     fontSize: RF(3.1),
