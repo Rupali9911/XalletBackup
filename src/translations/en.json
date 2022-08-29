@@ -137,6 +137,8 @@
         "next": "next",
         "inCirculation": "In Circulation",
         "maxIssue": "Max Issue",
+        "ITEMS" : "Items",
+        "ITEM" : "Item",
         "hot": "Hot",
         "launchPad": "Launch Pad",
         "allNft": "All NFT's" ,

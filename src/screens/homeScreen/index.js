@@ -239,7 +239,7 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => {
           navigation.push('CertificateDetail', { item: item });
         }}
-        key={`_${index}`}>
+        >
         <View style={styles.userCircle}>
           <C_Image
             uri={item?.mediaUrl}
