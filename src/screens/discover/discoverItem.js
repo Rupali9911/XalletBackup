@@ -66,15 +66,14 @@ const Name = ({ label }) => {
 export const handleLike = async (nftItem) => {
     let getNftItem = { ...nftItem };
     return new Promise((resolve, reject) => {
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MDczNDEyMCwiZXhwIjoxNjYwNzM3NzIwfQ.izjKPW9Ihfb-77QsmYRQMeHyICqo2HZzo3jtr_vVNfE'
+        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
         let headers = {
             'Authorization': `Bearer ${token}`
         }
         let data = {
             nftId: nftItem.nftId,
-            status: Number(nftItem.isLike) ? 0 : 1
+            status: Number(nftItem.isLike) === 1 ? 0 : 1
         };
-
         ApiRequest(`${NEW_BASE_URL}/nfts/like`, 'POST', data, headers)
             .then((response) => {
                 if (response.generatedMaps.length > 0 || response.affected) {
@@ -94,7 +93,7 @@ function discoverItem({
     item
 }) {
     // console.log("🚀 ~ file: discoverItem.js ~ line 126 ~ item", item)
-    const { wallet, data } = useSelector(state => state.UserReducer);
+    const { wallet, userData } = useSelector(state => state.UserReducer);
     const navigation = useNavigation();
     const [isPlay, setPlay] = useState(false);
     const refVideo = useRef(null);
@@ -175,12 +174,6 @@ function discoverItem({
                         isPlay
                             ? setPlay(!isPlay)
                             : navigation.navigate('CertificateDetail', {
-                                owner: nftItem.buyerUser,
-                                ownerData: ownerObj,
-                                artistId: nftItem.creator,
-                                artistData: creatorObj,
-                                video: videoUri,
-                                fileType: fileType,
                                 item: item,
                                 setNftItem
                             })
@@ -204,7 +197,6 @@ function discoverItem({
                                     }}
                                     style={styles.videoContainer}
                                 />
-                                {/* <C_Image uri={imageUri} imageStyle={styles.modalImage} /> */}
                                 {!isPlay && (
                                     <View
                                         style={styles.playBtnCont}>

@@ -7,9 +7,9 @@ import {
   FAVORITE_NFT_LOAD_SUCCESS,
   NEW_NFT_LIST_RESET,
   NEW_NFT_LOAD_FAIL,
-  ART_NFT_LOAD_FAIL,
+  // ART_NFT_LOAD_FAIL,
   NEW_NFT_LOAD_START,
-  ART_NFT_LOAD_START,
+  // ART_NFT_LOAD_START,
   // NEW_NFT_LOAD_SUCCESS,
   NEW_NFT_ART_LOAD_SUCCESS,
   NEW_NFT_ALL_LOAD_SUCCESS,
@@ -99,36 +99,35 @@ export const newPageChange = data => ({
   payload: data,
 });
 
-export const newNFTData = (callFrom, category, sort, pageSize, pageNum) => {
-  console.log("🚀 ~ file: newNFTActions.js ~ line 70 ~ newNFTData ~ ", category, sort, pageSize, pageNum)
+export const newNFTData = (category, sort, limit, pageNum) => {
+  let userId = 16898
   return (dispatch) => {
-    // let pageSize = 10;
+    let pageSize = limit? limit : 10;
     dispatch(newNftLoadStart())
-    // dispatch(isArtNftLoadStart())
-    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}`
+    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}&userId=${userId}`
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        if (callFrom === 'all') {
-          dispatch(newNftAllLoadSuccess(data))
-        }
-        if (callFrom === 'art') {
-          dispatch(newNftArtLoadSuccess(data))
-        }
-        if (callFrom === 'image') {
-          dispatch(newNftImageLoadSuccess(data))
-        }
-        if (callFrom === 'trending') {
+        if (category === 0) {
           dispatch(newNftTrendingLoadSuccess(data))
         }
-        if (callFrom === 'gif') {
+        if (category === 1) {
+          dispatch(newNftArtLoadSuccess(data))
+        }
+        if (category === 2) {
+          dispatch(newNftImageLoadSuccess(data))
+        }
+        if (category === 3) {
           dispatch(newNftGifLoadSuccess(data))
         }
-        if (callFrom === 'movie') {
+        if (category === 4) {
           dispatch(newNftMovieLoadSuccess(data))
         }
-        if (callFrom === 'music') {
+        if (category === 5) {
           dispatch(newNftMusicLoadSuccess(data))
+        }
+        if (category === 6) {
+          dispatch(newNftAllLoadSuccess(data))
         }
         // dispatch(newNftLoadSuccess(data))
       })

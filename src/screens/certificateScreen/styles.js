@@ -4,6 +4,7 @@ import {
   SIZE,
   widthPercentageToDP as wp
 } from '../../common/responsiveFunction';
+import Colors from '../../constants/Colors';
 import { hp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { colors, fonts } from '../../res';
@@ -146,14 +147,14 @@ const styles = StyleSheet.create({
   personName: {
     fontSize: RF(1.4),
     fontFamily: fonts.ARIAL_BOLD,
-    color: colors.black,
+    color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(70),
   },
   collectionName: {
     fontSize: RF(1.4),
     fontFamily: fonts.ARIAL_BOLD,
-    color: colors.black,
+    color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(53),
     marginRight: 5
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
   },
   creatorName: {
     fontSize: RF(2),
-    fontFamily: fonts.ARIAL,
+    fontFamily: fonts.ARIAL_BOLD,
     color: colors.themeR,
     // lineHeight: SIZE(14.06),
     maxWidth: SIZE(130),
@@ -174,12 +175,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   description: {
-    fontSize: RF(1.4),
-    fontFamily: fonts.PINGfANG,
-    color: colors.GREY1,
-    marginTop: SIZE(30),
-    marginBottom: SIZE(20),
-    paddingHorizontal: SIZE(12),
+    // fontSize: RF(1.4),
+    fontFamily: fonts.ARIAL,
+    // color: colors.black,
+    // marginTop: SIZE(5),
+    marginBottom: SIZE(15),
+    paddingHorizontal: SIZE(15)
   },
   payIn: {
     fontSize: RF(1.6),
@@ -220,13 +221,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   priceUnit: {
-    fontSize: RF(2.3),
-    fontFamily: fonts.PINGfANG_SBOLD,
+    fontSize: RF(3.1),
+    fontFamily: fonts.ARIAL_BOLD,
     color: colors.GREY4,
     marginLeft: wp(2),
   },
   dollarText: {
-    fontSize: RF(1.7)
+    fontSize: RF(1.8)
   },
   price: {
     fontSize: RF(3.1),
@@ -257,7 +258,8 @@ const styles = StyleSheet.create({
   rowText: {
     color: colors.black,
     fontSize: RF(1.65),
-    maxWidth: wp('35%'),
+    marginTop: SIZE(5)
+    // maxWidth: wp('55%'),
   },
   rowTextcontractaddress: {
     color: colors.black,
@@ -265,8 +267,16 @@ const styles = StyleSheet.create({
     maxWidth: wp('40%'),
   },
 
+  containerChildStyles: {
+    paddingHorizontal: 0,
+    borderRadius: 10,
+    paddingVertical: 0,
+    marginTop: hp(1)
+  },
+
   head: { height: SIZE(40) },
   text: { margin: SIZE(10), fontSize: SIZE(12) },
+  themeColor: { color: Colors.themeColor },
   emptyData: {
     alignSelf: 'center',
     marginVertical: hp('1%'),
@@ -317,7 +327,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center"
   },
-  bidTimeContainer:{
+  bidTimeContainer: {
     padding: SIZE(10),
     borderWidth: SIZE(1),
     borderColor: '#eeeeee',
@@ -325,13 +335,77 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZE(15),
     marginBottom: SIZE(10),
   },
-  bidTitleView:{flexDirection: 'row' },
-  bidTitleTxt:{fontSize: SIZE(14)},
-  bidTimeTxt:{fontSize: SIZE(16), fontWeight: 'bold'},
-  highestBidTxt:{
+  bidTitleView: { flexDirection: 'row' },
+  bidTitleTxt: { fontSize: SIZE(14) },
+  bidTimeTxt: { fontSize: SIZE(16), fontWeight: 'bold' },
+  highestBidTxt: {
     fontSize: SIZE(13),
     top: SIZE(5)
+  },
+  socialLinksWrap: {
+    alignItems: 'center',
+    marginRight: 10,
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    zIndex: 2,
+  },
+  networkIcon: {
+    height: 26,
+    width: 26,
+    borderRadius: 13,
+    marginHorizontal: 5,
+    alignSelf: 'center'
+  },
+  buybutton: {
+    flexDirection: 'row',
+    paddingTop: SIZE(10)
+  },
+  rowAlign: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  marginRight: {
+    marginRight: 10,
+  },
+  countDownDigit: {
+    borderWidth: 1,
+    height: hp(5),
+    backgroundColor: Colors.white,
+    borderColor: Colors.themeColor
+  },
+  countDownText: { color: Colors.black },
+  cellBorderStyle: {
+    borderWidth: 1,
+    borderColor: Colors.GREY9
+  },
+  labelText: {
+    fontSize: RF(1.7),
+    paddingBottom: 8,
+    fontFamily: fonts.PINGfANG_SBOLD,
+    color: colors.GREY4,
+  },
+  priceView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: wp(2),
+  },
+  tokenIcon: {
+    width: SIZE(33),
+    height: SIZE(33),
+    borderRadius: SIZE(60 / 2),
+    marginRight: SIZE(7)
+  },
+  rightButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.white
+  },
+  rightButtonText: {
+    color: Colors.BLUE3
   }
+
 });
 
 export default styles;

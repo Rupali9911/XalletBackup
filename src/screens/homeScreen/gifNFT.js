@@ -20,8 +20,10 @@ import { newNftLoadStart, newNFTData, newNftListReset, } from '../../store/actio
 import { translate } from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
+import { CATEGORY_VALUE } from '../../constants'
 
-const GifNFT = () => {
+
+const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -33,28 +35,34 @@ const GifNFT = () => {
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [isSort, setIsSort] = useState(null);
-  const [page, setPage] = useState(1);
+  // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState()
 
+  let category = CATEGORY_VALUE.gif;
+    let limit = 10;
+    let sortCategory = 0;
+    
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender || isSort !== sort)) {
+    if (isFocused && (isFirstRender)) {
+      setPage(1)
       timer = setTimeout(() => {
         dispatch(newNftLoadStart());
-        dispatch(newNftListReset());
-        getNFTlist(3, 0, 10, page);
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false)
-        setIsSort(sort)
+        setSortOption(0)
+        setPage(1)
+        screen(category)
       }, 100);
     }
     return () => clearTimeout(timer);
-  }, [sort, isFocused]);
+  }, [sortOption, isFocused]);
 
   //===================== Dispatch Action to Fetch Gif NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
-    dispatch(newNFTData('gif', category, sort, pageSize, pageNum));
+    dispatch(newNFTData(category, sort, pageSize, pageNum));
   }, []);
 
   // ===================== Render Gif NFT Flatlist ===================================
@@ -88,7 +96,7 @@ const GifNFT = () => {
   const renderNoNFT = () => {
     return (
       <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        <Text style={styles.sorryMessage}>{translate('common.noDataFound')}</Text>
       </View>
     )
   }
@@ -100,16 +108,15 @@ const GifNFT = () => {
   }
 
   const refreshFunc = () => {
-    dispatch(newNftListReset());
-    getNFTlist(3, 0, 10, 1);
+    dispatch(newNftListReset(3));
+    getNFTlist(category, sortCategory, limit, 1);
     setPage(1)
   };
 
   const handleFlastListEndReached = () => {
     if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newGifNftList.length) {
       let pageNum = page + 1
-      getNFTlist(3, 0, 10, pageNum);
-      // dispatch(newPageChange(pageNum))
+      getNFTlist(category, sortOption, limit, pageNum);
       setPage(pageNum)
     }
   }

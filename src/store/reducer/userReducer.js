@@ -19,10 +19,11 @@ import {
   LOG_OUT,
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 import { setConnectedApps } from './walletReducer';
+import { ApiRequest } from '../../helpers/ApiRequest';
 import { reject } from 'lodash';
 import { resolve } from 'path-browserify';
 
@@ -32,7 +33,7 @@ const initialState = {
   mainLoader: false,
   wallet: null,
   isCreate: false,
-  data: {},
+  userData: null,
   passcode: '',
   passcodeAsync: '',
   passcodeAsyncStatus: false,
@@ -53,11 +54,11 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         showSplash: false,
       };
-      case CONNECT_MODAL_STATE:
-        return {
-          ...state,
-          connectModalState: action.payload,
-        };
+    case CONNECT_MODAL_STATE:
+      return {
+        ...state,
+        connectModalState: action.payload,
+      };
     case UPDATE_PASS_ASYNC:
       return {
         ...state,
@@ -103,7 +104,7 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         wallet: action.payload.wallet,
-        data: action.payload.data,
+        userData: action.payload.data,
         isCreate: action.payload.isCreate,
         showSuccess: action.payload.showSuccess,
         loading: false,
@@ -117,11 +118,11 @@ export default UserReducer = (state = initialState, action) => {
       };
 
     case UPDATE_PROFILE:
-      let _data = state.data;
+      let _data = state.userData;
       _data.user = action.payload;
       return {
         ...state,
-        data: { ..._data },
+        userData: { ..._data },
       };
 
     case UPDATE_BACKUP:
@@ -288,17 +289,17 @@ export const loadProfileFromAsync = (id) => (dispatch) =>
       },
     };
     fetch(`${BASE_URL}/xanalia/getProfile`, body)
-        .then(response => response.json())
-        .then(res => {
-          if (typeof (res.data) !== 'string' && res.data) {
-            dispatch(upateUserData(res.data));
-          }
-          resolve()
-        })
-        .catch(e => {
-          reject(e)
-        });
-})
+      .then(response => response.json())
+      .then(res => {
+        if (typeof (res.data) !== 'string' && res.data) {
+          dispatch(upateUserData(res.data));
+        }
+        resolve()
+      })
+      .catch(e => {
+        reject(e)
+      });
+  })
 
 export const setUserAuthData =
   (data, isCreate = false) =>
@@ -315,76 +316,125 @@ export const updateCreateState = () => dispatch =>
     resolve();
   });
 
-export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
+// export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
+//   new Promise((resolve, reject) => {
+//     const url = `${BASE_URL}/auth/get-address-nonce`;
+//     const params = {
+//       publicAddress: wallet?.address,
+//     };
+
+//     const request = {
+//       method: 'POST',
+//       body: JSON.stringify(params),
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     dispatch(startLoading());
+//     fetch(url, request)
+//       .then(res => res.json())
+//       .then(response => {
+//         console.log('response', response);
+//         if (response.success) {
+//           const _params = {
+//             nonce: response.data,
+//             signature: `${getSig(response.data, wallet.privateKey)}`,
+//           };
+
+//           const verifyReuqest = {
+//             method: 'POST',
+//             body: JSON.stringify(_params),
+//             headers: {
+//               Accept: 'application/json',
+//               'Content-Type': 'application/json',
+//             },
+//           };
+//           fetch(
+//             `${BASE_URL}/auth/verify-signature`,
+//             verifyReuqest,
+//           )
+//             .then(_res => _res.json())
+//             .then(async _response => {
+//               if (_response.success) {
+//                 const items = [
+//                   ['@wallet', JSON.stringify(wallet)],
+//                   ['@userData', JSON.stringify(_response.data)],
+//                 ];
+//                 await AsyncStorage.multiSet(items);
+//                 wallet.address = String(wallet?.address).toLowerCase();
+//                 dispatch(
+//                   setUserData({
+//                     data: _response.data,
+//                     wallet,
+//                     isCreate,
+//                     showSuccess: isLater ? false : true,
+//                   }),
+//                 );
+//                 resolve();
+//               } else {
+//                 console.log('error 1', err);
+//                 dispatch(endLoading());
+//                 reject(_response);
+//               }
+//             })
+//             .catch(err => {
+//               console.log('error 2', err);
+//               dispatch(endLoading());
+//               reject(err);
+//             });
+//         } else {
+//           console.log('error 3', err);
+//           dispatch(endLoading());
+//           reject(response);
+//         }
+//       })
+//       .catch(err => {
+//         console.log('error', err);
+//         dispatch(endLoading());
+//         reject(err);
+//       });
+//   });
+
+// ======================= Login External Wallet API call ======================
+export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
   new Promise((resolve, reject) => {
-    const url = `${BASE_URL}/auth/get-address-nonce`;
-    const params = {
-      publicAddress: wallet?.address,
+    // console.log("@@@ wallet in loginExternalWallet Func ===========>", wallet)
+    const url = `${NEW_BASE_URL}/auth/login-external-wallet`;
+    const body = {
+      signature: wallet.signature,
+      address: wallet.address,
+      email: null
     };
-
-    const request = {
-      method: 'POST',
-      body: JSON.stringify(params),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     };
-
+    // console.log("@@@ Body request ===========>", request)
     dispatch(startLoading());
-    fetch(url, request)
-      .then(res => res.json())
-      .then(response => {
-        console.log('response', response);
-        if (response.success) {
-          const _params = {
-            nonce: response.data,
-            signature: `${getSig(response.data, wallet.privateKey)}`,
-          };
-
-          const verifyReuqest = {
-            method: 'POST',
-            body: JSON.stringify(_params),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          };
-          fetch(
-            `${BASE_URL}/auth/verify-signature`,
-            verifyReuqest,
-          )
-            .then(_res => _res.json())
-            .then(async _response => {
-              if (_response.success) {
-                const items = [
-                  ['@wallet', JSON.stringify(wallet)],
-                  ['@userData', JSON.stringify(_response.data)],
-                ];
-                await AsyncStorage.multiSet(items);
-                wallet.address = String(wallet?.address).toLowerCase();
-                dispatch(
-                  setUserData({
-                    data: _response.data,
-                    wallet,
-                    isCreate,
-                    showSuccess: isLater ? false : true,
-                  }),
-                );
-                resolve();
-              } else {
-                  console.log('error 1', err);
-                dispatch(endLoading());
-                reject(_response);
-              }
-            })
-            .catch(err => {
-              console.log('error 2', err);
-              dispatch(endLoading());
-              reject(err);
-            });
+    ApiRequest(url, 'POST', body, headers)
+      .then(async response => {
+        console.log('@@@ response of loginWithExternalWallet API call =========>', response);
+        if (response.access_token) {
+          const items = [
+            ['@wallet', JSON.stringify(wallet)],
+            ['@userData', JSON.stringify(response)],
+          ];
+          // console.log("@@@ Manage session after loginWithExternalWallet API call ========>", items)
+          await AsyncStorage.multiSet(items);
+          wallet.address = String(wallet?.address).toLowerCase();
+          dispatch(
+            setUserData({
+              data: response,
+              wallet,
+              isCreate,
+              showSuccess: isLater ? false : true,
+            }),
+          );
+          resolve();
         } else {
-            console.log('error 3', err);
+          console.log('error 3');
           dispatch(endLoading());
           reject(response);
         }
@@ -395,6 +445,7 @@ export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
         reject(err);
       });
   });
+// =====================================================================
 
 export const setBackupStatus = data => dispatch =>
   new Promise(async (resolve, reject) => {
@@ -416,12 +467,12 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
   const { data } = getState().UserReducer;
   // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-    const headers = {
-        "Content-Type": 'multipart/form-data',
-        Authorization: `Bearer ${data.token}`,
-    };
+  const headers = {
+    "Content-Type": 'multipart/form-data',
+    Authorization: `Bearer ${data.token}`,
+  };
   await axios
-    .post(`${BASE_URL}/user/update-profile-image`, formData, {headers: headers})
+    .post(`${BASE_URL}/user/update-profile-image`, formData, { headers: headers })
     .then(res => {
       console.log('Response from update-profile-image', res.data.data)
       dispatch(upateUserData(res.data.data));

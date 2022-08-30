@@ -74,9 +74,6 @@ const Collection = () => {
   //   )
   // }
 
-
-  console.log('collection list',CollectionReducer.collectionList)
-
   // ===================== Render Hot Collectio NFT Flatlist ===================================
   const renderHotCollectioNFTList = () => {
     return (
@@ -105,7 +102,7 @@ const Collection = () => {
   const renderNoNFT = () => {
     return (
       <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        <Text style={styles.sorryMessage}>{translate('common.noDataFound')}</Text>
       </View>
     )
   }
@@ -117,7 +114,7 @@ const Collection = () => {
   }
   const handleRefresh = () => {
     dispatch(collectionListReset());
-    getCollection(1);
+    getCollection(1,isSelectTab);
     dispatch(collectionPageChange(1));
   };
 
@@ -159,6 +156,7 @@ const Collection = () => {
       collectionName={item.name}
       creatorInfo={item.creatorInfo}
       blind={item.blind}
+      isHotCollection={item.isHot}
       count={item.totalNft}
       network={item.network}
       collectionTab = {isSelectTab}

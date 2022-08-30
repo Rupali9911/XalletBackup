@@ -46,7 +46,7 @@ var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
 const WalletPay = ({ route, navigation }) => {
-  const { wallet, isCreate, data } = useSelector(state => state.UserReducer);
+  const { wallet, isCreate, userData } = useSelector(state => state.UserReducer);
   const { paymentObject } = useSelector(state => state.PaymentReducer);
   const {
     bnbBalance,
@@ -123,7 +123,7 @@ const WalletPay = ({ route, navigation }) => {
       setLoading(true);
       getBalances(wallet.address);
     }
-    console.log('wallet pay use effect', data, route.params);
+    console.log('wallet pay use effect', userData, route.params);
   }, [isFocused]);
 
   useEffect(() => {
@@ -345,7 +345,7 @@ const WalletPay = ({ route, navigation }) => {
               totalValue = totalValue + usdcValue;
               break;
             case 'WETH':
-           // case 'WETH':
+              // case 'WETH':
               totalValue = totalValue + wethValue;
               break;
           }
@@ -597,7 +597,7 @@ const WalletPay = ({ route, navigation }) => {
               USDT: responses[5],
               BUSD: responses[6],
               // ALIA: responses[5],
-               USDC: responses[6],
+              USDC: responses[6],
             };
             dispatch(updateBalances(balances));
             setBalances(balances);

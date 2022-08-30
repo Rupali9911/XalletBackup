@@ -102,23 +102,11 @@ export default function AppSearch() {
         withTag={withTag}
         onPress={item => {
           if (item.type == 'NFT') {
-            const image = item?.largeImage;
-            const fileType = image ? image.substring(image.lastIndexOf('.') + 1) : '';
-            navigation.navigate('CertificateDetail', {
-              video: item?.largeImage,
-              fileType: fileType,
-              item: item,
-              routeName: "Search"
-            });
+            navigation.navigate('CertificateDetail', { item: item });
           } else if (item.type == 'Artist') {
             navigation.navigate('ArtistDetail', { id: item?.address });
           } else if (item.type == 'Collections') {
-            if (item.blind) {
-              console.log('========collection search => blind', item.blind, item)
-              navigation.push('CollectionDetail', { isBlind: true, collectionId: item?.address, isHotCollection: false });
-            } else {
-              navigation.push('CollectionDetail', { isBlind: false, collectionId: item?.address, isHotCollection: true });
-            }
+            navigation.push('CollectionDetail', { item: item });
           }
         }}
       />

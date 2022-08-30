@@ -26,15 +26,21 @@ import CommonStyles from '../../constants/styles';
 import { colors } from '../../res';
 import {
   endLoader,
-  getAddressNonce,
+  loginExternalWallet,
   setBackupStatus,
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
-
-const ethers = require('ethers');
+//================= =================
+import "react-native-get-random-values"
+import "@ethersproject/shims"
+import { ethers } from "ethers";
+import bip39 from 'react-native-bip39';
+import { hdkey } from 'ethereumjs-wallet';
+const Web3 = require('web3');
+//================= =================
 
 const toastConfig = {
   my_custom_type: ({ text1, props, ...rest }) => (
@@ -78,19 +84,27 @@ const ImportWallet = ({ route, navigation }) => {
       dispatch(startLoader())
         .then(async () => {
           let mnemonic = phrase.trim();
-          let mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+          const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
+          const path = "m/44'/60'/0'/0/0";
+          const wallet = hdwallet.derivePath(path).getWallet();
+          const address = `0x${wallet.getAddress().toString('hex')}`;
+          const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
+          var web3 = new Web3(Web3.givenProvider);
+          const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey);
+          // console.log('HD wallet ----------------->', hdwallet)
+          // console.log('wallet ----------------->', wallet)
+          // console.log('address ----------------->', address)
+          // console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
           const account = {
-            mnemonic: mnemonicWallet.mnemonic,
-            address: mnemonicWallet.address,
-            privateKey: mnemonicWallet.privateKey,
-          };
-          console.log(mnemonicWallet.mnemonic);
-          console.log(mnemonicWallet.address);
-          console.log(mnemonicWallet.privateKey);
+            mnemonic: mnemonic,
+            address: address,
+            privateKey: privateKey,
+            signature: signature.signature
+          }
           setWallet(account);
           // dispatch(setUserAuthData(account));
           dispatch(setPasscode(''));
-          dispatch(getAddressNonce(account, false))
+          dispatch(loginExternalWallet(account, false))
             .then(() => {
               dispatch(setBackupStatus(true));
             })
@@ -125,11 +139,14 @@ const ImportWallet = ({ route, navigation }) => {
         .then(async () => {
           let private_key = phrase.trim();
           let mnemonicWallet = new ethers.Wallet(private_key);
+          var web3 = new Web3(Web3.givenProvider);
+          const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', mnemonicWallet.privateKey);
           console.log('mnemonicWallet', mnemonicWallet);
           const account = {
             mnemonic: mnemonicWallet.mnemonic,
             address: mnemonicWallet.address,
             privateKey: mnemonicWallet.privateKey,
+            signature: signature.signature
           };
           console.log(mnemonicWallet.mnemonic);
           console.log(mnemonicWallet.address);
@@ -137,7 +154,7 @@ const ImportWallet = ({ route, navigation }) => {
           setWallet(account);
           // dispatch(setUserAuthData(account));
           dispatch(setPasscode(''));
-          dispatch(getAddressNonce(account, false))
+          dispatch(loginExternalWallet(account, false))
             .then(() => {
               dispatch(setBackupStatus(true));
             })

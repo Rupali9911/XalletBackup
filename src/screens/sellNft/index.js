@@ -27,7 +27,7 @@ const SellNFT = ({ route, navigation }) => {
 
     const { nftDetail } = route.params;
 
-    const { wallet, data } = useSelector(state => state.UserReducer);
+    const { wallet, userData } = useSelector(state => state.UserReducer);
     const [sellFormat, setSellFormat] = useState(FIXED_PRICE);
     const [baseCurrency, setBaseCurrency] = useState(null);
     const [price, setPrice] = useState('');
@@ -364,7 +364,7 @@ const ToggleState = (props) => {
             <View style={{ flex: 0.1 }} />
             <TouchableOpacity disabled style={activeState == AUCTION ? styles.button : styles.outLineButton} onPress={() => onChange(AUCTION)}>
                 <Text style={activeState == AUCTION ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel}>
-                    {translate("common.highestBid")}
+                    {translate("common.auctionnew")}
                 </Text>
                 <Text style={activeState == AUCTION ? CommonStyles.buttonLabel : CommonStyles.outlineButtonLabel}>
                     {translate("common.auctionToHighest")}

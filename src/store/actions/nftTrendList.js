@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
@@ -93,7 +93,6 @@ export const getNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -106,7 +105,6 @@ export const getNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        // console.log('json',json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -154,7 +152,6 @@ export const gifNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -167,7 +164,6 @@ export const gifNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        // console.log('json',json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -216,7 +212,6 @@ export const movieNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -229,7 +224,6 @@ export const movieNFTList = (page, limit, sort) => {
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {
-        // console.log('json',json)
         let nftData = [];
         if (!json.count) {
           json.data = [];
@@ -275,38 +269,51 @@ export const setSortBy = data => ({
   payload: data,
 });
 
-export const getAllArtist = () => {
-  return dispatch => {
-    let body_data = {
-      networkType: networkType,
-    };
+export const getAllArtist =(page,limit)=> {
+  return (dispatch) => {
+    dispatch(artistLoadingStart())
+    const url = `${NEW_BASE_URL}/nfts/nfts-slider?page=${page}&limit=${limit}`
+    fetch(url)
+    .then(response => response.json())
+    .then(data=>{
+      dispatch(getAllArtistSuccess(data))
+    })
+    .catch(() => dispatch(artistLoadingEnd()))
+  }
+}
+
+// export const getAllArtist = () => {
+//   return dispatch => {
+//     let body_data = {
+//       networkType: networkType,
+//     };
 
 
-    dispatch(artistLoadingStart());
+//     dispatch(artistLoadingStart());
 
-    let fetch_data_body = {
-      method: 'POST',
-      body: JSON.stringify(body_data),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    };
+//     let fetch_data_body = {
+//       method: 'POST',
+//       body: JSON.stringify(body_data),
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//     };
 
-    fetch(`${BASE_URL}/user/get-all-artist`, fetch_data_body)
-      .then(response => response.json())
-      .then(json => {
-        dispatch(getAllArtistSuccess([...json.data]));
-      })
-      .catch(err => {
-        dispatch(artistLoadingEnd());
-        // alertWithSingleBtn(
-        //   translate('wallet.common.alert'),
-        //   translate('wallet.common.error.networkFailed'),
-        // );
-      });
-  };
-};
+//     fetch(`${BASE_URL}/user/get-all-artist`, fetch_data_body)
+//       .then(response => response.json())
+//       .then(json => {
+//         dispatch(getAllArtistSuccess([...json.data]));
+//       })
+//       .catch(err => {
+//         dispatch(artistLoadingEnd());
+//         // alertWithSingleBtn(
+//         //   translate('wallet.common.alert'),
+//         //   translate('wallet.common.error.networkFailed'),
+//         // );
+//       });
+//   };
+// };
 
 export const handleLikeDislike = (item, index, screenName) => {
   return (dispatch, getState) => {

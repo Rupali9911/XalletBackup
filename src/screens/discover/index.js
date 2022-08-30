@@ -9,13 +9,13 @@ import AppSearch from '../../components/appSearch';
 import { hp } from '../../constants/responsiveFunct';
 import { colors } from '../../res';
 import { getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
-import NftItem from './discoverItem';
+import DiscoverItem from './discoverItem';
 import { networkType } from "../../common/networkType";
 import { nftDataCollectionLoadSuccess } from "../../store/actions/nftDataCollectionAction";
 import axios from 'axios';
 
 function ExploreScreen() {
-  const { wallet, data } = useSelector(state => state.UserReducer);
+  const { wallet, userData } = useSelector(state => state.UserReducer);
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -24,7 +24,7 @@ function ExploreScreen() {
   const [footerLoader, setFooterLoader] = useState(false);
   const [noMore, setNoMore] = useState(false);
   const [isFetching, toggleFetching] = useState(false);
-  const owner = wallet?.address || data?.user?._id;
+  const owner = wallet?.address || userData?.user?.id;
 
   useEffect(() => {
     setLoader(true)
@@ -33,7 +33,8 @@ function ExploreScreen() {
   }, []);
 
   const loadNFTList = (page, refresh) => {
-    const url = `${NEW_BASE_URL}/nfts/nfts-discover?page=${page}&limit=12&userId=3708`
+    const userId = '3708'
+    const url = `${NEW_BASE_URL}/nfts/nfts-discover?page=${page}&limit=12&userId=${userId}`
     fetch(url)
       .then(response => response.json())
       .then(json => {
@@ -71,7 +72,7 @@ function ExploreScreen() {
   };
 
   const renderItem = ({ item }) => {
-    return <NftItem item={item} />;
+    return <DiscoverItem item={item} />;
   };
 
   const onRefresh = () => {
@@ -114,14 +115,12 @@ function ExploreScreen() {
               ItemSeparatorComponent={itemSeparator}
               ListFooterComponent={renderFooter}
               keyExtractor={keyExtractor}
-              // numColumns={2}
-              // initialNumToRender={5}
-
+              initialNumToRender={10}
               horizontal={false}
               pagingEnabled={false}
               legacyImplementation={false}
-              // onEndReached={handleFlastListEndReached}
-              // onEndReachedThreshold={0.4}   //   0.1
+              onEndReached={handleFlastListEndReached}
+              onEndReachedThreshold={0.4}
               style={{ paddingHorizontal: 7 }}
             />
           )}
