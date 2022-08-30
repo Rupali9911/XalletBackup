@@ -680,8 +680,9 @@
         "amountMoreThan": "금액은 $999,999.99 이하여야 합니다.",
         "toFilter": "에게",
         "ongoinglaunch": "전진",
-        "CNcreatorname":"작성자 이름",
-        "CNcreatordesc":"작성자 설명"
+        "CNcreatorname": "작성자 이름",
+        "CNcreatordesc": "작성자 설명",
+        "viewAllCollection": "모든 컬렉션 보기"
     },
     "AwardPage": {},
     "wallet": {

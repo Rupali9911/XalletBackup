@@ -71,8 +71,7 @@ const styles = StyleSheet.create({
   modalImage: {
     width: wp('100%'),
     height: wp('100%'),
-    resizeMode: 'contain',
-    backgroundColor: colors.BLACK1,
+    backgroundColor: Colors.WHITE8,
   },
   nftTitle: {
     fontSize: RF(1.5),
@@ -404,8 +403,17 @@ const styles = StyleSheet.create({
   },
   rightButtonText: {
     color: Colors.BLUE3
+  },
+  viewAllBtn: {
+    marginVertical: SIZE(12),
+    width: wp(40),
+    alignSelf: 'center'
+  },
+  viewAllBtnInner: {
+    backgroundColor: 'transparent',
+    borderColor: Colors.BLUE4,
+    borderWidth: 2
   }
-
 });
 
 export default styles;

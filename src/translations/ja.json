@@ -680,8 +680,9 @@
         "amountMoreThan": "金額は$999,999.99以下でなければなりません",
         "toFilter": "から",
         "ongoinglaunch": "進行中",
-        "CNcreatorname":"作者名",
-        "CNcreatordesc":"作品の詳細"
+        "CNcreatorname": "作者名",
+        "CNcreatordesc": "作品の詳細",
+        "viewAllCollection": "全コレクション表示"
     },
     "AwardPage": {},
     "wallet": {

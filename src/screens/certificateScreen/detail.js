@@ -19,9 +19,10 @@ import {
 } from 'react-native-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
-import details from '../../../assets/images/details.png';
+import detailsImg from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
-import trading from '../../../assets/images/trading.png';
+import tradingImg from '../../../assets/images/trading.png';
+import historyImg from '../../../assets/images/history.png'
 import { networkType } from '../../common/networkType';
 import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppModal from '../../components/appModal';
@@ -59,6 +60,7 @@ import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } fro
 import { formatAddress } from '../../constants/addressFormat';
 import { getDateString, getExpirationDate } from '../../constants/date';
 import CountDown from 'react-native-countdown-component';
+import { twitterLink } from '../../common/function';
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
@@ -145,7 +147,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData1, setTradingTableData1] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
-
   const [tradingList, setTradingList] = useState([]);
   const [offerList, setOfferList] = useState([]);
   const [isLike, setLike] = useState();
@@ -161,6 +162,8 @@ const DetailScreen = ({ navigation, route }) => {
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
   const network = detailNFT?.network ? detailNFT.network : item?.network
   const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
+
+  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
 
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
@@ -437,7 +440,7 @@ const DetailScreen = ({ navigation, route }) => {
               <C_Image
                 uri={thumbnailUrl}
                 imageStyle={styles.modalImage}
-                isContain
+                // isContain
               />
             )}
             <Video
@@ -498,7 +501,7 @@ const DetailScreen = ({ navigation, route }) => {
           <C_Image
             uri={mediaUrl}
             imageStyle={styles.modalImage}
-            isContain
+            // isContain
           />
         )}
       </TouchableOpacity>
@@ -536,21 +539,7 @@ const DetailScreen = ({ navigation, route }) => {
         <TouchableOpacity
           disabled={collectionClick(collectCreat)}
           onPress={() => {
-            if (collectCreat) {
-              if (collectCreat.blind) {
-                navigation.push('CollectionDetail', {
-                  isBlind: true,
-                  collectionId: collectCreat._id,
-                  isHotCollection: false,
-                });
-              } else {
-                navigation.push('CollectionDetail', {
-                  isBlind: false,
-                  collectionId: collectCreat._id,
-                  isHotCollection: true,
-                });
-              }
-            }
+            navigation.push('CollectionDetail', { item: collectCreat });
           }}
           style={styles.personType}>
           {renderIconImage('collection', false)}
@@ -1052,7 +1041,11 @@ const DetailScreen = ({ navigation, route }) => {
                 ? hp(16) + (hp(4) * (history === 'trading' && listData.length <= 3 ? 3 : listData?.length))
                 : hp(35.7),
         }}
-        icon={trading}>
+        icon={
+          history === 'bid' ? historyImg
+            : history === 'offers' ? tradingImg : detailsImg
+        }
+      >
         {history === 'trading' &&
           <Filters
             value={filterTableValue}
@@ -1260,7 +1253,9 @@ const DetailScreen = ({ navigation, route }) => {
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
     return (
-      <NFTDetailDropdown title={translate('common.creator')} icon={details}>
+      <NFTDetailDropdown
+        title={translate('common.creator')}
+        icon={detailsImg}>
         <TouchableOpacity
           onPress={() => {
             if (!disableCreator) {
@@ -1282,19 +1277,20 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const renderSocialLinks = () => {
+    let twitterFullLink = twitterLink(detailNFT?.creator?.twitterLink)
     return (
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
           <TouchableOpacity
             style={styles.marginRight}
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
-            onPress={() => Linking.openURL(detailNFT?.creator?.twitterLink)}>
+            hitSlop={hitSlop}
+            onPress={() => Linking.openURL(twitterFullLink)}>
             <TwiiterIcon />
           </TouchableOpacity>
         ) : null}
         {detailNFT?.creator?.instagramLink ? (
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            hitSlop={hitSlop}
             style={{ marginRight: 6 }}
             onPress={() => Linking.openURL(detailNFT?.creator?.instagramLink)}>
             <InstagramIcon />
@@ -1302,7 +1298,7 @@ const DetailScreen = ({ navigation, route }) => {
         ) : null}
         {detailNFT?.creator?.facebookLink ? (
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            hitSlop={hitSlop}
             onPress={() => Linking.openURL(detailNFT?.creator?.facebookLink)}>
             <FacebookIcon />
           </TouchableOpacity>
@@ -1316,7 +1312,7 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
-        icon={details}>
+        icon={detailsImg}>
         {renderDetail('wallet.common.contractAddress', 'address', showContractAddress(item))}
         {renderDetail('wallet.common.nftId', '', _tokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
@@ -1350,19 +1346,28 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
-        icon={grid}
-        // containerDropStyles={{paddingHorizontal: SIZE(-20)}}
+        icon={detailsImg}
         containerStyles={{ width: wp(100) }}
         containerChildStyles={styles.containerChildStyles}
       >
         {moreData.length !== 0 ? (
-          <FlatList
-            data={moreData}
-            numColumns={2}
-            horizontal={false}
-            renderItem={memoizedItem}
-            keyExtractor={(v, i) => 'item_' + i}
-          />
+          <>
+            <FlatList
+              data={moreData}
+              numColumns={2}
+              horizontal={false}
+              renderItem={memoizedItem}
+              keyExtractor={(v, i) => 'item_' + i}
+            />
+            <GroupButton
+              leftText={translate('viewAllCollection')}
+              style={styles.viewAllBtn}
+              leftStyle={styles.viewAllBtnInner}
+              leftTextStyle={{ color: Colors.BLUE4 }}
+              onLeftPress={() => navigation.push('CollectionDetail', { item: collectCreat })}
+              rightHide
+            />
+          </>
         ) : (
           <View style={styles.sorryMessageCont}>
             <Text style={styles.sorryMessage}>

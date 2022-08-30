@@ -680,8 +680,9 @@
         "amountMoreThan": "金額不得超過 999,999.99 美元",
         "toFilter": "到",
         "ongoinglaunch": "進行中",
-        "CNcreatorname":"創作者姓名",
-        "CNcreatordesc":"創作者描述"
+        "CNcreatorname": "創作者姓名",
+        "CNcreatordesc": "創作者描述",
+        "viewAllCollection": "查看所有收藏"
     },
     "AwardPage": {},
     "wallet": {
