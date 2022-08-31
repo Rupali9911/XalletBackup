@@ -53,7 +53,13 @@ import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData 
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import { compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
+import {
+  CATEGORY_VALUE,
+  compareAddress,
+  FILTER_TRADING_HISTORY_OPTIONS,
+  NFT_MARKET_STATUS,
+  SORT_TRADING_HISTORY
+} from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
@@ -81,33 +87,27 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const { owner, video, item, index, setNftItem, routeName } = route.params;
+  const { item, setNftItem } = route.params;
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
   const { data, wallet } = useSelector(state => state.UserReducer);
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
   const [ownerN, setOwnerN] = useState();
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
-  const [isContractOwner, setIsContractOwner] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
-  const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
   const [singleNFT, setSingleNFT] = useState({});
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [lBidAmount, setLastBidAmount] = useState('');
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
-  const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState('');
   const [auctionETime, setAuctionETime] = useState('');
   const [buyLoading, setBuyLoading] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
   const [ownerAddress, setOwnerAddress] = useState('');
-  const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
   const [sellDetails, setSellDetails] = useState([]);
   const [currencyPrices, setCurrencyPrices] = useState({});
@@ -127,7 +127,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [playVideoLoad, setPlayVideoLoad] = useState(false);
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
-  const [videoURL, setVideoURL] = useState(mediaUrl);
   const [playVideo, toggleVideoPlay] = useState(false);
   const [artistRole, setArtistRole] = useState('');
   const [tradingTableHead, setTradingTableHead] = useState([
@@ -150,14 +149,27 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingList, setTradingList] = useState([]);
   const [offerList, setOfferList] = useState([]);
   const [isLike, setLike] = useState();
-  const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
-  const [bidPriceInDollar, setBidPriceInDollar] = useState('');
   const [detailNFT, setDetailNFT] = useState({});
-  const [minBidPrice, setMinBidPrice] = useState('')
 
+  // const [isContractOwner, setIsContractOwner] = useState(false);
+  // const [isOwner, setIsOwner] = useState(false);
+  // const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
+  // const [lBidAmount, setLastBidAmount] = useState('');
+  // const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState('');
+  // const [isForAward, setIsForAward] = useState(false);
+  // const [videoURL, setVideoURL] = useState(mediaUrl);
+  // const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
+  // const [bidPriceInDollar, setBidPriceInDollar] = useState('');
+  // const [minBidPrice, setMinBidPrice] = useState('')
+  // const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
+
+  const categoryType = detailNFT?.category ? detailNFT?.category : item?.category;
   const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item.mediaUrl;
-  const thumbnailUrl = detailNFT?.thumbnailUrl ? detailNFT.thumbnailUrl : item?.thumbnailUrl
-  const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
+  const thumbnailUrl = detailNFT?.thumbnailUrl
+    ? detailNFT.thumbnailUrl :
+    categoryType === CATEGORY_VALUE.music
+      ? item.mediaUrl
+      : item?.thumbnailUrl
   const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
   const network = detailNFT?.network ? detailNFT.network : item?.network
@@ -433,14 +445,13 @@ const DetailScreen = ({ navigation, route }) => {
           }
           toggleVideoPlay(!playVideo);
         }}>
-        {fileType.toLowerCase() === 'mp4' ||
-          fileType.toLowerCase() === 'mov' ? (
+        {categoryType === CATEGORY_VALUE.movie ? (
           <View style={{ ...styles.modalImage }}>
             {showThumb && (
               <C_Image
                 uri={thumbnailUrl}
                 imageStyle={styles.modalImage}
-                // isContain
+              // isContain
               />
             )}
             <Video
@@ -497,11 +508,19 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             )}
           </View>
+        ) : categoryType === CATEGORY_VALUE.music ? (
+          <View style={{ ...styles.modalImage }}>
+            <C_Image
+              uri={thumbnailUrl}
+              imageStyle={styles.modalImage}
+            // isContain
+            />
+          </View>
         ) : (
           <C_Image
             uri={mediaUrl}
             imageStyle={styles.modalImage}
-            // isContain
+          // isContain
           />
         )}
       </TouchableOpacity>
@@ -1016,13 +1035,15 @@ const DetailScreen = ({ navigation, route }) => {
   // }
 
   //===================== Render Bid History Function =======================
-  const noDataRender = () => {
+  const noDataRender = (history) => {
     return (
-      <Text style={styles.emptyData}>
-        {translate('common.noDataFound')}
-      </Text>
+      <Cell
+        style={styles.emptyData(history)}
+        data={translate('common.noDataFound')}
+      />
     )
   }
+
   const renderBidNTradingHistory = (history) => {
     let listData = history === 'bid' ? sellDetails : history === 'offers' ? offerList : tradingTableData
     return (
@@ -1144,11 +1165,11 @@ const DetailScreen = ({ navigation, route }) => {
                     );
                   })
                 ) : (
-                  noDataRender()
+                  noDataRender(history)
                 )}
           </Table>
         </ScrollView>
-      </NFTDetailDropdown>
+      </NFTDetailDropdown >
     )
   }
 
@@ -2897,16 +2918,16 @@ const DetailScreen = ({ navigation, route }) => {
     }
   };
 
-  const calculateBidPriceDollar = async (price, owner) => {
-    let dollarToken = basePriceTokens.filter(
-      token => token.chain === singleNFT.nftChain && token.dollarCurrency,
-    );
-    let rs = await calculatePriceWeb(price, dollarToken[0]?.order, owner);
-    if (rs) {
-      let res = divideNo(rs);
-      setBidPriceInDollar(res);
-    }
-  };
+  // const calculateBidPriceDollar = async (price, owner) => {
+  //   let dollarToken = basePriceTokens.filter(
+  //     token => token.chain === singleNFT.nftChain && token.dollarCurrency,
+  //   );
+  //   let rs = await calculatePriceWeb(price, dollarToken[0]?.order, owner);
+  //   if (rs) {
+  //     let res = divideNo(rs);
+  //     setBidPriceInDollar(res);
+  //   }
+  // };
 
   const calculatePriceWeb = async (price, tradeCurr, owner) => {
     let collectionAddress = singleNFT?.collection
