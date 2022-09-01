@@ -53,7 +53,7 @@ import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData 
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import { compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
+import { CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
@@ -61,6 +61,7 @@ import { formatAddress } from '../../constants/addressFormat';
 import { getDateString, getExpirationDate } from '../../constants/date';
 import CountDown from 'react-native-countdown-component';
 import { twitterLink } from '../../common/function';
+import sendRequest from '../../helpers/AxiosApiRequest';
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
