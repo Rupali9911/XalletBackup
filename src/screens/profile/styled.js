@@ -29,7 +29,6 @@ const FollowButtonText = styled.Text`
 `;
 
 const EditButton = styled.TouchableOpacity`
-    flex: 1;
     height: ${SIZE(30)}px;
     border-radius: ${SIZE(2)}px;
     border-width: ${SIZE(1)}px;

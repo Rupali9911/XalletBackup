@@ -28,6 +28,7 @@ export default function LaunchPadItemData(props) {
         isCollection,
         cryptoAllowed,
         disabled,
+        isOfficial,
         collectionId
     } = props;
 

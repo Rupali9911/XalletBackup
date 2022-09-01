@@ -17,6 +17,9 @@ if (networkType === "mainnet") {
   API_GATEWAY_URL = "https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1";
 }
 
+let API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1'
+// let API_GATEWAY_URL = 'https://hgvgnnifc3.execute-api.eu-west-1.amazonaws.com/v1'
+
 export {
   BASE_URL,
   NEW_BASE_URL,
