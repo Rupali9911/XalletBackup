@@ -1,4 +1,4 @@
-import {NEW_BASE_URL, BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL, BASE_URL } from '../../common/constants';
 import { cardsDefaultData } from '../../web3/config/cardsDefaultData';
 import {
   COLLECTION_FAIL,
@@ -8,6 +8,7 @@ import {
   COLLECTION_PAGE_CHANGE,
 } from '../types';
 import { networkType } from '../../common/networkType';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 export const collectionLoadSuccess = (data) => ({
   type: COLLECTION_SUCCESS,
@@ -31,7 +32,7 @@ export const collectionPageChange = (data) => ({
   payload: data
 });
 
-export const collectionList = (page,isSelectTab) => {
+export const collectionList = (page, isSelectTab) => {
   return (dispatch) => {
     dispatch(collectionLoadStart());
 
@@ -41,21 +42,24 @@ export const collectionList = (page,isSelectTab) => {
     //   ? `${BASE_URL}/user/actual-collections?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`
     //   : `${BASE_URL}/user/live-actual-collections-type?page=${page}&limit=${limit}&type=${isSelectTab ? 'normal' : 'blind'}`;
 
-    const url = `${NEW_BASE_URL}/collections?page=${page}&limit=${limit}`
+    const url = `${NEW_BASE_URL}/collections`
 
-    fetch(url)
-      .then(response => response.json())
+    sendRequest({
+      url, params: {
+        page, limit
+      }
+    })
       .then(json => {
         if (isSelectTab) {
-        //  let newData = json?.data?.map((item) => {
-        //     if (item.chainType) {
-        //       item.chainType = ["ethereum", "binance"]
-        //     } else {
-        //       item = { ...item, chainType: ["ethereum", "binance"] }
-        //     }
-        //     return item;
-        //   })
-        //   json.data = newData;
+          //  let newData = json?.data?.map((item) => {
+          //     if (item.chainType) {
+          //       item.chainType = ["ethereum", "binance"]
+          //     } else {
+          //       item = { ...item, chainType: ["ethereum", "binance"] }
+          //     }
+          //     return item;
+          //   })
+          //   json.data = newData;
           dispatch(collectionLoadSuccess(json));
         }
       }).catch(err => {

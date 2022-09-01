@@ -1,3 +1,4 @@
+import sendRequest from '../../helpers/AxiosApiRequest';
 import { NEW_BASE_URL } from '../../common/constants';
 import {
     LAUNCHPAD_NFT_LIST_FAIL,
@@ -34,10 +35,15 @@ export const launchpadNftLoadSuccess = (data) => ({
 export const getLaunchpadNftList = (page, limit) => {
     return (dispatch) => {
         dispatch(launchpadNftLoadStart())
-        const url = `${NEW_BASE_URL}/launchpad?page=${page}&limit=${limit}`
-
-        fetch(url)
-            .then(response => response.json())
+        const url = `${NEW_BASE_URL}/launchpad`
+        sendRequest({
+            url,
+            method: 'GET',
+            params: {
+                page,
+                limit
+            },
+        })
             .then(data => {
                 dispatch(launchpadNftLoadSuccess(data))
             })

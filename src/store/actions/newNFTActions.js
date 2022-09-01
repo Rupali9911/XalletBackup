@@ -1,6 +1,6 @@
 import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
-import { ApiRequest } from '../../helpers/ApiRequest';
+import sendRequest from '../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import {
@@ -102,11 +102,20 @@ export const newPageChange = data => ({
 export const newNFTData = (category, sort, limit, pageNum) => {
   let userId = 16898
   return (dispatch) => {
-    let pageSize = limit? limit : 10;
+    let pageSize = limit ? limit : 10;
     dispatch(newNftLoadStart())
-    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets?pageIndex=${pageNum}&pageSize=${pageSize}&sortFilter=${sort}&categoryFilter=${category}&userId=${userId}`
-    fetch(url)
-      .then(response => response.json())
+    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets`
+    sendRequest({
+      url,
+      method: 'GET',
+      params: {
+        pageIndex: pageNum,
+        pageSize,
+        sortFilter: sort,
+        categoryFilter: category,
+        userId
+      }
+    })
       .then(data => {
         if (category === 0) {
           dispatch(newNftTrendingLoadSuccess(data))
@@ -269,12 +278,14 @@ export const favoriteNFTList = (page, limit, sort) => {
 };
 
 export const searchNFT = searchTxt => dispatch =>
-  new Promise((resolve, reject) => {
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MDI5NjcxMiwiZXhwIjoxNjYwMzAwMzEyfQ.3e0qqKvbzJetTZ87qiKh5LnYdo6DndeFirMFJsA7G5Y'
-    let headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    ApiRequest(`${NEW_BASE_URL}/users/search?keyword=${searchTxt}`, 'GET', null, headers)
+  new Promise(async (resolve, reject) => {
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/search`,
+      method: 'GET',
+      params: {
+        keyword: searchTxt
+      }
+    })
       .then(response => {
         resolve(response);
       })

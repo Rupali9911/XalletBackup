@@ -53,13 +53,7 @@ import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData 
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import {
-  CATEGORY_VALUE,
-  compareAddress,
-  FILTER_TRADING_HISTORY_OPTIONS,
-  NFT_MARKET_STATUS,
-  SORT_TRADING_HISTORY
-} from '../../constants';
+import { compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
@@ -267,10 +261,17 @@ const DetailScreen = ({ navigation, route }) => {
   const getTokenDetailsApi = async () => {
     let userId = 3708
     let networkName = typeof network === 'string' ? network : network?.networkName
-    let url = `${NEW_BASE_URL}/nfts/details?networkName=${networkName}&collectionAddress=${collectionAddress}&nftTokenId=${nftTokenId}&userId=${userId}`
+    let url = `${NEW_BASE_URL}/nfts/details`
 
-    fetch(url)
-      .then(response => response.json())
+    sendRequest({
+      url,
+      params: {
+        networkName,
+        collectionAddress,
+        nftTokenId,
+        userId
+      }
+    })
       .then(json => {
         console.log("🚀 ~ file: detail.js ~ line 223 ~  ~ json", json)
         if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
@@ -1910,12 +1911,19 @@ const DetailScreen = ({ navigation, route }) => {
     let limit = 6
     let userId = 3708
     let networkId = network?.networkId
-    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection?page=${page}&limit=${limit}&collectionAddress=${collectionAddress}&currentNftId=${nftId}&userId=${userId}&networkId=${networkId}`;
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-    let headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    ApiRequest(url, 'GET', null, headers)
+    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
+    sendRequest({
+      url,
+      method: 'GET',
+      params: {
+        page,
+        limit,
+        collectionAddress,
+        currentNftId: nftId,
+        userId,
+        networkId
+      },
+    })
       .then(res => {
         if (res?.list?.length > 0) {
           setMoreData(res?.list);
@@ -1928,11 +1936,10 @@ const DetailScreen = ({ navigation, route }) => {
 
   const getOfferList = () => {
     let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-    let headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    ApiRequest(url, 'GET', null, headers)
+    sendRequest({
+      url,
+      method: 'GET',
+    })
       .then(res => {
         console.log("🚀 ~ file: detail.js ~ line 1677 ~ ~ res", res)
         if (res?.length > 0) {
@@ -1970,23 +1977,20 @@ const DetailScreen = ({ navigation, route }) => {
     let page = 1
     let limit = 5
     let bidSort = 3
-    let url = history === 'bid'
-      ? `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`
-      : `${NEW_BASE_URL}/sale-nft/trading-history`
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-    let method = history === 'bid' ? 'GET' : 'POST'
-    let body = history === 'bid' ? null :
-      {
+    let payload = history === 'bid' ? {
+      url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+      method: 'GET',
+    } : {
+      url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+      method: 'POST',
+      data: {
         page: 1,
         limit: 30,
         nftId: nftId,
         sort
       }
-
-    let headers = {
-      'Authorization': `Bearer ${token}`
     }
-    ApiRequest(url, method, body, headers)
+    sendRequest(payload)
       .then(res => {
         console.log("🚀 ~ file: detail.js ~ line 1656 ~ ~ res", history, res)
         if (res?.items?.length > 0) {

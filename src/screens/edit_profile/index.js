@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
 import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text, PermissionsAndroid } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ActionSheet from 'react-native-actionsheet';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Field, reduxForm } from 'redux-form';

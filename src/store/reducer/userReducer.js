@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 
 import {
@@ -23,7 +24,7 @@ import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 import { setConnectedApps } from './walletReducer';
-import { ApiRequest } from '../../helpers/ApiRequest';
+import sendRequest from '../../helpers/AxiosApiRequest';
 import { reject } from 'lodash';
 import { resolve } from 'path-browserify';
 
@@ -103,7 +104,6 @@ export default UserReducer = (state = initialState, action) => {
     case AUTH_SUCCESS:
       return {
         ...state,
-        wallet: action.payload.wallet,
         userData: action.payload.data,
         isCreate: action.payload.isCreate,
         showSuccess: action.payload.showSuccess,
@@ -221,16 +221,11 @@ export const endLoader = () => dispatch =>
   });
 
 export const loadFromAsync = asyncData => (dispatch, getState) => {
-  if (asyncData && (asyncData.wallet || asyncData.userData)) {
-    const { wallet, userData, BackedUp, apps } = asyncData;
-
-    if (wallet) {
-      wallet.address = String(wallet?.address).toLowerCase();
-    }
+  if (asyncData && asyncData.userData) {
+    const { userData, BackedUp, apps } = asyncData;
     dispatch(
       setUserData({
         data: userData,
-        wallet: wallet ? wallet : null,
         isCreate: false,
         showSuccess: false,
       }),
@@ -238,39 +233,38 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
 
     BackedUp && dispatch(setBackup(BackedUp));
     apps && dispatch(setConnectedApps(apps));
-    const _wallet = wallet;
+    // const _wallet = wallet;
 
-    let req_data = {
-      owner: userData.user.username || _wallet?.address,
-      token: 'HubyJ*%qcqR0',
-    };
+    // let req_data = {
+    //   owner: userData?.user?.username || _wallet?.address,
+    //   token: 'HubyJ*%qcqR0',
+    // };
 
-    let body = {
-      method: 'POST',
-      body: JSON.stringify(req_data),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    };
-    fetch(`${BASE_URL}/xanalia/getProfile`, body)
-      .then(response => response.json())
-      .then(res => {
-        if (typeof (res.data) !== 'string' && res.data) {
-          dispatch(upateUserData(res.data));
+    // let body = {
+    //   method: 'POST',
+    //   body: JSON.stringify(req_data),
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    // };
+    // fetch(`${BASE_URL}/xanalia/getProfile`, body)
+    //   .then(response => response.json())
+    //   .then(res => {
+    //     if (typeof (res.data) !== 'string' && res.data) {
+    //       dispatch(upateUserData(res.data));
 
-        }
-        dispatch(endMainLoading());
-        dispatch(hideSplash());
-      })
-      .catch(e => {
-        dispatch(hideSplash());
-        dispatch(endMainLoading());
-      });
-  } else {
-    dispatch(hideSplash());
-    dispatch(endMainLoading());
+    //     }
+    //     dispatch(endMainLoading());
+    //     dispatch(hideSplash());
+    //   })
+    //   .catch(e => {
+    //     dispatch(hideSplash());
+    //     dispatch(endMainLoading());
+    //   });
   }
+  dispatch(hideSplash());
+  dispatch(endMainLoading());
 };
 
 export const loadProfileFromAsync = (id) => (dispatch) =>
@@ -279,17 +273,11 @@ export const loadProfileFromAsync = (id) => (dispatch) =>
       owner: id,
       token: 'HubyJ*%qcqR0',
     };
-
-    let body = {
+    sendRequest({
+      url: `${BASE_URL}/xanalia/getProfile`,
       method: 'POST',
-      body: JSON.stringify(req_data),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    };
-    fetch(`${BASE_URL}/xanalia/getProfile`, body)
-      .then(response => response.json())
+      data: req_data,
+    })
       .then(res => {
         if (typeof (res.data) !== 'string' && res.data) {
           dispatch(upateUserData(res.data));
@@ -306,7 +294,7 @@ export const setUserAuthData =
     dispatch =>
       new Promise(async (resolve, reject) => {
         dispatch(startLoading());
-        AsyncStorage.setItem('@wallet', JSON.stringify(data));
+        AsyncStorage.setItem('@WALLET', JSON.stringify(data));
         dispatch(setUserData({ data, isCreate }));
       });
 
@@ -316,118 +304,33 @@ export const updateCreateState = () => dispatch =>
     resolve();
   });
 
-// export const getAddressNonce = (wallet, isCreate, isLater) => dispatch =>
-//   new Promise((resolve, reject) => {
-//     const url = `${BASE_URL}/auth/get-address-nonce`;
-//     const params = {
-//       publicAddress: wallet?.address,
-//     };
-
-//     const request = {
-//       method: 'POST',
-//       body: JSON.stringify(params),
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//       },
-//     };
-
-//     dispatch(startLoading());
-//     fetch(url, request)
-//       .then(res => res.json())
-//       .then(response => {
-//         console.log('response', response);
-//         if (response.success) {
-//           const _params = {
-//             nonce: response.data,
-//             signature: `${getSig(response.data, wallet.privateKey)}`,
-//           };
-
-//           const verifyReuqest = {
-//             method: 'POST',
-//             body: JSON.stringify(_params),
-//             headers: {
-//               Accept: 'application/json',
-//               'Content-Type': 'application/json',
-//             },
-//           };
-//           fetch(
-//             `${BASE_URL}/auth/verify-signature`,
-//             verifyReuqest,
-//           )
-//             .then(_res => _res.json())
-//             .then(async _response => {
-//               if (_response.success) {
-//                 const items = [
-//                   ['@wallet', JSON.stringify(wallet)],
-//                   ['@userData', JSON.stringify(_response.data)],
-//                 ];
-//                 await AsyncStorage.multiSet(items);
-//                 wallet.address = String(wallet?.address).toLowerCase();
-//                 dispatch(
-//                   setUserData({
-//                     data: _response.data,
-//                     wallet,
-//                     isCreate,
-//                     showSuccess: isLater ? false : true,
-//                   }),
-//                 );
-//                 resolve();
-//               } else {
-//                 console.log('error 1', err);
-//                 dispatch(endLoading());
-//                 reject(_response);
-//               }
-//             })
-//             .catch(err => {
-//               console.log('error 2', err);
-//               dispatch(endLoading());
-//               reject(err);
-//             });
-//         } else {
-//           console.log('error 3', err);
-//           dispatch(endLoading());
-//           reject(response);
-//         }
-//       })
-//       .catch(err => {
-//         console.log('error', err);
-//         dispatch(endLoading());
-//         reject(err);
-//       });
-//   });
-
 // ======================= Login External Wallet API call ======================
 export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
   new Promise((resolve, reject) => {
-    // console.log("@@@ wallet in loginExternalWallet Func ===========>", wallet)
     const url = `${NEW_BASE_URL}/auth/login-external-wallet`;
     const body = {
       signature: wallet.signature,
       address: wallet.address,
       email: null
     };
-    const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    };
-    // console.log("@@@ Body request ===========>", request)
     dispatch(startLoading());
-    ApiRequest(url, 'POST', body, headers)
+    sendRequest({
+      url: url,
+      data: body,
+      method: 'POST',
+    })
       .then(async response => {
-        console.log('@@@ response of loginWithExternalWallet API call =========>', response);
         if (response.access_token) {
-          const items = [
-            ['@wallet', JSON.stringify(wallet)],
-            ['@userData', JSON.stringify(response)],
-          ];
-          // console.log("@@@ Manage session after loginWithExternalWallet API call ========>", items)
-          await AsyncStorage.multiSet(items);
+          await EncryptedStorage.setItem("SESSION_TOKEN", JSON.stringify({
+            accessToken: response.access_token,
+            refreshToken: response.refresh_token,
+          }));
           wallet.address = String(wallet?.address).toLowerCase();
+          await EncryptedStorage.setItem("@WALLET", JSON.stringify(wallet));
+          await AsyncStorage.setItem("@USERDATA", JSON.stringify(response.user));
           dispatch(
             setUserData({
-              data: response,
-              wallet,
+              data: response.user,
               isCreate,
               showSuccess: isLater ? false : true,
             }),
@@ -455,8 +358,8 @@ export const setBackupStatus = data => dispatch =>
   });
 
 export const signOut = () => {
-  return (dispatch, getState) => {
-    AsyncStorage.removeItem('@wallet');
+  return async (dispatch, getState) => {
+    await EncryptedStorage.removeItem('@WALLET');
     dispatch(logout());
   };
 };

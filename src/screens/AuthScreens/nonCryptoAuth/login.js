@@ -58,11 +58,10 @@ const LoginCrypto = ({ route, navigation }) => {
                         user: response.data.data.user,
                         token: response.data.data.accessToken
                     }
-                    await AsyncStorage.setItem('@userData', JSON.stringify(tempData));
+                    await AsyncStorage.setItem('@USERDATA', JSON.stringify(tempData));
                     dispatch(
                         setUserData({
                             data: tempData,
-                            wallet: "",
                             isCreate: false,
                             showSuccess: false,
                         }),
@@ -116,11 +115,11 @@ const LoginCrypto = ({ route, navigation }) => {
                             },
                             textContentType: 'username',
                             autoCompleteType: 'username',
-                            importantForAutofill:'yes'
+                            importantForAutofill: 'yes'
                         }}
                         error={error["email"]}
-                        inputMainStyle={{marginTop:hp(4)}}
-                        inputContStyle={{marginTop:hp(3)}}
+                        inputMainStyle={{ marginTop: hp(4) }}
+                        inputContStyle={{ marginTop: hp(3) }}
                     />
                     {/* <InputFields
                         label={translate("common.password")}
