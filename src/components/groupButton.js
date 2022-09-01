@@ -17,10 +17,11 @@ const groupButton = ({
     leftStyle = {},
     rightStyle = {},
     leftTextStyle = {},
-    rightTextStyle = {}
+    rightTextStyle = {},
+    style = {}
 }) => {
     return (
-        <View style={styles.mainContainer}>
+        <View style={[styles.mainContainer, style]}>
             {leftHide ? null : <TouchableOpacity
                 onPress={onLeftPress}
                 style={[styles.leftButton,

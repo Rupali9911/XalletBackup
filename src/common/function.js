@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 
-const confirmationAlert = (title, message,leftText, rightText, onOkPress, onCancelPress) => {
+const confirmationAlert = (title, message, leftText, rightText, onOkPress, onCancelPress) => {
     Alert.alert(
         title,
         message,
@@ -30,7 +30,10 @@ const alertWithSingleBtn = (title, message, onOkPress, btnTxt) => {
     );
 }
 
+const twitterLink = (username) => `https://twitter.com/${username}`
+
 export {
     confirmationAlert,
-    alertWithSingleBtn
+    alertWithSingleBtn,
+    twitterLink
 }

@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import { BASE_URL, NEW_BASE_URL } from "../../common/constants";
 import { useSelector } from "react-redux";
 import { networkType } from "../../common/networkType";
-import { ApiRequest } from "../../helpers/ApiRequest";
+import sendRequest, { getAccessToken } from "../../helpers/AxiosApiRequest";
 
 const { width } = Dimensions.get('window');
 
@@ -65,16 +65,16 @@ const Name = ({ label }) => {
 
 export const handleLike = async (nftItem) => {
     let getNftItem = { ...nftItem };
-    return new Promise((resolve, reject) => {
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
+    return new Promise(async (resolve, reject) => {
         let data = {
             nftId: nftItem.nftId,
             status: Number(nftItem.isLike) === 1 ? 0 : 1
         };
-        ApiRequest(`${NEW_BASE_URL}/nfts/like`, 'POST', data, headers)
+        sendRequest({
+            url: `${NEW_BASE_URL}/nfts/like`,
+            method: 'POST',
+            data
+        })
             .then((response) => {
                 if (response.generatedMaps.length > 0 || response.affected) {
                     getNftItem.isLike = data.status;

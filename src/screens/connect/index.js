@@ -32,6 +32,7 @@ import { connectStateModal } from '../../store/reducer/userReducer';
 import { getSig } from '../wallet/functions';
 import NotificationActionModal from '../../components/notificationActionModal';
 import { BASE_URL } from "../../common/constants";
+import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
 import axios from "axios";
 const singleSocket = SingleSocket.getInstance();
 
@@ -90,7 +91,7 @@ const Connect = ({ route, navigation }) => {
 
     const { appId } = route.params;
     const dispatch = useDispatch();
-    const { wallet, userData, passcode } = useSelector(state => state.UserReducer);
+    const { userData, passcode } = useSelector(state => state.UserReducer);
     const { socketOpen } = useSelector(state => state.WalletReducer);
 
     const [isSocketConnected, setSocketConnected] = useState(false);
@@ -156,7 +157,8 @@ const Connect = ({ route, navigation }) => {
         }
     }, [showConnectionSuccess]);
 
-    useEffect(() => {
+    useEffect(async () => {
+        let wallet = await getWallet();
         console.log('useEffect, passcode', passcode, !passcode, socketOpen)
         if (socketOpen) {
             if (appId && !passcode) {

@@ -71,8 +71,7 @@ const styles = StyleSheet.create({
   modalImage: {
     width: wp('100%'),
     height: wp('100%'),
-    resizeMode: 'contain',
-    backgroundColor: colors.BLACK1,
+    backgroundColor: Colors.WHITE8,
   },
   nftTitle: {
     fontSize: RF(1.5),
@@ -147,14 +146,14 @@ const styles = StyleSheet.create({
   personName: {
     fontSize: RF(1.4),
     fontFamily: fonts.ARIAL_BOLD,
-    color: colors.black,
+    color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(70),
   },
   collectionName: {
     fontSize: RF(1.4),
     fontFamily: fonts.ARIAL_BOLD,
-    color: colors.black,
+    color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(53),
     marginRight: 5
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
   },
   creatorName: {
     fontSize: RF(2),
-    fontFamily: fonts.ARIAL,
+    fontFamily: fonts.ARIAL_BOLD,
     color: colors.themeR,
     // lineHeight: SIZE(14.06),
     maxWidth: SIZE(130),
@@ -175,12 +174,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   description: {
-    fontSize: RF(1.4),
-    fontFamily: fonts.PINGfANG,
-    color: colors.GREY1,
-    marginTop: SIZE(5),
-    marginBottom: SIZE(20),
-    paddingHorizontal: SIZE(12),
+    // fontSize: RF(1.4),
+    fontFamily: fonts.ARIAL,
+    // color: colors.black,
+    // marginTop: SIZE(5),
+    marginBottom: SIZE(15),
+    paddingHorizontal: SIZE(15)
   },
   payIn: {
     fontSize: RF(1.6),
@@ -221,13 +220,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   priceUnit: {
-    fontSize: RF(2.3),
-    fontFamily: fonts.PINGfANG_SBOLD,
+    fontSize: RF(3.1),
+    fontFamily: fonts.ARIAL_BOLD,
     color: colors.GREY4,
     marginLeft: wp(2),
   },
   dollarText: {
-    fontSize: RF(1.7)
+    fontSize: RF(1.8)
   },
   price: {
     fontSize: RF(3.1),
@@ -277,10 +276,12 @@ const styles = StyleSheet.create({
   head: { height: SIZE(40) },
   text: { margin: SIZE(10), fontSize: SIZE(12) },
   themeColor: { color: Colors.themeColor },
-  emptyData: {
-    alignSelf: 'center',
-    marginVertical: hp('1%'),
-  },
+  emptyData: (history) => ({
+    // alignSelf: 'center',
+    // marginVertical: hp('1%'),
+    height: history === 'trading' ? hp(12) : hp(8),
+    alignItems: 'center',
+  }),
   sorryMessageCont: {
     flex: 1,
     justifyContent: 'center',
@@ -404,8 +405,17 @@ const styles = StyleSheet.create({
   },
   rightButtonText: {
     color: Colors.BLUE3
+  },
+  viewAllBtn: {
+    marginVertical: SIZE(12),
+    width: wp(40),
+    alignSelf: 'center'
+  },
+  viewAllBtnInner: {
+    backgroundColor: 'transparent',
+    borderColor: Colors.BLUE4,
+    borderWidth: 2
   }
-
 });
 
 export default styles;
