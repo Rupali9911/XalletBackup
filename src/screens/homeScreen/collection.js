@@ -158,6 +158,7 @@ const Collection = () => {
       blind={item.blind}
       isHotCollection={item.isHot}
       count={item.totalNft}
+      verified={item.isOfficial}
       network={item.network}
       collectionTab = {isSelectTab}
       colId={item._id}

@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import _, { toFinite } from 'lodash';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -36,6 +36,7 @@ import {
     myPageChange,
     myNftLoadFail,
 } from '../../store/actions/myNFTaction';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const NFTCreated = ({ route }) => {
     const isFocusedHistory = useIsFocused();
@@ -46,6 +47,10 @@ const NFTCreated = ({ route }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [isFirstRender, setIsFirstRender] = useState(true);
+
+    let pageNum = 1
+    let limit = 10
+    let tab = 1
 
     useEffect(() => {
         if (isFocusedHistory) {
@@ -70,39 +75,29 @@ const NFTCreated = ({ route }) => {
     };
 
     const renderItem = ({ item }) => {
-        let findIndex = MyNFTReducer.myList.findIndex(x => x._id === item._id);
-
-        if (item && item.hasOwnProperty("metaData") && item.metaData) {
-            const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
-            return (
-                <NFTItem
-                    screenName="myNFT"
-                    item={item}
-                    image={image}
-                    // onLongPress={() => {
-                    //     setModalData(item);
-                    //     setModalVisible(true);
-                    // }}
-                    onPress={() => {
-                        // dispatch(changeScreenName('myNFT'));
-                        navigation.navigate('DetailItem', { id: id, index: findIndex, sName: "myNFT" });
-                    }}
-                />
-            );
-        }
+        return (
+            <NFTItem
+                screenName="movieNFT"
+                item={item}
+                // image={imageUri}
+                profile={true}
+                onPress={() => {
+                    // dispatch(changeScreenName('movieNFT'));
+                    navigation.push('CertificateDetail', { item: item });
+                }}
+            />
+        );
     };
 
     const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myList]);
 
-    const getNFTlist = useCallback(page => {
-        console.log('getNFTlist, id', id)
-        dispatch(myNFTList(page, id));
+    const getNFTlist = useCallback((pageIndex,pageSize,address,category) => {
+        dispatch(myNFTList(pageIndex,pageSize,address,category));
     }, []);
 
     const pressToggle = () => {
         dispatch(myNftListReset());
-        dispatch(myPageChange(1));
-        getNFTlist(1);
+        getNFTlist(pageNum,limit,id,tab);
     };
 
     console.log("🚀 ~ file: nftCreated.js ~ line 118 ~ NFTCreated ~ MyNFTReducer?.myList", MyNFTReducer?.myList)
@@ -136,6 +131,8 @@ const NFTCreated = ({ route }) => {
                         ListFooterComponent={renderFooter}
                         onEndReachedThreshold={0.4}
                         keyExtractor={(v, i) => 'item_' + i}
+                        
+
                     />
                 ) : (
                     <View style={styles.sorryMessageCont}>

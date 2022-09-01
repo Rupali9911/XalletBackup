@@ -37,7 +37,7 @@ export default function MyNFTReducer(state = initialState, action) {
     case MY_NFT_LOAD_SUCCESS:
       return (state = {
         ...state,
-        myList: [...state.myList, ...action.payload.data],
+        myList: [...state.myList, ...action.payload.list],
         myNftTotalCount: action.payload.count,
         myNftListLoading: false,
       });

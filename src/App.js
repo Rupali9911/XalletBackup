@@ -77,6 +77,10 @@ const TabComponent = () => {
   const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
+  const { UserReducer } = useSelector(state => state);
+  const id = UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
+
+
   React.useEffect(() => {
     if (showSuccess || isCreate || connectModalState) {
       setIsBottomTabVisible(false)
@@ -181,6 +185,7 @@ const TabComponent = () => {
         options={{ tabBarLabel: translate('wallet.common.me') }}
         name={'Me'}
         component={ProfileScreen}
+        initialParams={{from : 'me', id : id}}
       />
     </Tab.Navigator>
   );
@@ -290,6 +295,7 @@ const AppRoutes = () => {
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
           <Stack.Screen name="transactionsDetail" component={transactionsDetail} />

@@ -14,8 +14,12 @@ if (networkType === "mainnet") {
   PROVIDER_URL = "https://data-seed-prebsc-1-s1.binance.org:8545";
 }
 
+let API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1'
+// let API_GATEWAY_URL = 'https://hgvgnnifc3.execute-api.eu-west-1.amazonaws.com/v1'
+
 export {
   BASE_URL,
   NEW_BASE_URL,
-  PROVIDER_URL
+  PROVIDER_URL,
+  API_GATEWAY_URL
 };

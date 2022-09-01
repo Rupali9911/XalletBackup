@@ -28,6 +28,7 @@ export default function CollectionItem(props) {
     blind,
     address,
     isCollection,
+    verified,
     cryptoAllowed,
     colId
   } = props;
@@ -138,7 +139,7 @@ export default function CollectionItem(props) {
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
-              {!collectionTab && renderVerifiedCollection()}
+              {verified === 1 && renderVerifiedCollection()}
             </View>
             {!isCollection && (
               <Text style={styles.byUser}>{collectionTab ? `${getByUser()}` : `by ${getByUser()}`}</Text>
