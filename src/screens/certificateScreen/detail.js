@@ -86,7 +86,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { data, wallet } = useSelector(state => state.UserReducer);
+  const { userData, wallet } = useSelector(state => state.UserReducer);
   // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
@@ -169,6 +169,7 @@ const DetailScreen = ({ navigation, route }) => {
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
   const network = detailNFT?.network ? detailNFT.network : item?.network
   const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
+  const userId = userData?.id;
 
   const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
 
@@ -260,7 +261,6 @@ const DetailScreen = ({ navigation, route }) => {
   // };
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const getTokenDetailsApi = async () => {
-    let userId = 3708
     let networkName = typeof network === 'string' ? network : network?.networkName
     let url = `${NEW_BASE_URL}/nfts/details`
 
@@ -1442,101 +1442,101 @@ const DetailScreen = ({ navigation, route }) => {
   const memoizedItem = useMemo(() => renderItem, [moreData]);
 
   //=============== Render Payment Method Function ===============
-  const renderPaymentMethod = () => {
-    return (
-      <PaymentMethod
-        visible={showPaymentMethod}
-        payableIn={payableIn}
-        price={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInCurrency
-            : priceNFT
-          //  nftPrice
-          //   ? nftPrice
-          //   : 0
-        }
-        priceStr={priceNFTString}
-        priceInDollar={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInDollar
-            : priceInDollar
-        }
-        baseCurrency={baseCurrency}
-        allowedTokens={availableTokens}
-        ownerAddress={
-          ownerAddress?.includes('0x')
-            ? ownerAddress
-            : walletAddressForNonCrypto
-        }
-        id={singleNFT.id}
-        collectionAddress={collectionAddress}
-        chain={chainType}
-        onRequestClose={() => setShowPaymentMethod(false)}
-      />
-    )
-  }
+  // const renderPaymentMethod = () => {
+  //   return (
+  //     <PaymentMethod
+  //       visible={showPaymentMethod}
+  //       payableIn={payableIn}
+  //       price={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInCurrency
+  //           : priceNFT
+  //         //  nftPrice
+  //         //   ? nftPrice
+  //         //   : 0
+  //       }
+  //       priceStr={priceNFTString}
+  //       priceInDollar={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInDollar
+  //           : priceInDollar
+  //       }
+  //       baseCurrency={baseCurrency}
+  //       allowedTokens={availableTokens}
+  //       ownerAddress={
+  //         ownerAddress?.includes('0x')
+  //           ? ownerAddress
+  //           : walletAddressForNonCrypto
+  //       }
+  //       id={singleNFT.id}
+  //       collectionAddress={collectionAddress}
+  //       chain={chainType}
+  //       onRequestClose={() => setShowPaymentMethod(false)}
+  //     />
+  //   )
+  // }
 
   //=============== Render Payment Now Function ===============
-  const renderPaymentNow = () => {
-    return (
-      <PaymentNow
-        visible={showPaymentNow}
-        price={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInCurrency
-            : nftPrice
-              ? nftPrice
-              : 0
-        }
-        priceInDollar={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInDollar
-            : priceInDollar
-        }
-        chain={chainType}
-        NftId={_tokenId}
-        IdWithChain={nft}
-        ownerId={nonCryptoOwnerId}
-        ownerAddress={
-          ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto
-        }
-        baseCurrency={baseCurrency}
-        collectionAddress={collectionAddress}
-        lastBidAmount={priceNFT}
-        onRequestClose={() => {
-          dispatch(setPaymentObject(null));
-          setShowPaymentNow(false);
-        }}
-        onPaymentDone={() => {
-          dispatch(setPaymentObject(null));
-          setBuyLoading(true);
-          setShowPaymentNow(false);
-          setSuccessModalVisible(true);
-        }}
-      />
-    )
-  }
+  // const renderPaymentNow = () => {
+  //   return (
+  //     <PaymentNow
+  //       visible={showPaymentNow}
+  //       price={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInCurrency
+  //           : nftPrice
+  //             ? nftPrice
+  //             : 0
+  //       }
+  //       priceInDollar={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInDollar
+  //           : priceInDollar
+  //       }
+  //       chain={chainType}
+  //       NftId={_tokenId}
+  //       IdWithChain={nft}
+  //       ownerId={nonCryptoOwnerId}
+  //       ownerAddress={
+  //         ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto
+  //       }
+  //       baseCurrency={baseCurrency}
+  //       collectionAddress={collectionAddress}
+  //       lastBidAmount={priceNFT}
+  //       onRequestClose={() => {
+  //         dispatch(setPaymentObject(null));
+  //         setShowPaymentNow(false);
+  //       }}
+  //       onPaymentDone={() => {
+  //         dispatch(setPaymentObject(null));
+  //         setBuyLoading(true);
+  //         setShowPaymentNow(false);
+  //         setSuccessModalVisible(true);
+  //       }}
+  //     />
+  //   )
+  // }
 
   //=============== Render Tab Modal Function ===============
-  const renderTabModal = () => {
-    return (
-      <TabModal
-        modalProps={{
-          isVisible: allowedTokenModal,
-          onBackdropPress: () => {
-            setAllowedTokenModal(false);
-          },
-        }}
-        data={{ data: availableTokens }}
-        title={translate('common.allowedcurrency')}
-        itemPress={async tradeCurr => {
-          setAllowedTokenModal(false);
-          await calculatePrice(tradeCurr);
-        }}
-        renderItemName={'name'}
-      />
-    )
-  }
+  // const renderTabModal = () => {
+  //   return (
+  //     <TabModal
+  //       modalProps={{
+  //         isVisible: allowedTokenModal,
+  //         onBackdropPress: () => {
+  //           setAllowedTokenModal(false);
+  //         },
+  //       }}
+  //       data={{ data: availableTokens }}
+  //       title={translate('common.allowedcurrency')}
+  //       itemPress={async tradeCurr => {
+  //         setAllowedTokenModal(false);
+  //         await calculatePrice(tradeCurr);
+  //       }}
+  //       renderItemName={'name'}
+  //     />
+  //   )
+  // }
 
   //=============== Render Tab Modal Function ===============
   const renderAppModal = () => {
@@ -1910,7 +1910,6 @@ const DetailScreen = ({ navigation, route }) => {
   const getRealtedNFT = async () => {
     let page = 1
     let limit = 6
-    let userId = 3708
     let networkId = network?.networkId
     let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
     sendRequest({
@@ -2869,59 +2868,60 @@ const DetailScreen = ({ navigation, route }) => {
   //     setDiscountValue(res ? res / 10 : 0);
   //   });
   // };
-  const calculatePrice = async tradeCurr => {
-    setPayableIn(tradeCurr.name);
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    let ownerAddress =
-      data?.user?.role === 'crypto'
-        ? wallet?.address
-        : blockChainConfig[i]?.walletAddressForNonCrypto;
-    let res = await MarketPlaceContract.methods
-      .calculatePrice(
-        priceNFTString,
-        baseCurrency?.order,
-        tradeCurr.order,
-        _tokenId,
-        ownerAddress,
-        collectionAddress,
-      )
-      .call();
 
-    if (res) {
-      let currPay = res / 1e18;
-      let finalPrice = '';
-      switch (tradeCurr.key) {
-        case 'BNB':
-          finalPrice = currPay * currencyPrices?.BNB;
-          break;
+  // const calculatePrice = async tradeCurr => {
+  //   setPayableIn(tradeCurr.name);
+  //   let web3 = new Web3(providerUrl);
+  //   let MarketPlaceContract = new web3.eth.Contract(
+  //     MarketPlaceAbi,
+  //     MarketContractAddress,
+  //   );
+  //   let ownerAddress =
+  //     data?.user?.role === 'crypto'
+  //       ? wallet?.address
+  //       : blockChainConfig[i]?.walletAddressForNonCrypto;
+  //   let res = await MarketPlaceContract.methods
+  //     .calculatePrice(
+  //       priceNFTString,
+  //       baseCurrency?.order,
+  //       tradeCurr.order,
+  //       _tokenId,
+  //       ownerAddress,
+  //       collectionAddress,
+  //     )
+  //     .call();
 
-        case 'ALIA':
-          finalPrice = currPay * currencyPrices?.ALIA;
-          break;
+  //   if (res) {
+  //     let currPay = res / 1e18;
+  //     let finalPrice = '';
+  //     switch (tradeCurr.key) {
+  //       case 'BNB':
+  //         finalPrice = currPay * currencyPrices?.BNB;
+  //         break;
 
-        case 'ETH':
-          finalPrice = currPay * currencyPrices?.ETH;
-          break;
+  //       case 'ALIA':
+  //         finalPrice = currPay * currencyPrices?.ALIA;
+  //         break;
 
-        case 'MATIC':
-          finalPrice = currPay * currencyPrices?.MATIC;
-          break;
+  //       case 'ETH':
+  //         finalPrice = currPay * currencyPrices?.ETH;
+  //         break;
 
-        default:
-          finalPrice = currPay * 1;
-          break;
-      }
-      setPayableInCurrency(currPay);
-      setPayableInDollar(finalPrice);
-      return currPay;
-    } else {
-      return '';
-    }
-  };
+  //       case 'MATIC':
+  //         finalPrice = currPay * currencyPrices?.MATIC;
+  //         break;
+
+  //       default:
+  //         finalPrice = currPay * 1;
+  //         break;
+  //     }
+  //     setPayableInCurrency(currPay);
+  //     setPayableInDollar(finalPrice);
+  //     return currPay;
+  //   } else {
+  //     return '';
+  //   }
+  // };
 
   // const calculateBidPriceDollar = async (price, owner) => {
   //   let dollarToken = basePriceTokens.filter(
@@ -2934,32 +2934,32 @@ const DetailScreen = ({ navigation, route }) => {
   //   }
   // };
 
-  const calculatePriceWeb = async (price, tradeCurr, owner) => {
-    let collectionAddress = singleNFT?.collection
-      ? singleNFT?.collection
-      : ERC721Address;
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    let res = await MarketPlaceContract.methods
-      .calculatePrice(
-        price,
-        baseCurrency?.order,
-        tradeCurr,
-        singleNFT.id,
-        owner,
-        collectionAddress,
-      )
-      .call()
-      .then(res => res)
-      .catch(err => {
-        console.log(err);
-      });
-    if (res) return res;
-    else return '';
-  };
+  // const calculatePriceWeb = async (price, tradeCurr, owner) => {
+  //   let collectionAddress = singleNFT?.collection
+  //     ? singleNFT?.collection
+  //     : ERC721Address;
+  //   let web3 = new Web3(providerUrl);
+  //   let MarketPlaceContract = new web3.eth.Contract(
+  //     MarketPlaceAbi,
+  //     MarketContractAddress,
+  //   );
+  //   let res = await MarketPlaceContract.methods
+  //     .calculatePrice(
+  //       price,
+  //       baseCurrency?.order,
+  //       tradeCurr,
+  //       singleNFT.id,
+  //       owner,
+  //       collectionAddress,
+  //     )
+  //     .call()
+  //     .then(res => res)
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  //   if (res) return res;
+  //   else return '';
+  // };
 
   const bidingTimeEnded = () => {
     return new Date().getTime() > new Date(auctionETime).getTime();
