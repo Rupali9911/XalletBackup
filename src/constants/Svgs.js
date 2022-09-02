@@ -62,6 +62,7 @@ import LeftArrowWhiteIcon from 'src/assets/svgs/icon-arrow-left-white.svg';
 import RightArrowGreyIcon from 'src/assets/svgs/icon-arrow-right-grey.svg';
 import BottomArrowIcon from 'src/assets/svgs/icon-arrow-bottom.svg';
 import SettingIcon from 'src/assets/svgs/icon-setting.svg';
+import SettingIconBlack from 'src/assets/svgs/icon-setting-black.svg';
 import CircleCloseIcon from 'src/assets/svgs/icon-circle-close.svg';
 import SendMessageIcon from 'src/assets/svgs/icon-send-message.svg';
 import PhoneIcon from 'src/assets/svgs/icon-phone.svg';
@@ -147,6 +148,7 @@ export default {
   RightArrowGreyIcon,
   BottomArrowIcon,
   SettingIcon,
+  SettingIconBlack,
   CircleCloseIcon,
   SendMessageIcon,
   PhoneIcon,

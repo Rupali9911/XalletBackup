@@ -186,7 +186,6 @@ const TabComponent = () => {
         options={{ tabBarLabel: translate('wallet.common.me') }}
         name={'Me'}
         component={ProfileScreen}
-        initialParams={{from : 'me', id : id}}
       />
     </Tab.Navigator>
   );
