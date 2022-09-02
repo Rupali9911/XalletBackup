@@ -100,7 +100,6 @@ const NFTCreated = ({ route }) => {
         getNFTlist(pageNum,limit,id,tab);
     };
 
-    console.log("🚀 ~ file: nftCreated.js ~ line 118 ~ NFTCreated ~ MyNFTReducer?.myList", MyNFTReducer?.myList)
 
     return (
         <View style={styles.trendCont}>

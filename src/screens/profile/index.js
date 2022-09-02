@@ -66,7 +66,7 @@ import { useNavigation } from '@react-navigation/native';
 import { updateAvtar, updateBanner } from '../../store/actions/myNFTaction';
 
 
-const { ConnectSmIcon, SettingIcon, CopyToClipboard, EditImage, CopyProfile } = SVGS;
+const { ConnectSmIcon, SettingIcon, CopyToClipboard, EditImage, CopyProfile, SettingIconBlack } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -76,49 +76,33 @@ function Profile({ navigation, connector, route }) {
     const [openDial1, setOpenDial1] = useState(false)
     const [openDial2, setOpenDial2] = useState(false)
     const { UserReducer } = useSelector(state => state);
-    // const [photo, setPhoto] = useState()
-    // const [banner, setBanner] = useState();
     const actionSheetRef = useRef(null);
 
     const dispatch = useDispatch();
-    const id = route.params.id
 
+    let id = UserReducer.userData.userWallet.address
 
-    const token = UserReducer.userData.access_token
-
-
-    // const id = UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
-    // const id = '0x5d19dc1141f866826e246098e9f122eb4b11910c'
-
-    console.log(userData, '>>>>>> main data')
+    if (typeof route.params === 'undefined') {
+        id = UserReducer.userData.userWallet.address
+    } else {
+        id = route.params.id
+    }
 
     const OPEN_CAMERA = 0;
     const OPEN_GALLERY = 1;
-
-
-    // const { about, title, links, username, role, profile_image } = UserReducer?.data?.user;
-    // useEffect(() => {
-    //     Update the document title using the browser API
-    //     UserReducer.data.user.profile_image,
-    //     UserReducer.data.user.about,
-    //     UserReducer.data.user.title,
-    //     UserReducer.data.user.links,
-    //     UserReducer.data.user.username,
-    //     UserReducer.data.user.role
-
-    //     console.log('UserReducer.data.user.profile_image ', UserReducer.data.user.profile_image)
-    // });
 
     const fetchData = () => {
         const url = `${NEW_BASE_URL}/users/${id}`
         fetch(url)
             .then((response) => response.json())
-            .then((data) => setUserData(data))
+            .then((data) => {
+                setUserData(data)
+            })
     }
 
     useEffect(() => {
         fetchData()
-    }, [id])
+    }, [])
 
     const toastConfig = {
         my_custom_type: ({ text1, props, ...rest }) => (
@@ -153,14 +137,7 @@ function Profile({ navigation, connector, route }) {
         }, 500)
     };
 
-
-    // const checkVideoUrl =
-    //     uriType === 'mp4' ||
-    //     uriType === 'MP4' ||
-    //     uriType === 'mov' ||
-    //     uriType === 'MOV';
-
-    const renderTabView = () => {
+    const renderTabView = (id) => {
         return (
             <Tab.Navigator
                 screenOptions={{
@@ -172,7 +149,6 @@ function Profile({ navigation, connector, route }) {
                     },
                     tabBarItemStyle: {
                         height: SIZE(42),
-                        // marginTop: SIZE(-10),
                     },
                     tabBarLabelStyle: {
                         fontSize: FONT(12),
@@ -207,7 +183,6 @@ function Profile({ navigation, connector, route }) {
     }
 
     const selectActionSheet = async (index) => {
-        console.log(index, '???????', imageType)
         const options = {
             title: 'Select Your Photo',
             storageOptions: {
@@ -225,7 +200,6 @@ function Profile({ navigation, connector, route }) {
                 width: 512,
                 cropping: true
             }).then(image => {
-                console.log('Response from camera', image)
                 if (image.height <= 512 && image.width <= 512) {
                     let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename ? image.filename : image.path.substring(image.path.lastIndexOf('/') + 1)
                     let uri = Platform.OS === 'android' ? image.path : image.sourceURL
@@ -237,17 +211,13 @@ function Profile({ navigation, connector, route }) {
                         fileName: filename,
                         image: image
                     }
-                    // console.log("🚀 ~ file: index.js ~ line 212 ~ ~ imageType", imageType, temp.type)
                     if (imageType === 'profile') {
-                        // setPhoto(temp)
                         updateAvtar(userData.id, token, temp)
                     } else if (imageType === 'banner') {
-                        // setBanner(temp)
                         updateBanner(userData.id, temp, token)
                     }
                 }
             }).catch(async e => {
-                console.log('Error from openCamera', e, e.code)
                 if (e.code && (e.code === 'E_NO_CAMERA_PERMISSION' || e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR')) {
                     // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
                     // if (isGranted===false) {
@@ -269,8 +239,6 @@ function Profile({ navigation, connector, route }) {
                 width: 512,
                 cropping: true
             }).then(image => {
-                console.log('Response from storage', image)
-
                 if (image.height <= 512 && image.width <= 512) {
 
                     let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
@@ -284,18 +252,13 @@ function Profile({ navigation, connector, route }) {
                         fileName: filename,
                         image: image
                     }
-                    console.log("🚀 ~ file: index.js ~ line 212 ~ ~ imageType", imageType, temp.type)
                     if (imageType === 'profile') {
-                        console.log(temp, '>>>>>> temp')
-                        // setPhoto(temp)
-                        updateAvtar(userData.id, temp, token)
+                        updateAvtar(userData.id, temp)
                     } else if (imageType === 'banner') {
-                        // setBanner(temp)
                         updateBanner(userData.id, temp, token)
                     }
                 }
             }).catch(async e => {
-                console.log('Error from openPicker', e)
                 if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
                     // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
                     // if (isGranted === false) {
@@ -335,8 +298,6 @@ function Profile({ navigation, connector, route }) {
 
     const renderBannerImage = () => {
         return (
-            route.params.from === 'me' ? <C_Image uri={UserReducer?.userData?.user?.banner}
-                imageStyle={styles.collectionListImage} /> :
                 <C_Image uri={userData.banner}
                     imageStyle={styles.collectionListImage} />
         )
@@ -345,10 +306,8 @@ function Profile({ navigation, connector, route }) {
     const renderIconImage = () => {
         return (
             <TouchableOpacity onPress={() => onSelect('profile')}>
-                {route.params.from === 'me' ? <C_Image uri={UserReducer?.userData?.user?.profile_image}
-                    imageStyle={styles.iconImage} /> :
                     <C_Image uri={userData.avatar}
-                        imageStyle={styles.iconImage} />}
+                        imageStyle={styles.iconImage} />
             </TouchableOpacity>
         )
     }
@@ -359,7 +318,7 @@ function Profile({ navigation, connector, route }) {
         return (
             <View style={styles.profileInfo}>
                 <View style={styles.userNameView}>
-                    <Text style={styles.userNameText}>{userData.userName}</Text>
+                    <Text style={styles.userNameText}>{userData.userName ? userData.userName : 'Unnamed' }</Text>
                 </View>
                 <View style={styles.userIdView}>
                     <Text style={styles.userIdText}>{userData?.userWallet?.address.substring(0, 6)}...{userData?.userWallet?.address.substring(userData?.userWallet?.address.length - 4, userData?.userWallet?.address.length)}</Text>
@@ -395,15 +354,19 @@ function Profile({ navigation, connector, route }) {
                     />
                 }
             >
+                {route.params && <AppHeader
+                    title={translate("common.profile")}
+                    showBackButton
+                />}
                 <View>
-                    <TouchableOpacity style={styles.settings}
+                    {!route.params && <TouchableOpacity style={styles.settings}
                         onPress={() => navigation.navigate('Setting', { connector: connector })}>
                         <SettingIcon width={SIZE(23)} height={SIZE(23)} />
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                     <View style={styles.collectionWrapper}>
                         {renderBannerImage()}
                     </View>
-                    {route.params.from === 'me' && <TouchableOpacity style={styles.editImage} onPress={() => onSelect('banner')}>
+                    {!route.params && <TouchableOpacity style={styles.editImage} onPress={() => onSelect('banner')}>
                         <EditImage width={SIZE(12)} height={SIZE(12)} />
                     </TouchableOpacity>}
                     <TouchableOpacity style={styles.copyProfile} onPress={() => copyProfileToClipboard()}>
@@ -421,11 +384,11 @@ function Profile({ navigation, connector, route }) {
                         {renderIconImage()}
                         {renderProfileNameAndId()}
                     </View>
-                    {route.params.from === 'me' && <EditButton style={{ alignSelf: 'center', width: wp(60), height: hp(3) }} onPress={() => navigation.navigate('EditProfile')}>
+                    {!route.params && <EditButton style={{ alignSelf: 'center', width: wp(60), height: hp(3) }} onPress={() => navigation.navigate('EditProfile')}>
                         <EditButtonText>{translate('wallet.common.editprofile')}</EditButtonText>
                     </EditButton>}
-                    <View style={route.params.from === 'me' ? styles.tabBarView1 : styles.tabBarView2}>
-                        {renderTabView()}
+                    <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
+                        {renderTabView(id)}
                     </View>
                     <ActionSheet
                         ref={actionSheetRef}

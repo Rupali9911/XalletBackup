@@ -1,6 +1,7 @@
-import { BASE_URL, NEW_BASE_URL,API_GATEWAY_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL, API_GATEWAY_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { ApiRequest } from '../../helpers/ApiRequest';
+import { getAccessToken } from '../../helpers/AxiosApiRequest';
 import { parseNftObject } from '../../utils/parseNFTObj';
 
 import {
@@ -62,37 +63,58 @@ export const myNFTList = (pageIndex, pageSize, address, category) => {
   }
 }
 
+const createFormData = (photo, body = {}) => {
+  const data = new FormData();
 
-export const updateAvtar = (userId, file, token) => {
-  // const { type } = file
-  console.log(file.type, userId, token, '>>>>>>> extension')
+
+  data.append('file', {
+    name: photo.fileName,
+    type: photo.type,
+    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+  });
+
+  Object.keys(body).forEach((key) => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
+
+
+export const updateAvtar = async (userId, file) => {
   const extension = file.type.split('/')[1]
   const name = new Date().getTime()
   let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`
+  const token = await getAccessToken('ACCESS_TOKEN')
+
+  const data = {
+    uri: file.uri,
+    name: file.fileName,
+    type: file.type,
+  }
+  const body = new FormData()
+  body.append('file', data)
 
   const requestOptions = {
     method: 'PUT',
     headers: {
-      'Content-Type': file.type,
-      'Authorization': `Bearer ${token}`,
-      'x-amz-tagging': `token=${token}`
+      'Content-Type': 'image/jpeg',
+      'Authorization': `${token}`,
+      'x-amz-tagging': `token=${token}`,
     },
-    body: file,
-    // referrer : 'https://frontend.xanalia.com/'
+    body: data,
   };
   fetch(url, requestOptions)
-  .then(response => response.json())
-  .then(data => console.log(data));
+    .then(response => response.json())
+    .then(data => console.log(data));
 }
 
 
 
 export const updateBanner = (userId, file, token) => {
-  // const { type } = file
-  console.log(file.type, userId, token, '>>>>>>> extension')
   const extension = file.type.split('/')[1]
   const name = new Date().getTime()
-  let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}#https://frontend.xanalia.com/`
+  let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`
 
   const requestOptions = {
     method: 'PUT',
@@ -105,8 +127,8 @@ export const updateBanner = (userId, file, token) => {
     // referrer : 'https://frontend.xanalia.com/'
   };
   fetch(url, requestOptions)
-  .then(response => response.json())
-  .then(data => console.log(data));
+    .then(response => response.json())
+    .then(data => console.log(data));
 }
 
 export const removeBanner = () => {
