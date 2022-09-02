@@ -8,7 +8,7 @@ var isAlert = false;
 export const STRIPE_API_URL = "https://api.stripe.com/v1/";
 export const BASE_URL = "https://testapi.xanalia.com/";
 
-export const ApiRequest = async (url, method, body, headers) => {
+export const ApiRequest = async (url, method, body, headers) => {   
 
     const requestOptions = {
         method,
@@ -29,22 +29,41 @@ export const ApiRequest = async (url, method, body, headers) => {
                 fetch(url, requestOptions)
                     .then(response => {
                         const statusCode = response.status;
+                        // return JSON.parse(JSON.stringify(response));
                         // console.log('response from API', response);
-
-                        try {
+                        if (statusCode == 200) {
                             return response.json();
-                        } catch (err) {
-                            if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
-                                throw `Try again !!!`;
+                        } else {
+                            switch (statusCode) {
+                                case 404:
+                                    console.log('Object not found');
+                                    throw Error(`${statusCode} Object not found`);
+                                case 500:
+                                    console.log('Internal server error');
+                                    if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
+                                        throw Error(`Try again !!!`);
+                                    }
+                                    throw Error(`${statusCode} Internal server error`);
+                                default:
+                                    console.log('Some error occured');
+                                    throw Error(`${statusCode} Some error occured`);
                             }
-                        };
-                        return response.json();
+                        }
+
+                        // try {
+                        //     return response.json();
+                        // } catch (err) {
+                        //     if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
+                        //         throw Error(`Try again !!!`);
+                        //     }
+                        // };
+                        // return response.json();
                     })
                     .then(response => {
                         resolve(response);
                     })
                     .catch(error => {
-                        reject()
+                        reject(error)
                         // alertWithSingleBtn(
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.apiFailed"),
@@ -70,7 +89,7 @@ export const ApiRequest = async (url, method, body, headers) => {
                 }
             }
         }).catch(err => {
-            reject();
+            reject(err);
             // alertWithSingleBtn(
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),

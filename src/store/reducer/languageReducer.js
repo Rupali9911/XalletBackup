@@ -108,23 +108,15 @@ export const getAllLanguages = () => (dispatch) =>
       }
 
       dispatch(updateAllLanguages(languages))
-      // console.log('Languages',JSON.stringify(languages))
-      // batch(() => {
-      //   dispatch(setEnglishLanguage(languages[0]));
-      //   dispatch(setJapanLanguage(languages[1]));
-      //   dispatch(setKoreaLanguage(languages[2]));
-      //   dispatch(setChinaLanguage(languages[3]));
-      //   dispatch(setTaiwanLanguage(languages[4]));
-      // });
     }).catch((error) => {
       console.log(error);
     });
 
 //Set Selected Language
-export const setAppLanguage = (data) => (dispatch) => {
-  AsyncStorage.setItem('@language', JSON.stringify(data));
-  dispatch(setSelectedLanguage(data));
-  setI18nConfig(data.language_name);
+export const setAppLanguage = (language) => (dispatch) => {
+  AsyncStorage.setItem('@language', JSON.stringify(language));
+  dispatch(setSelectedLanguage(language));
+  setI18nConfig(language.language_name);
 }
 
 const updateAllLanguages = (data) => ({

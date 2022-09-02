@@ -29,7 +29,7 @@ const appSplash = () => {
     }, []);
 
     const loadAllData = async () => {
-        dispatch(getAllLanguages());
+       await dispatch(getAllLanguages());
         try {
             const token = await getAccessToken('ACCESS_TOKEN');
             if (token) {
