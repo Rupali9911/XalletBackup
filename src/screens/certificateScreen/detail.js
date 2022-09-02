@@ -1383,7 +1383,7 @@ const DetailScreen = ({ navigation, route }) => {
               keyExtractor={(v, i) => 'item_' + i}
             />
             <GroupButton
-              leftText={translate('viewAllCollection')}
+              leftText={translate('common.viewAllCollection')}
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
               leftTextStyle={{ color: Colors.BLUE4 }}
