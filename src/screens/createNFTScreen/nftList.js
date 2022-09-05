@@ -12,18 +12,19 @@ import {
 import { IMAGES } from '../../constants';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import Modal from 'react-native-modal';
 import { C_Image } from '../../components';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 const ListItem = props => {
-  let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
+  // let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
   return (
     <TouchableOpacity onPress={props.press} style={styles.listCont}>
       <View style={styles.listCenter}>
-        <Text style={styles.listLabel}>{dataToRender.name}</Text>
+        <Text style={styles.listLabel}>{props.data.nftName}</Text>
       </View>
       <Image source={IMAGES.leftArrow} style={styles.imageStyles(3)} />
     </TouchableOpacity>
@@ -113,6 +114,7 @@ const NFTList = ({
   nftListDefault,
   switchEditNFT
 }) => {
+  // console.log("@@@ NFT List screen props ===========>", changeLoadingState, position, showModal, modalItem, modalScreen, nftListDefault, switchEditNFT)
 
   const [collectionList, setCollectionList] = useState([]);
   const [collection, setCollection] = useState(null);
@@ -132,10 +134,24 @@ const NFTList = ({
     state => state.WalletReducer
   );
 
+  useEffect(async () => {
+    const response = await sendRequest({
+      url: `${NEW_BASE_URL}/nfts`,
+      method: 'GET',
+      params: {
+        pageIndex: 1,
+        pageSize: 50
+      }
+    })
+    setNftListCreated((old) => [...old, ...response.list])
+    console.log("@@@ nft list api call on load =========>", response)
+  }, [])
+
+
   useEffect(() => {
     if (position == 1) {
-      cleanData()
-      changeLoadingState(true)
+      // cleanData()
+      // changeLoadingState(true)
       getCollectionList()
 
       if (nftListDefault) {
@@ -158,11 +174,14 @@ const NFTList = ({
   }
 
   useEffect(() => {
+    console.log("@@@ useEffect to get NFT list ========>", modalScreen, modalItem)
     if (modalScreen === "nftList" && modalItem) {
+      console.log("@@@ useEffect to get NFT list inside first if ========>",)
       if (modalItem !== "closed") {
-        cleanData()
-        setCollection(modalItem)
-        getNftList(modalItem, toggle, 1)
+        console.log("@@@ useEffect to get NFT list inside second if ========>",)
+        // cleanData()
+        // setCollection(modalItem)
+        // getNftList(modalItem, toggle, 1)
       }
     }
 
@@ -187,14 +206,14 @@ const NFTList = ({
             setCollectionList(collectionList.data.data)
             if (collectionList.data.data.length !== 0) {
               let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
-              cleanData()
+              // cleanData()
               if (!nftListDefault) {
                 setCollection(selectedCollection ? selectedCollection : collectionList.data.data[0])
               }
 
               toggle == "mint" ?
                 setNftListPage(1) : setNftListDraftPage(1);
-              getNftList(selectedCollection, toggle, 1)
+              // getNftList(selectedCollection, toggle, 1)
             } else {
               changeLoadingState(false)
             }
@@ -214,7 +233,8 @@ const NFTList = ({
   };
 
   const getNftList = (collect, tog, page) => {
-    const url = `${BASE_URL}/user/listing-nft`;
+    console.log("@@@ Get NFT list function ========>",)
+    const url = `${NEW_BASE_URL}/nfts`;
     let body = {
       collectionAddress: collect.collectionAddress,
       page: page,
@@ -275,11 +295,11 @@ const NFTList = ({
     return (
       <ListItem press={() => {
         let objectToRender = toggle == "mint" ? {
-          image: item.metaData.image,
-          name: item.metaData.name,
-          minPrice: parseInt(item.newprice[0].price) / Math.pow(10, 18),
-          basePrice: getCoinName(item.newprice[0].baseCurrency, item.newprice[0].mainChain),
-          chainType: item.newprice?.[0]?.mainChain
+          image: item.thumbnailUrl,
+          name: item.nftName,
+          minPrice: parseInt(item.price) / Math.pow(10, 18),
+          basePrice: getCoinName(item.receiveToken, item.network),
+          chainType: item.network
         } : item;
         selectItem(objectToRender)
       }} data={item} toggle={toggle} />
@@ -289,6 +309,7 @@ const NFTList = ({
   let showList = (toggle == "mint" && nftListCreated.length !== 0) ?
     nftListCreated : (toggle == "draft" && nftListDraft.length !== 0) ?
       nftListDraft : []
+  console.log("@@@ showList befor flatlist =======>", showList)
 
   const handleFlastListEndReached = () => {
     let num;
@@ -299,7 +320,7 @@ const NFTList = ({
       num = nftListDraftPage + 1;
       setNftListDraftPage(num)
     }
-    getNftList(collection, toggle, num)
+    // getNftList(collection, toggle, num)
   }
 
   const keyExtractor = (item, index) => { return 'item_' + index }

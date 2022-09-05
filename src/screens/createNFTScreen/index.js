@@ -27,7 +27,8 @@ import moment from "moment";
 const CreateNFTScreen = ({ route }) => {
 
   const routeParams = route.params;
-  const isNonCrypto = useSelector(state => state.UserReducer?.userData?.user?.isNonCrypto);
+  // console.log("@@@ Created NFT Screen props routes ========>", routeParams)
+  const isNonCrypto = useSelector(state => state.UserReducer?.userData?.isNonCrypto);
   const [loading, setLoading] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,9 +45,9 @@ const CreateNFTScreen = ({ route }) => {
   const [index, setIndex] = useState(0);
   const routes = isNonCrypto === 0 ?
     [
-      { key: 'Collection', title: translate("wallet.common.collection") },
+      { key: 'Collection', title: translate("common.collectionList") },
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
-      { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
+      { key: 'UploadNFT', title: translate("common.CreateNFT") },
       { key: 'Filter', title: translate("wallet.common.filter") },
     ] :
     [
@@ -165,15 +166,15 @@ const CreateNFTScreen = ({ route }) => {
           containerStyle={{ backgroundColor: colors.white }}
         />
         <View style={styles.sectionContainer}>
-          <View style={styles.titleWrapper}>
+          {/* <View style={styles.titleWrapper}>
             <Text style={styles.title}>{renderTitle}</Text>
             {routeParams?.status === 'created' &&
               <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
                 <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
               </TouchableOpacity>
             }
-          </View>
-          <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text>
+          </View> */}
+          {/* <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text> */}
 
           <TabView
             renderTabBar={renderTabBar}

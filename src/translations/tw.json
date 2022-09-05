@@ -683,6 +683,8 @@
         "CNcreatorname": "創作者姓名",
         "CNcreatordesc": "創作者描述",
         "viewAllCollection": "查看所有收藏",
+        "collectionList": "收藏列表",
+        "createCollection": "創建收藏",
         "AIChat":"與人工智能聊天",
         "enterMessage":"輸入您的信息"
     },

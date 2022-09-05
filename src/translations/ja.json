@@ -683,6 +683,8 @@
         "CNcreatorname": "作者名",
         "CNcreatordesc": "作品の詳細",
         "viewAllCollection": "全コレクション表示",
+        "collectionList": "コレクション一覧",
+        "createCollection": "コレクション作成",
         "AIChat":"AIとチャット",
         "enterMessage":"メッセージを入力してください"
     },

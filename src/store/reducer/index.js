@@ -18,6 +18,7 @@ import HotCollectionReducer from './hotCollectionReducer';
 import NftDataCollectionReducer from './nftDataCollectionReducer';
 import CollectionReducer from './collectionReducer';
 import LaunchpadReducer from './launchpadReducer'
+import NetworkReducer from './networkReducer'
 import chatReducer from './chatReducer';
 import { reducer as formReducer } from 'redux-form'
 
@@ -40,12 +41,13 @@ const RootReducer = combineReducers({
     NftDataCollectionReducer,
     CollectionReducer,
     LaunchpadReducer,
+    NetworkReducer,
     chatReducer,
     form: formReducer
 });
 
 const _rootReducer = (state, action) => {
-    if(action.type === 'USER_LOGGED_OUT'){
+    if (action.type === 'USER_LOGGED_OUT') {
         state = undefined;
     }
     return RootReducer(state, action);
