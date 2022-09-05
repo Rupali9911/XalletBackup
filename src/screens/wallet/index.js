@@ -32,8 +32,10 @@ import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
+import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from "../../common/function";
 import { CommonActions } from '@react-navigation/native';
+import { get } from 'lodash';
 
 const ethers = require('ethers');
 
@@ -43,7 +45,8 @@ var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
 const Wallet = ({ route, navigation }) => {
-  const { wallet, isCreate, userData, isBackup } = useSelector(
+  let wallet = null
+  const { isCreate, userData, isBackup } = useSelector(
     state => state.UserReducer,
   );
   const {
@@ -81,7 +84,8 @@ const Wallet = ({ route, navigation }) => {
   let subscribeBnb;
   let subscribeMatic;
 
-  useEffect(() => {
+  useEffect(async () => {
+    wallet = await getWallet();
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
       getBalances(wallet.address);

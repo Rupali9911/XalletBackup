@@ -75,7 +75,7 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const { userData } = useSelector(state => state.UserReducer);
   const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
@@ -112,8 +112,6 @@ const TabComponent = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-  const { userData } = useSelector(state => state.UserReducer);
-
 
   return (
     <Tab.Navigator

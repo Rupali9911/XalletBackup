@@ -685,6 +685,8 @@
         "CNcreatorname": "작성자 이름",
         "CNcreatordesc": "작성자 설명",
         "viewAllCollection": "모든 컬렉션 보기",
+        "collectionList": "컬렉션 목록",
+        "createCollection": "컬렉션 제작",
         "AIChat":"AI와 채팅",
         "enterMessage":"메시지 입력"
     },
