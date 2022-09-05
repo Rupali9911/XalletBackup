@@ -58,6 +58,7 @@ import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer'
 import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
+import AiChat from './components/AiChat';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -315,6 +316,7 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
+          <Stack.Screen name="AiChat" component={AiChat}/>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

@@ -684,7 +684,9 @@
         "ongoinglaunch": "전진",
         "CNcreatorname": "작성자 이름",
         "CNcreatordesc": "작성자 설명",
-        "viewAllCollection": "모든 컬렉션 보기"
+        "viewAllCollection": "모든 컬렉션 보기",
+        "AIChat":"AI와 채팅",
+        "enterMessage":"메시지 입력"
     },
     "AwardPage": {},
     "wallet": {

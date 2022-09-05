@@ -683,7 +683,9 @@
         "ongoinglaunch": "Ongoing",
         "CNcreatorname": "Creator Name",
         "CNcreatordesc": "Creator Description",
-        "viewAllCollection": "View all collection"
+        "viewAllCollection": "View all collection",
+        "AIChat":"Chat with AI",
+        "enterMessage":"Type your message"
     },
     "AwardPage": {},
     "wallet": {
