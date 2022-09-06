@@ -66,7 +66,7 @@ const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
   PlayButtonIcon,
-  HeartWhiteIcon, 
+  HeartWhiteIcon,
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
   TwiiterIcon,
@@ -537,7 +537,7 @@ const DetailScreen = ({ navigation, route }) => {
           handleLikeMethod();
         }}
         style={styles.likeButton}>
-        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon/> }
+        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
       </TouchableOpacity>
     )
   }

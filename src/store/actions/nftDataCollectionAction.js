@@ -3,7 +3,10 @@ import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
 import { divideNo } from '../../utils';
 import { getBaseCurrency, parseNftObject } from '../../utils/parseNFTObj';
-import { translate } from '../../walletUtils'
+import { getEventByValue, getFromAddress, getToAddress } from '../../constants/tradingHistory';
+import { translate } from '../../walletUtils';
+import moment from 'moment';
+
 import {
   NFT_DATA_COLLECTION_FAIL,
   NFT_DATA_COLLECTION_LIST_RESET,
@@ -93,324 +96,418 @@ export const activityNftListPageChange = (data) => ({
   payload: data
 });
 
-export const activityHistoryList = (page, collectionId, type, tabTitle, limit) => {
-  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
-  return (dispatch, getState) => {
-    const data = {
-      collectionId,
-      filterType: type,
-      limit: limit,
-      networkType,
-      page
-    };
+// export const activityHistoryList = (page, collectionId, type, tabTitle, limit) => {
+//   console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionId, type, tabTitle)
+//   return (dispatch, getState) => {
+//     const data = {
+//       collectionId,
+//       filterType: type,
+//       limit: limit,
+//       networkType,
+//       page
+//     };
 
-    const body = {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    };
+//     const body = {
+//       method: 'POST',
+//       body: JSON.stringify(data),
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//     };
 
-    fetch(`${BASE_URL}/xanalia/getActivityHistory`, body)
-      .then(response => response.json())
-      .then(res => {
+//     fetch(`${BASE_URL}/xanalia/getActivityHistory`, body)
+//       .then(response => response.json()) 
+//       .then(res => { 
 
-        console.log()
+//         if (tabTitle === 'Activity') { 
+//           // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
+//           let bids = []
+//           for (let i = 0; i < res.data.length; i++) {
+//             let event = ""
+//             let mainPrice = ""
+//             let seller = "" 
+//             let owner = ""
+//             if(res.data[i].event === 'SellNFT'){
+//               owner = ""
+//               seller = res.data[i].returnValues.seller
+//               event = translate('common.sales')
+//               let price = divideNo(parseInt(res.data[i].returnValues.price._hex, 16))
+//               let baseCurrency = getBaseCurrency(
+//                 res?.data[i]?.mainTokenId.toString().split("-")[0],
+//                 parseInt(
+//                   res?.data[i]?.returnValues?.baseCurrency?._hex,
+//                   16
+//               ))
+//               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+//             }
+//             else if(res.data[i].event === 'OnAuction'){
+//               owner = ""
+//               seller = res.data[i].returnValues.seller
+//               event = translate('common.OnAuction')
+//               let price = divideNo(parseInt(res.data[i].returnValues.startPrice._hex, 16))
+//               let baseCurrency = getBaseCurrency(
+//                 res?.data[i]?.mainTokenId.toString().split("-")[0],
+//                 parseInt(
+//                   res?.data[i]?.returnValues?.baseCurrency?._hex,
+//                   16
+//               ))
+//               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+//               // console.log(price,baseCurrency,mainPrice)
+//             }
+//             else if(res.data[i].event === 'awardAuctionNFT'){
+//               owner = ""
+//               seller = res.data[i].returnValues.seller
+//               event = translate('common.OnAuction')
+//               let price = divideNo(parseInt(res.data[i].returnValues.priceDollar._hex, 16))
+//               let baseCurrency = ""
+//               mainPrice = `${price} ${baseCurrency}`
+//             }
+//             else if(res.data[i].event === 'Bid'){
+//               owner= ""
+//               seller = res.data[i].returnValues.bidder
+//               event = translate('common.Bids')
+//               let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
+//               let baseCurrency = res.data.data[i].returnValues.baseCurrency ? 
+//               res.data.data[i].returnValues.baseCurrency._hex  ?  
+//               getBaseCurrency(
+//                 res?.data[i]?.mainTokenId.toString().split("-")[0],
+//                 parseInt(
+//                   res?.data[i]?.returnValues?.baseCurrency?._hex,
+//                   16
+//               )) : getBaseCurrency(
+//                 res?.data[i]?.mainTokenId.toString().split("-")[0],
+//                 parseInt(
+//                   res?.data[i]?.returnValues?.baseCurrency?._hex,
+//                   16
+//               )) : 'ALIA'
+//               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+//             }
+//             else if(res.data[i].event === 'BuyNFT' ||
+//             res.data[i].event === "BuyNFTNonCrypto"){
+//               owner= res?.data[i]?.returnValues?.buyer
+//               seller = res?.data[i]?.sellData?.seller
+//               event = translate('common.Buys')
+//               let price = res.data[i].sellData?.priceConversion
+//               let baseCurrency = res.data[i].sellData?.buyCurrencyType
+//               ? getBaseCurrency(
+//                 res.data[i]?.mainTokenId.toString().split("-")[0],
+//                 parseInt(res.data[i].sellData?.buyCurrencyType, 16)
+//               )
+//               : res.data[i].returnValues?.dollarPrice &&
+//                 parseInt(
+//                   divideNo(
+//                     parseInt(
+//                       res.data[i].returnValues?.dollarPrice._hex,
+//                       16
+//                     )
+//                   )
+//                 ) > 0
+//                 ? "$"
+//                 : "ALIA"
+//               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+//             }
+//             else if(res.data[i].event === 'Claim'){
+//               owner = res.data[i].returnValues.bidder
+//               seller = res.data[i].sellData
+//                   ? res.data[i].sellData.seller
+//                   : ""
+//               event = translate('common.Claim')
+//               let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
+//               let baseCurrency = res.data.data[i].returnValues.baseCurrency
+//               ? getBaseCurrency(
+//                 res.data[i]?.mainTokenId.toString().split("-")[0],
+//                 parseInt(
+//                   res.data[i].returnValues.baseCurrency._hex,
+//                   16
+//                 )
+//               )
+//               : "ALIA"
+//               mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
+//             }
+//             else if(res.data[i].event === 'CancelSell'){
+//               owner = ""
+//               seller =  res.data[i].returnValues.from
+//               event = translate('common.cancelSell')
+//               let price= ""
+//               let baseCurrency = ""
+//               mainPrice = `${price} ${baseCurrency}`
+//             }
+//             else if(res.data[i].event === 'MintWithTokenURI' 
+//             || res.data[i].event === 'MintWithTokenURINonCrypto'){
+//               owner = ""
+//               seller =  res.data[i].returnValues.from
+//               event = translate('common.minted')
+//               let price = ""
+//               let baseCurrency = ""
+//               mainPrice = `${price} ${baseCurrency}`
+//             }
 
-        if (tabTitle === 'Activity') {
-          // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
-          let bids = []
-          for (let i = 0; i < res.data.length; i++) {
-            let event = ""
-            let mainPrice = ""
-            let seller = "" 
-            let owner = ""
-            if(res.data[i].event === 'SellNFT'){
-              owner = ""
-              seller = res.data[i].returnValues.seller
-              event = translate('common.sales')
-              let price = divideNo(parseInt(res.data[i].returnValues.price._hex, 16))
-              let baseCurrency = getBaseCurrency(
-                res?.data[i]?.mainTokenId.toString().split("-")[0],
-                parseInt(
-                  res?.data[i]?.returnValues?.baseCurrency?._hex,
-                  16
-              ))
-              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
-            }
-            else if(res.data[i].event === 'OnAuction'){
-              owner = ""
-              seller = res.data[i].returnValues.seller
-              event = translate('common.OnAuction')
-              let price = divideNo(parseInt(res.data[i].returnValues.startPrice._hex, 16))
-              let baseCurrency = getBaseCurrency(
-                res?.data[i]?.mainTokenId.toString().split("-")[0],
-                parseInt(
-                  res?.data[i]?.returnValues?.baseCurrency?._hex,
-                  16
-              ))
-              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
-              // console.log(price,baseCurrency,mainPrice)
-            }
-            else if(res.data[i].event === 'awardAuctionNFT'){
-              owner = ""
-              seller = res.data[i].returnValues.seller
-              event = translate('common.OnAuction')
-              let price = divideNo(parseInt(res.data[i].returnValues.priceDollar._hex, 16))
-              let baseCurrency = ""
-              mainPrice = `${price} ${baseCurrency}`
-            }
-            else if(res.data[i].event === 'Bid'){
-              owner= ""
-              seller = res.data[i].returnValues.bidder
-              event = translate('common.Bids')
-              let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
-              let baseCurrency = res.data.data[i].returnValues.baseCurrency ? 
-              res.data.data[i].returnValues.baseCurrency._hex  ?  
-              getBaseCurrency(
-                res?.data[i]?.mainTokenId.toString().split("-")[0],
-                parseInt(
-                  res?.data[i]?.returnValues?.baseCurrency?._hex,
-                  16
-              )) : getBaseCurrency(
-                res?.data[i]?.mainTokenId.toString().split("-")[0],
-                parseInt(
-                  res?.data[i]?.returnValues?.baseCurrency?._hex,
-                  16
-              )) : 'ALIA'
-              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
-            }
-            else if(res.data[i].event === 'BuyNFT' ||
-            res.data[i].event === "BuyNFTNonCrypto"){
-              owner= res?.data[i]?.returnValues?.buyer
-              seller = res?.data[i]?.sellData?.seller
-              event = translate('common.Buys')
-              let price = res.data[i].sellData?.priceConversion
-              let baseCurrency = res.data[i].sellData?.buyCurrencyType
-              ? getBaseCurrency(
-                res.data[i]?.mainTokenId.toString().split("-")[0],
-                parseInt(res.data[i].sellData?.buyCurrencyType, 16)
-              )
-              : res.data[i].returnValues?.dollarPrice &&
-                parseInt(
-                  divideNo(
-                    parseInt(
-                      res.data[i].returnValues?.dollarPrice._hex,
-                      16
-                    )
-                  )
-                ) > 0
-                ? "$"
-                : "ALIA"
-              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
-            }
-            else if(res.data[i].event === 'Claim'){
-              owner = res.data[i].returnValues.bidder
-              seller = res.data[i].sellData
-                  ? res.data[i].sellData.seller
-                  : ""
-              event = translate('common.Claim')
-              let price = divideNo(parseInt(res.data[i].returnValues.amount._hex, 16))
-              let baseCurrency = res.data.data[i].returnValues.baseCurrency
-              ? getBaseCurrency(
-                res.data[i]?.mainTokenId.toString().split("-")[0],
-                parseInt(
-                  res.data[i].returnValues.baseCurrency._hex,
-                  16
-                )
-              )
-              : "ALIA"
-              mainPrice = `${Number(price).toFixed(2)} ${baseCurrency}`
-            }
-            else if(res.data[i].event === 'CancelSell'){
-              owner = ""
-              seller =  res.data[i].returnValues.from
-              event = translate('common.cancelSell')
-              let price= ""
-              let baseCurrency = ""
-              mainPrice = `${price} ${baseCurrency}`
-            }
-            else if(res.data[i].event === 'MintWithTokenURI' 
-            || res.data[i].event === 'MintWithTokenURINonCrypto'){
-              owner = ""
-              seller =  res.data[i].returnValues.from
-              event = translate('common.minted')
-              let price = ""
-              let baseCurrency = ""
-              mainPrice = `${price} ${baseCurrency}`
-            }
+//             let obj = [
+//               res.data[i]?.metaData
+//                 ? res?.data[i]?.metaData?.thumbnft
+//                 : res?.data[i]?.nftInfo[0]?.metaData?.thumbnft
+//                   ? res?.data[i]?.nftInfo[0]?.metaData?.thumbnft
+//                   : res?.data[i]?.nftInfo[0]?.metaData?.image,
+//               res?.data[i]?.nftInfo[0]?.en_nft_name
+//                 ? res?.data[i]?.nftInfo[0]?.en_nft_name
+//                 : res?.data[i]?.metaData?.name
+//                   ? res?.data[i]?.metaData?.name
+//                   : res?.data[i]?.nftInfo[0]?.metaData?.name,
+//               event,
+//               mainPrice,
+//               seller,
+//               owner,
+//               res?.data[i]?.timestamp,
+//               res?.data[i]?.nftInfo[0]
+//             ]
+//             bids.push(obj)
+//           }
 
-            let obj = [
-              res.data[i]?.metaData
-                ? res?.data[i]?.metaData?.thumbnft
-                : res?.data[i]?.nftInfo[0]?.metaData?.thumbnft
-                  ? res?.data[i]?.nftInfo[0]?.metaData?.thumbnft
-                  : res?.data[i]?.nftInfo[0]?.metaData?.image,
-              res?.data[i]?.nftInfo[0]?.en_nft_name
-                ? res?.data[i]?.nftInfo[0]?.en_nft_name
-                : res?.data[i]?.metaData?.name
-                  ? res?.data[i]?.metaData?.name
-                  : res?.data[i]?.nftInfo[0]?.metaData?.name,
-              event,
-              mainPrice,
-              seller,
-              owner,
-              res?.data[i]?.timestamp,
-              res?.data[i]?.nftInfo[0]
-            ]
-            bids.push(obj)
-          }
+//           let temp = {
+//             ...res,
+//             data: bids
+//           };
+//           dispatch(activityNftListSuccess({ ...temp, tabTitle: tabTitle }))
+//         }
 
-          let temp = {
-            ...res,
-            data: bids
-          };
-          dispatch(activityNftListSuccess({ ...temp, tabTitle: tabTitle }))
-        }
+//       })
+//       .catch(err => {
+//         dispatch(activityNftListFail());
+//       });
+//   }
+// }
 
-      })
-      .catch(err => {
-        dispatch(activityNftListFail());
-      });
-  }
-}
 
-export const nftDataCollectionList =  (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle, networkName, contractAddress) => {
-  console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+
+
+
+// export const nftDataCollectionList =  (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle, networkName, contractAddress) => {
  
-  return (dispatch, getState) => {
-    console.log('This is main return function');
-    if (isStore && type !== 'owned') { 
-      console.log('is it in if part')
-      const data = {
-        filterType: type,
-        limit: 10,
-        packName: 'Monkey King',
-        page,
-      };
 
-      const fetch_data_body = {
+  export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) => {
+    console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64, ~ nftDataCollectionList ~ ", page, collectionId, limit)
+    return (dispatch) => {
+      const data = {
+        page, 
+        collectionId,
+        limit,
+        sort
+      };
+      // let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U';
+
+      const body = {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
+
         },
       };
+  
+      fetch(`${NEW_BASE_URL}/sale-nft/trading-history`, body)
+        .then(response => response.json()) 
+        .then(res => { 
+           console.log('Activity Result : ', res);
 
-      fetch(`${BASE_URL}/user/fetch-pack-data`, fetch_data_body)
-        .then(response => response.json())
-        .then(json => {
-          const selectedPack = json.data
-          const nftData = [];
-          for (let i = 0; i < selectedPack?.length; i++) {
-            if (selectedPack?.length > 0 && selectedPack[0]?.tokenUri) {
-              nftData.push({
-                ...selectedPack[i]?.tokenUri?.metaData,
-                properties: {
-                  type: selectedPack[i]?.tokenUri?.metaData?.properties?.type,
-                },
-                totalSupply: selectedPack[i]?.tokenUri?.metaData?.totalSupply,
-                externalLink: selectedPack[i]?.tokenUri?.metaData?.externalLink,
-                thumbnft: selectedPack[i]?.tokenUri?.metaData?.thumbnft,
-                tokenURI: selectedPack[i]?.tokenUri?.tokenUri,
-                nftChain: 'binance',
-                price: selectedPack[i]?.price,
-              });
-              // }
-            } else {
-              // for (let i = 0; i < selectedPack?.length; i++) {
-              selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
-              selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
-              let parsedNFT = parseNftObject(selectedPack[i]);
-              nftData.push({
-                ...parsedNFT,
-                properties: {
-                  type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
-                },
-                totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
-                externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
-                thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
-                tokenURI: selectedPack[i]?.catInfo?.tokenUri,
-                price:
-                  selectedPack[i]?.price?.toString() === "0"
-                    ? selectedPack[i]?.usdPrice?.toString()
-                    : selectedPack[i]?.price?.toString(),
-              });
-            }
-          }
-          json.data = nftData;
-          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+           if(res?.items?.length > 0)
+           {
+            const tradingList = [];
+            const filterList = [];
+
+            res?.items?.map((item) => {
+              let from = item?.fromUser?.userWallet?.address;
+              let to = item?.toUser?.userWallet?.address;
+              console.log('Inside Map : ')
+              let temp = [
+                {image:item?.nft?.smallImage, imageName: item?.nft?.name},
+                getEventByValue(item?.action),
+                item?.price && item?.receiveToken
+                  ? Number(item?.price) + ' ' + item?.receiveToken
+                  : '',
+                getFromAddress(from, item?.action),
+                getToAddress(to, item?.action),
+                moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
+                              
+              ];
+
+              tradingList.push(temp);
+              filterList.push(getEventByValue(item?.action));
+
+              // console.log('This is Temp Variable : ',  {list: tradingList, count: res?.meta?.itemCount});
+              // dispatch(activityNftListSuccess(temp));
+              dispatch(activityNftListSuccess({list: tradingList, count: res?.meta?.totalPages, result: res?.items}))
+            });
+            
+           
+           }
+
+           
+  
         })
         .catch(err => {
-          dispatch(nftDataCollectionLoadFail());
+          dispatch(activityNftListFail());
         });
-    } else {
-      console.log('is it in else part')
-      const { data, wallet } = getState().UserReducer;
-      const owner = data?.user?._id || wallet?.address;
-      if (type === 'owned') {
-        console.log('Return if part : ');
-        dispatch(nftBlindSeriesCollectionList(page, collectionAddress, type, seriesInfoId, '', 'nftDataCollectionList', tabTitle));
-      } else {
-        console.log('Return else part : ');
-        // `https://prod-backend.xanalia.com/collections/nft/collectionId?page=1&limit=30&networkName=BSC&contractAddress=0xE737d5A35A41fFd6072503BCA9C3013632287305&status=1&userId=3708`
-        let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=30&networkName=${networkName}&contractAddress=${contractAddress}&status=1`;
-        console.log('URL : ', url)
-        if (manualColl) {
-          url = url.concat(`&collectionId=${collectionId}`);
-          url = url.concat(`&collectionAddress=${collectionId}`);
-        } else if (collectionId) {
-          url = url.concat(`&collectionId=${collectionId}`);
-          url = url.concat(`&collectionAddress=${collectionAddress}`);
-        } else {
-          url = url.concat(`&collectionAddress=${collectionAddress}`);
-        }
-        fetch(url)
-          .then(response => response.json())
-          .then(json => {
-            console.log('This is jsonn : ', json, json.list);
-            console.log('JSON PART : ', json);
-
-            // const nftData = [];
-            // if (!json.count) {
-            //   json.data = [];
-            // } else {
-            // json.list.map(item => {
-            //   console.log('Items : ', item);
-            //   const parsedNFT = parseNftObject(item);
-            //   console.log('ParsedNft : ', parsedNFT)
-            //   console.log('kjhkhkhkjkjkjkjh : ')
-
-            //   const data = {
-            //     ...parsedNFT,
-            //     totalSupply: item?.metaData?.totalSupply,
-            //     properties: {
-            //       type: item?.metaData?.properties?.type,
-            //     },
-            //     externalLink: item?.metaData?.externalLink,
-            //     // thumbnft: item?.metaData?.thumbnft,
-            //     thumbnft: item?.thumbnailUrl,
-            //     tokenURI: item?.catInfo?.tokenUri,
-            //     thumbnailUrl: item?.metaData.thumbnft,
-            //     ...item,
-            //   };
-            //   console.log('slkdkjasdjalsdasjdlasdjasl')
-            //   console.log('DATAAA : ', data);
-            //   nftData.push(data);
-            // });
-
-            // }
-            // json.list = nftData;
-            // console.log('new json data  : ', json.data)
-            dispatch(nftDataCollectionLoadSuccess({ json:json, tabTitle: tabTitle }));
-          }).catch(err => {
-            dispatch(nftDataCollectionLoadFail());
-          })
-      }
     }
+  }
+
+export const nftDataCollectionList = (page, tabTitle, networkName, contractAddress, tabStatus, userAddress, userId) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+
+
+  return (dispatch) => {
+    
+    let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=10&networkName=${networkName}&contractAddress=${contractAddress}&userId=${userId}`;
+    // let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=10&networkName=${networkName}&contractAddress=${contractAddress}&status=${tabStatus}&userId=${userId}`;
+    if (userAddress) {
+        url = url.concat(`&userAddress=${userAddress}`);
+    }
+    else if(tabStatus){
+      url = url.concat(`&status=${tabStatus}`);
+    }
+    
+    console.log('Main URl : ', url);
+    
+    fetch(url)
+    .then(response => response.json())
+    .then(json => {
+      console.log('This is jsonn : ', json, json.list);
+      console.log('JSON PART : ', json);
+      dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+    }).catch(err => {
+      dispatch(nftDataCollectionLoadFail());
+      console.log('Error : ', err);
+    });
+
+
+    // if (isStore && type !== 'owned') { 
+    //   const data = {
+    //     filterType: type,
+    //     limit: 10,
+    //     packName: 'Monkey King',
+    //     page,
+    //   };
+
+    //   const fetch_data_body = {
+    //     method: 'POST',
+    //     body: JSON.stringify(data),
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //   };
+
+    //   fetch(`${BASE_URL}/user/fetch-pack-data`, fetch_data_body)
+    //     .then(response => response.json())
+    //     .then(json => {
+    //       const selectedPack = json.data
+    //       const nftData = [];
+    //       for (let i = 0; i < selectedPack?.length; i++) {
+    //         if (selectedPack?.length > 0 && selectedPack[0]?.tokenUri) {
+    //           nftData.push({
+    //             ...selectedPack[i]?.tokenUri?.metaData,
+    //             properties: {
+    //               type: selectedPack[i]?.tokenUri?.metaData?.properties?.type,
+    //             },
+    //             totalSupply: selectedPack[i]?.tokenUri?.metaData?.totalSupply,
+    //             externalLink: selectedPack[i]?.tokenUri?.metaData?.externalLink,
+    //             thumbnft: selectedPack[i]?.tokenUri?.metaData?.thumbnft,
+    //             tokenURI: selectedPack[i]?.tokenUri?.tokenUri,
+    //             nftChain: 'binance',
+    //             price: selectedPack[i]?.price,
+    //           });
+    //           // }
+    //         } else {
+    //           // for (let i = 0; i < selectedPack?.length; i++) {
+    //           selectedPack[i].metaData = selectedPack[i]?.nftDetail.metaData;
+    //           selectedPack[i].tokenId = selectedPack[i]?.nftDetail.tokenId;
+    //           let parsedNFT = parseNftObject(selectedPack[i]);
+    //           nftData.push({
+    //             ...parsedNFT,
+    //             properties: {
+    //               type: selectedPack[i]?.nftDetail?.metaData?.properties?.type,
+    //             },
+    //             totalSupply: selectedPack[i]?.nftDetail?.metaData?.totalSupply,
+    //             externalLink: selectedPack[i]?.nftDetail?.metaData?.externalLink,
+    //             thumbnft: selectedPack[i]?.nftDetail?.metaData?.thumbnft,
+    //             tokenURI: selectedPack[i]?.catInfo?.tokenUri,
+    //             price:
+    //               selectedPack[i]?.price?.toString() === "0"
+    //                 ? selectedPack[i]?.usdPrice?.toString()
+    //                 : selectedPack[i]?.price?.toString(),
+    //           });
+    //         }
+    //       }
+    //       json.data = nftData;
+    //       dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+    //     })
+    //     .catch(err => {
+    //       dispatch(nftDataCollectionLoadFail());
+    //     });
+    // } 
+    // else {
+
+   
+
+    //   // const { data, wallet } = getState().UserReducer;
+    //   // const owner = data?.user?._id || wallet?.address;
+    //   // if (type === 'owned') {
+    //   //   dispatch(nftBlindSeriesCollectionList(page, collectionAddress, type, seriesInfoId, '', 'nftDataCollectionList', tabTitle));
+    //   // } else {
+    //   //   let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=30&networkName=${networkName}&contractAddress=${contractAddress}&status=1`;
+    //   //   if (manualColl) {
+    //   //     url = url.concat(`&collectionId=${collectionId}`);
+    //   //     url = url.concat(`&collectionAddress=${collectionId}`);
+    //   //   } else if (collectionId) {
+    //   //     url = url.concat(`&collectionId=${collectionId}`);
+    //   //     url = url.concat(`&collectionAddress=${collectionAddress}`);
+    //   //   } else {
+    //   //     url = url.concat(`&collectionAddress=${collectionAddress}`);
+    //   //   }
+    //   //   fetch(url)
+    //   //     .then(response => response.json())
+    //   //     .then(json => {
+    //   //       console.log('This is jsonn : ', json, json.list);
+    //   //       console.log('JSON PART : ', json);
+    //   //       dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+    //   //       // const nftData = [];
+    //   //       // if (!json.count) {
+    //   //       //   json.data = [];
+    //   //       // } else {
+    //   //       // json.list.map(item => {
+    //   //       //   console.log('Items : ', item);
+    //   //       //   const parsedNFT = parseNftObject(item);
+    //   //       //   console.log('ParsedNft : ', parsedNFT)
+    //   //       //   console.log('kjhkhkhkjkjkjkjh : ')
+
+    //   //       //   const data = {
+    //   //       //     ...parsedNFT,
+    //   //       //     totalSupply: item?.metaData?.totalSupply,
+    //   //       //     properties: {
+    //   //       //       type: item?.metaData?.properties?.type,
+    //   //       //     },
+    //   //       //     externalLink: item?.metaData?.externalLink,
+    //   //       //     // thumbnft: item?.metaData?.thumbnft,
+    //   //       //     thumbnft: item?.thumbnailUrl,
+    //   //       //     tokenURI: item?.catInfo?.tokenUri,
+    //   //       //     thumbnailUrl: item?.metaData.thumbnft,
+    //   //       //     ...item,
+    //   //       //   };
+    //   //       //   console.log('slkdkjasdjalsdasjdlasdjasl')
+    //   //       //   console.log('DATAAA : ', data);
+    //   //       //   nftData.push(data);
+    //   //       // });
+
+    //   //       // }
+    //   //       // json.list = nftData;
+    //   //       // console.log('new json data  : ', json.data)
+    //   //       // dispatch(nftDataCollectionLoadSuccess({ json:json, tabTitle: tabTitle }));
+    //   //     }).catch(err => {
+    //   //       dispatch(nftDataCollectionLoadFail());
+    //   //     })
+    //   // }
+    // }
   }
 }
 
