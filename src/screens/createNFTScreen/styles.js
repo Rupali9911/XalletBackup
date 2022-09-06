@@ -1,4 +1,4 @@
-import { StyleSheet,Platform } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 import { colors, fonts } from '../../res';
 import {
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   childCont: {
     flex: 1,
     backgroundColor: colors.GREY8,
-    paddingVertical: hp('2%'),
+    // paddingVertical: hp('-2%'),
   },
   cardfieldCount: {
     fontSize: RF(1.5),
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
   },
   leftToggle: {
     width: '30%',
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
+    // borderTopRightRadius: 0,
+    // borderBottomRightRadius: 0,
   },
   rightToggle: {
     width: '30%',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   }),
   listMainCont: {
-    marginVertical: hp(3),
+    // marginVertical: hp(3),
     flex: 1,
   },
   listCont: {

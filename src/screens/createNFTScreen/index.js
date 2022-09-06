@@ -81,6 +81,7 @@ const CreateNFTScreen = ({ route }) => {
       case 'NFTList':
         return <NFTList
           modalItem={modalItem}
+          dropDowntitle={modalData}
           modalScreen={modalScreen}
           switchEditNFT={(data) => {
             setnftItem(data)

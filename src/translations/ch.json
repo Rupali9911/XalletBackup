@@ -686,7 +686,8 @@
         "collectionList": "收藏列表",
         "createCollection": "创建收藏",
         "AIChat":"与人工智能聊天",
-        "enterMessage":"输入您的信息"
+        "enterMessage":"输入您的信息",
+        "CREATED_COLLECTED": "创建/收集"
     },
     "AwardPage": {},
     "wallet": {

@@ -685,7 +685,8 @@
         "collectionList": "Collections List",
         "createCollection": "Create Collection",
         "AIChat":"Chat with AI",
-        "enterMessage":"Type your message"
+        "enterMessage":"Type your message",
+        "CREATED_COLLECTED": "Created / Collected"
     },
     "AwardPage": {},
     "wallet": {

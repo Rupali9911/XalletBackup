@@ -686,7 +686,8 @@
         "collectionList": "コレクション一覧",
         "createCollection": "コレクション作成",
         "AIChat":"AIとチャット",
-        "enterMessage":"メッセージを入力してください"
+        "enterMessage":"メッセージを入力してください",
+        "CREATED_COLLECTED": "制作物 / 所有中"
     },
     "AwardPage": {},
     "wallet": {
