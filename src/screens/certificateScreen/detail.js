@@ -19,9 +19,10 @@ import {
 } from 'react-native-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
-import details from '../../../assets/images/details.png';
+import detailsImg from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
-import trading from '../../../assets/images/trading.png';
+import tradingImg from '../../../assets/images/trading.png';
+import historyImg from '../../../assets/images/history.png'
 import { networkType } from '../../common/networkType';
 import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppModal from '../../components/appModal';
@@ -52,13 +53,15 @@ import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData 
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import { compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
+import { CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SORT_TRADING_HISTORY } from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
 import { formatAddress } from '../../constants/addressFormat';
 import { getDateString, getExpirationDate } from '../../constants/date';
 import CountDown from 'react-native-countdown-component';
+import { twitterLink } from '../../common/function';
+import sendRequest from '../../helpers/AxiosApiRequest';
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
@@ -79,33 +82,27 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const { owner, video, item, index, setNftItem, routeName } = route.params;
+  const { item, setNftItem } = route.params;
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { data, wallet } = useSelector(state => state.UserReducer);
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { userData, wallet } = useSelector(state => state.UserReducer);
+  // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
   const [ownerN, setOwnerN] = useState();
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
-  const [isContractOwner, setIsContractOwner] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
-  const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
   const [singleNFT, setSingleNFT] = useState({});
   const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [lBidAmount, setLastBidAmount] = useState('');
   const [priceNFT, setPriceNFT] = useState('');
   const [priceNFTString, setPriceNFTString] = useState('');
-  const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState('');
   const [auctionETime, setAuctionETime] = useState('');
   const [buyLoading, setBuyLoading] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
   const [ownerAddress, setOwnerAddress] = useState('');
-  const [isForAward, setIsForAward] = useState(false);
   const [baseCurrency, setBaseCurrency] = useState(null);
   const [sellDetails, setSellDetails] = useState([]);
   const [currencyPrices, setCurrencyPrices] = useState({});
@@ -125,7 +122,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [playVideoLoad, setPlayVideoLoad] = useState(false);
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
-  const [videoURL, setVideoURL] = useState(mediaUrl);
   const [playVideo, toggleVideoPlay] = useState(false);
   const [artistRole, setArtistRole] = useState('');
   const [tradingTableHead, setTradingTableHead] = useState([
@@ -145,22 +141,37 @@ const DetailScreen = ({ navigation, route }) => {
   const [tradingTableData1, setTradingTableData1] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
-
   const [tradingList, setTradingList] = useState([]);
   const [offerList, setOfferList] = useState([]);
   const [isLike, setLike] = useState();
-  const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
-  const [bidPriceInDollar, setBidPriceInDollar] = useState('');
   const [detailNFT, setDetailNFT] = useState({});
-  const [minBidPrice, setMinBidPrice] = useState('')
 
+  // const [isContractOwner, setIsContractOwner] = useState(false);
+  // const [isOwner, setIsOwner] = useState(false);
+  // const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
+  // const [lBidAmount, setLastBidAmount] = useState('');
+  // const [auctionInitiatorAdd, setAuctionInitiatorAdd] = useState('');
+  // const [isForAward, setIsForAward] = useState(false);
+  // const [videoURL, setVideoURL] = useState(mediaUrl);
+  // const [highestBidderAddValue, setHighestBidderAddValue] = useState("");
+  // const [bidPriceInDollar, setBidPriceInDollar] = useState('');
+  // const [minBidPrice, setMinBidPrice] = useState('')
+  // const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
+
+  const categoryType = detailNFT?.category ? detailNFT?.category : item?.category;
   const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item.mediaUrl;
-  const thumbnailUrl = detailNFT?.thumbnailUrl ? detailNFT.thumbnailUrl : item?.thumbnailUrl
-  const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
+  const thumbnailUrl = detailNFT?.thumbnailUrl
+    ? detailNFT.thumbnailUrl :
+    categoryType === CATEGORY_VALUE.music
+      ? item.mediaUrl
+      : item?.thumbnailUrl
   const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
   const network = detailNFT?.network ? detailNFT.network : item?.network
   const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
+  const userId = userData?.id;
+
+  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
 
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
@@ -250,12 +261,18 @@ const DetailScreen = ({ navigation, route }) => {
   // };
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const getTokenDetailsApi = async () => {
-    let userId = 3708
     let networkName = typeof network === 'string' ? network : network?.networkName
-    let url = `${NEW_BASE_URL}/nfts/details?networkName=${networkName}&collectionAddress=${collectionAddress}&nftTokenId=${nftTokenId}&userId=${userId}`
+    let url = `${NEW_BASE_URL}/nfts/details`
 
-    fetch(url)
-      .then(response => response.json())
+    sendRequest({
+      url,
+      params: {
+        networkName,
+        collectionAddress,
+        nftTokenId,
+        userId
+      }
+    })
       .then(json => {
         console.log("🚀 ~ file: detail.js ~ line 223 ~  ~ json", json)
         if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
@@ -430,14 +447,13 @@ const DetailScreen = ({ navigation, route }) => {
           }
           toggleVideoPlay(!playVideo);
         }}>
-        {fileType.toLowerCase() === 'mp4' ||
-          fileType.toLowerCase() === 'mov' ? (
+        {categoryType === CATEGORY_VALUE.movie ? (
           <View style={{ ...styles.modalImage }}>
             {showThumb && (
               <C_Image
                 uri={thumbnailUrl}
                 imageStyle={styles.modalImage}
-                isContain
+              // isContain
               />
             )}
             <Video
@@ -494,11 +510,19 @@ const DetailScreen = ({ navigation, route }) => {
               </View>
             )}
           </View>
+        ) : categoryType === CATEGORY_VALUE.music ? (
+          <View style={{ ...styles.modalImage }}>
+            <C_Image
+              uri={thumbnailUrl}
+              imageStyle={styles.modalImage}
+            // isContain
+            />
+          </View>
         ) : (
           <C_Image
             uri={mediaUrl}
             imageStyle={styles.modalImage}
-            isContain
+          // isContain
           />
         )}
       </TouchableOpacity>
@@ -536,21 +560,7 @@ const DetailScreen = ({ navigation, route }) => {
         <TouchableOpacity
           disabled={collectionClick(collectCreat)}
           onPress={() => {
-            if (collectCreat) {
-              if (collectCreat.blind) {
-                navigation.push('CollectionDetail', {
-                  isBlind: true,
-                  collectionId: collectCreat._id,
-                  isHotCollection: false,
-                });
-              } else {
-                navigation.push('CollectionDetail', {
-                  isBlind: false,
-                  collectionId: collectCreat._id,
-                  isHotCollection: true,
-                });
-              }
-            }
+            navigation.push('CollectionDetail', { item: collectCreat });
           }}
           style={styles.personType}>
           {renderIconImage('collection', false)}
@@ -1027,13 +1037,15 @@ const DetailScreen = ({ navigation, route }) => {
   // }
 
   //===================== Render Bid History Function =======================
-  const noDataRender = () => {
+  const noDataRender = (history) => {
     return (
-      <Text style={styles.emptyData}>
-        {translate('common.noDataFound')}
-      </Text>
+      <Cell
+        style={styles.emptyData(history)}
+        data={translate('common.noDataFound')}
+      />
     )
   }
+
   const renderBidNTradingHistory = (history) => {
     let listData = history === 'bid' ? sellDetails : history === 'offers' ? offerList : tradingTableData
     return (
@@ -1052,7 +1064,11 @@ const DetailScreen = ({ navigation, route }) => {
                 ? hp(16) + (hp(4) * (history === 'trading' && listData.length <= 3 ? 3 : listData?.length))
                 : hp(35.7),
         }}
-        icon={trading}>
+        icon={
+          history === 'bid' ? historyImg
+            : history === 'offers' ? tradingImg : detailsImg
+        }
+      >
         {history === 'trading' &&
           <Filters
             value={filterTableValue}
@@ -1151,11 +1167,11 @@ const DetailScreen = ({ navigation, route }) => {
                     );
                   })
                 ) : (
-                  noDataRender()
+                  noDataRender(history)
                 )}
           </Table>
         </ScrollView>
-      </NFTDetailDropdown>
+      </NFTDetailDropdown >
     )
   }
 
@@ -1260,7 +1276,9 @@ const DetailScreen = ({ navigation, route }) => {
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
     return (
-      <NFTDetailDropdown title={translate('common.creator')} icon={details}>
+      <NFTDetailDropdown
+        title={translate('common.creator')}
+        icon={detailsImg}>
         <TouchableOpacity
           onPress={() => {
             if (!disableCreator) {
@@ -1282,19 +1300,20 @@ const DetailScreen = ({ navigation, route }) => {
   }
 
   const renderSocialLinks = () => {
+    let twitterFullLink = twitterLink(detailNFT?.creator?.twitterLink)
     return (
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
           <TouchableOpacity
             style={styles.marginRight}
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
-            onPress={() => Linking.openURL(detailNFT?.creator?.twitterLink)}>
+            hitSlop={hitSlop}
+            onPress={() => Linking.openURL(twitterFullLink)}>
             <TwiiterIcon />
           </TouchableOpacity>
         ) : null}
         {detailNFT?.creator?.instagramLink ? (
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            hitSlop={hitSlop}
             style={{ marginRight: 6 }}
             onPress={() => Linking.openURL(detailNFT?.creator?.instagramLink)}>
             <InstagramIcon />
@@ -1302,7 +1321,7 @@ const DetailScreen = ({ navigation, route }) => {
         ) : null}
         {detailNFT?.creator?.facebookLink ? (
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            hitSlop={hitSlop}
             onPress={() => Linking.openURL(detailNFT?.creator?.facebookLink)}>
             <FacebookIcon />
           </TouchableOpacity>
@@ -1316,7 +1335,7 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
-        icon={details}>
+        icon={detailsImg}>
         {renderDetail('wallet.common.contractAddress', 'address', showContractAddress(item))}
         {renderDetail('wallet.common.nftId', '', _tokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
@@ -1350,19 +1369,28 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
-        icon={grid}
-        // containerDropStyles={{paddingHorizontal: SIZE(-20)}}
+        icon={detailsImg}
         containerStyles={{ width: wp(100) }}
         containerChildStyles={styles.containerChildStyles}
       >
         {moreData.length !== 0 ? (
-          <FlatList
-            data={moreData}
-            numColumns={2}
-            horizontal={false}
-            renderItem={memoizedItem}
-            keyExtractor={(v, i) => 'item_' + i}
-          />
+          <>
+            <FlatList
+              data={moreData}
+              numColumns={2}
+              horizontal={false}
+              renderItem={memoizedItem}
+              keyExtractor={(v, i) => 'item_' + i}
+            />
+            <GroupButton
+              leftText={translate('common.viewAllCollection')}
+              style={styles.viewAllBtn}
+              leftStyle={styles.viewAllBtnInner}
+              leftTextStyle={{ color: Colors.BLUE4 }}
+              onLeftPress={() => navigation.push('CollectionDetail', { item: collectCreat })}
+              rightHide
+            />
+          </>
         ) : (
           <View style={styles.sorryMessageCont}>
             <Text style={styles.sorryMessage}>
@@ -1414,101 +1442,101 @@ const DetailScreen = ({ navigation, route }) => {
   const memoizedItem = useMemo(() => renderItem, [moreData]);
 
   //=============== Render Payment Method Function ===============
-  const renderPaymentMethod = () => {
-    return (
-      <PaymentMethod
-        visible={showPaymentMethod}
-        payableIn={payableIn}
-        price={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInCurrency
-            : priceNFT
-          //  nftPrice
-          //   ? nftPrice
-          //   : 0
-        }
-        priceStr={priceNFTString}
-        priceInDollar={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInDollar
-            : priceInDollar
-        }
-        baseCurrency={baseCurrency}
-        allowedTokens={availableTokens}
-        ownerAddress={
-          ownerAddress?.includes('0x')
-            ? ownerAddress
-            : walletAddressForNonCrypto
-        }
-        id={singleNFT.id}
-        collectionAddress={collectionAddress}
-        chain={chainType}
-        onRequestClose={() => setShowPaymentMethod(false)}
-      />
-    )
-  }
+  // const renderPaymentMethod = () => {
+  //   return (
+  //     <PaymentMethod
+  //       visible={showPaymentMethod}
+  //       payableIn={payableIn}
+  //       price={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInCurrency
+  //           : priceNFT
+  //         //  nftPrice
+  //         //   ? nftPrice
+  //         //   : 0
+  //       }
+  //       priceStr={priceNFTString}
+  //       priceInDollar={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInDollar
+  //           : priceInDollar
+  //       }
+  //       baseCurrency={baseCurrency}
+  //       allowedTokens={availableTokens}
+  //       ownerAddress={
+  //         ownerAddress?.includes('0x')
+  //           ? ownerAddress
+  //           : walletAddressForNonCrypto
+  //       }
+  //       id={singleNFT.id}
+  //       collectionAddress={collectionAddress}
+  //       chain={chainType}
+  //       onRequestClose={() => setShowPaymentMethod(false)}
+  //     />
+  //   )
+  // }
 
   //=============== Render Payment Now Function ===============
-  const renderPaymentNow = () => {
-    return (
-      <PaymentNow
-        visible={showPaymentNow}
-        price={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInCurrency
-            : nftPrice
-              ? nftPrice
-              : 0
-        }
-        priceInDollar={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInDollar
-            : priceInDollar
-        }
-        chain={chainType}
-        NftId={_tokenId}
-        IdWithChain={nft}
-        ownerId={nonCryptoOwnerId}
-        ownerAddress={
-          ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto
-        }
-        baseCurrency={baseCurrency}
-        collectionAddress={collectionAddress}
-        lastBidAmount={priceNFT}
-        onRequestClose={() => {
-          dispatch(setPaymentObject(null));
-          setShowPaymentNow(false);
-        }}
-        onPaymentDone={() => {
-          dispatch(setPaymentObject(null));
-          setBuyLoading(true);
-          setShowPaymentNow(false);
-          setSuccessModalVisible(true);
-        }}
-      />
-    )
-  }
+  // const renderPaymentNow = () => {
+  //   return (
+  //     <PaymentNow
+  //       visible={showPaymentNow}
+  //       price={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInCurrency
+  //           : nftPrice
+  //             ? nftPrice
+  //             : 0
+  //       }
+  //       priceInDollar={
+  //         payableIn && data?.user?.role === 'crypto'
+  //           ? payableInDollar
+  //           : priceInDollar
+  //       }
+  //       chain={chainType}
+  //       NftId={_tokenId}
+  //       IdWithChain={nft}
+  //       ownerId={nonCryptoOwnerId}
+  //       ownerAddress={
+  //         ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto
+  //       }
+  //       baseCurrency={baseCurrency}
+  //       collectionAddress={collectionAddress}
+  //       lastBidAmount={priceNFT}
+  //       onRequestClose={() => {
+  //         dispatch(setPaymentObject(null));
+  //         setShowPaymentNow(false);
+  //       }}
+  //       onPaymentDone={() => {
+  //         dispatch(setPaymentObject(null));
+  //         setBuyLoading(true);
+  //         setShowPaymentNow(false);
+  //         setSuccessModalVisible(true);
+  //       }}
+  //     />
+  //   )
+  // }
 
   //=============== Render Tab Modal Function ===============
-  const renderTabModal = () => {
-    return (
-      <TabModal
-        modalProps={{
-          isVisible: allowedTokenModal,
-          onBackdropPress: () => {
-            setAllowedTokenModal(false);
-          },
-        }}
-        data={{ data: availableTokens }}
-        title={translate('common.allowedcurrency')}
-        itemPress={async tradeCurr => {
-          setAllowedTokenModal(false);
-          await calculatePrice(tradeCurr);
-        }}
-        renderItemName={'name'}
-      />
-    )
-  }
+  // const renderTabModal = () => {
+  //   return (
+  //     <TabModal
+  //       modalProps={{
+  //         isVisible: allowedTokenModal,
+  //         onBackdropPress: () => {
+  //           setAllowedTokenModal(false);
+  //         },
+  //       }}
+  //       data={{ data: availableTokens }}
+  //       title={translate('common.allowedcurrency')}
+  //       itemPress={async tradeCurr => {
+  //         setAllowedTokenModal(false);
+  //         await calculatePrice(tradeCurr);
+  //       }}
+  //       renderItemName={'name'}
+  //     />
+  //   )
+  // }
 
   //=============== Render Tab Modal Function ===============
   const renderAppModal = () => {
@@ -1882,14 +1910,20 @@ const DetailScreen = ({ navigation, route }) => {
   const getRealtedNFT = async () => {
     let page = 1
     let limit = 6
-    let userId = 3708
     let networkId = network?.networkId
-    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection?page=${page}&limit=${limit}&collectionAddress=${collectionAddress}&currentNftId=${nftId}&userId=${userId}&networkId=${networkId}`;
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-    let headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    ApiRequest(url, 'GET', null, headers)
+    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
+    sendRequest({
+      url,
+      method: 'GET',
+      params: {
+        page,
+        limit,
+        collectionAddress,
+        currentNftId: nftId,
+        userId,
+        networkId
+      },
+    })
       .then(res => {
         if (res?.list?.length > 0) {
           setMoreData(res?.list);
@@ -1902,11 +1936,10 @@ const DetailScreen = ({ navigation, route }) => {
 
   const getOfferList = () => {
     let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-    let headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    ApiRequest(url, 'GET', null, headers)
+    sendRequest({
+      url,
+      method: 'GET',
+    })
       .then(res => {
         console.log("🚀 ~ file: detail.js ~ line 1677 ~ ~ res", res)
         if (res?.length > 0) {
@@ -1944,6 +1977,7 @@ const DetailScreen = ({ navigation, route }) => {
     let page = 1
     let limit = 5
     let bidSort = 3
+<<<<<<< HEAD
     let url = history === 'bid' 
       ? `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`
       : `${NEW_BASE_URL}/sale-nft/trading-history`
@@ -1951,16 +1985,22 @@ const DetailScreen = ({ navigation, route }) => {
     let method = history === 'bid' ? 'GET' : 'POST'
     let body = history === 'bid' ? null : 
       {
+=======
+    let payload = history === 'bid' ? {
+      url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+      method: 'GET',
+    } : {
+      url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+      method: 'POST',
+      data: {
+>>>>>>> d0b774aad5e4f40276859831cfb38897a3006f5e
         page: 1,
         limit: 30,
         nftId: nftId,
         sort
       }
-
-    let headers = {
-      'Authorization': `Bearer ${token}`
     }
-    ApiRequest(url, method, body, headers)
+    sendRequest(payload)
       .then(res => {
         console.log("🚀 ~ file: detail.js ~ line 1656 ~ ~ res", history, res)
         if (res?.items?.length > 0) {
@@ -2838,97 +2878,98 @@ const DetailScreen = ({ navigation, route }) => {
   //     setDiscountValue(res ? res / 10 : 0);
   //   });
   // };
-  const calculatePrice = async tradeCurr => {
-    setPayableIn(tradeCurr.name);
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    let ownerAddress =
-      data?.user?.role === 'crypto'
-        ? wallet?.address
-        : blockChainConfig[i]?.walletAddressForNonCrypto;
-    let res = await MarketPlaceContract.methods
-      .calculatePrice(
-        priceNFTString,
-        baseCurrency?.order,
-        tradeCurr.order,
-        _tokenId,
-        ownerAddress,
-        collectionAddress,
-      )
-      .call();
 
-    if (res) {
-      let currPay = res / 1e18;
-      let finalPrice = '';
-      switch (tradeCurr.key) {
-        case 'BNB':
-          finalPrice = currPay * currencyPrices?.BNB;
-          break;
+  // const calculatePrice = async tradeCurr => {
+  //   setPayableIn(tradeCurr.name);
+  //   let web3 = new Web3(providerUrl);
+  //   let MarketPlaceContract = new web3.eth.Contract(
+  //     MarketPlaceAbi,
+  //     MarketContractAddress,
+  //   );
+  //   let ownerAddress =
+  //     data?.user?.role === 'crypto'
+  //       ? wallet?.address
+  //       : blockChainConfig[i]?.walletAddressForNonCrypto;
+  //   let res = await MarketPlaceContract.methods
+  //     .calculatePrice(
+  //       priceNFTString,
+  //       baseCurrency?.order,
+  //       tradeCurr.order,
+  //       _tokenId,
+  //       ownerAddress,
+  //       collectionAddress,
+  //     )
+  //     .call();
 
-        case 'ALIA':
-          finalPrice = currPay * currencyPrices?.ALIA;
-          break;
+  //   if (res) {
+  //     let currPay = res / 1e18;
+  //     let finalPrice = '';
+  //     switch (tradeCurr.key) {
+  //       case 'BNB':
+  //         finalPrice = currPay * currencyPrices?.BNB;
+  //         break;
 
-        case 'ETH':
-          finalPrice = currPay * currencyPrices?.ETH;
-          break;
+  //       case 'ALIA':
+  //         finalPrice = currPay * currencyPrices?.ALIA;
+  //         break;
 
-        case 'MATIC':
-          finalPrice = currPay * currencyPrices?.MATIC;
-          break;
+  //       case 'ETH':
+  //         finalPrice = currPay * currencyPrices?.ETH;
+  //         break;
 
-        default:
-          finalPrice = currPay * 1;
-          break;
-      }
-      setPayableInCurrency(currPay);
-      setPayableInDollar(finalPrice);
-      return currPay;
-    } else {
-      return '';
-    }
-  };
+  //       case 'MATIC':
+  //         finalPrice = currPay * currencyPrices?.MATIC;
+  //         break;
 
-  const calculateBidPriceDollar = async (price, owner) => {
-    let dollarToken = basePriceTokens.filter(
-      token => token.chain === singleNFT.nftChain && token.dollarCurrency,
-    );
-    let rs = await calculatePriceWeb(price, dollarToken[0]?.order, owner);
-    if (rs) {
-      let res = divideNo(rs);
-      setBidPriceInDollar(res);
-    }
-  };
+  //       default:
+  //         finalPrice = currPay * 1;
+  //         break;
+  //     }
+  //     setPayableInCurrency(currPay);
+  //     setPayableInDollar(finalPrice);
+  //     return currPay;
+  //   } else {
+  //     return '';
+  //   }
+  // };
 
-  const calculatePriceWeb = async (price, tradeCurr, owner) => {
-    let collectionAddress = singleNFT?.collection
-      ? singleNFT?.collection
-      : ERC721Address;
-    let web3 = new Web3(providerUrl);
-    let MarketPlaceContract = new web3.eth.Contract(
-      MarketPlaceAbi,
-      MarketContractAddress,
-    );
-    let res = await MarketPlaceContract.methods
-      .calculatePrice(
-        price,
-        baseCurrency?.order,
-        tradeCurr,
-        singleNFT.id,
-        owner,
-        collectionAddress,
-      )
-      .call()
-      .then(res => res)
-      .catch(err => {
-        console.log(err);
-      });
-    if (res) return res;
-    else return '';
-  };
+  // const calculateBidPriceDollar = async (price, owner) => {
+  //   let dollarToken = basePriceTokens.filter(
+  //     token => token.chain === singleNFT.nftChain && token.dollarCurrency,
+  //   );
+  //   let rs = await calculatePriceWeb(price, dollarToken[0]?.order, owner);
+  //   if (rs) {
+  //     let res = divideNo(rs);
+  //     setBidPriceInDollar(res);
+  //   }
+  // };
+
+  // const calculatePriceWeb = async (price, tradeCurr, owner) => {
+  //   let collectionAddress = singleNFT?.collection
+  //     ? singleNFT?.collection
+  //     : ERC721Address;
+  //   let web3 = new Web3(providerUrl);
+  //   let MarketPlaceContract = new web3.eth.Contract(
+  //     MarketPlaceAbi,
+  //     MarketContractAddress,
+  //   );
+  //   let res = await MarketPlaceContract.methods
+  //     .calculatePrice(
+  //       price,
+  //       baseCurrency?.order,
+  //       tradeCurr,
+  //       singleNFT.id,
+  //       owner,
+  //       collectionAddress,
+  //     )
+  //     .call()
+  //     .then(res => res)
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  //   if (res) return res;
+  //   else return '';
+  // };
 
   const bidingTimeEnded = () => {
     return new Date().getTime() > new Date(auctionETime).getTime();

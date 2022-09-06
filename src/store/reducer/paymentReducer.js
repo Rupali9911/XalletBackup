@@ -2,7 +2,7 @@ import {
     SET_PAYMENT_OBJECT,
     SET_ALL_CARDS
 } from '../types';
-import { ApiRequest } from '../../helpers/ApiRequest';
+import sendRequest from '../../helpers/AxiosApiRequest';
 import { BASE_URL } from '../../common/constants';
 
 const initialState = {
@@ -39,10 +39,13 @@ export const setAllCards = (data) => ({
 
 export const getAllCards = (token) => (dispatch) =>
     new Promise((resolve, reject) => {
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
-        ApiRequest(`${BASE_URL}/stripe/get-all-user-card?limit=10`, 'GET', null, headers)
+        sendRequest({
+            url: `${BASE_URL}/stripe/get-all-user-card`,
+            method: 'GET',
+            params: {
+                limit: 10
+            }
+        })
             .then((response) => {
                 if (response.success) {
                     dispatch(setAllCards(response.data.data));
@@ -51,18 +54,19 @@ export const getAllCards = (token) => (dispatch) =>
                     reject();
                 }
             }).catch((err) => {
-                console.log('error___',err);
+                console.log('error___', err);
                 reject();
             });
     });
 
 export const addCard = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
         console.log('request data save user card', data)
-        ApiRequest(`${BASE_URL}/stripe/save-user-card`, 'POST', data, headers)
+        sendRequest({
+            url: `${BASE_URL}/stripe/save-user-card`,
+            method: 'POST',
+            data
+        })
             .then((response) => {
                 if (response.success) {
                     resolve(response);
@@ -76,10 +80,11 @@ export const addCard = (token, data) => (dispatch) =>
 
 export const deleteCard = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
-        ApiRequest(`${BASE_URL}/stripe/delete-user-card`, 'POST', data, headers)
+        sendRequest({
+            url: `${BASE_URL}/stripe/delete-user-card`,
+            method: 'POST',
+            data
+        })
             .then((response) => {
                 if (response.success) {
                     resolve(response);
@@ -93,10 +98,11 @@ export const deleteCard = (token, data) => (dispatch) =>
 
 export const getPaymentIntent = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
-        ApiRequest(`${BASE_URL}/stripe/payment-intent`, 'POST', data, headers)
+        sendRequest({
+            url: `${BASE_URL}/stripe/payment-intent`,
+            method: 'POST',
+            data
+        })
             .then((response) => {
 
                 resolve(response);
@@ -108,10 +114,11 @@ export const getPaymentIntent = (token, data) => (dispatch) =>
 
 export const getTransactionHash = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
-        ApiRequest(`${BASE_URL}/stripe/confirm-payment-intent`, 'POST', data, headers)
+        sendRequest({
+            url: `${BASE_URL}/stripe/confirm-payment-intent`,
+            method: 'POST',
+            data
+        })
             .then((response) => {
 
                 resolve(response);
@@ -123,10 +130,11 @@ export const getTransactionHash = (token, data) => (dispatch) =>
 
 export const updateTransactionSuccess = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
-        let headers = {
-            'Authorization': `Bearer ${token}`
-        }
-        ApiRequest(`${BASE_URL}/stripe/transaction-success`, 'POST', data, headers)
+        sendRequest({
+            url: `${BASE_URL}/stripe/transaction-success`,
+            method: 'POST',
+            data
+        })
             .then((response) => {
 
                 resolve(response);

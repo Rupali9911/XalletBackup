@@ -53,10 +53,12 @@ import Store from './store';
 import { setRequestAppId } from './store/reducer/walletReducer';
 import { environment, translate } from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getWallet } from './helpers/AxiosApiRequest';
 import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer';
 import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
+import AiChat from './components/AiChat';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -73,7 +75,7 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const { userData } = useSelector(state => state.UserReducer);
   const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
@@ -106,8 +108,6 @@ const TabComponent = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-  const { userData } = useSelector(state => state.UserReducer);
-
 
   return (
     <Tab.Navigator
@@ -165,7 +165,7 @@ const TabComponent = () => {
         component={Discover}
         options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
-      {userData?.user?.isNonCrypto === 0 &&
+      {userData.isNonCrypto === 0 &&
         <Tab.Screen
           name={'Wallet'}
           options={{ tabBarLabel: translate('wallet.common.wallet') }}
@@ -187,7 +187,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const { wallet, passcode, mainLoader, showSplash, userData } = useSelector(
+  const { passcode, mainLoader, showSplash, userData } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -196,12 +196,13 @@ const AppRoutes = () => {
   const [pass, setPass] = React.useState(null);
   const [renderPass, toggle] = React.useState(false);
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-    Linking.addEventListener('url', ({ url }) => {
+    Linking.addEventListener('url', async ({ url }) => {
       console.log('e', url);
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
+        let wallet = await getWallet();
         if (wallet) {
           setTimeout(() => {
             navigatorRef.current?.navigate('Connect', { appId: id });
@@ -308,6 +309,7 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
+          <Stack.Screen name="AiChat" component={AiChat}/>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

@@ -15,7 +15,7 @@ function LanguageSel(props) {
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(selectedLanguageItem.language_name);
+    const [value, setValue] = useState(selectedLanguageItem?.language_name);
 
     const JapaneseLangTrans = {
         en: '英語（イギリス）',
@@ -48,7 +48,7 @@ function LanguageSel(props) {
             setOpen={setOpen}
             setValue={setValue}
             onChangeValue={(value) => {
-                if (value !== selectedLanguageItem.language_name) {
+                if (value !== selectedLanguageItem?.language_name) {
                     let item = languageArray.find(item => item.language_name == value);
                     dispatch(setAppLanguage(item));
                 }

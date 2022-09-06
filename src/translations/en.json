@@ -679,8 +679,13 @@
         "amountMoreThan": "Amount must be no more than $999,999.99",
         "toFilter": "To",
         "ongoinglaunch": "Ongoing",
-        "CNcreatorname":"Creator Name",
-        "CNcreatordesc":"Creator Description"
+        "CNcreatorname": "Creator Name",
+        "CNcreatordesc": "Creator Description",
+        "viewAllCollection": "View all collection",
+        "collectionList": "Collections List",
+        "createCollection": "Create Collection",
+        "AIChat":"Chat with AI",
+        "enterMessage":"Type your message"
     },
     "AwardPage": {},
     "wallet": {

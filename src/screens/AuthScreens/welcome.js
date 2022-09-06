@@ -17,7 +17,7 @@ const Welcome = ({ navigation }) => {
   useEffect(() => {
     FastImage.clearMemoryCache();
     FastImage.clearDiskCache();
-  }, [selectedLanguageItem.language_name]);
+  }, [selectedLanguageItem?.language_name]);
 
   const [openPicker, setOpenPicker] = useState(false);
 

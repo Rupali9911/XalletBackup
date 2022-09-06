@@ -11,6 +11,7 @@ import {
 import { getAllLanguages, setAppLanguage } from '../store/reducer/languageReducer';
 import { languageArray } from '../walletUtils';
 import * as RNLocalize from 'react-native-localize';
+import { getAccessToken } from '../helpers/AxiosApiRequest';
 
 const regionLanguage = RNLocalize.getLocales()
     .map(a => a.languageCode)
@@ -28,33 +29,29 @@ const appSplash = () => {
     }, []);
 
     const loadAllData = async () => {
-        await dispatch(getAllLanguages());
-
-        // AsyncStorage.clear()
-        AsyncStorage.getAllKeys((err, keys) => {
-            if (keys.length !== 0) {
-                AsyncStorage.multiGet(keys, (err, values) => {
-                    let asyncData = {};
-                    values.map(result => {
-                        let name = result[0].replace(/[^a-zA-Z ]/g, '');
-                        let value = JSON.parse(result[1]);
-                        asyncData[name] = value;
-
-                        if (name == 'language') {
-                            dispatch(setAppLanguage(value));
-                        }
-                    });
-                    dispatch(loadFromAsync(asyncData));
-                });
-
+       await dispatch(getAllLanguages());
+        try {
+            const token = await getAccessToken('ACCESS_TOKEN');
+            if (token) {
+                let asyncData = {};
+                let values = await AsyncStorage.multiGet(['@USERDATA', '@BackedUp', '@apps', '@language'])
+                asyncData["userData"] = JSON.parse(values[0][1]);
+                asyncData["BackedUp"] = values[1][1] ? JSON.parse(values[1][1]) : values[1][1]
+                asyncData["apps"] = values[2][1] ? JSON.parse(values[2][1]) : values[2][1];
+                let value = values[3][1] ? JSON.parse(values[3][1]) : values[3][1];
+                dispatch(loadFromAsync(asyncData));
+                dispatch(setAppLanguage(value));
             } else {
-                let item = languageArray.find(
-                    item => item.language_name == regionLanguage,
+                let regionalLanguage = languageArray.find(
+                    language => language.language_name == regionLanguage,
                 );
-                dispatch(setAppLanguage(item));
+                dispatch(setAppLanguage(regionalLanguage));
                 dispatch(loadFromAsync());
             }
-        });
+
+        } catch (error) {
+            console.log("@@@ Token in appSplash =========>", error);
+        }
     }
 
     return (

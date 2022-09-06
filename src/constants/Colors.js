@@ -6,6 +6,7 @@ export default {
   WHITE5: '#E9E9E9',
   WHITE6: '#8C8C8C',
   WHITE7: '#FAFAFA',
+  WHITE8: '#F7FBFF',
   BLACKRGBA: opacity => `rgba(0,0,0,${opacity})`,
   BLACK1: '#000000',
   BLACK2: '#979797',

@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   View,
   Alert,
@@ -29,8 +29,6 @@ import { getAllCards } from '../../store/reducer/paymentReducer';
 import { endMainLoading, _logout } from '../../store/reducer/userReducer';
 import { languageArray, translate } from '../../walletUtils';
 import styles from './styled';
-
-import { setI18nConfig } from "../../walletUtils";
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -160,9 +158,16 @@ function Setting({ navigation }) {
             label={translate('wallet.common.notifications')}
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
+
+         
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
+          />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
+          <ListItem
+            onPress={() => navigation.navigate('AiChat')}
+            label={translate('common.AIChat')}
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
@@ -177,10 +182,11 @@ function Setting({ navigation }) {
                 translate('wallet.common.logOutQ'),
                 translate('wallet.common.cancel'),
                 '',
-                () => {
+                async () => {
                   const _selectedLanguageItem = selectedLanguageItem;
+                  await EncryptedStorage.clear();
                   AsyncStorage.multiRemove(
-                    ['@passcode', '@wallet', '@userData', '@BackedUp', '@apps'],
+                    ['@passcode', '@WALLET', '@USERDATA', '@BackedUp', '@apps'],
                     err => console.log(err),
                   ).then(() => {
                     dispatch(_logout());
@@ -195,10 +201,12 @@ function Setting({ navigation }) {
             noArrow={true}
             label={translate('common.Logout')}
           />
+          
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
           {/*<Text>Authenticate with Touch ID</Text>*/}
           {/*</TouchableHighlight>*/}
         </View>
+        
       </ScrollView>
       <Modal
         isVisible={showLanguage}

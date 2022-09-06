@@ -71,8 +71,7 @@ const styles = StyleSheet.create({
   modalImage: {
     width: wp('100%'),
     height: wp('100%'),
-    resizeMode: 'contain',
-    backgroundColor: colors.BLACK1,
+    backgroundColor: Colors.WHITE8,
   },
   nftTitle: {
     fontSize: RF(1.5),
@@ -277,10 +276,12 @@ const styles = StyleSheet.create({
   head: { height: SIZE(40) },
   text: { margin: SIZE(10), fontSize: SIZE(12) },
   themeColor: { color: Colors.themeColor },
-  emptyData: {
-    alignSelf: 'center',
-    marginVertical: hp('1%'),
-  },
+  emptyData: (history) => ({
+    // alignSelf: 'center',
+    // marginVertical: hp('1%'),
+    height: history === 'trading' ? hp(12) : hp(8),
+    alignItems: 'center',
+  }),
   sorryMessageCont: {
     flex: 1,
     justifyContent: 'center',
@@ -404,8 +405,17 @@ const styles = StyleSheet.create({
   },
   rightButtonText: {
     color: Colors.BLUE3
+  },
+  viewAllBtn: {
+    marginVertical: SIZE(12),
+    width: wp(40),
+    alignSelf: 'center'
+  },
+  viewAllBtnInner: {
+    backgroundColor: 'transparent',
+    borderColor: Colors.BLUE4,
+    borderWidth: 2
   }
-
 });
 
 export default styles;

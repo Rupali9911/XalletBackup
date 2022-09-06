@@ -7,7 +7,7 @@ import {
   HOT_COLLECTION_SUCCESS,
   HOT_COLLECTION_PAGE_CHANGE,
 } from '../types';
-import { ApiRequest } from '../../helpers/ApiRequest';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 export const hotCollectionLoadSuccess = (data) => ({
   type: HOT_COLLECTION_SUCCESS,
@@ -31,11 +31,16 @@ export const hotCollectionPageChange = (data) => ({
   payload: data
 });
 
-export const hotCollectionList = (page,limit) => {
+export const hotCollectionList = (page, limit) => {
   return (dispatch) => {
 
-    fetch(`${NEW_BASE_URL}/collections/hot?page=${page}&limit=${limit}`)
-      .then(response => response.json())
+    sendRequest({
+      url: `${NEW_BASE_URL}/collections/hot`,
+      params: {
+        page,
+        limit
+      }
+    })
       .then(json => {
         console.log(json, 'mainData')
         // const obj = {
@@ -127,7 +132,13 @@ export const getUserWhiteList = (token) => {
 
 export const getBlindBoxSeriesSum = (collectionId) => {
   return new Promise((resolve, reject) => {
-    ApiRequest(`${BASE_URL}/blindbox/blindbox-series-sum?collectionAddress=${collectionId}`, 'GET', null, null)
+    sendRequest({
+      url: `${BASE_URL}/blindbox/blindbox-series-sum`,
+      method: 'GET',
+      params: {
+        collectionAddress: collectionId
+      }
+    })
       .then(response => {
         if (response?.data?.length > 0)
           resolve(response?.data[0]);

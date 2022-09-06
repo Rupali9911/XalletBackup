@@ -13,9 +13,11 @@ import DiscoverItem from './discoverItem';
 import { networkType } from "../../common/networkType";
 import { nftDataCollectionLoadSuccess } from "../../store/actions/nftDataCollectionAction";
 import axios from 'axios';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 function ExploreScreen() {
   const { wallet, userData } = useSelector(state => state.UserReducer);
+  // console.log("🚀 ~ file: index.js ~ line 20 ~ ExploreScreen ~ userData", userData)
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -24,7 +26,8 @@ function ExploreScreen() {
   const [footerLoader, setFooterLoader] = useState(false);
   const [noMore, setNoMore] = useState(false);
   const [isFetching, toggleFetching] = useState(false);
-  const owner = wallet?.address || userData?.user?.id;
+  const owner = wallet?.address;
+  const userId = userData?.id;
 
   useEffect(() => {
     setLoader(true)
@@ -33,10 +36,14 @@ function ExploreScreen() {
   }, []);
 
   const loadNFTList = (page, refresh) => {
-    const userId = '3708'
-    const url = `${NEW_BASE_URL}/nfts/nfts-discover?page=${page}&limit=12&userId=${userId}`
-    fetch(url)
-      .then(response => response.json())
+    const url = `${NEW_BASE_URL}/nfts/nfts-discover`
+    sendRequest({
+      url, params: {
+        page,
+        limit: 12,
+        userId
+      }
+    })
       .then(json => {
         console.log("🚀 ~ file: index.js ~ line 45 ~ discoverApi ~ ", json)
 
