@@ -30,17 +30,10 @@ const HotCollection = () => {
   // =============== Getting data from reducer ========================
   const { HotCollectionReducer } = useSelector(state => state);
 
-  // console.log('HOTCOLECT. : ', HotCollectionReducer);
-
   const isLoading = HotCollectionReducer.hotCollectionLoading
     const hotCollectionData = HotCollectionReducer.hotCollectionList
     const page = HotCollectionReducer.hotCollectionPage;
     const totalCount = HotCollectionReducer.hotCollectionTotalCount;
-
-    // console.log('A : ', HotCollectionReducer.hotCollectionLoading)
-    // console.log('B : ', HotCollectionReducer.hotCollectionList)
-    // console.log('C : ', HotCollectionReducer.hotCollectionPage)
-    // console.log('D : ', HotCollectionReducer.hotCollectionTotalCount)
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -148,8 +141,8 @@ const HotCollection = () => {
         colId={item._id}
         onPress={() => {
           if (item.collectionName !== 'NFTART AWARD 2021') {
-            console.log('if part hai ye');
-            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true, networkName: item.network.networkName, contractAddress: item.contractAddress  });
+            navigation.push('CollectionDetail', { item:item });
+            // navigation.push('CollectionDetail', { networkName: item.network.networkName, contractAddress: item.contractAddress  });
           } else {
             Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021')
               .catch(err => {

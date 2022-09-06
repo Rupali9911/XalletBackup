@@ -36,7 +36,8 @@ const initialState = {
   nftActivityList: [],
   nftActivityPage: 1,
   nftActivityTotalCount: 0,
-  tabTitle: ''
+  tabTitle: '',
+  nftActivityItems: [],
 }
 
 export default function nftDataCollectionReducer(state = initialState, action) {
@@ -47,21 +48,24 @@ export default function nftDataCollectionReducer(state = initialState, action) {
 
     case NFT_DATA_COLLECTION_SUCCESS:
       // console.log("🚀 ~ file: nftDataCollectionReducer.js ~ line 40 ~ ~ ", state, action.payload)
-      return state = action.payload.mysteryBox ?
-        {
-          ...state,
-          mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
-          mysteryBoxCollectionTotalCount: action.payload.count,
-          nftDataCollectionLoading: false,
-        } :
-        (action.payload.tabTitle === state.tabTitle) ? {
-          ...state,
-          nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
-          nftDataCollectionTotalCount: action.payload.count,
-          nftDataCollectionLoading: false,
-        } : {
-          ...state,
-        };
+      // return state = action.payload.mysteryBox ?
+      //   {
+      //     ...state,
+      //     mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
+      //     mysteryBoxCollectionTotalCount: action.payload.count,
+      //     nftDataCollectionLoading: false,
+      //   } :
+      //   (action.payload.tabTitle === state.tabTitle) ? {
+      //     ...state,
+      //     nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
+      //     nftDataCollectionTotalCount: action.payload.count,
+      //     nftDataCollectionLoading: false,
+      //   } : {
+      //     ...state,
+      //   };
+      return state = {...state, nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
+         nftDataCollectionTotalCount: action.payload.count,
+            nftDataCollectionLoading: false,}
     // if (action.payload.mysteryBox) {
     //   return state = {
     //     ...state,
@@ -118,9 +122,10 @@ export default function nftDataCollectionReducer(state = initialState, action) {
     case ACTIVITY_NFT_LIST_SUCCESS:
       return state = {
         ...state,
-        nftActivityList: [...action.payload.data],
+        nftActivityList: [...action.payload.list],
         nftActivityPage: 1,
         nftActivityTotalCount: action.payload.count,
+        nftActivityItems: action.payload.result,
         nftActivityLoading: false
       }
 

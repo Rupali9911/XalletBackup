@@ -163,6 +163,7 @@ export default function NFTItem(props) {
 
   //================== Render Name and Creator Name Function ===================
   const renderNameNcreatorName = (isCollection) => {
+    // console.log('This item is render for name and iscollction : ', isCollection, item);
     if (isCollection) {
       return (
         <View style={styles.nftName}>
@@ -656,7 +657,9 @@ export default function NFTItem(props) {
   // =================== End Commented Code =================================
 
   //=====================(Main return Function)=============================
+  // console.log('THis is ismecollection and ishotcollection : ', isMeCollection, isCollection)
   return (
+    
     <>
       {isMeCollection ? renderMeCollection() : isCollection ? renderNFTCollectionItem(true) : renderNFTCollectionItem(false)}
     </>

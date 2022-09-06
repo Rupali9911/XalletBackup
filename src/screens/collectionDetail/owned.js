@@ -41,18 +41,20 @@ const Owned = (props) => {
     // console.log("🚀 ~ file: Owned.js ~ line 41 ~ Owned ~ props", props)
     const { route } = props;
     const {
-        nftChain,
-        collectionAddress,
-        collectionType,
-        isBlind,
-        isHotCollection,
-        isSeries,
-        collectionId,
-        userCollection,
-        isStore,
-        manualColl,
-        seriesInfoId,
-        tabTitle
+        // nftChain,
+        // collectionAddress,
+        // collectionType,
+        // isBlind,
+        // isHotCollection,
+        // isSeries,
+        // collectionId,
+        // userCollection,
+        // isStore,
+        // manualColl,
+        // seriesInfoId,
+        collection,
+        tabTitle,
+        tabStatus
     } = route?.params;
 
     // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
@@ -61,124 +63,160 @@ const Owned = (props) => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const [isDetailScreen, setDetailScreen] = useState(false);
-    const [isBack, setBack] = useState(false);
+    // const [isBack, setBack] = useState(false); 
 
-    const isLoading = isSeries
-        ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
-        : NftDataCollectionReducer.nftDataCollectionLoading;
-    const collectionList = isSeries
-        ? NftDataCollectionReducer.nftBlindSeriesCollectionList
-        : collectionType == 1 && isBlind ?
-            NftDataCollectionReducer.mysteryBoxCollectionList :
-            NftDataCollectionReducer.nftDataCollectionList;
-    const page = isSeries
-        ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
-        : NftDataCollectionReducer.nftDataCollectionPage;
-    const totalCount = isSeries
-        ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
-        : collectionType == 1 && isBlind ?
-            NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
-            NftDataCollectionReducer.nftDataCollectionTotalCount;
-    const reducerTabTitle = NftDataCollectionReducer.tabTitle
+    // const isLoading = isSeries
+    //     ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
+    //     : NftDataCollectionReducer.nftDataCollectionLoading;
+    // const collectionList = isSeries
+    //     ? NftDataCollectionReducer.nftBlindSeriesCollectionList
+    //     : collectionType == 1 && isBlind ?
+    //         NftDataCollectionReducer.mysteryBoxCollectionList :
+    //         NftDataCollectionReducer.nftDataCollectionList;
+    // const page = isSeries
+    //     ? NftDataCollectionReducer.nftBlindSeriesCollectionPage
+    //     : NftDataCollectionReducer.nftDataCollectionPage;
+    // const totalCount = isSeries
+    //     ? NftDataCollectionReducer.nftBlindSeriesCollectionTotalCount
+    //     : collectionType == 1 && isBlind ?
+    //         NftDataCollectionReducer.mysteryBoxCollectionTotalCount :
+    //         NftDataCollectionReducer.nftDataCollectionTotalCount;
+    // const reducerTabTitle = NftDataCollectionReducer.tabTitle
+
+    const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
+    const collectionList = NftDataCollectionReducer.nftDataCollectionList;
+    const page = NftDataCollectionReducer.nftDataCollectionPage;
+    const totalCount = NftDataCollectionReducer.nftDataCollectionTotalCount;
+    const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
     // console.log("🚀 ~ file: Owned.js ~ line 66 ~ Owned ~", NftDataCollectionReducer.nftDataCollectionLoading, NftDataCollectionReducer.nftBlindSeriesCollectionLoading)
+    // useEffect(() => {
+    //     if (isFocused) {
+    //         // console.log("🚀 ~ file: Owned.js ~ line 53 ~",
+    //         // route?.params
+    //         // nftChain,
+    //         // collectionAddress,
+    //         // collectionType,
+    //         // isBlind,
+    //         // isHotCollection,
+    //         // isSeries,
+    //         // collectionId,
+    //         // userCollection,
+    //         // isStore,
+    //         // manualColl,
+    //         // seriesInfoId
+    //         // )
+    //         if (isFocused && !isDetailScreen) {
+    //             if (isSeries) {
+    //                 dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
+    //                 dispatch(nftBlindSeriesCollectionReset());
+    //                 getNFTlist(1);
+    //                 dispatch(nftBlindSeriesCollectionPageChange(1));
+    //             } else {
+    //                 dispatch(nftDataCollectionLoadStart(tabTitle));
+    //                 dispatch(nftDataCollectionListReset());
+    //                 getNFTlist(1);
+    //                 dispatch(nftDataCollectionPageChange(1));
+    //             }
+    //         } else {
+    //             isFocused && setDetailScreen(false)
+    //         }
+    //     }
+    // }, [collectionType, userCollection, isFocused]);
+
     useEffect(() => {
-        if (isFocused) {
-            // console.log("🚀 ~ file: Owned.js ~ line 53 ~",
-            // route?.params
-            // nftChain,
-            // collectionAddress,
-            // collectionType,
-            // isBlind,
-            // isHotCollection,
-            // isSeries,
-            // collectionId,
-            // userCollection,
-            // isStore,
-            // manualColl,
-            // seriesInfoId
-            // )
-            if (isFocused && !isDetailScreen) {
-                if (isSeries) {
-                    dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
-                    dispatch(nftBlindSeriesCollectionReset());
-                    getNFTlist(1);
-                    dispatch(nftBlindSeriesCollectionPageChange(1));
-                } else {
-                    dispatch(nftDataCollectionLoadStart(tabTitle));
-                    dispatch(nftDataCollectionListReset());
-                    getNFTlist(1);
-                    dispatch(nftDataCollectionPageChange(1));
-                }
-            } else {
-                isFocused && setDetailScreen(false)
-            }
-        }
-    }, [collectionType, userCollection, isFocused]);
-
-    const getNFTlist = useCallback(
-        page => {
-            if (isStore) {
-                // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
-                dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
-            } else if (!isBlind) {
-                // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
-                dispatch(
-                    nftDataCollectionList(
-                        page,
-                        collectionAddress,
-                        COLLECTION_TYPES[collectionType],
-                        userCollection && userCollection.includes('0x')
-                            ? collectionId
-                            : null,
-                        false,
-                        manualColl,
-                        null,
-                        tabTitle
-                    ),
-                );
-            } else if (isSeries) {
-                // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
-                dispatch(
-                    nftBlindSeriesCollectionList(
-                        page,
-                        collectionAddress,
-                        BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                        seriesInfoId,
-                        nftChain,
-                        null,
-                        tabTitle
-                    ),
-                );
-            } else {
-                let temp = {
-                    collectionAddress: collectionAddress,
-                    filterType: "minted2",
-                    limit: 24,
-                    loggedIn: null,
-                    owner: null,
-                    page: 1
-                }
-                // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
-                dispatch(nftBlindDataCollectionList(collectionAddress, 1, temp, tabTitle));
-            }
-            // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
-        },
-        [collectionType, userCollection],
-    );
-
-    const refreshFunc = () => {
-        if (isSeries) {
-            dispatch(nftBlindSeriesCollectionLoadStart());
-            dispatch(nftBlindSeriesCollectionReset());
-            getNFTlist(1);
-            dispatch(nftBlindSeriesCollectionPageChange(1));
-        } else {
-            dispatch(nftDataCollectionLoadStart());
+        if (isFocused && !isDetailScreen) {
+            dispatch(nftDataCollectionLoadStart(tabTitle));
             dispatch(nftDataCollectionListReset());
             getNFTlist(1);
             dispatch(nftDataCollectionPageChange(1));
         }
+        else {
+            isFocused && setDetailScreen(false)
+        }
+    }, [isFocused]);
+
+    const getNFTlist = useCallback(
+        page => {
+
+            dispatch(
+                nftDataCollectionList(
+                    page,
+                    tabTitle,
+                    collection.network.networkName,
+                    collection.contractAddress,
+                    tabStatus,
+                    null,
+                    collection.userId,     
+                ),
+            );
+            // if (isStore) {
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
+            //     dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
+            // } else if (!isBlind) {
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
+            //     dispatch(
+            //         nftDataCollectionList(
+            //             page,
+            //             collectionAddress,
+            //             COLLECTION_TYPES[collectionType],
+            //             userCollection && userCollection.includes('0x')
+            //                 ? collectionId
+            //                 : null,
+            //             false,
+            //             manualColl,
+            //             null,
+            //             tabTitle
+            //         ),
+            //     );
+            // } else if (isSeries) {
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
+            //     dispatch(
+            //         nftBlindSeriesCollectionList(
+            //             page,
+            //             collectionAddress,
+            //             BLIND_SERIES_COLLECTION_TYPE[collectionType],
+            //             seriesInfoId,
+            //             nftChain,
+            //             null,
+            //             tabTitle
+            //         ),
+            //     );
+            // } else {
+            //     let temp = {
+            //         collectionAddress: collectionAddress,
+            //         filterType: "minted2",
+            //         limit: 24,
+            //         loggedIn: null,
+            //         owner: null,
+            //         page: 1
+            //     }
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
+            //     dispatch(nftBlindDataCollectionList(collectionAddress, 1, temp, tabTitle));
+            // }
+            // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
+        },
+        // [collectionType, userCollection],
+        [],
+    );
+
+    const refreshFunc = () => {
+        // if (isSeries) {
+        //     dispatch(nftBlindSeriesCollectionLoadStart());
+        //     dispatch(nftBlindSeriesCollectionReset());
+        //     getNFTlist(1);
+        //     dispatch(nftBlindSeriesCollectionPageChange(1));
+        // } else {
+        //     dispatch(nftDataCollectionLoadStart());
+        //     dispatch(nftDataCollectionListReset());
+        //     getNFTlist(1);
+        //     dispatch(nftDataCollectionPageChange(1));
+        // }
+
+        dispatch(nftDataCollectionLoadStart());
+        dispatch(nftDataCollectionListReset());
+        getNFTlist(1);
+        dispatch(nftDataCollectionPageChange(1));
     };
 
     const renderFooter = () => {
@@ -187,125 +225,136 @@ const Owned = (props) => {
         //         <ActivityIndicator size='small' color={colors.themeR} />
         //     )
         // }
-        if (!isLoading) return null;
+        // if (!isLoading) return null;
         return (
             <ActivityIndicator size='small' color={colors.themeR} />
         )
     };
 
     const renderItem = ({ item, index }) => {
-        let findIndex
-        if (item?._id) {
-            findIndex = collectionList.findIndex(x => x?._id === item?._id);
-        } else {
-            findIndex = collectionList.findIndex(x => x?.id === item?.id);
-        }
+        return (
+        <NFTItem
+            item={item}
+            screenName="owned"
+            onPress={() => {
+                navigation.push('CertificateDetail', { item: item });
+            }}
+        />
+        );
+
+        // let findIndex
+        // if (item?._id) {
+        //     findIndex = collectionList.findIndex(x => x?._id === item?._id);
+        // } else {
+        //     findIndex = collectionList.findIndex(x => x?.id === item?.id);
+        // }
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
-        if (isStore || seriesInfoId) {
-            return (
-                <NFTItem
-                    item={item}
-                    index={index}
-                    image={item.image}
-                    nftChain={nftChain}
-                    isStore={isStore}
-                    onPress={() => {
-                        setDetailScreen(true)
-                        // console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
-                        if (!isSeries) {
-                            // dispatch(changeScreenName('dataCollection'));
-                            navigation.push('DetailItem', {
-                                index: findIndex,
-                                collectionType: COLLECTION_TYPES[collectionType],
-                                collectionAddress,
-                                sName: "dataCollection"
-                            });
-                        } else {
-                            // dispatch(changeScreenName('blindSeriesCollection'));
-                            navigation.push('DetailItem', {
-                                index: findIndex,
-                                collectionType: BLIND_SERIES_COLLECTION_TYPE[collectionType],
-                                collectionAddress,
-                                sName: "blindSeriesCollection"
-                            });
-                        }
-                    }}
-                    isCollection
-                    isBlind
-                />)
-        }
+        // if (isStore || seriesInfoId) {
+        //     return (
+        //         <NFTItem
+        //             item={item}
+        //             index={index}
+        //             image={item.image}
+        //             nftChain={nftChain}
+        //             isStore={isStore}
+        //             onPress={() => {
+        //                 setDetailScreen(true)
+        //                 // console.log("🚀 ~ file: collections.js ~ line 146 ~ renderItem ~ isSeries", isSeries)
+        //                 if (!isSeries) {
+        //                     // dispatch(changeScreenName('dataCollection'));
+        //                     navigation.push('DetailItem', {
+        //                         index: findIndex,
+        //                         collectionType: COLLECTION_TYPES[collectionType],
+        //                         collectionAddress,
+        //                         sName: "dataCollection"
+        //                     });
+        //                 } else {
+        //                     // dispatch(changeScreenName('blindSeriesCollection'));
+        //                     navigation.push('DetailItem', {
+        //                         index: findIndex,
+        //                         collectionType: BLIND_SERIES_COLLECTION_TYPE[collectionType],
+        //                         collectionAddress,
+        //                         sName: "blindSeriesCollection"
+        //                     });
+        //                 }
+        //             }}
+        //             isCollection
+        //             isBlind
+        //         />)
+        // }
 
         // console.log("🚀 ~ file: collections.js ~ line 176 ~ renderItem ~ ",
         //     isHotCollection, isBlind, collectionType,
         //     isHotCollection || isBlind && collectionType == 0
         // )
-        if (isHotCollection || isBlind && collectionType == 0) {
-            return (
-                <NFTItem
-                    screenName="dataCollection"
-                    item={item}
-                    index={index}
-                    image={item.iconImage}
-                    nftChain={nftChain}
-                    onPress={() => {
-                        setDetailScreen(true)
-                        if (!isSeries) {
-                            // dispatch(changeScreenName('dataCollection'));
-                            navigation.push('DetailItem', {
-                                index: findIndex,
-                                sName: "dataCollection"
-                            });
+        // if (isHotCollection || isBlind && collectionType == 0) {
+        //     return (
+        //         <NFTItem
+        //             screenName="dataCollection"
+        //             item={item}
+        //             index={index}
+        //             image={item.iconImage}
+        //             nftChain={nftChain}
+        //             onPress={() => {
+        //                 setDetailScreen(true)
+        //                 if (!isSeries) {
+        //                     // dispatch(changeScreenName('dataCollection'));
+        //                     navigation.push('DetailItem', {
+        //                         index: findIndex,
+        //                         sName: "dataCollection"
+        //                     });
 
-                        } else {
-                            // dispatch(changeScreenName('blindSeriesCollection'));
-                            navigation.push('DetailItem', {
-                                index: findIndex,
-                                sName: "blindSeriesCollection"
-                            });
-                        }
-                    }}
-                    isCollection
-                    isBlind
-                />
-            );
-        } else {
-            // console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
-            return (
-                <CollectionItem
-                    bannerImage={item.bannerImage}
-                    chainType={item.chainType || 'polygon'}
-                    items={item.items}
-                    iconImage={item.iconImage}
-                    collectionName={item.collectionName}
-                    creator={item.creator}
-                    creatorInfo={item.creatorInfo}
-                    blind={item.blind}
-                    isCollection={!isHotCollection}
-                    cryptoAllowed={item?.cryptoAllowed}
-                    onPress={() => {
-                        setDetailScreen(true)
-                        setBack(true)
-                        // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
-                        if (isBlind) {
-                            navigation.push('CollectionDetail', {
-                                isBlind: true,
-                                collectionId: collectionId,
-                                nftId: item._id,
-                                isHotCollection: !item.blind,
-                            });
-                        } else {
-                            if (item.collectionId) {
-                                navigation.push('CollectionDetail', {
-                                    isBlind: false,
-                                    collectionId: item._id,
-                                    isHotCollection: true,
-                                });
-                            }
-                        }
-                    }}
-                />
-            );
-        }
+        //                 } else {
+        //                     // dispatch(changeScreenName('blindSeriesCollection'));
+        //                     navigation.push('DetailItem', {
+        //                         index: findIndex,
+        //                         sName: "blindSeriesCollection"
+        //                     });
+        //                 }
+        //             }}
+        //             isCollection
+        //             isBlind
+        //         />
+        //     );
+        // } else {
+        //     // console.log("🚀 ~ file: collections.js ~ line 220 ~ renderItem ~ CollectionItem",)
+        //     return (
+        //         <CollectionItem
+        //             bannerImage={item.bannerImage}
+        //             chainType={item.chainType || 'polygon'}
+        //             items={item.items}
+        //             iconImage={item.iconImage}
+        //             collectionName={item.collectionName}
+        //             creator={item.creator}
+        //             creatorInfo={item.creatorInfo}
+        //             blind={item.blind}
+        //             isCollection={!isHotCollection}
+        //             cryptoAllowed={item?.cryptoAllowed}
+        //             onPress={() => {
+        //                 setDetailScreen(true)
+        //                 setBack(true)
+        //                 // console.log("🚀 ~ file: collections.js ~ line 222 ~ renderItem ~ item", item, isBlind)
+        //                 if (isBlind) {
+        //                     navigation.push('CollectionDetail', {
+        //                         isBlind: true,
+        //                         collectionId: collectionId,
+        //                         nftId: item._id,
+        //                         isHotCollection: !item.blind,
+        //                     });
+        //                 } else {
+        //                     if (item.collectionId) {
+        //                         navigation.push('CollectionDetail', {
+        //                             isBlind: false,
+        //                             collectionId: item._id,
+        //                             isHotCollection: true,
+        //                         });
+        //                     }
+        //                 }
+        //             }}
+        //         />
+        //     );
+        // }
+
     };
 
     const memoizedValue = useMemo(() => renderItem, [collectionList]);
@@ -321,7 +370,7 @@ const Owned = (props) => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {(tabTitle === 'Mystery Box' && isBack ? !isBack : tabTitle !== reducerTabTitle) || (page === 1 && isLoading) ? (
+            {(tabTitle !== reducerTabTitle) || (page === 1 && isLoading) ? (
                 <View style={{ marginTop: height / 8 }}>
                     <Loader />
                 </View>
@@ -331,7 +380,8 @@ const Owned = (props) => {
                     data={collectionList}
                     horizontal={false}
                     numColumns={2}
-                    initialNumToRender={isSeries ? 6 : 15}
+                    // initialNumToRender={isSeries ? 6 : 15}
+                    initialNumToRender={15}
                     // onRefresh={handleFlatlistRefresh}
                     // refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
@@ -339,18 +389,22 @@ const Owned = (props) => {
                         if (!isLoading && collectionList.length !== totalCount) {
                             let num = page + 1;
 
-                            if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
-                            } else {
-                                dispatch(nftDataCollectionLoadStart(tabTitle));
-                            }
+                            // if (isSeries) {
+                            //     dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
+                            // } else {
+                            //     dispatch(nftDataCollectionLoadStart(tabTitle));
+                            // }
 
+                            // getNFTlist(num);
+                            // if (isSeries) {
+                            //     dispatch(nftBlindSeriesCollectionPageChange(num));
+                            // } else {
+                            //     dispatch(nftDataCollectionPageChange(num));
+                            // }
+
+                            dispatch(nftDataCollectionLoadStart(tabTitle));
                             getNFTlist(num);
-                            if (isSeries) {
-                                dispatch(nftBlindSeriesCollectionPageChange(num));
-                            } else {
-                                dispatch(nftDataCollectionPageChange(num));
-                            }
+                            dispatch(nftDataCollectionPageChange(num));
                         }
                     }}
                     onEndReachedThreshold={0.4}

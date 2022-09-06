@@ -1109,7 +1109,7 @@ const DetailScreen = ({ navigation, route }) => {
                   })) : (
                     noDataRender()
                   )
-                : tradingTableData.length > 0 ? (
+                : tradingTableData.length > 0 ? ( 
                   tradingTableData?.map((rowData, rowIndex) => {
                     return (
                       <TableWrapper
@@ -1940,16 +1940,16 @@ const DetailScreen = ({ navigation, route }) => {
       });
   };
 
-  const getHistory = (history, sort) => {
+  const getHistory = (history, sort) => { 
     let page = 1
     let limit = 5
     let bidSort = 3
-    let url = history === 'bid'
+    let url = history === 'bid' 
       ? `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`
       : `${NEW_BASE_URL}/sale-nft/trading-history`
     let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
     let method = history === 'bid' ? 'GET' : 'POST'
-    let body = history === 'bid' ? null :
+    let body = history === 'bid' ? null : 
       {
         page: 1,
         limit: 30,
@@ -1979,14 +1979,14 @@ const DetailScreen = ({ navigation, route }) => {
             console.log("🚀 ~ file: detail.js ~ line 1780 ~  ~ ", tempList)
 
             setSellDetails(tempList)
-          } else {
+          } else { 
             let tradingList = []
             let filterList = []
 
             res?.items?.map(item => {
               let from = item?.fromUser?.userWallet?.address
               let to = item?.toUser?.userWallet?.address
-
+                
               if (item.action === SORT_TRADING_HISTORY.BUY_NFT) {
                 from = item?.toUser?.userWallet?.address
                 to = item?.fromUser?.userWallet?.address
@@ -3019,7 +3019,7 @@ const DetailScreen = ({ navigation, route }) => {
       <DropDownPicker
         open={open}
         value={props.value}
-        items={props.data}
+        items={props.data} 
         multiple={true}
         min={0}
         mode={'BADGE'}
