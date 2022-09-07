@@ -220,10 +220,12 @@ const NotOnSale = ({ route }) => {
 
     const renderItem = ({ item, index }) => {
 
+        let imageUri = item?.mediaUrl
         return (
             <NFTItem
                 item={item}
                 screenName="notOnSale"
+                image={imageUri}
                 onPress={() => {
                     navigation.push('CertificateDetail', { item: item });
                 }}

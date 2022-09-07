@@ -232,14 +232,16 @@ const Owned = (props) => {
     };
 
     const renderItem = ({ item, index }) => {
+        let imageUri = item?.mediaUrl
         return (
-        <NFTItem
-            item={item}
-            screenName="owned"
-            onPress={() => {
-                navigation.push('CertificateDetail', { item: item });
-            }}
-        />
+            <NFTItem
+                item={item}
+                screenName="owned"
+                image={imageUri}
+                onPress={() => {
+                    navigation.push('CertificateDetail', { item: item });
+                }}
+            />
         );
 
         // let findIndex

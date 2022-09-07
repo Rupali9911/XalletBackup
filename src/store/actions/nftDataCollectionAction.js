@@ -6,6 +6,7 @@ import { getBaseCurrency, parseNftObject } from '../../utils/parseNFTObj';
 import { getEventByValue, getFromAddress, getToAddress } from '../../constants/tradingHistory';
 import { translate } from '../../walletUtils';
 import moment from 'moment';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 import {
   NFT_DATA_COLLECTION_FAIL,
@@ -278,107 +279,76 @@ export const activityNftListPageChange = (data) => ({
 //   }
 // }
 
+export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) => {
+  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64, ~ nftDataCollectionList ~ ", page, collectionId, limit)
+  return (dispatch) => {
+    let data = {
+      page,
+      collectionId,
+      limit,
+      sort
+    };
 
+    sendRequest({
+      url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+      method: 'POST',
+      data
+    })
+      .then(res => {
+        if (res?.items?.length > 0) {
+          const tradingList = [];
+          const filterList = [];
 
+          res?.items?.map((item) => {  
+            let from = item?.fromUser?.userWallet?.address;
+            let to = item?.toUser?.userWallet?.address;
+            let temp = [
+              { image: item?.nft?.smallImage, imageName: item?.nft?.name },
+              getEventByValue(item?.action),
+              item?.price && item?.receiveToken
+                ? Number(item?.price) + ' ' + item?.receiveToken
+                : '',
+              getFromAddress(from, item?.action),
+              getToAddress(to, item?.action),
+              moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
 
+            ];
 
-// export const nftDataCollectionList =  (page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId, tabTitle, networkName, contractAddress) => {
- 
-
-  export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) => {
-    console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64, ~ nftDataCollectionList ~ ", page, collectionId, limit)
-    return (dispatch) => {
-      const data = {
-        page, 
-        collectionId,
-        limit,
-        sort
-      };
-      // let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U';
-
-      const body = {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-
-        },
-      };
-  
-      fetch(`${NEW_BASE_URL}/sale-nft/trading-history`, body)
-        .then(response => response.json()) 
-        .then(res => { 
-           console.log('Activity Result : ', res);
-
-           if(res?.items?.length > 0)
-           {
-            const tradingList = [];
-            const filterList = [];
-
-            res?.items?.map((item) => {
-              let from = item?.fromUser?.userWallet?.address;
-              let to = item?.toUser?.userWallet?.address;
-              console.log('Inside Map : ')
-              let temp = [
-                {image:item?.nft?.smallImage, imageName: item?.nft?.name},
-                getEventByValue(item?.action),
-                item?.price && item?.receiveToken
-                  ? Number(item?.price) + ' ' + item?.receiveToken
-                  : '',
-                getFromAddress(from, item?.action),
-                getToAddress(to, item?.action),
-                moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
-                              
-              ];
-
-              tradingList.push(temp);
-              filterList.push(getEventByValue(item?.action));
-
-              // console.log('This is Temp Variable : ',  {list: tradingList, count: res?.meta?.itemCount});
-              // dispatch(activityNftListSuccess(temp));
-              dispatch(activityNftListSuccess({list: tradingList, count: res?.meta?.totalPages, result: res?.items}))
-            });
-            
-           
-           }
-
-           
-  
-        })
-        .catch(err => {
-          dispatch(activityNftListFail());
-        });
-    }
+            tradingList.push(temp);
+            filterList.push(getEventByValue(item?.action));
+            dispatch(activityNftListSuccess({ list: tradingList, count: res?.meta?.totalPages, result: res?.items, tabTitle: tabTitle }))
+          });
+        }
+      })
+      .catch(err => {
+        dispatch(activityNftListFail());
+      });
   }
+}
 
 export const nftDataCollectionList = (page, tabTitle, networkName, contractAddress, tabStatus, userAddress, userId) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
-
-
   return (dispatch) => {
-    
-    let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=10&networkName=${networkName}&contractAddress=${contractAddress}&userId=${userId}`;
-    // let url = `${NEW_BASE_URL}/collections/nft/collectionId?page=${page}&limit=10&networkName=${networkName}&contractAddress=${contractAddress}&status=${tabStatus}&userId=${userId}`;
-    if (userAddress) {
-        url = url.concat(`&userAddress=${userAddress}`);
+    let url = `${NEW_BASE_URL}/collections/nft/collectionId?`;
+    {
+      userAddress ? url = url.concat(`&userAddress=${userAddress}`) : tabStatus ? url = url.concat(`&status=${tabStatus}`) : url;
     }
-    else if(tabStatus){
-      url = url.concat(`&status=${tabStatus}`);
-    }
-    
-    console.log('Main URl : ', url);
-    
-    fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      console.log('This is jsonn : ', json, json.list);
-      console.log('JSON PART : ', json);
-      dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
-    }).catch(err => {
-      dispatch(nftDataCollectionLoadFail());
-      console.log('Error : ', err);
-    });
+
+    sendRequest({
+      url,
+      params: {
+        page,
+        limit: 10,
+        networkName,
+        contractAddress,
+        userId
+      }
+    })
+      .then(json => {
+        dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+      }).catch(err => {
+        dispatch(nftDataCollectionLoadFail());
+      });
 
 
     // if (isStore && type !== 'owned') { 
@@ -448,7 +418,7 @@ export const nftDataCollectionList = (page, tabTitle, networkName, contractAddre
     // } 
     // else {
 
-   
+
 
     //   // const { data, wallet } = getState().UserReducer;
     //   // const owner = data?.user?._id || wallet?.address;
