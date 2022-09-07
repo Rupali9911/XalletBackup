@@ -65,22 +65,8 @@ export default function nftDataCollectionReducer(state = initialState, action) {
       //   };
       return state = {...state, nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
          nftDataCollectionTotalCount: action.payload.count,
-            nftDataCollectionLoading: false,}
-    // if (action.payload.mysteryBox) {
-    //   return state = {
-    //     ...state,
-    //     mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
-    //     mysteryBoxCollectionTotalCount: action.payload.count,
-    //     nftDataCollectionLoading: false,
-    //   };
-    // } else {
-    //   return state = {
-    //     ...state,
-    //     nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
-    //     nftDataCollectionTotalCount: action.payload.count,
-    //     nftDataCollectionLoading: false,
-    //   };
-    // }
+            nftDataCollectionLoading: false,
+          }
 
     case NFT_DATA_COLLECTION_LIST_UPDATE:
       return state = { ...state, nftDataCollectionList: [...action.payload] };
@@ -126,6 +112,7 @@ export default function nftDataCollectionReducer(state = initialState, action) {
         nftActivityPage: 1,
         nftActivityTotalCount: action.payload.count,
         nftActivityItems: action.payload.result,
+        tabTitle: action.payload.tabTitle, 
         nftActivityLoading: false
       }
 

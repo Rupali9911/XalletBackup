@@ -217,11 +217,14 @@ const OnSale = ({ route }) => {
 
     const renderItem = ({ item, index }) => {
 
+        let imageUri = item?.mediaUrl
         return (
             <NFTItem
                 item={item}
                 screenName="onSale"
+                image={imageUri}
                 onPress={() => {
+                    // dispatch(changeScreenName('Hot'));
                     navigation.push('CertificateDetail', { item: item });
                 }}
             />

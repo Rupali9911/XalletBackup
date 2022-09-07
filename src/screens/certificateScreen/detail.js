@@ -1977,15 +1977,6 @@ const DetailScreen = ({ navigation, route }) => {
     let page = 1
     let limit = 5
     let bidSort = 3
-<<<<<<< HEAD
-    let url = history === 'bid' 
-      ? `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`
-      : `${NEW_BASE_URL}/sale-nft/trading-history`
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjM3MDgsInVzZXJuYW1lIjoiU2h1YmhhbSBLb3RoYXJpIiwid2FsbGV0VHlwZSI6MSwibm9uY2UiOjAsImlhdCI6MTY2MTE3MTEwMCwiZXhwIjoxNjYxMTc0NzAwfQ.zP1CJfzy4hTgrX7szSq6GB1M7Aqk5SXEfshFi1JCr2U'
-    let method = history === 'bid' ? 'GET' : 'POST'
-    let body = history === 'bid' ? null : 
-      {
-=======
     let payload = history === 'bid' ? {
       url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
       method: 'GET',
@@ -1993,7 +1984,6 @@ const DetailScreen = ({ navigation, route }) => {
       url: `${NEW_BASE_URL}/sale-nft/trading-history`,
       method: 'POST',
       data: {
->>>>>>> d0b774aad5e4f40276859831cfb38897a3006f5e
         page: 1,
         limit: 30,
         nftId: nftId,

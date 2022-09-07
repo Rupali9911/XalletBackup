@@ -28,13 +28,13 @@ import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 import CollectionItem from '../../components/CollectionItem';
 
-const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
-const BLIND_SERIES_COLLECTION_TYPE = [
-    'minted2',
-    'onsale',
-    'notonsale',
-    'owned',
-];
+// const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
+// const BLIND_SERIES_COLLECTION_TYPE = [
+//     'minted2',
+//     'onsale',
+//     'notonsale',
+//     'owned',
+// ];
 const { height } = Dimensions.get('window');
 
 const Gallery = ({ route }) => {
@@ -216,27 +216,17 @@ const Gallery = ({ route }) => {
         //     findIndex = collectionList.findIndex(x => x?.id === item?.id);
         // }
 
-        // <NFTItem
-        //         screenName="dataCollection"
-        //         item={item}
-        //         // index={index}
-        //         onPress={() => {
-        //             navigation.push('CertificateDetail', { item: item });
-        //         }}
-        // />
-
-        // console.log('Items is here : ', item)
+        let imageUri = item?.mediaUrl
         return (
-
             <NFTItem
                 item={item}
                 screenName="gallery"
+                image={imageUri}
                 onPress={() => {
-                    setDetailScreen(true)
                     navigation.push('CertificateDetail', { item: item });
                 }}
             />
-        )
+        );
         // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         // if (isStore || seriesInfoId) {
         //     console.log('ISstore, seriesinfold ');

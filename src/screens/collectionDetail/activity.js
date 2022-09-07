@@ -43,6 +43,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import PaginationContainer from '../../components/PaginationContainer';
 import moment from 'moment';
 import { FILTER_TRADING_HISTORY_OPTIONS } from '../../constants';
+import sendRequest from '../../helpers/AxiosApiRequest';
+import { NEW_BASE_URL } from '../../common/constants';
+
 
 const FILTER_TYPE = ['MintWithTokenURI', 'SellNFT', 'Bid', 'BuyNFT', 'Claim', 'OnAuction', 'CancelSell'];
 
@@ -209,18 +212,21 @@ const Activity = ({ route }) => {
     };
 
     const getNftData = (index) => {
-
         let nftDetail = collectionItem[index]; 
+        let url = `${NEW_BASE_URL}/nfts/details`;
+        // let url = `https://prod-backend.xanalia.com/nfts/details?networkName=${nftDetail.nft.network.name}&collectionAddress=${nftDetail.nft.collections.contractAddress}&nftTokenId=${nftDetail.nft.tokenId}`;
 
-        let url = `https://prod-backend.xanalia.com/nfts/details?networkName=${nftDetail.nft.network.name}&collectionAddress=${nftDetail.nft.collections.contractAddress}&nftTokenId=${nftDetail.nft.tokenId}`;
-
-        fetch(url)
-        .then(response => response.json())
+        sendRequest({
+            url,
+            params: {
+              networkName: nftDetail.nft.network.name,
+              collectionAddress: nftDetail.nft.collections.contractAddress,
+              nftTokenId: nftDetail.nft.tokenId,
+            }
+          })
         .then(json => {
-          console.log('RESULT IS HERE : ', json);
           navigation.push('CertificateDetail', { item: json }); 
         }).catch(err => {
-         
           console.log('Error : ', err);
         });
         
