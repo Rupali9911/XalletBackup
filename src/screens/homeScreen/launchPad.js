@@ -79,11 +79,12 @@ const LaunchPad = () => {
                 count={item.totalNft}
                 status={item.status}
                 creatorInfo={item.owner.description}
-                blind={item.blind}
-                collectionId={item._id}
+                blind={item.blind} 
+                collectionId={item._id} 
                 disabled={(networkType === "testnet" || item.status === "comingSoon") ? true : false}
                 onPress={() => {
-                    navigation.push('CertificateDetail', { item: item });
+                    // navigation.push('CertificateDetail', { item: item });
+                    navigation.push('CollectionDetail', { item: item , isLaunchPad: true });
                 }}
             />
         );

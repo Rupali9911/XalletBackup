@@ -28,13 +28,13 @@ import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 import CollectionItem from '../../components/CollectionItem';
 
-const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
-const BLIND_SERIES_COLLECTION_TYPE = [
-    'minted2',
-    'onsale',
-    'notonsale',
-    'owned',
-];
+// const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
+// const BLIND_SERIES_COLLECTION_TYPE = [
+//     'minted2',
+//     'onsale',
+//     'notonsale',
+//     'owned',
+// ];
 const { height } = Dimensions.get('window');
 
 const Owned = (props) => {
@@ -54,7 +54,8 @@ const Owned = (props) => {
         // seriesInfoId,
         collection,
         tabTitle,
-        tabStatus
+        tabStatus,
+        isLaunchPad
     } = route?.params;
 
     // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
@@ -147,7 +148,9 @@ const Owned = (props) => {
                     collection.contractAddress,
                     tabStatus,
                     null,
-                    collection.userId,     
+                    collection.userId,
+                    isLaunchPad,
+                    false
                 ),
             );
             // if (isStore) {
