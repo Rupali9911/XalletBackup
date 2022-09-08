@@ -70,7 +70,8 @@ import Ethereum from 'src/assets/svgs/icon-etherium.svg';
 import BitmapIcon from 'src/assets/svgs/icon-smart-chain.svg';
 import CopyToClipboard from 'src/assets/svgs/icon-copyToClipboard.svg'
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
-import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
+import TwitterIcon from 'src/assets/svgs/icon-twitter.svg';
+import TwitterIconNew from 'src/assets/svgs/icon-twitter-new.svg';
 import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
 import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
 import ThreeDotsVerticalIcon from 'src/assets/svgs/icon-three-dots-vertical.svg';
@@ -78,6 +79,8 @@ import VerficationIcon from 'src/assets/svgs/icon-verified-nft.svg';
 import NewPolygonIcon from 'src/assets/svgs/icon-new-polygon.svg'
 import EditImage from 'src/assets/svgs/icon-edit-image.svg'
 import CopyProfile from 'src/assets/svgs/icon-copy-profile.svg'
+import ArtistSvg from 'src/assets/svgs/icon-artist.svg'
+import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg'
 
 export default {
   GirlIcon,
@@ -153,8 +156,11 @@ export default {
   NewPolygonIcon,
   VerficationIcon,
   FantaseedIcon,
-  TwiiterIcon,
+  TwitterIcon,
+  TwitterIconNew,
   FacebookIcon,
   InstagramIcon,
+  ArtistSvg,
+  ArtistSvgI,
   ThreeDotsVerticalIcon,
 };

@@ -24,7 +24,7 @@ import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 import { setConnectedApps } from './walletReducer';
-import sendRequest from '../../helpers/AxiosApiRequest';
+import sendRequest, { getAccessToken } from '../../helpers/AxiosApiRequest';
 import { reject } from 'lodash';
 import { resolve } from 'path-browserify';
 
@@ -174,7 +174,7 @@ export const setUserData = data => ({
   payload: data,
 });
 
-export const upateUserData = data => ({
+export const updateUserData = data => ({
   type: UPDATE_PROFILE,
   payload: data,
 });
@@ -252,7 +252,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     //   .then(response => response.json())
     //   .then(res => {
     //     if (typeof (res.data) !== 'string' && res.data) {
-    //       dispatch(upateUserData(res.data));
+    //       dispatch(updateUserData(res.data));
 
     //     }
     //     dispatch(endMainLoading());
@@ -280,7 +280,7 @@ export const loadProfileFromAsync = (id) => (dispatch) =>
     })
       .then(res => {
         if (typeof (res.data) !== 'string' && res.data) {
-          dispatch(upateUserData(res.data));
+          dispatch(updateUserData(res.data));
         }
         resolve()
       })
@@ -378,7 +378,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     .post(`${BASE_URL}/user/update-profile-image`, formData, { headers: headers })
     .then(res => {
       console.log('Response from update-profile-image', res.data.data)
-      dispatch(upateUserData(res.data.data));
+      dispatch(updateUserData(res.data.data));
     })
     .catch(err => {
       dispatch(endLoading());
@@ -402,67 +402,83 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     });
 };
 
+export const fetchData =(id) => {
+  return (dispatch) => {
+  const url = `${NEW_BASE_URL}/users/${id}`
+  sendRequest(url)
+    .then((res) => {
+      dispatch(updateUserData(res))
+    })
+  }
+}
+
 export const updateProfile =
-  (props, callBack) => async (dispatch, getState) => {
+  (props, id) => async (dispatch, getState) => {
+    // console.log(props)
     dispatch(startLoading());
+    const token = await getAccessToken('ACCESS_TOKEN')
+    // const { data } = getState().UserReducer;
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/update-profile`,
+      method: 'PUT',
+      data : props
+  }).then(()=>{
+    dispatch(fetchData(id))
+  })
+  .then((res) => {
+    console.log('response updateProfile', res)
+    dispatch(endLoading());
+    // callBack();
+  })
+  .catch(err => {
+    dispatch(endLoading());
+  })
 
-    const { data } = getState().UserReducer;
-    const config = {
-      method: 'post',
-      url: `${BASE_URL}/user/update-user-profile`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${data.token}`,
-      },
-      data: props,
-    };
-
-    await axios(config)
-      .then(res => {
-        console.log('res.data.data updateProfile', res.data.data)
-        let data = res.data.data;
-        dispatch(upateUserData(data));
-        dispatch(endLoading());
-        callBack();
-      })
-      .catch(err => {
-        dispatch(endLoading());
-
-        if (err.response.status === 401) {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.sessionexpired'),
-            () => {
-              console.log(err);
-            },
-          );
-          dispatch(signOut());
-          return;
-        }
-        if (err.response.data.data === 'email already taken') {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.emailexists'),
-            () => {
-              console.log(err);
-            },
-          );
-        } else if (err.response.data.data === 'username already taken') {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.usrnameexists'),
-            () => {
-              console.log(err.response.data.data);
-            },
-          );
-        } else {
-          // alertWithSingleBtn(
-          //   translate('wallet.common.alert'),
-          //   translate('wallet.common.error.networkFailed'),
-          //   () => {
-          //     console.log(err);
-          //   },
-          // );
-        }
-      });
+    // await axios(config)
+    //   .then(res => {
+    //     console.log('res.data.data updateProfile', res.data.data)
+    //     let data = res.data.data;
+    //     dispatch(updateUserData(data));
+    //     dispatch(endLoading());
+    //     callBack();
+    //   })
+    //   .catch(err => {
+    //     dispatch(endLoading());
+    //     // if (err.response.status === 401) {
+    //     //   alertWithSingleBtn(
+    //     //     translate('wallet.common.alert'),
+    //     //     translate('common.sessionexpired'),
+    //     //     () => {
+    //     //       console.log(err);
+    //     //     },
+    //     //   );
+    //     //   dispatch(signOut());
+    //     //   return;
+    //     // }
+    //     // if (err.response.data.data === 'email already taken') {
+    //     //   alertWithSingleBtn(
+    //     //     translate('wallet.common.alert'),
+    //     //     translate('common.emailexists'),
+    //     //     () => {
+    //     //       console.log(err);
+    //     //     },
+    //     //   );
+    //     // } else if (err.response.data.data === 'username already taken') {
+    //     //   alertWithSingleBtn(
+    //     //     translate('wallet.common.alert'),
+    //     //     translate('common.usrnameexists'),
+    //     //     () => {
+    //     //       console.log(err.response.data.data);
+    //     //     },
+    //     //   );
+    //     // } else {
+    //     //   // alertWithSingleBtn(
+    //     //   //   translate('wallet.common.alert'),
+    //     //   //   translate('wallet.common.error.networkFailed'),
+    //     //   //   () => {
+    //     //   //     console.log(err);
+    //     //   //   },
+    //     //   // );
+    //     // }
+    //   });
   };

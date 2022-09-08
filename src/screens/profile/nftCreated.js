@@ -108,12 +108,15 @@ const NFTCreated = ({ route }) => {
                 isFirstRender ? isFirstRender : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
                     <Loader />
                 ) : MyNFTReducer.myList?.length !== 0 ? (
+                    <View>
                     <FlatList
+                        key={1}
                         data={MyNFTReducer?.myList}
                         horizontal={false}
                         numColumns={2}
                         initialNumToRender={15}
                         onRefresh={pressToggle}
+                        
                         refreshing={MyNFTReducer.myListPage === 1 &&
                             MyNFTReducer.myNftListLoading}
                         renderItem={memoizedValue}
@@ -130,9 +133,8 @@ const NFTCreated = ({ route }) => {
                         ListFooterComponent={renderFooter}
                         onEndReachedThreshold={0.4}
                         keyExtractor={(v, i) => 'item_' + i}
-                        
-
                     />
+                    </View>
                 ) : (
                     <View style={styles.sorryMessageCont}>
                         <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
