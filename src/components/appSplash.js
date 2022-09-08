@@ -29,7 +29,7 @@ const appSplash = () => {
     }, []);
 
     const loadAllData = async () => {
-        dispatch(getAllLanguages());
+       await dispatch(getAllLanguages());
         try {
             const token = await getAccessToken('ACCESS_TOKEN');
             if (token) {
@@ -42,10 +42,10 @@ const appSplash = () => {
                 dispatch(loadFromAsync(asyncData));
                 dispatch(setAppLanguage(value));
             } else {
-                let item = languageArray.find(
-                    item => item.language_name == regionLanguage,
+                let regionalLanguage = languageArray.find(
+                    language => language.language_name == regionLanguage,
                 );
-                dispatch(setAppLanguage(item));
+                dispatch(setAppLanguage(regionalLanguage));
                 dispatch(loadFromAsync());
             }
 

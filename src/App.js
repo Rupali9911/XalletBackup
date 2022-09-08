@@ -58,6 +58,7 @@ import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer'
 import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
+import AiChat from './components/AiChat';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -74,7 +75,7 @@ const deepLinkData = {
 
 const TabComponent = () => {
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const userRole = useSelector(state => state.UserReducer?.data?.user?.role);
+  const { userData } = useSelector(state => state.UserReducer);
   const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
 
@@ -111,8 +112,6 @@ const TabComponent = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-  const { userData } = useSelector(state => state.UserReducer);
-
 
   return (
     <Tab.Navigator
@@ -315,6 +314,7 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
+          <Stack.Screen name="AiChat" component={AiChat}/>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

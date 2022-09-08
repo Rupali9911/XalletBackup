@@ -138,7 +138,7 @@ android {
         // minSdkVersion 24
         multiDexEnabled true
         versionCode 1
-        versionName "2.8.05"
+        versionName "2.9.09"
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true

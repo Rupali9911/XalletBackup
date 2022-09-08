@@ -138,7 +138,7 @@ const UploadNFT = ({
 
     useEffect(() => {
         if (position == 2) {
-            changeLoadingState(true)
+            // changeLoadingState(true)
             getCollectionList()
             cleanAll();
 
