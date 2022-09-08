@@ -137,6 +137,13 @@ const styles = StyleSheet.create({
     borderColor: '#979797',
     borderWidth: 1,
   },
+  userImage: {
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40),
+    // marginLeft: SIZE(28),
+    // marginTop:SIZE(15),
+  },
   personTypeText: {
     fontSize: RF(1.3),
     fontFamily: fonts.ARIAL,
@@ -415,6 +422,303 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: Colors.BLUE4,
     borderWidth: 2
+  },
+
+  mainview: {
+    backgroundColor:
+      Colors.WHITE1,
+    height: hp(65),
+    width: wp(95),
+    right: SIZE(10),
+    borderRadius: SIZE(10),
+    justifyContent: 'center'
+  },
+  headerview: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: SIZE(22),
+    alignItems: "center"
+  },
+  bidtext: {
+    fontWeight: "bold",
+    fontSize: SIZE(20)
+  },
+  userView: {
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    marginHorizontal: 22,
+    marginTop: 10
+  },
+  headerCancelButton: { tintColor: Colors.GREY1 },
+  feeText: {
+    paddingTop: SIZE(30),
+    paddingLeft: SIZE(20),
+    fontWeight: "bold"
+  },
+  footerText: {
+    color: Colors.GREY1
+    , fontWeight: "300"
+  },
+  checkboxImg: { tintColor: Colors.GREY1 },
+  royaltyFeeView: {
+    flexDirection: "row",
+    marginTop: 18,
+    marginHorizontal: 22,
+    justifyContent: "space-between"
+  },
+  nftPrice: {
+    color: Colors.BLUE2,
+    fontWeight: "bold",
+  },
+  termsText: {
+    color: Colors.BLUE2,
+    fontWeight: "bold",
+  },
+  footerView: {
+    flexDirection: "row",
+    marginTop: 18,
+    marginHorizontal: 22,
+    justifyContent: "space-between"
+  },
+  willPayView: {
+    flexDirection: "row",
+    marginTop: 18,
+    marginHorizontal: 22,
+    justifyContent: "space-between"
+  },
+  breakLine: {
+    marginHorizontal: 22,
+    height: 0.7,
+    backgroundColor:
+      Colors.GREY1,
+    marginTop: 15
+  },
+  priceInPercent: {
+    color: Colors.BLUE2,
+    fontWeight: "bold",
+  },
+  serviceFeeView: {
+    flexDirection: "row",
+    marginTop: 18,
+    marginHorizontal: 22,
+    justifyContent: "space-between"
+  },
+  itemText: {
+    paddingTop: SIZE(30),
+    paddingLeft: SIZE(20),
+    fontWeight: "bold"
+  },
+  amountText: {
+    fontWeight: "bold",
+    paddingLeft: SIZE(10),
+  },
+  modalBody: { flex: 1 },
+  groupButtonView: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
+    paddingHorizontal: SIZE(20),
+    marginVertical: SIZE(25)
+  },
+  rightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE2,
+    backgroundColor: Colors.white
+  },
+  rightGroupButtonText: {
+    color: Colors.BLUE3,
+  },
+  expirationText: {
+    marginTop: 15,
+    marginLeft: 22,
+    color: "#151e3d"
+  },
+  dateText: {
+    padding: SIZE(8)
+
+  },
+  numberView: {
+    marginHorizontal: SIZE(20),
+    marginTop: SIZE(10),
+    borderColor: Colors.GREY1,
+    borderWidth: 1,
+    borderRadius: 4,
+    height: hp(4)
+  },
+  curancyInput: {
+    backgroundColor: Colors.WHITE1,
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    height: hp(4.1),
+    width: wp(30),
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
+    borderRightWidth: 0
+  },
+  busdText: {
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    right: SIZE(2)
+  },
+  imageTextView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  currencyView: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: wp(20),
+    height: hp(4.1),
+    justifyContent: "center"
+  },
+  priceBoxView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: SIZE(35),
+    marginTop: SIZE(25),
+    marginBottom: SIZE(30)
+  },
+  modalContainer: {
+    flex: 1
+  },
+  reClaimcontainer: {
+    backgroundColor: "white",
+    height: hp(42),
+    width: wp(95),
+    paddingHorizontal: SIZE(20),
+    paddingTop: SIZE(15),
+    borderRadius: SIZE(18),
+    right: SIZE(8)
+  },
+  reClaimCancelBTNview: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  reClaimCancelButton: {
+    tintColor: Colors.GREY1,
+  },
+  centerImgView: {
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  centerImg: {
+    height: hp(17)
+  },
+  reclaimView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingTop: SIZE(15)
+  },
+  reclaimText: {
+    fontWeight: "bold",
+    fontSize: SIZE(25)
+  },
+  textView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: SIZE(10)
+  },
+  text: {
+    color: Colors.GREY1,
+  },
+  groupButtonView: {
+    marginTop: SIZE(25),
+    paddingHorizontal: SIZE(20)
+  },
+  reClaimRightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.BLUE4
+  },
+  reClaimrightGroupButtonText: {
+    color: Colors.white
+  },
+  rightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.white
+  },
+  rightGroupButtonText: {
+    color: Colors.BLUE3
+  },
+  modalContainer: {
+    flex: 1
+  },
+  editPriceContainner: {
+    backgroundColor: Colors.WHITE1,
+    height: hp(27),
+    width: wp(95),
+    paddingTop: SIZE(15),
+    borderRadius: SIZE(18),
+    right: SIZE(8)
+  },
+  editPriceHeaderView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: SIZE(25)
+  },
+  editPriceText: {
+    fontWeight: "bold",
+    fontSize: SIZE(18)
+  },
+  cancelButton: {
+    tintColor: Colors.GREY1
+  },
+  inputWrapperView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    paddingHorizontal: SIZE(39),
+    marginVertical: SIZE(35)
+  },
+  inputFieldView: {
+    alignItems: "center"
+  },
+  inputField: {
+    backgroundColor: Colors.WHITE1,
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    height: hp(5),
+    width: wp(60),
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8
+  },
+  usdtView: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    borderWidth: 0.5,
+    height: hp(5.2),
+    width: wp(15),
+    borderLeftWidth: 0,
+    borderColor: Colors.GREY1,
+    borderBottomRightRadius: 8,
+    borderTopRightRadius: 8,
+  },
+  usdtText: {
+    right: 12,
+    top: 15,
+    fontWeight: "bold"
+  },
+  editPriceGroupBButtonView: {
+    bottom: SIZE(10),
+    paddingHorizontal: SIZE(35)
+  },
+  editPriceGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.BLUE1
+  },
+  editPriceGroupButtonText: {
+    fontWeight: "bold"
   }
 });
 
