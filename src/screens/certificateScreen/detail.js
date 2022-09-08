@@ -1,7 +1,7 @@
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -11,18 +11,22 @@ import {
   Text,
   TouchableOpacity,
   View,
+  CheckBox
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import {Row, Table, Cell, TableWrapper} from 'react-native-table-component';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
+import Modal from 'react-native-modal';
+import {
+  Row, Table, Cell, TableWrapper
+} from 'react-native-table-component';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import tradingImg from '../../../assets/images/trading.png';
 import historyImg from '../../../assets/images/history.png';
-import {networkType} from '../../common/networkType';
-import {AppHeader, C_Image, GroupButton} from '../../components';
+import { networkType } from '../../common/networkType';
+import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
@@ -30,30 +34,25 @@ import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import {hp, wp} from '../../constants/responsiveFunct';
+import { hp, wp } from '../../constants/responsiveFunct';
 import {
   getAllCards,
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import {alertWithSingleBtn, divideNo, numberWithCommas} from '../../utils';
-import {translate} from '../../walletUtils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
-import {CardField, TabModal} from '../createNFTScreen/components';
+import { alertWithSingleBtn, divideNo, numberWithCommas } from '../../utils';
+import { translate } from '../../walletUtils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
+import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
-import {ActivityIndicator} from 'react-native-paper';
-import {currencyInDollar} from '../wallet/functions';
-import {getBaseCurrency} from '../../utils/parseNFTObj';
-import AppBackground from '../../components/appBackground';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
+import { ActivityIndicator, TextInput } from 'react-native-paper';
+import { currencyInDollar } from '../wallet/functions';
+import { getBaseCurrency } from '../../utils/parseNFTObj';
+import AppBackground from '../../components/appBackground'
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import addComma from '../../utils/insertComma';
 import {
   convertPrice,
@@ -62,9 +61,9 @@ import {
   firstCellData,
   fourthCellData,
 } from '../../utils/detailHelperFunctions';
-import {isChinaApp} from '../../web3/config/networkType';
-import {handleLike} from '../discover/discoverItem';
-import {Verifiedcollections} from '../../components/verifiedCollection';
+import { isChinaApp } from '../../web3/config/networkType';
+import { handleLike } from '../discover/discoverItem';
+import { Verifiedcollections } from '../../components/verifiedCollection';
 import {
   CATEGORY_VALUE,
   compareAddress,
@@ -72,7 +71,7 @@ import {
   NFT_MARKET_STATUS,
   SORT_TRADING_HISTORY,
 } from '../../constants';
-import {ApiRequest} from '../../helpers/ApiRequest';
+import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import {
   getEventByValue,
@@ -80,11 +79,15 @@ import {
   getKeyEventByValue,
   getToAddress,
 } from '../../constants/tradingHistory';
-import {formatAddress} from '../../constants/addressFormat';
-import {getDateString, getExpirationDate} from '../../constants/date';
+import { formatAddress } from '../../constants/addressFormat';
+import { getDateString, getExpirationDate } from '../../constants/date';
 import CountDown from 'react-native-countdown-component';
-import {twitterLink} from '../../common/function';
+import { twitterLink } from '../../common/function';
 import sendRequest from '../../helpers/AxiosApiRequest';
+import Images from '../../constants/Images';
+import ShowModal from "./modal"
+import cancelImg from "../../../assets/images/cancel.png"
+// import Modal from "react-native-modal";
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
@@ -98,19 +101,19 @@ const {
   VerficationIcon,
 } = SVGS;
 
-const DetailScreen = ({navigation, route}) => {
+const DetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
+  const { item, setNftItem, networkName, collectionAddress, nftTokenId } =
     route.params;
 
   // =============== Getting data from reducer ========================
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
-  const {userData, wallet} = useSelector(state => state.UserReducer);
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
+  const { userData, wallet } = useSelector(state => state.UserReducer);
   // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
@@ -170,6 +173,15 @@ const DetailScreen = ({navigation, route}) => {
   const [isLike, setLike] = useState();
   const [detailNFT, setDetailNFT] = useState({});
 
+  const [isVisible, setVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [reclaimModal, setReclaimModal] = useState(false)
+  const [cancelAuctionModal, setCancelAuctionModal] = useState(false)
+  const [editPrice, setEditPrice] = useState(false)
+  const [priceEdit, setPriceEdit] = useState(false)
+  const [cancel, setCancel] = useState(false)
+
   // const [isContractOwner, setIsContractOwner] = useState(false);
   // const [isOwner, setIsOwner] = useState(false);
   // const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
@@ -189,16 +201,20 @@ const DetailScreen = ({navigation, route}) => {
   const thumbnailUrl = detailNFT?.thumbnailUrl
     ? detailNFT.thumbnailUrl
     : categoryType === CATEGORY_VALUE.music
-    ? item?.mediaUrl
-    : item?.thumbnailUrl;
+      ? item?.mediaUrl
+      : item?.thumbnailUrl;
   // const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId;
   const network = detailNFT?.network ? detailNFT.network : item?.network;
   // const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
+  const walletAddress = userData?.userWallet?.address;
 
-  const hitSlop = {top: 5, bottom: 5, left: 5, right: 5};
+  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
 
+  const auctionId = detailNFT?.saleData?.auction?.auctionId
+  const saleId = detailNFT?.saleData?.fixPrice?.id
+  const price = detailNFT?.saleData?.fixPrice?.price
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
   // const [discount, setDiscount] = useState(false);
@@ -224,7 +240,7 @@ const DetailScreen = ({navigation, route}) => {
       //     });
       // }
       // // }
-      getTokenDetailsApi();
+      getNFTDetails();
     }
   }, [isFocused, networkName, collectionAddress, nftTokenId]);
 
@@ -286,9 +302,9 @@ const DetailScreen = ({navigation, route}) => {
   //   }
   // };
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  const getTokenDetailsApi = async () => {
-    // let networkName = typeof network === 'string' ? network : network?.networkName
-    let url = `${NEW_BASE_URL}/nfts/details`;
+  const getNFTDetails = () => {
+    let networkName = typeof network === 'string' ? network : network?.networkName
+    let url = `${NEW_BASE_URL}/nfts/details`
 
     sendRequest({
       url,
@@ -426,7 +442,7 @@ const DetailScreen = ({navigation, route}) => {
         showBackButton
         title={translate('wallet.common.detail')}
         showRightComponent={
-          <View style={{paddingRight: 10}}>
+          <View style={{ paddingRight: 10 }}>
             <Menu
               onSelect={value => {
                 alertWithSingleBtn(
@@ -451,7 +467,7 @@ const DetailScreen = ({navigation, route}) => {
   const renderMenuOption = value => {
     return (
       <MenuOption value={value}>
-        <Text style={{marginVertical: 10}}>
+        <Text style={{ marginVertical: 10 }}>
           {value === 1 && translate('common.reportNft')}
           {value === 2 && translate('common.blockUser')}
         </Text>
@@ -477,18 +493,18 @@ const DetailScreen = ({navigation, route}) => {
           toggleVideoPlay(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <View style={{...styles.modalImage}}>
+          <View style={{ ...styles.modalImage }}>
             {showThumb && (
               <C_Image
                 uri={thumbnailUrl}
                 imageStyle={styles.modalImage}
-                // isContain
+              // isContain
               />
             )}
             <Video
               key={videoKey}
               ref={refVideo}
-              source={{uri: mediaUrl}}
+              source={{ uri: mediaUrl }}
               repeat
               playInBackground={false}
               paused={!playVideo}
@@ -526,13 +542,13 @@ const DetailScreen = ({navigation, route}) => {
             )}
             {videoLoadErr && (
               <View style={styles.videoPlayIconCont}>
-                <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                   <TouchableOpacity
                     onPress={() => {
                       setVideoLoadErr(false);
                       setVideoKey(videoKey + 1);
                     }}
-                    style={{paddingHorizontal: 15, paddingVertical: 10}}>
+                    style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
                     <Text style={styles.retry}>
                       {translate('common.retryLoading')}
                     </Text>
@@ -542,18 +558,18 @@ const DetailScreen = ({navigation, route}) => {
             )}
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
-          <View style={{...styles.modalImage}}>
+          <View style={{ ...styles.modalImage }}>
             <C_Image
               uri={thumbnailUrl}
               imageStyle={styles.modalImage}
-              // isContain
+            // isContain
             />
           </View>
         ) : (
           <C_Image
             uri={mediaUrl}
             imageStyle={styles.modalImage}
-            // isContain
+          // isContain
           />
         )}
       </TouchableOpacity>
@@ -618,15 +634,15 @@ const DetailScreen = ({navigation, route}) => {
           source={
             key === 'creator'
               ? artistDetail?.avatar
-                ? {uri: artistDetail.avatar}
+                ? { uri: artistDetail.avatar }
                 : IMAGES.DEFAULTPROFILE
               : key === 'collection'
-              ? collectCreat
-                ? {uri: collectCreat.avatar}
-                : IMAGES.DEFAULTPROFILE
-              : key === 'owner' && ownerDataN?.avatar
-              ? {uri: ownerDataN.avatar}
-              : IMAGES.DEFAULTPROFILE
+                ? collectCreat
+                  ? { uri: collectCreat.avatar }
+                  : IMAGES.DEFAULTPROFILE
+                : key === 'owner' && ownerDataN?.avatar
+                  ? { uri: ownerDataN.avatar }
+                  : IMAGES.DEFAULTPROFILE
           }
         />
         <View>
@@ -635,8 +651,8 @@ const DetailScreen = ({navigation, route}) => {
               {key === 'creator'
                 ? translate('common.creator')
                 : key === 'collection'
-                ? translate('wallet.common.collection')
-                : key === 'owner' && translate('common.owner')}
+                  ? translate('wallet.common.collection')
+                  : key === 'owner' && translate('common.owner')}
             </Text>
           )}
           {key !== 'collection' ? (
@@ -691,7 +707,7 @@ const DetailScreen = ({navigation, route}) => {
     ) {
       label =
         detailNFT?.saleData?.auction?.highestPrice ===
-        detailNFT?.saleData?.auction?.startPrice
+          detailNFT?.saleData?.auction?.startPrice
           ? translate('common.minimumBid')
           : translate('common.highestBid');
       tokenIcon = detailNFT?.saleData?.auction?.tokenIcon;
@@ -706,10 +722,10 @@ const DetailScreen = ({navigation, route}) => {
     }
 
     return (
-      <View style={{paddingHorizontal: SIZE(12), paddingBottom: SIZE(5)}}>
+      <View style={{ paddingHorizontal: SIZE(12), paddingBottom: SIZE(5) }}>
         {label && <Text style={styles.labelText}>{label}</Text>}
         <View style={styles.priceView}>
-          <Image style={styles.tokenIcon} source={{uri: tokenIcon}} />
+          <Image style={styles.tokenIcon} source={{ uri: tokenIcon }} />
 
           {!load && (
             <Text style={styles.price}>
@@ -741,6 +757,96 @@ const DetailScreen = ({navigation, route}) => {
     return null;
   };
 
+  const cancelModalConfirm = () => {
+  }
+  const cancelModal = () => {
+    setCancel(false)
+  }
+  const closeReclaimModal = () => {
+    setReclaimModal(false)
+  }
+
+  const modalClose = () => {
+    setCancelAuctionModal(false)
+  }
+
+  const reClaimApi = () => {
+    const url = `${NEW_BASE_URL}/auction/${auctionId}/reclaim-nft`
+    sendRequest({
+      url,
+      method: 'GET'
+    })
+      .then((response) => {
+        // console.log("===>", response);
+      })
+  }
+
+  const cancelAuctionApi = () => {
+    const url = `${NEW_BASE_URL}/auction-session/cancel/${auctionId}`
+    sendRequest({
+      url,
+      method: 'POST'
+    })
+      .then((response) => {
+        // console.log("Cancel Auction===>", response);
+      })
+  }
+  const editPriceApi = () => {
+    const url = `${NEW_BASE_URL}/sale-nft?saleId=${saleId}`
+    sendRequest({
+      url,
+      method: 'PUT',
+      params: {
+        price: Number(price)
+      }
+    })
+      .then((response) => {
+        console.log("Edit Price===>", response);
+      })
+  }
+
+  const editPriceModal = () => {
+    const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
+    // console.log("tokenName",tokenName);
+    return (
+      <View style={styles.modalContainer}>
+        <Modal isVisible={priceEdit}>
+          <View style={styles.editPriceContainner}>
+
+            <View style={styles.editPriceHeaderView}>
+              <Text style={styles.editPriceText}>{translate('common.editPrice')}</Text>
+              <TouchableOpacity onPress={() => { setPriceEdit(false) }}>
+                <Image source={cancelImg} style={styles.cancelButton} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputWrapperView}>
+              <View style={styles.inputFieldView}>
+                <TextInput style={styles.inputField} />
+              </View>
+              <View style={styles.usdtView}>
+                <Text style={styles.usdtText}>{tokenName}</Text>
+              </View>
+            </View>
+
+            <View style={styles.editPriceGroupBButtonView}>
+              <GroupButton
+                leftText={translate('common.change')}
+                leftDisabled={false}
+                leftLoading={false}
+                onLeftPress={() => { editPriceApi() }}
+                rightStyle={styles.editPriceGroupButton}
+                rightTextStyle={styles.editPriceGroupButtonText}
+                rightHide
+              />
+            </View>
+
+          </View>
+        </Modal>
+      </View>
+    )
+  }
+
   //================== Render Auction Time Function ==================
   // const renderAuctionTimeRemain = () => {
   //   return (
@@ -768,6 +874,124 @@ const DetailScreen = ({navigation, route}) => {
   //     </View>
   //   )
   // }
+  const openModal = () => {
+    // setModalVisible(true)
+    // showModal()
+  }
+  const closeModal = () => {
+    setModalVisible(false)
+    // showModal()
+  }
+
+  const ModalBody = () => {
+    // console.log("===>",detailNFT);
+    const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
+    return (
+      // <Modal
+      //   isVisible={isVisible}
+      //   // backdropColor="#B4B3DB"
+      //   // backdropOpacity={0.8}
+      //   onBackdropPress={() => setVisible(false)}
+      //   // animationIn="zoomInDown"
+      //   // animationOut="zoomOutUp"
+      //   // animationInTiming={600}
+      //   // animationOutTiming={600}
+      //   // backdropTransitionInTiming={600}
+      //   // backdropTransitionOutTiming={600}
+      //   onRequestClose={() => { setVisible(false) }}>
+      //   <View style={{backgroundColor:Colors.white, }}>
+
+      //     <Text style={styles.modalTitle}>
+      //       {translate('wallet.common.selectLanguage')}
+      //     </Text>
+      //     <View style={{ marginTop: hp('3%') }}>
+
+      //     </View>
+      //   </View>
+      // </Modal>
+      <>
+        {modalVisible ?
+
+          <View style={styles.modalBody}>
+            <Modal isVisible={modalVisible}>
+
+              <View style={styles.mainview}>
+                <View style={styles.headerview}>
+                  <Text style={styles.bidtext}>{translate('common.makeAnOffer')}</Text>
+                  <TouchableOpacity onPress={() => { closeModal() }}>
+                    <Image style={styles.headerCancelButton} source={Images.cancelIcon} />
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.itemText}>{translate('common.item')}</Text>
+                <View style={styles.userView}>
+                  <View style={styles.imageTextView}>
+                    <Image
+                      style={styles.userImage}
+                      source={Images.pIcon}
+                    />
+
+                    <Text style={styles.amountText}>461</Text>
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputFieldView}>
+                      <TextInput style={styles.curancyInput} />
+                    </View>
+                    <View style={styles.busdText}>
+                      <View style={styles.currencyView}>
+                        <Text >{tokenName}</Text>
+                        <Image style={{ tintColor: Colors.GREY1, marginLeft: SIZE(10) }} source={Images.downArrow} />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.breakLine} />
+                <Text style={styles.expirationText}>{translate('common.offerExpiration')}</Text>
+                <View style={styles.numberView}>
+                  <Text style={styles.dateText}>09/19/2022 12:56 pm</Text>
+                </View>
+                <Text style={styles.feeText}>{translate('common.fee')}</Text>
+                <View style={styles.royaltyFeeView}>
+                  <Text>Royalty fee</Text>
+                  <Text style={styles.priceInPercent}>0 ALIA (0%)</Text>
+                </View>
+                <View style={styles.serviceFeeView}>
+                  <Text>Service fee</Text>
+                  <Text style={styles.priceInPercent}>0 ALIA (2.5%)</Text>
+                </View>
+                <View style={styles.breakLine} />
+                <View style={styles.willPayView}>
+                  <Text>You will pay</Text>
+                  <Text style={styles.nftPrice}>0 ALIA</Text>
+                </View>
+                <View style={styles.breakLine} />
+                <View style={styles.footerView}>
+                  <Image style={styles.checkboxImg} source={Images.unCheckIcon} />
+                  {/* <CheckBox /> */}
+                  <Text style={styles.footerText}>By checking this box,I agree to Xanalia's<Text style={styles.termsText}> Terms of Serevices</Text>
+                  </Text>
+                </View>
+                <View style={styles.groupButtonView}>
+                  <GroupButton
+                    leftText={'Confirm'}
+                    leftDisabled={false}
+                    leftLoading={false}
+                    onLeftPress={() => { }}
+                    rightText={'Top Up'}
+                    rightDisabled={false}
+                    rightLoading={false}
+                    onrightPress={() => { }}
+                    rightStyle={styles.rightGroupButton}
+                    rightTextStyle={styles.rightGroupButtonText}
+                  />
+                </View>
+              </View>
+            </Modal>
+          </View>
+          : null}
+      </>
+    )
+  }
 
   //================== Render Group Button Function ==================
 
@@ -788,14 +1012,14 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const NotOnSaleAction = () => {
-    if (compareAddress(wallet?.address, ownerAddress)) {
+    if (compareAddress(walletAddress, ownerAddress)) {
       return (
         <View style={styles.buybutton}>
           <GroupButton
             leftText={translate('common.sell')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => {}}
+            onLeftPress={() => { }}
             rightHide
           />
         </View>
@@ -807,7 +1031,7 @@ const DetailScreen = ({navigation, route}) => {
           leftText={translate('common.makeOffer')}
           leftDisabled={false}
           leftLoading={false}
-          onLeftPress={() => {}}
+          onLeftPress={() => { }}
           rightHide
         />
       </View>
@@ -815,18 +1039,19 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const OnFixPriceAction = () => {
-    if (compareAddress(wallet?.address, ownerAddress)) {
+    if (compareAddress(walletAddress, ownerAddress)) {
       return (
         <View style={styles.buybutton}>
           <GroupButton
             leftText={translate('common.cancelResell')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => {}}
+            onLeftPress={() => { setCancel(true) }}
+
             rightText={translate('common.editPrice')}
             rightDisabled={false}
             rightLoading={false}
-            onrightPress={() => {}}
+            onRightPress={() => { setPriceEdit(true) }}
             rightStyle={styles.rightButton}
             rightTextStyle={styles.rightButtonText}
           />
@@ -839,11 +1064,11 @@ const DetailScreen = ({navigation, route}) => {
           leftText={translate('common.buy')}
           leftDisabled={false}
           leftLoading={false}
-          onLeftPress={() => {}}
+          onLeftPress={() => { }}
           rightText={translate('common.makeOffer')}
           rightDisabled={false}
           rightLoading={false}
-          onrightPress={() => {}}
+          onRightPress={() => { setModalVisible(!modalVisible) }}
           rightStyle={styles.rightButton}
           rightTextStyle={styles.rightButtonText}
         />
@@ -851,7 +1076,7 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
-  const BidInfo = ({status}) => {
+  const BidInfo = ({ status }) => {
     const [isWaiting, setIsWaiting] = useState(false);
     const auction = detailNFT?.saleData?.auction;
     const startTime = auction?.startTime;
@@ -866,18 +1091,25 @@ const DetailScreen = ({navigation, route}) => {
 
     const endCoundownTime = (finalTime - nowTimeStamp) / 1000;
 
+    const callbackCoundown = () => {
+      setIsWaiting(true)
+      setTimeout(() => {
+        getNFTDetails()
+      }, 50000)
+    }
+
     const CountdownTime = () => {
       return (
         <View>
           <CountDown
             size={18}
             until={endCoundownTime}
-            onFinish={() => {}}
+            onFinish={() => callbackCoundown()}
             digitStyle={styles.countDownDigit}
             digitTxtStyle={styles.countDownText}
             separatorStyle={styles.countDownText}
             timeToShow={['D', 'H', 'M', 'S']}
-            timeLabels={{d: null, h: null, m: null, s: null}}
+            timeLabels={{ d: null, h: null, m: null, s: null }}
             showSeparator
           />
         </View>
@@ -925,7 +1157,7 @@ const DetailScreen = ({navigation, route}) => {
     };
 
     return (
-      <View style={{paddingTop: 5, paddingBottom: 10}}>
+      <View style={{ paddingTop: 5, paddingBottom: 10 }}>
         {renderCoundown()}
         {auction?.highestBidder ? (
           <Text>
@@ -941,27 +1173,28 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.ON_AUCTION} />
-        {compareAddress(wallet?.address, ownerAddress) ? (
-          <View style={CommonStyles.flexRow}>
+        {compareAddress(walletAddress, ownerAddress)
+          ?
+          (<View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.cancelAuction')}
               leftDisabled={false}
               leftLoading={false}
-              onLeftPress={() => {}}
+              onLeftPress={() => { setCancelAuctionModal(true) }}
               rightHide
             />
           </View>
-        ) : (
-          <View style={CommonStyles.flexRow}>
-            <GroupButton
-              leftText={translate('common.placeABid')}
-              leftDisabled={false}
-              leftLoading={false}
-              onLeftPress={() => {}}
-              rightHide
-            />
-          </View>
-        )}
+          ) : (
+            <View style={CommonStyles.flexRow}>
+              <GroupButton
+                leftText={translate('common.placeABid')}
+                leftDisabled={false}
+                leftLoading={false}
+                onLeftPress={() => { }}
+                rightHide
+              />
+            </View>
+          )}
       </View>
     );
   };
@@ -970,28 +1203,31 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.CANCEL_AUCTION} />
-        {compareAddress(wallet?.address, ownerAddress) ? (
-          <View style={CommonStyles.flexRow}>
+        {compareAddress(walletAddress, ownerAddress)
+          ?
+          (<View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.reclaimNFT')}
               leftDisabled={false}
               leftLoading={false}
-              onLeftPress={() => {}}
+              // onLeftPress={() => { setVisible(true), openModal() }}
+              onLeftPress={() => { setReclaimModal(true) }}
               rightHide
             />
           </View>
-        ) : (
-          <View style={CommonStyles.flexRow}>
-            <GroupButton
-              leftText={translate('common.auctionEnd')}
-              leftDisabled={false}
-              leftLoading={false}
-              onLeftPress={() => {}}
-              rightHide
-            />
-          </View>
-        )}
-      </View>
+          ) : (
+            <View style={CommonStyles.flexRow}>
+              <GroupButton
+                leftText={translate('common.auctionEnd')}
+                leftDisabled={true}
+                leftLoading={false}
+                onLeftPress={() => { }}
+                rightHide
+              />
+            </View>)
+        }
+        {/* {ModalBody()} */}
+      </View >
     );
   };
 
@@ -999,16 +1235,17 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.UPCOMMING_AUCTION} />
-        {compareAddress(wallet?.address, ownerAddress) ? (
-          <GroupButton
+        {compareAddress(walletAddress, ownerAddress) ?
+          (<GroupButton
             leftText={translate('common.cancelAuction')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => {}}
+            onLeftPress={() => { }}
             rightHide
           />
-        ) : null}
-      </View>
+          ) : null
+        }
+      </View >
     );
   };
 
@@ -1102,16 +1339,16 @@ const DetailScreen = ({navigation, route}) => {
       history === 'bid'
         ? sellDetails
         : history === 'offers'
-        ? offerList
-        : tradingTableData;
+          ? offerList
+          : tradingTableData;
     return (
       <NFTDetailDropdown
         title={
           history === 'bid'
             ? translate('wallet.common.bidHistory')
             : history === 'offers'
-            ? 'Offers'
-            : translate('common.tradingHistory')
+              ? 'Offers'
+              : translate('common.tradingHistory')
         }
         containerChildStyles={{
           height:
@@ -1120,19 +1357,19 @@ const DetailScreen = ({navigation, route}) => {
                 ? hp(28)
                 : hp(19)
               : listData?.length < 5
-              ? hp(16) +
+                ? hp(16) +
                 hp(4) *
-                  (history === 'trading' && listData.length <= 3
-                    ? 3
-                    : listData?.length)
-              : hp(35.7),
+                (history === 'trading' && listData.length <= 3
+                  ? 3
+                  : listData?.length)
+                : hp(35.7),
         }}
         icon={
           history === 'bid'
             ? historyImg
             : history === 'offers'
-            ? tradingImg
-            : detailsImg
+              ? tradingImg
+              : detailsImg
         }>
         {history === 'trading' && (
           <Filters
@@ -1146,7 +1383,7 @@ const DetailScreen = ({navigation, route}) => {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           // nestedScrollEnabled={true}
-          style={{marginVertical: hp(2)}}>
+          style={{ marginVertical: hp(2) }}>
           <Table borderStyle={styles.cellBorderStyle}>
             <Row
               data={
@@ -1163,18 +1400,18 @@ const DetailScreen = ({navigation, route}) => {
             {history === 'bid'
               ? sellDetails?.length > 0
                 ? sellDetails?.map((rowData, rowIndex) => {
-                    return (
-                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                        {rowData?.map((cellData, cellIndex) => {
-                          return renderCell(cellIndex, cellData, rowIndex);
-                        })}
-                      </TableWrapper>
-                    );
-                  })
+                  return (
+                    <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
+                      {rowData?.map((cellData, cellIndex) => {
+                        return renderCell(cellIndex, cellData, rowIndex);
+                      })}
+                    </TableWrapper>
+                  );
+                })
                 : noDataRender()
               : history === 'offers'
-              ? offerList?.length > 0
-                ? offerList?.map((rowData, rowIndex) => {
+                ? offerList?.length > 0
+                  ? offerList?.map((rowData, rowIndex) => {
                     let temprowData = rowData.slice(0, 4);
                     let iconUri = rowData.find((e, i) => i === 4);
                     return (
@@ -1190,46 +1427,46 @@ const DetailScreen = ({navigation, route}) => {
                       </TableWrapper>
                     );
                   })
-                : noDataRender()
-              : tradingTableData.length > 0
-              ? tradingTableData?.map((rowData, rowIndex) => {
-                  return (
-                    <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                      {rowData?.map((cellData, cellIndex) => {
-                        let wid;
-                        if (cellIndex === 0) {
-                          wid = 200;
-                        }
-                        if (cellIndex === 1) {
-                          wid = 130;
-                        }
-                        if (cellIndex === 2) {
-                          wid = 180;
-                        }
-                        if (cellIndex === 3) {
-                          wid = 180;
-                        }
-                        if (cellIndex === 4) {
-                          wid = 200;
-                        }
-                        return (
-                          <Cell
-                            key={cellIndex}
-                            data={
-                              (cellIndex == 2 || cellIndex == 3) &&
-                              cellData !== 'Null Address'
-                                ? renderAddress(cellData)
-                                : cellData
-                            }
-                            textStyle={styles.text}
-                            width={wid}
-                          />
-                        );
-                      })}
-                    </TableWrapper>
-                  );
-                })
-              : noDataRender(history)}
+                  : noDataRender()
+                : tradingTableData.length > 0
+                  ? tradingTableData?.map((rowData, rowIndex) => {
+                    return (
+                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
+                        {rowData?.map((cellData, cellIndex) => {
+                          let wid;
+                          if (cellIndex === 0) {
+                            wid = 200;
+                          }
+                          if (cellIndex === 1) {
+                            wid = 130;
+                          }
+                          if (cellIndex === 2) {
+                            wid = 180;
+                          }
+                          if (cellIndex === 3) {
+                            wid = 180;
+                          }
+                          if (cellIndex === 4) {
+                            wid = 200;
+                          }
+                          return (
+                            <Cell
+                              key={cellIndex}
+                              data={
+                                (cellIndex == 2 || cellIndex == 3) &&
+                                  cellData !== 'Null Address'
+                                  ? renderAddress(cellData)
+                                  : cellData
+                              }
+                              textStyle={styles.text}
+                              width={wid}
+                            />
+                          );
+                        })}
+                      </TableWrapper>
+                    );
+                  })
+                  : noDataRender(history)}
           </Table>
         </ScrollView>
       </NFTDetailDropdown>
@@ -1240,7 +1477,7 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <TouchableOpacity
         disabled={!cellData}
-        onPress={() => navigation.push('ArtistDetail', {id: cellData})}>
+        onPress={() => navigation.push('ArtistDetail', { id: cellData })}>
         <Text numberOfLines={1} style={[styles.text, styles.themeColor]}>
           {formatAddress(cellData)}
         </Text>
@@ -1255,7 +1492,7 @@ const DetailScreen = ({navigation, route}) => {
         data={
           index === 0 && iconUri ? (
             <View style={CommonStyles.rowAlign}>
-              <Image style={styles.networkIcon} source={{uri: iconUri}} />
+              <Image style={styles.networkIcon} source={{ uri: iconUri }} />
               <Text>{cellData}</Text>
             </View>
           ) : index === 1 ? (
@@ -1321,10 +1558,10 @@ const DetailScreen = ({navigation, route}) => {
     return typeof item?.collection === 'object'
       ? item?.collection?.address
       : item?.collection
-      ? item?.collection?.substring(0, 5) +
+        ? item?.collection?.substring(0, 5) +
         ' ... ' +
         item.collection.slice([item.collection.length - 4])
-      : MarketContractAddress;
+        : MarketContractAddress;
   };
 
   //===================== Render Creator NFTDetailDropdown Function =======================
@@ -1342,7 +1579,7 @@ const DetailScreen = ({navigation, route}) => {
         </TouchableOpacity>
 
         {detailNFT?.creator?.description ? (
-          <TextView style={[styles.rowText, {marginTop: SIZE(10)}]}>
+          <TextView style={[styles.rowText, { marginTop: SIZE(10) }]}>
             {detailNFT?.creator?.description}
           </TextView>
         ) : null}
@@ -1366,7 +1603,7 @@ const DetailScreen = ({navigation, route}) => {
         {detailNFT?.creator?.instagramLink ? (
           <TouchableOpacity
             hitSlop={hitSlop}
-            style={{marginRight: 6}}
+            style={{ marginRight: 6 }}
             onPress={() => Linking.openURL(detailNFT?.creator?.instagramLink)}>
             <InstagramIcon />
           </TouchableOpacity>
@@ -1413,8 +1650,8 @@ const DetailScreen = ({navigation, route}) => {
             key === ''
               ? styles.rowText
               : key === 'blockChainType'
-              ? [styles.rowText, {textTransform: 'uppercase'}]
-              : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
+                ? [styles.rowText, { textTransform: 'uppercase' }]
+                : [styles.rowTextcontractaddress, { color: Colors.themeColor }]
           }
           ellipsizeMode="middle"
           numberOfLines={1}>
@@ -1431,7 +1668,7 @@ const DetailScreen = ({navigation, route}) => {
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
         icon={detailsImg}
-        containerStyles={{width: wp(100)}}
+        containerStyles={{ width: wp(100) }}
         containerChildStyles={styles.containerChildStyles}>
         {moreData.length !== 0 ? (
           <>
@@ -1446,7 +1683,7 @@ const DetailScreen = ({navigation, route}) => {
               leftText={translate('common.viewAllCollection')}
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
-              leftTextStyle={{color: Colors.BLUE4}}
+              leftTextStyle={{ color: Colors.BLUE4 }}
               onLeftPress={() =>
                 navigation.push('CollectionDetail', {
                   networkName: detailNFT?.network?.networkName,
@@ -1466,7 +1703,7 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <NFTItem
         item={item}
@@ -1654,8 +1891,8 @@ const DetailScreen = ({navigation, route}) => {
   let ownerName = ownerDataN?.name?.trim()
     ? ownerDataN.name
     : ownerDataN?.address?.includes('0x')
-    ? ownerDataN.address.substring(0, 6)
-    : '---';
+      ? ownerDataN.address.substring(0, 6)
+      : '---';
   // ownerDataN && typeof ownerDataN === 'object'
   //   ? ownerDataN?.role === 'crypto'
   //     ? ownerDataN?.title?.trim()
@@ -1698,8 +1935,8 @@ const DetailScreen = ({navigation, route}) => {
   let creatorName = artistDetail?.name?.trim()
     ? artistDetail.name
     : artistDetail?.address?.includes('0x')
-    ? artistDetail.address.substring(0, 6)
-    : '---';
+      ? artistDetail.address.substring(0, 6)
+      : '---';
   // artistDetail && typeof artistDetail === 'object'
   //   ? artistDetail?.role === 'crypto'
   //     ? artistDetail?.title?.trim()
@@ -1723,8 +1960,8 @@ const DetailScreen = ({navigation, route}) => {
   let collectionName = collectCreat?.name
     ? collectCreat.name
     : collectCreat?.address?.includes('0x')
-    ? collectCreat.address.substring(0, 6)
-    : '---';
+      ? collectCreat.address.substring(0, 6)
+      : '---';
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   // const checkNFTOnAuction = () => {
@@ -2042,19 +2279,19 @@ const DetailScreen = ({navigation, route}) => {
     let payload =
       history === 'bid'
         ? {
-            url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
-            method: 'GET',
-          }
+          url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+          method: 'GET',
+        }
         : {
-            url: `${NEW_BASE_URL}/sale-nft/trading-history`,
-            method: 'POST',
-            data: {
-              page: 1,
-              limit: 30,
-              nftId: nftId,
-              sort,
-            },
-          };
+          url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+          method: 'POST',
+          data: {
+            page: 1,
+            limit: 30,
+            nftId: nftId,
+            sort,
+          },
+        };
     sendRequest(payload)
       .then(res => {
         console.log('🚀 ~ file: detail.js ~ line 1656 ~ ~ res', history, res);
@@ -2721,8 +2958,8 @@ const DetailScreen = ({navigation, route}) => {
         seller && seller.includes('0x')
           ? seller.substring(0, 6)
           : ownerDataN._id === seller
-          ? ownerDataN.username
-          : seller;
+            ? ownerDataN.username
+            : seller;
     }
     return sellerName;
   };
@@ -3053,7 +3290,7 @@ const DetailScreen = ({navigation, route}) => {
         if (
           saleDataAuction &&
           Number(saleDataAuction.startPrice) ===
-            Number(saleDataAuction.highestPrice)
+          Number(saleDataAuction.highestPrice)
         ) {
           return 'min_bid';
         }
@@ -3100,11 +3337,11 @@ const DetailScreen = ({navigation, route}) => {
   const onProfile = ownerStatus => {
     if (ownerStatus) {
       if (ownerN) {
-        navigation.push('ArtistDetail', {id: ownerN});
+        navigation.push('ArtistDetail', { id: ownerN });
       }
     } else {
       if (artist) {
-        navigation.push('ArtistDetail', {id: artist});
+        navigation.push('ArtistDetail', { id: artist });
       }
     }
   };
@@ -3209,9 +3446,41 @@ const DetailScreen = ({navigation, route}) => {
             {renderBidNTradingHistory('offers')}
             {renderBidNTradingHistory('trading')}
             {renderMoreCollection()}
-          </ScrollView>
-        </AppBackground>
-      </SafeAreaView>
+            {editPriceModal()}
+            {ModalBody()}
+            <ShowModal
+              title={translate('common.cancelAuction')}
+              description={translate('common.areYouWantCancelNFT')}
+              isVisible={cancelAuctionModal}
+              closeModal={modalClose}
+              leftButtonTitle={translate('common.Cancel')}
+              rightButtonTitle={translate('common.Confirm')}
+              cancelAuctionApi={() => cancelAuctionApi()}
+              cancelAuction={true}
+            />
+            <ShowModal
+              title={translate('common.reclaimNFT')}
+              description={translate('common.areYouWantReclaimNFT')}
+              isVisible={reclaimModal}
+              closeModal={() => { closeReclaimModal(), getNFTDetails() }}
+              reClaimApi={() => reClaimApi()}
+              leftButtonTitle={translate('common.Cancel')}
+              rightButtonTitle={translate('common.Confirm')}
+              reclaim={true}
+            />
+            <ShowModal
+              title={translate('common.CanCel')}
+              description={translate('common.cancellingYourlistingWillUnPublish')}
+              isVisible={cancel}
+              closeModal={cancelModal}
+              cancelModalConfirm={() => cancelModalConfirm()}
+              leftButtonTitle={translate('common.Cancel')}
+              rightButtonTitle={translate('common.Confirm')}
+              cancel={true}
+            />
+          </ScrollView >
+        </AppBackground >
+      </SafeAreaView >
       {/* {renderPaymentMethod()}
       {renderPaymentNow()} 
       {renderTabModal()}
