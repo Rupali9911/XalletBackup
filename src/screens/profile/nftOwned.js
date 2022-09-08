@@ -90,6 +90,7 @@ const NFTOwned = ({ route, navigation }) => {
                     <Loader /> :
                     MyNFTReducer.myList?.length !== 0 ?
                         <FlatList
+                            key={2}
                             data={MyNFTReducer?.myList}
                             horizontal={false}
                             numColumns={2}

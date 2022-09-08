@@ -1,20 +1,21 @@
 import _ from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { TouchableOpacity, SafeAreaView, Keyboard, Platform, Text, PermissionsAndroid } from 'react-native';
+import { TouchableOpacity, SafeAreaView, Keyboard, Text, Button, TextInput, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ActionSheet from 'react-native-actionsheet';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Field, reduxForm } from 'redux-form';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector, useDispatch } from 'react-redux';
+import Modal from 'react-native-modal'
 
 import { CenterWrap, SpaceView, BorderView, RowWrap } from 'src/styles/common.styles';
-import { SIZE } from 'src/constants';
+import { SIZE, SVGS } from 'src/constants';
 import { C_Image, LimitableInput } from 'src/components';
 import { Avatar, ChangeAvatar, DoneText } from './styled';
 import { translate } from '../../walletUtils';
 import AppBackground from '../../components/appBackground';
-import { AppHeader } from '../../components';
+import { AppHeader, GroupButton } from '../../components';
 import {
   maxLength13,
   maxLength20,
@@ -31,7 +32,7 @@ import {
   validateZoomLinkURL,
   validateUserName
 } from '../../utils';
-import { updateProfile, updateProfileImage } from '../../store/reducer/userReducer';
+import userReducer, { updateProfile, updateProfileImage, updateUserData } from '../../store/reducer/userReducer';
 import { hp } from '../../constants/responsiveFunct';
 import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
 import { openSettings } from 'react-native-permissions';
@@ -40,11 +41,19 @@ import { responsiveFontSize as RF } from "../../common/responsiveFunction";
 import fonts from "../../res/fonts";
 import colors from "../../res/colors";
 import { View } from "native-base";
+import Colors from '../../constants/Colors';
+import { COLORS } from '../../constants';
+import ButtonInputContainer from '../../components/buttonInputContainer'
+import sendRequest from '../../helpers/AxiosApiRequest';
+import { NEW_BASE_URL } from '../../common/constants';
+// import { TextInput } from 'react-native-paper';
+const { TwitterIconNew, InstagramIcon, ArtistSvg, ArtistSvgI } = SVGS;
 
 function Profile(props) {
   const { navigation, handleSubmit } = props;
 
   const { UserReducer } = useSelector(state => state);
+  // console.log(UserReducer.userData, 'data from reducer edit')
   const isNonCrypto = useSelector(state => state.UserReducer?.userData?.user?.isNonCrypto);
   // const [firstName, setFirstName] = useState(UserReducer.userData.user?.firstName);
   // const [errfirstname, setErrFirstname] = useState(false);
@@ -60,123 +69,171 @@ function Profile(props) {
   // const [errZoomLink, setErrZoomLink] = useState(false);
   // const [title, setTitle] = useState(UserReducer.userData.user.title);
   // const [errTitle, setErrTitle] = useState(false);
-  const [photo, setPhoto] = useState({ uri: UserReducer.userData.user.profile_image });
-  const [username, setUsername] = useState(isNonCrypto === 0 ? UserReducer.userData.user.title : UserReducer.userData.user.username);
+  const [username, setUsername] = useState(isNonCrypto === 0 ? UserReducer.userData.title : UserReducer.userData.userName);
   const [errUsername, setErrUsername] = useState(false);
-  const [email, setEmail] = useState(UserReducer.userData.user.email);
+  const [email, setEmail] = useState(UserReducer.userData.email);
   const [errEmail, setErrEmail] = useState(false);
-  const [website, setWebsite] = useState(UserReducer.userData.user.links?.website);
+  const [website, setWebsite] = useState(UserReducer.userData.website);
   const [errWebsite, setErrWebsite] = useState(false);
-  const [discord, setDiscord] = useState(UserReducer.userData.user.links?.discord);
+  const [discord, setDiscord] = useState(UserReducer.userData.discordSite);
   const [errDiscord, setErrDiscord] = useState(false);
-  const [twitter, setTwitter] = useState(UserReducer.userData.user.links?.twitter);
+  const [twitter, setTwitter] = useState(UserReducer.userData.twitterSite);
   const [errTwitter, setErrTwitter] = useState(false);
-  const [youtube, setYoutube] = useState(UserReducer.userData.user.links?.youtube);
+  const [youtube, setYoutube] = useState(UserReducer.userData.youtubeSite);
   const [errYoutube, setErrYoutube] = useState(false);
-  const [instagram, setInstagram] = useState(UserReducer.userData.user.links?.instagram);
+  const [instagram, setInstagram] = useState(UserReducer.userData.instagramSite);
   const [errInstagram, setErrInstagram] = useState(false);
-  const [about, setAbout] = useState(UserReducer.userData.user.about);
+  const [about, setAbout] = useState(UserReducer.userData.about);
   const [errAbout, setErrAbout] = useState(false);
-  const actionSheetRef = useRef(null);
+  const [userData,setUserData] = useState()
   //const [conformpermission,setConformpermission]=useState(true)
   const dispatch = useDispatch();
 
   const [showPermission, setShowPermission] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
 
+  let id = UserReducer.userData.userWallet.address
 
-  const OPEN_CAMERA = 0;
-  const OPEN_GALLERY = 1;
-
-  const selectActionSheet = async index => {
-    const options = {
-      title: 'Select Your Photo',
-      storageOptions: {
-        skipBackup: true,
-        cropping: true,
-        privateDirectory: true
-      },
-      quality: 0.5,
-    };
-
-    if (index === OPEN_CAMERA) {
-
-      ImagePicker.openCamera({
-        height: 512,
-        width: 512,
-        cropping: true
-      }).then(image => {
-        console.log('Response from camera', image)
-        if (image.height <= 512 && image.width <= 512) {
-          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename ? image.filename : image.path.substring(image.path.lastIndexOf('/') + 1)
-          let uri = Platform.OS === 'android' ? image.path : image.sourceURL
-
-          let temp = {
-            path: image.path,
-            uri: uri,
-            type: image.mime,
-            fileName: filename,
-            image: image
-          }
-          setPhoto(temp)
-        }
-      }).catch(async e => {
-        console.log('Error from openCamera', e, e.code)
-        if (e.code && (e.code === 'E_NO_CAMERA_PERMISSION' || e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR')) {
-          // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-          // if (isGranted===false) {
-          confirmationAlert(
-            translate("wallet.common.cameraPermissionHeader"),
-            translate("wallet.common.cameraPermissionMessage"),
-            translate("common.Cancel"),
-            translate("wallet.common.settings"),
-            () => openSettings(),
-            () => null
-          )
-          // }
-        }
-      })
-    } else if (index === OPEN_GALLERY) {
-      ImagePicker.openPicker({
-        mediaType: "photo",
-        height: 512,
-        width: 512,
-        cropping: true
-      }).then(image => {
-        console.log('Response from storage', image)
-
-        if (image.height <= 512 && image.width <= 512) {
-
-          let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
-
-          let uri = Platform.OS === 'android' ? image.path : image.sourceURL
-
-          let temp = {
-            path: image.path,
-            uri: uri,
-            type: image.mime,
-            fileName: filename,
-            image: image
-          }
-          setPhoto(temp)
-        }
-      }).catch(async e => {
-        console.log('Error from openPicker', e)
-        if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
-          // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
-          // if (isGranted === false) {
-          confirmationAlert(
-            translate("wallet.common.storagePermissionHeader"),
-            translate("wallet.common.storagePermissionMessage"),
-            translate("common.Cancel"),
-            translate("wallet.common.settings"),
-            () => openSettings(),
-            () => null
-          )
-          // }
-        }
-      })
-    }
+  console.log(UserReducer?.userData,'data from reducer')
+  
+  const renderArtistModal = () => {
+    return (
+      <View style={{ flex: 1 }}>
+        <Modal
+          backdropColor="#000000"
+          backdropOpacity={0.6}
+          onBackdropPress={() => {
+            setIsVisible(false);
+          }}
+          isVisible={isVisible}
+          transparent={true}>
+          <View style={{ paddingHorizontal: SIZE(54), paddingVertical: SIZE(30), backgroundColor: COLORS.WHITE1, alignItems: 'center', borderRadius: SIZE(7) }}>
+            <ArtistSvg />
+            <Text style={{ textAlign: 'center', marginVertical: SIZE(15), fontSize: SIZE(24), fontWeight: '700' }}>
+              Become an Artist
+            </Text>
+            <Text style={{ lineHeight: SIZE(17), fontSize: SIZE(14), fontFamily: 'Arial', textAlign: 'center', marginBottom: SIZE(12) }}>
+              You are only a form away from becoming an Artist on Xanalia. After winning the Artist title, you will be given a rare Blue Verification Badge that is only available to verified Artists.
+            </Text>
+            <Text style={{ lineHeight: SIZE(17), fontSize: SIZE(14), fontFamily: 'Arial', textAlign: 'center', marginBottom: SIZE(28) }}>
+              All applications will go through several thorough screening rounds from Xanalia team to ensure the authencity of the Artist.
+            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text>
+                <ArtistSvgI />
+              </Text>
+              <Text style={{ lineHeight: SIZE(17), marginRight: 19, fontSize: SIZE(14), fontFamily: 'Arial', textAlign: 'center', marginBottom: SIZE(22), color: COLORS.themeColor }}>
+                You must input a username, upload a profile picture, verify your email address and Twitter account first.
+              </Text>
+            </View>
+            <GroupButton
+              style={{ width: '120%' }}
+              onLeftPress={() => setIsVisible(false)}
+              leftStyle={{ backgroundColor: '#2280e1' }}
+              leftTextStyle={{ fontWeight: '600', fontSize: SIZE(14) }}
+              leftText='OK'
+              rightHide
+            />
+          </View>
+        </Modal>
+      </View>
+    )
   }
+
+
+  // const OPEN_CAMERA = 0;
+  // const OPEN_GALLERY = 1;
+
+  // const selectActionSheet = async index => {
+  //   const options = {
+  //     title: 'Select Your Photo',
+  //     storageOptions: {
+  //       skipBackup: true,
+  //       cropping: true,
+  //       privateDirectory: true
+  //     },
+  //     quality: 0.5,
+  //   };
+
+  //   if (index === OPEN_CAMERA) {
+
+  //     ImagePicker.openCamera({
+  //       height: 512,
+  //       width: 512,
+  //       cropping: true
+  //     }).then(image => {
+  //       console.log('Response from camera', image)
+  //       if (image.height <= 512 && image.width <= 512) {
+  //         let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename ? image.filename : image.path.substring(image.path.lastIndexOf('/') + 1)
+  //         let uri = Platform.OS === 'android' ? image.path : image.sourceURL
+
+  //         let temp = {
+  //           path: image.path,
+  //           uri: uri,
+  //           type: image.mime,
+  //           fileName: filename,
+  //           image: image
+  //         }
+  //         setPhoto(temp)
+  //       }
+  //     }).catch(async e => {
+  //       console.log('Error from openCamera', e, e.code)
+  //       if (e.code && (e.code === 'E_NO_CAMERA_PERMISSION' || e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR')) {
+  //         // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+  //         // if (isGranted===false) {
+  //         confirmationAlert(
+  //           translate("wallet.common.cameraPermissionHeader"),
+  //           translate("wallet.common.cameraPermissionMessage"),
+  //           translate("common.Cancel"),
+  //           translate("wallet.common.settings"),
+  //           () => openSettings(),
+  //           () => null
+  //         )
+  //         // }
+  //       }
+  //     })
+  //   } else if (index === OPEN_GALLERY) {
+  //     ImagePicker.openPicker({
+  //       mediaType: "photo",
+  //       height: 512,
+  //       width: 512,
+  //       cropping: true
+  //     }).then(image => {
+  //       console.log('Response from storage', image)
+
+  //       if (image.height <= 512 && image.width <= 512) {
+
+  //         let filename = Platform.OS === 'android' ? image.path.substring(image.path.lastIndexOf('/') + 1) : image.filename
+
+  //         let uri = Platform.OS === 'android' ? image.path : image.sourceURL
+
+  //         let temp = {
+  //           path: image.path,
+  //           uri: uri,
+  //           type: image.mime,
+  //           fileName: filename,
+  //           image: image
+  //         }
+  //         setPhoto(temp)
+  //       }
+  //     }).catch(async e => {
+  //       console.log('Error from openPicker', e)
+  //       if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
+  //         // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
+  //         // if (isGranted === false) {
+  //         confirmationAlert(
+  //           translate("wallet.common.storagePermissionHeader"),
+  //           translate("wallet.common.storagePermissionMessage"),
+  //           translate("common.Cancel"),
+  //           translate("wallet.common.settings"),
+  //           () => openSettings(),
+  //           () => null
+  //         )
+  //         // }
+  //       }
+  //     })
+  //   }
+  // }
 
   const onSave = () => {
     Keyboard.dismiss()
@@ -301,50 +358,30 @@ function Profile(props) {
 
     const req_body = isNonCrypto === 0 ?
       {
+        description: about,
+        discordSite: discord,
+        // crypto: true,
+        email: email,
+        instagramSite: instagram,
+        twitterSite: twitter,
         title: username,
-        crypto: true,
-        email,
-        website,
-        discord,
-        twitter,
-        youtube,
-        instagram,
-        about
+        website: website,
+        youtubeSite: youtube,
       } :
       {
-        username,
-        crypto: false,
-        email,
-        website,
-        discord,
-        twitter,
-        youtube,
-        instagram,
-        about
-        // firstName,
-        // lastName,
-        // address,
-        // phoneNumber,
-        // title,
-        // facebook,
-        // zoomLink,
+        description: about,
+        discordSite: discord,
+        // crypto: true,
+        email: email,
+        instagramSite: instagram,
+        twitterSite: twitter,
+        userName: username,
+        website: website,
+        youtubeSite: youtube,
       }
 
     if (validateNum === 8) {
-      if (photo?.uri !== UserReducer.userData.user.profile_image) {
-        let formData = new FormData();
-        formData.append('profile_image', { uri: photo?.path ? photo.path : photo.uri, name: photo?.fileName, type: photo?.type });
-
-        console.log('formData', formData._parts)
-        dispatch(updateProfileImage(formData)).then(() => {
-          dispatch(updateProfile(req_body, () => navigation.goBack()));
-        })
-          .catch((err) => {
-            dispatch(updateProfile(req_body, () => navigation.goBack()));
-          });
-      } else {
-        dispatch(updateProfile(req_body, () => navigation.goBack()));
-      }
+      dispatch(updateProfile(req_body,id))
     }
   }
 
@@ -355,13 +392,13 @@ function Profile(props) {
         <AppHeader
           title={translate("wallet.common.profileSettings")}
           showBackButton
-          showRightButton={true}
-          onPressRight={onSave}
-          rightButtonComponent={<DoneText>{translate("wallet.common.done")}</DoneText>}
+        // showRightButton={true}
+        // onPressRight={onSave}
+        // rightButtonComponent={<DoneText>{translate("wallet.common.done")}</DoneText>}
         />
 
         <KeyboardAwareScrollView extraScrollHeight={hp('7%')}>
-          <CenterWrap>
+          {/* <CenterWrap>
             <SpaceView mTop={SIZE(10)} />
             <Avatar>
               <C_Image
@@ -379,8 +416,7 @@ function Profile(props) {
               </ChangeAvatar>
             </TouchableOpacity>
             <SpaceView mTop={SIZE(17)} />
-          </CenterWrap>
-          <BorderView />
+          </CenterWrap> */}
 
           {/* <LimitableInput
             value={firstName}
@@ -439,25 +475,68 @@ function Profile(props) {
             error={errZoomLink}
           /> */}
           <LimitableInput
+            multiLine
             value={username && username.trimStart().replace(/\s\s+/g, ' ')}
             onChange={(text) => { setUsername(text); setErrUsername(false); }}
             label={translate("common.UserName")}
-            placeholder={translate("common.UserName")}
+            placeholder={translate("common.PLACEHOLDER_USERNAME")}
             validate={[maxLength50, validateUserName]}
             editable={true}
             error={errUsername}
           />
-          {UserReducer.userData.user?.isNonCrypto === 1 &&
+          <View style={styles.mainView}>
+            <Text style={styles.label}>{translate("common.twitter")}</Text>
+            <View style={styles.inputView}>
+              <View style={styles.iconConatainer}>
+                <TwitterIconNew width={SIZE(24)} height={SIZE(24)} />
+              </View>
+              <TextInput
+                style={{ padding: SIZE(12), width: '55%' }}
+                placeholderTextColor="grey"
+                value={twitter}
+                onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
+                // placeholder={translate("common.twitter")}
+                placeholder={translate("common.PLACEHOLDER_TWITTER")}
+              />
+              <TouchableOpacity style={UserReducer.userData.twitterSite ? styles.verifyBtnActive : styles.verifyBtn}>
+                <Text style={{ color: '#FFFFFF', fontSize: SIZE(14), fontWeight: '700' }}>Verify twitter</Text>
+              </TouchableOpacity>
+            </View>
+            {errTwitter && <Text style={{ fontSize: SIZE(14), fontFamily: 'Arial', color: COLORS.RED2 }}>{errTwitter}</Text>}
+          </View>
+          {/* <LimitableInput
+            multiLine
+            value={twitter && twitter.trimStart()}
+            onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
+            label={translate("common.twitter")}
+            placeholder={translate("common.twitter")}
+            validate={[maxLength100, validateTwitterURL]}
+            error={errTwitter}
+          /> */}
+          {UserReducer?.userData?.isNonCrypto === 1 &&
             <LimitableInput
+              multiLine
               value={email && email.trimStart()}
               onChange={(text) => { setEmail(text); setErrEmail(false); }}
               label={translate("common.email")}
-              placeholder={translate("common.email")}
+              placeholder={translate("common.PLACEHOLDER_EMAIL")}
               validate={[maxLength50, validateEmail]}
               error={errEmail}
               editable={false}
             />}
+          {UserReducer?.userData?.isNonCrypto === 0 &&
+            <LimitableInput
+              multiLine
+              value={email}
+              onChange={(text) => { setEmail(text); setErrEmail(false); }}
+              label={translate("common.email")}
+              placeholder={translate("common.PLACEHOLDER_EMAIL")}
+              validate={[maxLength50, validateEmail]}
+              error={errEmail}
+              editable={true}
+            />}
           <LimitableInput
+            multiLine
             value={website && website.trimStart()}
             onChange={(text) => { setWebsite(text); setErrWebsite(false) }}
             label={translate("common.website")}
@@ -466,22 +545,7 @@ function Profile(props) {
             error={errWebsite}
           />
           <LimitableInput
-            value={discord && discord.trimStart()}
-            onChange={(text) => { setDiscord(text); setErrDiscord(false); }}
-            label={translate("common.discord")}
-            placeholder={translate("common.discord")}
-            validate={[maxLength100, validateDiscordURL]}
-            error={errDiscord}
-          />
-          <LimitableInput
-            value={twitter && twitter.trimStart()}
-            onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
-            label={translate("common.twitter")}
-            placeholder={translate("common.twitter")}
-            validate={[maxLength100, validateTwitterURL]}
-            error={errTwitter}
-          />
-          <LimitableInput
+            multiLine
             value={youtube && youtube.trimStart()}
             onChange={(text) => { setYoutube(text); setErrYoutube(false); }}
             label={translate("common.youtube")}
@@ -490,44 +554,81 @@ function Profile(props) {
             error={errYoutube}
           />
           <LimitableInput
+            multiLine
+            value={discord && discord.trimStart()}
+            onChange={(text) => { setDiscord(text); setErrDiscord(false); }}
+            label={translate("common.discord")}
+            placeholder={translate("common.discord")}
+            validate={[maxLength100, validateDiscordURL]}
+            error={errDiscord}
+          />
+          <View style={styles.mainView}>
+            <Text style={styles.label}>{translate("common.instagram")}</Text>
+            <View style={styles.inputView}>
+              <View style={styles.iconConatainer}>
+                <InstagramIcon width={SIZE(24)} height={SIZE(24)} />
+              </View>
+              <TextInput
+                style={{ padding: SIZE(12), width: '90%' }}
+                placeholderTextColor="grey"
+                value={twitter}
+                onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
+                // placeholder={translate("common.twitter")}
+                placeholder={translate("common.PLACEHOLDER_INSTAGRAM")}
+              />
+            </View>
+            {errInstagram && <Text style={{ fontSize: SIZE(14), fontFamily: 'Arial', color: COLORS.RED2 }}>{errInstagram}</Text>}
+          </View>
+          {/* <LimitableInput
+            multiLine
             value={instagram && instagram.trimStart()}
             onChange={(text) => { setInstagram(text); setErrInstagram(false); }}
             label={translate("common.instagram")}
             placeholder={translate("common.instagram")}
             validate={[maxLength100, validateInstagramURL]}
             error={errInstagram}
+          /> */}
+          <GroupButton
+            style={{ marginVertical: SIZE(10), marginTop: SIZE(30) }}
+            onLeftPress={() => setIsVisible(true)}
+            leftStyle={{ marginHorizontal: '5%', backgroundColor: '#0b5ed7' }}
+            leftTextStyle={{ fontWeight: '600', fontSize: SIZE(14) }}
+            leftText={translate("common.ARTIST_LABEL")}
+            rightHide
           />
-          {UserReducer.userData.user?.isNonCrypto === 0 &&
-            <LimitableInput
-              value={email}
-              onChange={(text) => { setEmail(text); setErrEmail(false); }}
-              label={translate("common.email")}
-              placeholder={translate("common.email")}
-              validate={[maxLength50, validateEmail]}
-              error={errEmail}
-              editable={true}
-            />}
           <SpaceView mTop={SIZE(12)} />
           <LimitableInput
             multiLine
+            limit
+            style={{ height: 230 }}
             value={about && about.trimStart()}
             onChange={(text) => { setAbout(text.slice(0, 200)); setErrAbout(false); }}
-            label={translate("wallet.common.aboutMe")}
-            placeholder={translate("wallet.common.aboutMe")}
+            label={translate("common.bio")}
+            // placeholder={translate("common.bio")}
+            placeholder={translate("common.PLACEHOLDER_DESCRIPTION")}
             validate={[maxLength200]}
             error={errAbout}
             maxLength={200}
             about={about}
           />
+          <GroupButton
+            onLeftPress={() => onSave()}
+            style={{ marginVertical: SIZE(10), marginTop: SIZE(30) }}
+            leftStyle={{ marginHorizontal: '5%', backgroundColor: '#2280e1' }}
+            leftTextStyle={{ fontWeight: '600', fontSize: SIZE(14) }}
+            leftText={translate("common.BTN_SAVE_CHANGE")}
+            rightHide
+          />
+          {renderArtistModal()}
         </KeyboardAwareScrollView>
 
-        <ActionSheet
+        {/* <ActionSheet
           ref={actionSheetRef}
           title={translate("wallet.common.choosePhoto")}
           options={[translate("wallet.common.takePhoto"), translate("wallet.common.choosePhotoFromGallery"), translate("wallet.common.cancel")]}
           cancelButtonIndex={2}
           onPress={selectActionSheet}
-        />
+        /> */}
 
         {showPermission ? showpermissionalert() : null}
       </SafeAreaView>
@@ -536,3 +637,53 @@ function Profile(props) {
 }
 
 export default Profile;
+
+const styles = StyleSheet.create({
+  iconConatainer: {
+    width: '7%',
+    height: SIZE(40),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: SIZE(10)
+  },
+  inputView: {
+    borderColor: Colors.themeColor,
+    borderWidth: SIZE(1),
+    borderRadius: SIZE(7),
+    height: SIZE(40),
+    color: Colors.BLACK1,
+    marginTop: SIZE(12),
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden'
+  },
+  label: {
+    fontSize: SIZE(16),
+    fontWeight: '700',
+    color: '#212529'
+  },
+  mainView: {
+    flexDirection: 'column',
+    width: '90%',
+    marginLeft: SIZE(19),
+    marginTop: SIZE(20)
+  },
+  verifyBtn: {
+    width: '35%',
+    height: SIZE(38),
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomRightRadius: SIZE(8),
+    borderTopRightRadius: SIZE(8),
+  },
+  verifyBtnActive: {
+    width: '35%',
+    height: SIZE(38),
+    backgroundColor: '#2280e1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomRightRadius: SIZE(8),
+    borderTopRightRadius: SIZE(8),
+  }
+})
