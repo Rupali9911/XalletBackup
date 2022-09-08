@@ -46,7 +46,6 @@ import { COLORS } from '../../constants';
 import ButtonInputContainer from '../../components/buttonInputContainer'
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { NEW_BASE_URL } from '../../common/constants';
-// import { TextInput } from 'react-native-paper';
 const { TwitterIconNew, InstagramIcon, ArtistSvg, ArtistSvgI } = SVGS;
 
 function Profile(props) {
@@ -94,7 +93,8 @@ function Profile(props) {
 
   let id = UserReducer.userData.userWallet.address
 
-  console.log(UserReducer?.userData,'data from reducer')
+  // console.log(UserReducer.userData,'userData')
+
   
   const renderArtistModal = () => {
     return (
@@ -386,6 +386,9 @@ function Profile(props) {
   }
 
 
+  // console.log(twitter,'twitter link')
+
+
   return (
     <AppBackground isBusy={UserReducer.loading}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -494,11 +497,16 @@ function Profile(props) {
                 style={{ padding: SIZE(12), width: '55%' }}
                 placeholderTextColor="grey"
                 value={twitter}
-                onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
+                onChangeText={(text) => { setTwitter(text); setErrTwitter(false) }}
                 // placeholder={translate("common.twitter")}
                 placeholder={translate("common.PLACEHOLDER_TWITTER")}
               />
-              <TouchableOpacity style={UserReducer.userData.twitterSite ? styles.verifyBtnActive : styles.verifyBtn}>
+              <TouchableOpacity 
+              style={UserReducer.userData.twitterSite ? styles.verifyBtnActive : styles.verifyBtn}
+              onPress={()=>{
+                navigation.navigate('WebView')
+              }}
+              >
                 <Text style={{ color: '#FFFFFF', fontSize: SIZE(14), fontWeight: '700' }}>Verify twitter</Text>
               </TouchableOpacity>
             </View>
@@ -571,8 +579,8 @@ function Profile(props) {
               <TextInput
                 style={{ padding: SIZE(12), width: '90%' }}
                 placeholderTextColor="grey"
-                value={twitter}
-                onChange={(text) => { setTwitter(text); setErrTwitter(false); }}
+                value={instagram}
+                onChangeText={(text) => { setInstagram(text); setErrInstagram(false); }}
                 // placeholder={translate("common.twitter")}
                 placeholder={translate("common.PLACEHOLDER_INSTAGRAM")}
               />

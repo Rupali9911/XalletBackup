@@ -62,7 +62,7 @@ import { NEW_BASE_URL } from '../../common/constants';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message'
 import { DEFAULT_DATE_FORMAT } from '../../constants';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { updateAvtar, updateBanner } from '../../store/actions/myNFTaction';
 import sendRequest from '../../helpers/AxiosApiRequest';
 
@@ -78,6 +78,8 @@ function Profile({ navigation, connector, route }) {
     const [openDial2, setOpenDial2] = useState(false)
     const { UserReducer } = useSelector(state => state);
     const actionSheetRef = useRef(null);
+
+    const isFocused = useIsFocused();
 
     const dispatch = useDispatch();
 
@@ -97,12 +99,15 @@ function Profile({ navigation, connector, route }) {
         sendRequest(url)
             .then((res) => {
                 setUserData(res)
+                console.log(res,'profile')
+                dispatch(updateUserData(res))
             })
     }
 
     useEffect(() => {
-        fetchData()
-    }, [UserReducer?.userData])
+        if(isFocused){
+        fetchData()}
+    }, [isFocused])
 
     // const toastConfig = {
     //     my_custom_type: ({ text1, props, ...rest }) => (

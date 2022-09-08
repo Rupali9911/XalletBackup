@@ -118,8 +118,9 @@ export default UserReducer = (state = initialState, action) => {
       };
 
     case UPDATE_PROFILE:
-      let _data = state.userData;
-      _data.user = action.payload;
+      let _data = action.payload;
+      // _data.user = action.payload;
+      console.log(action.payload,'payload')
       return {
         ...state,
         userData: { ..._data },
@@ -407,6 +408,7 @@ export const fetchData =(id) => {
   const url = `${NEW_BASE_URL}/users/${id}`
   sendRequest(url)
     .then((res) => {
+      console.log(res,'data fetched')
       dispatch(updateUserData(res))
     })
   }
