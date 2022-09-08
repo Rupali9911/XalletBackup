@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   }),
   listMainCont: {
-    // marginVertical: hp(3),
+    marginBottom: hp(3),
     flex: 1,
   },
   listCont: {

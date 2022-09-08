@@ -13,7 +13,7 @@ import { IMAGES } from '../../constants';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
-import { alertWithSingleBtn } from '../../utils';
+import { toFixCustom } from './helperFunction';
 import { translate } from '../../walletUtils';
 import Modal from 'react-native-modal';
 import { C_Image } from '../../components';
@@ -153,23 +153,6 @@ const NFTList = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [selectData, setSelectData] = useState(null);
 
-  const toFixCustom = (x) => {
-    if (Math.abs(x) < 1.0) {
-      var e = parseInt(x?.toString().split('e-')[1])
-      if (e) {
-        x *= Math.pow(10, e - 1)
-        x = '0.' + new Array(e).join('0') + x.toString().substring(2)
-      }
-    } else {
-      var e = parseInt(x?.toString().split('+')[1])
-      if (e > 20) {
-        e -= 20
-        x /= Math.pow(10, e)
-        x += new Array(e + 1).join('0')
-      }
-    }
-    return Number(Number(x).toFixed(6))
-  }
 
   useEffect(async () => {
     cleanData();
@@ -376,14 +359,6 @@ const NFTList = ({
     setOnEndReachedCalledDuringMomentum(false)
   }
 
-  const _renderSearchResultsFooter = () => {
-    return pageLoader ? (
-      <View>
-        <ActivityIndicator size="small" color={'#000000'} />
-      </View>
-    ) : null;
-  };
-
   const keyExtractor = (item, index) => { return 'item_' + index }
 
   return (
@@ -447,11 +422,12 @@ const NFTList = ({
               onEndReachedThreshold={0.1}
               onEndReached={handleFlastListEndReached}
               onMomentumScrollBegin={_onMomentumScrollBegin}
-              ListFooterComponent={_renderSearchResultsFooter}
             />
           }
-
         </View>
+        {pageLoader ? (
+          <ActivityIndicator size="small" color={'#000000'} />
+        ) : null}
       </CardCont>
       <Modal
         isVisible={modalVisible}
