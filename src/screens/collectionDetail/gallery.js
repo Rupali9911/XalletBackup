@@ -52,7 +52,8 @@ const Gallery = ({ route }) => {
         // seriesInfoId,
         collection,
         tabTitle,
-        tabStatus
+        tabStatus,
+        isLaunchPad
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
@@ -132,6 +133,8 @@ const Gallery = ({ route }) => {
                     tabStatus,
                     null,
                     collection.userId,
+                    isLaunchPad,
+                    false
                 ),
             );
             // if (isStore) {
@@ -363,8 +366,8 @@ const Gallery = ({ route }) => {
                     numColumns={2}
                     // initialNumToRender={isSeries ? 6 : 15}
                     initialNumToRender={15}
-                    // onRefresh={handleFlatlistRefresh}
-                    // refreshing={page === 1 && isLoading}
+                    onRefresh={handleFlatlistRefresh}
+                    refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
                     onEndReached={() => {
                         if (!isLoading && collectionList.length !== totalCount) {

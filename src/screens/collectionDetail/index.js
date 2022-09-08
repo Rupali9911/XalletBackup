@@ -49,11 +49,13 @@ import { currencyInDollar } from '../wallet/functions';
 import Gallery from './gallery';
 import Owned from './owned';
 import OnSale from './onSale';
-import NotOnSale from './notOnSale';
+import soldOut from './soldOut';
 import { Verifiedcollections } from '../../components/verifiedCollection';
 import CommonStyles from '../../constants/styles';
 import Activity from './activity';
 import { RF, wp } from '../../constants/responsiveFunct';
+import sendRequest from '../../helpers/AxiosApiRequest';
+import { NEW_BASE_URL } from '../../common/constants';
 
 const { height } = Dimensions.get('window');
 
@@ -86,8 +88,8 @@ const imageToChainKey = {
 
 function CollectionDetail(props) {
     const { route } = props;
-    const { item, isBlind, collectionId, nftId, isStore, networkName, isHotCollection, contractAddress } = route.params;
-    console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", item);
+    const { item, isLaunchPad } = route.params;
+    // console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", item);
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
@@ -113,9 +115,9 @@ function CollectionDetail(props) {
     const { NftDataCollectionReducer } = useSelector(state => state);
     const [loadImage, setLoadImage] = useState([]);
 
-    const isLoading = isBlind && nftId
-        ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
-        : NftDataCollectionReducer.nftDataCollectionLoading;
+    // const isLoading = isBlind && nftId
+    //     ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
+    //     : NftDataCollectionReducer.nftDataCollectionLoading;
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButton)
@@ -139,68 +141,68 @@ function CollectionDetail(props) {
         }
     };
 
-    const setSelectedPackInfo = (userInfoData, nftData) => {
-        setSelectedPack({
-            artistDescription: userInfoData?.artistDescription,
-            en_artistDescription: userInfoData?.en_artistDescription,
-            ja_artistDescription: userInfoData?.ja_artistDescription,
-            ko_artistDescription: userInfoData?.ko_artistDescription,
-            zh_artistDescription: userInfoData?.zh_artistDescription,
-            zh_ch_artistDescription: userInfoData?.zh_ch_artistDescription,
+    // const setSelectedPackInfo = (userInfoData, nftData) => {
+    //     setSelectedPack({
+    //         artistDescription: userInfoData?.artistDescription,
+    //         en_artistDescription: userInfoData?.en_artistDescription,
+    //         ja_artistDescription: userInfoData?.ja_artistDescription,
+    //         ko_artistDescription: userInfoData?.ko_artistDescription,
+    //         zh_artistDescription: userInfoData?.zh_artistDescription,
+    //         zh_ch_artistDescription: userInfoData?.zh_ch_artistDescription,
 
-            artistName: userInfoData?.artistName,
-            en_artistName: userInfoData?.en_artistName,
-            ja_artistName: userInfoData?.ja_artistName,
-            ko_artistName: userInfoData?.ko_artistName,
-            zh_artistName: userInfoData?.zh_artistName,
-            zh_ch_artistName: userInfoData?.zh_ch_artistName,
+    //         artistName: userInfoData?.artistName,
+    //         en_artistName: userInfoData?.en_artistName,
+    //         ja_artistName: userInfoData?.ja_artistName,
+    //         ko_artistName: userInfoData?.ko_artistName,
+    //         zh_artistName: userInfoData?.zh_artistName,
+    //         zh_ch_artistName: userInfoData?.zh_ch_artistName,
 
-            bannerImage: userInfoData?.seriesURIMetaInfo?.banner_image,
-            nftChain: userInfoData?.nftChain,
-            countNFT: userInfoData?.boxInfo.length,
+    //         bannerImage: userInfoData?.seriesURIMetaInfo?.banner_image,
+    //         nftChain: userInfoData?.nftChain,
+    //         countNFT: userInfoData?.boxInfo.length,
 
-            description: userInfoData?.seriesURIMetaInfo.description,
-            en_description: userInfoData?.en_description,
-            ja_description: userInfoData?.ja_description,
-            ko_description: userInfoData?.ko_description,
-            zh_description: userInfoData?.zh_description,
-            zh_ch_description: userInfoData?.zh_ch_description,
+    //         description: userInfoData?.seriesURIMetaInfo.description,
+    //         en_description: userInfoData?.en_description,
+    //         ja_description: userInfoData?.ja_description,
+    //         ko_description: userInfoData?.ko_description,
+    //         zh_description: userInfoData?.zh_description,
+    //         zh_ch_description: userInfoData?.zh_ch_description,
 
-            image: userInfoData?.seriesURIMetaInfo.image,
-            like_count: userInfoData?.like_count,
-            name: userInfoData?.name,
-            packVideo: userInfoData?.packVideo,
+    //         image: userInfoData?.seriesURIMetaInfo.image,
+    //         like_count: userInfoData?.like_count,
+    //         name: userInfoData?.name,
+    //         packVideo: userInfoData?.packVideo,
 
-            title: userInfoData?.title,
-            en_title: userInfoData?.en_title,
-            ja_title: userInfoData?.ja_title,
-            ko_title: userInfoData?.ko_title,
-            zh_title: userInfoData?.zh_title,
-            zh_ch_title: userInfoData?.zh_ch_title,
+    //         title: userInfoData?.title,
+    //         en_title: userInfoData?.en_title,
+    //         ja_title: userInfoData?.ja_title,
+    //         ko_title: userInfoData?.ko_title,
+    //         zh_title: userInfoData?.zh_title,
+    //         zh_ch_title: userInfoData?.zh_ch_title,
 
-            price: userInfoData?.price.toString(),
+    //         price: userInfoData?.price.toString(),
 
-            tokenUri: nftData,
+    //         tokenUri: nftData,
 
-            en_creator: userInfoData?.en_creator,
-            ja_creator: userInfoData?.ja_creator,
-            ko_creator: userInfoData?.ko_creator,
-            zh_creator: userInfoData?.zh_creator,
-            zh_ch_creator: userInfoData?.zh_ch_creator,
+    //         en_creator: userInfoData?.en_creator,
+    //         ja_creator: userInfoData?.ja_creator,
+    //         ko_creator: userInfoData?.ko_creator,
+    //         zh_creator: userInfoData?.zh_creator,
+    //         zh_ch_creator: userInfoData?.zh_ch_creator,
 
-            en_creatorName: userInfoData?.en_creatorName,
-            ja_creatorName: userInfoData?.ja_creatorName,
-            ko_creatorName: userInfoData?.ko_creatorName,
-            zh_creatorName: userInfoData?.zh_creatorName,
-            zh_ch_creatorName: userInfoData?.zh_ch_creatorName,
+    //         en_creatorName: userInfoData?.en_creatorName,
+    //         ja_creatorName: userInfoData?.ja_creatorName,
+    //         ko_creatorName: userInfoData?.ko_creatorName,
+    //         zh_creatorName: userInfoData?.zh_creatorName,
+    //         zh_ch_creatorName: userInfoData?.zh_ch_creatorName,
 
-            en_creatorDescription: userInfoData?.en_creatorDescription,
-            ja_creatorDescription: userInfoData?.ja_creatorDescription,
-            ko_creatorDescription: userInfoData?.ko_creatorDescription,
-            zh_creatorDescription: userInfoData?.zh_creatorDescription,
-            zh_ch_creatorDescription: userInfoData?.zh_ch_creatorDescription,
-        });
-    }
+    //         en_creatorDescription: userInfoData?.en_creatorDescription,
+    //         ja_creatorDescription: userInfoData?.ja_creatorDescription,
+    //         ko_creatorDescription: userInfoData?.ko_creatorDescription,
+    //         zh_creatorDescription: userInfoData?.zh_creatorDescription,
+    //         zh_ch_creatorDescription: userInfoData?.zh_ch_creatorDescription,
+    //     });
+    // }
 
     const getSeriesAsOfChain = () => {
         let selectedSeriesId;
@@ -248,12 +250,33 @@ function CollectionDetail(props) {
             //     setCollection(collectionArray?.data);
             //     setLoading(false);
             // }
-            const collectionArray = await getHotCollectionDetail(
-                item.network.networkName,
-                item.contractAddress,
-            );
-            setCollection(collectionArray?.data);
-            setLoading(false);
+
+            if (isLaunchPad) {
+                const url = `${NEW_BASE_URL}/launchpad/detail`;
+                sendRequest({
+                    url,
+                    params: {
+                        launchpadId: item.id
+                    },
+                }).then((res) => {
+                    setCollection(res);
+                    setLoading(false)
+                }).catch((err) => console.log('err : ', err))
+            }
+            else {
+                const collectionArray = await getHotCollectionDetail(
+                    item.network.networkName,
+                    item.contractAddress,
+                );
+                setCollection(collectionArray);
+                setLoading(false);
+            }
+            // const collectionArray = await getHotCollectionDetail(
+            //     item.network.networkName,
+            //     item.contractAddress,
+            // );
+            // setCollection(collectionArray);
+            // setLoading(false);
         } catch (err) {
             console.error(err.message);
             setLoading(false);
@@ -922,16 +945,16 @@ function CollectionDetail(props) {
         )
     }
 
-    var formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    });
-    var formatter = new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 3,
-    });
+    // var formatter = new Intl.NumberFormat("en-US", {
+    //     style: "currency",
+    //     currency: "USD",
+    //     minimumFractionDigits: 0,
+    //     maximumFractionDigits: 3,
+    // });
+    // var formatter = new Intl.NumberFormat("en-US", {
+    //     minimumFractionDigits: 0,
+    //     maximumFractionDigits: 3,
+    // });
 
     const renderDetailList = () => {
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
@@ -939,8 +962,8 @@ function CollectionDetail(props) {
         // if (isStore) return null;
         let items = collection?.totalNft;
         let owners = collection?.totalOwner;
-        let floorPrice = collection?.floorPrice;
-        let volTraded = collection?.volumeTraded;
+        let floorPrice = Number(collection?.floorPrice).toFixed(3);
+        let volTraded = Number(collection?.volumeTraded).toFixed(3);
 
         // if (!isBlind || isBlind && nftId) {
         //     console.log("🚀 ~ file: index.js ~ line 858 ~~ IF", !isBlind, collection?.nftCount, blindboxList[0]?.boxInfo?.length, selectedBlindBox.boxInfo?.length, collection, blindboxList, selectedBlindBox)
@@ -1089,7 +1112,7 @@ function CollectionDetail(props) {
         );
     }
 
-    const renderTabView = (tab) => { 
+    const renderTabView = (tab) => {
         // let tabProps = {
         //     collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
         //     collectionType: collectionType,
@@ -1122,7 +1145,6 @@ function CollectionDetail(props) {
                         width: tab ? wp('25%') : wp('50%'),
                         paddingHorizontal: wp('1%'),
                         justifyContent: 'center',
-                        // // fontSize: RF(1.4),
                         fontFamily: fonts.SegoeUIRegular,
                         textTransform: 'capitalize',
                     },
@@ -1133,11 +1155,10 @@ function CollectionDetail(props) {
                     tabBarIndicatorStyle: {
                         backgroundColor: COLORS.BLUE4,
                         height: 2,
-                        // marginBottom: SIZE(39),
                     }
                 }}
             >
-                <Tab.Screen
+                {tab && <Tab.Screen
                     name={translate('common.onSale')}
                     component={Gallery}
                     initialParams={{
@@ -1154,11 +1175,13 @@ function CollectionDetail(props) {
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.onSale'),
                         collection: item,
-                        tabStatus: 1
+                        tabStatus: 1,
+                        isLaunchPad: isLaunchPad
                     }}
-                />
-                <Tab.Screen
-                    name={ translate('common.notforsale')}
+                />}
+                {tab && <Tab.Screen
+                    // name={translate('common.notforsale')}
+                    name={'Sold Out'}
                     component={Owned}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
@@ -1172,12 +1195,13 @@ function CollectionDetail(props) {
                         // userCollection: collection?.userCollection,
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
-                        tabTitle: translate('common.notforsale'),
+                        tabTitle: 'Sold Out',
                         collection: item,
-                        tabStatus: 2
+                        tabStatus: 2,
+                        isLaunchPad: isLaunchPad
                     }}
-                />
-                {<Tab.Screen
+                />}
+                {tab && <Tab.Screen
                     name={translate('wallet.common.owned')}
                     component={OnSale}
                     initialParams={{
@@ -1194,12 +1218,12 @@ function CollectionDetail(props) {
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('wallet.common.owned'),
                         collection: item,
-                        
+                        isLaunchPad: isLaunchPad
                     }}
                 />}
-               {<Tab.Screen
+                {<Tab.Screen
                     name={translate('common.gallery')}
-                    component={NotOnSale}
+                    component={soldOut}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
                         // collectionType: 3,
@@ -1214,10 +1238,11 @@ function CollectionDetail(props) {
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.gallery'),
                         collection: item,
-                        tabStatus: 3
+                        tabStatus: 3,
+                        isLaunchPad: isLaunchPad
                     }}
-                />} 
-                {<Tab.Screen
+                />}
+                {tab && <Tab.Screen
                     name={translate('common.activity')}
                     component={Activity}
                     initialParams={{
@@ -1248,7 +1273,7 @@ function CollectionDetail(props) {
                     flexGrow: 1,
                     // paddingBottom:height/4
                 }}
-                style={{ flex: 1 }}
+                style={{ flex: 1 }} 
             >
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
@@ -1455,9 +1480,10 @@ function CollectionDetail(props) {
                             renderTabView(false)
                             : <Loader />
                     } */}
-                    {!loading ?
+                    {!loading && !isLaunchPad ? 
                         renderTabView(true)
-                        : null
+                        : isLaunchPad && !loading ? renderTabView(false) : null
+
                     }
                 </View>
 
@@ -1467,3 +1493,4 @@ function CollectionDetail(props) {
 }
 
 export default CollectionDetail;
+

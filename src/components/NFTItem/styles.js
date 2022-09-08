@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#56bbf8'
   },
-  statusNotOnSale: {
+  statusSoldOut: {
     fontSize: SIZE(12),
     fontWeight: '700',
     color: '#ff0125'

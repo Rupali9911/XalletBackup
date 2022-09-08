@@ -28,16 +28,16 @@ import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 import CollectionItem from '../../components/CollectionItem';
 
-const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
-const BLIND_SERIES_COLLECTION_TYPE = [
-    'minted2',
-    'onsale',
-    'notonsale',
-    'owned',
-];
+// const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
+// const BLIND_SERIES_COLLECTION_TYPE = [
+//     'minted2',
+//     'onsale',
+//     'notonsale',
+//     'owned',
+// ];
 const { height } = Dimensions.get('window');
 
-const NotOnSale = ({ route }) => {
+const soldOut = ({ route }) => {
     const {
         // nftChain,
         // collectionAddress,
@@ -53,7 +53,8 @@ const NotOnSale = ({ route }) => {
         // tabTitle
         tabTitle,
         collection,
-        tabStatus
+        tabStatus,
+        isLaunchPad,
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
@@ -131,20 +132,44 @@ const NotOnSale = ({ route }) => {
         }
     }, [isFocused]);
 
+    console.log('IsLaunchPad : ', isLaunchPad);
     const getNFTlist = useCallback(
+        
         page => {
 
-            dispatch(
-                nftDataCollectionList(
-                    page,
-                    tabTitle,
-                    collection.network.networkName,
-                    collection.contractAddress,
-                    tabStatus,
-                    null,
-                    collection.userId,
-                ),
-            );
+            if(isLaunchPad)
+            {
+                dispatch(
+                    nftDataCollectionList(
+                        page,
+                        tabTitle,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        isLaunchPad,
+                        collection.id, 
+                    ),
+                );
+            }
+            else
+            {
+                dispatch(
+                    nftDataCollectionList(
+                        page,
+                        tabTitle,
+                        collection.network.networkName,
+                        collection.contractAddress,
+                        tabStatus,
+                        null,
+                        collection.userId,
+                        isLaunchPad
+                    ),
+                );
+            }
+
+           
 
             // if (isStore) {
             //     // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
@@ -224,7 +249,7 @@ const NotOnSale = ({ route }) => {
         return (
             <NFTItem
                 item={item}
-                screenName="notOnSale"
+                // screenName="soldOut"
                 image={imageUri}
                 onPress={() => {
                     navigation.push('CertificateDetail', { item: item });
@@ -412,4 +437,4 @@ const NotOnSale = ({ route }) => {
     );
 };
 
-export default NotOnSale;
+export default soldOut;

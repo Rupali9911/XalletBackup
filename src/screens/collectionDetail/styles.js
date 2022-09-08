@@ -279,7 +279,37 @@ const styles = StyleSheet.create({
   blindBoxLoader: {
     position:"absolute",
     alignSelf:'center'
+  },
+  containerStyle: {
+    flex: 1,
+    justifyContent: 'flex-start' 
+  },
+  tableView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center' 
+  },
+  tableCellImageView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  cellImage: {
+    height: hp(5.5), 
+    width: hp(5.5), 
+    borderRadius: 3, 
+    marginRight: 10,
+  },
+  cellAddress: {
+    color: 'black',
+    marginLeft: hp(0.5),
+    marginRight: hp(0.5)
+  },
+  textStyle: {
+    margin: SIZE(10), 
+    fontSize: SIZE(12) 
   }
+
 });
 
 export default styles;

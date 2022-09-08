@@ -52,7 +52,8 @@ const OnSale = ({ route }) => {
         // seriesInfoId,
         tabTitle,
         collection,
-        tabStatus
+        tabStatus,
+        isLaunchPad
 
     } = route?.params;
     const { NftDataCollectionReducer } = useSelector(state => state);
@@ -141,6 +142,8 @@ const OnSale = ({ route }) => {
                     null,
                     collection.owner.address,
                     collection.owner.userId,
+                    isLaunchPad,
+                    false
                 ),
             );
             // if (isStore) {

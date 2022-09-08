@@ -140,8 +140,8 @@ const HotCollection = () => {
         network={item.network}
         colId={item._id}
         onPress={() => {
-          if (item.collectionName !== 'NFTART AWARD 2021') {
-            navigation.push('CollectionDetail', { item:item });
+          if (item.collectionName !== 'NFTART AWARD 2021') { 
+            navigation.push('CollectionDetail', { item:item, isLaunchPad: false});
             // navigation.push('CollectionDetail', { networkName: item.network.networkName, contractAddress: item.contractAddress  });
           } else {
             Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021')

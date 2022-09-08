@@ -47,7 +47,7 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import { NEW_BASE_URL } from '../../common/constants';
 
 
-const FILTER_TYPE = ['MintWithTokenURI', 'SellNFT', 'Bid', 'BuyNFT', 'Claim', 'OnAuction', 'CancelSell'];
+// const FILTER_TYPE = ['MintWithTokenURI', 'SellNFT', 'Bid', 'BuyNFT', 'Claim', 'OnAuction', 'CancelSell'];
 
 const Activity = ({ route }) => {
     const {
@@ -63,10 +63,8 @@ const Activity = ({ route }) => {
         // manualColl,
         // seriesInfoId,
         tabTitle,
-        collection
+        collection,
     } = route?.params;
-
-    console.log('What is Collections : ', collection)
 
     const { NftDataCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
@@ -104,7 +102,7 @@ const Activity = ({ route }) => {
     const reducerTabTitle = NftDataCollectionReducer.tabTitle;
     const collectionItem = NftDataCollectionReducer.nftActivityItems;
 
-    const limit = 6
+    const limit = 6;
 
     // const NumOfPages = Math.ceil(totalCount / limit)
     const isArray = Array.isArray(collectionList[0])
@@ -211,7 +209,7 @@ const Activity = ({ route }) => {
         );
     };
 
-    const getNftData = (index) => {
+    const getNftData = (index) => { 
         let nftDetail = collectionItem[index]; 
         let url = `${NEW_BASE_URL}/nfts/details`;
         // let url = `https://prod-backend.xanalia.com/nfts/details?networkName=${nftDetail.nft.network.name}&collectionAddress=${nftDetail.nft.collections.contractAddress}&nftTokenId=${nftDetail.nft.tokenId}`;
@@ -263,7 +261,7 @@ const Activity = ({ route }) => {
 
     return (
         <KeyboardAwareScrollView
-            contentContainerStyle={{ flex: 1, justifyContent: 'flex-start' }}
+            contentContainerStyle={styles.containerStyle}
             style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
             
@@ -276,7 +274,7 @@ const Activity = ({ route }) => {
                         showsHorizontalScrollIndicator={false}
                     // nestedScrollEnabled={true}
                     >
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={styles.tableView}>
                             {(tabTitle !== reducerTabTitle) || isLoading ? (
                                 <View style={{
                                     height: Dimensions.get('window').height,
@@ -295,13 +293,11 @@ const Activity = ({ route }) => {
                                     />
                                     {isArray && !isLoading && collectionList.length > 0 ? (
                                         collectionList.map((rowData, rowIndex) => {
-                                            console.log('Table Data : ', rowData, rowIndex);
                                             return (
                                                 <TableWrapper
                                                     key={rowIndex}
                                                     style={{ flexDirection: 'row' }}>
                                                     {rowData?.map((cellData, cellIndex) => {
-                                                        console.log('Table Cell Data : ', cellData, cellIndex)
                                                         let wid;
 
                                                         // if (cellIndex === 0) {
@@ -356,21 +352,18 @@ const Activity = ({ route }) => {
                                                                     // cellIndex == 0 
                                                                     cellIndex === 0 ? (
                                                                         <TouchableOpacity
-                                                                            style={{
-                                                                                flexDirection: 'row',
-                                                                                justifyContent: 'center',
-                                                                                alignItems: 'center'
-                                                                            }}
+                                                                            style={styles.tableCellImageView}
                                                                             onPress={() => getNftData(rowIndex)}
+                                                                            numberOfLines={1}
                                                                         >
                                                                             <Image
-                                                                                style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
+                                                                                style={styles.cellImage}
                                                                                 source={{ uri: cellData.image }}
                                                                             />
 
-                                                                            <Text>{cellData.imageName}</Text>
-
-                                                                        </TouchableOpacity>) : 
+                                                                            <Text numberOfLines={1} >{cellData.imageName}</Text>
+                                                                        </TouchableOpacity>
+                                                                        ) : 
                                                                         cellIndex === 1 ?
                                                                             (
                                                                                 cellData
@@ -391,7 +384,7 @@ const Activity = ({ route }) => {
                                                                                                     marginRight: hp(0.5)
                                                                                                 },
                                                                                             ]}>
-                                                                                            {cellData !== 'Null Address' && cellData.substring(0, 5)
+                                                                                            {cellData !== 'Null Address' && cellData
                                                                                             }
                                                                                         </Text>
                                                                                     </TouchableOpacity>
@@ -408,7 +401,7 @@ const Activity = ({ route }) => {
                                                                                                         marginRight: hp(0.5)
                                                                                                     },
                                                                                                 ]}>
-                                                                                                {cellData !== 'Null Address' && cellData.substring(0, 5)
+                                                                                                {cellData !== 'Null Address' && cellData
                                                                                                 }
                                                                                             </Text>
                                                                                         </TouchableOpacity>
@@ -486,8 +479,8 @@ const Activity = ({ route }) => {
                                                                 // width={wid}
                                                                 // height={hp(6.5)}
 
-                                                                textStyle={styles.text}
-                                                                // textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
+                                                                // textStyle={styles.text}
+                                                                textStyle={styles.textStyle}
                                                                 width={wid}
                                                                 height={hp(6.5)}
                                                                 />

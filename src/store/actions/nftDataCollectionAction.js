@@ -297,13 +297,12 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
       .then(res => {
         if (res?.items?.length > 0) {
           const tradingList = [];
-          const filterList = [];
 
-          res?.items?.map((item) => {  
+          res?.items?.map((item) => {
             let from = item?.fromUser?.userWallet?.address;
             let to = item?.toUser?.userWallet?.address;
             let temp = [
-              { image: item?.nft?.smallImage, imageName: item?.nft?.name },
+              { image: item?.nft?.previewImage, imageName: item?.nft?.name },
               getEventByValue(item?.action),
               item?.price && item?.receiveToken
                 ? Number(item?.price) + ' ' + item?.receiveToken
@@ -315,7 +314,6 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
             ];
 
             tradingList.push(temp);
-            filterList.push(getEventByValue(item?.action));
             dispatch(activityNftListSuccess({ list: tradingList, count: res?.meta?.totalPages, result: res?.items, tabTitle: tabTitle }))
           });
         }
@@ -326,30 +324,52 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
   }
 }
 
-export const nftDataCollectionList = (page, tabTitle, networkName, contractAddress, tabStatus, userAddress, userId) => {
+export const nftDataCollectionList = (page, tabTitle, networkName, contractAddress, tabStatus, userAddress, userId, isLaunchPad, launchpadId) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
+
   return (dispatch) => {
-    let url = `${NEW_BASE_URL}/collections/nft/collectionId?`;
-    {
-      userAddress ? url = url.concat(`&userAddress=${userAddress}`) : tabStatus ? url = url.concat(`&status=${tabStatus}`) : url;
+    let limit = 10;
+    if (isLaunchPad) {
+      let url = `${NEW_BASE_URL}/launchpad/nfts`;
+
+      sendRequest({
+        url,
+        params: {
+          page,
+          limit,
+          launchpadId
+        }
+      })
+        .then(json => {
+          console.log('THis is JSOn : ', json)
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+        }).catch(err => {
+          dispatch(nftDataCollectionLoadFail());
+        });
+
+
     }
-
-    sendRequest({
-      url,
-      params: {
-        page,
-        limit: 10,
-        networkName,
-        contractAddress,
-        userId
+    else {
+      let url = `${NEW_BASE_URL}/collections/nft/collectionId?`;
+      {
+        userAddress ? url = url.concat(`&userAddress=${userAddress}`) : tabStatus ? url = url.concat(`&status=${tabStatus}`) : url;
       }
-    })
-      .then(json => {
-        dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
-      }).catch(err => {
-        dispatch(nftDataCollectionLoadFail());
-      });
-
+      sendRequest({
+        url,
+        params: {
+          page,
+          limit,
+          networkName,
+          contractAddress,
+          userId
+        }
+      })
+        .then(json => {
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
+        }).catch(err => {
+          dispatch(nftDataCollectionLoadFail());
+        });
+    }
 
     // if (isStore && type !== 'owned') { 
     //   const data = {

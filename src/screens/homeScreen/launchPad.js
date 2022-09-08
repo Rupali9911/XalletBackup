@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect} from 'react';
-import {FlatList, StatusBar, View, Text} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect } from 'react';
+import { FlatList, StatusBar, View, Text } from 'react-native';
 import {
   launchpadNftLoadStart,
   launchpadNftListReset,
@@ -8,20 +8,20 @@ import {
   launchpadNftLoadSuccess,
   getLaunchpadNftList,
 } from '../../store/actions/launchpadAction';
-import {useDispatch, useSelector} from 'react-redux';
-import {networkType} from '../../common/networkType';
-import {colors} from '../../res';
-import {Loader} from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { networkType } from '../../common/networkType';
+import { colors } from '../../res';
+import { Loader } from '../../components';
 import styles from './styles';
 import LaunchPadItemData from '../LaunchPadDetail/LaunchPadItemData';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 
 const LaunchPad = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   // =============== Getting data from reducer ========================
-  const {LaunchpadReducer} = useSelector(state => state);
+  const { LaunchpadReducer } = useSelector(state => state);
 
   const isLoading = LaunchpadReducer.launchpadLoading;
   const launchData = LaunchpadReducer.launchpadList;
@@ -60,7 +60,7 @@ const LaunchPad = () => {
   };
 
   //=====================(Render Flatlist Item Function)=============================
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <LaunchPadItemData
         bannerImage={item.bannerImage}
@@ -81,7 +81,7 @@ const LaunchPad = () => {
             : false
         }
         onPress={() => {
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', { item: item });
         }}
       />
     );
