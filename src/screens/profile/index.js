@@ -53,7 +53,7 @@ function Profile({ navigation, connector }) {
 
     const id = UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
     // const { about, title, links, username, role, profile_image } = UserReducer?.data?.user;
-    useEffect(() => {
+    // useEffect(() => {
         // Update the document title using the browser API
         // UserReducer.data.user.profile_image,
         // UserReducer.data.user.about,
@@ -63,7 +63,7 @@ function Profile({ navigation, connector }) {
         // UserReducer.data.user.role
 
         // console.log('UserReducer.data.user.profile_image ', UserReducer.data.user.profile_image)
-    });
+    // });
 
     const renderTabView = () => {
         return (

@@ -82,6 +82,7 @@ export default function NFTItem(props) {
       isLike: isLike,
       // totalLike: nftData?.totalLike
     };
+    console.log(nftItem, 'like nftItem')
     const nftData = await handleLike(nftItem);
     if (nftData) {
       setIsLike(!Number(nftItem.isLike))

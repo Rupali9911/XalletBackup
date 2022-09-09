@@ -66,8 +66,10 @@ const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
   PlayButtonIcon,
-  HeartWhiteIcon,
-  HeartActiveIcon,
+  // HeartWhiteIcon,
+  // HeartActiveIcon,
+  HeartWhiteIconNew, 
+  HeartActiveIconNew,
   ThreeDotsVerticalIcon,
   TwiiterIcon,
   FacebookIcon,
@@ -244,9 +246,9 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [paymentObject]);
 
-  useEffect(() => {
-    // checkNFTOnAuction();
-  }, [singleNFT]);
+  // useEffect(() => {
+  //   // checkNFTOnAuction();
+  // }, [singleNFT]);
 
   //===================== API Call Functions =========================
   // const getOwnerDetailsById = async id => {
@@ -274,7 +276,6 @@ const DetailScreen = ({ navigation, route }) => {
       }
     })
       .then(json => {
-        console.log("🚀 ~ file: detail.js ~ line 223 ~  ~ json", json)
         if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
 
           setNFTPrice(json?.price)
@@ -538,7 +539,7 @@ const DetailScreen = ({ navigation, route }) => {
           handleLikeMethod();
         }}
         style={styles.likeButton}>
-        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+        {isLike ? <HeartActiveIconNew /> : <HeartWhiteIconNew/> }
       </TouchableOpacity>
     )
   }
@@ -827,7 +828,7 @@ const DetailScreen = ({ navigation, route }) => {
         <View>
           <CountDown
             size={18}
-            until={endCoundownTime}
+            // until={endCoundownTime}
             onFinish={() => { }}
             digitStyle={styles.countDownDigit}
             digitTxtStyle={styles.countDownText}
@@ -3065,6 +3066,7 @@ const DetailScreen = ({ navigation, route }) => {
       />
     );
   };
+
 
   const handleLikeMethod = async () => {
     const nftData = await handleLike(detailNFT);
