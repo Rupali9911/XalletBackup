@@ -66,13 +66,13 @@ const Name = ({ label }) => {
 }
 
 export const handleLike = async (nftItem) => {
-    console.log(nftItem)
     let getNftItem = { ...nftItem };
     return new Promise(async (resolve, reject) => {
         let data = {
             nftId: nftItem.nftId,
             status: Number(nftItem.isLike) === 1 ? 0 : 1
         };
+        console.log(data)
         sendRequest({
             url: `${NEW_BASE_URL}/nfts/like`,
             method: 'POST',

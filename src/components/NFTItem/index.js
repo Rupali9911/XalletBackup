@@ -77,6 +77,7 @@ export default function NFTItem(props) {
 
   //================== Render Heart Icon Function ===================
   const handleLikeMethod = async () => {
+    
     let nftItem = {
       ...item,
       isLike: isLike,

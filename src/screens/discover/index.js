@@ -48,8 +48,6 @@ function ExploreScreen() {
       }
     })
       .then(json => {
-        console.log("🚀 ~ file: index.js ~ line 45 ~ discoverApi ~ ", json)
-
         if (json?.data === "No record found") {
           setNoMore(true)
         } else {
@@ -131,7 +129,6 @@ function ExploreScreen() {
               legacyImplementation={false}
               onEndReached={handleFlastListEndReached}
               onEndReachedThreshold={0.4}
-              style={{ paddingHorizontal: 7 }}
             />
           )}
         </View>
