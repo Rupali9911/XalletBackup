@@ -3,6 +3,7 @@ import { networkType } from '../../common/networkType';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
+import { useSelector } from 'react-redux';
 import {
   FAVORITE_NFT_LOAD_SUCCESS,
   NEW_NFT_LIST_RESET,
@@ -99,9 +100,10 @@ export const newPageChange = data => ({
   payload: data,
 });
 
-export const newNFTData = (category, sort, limit, pageNum) => {
-  let userId = 16898
-  return (dispatch) => {
+export const newNFTData = (category, sort, limit, pageNum) => {  
+  return (dispatch,getState) => {
+    const {userData} = getState().UserReducer;
+    let userId = userData.id
     let pageSize = limit ? limit : 10;
     dispatch(newNftLoadStart())
     const url = `${NEW_BASE_URL}/nfts/all-nfts-markets`

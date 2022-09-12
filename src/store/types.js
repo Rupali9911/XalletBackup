@@ -193,3 +193,12 @@ export const LAUNCHPAD_NFT_LIST_RESET = 'LAUNCHPAD_NFT_LIST_RESET'
 export const LAUNCHPAD_NFT_LIST_START = 'LAUNCHPAD_NFT_LIST_START'
 export const LAUNCHPAD_NFT_LIST_SUCCESS = 'LAUNCHPAD_NFT_LIST_SUCCESS'
 export const LAUNCHPAD_NFT_LIST_PAGE_CHANGE = 'LAUNCHPAD_NFT_PAGE_CHANGE'
+
+//================= Network Reducer =========================
+export const GET_NETWORKS = 'GET_NETWORKS'
+
+//Chat Types
+export const CHAT_LOAD_START = 'CHAT_LOAD_START';
+export const CHAT_SUCCESS = 'CHAT_SUCCESS';
+export const CHAT_LOAD_FAIL = 'CHAT_LOAD_FAIL';
+

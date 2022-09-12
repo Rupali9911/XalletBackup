@@ -695,7 +695,13 @@
         "ongoinglaunch": "進行中",
         "CNcreatorname": "作者名",
         "CNcreatordesc": "作品の詳細",
-        "viewAllCollection": "全コレクション表示"
+        "viewAllCollection": "全コレクション表示",
+        "collectionList": "コレクション一覧",
+        "createCollection": "コレクション作成",
+        "AIChat":"AIとチャット",
+        "enterMessage":"メッセージを入力してください",
+        "CREATED_COLLECTED": "制作物 / 所有中",
+        "LIST_COLLECTION_TABLE_SYMBOL": "シンボル"
     },
     "AwardPage": {},
     "wallet": {

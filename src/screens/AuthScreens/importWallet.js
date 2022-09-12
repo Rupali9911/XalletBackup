@@ -141,7 +141,6 @@ const ImportWallet = ({ route, navigation }) => {
           let mnemonicWallet = new ethers.Wallet(private_key);
           var web3 = new Web3(Web3.givenProvider);
           const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', mnemonicWallet.privateKey);
-          console.log('mnemonicWallet', mnemonicWallet);
           const account = {
             mnemonic: mnemonicWallet.mnemonic,
             address: mnemonicWallet.address,
