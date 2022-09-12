@@ -427,7 +427,8 @@ const styles = StyleSheet.create({
   mainview: {
     backgroundColor:
       Colors.WHITE1,
-    height: hp(65),
+    // height: hp(65),
+    paddingVertical:SIZE(20),
     width: wp(95),
     right: SIZE(10),
     borderRadius: SIZE(10),
@@ -517,7 +518,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-end",
-    paddingHorizontal: SIZE(20),
+    paddingHorizontal: SIZE(10),
     marginVertical: SIZE(25)
   },
   rightGroupButton: {
@@ -529,7 +530,7 @@ const styles = StyleSheet.create({
     color: Colors.BLUE3,
   },
   expirationText: {
-    marginTop: 15,
+    marginTop: SIZE(15),
     marginLeft: 22,
     color: "#151e3d"
   },
@@ -555,12 +556,39 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderRightWidth: 0
   },
+  curancyInputPrice:{ backgroundColor: Colors.WHITE1,
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    height: hp(4.1),
+    width: wp(30),
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
+    borderRightWidth: 0,
+    paddingHorizontal:SIZE(20)
+  },
+  curancyInputChange: {
+    backgroundColor: Colors.WHITE1,
+    // borderWidth: 1,
+    borderColor: Colors.GREY1,
+    height: hp(4.4),
+    width: wp(15),
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
+  },
   busdText: {
     borderWidth: 1,
     borderColor: Colors.GREY1,
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
-    right: SIZE(2)
+    right: SIZE(2),
+  },
+  busdTextView:{
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    right: SIZE(2),
+    borderLeftWidth: 0,
   },
   imageTextView: {
     flexDirection: 'row',
@@ -576,7 +604,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: wp(20),
     height: hp(4.1),
-    justifyContent: "center"
+    justifyContent: "center",
+    
   },
   priceBoxView: {
     flexDirection: "row",
@@ -629,7 +658,10 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.GREY1,
   },
-  groupButtonView: {
+  tokenName:{
+    fontWeight:"bold"
+  },
+  makkeOfferGroupButtonView: {
     marginTop: SIZE(25),
     paddingHorizontal: SIZE(20)
   },
@@ -719,6 +751,79 @@ const styles = StyleSheet.create({
   },
   editPriceGroupButtonText: {
     fontWeight: "bold"
+  },
+  //===========>
+  placeAbbidView: {
+    backgroundColor:
+      Colors.WHITE1,
+    height: hp(30),
+    width: wp(95),
+    right: SIZE(10),
+    borderRadius: SIZE(10),
+    justifyContent:'center'
+  },
+  PlaceAbidHeaderview: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: SIZE(12),
+    paddingHorizontal:SIZE(35)
+  },
+  bidtext: {
+    fontWeight: "bold",
+    fontSize: SIZE(20)
+  },
+  priceText: {
+    paddingTop: SIZE(30),
+    paddingLeft: SIZE(35),
+    fontWeight: "bold"
+  },
+  placeAbidgroupButtonView: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
+    paddingHorizontal:SIZE(35)
+  },
+  rightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.white
+  },
+  rightGroupButtonText: {
+    color: Colors.BLUE3,
+  },
+  numberText:{
+    padding:SIZE(10)
+  },
+  placeAbidNumberView:{
+    width: wp(61),
+    borderColor:Colors.GREY1,
+    borderTopLeftRadius:8,
+    borderBottomLeftRadius:8,
+    borderWidth:1,
+    borderRightWidth:0
+  },
+  busdView:{
+    borderWidth:1,
+    borderColor:Colors.GREY1,
+    borderTopRightRadius:8,
+    borderBottomRightRadius:8,
+    right:SIZE(3)
+  },
+  priceBoxView:{
+    flexDirection:"row",
+  justifyContent:"space-between",
+  alignItems:"center",
+  paddingHorizontal:SIZE(35),
+  marginTop: SIZE(25),
+  marginBottom: SIZE(30)
+  } ,
+  cancelimg:{
+    tintColor:Colors.GREY1,
+    marginTop:SIZE(5)
+  },
+  priceNFT:{
+    padding:SIZE(10),
+    fontWeight:"bold"
   }
 });
 
