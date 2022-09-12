@@ -53,6 +53,16 @@ const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
         return () => clearTimeout(timer);
     }, [isFocused]);
 
+    // useEffect(() => {
+    //         dispatch(newNftLoadStart());
+    //         dispatch(newNftListReset(category));
+    //         getNFTlist(category, sortCategory, limit, 1);
+    //         // setIsFirstRender(false)
+    //         setSortOption(0)
+    //         setPage(1)
+    //         screen(category)
+    // }, [screen])
+
     //===================== Dispatch Action to Fetch Hot NFT List =========================
     const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
         dispatch(newNFTData(category, sort, pageSize, pageNum));

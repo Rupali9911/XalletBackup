@@ -14,6 +14,7 @@ import { networkType } from "../../common/networkType";
 import { nftDataCollectionLoadSuccess } from "../../store/actions/nftDataCollectionAction";
 import axios from 'axios';
 import sendRequest from '../../helpers/AxiosApiRequest';
+import { useIsFocused } from '@react-navigation/native';
 
 function ExploreScreen() {
   const { wallet, userData } = useSelector(state => state.UserReducer);
@@ -28,12 +29,14 @@ function ExploreScreen() {
   const [isFetching, toggleFetching] = useState(false);
   const owner = wallet?.address;
   const userId = userData?.id;
+  const isFocused = useIsFocused()
 
   useEffect(() => {
-    setLoader(true)
+    if(isFocused){
+      setLoader(true)
     loadNFTList(1, true)
-    // discoverApi(1, true)
-  }, []);
+    }
+  }, [isFocused]);
 
   const loadNFTList = (page, refresh) => {
     const url = `${NEW_BASE_URL}/nfts/nfts-discover`
@@ -45,8 +48,6 @@ function ExploreScreen() {
       }
     })
       .then(json => {
-        console.log("🚀 ~ file: index.js ~ line 45 ~ discoverApi ~ ", json)
-
         if (json?.data === "No record found") {
           setNoMore(true)
         } else {
@@ -128,7 +129,6 @@ function ExploreScreen() {
               legacyImplementation={false}
               onEndReached={handleFlastListEndReached}
               onEndReachedThreshold={0.4}
-              style={{ paddingHorizontal: 7 }}
             />
           )}
         </View>

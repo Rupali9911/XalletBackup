@@ -58,6 +58,7 @@ export default function NFTItem(props,{ navigation }) {
       </FixedTouchableHighlight>
     )
   }
+  
 
   //======== Render NFT Collection Items Collection Images Function ============
   const renderNFTCollectionItem = (isCollection) => {
@@ -79,11 +80,13 @@ export default function NFTItem(props,{ navigation }) {
 
   //================== Render Heart Icon Function ===================
   const handleLikeMethod = async () => {
+    
     let nftItem = {
       ...item,
       isLike: isLike,
       // totalLike: nftData?.totalLike
     };
+    console.log(nftItem, 'like nftItem')
     const nftData = await handleLike(nftItem);
     if (nftData) {
       setIsLike(!Number(nftItem.isLike))
