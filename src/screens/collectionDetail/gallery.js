@@ -27,6 +27,7 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 import CollectionItem from '../../components/CollectionItem';
+import { ScrollView } from 'native-base';
 
 // const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
 // const BLIND_SERIES_COLLECTION_TYPE = [
@@ -360,41 +361,41 @@ const Gallery = ({ route }) => {
                 </View>
             ) : collectionList.length !== 0 ? (
                 <FlatList
-                    data={collectionList}
-                    nestedScrollEnabled={true}
-                    horizontal={false}
-                    numColumns={2}
-                    // initialNumToRender={isSeries ? 6 : 15}
-                    initialNumToRender={15}
-                    onRefresh={handleFlatlistRefresh}
-                    refreshing={page === 1 && isLoading}
-                    renderItem={memoizedValue}
-                    onEndReached={() => {
-                        if (!isLoading && collectionList.length !== totalCount) {
-                            let num = page + 1;
+                        data={collectionList}
+                        nestedScrollEnabled={true}
+                        horizontal={false}
+                        numColumns={2}
+                        // initialNumToRender={isSeries ? 6 : 15}
+                        initialNumToRender={15}
+                        onRefresh={handleFlatlistRefresh}
+                        refreshing={page === 1 && isLoading}
+                        renderItem={memoizedValue}
+                        onEndReached={() => {
+                            if (!isLoading && collectionList.length !== totalCount) {
+                                let num = page + 1;
 
-                            // if (isSeries) {
-                            //     dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
-                            // } else {
-                            //     dispatch(nftDataCollectionLoadStart(tabTitle));
-                            // }
+                                // if (isSeries) {
+                                //     dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
+                                // } else {
+                                //     dispatch(nftDataCollectionLoadStart(tabTitle));
+                                // }
 
-                            // getNFTlist(num);
-                            // if (isSeries) {
-                            //     dispatch(nftBlindSeriesCollectionPageChange(num));
-                            // } else {
-                            //     dispatch(nftDataCollectionPageChange(num));
-                            // }
+                                // getNFTlist(num);
+                                // if (isSeries) {
+                                //     dispatch(nftBlindSeriesCollectionPageChange(num));
+                                // } else {
+                                //     dispatch(nftDataCollectionPageChange(num));
+                                // }
 
-                            dispatch(nftDataCollectionLoadStart(tabTitle));
-                            getNFTlist(num);
-                            dispatch(nftDataCollectionPageChange(num));
-                        }
-                    }}
-                    onEndReachedThreshold={0.4}
-                    keyExtractor={keyExtractor}
-                    ListFooterComponent={renderFooter}
-                />
+                                dispatch(nftDataCollectionLoadStart(tabTitle));
+                                getNFTlist(num);
+                                dispatch(nftDataCollectionPageChange(num));
+                            }
+                        }}
+                        onEndReachedThreshold={0.4}
+                        keyExtractor={keyExtractor}
+                        ListFooterComponent={renderFooter}
+                    />
             ) : (
                 <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>

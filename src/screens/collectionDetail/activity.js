@@ -125,10 +125,12 @@ const Activity = ({ route }) => {
             //     manualColl,
             //     seriesInfoId
             // )
+
             if (isFocused && !isDetailScreen) {
                 dispatch(activityNftListStart(tabTitle));
                 dispatch(activityNftListReset());
                 if (filterTableValue.length > 0) {
+                    console.log('FilterTableValu, : ', filterTableValue)
                     setValues(filterTableValue)
                     getNFTlist(1, filterTableValue)
 
@@ -140,9 +142,9 @@ const Activity = ({ route }) => {
                 dispatch(activityNftListPageChange(1));
             } else {
                 isFocused && setDetailScreen(false)
-            } 
+            }
         }
-    }, [ isFocused, filterTableValue]);
+    }, [isFocused, filterTableValue]);
 
     function setDate(t) {
         // var s = moment.utc(t).local().format("YYYY/MM/DD HH:mm:ss");
@@ -209,25 +211,25 @@ const Activity = ({ route }) => {
         );
     };
 
-    const getNftData = (index) => { 
-        let nftDetail = collectionItem[index]; 
+    const getNftData = (index) => {
+        let nftDetail = collectionItem[index];
         let url = `${NEW_BASE_URL}/nfts/details`;
         // let url = `https://prod-backend.xanalia.com/nfts/details?networkName=${nftDetail.nft.network.name}&collectionAddress=${nftDetail.nft.collections.contractAddress}&nftTokenId=${nftDetail.nft.tokenId}`;
 
         sendRequest({
             url,
             params: {
-              networkName: nftDetail.nft.network.name,
-              collectionAddress: nftDetail.nft.collections.contractAddress,
-              nftTokenId: nftDetail.nft.tokenId,
+                networkName: nftDetail.nft.network.name,
+                collectionAddress: nftDetail.nft.collections.contractAddress,
+                nftTokenId: nftDetail.nft.tokenId,
             }
-          })
-        .then(json => {
-          navigation.push('CertificateDetail', { item: json }); 
-        }).catch(err => {
-          console.log('Error : ', err);
-        });
-        
+        })
+            .then(json => {
+                navigation.push('CertificateDetail', { item: json });
+            }).catch(err => {
+                console.log('Error : ', err);
+            });
+
         // let nftItemDetails = nftDetail.nft;
 
         // collectionItem
@@ -258,17 +260,16 @@ const Activity = ({ route }) => {
         // })
         setDetailScreen(true)
     }
-
     return (
         <KeyboardAwareScrollView
             contentContainerStyle={styles.containerStyle}
             style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            
-            <View style={{ flex: 1 }}>
-                <Filters/>
 
-                <View style={{ margin: hp(1), marginVertical: collectionList.length > 0 ? hp(3) : hp(0), }}>
+            <View style={{ flex: 1 }}>
+                <Filters />
+
+                <View style={{ margin: hp(1), marginVertical: collectionList.length > 0 ? hp(3) : hp(0) }}>
                     <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
@@ -283,7 +284,9 @@ const Activity = ({ route }) => {
                                     <Loader />
                                 </View>
                             ) :
-                                (!isLoading && collectionList.length > 0 ? (<Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+                                (!isLoading && collectionList.length > 0 ? (
+                                 
+                                <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                                     <Row
                                         data={tradingTableHead}
                                         style={{ marginBottom: hp(0.5) }}
@@ -346,24 +349,26 @@ const Activity = ({ route }) => {
 
                                                         return (
 
+                                                            
+
                                                             <Cell
                                                                 key={cellIndex}
                                                                 data={
                                                                     // cellIndex == 0 
                                                                     cellIndex === 0 ? (
+
                                                                         <TouchableOpacity
-                                                                            style={styles.tableCellImageView}
                                                                             onPress={() => getNftData(rowIndex)}
-                                                                            numberOfLines={1}
+                                                                            style={styles.tableCellImageView}                                                                       
+                                                                            // numberOfLines={1}
                                                                         >
                                                                             <Image
                                                                                 style={styles.cellImage}
                                                                                 source={{ uri: cellData.image }}
                                                                             />
-
-                                                                            <Text numberOfLines={1} >{cellData.imageName}</Text>
+                                                                            <Text numberOfLines={1} style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
                                                                         </TouchableOpacity>
-                                                                        ) : 
+                                                                    ) : 
                                                                         cellIndex === 1 ?
                                                                             (
                                                                                 cellData
@@ -483,7 +488,7 @@ const Activity = ({ route }) => {
                                                                 textStyle={styles.textStyle}
                                                                 width={wid}
                                                                 height={hp(6.5)}
-                                                                />
+                                                            />
                                                             // <Cell
                                                             //     key={cellIndex}
                                                             //     data={
@@ -563,7 +568,7 @@ const Activity = ({ route }) => {
                                     ) :
                                         <></>
                                     }
-                                </Table>) :
+                                </Table>) : 
                                     (
                                         <View style={{
                                             width: Dimensions.get('window').width,

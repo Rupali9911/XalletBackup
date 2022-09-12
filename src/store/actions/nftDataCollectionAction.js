@@ -121,7 +121,7 @@ export const activityNftListPageChange = (data) => ({
 //       .then(response => response.json()) 
 //       .then(res => { 
 
-//         if (tabTitle === 'Activity') { 
+//         if (tabTitle === 'Activity') {
 //           // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 88 ~ return ~ res", res)
 //           let bids = []
 //           for (let i = 0; i < res.data.length; i++) {
@@ -289,13 +289,13 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
       sort
     };
 
-    sendRequest({
+      sendRequest({
       url: `${NEW_BASE_URL}/sale-nft/trading-history`,
       method: 'POST',
       data
     })
       .then(res => {
-        if (res?.items?.length > 0) {
+        if (res?.items?.length > 0) { 
           const tradingList = [];
 
           res?.items?.map((item) => {
@@ -316,6 +316,9 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
             tradingList.push(temp);
             dispatch(activityNftListSuccess({ list: tradingList, count: res?.meta?.totalPages, result: res?.items, tabTitle: tabTitle }))
           });
+        }
+        else{
+          dispatch(activityNftListFail());
         }
       })
       .catch(err => {
@@ -341,7 +344,6 @@ export const nftDataCollectionList = (page, tabTitle, networkName, contractAddre
         }
       })
         .then(json => {
-          console.log('THis is JSOn : ', json)
           dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         }).catch(err => {
           dispatch(nftDataCollectionLoadFail());

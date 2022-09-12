@@ -196,9 +196,8 @@ export default function NFTItem(props) {
       case NFT_MARKET_STATUS.NOT_ON_SALE:
         return (
           <Text style={styles.statusSoldOut}>
-            {/* {translate('common.notforsale')} */}
-            {('Sold Out')}
-          </Text>
+            {translate('common.notOnSell')}
+          </Text> 
         )
       case NFT_MARKET_STATUS.ON_FIX_PRICE:
         return (

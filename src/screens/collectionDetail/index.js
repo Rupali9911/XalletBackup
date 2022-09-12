@@ -1180,8 +1180,7 @@ function CollectionDetail(props) {
                     }}
                 />}
                 {tab && <Tab.Screen
-                    // name={translate('common.notforsale')}
-                    name={'Sold Out'}
+                    name={translate('common.notOnSell')}
                     component={Owned}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
@@ -1195,7 +1194,7 @@ function CollectionDetail(props) {
                         // userCollection: collection?.userCollection,
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
-                        tabTitle: 'Sold Out',
+                        tabTitle: translate('common.notOnSell'),
                         collection: item,
                         tabStatus: 2,
                         isLaunchPad: isLaunchPad
