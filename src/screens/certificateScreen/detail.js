@@ -844,11 +844,11 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.placeAbidgroupButtonView}>
               <GroupButton
-                leftText={'Confirm'}
+                leftText={translate('common.Confirm')}
                 leftDisabled={false}
                 leftLoading={false}
                 onLeftPress={() => { }}
-                rightText={'Top Up'}
+                rightText={translate('common.topUp')}
                 rightDisabled={false}
                 rightLoading={false}
                 onrightPress={() => { }}
@@ -925,7 +925,7 @@ const DetailScreen = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.itemText}>{translate('common.item')}</Text>
+            <Text style={styles.itemText}>{translate('common.ITEM')}</Text>
             <View style={styles.userView}>
               <View style={styles.imageTextView}>
                 <Image
@@ -3451,12 +3451,14 @@ const DetailScreen = ({ navigation, route }) => {
             {renderBidNTradingHistory('offers')}
             {renderBidNTradingHistory('trading')}
             {renderMoreCollection()}
+
             {editPriceModal()}
             {ModalBody()}
             {placeABidModal()}
+
             <ShowModal
               title={translate('common.cancelAuction')}
-              description={translate('common.areYouWantCancelNFT')}
+              description={translate('common.areYouWantCancelAuction')}
               isVisible={cancelAuctionModal}
               closeModal={modalClose}
               leftButtonTitle={translate('common.Cancel')}
@@ -3475,7 +3477,7 @@ const DetailScreen = ({ navigation, route }) => {
               reclaim={true}
             />
             <ShowModal
-              title={translate('common.CanCel')}
+              title={translate('common.Cancel')}  // Need to make it capital
               description={translate('common.cancellingYourlistingWillUnPublish')}
               isVisible={cancel}
               closeModal={cancelModal}
