@@ -56,6 +56,7 @@ export default function NFTItem(props) {
       </FixedTouchableHighlight>
     )
   }
+  
 
   //======== Render NFT Collection Items Collection Images Function ============
   const renderNFTCollectionItem = (isCollection) => {
