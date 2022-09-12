@@ -290,9 +290,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center' 
   },
   tableCellImageView: {
+    // flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    maxWidth: 200
   },
   cellImage: {
     height: hp(5.5), 

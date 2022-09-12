@@ -132,7 +132,6 @@ const soldOut = ({ route }) => {
         }
     }, [isFocused]);
 
-    console.log('IsLaunchPad : ', isLaunchPad);
     const getNFTlist = useCallback(
         
         page => {
