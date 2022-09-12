@@ -11,7 +11,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  CheckBox
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
@@ -87,7 +86,7 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import Images from '../../constants/Images';
 import ShowModal from "./modal"
 import cancelImg from "../../../assets/images/cancel.png"
-// import Modal from "react-native-modal";
+import Checkbox from '../../components/checkbox';
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
@@ -181,7 +180,11 @@ const DetailScreen = ({ navigation, route }) => {
   const [editPrice, setEditPrice] = useState(false)
   const [priceEdit, setPriceEdit] = useState(false)
   const [cancel, setCancel] = useState(false)
-
+  const [placeABid, setPlaceABid] = useState(false)
+  const [isCheck, setIsCheck] = useState(false)
+  const [checkOut, setCheckOut] = useState(false)
+  const [priceChange, SetPriceChange] = useState('')
+  const [editNull, setEditNull] = useState(null)
   // const [isContractOwner, setIsContractOwner] = useState(false);
   // const [isOwner, setIsOwner] = useState(false);
   // const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
@@ -777,7 +780,6 @@ const DetailScreen = ({ navigation, route }) => {
       method: 'GET'
     })
       .then((response) => {
-        // console.log("===>", response);
       })
   }
 
@@ -788,7 +790,6 @@ const DetailScreen = ({ navigation, route }) => {
       method: 'POST'
     })
       .then((response) => {
-        // console.log("Cancel Auction===>", response);
       })
   }
   const editPriceApi = () => {
@@ -801,34 +802,31 @@ const DetailScreen = ({ navigation, route }) => {
       }
     })
       .then((response) => {
-        console.log("Edit Price===>", response);
+        console.log("edit==>", response);
       })
   }
 
+
   const editPriceModal = () => {
     const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
-    // console.log("tokenName",tokenName);
     return (
       <View style={styles.modalContainer}>
         <Modal isVisible={priceEdit}>
           <View style={styles.editPriceContainner}>
-
             <View style={styles.editPriceHeaderView}>
               <Text style={styles.editPriceText}>{translate('common.editPrice')}</Text>
               <TouchableOpacity onPress={() => { setPriceEdit(false) }}>
                 <Image source={cancelImg} style={styles.cancelButton} />
               </TouchableOpacity>
             </View>
-
             <View style={styles.inputWrapperView}>
               <View style={styles.inputFieldView}>
-                <TextInput style={styles.inputField} />
+                <TextInput style={styles.inputField} onChangeText={(text) => SetPriceChange(text)} value={numberWithCommas(Number(price).toFixed(2))}></TextInput>
               </View>
               <View style={styles.usdtView}>
                 <Text style={styles.usdtText}>{tokenName}</Text>
               </View>
             </View>
-
             <View style={styles.editPriceGroupBButtonView}>
               <GroupButton
                 leftText={translate('common.change')}
@@ -840,7 +838,65 @@ const DetailScreen = ({ navigation, route }) => {
                 rightHide
               />
             </View>
+          </View>
+        </Modal>
+      </View>
+    )
+  }
 
+  const placeAbidApi = () => {
+    const url = `${NEW_BASE_URL}/auction/${auctionId}/place-bid`
+    sendRequest({
+      url,
+      method: 'POST'
+    })
+      .then((response) => {
+      })
+  }
+  const openBidModal = () => {
+    setPlaceABid(true)
+  }
+  const closeBidModal = () => {
+    setPlaceABid(false)
+  }
+
+  const placeABidModal = () => {
+    const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
+    const price = detailNFT?.saleData?.fixPrice?.price
+    return (
+      <View style={{ flex: 1 }}>
+        <Modal isVisible={placeABid} >
+          <View style={styles.placeAbbidView}>
+            <View style={styles.PlaceAbidHeaderview}>
+              <Text style={styles.bidtext}>{translate('common.placeABid')}</Text>
+              <TouchableOpacity onPress={closeBidModal}>
+                <Image source={cancelImg} style={styles.cancelimg} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.priceText}>Price</Text>
+            <View style={
+              styles.priceBoxView}>
+              <View style={styles.placeAbidNumberView}>
+                <Text style={styles.numberText}>{price}</Text>
+              </View>
+              <View style={styles.busdView}>
+                <Text style={styles.priceNFT}>{tokenName}</Text>
+              </View>
+            </View>
+            <View style={styles.placeAbidgroupButtonView}>
+              <GroupButton
+                leftText={'Confirm'}
+                leftDisabled={false}
+                leftLoading={false}
+                onLeftPress={() => { }}
+                rightText={'Top Up'}
+                rightDisabled={false}
+                rightLoading={false}
+                onrightPress={() => { }}
+                rightStyle={styles.rightGroupButton}
+                rightTextStyle={styles.rightGroupButtonText}
+              />
+            </View>
           </View>
         </Modal>
       </View>
@@ -879,117 +935,132 @@ const DetailScreen = ({ navigation, route }) => {
     // showModal()
   }
   const closeModal = () => {
-    setModalVisible(false)
+    {
+      modalVisible ?
+        setModalVisible(false)
+        :
+        setCheckOut(false)
+    }
     // showModal()
   }
 
   const ModalBody = () => {
-    // console.log("===>",detailNFT);
     const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
+    const tokenID = detailNFT?.saleData?.fixPrice?.id
+    const name = detailNFT?.name
+    const percentage = numberWithCommas(Number(price).toFixed(2)) * 100 / 40
     return (
-      // <Modal
-      //   isVisible={isVisible}
-      //   // backdropColor="#B4B3DB"
-      //   // backdropOpacity={0.8}
-      //   onBackdropPress={() => setVisible(false)}
-      //   // animationIn="zoomInDown"
-      //   // animationOut="zoomOutUp"
-      //   // animationInTiming={600}
-      //   // animationOutTiming={600}
-      //   // backdropTransitionInTiming={600}
-      //   // backdropTransitionOutTiming={600}
-      //   onRequestClose={() => { setVisible(false) }}>
-      //   <View style={{backgroundColor:Colors.white, }}>
+      <View style={styles.modalBody}>
+        <Modal isVisible={modalVisible ? modalVisible : checkOut}>
 
-      //     <Text style={styles.modalTitle}>
-      //       {translate('wallet.common.selectLanguage')}
-      //     </Text>
-      //     <View style={{ marginTop: hp('3%') }}>
+          <View style={styles.mainview}>
+            <View style={styles.headerview}>
 
-      //     </View>
-      //   </View>
-      // </Modal>
-      <>
-        {modalVisible ?
+              {modalVisible ?
+                <Text style={styles.bidtext}>{translate('common.makeAnOffer')}</Text>
+                :
+                <Text style={styles.bidtext}>{translate('common.completeCheckOut')}</Text>
+              }
+              <TouchableOpacity onPress={() => { closeModal() }}>
+                <Image style={styles.headerCancelButton} source={Images.cancelIcon} />
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.modalBody}>
-            <Modal isVisible={modalVisible}>
+            <Text style={styles.itemText}>{translate('common.item')}</Text>
+            <View style={styles.userView}>
+              <View style={styles.imageTextView}>
+                <Image
+                  style={styles.userImage}
+                  source={Images.pIcon}
+                />
 
-              <View style={styles.mainview}>
-                <View style={styles.headerview}>
-                  <Text style={styles.bidtext}>{translate('common.makeAnOffer')}</Text>
-                  <TouchableOpacity onPress={() => { closeModal() }}>
-                    <Image style={styles.headerCancelButton} source={Images.cancelIcon} />
-                  </TouchableOpacity>
+                {modalVisible ?
+                  <Text style={styles.amountText}>{tokenID}</Text>
+                  :
+                  <Text style={styles.amountText}>{name}</Text>
+                }
+              </View>
+
+              <View style={styles.inputContainer}>
+                <View style={modalVisible ? styles.inputFieldView : styles.curancyInputChange}>
+                  {modalVisible ?
+                    <TextInput style={styles.curancyInput} ></TextInput>
+                    :
+                    <TextInput style={styles.curancyInputPrice} >{numberWithCommas(Number(price).toFixed(0))}</TextInput>
+                  }
                 </View>
-
-                <Text style={styles.itemText}>{translate('common.item')}</Text>
-                <View style={styles.userView}>
-                  <View style={styles.imageTextView}>
-                    <Image
-                      style={styles.userImage}
-                      source={Images.pIcon}
-                    />
-
-                    <Text style={styles.amountText}>461</Text>
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <View style={styles.inputFieldView}>
-                      <TextInput style={styles.curancyInput} />
-                    </View>
-                    <View style={styles.busdText}>
-                      <View style={styles.currencyView}>
-                        <Text >{tokenName}</Text>
-                        <Image style={{ tintColor: Colors.GREY1, marginLeft: SIZE(10) }} source={Images.downArrow} />
-                      </View>
-                    </View>
+                <View style={modalVisible ? styles.busdText : styles.busdTextView}>
+                  <View style={styles.currencyView}>
+                    <Text style={styles.tokenName}>{tokenName}</Text>
+                    {modalVisible ?
+                      <Image style={{ tintColor: Colors.GREY1, marginLeft: SIZE(10) }} source={Images.downArrow} />
+                      : null
+                    }
                   </View>
                 </View>
-                <View style={styles.breakLine} />
+              </View>
+            </View>
+            <View style={styles.breakLine} />
+            {modalVisible ?
+              <>
                 <Text style={styles.expirationText}>{translate('common.offerExpiration')}</Text>
                 <View style={styles.numberView}>
                   <Text style={styles.dateText}>09/19/2022 12:56 pm</Text>
                 </View>
-                <Text style={styles.feeText}>{translate('common.fee')}</Text>
-                <View style={styles.royaltyFeeView}>
-                  <Text>Royalty fee</Text>
-                  <Text style={styles.priceInPercent}>0 ALIA (0%)</Text>
-                </View>
-                <View style={styles.serviceFeeView}>
-                  <Text>Service fee</Text>
-                  <Text style={styles.priceInPercent}>0 ALIA (2.5%)</Text>
-                </View>
-                <View style={styles.breakLine} />
-                <View style={styles.willPayView}>
-                  <Text>You will pay</Text>
-                  <Text style={styles.nftPrice}>0 ALIA</Text>
-                </View>
-                <View style={styles.breakLine} />
-                <View style={styles.footerView}>
-                  <Image style={styles.checkboxImg} source={Images.unCheckIcon} />
-                  {/* <CheckBox /> */}
-                  <Text style={styles.footerText}>By checking this box,I agree to Xanalia's<Text style={styles.termsText}> Terms of Serevices</Text>
-                  </Text>
-                </View>
-                <View style={styles.groupButtonView}>
-                  <GroupButton
-                    leftText={'Confirm'}
-                    leftDisabled={false}
-                    leftLoading={false}
-                    onLeftPress={() => { }}
-                    rightText={'Top Up'}
-                    rightDisabled={false}
-                    rightLoading={false}
-                    onrightPress={() => { }}
-                    rightStyle={styles.rightGroupButton}
-                    rightTextStyle={styles.rightGroupButtonText}
-                  />
-                </View>
-              </View>
-            </Modal>
+              </>
+              : null}
+            <Text style={styles.feeText}>{translate('common.fee')}</Text>
+            <View style={styles.royaltyFeeView}>
+
+              <Text>{translate('common.royaltyFee')}</Text>
+              {modalVisible ?
+                <Text style={styles.priceInPercent}>0 {tokenName} (2.5%)</Text>
+                :
+                <Text style={styles.priceInPercent}>{numberWithCommas(Number(percentage).toFixed(0))} {tokenName} (2.5%)</Text>
+              }
+            </View>
+            <View style={styles.serviceFeeView}>
+              <Text>{translate('common.serviceFee')}</Text>
+              {modalVisible ?
+                <Text style={styles.priceInPercent}>0 {tokenName} (2.5%)</Text>
+                :
+                <Text style={styles.priceInPercent}>{numberWithCommas(Number(percentage).toFixed(0))} {tokenName} (2.5%)</Text>
+              }
+            </View>
+            <View style={styles.breakLine} />
+            <View style={styles.willPayView}>
+              <Text>{translate('common.youWillPay')}</Text>
+              {modalVisible ?
+                <Text style={styles.nftPrice}>0 {tokenName}</Text>
+                :
+                <Text style={styles.nftPrice}>{numberWithCommas(Number(price).toFixed(0))} {tokenName}</Text>
+              }
+            </View>
+            <View style={styles.breakLine} />
+            <View style={styles.footerView}>
+              <Checkbox isCheck={isCheck} onChecked={() => { setIsCheck(!isCheck) }} iconSize={wp("7%")}
+              />
+              <Text style={styles.footerText}>{translate('common.byCheckingTheBox')}<Text style={styles.termsText}> {translate('wallet.common.termsServices')}</Text>
+              </Text>
+            </View>
+            <View style={styles.makkeOfferGroupButtonView}>
+              <GroupButton
+                leftText={'Confirm'}
+                leftDisabled={false}
+                leftLoading={false}
+                onLeftPress={() => { }}
+                rightText={'Top Up'}
+                rightDisabled={false}
+                rightLoading={false}
+                onrightPress={() => { }}
+                rightStyle={styles.rightGroupButton}
+                rightTextStyle={styles.rightGroupButtonText}
+              />
+            </View>
           </View>
-          : null}
-      </>
+        </Modal>
+      </View>
+
     )
   }
 
@@ -1031,7 +1102,7 @@ const DetailScreen = ({ navigation, route }) => {
           leftText={translate('common.makeOffer')}
           leftDisabled={false}
           leftLoading={false}
-          onLeftPress={() => { }}
+          onLeftPress={() => { setModalVisible(true) }}
           rightHide
         />
       </View>
@@ -1064,11 +1135,11 @@ const DetailScreen = ({ navigation, route }) => {
           leftText={translate('common.buy')}
           leftDisabled={false}
           leftLoading={false}
-          onLeftPress={() => { }}
+          onLeftPress={() => { setCheckOut(true) }}
           rightText={translate('common.makeOffer')}
           rightDisabled={false}
           rightLoading={false}
-          onRightPress={() => { setModalVisible(!modalVisible) }}
+          onRightPress={() => { setModalVisible(true) }}
           rightStyle={styles.rightButton}
           rightTextStyle={styles.rightButtonText}
         />
@@ -3448,6 +3519,7 @@ const DetailScreen = ({ navigation, route }) => {
             {renderMoreCollection()}
             {editPriceModal()}
             {ModalBody()}
+            {placeABidModal()}
             <ShowModal
               title={translate('common.cancelAuction')}
               description={translate('common.areYouWantCancelNFT')}
