@@ -1,6 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import axios from 'axios'
+import axios from 'axios';
 import { NEW_BASE_URL } from '../common/constants';
 import { alertWithSingleBtn } from '../common/function';
 
@@ -13,7 +13,7 @@ async function sendRequest(payload) {
         payload.headers = payload.headers
             ? {
                 ...payload.headers,
-                Authorization: 'Bearer ' + token
+              //  Authorization: 'Bearer ' + token
             }
             : token ? {
                 'Content-Type': 'application/json',
@@ -26,6 +26,7 @@ async function sendRequest(payload) {
         if (state.isConnected) {
             isAlert = false;
             const response = await axiosInstance.request(payload);
+            console.log('Respnse from API------->', response)
             return response?.data
         } else {
             if (!isAlert) {
@@ -55,6 +56,7 @@ axiosInstance.interceptors.response.use(
         return response
     },
     async (err) => {
+        console.log('ERROR:------->', err)
         const { response, config } = err
         try {
             if (response?.status === 401) {

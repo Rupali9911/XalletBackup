@@ -1,5 +1,5 @@
 
-import { CHAT_LOAD_START, CHAT_SUCCESS, CHAT_LOAD_FAIL } from '../types';
+import { CHAT_NFT_COLLECTION_START, CHAT_NFT_COLLECTION_SUCCESS, CHAT_NFT_COLLECTION_FAIL, CHAT_LOAD_START, CHAT_SUCCESS, CHAT_LOAD_FAIL } from '../types';
 import { chatLoadStart, chatLoadSuccess, chatLoadFail } from '../actions/chatAction';
 import { ApiRequest } from '../../helpers/ApiRequest';
 
@@ -7,10 +7,22 @@ const initialState = {
     isChatLoading: false,
     chatSuccess: '',
     chatFail: '',
+    chatNftCollectionLoading: false,
+    chatNftCollectionList: [],
+    chatNftCollectionFail: '',
 }
 
 export default function chatReducer(state = initialState, action) { 
     switch (action.type) {
+        case CHAT_NFT_COLLECTION_START:
+            return { ...state, chatNftCollectionLoading: true };
+
+        case CHAT_NFT_COLLECTION_SUCCESS:
+            return { ...state, chatNftCollectionList: action.payload, chatNftCollectionLoading: false, chatNftCollectionFail: '' };
+
+        case CHAT_NFT_COLLECTION_FAIL:
+            return { ...state, chatNftCollectionFail: action.payload, chatNftCollectionLoading: false };
+
         case CHAT_LOAD_START:
             return { ...state, isChatLoading: true };
 

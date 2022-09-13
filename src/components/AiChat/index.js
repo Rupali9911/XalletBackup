@@ -1,12 +1,17 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, Platform, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, StatusBar, SectionList, Image, Platform, TextInput, FlatList, KeyboardAvoidingView, } from 'react-native';
 import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
-import React, { useState, } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAiChat } from '../../store/reducer/chatReducer';
+import { getOtherDataNft, getMyDataNft } from '../../store/actions/chatAction';
 import ImagesSrc from '../../constants/Images';
 import { translate } from '../../walletUtils';
 import styles from './style';
+import AppSearch from '../../components/appSearch';
+import { Searchbar } from 'react-native-paper';
+
+
 
 const AiChat = () => {
   const dispatch = useDispatch();
@@ -15,185 +20,126 @@ const AiChat = () => {
   const [message, setMessage] = useState('');
   const [chatMessage, setChatMessage] = useState([]);
   const [disableButton, setDisableButton] = useState(false);
+  const [searchTxt, setSearchTxt] = useState('');
+
   const flatList = React.useRef(null);
 
   // =============== Getting data from reducer ========================
   const { chatSuccess, isChatLoading, error } = useSelector(state => state.chatReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { chatReducer } = useSelector(state => state);
 
-  // ===================== Call RightSide View ===================================
-  const RightBubble = (props) => {
-    const { item } = props;
-    return (
-      <View style={styles.rightBubbleContainer}>
-        <View
-          style={styles.timeFormat}>
-          <Text style={styles.statusText}>{item.time}</Text>
-        </View>
-        <View style={[styles.talkBubble, { marginRight: 10, }]}>
-          <View
-            style={[
-              styles.talkBubbleAbsoluteRight,
-            ]}
-          />
-          <View
-            style={styles.textContainer}>
-            <Text
-              style={{
-                color: Colors.black,
-                fontSize: 14,
-                // fontFamily: Fonts.extralight,
-              }}>
-              {item.message}
-            </Text>
-          </View>
-        </View>
-      </View>
-    );
-  }
+  const collectionList = chatReducer.chatNftCollectionList;
 
-  // ===================== Call LeftSide View ===================================
-  const LeftBubble = (props) => {
-    const { item } = props;
-    return (
-      <View style={styles.leftBubbleContainer}>
-        <View style={[styles.talkBubble, { marginLeft: 10, }]}>
-          <View
-            style={[
-              styles.talkBubbleAbsoluteLeft,
-            ]}
-          />
-          <View
-            style={styles.textContainer}>
-            {item.type == 'Hold' && item.message == ''
-              ?
-              <Image source={ImagesSrc.typingLoading} style={styles.isLoading} alt="loading..." />
-              :
-              <Text
-                style={{
-                  color: Colors.black,
-                  fontSize: 14,
-                }}>
-                {item.message}
-              </Text>
-            }
-          </View>
-        </View>
-        <View
-          style={styles.timeFormat}>
-          <Text style={styles.statusText}>{item.time}</Text>
-        </View>
-      </View>
-    );
-  }
+  console.log('CollectionList is Here >>>>>>> ', collectionList);
 
-  // ===================== Render AIChat Flatlist ===================================
-  const ShowChatMessage = (props) => {
-    const { item } = props;
-    return (
-      <View>
-        {item.type == 'sender' ?
-          <RightBubble item={props.item} />
-          :
-          <LeftBubble item={props.item} />
-        }
-      </View>
-    );
-  }
+  const { userData } = useSelector(
+    state => state.UserReducer,
+  );
 
-  // ===================== Send Message ===================================
-  const sendMessage = (msg, time) => {
-    let timeConversion = time.toLocaleTimeString('en-US', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-    if (msg && msg != '') {
-      let sendObj = {
-        message: msg,
-        type: 'sender',
-        time: timeConversion,
-      };
-      let holdResp = {
-        message: '',
-        type: 'Hold',
-      }
-      setChatMessage(chatMessage => [...chatMessage, sendObj, holdResp]);
-      setDisableButton(true);
-      console.log('Before Slice : ', chatMessage);
-      dispatch(getAiChat(msg, selectedLanguageItem.language_display))
-        .then(chatResp => {
-          // chatMessage.pop();
-          setChatMessage((previousObj) => (previousObj.slice(0, -1)));
-          let receiveObj = {
-            message: chatResp,
-            type: 'receiver',
-            time: timeConversion
-          }
-          console.log('THis is Receiver Object : ', receiveObj);
-          console.log('chatMessage', chatMessage);
-          setChatMessage(chatMessage => [...chatMessage, receiveObj]);
-          setDisableButton(false);
-        })
-        .catch(err => {
-          console.log('Chat response error', err);
-          setChatMessage([]);
-        });
-    }
-    setMessage('');
-  }
+  console.log(userData);
+
+  useEffect(() => {
+
+    console.log('Use effect called============')
+    dispatch(getMyDataNft())
+    dispatch(getOtherDataNft(userData.userWallet.address))
+  }, []);
+
+
+
 
   //=====================(Main return Function)=============================
-
+console.log('Collection List Length : ', collectionList.length, );
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <SafeAreaView>
+      <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
       <AppHeader
-        title={translate("common.AIChat")}
         showBackButton
         isWhite
         containerStyle={{ backgroundColor: Colors.themeColor, }}
       />
-      <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : undefined } style={{ flex: 1,  }} enabled 
-        // keyboardVerticalOffset={
-        //   Platform.select({
-        //     ios: () => 0,
-        //     android: () => -200
-        //   })()
-        // }
-        >
-        <View style={styles.chatContainer}>
-          <FlatList
-            ref={flatList}
-            onContentSizeChange={(item, index) => {
-              flatList.current.scrollToEnd({ animated: true });
-              flatList.current.scrollToOffset({ animated: true, offset: index });
-            }}
-            data={chatMessage}
-            renderItem={({ item }) => (
-              <ShowChatMessage item={item} />
-            )}
-            keyExtractor={(item, index) => { return `_${index}` }}
-            onLayout={() => flatList.current.scrollToEnd({ animated: true })}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate("common.enterMessage")}
-              value={message}
-              onChangeText={text => setMessage(text)}
-              placeholderTextColor={Colors.themeColor}
-              // autoCorrect={false}
-              // autoComplete="off"
-            />
-            <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage(message, new Date())} disabled={disableButton}>
-              <Image style={[styles.icon, { tintColor: Colors.themeColor }]} source={ImagesSrc.sendChatMessage} />
-            </TouchableOpacity>  
-          </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <Searchbar
+        style={styles.searchBar}
+        placeholder="Search..."
+        onChangeText={txt => {
+          setSearchTxt(txt);
+        }}
+        inputStyle={styles.inputStyle}
+        value={searchTxt}
+        multiline={false}
+      />
+      {collectionList.length !== 0 ? (
+            <View style={{backgroundColor: Colors.white , marginHorizontal: 10 ,paddingLeft: 10,}}>
+              <Text style={{paddingVertical: 10,  fontWeight: 'bold'}}>Others</Text>
+              <FlatList
+              // style={{ flex: 1 }}
+              showsVerticalScrollIndicator={false}
+              data={collectionList}
+              // inverted
+              // keyExtriactor={(time, index) => index.toString()}
+              renderItem={({ item }) => {
+                let metaData = item.metadata;
+                let data = JSON.parse(metaData);
+                return (
+                 
+                      <View style={{flexDirection: 'row', backgroundColor: Colors.white, paddingVertical:5 ,}}>
+                      
+                      <Image source={{ uri: data.image }} style={{ height: 30, width: 30, borderRadius: 30/2 }} />
+                        <Text style={{ paddingVertical: 10, paddingStart: 5, marginLeft: 10}}>
+                          {data.name}</Text>
+                      </View>
+                
+                )
+              }} />
+              </View>
+            ) : (
+                <View style={{ flex: 1 }}>
+                    <View style={styles.sorryMessageCont}>
+                        <Text style={styles.sorryMessage}>{translate('common.noNFTsFound')}</Text>
+                    </View>
+                </View>
+            )
+          }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+      {/* <FlatList
+        style={{ flex: 1 }}
+        data={data}
+        inverted
+        keyExtriactor={(time, index) => index.toString()}
+        renderItem={({ item }) => {
+          return (
+            <View>
+              <View style={styles.container}>
+                <View style={{ backgroundColor: '#529FF3', margin: 10 }}>
+                  <Text style={{ paddingVertical: 10, fontSize: 15, paddingStart: 5, paddingEnd: 16, color: 'black' }}>
+                    {item.text}</Text>
+                  <Image source={{ uri: item.imgUrl }} style={{ height: 100, width: 100 }} />
+                </View>
+              </View>
+            </View>
+          )
+        }} /> */}
+
+
+
+    </SafeAreaView>
   )
 }
 

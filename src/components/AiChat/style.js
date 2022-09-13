@@ -134,6 +134,32 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
     },
+    searchBar: {
+        borderWidth: 1,
+        borderColor: Colors.borderLightColor3,
+        borderRadius: hp('3%'),
+        width: wp('95%'),
+        height: hp('5%'),
+        paddingVertical: 0,
+      },
+      inputStyle: {
+        fontSize: 14,
+        // fontFamily: Fonts.PINGfANG,
+        color: Colors.BLACK1,
+        height: '100%',
+        margin: 0,
+        padding: 0
+      },
+      sorryMessageCont: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      sorryMessage: {
+        fontSize: 15,
+        // fontFamily: fonts.SegoeUIRegular,
+      },
+
 
 })
 

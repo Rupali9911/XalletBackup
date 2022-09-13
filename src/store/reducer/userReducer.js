@@ -267,7 +267,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
   dispatch(endMainLoading());
 };
 
-export const loadProfileFromAsync = (id) => (dispatch) =>
+export const loadProfileFromAsync = (id) => (dispatch) => 
   new Promise((resolve, reject) => {
     let req_data = {
       owner: id,

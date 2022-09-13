@@ -23,7 +23,7 @@ export const ApiRequest = async (url, method, body, headers) => {
     }
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
-            console.log("Connection type", state.type, state.isConnected);
+            // console.log("Connection type", state.type, state.isConnected);
             if (state.isConnected) {
                 isAlert = false;
                 fetch(url, requestOptions)
@@ -122,7 +122,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
     console.log('requestOptions', requestOptions);
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
-            console.log("Connection type", state.type, state.isConnected);
+            // console.log("Connection type", state.type, state.isConnected);
             if (state.isConnected) {
                 isAlert = false;
                 // console.log('requestOptions',requestOptions);
