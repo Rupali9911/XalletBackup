@@ -19,6 +19,7 @@ import { translate } from '../../walletUtils';
 import Collection from './collection';
 import Filter from './filter';
 import NFTList from './nftList';
+import CollectionList from './CollectionList';
 import UploadNFT from './uploadNft';
 import { TabModal } from './components';
 import { useSelector } from 'react-redux';
@@ -73,11 +74,22 @@ const CreateNFTScreen = ({ route }) => {
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Collection':
-        return <Collection
+        return <CollectionList
+          modalItem={modalItem}
+          modalScreen={modalScreen}
+          switchEditNFT={(data) => {
+            setnftItem(data)
+            setIndex(2)
+          }}
+          showModal={(v) => ShowModalAction(v, "collectionList")}
           position={index}
-          routeParams={routeParams}
-          changeLoadingState={(e) => setLoading(e)}
-        />;
+          nftListDefault={nftListDefault}
+          changeLoadingState={(e) => setLoading(e)} />;
+      // return <Collection
+      //   position={index}
+      //   routeParams={routeParams}
+      //   changeLoadingState={(e) => setLoading(e)}
+      // />;
       case 'NFTList':
         return <NFTList
           modalItem={modalItem}
