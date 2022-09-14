@@ -136,8 +136,7 @@ function Profile({ navigation, connector, route }) {
             setOpenDial2(false)
         }, 500)
     };
-
-    const renderTabView = (id) => {
+    const renderTabView = () => {
         return (
             <Tab.Navigator
                 screenOptions={{

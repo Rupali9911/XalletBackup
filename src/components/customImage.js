@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform,Image } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-fast-video';
 import { SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID } from '../constants';
 import Colors from '../constants/Colors';
+import Audio from '../assets/pngs/headphone-icon.png'
 
 const {
     PlayButtonIcon
@@ -15,7 +16,7 @@ const C_Image = (props) => {
     let [brokenUrl, setBrokenUrl] = useState(false);
     let [isBroken, setIsBroken] = useState(false);
 
-    const checkVideoUrl = props?.category === NFT_TYPE_TO_ID.video;
+    const checkVideoUrl = props?.category ;
 
     return (
         <>
@@ -93,11 +94,18 @@ const C_Image = (props) => {
                     />
             }
             {
-                checkVideoUrl ?
+                checkVideoUrl === NFT_TYPE_TO_ID.video ?
                     <View style={styles.imageCont}>
                         <View style={styles.playCont}>
                             <PlayButtonIcon width={SIZE(40)} height={SIZE(40)} />
                         </View>
+                    </View>
+                    : null
+            }
+            {
+                checkVideoUrl === NFT_TYPE_TO_ID.audio ?
+                    <View style={styles.imageCont}>
+                            <Image style={{width:40,height:40}} source={Audio}/>
                     </View>
                     : null
             }
@@ -113,7 +121,7 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     playCont: {
         width: SIZE(40),

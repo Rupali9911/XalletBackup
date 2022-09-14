@@ -25,9 +25,9 @@ const { width } = Dimensions.get('window');
 
 const {
     PlayButtonIcon,
-    HeartIcon,
     ThreeDotsVerticalIcon,
-    HeartActiveIcon,
+    HeartWhiteIcon, 
+    HeartActiveIcon
 } = SVGS;
 
 const AvatarImage = ({ imageSource }) => {
@@ -70,6 +70,7 @@ export const handleLike = async (nftItem) => {
             nftId: nftItem.nftId,
             status: Number(nftItem.isLike) === 1 ? 0 : 1
         };
+        console.log(data)
         sendRequest({
             url: `${NEW_BASE_URL}/nfts/like`,
             method: 'POST',
@@ -230,7 +231,7 @@ function discoverItem({
                 <HStack justifyContent="space-between" >
                     <TouchableOpacity
                         onPress={handleLikeMethod}>
-                        {Number(nftItem?.isLike) ? <HeartActiveIcon /> : <HeartIcon />}
+                        {Number(nftItem?.isLike) ? <HeartActiveIcon/> : <HeartWhiteIcon />}
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Menu onSelect={value => {

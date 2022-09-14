@@ -688,7 +688,9 @@
         "collectionList": "컬렉션 목록",
         "createCollection": "컬렉션 제작",
         "AIChat":"AI와 채팅",
-        "enterMessage":"메시지 입력"
+        "enterMessage":"메시지 입력",
+        "CREATED_COLLECTED": "제작 / 소유중",
+        "LIST_COLLECTION_TABLE_SYMBOL": "심볼"
     },
     "AwardPage": {},
     "wallet": {

@@ -66,7 +66,7 @@ const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
   PlayButtonIcon,
-  HeartWhiteIcon,
+  HeartWhiteIcon, 
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
   TwiiterIcon,
@@ -170,6 +170,7 @@ const DetailScreen = ({ navigation, route }) => {
   const network = detailNFT?.network ? detailNFT.network : item?.network
   const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
+  console.log(userId)
 
   const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
 
@@ -244,9 +245,9 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [paymentObject]);
 
-  useEffect(() => {
-    // checkNFTOnAuction();
-  }, [singleNFT]);
+  // useEffect(() => {
+  //   // checkNFTOnAuction();
+  // }, [singleNFT]);
 
   //===================== API Call Functions =========================
   // const getOwnerDetailsById = async id => {
@@ -274,7 +275,6 @@ const DetailScreen = ({ navigation, route }) => {
       }
     })
       .then(json => {
-        console.log("🚀 ~ file: detail.js ~ line 223 ~  ~ json", json)
         if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
 
           setNFTPrice(json?.price)
@@ -538,7 +538,7 @@ const DetailScreen = ({ navigation, route }) => {
           handleLikeMethod();
         }}
         style={styles.likeButton}>
-        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon/> }
       </TouchableOpacity>
     )
   }
@@ -3065,6 +3065,7 @@ const DetailScreen = ({ navigation, route }) => {
       />
     );
   };
+
 
   const handleLikeMethod = async () => {
     const nftData = await handleLike(detailNFT);
