@@ -5,67 +5,66 @@ import { GroupButton } from "../../components";
 import Modal from "react-native-modal";
 import Images from "../../constants/Images";
 import cancelImg from "../../../assets/images/cancel.png"
+import { translate } from '../../walletUtils';
+
 const ShowModal = (props) => {
   const {
     title,
     description,
     isVisible,
     closeModal,
-    reClaimApi,
     leftButtonTitle,
     rightButtonTitle,
-    topUpButton,
-    cancelAuctionApi,
-    reclaim,
-    cancelAuction,
-    cancel,
-    cancelModalConfirm
+    onLeftPress,
+    onRightPress,
+    isTitleCapital
   } = props
   return (
     <View style={styles.modalContainer}>
-       <Modal isVisible={isVisible} >
+      <Modal isVisible={isVisible}>
         <View style={styles.reClaimcontainer}>
-          <View style={styles.reClaimCancelBTNview}>
-            <TouchableOpacity onPress={closeModal} >
-              <Image source={cancelImg} style={styles.reClaimCancelButton} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.centerImgView}>
-            <Image source={Images.confirm} style={styles.centerImg} />
-          </View>
+
+          <TouchableOpacity
+            style={styles.reClaimCancelBTNview}
+            onPress={closeModal}>
+            <Image
+              source={cancelImg}
+              style={styles.reClaimCancelButton}
+            />
+          </TouchableOpacity>
+
+          <Image
+            source={Images.confirm}
+            style={styles.centerImg}
+          />
+
           <View style={styles.reclaimView}>
-            {title === title ? <Text style={styles.reclaimText}>
-              {title}
-            </Text> : title === title ? <Text style={styles.reclaimText}>
-              {title}
-            </Text> : <Text style={styles.reclaimText}>
+            <Text style={styles.reclaimText}>
               {title}
             </Text>
-            }
           </View>
+
           <View style={styles.textView}>
-            {description === description ? <Text style={styles.text}>
+            <Text style={styles.text}>
               {description}
-            </Text> : description === description ? <Text style={styles.text}>
-              {description}
-            </Text> : <Text style={styles.text}>
-              {description}
-            </Text>}
+            </Text>
           </View>
+
           <View style={styles.groupButtonView}>
             <GroupButton
-              leftText={leftButtonTitle}
+              leftText={leftButtonTitle ? leftButtonTitle : translate('common.Cancel')}
               leftDisabled={false}
               leftLoading={false}
-              onLeftPress={() => { closeModal()}}
-              rightText={rightButtonTitle}
-              rightDisabled={false}
-              rightLoading={false}
-              onRightPress={() => {reclaim ? reClaimApi():cancelAuction? cancelAuctionApi():cancel?cancelModalConfirm():null}}
-              rightStyle={styles.reClaimRightGroupButton}
-              rightTextStyle={styles.reClaimrightGroupButtonText}
+              onLeftPress={() => closeModal ? closeModal() : onLeftPress}
               leftStyle={styles.rightGroupButton}
               leftTextStyle={styles.rightGroupButtonText}
+
+              rightText={rightButtonTitle ? rightButtonTitle : translate('common.Confirm')}
+              rightDisabled={false}
+              rightLoading={false}
+              onRightPress={onRightPress}
+              rightStyle={styles.reClaimRightGroupButton}
+              rightTextStyle={styles.reClaimrightGroupButtonText}
             />
           </View>
         </View>

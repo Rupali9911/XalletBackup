@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor:
       Colors.WHITE1,
     // height: hp(65),
-    paddingVertical:SIZE(20),
+    paddingVertical: SIZE(20),
     width: wp(95),
     right: SIZE(10),
     borderRadius: SIZE(10),
@@ -457,8 +457,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   footerText: {
-    color: Colors.GREY1
-    , fontWeight: "300"
+    color: Colors.GREY1,
+    fontWeight: "300"
+  },
+  feeErrorView: {
+    paddingVertical: SIZE(23),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  errorText: {
+    marginHorizontal: 22,
+    color: Colors.DANGER,
+    fontWeight: "bold",
   },
   checkboxImg: { tintColor: Colors.GREY1 },
   royaltyFeeView: {
@@ -547,33 +558,39 @@ const styles = StyleSheet.create({
     height: hp(4)
   },
   curancyInput: {
-    backgroundColor: Colors.WHITE1,
-    borderWidth: 1,
-    borderColor: Colors.GREY1,
-    height: hp(4.1),
-    width: wp(30),
-    borderBottomLeftRadius: 8,
-    borderTopLeftRadius: 8,
-    borderRightWidth: 0
+    // backgroundColor: Colors.WHITE1,
+    // borderWidth: 1,
+    // borderColor: Colors.GREY1,
+    // height: hp(4.1),
+    // width: wp(30),
+    // borderBottomLeftRadius: 8,
+    // borderTopLeftRadius: 8,
+    // borderRightWidth: 0
+    paddingLeft: 10
   },
-  curancyInputPrice:{ backgroundColor: Colors.WHITE1,
-    borderWidth: 1,
-    borderColor: Colors.GREY1,
-    height: hp(4.1),
-    width: wp(30),
-    borderBottomLeftRadius: 8,
-    borderTopLeftRadius: 8,
-    borderRightWidth: 0,
-    paddingHorizontal:SIZE(20)
+  curancyInputPrice: {
+    // backgroundColor: Colors.WHITE1,
+    // borderWidth: 1,
+    // borderColor: Colors.GREY1,
+    // height: hp(4.3),
+    // marginTop:0.5,
+    // width: wp(30),
+    // borderBottomLeftRadius: 8,
+    // borderTopLeftRadius: 8,
+    // borderRightWidth: 0,
+    paddingHorizontal: SIZE(10),
+    textAlign: 'center',
+    fontWeight: 'bold'
   },
   curancyInputChange: {
-    backgroundColor: Colors.WHITE1,
-    // borderWidth: 1,
-    borderColor: Colors.GREY1,
-    height: hp(4.4),
-    width: wp(15),
-    borderBottomLeftRadius: 8,
-    borderTopLeftRadius: 8,
+    // backgroundColor: Colors.WHITE1,
+    // // borderWidth: 1,
+    // borderColor: Colors.GREY1,
+    // height: hp(4.4),
+    // width: wp(15),
+    // borderBottomLeftRadius: 8,
+    // borderTopLeftRadius: 8,
+    flex: 1 / 2,
   },
   busdText: {
     borderWidth: 1,
@@ -582,7 +599,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
     right: SIZE(2),
   },
-  busdTextView:{
+  busdTextView: {
     borderWidth: 1,
     borderColor: Colors.GREY1,
     borderTopRightRadius: 8,
@@ -597,15 +614,23 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderRadius: 8,
+    flex: 1,
+    marginLeft: 10,
+    height: hp(5),
   },
   currencyView: {
     flexDirection: "row",
     alignItems: "center",
-    width: wp(20),
-    height: hp(4.1),
+    // width: wp(20),
+    height: hp(5),
     justifyContent: "center",
-    
+    flex: 1 / 2,
+    borderLeftWidth: 1,
+    borderColor: Colors.GREY1,
   },
   priceBoxView: {
     flexDirection: "row",
@@ -634,12 +659,9 @@ const styles = StyleSheet.create({
   reClaimCancelButton: {
     tintColor: Colors.GREY1,
   },
-  centerImgView: {
-    flexDirection: "row",
-    justifyContent: "center"
-  },
   centerImg: {
-    height: hp(17)
+    height: hp(17),
+    alignSelf: 'center'
   },
   reclaimView: {
     flexDirection: "row",
@@ -658,8 +680,8 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.GREY1,
   },
-  tokenName:{
-    fontWeight:"bold"
+  tokenName: {
+    fontWeight: "bold"
   },
   makkeOfferGroupButtonView: {
     marginTop: SIZE(25),
@@ -718,15 +740,14 @@ const styles = StyleSheet.create({
   inputField: {
     backgroundColor: Colors.WHITE1,
     borderWidth: 1,
-    borderColor: Colors.BLUE3,
-    height: hp(5),
+    borderColor: Colors.GREY1,
+    height: hp(5.2),
     width: wp(60),
     borderBottomLeftRadius: 8,
-    borderTopLeftRadius: 8
+    borderTopLeftRadius: 8,
+    paddingLeft: SIZE(10)
   },
-  usdtView: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+  tokenView: {
     borderWidth: 0.5,
     height: hp(5.2),
     width: wp(15),
@@ -734,11 +755,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.GREY1,
     borderBottomRightRadius: 8,
     borderTopRightRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  usdtText: {
-    right: 12,
-    top: 15,
-    fontWeight: "bold"
+  tokenText: {
+    // fontWeight: "bold"
   },
   editPriceGroupBButtonView: {
     bottom: SIZE(10),
@@ -752,6 +773,7 @@ const styles = StyleSheet.create({
   editPriceGroupButtonText: {
     fontWeight: "bold"
   },
+
   //===========>
   placeAbbidView: {
     backgroundColor:
@@ -760,13 +782,13 @@ const styles = StyleSheet.create({
     width: wp(95),
     right: SIZE(10),
     borderRadius: SIZE(10),
-    justifyContent:'center'
+    justifyContent: 'center'
   },
   PlaceAbidHeaderview: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: SIZE(12),
-    paddingHorizontal:SIZE(35)
+    paddingHorizontal: SIZE(35)
   },
   bidtext: {
     fontWeight: "bold",
@@ -781,7 +803,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-end",
-    paddingHorizontal:SIZE(35)
+    paddingHorizontal: SIZE(35)
   },
   rightGroupButton: {
     borderWidth: 1,
@@ -791,39 +813,39 @@ const styles = StyleSheet.create({
   rightGroupButtonText: {
     color: Colors.BLUE3,
   },
-  numberText:{
-    padding:SIZE(10)
+  numberText: {
+    padding: SIZE(10)
   },
-  placeAbidNumberView:{
+  placeAbidNumberView: {
     width: wp(61),
-    borderColor:Colors.GREY1,
-    borderTopLeftRadius:8,
-    borderBottomLeftRadius:8,
-    borderWidth:1,
-    borderRightWidth:0
+    borderColor: Colors.GREY1,
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderWidth: 1,
+    borderRightWidth: 0
   },
-  busdView:{
-    borderWidth:1,
-    borderColor:Colors.GREY1,
-    borderTopRightRadius:8,
-    borderBottomRightRadius:8,
-    right:SIZE(3)
+  busdView: {
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    right: SIZE(3)
   },
-  priceBoxView:{
-    flexDirection:"row",
-  justifyContent:"space-between",
-  alignItems:"center",
-  paddingHorizontal:SIZE(35),
-  marginTop: SIZE(25),
-  marginBottom: SIZE(30)
-  } ,
-  cancelimg:{
-    tintColor:Colors.GREY1,
-    marginTop:SIZE(5)
+  priceBoxView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: SIZE(35),
+    marginTop: SIZE(25),
+    marginBottom: SIZE(30)
   },
-  priceNFT:{
-    padding:SIZE(10),
-    fontWeight:"bold"
+  cancelimg: {
+    tintColor: Colors.GREY1,
+    marginTop: SIZE(5)
+  },
+  priceNFT: {
+    padding: SIZE(10),
+    fontWeight: "bold"
   }
 });
 
