@@ -11,33 +11,33 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
+// import { changeScreenName } from '../../store/actions/authAction';
 import {
-    nftBlindDataCollectionList,
     nftDataCollectionList,
     nftDataCollectionListReset,
     nftDataCollectionLoadStart,
     nftDataCollectionPageChange,
-    nftBlindSeriesCollectionList,
-    nftBlindSeriesCollectionLoadStart,
-    nftBlindSeriesCollectionReset,
-    nftBlindSeriesCollectionPageChange,
+    // nftBlindDataCollectionList,
+    // nftBlindSeriesCollectionList,
+    // nftBlindSeriesCollectionLoadStart,
+    // nftBlindSeriesCollectionReset,
+    // nftBlindSeriesCollectionPageChange,
 } from '../../store/actions/nftDataCollectionAction';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
-import CollectionItem from '../../components/CollectionItem';
+// import CollectionItem from '../../components/CollectionItem';
 
-const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
-const BLIND_SERIES_COLLECTION_TYPE = [
-    'minted2',
-    'onsale',
-    'notonsale',
-    'owned',
-];
+// const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
+// const BLIND_SERIES_COLLECTION_TYPE = [
+//     'minted2',
+//     'onsale',
+//     'notonsale',
+//     'owned',
+// ];
 const { height } = Dimensions.get('window');
 
-const OnSale = ({ route }) => {
+const tabFour = ({ route }) => {
     const {
         // nftChain,
         // collectionAddress,
@@ -50,12 +50,13 @@ const OnSale = ({ route }) => {
         // isStore,
         // manualColl,
         // seriesInfoId,
+        // tabTitle
         tabTitle,
         collection,
         tabStatus,
-        isLaunchPad
-
+        isLaunchPad,
     } = route?.params;
+
     const { NftDataCollectionReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -87,8 +88,8 @@ const OnSale = ({ route }) => {
 
     // useEffect(() => {
     //     if (isFocused) {
-    //         // console.log("🚀 ~ file: onSale.js ~ line 53 ~",
-    //         // route?.params
+    //         // console.log("🚀 ~ file: notOnSale.js ~ line 53 ~", 
+    //         // route?.params,
     //         // nftChain,
     //         // collectionAddress,
     //         // collectionType,
@@ -132,25 +133,49 @@ const OnSale = ({ route }) => {
     }, [isFocused]);
 
     const getNFTlist = useCallback(
+        
         page => {
-            dispatch(
-                nftDataCollectionList(
-                    page,
-                    tabTitle,
-                    collection.network.networkName,
-                    collection.contractAddress,
-                    null,
-                    collection.owner.address,
-                    collection.owner.userId,
-                    isLaunchPad,
-                    false
-                ),
-            );
+
+            if(isLaunchPad)
+            {
+                dispatch(
+                    nftDataCollectionList(
+                        page,
+                        tabTitle,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        isLaunchPad,
+                        collection?.id, 
+                    ),
+                );
+            }
+            else
+            {
+                dispatch(
+                    nftDataCollectionList(
+                        page,
+                        tabTitle,
+                        collection?.network?.networkName,
+                        collection?.contractAddress,
+                        tabStatus,
+                        null,
+                        collection?.userId,
+                        isLaunchPad,
+                        false
+                    ),
+                );
+            }
+
+           
+
             // if (isStore) {
-            //     console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 89 ~ isStore", isStore)
             //     dispatch(nftDataCollectionList(page, null, COLLECTION_TYPES[collectionType], null, true, null, null, tabTitle));
             // } else if (!isBlind) {
-            //     console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 91 ~ !isBlind", !isBlind)
             //     dispatch(
             //         nftDataCollectionList(
             //             page,
@@ -166,7 +191,7 @@ const OnSale = ({ route }) => {
             //         ),
             //     );
             // } else if (isSeries) {
-            //     console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 104 ~ isSeries", isSeries)
             //     dispatch(
             //         nftBlindSeriesCollectionList(
             //             page,
@@ -185,9 +210,9 @@ const OnSale = ({ route }) => {
             //         limit: 24,
             //         loggedIn: null,
             //         owner: null,
-            //         page: 1
+            //         page: page
             //     }
-            //     console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
+            //     // console.log("🚀 ~ file: getNFTlist ~ line 120 ~ temp", temp)
             //     dispatch(nftBlindDataCollectionList(collectionAddress, collectionType, temp, tabTitle));
             // }
             // dispatch(nftDataCollectionList(page, collectionAddress, COLLECTION_TYPES[collectionType], collectionId));
@@ -214,7 +239,7 @@ const OnSale = ({ route }) => {
     };
 
     const renderFooter = () => {
-        // if (!isLoading) return null;
+        if (!isLoading) return null;
         return <ActivityIndicator size="small" color={colors.themeR} />;
     };
 
@@ -224,10 +249,9 @@ const OnSale = ({ route }) => {
         return (
             <NFTItem
                 item={item}
-                screenName="onSale"
+                // screenName="soldOut"
                 image={imageUri}
                 onPress={() => {
-                    // dispatch(changeScreenName('Hot'));
                     navigation.push('CertificateDetail', { item: item });
                 }}
             />
@@ -236,10 +260,10 @@ const OnSale = ({ route }) => {
         // let findIndex
         // if (item?._id) {
         //     findIndex = collectionList.findIndex(x => x?._id === item?._id);
-        // }else{
+        // } else {
         //     findIndex = collectionList.findIndex(x => x?.id === item?.id);
         // }
-        //  console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0, findIndex)
+        // console.log("🚀 ~ file: collections.js ~ line 152 ~ renderItem ~ isStore", isStore, isHotCollection || isBlind && collectionType == 0)
         // if (isStore || seriesInfoId) {
         //     return (
         //         <NFTItem
@@ -356,7 +380,8 @@ const OnSale = ({ route }) => {
 
     const keyExtractor = (item, index) => { return 'item_' + index }
 
-    // console.log("🚀 ~ file: onSale.js ~ line 297 ~ OnSale ~ collectionList", collectionList)
+    // console.log("🚀 ~ file: notOnSale.js ~ line 297 ~ ~ collectionList", collectionList, NftDataCollectionReducer, NftDataCollectionReducer.nftBlindSeriesCollectionList, NftDataCollectionReducer.mysteryBoxCollectionList, NftDataCollectionReducer.nftDataCollectionList)
+
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -366,18 +391,19 @@ const OnSale = ({ route }) => {
                 </View>
             ) : collectionList.length !== 0 ? (
                 <FlatList
-                    nestedScrollEnabled={true}
                     data={collectionList}
                     horizontal={false}
                     numColumns={2}
                     // initialNumToRender={isSeries ? 6 : 15}
-                    initialNumToRender={15}
-                    // onRefresh={handleFlatlistRefresh}
-                    // refreshing={page === 1 && isLoading}
+                    initialNumToRender={6}
+                    nestedScrollEnabled={true}
+                    onRefresh={handleFlatlistRefresh}
+                    refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
                     onEndReached={() => {
                         if (!isLoading && collectionList.length !== totalCount) {
                             let num = page + 1;
+
                             // if (isSeries) {
                             //     dispatch(nftBlindSeriesCollectionLoadStart(tabTitle));
                             // } else {
@@ -411,4 +437,4 @@ const OnSale = ({ route }) => {
     );
 };
 
-export default OnSale;
+export default tabFour;

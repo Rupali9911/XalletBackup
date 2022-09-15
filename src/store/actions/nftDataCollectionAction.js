@@ -302,7 +302,7 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
             let from = item?.fromUser?.userWallet?.address;
             let to = item?.toUser?.userWallet?.address;
             let temp = [
-              { image: item?.nft?.previewImage, imageName: item?.nft?.name },
+              { image: item?.nft?.previewImage ? item?.nft?.previewImage : item?.nft?.smallImage , imageName: item?.nft?.name },
               getEventByValue(item?.action),
               item?.price && item?.receiveToken
                 ? Number(item?.price) + ' ' + item?.receiveToken
@@ -352,10 +352,20 @@ export const nftDataCollectionList = (page, tabTitle, networkName, contractAddre
 
     }
     else {
-      let url = `${NEW_BASE_URL}/collections/nft/collectionId?`;
+
+      let url = '';
+      if(userAddress && tabTitle == 'Owned')
       {
-        userAddress ? url = url.concat(`&userAddress=${userAddress}`) : tabStatus ? url = url.concat(`&status=${tabStatus}`) : url;
+        url = `${NEW_BASE_URL}/collections/nft/owner/collectionId?&userAddress=${userAddress}`;
       }
+      else if(tabStatus)
+      {
+        url = `${NEW_BASE_URL}/collections/nft/collectionId?&status=${tabStatus}`;
+      }
+      // let url = `${NEW_BASE_URL}/collections/nft/collectionId?`;
+      // {
+      //   userAddress ? url = url.concat(`&userAddress=${userAddress}`) : tabStatus ? url = url.concat(`&status=${tabStatus}`) : url;
+      // }
       sendRequest({
         url,
         params: {

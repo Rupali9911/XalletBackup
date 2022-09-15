@@ -11,22 +11,22 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
+// import { changeScreenName } from '../../store/actions/authAction';
 import {
-    nftBlindDataCollectionList,
     nftDataCollectionList,
     nftDataCollectionListReset,
     nftDataCollectionLoadStart,
     nftDataCollectionPageChange,
-    nftBlindSeriesCollectionList,
-    nftBlindSeriesCollectionLoadStart,
-    nftBlindSeriesCollectionReset,
-    nftBlindSeriesCollectionPageChange,
+    // nftBlindDataCollectionList,
+    // nftBlindSeriesCollectionList,
+    // nftBlindSeriesCollectionLoadStart,
+    // nftBlindSeriesCollectionReset,
+    // nftBlindSeriesCollectionPageChange,
 } from '../../store/actions/nftDataCollectionAction';
 import { translate } from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
-import CollectionItem from '../../components/CollectionItem';
+// import CollectionItem from '../../components/CollectionItem';
 
 // const COLLECTION_TYPES = ['onsale', 'notonsale', 'owned', 'gallery'];
 // const BLIND_SERIES_COLLECTION_TYPE = [
@@ -37,7 +37,7 @@ import CollectionItem from '../../components/CollectionItem';
 // ];
 const { height } = Dimensions.get('window');
 
-const Owned = (props) => {
+const tabTwo = (props) => {
     // console.log("🚀 ~ file: Owned.js ~ line 41 ~ Owned ~ props", props)
     const { route } = props;
     const {
@@ -144,11 +144,11 @@ const Owned = (props) => {
                 nftDataCollectionList(
                     page,
                     tabTitle,
-                    collection.network.networkName,
-                    collection.contractAddress,
+                    collection?.network?.networkName,
+                    collection?.contractAddress,
                     tabStatus,
                     null,
-                    collection.userId,
+                    collection?.userId,
                     isLaunchPad,
                     false
                 ),
@@ -223,15 +223,25 @@ const Owned = (props) => {
     };
 
     const renderFooter = () => {
-        // if (!isLoading) {
+
+        if (!isLoading) return null;
+        return (
+            <ActivityIndicator size='small' color={colors.themeR} />
+        );
+        
+        // if (isLoading) {
         //     return (
         //         <ActivityIndicator size='small' color={colors.themeR} />
         //     )
         // }
+        // else {
+        //     return null;
+        // }
+
         // if (!isLoading) return null;
-        return (
-            <ActivityIndicator size='small' color={colors.themeR} />
-        )
+        // return (
+        //     <ActivityIndicator size='small' color={colors.themeR} />
+        // )
     };
 
     const renderItem = ({ item, index }) => {
@@ -386,9 +396,9 @@ const Owned = (props) => {
                     horizontal={false}
                     numColumns={2}
                     // initialNumToRender={isSeries ? 6 : 15}
-                    initialNumToRender={15}
-                    // onRefresh={handleFlatlistRefresh}
-                    // refreshing={page === 1 && isLoading}
+                    initialNumToRender={6}
+                    onRefresh={handleFlatlistRefresh}
+                    refreshing={page === 1 && isLoading}
                     renderItem={memoizedValue}
                     onEndReached={() => {
                         if (!isLoading && collectionList.length !== totalCount) {
@@ -427,4 +437,4 @@ const Owned = (props) => {
     );
 };
 
-export default Owned;
+export default tabTwo;
