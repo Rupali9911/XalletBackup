@@ -25,11 +25,9 @@ const { width } = Dimensions.get('window');
 
 const {
     PlayButtonIcon,
-    // HeartIcon,
     ThreeDotsVerticalIcon,
-    // HeartActiveIcon,
-    HeartWhiteIconNew, 
-    HeartActiveIconNew
+    HeartWhiteIcon, 
+    HeartActiveIcon
 } = SVGS;
 
 const AvatarImage = ({ imageSource }) => {
@@ -233,7 +231,7 @@ function discoverItem({
                 <HStack justifyContent="space-between" >
                     <TouchableOpacity
                         onPress={handleLikeMethod}>
-                        {Number(nftItem?.isLike) ? <HeartActiveIconNew/> : <HeartWhiteIconNew />}
+                        {Number(nftItem?.isLike) ? <HeartActiveIcon/> : <HeartWhiteIcon />}
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Menu onSelect={value => {
