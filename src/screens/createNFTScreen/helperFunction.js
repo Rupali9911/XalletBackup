@@ -46,3 +46,9 @@ export const toFixCustom = (x) => {
     }
     return Number(Number(x).toFixed(6))
 }
+
+export const roundNumber = (num, fixedLength) => {
+    const number =
+        Math.round(num * Math.pow(10, fixedLength)) / Math.pow(10, fixedLength)
+    return number
+}
