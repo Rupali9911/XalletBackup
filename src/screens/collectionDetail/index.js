@@ -26,6 +26,8 @@ import { translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
 import { SVGS, FONTS, FONT } from 'src/constants';
 import { COLORS, IMAGES, SIZE } from '../../constants';
+import { Verifiedcollections } from '../../components/verifiedCollection';
+
 import {
     Menu,
     MenuOptions,
