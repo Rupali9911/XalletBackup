@@ -48,21 +48,6 @@ export default function nftDataCollectionReducer(state = initialState, action) {
 
     case NFT_DATA_COLLECTION_SUCCESS:
       // console.log("🚀 ~ file: nftDataCollectionReducer.js ~ line 40 ~ ~ ", state, action.payload)
-      // return state = action.payload.mysteryBox ?
-      //   {
-      //     ...state,
-      //     mysteryBoxCollectionList: [...state.mysteryBoxCollectionList, ...action.payload.data],
-      //     mysteryBoxCollectionTotalCount: action.payload.count,
-      //     nftDataCollectionLoading: false,
-      //   } :
-      //   (action.payload.tabTitle === state.tabTitle) ? {
-      //     ...state,
-      //     nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.data],
-      //     nftDataCollectionTotalCount: action.payload.count,
-      //     nftDataCollectionLoading: false,
-      //   } : {
-      //     ...state,
-      //   };
       return state = {...state, nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
          nftDataCollectionTotalCount: action.payload.count,
             nftDataCollectionLoading: false,
