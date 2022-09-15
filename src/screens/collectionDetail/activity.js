@@ -96,6 +96,11 @@ const Activity = ({ route }) => {
         }
     }, [isFocused, filterTableValue]);
 
+    const formatAddress = (address) => {
+        if (!address) return ''
+        return address.slice(0, 6)
+    }
+
     const renderCell = (cellIndex, cellData, rowIndex) => {
         return (
             <Cell
@@ -115,23 +120,19 @@ const Activity = ({ route }) => {
                      cellIndex === 1 || cellIndex === 2 || cellIndex === 5 ? (
                         cellData
                     ) :
-                     cellIndex === 3 || cellIndex === 4 ? (
-                        <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                            <Text
-                                numberOfLines={1}
-                                style={[
-                                    styles.text,
-                                    {
-                                        color: 'black',
-                                        marginLeft: hp(0.5),
-                                        marginRight: hp(0.5)
-                                    },
-                                ]}>
-                                {cellData !== 'Null Address' && cellData
-                                }
-                            </Text>
-                        </TouchableOpacity>
-                    ) : null
+                    ((cellIndex === 3 || cellIndex === 4) && cellData !== 'Null Address') ? (
+                    //  cellIndex === 3 || cellIndex === 4 ? (
+                        <TouchableOpacity
+                        onPress={() => getNftData(rowIndex)}
+                        >
+                        <Text
+                          numberOfLines={1}
+                          style={[styles.text, styles.themeColor]}>
+                          {formatAddress(cellData)}
+                        </Text>
+                      </TouchableOpacity>
+
+                    ) : cellData
 
                 }
                 textStyle={styles.textStyle}
@@ -215,7 +216,6 @@ const Activity = ({ route }) => {
                     <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
-                    // nestedScrollEnabled={true}
                     >
                         <View style={styles.tableView}>
                             {(tabTitle !== reducerTabTitle) || isLoading ? (
@@ -241,280 +241,16 @@ const Activity = ({ route }) => {
                                                 console.log('Collection List : ===========> ', collectionList)
                                                 return (
 
-                                                    // <TableWrapper
-                                                    //     key={rowIndex}
-                                                    //     style={{ flexDirection: 'row' }}>
-                                                    //     {rowData?.map((cellData, cellIndex) => {
-                                                    //         return (
-                                                    //             renderCell(cellIndex, cellData, rowIndex)
-                                                    //         );
-                                                    //     })}
-                                                    // </TableWrapper>
-
-
-
                                                     <TableWrapper
                                                         key={rowIndex}
                                                         style={{ flexDirection: 'row' }}>
                                                         {rowData?.map((cellData, cellIndex) => {
-                                                            let wid;
-
-                                                            // if (cellIndex === 0) {
-                                                            //     wid = 50;
-                                                            // }
-                                                            // if (cellIndex === 1) {
-                                                            //     wid = 145;
-                                                            // }
-                                                            // if (cellIndex === 2) {
-                                                            //     wid = 140;
-                                                            // }
-                                                            // if (cellIndex === 3) {
-                                                            //     wid = 180;
-                                                            // }
-                                                            // if (cellIndex === 4) {
-                                                            //     wid = 140;
-                                                            // }
-                                                            // if (cellIndex === 5) {
-                                                            //     wid = 120;
-                                                            // }
-                                                            // if (cellIndex === 6) {
-                                                            //     wid = 145;
-                                                            // }
-                                                            // if (cellIndex === 7) {
-                                                            //     wid = 1;
-                                                            // }
-
-                                                            if (cellIndex === 0) {
-                                                                wid = 200;
-                                                            }
-                                                            if (cellIndex === 1 || cellIndex === 5) {
-                                                                wid = 180;
-                                                            }
-                                                            if (cellIndex === 2 || cellIndex === 3 || cellIndex === 4) {
-                                                                wid = 100;
-                                                            }
-                                                            // if (cellIndex === 3) {
-                                                            //     wid = 100;
-                                                            // }
-                                                            // if (cellIndex === 4) {
-                                                            //     wid = 100;
-                                                            // }
-                                                            // if (cellIndex === 5) {
-                                                            //     wid = 180;
-                                                            // }
-
                                                             return (
-                                                                <Cell
-                                                                    key={cellIndex}
-                                                                    data={
-                                                                        cellIndex === 0 ? (
-
-                                                                            <TouchableOpacity
-                                                                                onPress={() => getNftData(rowIndex)}
-                                                                                style={styles.tableCellImageView}                                                                       
-                                                                                // numberOfLines={1}
-                                                                            >
-                                                                                <Image
-                                                                                    style={styles.cellImage}
-                                                                                    source={{ uri: cellData.image }}
-                                                                                />
-                                                                                <Text numberOfLines={1} style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
-                                                                            </TouchableOpacity>
-                                                                        ) : 
-                                                                            cellIndex === 1 ?
-                                                                                (
-                                                                                    cellData
-                                                                                ) :
-                                                                                cellIndex === 2 ?
-                                                                                    (
-                                                                                        cellData
-                                                                                    ) :
-                                                                                    cellIndex === 3 ? (
-                                                                                        <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                                            <Text
-                                                                                                numberOfLines={1}
-                                                                                                style={[
-                                                                                                    styles.text,
-                                                                                                    {
-                                                                                                        color: 'black',
-                                                                                                        marginLeft: hp(0.5),
-                                                                                                        marginRight: hp(0.5)
-                                                                                                    },
-                                                                                                ]}>
-                                                                                                {cellData !== 'Null Address' && cellData
-                                                                                                }
-                                                                                            </Text>
-                                                                                        </TouchableOpacity>
-                                                                                    ) :
-                                                                                        cellIndex === 4 ? (
-                                                                                            <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                                                <Text
-                                                                                                    numberOfLines={1}
-                                                                                                    style={[
-                                                                                                        styles.text,
-                                                                                                        {
-                                                                                                            color: 'black',
-                                                                                                            marginLeft: hp(0.5),
-                                                                                                            marginRight: hp(0.5)
-                                                                                                        },
-                                                                                                    ]}>
-                                                                                                    {cellData !== 'Null Address' && cellData
-                                                                                                    }
-                                                                                                </Text>
-                                                                                            </TouchableOpacity>
-                                                                                        ) :
-                                                                                            cellIndex === 5 &&
-                                                                                            (
-                                                                                                // cellData && cellData.substring(0, 9)
-                                                                                                cellData
-                                                                                            )
-
-                                                                        // cellIndex == 1 ? (
-                                                                        //     <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                        //         <Text
-                                                                        //             numberOfLines={1}
-                                                                        //             style={[
-                                                                        //                 styles.text,
-                                                                        //                 {
-                                                                        //                     color: 'black',
-                                                                        //                     marginLeft: hp(0.5),
-                                                                        //                     marginRight: hp(0.5)
-                                                                        //                 },
-                                                                        //             ]}>
-                                                                        //              {cellData !== 'Null Address' && cellData
-                                                                        //             }
-                                                                        //         </Text>
-                                                                        //     </TouchableOpacity>
-                                                                        // ) :
-                                                                        //     cellIndex == 0 ? (
-                                                                        //         <TouchableOpacity
-                                                                        //             style={{
-                                                                        //                 flexDirection: 'row',
-                                                                        //                 justifyContent: 'center',
-                                                                        //                 alignItems: 'center'
-                                                                        //             }}
-                                                                        //             onPress={() => getNftData(rowIndex)}
-                                                                        //         >
-                                                                        //             <Image
-                                                                        //                 style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
-                                                                        //                 source={{ uri: cellData }}
-                                                                        //             />
-
-                                                                        //         </TouchableOpacity>) :
-                                                                        //         cellIndex === 3 ?
-                                                                        //             (
-                                                                        //                 cellData
-                                                                        //             ) :
-                                                                        //             cellIndex === 4 ?
-                                                                        //                 (
-                                                                        //                     cellData && cellData.substring(0, 12)
-                                                                        //                 ) :
-                                                                        //                 cellIndex === 5 ? (
-                                                                        //                     cellData && cellData.substring(0, 12)
-                                                                        //                 ) :
-                                                                        //                     cellIndex === 6 ? (
-                                                                        //                         setDate(cellData)
-                                                                        //                     ) :
-                                                                        //                         cellIndex === 2 && (
-                                                                        //                             <Text
-                                                                        //                                 numberOfLines={1}
-                                                                        //                                 style={[
-                                                                        //                                     styles.text,
-                                                                        //                                     {
-                                                                        //                                         color: 'black',
-                                                                        //                                         marginLeft: hp(0.5),
-                                                                        //                                         marginRight: hp(0.5)
-                                                                        //                                     },
-                                                                        //                                 ]}>
-                                                                        //                                 {cellData}
-                                                                        //                             </Text>
-                                                                        //                         )
-                                                                    }
-                                                                    // cellIndex === 3 ? element(cellData, index) :
-                                                                    // textStyle={styles.text}
-                                                                    // textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
-                                                                    // width={wid}
-                                                                    // height={hp(6.5)}
-
-                                                                    // textStyle={styles.text}
-                                                                    textStyle={styles.textStyle}
-                                                                    width={wid}
-                                                                    height={hp(6.5)}
-                                                                />
-                                                                // <Cell
-                                                                //     key={cellIndex}
-                                                                //     data={
-                                                                //         // cellIndex == 0 
-                                                                //         cellIndex == 1 ? (
-                                                                //             <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                //                 <Text
-                                                                //                     numberOfLines={1}
-                                                                //                     style={[
-                                                                //                         styles.text,
-                                                                //                         {
-                                                                //                             color: 'black',
-                                                                //                             marginLeft: hp(0.5),
-                                                                //                             marginRight: hp(0.5)
-                                                                //                         },
-                                                                //                     ]}>
-                                                                //                      {cellData !== 'Null Address' && cellData
-                                                                //                     }
-                                                                //                 </Text>
-                                                                //             </TouchableOpacity>
-                                                                //         ) :
-                                                                //             cellIndex == 0 ? (
-                                                                //                 <TouchableOpacity
-                                                                //                     style={{
-                                                                //                         flexDirection: 'row',
-                                                                //                         justifyContent: 'center',
-                                                                //                         alignItems: 'center'
-                                                                //                     }}
-                                                                //                     onPress={() => getNftData(rowIndex)}
-                                                                //                 >
-                                                                //                     <Image
-                                                                //                         style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
-                                                                //                         source={{ uri: cellData }}
-                                                                //                     />
-
-                                                                //                 </TouchableOpacity>) :
-                                                                //                 cellIndex === 3 ?
-                                                                //                     (
-                                                                //                         cellData
-                                                                //                     ) :
-                                                                //                     cellIndex === 4 ?
-                                                                //                         (
-                                                                //                             cellData && cellData.substring(0, 12)
-                                                                //                         ) :
-                                                                //                         cellIndex === 5 ? (
-                                                                //                             cellData && cellData.substring(0, 12)
-                                                                //                         ) :
-                                                                //                             cellIndex === 6 ? (
-                                                                //                                 setDate(cellData)
-                                                                //                             ) :
-                                                                //                                 cellIndex === 2 && (
-                                                                //                                     <Text
-                                                                //                                         numberOfLines={1}
-                                                                //                                         style={[
-                                                                //                                             styles.text,
-                                                                //                                             {
-                                                                //                                                 color: 'black',
-                                                                //                                                 marginLeft: hp(0.5),
-                                                                //                                                 marginRight: hp(0.5)
-                                                                //                                             },
-                                                                //                                         ]}>
-                                                                //                                         {cellData}
-                                                                //                                     </Text>
-                                                                //                                 )
-                                                                //     }
-                                                                //     // cellIndex === 3 ? element(cellData, index) :
-                                                                //     // textStyle={styles.text}
-                                                                //     textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
-                                                                //     width={wid}
-                                                                //     height={hp(6.5)}
-                                                                // />
+                                                                renderCell(cellIndex, cellData, rowIndex)
                                                             );
                                                         })}
                                                     </TableWrapper>
+                                                
                                                 );
                                             })
                                         ) :
@@ -535,11 +271,6 @@ const Activity = ({ route }) => {
                                     ))
                             }
                         </View>
-                        {/* <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                                <Text>
-                                    {translate('common.noDataFound')}
-                                </Text>
-                            </View> */}
                     </ScrollView>
                 </View>
             </View>

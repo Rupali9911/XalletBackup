@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
 
 import { SIZE } from '../../common/responsiveFunction';
 import { colors, fonts } from '../../res';
@@ -310,7 +311,9 @@ const styles = StyleSheet.create({
   textStyle: {
     margin: SIZE(10), 
     fontSize: SIZE(12) 
-  }
+  },
+  text: { margin: SIZE(10), fontSize: SIZE(12) },
+  themeColor: { color: Colors.themeColor },
 
 });
 
