@@ -89,6 +89,11 @@ export default function AppSearch() {
   };
 
   const handleFlatListRenderItem = ({ item, index }) => {
+    let isLaunchPad = false;
+    if(item?.launchpadId)
+    {
+      isLaunchPad = true;
+    }
     let withTag = false;
     if (index == 0) {
       withTag = true;
@@ -106,7 +111,7 @@ export default function AppSearch() {
           } else if (item.type == 'Artist') {
             navigation.navigate('ArtistDetail', { id: item?.address });
           } else if (item.type == 'Collections') {
-            navigation.push('CollectionDetail', { item: item });
+            navigation.push('CollectionDetail', { networkName: item?.network, contractAddress: item?.address, launchpadId: item?.launchpadId, isLaunchPad});
           }
         }}
       />

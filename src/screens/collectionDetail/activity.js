@@ -2,8 +2,8 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
+    // ActivityIndicator,
+    // FlatList,
     StatusBar,
     Text,
     View,
@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { colors } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
+// import { changeScreenName } from '../../store/actions/authAction';
 import {
     activityHistoryList,
     activityNftListStart,
@@ -33,19 +33,18 @@ import {
 } from 'react-native-table-component';
 import { translate } from '../../walletUtils';
 import styles from './styles';
-import NFTItem from '../../components/NFTItem';
-import CollectionItem from '../../components/CollectionItem';
-import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import { hp } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
-import { SIZE } from '../../common/responsiveFunction';
 import DropDownPicker from 'react-native-dropdown-picker';
 import PaginationContainer from '../../components/PaginationContainer';
 import moment from 'moment';
 import { FILTER_TRADING_HISTORY_OPTIONS } from '../../constants';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { NEW_BASE_URL } from '../../common/constants';
-
+// import NFTItem from '../../components/NFTItem';
+// import CollectionItem from '../../components/CollectionItem';
+// import NFTDetailDropdown from '../../components/NFTDetailDropdown';
+// import { SIZE } from '../../common/responsiveFunction';
 
 // const FILTER_TYPE = ['MintWithTokenURI', 'SellNFT', 'Bid', 'BuyNFT', 'Claim', 'OnAuction', 'CancelSell'];
 
@@ -74,19 +73,19 @@ const Activity = ({ route }) => {
     const [filterTableList, setFilterTableList] = useState([]);
     const [pageNum, setPageNum] = useState('1')
     const [pageInput, setPageInput] = useState(pageNum)
-    const [values, setValues] = useState([])
     const [filterTableValue, setFilterTableValue] = useState([]);
-    const [items, setItems] = useState([
-        { label: translate('common.minted'), value: 'MintWithTokenURI' },
-        { label: translate('common.sales'), value: 'SellNFT' },
-        { label: translate('common.Bids'), value: 'Bid' },
-        { label: translate('common.Buys'), value: 'BuyNFT' },
-        { label: translate('common.Claim'), value: 'Claim' },
-        { label: translate('common.OnAuction'), value: 'OnAuction' },
-        { label: translate('common.cancelSell'), value: 'CancelSell' },
-    ]);
+    // const [values, setValues] = useState([])
+    // const [items, setItems] = useState([
+    //     { label: translate('common.minted'), value: 'MintWithTokenURI' },
+    //     { label: translate('common.sales'), value: 'SellNFT' },
+    //     { label: translate('common.Bids'), value: 'Bid' },
+    //     { label: translate('common.Buys'), value: 'BuyNFT' },
+    //     { label: translate('common.Claim'), value: 'Claim' },
+    //     { label: translate('common.OnAuction'), value: 'OnAuction' },
+    //     { label: translate('common.cancelSell'), value: 'CancelSell' },
+    // ]);
     const [tradingTableHead, setTradingTableHead] = useState([
-        'NFT',
+        translate('common.NFT'),
         translate('common.event'),
         translate('common.price'),
         translate('common.from'),
@@ -130,7 +129,6 @@ const Activity = ({ route }) => {
                 dispatch(activityNftListStart(tabTitle));
                 dispatch(activityNftListReset());
                 if (filterTableValue.length > 0) {
-                    console.log('FilterTableValu, : ', filterTableValue)
                     setValues(filterTableValue)
                     getNFTlist(1, filterTableValue)
 
@@ -146,10 +144,57 @@ const Activity = ({ route }) => {
         }
     }, [isFocused, filterTableValue]);
 
-    function setDate(t) {
-        // var s = moment.utc(t).local().format("YYYY/MM/DD HH:mm:ss");
-        var s = moment.unix(t).format("YYYY/MM/DD HH:mm:ss")
-        return s.toString();
+    // function setDate(t) {
+    //     // var s = moment.utc(t).local().format("YYYY/MM/DD HH:mm:ss");
+    //     var s = moment.unix(t).format("YYYY/MM/DD HH:mm:ss")
+    //     return s.toString();
+    // }
+
+    const renderCell = (cellIndex, cellData, rowIndex) => {
+        return (
+            <Cell
+                key={rowIndex}
+                data={
+
+                     cellIndex === 0 ? (
+                        <TouchableOpacity
+                            onPress={() => getNftData(rowIndex)}
+                            style={styles.tableCellImageView}>
+                            <Image
+                                style={styles.cellImage}
+                                source={{ uri: cellData.image }} />
+                            <Text numberOfLines={1} style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
+                        </TouchableOpacity>
+                    ) :
+                     cellIndex === 1 || cellIndex === 2 || cellIndex === 5 ? (
+                        cellData
+                    ) :
+                     cellIndex === 3 || cellIndex === 4 ? (
+                        <TouchableOpacity onPress={() => getNftData(rowIndex)}>
+                            <Text
+                                numberOfLines={1}
+                                style={[
+                                    styles.text,
+                                    {
+                                        color: 'black',
+                                        marginLeft: hp(0.5),
+                                        marginRight: hp(0.5)
+                                    },
+                                ]}>
+                                {cellData !== 'Null Address' && cellData
+                                }
+                            </Text>
+                        </TouchableOpacity>
+                    ) : null
+
+                }
+                textStyle={styles.textStyle}
+                width={
+                    cellIndex === 0 ? 200 : cellIndex === 1 || cellIndex === 5 ? 180 : cellIndex === 2 || cellIndex === 3 || cellIndex === 4 ? 100 : 200
+                }
+                height={hp(6.5)}
+            />
+        )
     }
 
     const getNFTlist = useCallback(
@@ -223,9 +268,9 @@ const Activity = ({ route }) => {
                 collectionAddress: nftDetail.nft.collections.contractAddress,
                 nftTokenId: nftDetail.nft.tokenId,
             }
-        })
-            .then(json => {
-                navigation.push('CertificateDetail', { item: json });
+            })
+            .then(data => {
+                navigation.push('CertificateDetail', { item: data });
             }).catch(err => {
                 console.log('Error : ', err);
             });
@@ -285,290 +330,299 @@ const Activity = ({ route }) => {
                                 </View>
                             ) :
                                 (!isLoading && collectionList.length > 0 ? (
-                                 
-                                <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
-                                    <Row
-                                        data={tradingTableHead}
-                                        style={{ marginBottom: hp(0.5) }}
-                                        textStyle={{ marginLeft: 10 }}
-                                        widthArr={[200, 180, 100, 100, 100, 180]}
-                                        height={hp(2.5)}
-                                    />
-                                    {isArray && !isLoading && collectionList.length > 0 ? (
-                                        collectionList.map((rowData, rowIndex) => {
-                                            return (
-                                                <TableWrapper
-                                                    key={rowIndex}
-                                                    style={{ flexDirection: 'row' }}>
-                                                    {rowData?.map((cellData, cellIndex) => {
-                                                        let wid;
 
-                                                        // if (cellIndex === 0) {
-                                                        //     wid = 50;
-                                                        // }
-                                                        // if (cellIndex === 1) {
-                                                        //     wid = 145;
-                                                        // }
-                                                        // if (cellIndex === 2) {
-                                                        //     wid = 140;
-                                                        // }
-                                                        // if (cellIndex === 3) {
-                                                        //     wid = 180;
-                                                        // }
-                                                        // if (cellIndex === 4) {
-                                                        //     wid = 140;
-                                                        // }
-                                                        // if (cellIndex === 5) {
-                                                        //     wid = 120;
-                                                        // }
-                                                        // if (cellIndex === 6) {
-                                                        //     wid = 145;
-                                                        // }
-                                                        // if (cellIndex === 7) {
-                                                        //     wid = 1;
-                                                        // }
+                                    <Table borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
+                                        <Row
+                                            data={tradingTableHead}
+                                            style={{ marginBottom: hp(0.5) }}
+                                            textStyle={{ marginLeft: 10 }}
+                                            widthArr={[200, 180, 100, 100, 100, 180]}
+                                            height={hp(2.5)}
+                                        />
+                                        {isArray && !isLoading && collectionList.length > 0 ? (
+                                            collectionList.map((rowData, rowIndex) => {
+                                                return (
 
-                                                        if (cellIndex === 0) {
-                                                            wid = 200;
-                                                        }
-                                                        if (cellIndex === 1) {
-                                                            wid = 180;
-                                                        }
-                                                        if (cellIndex === 2) {
-                                                            wid = 100;
-                                                        }
-                                                        if (cellIndex === 3) {
-                                                            wid = 100;
-                                                        }
-                                                        if (cellIndex === 4) {
-                                                            wid = 100;
-                                                        }
-                                                        if (cellIndex === 5) {
-                                                            wid = 180;
-                                                        }
+                                                    <TableWrapper
+                                                        key={rowIndex}
+                                                        style={{ flexDirection: 'row' }}>
+                                                        {rowData?.map((cellData, cellIndex) => {
+                                                            return (
+                                                                renderCell(cellIndex, cellData, rowIndex)
+                                                            );
+                                                        })}
+                                                    </TableWrapper>
 
-                                                        return (
 
-                                                            
 
-                                                            <Cell
-                                                                key={cellIndex}
-                                                                data={
-                                                                    // cellIndex == 0 
-                                                                    cellIndex === 0 ? (
+                                                    // <TableWrapper
+                                                    //     key={rowIndex}
+                                                    //     style={{ flexDirection: 'row' }}>
+                                                    //     {rowData?.map((cellData, cellIndex) => {
+                                                    //         let wid;
 
-                                                                        <TouchableOpacity
-                                                                            onPress={() => getNftData(rowIndex)}
-                                                                            style={styles.tableCellImageView}                                                                       
-                                                                            // numberOfLines={1}
-                                                                        >
-                                                                            <Image
-                                                                                style={styles.cellImage}
-                                                                                source={{ uri: cellData.image }}
-                                                                            />
-                                                                            <Text numberOfLines={1} style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
-                                                                        </TouchableOpacity>
-                                                                    ) : 
-                                                                        cellIndex === 1 ?
-                                                                            (
-                                                                                cellData
-                                                                            ) :
-                                                                            cellIndex === 2 ?
-                                                                                (
-                                                                                    cellData
-                                                                                ) :
-                                                                                cellIndex === 3 ? (
-                                                                                    <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                                        <Text
-                                                                                            numberOfLines={1}
-                                                                                            style={[
-                                                                                                styles.text,
-                                                                                                {
-                                                                                                    color: 'black',
-                                                                                                    marginLeft: hp(0.5),
-                                                                                                    marginRight: hp(0.5)
-                                                                                                },
-                                                                                            ]}>
-                                                                                            {cellData !== 'Null Address' && cellData
-                                                                                            }
-                                                                                        </Text>
-                                                                                    </TouchableOpacity>
-                                                                                ) :
-                                                                                    cellIndex === 4 ? (
-                                                                                        <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                                            <Text
-                                                                                                numberOfLines={1}
-                                                                                                style={[
-                                                                                                    styles.text,
-                                                                                                    {
-                                                                                                        color: 'black',
-                                                                                                        marginLeft: hp(0.5),
-                                                                                                        marginRight: hp(0.5)
-                                                                                                    },
-                                                                                                ]}>
-                                                                                                {cellData !== 'Null Address' && cellData
-                                                                                                }
-                                                                                            </Text>
-                                                                                        </TouchableOpacity>
-                                                                                    ) :
-                                                                                        cellIndex === 5 &&
-                                                                                        (
-                                                                                            // cellData && cellData.substring(0, 9)
-                                                                                            cellData
-                                                                                        )
+                                                    //         // if (cellIndex === 0) {
+                                                    //         //     wid = 50;
+                                                    //         // }
+                                                    //         // if (cellIndex === 1) {
+                                                    //         //     wid = 145;
+                                                    //         // }
+                                                    //         // if (cellIndex === 2) {
+                                                    //         //     wid = 140;
+                                                    //         // }
+                                                    //         // if (cellIndex === 3) {
+                                                    //         //     wid = 180;
+                                                    //         // }
+                                                    //         // if (cellIndex === 4) {
+                                                    //         //     wid = 140;
+                                                    //         // }
+                                                    //         // if (cellIndex === 5) {
+                                                    //         //     wid = 120;
+                                                    //         // }
+                                                    //         // if (cellIndex === 6) {
+                                                    //         //     wid = 145;
+                                                    //         // }
+                                                    //         // if (cellIndex === 7) {
+                                                    //         //     wid = 1;
+                                                    //         // }
 
-                                                                    // cellIndex == 1 ? (
-                                                                    //     <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                                    //         <Text
-                                                                    //             numberOfLines={1}
-                                                                    //             style={[
-                                                                    //                 styles.text,
-                                                                    //                 {
-                                                                    //                     color: 'black',
-                                                                    //                     marginLeft: hp(0.5),
-                                                                    //                     marginRight: hp(0.5)
-                                                                    //                 },
-                                                                    //             ]}>
-                                                                    //              {cellData !== 'Null Address' && cellData
-                                                                    //             }
-                                                                    //         </Text>
-                                                                    //     </TouchableOpacity>
-                                                                    // ) :
-                                                                    //     cellIndex == 0 ? (
-                                                                    //         <TouchableOpacity
-                                                                    //             style={{
-                                                                    //                 flexDirection: 'row',
-                                                                    //                 justifyContent: 'center',
-                                                                    //                 alignItems: 'center'
-                                                                    //             }}
-                                                                    //             onPress={() => getNftData(rowIndex)}
-                                                                    //         >
-                                                                    //             <Image
-                                                                    //                 style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
-                                                                    //                 source={{ uri: cellData }}
-                                                                    //             />
+                                                    //         if (cellIndex === 0) {
+                                                    //             wid = 200;
+                                                    //         }
+                                                    //         if (cellIndex === 1 || cellIndex === 5) {
+                                                    //             wid = 180;
+                                                    //         }
+                                                    //         if (cellIndex === 2 || cellIndex === 3 || cellIndex === 4) {
+                                                    //             wid = 100;
+                                                    //         }
+                                                    //         // if (cellIndex === 3) {
+                                                    //         //     wid = 100;
+                                                    //         // }
+                                                    //         // if (cellIndex === 4) {
+                                                    //         //     wid = 100;
+                                                    //         // }
+                                                    //         // if (cellIndex === 5) {
+                                                    //         //     wid = 180;
+                                                    //         // }
 
-                                                                    //         </TouchableOpacity>) :
-                                                                    //         cellIndex === 3 ?
-                                                                    //             (
-                                                                    //                 cellData
-                                                                    //             ) :
-                                                                    //             cellIndex === 4 ?
-                                                                    //                 (
-                                                                    //                     cellData && cellData.substring(0, 12)
-                                                                    //                 ) :
-                                                                    //                 cellIndex === 5 ? (
-                                                                    //                     cellData && cellData.substring(0, 12)
-                                                                    //                 ) :
-                                                                    //                     cellIndex === 6 ? (
-                                                                    //                         setDate(cellData)
-                                                                    //                     ) :
-                                                                    //                         cellIndex === 2 && (
-                                                                    //                             <Text
-                                                                    //                                 numberOfLines={1}
-                                                                    //                                 style={[
-                                                                    //                                     styles.text,
-                                                                    //                                     {
-                                                                    //                                         color: 'black',
-                                                                    //                                         marginLeft: hp(0.5),
-                                                                    //                                         marginRight: hp(0.5)
-                                                                    //                                     },
-                                                                    //                                 ]}>
-                                                                    //                                 {cellData}
-                                                                    //                             </Text>
-                                                                    //                         )
-                                                                }
-                                                                // cellIndex === 3 ? element(cellData, index) :
-                                                                // textStyle={styles.text}
-                                                                // textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
-                                                                // width={wid}
-                                                                // height={hp(6.5)}
+                                                    //         return (
+                                                    //             <Cell
+                                                    //                 key={cellIndex}
+                                                    //                 data={
+                                                    //                     cellIndex === 0 ? (
 
-                                                                // textStyle={styles.text}
-                                                                textStyle={styles.textStyle}
-                                                                width={wid}
-                                                                height={hp(6.5)}
-                                                            />
-                                                            // <Cell
-                                                            //     key={cellIndex}
-                                                            //     data={
-                                                            //         // cellIndex == 0 
-                                                            //         cellIndex == 1 ? (
-                                                            //             <TouchableOpacity onPress={() => getNftData(rowIndex)}>
-                                                            //                 <Text
-                                                            //                     numberOfLines={1}
-                                                            //                     style={[
-                                                            //                         styles.text,
-                                                            //                         {
-                                                            //                             color: 'black',
-                                                            //                             marginLeft: hp(0.5),
-                                                            //                             marginRight: hp(0.5)
-                                                            //                         },
-                                                            //                     ]}>
-                                                            //                      {cellData !== 'Null Address' && cellData
-                                                            //                     }
-                                                            //                 </Text>
-                                                            //             </TouchableOpacity>
-                                                            //         ) :
-                                                            //             cellIndex == 0 ? (
-                                                            //                 <TouchableOpacity
-                                                            //                     style={{
-                                                            //                         flexDirection: 'row',
-                                                            //                         justifyContent: 'center',
-                                                            //                         alignItems: 'center'
-                                                            //                     }}
-                                                            //                     onPress={() => getNftData(rowIndex)}
-                                                            //                 >
-                                                            //                     <Image
-                                                            //                         style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
-                                                            //                         source={{ uri: cellData }}
-                                                            //                     />
+                                                    //                         <TouchableOpacity
+                                                    //                             onPress={() => getNftData(rowIndex)}
+                                                    //                             style={styles.tableCellImageView}                                                                       
+                                                    //                             // numberOfLines={1}
+                                                    //                         >
+                                                    //                             <Image
+                                                    //                                 style={styles.cellImage}
+                                                    //                                 source={{ uri: cellData.image }}
+                                                    //                             />
+                                                    //                             <Text numberOfLines={1} style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
+                                                    //                         </TouchableOpacity>
+                                                    //                     ) : 
+                                                    //                         cellIndex === 1 ?
+                                                    //                             (
+                                                    //                                 cellData
+                                                    //                             ) :
+                                                    //                             cellIndex === 2 ?
+                                                    //                                 (
+                                                    //                                     cellData
+                                                    //                                 ) :
+                                                    //                                 cellIndex === 3 ? (
+                                                    //                                     <TouchableOpacity onPress={() => getNftData(rowIndex)}>
+                                                    //                                         <Text
+                                                    //                                             numberOfLines={1}
+                                                    //                                             style={[
+                                                    //                                                 styles.text,
+                                                    //                                                 {
+                                                    //                                                     color: 'black',
+                                                    //                                                     marginLeft: hp(0.5),
+                                                    //                                                     marginRight: hp(0.5)
+                                                    //                                                 },
+                                                    //                                             ]}>
+                                                    //                                             {cellData !== 'Null Address' && cellData
+                                                    //                                             }
+                                                    //                                         </Text>
+                                                    //                                     </TouchableOpacity>
+                                                    //                                 ) :
+                                                    //                                     cellIndex === 4 ? (
+                                                    //                                         <TouchableOpacity onPress={() => getNftData(rowIndex)}>
+                                                    //                                             <Text
+                                                    //                                                 numberOfLines={1}
+                                                    //                                                 style={[
+                                                    //                                                     styles.text,
+                                                    //                                                     {
+                                                    //                                                         color: 'black',
+                                                    //                                                         marginLeft: hp(0.5),
+                                                    //                                                         marginRight: hp(0.5)
+                                                    //                                                     },
+                                                    //                                                 ]}>
+                                                    //                                                 {cellData !== 'Null Address' && cellData
+                                                    //                                                 }
+                                                    //                                             </Text>
+                                                    //                                         </TouchableOpacity>
+                                                    //                                     ) :
+                                                    //                                         cellIndex === 5 &&
+                                                    //                                         (
+                                                    //                                             // cellData && cellData.substring(0, 9)
+                                                    //                                             cellData
+                                                    //                                         )
 
-                                                            //                 </TouchableOpacity>) :
-                                                            //                 cellIndex === 3 ?
-                                                            //                     (
-                                                            //                         cellData
-                                                            //                     ) :
-                                                            //                     cellIndex === 4 ?
-                                                            //                         (
-                                                            //                             cellData && cellData.substring(0, 12)
-                                                            //                         ) :
-                                                            //                         cellIndex === 5 ? (
-                                                            //                             cellData && cellData.substring(0, 12)
-                                                            //                         ) :
-                                                            //                             cellIndex === 6 ? (
-                                                            //                                 setDate(cellData)
-                                                            //                             ) :
-                                                            //                                 cellIndex === 2 && (
-                                                            //                                     <Text
-                                                            //                                         numberOfLines={1}
-                                                            //                                         style={[
-                                                            //                                             styles.text,
-                                                            //                                             {
-                                                            //                                                 color: 'black',
-                                                            //                                                 marginLeft: hp(0.5),
-                                                            //                                                 marginRight: hp(0.5)
-                                                            //                                             },
-                                                            //                                         ]}>
-                                                            //                                         {cellData}
-                                                            //                                     </Text>
-                                                            //                                 )
-                                                            //     }
-                                                            //     // cellIndex === 3 ? element(cellData, index) :
-                                                            //     // textStyle={styles.text}
-                                                            //     textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
-                                                            //     width={wid}
-                                                            //     height={hp(6.5)}
-                                                            // />
-                                                        );
-                                                    })}
-                                                </TableWrapper>
-                                            );
-                                        })
-                                    ) :
-                                        <></>
-                                    }
-                                </Table>) : 
+                                                    //                     // cellIndex == 1 ? (
+                                                    //                     //     <TouchableOpacity onPress={() => getNftData(rowIndex)}>
+                                                    //                     //         <Text
+                                                    //                     //             numberOfLines={1}
+                                                    //                     //             style={[
+                                                    //                     //                 styles.text,
+                                                    //                     //                 {
+                                                    //                     //                     color: 'black',
+                                                    //                     //                     marginLeft: hp(0.5),
+                                                    //                     //                     marginRight: hp(0.5)
+                                                    //                     //                 },
+                                                    //                     //             ]}>
+                                                    //                     //              {cellData !== 'Null Address' && cellData
+                                                    //                     //             }
+                                                    //                     //         </Text>
+                                                    //                     //     </TouchableOpacity>
+                                                    //                     // ) :
+                                                    //                     //     cellIndex == 0 ? (
+                                                    //                     //         <TouchableOpacity
+                                                    //                     //             style={{
+                                                    //                     //                 flexDirection: 'row',
+                                                    //                     //                 justifyContent: 'center',
+                                                    //                     //                 alignItems: 'center'
+                                                    //                     //             }}
+                                                    //                     //             onPress={() => getNftData(rowIndex)}
+                                                    //                     //         >
+                                                    //                     //             <Image
+                                                    //                     //                 style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
+                                                    //                     //                 source={{ uri: cellData }}
+                                                    //                     //             />
+
+                                                    //                     //         </TouchableOpacity>) :
+                                                    //                     //         cellIndex === 3 ?
+                                                    //                     //             (
+                                                    //                     //                 cellData
+                                                    //                     //             ) :
+                                                    //                     //             cellIndex === 4 ?
+                                                    //                     //                 (
+                                                    //                     //                     cellData && cellData.substring(0, 12)
+                                                    //                     //                 ) :
+                                                    //                     //                 cellIndex === 5 ? (
+                                                    //                     //                     cellData && cellData.substring(0, 12)
+                                                    //                     //                 ) :
+                                                    //                     //                     cellIndex === 6 ? (
+                                                    //                     //                         setDate(cellData)
+                                                    //                     //                     ) :
+                                                    //                     //                         cellIndex === 2 && (
+                                                    //                     //                             <Text
+                                                    //                     //                                 numberOfLines={1}
+                                                    //                     //                                 style={[
+                                                    //                     //                                     styles.text,
+                                                    //                     //                                     {
+                                                    //                     //                                         color: 'black',
+                                                    //                     //                                         marginLeft: hp(0.5),
+                                                    //                     //                                         marginRight: hp(0.5)
+                                                    //                     //                                     },
+                                                    //                     //                                 ]}>
+                                                    //                     //                                 {cellData}
+                                                    //                     //                             </Text>
+                                                    //                     //                         )
+                                                    //                 }
+                                                    //                 // cellIndex === 3 ? element(cellData, index) :
+                                                    //                 // textStyle={styles.text}
+                                                    //                 // textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
+                                                    //                 // width={wid}
+                                                    //                 // height={hp(6.5)}
+
+                                                    //                 // textStyle={styles.text}
+                                                    //                 textStyle={styles.textStyle}
+                                                    //                 width={wid}
+                                                    //                 height={hp(6.5)}
+                                                    //             />
+                                                    //             // <Cell
+                                                    //             //     key={cellIndex}
+                                                    //             //     data={
+                                                    //             //         // cellIndex == 0 
+                                                    //             //         cellIndex == 1 ? (
+                                                    //             //             <TouchableOpacity onPress={() => getNftData(rowIndex)}>
+                                                    //             //                 <Text
+                                                    //             //                     numberOfLines={1}
+                                                    //             //                     style={[
+                                                    //             //                         styles.text,
+                                                    //             //                         {
+                                                    //             //                             color: 'black',
+                                                    //             //                             marginLeft: hp(0.5),
+                                                    //             //                             marginRight: hp(0.5)
+                                                    //             //                         },
+                                                    //             //                     ]}>
+                                                    //             //                      {cellData !== 'Null Address' && cellData
+                                                    //             //                     }
+                                                    //             //                 </Text>
+                                                    //             //             </TouchableOpacity>
+                                                    //             //         ) :
+                                                    //             //             cellIndex == 0 ? (
+                                                    //             //                 <TouchableOpacity
+                                                    //             //                     style={{
+                                                    //             //                         flexDirection: 'row',
+                                                    //             //                         justifyContent: 'center',
+                                                    //             //                         alignItems: 'center'
+                                                    //             //                     }}
+                                                    //             //                     onPress={() => getNftData(rowIndex)}
+                                                    //             //                 >
+                                                    //             //                     <Image
+                                                    //             //                         style={{ height: hp(5.5), width: hp(5.5), borderRadius: 3 }}
+                                                    //             //                         source={{ uri: cellData }}
+                                                    //             //                     />
+
+                                                    //             //                 </TouchableOpacity>) :
+                                                    //             //                 cellIndex === 3 ?
+                                                    //             //                     (
+                                                    //             //                         cellData
+                                                    //             //                     ) :
+                                                    //             //                     cellIndex === 4 ?
+                                                    //             //                         (
+                                                    //             //                             cellData && cellData.substring(0, 12)
+                                                    //             //                         ) :
+                                                    //             //                         cellIndex === 5 ? (
+                                                    //             //                             cellData && cellData.substring(0, 12)
+                                                    //             //                         ) :
+                                                    //             //                             cellIndex === 6 ? (
+                                                    //             //                                 setDate(cellData)
+                                                    //             //                             ) :
+                                                    //             //                                 cellIndex === 2 && (
+                                                    //             //                                     <Text
+                                                    //             //                                         numberOfLines={1}
+                                                    //             //                                         style={[
+                                                    //             //                                             styles.text,
+                                                    //             //                                             {
+                                                    //             //                                                 color: 'black',
+                                                    //             //                                                 marginLeft: hp(0.5),
+                                                    //             //                                                 marginRight: hp(0.5)
+                                                    //             //                                             },
+                                                    //             //                                         ]}>
+                                                    //             //                                         {cellData}
+                                                    //             //                                     </Text>
+                                                    //             //                                 )
+                                                    //             //     }
+                                                    //             //     // cellIndex === 3 ? element(cellData, index) :
+                                                    //             //     // textStyle={styles.text}
+                                                    //             //     textStyle={{ margin: SIZE(10), fontSize: SIZE(12) }}
+                                                    //             //     width={wid}
+                                                    //             //     height={hp(6.5)}
+                                                    //             // />
+                                                    //         );
+                                                    //     })}
+                                                    // </TableWrapper>
+                                                );
+                                            })
+                                        ) :
+                                            <></>
+                                        }
+                                    </Table>) :
                                     (
                                         <View style={{
                                             width: Dimensions.get('window').width,

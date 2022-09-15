@@ -13,19 +13,14 @@ import {
     BackHandler
 } from 'react-native';
 import AppBackground from '../../components/appBackground';
-import { C_Image, GroupButton, Loader } from '../../components';
+import { C_Image, Loader } from '../../components';
 import {
-    getBoxes,
-    getBlindBoxSeriesSum,
-    getBoxStatsDetails,
     getHotCollectionDetail,
-    getStoreCollectioDetail
 } from '../../store/actions/hotCollectionAction';
 import ImageSrc from '../../constants/Images';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Collections from './collections';
 import { colors, fonts } from '../../res';
 import { translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
@@ -38,20 +33,15 @@ import {
     MenuTrigger,
 } from 'react-native-popup-menu';
 import { alertWithSingleBtn } from '../../common/function';
-import { convertValue, divideNo, numberWithCommas } from '../../utils';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import Web3 from 'web3';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
-import { networkType } from '../../common/networkType';
 import { SvgUri } from 'react-native-svg';
-import Video from 'react-native-fast-video';
 import { currencyInDollar } from '../wallet/functions';
-import Gallery from './gallery';
-import Owned from './owned';
-import OnSale from './onSale';
-import soldOut from './soldOut';
-import { Verifiedcollections } from '../../components/verifiedCollection';
-import CommonStyles from '../../constants/styles';
+import tabOne from './tabOne';
+import tabTwo from './tabTwo';
+import tabThree from './tabThree';
+import tabFour from './tabFour';
 import Activity from './activity';
 import { RF, wp } from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
@@ -62,14 +52,14 @@ const { height } = Dimensions.get('window');
 const { TwiiterIcon, FacebookIcon, InstagramIcon, ThreeDotsVerticalIcon, PolygonIcon, Ethereum, BitmapIcon } = SVGS;
 const Tab = createMaterialTopTabNavigator();
 
-let MarketPlaceAbi = "";
-let MarketContractAddress = "";
+// let MarketPlaceAbi = "";
+// let MarketContractAddress = "";
 
-let OffChainBlindBoxAbi = "";
-let OffChainBlindBoxAddress = ""
-let ApproveAbi = "";
-let providerUrl = "";
-let walletAddressForNonCrypto = "";
+// let OffChainBlindBoxAbi = "";
+// let OffChainBlindBoxAddress = ""
+// let ApproveAbi = "";
+// let providerUrl = "";
+// let walletAddressForNonCrypto = "";
 
 const imageToChainKey = {
     polygon: {
@@ -88,32 +78,32 @@ const imageToChainKey = {
 
 function CollectionDetail(props) {
     const { route } = props;
-    const { item, isLaunchPad } = route.params;
+    const { networkName, contractAddress, launchpadId, isLaunchPad } = route.params;
     // console.log("🚀 ~ file: index.js ~ line 75 ~ CollectionDetail ~ ", item);
     const [collection, setCollection] = useState({});
     const [loading, setLoading] = useState(true);
     const [descTab, setDescTab] = useState(true);
-    const [collectionType, setCollectionType] = useState(0);
-    const [collectionAddress, setCollectionAddress] = useState(null);
-    const [storeCollection, setStoreCollection] = useState({});
-    const [sumBlindBox, setSumBlindBox] = useState({});
-    const [blindboxList, setBlindboxList] = useState([]);
-    const [statsDetails, setStatsDetails] = useState([]);
     const [nftChain, setNftChain] = useState('ethereum');
     const [baseCurrency, setBaseCurrency] = useState();
     const [priceOnChain, setPriceOnChain] = useState();
-    const [availableTokens, setAvailableTokens] = useState();
     const [availableChains, setAvailableChains] = useState([]);
     const [selectedBlindBox, setSelectedBlindBox] = useState([]);
-    const [userIsWhiteListed, setUserIsWhiteListed] = useState(false);
-    const [whiteListId, setWhiteListId] = useState();
-    const [priceOnDollar, setPriceOnDollar] = useState(0);
-    const [selectedPack, setSelectedPack] = useState();
     const navigation = useNavigation();
-    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
     const { data, wallet } = useSelector(state => state.UserReducer);
-    const { NftDataCollectionReducer } = useSelector(state => state);
-    const [loadImage, setLoadImage] = useState([]);
+    // const { NftDataCollectionReducer } = useSelector(state => state);
+    // const [loadImage, setLoadImage] = useState([]);
+    // const [collectionType, setCollectionType] = useState(0);
+    // const [collectionAddress, setCollectionAddress] = useState(null);
+    // const [storeCollection, setStoreCollection] = useState({});
+    // const [sumBlindBox, setSumBlindBox] = useState({});
+    // const [blindboxList, setBlindboxList] = useState([]);
+    // const [statsDetails, setStatsDetails] = useState([]);
+    // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+    // const [userIsWhiteListed, setUserIsWhiteListed] = useState(false);
+    // const [whiteListId, setWhiteListId] = useState();
+    // const [priceOnDollar, setPriceOnDollar] = useState(0);
+    // const [selectedPack, setSelectedPack] = useState();
+    // const [availableTokens, setAvailableTokens] = useState();
 
     // const isLoading = isBlind && nftId
     //     ? NftDataCollectionReducer.nftBlindSeriesCollectionLoading
@@ -256,7 +246,7 @@ function CollectionDetail(props) {
                 sendRequest({
                     url,
                     params: {
-                        launchpadId: item.id
+                        launchpadId: launchpadId 
                     },
                 }).then((res) => {
                     setCollection(res);
@@ -265,8 +255,8 @@ function CollectionDetail(props) {
             }
             else {
                 const collectionArray = await getHotCollectionDetail(
-                    item.network.networkName,
-                    item.contractAddress,
+                    networkName,
+                    contractAddress
                 );
                 setCollection(collectionArray);
                 setLoading(false);
@@ -279,9 +269,11 @@ function CollectionDetail(props) {
             // setLoading(false);
         } catch (err) {
             console.error(err.message);
+            setCollection([]);
             setLoading(false);
         }
     };
+
     // const setBlindBoxes = async (collectionArray) => {
     //     let boxes;
     //     if (collectionArray?.data?.data?._id === '61aa04803035bdb9917871cf') {
@@ -344,27 +336,27 @@ function CollectionDetail(props) {
     //         })
     // }
 
-    useEffect(() => {
-        // if (!_.isEmpty(selectedBlindBox) && !_.isEmpty(nftChain) && !_.isEmpty(basePriceTokens)) {
-        //     let index = '';
-        //     for (let i = 0; i < selectedBlindBox.seriesChain.length; i++) {
-        //         if (selectedBlindBox.seriesChain[i][nftChain]) {
-        //             index = i;
-        //         }
-        //     }
-        //     const _priceOnChain =
-        //         selectedBlindBox.seriesChain[index][nftChain]?.price || "";
-        //     setPriceOnChain(_priceOnChain);
+    // useEffect(() => {
+    //     // if (!_.isEmpty(selectedBlindBox) && !_.isEmpty(nftChain) && !_.isEmpty(basePriceTokens)) {
+    //     //     let index = '';
+    //     //     for (let i = 0; i < selectedBlindBox.seriesChain.length; i++) {
+    //     //         if (selectedBlindBox.seriesChain[i][nftChain]) {
+    //     //             index = i;
+    //     //         }
+    //     //     }
+    //     //     const _priceOnChain =
+    //     //         selectedBlindBox.seriesChain[index][nftChain]?.price || "";
+    //     //     setPriceOnChain(_priceOnChain);
 
-        //     let baseCurrencyBB = index !== "" && selectedBlindBox.seriesChain[index][nftChain].baseCurrency;
-        //     let baseCurrency = basePriceTokens.filter(
-        //         (token) =>
-        //             token.chain === nftChain &&
-        //             token.order === baseCurrencyBB
-        //     );
-        //     setBaseCurrency(baseCurrency[0]);
-        // }
-    }, [nftChain, wallet]);
+    //     //     let baseCurrencyBB = index !== "" && selectedBlindBox.seriesChain[index][nftChain].baseCurrency;
+    //     //     let baseCurrency = basePriceTokens.filter(
+    //     //         (token) =>
+    //     //             token.chain === nftChain &&
+    //     //             token.order === baseCurrencyBB
+    //     //     );
+    //     //     setBaseCurrency(baseCurrency[0]);
+    //     // }
+    // }, [nftChain, wallet]);
 
     useEffect(() => {
         getCurrencyPrice(priceOnChain);
@@ -436,90 +428,90 @@ function CollectionDetail(props) {
         });
     };
 
-    const chainInfo = async (blindBox) => {
-        // console.log("🚀 ~ file: index.js ~ line 394 ~ chainInfo ~ chainInfo", blindBox)
+    // const chainInfo = async (blindBox) => {
+    //     // console.log("🚀 ~ file: index.js ~ line 394 ~ chainInfo ~ chainInfo", blindBox)
 
-        let index = "";
-        let _availableChains = [];
-        for (let i = 0; i < blindBox.seriesChain.length; i++) {
-            if (blindBox.seriesChain[i].hasOwnProperty("polygon")) {
-                _availableChains.push("polygon");
-            } else if (blindBox.seriesChain[i].hasOwnProperty("ethereum")) {
-                _availableChains.push("ethereum");
-            } else if (blindBox.seriesChain[i].hasOwnProperty("binance")) {
-                _availableChains.push("binance");
-            }
-        }
+    //     let index = "";
+    //     let _availableChains = [];
+    //     for (let i = 0; i < blindBox.seriesChain.length; i++) {
+    //         if (blindBox.seriesChain[i].hasOwnProperty("polygon")) {
+    //             _availableChains.push("polygon");
+    //         } else if (blindBox.seriesChain[i].hasOwnProperty("ethereum")) {
+    //             _availableChains.push("ethereum");
+    //         } else if (blindBox.seriesChain[i].hasOwnProperty("binance")) {
+    //             _availableChains.push("binance");
+    //         }
+    //     }
 
-        const indexEth = _availableChains.indexOf("ethereum");
-        const _nftChain = _availableChains[indexEth];
-        setNftChain(_nftChain);
+    //     const indexEth = _availableChains.indexOf("ethereum");
+    //     const _nftChain = _availableChains[indexEth];
+    //     setNftChain(_nftChain);
 
-        for (let i = 0; i < blindBox.seriesChain.length; i++) {
-            if (blindBox.seriesChain[i][_nftChain]) {
-                index = i;
-            }
-        }
+    //     for (let i = 0; i < blindBox.seriesChain.length; i++) {
+    //         if (blindBox.seriesChain[i][_nftChain]) {
+    //             index = i;
+    //         }
+    //     }
 
-        let baseCurrencyBB = index !== "" && blindBox.seriesChain[index][_nftChain].baseCurrency;
-        let baseCurrency = basePriceTokens.filter(
-            (token) =>
-                token.chain === _nftChain &&
-                token.order === baseCurrencyBB
-        );
+    //     let baseCurrencyBB = index !== "" && blindBox.seriesChain[index][_nftChain].baseCurrency;
+    //     let baseCurrency = basePriceTokens.filter(
+    //         (token) =>
+    //             token.chain === _nftChain &&
+    //             token.order === baseCurrencyBB
+    //     );
 
-        let currArrayHex = index !== "" && blindBox.seriesChain[index][_nftChain].allowedCurrencies;
-        let currArray = currArrayHex && currArrayHex.length > 0 && currArrayHex
-            .map((item) => parseInt(item._hex, 16))
-            .toString();
+    //     let currArrayHex = index !== "" && blindBox.seriesChain[index][_nftChain].allowedCurrencies;
+    //     let currArray = currArrayHex && currArrayHex.length > 0 && currArrayHex
+    //         .map((item) => parseInt(item._hex, 16))
+    //         .toString();
 
-        let _availableTokens = basePriceTokens.filter(
-            (token) =>
-                token.chain === _nftChain && currArray &&
-                currArray.includes(token.order.toString())
-        );
-        const _priceOnChain =
-            blindBox.seriesChain[index][_nftChain]?.price || "";
+    //     let _availableTokens = basePriceTokens.filter(
+    //         (token) =>
+    //             token.chain === _nftChain && currArray &&
+    //             currArray.includes(token.order.toString())
+    //     );
+    //     const _priceOnChain =
+    //         blindBox.seriesChain[index][_nftChain]?.price || "";
 
-        setBaseCurrency(baseCurrency[0]);
-        setPriceOnChain(_priceOnChain);
-        setAvailableTokens(_availableTokens);
-        // console.log('==========1111111', _availableChains.sort());
-        setAvailableChains(_availableChains.sort());
-        // console.log('==========_availableChains.sort()', _availableChains.sort());
+    //     setBaseCurrency(baseCurrency[0]);
+    //     setPriceOnChain(_priceOnChain);
+    //     setAvailableTokens(_availableTokens);
+    //     // console.log('==========1111111', _availableChains.sort());
+    //     setAvailableChains(_availableChains.sort());
+    //     // console.log('==========_availableChains.sort()', _availableChains.sort());
 
-        // let w = new Web3(providerUrl);
-        // const calculatedPrice = await calculatePrice(
-        //   w.utils.toWei(_priceOnChain.toString(), 'ether'),
-        //   _nftChain === "ethereum" ? 0 : 1,
-        //   "0x0000000000000000000000000000000000000000",
-        // );
-        // setPriceOnDollar(divideNo(calculatedPrice));
-        setLoading(false);
-    }
+    //     // let w = new Web3(providerUrl);
+    //     // const calculatedPrice = await calculatePrice(
+    //     //   w.utils.toWei(_priceOnChain.toString(), 'ether'),
+    //     //   _nftChain === "ethereum" ? 0 : 1,
+    //     //   "0x0000000000000000000000000000000000000000",
+    //     // );
+    //     // setPriceOnDollar(divideNo(calculatedPrice));
+    //     setLoading(false);
+    // }
 
-    const calculatePrice = async (price, tradeCurr, owner) => {
-        let collectionAddress = selectedBlindBox.collectionAddr[nftChain];
-        let web3 = new Web3(providerUrl);
-        let MarketPlaceContract = new web3.eth.Contract(
-            MarketPlaceAbi,
-            MarketContractAddress
-        );
+    // const calculatePrice = async (price, tradeCurr, owner) => {
+    //     let collectionAddress = selectedBlindBox.collectionAddr[nftChain];
+    //     let web3 = new Web3(providerUrl);
+    //     let MarketPlaceContract = new web3.eth.Contract(
+    //         MarketPlaceAbi,
+    //         MarketContractAddress
+    //     );
 
-        let selectedSeriesId = getSeriesAsOfChain();
-        let res = await MarketPlaceContract.methods
-            .calculatePrice(
-                price,
-                baseCurrency.order,
-                tradeCurr,
-                selectedSeriesId.seriesId,
-                owner,
-                collectionAddress
-            )
-            .call();
-        if (res) return res;
-        else return "";
-    }
+    //     let selectedSeriesId = getSeriesAsOfChain();
+    //     let res = await MarketPlaceContract.methods
+    //         .calculatePrice(
+    //             price,
+    //             baseCurrency.order,
+    //             tradeCurr,
+    //             selectedSeriesId.seriesId,
+    //             owner,
+    //             collectionAddress
+    //         )
+    //         .call();
+    //     if (res) return res;
+    //     else return "";
+    // }
 
     const renderBanner = () => {
         let bannerUrl = collection?.bannerImage;
@@ -618,101 +610,101 @@ function CollectionDetail(props) {
         );
     };
 
-    const blindBoxInfo = () => {
-        // console.log('selectedBlindBox1', selectedBlindBox)
-        // if (isStore) return null;
-        // if (isBlind && nftId) {
-        return (
-            <>
-                <View style={{ padding: SIZE(10) }}>
-                    {!selectedBlindBox?.packVideo ? null :
-                        selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
-                            <View style={CommonStyles.center}>
-                                {loadImage &&
-                                    <Loader style={styles.blindBoxLoader} />
-                                }
-                                <Video
-                                    source={{ uri: selectedBlindBox?.packVideo }}
-                                    repeat={true}
-                                    resizeMode={'cover'}
-                                    style={styles.selectBlindBoxVideo}
-                                    onLoadStart={() => setLoadImage(true)}
-                                    onReadyForDisplay={() => setLoadImage(false)}
-                                />
-                            </View>
-                        ) : (
-                            <View style={CommonStyles.center}>
-                                {loadImage &&
-                                    <Loader style={styles.blindBoxLoader} />
-                                }
-                                <Image
-                                    source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
-                                    style={styles.selectBlindBoxVideo}
-                                    onLoadStart={() => setLoadImage(true)}
-                                    onLoadEnd={() => setLoadImage(false)}
-                                />
-                            </View>
-                        )}
-                    <Text style={styles.selectBlindBoxName}>
-                        {selectedBlindBox?.name ? selectedBlindBox?.name : blindboxList[0]?.name}
-                    </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: SIZE(5) }}>
-                        <Text style={{
-                            fontSize: SIZE(22),
-                            fontWeight: 'bold',
-                            marginRight: SIZE(10),
-                            lineHeight: SIZE(22)
-                        }}>
-                            {priceOnChain ? priceOnChain : blindboxList[0]?.price}
-                        </Text>
-                        <Text style={{
-                            fontSize: SIZE(22),
-                            fontWeight: 'bold',
-                            color: '#9D9D9D',
-                            lineHeight: SIZE(22)
-                        }}>
-                            {baseCurrency ? baseCurrency.key : ""}
-                        </Text>
-                        {priceOnDollar ?
-                            <>
-                                <Text style={{
-                                    fontSize: SIZE(15),
-                                    color: '#9D9D9D',
-                                    marginLeft: SIZE(10),
-                                    lineHeight: SIZE(22)
-                                }}>
-                                    {`($${numberWithCommas(parseFloat(priceOnDollar).toFixed(2))})`}
-                                </Text>
-                            </> :
-                            <View style={{ marginBottom: 5, marginLeft: 10 }}>
-                                {chainIcon(blindboxList[0]?.nftChain)}
-                            </View>
-                        }
-                    </View>
-                    {/* <View style={{ paddingTop: SIZE(10) }}>
-                            <GroupButton
-                                leftDisabled={false}
-                                leftText={
-                                    parseInt(selectedBlindBox?.startTime) * 1000 <= new Date().getTime() ?
-                                        parseInt(selectedBlindBox?.endTime) * 1000 <= new Date().getTime() ?
-                                            // selectedBlindBox?. 
-                                            'The sale has ended'
-                                            : selectedBlindBox?.buyBoxCount &&
-                                                parseInt(selectedBlindBox?.buyBoxCount[nftChain]) <
-                                                parseInt(selectedBlindBox?.maxBoxesChain[nftChain]) ?
-                                                null
-                                                : 'Sold Out'
-                                        : 'CountDown'
-                                }
-                                // onLeftPress={() => { alert('okay') }}
-                                rightHide
-                            />
-                        </View> */}
-                </View>
-            </>
-        )
-        // }
-    }
+    // const blindBoxInfo = () => {
+    //     // console.log('selectedBlindBox1', selectedBlindBox)
+    //     // if (isStore) return null;
+    //     // if (isBlind && nftId) {
+    //     return (
+    //         <>
+    //             <View style={{ padding: SIZE(10) }}>
+    //                 {!selectedBlindBox?.packVideo ? null :
+    //                     selectedBlindBox?.packVideo && !selectedBlindBox?.packVideo.match(/\.(jpg|jpeg|png|gif)$/) ? (
+    //                         <View style={CommonStyles.center}>
+    //                             {loadImage &&
+    //                                 <Loader style={styles.blindBoxLoader} />
+    //                             }
+    //                             <Video
+    //                                 source={{ uri: selectedBlindBox?.packVideo }}
+    //                                 repeat={true}
+    //                                 resizeMode={'cover'}
+    //                                 style={styles.selectBlindBoxVideo}
+    //                                 onLoadStart={() => setLoadImage(true)}
+    //                                 onReadyForDisplay={() => setLoadImage(false)}
+    //                             />
+    //                         </View>
+    //                     ) : (
+    //                         <View style={CommonStyles.center}>
+    //                             {loadImage &&
+    //                                 <Loader style={styles.blindBoxLoader} />
+    //                             }
+    //                             <Image
+    //                                 source={{ uri: selectedBlindBox?.packVideo ? selectedBlindBox?.packVideo : collection?.iconImage }}
+    //                                 style={styles.selectBlindBoxVideo}
+    //                                 onLoadStart={() => setLoadImage(true)}
+    //                                 onLoadEnd={() => setLoadImage(false)}
+    //                             />
+    //                         </View>
+    //                     )}
+    //                 <Text style={styles.selectBlindBoxName}>
+    //                     {selectedBlindBox?.name ? selectedBlindBox?.name : blindboxList[0]?.name}
+    //                 </Text>
+    //                 <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginTop: SIZE(5) }}>
+    //                     <Text style={{
+    //                         fontSize: SIZE(22),
+    //                         fontWeight: 'bold',
+    //                         marginRight: SIZE(10),
+    //                         lineHeight: SIZE(22)
+    //                     }}>
+    //                         {priceOnChain ? priceOnChain : blindboxList[0]?.price}
+    //                     </Text>
+    //                     <Text style={{
+    //                         fontSize: SIZE(22),
+    //                         fontWeight: 'bold',
+    //                         color: '#9D9D9D',
+    //                         lineHeight: SIZE(22)
+    //                     }}>
+    //                         {baseCurrency ? baseCurrency.key : ""}
+    //                     </Text>
+    //                     {priceOnDollar ?
+    //                         <>
+    //                             <Text style={{
+    //                                 fontSize: SIZE(15),
+    //                                 color: '#9D9D9D',
+    //                                 marginLeft: SIZE(10),
+    //                                 lineHeight: SIZE(22)
+    //                             }}>
+    //                                 {`($${numberWithCommas(parseFloat(priceOnDollar).toFixed(2))})`}
+    //                             </Text>
+    //                         </> :
+    //                         <View style={{ marginBottom: 5, marginLeft: 10 }}>
+    //                             {chainIcon(blindboxList[0]?.nftChain)}
+    //                         </View>
+    //                     }
+    //                 </View>
+    //                 {/* <View style={{ paddingTop: SIZE(10) }}>
+    //                         <GroupButton
+    //                             leftDisabled={false}
+    //                             leftText={
+    //                                 parseInt(selectedBlindBox?.startTime) * 1000 <= new Date().getTime() ?
+    //                                     parseInt(selectedBlindBox?.endTime) * 1000 <= new Date().getTime() ?
+    //                                         // selectedBlindBox?. 
+    //                                         'The sale has ended'
+    //                                         : selectedBlindBox?.buyBoxCount &&
+    //                                             parseInt(selectedBlindBox?.buyBoxCount[nftChain]) <
+    //                                             parseInt(selectedBlindBox?.maxBoxesChain[nftChain]) ?
+    //                                             null
+    //                                             : 'Sold Out'
+    //                                     : 'CountDown'
+    //                             }
+    //                             // onLeftPress={() => { alert('okay') }}
+    //                             rightHide
+    //                         />
+    //                     </View> */}
+    //             </View>
+    //         </>
+    //     )
+    //     // }
+    // }
 
     const renderDescription = () => {
         // if (isBlind && nftId && !isStore) { 
@@ -960,8 +952,8 @@ function CollectionDetail(props) {
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", isBlind, nftId, isStore)
         // console.log("🚀 ~ file: index.js ~ line 711 ~ ~ isStore", collection, statsDetails)
         // if (isStore) return null;
-        let items = collection?.totalNft;
-        let owners = collection?.totalOwner;
+        let items = Number(collection?.totalNft);
+        let owners = Number(collection?.totalOwner);
         let floorPrice = Number(collection?.floorPrice).toFixed(3);
         let volTraded = Number(collection?.volumeTraded).toFixed(3);
 
@@ -1142,7 +1134,7 @@ function CollectionDetail(props) {
                     tabBarItemStyle: {
                         height: SIZE(42),
                         marginTop: SIZE(-10),
-                        width: tab ? wp('25%') : wp('50%'),
+                        width:  wp('25%'),
                         paddingHorizontal: wp('1%'),
                         justifyContent: 'center',
                         fontFamily: fonts.SegoeUIRegular,
@@ -1156,11 +1148,11 @@ function CollectionDetail(props) {
                         backgroundColor: COLORS.BLUE4,
                         height: 2,
                     }
-                }}
-            >
+                }}>
+                    
                 {tab && <Tab.Screen
                     name={translate('common.onSale')}
-                    component={Gallery}
+                    component={tabOne}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
                         // collectionType: 0,
@@ -1174,14 +1166,14 @@ function CollectionDetail(props) {
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.onSale'),
-                        collection: item,
+                        collection: collection,
                         tabStatus: 1,
                         isLaunchPad: isLaunchPad
                     }}
                 />}
                 {tab && <Tab.Screen
                     name={translate('common.notOnSell')}
-                    component={Owned}
+                    component={tabTwo}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
                         // collectionType: 1,
@@ -1195,14 +1187,14 @@ function CollectionDetail(props) {
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.notOnSell'),
-                        collection: item,
+                        collection: collection,
                         tabStatus: 2,
                         isLaunchPad: isLaunchPad
                     }}
                 />}
                 {tab && <Tab.Screen
                     name={translate('wallet.common.owned')}
-                    component={OnSale}
+                    component={tabThree}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
                         // collectionType: 2,
@@ -1216,13 +1208,13 @@ function CollectionDetail(props) {
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('wallet.common.owned'),
-                        collection: item,
+                        collection: collection,
                         isLaunchPad: isLaunchPad
                     }}
                 />}
                 {<Tab.Screen
                     name={translate('common.gallery')}
-                    component={soldOut}
+                    component={tabFour}
                     initialParams={{
                         // collectionAddress: (isBlind && nftId) ? nftId : collectionAddress ? collectionAddress : collectionId,
                         // collectionType: 3,
@@ -1236,7 +1228,7 @@ function CollectionDetail(props) {
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.gallery'),
-                        collection: item,
+                        collection: collection,
                         tabStatus: 3,
                         isLaunchPad: isLaunchPad
                     }}
@@ -1257,7 +1249,7 @@ function CollectionDetail(props) {
                         // manualColl: collection.manualColl,
                         // seriesInfoId: blindboxList?.length > 0 ? blindboxList[0]?._id : false,
                         tabTitle: translate('common.activity'),
-                        collection: item,
+                        collection: collection,
                     }}
                 />}
             </Tab.Navigator>
@@ -1481,8 +1473,7 @@ function CollectionDetail(props) {
                     } */}
                     {!loading && !isLaunchPad ? 
                         renderTabView(true)
-                        : isLaunchPad && !loading ? renderTabView(false) : null
-
+                        : isLaunchPad && !loading ? renderTabView(false) : <Loader/>
                     }
                 </View>
 

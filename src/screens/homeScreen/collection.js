@@ -162,7 +162,7 @@ const Collection = () => {
       collectionTab = {isSelectTab}
       colId={item._id}
         onPress={() => {
-          navigation.push('CollectionDetail', { item: item , isLaunchPad: false});
+          navigation.push('CollectionDetail', { networkName: item?.network?.networkName, contractAddress: item?.contractAddress, launchpadId: null, isLaunchPad: false});
           // if (item.redirect === '/collection/underground_city') {
           //   navigation.push('CollectionDetail', {
           //     isBlind: true,
