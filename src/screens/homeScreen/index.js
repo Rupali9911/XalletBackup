@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
+import {useMemo} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import React, { useEffect, useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   ActivityIndicator,
   AppState,
@@ -14,9 +14,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Dimensions
+  Dimensions,
+  BackHandler,
 } from 'react-native';
-import { FAB } from 'react-native-paper';
+import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
   openSettings,
@@ -24,27 +25,30 @@ import {
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image } from '../../components';
+import {AppHeader, C_Image} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
-import { colors } from '../../res';
-import { getAllArtist, setSortBy } from '../../store/actions/nftTrendList';
-import { updateCreateState, updatePassStatus } from '../../store/reducer/userReducer';
-import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
-import { translate } from '../../walletUtils';
+import {colors} from '../../res';
+import {getAllArtist, setSortBy} from '../../store/actions/nftTrendList';
+import {
+  updateCreateState,
+  updatePassStatus,
+} from '../../store/reducer/userReducer';
+import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
+import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
 import ImageNFT from './imageNFT';
-import MusicNFT from './musicNFT'
+import MusicNFT from './musicNFT';
 import GifNFT from './gifNFT';
 import Trending from './trending';
 import MovieNFT from './movieNFT';
@@ -52,29 +56,28 @@ import ArtNFT from './artNFT';
 import HotCollection from './hotCollection';
 import Collection from './collection';
 import styles from './styles';
-import { alertWithSingleBtn } from '../../utils';
-import LaunchPad from "./launchPad"
-import {
-  TabView,
-  TabBar,
-} from 'react-native-tab-view';
-import { SORT_FILTER_OPTONS } from '../../constants'
-import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
-import { FlatList } from 'native-base';
+import {alertWithSingleBtn} from '../../utils';
+import LaunchPad from './launchPad';
+import {TabView, TabBar} from 'react-native-tab-view';
+import {SORT_FILTER_OPTONS} from '../../constants';
+import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
+import {FlatList} from 'native-base';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { NEW_BASE_URL } from '../../common/constants';
-import { setNetworkData } from '../../store/reducer/networkReducer';
+import {NEW_BASE_URL} from '../../common/constants';
+import {setNetworkData} from '../../store/reducer/networkReducer';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   // =============== Getting data from reducer ========================
-  const isNonCrypto = useSelector(state => state.UserReducer?.userData?.isNonCrypto);
-  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
-  const { artistList, artistLoading, sort } = useSelector(
+  const isNonCrypto = useSelector(
+    state => state.UserReducer?.userData?.isNonCrypto,
+  );
+  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
+  const {artistList, artistLoading, sort} = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess, userData } = useSelector(state => state.UserReducer);
+  const {showSuccess, userData} = useSelector(state => state.UserReducer);
   const modalState = Platform.OS === 'android' ? false : showSuccess;
-  const { requestAppId } = useSelector(state => state.WalletReducer);
+  const {requestAppId} = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
   //================== Components State Defination ===================
@@ -85,51 +88,49 @@ const HomeScreen = ({ navigation }) => {
   const [openState, setOpenState] = useState(false);
   const [index, setIndex] = useState(0);
 
-  const [screen, setScreen] = useState('')
-  const [sortOption, setSortOption] = useState(0)
+  const [screen, setScreen] = useState('');
+  const [sortOption, setSortOption] = useState(0);
   const [page, setPage] = useState(1);
 
-  const [artistPage, setArtistPage] = useState(1)
-  const [end, setEnd] = useState()
-  const [active, setActive] = useState(0)
+  const [artistPage, setArtistPage] = useState(1);
+  const [end, setEnd] = useState();
+  const [active, setActive] = useState(0);
 
-
-  let artistLimit = 12
-
+  let artistLimit = 12;
 
   const [routes] = useState([
-    { key: 'launch', title: translate('common.launchPad') },
-    { key: 'allNft', title: translate("common.allNft") },
-    { key: 'trending', title: translate("common.trending") },
-    { key: 'collect', title: translate('wallet.common.collection') },
-    { key: 'art', title: translate('common.2DArt') },
-    { key: 'image', title: translate("common.image") },
-    { key: 'gif', title: translate('common.gif') },
-    { key: 'movie', title: translate('common.video') },
-    { key: 'music', title: translate('common.music') },
-    { key: 'hotCollection', title: translate('common.hotcollection') },
+    {key: 'launch', title: translate('common.launchPad')},
+    {key: 'allNft', title: translate('common.allNft')},
+    {key: 'trending', title: translate('common.trending')},
+    {key: 'collect', title: translate('wallet.common.collection')},
+    {key: 'art', title: translate('common.2DArt')},
+    {key: 'image', title: translate('common.image')},
+    {key: 'gif', title: translate('common.gif')},
+    {key: 'movie', title: translate('common.video')},
+    {key: 'music', title: translate('common.music')},
+    {key: 'hotCollection', title: translate('common.hotcollection')},
   ]);
 
-  const onStateChange = ({ open }) => setOpenState(open);
+  const onStateChange = ({open}) => setOpenState(open);
 
   //===================== UseEffect Function =========================
   useFocusEffect(
     React.useCallback(() => {
       return () => setOpenState(false);
-    }, [])
+    }, []),
   );
 
   useEffect(async () => {
     const res = await sendRequest({
       url: `${NEW_BASE_URL}/networks`,
-      method: 'GET'
-    })
+      method: 'GET',
+    });
     dispatch(setNetworkData(res));
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setActive(0)
-  }, [screen])
+    setActive(0);
+  }, [screen]);
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener(state => {
@@ -148,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
     });
     AppState.addEventListener('change', appStateChange);
     if (requestAppId) {
-      navigation.navigate('Connect', { appId: requestAppId });
+      navigation.navigate('Connect', {appId: requestAppId});
     }
 
     return () => {
@@ -161,9 +162,30 @@ const HomeScreen = ({ navigation }) => {
       setTimeout(() => {
         setModalVisible(showSuccess);
         setSuccessVisible(showSuccess);
-      }, 1000)
+      }, 1000);
     }
   }, [showSuccess]);
+
+  // function handleBackButtonClick() {
+  //   console.log('handleBackButtonClick Index', index);
+  //   //navigation.goBack();
+  //   if (index != 0) {
+  //     //this.props.jumpTo('launch');
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+  //   return () => {
+  //     BackHandler.removeEventListener(
+  //       'hardwareBackPress',
+  //       handleBackButtonClick,
+  //     );
+  //   };
+  // }, [index]);
 
   //================== App State Change Function =======================
   const appStateChange = async nextAppState => {
@@ -171,16 +193,16 @@ const HomeScreen = ({ navigation }) => {
     let passVal = JSON.parse(passCheck);
     if (nextAppState === 'active') {
       if (passVal && !passcodeAsyncStatus) {
-        setSuccessVisible(false)
-        setModalVisible(false)
-        dispatch(updatePassStatus(false))
-        navigation.navigate('PasscodeScreen', { screen: 'active' })
+        setSuccessVisible(false);
+        setModalVisible(false);
+        dispatch(updatePassStatus(false));
+        navigation.navigate('PasscodeScreen', {screen: 'active'});
       }
     }
   };
 
   const checkPermissions = async () => {
-    PushNotification.checkPermissions(async ({ alert }) => {
+    PushNotification.checkPermissions(async ({alert}) => {
       if (!alert) {
         setNotificationVisible(true);
       } else {
@@ -190,10 +212,10 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const getNFTlist = React.useCallback((category, sort, pageSize, pageNum) => {
-    dispatch(newNftListReset(category))
+    dispatch(newNftListReset(category));
     dispatch(newNFTData(category, sort, pageSize, pageNum));
-    setSortOption(sort)
-    setPage(1)
+    setSortOption(sort);
+    setPage(1);
   }, []);
 
   // ===================== Render Screen Header =================================
@@ -205,74 +227,74 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.headerMenuContainer}>
             <TouchableOpacity
               onPress={() => onClickButton()}
-              hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+              hitSlop={{top: 5, bottom: 5, left: 5}}>
               <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
-              hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+              hitSlop={{top: 5, bottom: 5, left: 5}}>
               <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
             </TouchableOpacity>
           </View>
         }
       />
-    )
-  }
+    );
+  };
 
-  const onClickButton = (from) => {
-    if (from == 'Certificate')
-      navigation.navigate('Certificate')
-    else if (from == 'Create')
-      navigation.navigate('Create')
+  const onClickButton = from => {
+    if (from == 'Certificate') navigation.navigate('Certificate');
+    else if (from == 'Create') navigation.navigate('Create');
     else
       alertWithSingleBtn(
         translate('wallet.common.alert'),
-        translate('common.comingSoon'))
-  }
+        translate('common.comingSoon'),
+      );
+  };
 
   // ===================== Render Artist List ===================================
-  const renderArtistItem = ({ item, index }) => {
+  const renderArtistItem = ({item, index}) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
         style={styles.headerView}
         onPress={() => {
-          navigation.push('CertificateDetail', { item: item });
-        }}
-        >
+          navigation.push('CertificateDetail', {item: item});
+        }}>
         <View style={styles.userCircle}>
           <C_Image
             uri={item?.mediaUrl}
             type={item.profile_image}
-            imageType="profile"
-            imageStyle={{ width: '100%', height: '100%' }}
+            //imageType="profile"
+            imageStyle={{width: '100%', height: '100%'}}
           />
         </View>
         <Text numberOfLines={1} style={styles.userText}>
-          {`${item?.name?.substring(0, 8)}...`}
+          {item?.name}
         </Text>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   const renderFooter = () => {
     if (artistLoading) {
-      return <View style={styles.artistLoader1}>
-        <ActivityIndicator size="small" color={colors.themeR} />
-      </View>
+      return (
+        <View style={styles.artistLoader1}>
+          <ActivityIndicator size="small" color={colors.themeR} />
+        </View>
+      );
     }
-    return null
+    return null;
   };
 
-  const keyExtractor = (item, index) => { return 'item_' + index }
-
+  const keyExtractor = (item, index) => {
+    return 'item_' + index;
+  };
 
   const renderArtistList = () => {
     return (
       <View>
         {artistList.length === 0 && artistLoading ? (
-          <View
-            style={styles.artistLoader}>
+          <View style={styles.artistLoader}>
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
@@ -282,16 +304,18 @@ const HomeScreen = ({ navigation }) => {
             renderItem={renderArtistItem}
             onEndReached={() => {
               if (!end) {
-                let pageNum = artistPage + 1
-                dispatch(getAllArtist(pageNum, artistLimit))
-                setArtistPage(pageNum)
-                setEnd(true)
+                let pageNum = artistPage + 1;
+                dispatch(getAllArtist(pageNum, artistLimit));
+                setArtistPage(pageNum);
+                setEnd(true);
               }
             }}
+            showsHorizontalScrollIndicator={false}
             keyExtractor={keyExtractor}
             onEndReachedThreshold={0.6}
             ListFooterComponent={renderFooter}
             onMomentumScrollBegin={() => setEnd(false)}
+            style={styles.headerList}
           />
           // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           //   {artistList && artistList.length !== 0
@@ -323,8 +347,8 @@ const HomeScreen = ({ navigation }) => {
           // </ScrollView>
         )}
       </View>
-    )
-  }
+    );
+  };
 
   // const getArtistName = (item) => {
   //   let creatorName = item.title || item.username
@@ -348,20 +372,23 @@ const HomeScreen = ({ navigation }) => {
   const renderNFTCategoriesTabs = () => {
     return (
       <TabView
-        navigationState={{ index, routes }}
+        navigationState={{index, routes}}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
         onIndexChange={handleIndexChange}
         scrollEnabled={true}
-        initialLayout={{ width: Dimensions.get('window').width }}
+        initialLayout={{width: Dimensions.get('window').width}}
         lazy
       />
-    )
-  }
+    );
+  };
 
-  const handleIndexChange = (index) => setIndex(index);
+  const handleIndexChange = index => {
+    console.log('Index', index);
+    setIndex(index);
+  };
 
-  const renderTabBar = (props) => (
+  const renderTabBar = props => (
     <TabBar
       {...props}
       bounces={false}
@@ -375,80 +402,105 @@ const HomeScreen = ({ navigation }) => {
     />
   );
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
+    console.log(' renderScene Index', index);
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
       case 'allNft':
-        return <AllNFT
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption}
-        />;
+        return (
+          <AllNFT
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'trending':
-        return <Trending
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption}
-        />;
+        return (
+          <Trending
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'collect':
-        return <Collection
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <Collection
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'art':
-        return <ArtNFT
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <ArtNFT
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'image':
-        return <ImageNFT
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <ImageNFT
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'gif':
-        return <GifNFT
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <GifNFT
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'movie':
-        return <MovieNFT
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <MovieNFT
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'music':
-        return <MusicNFT
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <MusicNFT
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       case 'hotCollection':
-        return <HotCollection
-          screen={(num) => setScreen(num)}
-          page={page}
-          setPage={setPage}
-          sortOption={sortOption}
-          setSortOption={setSortOption} />;
+        return (
+          <HotCollection
+            screen={num => setScreen(num)}
+            page={page}
+            setPage={setPage}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+          />
+        );
       default:
         return null;
     }
   };
-
 
   // ===================== Render App Modal On Success & Notification) ==============
   const renderAppModal = () => {
@@ -478,25 +530,25 @@ const HomeScreen = ({ navigation }) => {
             onDonePress={() => {
               setModalVisible(false);
               Platform.OS === 'ios'
-                ? checkNotifications().then(({ status, settings }) => {
-                  if (status == 'denied') {
-                    requestNotifications(['alert', 'sound']).then(
-                      ({ status, settings }) => {
-                        console.log(status, settings, 'notification');
-                      },
-                    );
-                  }
-                  if (status == 'blocked') {
-                    Linking.openSettings();
-                  }
-                })
+                ? checkNotifications().then(({status, settings}) => {
+                    if (status == 'denied') {
+                      requestNotifications(['alert', 'sound']).then(
+                        ({status, settings}) => {
+                          console.log(status, settings, 'notification');
+                        },
+                      );
+                    }
+                    if (status == 'blocked') {
+                      Linking.openSettings();
+                    }
+                  })
                 : openSettings();
             }}
           />
         ) : null}
       </AppModal>
-    )
-  }
+    );
+  };
 
   //=============== Filter Component Functions =================
   const fabActions = useMemo(() => {
@@ -505,87 +557,155 @@ const HomeScreen = ({ navigation }) => {
         id: 0,
         icon: 'sort-variant',
         label: translate('common.mostFavourite'),
-        color: active === SORT_FILTER_OPTONS.mostLiked ? Colors.WHITE4 : Colors.BLACK5,
-        labelTextColor: active === SORT_FILTER_OPTONS.mostLiked ? Colors.WHITE4 : Colors.BLACK5,
-        labelStyle: active === SORT_FILTER_OPTONS.mostLiked ? styles.fabLabelStyle1 : styles.fabLabelStyle,
-        style: active === SORT_FILTER_OPTONS.mostLiked ? styles.fabItemStyle1 : styles.fabItemStyle,
+        color:
+          active === SORT_FILTER_OPTONS.mostLiked
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelTextColor:
+          active === SORT_FILTER_OPTONS.mostLiked
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelStyle:
+          active === SORT_FILTER_OPTONS.mostLiked
+            ? styles.fabLabelStyle1
+            : styles.fabLabelStyle,
+        style:
+          active === SORT_FILTER_OPTONS.mostLiked
+            ? styles.fabItemStyle1
+            : styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.mostLiked, 10, 1)
-          setPage(1)
-          setActive(SORT_FILTER_OPTONS.mostLiked)
+          getNFTlist(screen, SORT_FILTER_OPTONS.mostLiked, 10, 1);
+          setPage(1);
+          setActive(SORT_FILTER_OPTONS.mostLiked);
         },
       },
       {
         id: 1,
         icon: 'sort-variant',
         label: translate('common.recentlyListed'),
-        color: active === SORT_FILTER_OPTONS.onSale ? Colors.WHITE4 : Colors.BLACK5,
-        labelTextColor: active === SORT_FILTER_OPTONS.onSale ? Colors.WHITE4 : Colors.BLACK5,
-        labelStyle: active === SORT_FILTER_OPTONS.onSale ? styles.fabLabelStyle1 : styles.fabLabelStyle,
-        style: active === SORT_FILTER_OPTONS.onSale ? styles.fabItemStyle1 : styles.fabItemStyle,
+        color:
+          active === SORT_FILTER_OPTONS.onSale ? Colors.WHITE4 : Colors.BLACK5,
+        labelTextColor:
+          active === SORT_FILTER_OPTONS.onSale ? Colors.WHITE4 : Colors.BLACK5,
+        labelStyle:
+          active === SORT_FILTER_OPTONS.onSale
+            ? styles.fabLabelStyle1
+            : styles.fabLabelStyle,
+        style:
+          active === SORT_FILTER_OPTONS.onSale
+            ? styles.fabItemStyle1
+            : styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.onSale, 10, 1)
-          setPage(1)
-          setActive(SORT_FILTER_OPTONS.onSale)
+          getNFTlist(screen, SORT_FILTER_OPTONS.onSale, 10, 1);
+          setPage(1);
+          setActive(SORT_FILTER_OPTONS.onSale);
         },
       },
       {
         id: 2,
         icon: 'sort-variant',
         label: translate('common.recentlyCreated'),
-        color: active === SORT_FILTER_OPTONS.recentlyCreated ? Colors.WHITE4 : Colors.BLACK5,
-        labelTextColor: active === SORT_FILTER_OPTONS.recentlyCreated ? Colors.WHITE4 : Colors.BLACK5,
-        labelStyle: active === SORT_FILTER_OPTONS.recentlyCreated ? styles.fabLabelStyle1 : styles.fabLabelStyle,
-        style: active === SORT_FILTER_OPTONS.recentlyCreated ? styles.fabItemStyle1 : styles.fabItemStyle,
+        color:
+          active === SORT_FILTER_OPTONS.recentlyCreated
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelTextColor:
+          active === SORT_FILTER_OPTONS.recentlyCreated
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelStyle:
+          active === SORT_FILTER_OPTONS.recentlyCreated
+            ? styles.fabLabelStyle1
+            : styles.fabLabelStyle,
+        style:
+          active === SORT_FILTER_OPTONS.recentlyCreated
+            ? styles.fabItemStyle1
+            : styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.recentlyCreated, 10, 1)
-          setPage(1)
-          setActive(SORT_FILTER_OPTONS.recentlyCreated)
+          getNFTlist(screen, SORT_FILTER_OPTONS.recentlyCreated, 10, 1);
+          setPage(1);
+          setActive(SORT_FILTER_OPTONS.recentlyCreated);
         },
       },
       {
         id: 3,
         icon: 'sort-variant',
         label: translate('common.priceLowToHigh'),
-        color: active === SORT_FILTER_OPTONS.lowToHighPrice ? Colors.WHITE4 : Colors.BLACK5,
-        labelTextColor: active === SORT_FILTER_OPTONS.lowToHighPrice ? Colors.WHITE4 : Colors.BLACK5,
-        labelStyle: active === SORT_FILTER_OPTONS.lowToHighPrice ? styles.fabLabelStyle1 : styles.fabLabelStyle,
-        style: active === SORT_FILTER_OPTONS.lowToHighPrice ? styles.fabItemStyle1 : styles.fabItemStyle,
+        color:
+          active === SORT_FILTER_OPTONS.lowToHighPrice
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelTextColor:
+          active === SORT_FILTER_OPTONS.lowToHighPrice
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelStyle:
+          active === SORT_FILTER_OPTONS.lowToHighPrice
+            ? styles.fabLabelStyle1
+            : styles.fabLabelStyle,
+        style:
+          active === SORT_FILTER_OPTONS.lowToHighPrice
+            ? styles.fabItemStyle1
+            : styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.lowToHighPrice, 10, 1)
-          setPage(1)
-          setActive(SORT_FILTER_OPTONS.lowToHighPrice)
+          getNFTlist(screen, SORT_FILTER_OPTONS.lowToHighPrice, 10, 1);
+          setPage(1);
+          setActive(SORT_FILTER_OPTONS.lowToHighPrice);
         },
       },
       {
         id: 4,
         icon: 'sort-variant',
         label: translate('common.priceHighToLow'),
-        color: active === SORT_FILTER_OPTONS.highToLowPrice ? Colors.WHITE4 : Colors.BLACK5,
-        labelTextColor: active === SORT_FILTER_OPTONS.highToLowPrice ? Colors.WHITE4 : Colors.BLACK5,
-        labelStyle: active === SORT_FILTER_OPTONS.highToLowPrice ? styles.fabLabelStyle1 : styles.fabLabelStyle,
-        style: active === SORT_FILTER_OPTONS.highToLowPrice ? styles.fabItemStyle1 : styles.fabItemStyle,
+        color:
+          active === SORT_FILTER_OPTONS.highToLowPrice
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelTextColor:
+          active === SORT_FILTER_OPTONS.highToLowPrice
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelStyle:
+          active === SORT_FILTER_OPTONS.highToLowPrice
+            ? styles.fabLabelStyle1
+            : styles.fabLabelStyle,
+        style:
+          active === SORT_FILTER_OPTONS.highToLowPrice
+            ? styles.fabItemStyle1
+            : styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.highToLowPrice, 10, 1)
-          setPage(1)
-          setActive(SORT_FILTER_OPTONS.highToLowPrice)
+          getNFTlist(screen, SORT_FILTER_OPTONS.highToLowPrice, 10, 1);
+          setPage(1);
+          setActive(SORT_FILTER_OPTONS.highToLowPrice);
         },
       },
       {
         id: 5,
         icon: 'sort-variant',
         label: translate('common.onAuction'),
-        color: active === SORT_FILTER_OPTONS.onAuction ? Colors.WHITE4 : Colors.BLACK5,
-        labelTextColor: active === SORT_FILTER_OPTONS.onAuction ? Colors.WHITE4 : Colors.BLACK5,
-        labelStyle: active === SORT_FILTER_OPTONS.onAuction ? styles.fabLabelStyle1 : styles.fabLabelStyle,
-        style: active === SORT_FILTER_OPTONS.onAuction ? styles.fabItemStyle1 : styles.fabItemStyle,
+        color:
+          active === SORT_FILTER_OPTONS.onAuction
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelTextColor:
+          active === SORT_FILTER_OPTONS.onAuction
+            ? Colors.WHITE4
+            : Colors.BLACK5,
+        labelStyle:
+          active === SORT_FILTER_OPTONS.onAuction
+            ? styles.fabLabelStyle1
+            : styles.fabLabelStyle,
+        style:
+          active === SORT_FILTER_OPTONS.onAuction
+            ? styles.fabItemStyle1
+            : styles.fabItemStyle,
         onPress: () => {
-          getNFTlist(screen, SORT_FILTER_OPTONS.onAuction, 10, 1)
-          setPage(1)
-          setActive(SORT_FILTER_OPTONS.onAuction)
+          getNFTlist(screen, SORT_FILTER_OPTONS.onAuction, 10, 1);
+          setPage(1);
+          setActive(SORT_FILTER_OPTONS.onAuction);
         },
       },
-    ]
+    ];
   }, [screen, active]);
 
   const fab = () => {
@@ -596,14 +716,14 @@ const HomeScreen = ({ navigation }) => {
           openState
             ? 'close'
             : props => (
-              <FontAwesome5
-                name={'sort-amount-down'}
-                color={props.color}
-                size={props.size}
-              />
-            )
+                <FontAwesome5
+                  name={'sort-amount-down'}
+                  color={props.color}
+                  size={props.size}
+                />
+              )
         }
-        fabStyle={{ backgroundColor: Colors.themeColor, }}
+        fabStyle={{backgroundColor: Colors.themeColor}}
         actions={fabActions}
         onStateChange={onStateChange}
         onPress={() => {
@@ -612,24 +732,20 @@ const HomeScreen = ({ navigation }) => {
           }
         }}
       />
-    )
-  }
+    );
+  };
   const FilterComponent = React.memo(fab);
 
   //=====================(Main return Function)=============================
   return (
     <>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         {renderAppHeader()}
         {renderArtistList()}
-        {online &&
-          (showSuccess ? null : renderNFTCategoriesTabs())}
+        {online && (showSuccess ? null : renderNFTCategoriesTabs())}
       </SafeAreaView>
       {renderAppModal()}
-      {
-        index !== 0 && index !== 9 && index !== 3 &&
-        <FilterComponent />
-      }
+      {index !== 0 && index !== 9 && index !== 3 && <FilterComponent />}
     </>
   );
 };
