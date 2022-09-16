@@ -32,6 +32,10 @@ const tabOne = ({ route }) => {
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
+    const { userData } = useSelector(state => state.UserReducer);
+
+    console.log('UserWallet : ', userData)
+
 
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -64,10 +68,10 @@ const tabOne = ({ route }) => {
                     tabTitle,
                     collection?.network?.networkName,
                     collection?.contractAddress,
-                    tabStatus,
-                    null,
-                    collection?.userId,
                     isLaunchPad,
+                    tabStatus,
+                    userData?.id,
+                    null,
                     false
                 ),
             );

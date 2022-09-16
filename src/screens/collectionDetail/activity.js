@@ -11,7 +11,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '../../components';
+import { C_Image, Loader } from '../../components';
 import { colors } from '../../res';
 import {
     activityHistoryList,
@@ -107,37 +107,35 @@ const Activity = ({ route }) => {
                 key={rowIndex}
                 data={
 
-                     cellIndex === 0 ? (
+                    cellIndex === 0 ? (
                         <TouchableOpacity
                             onPress={() => getNftData(rowIndex)}
                             style={styles.tableCellImageView}>
-                            <Image
-                                style={styles.cellImage}
-                                source={{ uri: cellData.image }} />
-                            <Text numberOfLines={1} style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
+                            <C_Image
+                                imageStyle={styles.cellImage}
+                                uri={cellData.image} />
+                            <Text style={{ flex: 1, flexWrap: 'wrap' }}>{cellData.imageName}</Text>
                         </TouchableOpacity>
                     ) :
-                     cellIndex === 1 || cellIndex === 2 || cellIndex === 5 ? (
-                        cellData
-                    ) :
-                    ((cellIndex === 3 || cellIndex === 4) && cellData !== 'Null Address') ? (
-                    //  cellIndex === 3 || cellIndex === 4 ? (
-                        <TouchableOpacity
-                        onPress={() => getNftData(rowIndex)}
-                        >
-                        <Text
-                          numberOfLines={1}
-                          style={[styles.text, styles.themeColor]}>
-                          {formatAddress(cellData)}
-                        </Text>
-                      </TouchableOpacity>
+                        ((cellIndex === 3 || cellIndex === 4) && cellData !== 'Null Address') ? (
+                            <TouchableOpacity
+                                onPress={() => getNftData(rowIndex)}>
+                                <Text
+                                    numberOfLines={1}
+                                    style={[styles.text, styles.themeColor]}>
+                                    {formatAddress(cellData)}
+                                </Text>
+                            </TouchableOpacity>
 
-                    ) : cellData
+                        ) : cellData
 
                 }
                 textStyle={styles.textStyle}
                 width={
-                    cellIndex === 0 ? 200 : cellIndex === 1 || cellIndex === 5 ? 180 : cellIndex === 2 || cellIndex === 3 || cellIndex === 4 ? 100 : 200
+                    (cellIndex === 1 || cellIndex === 5)
+                        ? 180
+                        : (cellIndex === 2 || cellIndex === 3 || cellIndex === 4)
+                            ? 100 : 200
                 }
                 height={hp(6.5)}
             />
@@ -184,23 +182,15 @@ const Activity = ({ route }) => {
     };
 
     const getNftData = (index) => {
-        let nftDetail = collectionItem[index];
-        let url = `${NEW_BASE_URL}/nfts/details`;
 
-        sendRequest({
-            url,
-            params: {
-                networkName: nftDetail.nft.network.name,
-                collectionAddress: nftDetail.nft.collections.contractAddress,
-                nftTokenId: nftDetail.nft.tokenId,
-            }
-            })
-            .then(data => {
-                navigation.push('CertificateDetail', { item: data });
-            }).catch(err => {
-                console.log('Error : ', err);
-            });
-            
+        let nftDetail = collectionItem[index]?.nft;
+
+        navigation.push('CertificateDetail', {
+            networkName: nftDetail?.network?.name,
+            collectionAddress: nftDetail?.collections?.contractAddress,
+            nftTokenId: nftDetail?.tokenId,
+        });
+
         setDetailScreen(true)
     }
     return (
@@ -238,7 +228,6 @@ const Activity = ({ route }) => {
                                         />
                                         {isArray && !isLoading && collectionList.length > 0 ? (
                                             collectionList.map((rowData, rowIndex) => {
-                                                console.log('Collection List : ===========> ', collectionList)
                                                 return (
 
                                                     <TableWrapper
@@ -250,7 +239,7 @@ const Activity = ({ route }) => {
                                                             );
                                                         })}
                                                     </TableWrapper>
-                                                
+
                                                 );
                                             })
                                         ) :
@@ -267,7 +256,6 @@ const Activity = ({ route }) => {
                                                 {translate('common.noDataFound')}
                                             </Text>
                                         </View>
-
                                     ))
                             }
                         </View>

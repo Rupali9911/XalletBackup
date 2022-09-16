@@ -544,6 +544,10 @@ const DetailScreen = ({ navigation, route }) => {
 
   //================== Render Creator, Collection and Owner Function ==================
   const renderCreatorCollectionOwnerName = () => {
+    let isLaunchPad = false;
+    if (detailNFT?.launchpadId) {
+      isLaunchPad = true;
+    }
     return (
       <View style={styles.person}>
         <TouchableOpacity
@@ -559,7 +563,7 @@ const DetailScreen = ({ navigation, route }) => {
         <TouchableOpacity
           disabled={collectionClick(collectCreat)}
           onPress={() => {
-            navigation.push('CollectionDetail', { item: collectCreat });
+            navigation.push('CollectionDetail', { networkName: detailNFT?.network?.networkName, contractAddress: detailNFT?.collection?.address,  launchpadId: detailNFT?.launchpadId, isLaunchPad });
           }}
           style={styles.personType}>
           {renderIconImage('collection', false)}
@@ -1365,6 +1369,10 @@ const DetailScreen = ({ navigation, route }) => {
 
   //=============== Render More from this collection Function ===============
   const renderMoreCollection = () => {
+    let isLaunchPad = false;
+    if (detailNFT?.launchpadId) {
+      isLaunchPad = true;
+    }
     return (
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
@@ -1386,7 +1394,7 @@ const DetailScreen = ({ navigation, route }) => {
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
               leftTextStyle={{ color: Colors.BLUE4 }}
-              onLeftPress={() => navigation.push('CollectionDetail', { item: collectCreat })}
+              onLeftPress={() => navigation.push('CollectionDetail', { networkName: detailNFT?.network?.networkName, contractAddress: detailNFT?.collection?.address,  launchpadId: detailNFT?.launchpadId, isLaunchPad })}
               rightHide
             />
           </>

@@ -108,20 +108,23 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
       sort
     };
 
-      sendRequest({
+    sendRequest({
       url: `${NEW_BASE_URL}/sale-nft/trading-history`,
       method: 'POST',
       data
     })
       .then(res => {
-        if (res?.items?.length > 0) { 
+        if (res?.items?.length > 0) {
           const tradingList = [];
 
           res?.items?.map((item) => {
             let from = item?.fromUser?.userWallet?.address;
             let to = item?.toUser?.userWallet?.address;
             let temp = [
-              { image: item?.nft?.previewImage ? item?.nft?.previewImage : item?.nft?.smallImage , imageName: item?.nft?.name },
+              {
+                image: item?.nft?.previewImage ? item?.nft?.previewImage : item?.nft?.smallImage,
+                imageName: item?.nft?.name
+              },
               getEventByValue(item?.action),
               item?.price && item?.receiveToken
                 ? Number(item?.price) + ' ' + item?.receiveToken
@@ -133,10 +136,16 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
             ];
 
             tradingList.push(temp);
-            dispatch(activityNftListSuccess({ list: tradingList, count: res?.meta?.totalPages, result: res?.items, tabTitle: tabTitle }))
           });
+          dispatch(activityNftListSuccess({
+            list: tradingList,
+            count: res?.meta?.totalPages,
+            result: res?.items,
+            tabTitle: tabTitle
+          }))
+
         }
-        else{
+        else {
           dispatch(activityNftListFail());
         }
       })
@@ -146,7 +155,7 @@ export const activityHistoryList = (page, collectionId, limit, tabTitle, sort) =
   }
 }
 
-export const nftDataCollectionList = (page, tabTitle, networkName, contractAddress, tabStatus, userAddress, userId, isLaunchPad, launchpadId) => {
+export const nftDataCollectionList = (page, tabTitle, networkName, contractAddress, isLaunchPad, tabStatus, userId, userAddress, launchpadId) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
 
   return (dispatch) => {
@@ -171,12 +180,10 @@ export const nftDataCollectionList = (page, tabTitle, networkName, contractAddre
 
     else {
       let url = '';
-      if(userAddress && tabTitle == 'Owned')
-      {
+      if (userAddress && tabTitle == 'Owned') {
         url = `${NEW_BASE_URL}/collections/nft/owner/collectionId?&userAddress=${userAddress}`;
       }
-      else if(tabStatus)
-      {
+      else if (tabStatus) {
         url = `${NEW_BASE_URL}/collections/nft/collectionId?&status=${tabStatus}`;
       }
 
