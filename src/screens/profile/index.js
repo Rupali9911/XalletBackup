@@ -52,7 +52,7 @@ import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
 import Draft from './draft';
 import colors from "../../res/colors";
-import { upateUserData, loadFromAsync, loadProfileFromAsync, setUserData } from "../../store/reducer/userReducer";
+import { upateUserData, loadFromAsync, loadProfileFromAsync, setUserData, updateUserData } from "../../store/reducer/userReducer";
 import { getAllLanguages, setAppLanguage } from "../../store/reducer/languageReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../../constants/Colors";
@@ -62,8 +62,9 @@ import { NEW_BASE_URL } from '../../common/constants';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message'
 import { DEFAULT_DATE_FORMAT } from '../../constants';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { updateAvtar, updateBanner } from '../../store/actions/myNFTaction';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 
 const { ConnectSmIcon, SettingIcon, CopyToClipboard, EditImage, CopyProfile, SettingIconBlack } = SVGS;
@@ -78,14 +79,15 @@ function Profile({ navigation, connector, route }) {
     const { UserReducer } = useSelector(state => state);
     const actionSheetRef = useRef(null);
 
-    const dispatch = useDispatch();
+    const isFocused = useIsFocused();
 
+    const dispatch = useDispatch();
     let id = UserReducer.userData.userWallet.address
 
     if (typeof route.params === 'undefined') {
         id = UserReducer.userData.userWallet.address
     } else {
-        id = route.params.id
+        id = route?.params?.id
     }
 
     const OPEN_CAMERA = 0;
@@ -93,33 +95,22 @@ function Profile({ navigation, connector, route }) {
 
     const fetchData = () => {
         const url = `${NEW_BASE_URL}/users/${id}`
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                setUserData(data)
+        sendRequest(url)
+            .then((res) => {
+                setUserData(res)
+                if (typeof route.params === 'undefined') {
+                    dispatch(updateUserData(res))
+                }
             })
     }
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        if (isFocused) {
+            fetchData()
+        }
+    }, [isFocused])
 
-    const toastConfig = {
-        my_custom_type: ({ text1, props, ...rest }) => (
-            <View
-                style={{
-                    zIndex: 100,
-                    alignItems: 'center',
-                    width: wp('35%'),
-                    paddingHorizontal: wp('2%'),
-                    borderRadius: wp('10%'),
-                    paddingVertical: hp('1%'),
-                    backgroundColor: colors.GREY2,
-                }}>
-                <Text style={{ color: colors.black, fontWeight: 'bold' }}>{text1}</Text>
-            </View>
-        ),
-    };
+
 
     const copyToClipboard = () => {
         Clipboard.setString(id);
@@ -136,7 +127,8 @@ function Profile({ navigation, connector, route }) {
             setOpenDial2(false)
         }, 500)
     };
-    const renderTabView = () => {
+
+    const renderTabView = (id) => {
         return (
             <Tab.Navigator
                 screenOptions={{
@@ -211,9 +203,9 @@ function Profile({ navigation, connector, route }) {
                         image: image
                     }
                     if (imageType === 'profile') {
-                        updateAvtar(userData.id, token, temp)
+                        updateAvtar(userData.id, temp)
                     } else if (imageType === 'banner') {
-                        updateBanner(userData.id, temp, token)
+                        updateBanner(userData.id, temp)
                     }
                 }
             }).catch(async e => {
@@ -254,7 +246,7 @@ function Profile({ navigation, connector, route }) {
                     if (imageType === 'profile') {
                         updateAvtar(userData.id, temp)
                     } else if (imageType === 'banner') {
-                        updateBanner(userData.id, temp, token)
+                        updateBanner(userData.id, temp)
                     }
                 }
             }).catch(async e => {
@@ -297,16 +289,16 @@ function Profile({ navigation, connector, route }) {
 
     const renderBannerImage = () => {
         return (
-                <C_Image uri={userData.banner}
-                    imageStyle={styles.collectionListImage} />
+            <C_Image uri={userData.banner}
+                imageStyle={styles.collectionListImage} />
         )
     }
 
     const renderIconImage = () => {
         return (
             <TouchableOpacity onPress={() => onSelect('profile')}>
-                    <C_Image uri={userData.avatar}
-                        imageStyle={styles.iconImage} />
+                <C_Image uri={userData.avatar}
+                    imageStyle={styles.iconImage} />
             </TouchableOpacity>
         )
     }
@@ -317,7 +309,7 @@ function Profile({ navigation, connector, route }) {
         return (
             <View style={styles.profileInfo}>
                 <View style={styles.userNameView}>
-                    <Text style={styles.userNameText}>{userData.userName ? userData.userName : 'Unnamed' }</Text>
+                    <Text style={styles.userNameText}>{userData.userName ? userData.userName : 'Unnamed'}</Text>
                 </View>
                 <View style={styles.userIdView}>
                     <Text style={styles.userIdText}>{userData?.userWallet?.address.substring(0, 6)}...{userData?.userWallet?.address.substring(userData?.userWallet?.address.length - 4, userData?.userWallet?.address.length)}</Text>
@@ -343,15 +335,15 @@ function Profile({ navigation, connector, route }) {
 
     return (
         <Container>
-            <ScrollView
-                contentContainerStyle={styles.scrollView}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        tintColor={Colors.themeColor}
-                    />
-                }
+            <View
+                style={styles.scrollView}
+            // refreshControl={
+            //     <RefreshControl
+            //         refreshing={refreshing}
+            //         onRefresh={onRefresh}
+            //         tintColor={Colors.themeColor}
+            //     />
+            // }
             >
                 {route.params && <AppHeader
                     title={translate("common.profile")}
@@ -383,7 +375,8 @@ function Profile({ navigation, connector, route }) {
                         {renderIconImage()}
                         {renderProfileNameAndId()}
                     </View>
-                    {!route.params && <EditButton style={{ alignSelf: 'center', width: wp(60), height: hp(3) }} onPress={() => navigation.navigate('EditProfile')}>
+                    {!route.params && <EditButton style={{ alignSelf: 'center', width: wp(60), height: hp(3) }}
+                        onPress={() => navigation.navigate('EditProfile', { userData })}>
                         <EditButtonText>{translate('wallet.common.editprofile')}</EditButtonText>
                     </EditButton>}
                     <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
@@ -397,100 +390,7 @@ function Profile({ navigation, connector, route }) {
                         onPress={selectActionSheet}
                     />
                 </View>
-
-                {/* <AppHeader
-                    title={translate('wallet.common.myPage')}
-                    showRightButton
-                    // showBackButton
-                    rightButtonComponent={
-                        <SettingIcon width={SIZE(23)} height={SIZE(23)} />
-                    }
-                    onPressRight={() =>
-                        navigation.navigate('Setting', { connector: connector })
-                    }
-                /> */}
-                {/* <View
-                    style={{
-                        width: '100%',
-                        paddingHorizontal: SIZE(14),
-                        flexDirection: 'row',
-                    }}>
-                    <UserImageView>
-                        <C_Image
-                            uri={profile_image}
-                            imageStyle={{
-                                width: '100%',
-                                height: '100%',
-                            }}
-                            imageType="profile"
-                        />
-                    </UserImageView>
-                    <View style={{
-                        flex: 1, justifyContent: "center",
-                        alignItems: "flex-end", paddingLeft: wp("4")
-                    }}>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                            }}>
-                            <View style={{ alignItems: 'center', width: wp("17") }}>
-                                <Text style={styles.countLabel1}>{'0'}</Text>
-                                <SmallText>{translate('wallet.common.post')}</SmallText>
-                            </View>
-                            <View style={{ alignItems: 'center', width: wp("17") }}>
-                                <Text style={styles.countLabel1}>{'0'}</Text>
-                                <SmallText>{translate('common.followers')}</SmallText>
-                            </View>
-                            <View style={{ alignItems: 'center', width: wp("17") }}>
-                                <Text style={styles.countLabel1}>{'0'}</Text>
-                                <SmallText>{translate('common.following')}</SmallText>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <DescriptionView>
-                    <SpaceView mTop={SIZE(12)} />
-                    <SmallBoldText>{title || username}</SmallBoldText>
-                    <SpaceView mTop={SIZE(8)} />
-                    {!_.isEmpty(about) && (
-                        <ScrollView style={{ maxHeight: SIZE(70), padding: 5 }}>
-                            <Hyperlink
-                                onPress={(url, text) => Linking.openURL(url)}
-                                linkStyle={{ color: COLORS.BLUE2 }}>
-                                <SmallNormalText>{about}</SmallNormalText>
-                            </Hyperlink>
-                        </ScrollView>
-                    )}
-                    <SpaceView mTop={SIZE(8)} />
-                    {links && !_.isEmpty(links.website) && (
-                        <TouchableOpacity
-                            onPress={() => {
-                                links.website.includes('://')
-                                    ? Linking.openURL(links.website)
-                                    : Linking.openURL(`https://${links.website}`);
-                            }}>
-                            <RowWrap>
-                                <ConnectSmIcon />
-                                <WebsiteLink>
-                                    {links.website.includes('://')
-                                        ? links.website.split('/')[2]
-                                        : links.website}
-                                </WebsiteLink>
-                            </RowWrap>
-                        </TouchableOpacity>
-                    )}
-                </DescriptionView>
-                <SpaceView mTop={SIZE(14)} />
-                <RowWrap>
-                    <SpaceView mLeft={SIZE(15)} />
-                    <EditButton onPress={() => navigation.navigate('EditProfile')}>
-                        <EditButtonText>{translate('wallet.common.edit')}</EditButtonText>
-                    </EditButton>
-                    <SpaceView mRight={SIZE(15)} />
-                </RowWrap>
-                <SpaceView mTop={SIZE(16)} />
-                {renderTabView()} */}
-            </ScrollView>
+            </View>
         </Container>
     );
 }
@@ -545,9 +445,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     iconImage: {
-        width: SIZE(160),
-        height: SIZE(160),
-        borderRadius: SIZE(160),
+        width: SIZE(150),
+        height: SIZE(150),
+        borderRadius: SIZE(150),
         marginBottom: SIZE(10)
     },
     iconWrapper: {

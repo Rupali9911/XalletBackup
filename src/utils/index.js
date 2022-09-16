@@ -116,27 +116,51 @@ export const maxLength50 = maxLength(50);
 export const maxLength100 = maxLength(100);
 export const maxLength200 = maxLength(200);
 
+const min = 6 , max = 32
+
+const regex = new RegExp(
+  `^(?=.{${min},${max}}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$`,
+)
+const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const linkRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+
 export const required = value => (value ? undefined : 'Required');
-export const validateUserName = value =>
-  value === ' ' ||  value === '' ? translate('common.usrempty') : undefined;
+
+export const validateUserName = value => {
+  if(!value.trim().length){
+    return translate('common.REQUIRED_USERNAME')
+  }
+  else if(!regex.test(value)){
+    return translate('common.VALIDATE_USERNAME')
+  }
+}
+
 export const validateEmail = value =>
-  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? translate('common.emailval')
+  value && !emailRegex.test(value)
+    ? translate('common.CHECK_YOUR_EMAIL')
     : undefined;
+
 export const validateWebsiteURL = value =>
-  value && !validURL(value) ? translate('common.invalidwebURL') : undefined;
+  value && !linkRegex.test(value) ? translate('common.CHECK_YOUR_WEBSITE') : undefined;
+
 export const validateDiscordURL = value =>
-  value && !validURL(value) ? translate('common.discordlink') : undefined;
+  value && !linkRegex.test(value) ? translate('common.CHECK_YOUR_DISCORD') : undefined;
+
+
 export const validateTwitterURL = value =>
-  value && !validURL(value) ? translate('common.validtwiiterlink') : undefined;
+  value && !regex.test(value) ? translate('common.CHECK_YOUR_TWITTER') : undefined;
+
 export const validateYoutubeURL = value =>
-  value && !validURL(value) ? translate('common.youtubelink') : undefined;
+  value && !linkRegex.test(value) ? translate('common.CHECK_YOUR_YOUTUBE') : undefined;
+
 export const validateInstagramURL = value =>
-  value && !validURL(value) ? translate('common.instagramlink') : undefined;
+  value && !regex.test(value) ? translate('common.CHECK_YOUR_INSTAGRAM') : undefined;
+
 export const validateFacebookURL = value =>
-  value && !validURL(value) ? translate('common.validfblink') : undefined;
+  value && !linkRegex.test(value) ? translate('common.validfblink') : undefined;
+
 export const validateZoomLinkURL = value =>
-  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? translate('common.emailval') : undefined;
+  value && !linkRegex.test(value) ? translate('common.emailval') : undefined;
 
 
 export const convertValue = value => {
