@@ -34,7 +34,7 @@ export default function NFTItem(props,{ navigation }) {
   } = props;
 
   // ======================= SVGS Destructing =======================
-  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIconNew, HeartActiveIconNew } = SVGS;
+  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 
   // =============== Getting data from reducer ========================
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
@@ -100,7 +100,7 @@ export default function NFTItem(props,{ navigation }) {
       <TouchableOpacity
         onPress={() => handleLikeMethod()}
         style={styles.likeButton}>
-        {isLike ? <HeartActiveIconNew /> : <HeartWhiteIconNew />}
+        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
       </TouchableOpacity>
     )
   }

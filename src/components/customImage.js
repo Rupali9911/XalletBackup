@@ -105,9 +105,7 @@ const C_Image = (props) => {
             {
                 checkVideoUrl === NFT_TYPE_TO_ID.audio ?
                     <View style={styles.imageCont}>
-                        <View >
                             <Image style={{width:40,height:40}} source={Audio}/>
-                        </View>
                     </View>
                     : null
             }
