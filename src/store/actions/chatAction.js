@@ -1,4 +1,4 @@
-import { CHAT_NFT_COLLECTION_START, CHAT_NFT_COLLECTION_SUCCESS, CHAT_NFT_COLLECTION_FAIL, CHAT_LOAD_START, CHAT_SUCCESS, CHAT_LOAD_FAIL } from '../types';
+import { CHAT_NFT_COLLECTION_START, CHAT_NFT_COLLECTION_SUCCESS, CHAT_NFT_COLLECTION_FAIL, CHAT_LOAD_START, CHAT_SUCCESS, CHAT_LOAD_FAIL, CHAT_OWNED_NFT_START, CHAT_OWNED_NFT_SUCCESS, CHAT_OWNED_NFT_FAIL } from '../types';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 
@@ -30,6 +30,21 @@ export const chatLoadFail = (error) => ({
   payload: error,
 });
 
+
+export const chatOwnedNftCollectionLoadStart = () => ({
+  type: CHAT_OWNED_NFT_START,
+});
+
+export const chatOwnedNftCollectionLoadSuccess = (data) => ({
+  type: CHAT_OWNED_NFT_SUCCESS,
+  payload: data,
+});
+
+export const chatOwnedNftCollectionLoadFail = (error) => ({
+  type: CHAT_OWNED_NFT_FAIL,
+  payload: error,
+});
+
 export const getOtherDataNft = (address) => (dispatch) => {
   
   let url = `${BASE_URL}/xanaGenesis/get-other-data`;
@@ -44,7 +59,7 @@ export const getOtherDataNft = (address) => (dispatch) => {
       // page: 1
     },
     headers:{
-      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMTc4YzgyMjNmYjVjYmVmYTRkYzY1OSIsImlhdCI6MTY2Mjk4MjIzNCwiZXhwIjoxNjYzMDY4NjM0fQ.d3_O9leA4D_fhf9_RmBwv5hngaY2r4s3E1TKpSFNbJg'
+      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGM3NTIxMzlmNmVjYzQ4NjUyM2VhNyIsImlhdCI6MTY2MzI0MjgxNCwiZXhwIjoxNjYzMzI5MjE0fQ.fIJNdM0D2leJXA7DPeLkKwoAzxckV0qS4vlemMCs97Y'
     }
   })
   .then(res => {
@@ -70,11 +85,14 @@ export const getMyDataNft = () => (dispatch) => {
       owner: '0x1a01d68dace26f59ad6ab114c6a0ef6a3b2ccb9e',
     },
     headers:{
-      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMTc4YzgyMjNmYjVjYmVmYTRkYzY1OSIsImlhdCI6MTY2Mjk4MjIzNCwiZXhwIjoxNjYzMDY4NjM0fQ.d3_O9leA4D_fhf9_RmBwv5hngaY2r4s3E1TKpSFNbJg'
+      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGM3NTIxMzlmNmVjYzQ4NjUyM2VhNyIsImlhdCI6MTY2MzI0MjgxNCwiZXhwIjoxNjYzMzI5MjE0fQ.fIJNdM0D2leJXA7DPeLkKwoAzxckV0qS4vlemMCs97Y'
     }
   })
   .then(res => {
     console.log('GET-MY-DATA ----------- ', res);
+    let result = res?.userNfts?.result 
+    dispatch(chatOwnedNftCollectionLoadSuccess(result));
+
   })
   .catch(err => console.log('Error : ', err))
   
