@@ -62,24 +62,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    headerList:{
+        // margin: SIZE(10)
+    },
     headerView: {
-        maxWidth: wp('20%')
+         padding: 2,
+         paddingBottom: SIZE(10)
     },
     userCircle: {
-        width: SIZE(57),
-        height: SIZE(57),
-        // borderRadius: SIZE(57),
-        marginHorizontal: SIZE(5),
-        marginBottom: SIZE(8),
+        width: SIZE(105),
+        height: SIZE(60),
+        borderRadius: 3,
         overflow: 'hidden'
     },
     userText: {
-        fontSize: RF(1.1),
+        fontSize: RF(1.3),
         color: colors.BLACK1,
         textAlign: 'center',
         fontFamily: fonts.PINGfANG,
-        marginBottom: SIZE(8),
-        // margin: 2
+        top: 5
     },
     headerMenuContainer: {
         flex: 1,
