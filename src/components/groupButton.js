@@ -25,7 +25,7 @@ const groupButton = ({
             {leftHide ? null : <TouchableOpacity
                 onPress={onLeftPress}
                 style={[styles.leftButton,
-                leftDisabled ? { opacity: 0.4 } : null, leftStyle, rightText && { marginRight: 5 }
+                leftDisabled ? { opacity: 0.8 } : null, leftStyle, rightText && { marginRight: 5 }
                 ]}
                 disabled={leftDisabled}>
                 {leftLoading

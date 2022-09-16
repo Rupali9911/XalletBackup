@@ -172,7 +172,6 @@ const DetailScreen = ({ navigation, route }) => {
   const network = detailNFT?.network ? detailNFT.network : item?.network
   const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
-  console.log(userId)
 
   const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
 
@@ -829,7 +828,7 @@ const DetailScreen = ({ navigation, route }) => {
         <View>
           <CountDown
             size={18}
-            // until={endCoundownTime}
+            until={endCoundownTime}
             onFinish={() => { }}
             digitStyle={styles.countDownDigit}
             digitTxtStyle={styles.countDownText}

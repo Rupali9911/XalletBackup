@@ -84,6 +84,8 @@ import EditImage from 'src/assets/svgs/icon-edit-image.svg'
 import CopyProfile from 'src/assets/svgs/icon-copy-profile.svg'
 import ArtistSvg from 'src/assets/svgs/icon-artist.svg'
 import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg'
+import SuccessIcon from 'src/assets/svgs/icon-toast-success.svg'
+import ErrorIcon from 'src/assets/svgs/icon-toast-error.svg'
 
 export default {
   GirlIcon,
@@ -168,5 +170,7 @@ export default {
   InstagramIcon,
   ArtistSvg,
   ArtistSvgI,
+  SuccessIcon,
+  ErrorIcon,
   ThreeDotsVerticalIcon,
 };
