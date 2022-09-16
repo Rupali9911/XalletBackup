@@ -70,7 +70,6 @@ export const handleLike = async (nftItem) => {
             nftId: nftItem.nftId,
             status: Number(nftItem.isLike) === 1 ? 0 : 1
         };
-        console.log(data)
         sendRequest({
             url: `${NEW_BASE_URL}/nfts/like`,
             method: 'POST',
@@ -93,7 +92,6 @@ export const handleLike = async (nftItem) => {
 function discoverItem({
     item
 }) {
-    // console.log("🚀 ~ file: discoverItem.js ~ line 126 ~ item", item)
     const { wallet, userData } = useSelector(state => state.UserReducer);
     const navigation = useNavigation();
     const [isPlay, setPlay] = useState(false);
@@ -119,9 +117,9 @@ function discoverItem({
 
     const avatarpress = (v) => {
         if (v === "owner") {
-            if (nftItem?.owner?.userId) navigation.push('ArtistDetail', { id: nftItem?.owner?.userId });
+            if (nftItem?.owner?.address) navigation.push('Profile', { id: nftItem?.owner?.address });
         } else {
-            if (nftItem?.creator?.userId) navigation.push('ArtistDetail', { id: nftItem?.creator?.userId });
+            if (nftItem?.creator?.address) navigation.push('Profile', { id: nftItem?.creator?.address });
         }
     }
 

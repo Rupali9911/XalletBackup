@@ -83,12 +83,10 @@ function Profile({ navigation, connector, route }) {
 
     const dispatch = useDispatch();
 
-    let id = UserReducer.userData.userWallet.address
-
     if (typeof route.params === 'undefined') {
         id = UserReducer.userData.userWallet.address
     } else {
-        id = route.params.id
+        id = route?.params?.id
     }
 
     const OPEN_CAMERA = 0;
@@ -99,32 +97,19 @@ function Profile({ navigation, connector, route }) {
         sendRequest(url)
             .then((res) => {
                 setUserData(res)
-                console.log(res,'profile')
-                dispatch(updateUserData(res))
+                if (typeof route.params === 'undefined') {
+                    dispatch(updateUserData(res))
+                }
             })
     }
 
     useEffect(() => {
-        if(isFocused){
-        fetchData()}
+        if (isFocused) {
+            fetchData()
+        }
     }, [isFocused])
 
-    // const toastConfig = {
-    //     my_custom_type: ({ text1, props, ...rest }) => (
-    //         <View
-    //             style={{
-    //                 zIndex: 100,
-    //                 alignItems: 'center',
-    //                 width: wp('35%'),
-    //                 paddingHorizontal: wp('2%'),
-    //                 borderRadius: wp('10%'),
-    //                 paddingVertical: hp('1%'),
-    //                 backgroundColor: colors.GREY2,
-    //             }}>
-    //             <Text style={{ color: colors.black, fontWeight: 'bold' }}>{text1}</Text>
-    //         </View>
-    //     ),
-    // };
+
 
     const copyToClipboard = () => {
         Clipboard.setString(id);
@@ -217,9 +202,9 @@ function Profile({ navigation, connector, route }) {
                         image: image
                     }
                     if (imageType === 'profile') {
-                        updateAvtar(userData.id, token, temp)
+                        updateAvtar(userData.id, temp)
                     } else if (imageType === 'banner') {
-                        updateBanner(userData.id, temp, token)
+                        updateBanner(userData.id, temp)
                     }
                 }
             }).catch(async e => {
@@ -260,7 +245,7 @@ function Profile({ navigation, connector, route }) {
                     if (imageType === 'profile') {
                         updateAvtar(userData.id, temp)
                     } else if (imageType === 'banner') {
-                        updateBanner(userData.id, temp, token)
+                        updateBanner(userData.id, temp)
                     }
                 }
             }).catch(async e => {
@@ -303,16 +288,16 @@ function Profile({ navigation, connector, route }) {
 
     const renderBannerImage = () => {
         return (
-                <C_Image uri={userData.banner}
-                    imageStyle={styles.collectionListImage} />
+            <C_Image uri={userData.banner}
+                imageStyle={styles.collectionListImage} />
         )
     }
 
     const renderIconImage = () => {
         return (
             <TouchableOpacity onPress={() => onSelect('profile')}>
-                    <C_Image uri={userData.avatar}
-                        imageStyle={styles.iconImage} />
+                <C_Image uri={userData.avatar}
+                    imageStyle={styles.iconImage} />
             </TouchableOpacity>
         )
     }
@@ -323,7 +308,7 @@ function Profile({ navigation, connector, route }) {
         return (
             <View style={styles.profileInfo}>
                 <View style={styles.userNameView}>
-                    <Text style={styles.userNameText}>{userData.userName ? userData.userName : 'Unnamed' }</Text>
+                    <Text style={styles.userNameText}>{userData.userName ? userData.userName : 'Unnamed'}</Text>
                 </View>
                 <View style={styles.userIdView}>
                     <Text style={styles.userIdText}>{userData?.userWallet?.address.substring(0, 6)}...{userData?.userWallet?.address.substring(userData?.userWallet?.address.length - 4, userData?.userWallet?.address.length)}</Text>
@@ -351,13 +336,13 @@ function Profile({ navigation, connector, route }) {
         <Container>
             <View
                 style={styles.scrollView}
-                // refreshControl={
-                //     <RefreshControl
-                //         refreshing={refreshing}
-                //         onRefresh={onRefresh}
-                //         tintColor={Colors.themeColor}
-                //     />
-                // }
+            // refreshControl={
+            //     <RefreshControl
+            //         refreshing={refreshing}
+            //         onRefresh={onRefresh}
+            //         tintColor={Colors.themeColor}
+            //     />
+            // }
             >
                 {route.params && <AppHeader
                     title={translate("common.profile")}
@@ -389,8 +374,8 @@ function Profile({ navigation, connector, route }) {
                         {renderIconImage()}
                         {renderProfileNameAndId()}
                     </View>
-                    {!route.params && <EditButton style={{ alignSelf: 'center', width: wp(60), height: hp(3) }} 
-                    onPress={() => navigation.navigate('EditProfile', { userData } )}>
+                    {!route.params && <EditButton style={{ alignSelf: 'center', width: wp(60), height: hp(3) }}
+                        onPress={() => navigation.navigate('EditProfile', { userData })}>
                         <EditButtonText>{translate('wallet.common.editprofile')}</EditButtonText>
                     </EditButton>}
                     <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>

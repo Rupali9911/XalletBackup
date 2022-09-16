@@ -32,8 +32,7 @@ const EditableInput = styled.TextInput`
 `;
 
 const LimitView = styled.View`
-    width: 100%;
-    height: ${SIZE(30)}px;
+    width: 90%;
     margin-left: ${SIZE(20)}px;
 `;
 

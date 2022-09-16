@@ -5,8 +5,10 @@ import { NEW_BASE_URL } from '../common/constants'
 import AppHeader from './appHeader';
 import AppBackground from './appBackground';
 
-export default WebView = () => {
+export default WebView = ({navigation}) => {
     const Url = NEW_BASE_URL + '/auth/twitter'
+
+    let load = 0
 
   return (
     <AppBackground>
@@ -15,6 +17,13 @@ export default WebView = () => {
       <WebViewLibrary
         key={Url}
         source={{ uri: Url }}
+        onLoad={()=>{
+          load ++
+          if(load > 2) {
+            navigation.navigate('Profile')
+          }
+      }
+      }
       />
     </SafeAreaView>
     </AppBackground>
