@@ -130,7 +130,11 @@ const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
                 image={imageUri}
                 onPress={() => {
                     // dispatch(changeScreenName('Hot'));
-                    navigation.push('CertificateDetail', { item: item });
+                    navigation.push('CertificateDetail', {
+                        networkName: item?.network?.networkName,
+                        collectionAddress: item?.collection?.address,
+                        nftTokenId: item?.tokenId,
+                    });
                 }}
             />
         );

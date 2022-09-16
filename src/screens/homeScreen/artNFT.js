@@ -11,7 +11,7 @@ import NFTItem from '../../components/NFTItem';
 import { CATEGORY_VALUE } from '../../constants'
 
 
-const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const ArtNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
@@ -129,7 +129,11 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
                 image={imageUri}
                 onPress={() => {
                     // dispatch(changeScreenName('newNFT'));
-                    navigation.push('CertificateDetail', { item : item });
+                    navigation.push('CertificateDetail', {
+                        networkName: item?.network?.networkName,
+                        collectionAddress: item?.collection?.address,
+                        nftTokenId: item?.tokenId,
+                    });
                 }}
             />
         )
@@ -141,7 +145,7 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {isFirstRender ? isFirstRender :  page === 1 &&
+            {isFirstRender ? isFirstRender : page === 1 &&
                 NewNFTListReducer.newNftListLoading ? (
                 <Loader />
             ) : NewNFTListReducer.newArtNftList.length !== 0 ? renderArtNFTList()

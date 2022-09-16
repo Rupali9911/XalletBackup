@@ -174,7 +174,9 @@ function discoverItem({
                         isPlay
                             ? setPlay(!isPlay)
                             : navigation.navigate('CertificateDetail', {
-                                item: item,
+                                networkName: item?.network?.networkName,
+                                collectionAddress: item?.collection?.address,
+                                nftTokenId: item?.tokenId,
                                 setNftItem
                             })
                     }}>

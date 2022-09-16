@@ -74,7 +74,6 @@ const tabTwo = (props) => {
                     false
                 ),
             );
-          
         },
         [],
     );
@@ -102,7 +101,11 @@ const tabTwo = (props) => {
                 screenName="owned"
                 image={imageUri}
                 onPress={() => {
-                    navigation.push('CertificateDetail', { item: item });
+                    navigation.push('CertificateDetail', {
+                        networkName: item?.network?.networkName,
+                        collectionAddress: item?.collection?.address,
+                        nftTokenId: item?.tokenId,
+                    });
                 }}
             />
         );
