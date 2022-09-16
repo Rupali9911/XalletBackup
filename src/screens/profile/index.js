@@ -82,6 +82,7 @@ function Profile({ navigation, connector, route }) {
     const isFocused = useIsFocused();
 
     const dispatch = useDispatch();
+    let id = UserReducer.userData.userWallet.address
 
     if (typeof route.params === 'undefined') {
         id = UserReducer.userData.userWallet.address

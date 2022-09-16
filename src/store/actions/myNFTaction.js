@@ -3,6 +3,7 @@ import { networkType } from '../../common/networkType';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import { getAccessToken } from '../../helpers/AxiosApiRequest';
 import { parseNftObject } from '../../utils/parseNFTObj';
+import RNFetchBlob from 'rn-fetch-blob'
 
 import {
   FAVORITE_NFT_SUCCESS,
@@ -87,26 +88,28 @@ export const updateAvtar = async (userId, file) => {
   let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`
   const token = await getAccessToken('ACCESS_TOKEN')
 
-  const data = {
-    uri: file.uri,
-    name: file.fileName,
-    type: file.type,
-  }
-  const body = new FormData()
-  body.append('file', data)
 
-  const requestOptions = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'image/jpeg',
-      'Authorization': `${token}`,
-      'x-amz-tagging': `token=${token}`,
-    },
-    body: data,
-  };
-  fetch(url, requestOptions)
-    .then(response => response.json())
-    .then(data => console.log(data));
+  RNFetchBlob.fs.readFile(file.path, 'base64')
+      .then(async (data) => {
+        var Buffer = require("buffer/").Buffer;
+       const imageData = await Buffer.from(data, "base64");
+        console.log("@@@ Image upload base 64 data =========>", data)        
+        
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'image/jpeg',
+            'Authorization': `${token}`,
+            'x-amz-tagging': `token=${token}`,
+          },
+          body: imageData,
+        };
+        fetch(url, requestOptions)
+          .then(response => response.json())
+          .then(data => console.log(data));
+      })
+
+ 
 }
 
 
@@ -127,8 +130,7 @@ export const updateBanner = (userId, file, token) => {
     // referrer : 'https://frontend.xanalia.com/'
   };
   fetch(url, requestOptions)
-    .then(response => response.json())
-    .then(data => console.log(data));
+    .then(response => console.log(response))
 }
 
 export const removeBanner = () => {
