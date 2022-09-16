@@ -82,7 +82,7 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const { item, setNftItem } = route.params;
+  const { item, setNftItem, setBack } = route.params;
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
@@ -394,6 +394,7 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <AppHeader
         showBackButton
+        onPressBack = {()=>{if(setBack)setBack(true); navigation.goBack()}}
         title={translate('wallet.common.detail')}
         showRightComponent={
           <View style={{ paddingRight: 10 }}>
@@ -592,7 +593,7 @@ const DetailScreen = ({ navigation, route }) => {
             {key === 'creator'
               ? translate('common.creator')
               : key === 'collection'
-                ? translate('wallet.common.collection')
+                ? translate('common.collected')
                 : key === 'owner' && translate('common.owner')}
           </Text>}
           {key !== 'collection' ?
@@ -1264,7 +1265,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   const showContractAddress = (item) => {
     return (typeof item?.collection === 'object'
-      ? item?.collection?.address
+      ? item?.collection?.address.substring(0, 6)
       : item?.collection ?
         item?.collection?.substring(0, 5) +
         ' ... ' +

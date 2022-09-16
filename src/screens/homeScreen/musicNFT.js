@@ -31,6 +31,8 @@ const MusicNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   const [end, setEnd] = useState()
+  const [back, setBack] = useState(false)
+
 
   let category = CATEGORY_VALUE.music;
   let limit = 10;
@@ -51,6 +53,15 @@ const MusicNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
     }
     return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
+
+  useEffect(() => {
+    if (back) {
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset(category));
+      getNFTlist(category, sortCategory, limit, 1);
+      setBack(false)
+    }
+  }, [back])
 
   //===================== Dispatch Action to Fetch Movie NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -101,7 +112,7 @@ const MusicNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
 
   const refreshFunc = () => {
     dispatch(newNftListReset(category));
-    getNFTlist(category, sortCategory, limit, 1);
+    getNFTlist(category, sortOption, limit, 1);
     setPage(1)
   };
 
@@ -130,7 +141,7 @@ const MusicNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
         image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', { item: item });
+          navigation.push('CertificateDetail', { item: item, setBack });
         }}
       />
     );

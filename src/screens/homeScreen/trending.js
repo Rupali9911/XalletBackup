@@ -32,6 +32,7 @@ const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
     // const [isSort, setIsSort] = useState(null);
 
     const [end, setEnd] = useState()
+    const [back, setBack] = useState(false)
 
     let category = CATEGORY_VALUE.trending;
     let limit = 10;
@@ -52,6 +53,15 @@ const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
         }
         return () => clearTimeout(timer);
     }, [isFocused]);
+
+    useEffect(() => {
+        if (back) {
+            dispatch(newNftLoadStart());
+            dispatch(newNftListReset(category));
+            getNFTlist(category, sortCategory, limit, 1);
+            setBack(false)
+        }
+    }, [back])
 
     // useEffect(() => {
     //         dispatch(newNftLoadStart());
@@ -112,7 +122,7 @@ const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
 
     const refreshFunc = () => {
         dispatch(newNftListReset(category));
-        getNFTlist(category, sortCategory, limit, 1);
+        getNFTlist(category, sortOption, limit, 1);
         setPage(1)
     };
 
@@ -140,7 +150,7 @@ const Trending = ({ screen, sortOption, setSortOption, page, setPage }) => {
                 image={imageUri}
                 onPress={() => {
                     // dispatch(changeScreenName('Hot'));
-                    navigation.push('CertificateDetail', { item: item });
+                    navigation.push('CertificateDetail', { item: item, setBack });
                 }}
             />
         );

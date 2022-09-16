@@ -32,6 +32,8 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const [isFirstRender, setIsFirstRender] = useState(true);
   // const [isSort, setIsSort] = useState(null);
   const [end, setEnd] = useState()
+  const [back, setBack] = useState(false)
+
 
   let category = CATEGORY_VALUE.allNft;
   let limit = 10;
@@ -39,7 +41,7 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
 
   // ===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender )) {
+    if (isFocused && (isFirstRender)) {
       timer = setTimeout(() => {
         dispatch(newNftLoadStart());
         dispatch(newNftListReset(category));
@@ -52,6 +54,15 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
     }
     return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
+
+  useEffect(() => {
+    if (back) {
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset(category));
+      getNFTlist(category, sortCategory, limit, 1);
+      setBack(false)
+    }
+  }, [back])
 
   //===================== Dispatch Action to Fetch Award NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -123,7 +134,7 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
         screenName="allNft"
         item={item}
         onPress={() => {
-          navigation.push('CertificateDetail', { item: item });
+          navigation.push('CertificateDetail', { item: item, setBack });
         }}
       />
     );
@@ -137,7 +148,7 @@ const AllNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   //=================== Other Functions ====================
   const handleRefresh = () => {
     dispatch(newNftListReset(category));
-    getNFTlist(category, sortCategory, limit, 1);
+    getNFTlist(category, sortOption, limit, 1);
     setPage(1)
   }
 

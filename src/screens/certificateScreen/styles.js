@@ -74,13 +74,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE8,
   },
   nftTitle: {
-    fontSize: RF(1.5),
+    fontSize: RF(1.75),
     fontFamily: fonts.ARIAL_BOLD,
     marginTop: SIZE(15),
     width: wp('100%'),
     paddingHorizontal: SIZE(12),
     color: colors.PINK1,
-    textTransform: 'uppercase',
   },
   nftName: {
     fontSize: RF(2.75),

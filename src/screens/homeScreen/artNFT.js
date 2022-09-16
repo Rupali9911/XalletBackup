@@ -26,6 +26,7 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
     // const [isSort, setIsSort] = useState(0);
 
     const [end, setEnd] = useState()
+    const [back, setBack] = useState(false)
 
     let category = CATEGORY_VALUE.art;
     let limit = 10;
@@ -47,6 +48,15 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         }
         return () => clearTimeout(timer);
     }, [sortOption, isFocused])
+
+    useEffect(() => {
+        if (back) {
+            dispatch(newNftLoadStart());
+            dispatch(newNftListReset(category));
+            getNFTlist(category, sortCategory, limit, 1);
+            setBack(false)
+        }
+    }, [back])
 
     //===================== Dispatch Action to Fetch Art NFT List =========================
     const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -97,7 +107,7 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
 
     const handleRefresh = () => {
         dispatch(newNftListReset(category));
-        getNFTlist(category, sortCategory, limit, 1);
+        getNFTlist(category, sortOption, limit, 1);
     }
 
     const handleFlastListEndReached = () => {
@@ -129,7 +139,7 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
                 image={imageUri}
                 onPress={() => {
                     // dispatch(changeScreenName('newNFT'));
-                    navigation.push('CertificateDetail', { item : item });
+                    navigation.push('CertificateDetail', { item : item, setBack });
                 }}
             />
         )

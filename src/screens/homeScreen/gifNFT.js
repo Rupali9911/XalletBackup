@@ -23,7 +23,7 @@ import styles from './styles';
 import { CATEGORY_VALUE } from '../../constants'
 
 
-const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -38,11 +38,12 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState()
+  const [back, setBack] = useState(false)
 
   let category = CATEGORY_VALUE.gif;
-    let limit = 10;
-    let sortCategory = 0;
-    
+  let limit = 10;
+  let sortCategory = 0;
+
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && (isFirstRender)) {
@@ -59,6 +60,15 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
     }
     return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
+
+  useEffect(() => {
+    if (back) {
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset(category));
+      getNFTlist(category, sortCategory, limit, 1);
+      setBack(false)
+    }
+  }, [back])
 
   //===================== Dispatch Action to Fetch Gif NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -109,7 +119,7 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
 
   const refreshFunc = () => {
     dispatch(newNftListReset(3));
-    getNFTlist(category, sortCategory, limit, 1);
+    getNFTlist(category, sortOption, limit, 1);
     setPage(1)
   };
 
@@ -130,18 +140,18 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
 
   const renderItem = ({ item, index }) => {
     let findIndex = NewNFTListReducer.newGifNftList.findIndex(x => x.id === item.id);
-        let imageUri = item?.mediaUrl
-      return (
-        <NFTItem
-          screenName="gitNFT"
-          item={item}
-          image={imageUri}
-          onPress={() => {
-            // dispatch(changeScreenName('gitNFT'));
-            navigation.push('CertificateDetail', { item : item });
-          }}
-        />
-      );
+    let imageUri = item?.mediaUrl
+    return (
+      <NFTItem
+        screenName="gitNFT"
+        item={item}
+        image={imageUri}
+        onPress={() => {
+          // dispatch(changeScreenName('gitNFT'));
+          navigation.push('CertificateDetail', { item: item, setBack });
+        }}
+      />
+    );
   };
 
   const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newGifNftList]);
@@ -149,14 +159,14 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {isFirstRender ? isFirstRender : page === 1 &&
-                NewNFTListReducer.newNftListLoading ? (
-                <Loader />
-            ) : NewNFTListReducer.newGifNftList.length !== 0 ? renderGifNFTList()
-                : renderNoNFT()
-            }
-        </View >
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      {isFirstRender ? isFirstRender : page === 1 &&
+        NewNFTListReducer.newNftListLoading ? (
+        <Loader />
+      ) : NewNFTListReducer.newGifNftList.length !== 0 ? renderGifNFTList()
+        : renderNoNFT()
+      }
+    </View >
   );
 };
 

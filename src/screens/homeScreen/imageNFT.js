@@ -20,7 +20,7 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import { CATEGORY_VALUE } from '../../constants'
 
-const ImageNFT = ({ screen, sortOption,setSortOption, page, setPage }) => {
+const ImageNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -35,6 +35,7 @@ const ImageNFT = ({ screen, sortOption,setSortOption, page, setPage }) => {
   // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState()
+  const [back, setBack] = useState(false)
 
   let category = CATEGORY_VALUE.image;
   let limit = 10;
@@ -57,6 +58,14 @@ const ImageNFT = ({ screen, sortOption,setSortOption, page, setPage }) => {
     return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
 
+  useEffect(() => {
+    if (back) {
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset(category));
+      getNFTlist(category, sortCategory, limit, 1);
+      setBack(false)
+    }
+  }, [back])
 
   //===================== Dispatch Action to Fetch Photo NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -107,7 +116,7 @@ const ImageNFT = ({ screen, sortOption,setSortOption, page, setPage }) => {
 
   const handleRefresh = () => {
     dispatch(newNftListReset(category));
-    getNFTlist(category, sortCategory, limit, 1);
+    getNFTlist(category, sortOption, limit, 1);
     setPage(1)
   };
 
@@ -139,7 +148,7 @@ const ImageNFT = ({ screen, sortOption,setSortOption, page, setPage }) => {
         image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('photoNFT'));
-          navigation.push('CertificateDetail', { item: item });
+          navigation.push('CertificateDetail', { item: item, setBack });
         }}
       />
     );
