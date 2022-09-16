@@ -35,6 +35,8 @@ const tabTwo = (props) => {
 
     // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
     const { NftDataCollectionReducer } = useSelector(state => state);
+    const { userData } = useSelector(state => state.UserReducer);
+
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
@@ -67,11 +69,11 @@ const tabTwo = (props) => {
                     tabTitle,
                     collection?.network?.networkName,
                     collection?.contractAddress,
-                    tabStatus,
-                    null,
-                    collection?.userId,
                     isLaunchPad,
-                    false
+                    tabStatus,
+                    userData?.id,
+                    null,
+                    null
                 ),
             );
         },

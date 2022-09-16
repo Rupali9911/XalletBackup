@@ -134,7 +134,7 @@ const HotCollection = () => {
         items={item.items}
         iconImage={item.iconImage}
         collectionName={item.name}
-        creatorInfo={item.creatorInfo}
+        creatorInfo={item.creatorInfo} 
         isHotCollection={item.isHot}
         blind={item.blind}
         count={item.totalNft}
@@ -149,7 +149,7 @@ const HotCollection = () => {
               .catch(err => {
                 console.error("Failed opening page because: ", err)
               })
-          }
+          } 
         }}
       />
     );

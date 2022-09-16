@@ -32,6 +32,8 @@ const tabFour = ({ route }) => {
     } = route?.params;
 
     const { NftDataCollectionReducer } = useSelector(state => state);
+    const { userData } = useSelector(state => state.UserReducer);
+
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const isFocused = useIsFocused();
@@ -65,10 +67,10 @@ const tabFour = ({ route }) => {
                         tabTitle,
                         null,
                         null,
-                        null,
-                        null,
-                        null,
                         isLaunchPad,
+                        null,
+                        null,
+                        null,
                         collection?.id,
                     ),
                 );
@@ -80,11 +82,11 @@ const tabFour = ({ route }) => {
                         tabTitle,
                         collection?.network?.networkName,
                         collection?.contractAddress,
-                        tabStatus,
-                        null,
-                        collection?.userId,
                         isLaunchPad,
-                        false
+                        tabStatus,
+                        userData?.id,
+                        null,
+                        null
                     ),
                 );
             }
@@ -138,7 +140,7 @@ const tabFour = ({ route }) => {
     return (
         <View style={styles.trendCont}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {page === 1 && isLoading ? (
+            {(tabTitle !== reducerTabTitle) || page === 1 && isLoading ? (
                 <View style={{ marginTop: height / 8 }}>
                     <Loader />
                 </View>

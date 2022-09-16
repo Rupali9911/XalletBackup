@@ -34,9 +34,7 @@ export const hotCollectionPageChange = (data) => ({
 export const hotCollectionList = (page, limit) => {
   return (dispatch) => {
 
-    let limit = 5;
-
-    console.log('URL ==================> ',`${NEW_BASE_URL}/collections/hot?page=${page}&limit=${limit}`);
+    let limit = 10;
 
     sendRequest({
       url: `${NEW_BASE_URL}/collections/hot`,

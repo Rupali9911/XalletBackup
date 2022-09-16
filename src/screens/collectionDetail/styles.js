@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     height: hp(5.5), 
     width: hp(5.5), 
     borderRadius: 3, 
-    marginRight: 10,
+    marginHorizontal: 5,
   },
   cellAddress: {
     color: 'black',
