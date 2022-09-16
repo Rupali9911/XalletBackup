@@ -82,7 +82,7 @@ const DetailScreen = ({ navigation, route }) => {
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const { item, setNftItem } = route.params;
+  const { item, setNftItem, networkName, collectionAddress, nftTokenId } = route.params;
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
@@ -107,7 +107,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [sellDetails, setSellDetails] = useState([]);
   const [currencyPrices, setCurrencyPrices] = useState({});
   const [priceInDollar, setPriceInDollar] = useState('');
-  const [nftPrice, setNFTPrice] = useState(item?.price ? item.price : '');
+  const [nftPrice, setNFTPrice] = useState('');
   const [payableInCurrency, setPayableInCurrency] = useState('');
   const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
@@ -159,16 +159,16 @@ const DetailScreen = ({ navigation, route }) => {
   // const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
 
   const categoryType = detailNFT?.category ? detailNFT?.category : item?.category;
-  const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item.mediaUrl;
+  const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item?.mediaUrl;
   const thumbnailUrl = detailNFT?.thumbnailUrl
     ? detailNFT.thumbnailUrl :
     categoryType === CATEGORY_VALUE.music
-      ? item.mediaUrl
+      ? item?.mediaUrl
       : item?.thumbnailUrl
-  const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
+  // const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
   const network = detailNFT?.network ? detailNFT.network : item?.network
-  const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
+  // const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
 
   const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
@@ -183,7 +183,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && networkName && collectionAddress && nftTokenId) {
       // // if (chainType) {
       // // if (chainAvailable) {
       // setBuyLoading(true);
@@ -200,7 +200,7 @@ const DetailScreen = ({ navigation, route }) => {
       // // }
       getTokenDetailsApi();
     }
-  }, [isFocused]);
+  }, [isFocused, networkName, collectionAddress, nftTokenId]);
 
   // useEffect(() => {
   //   getCurrencyPrice(item?.price ? item.price : priceNFT);
@@ -261,7 +261,7 @@ const DetailScreen = ({ navigation, route }) => {
   // };
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const getTokenDetailsApi = async () => {
-    let networkName = typeof network === 'string' ? network : network?.networkName
+    // let networkName = typeof network === 'string' ? network : network?.networkName
     let url = `${NEW_BASE_URL}/nfts/details`
 
     sendRequest({
@@ -1407,7 +1407,11 @@ const DetailScreen = ({ navigation, route }) => {
         item={item}
         image={item?.mediaUrl}
         onPress={() => {
-          navigation.push('CertificateDetail', { item: item });
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
     )

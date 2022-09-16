@@ -89,7 +89,7 @@ const tabOne = ({ route }) => {
     };
 
     const renderItem = ({ item, index }) => {
-       
+
         let imageUri = item?.mediaUrl
         return (
             <NFTItem
@@ -97,11 +97,15 @@ const tabOne = ({ route }) => {
                 screenName="gallery"
                 image={imageUri}
                 onPress={() => {
-                    navigation.push('CertificateDetail', { item: item });
+                    navigation.push('CertificateDetail', {
+                        networkName: item?.network?.networkName,
+                        collectionAddress: item?.collection?.address,
+                        nftTokenId: item?.tokenId,
+                    });
                 }}
             />
         );
-        
+
     };
 
     const memoizedValue = useMemo(() => renderItem, [collectionList]);
@@ -123,27 +127,27 @@ const tabOne = ({ route }) => {
                 </View>
             ) : collectionList.length !== 0 ? (
                 <FlatList
-                        data={collectionList}
-                        nestedScrollEnabled={true}
-                        horizontal={false}
-                        numColumns={2}
-                        initialNumToRender={6}
-                        onRefresh={handleFlatlistRefresh}
-                        refreshing={page === 1 && isLoading}
-                        renderItem={memoizedValue}
-                        onEndReached={() => {
-                            if (!isLoading && collectionList.length !== totalCount) {
-                                let num = page + 1;
+                    data={collectionList}
+                    nestedScrollEnabled={true}
+                    horizontal={false}
+                    numColumns={2}
+                    initialNumToRender={6}
+                    onRefresh={handleFlatlistRefresh}
+                    refreshing={page === 1 && isLoading}
+                    renderItem={memoizedValue}
+                    onEndReached={() => {
+                        if (!isLoading && collectionList.length !== totalCount) {
+                            let num = page + 1;
 
-                                dispatch(nftDataCollectionLoadStart(tabTitle));
-                                getNFTlist(num);
-                                dispatch(nftDataCollectionPageChange(num));
-                            }
-                        }}
-                        onEndReachedThreshold={0.4}
-                        keyExtractor={keyExtractor}
-                        ListFooterComponent={renderFooter}
-                    />
+                            dispatch(nftDataCollectionLoadStart(tabTitle));
+                            getNFTlist(num);
+                            dispatch(nftDataCollectionPageChange(num));
+                        }
+                    }}
+                    onEndReachedThreshold={0.4}
+                    keyExtractor={keyExtractor}
+                    ListFooterComponent={renderFooter}
+                />
             ) : (
                 <View style={{ flex: 1 }}>
                     <View style={styles.sorryMessageCont}>

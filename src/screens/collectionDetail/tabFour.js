@@ -55,11 +55,10 @@ const tabFour = ({ route }) => {
         }
     }, [isFocused]);
 
-    const getNFTlist = useCallback( 
+    const getNFTlist = useCallback(
         page => {
 
-            if(isLaunchPad)
-            {
+            if (isLaunchPad) {
                 dispatch(
                     nftDataCollectionList(
                         page,
@@ -70,12 +69,11 @@ const tabFour = ({ route }) => {
                         null,
                         null,
                         isLaunchPad,
-                        collection?.id, 
+                        collection?.id,
                     ),
                 );
             }
-            else
-            {
+            else {
                 dispatch(
                     nftDataCollectionList(
                         page,
@@ -115,7 +113,11 @@ const tabFour = ({ route }) => {
                 screenName="soldOut"
                 image={imageUri}
                 onPress={() => {
-                    navigation.push('CertificateDetail', { item: item });
+                    navigation.push('CertificateDetail', {
+                        networkName: item?.network?.networkName,
+                        collectionAddress: item?.collection?.address,
+                        nftTokenId: item?.tokenId,
+                    });
                 }}
             />
         );

@@ -90,8 +90,7 @@ export default function AppSearch() {
 
   const handleFlatListRenderItem = ({ item, index }) => {
     let isLaunchPad = false;
-    if(item?.launchpadId)
-    {
+    if (item?.launchpadId) {
       isLaunchPad = true;
     }
     let withTag = false;
@@ -107,11 +106,22 @@ export default function AppSearch() {
         withTag={withTag}
         onPress={item => {
           if (item.type == 'NFT') {
-            navigation.navigate('CertificateDetail', { item: item });
+            navigation.navigate('CertificateDetail', {
+              networkName: item?.network,
+              collectionAddress: item?.collectionAddress,
+              nftTokenId: item?.tokenId
+            });
           } else if (item.type == 'Artist') {
-            navigation.navigate('ArtistDetail', { id: item?.address });
+            navigation.navigate('ArtistDetail', {
+              id: item?.address
+            });
           } else if (item.type == 'Collections') {
-            navigation.push('CollectionDetail', { networkName: item?.network, contractAddress: item?.address, launchpadId: item?.launchpadId, isLaunchPad});
+            navigation.push('CollectionDetail', {
+              networkName: item?.network,
+              contractAddress: item?.address,
+              launchpadId: item?.launchpadId,
+              isLaunchPad
+            });
           }
         }}
       />

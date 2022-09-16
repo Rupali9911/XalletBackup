@@ -23,7 +23,7 @@ import styles from './styles';
 import { CATEGORY_VALUE } from '../../constants'
 
 
-const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -40,9 +40,9 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const [end, setEnd] = useState()
 
   let category = CATEGORY_VALUE.gif;
-    let limit = 10;
-    let sortCategory = 0;
-    
+  let limit = 10;
+  let sortCategory = 0;
+
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && (isFirstRender)) {
@@ -130,18 +130,22 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
 
   const renderItem = ({ item, index }) => {
     let findIndex = NewNFTListReducer.newGifNftList.findIndex(x => x.id === item.id);
-        let imageUri = item?.mediaUrl
-      return (
-        <NFTItem
-          screenName="gitNFT"
-          item={item}
-          image={imageUri}
-          onPress={() => {
-            // dispatch(changeScreenName('gitNFT'));
-            navigation.push('CertificateDetail', { item : item });
-          }}
-        />
-      );
+    let imageUri = item?.mediaUrl
+    return (
+      <NFTItem
+        screenName="gitNFT"
+        item={item}
+        image={imageUri}
+        onPress={() => {
+          // dispatch(changeScreenName('gitNFT'));
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
+        }}
+      />
+    );
   };
 
   const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newGifNftList]);
@@ -149,14 +153,14 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {isFirstRender ? isFirstRender : page === 1 &&
-                NewNFTListReducer.newNftListLoading ? (
-                <Loader />
-            ) : NewNFTListReducer.newGifNftList.length !== 0 ? renderGifNFTList()
-                : renderNoNFT()
-            }
-        </View >
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      {isFirstRender ? isFirstRender : page === 1 &&
+        NewNFTListReducer.newNftListLoading ? (
+        <Loader />
+      ) : NewNFTListReducer.newGifNftList.length !== 0 ? renderGifNFTList()
+        : renderNoNFT()
+      }
+    </View >
   );
 };
 
