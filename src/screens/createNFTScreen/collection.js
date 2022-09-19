@@ -162,6 +162,18 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
   }
 
   const onPhoto = (v) => {
+    // var options = {
+    //   mediaType: "photo",
+    //   maxWidth: v == "banner" ? 1600 : 512,
+    //   maxHeight: v == "banner" ? 300 : 512,
+    //   includeExtra: true,
+    //   presentationStyle: 'fullScreen'
+    // };
+    // ImagePicker.launchImageLibrary(options, image => {
+    //   console.log('@@@ React Native Image Picker Response = ', image);
+    //   updateImageState(image.assets[0], false, v)
+    // });
+
     ImagePicker.openPicker({
       mediaType: "photo",
       width: v == "banner" ? 1600 : 512,
