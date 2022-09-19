@@ -17,7 +17,9 @@ import { networkType as networkStatus } from "../../common/networkType";
 import { fonts } from '../../res';
 
 import axios from 'axios';
-import { BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
+import sendRequest from '../../helpers/AxiosApiRequest';
+
 import { alertWithSingleBtn } from '../../utils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
@@ -65,6 +67,12 @@ const UploadNFT = ({
     const { networkType } = useSelector(
         state => state.WalletReducer
     );
+
+    const { networks } = useSelector(
+        state => state.NetworkReducer
+    );
+
+    // console.log("@@@ On upload NFT screen reducer states =========>", networkType, networks)
 
     const [collectionList, setCollectionList] = useState([]);
     const [collection, setCollection] = useState(null);
@@ -137,7 +145,7 @@ const UploadNFT = ({
     }
 
     useEffect(() => {
-        if (position == 2) {
+        if (position == 3) {
             // changeLoadingState(true)
             getCollectionList()
             cleanAll();
@@ -153,60 +161,6 @@ const UploadNFT = ({
 
         }
     }, [position, nftItem])
-
-    const updateNFTData = (item) => {
-
-        setNftName(item.name);
-        setNftDesc(item.description);
-
-        let checkImage = item.image.match(/^http[^\?]*.(jpg|jpeg|gif|png)(\?(.*))?$/gmi);
-        let imageObjSet = {
-            path: item.image
-        }
-        let setImageTList;
-
-        if (checkImage) {
-
-            if (item.image.includes("gif")) {
-                imageObjSet.mime = "image/gif"
-                setImageTList = ImageType.filter(v => v.name == "GIF")
-            } else {
-                imageObjSet.mime = "image"
-                setNftImageThumb({ path: item.thumbnailImage })
-                setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie")
-            }
-            setNftImage(imageObjSet)
-
-        } else {
-            imageObjSet.mime = "video"
-            setImageTList = ImageType.filter(v => v.name == "Movie")
-            setNftImage(imageObjSet)
-            setNftImageThumb({ path: item.thumbnailImage })
-        }
-
-        setImageTypeList(setImageTList)
-
-        let basePriceFind = PriceUnits[networkType.value].find(
-            v => v.name == item.basePrice || v.order == item.basePrice
-        );
-
-        if (typeof (item.properties.type) == "string") {
-            let imageTypeFind = ImageType.find(
-                v => v.type == item.properties.type
-            )
-            setNftImageType(imageTypeFind)
-        }
-
-        setBasePrice(basePriceFind)
-        setOtherPrice(item.acceptCoins)
-
-        setToggleButton(item.salesType)
-        setFixedPrice(item.minPrice)
-        setStartTimeDate(item.startTime)
-        setEndTimeDate(item.endTime)
-        changeLoadingState(false);
-
-    }
 
     useEffect(() => {
         if (modalScreen === "uploadNFT" && modalItem) {
@@ -269,6 +223,60 @@ const UploadNFT = ({
 
     }, [datePickerData])
 
+    const updateNFTData = (item) => {
+
+        setNftName(item.name);
+        setNftDesc(item.description);
+
+        let checkImage = item.image.match(/^http[^\?]*.(jpg|jpeg|gif|png)(\?(.*))?$/gmi);
+        let imageObjSet = {
+            path: item.image
+        }
+        let setImageTList;
+
+        if (checkImage) {
+
+            if (item.image.includes("gif")) {
+                imageObjSet.mime = "image/gif"
+                setImageTList = ImageType.filter(v => v.name == "GIF")
+            } else {
+                imageObjSet.mime = "image"
+                setNftImageThumb({ path: item.thumbnailImage })
+                setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie")
+            }
+            setNftImage(imageObjSet)
+
+        } else {
+            imageObjSet.mime = "video"
+            setImageTList = ImageType.filter(v => v.name == "Movie")
+            setNftImage(imageObjSet)
+            setNftImageThumb({ path: item.thumbnailImage })
+        }
+
+        setImageTypeList(setImageTList)
+
+        let basePriceFind = PriceUnits[networkType.value].find(
+            v => v.name == item.basePrice || v.order == item.basePrice
+        );
+
+        if (typeof (item.properties.type) == "string") {
+            let imageTypeFind = ImageType.find(
+                v => v.type == item.properties.type
+            )
+            setNftImageType(imageTypeFind)
+        }
+
+        setBasePrice(basePriceFind)
+        setOtherPrice(item.acceptCoins)
+
+        setToggleButton(item.salesType)
+        setFixedPrice(item.minPrice)
+        setStartTimeDate(item.startTime)
+        setEndTimeDate(item.endTime)
+        changeLoadingState(false);
+
+    }
+
     const cleanAll = () => {
         setNftImage(null);
         setImageError("");
@@ -327,55 +335,50 @@ const UploadNFT = ({
     }
 
     const getCollectionList = async () => {
-        if (userData.access_token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
-            axios.defaults.headers.post['Content-Type'] = 'application/json';
-            const url = `${BASE_URL}/user/view-collection`;
-            const body = {
-                page: 1,
-                limit: 50,
-                chainType: networkType.value,
-                networkType: networkStatus
-            };
-            axios.post(url, body)
-                .then(collectionList => {
-                    console.log(collectionList, "collection list getting")
-                    if (collectionList.data.success) {
-                        setCollectionList(collectionList.data.data)
-                        if (collectionList.data.data.length !== 0) {
-                            if (nftItem) {
-                                let selectedData = collectionList.data.data.find(v => v._id == nftItem.collectionId);
-                                setCollection(selectedData)
-                                getFiltersList(selectedData._id)
-                            } else {
-                                let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
-                                let selectedData = selectedCollection ? selectedCollection : collectionList.data.data[0];
-                                setCollection(selectedData)
-                                getFiltersList(selectedData._id)
-                            }
-                        } else {
-                            changeLoadingState(false)
-                        }
-                    } else {
-                        changeLoadingState(false)
-                    }
-                })
-                .catch(e => {
+        sendRequest({
+            url: `${NEW_BASE_URL}/collections/self`,
+            method: 'GET',
+            params: {
+                networkId: 1
+            }
+        })
+            .then(collectionList => {
+                if (collectionList.data.length !== 0) {
+                    setCollectionList(collectionList.data);
                     changeLoadingState(false);
-                    console.log(e.response, "nftlist collectionList error");
-                    // alertWithSingleBtn(
-                    //   translate("wallet.common.alert"),
-                    //   translate("wallet.common.error.networkFailed")
-                    // );
+                    // if (collectionList.data.data.length !== 0) {
+                    //     if (nftItem) {
+                    //         let selectedData = collectionList.data.data.find(v => v._id == nftItem.collectionId);
+                    //         setCollection(selectedData)
+                    //         getFiltersList(selectedData._id)
+                    //     } else {
+                    //         let selectedCollection = collectionList.data.data.find(o => o.chainType === networkType.value);
+                    //         let selectedData = selectedCollection ? selectedCollection : collectionList.data.data[0];
+                    //         setCollection(selectedData)
+                    //         getFiltersList(selectedData._id)
+                    //     }
+                    // } else {
+                    //     changeLoadingState(false)
+                    // }
+                } else {
+                    changeLoadingState(false)
+                }
+            })
+            .catch(e => {
+                changeLoadingState(false);
+                console.log(e.response, "nftlist collectionList error");
+                // alertWithSingleBtn(
+                //   translate("wallet.common.alert"),
+                //   translate("wallet.common.error.networkFailed")
+                // );
 
-                    if (e?.response?.status === 401) {
-                        alertWithSingleBtn(
-                            translate("wallet.common.alert"),
-                            translate('common.sessionexpired')
-                        )
-                    }
-                })
-        }
+                if (e?.response?.status === 401) {
+                    alertWithSingleBtn(
+                        translate("wallet.common.alert"),
+                        translate('common.sessionexpired')
+                    )
+                }
+            })
     };
 
     const cropImage = (res) => {
@@ -560,7 +563,7 @@ const UploadNFT = ({
 
     const handleCreate = async () => {
         if (userData.access_token) {
-            changeLoadingState(true);
+            // changeLoadingState(true);
 
             const imageRes = await uploadImageToStorage();
             console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+", imageRes)
@@ -802,7 +805,7 @@ const UploadNFT = ({
 
     const saveDraft = async () => {
         if (userData.access_token) {
-            changeLoadingState(true);
+            // changeLoadingState(true);
 
             const imageRes = await uploadImageToStorage();
             if (imageRes) {
@@ -879,7 +882,8 @@ const UploadNFT = ({
         translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
             translate("common.polygon") : translate("common.ethereum");
 
-    let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
+    // let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
+    let draftBtnD = (collection || collection && collection.name === "Xanalia (ETH)") || !disableBtn;
     return (
         <View style={styles.childCont}>
             <ScrollView
@@ -992,25 +996,25 @@ const UploadNFT = ({
                         />
                         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
                         <CardField
-                            inputProps={{ value: collection ? collection.collectionName : "" }}
+                            inputProps={{ value: collection ? collection.name : "" }}
                             onPress={() => {
                                 setActiveModal("collection")
                                 showModal({
                                     data: collectionList,
                                     title: translate("wallet.common.collectionList"),
-                                    itemToRender: "collectionName"
+                                    itemToRender: "name"
                                 })
                             }}
                             showRight
                             pressable />
                         <CardLabel>{translate("wallet.common.descriptionCreate")}</CardLabel>
-                        <Text style={styles.cardfieldCount}>{nftDesc.length} / 150</Text>
+                        <Text style={styles.cardfieldCount}>{nftDesc.length} / 1000</Text>
                         <CardField
                             inputProps={{
                                 placeholder: translate("wallet.common.typeSomething"),
                                 multiline: true,
                                 value: nftDesc,
-                                onChangeText: e => nftDesc.length <= 150 ? setNftDesc(e.slice(0, 150)) : null
+                                onChangeText: e => nftDesc.length <= 1000 ? setNftDesc(e.slice(0, 1000)) : null
                             }}
                             contStyle={{ height: hp('15%') }}
                         />
@@ -1033,7 +1037,7 @@ const UploadNFT = ({
                             pressable
                             showRight
                         />
-                        {
+                        {/* {
                             toggleButton !== "timeAuction" ?
                                 <>
                                     <CardLabel>{translate("wallet.common.alsoPay")}</CardLabel>
@@ -1099,7 +1103,7 @@ const UploadNFT = ({
 
                                         </View> : null}
                                 </> : null
-                        }
+                        } */}
                     </CardCont>
 
                     <CardCont>
@@ -1118,7 +1122,8 @@ const UploadNFT = ({
                             pressable
                             showRight />
                         {
-                            collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
+                            // collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
+                            collection ?
                                 <>
                                     <CardLabel>{translate("wallet.common.royality")}</CardLabel>
                                     <CardField

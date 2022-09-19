@@ -68,7 +68,7 @@ const Filter = ({
   );
 
   useEffect(() => {
-    if (position == 3) {
+    if (position == 4) {
       changeLoadingState(true)
       getCollectionList()
     }

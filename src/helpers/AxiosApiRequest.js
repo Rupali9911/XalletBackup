@@ -11,16 +11,22 @@ async function sendRequest(payload) {
     try {
         const token = await getAccessToken('ACCESS_TOKEN')
         payload.headers = payload.headers
-            ? {
-                ...payload.headers,
-                Authorization: 'Bearer ' + token
-            }
+            ? payload.headers.Authorization
+                ? payload.headers.Authorization === 'No'
+                    ? getHeaders(payload.headers)
+                    : payload.headers
+                :
+                {
+                    ...payload.headers,
+                    Authorization: 'Bearer ' + token
+                }
             : token ? {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             } : {
                 'content-type': 'application/json',
             }
+        console.log("@@@ Axios wrapper params ==========>", payload)
         const state = await NetInfo.fetch()
         console.log("Connection type", state.type, state.isConnected);
         if (state.isConnected) {
@@ -52,9 +58,11 @@ export const axiosInstance = axios.create()
 //=============== Axios Interceptors ========================
 axiosInstance.interceptors.response.use(
     (response) => {
+        console.log("@@@ API response in interceptor ==========>", response)
         return response
     },
     async (err) => {
+        console.log("@@@ API request error ======>", err)
         const { response, config } = err
         try {
             if (response?.status === 401) {
@@ -150,6 +158,13 @@ export async function APIRefreshToken() {
             data: { token, refreshToken },
         }
     )
+}
+
+//=================== Get Headers =====================
+const getHeaders = (header) => {
+    console.log("@@@ hello header how are you ======>", header);
+    delete header['Authorization'];
+    return header
 }
 
 export default sendRequest

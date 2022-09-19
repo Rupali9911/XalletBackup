@@ -94,10 +94,10 @@ const ModalItems = props => {
     return (
         <View style={styles.modalNftItemCont} >
             <View style={{ flex: 1 }} >
-                <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>{props.label}</Text>
+                <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>{props?.label}</Text>
             </View>
             <View style={{ flex: 1 }}>
-                <Text style={styles.listLabel}>{props.value}</Text>
+                <Text style={styles.listLabel}>{props?.value}</Text>
             </View>
         </View>
     )
@@ -153,16 +153,19 @@ const CollectionList = ({
         setCollectionList([])
     }
 
-    const getActualCollectionList = (num) => {
+    const getActualCollectionList = (num, status) => {
+        console.log("@@@ Get Actual collection API call ==========>", num, status)
         let params = {
             page: num,
             limit: 5,
             status: 1
         }
-        if (selectedNetwork) {
-            params = {
-                ...params,
-                networkId: selectedNetwork.id
+        if (!status) {
+            if (selectedNetwork) {
+                params = {
+                    ...params,
+                    networkId: selectedNetwork?.id
+                }
             }
         }
         sendRequest({
@@ -171,7 +174,7 @@ const CollectionList = ({
             params
         })
             .then(res => {
-                if (res.data.length !== 0) {
+                if (res?.data?.length !== 0) {
                     setOnEndReachedCalledDuringMomentum(true)
                     setCollectionList((old) => [...old, ...res.data])
                 }
@@ -223,15 +226,16 @@ const CollectionList = ({
         return (
             <ListItem press={() => {
                 let objectToRender = toggle == "mint" ? {
-                    image: item.iconImage,
-                    name: item.name,
-                    symbol: item.symbol ? item.symbol : '',
-                    contractAddress: item.contractAddress ? item.contractAddress : '',
+                    image: item?.iconImage,
+                    name: item?.name,
+                    symbol: item?.symbol ? item.symbol : '',
+                    contractAddress: item?.contractAddress ? item.contractAddress : '',
                     network: item?.network?.name,
-                    status: item.status,
-                    createdAt: timeSince(new Date(item.createdAt)),
-                    nftCreated: item.totalNft,
-                    type: item.type
+                    status: item?.status,
+                    createdAt: timeSince(new Date(item?.createdAt)),
+                    nftCreated: item?.totalNft,
+                    type: item?.type,
+                    collectionData: item
                 } : item;
                 selectItem(objectToRender)
             }} data={item} toggle={toggle} />
@@ -269,11 +273,11 @@ const CollectionList = ({
             <CardCont style={{ flex: 1 }} >
                 <CardLabel>{translate("wallet.common.network")}</CardLabel>
                 <CardField
-                    inputProps={{ value: selectedNetwork ? selectedNetwork.name : "" }}
+                    inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "" }}
                     onPress={() => showModal({ data: networkList, title: translate("wallet.common.network"), itemToRender: "name" })}
                     pressable
                     showRight />
-                <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
+                <View style={[styles.saveBtnGroup]}>
                     <CardButton
                         onPress={() => {
                             setCollectionList([]);
@@ -284,16 +288,28 @@ const CollectionList = ({
                         label={translate("wallet.common.search")}
                         buttonCont={styles.leftToggle}
                     />
+                    <CardButton
+                        onPress={() => {
+                            cleanData();
+                            setSelectedNetwork(null)
+                            changeLoadingState(true)
+                            getActualCollectionList(1, 'Reset')
+                        }}
+                        disable={selectedNetwork ? false : true}
+                        border={toggle !== "draft" ? colors.BLUE6 : null}
+                        buttonCont={styles.rightToggle}
+                        label={translate("common.saveAsDraft")}
+                    />
                     {/* <CardButton
-            onPress={() => {
-              setNftListDraft([]);
-              setNftListCreated([]);
-              pressToggle("draft", collection)
-            }}
-            border={toggle !== "draft" ? colors.BLUE6 : null}
-            buttonCont={styles.rightToggle}
-            label={translate("common.saveAsDraft")}
-          /> */}
+                        onPress={() => {
+                            setNftListDraft([]);
+                            setNftListCreated([]);
+                            pressToggle("draft", collection)
+                        }}
+                        border={toggle !== "draft" ? colors.BLUE6 : null}
+                        buttonCont={styles.rightToggle}
+                        label={translate("common.saveAsDraft")}
+                    /> */}
                 </View>
 
                 <View style={styles.listMainCont}>
@@ -337,29 +353,29 @@ const CollectionList = ({
                             <ScrollView>
                                 <View style={styles.nftImageCont} >
                                     <C_Image
-                                        uri={selectData.image}
+                                        uri={selectData?.image}
                                         imageStyle={{ height: wp(30), width: wp(30) }}
                                     />
                                 </View>
                                 <ModalItems
                                     label={`${translate("common.nftName")}:`}
-                                    value={selectData.name}
+                                    value={selectData?.name}
                                 />
                                 <ModalItems
                                     label={`${translate("common.LIST_COLLECTION_TABLE_SYMBOL")}:`}
-                                    value={selectData.symbol}
+                                    value={selectData?.symbol}
                                 />
                                 <ModalItems
                                     label={`${translate("wallet.common.contractAddress")}:`}
-                                    value={selectData.contractAddress}
+                                    value={selectData?.contractAddress}
                                 />
                                 <ModalItems
                                     label={`${translate("wallet.common.network")}:`}
-                                    value={selectData.network}
+                                    value={selectData?.network}
                                 />
                                 <ModalItems
                                     label={`${translate("wallet.common.status")}:`}
-                                    value={selectData.status}
+                                    value={selectData?.status}
                                 />
                                 <ModalItems
                                     label={`${translate("wallet.common.created")}:`}
@@ -367,7 +383,7 @@ const CollectionList = ({
                                 />
                                 <ModalItems
                                     label={`${translate("common.NFT")} ${translate("common.created")}:`}
-                                    value={selectData.nftCreated}
+                                    value={selectData?.nftCreated}
                                 />
                                 {/* <ModalItems
                                     label={`${translate("common.trade")}:`}
@@ -377,25 +393,25 @@ const CollectionList = ({
                                     label={`${translate("common.Earned")}:`}
                                     value={selectData.earned}
                                 /> */}
-                                {/* {
-                                    selectData.type === 4 &&
-                                    <View style={styles.saveBtnGroup}>
+                                {
+                                    selectData?.type === 4 &&
+                                    <View style={[styles.saveBtnGroup, { justifyContent: 'center' }]}>
                                         <CardButton
                                             onPress={() => {
                                                 setModalVisible(false)
-                                                switchEditNFT(selectData)
+                                                switchEditNFT(selectData?.collectionData)
                                             }}
                                             label={translate("wallet.common.edit")}
                                             buttonCont={{ width: '48%' }}
                                         />
-                                        <CardButton
+                                        {/* <CardButton
                                             onPress={() => null}
                                             border={colors.BLUE6}
                                             buttonCont={{ width: '48%' }}
                                             label={translate("wallet.common.delete")}
-                                        />
+                                        /> */}
                                     </View>
-                                } */}
+                                }
 
                             </ScrollView> : null}
                 </View>

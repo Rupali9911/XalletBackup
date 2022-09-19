@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, Image, TouchableOpacity, Platform } from 'react-native';
 import { colors } from '../../res';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useSelector } from 'react-redux';
@@ -14,10 +14,12 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../com
 import { IMAGES } from '../../constants';
 import { translate } from '../../walletUtils';
 import axios from 'axios';
-import { BASE_URL } from '../../common/constants';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../utils';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { createCollection } from '../wallet/functions';
+import sendRequest from '../../helpers/AxiosApiRequest';
+import { getUploadData, putCollectionMedia } from '../../utils/uploadMediaS3';
 
 const toastConfig = {
   my_custom_type: ({ text1, props, ...rest }) => (
@@ -33,7 +35,7 @@ const toastConfig = {
   ),
 };
 
-const Collection = ({ changeLoadingState, routeParams, position }) => {
+const Collection = ({ changeLoadingState, routeParams, position, collectionData }) => {
 
   const navigation = useNavigation();
 
@@ -63,6 +65,8 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     state => state.WalletReducer
   );
 
+  // console.log("@@@ Network type on collection ==========>", networkType, userData);
+
   let MarketPlaceAbi = '';
   let MarketContractAddress = '';
   let providerUrl = '';
@@ -91,7 +95,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
   }
 
   useEffect(() => {
-    if (position == 0) {
+    if (position == 1) {
       if (routeParams && routeParams.name == "collection") {
         let collectData = routeParams.data;
         console.log(collectData)
@@ -115,28 +119,89 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
           collectData.collectionName.toLowerCase() == "xanalia" ?
             setDisableAll(true) : setDisableAll(false);
         }
+      } else if (collectionData) {
+        console.log("@@@ Edit collection data =========>", collectionData)
+        updateCollectionData(collectionData)
       }
 
     }
   }, [position])
 
+  const updateCollectionData = (item) => {
+    sendRequest({
+      url: `${NEW_BASE_URL}/collections/collectionId`,
+      method: 'GET',
+      params: {
+        networkName: item.network.name,
+        contractAddress: item.contractAddress,
+        isUpdate: 1
+      }
+    })
+      .then(res => {
+        console.log("@@@ update collection api =====>", res)
+        if (res) {
+          setCollectionName(res.name);
+          setCollectionSymbol(res.symbol);
+          setCollectionDes(res.description);
+          setCollectionAdd(item.contractAddress)
+          setBannerImage({ path: res.bannerImage });
+          setIconImage({ path: res.iconImage });
+          setScreenStatus("created");
+        }
+        changeLoadingState(false)
+      })
+      .catch(e => {
+        changeLoadingState(false);
+        console.log(e, "nftlist collectionList error");
+        // alertWithSingleBtn(
+        //   translate("wallet.common.alert"),
+        //   translate("wallet.common.error.networkFailed")
+        // );
+      })
+
+  }
+
   const onPhoto = (v) => {
+    // var options = {
+    //   mediaType: "photo",
+    //   maxWidth: v == "banner" ? 1600 : 512,
+    //   maxHeight: v == "banner" ? 300 : 512,
+    //   includeExtra: true,
+    //   presentationStyle: 'fullScreen'
+    // };
+    // ImagePicker.launchImageLibrary(options, image => {
+    //   console.log('@@@ React Native Image Picker Response = ', image);
+    //   updateImageState(image.assets[0], false, v)
+    // });
+
     ImagePicker.openPicker({
       mediaType: "photo",
       width: v == "banner" ? 1600 : 512,
       height: v == "banner" ? 300 : 512,
       cropping: true
     }).then(image => {
-
+      console.log("@@@ On photo upload image ==========>", image)
       if (v == "banner") {
         if (image.height <= 300 && image.width <= 1600) {
-          updateImageState(image, false, v)
+          if (image.size > 100 * 1024 * 1024) {
+            console.log("@@@ big size banner", image.size)
+            updateImageState(null, true, v)
+          } else {
+            console.log("@@@ correct size banner")
+            updateImageState(image, false, v)
+          }
         } else {
           updateImageState(null, true, v)
         }
       } else {
         if (image.height <= 512 && image.width <= 512) {
-          updateImageState(image, false, v)
+          if (image.size > 100 * 1024 * 1024) {
+            console.log("@@@ big size icon")
+            updateImageState(null, true, v)
+          } else {
+            console.log("@@@ correct size icon")
+            updateImageState(image, false, v)
+          }
         } else {
           updateImageState(null, true, v)
         }
@@ -379,101 +444,247 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
     }
   }
 
-  const saveCollection = () => {
-    const publicAddress = wallet?.address;
-    const privKey = wallet.privateKey;
 
-    console.log("🚀 ~ file: collection.js ~ line 370 ~ saveCollection ~ publicAddress", privKey, publicAddress)
-    changeLoadingState(true);
-    if (publicAddress && userData.access_token) {
+  //==============================================
 
-      console.log("create Collection Public 376"),
-        createCollection(
-          publicAddress,
-          privKey,
-          networkType.value,
-          providerUrl,
-          MarketPlaceAbi,
-          MarketContractAddress,
-          gasFee,
-          gasLimit,
-          collectionName,
-          collectionSymbol
-        ).then(async (transactionData) => {
-          console.log("🚀 ~ file: collection.js ~ line 390 ~ transactionData", transactionData)
-          if (transactionData.success) {
-            const { collectionAddress } = transactionData.data;
-            console.log("CollectionAddress is @@@@@@@@", transactionData.data)
-            setCollectionAdd(collectionAddress);
-            console.log(collectionAddress, "transactionData 393")
+  const handleUploadMedia = async (collectionId) => {
+    if (bannerImage && iconImage) {
+      // For banner image
+      const urlBanner = await getUploadData({
+        mediaFile: bannerImage,
+        collectionId: collectionId,
+        userId: userData.id,
+        type: 'collection_cover'
+      })
 
-            let res = await uploadFileToStorage(
-              bannerImage,
-              iconImage,
-              'banner_image',
-              'icon_image',
-              userData.access_token
-            );
+      await putCollectionMedia({
+        mediaFile: bannerImage,
+        uploadUrl: urlBanner?.upload_url,
+        collectionId: collectionId,
+        type: 'banner',
+      })
 
-            console.log("🚀 ~ file: collection.js ~ line 404 ~ res", res)
-            if (res) {
-              let url = `${BASE_URL}/user/create-collection`
+      // For icon image
+      const urlIcon = await getUploadData({
+        mediaFile: iconImage,
+        collectionId: collectionId,
+        userId: userData.id,
+        type: 'collection'
+      })
 
-              axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
-              axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-              let obj = {
-                collectionAddress,
-                collectionName,
-                collectionDesc: collectionDes,
-                bannerImage: res.banner_image,
-                iconImage: res.icon_image,
-                collectionSymbol,
-                creatorName,
-                creatorDescription,
-                chainType: networkType.value,
-              };
-
-              axios.post(url, obj)
-                .then(collectionData => {
-                  changeLoadingState(false);
-                  console.log(collectionData, "collectionData success 424")
-
-                  if (collectionData.data.success) {
-                    cancel()
-                    alertWithSingleBtn(
-                      "Success Message",
-                      "Collection Created Successfully"
-                    );
-                  } else {
-                    alertWithSingleBtn(
-                      translate("wallet.common.alert"),
-                      translate("wallet.common.error.apiFailed")
-                    )
-                  }
-
-                })
-                .catch(e => {
-                  console.log("441 .catch !!")
-                  changeLoadingState(false);
-                  console.log(e.response, "uploading collection data to database 443");
-                  // alertWithSingleBtn(
-                  //   translate("wallet.common.alert"),
-                  //   translate("wallet.common.error.networkFailed")
-                  // );
-                })
-            }
-          }
-        }).catch(e => {
-          console.log("collection last catch 452")
-          changeLoadingState(false);
-          console.log("testing collection error 454", e.response, e)
-          alertWithSingleBtn(
-            translate("wallet.common.alert"),
-            translate("wallet.common.insufficientFunds")
-          );
-        })
+      await putCollectionMedia({
+        mediaFile: iconImage,
+        uploadUrl: urlIcon?.upload_url,
+        collectionId: collectionId,
+        type: 'cover',
+      })
     }
+
+    // const arrayBuffer = decode(base64);
+    // var Buffer = require("buffer/").Buffer;
+    // arrayBuffer = await Buffer.from(base64, "base64");
+
+    // RNFetchBlob.fs.readStream(bannerImage.path, 'base64')
+    // .then(async (stream) => {
+    //   let data = ''
+    //   stream.open()
+    //   stream.onData((chunk) => {
+    //     data += chunk
+    //   })
+    //   stream.onEnd(async () => {
+    //     console.log("@@@ RN fetch Blob ==========>", data)
+    //     var Buffer = require("buffer/").Buffer;
+    //     data = await Buffer.from(data, "base64");
+    //     console.log("@@@ Image upload base 64 data =========>", data)
+    //     imageBody = data;
+    //   })
+    //   // handle the data ..
+
+    // })
+
+    // const resp = await fetch(bannerImage.sourceURL);
+    // const contentType = resp.headers.get('content-type')
+    // const buf = await resp.blob();
+    // const file = new File([buf], 'image.jpg', { contentType });
+    // console.log("@@@ Handle upload Media banner image after fetch =========>", file)
+
+    // const imageId = getFileImageName(bannerImage.mime)
+    // const params = {
+    //   imageId,
+    //   collectionId,
+    //   type: 'collection',
+    // }
+
+    // const presignedResponse = await sendRequest({
+    //   url: `https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1/nft-image/${userData.id}/pre-signed`,
+    //   method: 'PUT',
+    //   params,
+    //   headers: {
+    //     Authorization: `${token}`
+    //   },
+    // })
+    // console.log("@@@ Presinged API  response ==========>", presignedResponse.upload_url)
+
+    // const presignedFinalResponse = await sendRequest({
+    //   url: presignedResponse.upload_url,
+    //   method: 'PUT',
+    //   data: arrayBuffer,
+    //   headers: {
+    //     'x-amz-tagging': `token=${token}&collectionId=${collectionId}&type=cover`,
+    //     'Content-Type': 'image/jpeg',
+    //   },
+    // })
+
+    // console.log(`@@@ Presinged API final response with time ==========> milliseconds`, presignedFinalResponse)
+
+
+    // if (collection.iconFile && collection.bannerFile) {
+    //     // upload icon
+    //     const urlIcon = await collectionServices.getUploadData({
+    //         mediaFile: collection.iconFile,
+    //         collectionId: collectionId,
+    //         type: IMAGE_TYPE_UPLOAD.COLLECTION,
+    //     })
+
+    //     await collectionServices.putCollectionMedia({
+    //         mediaFile: collection.iconFile,
+    //         uploadUrl: urlIcon?.upload_url,
+    //         collectionId: collectionId,
+    //         type: 'cover',
+    //     })
+
+    //     // upload banner
+    //     const urlBanner = await collectionServices.getUploadData({
+    //         mediaFile: collection.bannerFile,
+    //         collectionId: collectionId,
+    //         type: IMAGE_TYPE_UPLOAD.COLLECTION_COVER,
+    //     })
+
+    //     await collectionServices.putCollectionMedia({
+    //         mediaFile: collection.bannerFile,
+    //         uploadUrl: urlBanner?.upload_url,
+    //         collectionId: collectionId,
+    //         type: 'banner',
+    //     })
+    // }
+  }
+
+  const getData = () => {
+    return {
+      name: collectionName,
+      description: collectionDes,
+      symbol: collectionSymbol,
+      networkId: 1,
+    }
+  }
+
+  const saveCollection = async () => {
+    const data = getData()
+    const res = await sendRequest({
+      url: `${NEW_BASE_URL}/collections`,
+      method: 'POST',
+      data
+    })
+    console.log("@@@ Create collection API =========>", res)
+    if (res.collection && res.dataReturn?.signData) {
+      handleUploadMedia(res.collection.id);
+      // await mintCollection(res.dataReturn.signData)
+    }
+
+    // const publicAddress = wallet?.address;
+    // const privKey = wallet.privateKey;
+
+    // console.log("🚀 ~ file: collection.js ~ line 370 ~ saveCollection ~ publicAddress", privKey, publicAddress)
+    // changeLoadingState(true);
+    // if (publicAddress && userData.access_token) {
+
+    //   console.log("create Collection Public 376"),
+    //     createCollection(
+    //       publicAddress,
+    //       privKey,
+    //       networkType.value,
+    //       providerUrl,
+    //       MarketPlaceAbi,
+    //       MarketContractAddress,
+    //       gasFee,
+    //       gasLimit,
+    //       collectionName,
+    //       collectionSymbol
+    //     ).then(async (transactionData) => {
+    //       console.log("🚀 ~ file: collection.js ~ line 390 ~ transactionData", transactionData)
+    //       if (transactionData.success) {
+    //         const { collectionAddress } = transactionData.data;
+    //         console.log("CollectionAddress is @@@@@@@@", transactionData.data)
+    //         setCollectionAdd(collectionAddress);
+    //         console.log(collectionAddress, "transactionData 393")
+
+    //         let res = await uploadFileToStorage(
+    //           bannerImage,
+    //           iconImage,
+    //           'banner_image',
+    //           'icon_image',
+    //           userData.access_token
+    //         );
+
+    //         console.log("🚀 ~ file: collection.js ~ line 404 ~ res", res)
+    //         if (res) {
+    //           let url = `${BASE_URL}/user/create-collection`
+
+    //           axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
+    //           axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+    //           let obj = {
+    //             collectionAddress,
+    //             collectionName,
+    //             collectionDesc: collectionDes,
+    //             bannerImage: res.banner_image,
+    //             iconImage: res.icon_image,
+    //             collectionSymbol,
+    //             creatorName,
+    //             creatorDescription,
+    //             chainType: networkType.value,
+    //           };
+
+    //           axios.post(url, obj)
+    //             .then(collectionData => {
+    //               changeLoadingState(false);
+    //               console.log(collectionData, "collectionData success 424")
+
+    //               if (collectionData.data.success) {
+    //                 cancel()
+    //                 alertWithSingleBtn(
+    //                   "Success Message",
+    //                   "Collection Created Successfully"
+    //                 );
+    //               } else {
+    //                 alertWithSingleBtn(
+    //                   translate("wallet.common.alert"),
+    //                   translate("wallet.common.error.apiFailed")
+    //                 )
+    //               }
+
+    //             })
+    //             .catch(e => {
+    //               console.log("441 .catch !!")
+    //               changeLoadingState(false);
+    //               console.log(e.response, "uploading collection data to database 443");
+    //               // alertWithSingleBtn(
+    //               //   translate("wallet.common.alert"),
+    //               //   translate("wallet.common.error.networkFailed")
+    //               // );
+    //             })
+    //         }
+    //       }
+    //     }).catch(e => {
+    //       console.log("collection last catch 452")
+    //       changeLoadingState(false);
+    //       console.log("testing collection error 454", e.response, e)
+    //       alertWithSingleBtn(
+    //         translate("wallet.common.alert"),
+    //         translate("wallet.common.insufficientFunds")
+    //       );
+    //     })
+    // }
   }
 
   const saveEditAsDraftCollection = async () => {
@@ -561,6 +772,15 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
       } else {
         return !disable;
       }
+    } else if (collectionData && screenStatus == "created") {
+      let des = collectionData?.description == collectionDes;
+      let bannerImg = collectionData?.bannerImage == (bannerImage?.path ? bannerImage.path : bannerImage);
+      let iconImg = collectionData?.iconImage == (iconImage?.path ? iconImage.path : iconImage);
+      if (collectionData && (des && bannerImg && iconImg)) {
+        return true;
+      } else {
+        return !disable;
+      }
     } else {
       return !disable;
     }
@@ -598,21 +818,21 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
 
           <CardCont>
             <CardLabel>{translate("wallet.common.collectionDes")}</CardLabel>
-            <Text style={styles.cardfieldCount}>{collectionDes.length} / 150</Text>
+            <Text style={styles.cardfieldCount}>{collectionDes?.length} / 1000</Text>
             <CardField
               inputProps={{
                 editable: !disableAll,
                 placeholder: translate("wallet.common.typeSomething"),
                 multiline: true,
                 value: collectionDes,
-                maxLength: 150,
-                onChangeText: e => collectionDes.length <= 150 ? setCollectionDes(e.slice(0, 150)) : null
+                maxLength: 1000,
+                onChangeText: e => collectionDes.length <= 100 ? setCollectionDes(e.slice(0, 1000)) : null
               }}
               contStyle={{ height: hp('20%'), backgroundColor: disableAll ? colors.GREY10 : colors.white }}
             />
           </CardCont>
 
-          <CardCont>
+          {/* <CardCont>
             <CardLabel>{translate("common.CNcreatorname")}</CardLabel>
             <CardField
               contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
@@ -626,7 +846,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               contStyle={{ backgroundColor: screenStatus == "created" ? colors.GREY10 : colors.white }}
               inputProps={{ editable: screenStatus !== "created", value: creatorDescription, onChangeText: e => setcreatorDescription(e) }}
             />
-          </CardCont>
+          </CardCont> */}
 
           <CardCont>
             <CardLabel>{translate("wallet.common.contractAddress")}</CardLabel>
@@ -657,7 +877,7 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                 buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
                 onPress={() => onPhoto("banner")}
                 disable={disableAll}
-                label={translate("common.change")}
+                label={translate("wallet.common.upload")}
               />
             </View>
           </CardCont>
@@ -678,11 +898,11 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
                 onPress={() => onPhoto("icon")}
                 buttonCont={[styles.changeBtn, { backgroundColor: disableAll ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }]}
                 disable={disableAll}
-                label={translate("common.change")}
+                label={translate("wallet.common.upload")}
               />
             </View>
           </CardCont>
-          {
+          {/* {
             (screenStatus === "new" || screenStatus === "draft") &&
             <CardButton
               border={!disable ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
@@ -691,13 +911,13 @@ const Collection = ({ changeLoadingState, routeParams, position }) => {
               disable={!disable}
               buttonCont={{ marginBottom: 0 }}
             />
-          }
+          } */}
 
           <View style={styles.saveBtnGroup}>
             <CardButton
               onPress={screenStatus === "new" ? saveCollection :
                 screenStatus === "draft" ? saveDraftCollection : saveEditAsDraftCollection}
-              label={screenStatus === "new" || screenStatus === "draft" ? translate("common.save") : translate("wallet.common.edit")}
+              label={screenStatus === "new" || screenStatus === "draft" ? translate("common.createbut") : translate("common.save")}
               buttonCont={{ width: '48%', backgroundColor: editDisable() ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }}
               disable={screenStatus === "new" || screenStatus === "draft" ? !disable : editDisable()}
             />
