@@ -9,7 +9,7 @@ if (networkType === "mainnet") {
   BASE_URL = "https://api.xanalia.com";
   NEW_BASE_URL = "https://prod-backend.xanalia.com";
   PROVIDER_URL = "https://bsc-dataseed.binance.org/";
-  API_GATEWAY_URL = "https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1";
+  API_GATEWAY_URL = "https://jlvot2m1v8.execute-api.eu-west-1.amazonaws.com/v1";
 } else {
   BASE_URL = "https://testapi.xanalia.com";
   NEW_BASE_URL = "https://backend.xanalia.com";

@@ -17,7 +17,6 @@ const getUploadData = async ({
     type = '',
 }) => {
     const token = await getAccessToken('ACCESS_TOKEN')
-    console.log("@@@ Handle upload Media banner Image =========>", mediaFile);
     const imageId = getFileImageName(mediaFile.mime)
     const params = {
         imageId,
@@ -33,7 +32,6 @@ const getUploadData = async ({
             Authorization: `${token}`
         },
     })
-    console.log("@@@ Presinged API  response ==========>", presignedResponse.upload_url)
     return presignedResponse;
 }
 
@@ -42,7 +40,6 @@ const convertImageToArrayBuffer = async (url) => {
     const base64 = await RNFetchBlob.fs.readFile(url, 'base64')
     var Buffer = require("buffer/").Buffer;
     const arrayBuffer = await Buffer.from(base64, "base64");
-    console.log("@@@ Image upload base 64 data after =========>", arrayBuffer)
     return arrayBuffer;
 }
 
@@ -54,9 +51,7 @@ const putCollectionMedia = async ({
     type,
 }) => {
     const token = await getAccessToken('ACCESS_TOKEN')
-    console.log("@@@ Handle upload Media banner Image =========>", mediaFile);
     let newPath = mediaFile.path.replace('file://', '');
-    console.log("@@@ Handle upload Media banner Image after replace=========>", newPath);
     const arrayBuffer = await convertImageToArrayBuffer(newPath);
     const presignedFinalResponse = await sendRequest({
         url: uploadUrl,
@@ -68,8 +63,6 @@ const putCollectionMedia = async ({
             'Authorization': 'No'
         },
     })
-    console.log(`@@@ Presinged API final response with time ==========> milliseconds`, presignedFinalResponse)
-
 }
 
 export {

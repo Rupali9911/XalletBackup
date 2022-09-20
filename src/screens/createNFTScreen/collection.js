@@ -120,7 +120,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
             setDisableAll(true) : setDisableAll(false);
         }
       } else if (collectionData) {
-        console.log("@@@ Edit collection data =========>", collectionData)
+        // console.log("@@@ Edit collection data =========>", collectionData)
         updateCollectionData(collectionData)
       }
 
@@ -162,18 +162,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
   }
 
   const onPhoto = (v) => {
-    // var options = {
-    //   mediaType: "photo",
-    //   maxWidth: v == "banner" ? 1600 : 512,
-    //   maxHeight: v == "banner" ? 300 : 512,
-    //   includeExtra: true,
-    //   presentationStyle: 'fullScreen'
-    // };
-    // ImagePicker.launchImageLibrary(options, image => {
-    //   console.log('@@@ React Native Image Picker Response = ', image);
-    //   updateImageState(image.assets[0], false, v)
-    // });
-
     ImagePicker.openPicker({
       mediaType: "photo",
       width: v == "banner" ? 1600 : 512,
@@ -184,10 +172,8 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       if (v == "banner") {
         if (image.height <= 300 && image.width <= 1600) {
           if (image.size > 100 * 1024 * 1024) {
-            console.log("@@@ big size banner", image.size)
             updateImageState(null, true, v)
           } else {
-            console.log("@@@ correct size banner")
             updateImageState(image, false, v)
           }
         } else {
@@ -196,10 +182,8 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       } else {
         if (image.height <= 512 && image.width <= 512) {
           if (image.size > 100 * 1024 * 1024) {
-            console.log("@@@ big size icon")
             updateImageState(null, true, v)
           } else {
-            console.log("@@@ correct size icon")
             updateImageState(image, false, v)
           }
         } else {
@@ -479,94 +463,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         type: 'cover',
       })
     }
-
-    // const arrayBuffer = decode(base64);
-    // var Buffer = require("buffer/").Buffer;
-    // arrayBuffer = await Buffer.from(base64, "base64");
-
-    // RNFetchBlob.fs.readStream(bannerImage.path, 'base64')
-    // .then(async (stream) => {
-    //   let data = ''
-    //   stream.open()
-    //   stream.onData((chunk) => {
-    //     data += chunk
-    //   })
-    //   stream.onEnd(async () => {
-    //     console.log("@@@ RN fetch Blob ==========>", data)
-    //     var Buffer = require("buffer/").Buffer;
-    //     data = await Buffer.from(data, "base64");
-    //     console.log("@@@ Image upload base 64 data =========>", data)
-    //     imageBody = data;
-    //   })
-    //   // handle the data ..
-
-    // })
-
-    // const resp = await fetch(bannerImage.sourceURL);
-    // const contentType = resp.headers.get('content-type')
-    // const buf = await resp.blob();
-    // const file = new File([buf], 'image.jpg', { contentType });
-    // console.log("@@@ Handle upload Media banner image after fetch =========>", file)
-
-    // const imageId = getFileImageName(bannerImage.mime)
-    // const params = {
-    //   imageId,
-    //   collectionId,
-    //   type: 'collection',
-    // }
-
-    // const presignedResponse = await sendRequest({
-    //   url: `https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1/nft-image/${userData.id}/pre-signed`,
-    //   method: 'PUT',
-    //   params,
-    //   headers: {
-    //     Authorization: `${token}`
-    //   },
-    // })
-    // console.log("@@@ Presinged API  response ==========>", presignedResponse.upload_url)
-
-    // const presignedFinalResponse = await sendRequest({
-    //   url: presignedResponse.upload_url,
-    //   method: 'PUT',
-    //   data: arrayBuffer,
-    //   headers: {
-    //     'x-amz-tagging': `token=${token}&collectionId=${collectionId}&type=cover`,
-    //     'Content-Type': 'image/jpeg',
-    //   },
-    // })
-
-    // console.log(`@@@ Presinged API final response with time ==========> milliseconds`, presignedFinalResponse)
-
-
-    // if (collection.iconFile && collection.bannerFile) {
-    //     // upload icon
-    //     const urlIcon = await collectionServices.getUploadData({
-    //         mediaFile: collection.iconFile,
-    //         collectionId: collectionId,
-    //         type: IMAGE_TYPE_UPLOAD.COLLECTION,
-    //     })
-
-    //     await collectionServices.putCollectionMedia({
-    //         mediaFile: collection.iconFile,
-    //         uploadUrl: urlIcon?.upload_url,
-    //         collectionId: collectionId,
-    //         type: 'cover',
-    //     })
-
-    //     // upload banner
-    //     const urlBanner = await collectionServices.getUploadData({
-    //         mediaFile: collection.bannerFile,
-    //         collectionId: collectionId,
-    //         type: IMAGE_TYPE_UPLOAD.COLLECTION_COVER,
-    //     })
-
-    //     await collectionServices.putCollectionMedia({
-    //         mediaFile: collection.bannerFile,
-    //         uploadUrl: urlBanner?.upload_url,
-    //         collectionId: collectionId,
-    //         type: 'banner',
-    //     })
-    // }
   }
 
   const getData = () => {
