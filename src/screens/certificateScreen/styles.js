@@ -776,13 +776,10 @@ const styles = StyleSheet.create({
 
   //===========>
   placeAbbidView: {
-    backgroundColor:
-      Colors.WHITE1,
-    height: hp(30),
-    width: wp(95),
-    right: SIZE(10),
+    backgroundColor: Colors.WHITE1,
     borderRadius: SIZE(10),
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingBottom: SIZE(20),
   },
   PlaceAbidHeaderview: {
     flexDirection: "row",
@@ -846,7 +843,154 @@ const styles = StyleSheet.create({
   priceNFT: {
     padding: SIZE(10),
     fontWeight: "bold"
-  }
+  },
+
+
+  //=========Sell NFT Modal
+  sellModalView: {
+    backgroundColor: Colors.WHITE1,
+    height: hp(43),
+    width: wp(90),
+    paddingVertical: SIZE(10),
+    borderRadius: SIZE(10),
+  },
+  sellModalHeaderView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: SIZE(20)
+  },
+  sellNftText: {
+    fontWeight: "bold",
+    fontSize: SIZE(20)
+  },
+  saleTypeText: {
+    paddingVertical: SIZE(20),
+    paddingHorizontal: SIZE(28),
+    fontWeight: "bold"
+  },
+  sellRightGroupButtonText: {
+    color: Colors.BLUE4,
+    fontWeight: "100",
+
+  },
+  sellRightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE4,
+    backgroundColor: Colors.white
+  },
+  sellInputFieldView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    width: wp(75),
+    marginHorizontal: SIZE(28),
+    borderRadius: 5,
+  },
+  // sellInputField:{
+  //   height:hp(5),
+  //   width:wp(41),
+  //   paddingHorizontal:SIZE(10),
+  //   borderWidth:1,
+  //   borderColor:Colors.GREY1,
+  //   borderRightWidth:0, 
+  //   borderBottomLeftRadius: 8,
+  //   borderTopLeftRadius: 8,
+  // },
+  // sellTokenPriceView:{ 
+  //   borderWidth:1,
+  //   borderColor:Colors.BLUE4,
+  //   borderBottomRightRadius:8,
+  //   borderTopRightRadius:8,
+  //   height:hp(4),
+  //   width:wp(25),
+  //   flexDirection:"row",
+  //   justifyContent:"space-around",
+  // },
+  sellGroupBButtonView: {
+    paddingHorizontal: SIZE(28),
+    paddingVertical: SIZE(45)
+  },
+  sellTokenPicker: {
+    minHeight: 46,
+    width: wp(30),
+    borderColor: Colors.GREY1,
+    borderWidth: 1,
+    borderRadius: 0,
+    borderRightWidth: 0,
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    marginRight: 5
+  },
+  auctionModalView: {
+    backgroundColor: Colors.WHITE1,
+    height: hp(57),
+    width: wp(90),
+    paddingVertical: SIZE(10),
+    borderRadius: SIZE(10),
+  },
+  opneTimeView: {
+    flexDirection: "row",
+    // width: "100%" 
+  },
+  openTimeText: {
+    flex: 0.5,
+    color: "#3e4676",
+    paddingLeft: SIZE(28),
+    paddingBottom: SIZE(10)
+  },
+  closeTimeText: {
+    flex: 0.5,
+    color: "#3e4676",
+    paddingRight: SIZE(15),
+  },
+  dateFieldView: {
+    flexDirection: "row",
+    // width: "100%", 
+    paddingHorizontal: SIZE(27)
+  },
+  openTimeField: {
+    // flex: 0.5, 
+    borderWidth: 1,
+    width: wp(36.5),
+    height: hp(5),
+    // margin: SIZE(10) ,
+    borderRadius: 5,
+    borderColor: Colors.GREY1,
+    marginRight: SIZE(10)
+  },
+  minPriceText: {
+    paddingHorizontal: SIZE(29),
+    color: "#3e4676",
+    paddingVertical: SIZE(15)
+  },
+  sellLeftGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.BLUE2
+  },
+  sellLeftGroupButtonText: {
+    color: Colors.WHITE2,
+  },
+  sellDropDownContainer: {
+    backgroundColor: Colors.GREY7
+  },
+  showTime: {
+    alignSelf: "center",
+    paddingVertical: SIZE(12),
+    fontSize: SIZE(10),
+    fontWeight: "700"
+  },
+  sellInputField: {
+    width: "55%",
+    paddingHorizontal: SIZE(10),
+  },
+  sellGroupButtonView: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
+    paddingHorizontal: SIZE(28)
+  },
 });
 
 export default styles;
