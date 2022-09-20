@@ -37,6 +37,7 @@ const HotCollection = () => {
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
+  
 
   //===================== UseEffect Function =========================
   useEffect(() => {
@@ -45,8 +46,8 @@ const HotCollection = () => {
         console.log("hot collection",)
         dispatch(hotCollectionLoadStart());
         dispatch(hotCollectionListReset());
-        getHotCollection(page,totalCount);
-        dispatch(hotCollectionPageChange(1))
+        getHotCollection(1,totalCount);
+        dispatch(hotCollectionPageChange(1));
         setIsFirstRender(false)
       }, 100);
     }
@@ -72,7 +73,7 @@ const HotCollection = () => {
           HotCollectionReducer.hotCollectionLoading
         }
         renderItem={memoizedValue}
-        // onEndReached={handleFlastListEndReached}
+        onEndReached={handleFlastListEndReached}
         onEndReachedThreshold={0.4}
         keyExtractor={keyExtractor}
         ListFooterComponent={renderFooter}
@@ -99,7 +100,7 @@ const HotCollection = () => {
 
   const handleRefresh = () => {
     dispatch(hotCollectionListReset());
-    getHotCollection(page,totalCount);
+    getHotCollection(1,totalCount);
     dispatch(hotCollectionPageChange(1));
   };
 
@@ -107,22 +108,23 @@ const HotCollection = () => {
   const handleFlastListEndReached = () => {
     if (
       !HotCollectionReducer.hotCollectionLoading &&
-      HotCollectionReducer.hotCollectionTotalCount !==
+      HotCollectionReducer.hotCollectionTotalCount !== 
       HotCollectionReducer.hotCollectionList.length
     ) {
       let num = HotCollectionReducer.hotCollectionPage + 1;
-      getHotCollection(num);
-      dispatch(hotCollectionPageChange(num));
+      getHotCollection(num, totalCount); 
+      dispatch(hotCollectionPageChange(num)); 
     }
   }
   //=====================================================
   const keyExtractor = (item, index) => { return 'item_' + index }
 
   const renderFooter = () => {
+    console.log(HotCollectionReducer.hotCollectionLoading, 'Login Data')
     if (!HotCollectionReducer.hotCollectionLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
+    return <ActivityIndicator size="small" color={'red'} />;
   };
-
+  
   const renderItem = ({ item }) => {
     return (
       <CollectionItem
@@ -132,21 +134,22 @@ const HotCollection = () => {
         items={item.items}
         iconImage={item.iconImage}
         collectionName={item.name}
-        creatorInfo={item.creatorInfo}
+        creatorInfo={item.creatorInfo} 
         isHotCollection={item.isHot}
         blind={item.blind}
         count={item.totalNft}
         network={item.network}
         colId={item._id}
         onPress={() => {
-          if (item.collectionName !== 'NFTART AWARD 2021') {
-            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          if (item.collectionName !== 'NFTART AWARD 2021') { 
+            navigation.push('CollectionDetail', { networkName: item?.network?.networkName, contractAddress: item?.contractAddress,  launchpadId: null, isLaunchPad: false});
+            // navigation.push('CollectionDetail', { networkName: item.network.networkName, contractAddress: item.contractAddress  });
           } else {
             Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021')
               .catch(err => {
                 console.error("Failed opening page because: ", err)
               })
-          }
+          } 
         }}
       />
     );

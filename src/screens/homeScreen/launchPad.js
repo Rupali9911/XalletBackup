@@ -75,13 +75,18 @@ const LaunchPad = () => {
         creatorInfo={item.owner.description}
         blind={item.blind}
         collectionId={item._id}
-        disabled={
-          networkType === 'testnet' || item.status === 'comingSoon'
-            ? true
-            : false
-        }
+        // disabled={
+        //   networkType === 'testnet' || item.status === 'comingSoon'
+        //     ? true
+        //     : false
+        // }
         onPress={() => {
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CollectionDetail', {
+            networkName: null,
+            contractAddress: null,
+            launchpadId: item?.id,
+            isLaunchPad: true,
+          });
         }}
       />
     );

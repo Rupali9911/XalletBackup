@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
 
 import { SIZE } from '../../common/responsiveFunction';
 import { colors, fonts } from '../../res';
@@ -279,7 +280,41 @@ const styles = StyleSheet.create({
   blindBoxLoader: {
     position:"absolute",
     alignSelf:'center'
-  }
+  },
+  containerStyle: {
+    flex: 1,
+    justifyContent: 'flex-start' 
+  },
+  tableView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center' 
+  },
+  tableCellImageView: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    maxWidth: 200
+  },
+  cellImage: {
+    height: hp(5.5), 
+    width: hp(5.5), 
+    borderRadius: 3, 
+    marginHorizontal: 5,
+  },
+  cellAddress: {
+    color: 'black',
+    marginLeft: hp(0.5),
+    marginRight: hp(0.5)
+  },
+  textStyle: {
+    margin: SIZE(10), 
+    fontSize: SIZE(12) 
+  },
+  text: { margin: SIZE(10), fontSize: SIZE(12) },
+  themeColor: { color: Colors.themeColor },
+
 });
 
 export default styles;

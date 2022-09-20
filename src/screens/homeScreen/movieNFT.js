@@ -22,7 +22,7 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import { CATEGORY_VALUE } from '../../constants'
 
-const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
@@ -39,8 +39,8 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const [end, setEnd] = useState()
 
   let category = CATEGORY_VALUE.movie;
-    let limit = 10;
-    let sortCategory = 0;
+  let limit = 10;
+  let sortCategory = 0;
 
   //===================== UseEffect Function =========================
   useEffect(() => {
@@ -128,17 +128,21 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
 
   const renderItem = ({ item }) => {
     let imageUri = item?.mediaUrl
-      return (
-        <NFTItem
-          screenName="movieNFT"
-          item={item}
-          image={imageUri}
-          onPress={() => {
-            // dispatch(changeScreenName('movieNFT'));
-            navigation.push('CertificateDetail', { item : item });
-          }}
-        />
-      );
+    return (
+      <NFTItem
+        screenName="movieNFT"
+        item={item}
+        image={imageUri}
+        onPress={() => {
+          // dispatch(changeScreenName('movieNFT'));
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
+        }}
+      />
+    );
   };
 
   const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newMovieNftList]);
@@ -146,14 +150,14 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            {isFirstRender ? isFirstRender : page === 1 &&
-                NewNFTListReducer.newNftListLoading ? (
-                <Loader />
-            ) : NewNFTListReducer.newMovieNftList.length !== 0 ? renderMovieNFTList()
-                : renderNoNFT()
-            }
-        </View >
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      {isFirstRender ? isFirstRender : page === 1 &&
+        NewNFTListReducer.newNftListLoading ? (
+        <Loader />
+      ) : NewNFTListReducer.newMovieNftList.length !== 0 ? renderMovieNFTList()
+        : renderNoNFT()
+      }
+    </View >
   );
 };
 

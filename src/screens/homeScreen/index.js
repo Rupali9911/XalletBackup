@@ -258,8 +258,13 @@ const HomeScreen = ({navigation}) => {
         activeOpacity={1}
         style={styles.headerView}
         onPress={() => {
-          navigation.push('CertificateDetail', {item: item});
-        }}>
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
+        }}
+        key={`_${index}`}>
         <View style={styles.userCircle}>
           <C_Image
             uri={item?.mediaUrl}
