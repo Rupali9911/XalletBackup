@@ -116,24 +116,30 @@ export const maxLength50 = maxLength(50);
 export const maxLength100 = maxLength(100);
 export const maxLength200 = maxLength(200);
 
-const min = 6 , max = 32
+const min = 6,
+  max = 32;
 
+// const regex = new RegExp(
+//   `^(?=.{${min},${max}}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$`,
+// );
 const regex = new RegExp(
-  `^(?=.{${min},${max}}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$`,
-)
-const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const linkRegex = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+  /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/,
+);
+
+const emailRegex =
+  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const linkRegex =
+  /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
 export const required = value => (value ? undefined : 'Required');
 
 export const validateUserName = value => {
-  if(!value.trim().length){
-    return translate('common.REQUIRED_USERNAME')
+  if (!value.trim().length) {
+    return translate('common.REQUIRED_USERNAME');
+  } else if (!regex.test(value)) {
+    return translate('common.VALIDATE_USERNAME');
   }
-  else if(!regex.test(value)){
-    return translate('common.VALIDATE_USERNAME')
-  }
-}
+};
 
 export const validateEmail = value =>
   value && !emailRegex.test(value)
@@ -141,20 +147,29 @@ export const validateEmail = value =>
     : undefined;
 
 export const validateWebsiteURL = value =>
-  value && !linkRegex.test(value) ? translate('common.CHECK_YOUR_WEBSITE') : undefined;
+  value && !linkRegex.test(value)
+    ? translate('common.CHECK_YOUR_WEBSITE')
+    : undefined;
 
 export const validateDiscordURL = value =>
-  value && !linkRegex.test(value) ? translate('common.CHECK_YOUR_DISCORD') : undefined;
-
+  value && !linkRegex.test(value)
+    ? translate('common.CHECK_YOUR_DISCORD')
+    : undefined;
 
 export const validateTwitterURL = value =>
-  value && !regex.test(value) ? translate('common.CHECK_YOUR_TWITTER') : undefined;
+  value && !regex.test(value)
+    ? translate('common.CHECK_YOUR_TWITTER')
+    : undefined;
 
 export const validateYoutubeURL = value =>
-  value && !linkRegex.test(value) ? translate('common.CHECK_YOUR_YOUTUBE') : undefined;
+  value && !linkRegex.test(value)
+    ? translate('common.CHECK_YOUR_YOUTUBE')
+    : undefined;
 
 export const validateInstagramURL = value =>
-  value && !regex.test(value) ? translate('common.CHECK_YOUR_INSTAGRAM') : undefined;
+  value && !regex.test(value)
+    ? translate('common.CHECK_YOUR_INSTAGRAM')
+    : undefined;
 
 export const validateFacebookURL = value =>
   value && !linkRegex.test(value) ? translate('common.validfblink') : undefined;
@@ -162,13 +177,14 @@ export const validateFacebookURL = value =>
 export const validateZoomLinkURL = value =>
   value && !linkRegex.test(value) ? translate('common.emailval') : undefined;
 
-
 export const convertValue = value => {
-  var suffixes = ["", "k", "MM", "b", "t"];
-  var suffixNum = Math.floor(("" + parseInt(value)).length / 4);
-  var shortValue = parseFloat((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value));
+  var suffixes = ['', 'k', 'MM', 'b', 't'];
+  var suffixNum = Math.floor(('' + parseInt(value)).length / 4);
+  var shortValue = parseFloat(
+    suffixNum !== 0 ? value / Math.pow(1000, suffixNum) : value,
+  );
   if (shortValue % 1 !== 0) {
-      shortValue = shortValue?.toFixed(3);
+    shortValue = shortValue?.toFixed(3);
   }
   return shortValue + suffixes[suffixNum];
-}
+};

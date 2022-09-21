@@ -408,7 +408,6 @@ const HomeScreen = ({navigation}) => {
   );
 
   const renderScene = ({route}) => {
-    console.log(' renderScene Index', index);
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
