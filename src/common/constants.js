@@ -17,9 +17,13 @@ if (networkType === "mainnet") {
 let API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1'
 // let API_GATEWAY_URL = 'https://hgvgnnifc3.execute-api.eu-west-1.amazonaws.com/v1'
 
+const SIGN_MESSAGE =
+  'Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!';
+
 export {
   BASE_URL,
   NEW_BASE_URL,
   PROVIDER_URL,
-  API_GATEWAY_URL
+  API_GATEWAY_URL,
+  SIGN_MESSAGE
 };

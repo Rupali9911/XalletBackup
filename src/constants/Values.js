@@ -1,14 +1,10 @@
-import {
-  Platform,
-  Dimensions,
-  PixelRatio,
-} from 'react-native';
+import {Platform, Dimensions, PixelRatio} from 'react-native';
 
 //
 const PLATFORM = Platform.OS;
 
 //
-const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
+const {width: WIDTH, height: HEIGHT} = Dimensions.get('window');
 
 //
 const SIZE0 = WIDTH * 0.006; // 2
@@ -33,11 +29,11 @@ const SIZE30 = SIZE1 * 30; // 150
 const SIZE40 = SIZE1 * 40; // 200
 
 //
-const scale = size => WIDTH / 375 * size; // 360
-const FONT = (size, factor = 0.5) => (size + (scale(size) - size) * factor);
+const scale = size => (WIDTH / 375) * size; // 360
+const FONT = (size, factor = 0.5) => size + (scale(size) - size) * factor;
 
 const SIZE = size => {
-  const newSize = size * WIDTH / 375;
+  const newSize = (size * WIDTH) / 375;
   if (Platform.OS === 'ios') {
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
   } else if (Platform.OS === 'android') {
@@ -45,7 +41,7 @@ const SIZE = size => {
   } else {
     return size;
   }
-}
+};
 
 //
 const APP_DATE_FORMAT = 'DD MMM YYYY';
@@ -91,15 +87,15 @@ const JOB_DETAILS_LIMIT = 20;
 const SIGNATURE_WRAP_RATIO = 1.2;
 
 //
-const API_BASE_URL =
-  'https://staging-tms-dispatch.logisfleet.com/';
+const API_BASE_URL = 'https://staging-tms-dispatch.logisfleet.com/';
 // 'https://tms-dispatch-api.wasteporter.com/';
 
+const AWARD_GOLD = 'https://ik.imagekit.io/xanalia/Images/GoldAward.png';
+const AWARD_BRONZE = 'https://ik.imagekit.io/xanalia/Images/BtonzeAward.png';
+const AWARD_SILVER = 'https://ik.imagekit.io/xanalia/Images/SilverAward.png';
+const AWARD_SPECIAL = 'https://ik.imagekit.io/xanalia/Images/SpecialAward.png';
 
-const AWARD_GOLD ='https://ik.imagekit.io/xanalia/Images/GoldAward.png'
-const AWARD_BRONZE = "https://ik.imagekit.io/xanalia/Images/BtonzeAward.png"
-const AWARD_SILVER = "https://ik.imagekit.io/xanalia/Images/SilverAward.png"
-const AWARD_SPECIAL = "https://ik.imagekit.io/xanalia/Images/SpecialAward.png"
+
 
 export {
   PLATFORM,
@@ -138,8 +134,8 @@ export {
   JOB_DETAILS_LIMIT,
   SIGNATURE_WRAP_RATIO,
   API_BASE_URL,
-    AWARD_GOLD,
-    AWARD_BRONZE,
-    AWARD_SILVER,
-    AWARD_SPECIAL
+  AWARD_GOLD,
+  AWARD_BRONZE,
+  AWARD_SILVER,
+  AWARD_SPECIAL
 };
