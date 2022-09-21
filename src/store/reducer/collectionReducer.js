@@ -1,44 +1,43 @@
 import {
   COLLECTION_FAIL,
-  COLLECTION_LIST_RESET,
-  COLLECTION_START,
-  COLLECTION_SUCCESS,
-  COLLECTION_PAGE_CHANGE,
-  COLLECTION_LIST_UPDATE,
+  COLLECTION_LIST_RESET, COLLECTION_LIST_UPDATE, COLLECTION_PAGE_CHANGE, COLLECTION_START,
+  COLLECTION_SUCCESS
 } from '../types';
 
 const initialState = {
   collectionLoading: true,
   collectionList: [],
   collectionPage: 1,
-  collectionTotalCount: 0
-}
+  collectionTotalCount: 0,
+};
 
 export default function CollectionReducer(state = initialState, action) {
   switch (action.type) {
-
     case COLLECTION_START:
-      return state = { ...state, collectionLoading: true };
+      return (state = {...state, collectionLoading: true});
 
     case COLLECTION_SUCCESS:
-      return state = {
+      return (state = {
         ...state,
-        collectionList: [...state.collectionList, ...action.payload.listCollectionAllUser],
+        collectionList: [
+          ...state.collectionList,
+          ...action.payload.listCollectionAllUser,
+        ],
         collectionTotalCount: action.payload.count,
         collectionLoading: false,
-      };
+      });
 
     case COLLECTION_LIST_UPDATE:
-      return state = { ...state, collectionList: [...action.payload] };
+      return (state = {...state, collectionList: [...action.payload]});
 
     case COLLECTION_LIST_RESET:
-      return state = { ...state, collectionList: [] };
+      return (state = {...state, collectionList: []});
 
     case COLLECTION_FAIL:
-      return state = { ...state, collectionLoading: false };
+      return (state = {...state, collectionLoading: false});
 
     case COLLECTION_PAGE_CHANGE:
-      return state = { ...state, collectionPage: action.payload };
+      return (state = {...state, collectionPage: action.payload});
 
     default:
       return state;
