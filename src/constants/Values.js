@@ -95,8 +95,6 @@ const AWARD_BRONZE = 'https://ik.imagekit.io/xanalia/Images/BtonzeAward.png';
 const AWARD_SILVER = 'https://ik.imagekit.io/xanalia/Images/SilverAward.png';
 const AWARD_SPECIAL = 'https://ik.imagekit.io/xanalia/Images/SpecialAward.png';
 
-
-
 export {
   PLATFORM,
   WIDTH,
@@ -137,5 +135,5 @@ export {
   AWARD_GOLD,
   AWARD_BRONZE,
   AWARD_SILVER,
-  AWARD_SPECIAL
+  AWARD_SPECIAL,
 };

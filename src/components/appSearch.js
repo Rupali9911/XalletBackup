@@ -1,5 +1,5 @@
-import { useIsFocused, useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/core';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,18 +10,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Searchbar } from 'react-native-paper';
-import { useDispatch } from 'react-redux';
-import { IMAGES, SIZE } from '../constants';
+import {Searchbar} from 'react-native-paper';
+import {useDispatch} from 'react-redux';
+import {IMAGES, SIZE} from '../constants';
 import Colors from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 import Images from '../constants/Images';
-import { hp, RF, wp } from '../constants/responsiveFunct';
+import {hp, RF, wp} from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
-import { searchNFT, updateNftDetail } from '../store/actions/newNFTActions';
-import { translate } from '../walletUtils';
+import {searchNFT, updateNftDetail} from '../store/actions/newNFTActions';
+import {translate} from '../walletUtils';
 import LoadingView from './LoadingView';
-import { Verifiedcollections } from './verifiedCollection';
+import {Verifiedcollections} from './verifiedCollection';
 
 export default function AppSearch() {
   const dispatch = useDispatch();
@@ -41,12 +41,16 @@ export default function AppSearch() {
     if (searchTxt !== '') {
       setloading(true);
       const delayDebounceFn = setTimeout(() => {
-        console.log(searchTxt)
+        console.log(searchTxt);
         dispatch(searchNFT(searchTxt))
           .then(response => {
             console.log('search response', response);
             setloading(false);
-            if (response?.artistSearch.length > 0 || response?.collectionSearch.length > 0 || response?.nftSearch.length > 0) {
+            if (
+              response?.artistSearch.length > 0 ||
+              response?.collectionSearch.length > 0 ||
+              response?.nftSearch.length > 0
+            ) {
               setDataToList(response);
             } else {
               setSearchData([]);
@@ -57,13 +61,13 @@ export default function AppSearch() {
             setloading(false);
             setSearchData([]);
           });
-      }, 1000)
-      return () => clearTimeout(delayDebounceFn)
+      }, 1000);
+      return () => clearTimeout(delayDebounceFn);
     } else {
       setloading(false);
       setSearchData([]);
     }
-  }, [searchTxt])
+  }, [searchTxt]);
 
   const setDataToList = list => {
     let array = [];
@@ -88,47 +92,38 @@ export default function AppSearch() {
     setSearchData(array);
   };
 
-  const handleFlatListRenderItem = ({ item, index }) => {
-    let isLaunchPad = false;
-    if (item?.launchpadId) {
-      isLaunchPad = true;
-    }
-    let withTag = false;
-    if (index == 0) {
-      withTag = true;
-    } else if (searchData[index - 1].type !== item.type) {
-      withTag = true;
-    }
+  const handleFlatListRenderItem = ({item, index}) => {
     return (
       <ResultItem
         item={item}
         index={index}
-        withTag={withTag}
+        withTag={index == 0 || searchData[index - 1].type !== item.type}
         onPress={item => {
           if (item.type == 'NFT') {
             navigation.navigate('CertificateDetail', {
               networkName: item?.network,
               collectionAddress: item?.collectionAddress,
-              nftTokenId: item?.tokenId
+              nftTokenId: item?.tokenId,
             });
           } else if (item.type == 'Artist') {
             navigation.navigate('ArtistDetail', {
-              id: item?.address
+              id: item?.address,
             });
           } else if (item.type == 'Collections') {
             navigation.push('CollectionDetail', {
               networkName: item?.network,
               contractAddress: item?.address,
               launchpadId: item?.launchpadId,
-              isLaunchPad
             });
           }
         }}
       />
     );
-  }
+  };
 
-  const keyExtractor = (item, index) => { return `_${index}` }
+  const keyExtractor = (item, index) => {
+    return `_${index}`;
+  };
 
   return (
     <View style={styles.container}>
@@ -160,17 +155,16 @@ export default function AppSearch() {
             />
           ) : null}
         </View>
-      ) :
-        searchTxt ?
-          <View style={[styles.listContainer, styles.noDataFoundStyle]}>
-            <Text>{translate('common.noDataFound')}</Text>
-          </View>
-          : null}
+      ) : searchTxt ? (
+        <View style={[styles.listContainer, styles.noDataFoundStyle]}>
+          <Text>{translate('common.noDataFound')}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
 
-const ResultItem = ({ item, index, withTag, onPress }) => {
+const ResultItem = ({item, index, withTag, onPress}) => {
   const [loading, setLoading] = useState(false);
   return (
     <View style={[styles.resultItemContainer]}>
@@ -180,10 +174,12 @@ const ResultItem = ({ item, index, withTag, onPress }) => {
           <Image
             source={
               item.type == 'NFT'
-                ? { uri: item.smallImage }
-                : item.type == 'Collections' ? { uri: item.iconImage } : item.avatar
-                  ? { uri: item.avatar }
-                  : Images.default_user
+                ? {uri: item.smallImage}
+                : item.type == 'Collections'
+                ? {uri: item.iconImage}
+                : item.avatar
+                ? {uri: item.avatar}
+                : Images.default_user
             }
             style={styles.image}
             resizeMode={'cover'}
@@ -196,12 +192,10 @@ const ResultItem = ({ item, index, withTag, onPress }) => {
         </View>
         <Text style={styles.name} numberOfLines={1}>
           {item?.name ? item.name : '---'}
-          <View style={{ paddingLeft: 5 }}>{Verifiedcollections.find((id) => id === item._id) && (
-            <Image
-              style={styles.verifyIcon}
-              source={IMAGES.tweetPng}
-            />
-          )}
+          <View style={{paddingLeft: 5}}>
+            {Verifiedcollections.find(id => id === item._id) && (
+              <Image style={styles.verifyIcon} source={IMAGES.tweetPng} />
+            )}
           </View>
         </Text>
       </TouchableOpacity>
@@ -215,7 +209,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     width: '100%',
-    top: hp('1.5%')
+    top: hp('1.5%'),
   },
   searchBar: {
     borderWidth: 1,
@@ -228,7 +222,7 @@ const styles = StyleSheet.create({
   verifyIcon: {
     width: SIZE(10),
     height: SIZE(10),
-    borderRadius: SIZE(10)
+    borderRadius: SIZE(10),
   },
   inputStyle: {
     fontSize: RF(1.8),
@@ -236,7 +230,7 @@ const styles = StyleSheet.create({
     color: Colors.BLACK1,
     height: '100%',
     margin: 0,
-    padding: 0
+    padding: 0,
   },
   listContainer: {
     flex: 1,
@@ -259,7 +253,7 @@ const styles = StyleSheet.create({
   },
   resultItemContainer: {},
   flatlistStyle: {
-    height: Platform.OS === 'ios' ? hp('51%') : hp('48%')
+    height: Platform.OS === 'ios' ? hp('51%') : hp('48%'),
   },
   resultItem: {
     padding: wp('2%'),
@@ -290,6 +284,6 @@ const styles = StyleSheet.create({
     width: '95%',
     paddingVertical: 10,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 });

@@ -1,20 +1,18 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect } from 'react';
-import { FlatList, StatusBar, View, Text } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect} from 'react';
+import {FlatList, StatusBar, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {Loader} from '../../components';
+import {colors} from '../../res';
 import {
-  launchpadNftLoadStart,
-  launchpadNftListReset,
-  launchpadNftPageChange,
-  launchpadNftLoadSuccess,
   getLaunchpadNftList,
+  launchpadNftListReset,
+  launchpadNftLoadStart,
+  launchpadNftPageChange,
 } from '../../store/actions/launchpadAction';
-import { useDispatch, useSelector } from 'react-redux';
-import { networkType } from '../../common/networkType';
-import { colors } from '../../res';
-import { Loader } from '../../components';
-import styles from './styles';
+import {translate} from '../../walletUtils';
 import LaunchPadItemData from '../LaunchPadDetail/LaunchPadItemData';
-import { translate } from '../../walletUtils';
+import styles from './styles';
 
 const LaunchPad = () => {
   const dispatch = useDispatch();
@@ -75,11 +73,6 @@ const LaunchPad = () => {
         creatorInfo={item.owner.description}
         blind={item.blind}
         collectionId={item._id}
-        disabled={
-          networkType === 'testnet' || item.status === 'comingSoon'
-            ? true
-            : false
-        }
         onPress={() => {
           navigation.push('CertificateDetail', { item: item });
         }}
