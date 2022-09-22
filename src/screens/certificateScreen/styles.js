@@ -1,13 +1,13 @@
-import { Platform, StyleSheet } from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {
   responsiveFontSize as RF,
   SIZE,
-  widthPercentageToDP as wp
+  widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
 import Colors from '../../constants/Colors';
-import { hp } from '../../constants/responsiveFunct';
+import {hp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { colors, fonts } from '../../res';
+import {colors, fonts} from '../../res';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     height: wp('100%'),
     backgroundColor: Colors.WHITE8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   nftTitle: {
     fontSize: RF(1.75),
@@ -155,12 +157,12 @@ const styles = StyleSheet.create({
     color: colors.themeR,
     lineHeight: SIZE(14.06),
     maxWidth: SIZE(53),
-    marginRight: 5
+    marginRight: 5,
   },
   verifyIcon: {
     width: SIZE(15),
     height: SIZE(15),
-    borderRadius: SIZE(10)
+    borderRadius: SIZE(10),
   },
   creatorName: {
     fontSize: RF(2),
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
     maxWidth: SIZE(130),
     height: SIZE(20),
     alignSelf: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   description: {
     // fontSize: RF(1.4),
@@ -178,17 +180,17 @@ const styles = StyleSheet.create({
     // color: colors.black,
     // marginTop: SIZE(5),
     marginBottom: SIZE(15),
-    paddingHorizontal: SIZE(15)
+    paddingHorizontal: SIZE(15),
   },
   payIn: {
     fontSize: RF(1.6),
     fontFamily: fonts.ARIAL,
-    textAlign: "center",
-    color: "#707a83",
+    textAlign: 'center',
+    color: '#707a83',
     marginTop: 0,
     paddingHorizontal: 0,
     marginBottom: 0,
-    fontWeight: "bold"
+    fontWeight: 'bold',
   },
   moreView: {
     marginTop: SIZE(13),
@@ -225,7 +227,7 @@ const styles = StyleSheet.create({
     marginLeft: wp(2),
   },
   dollarText: {
-    fontSize: RF(1.8)
+    fontSize: RF(1.8),
   },
   price: {
     fontSize: RF(3.1),
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
   rowText: {
     color: colors.black,
     fontSize: RF(1.65),
-    marginTop: SIZE(5)
+    marginTop: SIZE(5),
     // maxWidth: wp('55%'),
   },
   rowTextcontractaddress: {
@@ -269,13 +271,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     borderRadius: 10,
     paddingVertical: 0,
-    marginTop: hp(1)
+    marginTop: hp(1),
   },
 
-  head: { height: SIZE(40) },
-  text: { margin: SIZE(10), fontSize: SIZE(12) },
-  themeColor: { color: Colors.themeColor },
-  emptyData: (history) => ({
+  head: {height: SIZE(40)},
+  text: {margin: SIZE(10), fontSize: SIZE(12)},
+  themeColor: {color: Colors.themeColor},
+  emptyData: history => ({
     // alignSelf: 'center',
     // marginVertical: hp('1%'),
     height: history === 'trading' ? hp(12) : hp(8),
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1,
     top: SIZE(10),
-    right: SIZE(10)
+    right: SIZE(10),
   },
   videoPlayIconChild: {
     width: SIZE(100),
@@ -303,18 +305,15 @@ const styles = StyleSheet.create({
     borderRadius: SIZE(100),
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
   },
   videoPlayIconCont: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    height: '50%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   video: {
-    flex: 1,
+    // flex: 1,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -323,9 +322,9 @@ const styles = StyleSheet.create({
   },
   retry: {
     fontSize: 20,
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center"
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   bidTimeContainer: {
     padding: SIZE(10),
@@ -335,12 +334,12 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZE(15),
     marginBottom: SIZE(10),
   },
-  bidTitleView: { flexDirection: 'row' },
-  bidTitleTxt: { fontSize: SIZE(14) },
-  bidTimeTxt: { fontSize: SIZE(16), fontWeight: 'bold' },
+  bidTitleView: {flexDirection: 'row'},
+  bidTitleTxt: {fontSize: SIZE(14)},
+  bidTimeTxt: {fontSize: SIZE(16), fontWeight: 'bold'},
   highestBidTxt: {
     fontSize: SIZE(13),
-    top: SIZE(5)
+    top: SIZE(5),
   },
   socialLinksWrap: {
     alignItems: 'center',
@@ -355,15 +354,15 @@ const styles = StyleSheet.create({
     width: 26,
     borderRadius: 13,
     marginHorizontal: 5,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   buybutton: {
     flexDirection: 'row',
-    paddingTop: SIZE(10)
+    paddingTop: SIZE(10),
   },
   rowAlign: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   marginRight: {
     marginRight: 10,
@@ -372,12 +371,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: hp(5),
     backgroundColor: Colors.white,
-    borderColor: Colors.themeColor
+    borderColor: Colors.themeColor,
   },
-  countDownText: { color: Colors.black },
+  countDownText: {color: Colors.black},
   cellBorderStyle: {
     borderWidth: 1,
-    borderColor: Colors.GREY9
+    borderColor: Colors.GREY9,
   },
   labelText: {
     fontSize: RF(1.7),
@@ -395,26 +394,37 @@ const styles = StyleSheet.create({
     width: SIZE(33),
     height: SIZE(33),
     borderRadius: SIZE(60 / 2),
-    marginRight: SIZE(7)
+    marginRight: SIZE(7),
   },
   rightButton: {
     borderWidth: 1,
     borderColor: Colors.BLUE3,
-    backgroundColor: Colors.white
+    backgroundColor: Colors.white,
   },
   rightButtonText: {
-    color: Colors.BLUE3
+    color: Colors.BLUE3,
   },
   viewAllBtn: {
     marginVertical: SIZE(12),
     width: wp(40),
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   viewAllBtnInner: {
     backgroundColor: 'transparent',
     borderColor: Colors.BLUE4,
-    borderWidth: 2
-  }
+    borderWidth: 2,
+  },
+  menuOption: {
+    height: SIZE(35),
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  speedMenuOption: {
+    height: SIZE(35),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default styles;
