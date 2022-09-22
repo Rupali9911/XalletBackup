@@ -11,14 +11,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import Modal from 'react-native-modal';
-import {
-  Row, Table, Cell, TableWrapper
-} from 'react-native-table-component';
+import { Row, Table, Cell, TableWrapper } from 'react-native-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
@@ -51,8 +47,13 @@ import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { ActivityIndicator } from 'react-native-paper';
 import { currencyInDollar } from '../wallet/functions';
 import { getBaseCurrency } from '../../utils/parseNFTObj';
-import AppBackground from '../../components/appBackground'
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import AppBackground from '../../components/appBackground';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 import addComma from '../../utils/insertComma';
 import {
   convertPrice,
@@ -64,7 +65,13 @@ import {
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import { CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SERVICE_FEE, SORT_TRADING_HISTORY } from '../../constants';
+import {
+  CATEGORY_VALUE,
+  compareAddress,
+  FILTER_TRADING_HISTORY_OPTIONS,
+  NFT_MARKET_STATUS,
+  SORT_TRADING_HISTORY,
+} from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import {
@@ -77,27 +84,13 @@ import { formatAddress } from '../../constants/addressFormat';
 import { getDateString, getExpirationDate } from '../../constants/date';
 import CountDown from 'react-native-countdown-component';
 import { twitterLink } from '../../common/function';
-import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
-import Images from '../../constants/Images';
-import ShowModal from "./modal"
-import cancelImg from "../../../assets/images/cancel.png"
-import Checkbox from '../../components/checkbox';
-import { TRANSACTION_ACTION } from '../../constants/transaction';
-import { toFixCustom } from '../createNFTScreen/helperFunction';
-import { getERC20Tokens } from '../../utils/token';
-import { getTokenNameFromId } from '../../utils/nft';
-import { sendCustomTransaction } from '../wallet/functions/transactionFunctions';
-import TransactionPending from "../../components/Popup/transactionPending"
-import DatePicker from 'react-native-date-picker';
-
+import sendRequest from '../../helpers/AxiosApiRequest';
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
   PlayButtonIcon,
-  // HeartWhiteIcon,
-  // HeartActiveIcon,
-  HeartWhiteIconNew,
-  HeartActiveIconNew,
+  HeartWhiteIcon,
+  HeartActiveIcon,
   ThreeDotsVerticalIcon,
   TwiiterIcon,
   FacebookIcon,
@@ -117,9 +110,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { userData } = useSelector(state => state.UserReducer);
-  const { networkType } = useSelector(state => state.WalletReducer);
-  const { networks } = useSelector(state => state.NetworkReducer);
+  const { userData, wallet } = useSelector(state => state.UserReducer);
   // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
@@ -179,54 +170,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [isLike, setLike] = useState();
   const [detailNFT, setDetailNFT] = useState({});
 
-  const [currentNetwork, setCurrentNetwork] = useState({});
-
-  const [isVisible, setVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [reclaimModal, setReclaimModal] = useState(false)
-  const [cancelAuctionModal, setCancelAuctionModal] = useState(false)
-  const [editedPrice, setEditedPrice] = useState('')
-  const [priceEdit, setPriceEdit] = useState(false)
-  const [cancel, setCancel] = useState(false)
-  const [placeABid, setPlaceABid] = useState(false)
-  const [isCheck, setIsCheck] = useState(false)
-  const [isCheckError, setIsCheckError] = useState(false);
-  const [isTopUpError, setIsTopUpError] = useState(false);
-  const [checkOut, setCheckOut] = useState(false)
-  const [priceChange, SetPriceChange] = useState('')
-
-  const [openTransactionPending, setOpenTransactionPending] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [Items, setitems] = useState([
-    { label: 'alia', value: 'ALIA' },
-    { label: 'bnb', value: 'BNB' }
-  ]);
-  const [input, setInput] = useState('')
-  const [sellInput, setSellInput] = useState('')
-  const [sellVisible, setSellVisible] = useState(false);
-  const [date, setDate] = useState(new Date()) // + 5 * 60000
-  const [openDate, setOpendate] = useState(false)
-  const [closeDate, setCloseDate] = useState(new Date()) // + 20 * 60000
-  const [close, setClose] = useState(false)
-  const [fixedPrice, setFixedPrice] = useState(false)
-  const [walletData, setWalletData] = useState({});
-
-  const DAY14 = 86400000 * 14
-  const [offerData, setOfferData] = useState({
-    totalPrice: '',
-    quantity: 1,
-    receiveToken: '',
-    networkTokenId: 0,
-    nftId: '',
-    expried: Date.now() + DAY14,
-
-    error: {
-      totalPrice: '',
-      expried: '',
-    },
-  })
   // const [isContractOwner, setIsContractOwner] = useState(false);
   // const [isOwner, setIsOwner] = useState(false);
   // const [nFTOnAuction, setIsNFTOnAuction] = useState(false);
@@ -253,17 +196,9 @@ const DetailScreen = ({ navigation, route }) => {
   const network = detailNFT?.network ? detailNFT.network : item?.network;
   // const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
-  const walletAddress = userData?.userWallet?.address;
 
   const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
 
-  const auctionId = detailNFT?.saleData?.auction?.auctionId
-  const saleId = detailNFT?.saleData?.fixPrice?.id
-  const price = detailNFT?.saleData?.fixPrice?.price
-
-  // useEffect(() => {
-  //   SetPriceChange(numberWithCommas(Number(price).toFixed(0)))
-  // }, [price])
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
   // const [discount, setDiscount] = useState(false);
@@ -289,16 +224,7 @@ const DetailScreen = ({ navigation, route }) => {
       //     });
       // }
       // // }
-      getNFTDetails();
-
-      // getWallet()
-      //   .then(data => {
-      //     setWalletData(data)
-      //   })
-      //   .catch(err => {
-      //     console.log("🚀 ~ file: detail.js ~ line 270 ~ useEffect ~ err", err)
-      //   })
-
+      getTokenDetailsApi();
     }
   }, [isFocused, networkName, collectionAddress, nftTokenId]);
 
@@ -325,21 +251,6 @@ const DetailScreen = ({ navigation, route }) => {
       getHistory('bid');
       getOfferList();
       getRealtedNFT();
-      const selectedNetwork = networks?.filter(item => item?.name === network?.networkName);
-      setCurrentNetwork(selectedNetwork[0]);
-
-      if (selectedNetwork && selectedNetwork[0].networkTokens?.length > 0) {
-        setOfferData({
-          ...offerData,
-          nftId: detailNFT?.nftId,
-          networkTokenId: getERC20Tokens(selectedNetwork[0].networkTokens)[0]
-            .id,
-          receiveToken: getTokenNameFromId(
-            Number(getERC20Tokens(selectedNetwork[0].networkTokens)[0].id),
-            selectedNetwork[0].networkTokens,
-          ),
-        })
-      }
     }
   }, [nftId]);
 
@@ -364,10 +275,20 @@ const DetailScreen = ({ navigation, route }) => {
   // }, [singleNFT]);
 
   //===================== API Call Functions =========================
-  const getNFTDetails = () => {
-    setLoad(true);
-    let networkName = typeof network === 'string' ? network : network?.networkName
-    let url = `${NEW_BASE_URL}/nfts/details`
+  // const getOwnerDetailsById = async id => {
+  //   const profileUrl = `${BASE_URL}/user/get-public-profile?userId=${id}`;
+  //   try {
+  //     let profile = await axios.get(profileUrl);
+  //     setOwnerDataN(profile?.data?.data);
+  //     setOwnerN(id);
+  //   } catch (err) {
+  //     // setLoad(false);
+  //   }
+  // };
+  //<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  const getTokenDetailsApi = async () => {
+    // let networkName = typeof network === 'string' ? network : network?.networkName
+    let url = `${NEW_BASE_URL}/nfts/details`;
 
     sendRequest({
       url,
@@ -379,17 +300,20 @@ const DetailScreen = ({ navigation, route }) => {
       },
     })
       .then(json => {
-        if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
+        if (
+          typeof json === 'object' &&
+          json?.creator &&
+          json?.collection &&
+          json?.owner
+        ) {
+          setNFTPrice(json?.price);
+          setDetailNFT(json);
+          setLike(Number(json?.isLike));
 
-          setNFTPrice(json?.price)
-          setDetailNFT(json)
-          setLike(Number(json?.isLike))
-
-          setArtistData(json?.creator)
-          setOwnerDataN(json?.owner)
-          setOwnerAddress(json?.owner?.address)
-          setcollectCreat(json?.collection)
-
+          setArtistData(json?.creator);
+          setOwnerDataN(json?.owner);
+          setOwnerAddress(json?.owner?.address);
+          setcollectCreat(json?.collection);
         }
         setLoad(false);
       })
@@ -645,7 +569,7 @@ const DetailScreen = ({ navigation, route }) => {
           handleLikeMethod();
         }}
         style={styles.likeButton}>
-        {isLike ? <HeartActiveIconNew /> : <HeartWhiteIconNew />}
+        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
       </TouchableOpacity>
     );
   };
@@ -817,385 +741,6 @@ const DetailScreen = ({ navigation, route }) => {
     return null;
   };
 
-  const cancelModalConfirm = () => {
-  }
-  const cancelModal = () => {
-    setCancel(false)
-  }
-  const closeReclaimModal = () => {
-    setReclaimModal(false)
-  }
-
-  const modalClose = () => {
-    setCancelAuctionModal(false)
-  }
-
-  const reClaimApi = () => {
-    setReclaimModal(false)
-    setOpenTransactionPending(true)
-    const url = `${NEW_BASE_URL}/auction/${auctionId}/reclaim-nft`
-    sendRequest({
-      url,
-      method: 'GET'
-    })
-      .then((claimNFTRes) => {
-        console.log("🚀 ~ file: detail.js ~ line 755 ~ .then ~ claimNFTRes", claimNFTRes)
-        if (claimNFTRes.messageCode) {
-          // toast.error(claimNFTRes.messageCode)
-          setOpenTransactionPending(false)
-        }
-        if (claimNFTRes) {
-          const signData = claimNFTRes.dataReturn?.signData
-          if (signData) {
-            const transactionParameters = {
-              nonce: signData.nonce, // ignored by MetaMask
-              to: signData.to, // Required except during contract publications.
-              from: signData.from, // must match user's active address.
-              data: signData.data, // Optional, but used for defining smart contract creation and interaction.
-              chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
-            }
-            sendCustomTransaction(
-              transactionParameters,
-              walletAddress,
-              nftTokenId,
-              network?.networkName,
-            )
-              .then(res => {
-                console.log('approve payByWallet 331', res);
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
-                // setLoading(false);
-                setOpenTransactionPending(false)
-                getNFTDetails();
-
-              })
-              .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
-                setOpenTransactionPending(false)
-                if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('common.blanceLow'),
-                  );
-                } else {
-                  alertWithSingleBtn(translate('common.error'), '');
-                }
-                // setLoading(false);
-              });
-          }
-        }
-      })
-      .catch((err) => {
-        setReclaimModal(false)
-        setOpenTransactionPending(false)
-      })
-  }
-
-  const cancelAuctionApi = () => {
-    setCancelAuctionModal(false)
-    setOpenTransactionPending(true)
-    const url = `${NEW_BASE_URL}/auction-session/cancel/${auctionId}`
-    sendRequest({
-      url,
-      method: 'POST'
-    })
-      .then((cancelAuctionRes) => {
-        console.log("🚀 ~ file: detail.js ~ line 759 ~ .then ~ cancelAuctionRes", cancelAuctionRes)
-        if (cancelAuctionRes?.error) {
-          setOpenTransactionPending(false)
-          throw new Error(cancelAuctionRes.message)
-        } else {
-          const signData = cancelAuctionRes.dataReturn?.signData
-          if (signData) {
-            const transactionParameters = {
-              nonce: signData.nonce, // ignored by MetaMask
-              to: signData.to, // Required except during contract publications.
-              from: signData.from, // must match user's active address.
-              data: signData.data, // Optional, but used for defining smart contract creation and interaction.
-              chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
-            }
-            sendCustomTransaction(
-              transactionParameters,
-              walletAddress,
-              nftTokenId,
-              network?.networkName,
-            )
-              .then(res => {
-                console.log('approve payByWallet 331', res);
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
-                // setLoading(false);
-                setOpenTransactionPending(false);
-                getNFTDetails();
-              })
-              .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
-                setOpenTransactionPending(false)
-                if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('common.blanceLow'),
-                  );
-                } else {
-                  alertWithSingleBtn(translate('common.error'), '');
-                }
-                // setLoading(false);
-              });
-          }
-        }
-      })
-      .catch((err) => {
-        setCancelAuctionModal(false)
-        setOpenTransactionPending(false)
-      })
-  }
-
-  const editPriceApi = () => {
-    const url = `${NEW_BASE_URL}/sale-nft?saleId=${saleId}`
-    sendRequest({
-      url,
-      method: 'PUT',
-      editedPrice
-    })
-      .then((response) => {
-        console.log("edit==>", response);
-      })
-  }
-
-
-  const editPriceModal = () => {
-    const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
-    return (
-      <View style={styles.modalContainer}>
-        <Modal isVisible={priceEdit}>
-          <View style={styles.editPriceContainner}>
-            <View style={styles.editPriceHeaderView}>
-              <Text style={styles.editPriceText}>{translate('common.editPrice')}</Text>
-
-              <TouchableOpacity onPress={() => setPriceEdit(false)}>
-                <Image source={cancelImg} style={styles.cancelButton} />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.inputWrapperView}>
-              <TextInput
-                value={editedPrice}
-                keyboardType='numeric'
-                style={styles.inputField}
-                onChangeText={(text) => setEditedPrice(text)}
-                maxLength={10}
-              />
-
-              <View style={styles.tokenView}>
-                <Text style={styles.tokenText}>{tokenName}</Text>
-              </View>
-            </View>
-
-            <View style={styles.editPriceGroupBButtonView}>
-              <GroupButton
-                leftText={translate('common.change')}
-                leftDisabled={false}
-                leftLoading={false}
-                onLeftPress={() => editPriceApi()}
-                rightStyle={styles.editPriceGroupButton}
-                rightTextStyle={styles.editPriceGroupButtonText}
-                rightHide
-              />
-            </View>
-          </View>
-        </Modal>
-      </View>
-    )
-  }
-
-  const placeAbidApi = () => {
-    const url = `${NEW_BASE_URL}/auction/${auctionId}/place-bid`
-    sendRequest({
-      url,
-      method: 'POST'
-    })
-      .then((response) => {
-      })
-  }
-  const openBidModal = () => {
-    setPlaceABid(true)
-  }
-  const closeBidModal = () => {
-    setPlaceABid(false)
-  }
-
-  const placeABidModal = () => {
-    const tokenName = detailNFT?.saleData?.auction?.tokenPrice
-    const price = detailNFT?.saleData?.auction?.highestPrice
-    return (
-      <Modal isVisible={placeABid} >
-        <View style={styles.placeAbbidView}>
-          <View style={styles.PlaceAbidHeaderview}>
-            <Text style={styles.bidtext}>{translate('common.placeABid')}</Text>
-            <TouchableOpacity onPress={closeBidModal}>
-              <Image source={cancelImg} style={styles.cancelimg} />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.priceText}>{translate('common.price')}</Text>
-
-          <View style={styles.inputWrapperView}>
-            <TextInput
-              value={editedPrice ? editedPrice : price}
-              keyboardType='numeric'
-              style={styles.inputField}
-              onChangeText={(text) => setEditedPrice(text)}
-              maxLength={10}
-            />
-
-            <View style={styles.tokenView}>
-              <Text style={styles.tokenText}>{tokenName}</Text>
-            </View>
-          </View>
-
-          <View style={styles.placeAbidgroupButtonView}>
-            <GroupButton
-              leftText={translate('common.Confirm')}
-              leftDisabled={false}
-              leftLoading={false}
-              onLeftPress={() => { }}
-              rightText={translate('common.topUp')}
-              rightDisabled={false}
-              rightLoading={false}
-              onRightPress={() => { }}
-              rightStyle={styles.rightGroupButton}
-              rightTextStyle={styles.rightGroupButtonText}
-            />
-          </View>
-        </View>
-      </Modal>
-    )
-  }
-  //===================Sell NFT Modal ===========
-  const sellNftModal = () => {
-    return (
-      <View style={styles.modalContainer}>
-        <Modal isVisible={sellVisible}>
-
-          <View style={fixedPrice ? styles.sellModalView : styles.auctionModalView}>
-            <View style={styles.sellModalHeaderView}>
-              <Text style={styles.sellNftText}>{'Sell NFT'}</Text>
-              <TouchableOpacity onPress={() => { setSellVisible(false) }}>
-                <Image source={cancelImg} style={styles.cancelimg} />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.saleTypeText}>{translate("wallet.common.saleType")}</Text>
-            <View style={styles.sellGroupButtonView}>
-              <GroupButton
-                leftText={'Fixed Price'}
-                leftDisabled={false}
-                leftLoading={false}
-                onLeftPress={() => { setFixedPrice(true) }}
-                rightText={'Time Auction'}
-                rightDisabled={false}
-                rightLoading={false}
-                onRightPress={() => { setFixedPrice(false) }}
-                rightStyle={
-                  fixedPrice ? styles.sellRightGroupButton : styles.sellLeftGroupButton
-                }
-                rightTextStyle={
-                  fixedPrice ? styles.sellRightGroupButtonText : styles.sellLeftGroupButtonText
-                }
-                leftStyle={
-                  fixedPrice ? styles.sellLeftGroupButton : styles.sellRightGroupButton
-                }
-                leftTextStyle={
-                  fixedPrice ? styles.sellLeftGroupButtonText : styles.sellRightGroupButtonText
-                }
-              />
-            </View>
-            <Text style={[styles.saleTypeText, { textTransform: 'capitalize' }]}>
-              {fixedPrice ? translate("common.fixedPrice") : "Time Auction"}
-            </Text>
-            {
-              fixedPrice
-                ?
-                <View style={styles.sellInputFieldView}>
-                  <TextInput
-                    style={styles.sellInputField}
-                    onChangeText={(text) => setSellInput(text)}
-                    value={sellInput}
-                  />
-                  <View >
-                    <DropDownPicker
-                      open={open}
-                      value={value}
-                      items={Items}
-                      setOpen={setOpen}
-                      maxHeight={60}
-                      setValue={setValue}
-                      setItems={setitems}
-                      dropDownContainerStyle={styles.sellDropDownContainer}
-                      style={styles.sellTokenPicker}
-                      placeholder={'Select Here'}
-                    />
-                  </View>
-                </View>
-                :
-                <>
-                  <View style={styles.opneTimeView}>
-                    <Text style={styles.openTimeText}>{translate("wallet.common.openTime")}</Text>
-                    <Text style={styles.closeTimeText}>{translate("wallet.common.closeTime")}</Text>
-                  </View>
-
-                  <View style={styles.dateFieldView} >
-                    <TouchableOpacity
-                      style={styles.openTimeField}
-                      onPress={() => setOpendate(true)}>
-                      <Text style={styles.showTime}>{moment(date).format('MM/DD/YYYY hh:mm a')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.openTimeField}
-                      onPress={() => setClose(true)}>
-                      <Text style={styles.showTime}>{moment(closeDate).format('MM/DD/YYYY hh:mm a')}</Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  <Text style={styles.minPriceText}>{'Min Price'}</Text>
-                  <View style={styles.sellInputFieldView}>
-                    <TextInput
-                      style={styles.sellInputField}
-                      onChangeText={(text) => setInput(text)}
-                      value={input}
-                    />
-                    <View >
-                      <DropDownPicker
-                        open={open}
-                        value={value}
-                        items={Items}
-                        setOpen={setOpen}
-                        maxHeight={60}
-                        setValue={setValue}
-                        setItems={setitems}
-                        dropDownContainerStyle={styles.sellDropDownContainer}
-                        style={styles.sellTokenPicker}
-                        placeholder={'Select Here'}
-                      />
-                    </View>
-                  </View>
-                </>
-            }
-            <View style={styles.sellGroupBButtonView}>
-              <GroupButton
-                leftText={'Sell item'}
-                leftDisabled={false}
-                leftLoading={false}
-                onLeftPress={() => { }}
-                rightStyle={styles.editPriceGroupButton}
-                rightTextStyle={styles.editPriceGroupButtonText}
-                rightHide
-              />
-            </View>
-          </View>
-        </Modal>
-      </View>
-    )
-  }
-
   //================== Render Auction Time Function ==================
   // const renderAuctionTimeRemain = () => {
   //   return (
@@ -1223,203 +768,6 @@ const DetailScreen = ({ navigation, route }) => {
   //     </View>
   //   )
   // }
-  const openModal = () => {
-    // setModalVisible(true)
-    // showModal()
-  }
-  const closeModal = () => {
-    {
-      modalVisible ?
-        setModalVisible(false)
-        :
-        setCheckOut(false)
-    }
-    // showModal()
-  }
-
-  const ModalBody = () => {
-    const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice
-
-    return (
-      <View style={styles.modalBody}>
-        <Modal isVisible={modalVisible ? modalVisible : checkOut}>
-
-          <View style={styles.mainview}>
-
-            <View style={styles.headerview}>
-              <Text style={styles.bidtext}>
-                {modalVisible
-                  ? translate('common.makeAnOffer')
-                  : translate('common.completeCheckOut')}
-              </Text>
-
-              <TouchableOpacity onPress={() => { closeModal() }}>
-                <Image
-                  style={styles.headerCancelButton}
-                  source={Images.cancelIcon}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.itemText}>{translate('common.ITEM')}</Text>
-            <View style={styles.userView}>
-              <View style={styles.imageTextView}>
-                <C_Image
-                  uri={thumbnailUrl}
-                  imageStyle={styles.userImage}
-                />
-
-                <Text style={styles.amountText}>{detailNFT?.name}</Text>
-              </View>
-
-              <View style={styles.inputContainer}>
-                <View style={styles.curancyInputChange}>
-                  {modalVisible ?
-                    <TextInput
-                      value={editedPrice}
-                      keyboardType='numeric'
-                      style={styles.curancyInput}
-                      onChangeText={(text) => setEditedPrice(text)}
-                      maxLength={10}
-                    />
-                    :
-                    <Text style={styles.curancyInputPrice}>
-                      {numberWithCommas(Number(price).toFixed(3))}
-                    </Text>
-                  }
-                </View>
-
-                <View style={styles.currencyView}>
-                  <Text style={styles.tokenName}>{tokenName}</Text>
-                  {modalVisible &&
-                    <Image
-                      style={{ tintColor: Colors.GREY1, marginLeft: SIZE(10) }}
-                      source={Images.downArrow}
-                    />
-                  }
-                </View>
-
-              </View>
-            </View>
-
-            <View style={styles.breakLine} />
-            {modalVisible ?
-              <>
-                <Text style={styles.expirationText}>{translate('common.offerExpiration')}</Text>
-                <View style={styles.numberView}>
-                  <Text style={styles.dateText}>{offerData?.expried}</Text>
-                </View>
-              </>
-              : null}
-            <Text style={styles.feeText}>{translate('common.fee')}</Text>
-
-            {!isTopUpError ?
-              <>
-                <View style={styles.royaltyFeeView}>
-                  <Text>{translate('common.royaltyFee')}</Text>
-
-                  <Text style={styles.priceInPercent}>
-                    {modalVisible ?
-                      `${toFixCustom(
-                        ((Number(offerData?.totalPrice) || 0) * Number(detailNFT?.royalty)) / 100,
-                      )} ${offerData?.receiveToken} (${Number(detailNFT?.royalty)}%)`
-                      : `${toFixCustom((price * Number(detailNFT.royalty)) / 100,
-                      )} ${tokenName} (${Number(detailNFT.royalty)}%)`}
-                  </Text>
-                </View>
-
-                <View style={styles.serviceFeeView}>
-                  <Text>{translate('common.serviceFee')}</Text>
-                  <Text style={styles.priceInPercent}>
-                    {modalVisible ?
-                      `${toFixCustom(
-                        ((Number(offerData?.totalPrice) || 0) * SERVICE_FEE) / 100,
-                      )} ${offerData?.receiveToken} (${SERVICE_FEE}%)`
-                      : `${toFixCustom(Number((price * SERVICE_FEE) / 100),
-                      )} ${tokenName} (${SERVICE_FEE}%)`}
-                  </Text>
-                </View>
-              </>
-              :
-              <View style={styles.feeErrorView}>
-                <Text style={styles.errorText}>
-                  {'Fiat plugin not installed on Moralis!'}
-                </Text>
-
-                <TouchableOpacity onPress={() => setIsTopUpError(false)}>
-                  <Image
-                    style={styles.headerCancelButton}
-                    source={Images.cancelIcon}
-                  />
-                </TouchableOpacity>
-              </View>
-            }
-
-            <View style={styles.breakLine} />
-
-            <View style={styles.willPayView}>
-              <Text>{translate('common.youWillPay')}</Text>
-              <Text style={styles.nftPrice}>
-                {modalVisible ? `${toFixCustom(offerData?.totalPrice) || 0} ${offerData?.receiveToken}`
-                  : `${toFixCustom(price)} ${tokenName}`
-                }</Text>
-            </View>
-
-            <View style={styles.breakLine} />
-
-            <View style={styles.footerView}>
-              <Checkbox
-                isCheck={isCheck}
-                iconSize={wp("7%")}
-                onChecked={() => setIsCheck(!isCheck)}
-              />
-              <Text style={styles.footerText}>
-                {translate('common.byCheckingTheBox')}{' '}
-                <Text style={styles.termsText}>{translate('wallet.common.termsServices')}</Text>
-              </Text>
-            </View>
-
-            {isCheckError &&
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.errorText}>
-                  {modalVisible
-                    ? 'This field is require. It must be greater than 0'
-                    : 'Please tick to agree service button to send transaction.'
-                  }
-                </Text>
-              </View>}
-
-            <View style={styles.makkeOfferGroupButtonView}>
-              <GroupButton
-                leftText={translate('common.Confirm')}
-                leftDisabled={false}
-                leftLoading={false}
-                onLeftPress={() => {
-                  if (!isCheck) {
-                    setIsCheckError(true)
-                  } else {
-                    setIsCheckError(false)
-                  }
-                }}
-                rightText={translate('common.topUp')}
-                rightDisabled={false}
-                rightLoading={false}
-                onRightPress={() => {
-                  if (!isCheck) {
-                    setIsTopUpError(true)
-                  } else {
-                    setIsTopUpError(false)
-                  }
-                }}
-                rightStyle={styles.rightGroupButton}
-                rightTextStyle={styles.rightGroupButtonText}
-              />
-            </View>
-          </View>
-        </Modal>
-      </View>
-    )
-  }
 
   //================== Render Group Button Function ==================
 
@@ -1440,14 +788,14 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const NotOnSaleAction = () => {
-    if (compareAddress(walletAddress, ownerAddress)) {
+    if (compareAddress(wallet?.address, ownerAddress)) {
       return (
         <View style={styles.buybutton}>
           <GroupButton
             leftText={translate('common.sell')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => { setSellVisible(true) }}
+            onLeftPress={() => { }}
             rightHide
           />
         </View>
@@ -1459,7 +807,7 @@ const DetailScreen = ({ navigation, route }) => {
           leftText={translate('common.makeOffer')}
           leftDisabled={false}
           leftLoading={false}
-          onLeftPress={() => { setModalVisible(true) }}
+          onLeftPress={() => { }}
           rightHide
         />
       </View>
@@ -1467,19 +815,18 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const OnFixPriceAction = () => {
-    if (compareAddress(walletAddress, ownerAddress)) {
+    if (compareAddress(wallet?.address, ownerAddress)) {
       return (
         <View style={styles.buybutton}>
           <GroupButton
             leftText={translate('common.cancelResell')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => { setCancel(true) }}
-
+            onLeftPress={() => { }}
             rightText={translate('common.editPrice')}
             rightDisabled={false}
             rightLoading={false}
-            onRightPress={() => { setPriceEdit(true) }}
+            onrightPress={() => { }}
             rightStyle={styles.rightButton}
             rightTextStyle={styles.rightButtonText}
           />
@@ -1492,11 +839,11 @@ const DetailScreen = ({ navigation, route }) => {
           leftText={translate('common.buy')}
           leftDisabled={false}
           leftLoading={false}
-          onLeftPress={() => { setCheckOut(true) }}
+          onLeftPress={() => { }}
           rightText={translate('common.makeOffer')}
           rightDisabled={false}
           rightLoading={false}
-          onRightPress={() => { setModalVisible(true) }}
+          onrightPress={() => { }}
           rightStyle={styles.rightButton}
           rightTextStyle={styles.rightButtonText}
         />
@@ -1519,20 +866,13 @@ const DetailScreen = ({ navigation, route }) => {
 
     const endCoundownTime = (finalTime - nowTimeStamp) / 1000;
 
-    const callbackCoundown = () => {
-      setIsWaiting(true)
-      setTimeout(() => {
-        getNFTDetails()
-      }, 50000)
-    }
-
     const CountdownTime = () => {
       return (
         <View>
           <CountDown
             size={18}
             until={endCoundownTime}
-            onFinish={() => callbackCoundown()}
+            onFinish={() => { }}
             digitStyle={styles.countDownDigit}
             digitTxtStyle={styles.countDownText}
             separatorStyle={styles.countDownText}
@@ -1601,28 +941,27 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.ON_AUCTION} />
-        {compareAddress(walletAddress, ownerAddress)
-          ?
-          (<View style={CommonStyles.flexRow}>
+        {compareAddress(wallet?.address, ownerAddress) ? (
+          <View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.cancelAuction')}
               leftDisabled={false}
               leftLoading={false}
-              onLeftPress={() => { setCancelAuctionModal(true) }}
+              onLeftPress={() => { }}
               rightHide
             />
           </View>
-          ) : (
-            <View style={CommonStyles.flexRow}>
-              <GroupButton
-                leftText={translate('common.placeABid')}
-                leftDisabled={false}
-                leftLoading={false}
-                onLeftPress={() => { }}
-                rightHide
-              />
-            </View>
-          )}
+        ) : (
+          <View style={CommonStyles.flexRow}>
+            <GroupButton
+              leftText={translate('common.placeABid')}
+              leftDisabled={false}
+              leftLoading={false}
+              onLeftPress={() => { }}
+              rightHide
+            />
+          </View>
+        )}
       </View>
     );
   };
@@ -1631,31 +970,28 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.CANCEL_AUCTION} />
-        {compareAddress(walletAddress, ownerAddress)
-          ?
-          (<View style={CommonStyles.flexRow}>
+        {compareAddress(wallet?.address, ownerAddress) ? (
+          <View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.reclaimNFT')}
               leftDisabled={false}
               leftLoading={false}
-              // onLeftPress={() => { setVisible(true), openModal() }}
-              onLeftPress={() => { setReclaimModal(true) }}
+              onLeftPress={() => { }}
               rightHide
             />
           </View>
-          ) : (
-            <View style={CommonStyles.flexRow}>
-              <GroupButton
-                leftText={translate('common.auctionEnd')}
-                leftDisabled={true}
-                leftLoading={false}
-                onLeftPress={() => { }}
-                rightHide
-              />
-            </View>)
-        }
-        {/* {ModalBody()} */}
-      </View >
+        ) : (
+          <View style={CommonStyles.flexRow}>
+            <GroupButton
+              leftText={translate('common.auctionEnd')}
+              leftDisabled={false}
+              leftLoading={false}
+              onLeftPress={() => { }}
+              rightHide
+            />
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -1663,17 +999,16 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.UPCOMMING_AUCTION} />
-        {compareAddress(walletAddress, ownerAddress) ?
-          (<GroupButton
+        {compareAddress(wallet?.address, ownerAddress) ? (
+          <GroupButton
             leftText={translate('common.cancelAuction')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => { setCancelAuctionModal(true) }}
+            onLeftPress={() => { }}
             rightHide
           />
-          ) : null
-        }
-      </View >
+        ) : null}
+      </View>
     );
   };
 
@@ -2053,8 +1388,12 @@ const DetailScreen = ({ navigation, route }) => {
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
         icon={detailsImg}>
-        {renderDetail('wallet.common.contractAddress', 'address', showContractAddress(item))}
-        {renderDetail('wallet.common.nftId', '', nftTokenId)}
+        {renderDetail(
+          'wallet.common.contractAddress',
+          'address',
+          showContractAddress(item),
+        )}
+        {renderDetail('wallet.common.nftId', '', _tokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
         {renderDetail(
           'wallet.common.blockChainType',
@@ -3870,63 +3209,6 @@ const DetailScreen = ({ navigation, route }) => {
             {renderBidNTradingHistory('offers')}
             {renderBidNTradingHistory('trading')}
             {renderMoreCollection()}
-
-            {editPriceModal()}
-            {ModalBody()}
-            {placeABidModal()}
-            {sellNftModal()}
-
-            <TransactionPending
-              isVisible={openTransactionPending}
-              setVisible={setOpenTransactionPending}
-            />
-            <ShowModal
-              isVisible={cancelAuctionModal}
-              title={translate('common.cancelAuction')}
-              description={translate('common.areYouWantCancelAuction')}
-              closeModal={modalClose}
-              onRightPress={cancelAuctionApi}
-            />
-            <ShowModal
-              isVisible={reclaimModal}
-              title={translate('common.reclaimNFT')}
-              description={translate('common.areYouWantReclaimNFT')}
-              closeModal={closeReclaimModal}
-              onRightPress={reClaimApi}
-            />
-            <ShowModal
-              isVisible={cancel}
-              title={translate('common.cancelResell')}
-              description={translate('common.cancellingYourlistingWillUnPublish')}
-              closeModal={cancelModal}
-              onRightPress={cancelModalConfirm}
-            />
-
-            <DatePicker
-              modal
-              open={openDate}
-              date={date}
-              onConfirm={(date) => {
-                setOpendate(false)
-                setDate(date)
-              }}
-              onCancel={() => {
-                setOpendate(false)
-              }}
-            />
-
-            <DatePicker
-              modal
-              open={close}
-              date={closeDate}
-              onConfirm={(date) => {
-                setClose(false)
-                setCloseDate(date)
-              }}
-              onCancel={() => {
-                setClose(false)
-              }}
-            />
           </ScrollView>
         </AppBackground>
       </SafeAreaView>
