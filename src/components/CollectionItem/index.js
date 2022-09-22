@@ -28,6 +28,7 @@ export default function CollectionItem(props) {
     blind,
     address,
     isCollection,
+    verified,
     cryptoAllowed,
     colId
   } = props;
@@ -138,7 +139,7 @@ export default function CollectionItem(props) {
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
-              {!collectionTab && renderVerifiedCollection()}
+              {verified === 1 && renderVerifiedCollection()}
             </View>
             {!isCollection && (
               <Text style={styles.byUser}>{collectionTab ? `${getByUser()}` : `by ${getByUser()}`}</Text>
@@ -147,8 +148,8 @@ export default function CollectionItem(props) {
           <View style={collectionTab ? styles.bottomWrap2 :  styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            {count <= 1 ? <Text style={styles.count}>{count ? count : 0} Item</Text> :
-            <Text style={styles.count}>{count ? count : 0} Items</Text>}
+            {count <= 1 ? <Text style={styles.count}>{count ? count : 0} {translate('common.ITEM')}</Text> :
+            <Text style={styles.count}>{count ? count : 0} {translate('common.ITEMS')}</Text>}
             {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>} */}

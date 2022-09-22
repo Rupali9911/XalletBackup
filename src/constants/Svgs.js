@@ -59,6 +59,7 @@ import LeftArrowWhiteIcon from 'src/assets/svgs/icon-arrow-left-white.svg';
 import RightArrowGreyIcon from 'src/assets/svgs/icon-arrow-right-grey.svg';
 import BottomArrowIcon from 'src/assets/svgs/icon-arrow-bottom.svg';
 import SettingIcon from 'src/assets/svgs/icon-setting.svg';
+import SettingIconBlack from 'src/assets/svgs/icon-setting-black.svg';
 import CircleCloseIcon from 'src/assets/svgs/icon-circle-close.svg';
 import SendMessageIcon from 'src/assets/svgs/icon-send-message.svg';
 import PhoneIcon from 'src/assets/svgs/icon-phone.svg';
@@ -67,14 +68,21 @@ import PolygonIcon from 'src/assets/svgs/icon-polygon.svg';
 import Ethereum from 'src/assets/svgs/icon-etherium.svg';
 // import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
 import BitmapIcon from 'src/assets/svgs/icon-smart-chain.svg';
-
+import CopyToClipboard from 'src/assets/svgs/icon-copyToClipboard.svg'
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
-import TwiiterIcon from 'src/assets/svgs/icon-twitter.svg';
+import TwitterIcon from 'src/assets/svgs/icon-twitter.svg';
+import TwitterIconNew from 'src/assets/svgs/icon-twitter-new.svg';
 import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
 import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
 import ThreeDotsVerticalIcon from 'src/assets/svgs/icon-three-dots-vertical.svg';
 import VerficationIcon from 'src/assets/svgs/icon-verified-nft.svg';
 import NewPolygonIcon from 'src/assets/svgs/icon-new-polygon.svg'
+import EditImage from 'src/assets/svgs/icon-edit-image.svg'
+import CopyProfile from 'src/assets/svgs/icon-copy-profile.svg'
+import ArtistSvg from 'src/assets/svgs/icon-artist.svg'
+import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg'
+import SuccessIcon from 'src/assets/svgs/icon-toast-success.svg'
+import ErrorIcon from 'src/assets/svgs/icon-toast-error.svg'
 
 export default {
   GirlIcon,
@@ -123,7 +131,9 @@ export default {
   BookMarkIcon,
   PlayButtonIcon,
   ConnectSmIcon,
-
+  CopyToClipboard,
+  EditImage,
+  CopyProfile,
   FitRedIcon,
   CartRedIcon,
   StoreActiveIcon,
@@ -137,6 +147,7 @@ export default {
   RightArrowGreyIcon,
   BottomArrowIcon,
   SettingIcon,
+  SettingIconBlack,
   CircleCloseIcon,
   SendMessageIcon,
   PhoneIcon,
@@ -147,8 +158,13 @@ export default {
   NewPolygonIcon,
   VerficationIcon,
   FantaseedIcon,
-  TwiiterIcon,
+  TwitterIcon,
+  TwitterIconNew,
   FacebookIcon,
   InstagramIcon,
+  ArtistSvg,
+  ArtistSvgI,
+  SuccessIcon,
+  ErrorIcon,
   ThreeDotsVerticalIcon,
 };

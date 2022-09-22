@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
+import { UserErrorMessage } from '../../constants';
 
 import {
   CONNECT_MODAL_STATE,
@@ -18,15 +19,17 @@ import {
   UPDATE_BACKUP,
   UPDATE_ASYNC_PASSCODE,
   LOG_OUT,
+  SET_TOAST_MESSAGE
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
 import { translate } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../common/function';
 import { setConnectedApps } from './walletReducer';
-import sendRequest from '../../helpers/AxiosApiRequest';
+import sendRequest, { getAccessToken } from '../../helpers/AxiosApiRequest';
 import { reject } from 'lodash';
 import { resolve } from 'path-browserify';
+import { Alert } from 'react-native';
 
 const initialState = {
   loading: false,
@@ -40,7 +43,8 @@ const initialState = {
   passcodeAsyncStatus: false,
   isBackup: false,
   showSuccess: false,
-  connectModalState: false
+  connectModalState: false,
+  toastMsg: null,
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -118,8 +122,7 @@ export default UserReducer = (state = initialState, action) => {
       };
 
     case UPDATE_PROFILE:
-      let _data = state.userData;
-      _data.user = action.payload;
+      let _data = action.payload;
       return {
         ...state,
         userData: { ..._data },
@@ -137,6 +140,12 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         wallet: null,
       };
+     
+      case SET_TOAST_MESSAGE:
+        return {
+          ...state,
+          toastMsg : action.payload,
+        };
     default:
       return state;
   }
@@ -174,7 +183,7 @@ export const setUserData = data => ({
   payload: data,
 });
 
-export const upateUserData = data => ({
+export const updateUserData = data => ({
   type: UPDATE_PROFILE,
   payload: data,
 });
@@ -205,6 +214,11 @@ export const logout = () => ({
 export const _logout = () => ({
   type: 'USER_LOGGED_OUT',
 });
+
+export const setToastMsg =(data)=>({
+  type : SET_TOAST_MESSAGE,
+  payload : data
+})
 
 export const startLoader = () => dispatch =>
   new Promise((resolve, reject) => {
@@ -252,7 +266,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     //   .then(response => response.json())
     //   .then(res => {
     //     if (typeof (res.data) !== 'string' && res.data) {
-    //       dispatch(upateUserData(res.data));
+    //       dispatch(updateUserData(res.data));
 
     //     }
     //     dispatch(endMainLoading());
@@ -280,7 +294,7 @@ export const loadProfileFromAsync = (id) => (dispatch) =>
     })
       .then(res => {
         if (typeof (res.data) !== 'string' && res.data) {
-          dispatch(upateUserData(res.data));
+          dispatch(updateUserData(res.data));
         }
         resolve()
       })
@@ -337,13 +351,11 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
           );
           resolve();
         } else {
-          console.log('error 3');
           dispatch(endLoading());
           reject(response);
         }
       })
       .catch(err => {
-        console.log('error', err);
         dispatch(endLoading());
         reject(err);
       });
@@ -377,8 +389,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
   await axios
     .post(`${BASE_URL}/user/update-profile-image`, formData, { headers: headers })
     .then(res => {
-      console.log('Response from update-profile-image', res.data.data)
-      dispatch(upateUserData(res.data.data));
+      dispatch(updateUserData(res.data.data));
     })
     .catch(err => {
       dispatch(endLoading());
@@ -402,67 +413,43 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     });
 };
 
-export const updateProfile =
-  (props, callBack) => async (dispatch, getState) => {
-    dispatch(startLoading());
-
-    const { data } = getState().UserReducer;
-    const config = {
-      method: 'post',
-      url: `${BASE_URL}/user/update-user-profile`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${data.token}`,
-      },
-      data: props,
-    };
-
-    await axios(config)
-      .then(res => {
-        console.log('res.data.data updateProfile', res.data.data)
-        let data = res.data.data;
-        dispatch(upateUserData(data));
-        dispatch(endLoading());
-        callBack();
+export const fetchData = (id) => {
+  return (dispatch) => {
+    const url = `${NEW_BASE_URL}/users/${id}`
+    sendRequest(url)
+      .then((res) => {
+        dispatch(updateUserData(res))
       })
-      .catch(err => {
-        dispatch(endLoading());
+  }
+}
 
-        if (err.response.status === 401) {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.sessionexpired'),
-            () => {
-              console.log(err);
-            },
-          );
-          dispatch(signOut());
-          return;
-        }
-        if (err.response.data.data === 'email already taken') {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.emailexists'),
-            () => {
-              console.log(err);
-            },
-          );
-        } else if (err.response.data.data === 'username already taken') {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.usrnameexists'),
-            () => {
-              console.log(err.response.data.data);
-            },
-          );
-        } else {
-          // alertWithSingleBtn(
-          //   translate('wallet.common.alert'),
-          //   translate('wallet.common.error.networkFailed'),
-          //   () => {
-          //     console.log(err);
-          //   },
-          // );
-        }
-      });
+
+
+export const updateProfile =
+  (props, id) => async (dispatch) => {
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/update-profile`,
+      method: 'PUT',
+      data: props
+    }).then((res) => {
+      dispatch(fetchData(id))
+      if (UserErrorMessage.hasOwnProperty(res.messageCode)) {  
+        let key = UserErrorMessage[res.messageCode].key
+        dispatch(setToastMsg({error : true , msg : translate(`common.${key}`)}))
+      }
+    })
   };
+
+export const verifyEmail = (email) =>
+  async (dispatch, getState) => {
+    const { userData } = getState().UserReducer;
+    const id = userData.userWallet.address
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/verify-email`,
+      method: 'POST',
+      data: { account: email }
+    })
+      .then(() => {
+        dispatch(fetchData(id))
+      })
+  }

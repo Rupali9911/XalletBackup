@@ -59,6 +59,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
 import AiChat from './components/AiChat';
+import WebView from './components/WebView';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -78,6 +79,10 @@ const TabComponent = () => {
   const { userData } = useSelector(state => state.UserReducer);
   const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
+
+  const { UserReducer } = useSelector(state => state);
+  const id = UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
+
 
   React.useEffect(() => {
     if (showSuccess || isCreate || connectModalState) {
@@ -291,6 +296,7 @@ const AppRoutes = () => {
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
           <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
@@ -310,6 +316,7 @@ const AppRoutes = () => {
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
           <Stack.Screen name="AiChat" component={AiChat}/>
+          <Stack.Screen name="WebView" component={WebView}/>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

@@ -1,3 +1,8 @@
 {
-    "files.autoSave": "off"
+<<<<<<< HEAD
+    "files.autoSave": "off",
+    "java.configuration.updateBuildConfiguration": "interactive"
+=======
+    "files.autoSave": "afterDelay"
+>>>>>>> 72d6f9a6eeb8bc8d63d1199e7cb0b8f63a04c9ad
 }

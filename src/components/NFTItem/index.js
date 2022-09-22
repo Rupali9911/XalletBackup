@@ -14,8 +14,9 @@ import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
 import ProfileImg from '../../assets/pngs/default_profile_img.png'
 import Ethereum from '../../assets/pngs/ethereum.png'
 import { handleLike } from '../../screens/discover/discoverItem';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
-export default function NFTItem(props) {
+export default function NFTItem(props,{ navigation }) {
   const dispatch = useDispatch();
 
   // ======================= Props Destructing =======================
@@ -40,7 +41,8 @@ export default function NFTItem(props) {
 
   //================== Components State Declaration ===================  
   const [isLike, setIsLike] = useState(Number(item.isLike))
-  // const [liked,setLiked]
+  const screenNavigation = useNavigation() 
+
   //================== Render Me Collection Images Function ===================
   const renderMeCollection = () => {
     return (
@@ -166,6 +168,7 @@ export default function NFTItem(props) {
 
   //================== Render Name and Creator Name Function ===================
   const renderNameNcreatorName = (isCollection) => {
+    // console.log('This item is render for name and iscollction : ', isCollection, item);
     if (isCollection) {
       return (
         <View style={styles.nftName}>
@@ -197,9 +200,9 @@ export default function NFTItem(props) {
     switch (marketplaceStatus) {
       case NFT_MARKET_STATUS.NOT_ON_SALE:
         return (
-          <Text style={styles.statusNotOnSale}>
-            {translate('common.notforsale')}
-          </Text>
+          <Text style={styles.statusSoldOut}>
+            {translate('common.notOnSell')}
+          </Text> 
         )
       case NFT_MARKET_STATUS.ON_FIX_PRICE:
         return (
@@ -335,13 +338,15 @@ export default function NFTItem(props) {
         style={styles.tokenIcon2}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity activeOpacity={1} 
+        onPress={()=>screenNavigation.navigate('Profile',{from : 'nftItem' , id : item.creator.address})}>
           {item?.creator?.avatar ?
             <Image style={styles.creatorIcon} source={{ uri: item?.creator?.avatar }} /> :
             <Image style={styles.creatorIcon} source={ProfileImg} />}
         </TouchableOpacity>
         <View style={styles.ownerContainer}>
-          <TouchableOpacity activeOpacity={1}>
+          <TouchableOpacity activeOpacity={1} 
+          onPress={()=>screenNavigation.navigate('Profile',{from : 'nftItem' , id : item.owner.address})}>
             {item?.owner?.avatar ?
               <Image style={styles.ownerIcon} source={{ uri: item?.owner?.avatar }} /> :
               <Image style={styles.ownerIcon} source={ProfileImg} />}
@@ -659,7 +664,9 @@ export default function NFTItem(props) {
   // =================== End Commented Code =================================
 
   //=====================(Main return Function)=============================
+  // console.log('THis is ismecollection and ishotcollection : ', isMeCollection, isCollection)
   return (
+    
     <>
       {isMeCollection ? renderMeCollection() : isCollection ? renderNFTCollectionItem(true) : renderNFTCollectionItem(false)}
     </>

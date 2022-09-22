@@ -1,5 +1,4 @@
 import { useIsFocused } from '@react-navigation/native';
-import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -8,73 +7,58 @@ import {
   Linking,
   SafeAreaView,
   ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  TextInput
+  Text, TextInput, TouchableOpacity,
+  View
 } from 'react-native';
+import CountDown from 'react-native-countdown-component';
+import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
 import Modal from 'react-native-modal';
+import { ActivityIndicator } from 'react-native-paper';
 import {
-  Row, Table, Cell, TableWrapper
-} from 'react-native-table-component';
+  Menu, MenuOption, MenuOptions, MenuTrigger
+} from 'react-native-popup-menu';
+import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
+import cancelImg from "../../../assets/images/cancel.png";
 import detailsImg from '../../../assets/images/details.png';
-import grid from '../../../assets/images/grid.png';
+import historyImg from '../../../assets/images/history.png';
 import tradingImg from '../../../assets/images/trading.png';
-import historyImg from '../../../assets/images/history.png'
-import { networkType } from '../../common/networkType';
+import { NEW_BASE_URL } from '../../common/constants';
+import { twitterLink } from '../../common/function';
 import { AppHeader, C_Image, GroupButton } from '../../components';
+import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
-import NFTDetailDropdown from '../../components/NFTDetailDropdown';
-import PaymentMethod from '../../components/PaymentMethod';
-import PaymentNow from '../../components/PaymentMethod/payNowModal';
-import SuccessModalContent from '../../components/successModal';
-import Colors from '../../constants/Colors';
-import { hp, wp } from '../../constants/responsiveFunct';
-import { getAllCards, setPaymentObject } from '../../store/reducer/paymentReducer';
-import { alertWithSingleBtn, divideNo, numberWithCommas } from '../../utils';
-import { translate } from '../../walletUtils';
-import { basePriceTokens } from '../../web3/config/availableTokens';
-import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
-import { CardField, TabModal } from '../createNFTScreen/components';
-import styles from './styles';
-import AppButton from '../../components/appButton';
-import CommonStyles from '../../constants/styles';
-import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
-import { ActivityIndicator } from 'react-native-paper';
-import { currencyInDollar } from '../wallet/functions';
-import { getBaseCurrency } from '../../utils/parseNFTObj';
-import AppBackground from '../../components/appBackground'
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import addComma from '../../utils/insertComma';
-import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData } from '../../utils/detailHelperFunctions';
-import { isChinaApp } from '../../web3/config/networkType';
-import { handleLike } from '../discover/discoverItem';
-import { Verifiedcollections } from '../../components/verifiedCollection';
-import { AMOUNT_BID_HIGHER, CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SERVICE_FEE, SIZE10, SORT_TRADING_HISTORY } from '../../constants';
-import { ApiRequest } from '../../helpers/ApiRequest';
-import NFTItem from '../../components/NFTItem';
-import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
-import { formatAddress } from '../../constants/addressFormat';
-import { getDateString, getExpirationDate } from '../../constants/date';
-import CountDown from 'react-native-countdown-component';
-import { twitterLink } from '../../common/function';
-import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
-import Images from '../../constants/Images';
-import ShowModal from "./modal"
-import cancelImg from "../../../assets/images/cancel.png"
 import Checkbox from '../../components/checkbox';
-import { TRANSACTION_ACTION } from '../../constants/transaction';
-import { toFixCustom } from '../createNFTScreen/helperFunction';
-import { getERC20Tokens } from '../../utils/token';
+import NFTDetailDropdown from '../../components/NFTDetailDropdown';
+import NFTItem from '../../components/NFTItem';
+import TransactionPending from "../../components/Popup/transactionPending";
+import SuccessModalContent from '../../components/successModal';
+import { AMOUNT_BID_HIGHER, CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SERVICE_FEE, SORT_TRADING_HISTORY } from '../../constants';
+import { formatAddress } from '../../constants/addressFormat';
+import Colors from '../../constants/Colors';
+import { getDateString, getExpirationDate } from '../../constants/date';
+import Images from '../../constants/Images';
+import { hp, wp } from '../../constants/responsiveFunct';
+import CommonStyles from '../../constants/styles';
+import {
+  getEventByValue,
+  getFromAddress, getToAddress
+} from '../../constants/tradingHistory';
+import sendRequest from '../../helpers/AxiosApiRequest';
+import { alertWithSingleBtn, numberWithCommas } from '../../utils';
+import { collectionClick } from '../../utils/detailHelperFunctions';
 import { getTokenNameFromId } from '../../utils/nft';
+import { getERC20Tokens } from '../../utils/token';
+import { translate } from '../../walletUtils';
+import { toFixCustom } from '../createNFTScreen/helperFunction';
+import { handleLike } from '../discover/discoverItem';
 import { handleTransactionError, sendCustomTransaction } from '../wallet/functions/transactionFunctions';
-import TransactionPending from "../../components/Popup/transactionPending"
-import DatePicker from 'react-native-date-picker';
+import ShowModal from "./modal";
+import styles from './styles';
 import { validatePrice } from './supportiveFunctions';
 
 const Web3 = require('web3');
@@ -87,24 +71,23 @@ const {
   TwiiterIcon,
   FacebookIcon,
   InstagramIcon,
-  VerficationIcon
+  VerficationIcon,
 } = SVGS;
 
-const DetailScreen = ({ navigation, route }) => {
+const DetailScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const { item, setNftItem } = route.params;
+  const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
+    route.params;
 
   // =============== Getting data from reducer ========================
   const { paymentObject } = useSelector(state => state.PaymentReducer);
   const { userData } = useSelector(state => state.UserReducer);
-  const { networkType } = useSelector(state => state.WalletReducer);
   const { networks } = useSelector(state => state.NetworkReducer);
-  // const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
@@ -124,7 +107,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [sellDetails, setSellDetails] = useState([]);
   const [currencyPrices, setCurrencyPrices] = useState({});
   const [priceInDollar, setPriceInDollar] = useState('');
-  const [nftPrice, setNFTPrice] = useState(item?.price ? item.price : '');
+  const [nftPrice, setNFTPrice] = useState('');
   const [payableInCurrency, setPayableInCurrency] = useState('');
   const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
@@ -152,7 +135,7 @@ const DetailScreen = ({ navigation, route }) => {
     translate('common.price'),
     translate('common.from'),
     translate('common.date'),
-    translate('common.expiration')
+    translate('common.expiration'),
   ]);
   const [filterTableList, setFilterTableList] = useState([]);
   const [tradingTableData1, setTradingTableData1] = useState([]);
@@ -224,21 +207,23 @@ const DetailScreen = ({ navigation, route }) => {
   // const [minBidPrice, setMinBidPrice] = useState('')
   // const fileType = mediaUrl ? mediaUrl?.split('.')[mediaUrl?.split('.').length - 1] : '';
 
-  const categoryType = detailNFT?.category ? detailNFT?.category : item?.category;
-  const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item.mediaUrl;
+  const categoryType = detailNFT?.category
+    ? detailNFT?.category
+    : item?.category;
+  const mediaUrl = detailNFT?.mediaUrl ? detailNFT.mediaUrl : item?.mediaUrl;
   const thumbnailUrl = detailNFT?.thumbnailUrl
-    ? detailNFT.thumbnailUrl :
-    categoryType === CATEGORY_VALUE.music
-      ? item.mediaUrl
-      : item?.thumbnailUrl
-  const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
-  const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId
-  const network = detailNFT?.network ? detailNFT.network : item?.network
-  const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
+    ? detailNFT.thumbnailUrl
+    : categoryType === CATEGORY_VALUE.music
+    ? item?.mediaUrl
+    : item?.thumbnailUrl;
+  // const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
+  const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId;
+  const network = detailNFT?.network ? detailNFT.network : item?.network;
+  // const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
   const walletAddress = userData?.userWallet?.address;
 
-  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 }
+  const hitSlop = {top: 5, bottom: 5, left: 5, right: 5};
 
   const auctionId = detailNFT?.saleData?.auction?.auctionId
   const saleId = detailNFT?.saleData?.fixPrice?.id
@@ -254,7 +239,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && networkName && collectionAddress && nftTokenId) {
       // // if (chainType) {
       // // if (chainAvailable) {
       // setBuyLoading(true);
@@ -280,7 +265,7 @@ const DetailScreen = ({ navigation, route }) => {
       //   })
 
     }
-  }, [isFocused]);
+  }, [isFocused, networkName, collectionAddress, nftTokenId]);
 
   // useEffect(() => {
   //   getCurrencyPrice(item?.price ? item.price : priceNFT);
@@ -291,7 +276,7 @@ const DetailScreen = ({ navigation, route }) => {
       // let filterValue = tradingTableData1.filter(o1 =>
       //   filterTableValue.some(o2 => o1[0] === o2),
       // );
-      setTradingTableData([])
+      setTradingTableData([]);
       getHistory('trading', filterTableValue);
       // setTradingTableData(filterValue)
     } else if (nftId) {
@@ -302,8 +287,8 @@ const DetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (nftId) {
-      getHistory('bid')
-      getOfferList()
+      getHistory('bid');
+      getOfferList();
       getRealtedNFT();
       const selectedNetwork = networks?.filter(item => item?.name === network?.networkName);
       setCurrentNetwork(selectedNetwork[0]);
@@ -344,10 +329,11 @@ const DetailScreen = ({ navigation, route }) => {
   // }, [singleNFT]);
 
   //===================== API Call Functions =========================
-  const getNFTDetails = (reload) => {
-    setLoad(true);
-    let networkName = typeof network === 'string' ? network : network?.networkName
-    let url = `${NEW_BASE_URL}/nfts/details`
+  
+  const getNFTDetails = async (reload) => {
+    // setLoad(true);
+    // let networkName = typeof network === 'string' ? network : network?.networkName
+    let url = `${NEW_BASE_URL}/nfts/details`;
 
     sendRequest({
       url,
@@ -355,12 +341,16 @@ const DetailScreen = ({ navigation, route }) => {
         networkName,
         collectionAddress,
         nftTokenId,
-        userId
-      }
+        userId,
+      },
     })
       .then(json => {
-        if (typeof json === 'object' && json?.creator && json?.collection && json?.owner) {
-
+        if (
+          typeof json === 'object' &&
+          json?.creator &&
+          json?.collection &&
+          json?.owner
+        ) {
           setNFTPrice(json?.price)
           setDetailNFT(json)
           setLike(Number(json?.isLike))
@@ -489,7 +479,7 @@ const DetailScreen = ({ navigation, route }) => {
         showBackButton
         title={translate('wallet.common.detail')}
         showRightComponent={
-          <View style={{ paddingRight: 10 }}>
+          <View style={{paddingRight: 10}}>
             <Menu
               onSelect={value => {
                 alertWithSingleBtn(
@@ -508,19 +498,19 @@ const DetailScreen = ({ navigation, route }) => {
           </View>
         }
       />
-    )
-  }
+    );
+  };
 
-  const renderMenuOption = (value) => {
+  const renderMenuOption = value => {
     return (
       <MenuOption value={value}>
-        <Text style={{ marginVertical: 10 }}>
+        <Text style={{marginVertical: 10}}>
           {value === 1 && translate('common.reportNft')}
           {value === 2 && translate('common.blockUser')}
         </Text>
       </MenuOption>
-    )
-  }
+    );
+  };
 
   //================== Render Banner Image/Video Function ==================
   const renderBannerImageVideo = () => {
@@ -540,18 +530,18 @@ const DetailScreen = ({ navigation, route }) => {
           toggleVideoPlay(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <View style={{ ...styles.modalImage }}>
+          <View style={{...styles.modalImage}}>
             {showThumb && (
               <C_Image
                 uri={thumbnailUrl}
                 imageStyle={styles.modalImage}
-              // isContain
+                // isContain
               />
             )}
             <Video
               key={videoKey}
               ref={refVideo}
-              source={{ uri: mediaUrl }}
+              source={{uri: mediaUrl}}
               repeat
               playInBackground={false}
               paused={!playVideo}
@@ -589,37 +579,39 @@ const DetailScreen = ({ navigation, route }) => {
             )}
             {videoLoadErr && (
               <View style={styles.videoPlayIconCont}>
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
                   <TouchableOpacity
                     onPress={() => {
                       setVideoLoadErr(false);
                       setVideoKey(videoKey + 1);
                     }}
-                    style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
-                    <Text style={styles.retry}>{translate('common.retryLoading')}</Text>
+                    style={{paddingHorizontal: 15, paddingVertical: 10}}>
+                    <Text style={styles.retry}>
+                      {translate('common.retryLoading')}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
-          <View style={{ ...styles.modalImage }}>
+          <View style={{...styles.modalImage}}>
             <C_Image
               uri={thumbnailUrl}
               imageStyle={styles.modalImage}
-            // isContain
+              // isContain
             />
           </View>
         ) : (
           <C_Image
             uri={mediaUrl}
             imageStyle={styles.modalImage}
-          // isContain
+            // isContain
           />
         )}
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   //================== Render Heart Icon Function ==================
   const renderHeartIcon = () => {
@@ -632,8 +624,8 @@ const DetailScreen = ({ navigation, route }) => {
         style={styles.likeButton}>
         {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   //================== Render Creator, Collection and Owner Function ==================
   const renderCreatorCollectionOwnerName = () => {
@@ -652,7 +644,11 @@ const DetailScreen = ({ navigation, route }) => {
         <TouchableOpacity
           disabled={collectionClick(collectCreat)}
           onPress={() => {
-            navigation.push('CollectionDetail', { item: collectCreat });
+            navigation.push('CollectionDetail', {
+              networkName: detailNFT?.network?.networkName,
+              contractAddress: detailNFT?.collection?.address,
+              launchpadId: detailNFT?.launchpadId,
+            });
           }}
           style={styles.personType}>
           {renderIconImage('collection', false)}
@@ -664,8 +660,8 @@ const DetailScreen = ({ navigation, route }) => {
           {renderIconImage('owner', false)}
         </TouchableOpacity>
       </View>
-    )
-  }
+    );
+  };
 
   const renderIconImage = (key, fromNFT) => {
     return (
@@ -673,55 +669,70 @@ const DetailScreen = ({ navigation, route }) => {
         <Image
           style={fromNFT ? styles.creatorImage : styles.iconsImage}
           source={
-            key === 'creator' ?
-              artistDetail?.avatar ? { uri: artistDetail.avatar } : IMAGES.DEFAULTPROFILE
+            key === 'creator'
+              ? artistDetail?.avatar
+                ? {uri: artistDetail.avatar}
+                : IMAGES.DEFAULTPROFILE
               : key === 'collection'
-                ? collectCreat ? { uri: collectCreat.avatar } : IMAGES.DEFAULTPROFILE
-                : key === 'owner' &&
-                  ownerDataN?.avatar ? { uri: ownerDataN.avatar } : IMAGES.DEFAULTPROFILE
-          } />
+              ? collectCreat
+                ? {uri: collectCreat.avatar}
+                : IMAGES.DEFAULTPROFILE
+              : key === 'owner' && ownerDataN?.avatar
+              ? {uri: ownerDataN.avatar}
+              : IMAGES.DEFAULTPROFILE
+          }
+        />
         <View>
-          {!fromNFT && <Text style={styles.personTypeText}>
-            {key === 'creator'
-              ? translate('common.creator')
-              : key === 'collection'
+          {!fromNFT && (
+            <Text style={styles.personTypeText}>
+              {key === 'creator'
+                ? translate('common.creator')
+                : key === 'collection'
                 ? translate('wallet.common.collection')
                 : key === 'owner' && translate('common.owner')}
-          </Text>}
-          {key !== 'collection' ?
-            <Text numberOfLines={1} style={fromNFT ? styles.creatorName : styles.personName}>
+            </Text>
+          )}
+          {key !== 'collection' ? (
+            <Text
+              numberOfLines={1}
+              style={fromNFT ? styles.creatorName : styles.personName}>
               {key === 'creator' ? creatorName : key === 'owner' && ownerName}
             </Text>
-            :
+          ) : (
             <View style={CommonStyles.flexRow}>
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
               {collectCreat?.isOfficial === 1 && <VerficationIcon />}
-            </View>}
+            </View>
+          )}
         </View>
       </>
-    )
-  }
+    );
+  };
 
   //================== Render Creator and NFT Name Function ==================
   const renderCreatorAndNFTName = () => {
     return (
       <>
-        {!load && <Text style={styles.nftTitle} ellipsizeMode="tail">
-          {creatorName}
-        </Text>}
-        {!load && <Text style={styles.nftName}>
-          {detailNFT ? detailNFT?.name : item?.name}
-        </Text >}
+        {!load && (
+          <Text style={styles.nftTitle} ellipsizeMode="tail">
+            {creatorName}
+          </Text>
+        )}
+        {!load && (
+          <Text style={styles.nftName}>
+            {detailNFT ? detailNFT?.name : item?.name}
+          </Text>
+        )}
       </>
-    )
-  }
+    );
+  };
 
   //================== Render NFT Price and Tokens Function ==================
   const renderNFTPriceNToken = () => {
     if (detailNFT.marketNftStatus === NFT_MARKET_STATUS.NOT_ON_SALE) {
-      return null
+      return null;
     }
 
     let label, tokenIcon, price, tokenPrice, priceToUsd;
@@ -731,47 +742,43 @@ const DetailScreen = ({ navigation, route }) => {
       detailNFT.marketNftStatus === NFT_MARKET_STATUS.CANCEL_AUCTION ||
       detailNFT.marketNftStatus === NFT_MARKET_STATUS.END_AUCTION
     ) {
-      label = detailNFT?.saleData?.auction?.highestPrice ===
+      label =
+        detailNFT?.saleData?.auction?.highestPrice ===
         detailNFT?.saleData?.auction?.startPrice
-        ? translate('common.minimumBid') : translate('common.highestBid')
-      tokenIcon = detailNFT?.saleData?.auction?.tokenIcon
-      price = detailNFT?.saleData?.auction?.highestPrice
-      tokenPrice = detailNFT?.saleData?.auction?.tokenPrice
-      priceToUsd = detailNFT?.saleData?.auction?.priceToUsd
+          ? translate('common.minimumBid')
+          : translate('common.highestBid');
+      tokenIcon = detailNFT?.saleData?.auction?.tokenIcon;
+      price = detailNFT?.saleData?.auction?.highestPrice;
+      tokenPrice = detailNFT?.saleData?.auction?.tokenPrice;
+      priceToUsd = detailNFT?.saleData?.auction?.priceToUsd;
     } else {
-      tokenIcon = detailNFT?.saleData?.fixPrice?.tokenIcon
-      price = detailNFT?.saleData?.fixPrice?.price
-      tokenPrice = detailNFT?.saleData?.fixPrice?.tokenPrice
-      priceToUsd = detailNFT?.saleData?.fixPrice?.priceToUsd
+      tokenIcon = detailNFT?.saleData?.fixPrice?.tokenIcon;
+      price = detailNFT?.saleData?.fixPrice?.price;
+      tokenPrice = detailNFT?.saleData?.fixPrice?.tokenPrice;
+      priceToUsd = detailNFT?.saleData?.fixPrice?.priceToUsd;
     }
 
     return (
-      <View style={{ paddingHorizontal: SIZE(12), paddingBottom: SIZE(5) }}>
-        {label && <Text style={styles.labelText}>
-          {label}
-        </Text>}
-        <View
-          style={styles.priceView}>
-          <Image
-            style={styles.tokenIcon}
-            source={{ uri: tokenIcon }}
-          />
+      <View style={{paddingHorizontal: SIZE(12), paddingBottom: SIZE(5)}}>
+        {label && <Text style={styles.labelText}>{label}</Text>}
+        <View style={styles.priceView}>
+          <Image style={styles.tokenIcon} source={{uri: tokenIcon}} />
 
-          {!load && <Text style={styles.price}>
-            {price ? numberWithCommas(Number(price).toFixed(2)) : ''}
-            <Text style={styles.priceUnit}>
-              {` ${tokenPrice}`}
-              <Text style={styles.dollarText}>
-                {priceToUsd
-                  ? ` ($${parseFloat(priceToUsd).toFixed(2)})`
-                  : ''}
+          {!load && (
+            <Text style={styles.price}>
+              {price ? numberWithCommas(Number(price).toFixed(2)) : ''}
+              <Text style={styles.priceUnit}>
+                {` ${tokenPrice}`}
+                <Text style={styles.dollarText}>
+                  {priceToUsd ? ` ($${parseFloat(priceToUsd).toFixed(2)})` : ''}
+                </Text>
               </Text>
             </Text>
-          </Text>}
+          )}
         </View>
       </View>
-    )
-  }
+    );
+  };
 
   //================== Render Description Function ==================
   const renderDescription = () => {
@@ -782,10 +789,10 @@ const DetailScreen = ({ navigation, route }) => {
             {detailNFT?.description.trim()}
           </Text>
         </View>
-      )
+      );
     }
     return null;
-  }
+  };
 
   const cancelModalConfirm = () => {
   }
@@ -1503,19 +1510,18 @@ const DetailScreen = ({ navigation, route }) => {
   const renderContentAction = () => {
     switch (detailNFT?.marketNftStatus) {
       case NFT_MARKET_STATUS.NOT_ON_SALE:
-        return <NotOnSaleAction />
+        return <NotOnSaleAction />;
       case NFT_MARKET_STATUS.ON_FIX_PRICE:
-        return <OnFixPriceAction />
+        return <OnFixPriceAction />;
       case NFT_MARKET_STATUS.ON_AUCTION:
-        return <OnAuctionAction />
+        return <OnAuctionAction />;
       case NFT_MARKET_STATUS.CANCEL_AUCTION:
       case NFT_MARKET_STATUS.END_AUCTION:
-        return <EndAuctionAction />
+        return <EndAuctionAction />;
       default:
-        return <UpCommingAuctionAction />
+        return <UpCommingAuctionAction />;
     }
-  }
-
+  };
 
   const NotOnSaleAction = () => {
     if (compareAddress(walletAddress, ownerAddress)) {
@@ -1529,7 +1535,7 @@ const DetailScreen = ({ navigation, route }) => {
             rightHide
           />
         </View>
-      )
+      );
     }
     return (
       <View style={styles.buybutton}>
@@ -1541,8 +1547,8 @@ const DetailScreen = ({ navigation, route }) => {
           rightHide
         />
       </View>
-    )
-  }
+    );
+  };
 
   const OnFixPriceAction = () => {
     if (compareAddress(walletAddress, ownerAddress)) {
@@ -1562,7 +1568,7 @@ const DetailScreen = ({ navigation, route }) => {
             rightTextStyle={styles.rightButtonText}
           />
         </View>
-      )
+      );
     }
     return (
       <View style={styles.buybutton}>
@@ -1579,21 +1585,21 @@ const DetailScreen = ({ navigation, route }) => {
           rightTextStyle={styles.rightButtonText}
         />
       </View>
-    )
-  }
+    );
+  };
 
-  const BidInfo = ({ status }) => {
+  const BidInfo = ({status}) => {
     const [isWaiting, setIsWaiting] = useState(false);
-    const auction = detailNFT?.saleData?.auction
-    const startTime = auction?.startTime
-    const endTime = auction?.endTime
+    const auction = detailNFT?.saleData?.auction;
+    const startTime = auction?.startTime;
+    const endTime = auction?.endTime;
 
-    const nowTimeStamp = Date.now()
-    const startTimeStamp = new Date(startTime).getTime()
-    const endTimeStamp = new Date(endTime).getTime()
+    const nowTimeStamp = Date.now();
+    const startTimeStamp = new Date(startTime).getTime();
+    const endTimeStamp = new Date(endTime).getTime();
 
-    const finalTime = nowTimeStamp < startTimeStamp
-      ? startTimeStamp : endTimeStamp
+    const finalTime =
+      nowTimeStamp < startTimeStamp ? startTimeStamp : endTimeStamp;
 
     const endCoundownTime = (finalTime - nowTimeStamp) / 1000;
 
@@ -1615,64 +1621,71 @@ const DetailScreen = ({ navigation, route }) => {
             digitTxtStyle={styles.countDownText}
             separatorStyle={styles.countDownText}
             timeToShow={['D', 'H', 'M', 'S']}
-            timeLabels={{ d: null, h: null, m: null, s: null }}
+            timeLabels={{d: null, h: null, m: null, s: null}}
             showSeparator
           />
         </View>
-      )
-    }
+      );
+    };
 
     const renderCoundown = () => {
       if (status === NFT_MARKET_STATUS.UPCOMMING_AUCTION) {
         return (
           <View style={CommonStyles.rowAlign}>
             {isWaiting ? (
-              <Text style={styles.marginRight}>{translate('common.auctionBeingUpdatedPleasewait')}</Text>
+              <Text style={styles.marginRight}>
+                {translate('common.auctionBeingUpdatedPleasewait')}
+              </Text>
             ) : (
               <>
-                <Text style={styles.marginRight}>{translate('common.auctionStartIn')}:</Text>
+                <Text style={styles.marginRight}>
+                  {translate('common.auctionStartIn')}:
+                </Text>
                 <CountdownTime />
               </>
             )}
           </View>
-        )
+        );
       }
       if (status === NFT_MARKET_STATUS.ON_AUCTION) {
         return (
           <View style={CommonStyles.rowAlign}>
             {isWaiting ? (
-              <Text style={styles.marginRight}>{translate('common.auctionBeingUpdatedPleasewait')}</Text>
+              <Text style={styles.marginRight}>
+                {translate('common.auctionBeingUpdatedPleasewait')}
+              </Text>
             ) : (
               <>
-                <Text style={styles.marginRight}>{translate('common.auctionEndIn')}:</Text>
+                <Text style={styles.marginRight}>
+                  {translate('common.auctionEndIn')}:
+                </Text>
                 <CountdownTime />
               </>
             )}
           </View>
-        )
+        );
       }
-      return null
-    }
+      return null;
+    };
 
     return (
-      <View style={{ paddingTop: 5, paddingBottom: 10 }}>
+      <View style={{paddingTop: 5, paddingBottom: 10}}>
         {renderCoundown()}
-        {auction?.highestBidder ?
+        {auction?.highestBidder ? (
           <Text style={{ paddingTop: SIZE(10) }}>
             {translate('common.highhestBidder')}:{' '}
             {auction?.highestBidder.slice(0, 7) + '...'}
           </Text>
-          : null}
+        ) : null}
       </View>
-    )
-  }
+    );
+  };
 
   const OnAuctionAction = () => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.ON_AUCTION} />
-        {compareAddress(walletAddress, ownerAddress)
-          ?
+        {compareAddress(walletAddress, ownerAddress) ? (
           <View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.cancelAuction')}
@@ -1682,7 +1695,7 @@ const DetailScreen = ({ navigation, route }) => {
               rightHide
             />
           </View>
-          :
+        ) : (
           <View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.placeABid')}
@@ -1692,17 +1705,16 @@ const DetailScreen = ({ navigation, route }) => {
               rightHide
             />
           </View>
-        }
+        )}
       </View>
-    )
-  }
+    );
+  };
 
   const EndAuctionAction = () => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.CANCEL_AUCTION} />
-        {compareAddress(walletAddress, ownerAddress)
-          ?
+        {compareAddress(walletAddress, ownerAddress) ? (
           <View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.reclaimNFT')}
@@ -1712,37 +1724,37 @@ const DetailScreen = ({ navigation, route }) => {
               rightHide
             />
           </View>
-          :
+        ) : (
           <View style={CommonStyles.flexRow}>
             <GroupButton
               leftText={translate('common.auctionEnd')}
               leftDisabled={true}
               leftLoading={false}
-              onLeftPress={() => { }}
+              onLeftPress={() => {}}
               rightHide
             />
           </View>
-        }
-        {/* {ModalBody()} */}
+        )}
       </View>
-    )
-  }
+    );
+  };
 
   const UpCommingAuctionAction = () => {
     return (
       <View>
         <BidInfo status={NFT_MARKET_STATUS.UPCOMMING_AUCTION} />
-        {compareAddress(walletAddress, ownerAddress) ?
+        {compareAddress(walletAddress, ownerAddress) ? (
           <GroupButton
             leftText={translate('common.cancelAuction')}
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => { setCancelAuctionModal(true) }}
             rightHide
-          /> : null}
+          />
+        ) : null}
       </View>
-    )
-  }
+    );
+  };
 
   // const renderGroupButton = () => {
   //   return (
@@ -1820,185 +1832,188 @@ const DetailScreen = ({ navigation, route }) => {
   // }
 
   //===================== Render Bid History Function =======================
-  const noDataRender = (history) => {
+  const noDataRender = history => {
     return (
       <Cell
         style={styles.emptyData(history)}
         data={translate('common.noDataFound')}
       />
-    )
-  }
+    );
+  };
 
-  const renderBidNTradingHistory = (history) => {
-    let listData = history === 'bid' ? sellDetails : history === 'offers' ? offerList : tradingTableData
+  const renderBidNTradingHistory = history => {
+    let listData =
+      history === 'bid'
+        ? sellDetails
+        : history === 'offers'
+        ? offerList
+        : tradingTableData;
     return (
       <NFTDetailDropdown
-        title={history === 'bid'
-          ? translate('wallet.common.bidHistory')
-          : history === 'offers'
+        title={
+          history === 'bid'
+            ? translate('wallet.common.bidHistory')
+            : history === 'offers'
             ? 'Offers'
             : translate('common.tradingHistory')
         }
         containerChildStyles={{
           height:
             listData?.length === 0
-              ? history === 'trading' ? hp(28) : hp(19)
+              ? history === 'trading'
+                ? hp(28)
+                : hp(19)
               : listData?.length < 5
-                ? hp(16) + (hp(4) * (history === 'trading' && listData.length <= 3 ? 3 : listData?.length))
-                : hp(35.7),
+              ? hp(16) +
+                hp(4) *
+                  (history === 'trading' && listData.length <= 3
+                    ? 3
+                    : listData?.length)
+              : hp(35.7),
         }}
         icon={
-          history === 'bid' ? historyImg
-            : history === 'offers' ? tradingImg : detailsImg
-        }
-      >
-        {history === 'trading' &&
+          history === 'bid'
+            ? historyImg
+            : history === 'offers'
+            ? tradingImg
+            : detailsImg
+        }>
+        {history === 'trading' && (
           <Filters
             value={filterTableValue}
             setValue={setFilterTableValue}
             setData={setFilterTableList}
             data={filterTableList}
-          />}
+          />
+        )}
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           // nestedScrollEnabled={true}
-          style={{ marginVertical: hp(2) }}>
-          <Table
-            borderStyle={styles.cellBorderStyle}>
+          style={{marginVertical: hp(2)}}>
+          <Table borderStyle={styles.cellBorderStyle}>
             <Row
-              data={history === 'trading' ? tradingTableHead : bidHistoryTableHead}
+              data={
+                history === 'trading' ? tradingTableHead : bidHistoryTableHead
+              }
               style={styles.head}
               textStyle={styles.text}
-              widthArr={history === 'trading' ? [200, 130, 180, 180, 200] : [130, 180, 180, 200]}
+              widthArr={
+                history === 'trading'
+                  ? [200, 130, 180, 180, 200]
+                  : [130, 180, 180, 200]
+              }
             />
             {history === 'bid'
               ? sellDetails?.length > 0
-                ? (sellDetails?.map((rowData, rowIndex) => {
-                  return (
-                    <TableWrapper
-                      key={rowIndex}
-                      style={CommonStyles.flexRow}>
-                      {rowData?.map((cellData, cellIndex) => {
-                        return (
-                          renderCell(cellIndex, cellData, rowIndex)
-                        );
-                      })}
-                    </TableWrapper>
-                  );
-                })) : (
-                  noDataRender()
-                )
-              : history === 'offers'
-                ? offerList?.length > 0
-                  ? (offerList?.map((rowData, rowIndex) => {
-                    let temprowData = rowData.slice(0, 4);
-                    let iconUri = rowData.find((e, i) => i === 4);
+                ? sellDetails?.map((rowData, rowIndex) => {
                     return (
-                      <TableWrapper
-                        key={rowIndex}
-                        style={CommonStyles.flexRow}>
-                        {temprowData?.map((cellData, cellIndex) => {
-                          return (
-                            renderCell(cellIndex, cellData, rowIndex, iconUri)
-                          );
+                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
+                        {rowData?.map((cellData, cellIndex) => {
+                          return renderCell(cellIndex, cellData, rowIndex);
                         })}
                       </TableWrapper>
                     );
-                  })) : (
-                    noDataRender()
-                  )
-                : tradingTableData.length > 0 ? (
-                  tradingTableData?.map((rowData, rowIndex) => {
+                  })
+                : noDataRender()
+              : history === 'offers'
+              ? offerList?.length > 0
+                ? offerList?.map((rowData, rowIndex) => {
+                    let temprowData = rowData.slice(0, 4);
+                    let iconUri = rowData.find((e, i) => i === 4);
                     return (
-                      <TableWrapper
-                        key={rowIndex}
-                        style={CommonStyles.flexRow}>
-                        {rowData?.map((cellData, cellIndex) => {
-                          let wid;
-                          if (cellIndex === 0) {
-                            wid = 200;
-                          }
-                          if (cellIndex === 1) {
-                            wid = 130;
-                          }
-                          if (cellIndex === 2) {
-                            wid = 180;
-                          }
-                          if (cellIndex === 3) {
-                            wid = 180;
-                          }
-                          if (cellIndex === 4) {
-                            wid = 200;
-                          }
-                          return (
-                            <Cell
-                              key={cellIndex}
-                              data={
-                                (cellIndex == 2 || cellIndex == 3) && cellData !== 'Null Address' ? (
-                                  renderAddress(cellData)
-                                ) : (
-                                  cellData
-                                )
-                              }
-                              textStyle={styles.text}
-                              width={wid}
-                            />
+                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
+                        {temprowData?.map((cellData, cellIndex) => {
+                          return renderCell(
+                            cellIndex,
+                            cellData,
+                            rowIndex,
+                            iconUri,
                           );
                         })}
                       </TableWrapper>
                     );
                   })
-                ) : (
-                  noDataRender(history)
-                )}
+                : noDataRender()
+              : tradingTableData.length > 0
+              ? tradingTableData?.map((rowData, rowIndex) => {
+                  return (
+                    <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
+                      {rowData?.map((cellData, cellIndex) => {
+                        let wid;
+                        if (cellIndex === 0) {
+                          wid = 200;
+                        }
+                        if (cellIndex === 1) {
+                          wid = 130;
+                        }
+                        if (cellIndex === 2) {
+                          wid = 180;
+                        }
+                        if (cellIndex === 3) {
+                          wid = 180;
+                        }
+                        if (cellIndex === 4) {
+                          wid = 200;
+                        }
+                        return (
+                          <Cell
+                            key={cellIndex}
+                            data={
+                              (cellIndex == 2 || cellIndex == 3) &&
+                              cellData !== 'Null Address'
+                                ? renderAddress(cellData)
+                                : cellData
+                            }
+                            textStyle={styles.text}
+                            width={wid}
+                          />
+                        );
+                      })}
+                    </TableWrapper>
+                  );
+                })
+              : noDataRender(history)}
           </Table>
         </ScrollView>
-      </NFTDetailDropdown >
-    )
-  }
+      </NFTDetailDropdown>
+    );
+  };
 
-  const renderAddress = (cellData) => {
+  const renderAddress = cellData => {
     return (
       <TouchableOpacity
         disabled={!cellData}
-        onPress={() =>
-          navigation.push('ArtistDetail', { id: cellData })
-        }>
-        <Text
-          numberOfLines={1}
-          style={[styles.text, styles.themeColor]}>
+        onPress={() => navigation.push('ArtistDetail', {id: cellData})}>
+        <Text numberOfLines={1} style={[styles.text, styles.themeColor]}>
           {formatAddress(cellData)}
         </Text>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   const renderCell = (index, cellData, rowIndex, iconUri) => {
     return (
       <Cell
         key={rowIndex}
         data={
-          index === 0 && iconUri ?
+          index === 0 && iconUri ? (
             <View style={CommonStyles.rowAlign}>
-              <Image
-                style={styles.networkIcon}
-                source={{ uri: iconUri }}
-              />
-              <Text>
-                {cellData}
-              </Text>
+              <Image style={styles.networkIcon} source={{uri: iconUri}} />
+              <Text>{cellData}</Text>
             </View>
-            : index === 1
-              ? renderAddress(cellData)
-              : cellData
+          ) : index === 1 ? (
+            renderAddress(cellData)
+          ) : (
+            cellData
+          )
         }
         borderStyle={styles.cellBorderStyle}
         textStyle={styles.text}
         width={index === 0 ? 130 : index === 1 ? 180 : index === 2 ? 180 : 200}
       />
-    )
-  }
+    );
+  };
 
   // const renderCell = (index, rowData, rowIndex) => {
   //   return (
@@ -2046,22 +2061,20 @@ const DetailScreen = ({ navigation, route }) => {
   //   }
   // };
 
-  const showContractAddress = (item) => {
-    return (typeof item?.collection === 'object'
+  const showContractAddress = item => {
+    return typeof item?.collection === 'object'
       ? item?.collection?.address
-      : item?.collection ?
-        item?.collection?.substring(0, 5) +
+      : item?.collection
+      ? item?.collection?.substring(0, 5) +
         ' ... ' +
         item.collection.slice([item.collection.length - 4])
-        : MarketContractAddress)
-  }
+      : MarketContractAddress;
+  };
 
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
     return (
-      <NFTDetailDropdown
-        title={translate('common.creator')}
-        icon={detailsImg}>
+      <NFTDetailDropdown title={translate('common.creator')} icon={detailsImg}>
         <TouchableOpacity
           onPress={() => {
             if (!disableCreator) {
@@ -2072,18 +2085,18 @@ const DetailScreen = ({ navigation, route }) => {
           {renderIconImage('creator', true)}
         </TouchableOpacity>
 
-        {detailNFT?.creator?.description ?
-          <TextView style={[styles.rowText, { marginTop: SIZE(10) }]}>
+        {detailNFT?.creator?.description ? (
+          <TextView style={[styles.rowText, {marginTop: SIZE(10)}]}>
             {detailNFT?.creator?.description}
           </TextView>
-          : null}
+        ) : null}
         {renderSocialLinks()}
       </NFTDetailDropdown>
-    )
-  }
+    );
+  };
 
   const renderSocialLinks = () => {
-    let twitterFullLink = twitterLink(detailNFT?.creator?.twitterLink)
+    let twitterFullLink = twitterLink(detailNFT?.creator?.twitterLink);
     return (
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
@@ -2097,7 +2110,7 @@ const DetailScreen = ({ navigation, route }) => {
         {detailNFT?.creator?.instagramLink ? (
           <TouchableOpacity
             hitSlop={hitSlop}
-            style={{ marginRight: 6 }}
+            style={{marginRight: 6}}
             onPress={() => Linking.openURL(detailNFT?.creator?.instagramLink)}>
             <InstagramIcon />
           </TouchableOpacity>
@@ -2122,30 +2135,35 @@ const DetailScreen = ({ navigation, route }) => {
         {renderDetail('wallet.common.contractAddress', 'address', showContractAddress(item))}
         {renderDetail('wallet.common.nftId', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
-        {renderDetail('wallet.common.blockChainType', 'blockChainType', network?.networkName)}
+        {renderDetail(
+          'wallet.common.blockChainType',
+          'blockChainType',
+          network?.networkName,
+        )}
       </NFTDetailDropdown>
-    )
-  }
+    );
+  };
   const renderDetail = (translateKey, key, value) => {
     let translateWord = translateKey;
     return (
       <View style={styles.rowContainer}>
-        <TextView style={styles.rowText}>
-          {translate(translateWord)}
-        </TextView>
+        <TextView style={styles.rowText}>{translate(translateWord)}</TextView>
         <TextView
-          style={key === '' ? styles.rowText : key === 'blockChainType' ? [styles.rowText, { textTransform: 'uppercase' }] : [
-            styles.rowTextcontractaddress,
-            { color: Colors.themeColor },
-          ]}
+          style={
+            key === ''
+              ? styles.rowText
+              : key === 'blockChainType'
+              ? [styles.rowText, {textTransform: 'uppercase'}]
+              : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
+          }
           ellipsizeMode="middle"
           numberOfLines={1}>
           {/* {MarketContractAddress} */}
           {value}
         </TextView>
       </View>
-    )
-  }
+    );
+  };
 
   //=============== Render More from this collection Function ===============
   const renderMoreCollection = () => {
@@ -2153,9 +2171,8 @@ const DetailScreen = ({ navigation, route }) => {
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
         icon={detailsImg}
-        containerStyles={{ width: wp(100) }}
-        containerChildStyles={styles.containerChildStyles}
-      >
+        containerStyles={{width: wp(100)}}
+        containerChildStyles={styles.containerChildStyles}>
         {moreData.length !== 0 ? (
           <>
             <FlatList
@@ -2169,33 +2186,41 @@ const DetailScreen = ({ navigation, route }) => {
               leftText={translate('common.viewAllCollection')}
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
-              leftTextStyle={{ color: Colors.BLUE4 }}
-              onLeftPress={() => navigation.push('CollectionDetail', { item: collectCreat })}
+              leftTextStyle={{color: Colors.BLUE4}}
+              onLeftPress={() =>
+                navigation.push('CollectionDetail', {
+                  networkName: detailNFT?.network?.networkName,
+                  contractAddress: detailNFT?.collection?.address,
+                  launchpadId: detailNFT?.launchpadId,
+                })
+              }
               rightHide
             />
           </>
         ) : (
           <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>
-              {translate('common.noNFT')}
-            </Text>
+            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
           </View>
         )}
       </NFTDetailDropdown>
-    )
-  }
+    );
+  };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <NFTItem
         item={item}
         image={item?.mediaUrl}
         onPress={() => {
-          navigation.push('CertificateDetail', { item: item });
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
-    )
-  }
+    );
+  };
 
   // const renderItem = ({ item, index }) => {
   //   // let findIndex = moreData.findIndex(x => x.id === item.id);
@@ -2331,8 +2356,8 @@ const DetailScreen = ({ navigation, route }) => {
           sucessMsg={translate('wallet.common.purchasedSuccess')}
         />
       </AppModal>
-    )
-  }
+    );
+  };
 
   //=================== Other Functions =====================
   let disableCreator = false;
@@ -2340,7 +2365,7 @@ const DetailScreen = ({ navigation, route }) => {
   let doComponentUpdate = false;
   // const nft = item?.tokenId || item?.collectionAdd;
   // let params = nft?.toString().split('-');
-  let _tokenId = item?.tokenId
+  let _tokenId = item?.tokenId;
   let chainType,
     ERC721Abi,
     ERC721Address,
@@ -2369,8 +2394,8 @@ const DetailScreen = ({ navigation, route }) => {
   let ownerName = ownerDataN?.name?.trim()
     ? ownerDataN.name
     : ownerDataN?.address?.includes('0x')
-      ? ownerDataN.address.substring(0, 6)
-      : '---'
+    ? ownerDataN.address.substring(0, 6)
+    : '---';
   // ownerDataN && typeof ownerDataN === 'object'
   //   ? ownerDataN?.role === 'crypto'
   //     ? ownerDataN?.title?.trim()
@@ -2413,8 +2438,8 @@ const DetailScreen = ({ navigation, route }) => {
   let creatorName = artistDetail?.name?.trim()
     ? artistDetail.name
     : artistDetail?.address?.includes('0x')
-      ? artistDetail.address.substring(0, 6)
-      : '---'
+    ? artistDetail.address.substring(0, 6)
+    : '---';
   // artistDetail && typeof artistDetail === 'object'
   //   ? artistDetail?.role === 'crypto'
   //     ? artistDetail?.title?.trim()
@@ -2438,8 +2463,8 @@ const DetailScreen = ({ navigation, route }) => {
   let collectionName = collectCreat?.name
     ? collectCreat.name
     : collectCreat?.address?.includes('0x')
-      ? collectCreat.address.substring(0, 6)
-      : '---'
+    ? collectCreat.address.substring(0, 6)
+    : '---';
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   // const checkNFTOnAuction = () => {
@@ -2691,9 +2716,9 @@ const DetailScreen = ({ navigation, route }) => {
   // };
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const getRealtedNFT = async () => {
-    let page = 1
-    let limit = 6
-    let networkId = network?.networkId
+    let page = 1;
+    let limit = 6;
+    let networkId = network?.networkId;
     let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
     sendRequest({
       url,
@@ -2704,7 +2729,7 @@ const DetailScreen = ({ navigation, route }) => {
         collectionAddress,
         currentNftId: nftId,
         userId,
-        networkId
+        networkId,
       },
     })
       .then(res => {
@@ -2718,37 +2743,31 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const getOfferList = () => {
-    let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`
+    let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`;
     sendRequest({
       url,
       method: 'GET',
     })
       .then(res => {
-        console.log("🚀 ~ file: detail.js ~ line 1677 ~ ~ res", res)
+        console.log('🚀 ~ file: detail.js ~ line 1677 ~ ~ res', res);
         if (res?.length > 0) {
-          let tempList = []
+          let tempList = [];
 
           res?.map(item => {
             let temp = [
               `${Number(item?.price)} ${item?.receiveToken}`,
               item.fromUser?.address,
-              getDateString(
-                item.createdAt
-                  ? item.createdAt
-                  : Date.now()
-              ),
+              getDateString(item.createdAt ? item.createdAt : Date.now()),
               item.expired * 1000 > Date.now()
-                ? timeSince(
-                  new Date(item.expired * 1000)
-                )
+                ? timeSince(new Date(item.expired * 1000))
                 : 'Expired',
-              item?.networkTokenIcon
-            ]
-            tempList.push(temp)
-          })
-          console.log("🚀 ~ file: detail.js ~ line 1700 ~  ~ ", tempList)
+              item?.networkTokenIcon,
+            ];
+            tempList.push(temp);
+          });
+          console.log('🚀 ~ file: detail.js ~ line 1700 ~  ~ ', tempList);
 
-          setOfferList(tempList)
+          setOfferList(tempList);
         }
       })
       .catch(err => {
@@ -2757,28 +2776,31 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const getHistory = (history, sort) => {
-    let page = 1
-    let limit = 5
-    let bidSort = 3
-    let payload = history === 'bid' ? {
-      url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
-      method: 'GET',
-    } : {
-      url: `${NEW_BASE_URL}/sale-nft/trading-history`,
-      method: 'POST',
-      data: {
-        page: 1,
-        limit: 30,
-        nftId: nftId,
-        sort
-      }
-    }
+    let page = 1;
+    let limit = 5;
+    let bidSort = 3;
+    let payload =
+      history === 'bid'
+        ? {
+            url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+            method: 'GET',
+          }
+        : {
+            url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+            method: 'POST',
+            data: {
+              page: 1,
+              limit: 30,
+              nftId: nftId,
+              sort,
+            },
+          };
     sendRequest(payload)
       .then(res => {
-        console.log("🚀 ~ file: detail.js ~ line 1656 ~ ~ res", history, res)
+        console.log('🚀 ~ file: detail.js ~ line 1656 ~ ~ res', history, res);
         if (res?.items?.length > 0) {
           if (history === 'bid') {
-            let tempList = []
+            let tempList = [];
 
             res?.items?.map(item => {
               let temp = [
@@ -2786,23 +2808,23 @@ const DetailScreen = ({ navigation, route }) => {
                 item?.fromUser?.userWallet?.address,
                 moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
                 getExpirationDate(item?.expired),
-              ]
-              tempList.push(temp)
-            })
-            console.log("🚀 ~ file: detail.js ~ line 1780 ~  ~ ", tempList)
+              ];
+              tempList.push(temp);
+            });
+            console.log('🚀 ~ file: detail.js ~ line 1780 ~  ~ ', tempList);
 
-            setSellDetails(tempList)
+            setSellDetails(tempList);
           } else {
-            let tradingList = []
-            let filterList = []
+            let tradingList = [];
+            let filterList = [];
 
             res?.items?.map(item => {
-              let from = item?.fromUser?.userWallet?.address
-              let to = item?.toUser?.userWallet?.address
+              let from = item?.fromUser?.userWallet?.address;
+              let to = item?.toUser?.userWallet?.address;
 
               if (item.action === SORT_TRADING_HISTORY.BUY_NFT) {
-                from = item?.toUser?.userWallet?.address
-                to = item?.fromUser?.userWallet?.address
+                from = item?.toUser?.userWallet?.address;
+                to = item?.fromUser?.userWallet?.address;
               }
               let temp = [
                 getEventByValue(item?.action),
@@ -2812,15 +2834,15 @@ const DetailScreen = ({ navigation, route }) => {
                 getFromAddress(from, item?.action),
                 getToAddress(to, item?.action),
                 moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
-              ]
-              tradingList.push(temp)
-              filterList.push(getEventByValue(item?.action))
-            })
-            console.log("🚀 ~ file: detail.js ~ line 1680 ~  ~ ", tradingList)
+              ];
+              tradingList.push(temp);
+              filterList.push(getEventByValue(item?.action));
+            });
+            console.log('🚀 ~ file: detail.js ~ line 1680 ~  ~ ', tradingList);
 
-            setTradingList(res?.items)
-            setTradingTableData(tradingList)
-            setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS)
+            setTradingList(res?.items);
+            setTradingTableData(tradingList);
+            setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
             // setTradingTableData1(tradingList)
             // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
           }
@@ -3439,8 +3461,8 @@ const DetailScreen = ({ navigation, route }) => {
         seller && seller.includes('0x')
           ? seller.substring(0, 6)
           : ownerDataN._id === seller
-            ? ownerDataN.username
-            : seller;
+          ? ownerDataN.username
+          : seller;
     }
     return sellerName;
   };
@@ -3749,8 +3771,8 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const setNFTStatus = () => {
-    let marketplaceStatus = detailNFT?.marketNftStatus
-    let saleDataAuction = detailNFT?.saleData?.auction
+    let marketplaceStatus = detailNFT?.marketNftStatus;
+    let saleDataAuction = detailNFT?.saleData?.auction;
     switch (marketplaceStatus) {
       case NFT_MARKET_STATUS.NOT_ON_SALE:
         return 'notOnSell';
@@ -3771,7 +3793,7 @@ const DetailScreen = ({ navigation, route }) => {
         if (
           saleDataAuction &&
           Number(saleDataAuction.startPrice) ===
-          Number(saleDataAuction.highestPrice)
+            Number(saleDataAuction.highestPrice)
         ) {
           return 'min_bid';
         }
@@ -3818,11 +3840,11 @@ const DetailScreen = ({ navigation, route }) => {
   const onProfile = ownerStatus => {
     if (ownerStatus) {
       if (ownerN) {
-        navigation.push('ArtistDetail', { id: ownerN });
+        navigation.push('ArtistDetail', {id: ownerN});
       }
     } else {
       if (artist) {
-        navigation.push('ArtistDetail', { id: artist });
+        navigation.push('ArtistDetail', {id: artist});
       }
     }
   };
@@ -3849,16 +3871,15 @@ const DetailScreen = ({ navigation, route }) => {
     );
   };
 
-
   const handleLikeMethod = async () => {
     const nftData = await handleLike(detailNFT);
     if (nftData) {
-      setDetailNFT(nftData)
+      setDetailNFT(nftData);
       if (typeof setNftItem == 'function') {
         let nftItem = {
           ...item,
           isLike: nftData?.isLike,
-          totalLike: nftData?.totalLike
+          totalLike: nftData?.totalLike,
         };
         setNftItem(nftItem);
       }
@@ -3915,11 +3936,13 @@ const DetailScreen = ({ navigation, route }) => {
             {renderDescription()}
             {renderNFTPriceNToken()}
             {/* {getAuctionTimeRemain(item?.newprice ? item : singleNFT) ? renderAuctionTimeRemain() : null} */}
-            {<View style={styles.bottomView}>
-              {/* {!load && setNFTStatus() !== undefined && renderGroupButton()} */}
-              {!load && renderContentAction()}
-              {/* {!load && setNFTStatus() === 'onSell' && renderNFTPriceNeditPriceAppButton()} */}
-            </View>}
+            {
+              <View style={styles.bottomView}>
+                {/* {!load && setNFTStatus() !== undefined && renderGroupButton()} */}
+                {!load && renderContentAction()}
+                {/* {!load && setNFTStatus() === 'onSell' && renderNFTPriceNeditPriceAppButton()} */}
+              </View>
+            }
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
             {renderBidNTradingHistory('bid')}

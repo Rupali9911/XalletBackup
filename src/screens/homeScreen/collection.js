@@ -158,32 +158,35 @@ const Collection = () => {
       blind={item.blind}
       isHotCollection={item.isHot}
       count={item.totalNft}
+      verified={item.isOfficial}
       network={item.network}
       collectionTab = {isSelectTab}
       colId={item._id}
         onPress={() => {
-          if (item.redirect === '/collection/underground_city') {
-            navigation.push('CollectionDetail', {
-              isBlind: true,
-              collectionId: item?.collectionId,
-              nftId: item._id,
-              // isHotCollection: !item.blind,
-            });
-          } else
-            if (item.redirect) {
-              navigation.push('CollectionDetail',
-                {
-                  isBlind: false,
-                  collectionId: item._id,
-                  isHotCollection: true,
-                  isStore: item.redirect,
-                });
-            } else if (item.blind) {
-              // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
-              navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-            } else {
-              navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-            }
+          navigation.push('CollectionDetail', { networkName: item?.network?.networkName, contractAddress: item?.contractAddress, launchpadId: null});
+          // if (item.redirect === '/collection/underground_city') {
+          //   navigation.push('CollectionDetail', {
+          //     isBlind: true,
+          //     collectionId: item?.collectionId,
+          //     nftId: item._id,
+          //     // isHotCollection: !item.blind,
+          //   });
+          // } else
+          //   if (item.redirect) {
+          //     navigation.push('CollectionDetail',
+          //       {
+          //         isBlind: false,
+          //         collectionId: item._id,
+          //         isHotCollection: true,
+          //         isStore: item.redirect,
+          //       });
+          //   } else if (item.blind) {
+          //     // navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false, nftId: item._id});
+          //     navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+          //   } else {
+          //     navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+          //   }
+            //------------------------------------------
           // if (!isSelectTab) {
           //   navigation.push('CollectionDetail',
           //   {

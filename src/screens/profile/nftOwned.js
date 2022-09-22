@@ -13,25 +13,36 @@ import NFTItem from '../../components/NFTItem';
 import { colors, fonts } from '../../res';
 import { changeScreenName } from '../../store/actions/authAction';
 import { translate } from '../../walletUtils';
-import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
+import {
+    myNftListReset,
+    myNFTList,
+    myNftLoadStart,
+    myPageChange,
+    myNftLoadFail,
+} from '../../store/actions/myNFTaction';
+// import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 
 const NFTOwned = ({ route, navigation }) => {
     const isFocusedHistory = useIsFocused();
 
     const { id } = route?.params;
-    const { MyCollectionReducer } = useSelector(state => state);
+    const { MyNFTReducer } = useSelector(state => state);
     const dispatch = useDispatch();
     const [isFirstRender, setIsFirstRender] = useState(true);
 
+    let pageNum = 1
+    let limit = 10
+    let tab = 2
+
     useEffect(() => {
         if (isFocusedHistory) {
-            if (MyCollectionReducer?.myCollection?.length === 0) {
+            if (MyNFTReducer?.myList?.length === 0) {
                 pressToggle()
             } else {
-                if (id && id.toLowerCase() === MyCollectionReducer.collectionUserAdd.toLowerCase()) {
-                    dispatch(myCollectionLoadFail())
+                if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
+                    dispatch(myNftLoadFail())
                 } else {
-                    dispatch(myCollectionListReset());
+                    dispatch(myNftListReset());
                     pressToggle()
                 }
             }
@@ -40,65 +51,62 @@ const NFTOwned = ({ route, navigation }) => {
     }, [isFocusedHistory]);
 
     const renderFooter = () => {
-        if (!MyCollectionReducer.myCollectionListLoading) return null;
+        if (!MyNFTReducer.myNftListLoading) return null;
         return (
             <ActivityIndicator size='small' color={colors.themeR} />
         )
     }
 
     const renderItem = ({ item }) => {
-        let findIndex = MyCollectionReducer.myCollection.findIndex(x => x.id === item.id);
-
-        if (item && item.hasOwnProperty("metaData") && item.metaData) {
-            const image = item?.metaData?.thumbnft || item?.thumbnailUrl;
             return (
                 <NFTItem
-                screenName="myCollection"
+                screenName="movieNFT"
                 item={item}
-                    image={image}
-                    // onLongPress={() => {
-                    //     setModalData(item);
-                    //     setModalVisible(true);
-                    // }}
-                    onPress={() => {
-                        // dispatch(changeScreenName('myCollection'));
-                        navigation.navigate('DetailItem', {id:id, index: findIndex, sName: "myCollection" });
-                    }}
-                />
+                // image={imageUri}
+                onPress={() => {
+                    // dispatch(changeScreenName('movieNFT'));
+                    navigation.push('CertificateDetail', { item: item });
+                }}
+            />
             );
-        }
     };
 
-    const pressToggle = () => {
-        dispatch(myCollectionListReset());
-        dispatch(myCollectionPageChange(1));
-        getNFTlist(1);
-    };
-    const getNFTlist = useCallback((page) => {
-        dispatch(myCollectionList(page, id));
+    const getNFTlist = useCallback((pageIndex,pageSize,address,category) => {
+        console.log('getNFTlist, id', id)
+        dispatch(myNFTList(pageIndex,pageSize,address,category));
     }, []);
+
+    const pressToggle = () => {
+        dispatch(myNftListReset());
+        getNFTlist(pageNum,limit,id,tab);
+    };
 
     return (
         <View style={styles.trendCont}>
 
             {/* { isFocusedHistory &&console.log("🚀 ~ file: nftOwned.js ~ line 85 ~ NFTOwned ~ MyCollectionReducer", MyCollectionReducer)} */}
             {
-                isFirstRender ? isFirstRender : MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading ?
+                isFirstRender ? isFirstRender : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ?
                     <Loader /> :
-                    MyCollectionReducer?.myCollection.length !== 0 ?
+                    MyNFTReducer.myList?.length !== 0 ?
                         <FlatList
-                            data={MyCollectionReducer?.myCollection}
+                            key={2}
+                            data={MyNFTReducer?.myList}
                             horizontal={false}
                             numColumns={2}
                             initialNumToRender={14}
                             onRefresh={pressToggle}
-                            refreshing={MyCollectionReducer.myCollectionPage === 1 && MyCollectionReducer.myCollectionListLoading}
+                            refreshing={MyNFTReducer.myListPage === 1 &&
+                                MyNFTReducer.myNftListLoading}
                             renderItem={renderItem}
                             onEndReached={() => {
-                                if (!MyCollectionReducer.myCollectionListLoading && MyCollectionReducer.myCollection.length !== MyCollectionReducer.myCollectionTotalCount) {
-                                    let num = MyCollectionReducer.myCollectionPage + 1;
+                                if (
+                                    !MyNFTReducer.myNftListLoading &&
+                                    MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+                                ) {
+                                    let num = MyNFTReducer.myListPage + 1;
                                     getNFTlist(num);
-                                    dispatch(myCollectionPageChange(num));
+                                    dispatch(myPageChange(num));
                                 }
                             }}
                             ListFooterComponent={renderFooter}
