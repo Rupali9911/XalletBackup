@@ -3,6 +3,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios'
 import { NEW_BASE_URL } from '../common/constants';
 import { alertWithSingleBtn } from '../common/function';
+import { translate } from '../walletUtils';
 
 var isAlert = false;
 
@@ -49,6 +50,14 @@ async function sendRequest(payload) {
             }
         }
     } catch (error) {
+        alertWithSingleBtn(
+            translate("wallet.common.alert"),
+            translate("wallet.common.error.networkError"),
+            () => {
+                isAlert = false;
+                // return Promise.reject()
+            }
+        );
         return Promise.reject(error)
     }
 }

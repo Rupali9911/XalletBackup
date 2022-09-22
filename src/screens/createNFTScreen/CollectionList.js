@@ -135,10 +135,12 @@ const CollectionList = ({
     const [nftListDraft, setNftListDraft] = useState([]);
 
     useEffect(async () => {
-        cleanData();
-        changeLoadingState(true)
-        getActualCollectionList(1)
-    }, [])
+        if (position === 0) {
+            cleanData();
+            changeLoadingState(true)
+            getActualCollectionList(1)
+        }
+    }, [position])
 
     useEffect(() => {
         if (modalScreen === "collectionList" && modalItem) {
@@ -174,7 +176,7 @@ const CollectionList = ({
             params
         })
             .then(res => {
-                if (res?.data?.length !== 0) {
+                if (res && res.data?.length !== 0) {
                     setOnEndReachedCalledDuringMomentum(true)
                     setCollectionList((old) => [...old, ...res.data])
                 }

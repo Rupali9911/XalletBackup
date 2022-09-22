@@ -52,12 +52,10 @@ const CreateNFTScreen = ({ route }) => {
       { key: 'CreateCollection', title: translate("common.createCollection") },
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("common.CreateNFT") },
-      { key: 'Filter', title: translate("wallet.common.filter") },
     ] :
     [
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
-      { key: 'Filter', title: translate("wallet.common.filter") },
     ];
   const navigation = useNavigation();
   const ShowModalAction = (v, screenName) => {
@@ -127,14 +125,6 @@ const CreateNFTScreen = ({ route }) => {
             setIndex(2)
           }}
           changeLoadingState={(e) => setLoading(e)} />;
-      case 'Filter':
-        return <Filter
-          modalItem={modalItem}
-          modalScreen={modalScreen}
-          showModal={(v) => ShowModalAction(v, "filter")}
-          position={index}
-          changeLoadingState={(e) => setLoading(e)}
-        />;
       default:
         return null;
     }
@@ -183,7 +173,7 @@ const CreateNFTScreen = ({ route }) => {
 
   return (
     <View style={styles.mainContainer}>
-      {/* {loading ? <LoaderIndicator /> : null} */}
+      {loading ? <LoaderIndicator /> : null}
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
           title={translate("common.CreateNFT")}

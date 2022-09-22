@@ -155,11 +155,13 @@ const NFTList = ({
 
 
   useEffect(async () => {
-    cleanData();
-    changeLoadingState(true)
-    getCollectionList()
-    getNftList(1)
-  }, [])
+    if (position === 2) {
+      cleanData();
+      changeLoadingState(true)
+      getCollectionList()
+      getNftList(1)
+    }
+  }, [position])
 
   useEffect(() => {
     if (modalScreen === "nftList" && modalItem) {

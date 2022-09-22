@@ -63,8 +63,9 @@ import {SORT_FILTER_OPTONS} from '../../constants';
 import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
 import {FlatList} from 'native-base';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import {NEW_BASE_URL} from '../../common/constants';
-import {setNetworkData} from '../../store/reducer/networkReducer';
+import { NEW_BASE_URL } from '../../common/constants';
+import { setNetworkData } from '../../store/reducer/networkReducer';
+import { updateNetworkType } from '../../store/reducer/walletReducer';
 
 const HomeScreen = ({navigation}) => {
   // =============== Getting data from reducer ========================
@@ -123,10 +124,21 @@ const HomeScreen = ({navigation}) => {
   useEffect(async () => {
     const res = await sendRequest({
       url: `${NEW_BASE_URL}/networks`,
-      method: 'GET',
-    });
-    dispatch(setNetworkData(res));
-  }, []);
+      method: 'GET'
+    })
+    if (res && typeof res === 'object' && res.length !== 0) {
+      const chainId = await AsyncStorage.getItem('@CURRENT_NETWORK_CHAIN_ID');
+      if (chainId) {
+        const selectedNetwork = res?.find(item => item?.chainId === Number(chainId));
+        if (selectedNetwork) {
+          dispatch(updateNetworkType(selectedNetwork));
+        }
+      } else {
+        dispatch(updateNetworkType(res[2]));
+      }
+      dispatch(setNetworkData(res));
+    }
+  }, [])
 
   useEffect(() => {
     setActive(0);

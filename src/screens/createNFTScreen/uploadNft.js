@@ -115,34 +115,34 @@ const UploadNFT = ({
     let gasFee = "";
     let gasLimit = "";
 
-    if (networkType.value === 'polygon') {
-        MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
-        MarketContractAddress = blockChainConfig[1].marketConConfig.add;
-        providerUrl = blockChainConfig[1].providerUrl;
-        ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
-        ERC721Address = blockChainConfig[1].erc721ConConfig.add;
-        NftApprovalAbi = blockChainConfig[1].nftApprovalConConfig.abi
-        gasFee = 30
-        gasLimit = 6000000
-    } else if (networkType.value === 'binance') {
-        MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
-        MarketContractAddress = blockChainConfig[0].marketConConfig.add;
-        providerUrl = blockChainConfig[0].providerUrl;
-        ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
-        ERC721Address = blockChainConfig[0].erc721ConConfig.add;
-        NftApprovalAbi = blockChainConfig[0].nftApprovalConConfig.abi
-        gasFee = 10
-        gasLimit = 6000000
-    } else if (networkType.value === 'ethereum') {
-        MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
-        MarketContractAddress = blockChainConfig[2].marketConConfig.add;
-        providerUrl = blockChainConfig[2].providerUrl;
-        ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
-        ERC721Address = blockChainConfig[2].erc721ConConfig.add;
-        NftApprovalAbi = blockChainConfig[2].nftApprovalConConfig.abi
-        gasFee = 10 // for this api etherscan
-        gasLimit = 6000000
-    }
+    // if (networkType.value === 'polygon') {
+    //     MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+    //     MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+    //     providerUrl = blockChainConfig[1].providerUrl;
+    //     ERC721Abi = blockChainConfig[1].erc721ConConfig.abi;
+    //     ERC721Address = blockChainConfig[1].erc721ConConfig.add;
+    //     NftApprovalAbi = blockChainConfig[1].nftApprovalConConfig.abi
+    //     gasFee = 30
+    //     gasLimit = 6000000
+    // } else if (networkType.value === 'binance') {
+    //     MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+    //     MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+    //     providerUrl = blockChainConfig[0].providerUrl;
+    //     ERC721Abi = blockChainConfig[0].erc721ConConfig.abi;
+    //     ERC721Address = blockChainConfig[0].erc721ConConfig.add;
+    //     NftApprovalAbi = blockChainConfig[0].nftApprovalConConfig.abi
+    //     gasFee = 10
+    //     gasLimit = 6000000
+    // } else if (networkType.value === 'ethereum') {
+    //     MarketPlaceAbi = blockChainConfig[2].marketConConfig.abi;
+    //     MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+    //     providerUrl = blockChainConfig[2].providerUrl;
+    //     ERC721Abi = blockChainConfig[2].erc721ConConfig.abi;
+    //     ERC721Address = blockChainConfig[2].erc721ConConfig.add;
+    //     NftApprovalAbi = blockChainConfig[2].nftApprovalConConfig.abi
+    //     gasFee = 10 // for this api etherscan
+    //     gasLimit = 6000000
+    // }
 
     useEffect(() => {
         if (position == 3) {
@@ -878,8 +878,8 @@ const UploadNFT = ({
             toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate)
                 : fixedPrice > 0) && networkType;
 
-    let networkTypeStatus = networkType.value.toLowerCase() == "binance" ?
-        translate("common.BinanceNtwk") : networkType.value.toLowerCase() == "polygon" ?
+    let networkTypeStatus = networkType.name.toLowerCase() == "BSC" ?
+        translate("common.BinanceNtwk") : networkType.name.toLowerCase() == "Polygon" ?
             translate("common.polygon") : translate("common.ethereum");
 
     // let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
