@@ -467,7 +467,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   errorText: {
-    marginHorizontal: 22,
+    color: Colors.DANGER,
+    fontWeight: "bold",
+  },
+  errorText1: {
+    marginTop:  SIZE(10),
     color: Colors.DANGER,
     fontWeight: "bold",
   },
@@ -636,7 +640,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: SIZE(35),
     marginTop: SIZE(25),
     marginBottom: SIZE(30)
   },
@@ -731,8 +734,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-evenly",
-    paddingHorizontal: SIZE(39),
+    // paddingHorizontal: SIZE(39),
     marginVertical: SIZE(35)
+  },
+  inputWrapperView1: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly"
   },
   inputFieldView: {
     alignItems: "center"
@@ -780,12 +788,13 @@ const styles = StyleSheet.create({
     borderRadius: SIZE(10),
     justifyContent: 'center',
     paddingBottom: SIZE(20),
+    paddingHorizontal: SIZE(35)
   },
   PlaceAbidHeaderview: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: SIZE(12),
-    paddingHorizontal: SIZE(35)
+    // paddingHorizontal: SIZE(35)
   },
   bidtext: {
     fontWeight: "bold",
@@ -793,14 +802,14 @@ const styles = StyleSheet.create({
   },
   priceText: {
     paddingTop: SIZE(30),
-    paddingLeft: SIZE(35),
+    // paddingLeft: SIZE(35),
     fontWeight: "bold"
   },
   placeAbidgroupButtonView: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-end",
-    paddingHorizontal: SIZE(35)
+    // paddingHorizontal: SIZE(35)
   },
   rightGroupButton: {
     borderWidth: 1,
@@ -832,7 +841,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: SIZE(35),
     marginTop: SIZE(25),
     marginBottom: SIZE(30)
   },

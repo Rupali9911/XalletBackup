@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   purchaseText: {
-    fontSize: SIZE(18),
+    fontSize: SIZE(16),
     color: Colors.GREY1,
     alignSelf: "center"
   }

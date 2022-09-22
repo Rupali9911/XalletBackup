@@ -55,7 +55,7 @@ import { convertPrice, getPrice, collectionClick, firstCellData, fourthCellData 
 import { isChinaApp } from '../../web3/config/networkType';
 import { handleLike } from '../discover/discoverItem';
 import { Verifiedcollections } from '../../components/verifiedCollection';
-import { CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SERVICE_FEE, SORT_TRADING_HISTORY } from '../../constants';
+import { AMOUNT_BID_HIGHER, CATEGORY_VALUE, compareAddress, FILTER_TRADING_HISTORY_OPTIONS, NFT_MARKET_STATUS, SERVICE_FEE, SIZE10, SORT_TRADING_HISTORY } from '../../constants';
 import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import { getEventByValue, getFromAddress, getKeyEventByValue, getToAddress } from '../../constants/tradingHistory';
@@ -72,9 +72,10 @@ import { TRANSACTION_ACTION } from '../../constants/transaction';
 import { toFixCustom } from '../createNFTScreen/helperFunction';
 import { getERC20Tokens } from '../../utils/token';
 import { getTokenNameFromId } from '../../utils/nft';
-import { sendCustomTransaction } from '../wallet/functions/transactionFunctions';
+import { handleTransactionError, sendCustomTransaction } from '../wallet/functions/transactionFunctions';
 import TransactionPending from "../../components/Popup/transactionPending"
 import DatePicker from 'react-native-date-picker';
+import { validatePrice } from './supportiveFunctions';
 
 const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
@@ -177,7 +178,8 @@ const DetailScreen = ({ navigation, route }) => {
   const [isCheckError, setIsCheckError] = useState(false);
   const [isTopUpError, setIsTopUpError] = useState(false);
   const [checkOut, setCheckOut] = useState(false)
-  const [priceChange, SetPriceChange] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isChecking, setIsChecking] = useState(false)
 
   const [openTransactionPending, setOpenTransactionPending] = useState(false);
   const [open, setOpen] = useState(false);
@@ -242,9 +244,6 @@ const DetailScreen = ({ navigation, route }) => {
   const saleId = detailNFT?.saleData?.fixPrice?.id
   const price = detailNFT?.saleData?.fixPrice?.price
 
-  // useEffect(() => {
-  //   SetPriceChange(numberWithCommas(Number(price).toFixed(0)))
-  // }, [price])
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
   // const [discount, setDiscount] = useState(false);
@@ -345,7 +344,7 @@ const DetailScreen = ({ navigation, route }) => {
   // }, [singleNFT]);
 
   //===================== API Call Functions =========================
-  const getNFTDetails = () => {
+  const getNFTDetails = (reload) => {
     setLoad(true);
     let networkName = typeof network === 'string' ? network : network?.networkName
     let url = `${NEW_BASE_URL}/nfts/details`
@@ -371,6 +370,13 @@ const DetailScreen = ({ navigation, route }) => {
           setOwnerAddress(json?.owner?.address)
           setcollectCreat(json?.collection)
 
+          if (reload) {
+            getHistory('trading');
+            getHistory('bid')
+            getOfferList()
+            getRealtedNFT();
+            handlePendingModal(false);
+          }
         }
         setLoad(false);
       })
@@ -794,9 +800,17 @@ const DetailScreen = ({ navigation, route }) => {
     setCancelAuctionModal(false)
   }
 
+  const handlePendingModal = (value) => {
+    setTimeout(() => {
+      setOpenTransactionPending(value)
+    }, 500);
+  }
+
+  // console.log("🚀 ~ file: detail.js ~ line 183 ~ ~ openTransactionPending", reclaimModal, openTransactionPending)
+
   const reClaimApi = () => {
     setReclaimModal(false)
-    setOpenTransactionPending(true)
+    handlePendingModal(true);
     const url = `${NEW_BASE_URL}/auction/${auctionId}/reclaim-nft`
     sendRequest({
       url,
@@ -806,7 +820,7 @@ const DetailScreen = ({ navigation, route }) => {
         console.log("🚀 ~ file: detail.js ~ line 755 ~ .then ~ claimNFTRes", claimNFTRes)
         if (claimNFTRes.messageCode) {
           // toast.error(claimNFTRes.messageCode)
-          setOpenTransactionPending(false)
+          handlePendingModal(false)
         }
         if (claimNFTRes) {
           const signData = claimNFTRes.dataReturn?.signData
@@ -828,35 +842,25 @@ const DetailScreen = ({ navigation, route }) => {
                 console.log('approve payByWallet 331', res);
                 // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
-                setOpenTransactionPending(false)
-                getNFTDetails();
-
+                getNFTDetails(true);
               })
               .catch(err => {
                 console.log('payByWallet_err payByWallet 339', err);
-                setOpenTransactionPending(false)
-                if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('common.blanceLow'),
-                  );
-                } else {
-                  alertWithSingleBtn(translate('common.error'), '');
-                }
-                // setLoading(false);
+                handlePendingModal(false)
+                handleTransactionError(err, translate);
               });
           }
         }
       })
       .catch((err) => {
         setReclaimModal(false)
-        setOpenTransactionPending(false)
+        handlePendingModal(false)
       })
   }
 
   const cancelAuctionApi = () => {
     setCancelAuctionModal(false)
-    setOpenTransactionPending(true)
+    handlePendingModal(true);
     const url = `${NEW_BASE_URL}/auction-session/cancel/${auctionId}`
     sendRequest({
       url,
@@ -865,7 +869,7 @@ const DetailScreen = ({ navigation, route }) => {
       .then((cancelAuctionRes) => {
         console.log("🚀 ~ file: detail.js ~ line 759 ~ .then ~ cancelAuctionRes", cancelAuctionRes)
         if (cancelAuctionRes?.error) {
-          setOpenTransactionPending(false)
+          handlePendingModal(false)
           throw new Error(cancelAuctionRes.message)
         } else {
           const signData = cancelAuctionRes.dataReturn?.signData
@@ -887,28 +891,19 @@ const DetailScreen = ({ navigation, route }) => {
                 console.log('approve payByWallet 331', res);
                 // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
-                setOpenTransactionPending(false);
-                getNFTDetails();
+                getNFTDetails(true);
               })
               .catch(err => {
                 console.log('payByWallet_err payByWallet 339', err);
-                setOpenTransactionPending(false)
-                if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('common.blanceLow'),
-                  );
-                } else {
-                  alertWithSingleBtn(translate('common.error'), '');
-                }
-                // setLoading(false);
+                handlePendingModal(false)
+                handleTransactionError(err, translate);
               });
           }
         }
       })
       .catch((err) => {
         setCancelAuctionModal(false)
-        setOpenTransactionPending(false)
+        handlePendingModal(false)
       })
   }
 
@@ -970,25 +965,137 @@ const DetailScreen = ({ navigation, route }) => {
     )
   }
 
-  const placeAbidApi = () => {
-    const url = `${NEW_BASE_URL}/auction/${auctionId}/place-bid`
-    sendRequest({
-      url,
-      method: 'POST'
-    })
-      .then((response) => {
+  const handlePlaceBidAuth = async () => {
+    try {
+      setIsChecking(true)
+      const url = `${NEW_BASE_URL}/auction/${auctionId}/place-bid`
+      const data = {
+        price: Number(editedPrice)
+      }
+      const placeBidRes = await sendRequest({
+        url,
+        method: 'POST',
+        data
       })
+      console.log("🚀 ~ file: detail.js ~ line 980 ~ .then ~ placeBidRes", placeBidRes)
+      setIsChecking(false)
+      if (placeBidRes?.messageCode) {
+        setErrorMessage(placeBidRes?.messageCode);
+        // throw new Error(placeBidRes?.messageCode)
+      } else {
+        setPlaceABid(false)
+        handlePendingModal(true)
+        const approveData = placeBidRes?.dataReturn?.approveData
+        console.log("🚀 ~ file: detail.js ~ line 991 ~ //.then ~ approveData", approveData)
+        let approved = true
+        let noncePlus = 0
+        if (approveData) {
+          try {
+            const transactionParameters = {
+              nonce: approveData.nonce, // ignored by MetaMask
+              to: approveData.to, // Required except during contract publications.
+              from: approveData.from, // must match user's active address.
+              data: approveData.data, // Optional, but used for defining smart contract creation and interaction.
+              chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+            }
+
+            const txnResult = await sendCustomTransaction(
+              transactionParameters,
+              walletAddress,
+              nftTokenId,
+              network?.networkName
+            )
+            console.log("🚀 ~ file: detail.js ~ line 1005 ~ .then ~ txnResult", txnResult)
+
+            if (txnResult) {
+              noncePlus = 1
+              // toast.success(t('APPROVE_TOKEN_SUCCESS'))
+            }
+          } catch (error) {
+            approved = false
+            handlePendingModal(false)
+            // toast.error(t('APPROVE_TOKEN_FAIL'))
+          }
+        }
+        const signData = placeBidRes?.dataReturn?.signData
+        const isEditBit = placeBidRes?.dataReturn?.isEditBit
+        if (signData && approved) {
+          try {
+            const transactionParameters = {
+              nonce: signData.nonce + noncePlus, // ignored by MetaMask
+              gasPrice: signData.gasPrice, // customizable by user during MetaMask confirmation.
+              gasLimit: signData.gas, // customizable by user during MetaMask confirmation.
+              to: signData.to, // Required except during contract publications.
+              from: signData.from, // must match user's active address.
+              data: signData.data, // Optional, but used for defining smart contract creation and interaction.
+              chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+            }
+            console.log("🚀 ~ file: detail.js ~ line 1035 ~ //.then ~ transactionParameters", transactionParameters)
+
+            sendCustomTransaction(
+              transactionParameters,
+              walletAddress,
+              nftTokenId,
+              network?.networkName
+            )
+              .then(res => {
+                console.log('approve payByWallet 331', res);
+                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // setLoading(false);
+                getNFTDetails(true);
+              })
+              .catch(err => {
+                console.log('payByWallet_err payByWallet 339', err);
+                handlePendingModal(false)
+                handleTransactionError(err, translate);
+              });
+          } catch (error) {
+            setIsChecking(false)
+            handlePendingModal(false)
+            handleTransactionError(error, translate);
+          }
+        }
+      }
+    } catch (error) { 
+      console.log("🚀 ~ file: detail.js ~ line 1074 ~ handlePlaceBidAuth ~ err", err)
+      closeBidModal();
+      handleTransactionError(error, t)
+      handlePendingModal(false)
+    }
   }
+
   const openBidModal = () => {
     setPlaceABid(true)
   }
   const closeBidModal = () => {
+    setErrorMessage('')
+    setEditedPrice('')
     setPlaceABid(false)
+  }
+
+  const onPlaceBid = (maxPrice) => {
+    const highestPrice = Number(detailNFT?.saleData?.auction?.highestPrice)
+    const bidPrice = editedPrice ? editedPrice : maxPrice
+
+    if (!validatePrice(bidPrice, highestPrice)) {
+      // setEditedPrice(bidPrice.toString())
+      setErrorMessage('The new bid amount have to be grater than 5% the highest bid amount')
+      handlePendingModal(false)
+      console.log('1091 ???????')
+    } else {
+      console.log('1093 <<<<<?>>>>>')
+      setErrorMessage('')
+      handlePlaceBidAuth()
+    }
   }
 
   const placeABidModal = () => {
     const tokenName = detailNFT?.saleData?.auction?.tokenPrice
-    const price = detailNFT?.saleData?.auction?.highestPrice
+    const highestPrice = Number(detailNFT?.saleData?.auction?.highestPrice)
+    let maxPrice = Number(
+      Number(highestPrice + highestPrice * AMOUNT_BID_HIGHER).toFixed(6)
+    )
+
     return (
       <Modal isVisible={placeABid} >
         <View style={styles.placeAbbidView}>
@@ -1001,26 +1108,32 @@ const DetailScreen = ({ navigation, route }) => {
 
           <Text style={styles.priceText}>{translate('common.price')}</Text>
 
-          <View style={styles.inputWrapperView}>
-            <TextInput
-              value={editedPrice ? editedPrice : price}
-              keyboardType='numeric'
-              style={styles.inputField}
-              onChangeText={(text) => setEditedPrice(text)}
-              maxLength={10}
-            />
+          <View style={{ marginVertical: SIZE(35), marginTop: SIZE(15) }}>
+            <View style={styles.inputWrapperView1}>
+              <TextInput
+                value={editedPrice ? editedPrice : maxPrice.toString()}
+                keyboardType='numeric'
+                style={styles.inputField}
+                onChangeText={(text) => setEditedPrice(text)}
+                maxLength={10}
+              />
 
-            <View style={styles.tokenView}>
-              <Text style={styles.tokenText}>{tokenName}</Text>
+              <View style={styles.tokenView}>
+                <Text style={styles.tokenText}>{tokenName}</Text>
+              </View>
+
             </View>
+            {errorMessage !== '' && <Text style={styles.errorText1}>
+              {errorMessage}
+            </Text>}
           </View>
 
           <View style={styles.placeAbidgroupButtonView}>
             <GroupButton
               leftText={translate('common.Confirm')}
-              leftDisabled={false}
-              leftLoading={false}
-              onLeftPress={() => { }}
+              leftDisabled={isChecking}
+              leftLoading={isChecking}
+              onLeftPress={() => { onPlaceBid(maxPrice) }}
               rightText={translate('common.topUp')}
               rightDisabled={false}
               rightLoading={false}
@@ -1545,7 +1658,7 @@ const DetailScreen = ({ navigation, route }) => {
       <View style={{ paddingTop: 5, paddingBottom: 10 }}>
         {renderCoundown()}
         {auction?.highestBidder ?
-          <Text>
+          <Text style={{ paddingTop: SIZE(10) }}>
             {translate('common.highhestBidder')}:{' '}
             {auction?.highestBidder.slice(0, 7) + '...'}
           </Text>
@@ -1595,7 +1708,6 @@ const DetailScreen = ({ navigation, route }) => {
               leftText={translate('common.reclaimNFT')}
               leftDisabled={false}
               leftLoading={false}
-              // onLeftPress={() => { setVisible(true), openModal() }}
               onLeftPress={() => { setReclaimModal(true) }}
               rightHide
             />

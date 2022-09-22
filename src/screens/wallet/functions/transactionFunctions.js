@@ -17,6 +17,7 @@ import {
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 import { getChainId, getNetworkId } from '../../../web3/config/chainIds';
 import { getWallet } from "../../../helpers/AxiosApiRequest";
+import { alertWithSingleBtn } from "../../../utils";
 
 
 const getGasPrice = async (rpcURL) => {
@@ -185,4 +186,17 @@ export const sendCustomTransaction = async (transaction, publicKey, nftId, type)
         // console.log(result);
         // return result
     })
+}
+
+export const handleTransactionError = (error, translate) => {
+    console.log("🚀 ~ file: transactionFunctions.js ~ line 192 ~ handleTransactionError ~ error", error)
+
+    if (typeof error === 'string' && error.includes('transaction underpriced')) {
+        alertWithSingleBtn(
+            translate('wallet.common.alert'),
+            translate('common.blanceLow'),
+        );
+    } else {
+        alertWithSingleBtn(translate('common.error'), '');
+    }
 }
