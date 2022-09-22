@@ -133,7 +133,11 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         screenName="allNft"
         item={item}
         onPress={() => {
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
     );

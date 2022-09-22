@@ -424,6 +424,7 @@
         "CHECK_YOUR_WEBSITE" : "请输入有效的网站网址",
         "CHECK_YOUR_DISCORD" : "请输入有效的 Discord URL",
         "CHECK_YOUR_YOUTUBE" : "请输入有效的 Youtube URL",
+        "playbackSpeed" : "播放速度",
         "links": "链接 ",
         "viewAll": "查看全部",
         "follow": "追随者 ",

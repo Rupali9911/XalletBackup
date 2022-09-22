@@ -23,7 +23,7 @@ export default function HotCollectionReducer(state = initialState, action) {
     case HOT_COLLECTION_SUCCESS:
       return state = {
         ...state,
-        hotCollectionList: [...action.payload.listCollectionAllUser],
+        hotCollectionList: [...state.hotCollectionList, ...action.payload.listCollectionAllUser],
         hotCollectionTotalCount: action.payload.count,
         hotCollectionLoading: false,
       };

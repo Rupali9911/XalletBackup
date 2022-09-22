@@ -86,6 +86,25 @@ const Trending = ({screen, sortOption, setSortOption, page, setPage}) => {
     );
   };
 
+  const renderItem = ({item}) => {
+    let imageUri = item?.mediaUrl;
+    return (
+      <NFTItem
+        item={item}
+        screenName="trending"
+        image={imageUri}
+        onPress={() => {
+          // dispatch(changeScreenName('Hot'));
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
+        }}
+      />
+    );
+  };
+
   // ===================== Render No NFT Function ===================================
   const renderNoNFT = () => {
     return (
@@ -128,21 +147,6 @@ const Trending = ({screen, sortOption, setSortOption, page, setPage}) => {
   const renderFooter = () => {
     if (!NewNFTListReducer.newNftListLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
-  };
-
-  const renderItem = ({item}) => {
-    let imageUri = item?.mediaUrl;
-    return (
-      <NFTItem
-        item={item}
-        screenName="trending"
-        image={imageUri}
-        onPress={() => {
-          // dispatch(changeScreenName('Hot'));
-          navigation.push('CertificateDetail', {item: item});
-        }}
-      />
-    );
   };
 
   const memoizedValue = useMemo(

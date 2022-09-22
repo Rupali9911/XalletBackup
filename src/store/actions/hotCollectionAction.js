@@ -34,6 +34,8 @@ export const hotCollectionPageChange = (data) => ({
 export const hotCollectionList = (page, limit) => {
   return (dispatch) => {
 
+    let limit = 10;
+
     sendRequest({
       url: `${NEW_BASE_URL}/collections/hot`,
       params: {
@@ -89,11 +91,26 @@ export const hotCollectionList = (page, limit) => {
   }
 }
 
-export const getHotCollectionDetail = (collectionId, isBlind) => {
-  axios.defaults.headers.post['Content-Type'] = 'application/json';
-  const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
-  return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
+// export const getHotCollectionDetail = (collectionId, isBlind) => {
+//   axios.defaults.headers.post['Content-Type'] = 'application/json';
+//   const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
+//   return axios.get(`${BASE_URL}/${sub_url}?collectionId=${collectionId}`);
+// }
+
+export const getHotCollectionDetail = (networkName, contractAddress) => {
+  // axios.defaults.headers.post['Content-Type'] = 'application/json';
+  // // const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
+  // return axios.get(`https://prod-backend.xanalia.com/collections/collectionId?networkName=${networkName}&contractAddress=${contractAddress}`);
+  
+  return sendRequest({
+    url: `${NEW_BASE_URL}/collections/collectionId`,
+    params: {
+      networkName,
+      contractAddress,
+    }
+  })
 }
+
 
 export const getStoreCollectioDetail = () => {
   axios.defaults.headers.post['Content-Type'] = 'application/json';

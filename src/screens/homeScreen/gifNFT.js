@@ -20,7 +20,7 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -151,7 +151,11 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('gitNFT'));
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
     );
