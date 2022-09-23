@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   modalImage: {
     width: wp('100%'),
     height: wp('100%'),
-    backgroundColor: Colors.WHITE8,
+    // backgroundColor: Colors.WHITE8,
     justifyContent: 'center',
     alignItems: 'center',
   },

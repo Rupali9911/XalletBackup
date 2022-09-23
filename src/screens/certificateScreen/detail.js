@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Linking,
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -68,6 +69,7 @@ import {handleLike} from '../discover/discoverItem';
 import {Verifiedcollections} from '../../components/verifiedCollection';
 import {
   CATEGORY_VALUE,
+  COLORS,
   compareAddress,
   FILTER_TRADING_HISTORY_OPTIONS,
   NFT_MARKET_STATUS,
@@ -88,6 +90,7 @@ import {twitterLink} from '../../common/function';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import IconMute from 'react-native-vector-icons/Octicons';
 import PlaySpeed from 'react-native-vector-icons/MaterialCommunityIcons';
+import PlayPause from 'react-native-vector-icons/MaterialCommunityIcons';
 import Sound from 'react-native-sound';
 import Slider from '@react-native-community/slider';
 
@@ -95,6 +98,7 @@ const Web3 = require('web3');
 
 // =============== SVGS Destructuring ========================
 const {
+  PlayButtonIcon,
   HeartWhiteIcon,
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
@@ -102,8 +106,6 @@ const {
   FacebookIcon,
   InstagramIcon,
   VerficationIcon,
-  PlayButtonBlack,
-  PauseButtonBlack,
 } = SVGS;
 
 const DetailScreen = ({navigation, route}) => {
@@ -230,35 +232,39 @@ const DetailScreen = ({navigation, route}) => {
   const [mute, setMute] = useState(false);
 
   useEffect(() => {
-    const audio = new Sound(mediaUrl, null, err => {
-      if (err) {
-        return;
-      }
-    });
-    setMusic(audio);
-    return function cleanup() {
-      audio.release();
-    };
+    if (categoryType === CATEGORY_VALUE.music) {
+      const audio = new Sound(mediaUrl, undefined, err => {
+        if (err) {
+          return;
+        }
+      });
+      setMusic(audio);
+      return function cleanup() {
+        audio.release();
+      };
+    }
   }, [mediaUrl]);
 
   const durationRef = useRef(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (music && durationRef?.current <= 0) {
-        setDuration(music.getDuration());
-        setDurationMin(Math.floor(music.getDuration() / 60));
-        setDurationSec(Math.floor(music.getDuration() % 60));
-        durationRef.current = music.getDuration();
-      } else if (music && isPlaying) {
-        music.getCurrentTime(seconds => {
-          setCurrentTime(Math.round(seconds));
-          setCurrentmin(Math.floor(seconds / 60));
-          setCurrentSec(Math.floor(seconds % 60));
-        });
-      }
-    }, 400);
-    return () => clearInterval(interval);
+    if (categoryType === CATEGORY_VALUE.music) {
+      const interval = setInterval(() => {
+        if (music && durationRef?.current <= 0) {
+          setDuration(music?.getDuration());
+          setDurationMin(Math.floor(music.getDuration() / 60));
+          setDurationSec(Math.floor(music.getDuration() % 60));
+          durationRef.current = music.getDuration();
+        } else if (music && isPlaying) {
+          music.getCurrentTime(seconds => {
+            setCurrentTime(Math.round(seconds));
+            setCurrentmin(Math.floor(seconds / 60));
+            setCurrentSec(Math.floor(seconds % 60));
+          });
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
   }, [isPlaying, music]);
 
   const onPlayPausePress = async () => {
@@ -579,11 +585,19 @@ const DetailScreen = ({navigation, route}) => {
           <View style={{...styles.modalImage}}>
             {/* {mediaUrl && ( */}
             {showThumb && (
-              <C_Image
-                uri={thumbnailUrl}
-                imageStyle={styles.modalImage}
-                // isContain
-              />
+              <View>
+                <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
+                <ActivityIndicator
+                  style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    top: '45%',
+                  }}
+                  size="medium"
+                  color={COLORS.BLACK1}
+                />
+              </View>
             )}
             <Video
               key={videoKey}
@@ -611,13 +625,17 @@ const DetailScreen = ({navigation, route}) => {
               style={[styles.video]}
             />
 
-            {/* {!playVideo && !videoLoad && (
-              <View style={styles.videoPlayIconCont}>
-                <View style={styles.videoPlayIconChild}>
-                  <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                </View>
+            {!playVideo && !showThumb && (
+              <View
+                style={{
+                  position: 'absolute',
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                  top: '37%',
+                }}>
+                <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
-            )} */}
+            )}
             {/* {(videoLoad || playVideoLoad) && !videoLoadErr && (
               <View style={styles.videoPlayIconCont}>
                 <View style={styles.videoPlayIconChild}>
@@ -664,37 +682,39 @@ const DetailScreen = ({navigation, route}) => {
                   onPress={() => {
                     onPlayPausePress();
                   }}>
-                  {isPlaying ? (
-                    <PauseButtonBlack width={SIZE(17)} height={SIZE(17)} />
-                  ) : (
-                    <PlayButtonBlack width={SIZE(30)} height={SIZE(30)} />
-                  )}
+                  <PlayPause
+                    name={isPlaying ? 'pause' : 'play'}
+                    size={wp('6.5%')}
+                  />
                 </TouchableOpacity>
               )}
 
               {duration !== -1 ? (
                 <Text>
-                  {currentmin} :{' '}
-                  {currentSec > 9 ? currentSec : '0' + currentSec}/{durationMin}{' '}
-                  : {durationSec > 9 ? durationSec : '0' + durationSec}
+                  {currentmin}:{currentSec > 9 ? currentSec : '0' + currentSec}{' '}
+                  / {durationMin}:
+                  {durationSec > 9 ? durationSec : '0' + durationSec}
                 </Text>
               ) : (
-                <Text>0 : 00/0 : 00</Text>
+                <Text>0:00 / 0:00</Text>
               )}
               <View style={{width: SIZE(140)}}>
                 <Slider
                   style={{width: SIZE(140)}}
-                  value={currentTime}
+                  value={currentTime === 0 ? -1 : currentTime}
                   tapToSeek={true}
                   minimumValue={0}
                   maximumValue={duration}
-                  onValueChange={value => seekAudio(value)}
+                  // onValueChange={value => seekAudio(value)}
                   minimumTrackTintColor={Colors.GREY1}
                   maximumTrackTintColor={Colors.GREY2}
+                  onSlidingComplete={value => {
+                    seekAudio(value);
+                  }}
                 />
               </View>
               <TouchableOpacity onPress={() => setMute(!mute)}>
-                <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4%')} />
+                <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
               </TouchableOpacity>
               <View>
                 <Menu
@@ -714,7 +734,15 @@ const DetailScreen = ({navigation, route}) => {
                 <Menu
                   key={openPlaySpeed}
                   opened={openPlaySpeed}
-                  onBackdropPress={() => setOpenPlaySpeed(false)}>
+                  onBackdropPress={() => setOpenPlaySpeed(false)}
+                  style={
+                    Platform.OS === 'android'
+                      ? {
+                          position: 'absolute',
+                          left: 50,
+                        }
+                      : {}
+                  }>
                   <MenuTrigger />
                   <MenuOptions>
                     <MenuOption
@@ -3393,7 +3421,9 @@ const DetailScreen = ({navigation, route}) => {
         <AppBackground isBusy={load}>
           <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
             {renderBannerImageVideo()}
-            {!playVideo && renderHeartIcon()}
+            {categoryType === CATEGORY_VALUE.movie
+              ? !playVideo && renderHeartIcon()
+              : renderHeartIcon()}
             {!load && renderCreatorCollectionOwnerName()}
             {renderCreatorAndNFTName()}
             {renderDescription()}
