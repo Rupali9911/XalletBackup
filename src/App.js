@@ -268,7 +268,7 @@ const AppRoutes = () => {
     <NavigationContainer ref={navigatorRef} linking={linking}>
       {userData ? (
         <Stack.Navigator
-          initialRouteName={initialRoute}
+          initialRouteName={'AiChat'}
           headerMode="none"
           screenOptions={{
             animationEnabled: true,

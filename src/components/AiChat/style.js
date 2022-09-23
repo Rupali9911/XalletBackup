@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         // bottom: 0,
         //  position: 'absolute',
         // position: 'relative',
-        display: 'flex',
+        // display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center'
         // justifyContent: 'space-evenly',
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         flexDirection: 'row',
-        marginVertical: 20
+        // marginVertical: 20
     },
     leftBubbleContainer: {
         alignItems: 'flex-start',
@@ -230,10 +230,10 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     backButtonWrap: {
-        position: 'absolute',
+        // position: 'absolute',
         left: SIZE(10),
-        top: SIZE(10),
-        zIndex: 1,
+        paddingVertical: SIZE(12),
+        // zIndex: 1,
         backgroundColor: 'white',
         width: SIZE(26),
         height: SIZE(26),

@@ -1,15 +1,16 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Keyboard, Image, Platform, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
 import React, { useState, } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAiChat } from '../../store/actions/chatAction';
+import { getAiChat, chatLoadingSuccess } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { C_Image } from '../../components';
+import { C_Image, AppHeader } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { hp } from '../../constants/responsiveFunct';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { set } from 'lodash';
+import ChatInput from './chatInput';
 
 const chatNFT = ({ route, navigation }) => {
   let { chatNft, tokenId } = route.params;
@@ -72,7 +73,7 @@ const chatNFT = ({ route, navigation }) => {
   const ShowChatMessage = (props) => {
     const { item } = props;
     return (
-      <View>
+      <View style={{marginVertical: 10}}>
         {item.type == 'sender' ?
           <RightBubble item={props.item} />
           :
@@ -138,26 +139,25 @@ const chatNFT = ({ route, navigation }) => {
     );
   };
 
-  const handleChange = e => {
-    setMessage(e);
-  };
-
-
 
   const ListFooter = () => {
     //View to set in Footer
     return (
      
       <View >
-        <View style={[styles.separator, { marginVertical: 5 }]} />
+        <View style={[styles.separator, { marginVertical: 10 }]} />
 
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder={translate("common.enterMessage")}
             value={message}
+            // autoFocus={true}
             onChangeText={text => setMessage(text)}
             placeholderTextColor={'#212529'}
+            // enableAutoAutomaticScroll={}
+            // enableAutoAutomaticScroll={true}
+            // autoCorrect={false}
           />
           <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage(message, new Date())}>
             <Text style={styles.sendBtnTxt}>Send</Text>
@@ -170,14 +170,24 @@ const chatNFT = ({ route, navigation }) => {
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1, }} scrollEnabled={false} >
-        
-        <View style={{ flex: 0.4 }}>
-          <TouchableOpacity
+       
+          {/* <AppHeader
+        showBackButton
+      /> */}
+      <TouchableOpacity
+            onPress={() => {dispatch(chatLoadingSuccess('')), navigation.goBack()}}
+            style={styles.backButtonWrap}
+            >
+            <Image style={styles.backIcon} source={ImageSrc.backArrow} />
+          </TouchableOpacity>
+      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} automaticallyAdjustKeyboardInsets={true}>
+      {/* <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButtonWrap}>
             <Image style={styles.backIcon} source={ImageSrc.backArrow} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+        <View style={{ flex: 0.4 }}>
+         
           <View style={styles.rcvReplyContainer}>
             <Text style={styles.nftName}>{chatNft.name.slice(chatNft.name.lastIndexOf("#"))}</Text>
             <View style={[styles.separator, { width: '80%' }]} />
