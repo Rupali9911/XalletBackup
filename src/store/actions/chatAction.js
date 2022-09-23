@@ -1,27 +1,14 @@
-import { CHAT_NFT_COLLECTION_START, CHAT_NFT_COLLECTION_SUCCESS, CHAT_NFT_COLLECTION_FAIL, CHAT_LOAD_START, CHAT_SUCCESS, CHAT_LOAD_FAIL, CHAT_OWNED_NFT_START, CHAT_OWNED_NFT_SUCCESS, CHAT_OWNED_NFT_FAIL } from '../types';
+import { CHAT_OTHER_NFT_LOAD_START, CHAT_OTHER_NFT_LOAD_SUCCESS, CHAT_OTHER_NFT_LOAD_FAIL, CHAT_LOAD_START, CHAT_LOAD_SUCCESS, CHAT_LOAD_FAIL, CHAT_OWNED_NFT_START, CHAT_OWNED_NFT_SUCCESS, CHAT_OWNED_NFT_FAIL } from '../types';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 
-export const chatNftCollectionLoadStart = () => ({
-  type: CHAT_NFT_COLLECTION_START,
-});
-
-export const chatNftCollectionLoadSuccess = (data) => ({
-  type: CHAT_NFT_COLLECTION_SUCCESS,
+export const chatLoadingStart = (data) => ({
+  type: CHAT_LOAD_START,
   payload: data,
 });
 
-export const chatNftCollectionLoadFail = (error) => ({
-  type: CHAT_NFT_COLLECTION_FAIL,
-  payload: error,
-});
-
-export const chatLoadStart = () => ({
-  type: CHAT_LOAD_START,
-});
-
-export const chatLoadSuccess = (data) => ({
-  type: CHAT_SUCCESS,
+export const chatLoadingSuccess = (data) => ({
+  type: CHAT_LOAD_SUCCESS,
   payload: data,
 });
 
@@ -30,6 +17,19 @@ export const chatLoadFail = (error) => ({
   payload: error,
 });
 
+export const chatOtherNftCollectionLoadStart = () => ({
+  type: CHAT_OTHER_NFT_LOAD_START,
+});
+
+export const chatOtherNftCollectionLoadSuccess = (data) => ({
+  type: CHAT_OTHER_NFT_LOAD_SUCCESS,
+  payload: data,
+});
+
+export const chatOtherNftCollectionLoadFail = (error) => ({
+  type: CHAT_OTHER_NFT_LOAD_FAIL,
+  payload: error,
+});
 
 export const chatOwnedNftCollectionLoadStart = () => ({
   type: CHAT_OWNED_NFT_START,
@@ -45,58 +45,80 @@ export const chatOwnedNftCollectionLoadFail = (error) => ({
   payload: error,
 });
 
+//----------------------------------------------------------------------------
+
+export const getAiChat = (message, address, name, tokenId) => (dispatch) => {
+  dispatch(chatLoadingStart(true))
+  return new Promise((resolve, reject) => {
+    let url = `${NEW_BASE_URL}/xana-genesis-chat/chat-bot`; 
+    let data = {
+      address: address,
+      bot_name: name,
+      text: message,
+      tokenId: tokenId
+    };
+    // dispatch(chatLoadingStart(true))
+    sendRequest({
+      url,
+      method: 'POST',
+      data,
+    })
+      .then(res => {
+        dispatch(chatLoadingStart(false))
+        if (res?.response) {
+          dispatch(chatLoadingSuccess(res?.response));
+          resolve(res?.response)
+          // dispatch(chatLoadingStart(false));
+        }
+      })
+      .catch(err => {
+        dispatch(chatLoadFail(err));
+        reject(err);
+      })
+  })
+}
+
+//---------------------------------------------------------
+
 export const getOtherDataNft = (address) => (dispatch) => {
-  
-  let url = `${BASE_URL}/xanaGenesis/get-other-data`;
-
-  console.log('URL:----------->', url)
+  let url = `${NEW_BASE_URL}/xana-genesis-chat/get-other-data`;
+  let data = {
+    cursor: '',
+    owner: address,
+    // page: 1
+  };
+  dispatch(chatOtherNftCollectionLoadStart(true));
   sendRequest({
     url,
     method: 'POST',
-    data: {
-      cursor: '',
-      owner: '0x1a01d68dace26f59ad6ab114c6a0ef6a3b2ccb9e',
-      // page: 1
-    },
-    headers:{
-      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGM3NTIxMzlmNmVjYzQ4NjUyM2VhNyIsImlhdCI6MTY2MzI0MjgxNCwiZXhwIjoxNjYzMzI5MjE0fQ.fIJNdM0D2leJXA7DPeLkKwoAzxckV0qS4vlemMCs97Y'
-    }
+    data,
   })
-  .then(res => {
-    let result = res?.data?.result;
-    if(result.length > 0)
-    {
-      dispatch(chatNftCollectionLoadSuccess(result));
-    }
-  })
-  .catch(err => console.log('Error : ', err))
-  
+    .then(list => {
+      dispatch(chatOtherNftCollectionLoadStart(false));
+      let result = list?.result;
+      if (result.length > 0) {
+        dispatch(chatOtherNftCollectionLoadSuccess(result));
+      }
+    })
+    .catch(err => console.log('Error : ', err))
+
 }
+//----------------------------------
+export const getSearchResult = (text, address) => (dispatch) => {
+  let url = `${NEW_BASE_URL}/xana-genesis-chat/search-nft`;
+  let data = {
+    owner: address,
+    searchValue: text
+  };
 
-export const getMyDataNft = () => (dispatch) => {
-  
-  let url = `${BASE_URL}/xanaGenesis/get-my-data`;
-
-  console.log('URL:----------->', url)
   sendRequest({
     url,
     method: 'POST',
-    data: {
-      owner: '0x1a01d68dace26f59ad6ab114c6a0ef6a3b2ccb9e',
-    },
-    headers:{
-      authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZGM3NTIxMzlmNmVjYzQ4NjUyM2VhNyIsImlhdCI6MTY2MzI0MjgxNCwiZXhwIjoxNjYzMzI5MjE0fQ.fIJNdM0D2leJXA7DPeLkKwoAzxckV0qS4vlemMCs97Y'
-    }
+    data,
   })
-  .then(res => {
-    console.log('GET-MY-DATA ----------- ', res);
-    let result = res?.userNfts?.result 
-    dispatch(chatOwnedNftCollectionLoadSuccess(result));
+    .then(data => {
+      console.log('Search Result : ', data);
 
-  })
-  .catch(err => console.log('Error : ', err))
-  
+    })
+    .catch(err => console.log('Error : ', err))
 }
-
-
-

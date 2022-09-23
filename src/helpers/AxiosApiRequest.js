@@ -13,7 +13,7 @@ async function sendRequest(payload) {
         payload.headers = payload.headers
             ? {
                 ...payload.headers,
-              //  Authorization: 'Bearer ' + token
+               Authorization: 'Bearer ' + token
             }
             : token ? {
                 'Content-Type': 'application/json',
