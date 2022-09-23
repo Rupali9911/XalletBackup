@@ -1,18 +1,30 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Keyboard, Image, Platform, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
-import React, { useState, } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAiChat } from '../../store/actions/chatAction';
-import { translate } from '../../walletUtils';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Keyboard,
+  Image,
+  Platform,
+  TextInput,
+  FlatList,
+  KeyboardAvoidingView,
+} from 'react-native';
+import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAiChat} from '../../store/actions/chatAction';
+import {translate} from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { C_Image } from '../../components';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { hp } from '../../constants/responsiveFunct';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { set } from 'lodash';
+import {C_Image} from '../../components';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {hp} from '../../constants/responsiveFunct';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {set} from 'lodash';
+import ChatInput from './ChatInput';
 
-const chatNFT = ({ route, navigation }) => {
-  let { chatNft, tokenId } = route.params;
+const chatNFT = ({route, navigation}) => {
+  let {chatNft, tokenId} = route.params;
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -21,66 +33,70 @@ const chatNFT = ({ route, navigation }) => {
 
   // =============== Getting data from reducer ========================
   const dispatch = useDispatch();
-  const { chatLoadSuccess, isChatLoading } = useSelector(state => state.chatReducer);
-  const { userData } = useSelector(state => state.UserReducer);
-  console.log('UserData : ', userData)
+  const {chatLoadSuccess, isChatLoading} = useSelector(
+    state => state.chatReducer,
+  );
+  const {userData} = useSelector(state => state.UserReducer);
+  console.log('UserData : ', userData);
 
   // ===================== Call RightSide View ===================================
-  const RightBubble = (props) => {
-    const { item } = props;
+  const RightBubble = props => {
+    const {item} = props;
     return (
       <View style={styles.rightBubbleContainer}>
         <View style={styles.talkBubble}>
-          <View
-            style={styles.textContainer}>
-            <Text style={[styles.nftName, {color: '#46446e', marginBottom: 5}]}>{item.senderName}</Text>
+          <View style={styles.textContainer}>
+            <Text style={[styles.nftName, {color: '#46446e', marginBottom: 5}]}>
+              {item.senderName}
+            </Text>
             <Text style={styles.bubbleText}> {item.message} </Text>
           </View>
         </View>
-        <View
-          style={[styles.timeFormat, { marginRight: 10 }]}>
-          <Image source={{ uri: item.senderImage }} style={styles.bubbleImage} />
+        <View style={[styles.timeFormat, {marginRight: 10}]}>
+          <Image source={{uri: item.senderImage}} style={styles.bubbleImage} />
           <Text style={styles.statusText}>{item.time}</Text>
         </View>
       </View>
     );
-  }
+  };
 
-  // ===================== Call LeftSide View =================================== 
-  const LeftBubble = (props) => {
-    const { item } = props;
+  // ===================== Call LeftSide View ===================================
+  const LeftBubble = props => {
+    const {item} = props;
     return (
       <View style={styles.leftBubbleContainer}>
-        <View
-          style={[styles.timeFormat, { marginLeft: 10 }]}>
-          <Image source={{ uri: item.receiverImage }} style={styles.bubbleImage} />
+        <View style={[styles.timeFormat, {marginLeft: 10}]}>
+          <Image
+            source={{uri: item.receiverImage}}
+            style={styles.bubbleImage}
+          />
           <Text style={styles.statusText}>{item.time}</Text>
         </View>
         <View style={styles.talkBubble}>
-          <View
-            style={styles.textContainer}>
-            <Text style={[styles.nftName, {color: '#46446e', marginBottom: 5}]}>{item.receiverName.slice(item.receiverName.lastIndexOf("#"))}</Text>
+          <View style={styles.textContainer}>
+            <Text style={[styles.nftName, {color: '#46446e', marginBottom: 5}]}>
+              {item.receiverName.slice(item.receiverName.lastIndexOf('#'))}
+            </Text>
             <Text style={styles.bubbleText}> {item.message} </Text>
           </View>
         </View>
-
       </View>
     );
-  }
+  };
 
   // ===================== Render AIChat Flatlist ===================================
-  const ShowChatMessage = (props) => {
-    const { item } = props;
+  const ShowChatMessage = props => {
+    const {item} = props;
     return (
       <View>
-        {item.type == 'sender' ?
+        {item.type == 'sender' ? (
           <RightBubble item={props.item} />
-          :
+        ) : (
           <LeftBubble item={props.item} />
-        }
+        )}
       </View>
     );
-  }
+  };
 
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
@@ -95,46 +111,47 @@ const chatNFT = ({ route, navigation }) => {
         type: 'sender',
         time: timeConversion,
         senderImage: userData.avatar,
-        senderName: userData.userName
+        senderName: userData.userName,
       };
       setChatMessage(chatMessage => [...chatMessage, sendObj]);
 
-      dispatch(getAiChat(msg, userData.userWallet.address, chatNft.name, tokenId))
-        .then((response) => {
+      dispatch(
+        getAiChat(msg, userData.userWallet.address, chatNft.name, tokenId),
+      )
+        .then(response => {
           let receiveObj = {
             message: response,
             type: 'receiver',
             time: timeConversion,
             receiverImage: chatNft.image,
-            receiverName: chatNft.name
-          }
+            receiverName: chatNft.name,
+          };
           setChatMessage(chatMessage => [...chatMessage, receiveObj]);
         })
-        .catch((err) => {
+        .catch(err => {
           console.log('Error Chat : ', err);
-        })
+        });
     }
     setMessage('');
-  }
+  };
 
   const ListHeader = () => {
     //View to set in Header
     return (
-      <View >
+      <View>
         <View style={styles.chatHeaderContainer}>
-          <Image source={{ uri: chatNft.image }} style={styles.chatHeaderImage} />
-          <View style={{ lineHeight: 2, paddingStart: 10 }}>
-            <Text style={styles.headerNftName}>{chatNft.name.slice(chatNft.name.lastIndexOf("#"))}</Text>
-            {isChatLoading ?
+          <Image source={{uri: chatNft.image}} style={styles.chatHeaderImage} />
+          <View style={{lineHeight: 2, paddingStart: 10}}>
+            <Text style={styles.headerNftName}>
+              {chatNft.name.slice(chatNft.name.lastIndexOf('#'))}
+            </Text>
+            {isChatLoading ? (
               <Text style={styles.typingMessage}>Typing...</Text>
-              : null}
+            ) : null}
           </View>
-
         </View>
         <View style={styles.separator} />
-
       </View>
-
     );
   };
 
@@ -142,24 +159,23 @@ const chatNFT = ({ route, navigation }) => {
     setMessage(e);
   };
 
-
-
   const ListFooter = () => {
     //View to set in Footer
     return (
-     
-      <View >
-        <View style={[styles.separator, { marginVertical: 5 }]} />
+      <View>
+        <View style={[styles.separator, {marginVertical: 5}]} />
 
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder={translate("common.enterMessage")}
+            placeholder={translate('common.enterMessage')}
             value={message}
             onChangeText={text => setMessage(text)}
             placeholderTextColor={'#212529'}
           />
-          <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage(message, new Date())}>
+          <TouchableOpacity
+            style={styles.sendBtn}
+            onPress={() => sendMessage(message, new Date())}>
             <Text style={styles.sendBtnTxt}>Send</Text>
           </TouchableOpacity>
         </View>
@@ -170,51 +186,57 @@ const chatNFT = ({ route, navigation }) => {
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1, }} scrollEnabled={false} >
-        
-        <View style={{ flex: 0.4 }}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{flex: 1}}
+        scrollEnabled={false}>
+        <View style={{flex: 0.4}}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButtonWrap}>
             <Image style={styles.backIcon} source={ImageSrc.backArrow} />
           </TouchableOpacity>
           <View style={styles.rcvReplyContainer}>
-            <Text style={styles.nftName}>{chatNft.name.slice(chatNft.name.lastIndexOf("#"))}</Text>
-            <View style={[styles.separator, { width: '80%' }]} />
-            {
-            !isChatLoading ?
+            <Text style={styles.nftName}>
+              {chatNft.name.slice(chatNft.name.lastIndexOf('#'))}
+            </Text>
+            <View style={[styles.separator, {width: '80%'}]} />
+            {!isChatLoading ? (
               <View>
-                <Text style={[styles.nftName, { marginVertical: 3 }]} numberOfLines={2}>{chatLoadSuccess}</Text>
+                <Text
+                  style={[styles.nftName, {marginVertical: 3}]}
+                  numberOfLines={2}>
+                  {chatLoadSuccess}
+                </Text>
               </View>
-            : null
-            }
+            ) : null}
           </View>
-          <C_Image uri={chatNft.image} imageStyle={styles.bannerImage}
-          />
+          <C_Image uri={chatNft.image} imageStyle={styles.bannerImage} />
         </View>
 
-        <View style={{ flex: 0.6 }}>
+        <View style={{flex: 0.6}}>
           <ListHeader />
-            <View style={styles.chatContainer}>
-              <FlatList
-                ref={flatList}
-                onContentSizeChange={(item, index) => {
-                  flatList.current.scrollToEnd({ animated: true });
-                  flatList.current.scrollToOffset({ animated: true, offset: index });
-                }}
-                data={chatMessage}
-                renderItem={({ item }) => (
-                  <ShowChatMessage item={item} />
-                )}
-                keyExtractor={(item, index) => { return `_${index}` }}
-                onLayout={() => flatList.current.scrollToEnd({ animated: true })}
-                showsVerticalScrollIndicator={false}
-              />
-            </View>
+          <View style={styles.chatContainer}>
+            <FlatList
+              ref={flatList}
+              onContentSizeChange={(item, index) => {
+                flatList.current.scrollToEnd({animated: true});
+                flatList.current.scrollToOffset({
+                  animated: true,
+                  offset: index,
+                });
+              }}
+              data={chatMessage}
+              renderItem={({item}) => <ShowChatMessage item={item} />}
+              keyExtractor={(item, index) => {
+                return `_${index}`;
+              }}
+              onLayout={() => flatList.current.scrollToEnd({animated: true})}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
           {/* <TextInput style={{height: 50, width: 300}}/> */}
-          <ListFooter />
+          <ChatInput />
         </View>
-
       </KeyboardAwareScrollView>
       {/* <ListFooter /> */}
 
@@ -295,7 +317,6 @@ const chatNFT = ({ route, navigation }) => {
       /> */}
       {/* </View> */}
 
-
       {/* <View> */}
 
       {/* <View style={styles.chatHeaderContainer}>
@@ -308,7 +329,6 @@ const chatNFT = ({ route, navigation }) => {
           </View>
         </View> */}
       {/* </View> */}
-
 
       {/* <View style={styles.separator} /> */}
 
@@ -347,17 +367,12 @@ const chatNFT = ({ route, navigation }) => {
       {/* </KeyboardAvoidingView> */}
       {/* </View> */}
     </SafeAreaView>
-
-  )
-}
+  );
+};
 
 export default chatNFT;
 
-
-
 //--------------------------------------------------------------------------------
-
-
 
 // import { View, Text, SafeAreaView, TouchableOpacity, Image, Platform, TextInput, FlatList, KeyboardAvoidingView } from 'react-native';
 // import { AppHeader } from '../../components';
@@ -517,7 +532,7 @@ export default chatNFT;
 //         isWhite
 //         containerStyle={{ backgroundColor: Colors.themeColor, }}
 //       />
-//       <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : undefined } style={{ flex: 1,  }} enabled 
+//       <KeyboardAvoidingView behavior={ Platform.OS === "ios" ? "padding" : undefined } style={{ flex: 1,  }} enabled
 //         // keyboardVerticalOffset={
 //         //   Platform.select({
 //         //     ios: () => 0,
@@ -553,7 +568,7 @@ export default chatNFT;
 //             />
 //             <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage(message, new Date())} disabled={disableButton}>
 //               <Image style={[styles.icon, { tintColor: Colors.themeColor }]} source={ImagesSrc.sendChatMessage} />
-//             </TouchableOpacity>  
+//             </TouchableOpacity>
 //           </View>
 //       </KeyboardAvoidingView>
 //     </SafeAreaView>
@@ -562,4 +577,3 @@ export default chatNFT;
 // }
 
 // export default AiChat;
-
