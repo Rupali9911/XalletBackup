@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
   modalImage: {
     width: wp('100%'),
     height: wp('100%'),
-    // backgroundColor: Colors.WHITE8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -436,12 +435,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    paddingHorizontal: SIZE(10),
   },
   activity: {
     position: 'absolute',
-    alignSelf: 'center',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'center',
-    top: '45%',
+    alignItems: 'center',
   },
   videoIcon: {
     width: SIZE(80),
@@ -452,7 +455,39 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    top: '40%',
+  },
+  timeView: {
+    width: SIZE(90),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controlView: {
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  optionView: {
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modal: {
+    flex: 1,
+    margin: 0,
+  },
+  closeIcon: {
+    alignSelf: 'flex-end',
+    width: SIZE(30),
+    height: SIZE(30),
+  },
+  modalImg: {
+    width: wp('100%'),
+    minHeight: wp('100%'),
+    resizeMode: 'contain',
   },
 });
 

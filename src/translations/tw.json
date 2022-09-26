@@ -424,6 +424,7 @@
         "CHECK_YOUR_WEBSITE" : "請輸入有效的網站網址",
         "CHECK_YOUR_DISCORD" : "請輸入有效的 Discord URL",
         "CHECK_YOUR_YOUTUBE" : "請輸入有效的 Youtube URL",
+        "TOKEN_ID" : "TOKEN ID",
         "playbackSpeed" : "播放速度",
         "links": "链接 ",
         "viewAll": "查看全部",

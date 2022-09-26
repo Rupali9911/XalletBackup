@@ -2,6 +2,7 @@ import {useIsFocused} from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
+import Modal from 'react-native-modal';
 import {
   Alert,
   FlatList,
@@ -106,6 +107,7 @@ const {
   FacebookIcon,
   InstagramIcon,
   VerficationIcon,
+  CircleCloseIcon,
 } = SVGS;
 
 const DetailScreen = ({navigation, route}) => {
@@ -180,6 +182,7 @@ const DetailScreen = ({navigation, route}) => {
   const [offerList, setOfferList] = useState([]);
   const [isLike, setLike] = useState();
   const [detailNFT, setDetailNFT] = useState({});
+  const [imgModal, setImgModal] = useState(false);
 
   // const [isContractOwner, setIsContractOwner] = useState(false);
   // const [isOwner, setIsOwner] = useState(false);
@@ -230,6 +233,7 @@ const DetailScreen = ({navigation, route}) => {
   const [currentmin, setCurrentmin] = useState(0);
   const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
   const [mute, setMute] = useState(false);
+  const [songCompleted, setSongCompleted] = useState(false);
 
   useEffect(() => {
     if (categoryType === CATEGORY_VALUE.music) {
@@ -266,6 +270,23 @@ const DetailScreen = ({navigation, route}) => {
       return () => clearInterval(interval);
     }
   }, [isPlaying, music]);
+
+  useEffect(() => {
+    if (Math.floor(duration) === currentTime) {
+      setCurrentTime(0);
+      setCurrentmin(0);
+      setCurrentSec(0);
+      setPlaying(false);
+      setSongCompleted(true);
+    }
+  }, [currentTime]);
+
+  useEffect(() => {
+    if (songCompleted) {
+      setCurrentSec(0);
+      setSongCompleted(false);
+    }
+  }, [songCompleted]);
 
   const onPlayPausePress = async () => {
     if (isPlaying) {
@@ -307,6 +328,26 @@ const DetailScreen = ({navigation, route}) => {
   const setAudioSpeed = speed => {
     setOpenPlaySpeed(false);
     music.setSpeed(speed);
+  };
+
+  //====================== Full image Function =======================
+
+  const imageModal = () => {
+    return (
+      <Modal
+        onBackdropPress={() => setImgModal(false)}
+        isVisible={imgModal}
+        style={styles.modal}>
+        <View>
+          <TouchableOpacity
+            style={styles.closeIcon}
+            onPress={() => setImgModal(false)}>
+            <CircleCloseIcon />
+          </TouchableOpacity>
+          <Image source={{uri: thumbnailUrl}} style={styles.modalImg} />
+        </View>
+      </Modal>
+    );
   };
 
   //===================== UseEffect Function =========================
@@ -570,6 +611,7 @@ const DetailScreen = ({navigation, route}) => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
+          setImgModal(true);
           if (showThumb) {
             setVideoLoad(true);
           } else {
@@ -584,17 +626,16 @@ const DetailScreen = ({navigation, route}) => {
         {categoryType === CATEGORY_VALUE.movie ? (
           <View style={{...styles.modalImage}}>
             {showThumb && (
-              <View>
-                <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
-                <ActivityIndicator
-                  style={styles.activity}
-                  size="medium"
-                  color={COLORS.BLACK1}
-                />
-              </View>
+              <Image source={{uri: thumbnailUrl}} style={styles.modalImage} />
+            )}
+            {showThumb && (
+              <ActivityIndicator
+                style={styles.activity}
+                size="medium"
+                color={COLORS.BLACK1}
+              />
             )}
             <Video
-              key={videoKey}
               ref={refVideo}
               source={{uri: mediaUrl}}
               repeat
@@ -650,7 +691,8 @@ const DetailScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   onPress={() => {
                     onPlayPausePress();
-                  }}>
+                  }}
+                  style={styles.controlView}>
                   <PlayPause
                     name={isPlaying ? 'pause' : 'play'}
                     size={wp('6.5%')}
@@ -659,15 +701,20 @@ const DetailScreen = ({navigation, route}) => {
               )}
 
               {duration !== -1 ? (
-                <Text>
-                  {currentmin}:{currentSec > 9 ? currentSec : '0' + currentSec}{' '}
-                  / {durationMin}:
-                  {durationSec > 9 ? durationSec : '0' + durationSec}
-                </Text>
+                <View style={styles.timeView}>
+                  <Text>
+                    {currentmin}:
+                    {currentSec > 9 ? currentSec : '0' + currentSec} /{' '}
+                    {durationMin}:
+                    {durationSec > 9 ? durationSec : '0' + durationSec}
+                  </Text>
+                </View>
               ) : (
-                <Text>0:00 / 0:00</Text>
+                <View style={styles.timeView}>
+                  <Text>0:00 / 0:00</Text>
+                </View>
               )}
-              <View style={{width: SIZE(140)}}>
+              <View style={{width: SIZE(150)}}>
                 <Slider
                   style={{width: SIZE(140)}}
                   value={currentTime === 0 ? -1 : currentTime}
@@ -681,7 +728,9 @@ const DetailScreen = ({navigation, route}) => {
                   }}
                 />
               </View>
-              <TouchableOpacity onPress={() => setMute(!mute)}>
+              <TouchableOpacity
+                style={styles.controlView}
+                onPress={() => setMute(!mute)}>
                 <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
               </TouchableOpacity>
               <View>
@@ -689,7 +738,10 @@ const DetailScreen = ({navigation, route}) => {
                   onSelect={() => {
                     setOpenPlaySpeed(true);
                   }}>
-                  <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+                  <MenuTrigger
+                    style={styles.optionView}
+                    children={<ThreeDotsVerticalIcon />}
+                  />
                   <MenuOptions>
                     <MenuOption style={styles.menuOption}>
                       <PlaySpeed size={wp('5%')} name={'play-speed'} />
@@ -761,6 +813,9 @@ const DetailScreen = ({navigation, route}) => {
         ) : (
           <C_Image uri={mediaUrl} imageStyle={styles.modalImage} />
         )}
+        {categoryType !== CATEGORY_VALUE.music &&
+          categoryType !== CATEGORY_VALUE.movie &&
+          imageModal()}
       </TouchableOpacity>
     );
   };
@@ -1521,15 +1576,10 @@ const DetailScreen = ({navigation, route}) => {
   //     navigation.push('ArtistDetail', { id: id });
   //   }
   // };
-
-  const showContractAddress = item => {
-    return typeof item?.collection === 'object'
-      ? item?.collection?.address.substring(0, 6)
-      : item?.collection
-      ? item?.collection?.substring(0, 5) +
-        ' ... ' +
-        item.collection.slice([item.collection.length - 4])
-      : MarketContractAddress;
+  const showContractAddress = () => {
+    return typeof detailNFT?.collection === 'object'
+      ? detailNFT?.collection?.address.substring(0, 6)
+      : '';
   };
 
   //===================== Render Creator NFTDetailDropdown Function =======================
@@ -1596,9 +1646,9 @@ const DetailScreen = ({navigation, route}) => {
         {renderDetail(
           'wallet.common.contractAddress',
           'address',
-          showContractAddress(item),
+          showContractAddress(),
         )}
-        {renderDetail('wallet.common.nftId', '', _tokenId)}
+        {renderDetail('common.TOKEN_ID', '', _tokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
         {renderDetail(
           'wallet.common.blockChainType',
@@ -1830,7 +1880,7 @@ const DetailScreen = ({navigation, route}) => {
   let doComponentUpdate = false;
   // const nft = item?.tokenId || item?.collectionAdd;
   // let params = nft?.toString().split('-');
-  let _tokenId = item?.tokenId;
+  let _tokenId = detailNFT?.tokenId;
   let chainType,
     ERC721Abi,
     ERC721Address,
