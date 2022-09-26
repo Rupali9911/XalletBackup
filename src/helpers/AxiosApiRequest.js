@@ -97,6 +97,8 @@ axiosInstance.interceptors.response.use(
                 // ) {
                 //     location.href = location.origin + '/maintenance'
                 // }
+            } else if (response?.status === 502) {
+                
             }
 
             return response

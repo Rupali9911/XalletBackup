@@ -176,9 +176,13 @@ const CollectionList = ({
             params
         })
             .then(res => {
-                if (res && res.data?.length !== 0) {
+                console.log("@@@ Get Actual collection API response  ==========>", res)
+                if (res && res?.data && res?.data?.length !== 0) {
+                    console.log("@@@ inside if after response")
                     setOnEndReachedCalledDuringMomentum(true)
                     setCollectionList((old) => [...old, ...res.data])
+                } else {
+                    console.log("@@@ inside else after response")
                 }
                 changeLoadingState(false)
                 setPageLoader(false);
@@ -276,7 +280,7 @@ const CollectionList = ({
                 <CardLabel>{translate("wallet.common.network")}</CardLabel>
                 <CardField
                     inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "" }}
-                    onPress={() => showModal({ data: networkList, title: translate("wallet.common.network"), itemToRender: "name" })}
+                    onPress={() => showModal({ data: networkList ? networkList : [], title: translate("wallet.common.network"), itemToRender: "name" })}
                     pressable
                     showRight />
                 <View style={[styles.saveBtnGroup]}>
@@ -300,7 +304,7 @@ const CollectionList = ({
                         disable={selectedNetwork ? false : true}
                         border={toggle !== "draft" ? colors.BLUE6 : null}
                         buttonCont={styles.rightToggle}
-                        label={translate("common.saveAsDraft")}
+                        label={translate("common.RESET_TEXT")}
                     />
                     {/* <CardButton
                         onPress={() => {
@@ -316,19 +320,23 @@ const CollectionList = ({
 
                 <View style={styles.listMainCont}>
                     {
-                        showList.length !== 0 &&
-
-                        <FlatList
-                            data={showList}
-                            showsVerticalScrollIndicator={false}
-                            initialNumToRender={50}
-                            renderItem={renderListItem}
-                            keyExtractor={keyExtractor}
-                            ItemSeparatorComponent={() => <View style={styles.separator} />}
-                            onEndReachedThreshold={0.1}
-                            onEndReached={handleFlastListEndReached}
-                            onMomentumScrollBegin={_onMomentumScrollBegin}
-                        />
+                        showList.length !== 0 ?
+                            <FlatList
+                                data={showList}
+                                showsVerticalScrollIndicator={false}
+                                initialNumToRender={50}
+                                renderItem={renderListItem}
+                                keyExtractor={keyExtractor}
+                                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                                onEndReachedThreshold={0.1}
+                                onEndReached={handleFlastListEndReached}
+                                onMomentumScrollBegin={_onMomentumScrollBegin}
+                            /> :
+                            <View style={styles.sorryMessageCont}>
+                                <Text style={styles.sorryMessage}>
+                                    {translate('common.noDataFound')}
+                                </Text>
+                            </View>
                     }
                 </View>
                 {pageLoader && <ActivityIndicator size="small" color={'#000000'} />}

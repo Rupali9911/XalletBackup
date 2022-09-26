@@ -1,53 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, Image, TouchableOpacity, Platform } from 'react-native';
-import { colors } from '../../res';
-import ImagePicker from 'react-native-image-crop-picker';
-import { useSelector } from 'react-redux';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-fast-video';
-import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import moment from 'moment';
+import ImagePicker from 'react-native-image-crop-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useSelector } from 'react-redux';
+import { colors } from '../../res';
 
-import styles from './styles';
-import { CardCont, CardField, CardLabel, CardButton } from './components';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../common/responsiveFunction';
+import { heightPercentageToDP as hp } from '../../common/responsiveFunction';
 import { IMAGES } from '../../constants';
-import { networkType as networkStatus } from "../../common/networkType";
 import { fonts } from '../../res';
+import { CardButton, CardCont, CardField, CardLabel } from './components';
+import styles from './styles';
 
 import axios from 'axios';
 import { NEW_BASE_URL } from '../../common/constants';
 import sendRequest from '../../helpers/AxiosApiRequest';
 
 import { alertWithSingleBtn } from '../../utils';
-import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { translate } from '../../walletUtils';
-import { setApprovalForAll, nftMakingMethods } from '../wallet/functions';
-import { RF } from '../../constants/responsiveFunct';
-import Colors from '../../constants/Colors';
-import { value } from "lodash/seq";
-import { _logout } from '../../store/reducer/userReducer';
+import { nftMakingMethods, setApprovalForAll } from '../wallet/functions';
+import { getUploadData, putNFTMedia, supportMediaType } from '../../utils/uploadMediaS3';
 
 const Web3 = require('web3');
 
 const PriceUnits = {
-    ethereum: [{ order: "1", name: 'ETH' }, { order: "0", name: 'USDT' }],
-    binance: [{ order: "0", name: 'ALIA' }, { order: "1", name: 'BUSD' }, { order: "2", name: 'BNB' }],
-    polygon: [{ order: "0", name: 'ALIA' }, { order: "1", name: 'USDC' }, { order: "2", name: 'ETH' }, {
+    Ethereum: [{ order: "1", name: 'ETH' }, { order: "0", name: 'USDT' }],
+    BSC: [{ order: "0", name: 'ALIA' }, { order: "1", name: 'BUSD' }, { order: "2", name: 'BNB' }],
+    Polygon: [{ order: "0", name: 'ALIA' }, { order: "1", name: 'USDC' }, { order: "2", name: 'ETH' }, {
         order: "3",
         name: "MATIC"
     }]
 }
 
+export const NFT_TYPE_TO_ID = {
+    art: 1,
+    image: 2,
+    gif: 3,
+    video: 4,
+    audio: 5,
+}
+
 const ImageType = [
-    { name: "Art", type: "2D", code: "common.2DArt" },
-    { name: "Photo", type: "portfolio", code: "common.photo" },
-    { name: "GIF", type: "GIF" },
-    { name: "Movie", type: "movie", code: "common.video" },
+    { name: "Art", value: 'art', type: "2D", code: "common.2DArt" },
+    { name: "Photo", value: 'image', type: "portfolio", code: "common.photo" },
+    { name: "GIF", value: 'gif', type: "GIF" },
+    { name: "Movie", value: 'video', type: "movie", code: "common.video" },
+    { name: "Audio", value: 'audio', type: "AUDIO" },
 ]
 
-const royalityData = ["2.5%", "5%", "10%"];
+const royalityData = ["2.5%", "5%", "7.5%", "10%"];
 
 const UploadNFT = ({
     changeLoadingState,
@@ -67,10 +70,12 @@ const UploadNFT = ({
     const { networkType } = useSelector(
         state => state.WalletReducer
     );
+    // console.log("@@@ On upload NFT, network Type from reducer ========>", networkType)
 
     const { networks } = useSelector(
         state => state.NetworkReducer
     );
+    // console.log("@@@ On upload NFT, networks from reducer ========>", networks)
 
     // console.log("@@@ On upload NFT screen reducer states =========>", networkType, networks)
 
@@ -100,7 +105,8 @@ const UploadNFT = ({
     const [startTimeDate, setStartTimeDate] = useState("");
     const [endTimeDate, setEndTimeDate] = useState("");
 
-    const [date, setDate] = useState(new Date())
+    const [startDate, setStartDate] = useState(new Date())
+    const [endDate, setEndDate] = useState(new Date())
     const [nftSupply, setNftSupply] = useState(1); //--------------
     const [nftExternalLink, setnftExternalLink] = useState(""); //-------------
 
@@ -211,9 +217,11 @@ const UploadNFT = ({
 
             if (datePickerData !== "closed") {
                 if (activeModal === "startTime") {
-                    setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
+                    setStartDate(datePickerData)
+                    setStartTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm:ss"))
                 } else if (activeModal === "endTime") {
-                    setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm"))
+                    setEndDate(datePickerData)
+                    setEndTimeDate(moment(datePickerData).format("YYYY-MM-DDTHH:mm:ss"))
                 }
                 setActiveModal("")
             } else {
@@ -339,11 +347,11 @@ const UploadNFT = ({
             url: `${NEW_BASE_URL}/collections/self`,
             method: 'GET',
             params: {
-                networkId: 1
+                networkId: networkType?.id
             }
         })
             .then(collectionList => {
-                if (collectionList.data.length !== 0) {
+                if (collectionList && collectionList?.data && collectionList.data.length !== 0) {
                     setCollectionList(collectionList.data);
                     changeLoadingState(false);
                     // if (collectionList.data.data.length !== 0) {
@@ -803,16 +811,137 @@ const UploadNFT = ({
         return { marketContract, web3 }
     }
 
-    const saveDraft = async () => {
-        if (userData.access_token) {
-            // changeLoadingState(true);
-
-            const imageRes = await uploadImageToStorage();
-            if (imageRes) {
-                saveDraftToDatabase(imageRes.image1, imageRes.image2)
+    const createNFT = async () => {
+        console.log("@@@ Mint nft ========>")
+        try {
+            const nftData = {
+                name: nftName.trim(),
+                description: nftDesc,
+                collectionId: collection && Number(collection?.id),
+                networkId: networkType?.id,
+                receiveToken: basePrice.name,
+                royalty: Number(royality.split('%')[0]),
+                category: NFT_TYPE_TO_ID[nftImageType?.value],
+                type: toggleButton === "fixPrice" ? 1 : 2,
             }
 
+            if (toggleButton === "fixPrice") {
+                nftData.price = Number(fixedPrice)
+            }
+
+            if (toggleButton === "timeAuction") {
+                nftData.price = Number(fixedPrice)
+                nftData.startPrice = Number(fixedPrice)
+                nftData.startTime = startDate.toISOString()
+                nftData.endTime = endDate.toISOString()
+            }
+            console.log("@@@ create NFT Data ========>", nftData)
+            const res = await sendRequest({
+                url: `${NEW_BASE_URL}/nfts`,
+                method: 'POST',
+                data: nftData
+            })
+            console.log("@@@ Create NFT API res =========>", res)
+            console.log("@@@ Thumbnail image  =========>", nftImageThumb)
+            console.log("@@@ Main image =========>", nftImage)
+            if (res && res?.savedNft) {
+                const nftId = res.savedNft.id;
+                const thumbnailFile = nftImageThumb;
+                const mainFile = nftImage;
+
+                let resPreview = ''
+                const nftType = NFT_TYPE_TO_ID[nftImageType?.value];
+                console.log("@@@ nft type in mint func =========>", nftType)
+                if (nftImageThumb.mime !== 'image/gif') {
+                    console.log("@@@ image type is not image/gif =========>", nftImageThumb.mime)
+                    resPreview = await getUploadData({
+                        mediaFile: nftImageThumb,
+                        collectionId: nftId,
+                        userId: userData.id,
+                        type: 'preview'
+                    })
+                    console.log("@@@ image type is not image/gif (getUploadData Res...) =========>", resPreview)
+                    await putNFTMedia({
+                        mediaFile: thumbnailFile,
+                        nftId: nftId,
+                        uploadUrl: resPreview.upload_url,
+                    })
+                }
+
+                // handle upload media to S3
+                if (nftType === 4 || nftType === 5) {
+                    console.log("@@@ image type is 4 or 5 =========>")
+                    // upload thumnail
+                    const previewMediaId = resPreview?.path?.replace(
+                        'input',
+                        'output',
+                    )
+                    console.log("@@@ image type is 4 or 5 (previewMediaID) =========>", previewMediaId)
+                    if (supportMediaType.audio.includes(mainFile?.mime)) {
+                        // upload audio
+                        console.log('UPLOAD AUDIO AUDIO')
+                        const resAudio = await getUploadData({
+                            mediaFile: mainFile,
+                            collectionId: nftId,
+                            userId: userData.id,
+                            type: 'audio',
+                        })
+                        await putNFTMedia({
+                            mediaFile: mainFile,
+                            nftId: nftId,
+                            uploadUrl: resAudio.upload_url,
+                            previewMediaId: previewMediaId,
+                        })
+                    } else {
+                        // upload video
+                        const resVideo = await getUploadData({
+                            mediaFile: mainFile,
+                            collectionId: nftId,
+                            userId: userData.id,
+                            previewMediaId: previewMediaId,
+                            type: 'video',
+                        })
+                        await putNFTMedia({
+                            mediaFile: mainFile,
+                            nftId: nftId,
+                            uploadUrl: resVideo.upload_url,
+                            previewMediaId: previewMediaId,
+                        })
+                    }
+                } else {
+                    console.log("@@@ image type is normal last condition=========>")
+                    // upload normal image
+                    const resPresign = await getUploadData({
+                        mediaFile: mainFile,
+                        collectionId: nftId,
+                        userId: userData.id,
+                    })
+                    console.log("@@@ image type is normal last condition (resPresign)=========>", resPresign)
+                    await putNFTMedia({
+                        nftId: nftId,
+                        mediaFile: mainFile,
+                        uploadUrl: resPresign?.upload_url,
+                        thumbImgPath: resPreview?.path,
+                    })
+                }
+            } else {
+                changeLoadingState(false);
+            }
+        } catch (error) {
+            changeLoadingState(false);
+            if (error)
+                errorMethod(err, error.message)
         }
+
+        // if (userData.access_token) {
+        //     // changeLoadingState(true);
+
+        //     const imageRes = await uploadImageToStorage();
+        //     if (imageRes) {
+        //         saveDraftToDatabase(imageRes.image1, imageRes.image2)
+        //     }
+
+        // }
     }
 
     const saveDraftToDatabase = (res, res2) => {
@@ -872,14 +1001,12 @@ const UploadNFT = ({
             setFixedPrice(v)
         }
     }
-    const dateis = date
-    let disableBtn = collection && nftName && nftDesc && nftImageType &&
-        nftImage && basePrice && (
-            toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate)
-                : fixedPrice > 0) && networkType;
+    let disableBtn = collection && nftName && nftDesc && nftImageType && nftImage && basePrice && (toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate) : fixedPrice > 0);
 
-    let networkTypeStatus = networkType.name.toLowerCase() == "BSC" ?
-        translate("common.BinanceNtwk") : networkType.name.toLowerCase() == "Polygon" ?
+    // console.log("@@@ check button disable ========>", disableBtn)
+
+    let networkTypeStatus = networkType.name == "BSC" ?
+        translate("common.BinanceNtwk") : networkType.name == "Polygon" ?
             translate("common.polygon") : translate("common.ethereum");
 
     // let draftBtnD = (collection && (collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) || collection && collection.collectionName === "Xanalia (ETH)") || !disableBtn;
@@ -1029,7 +1156,7 @@ const UploadNFT = ({
                             onPress={() => {
                                 setActiveModal("basePrice")
                                 showModal({
-                                    data: PriceUnits[networkType.value],
+                                    data: PriceUnits[networkType.name],
                                     title: translate("wallet.common.selectBasePrice"),
                                     itemToRender: "name"
                                 })
@@ -1123,19 +1250,20 @@ const UploadNFT = ({
                             showRight />
                         {
                             // collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase() ?
-                            collection ?
-                                <>
-                                    <CardLabel>{translate("wallet.common.royality")}</CardLabel>
-                                    <CardField
-                                        inputProps={{ value: royality }}
-                                        onPress={() => {
-                                            setActiveModal("royality")
-                                            showModal({ data: royalityData, title: translate("wallet.common.royality") })
-                                        }}
-                                        pressable
-                                        showRight />
-                                </>
-                                : null
+                            // collection ?
+                            <>
+                                <CardLabel>{translate("wallet.common.royality")}</CardLabel>
+                                <CardField
+                                    inputProps={{ value: royality }}
+                                    onPress={() => {
+                                        setActiveModal("royality")
+                                        showModal({ data: royalityData, title: translate("wallet.common.royality") })
+                                    }}
+                                    pressable
+                                    showRight />
+                                <CardLabel>{translate("common.PLATFORM_FEE_MSG")}</CardLabel>
+                            </>
+                            // : null
                         }
                         {
                             filterList.length !== 0 &&
@@ -1271,21 +1399,21 @@ const UploadNFT = ({
 
                     <View style={styles.saveBtnGroup}>
                         <CardButton
-                            onPress={() => nftItem ? saveDraftToDatabase(nftItem.image, nftItem.thumbnailImage) : saveDraft()}
-                            label={nftItem ? translate("wallet.common.edit") : translate("wallet.common.saveAsDraft")}
+                            onPress={() => nftItem ? saveDraftToDatabase(nftItem.image, nftItem.thumbnailImage) : createNFT()}
+                            label={nftItem ? translate("wallet.common.edit") : translate("common.CreateNFT")}
                             buttonCont={{
                                 width: '48%',
                                 backgroundColor: draftBtnD ? '#rgba(59,125,221,0.5)' : colors.BLUE6
                             }}
-                            disable={draftBtnD}
+                            disable={!disableBtn}
                         />
-                        <CardButton
+                        {/* <CardButton
                             onPress={handleCreate}
                             disable={!disableBtn}
                             border={!disableBtn ? '#rgba(59,125,221,0.5)' : colors.BLUE6}
                             buttonCont={{ width: '48%' }}
                             label={translate("wallet.common.upload")}
-                        />
+                        /> */}
                     </View>
                 </KeyboardAwareScrollView>
             </ScrollView>

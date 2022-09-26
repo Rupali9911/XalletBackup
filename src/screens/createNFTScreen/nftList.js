@@ -207,11 +207,11 @@ const NFTList = ({
       url: `${NEW_BASE_URL}/collections/user-collections`,
       method: 'GET',
       params: {
-        networkId: 1
+        networkId: networkType?.id
       }
     })
       .then(res => {
-        if (res?.data?.length !== 0) {
+        if (res && res?.data && res?.data?.length !== 0) {
           setCollectionList(res?.data);
           //   if (res.data.data.length !== 0) {
           //     let selectedCollection = res.data.data.find(o => o.chainType === networkType.value);
@@ -272,7 +272,7 @@ const NFTList = ({
       params
     })
       .then(res => {
-        if (res && res?.list?.length !== 0) {
+        if (res && res?.list && res?.list?.length !== 0) {
           setOnEndReachedCalledDuringMomentum(true)
           setNftListCreated((old) => [...old, ...res.list])
         }
@@ -416,7 +416,7 @@ const NFTList = ({
             }}
             disable={createdCollected || selectedNetwork || collection ? false : true}
             border={toggle == "mint" ? colors.BLUE6 : null}
-            label={translate("wallet.common.saveAsDraft")}
+            label={translate("common.RESET_TEXT")}
             buttonCont={styles.leftToggle}
           />
           {/* <CardButton
@@ -433,19 +433,23 @@ const NFTList = ({
 
         <View style={styles.listMainCont}>
           {
-            showList.length !== 0 &&
-
-            <FlatList
-              data={showList}
-              showsVerticalScrollIndicator={false}
-              initialNumToRender={50}
-              renderItem={renderListItem}
-              keyExtractor={keyExtractor}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-              onEndReachedThreshold={0.1}
-              onEndReached={handleFlastListEndReached}
-              onMomentumScrollBegin={_onMomentumScrollBegin}
-            />
+            showList.length !== 0 ?
+              <FlatList
+                data={showList}
+                showsVerticalScrollIndicator={false}
+                initialNumToRender={50}
+                renderItem={renderListItem}
+                keyExtractor={keyExtractor}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                onEndReachedThreshold={0.1}
+                onEndReached={handleFlastListEndReached}
+                onMomentumScrollBegin={_onMomentumScrollBegin}
+              /> :
+              <View style={styles.sorryMessageCont}>
+                <Text style={styles.sorryMessage}>
+                  {translate('common.noDataFound')}
+                </Text>
+              </View>
           }
         </View>
         {pageLoader ? (

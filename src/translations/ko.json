@@ -733,7 +733,9 @@
         "AIChat":"AI와 채팅",
         "enterMessage":"메시지 입력",
         "CREATED_COLLECTED": "제작 / 소유중",
-        "LIST_COLLECTION_TABLE_SYMBOL": "심볼"
+        "LIST_COLLECTION_TABLE_SYMBOL": "심볼",
+        "RESET_TEXT": "초기화",
+        "PLATFORM_FEE_MSG": "추가로 2.5%의 플랫폼 수수료가 부과됩니다."
     },
     "AwardPage": {},
     "wallet": {

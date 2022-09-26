@@ -732,7 +732,9 @@
         "AIChat":"Chat with AI",
         "enterMessage":"Type your message",
         "CREATED_COLLECTED": "Created / Collected",
-        "LIST_COLLECTION_TABLE_SYMBOL": "Symbol"
+        "LIST_COLLECTION_TABLE_SYMBOL": "Symbol",
+        "RESET_TEXT": "Reset",
+        "PLATFORM_FEE_MSG": "An additional platform fee of 2.5% will be charged"
     },
     "AwardPage": {},
     "wallet": {

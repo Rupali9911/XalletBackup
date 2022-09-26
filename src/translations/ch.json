@@ -733,7 +733,9 @@
         "AIChat":"与人工智能聊天",
         "enterMessage":"输入您的信息",
         "CREATED_COLLECTED": "创建/收集",
-        "LIST_COLLECTION_TABLE_SYMBOL": "图标"
+        "LIST_COLLECTION_TABLE_SYMBOL": "图标",
+        "RESET_TEXT": "重置",
+        "PLATFORM_FEE_MSG": "额外收取2.5%的平台费"
     },
     "AwardPage": {},
     "wallet": {

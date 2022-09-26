@@ -97,7 +97,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       }
       if (routeParams && routeParams.name == "collection") {
         let collectData = routeParams.data;
-        console.log(collectData)
+        // console.log(collectData)
         setScreenStatus(routeParams.status);
         setCollectionName(collectData.collectionName);
         setCollectionSymbol(collectData.collectionSymbol);
@@ -105,7 +105,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         setCollectionAdd(collectData.collectionAddress);
         setBannerImage({ path: collectData.bannerImage });
         setIconImage({ path: collectData.iconImage })
-        console.log("CollectionAddress######", collectionAdd)
+        // console.log("CollectionAddress######", collectionAdd)
         if (collectData.chainType !== networkType.value) {
           let networktype = collectData.chainType.toLowerCase() == "binance" ?
             translate("common.BinanceNtwk") :
@@ -135,7 +135,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         }
       })
       if (res && res?.id) {
-        console.log(res.type, userData?.id, res.userId)
+        // console.log(res.type, userData?.id, res.userId)
         if (res?.userId === userData?.id && res?.type === 4) {
           setCollectionName(res?.name);
           setCollectionSymbol(res?.symbol);
@@ -157,18 +157,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
   }
 
   const onPhoto = (v) => {
-    // var options = {
-    //   mediaType: "photo",
-    //   maxWidth: v == "banner" ? 1600 : 512,
-    //   maxHeight: v == "banner" ? 300 : 512,
-    //   includeExtra: true,
-    //   presentationStyle: 'fullScreen'
-    // };
-    // ImagePicker.launchImageLibrary(options, image => {
-    //   console.log('@@@ React Native Image Picker Response = ', image);
-    //   updateImageState(image.assets[0], false, v)
-    // });
-
     ImagePicker.openPicker({
       mediaType: "photo",
       width: v == "banner" ? 1600 : 512,
@@ -255,7 +243,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       name: collectionName,
       description: collectionDes,
       symbol: collectionSymbol,
-      networkId: 1,
+      networkId: networkType?.id,
     }
   }
 

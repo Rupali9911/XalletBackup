@@ -2,6 +2,15 @@ import sendRequest, { getAccessToken } from '../helpers/AxiosApiRequest';
 import { API_GATEWAY_URL } from '../common/constants';
 import RNFetchBlob from "rn-fetch-blob";
 
+
+const supportMediaType = {
+    image: 'image/jpeg, image/jpg, image/png, image/gif',
+    video: 'video/mp4',
+    audio: 'audio/mpeg, audio/mp3',
+    combind:
+        'image/jpeg, image/jpg, image/png, image/gif, video/mp4, audio/mp3, audio/mpeg',
+}
+
 // Get Image name 
 const getFileImageName = (imgFile) => {
     const name = new Date().getTime()
@@ -15,15 +24,33 @@ const getUploadData = async ({
     collectionId,
     userId,
     type = '',
+    previewMediaId = ''
 }) => {
     let presignedResponse = null
     const token = await getAccessToken('ACCESS_TOKEN')
     const imageId = getFileImageName(mediaFile.mime)
-    const params = {
-        imageId,
-        collectionId,
-        type
-    }
+    // const params = {
+    //     imageId,
+    //     collectionId,
+    //     type
+    // }
+    const params = type
+        ? previewMediaId
+            ? {
+                imageId,
+                collectionId,
+                preview_img_id: previewMediaId,
+                type,
+            }
+            : {
+                imageId,
+                collectionId,
+                type,
+            }
+        : {
+            imageId,
+            collectionId,
+        }
     try {
         presignedResponse = await sendRequest({
             url: `${API_GATEWAY_URL}/nft-image/${userId}/pre-signed`,
@@ -74,14 +101,45 @@ const putCollectionMedia = async ({
                 'Authorization': 'No'
             },
         })
+        console.log("@@@ after upload media =========>", presignedFinalResponse)
     } catch (error) {
         console.log("@@@ error ", error)
     }
 }
 
+const putNFTMedia = async ({
+    mediaFile,
+    nftId,
+    uploadUrl,
+    previewMediaId,
+    thumbImgPath,
+}) => {
+    const token = await getAccessToken('ACCESS_TOKEN')
+    let newPath = mediaFile.path.replace('file://', '');
+    const arrayBuffer = await convertImageToArrayBuffer(newPath);
+    const headers = {
+        'x-amz-tagging': thumbImgPath
+            ? `token=${token}&nft_id=${nftId}&thumbImgPath=${thumbImgPath}`
+            : previewMediaId
+                ? `token=${token}&nft_id=${nftId}&preview_img_id=${previewMediaId}`
+                : `token=${token}&nft_id=${nftId}`,
+        'Content-Type': mediaFile.mime,
+        'Authorization': 'No'
+    }
+
+    return sendRequest({
+        url: uploadUrl,
+        method: 'PUT',
+        data: arrayBuffer,
+        headers,
+    })
+}
+
 export {
+    supportMediaType,
     getFileImageName,
     getUploadData,
     putCollectionMedia,
+    putNFTMedia,
     convertImageToArrayBuffer
 };

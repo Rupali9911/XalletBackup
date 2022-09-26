@@ -733,7 +733,9 @@
         "AIChat":"AIとチャット",
         "enterMessage":"メッセージを入力してください",
         "CREATED_COLLECTED": "制作物 / 所有中",
-        "LIST_COLLECTION_TABLE_SYMBOL": "シンボル"
+        "LIST_COLLECTION_TABLE_SYMBOL": "シンボル",
+        "RESET_TEXT": "リセット",
+        "PLATFORM_FEE_MSG": "別途プラットフォーム手数料2.5%が発生します"
     },
     "AwardPage": {},
     "wallet": {

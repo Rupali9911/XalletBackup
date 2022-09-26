@@ -52,10 +52,12 @@ const CreateNFTScreen = ({ route }) => {
       { key: 'CreateCollection', title: translate("common.createCollection") },
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("common.CreateNFT") },
+      // { key: 'Filter', title: translate("wallet.common.filter") },
     ] :
     [
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
+      // { key: 'Filter', title: translate("wallet.common.filter") },
     ];
   const navigation = useNavigation();
   const ShowModalAction = (v, screenName) => {
@@ -125,6 +127,14 @@ const CreateNFTScreen = ({ route }) => {
             setIndex(2)
           }}
           changeLoadingState={(e) => setLoading(e)} />;
+      // case 'Filter':
+      //   return <Filter
+      //     modalItem={modalItem}
+      //     modalScreen={modalScreen}
+      //     showModal={(v) => ShowModalAction(v, "filter")}
+      //     position={index}
+      //     changeLoadingState={(e) => setLoading(e)}
+      //   />;
       default:
         return null;
     }
@@ -176,7 +186,7 @@ const CreateNFTScreen = ({ route }) => {
       {loading ? <LoaderIndicator /> : null}
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
-          title={translate("common.CreateNFT")}
+          // title={translate("common.CreateNFT")}
           showBackButton
           containerStyle={{ backgroundColor: colors.white }}
         />
@@ -239,7 +249,8 @@ const CreateNFTScreen = ({ route }) => {
             // locale={"en"}
             // is24hourSource={"locale"}
             onConfirm={date => {
-              console.log("Date Console on conform", moment(date).format('MMMM Do YYYY, h:mm:ss a'))
+              // console.log("Date Console on conform time stamp", new Date(date).getTime())
+              console.log("Date Console on conform UTC", date.toISOString());
               setDate(date)
               setDateVisible(false)
             }}
