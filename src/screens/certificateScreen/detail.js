@@ -583,7 +583,6 @@ const DetailScreen = ({navigation, route}) => {
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
           <View style={{...styles.modalImage}}>
-            {/* {mediaUrl && ( */}
             {showThumb && (
               <View>
                 <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
@@ -619,19 +618,11 @@ const DetailScreen = ({navigation, route}) => {
               }}
               style={[styles.video]}
             />
-
             {!playVideo && !showThumb && (
               <View style={styles.videoIcon}>
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
             )}
-            {/* {(videoLoad || playVideoLoad) && !videoLoadErr && (
-              <View style={styles.videoPlayIconCont}>
-                <View style={styles.videoPlayIconChild}>
-                  <ActivityIndicator size="large" color="white" />
-                </View>
-              </View>
-            )} */}
             {videoLoadErr && (
               <View style={styles.videoPlayIconCont}>
                 <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
@@ -683,7 +674,6 @@ const DetailScreen = ({navigation, route}) => {
                   tapToSeek={true}
                   minimumValue={0}
                   maximumValue={duration}
-                  // onValueChange={value => seekAudio(value)}
                   minimumTrackTintColor={Colors.GREY1}
                   maximumTrackTintColor={Colors.GREY2}
                   onSlidingComplete={value => {
