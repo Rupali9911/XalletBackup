@@ -588,12 +588,7 @@ const DetailScreen = ({navigation, route}) => {
               <View>
                 <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
                 <ActivityIndicator
-                  style={{
-                    position: 'absolute',
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    top: '45%',
-                  }}
+                  style={styles.activity}
                   size="medium"
                   color={COLORS.BLACK1}
                 />
@@ -626,13 +621,7 @@ const DetailScreen = ({navigation, route}) => {
             />
 
             {!playVideo && !showThumb && (
-              <View
-                style={{
-                  position: 'absolute',
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  top: '37%',
-                }}>
+              <View style={styles.videoIcon}>
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
             )}
@@ -663,18 +652,7 @@ const DetailScreen = ({navigation, route}) => {
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{...styles.modalImage}}>
             <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                width: '100%',
-                height: SIZE(50),
-                backgroundColor: '#f1f1f1',
-                borderRadius: SIZE(80),
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                alignItems: 'center',
-              }}>
+            <View style={styles.musicPlayer}>
               {duration === -1 ? (
                 <ActivityIndicator size="small" color="#0b0b0b" />
               ) : (

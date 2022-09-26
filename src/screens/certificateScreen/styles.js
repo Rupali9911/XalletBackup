@@ -4,6 +4,7 @@ import {
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
+import {COLORS} from '../../constants';
 import Colors from '../../constants/Colors';
 import {hp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
@@ -424,6 +425,34 @@ const styles = StyleSheet.create({
     height: SIZE(35),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  musicPlayer: {
+    position: 'absolute',
+    bottom: 10,
+    width: '100%',
+    height: SIZE(50),
+    backgroundColor: '#f1f1f1',
+    borderRadius: SIZE(80),
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  activity: {
+    position: 'absolute',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    top: '45%',
+  },
+  videoIcon: {
+    width: SIZE(80),
+    height: SIZE(80),
+    borderRadius: SIZE(80),
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+    position: 'absolute',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '40%',
   },
 });
 
