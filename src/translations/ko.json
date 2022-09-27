@@ -424,6 +424,7 @@
         "CHECK_YOUR_WEBSITE" : "유효한 웹사이트 URL을 입력하세요",
         "CHECK_YOUR_DISCORD" : "유효한 Discord URL을 입력하세요.",
         "CHECK_YOUR_YOUTUBE" : "올바른 YouTube URL을 입력하세요.",
+        "TOKEN_ID" : "토큰 ID",
         "playbackSpeed" : "재생 속도",
         "links": "연결 ",
         "viewAll": "모두보기",

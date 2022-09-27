@@ -424,6 +424,7 @@
         "CHECK_YOUR_WEBSITE" : "有効なウェブサイトのURLを入力してください",
         "CHECK_YOUR_DISCORD" : "有効なディスコードのチャンネルURLを入力してください",
         "CHECK_YOUR_YOUTUBE" : "有効なユーチューブのチャンネルURLを入力してください",
+        "TOKEN_ID" : "トークンID",
         "playbackSpeed" : "再生速度",
         "links": "リンク",
         "viewAll": "すべて見る",
