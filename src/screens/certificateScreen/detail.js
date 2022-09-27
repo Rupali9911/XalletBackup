@@ -659,7 +659,7 @@ const DetailScreen = ({navigation, route}) => {
               }}
               style={[styles.video]}
             />
-            {!playVideo && !showThumb && (
+            {!playVideo && (
               <View style={styles.videoIcon}>
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
@@ -686,7 +686,9 @@ const DetailScreen = ({navigation, route}) => {
             <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
             <View style={styles.musicPlayer}>
               {duration === -1 ? (
-                <ActivityIndicator size="small" color="#0b0b0b" />
+                <View style={styles.controlView}>
+                  <ActivityIndicator size="small" color="#0b0b0b" />
+                </View>
               ) : (
                 <TouchableOpacity
                   onPress={() => {
