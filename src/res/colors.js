@@ -6,7 +6,7 @@ const colors = {
 
     tabbar: "#56D3FF",
 
-    themeR: "#008FFF",
+    themeR: "#2280e1",
     themeL: "#00C7FF",
     buttonGroupBackground: '#F9FAF9',
 

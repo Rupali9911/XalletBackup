@@ -1,21 +1,20 @@
-import {useMemo} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import React, {useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
+import {FlatList} from 'native-base';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   AppState,
+  BackHandler,
+  Dimensions,
   Image,
   Linking,
   Platform,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
-  BackHandler,
 } from 'react-native';
 import {FAB} from 'react-native-paper';
 import {
@@ -24,47 +23,39 @@ import {
   requestNotifications,
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
+import {TabBar, TabView} from 'react-native-tab-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  heightPercentageToDP as hp,
-  responsiveFontSize as RF,
-  SIZE,
-  widthPercentageToDP as wp,
-} from '../../common/responsiveFunction';
+import {NEW_BASE_URL} from '../../common/constants';
 import {AppHeader, C_Image} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
+import {SORT_FILTER_OPTONS} from '../../constants';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
+import sendRequest from '../../helpers/AxiosApiRequest';
 import {colors} from '../../res';
-import {getAllArtist, setSortBy} from '../../store/actions/nftTrendList';
+import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
+import {getAllArtist} from '../../store/actions/nftTrendList';
+import {setNetworkData} from '../../store/reducer/networkReducer';
 import {
   updateCreateState,
   updatePassStatus,
 } from '../../store/reducer/userReducer';
-import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
+import {alertWithSingleBtn} from '../../utils';
 import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
-import ImageNFT from './imageNFT';
-import MusicNFT from './musicNFT';
-import GifNFT from './gifNFT';
-import Trending from './trending';
-import MovieNFT from './movieNFT';
 import ArtNFT from './artNFT';
-import HotCollection from './hotCollection';
 import Collection from './collection';
-import styles from './styles';
-import {alertWithSingleBtn} from '../../utils';
+import GifNFT from './gifNFT';
+import HotCollection from './hotCollection';
+import ImageNFT from './imageNFT';
 import LaunchPad from './launchPad';
-import {TabView, TabBar} from 'react-native-tab-view';
-import {SORT_FILTER_OPTONS} from '../../constants';
-import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
-import {FlatList} from 'native-base';
-import sendRequest from '../../helpers/AxiosApiRequest';
-import {NEW_BASE_URL} from '../../common/constants';
-import {setNetworkData} from '../../store/reducer/networkReducer';
+import MovieNFT from './movieNFT';
+import MusicNFT from './musicNFT';
+import styles from './styles';
+import Trending from './trending';
 
 const HomeScreen = ({navigation}) => {
   // =============== Getting data from reducer ========================
@@ -131,6 +122,10 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     setActive(0);
   }, [screen]);
+
+  useEffect(() => {
+    setActive(sortOption);
+  }, [sortOption]);
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener(state => {
@@ -392,6 +387,26 @@ const HomeScreen = ({navigation}) => {
     console.log('Index', index);
     setIndex(index);
   };
+
+  useEffect(() => {
+    if (index) {
+      const backAction = () => {
+        if (index !== 0) {
+          setIndex(0);
+        } else {
+          BackHandler.exitApp();
+        }
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
+
+      return () => backHandler.remove();
+    }
+  }, [index]);
 
   const renderTabBar = props => (
     <TabBar

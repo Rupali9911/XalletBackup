@@ -1,26 +1,24 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  Text,
-  View,
-} from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '../../components';
-import { colors } from '../../res';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, FlatList, StatusBar, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {Loader} from '../../components';
+import {colors} from '../../res';
 // import {
 //   movieNFTList,
 //   nftListReset,
 //   nftLoadStart,
 //   pageChange,
 // } from '../../store/actions/nftTrendList';
-import { newNftLoadStart, newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
-import { translate } from '../../walletUtils';
+import {
+  newNftLoadStart,
+  newNFTData,
+  newNftListReset,
+} from '../../store/actions/newNFTActions';
+import {translate} from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import styles from './styles';
-import { CATEGORY_VALUE } from '../../constants'
+import {CATEGORY_VALUE} from '../../constants';
 
 const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
@@ -29,14 +27,14 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   let timer = null;
 
   // =============== Getting data from reducer ========================
-  const { NewNFTListReducer } = useSelector(state => state);
-  const { sort } = useSelector(state => state.ListReducer);
+  const {NewNFTListReducer} = useSelector(state => state);
+  const {sort} = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isSort, setIsSort] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
 
-  const [end, setEnd] = useState()
+  const [end, setEnd] = useState();
 
   let category = CATEGORY_VALUE.movie;
   let limit = 10;
@@ -44,15 +42,15 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    if (isFocused && (isFirstRender)) {
+    if (isFocused && isFirstRender) {
       timer = setTimeout(() => {
         dispatch(newNftLoadStart());
         dispatch(newNftListReset(category));
         getNFTlist(category, sortCategory, limit, 1);
-        setIsFirstRender(false)
-        setSortOption(0)
-        setPage(1)
-        screen(category)
+        setIsFirstRender(false);
+        setSortOption(0);
+        setPage(1);
+        screen(category);
       }, 100);
     }
     return () => clearTimeout(timer);
@@ -72,12 +70,15 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
         numColumns={2}
         initialNumToRender={14}
         onRefresh={handleFlatlistRefresh}
-        refreshing={NewNFTListReducer.newListPage === 1 && NewNFTListReducer.newNftListLoading}
+        refreshing={
+          NewNFTListReducer.newListPage === 1 &&
+          NewNFTListReducer.newNftListLoading
+        }
         renderItem={memoizedValue}
         onEndReached={() => {
           if (!end) {
-            handleFlastListEndReached()
-            setEnd(true)
+            handleFlastListEndReached();
+            setEnd(true);
           }
         }}
         onEndReachedThreshold={0.4}
@@ -87,47 +88,55 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
         legacyImplementation={false}
         onMomentumScrollBegin={() => setEnd(false)}
       />
-    )
-  }
+    );
+  };
 
   // ===================== Render No NFT Function ===================================
   const renderNoNFT = () => {
     return (
       <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noDataFound')}</Text>
+        <Text style={styles.sorryMessage}>
+          {translate('common.noDataFound')}
+        </Text>
       </View>
-    )
-  }
+    );
+  };
 
   //=================== Flatlist Functions ====================
   const handleFlatlistRefresh = () => {
     dispatch(newNftLoadStart());
     refreshFunc();
-  }
+  };
 
   const refreshFunc = () => {
     dispatch(newNftListReset(category));
-    getNFTlist(category, sortCategory, limit, 1);
-    setPage(1)
+    getNFTlist(category, sortOption, limit, 1);
+    setPage(1);
   };
 
   const handleFlastListEndReached = () => {
-    if (!NewNFTListReducer.newNftListLoading && NewNFTListReducer.newTotalCount !== NewNFTListReducer.newMovieNftList.length) {
-      let pageNum = page + 1
+    if (
+      !NewNFTListReducer.newNftListLoading &&
+      NewNFTListReducer.newTotalCount !==
+        NewNFTListReducer.newMovieNftList.length
+    ) {
+      let pageNum = page + 1;
       getNFTlist(category, sortOption, limit, pageNum);
-      setPage(pageNum)
+      setPage(pageNum);
     }
-  }
+  };
 
-  const keyExtractor = (item, index) => { return 'item_' + index }
+  const keyExtractor = (item, index) => {
+    return 'item_' + index;
+  };
 
   const renderFooter = () => {
     if (!NewNFTListReducer.newNftListLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({ item }) => {
-    let imageUri = item?.mediaUrl
+  const renderItem = ({item}) => {
+    let imageUri = item?.mediaUrl;
     return (
       <NFTItem
         screenName="movieNFT"
@@ -145,19 +154,25 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, [NewNFTListReducer.newMovieNftList]);
+  const memoizedValue = useMemo(
+    () => renderItem,
+    [NewNFTListReducer.newMovieNftList],
+  );
 
   //=====================(Main return Function)=============================
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? isFirstRender : page === 1 &&
-        NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ? (
+        isFirstRender
+      ) : page === 1 && NewNFTListReducer.newNftListLoading ? (
         <Loader />
-      ) : NewNFTListReducer.newMovieNftList.length !== 0 ? renderMovieNFTList()
-        : renderNoNFT()
-      }
-    </View >
+      ) : NewNFTListReducer.newMovieNftList.length !== 0 ? (
+        renderMovieNFTList()
+      ) : (
+        renderNoNFT()
+      )}
+    </View>
   );
 };
 

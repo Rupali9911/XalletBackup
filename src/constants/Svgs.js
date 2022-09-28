@@ -41,6 +41,8 @@ import WalletConnectIcon from 'src/assets/svgs/icon-wallet-connect.svg';
 import CommentIcon from 'src/assets/svgs/icon-comment.svg';
 import BookMarkIcon from 'src/assets/svgs/icon-book-mark.svg';
 import PlayButtonIcon from 'src/assets/svgs/icon-play.svg';
+import PlayButtonBlack from 'src/assets/svgs/icon-play-black.svg';
+import PauseButtonBlack from 'src/assets/svgs/icon-pause-black.svg'
 import ConnectSmIcon from 'src/assets/svgs/icon-connect-sm.svg';
 
 import FitIcon from 'src/assets/svgs/icon-fit.svg';
@@ -130,6 +132,8 @@ export default {
   CommentIcon,
   BookMarkIcon,
   PlayButtonIcon,
+  PlayButtonBlack,
+  PauseButtonBlack,
   ConnectSmIcon,
   CopyToClipboard,
   EditImage,

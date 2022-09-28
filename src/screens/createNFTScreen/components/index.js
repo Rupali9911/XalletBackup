@@ -1,22 +1,18 @@
 import React from 'react';
 import {
-  View,
-  StyleSheet,
+  Image,
+  ScrollView, StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
-  Image,
-  ScrollView
+  TouchableOpacity, View
 } from 'react-native';
 import Modal from 'react-native-modal';
 
-import { colors, fonts } from '../../../res';
 import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-  responsiveFontSize as RF,
+  heightPercentageToDP as hp, responsiveFontSize as RF, widthPercentageToDP as wp
 } from '../../../common/responsiveFunction';
 import { IMAGES } from '../../../constants';
+import { colors, fonts } from '../../../res';
 import { translate } from '../../../walletUtils';
 
 export const CardCont = props => {
@@ -111,7 +107,7 @@ export const TabModal = (props) => {
             </Text> : null
         }
         <ScrollView style={{ marginTop: hp('3%') }}>
-          {props.data.data.map((v, i) => {
+          {props && props?.data && props?.data?.data && props?.data?.data.map((v, i) => {
             return (
               <TouchableOpacity
                 key={i}

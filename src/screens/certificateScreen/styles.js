@@ -4,6 +4,7 @@ import {
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
+import {COLORS} from '../../constants';
 import Colors from '../../constants/Colors';
 import {hp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
@@ -71,16 +72,16 @@ const styles = StyleSheet.create({
   modalImage: {
     width: wp('100%'),
     height: wp('100%'),
-    backgroundColor: Colors.WHITE8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   nftTitle: {
-    fontSize: RF(1.5),
+    fontSize: RF(1.75),
     fontFamily: fonts.ARIAL_BOLD,
     marginTop: SIZE(15),
     width: wp('100%'),
     paddingHorizontal: SIZE(12),
     color: colors.PINK1,
-    textTransform: 'uppercase',
   },
   nftName: {
     fontSize: RF(2.75),
@@ -311,18 +312,15 @@ const styles = StyleSheet.create({
     borderRadius: SIZE(100),
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
   },
   videoPlayIconCont: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    height: '50%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   video: {
-    flex: 1,
+    // flex: 1,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -423,7 +421,81 @@ const styles = StyleSheet.create({
     borderColor: Colors.BLUE4,
     borderWidth: 2,
   },
-
+  menuOption: {
+    height: SIZE(35),
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  speedMenuOption: {
+    height: SIZE(35),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  musicPlayer: {
+    position: 'absolute',
+    bottom: 10,
+    width: '100%',
+    height: SIZE(50),
+    backgroundColor: '#f1f1f1',
+    borderRadius: SIZE(80),
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingHorizontal: SIZE(10),
+  },
+  activity: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  videoIcon: {
+    width: SIZE(80),
+    height: SIZE(80),
+    borderRadius: SIZE(80),
+    backgroundColor: Colors.BLACK4,
+    position: 'absolute',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timeView: {
+    width: SIZE(90),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controlView: {
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  optionView: {
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modal: {
+    flex: 1,
+    margin: 0,
+  },
+  closeIcon: {
+    alignSelf: 'flex-end',
+    width: SIZE(30),
+    height: SIZE(30),
+  },
+  modalImg: {
+    width: wp('100%'),
+    minHeight: wp('100%'),
+    resizeMode: 'contain',
+  },
   mainview: {
     backgroundColor: Colors.WHITE1,
     // height: hp(65),

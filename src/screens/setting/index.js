@@ -159,7 +159,7 @@ function Setting({ navigation }) {
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
 
-         
+
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
@@ -186,7 +186,7 @@ function Setting({ navigation }) {
                   const _selectedLanguageItem = selectedLanguageItem;
                   await EncryptedStorage.clear();
                   AsyncStorage.multiRemove(
-                    ['@passcode', '@WALLET', '@USERDATA', '@BackedUp', '@apps'],
+                    ['@passcode', '@WALLET', '@USERDATA', '@BackedUp', '@apps', '@CURRENT_NETWORK_CHAIN_ID'],
                     err => console.log(err),
                   ).then(() => {
                     dispatch(_logout());
@@ -201,12 +201,12 @@ function Setting({ navigation }) {
             noArrow={true}
             label={translate('common.Logout')}
           />
-          
+
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
           {/*<Text>Authenticate with Touch ID</Text>*/}
           {/*</TouchableHighlight>*/}
         </View>
-        
+
       </ScrollView>
       <Modal
         isVisible={showLanguage}

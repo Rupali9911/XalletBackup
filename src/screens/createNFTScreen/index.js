@@ -13,6 +13,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
+  SIZE
 } from '../../common/responsiveFunction';
 import { translate } from '../../walletUtils';
 
@@ -42,19 +43,21 @@ const CreateNFTScreen = ({ route }) => {
   const [date, setDate] = useState(new Date());
   const [nftListDefault, setnftListDefault] = useState(null);
   const [nftItem, setnftItem] = useState(null);
+  const [collectionData, setCollectionData] = useState(null);
 
   const [index, setIndex] = useState(0);
   const routes = isNonCrypto === 0 ?
     [
-      { key: 'Collection', title: translate("common.collectionList") },
+      { key: 'CollectionList', title: translate("common.collectionList") },
+      { key: 'CreateCollection', title: translate("common.createCollection") },
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("common.CreateNFT") },
-      { key: 'Filter', title: translate("wallet.common.filter") },
+      // { key: 'Filter', title: translate("wallet.common.filter") },
     ] :
     [
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
-      { key: 'Filter', title: translate("wallet.common.filter") },
+      // { key: 'Filter', title: translate("wallet.common.filter") },
     ];
   const navigation = useNavigation();
   const ShowModalAction = (v, screenName) => {
@@ -73,23 +76,25 @@ const CreateNFTScreen = ({ route }) => {
 
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
-      case 'Collection':
+      case 'CollectionList':
         return <CollectionList
           modalItem={modalItem}
           modalScreen={modalScreen}
           switchEditNFT={(data) => {
-            setnftItem(data)
-            setIndex(2)
+            setCollectionData(data)
+            setIndex(1)
           }}
           showModal={(v) => ShowModalAction(v, "collectionList")}
           position={index}
           nftListDefault={nftListDefault}
           changeLoadingState={(e) => setLoading(e)} />;
-      // return <Collection
-      //   position={index}
-      //   routeParams={routeParams}
-      //   changeLoadingState={(e) => setLoading(e)}
-      // />;
+      case 'CreateCollection':
+        return <Collection
+          position={index}
+          collectionData={collectionData}
+          routeParams={routeParams}
+          changeLoadingState={(e) => setLoading(e)}
+        />;
       case 'NFTList':
         return <NFTList
           modalItem={modalItem}
@@ -97,7 +102,7 @@ const CreateNFTScreen = ({ route }) => {
           modalScreen={modalScreen}
           switchEditNFT={(data) => {
             setnftItem(data)
-            setIndex(2)
+            setIndex(3)
           }}
           showModal={(v) => ShowModalAction(v, "nftList")}
           position={index}
@@ -119,17 +124,17 @@ const CreateNFTScreen = ({ route }) => {
           nftItem={nftItem}
           switchToNFTList={(v, collect) => {
             setnftListDefault({ name: v, collect: collect })
-            setIndex(1)
+            setIndex(2)
           }}
           changeLoadingState={(e) => setLoading(e)} />;
-      case 'Filter':
-        return <Filter
-          modalItem={modalItem}
-          modalScreen={modalScreen}
-          showModal={(v) => ShowModalAction(v, "filter")}
-          position={index}
-          changeLoadingState={(e) => setLoading(e)}
-        />;
+      // case 'Filter':
+      //   return <Filter
+      //     modalItem={modalItem}
+      //     modalScreen={modalScreen}
+      //     showModal={(v) => ShowModalAction(v, "filter")}
+      //     position={index}
+      //     changeLoadingState={(e) => setLoading(e)}
+      //   />;
       default:
         return null;
     }
@@ -151,7 +156,14 @@ const CreateNFTScreen = ({ route }) => {
             {route.title}
           </Text>
         )}
-        tabStyle={{ paddingHorizontal: 0 }}
+        tabStyle={{
+          // height: SIZE(40),
+          // width: wp('30%'),
+          // paddingHorizontal: wp('1%'),
+          // justifyContent: 'center',
+          paddingHorizontal: wp('1.3%'),
+        }}
+        // scrollEnabled={true}
         indicatorStyle={{ backgroundColor: colors.BLUE4 }}
         style={{
           boxShadow: 'none',
@@ -174,7 +186,7 @@ const CreateNFTScreen = ({ route }) => {
       {loading ? <LoaderIndicator /> : null}
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
-          title={translate("common.CreateNFT")}
+          // title={translate("common.CreateNFT")}
           showBackButton
           containerStyle={{ backgroundColor: colors.white }}
         />
@@ -198,6 +210,7 @@ const CreateNFTScreen = ({ route }) => {
               setModalItem(null);
               setnftListDefault(null)
               setnftItem(null)
+              setCollectionData(null)
               setModalScreen("");
               setIndex(i);
             }}
@@ -236,7 +249,8 @@ const CreateNFTScreen = ({ route }) => {
             // locale={"en"}
             // is24hourSource={"locale"}
             onConfirm={date => {
-              console.log("Date Console on conform", moment(date).format('MMMM Do YYYY, h:mm:ss a'))
+              // console.log("Date Console on conform time stamp", new Date(date).getTime())
+              console.log("Date Console on conform UTC", date.toISOString());
               setDate(date)
               setDateVisible(false)
             }}

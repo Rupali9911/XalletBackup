@@ -1,3 +1,4 @@
+import Slider from '@react-native-community/slider';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
@@ -5,6 +6,7 @@ import {
   FlatList,
   Image,
   Linking,
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -17,21 +19,21 @@ import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
 import Modal from 'react-native-modal';
-import {ActivityIndicator} from 'react-native-paper';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import {Menu, MenuTrigger} from 'react-native-popup-menu';
+import Sound from 'react-native-sound';
 import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
+import {
+  default as PlayPause,
+  default as PlaySpeed,
+} from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconMute from 'react-native-vector-icons/Octicons';
 import {useDispatch, useSelector} from 'react-redux';
 import {IMAGES, SIZE, SVGS} from 'src/constants';
-import cancelImg from '../../../assets/images/cancel.png';
 import detailsImg from '../../../assets/images/details.png';
 import historyImg from '../../../assets/images/history.png';
 import tradingImg from '../../../assets/images/trading.png';
 import {NEW_BASE_URL} from '../../common/constants';
+import Fee from '../../common/fee';
 import {twitterLink} from '../../common/function';
 import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppBackground from '../../components/appBackground';
@@ -43,10 +45,10 @@ import PaymentMethod from '../../components/PaymentMethod';
 import NFTItem from '../../components/NFTItem';
 import TransactionPending from '../../components/Popup/transactionPending';
 import SuccessModalContent from '../../components/successModal';
-import TokenInput from '../../components/TextInput/tokenInput';
 import {
   AMOUNT_BID_HIGHER,
   CATEGORY_VALUE,
+  COLORS,
   compareAddress,
   FILTER_TRADING_HISTORY_OPTIONS,
   NFT_MARKET_STATUS,
@@ -66,6 +68,7 @@ import {
   getToAddress,
 } from '../../constants/tradingHistory';
 import sendRequest from '../../helpers/AxiosApiRequest';
+import useValidate from '../../hooks/useValidate';
 import {alertWithSingleBtn, numberWithCommas} from '../../utils';
 import {collectionClick} from '../../utils/detailHelperFunctions';
 import {getTokenNameFromId} from '../../utils/nft';
@@ -80,20 +83,18 @@ import {
 import ShowModal from './modal';
 import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
-import useValidate from '../../hooks/useValidate';
-import Fee from '../../common/fee';
 
-const Web3 = require('web3');
 // =============== SVGS Destructuring ========================
 const {
   PlayButtonIcon,
   HeartWhiteIcon,
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
-  TwiiterIcon,
+  TwitterIcon,
   FacebookIcon,
   InstagramIcon,
   VerficationIcon,
+  CircleCloseIcon,
 } = SVGS;
 
 const DetailScreen = ({navigation, route}) => {
@@ -168,6 +169,7 @@ const DetailScreen = ({navigation, route}) => {
   const [offerList, setOfferList] = useState([]);
   const [isLike, setLike] = useState();
   const [detailNFT, setDetailNFT] = useState({});
+  const [imgModal, setImgModal] = useState(false);
 
   const [currentNetwork, setCurrentNetwork] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
@@ -261,6 +263,135 @@ const DetailScreen = ({navigation, route}) => {
   // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   // const [bidHistory, setBidHistory] = useState([]);
   // const [tableData, setTableData] = useState([]);
+
+  //================== Timer =======================
+
+  const [music, setMusic] = useState(null);
+  const [isPlaying, setPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [durationMin, setDurationMin] = useState(0);
+  const [durationSec, setDurationSec] = useState(0);
+  const [currentSec, setCurrentSec] = useState(0);
+  const [currentmin, setCurrentmin] = useState(0);
+  const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
+  const [mute, setMute] = useState(false);
+  const [songCompleted, setSongCompleted] = useState(false);
+
+  useEffect(() => {
+    if (categoryType === CATEGORY_VALUE.music) {
+      const audio = new Sound(mediaUrl, undefined, err => {
+        if (err) {
+          return;
+        }
+      });
+      setMusic(audio);
+      return function cleanup() {
+        audio.release();
+      };
+    }
+  }, [mediaUrl]);
+
+  const durationRef = useRef(0);
+
+  useEffect(() => {
+    if (categoryType === CATEGORY_VALUE.music) {
+      const interval = setInterval(() => {
+        if (music && durationRef?.current <= 0) {
+          setDuration(music?.getDuration());
+          setDurationMin(Math.floor(music.getDuration() / 60));
+          setDurationSec(Math.floor(music.getDuration() % 60));
+          durationRef.current = music.getDuration();
+        } else if (music && isPlaying) {
+          music.getCurrentTime(seconds => {
+            setCurrentTime(Math.round(seconds));
+            setCurrentmin(Math.floor(seconds / 60));
+            setCurrentSec(Math.floor(seconds % 60));
+          });
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [isPlaying, music]);
+
+  useEffect(() => {
+    if (Math.floor(duration) === currentTime) {
+      setCurrentTime(0);
+      setCurrentmin(0);
+      setCurrentSec(0);
+      setPlaying(false);
+      setSongCompleted(true);
+    }
+  }, [currentTime]);
+
+  useEffect(() => {
+    if (songCompleted) {
+      setCurrentSec(0);
+      setSongCompleted(false);
+    }
+  }, [songCompleted]);
+
+  const onPlayPausePress = async () => {
+    if (isPlaying) {
+      music.pause();
+      setPlaying(false);
+    } else {
+      music.play(success => {
+        setPlaying(false);
+      });
+      setPlaying(true);
+    }
+  };
+
+  useEffect(() => {
+    if (mute) {
+      music?.setVolume(0);
+    } else {
+      music?.setVolume(1);
+    }
+  }, [mute, music]);
+
+  const seekAudio = async value => {
+    if (value < 0) {
+      await music?.setCurrentTime(0);
+      setCurrentTime(0);
+      setCurrentmin(0);
+      setCurrentSec(0);
+      return;
+    }
+    await music?.setCurrentTime(value);
+    if (isPlaying) {
+      await music?.play();
+    }
+    setCurrentTime(value);
+    setCurrentmin(Math.floor(value / 60));
+    setCurrentSec(Math.floor(value % 60));
+  };
+
+  const setAudioSpeed = speed => {
+    setOpenPlaySpeed(false);
+    music.setSpeed(speed);
+  };
+
+  //====================== Full image Function =======================
+
+  const imageModal = () => {
+    return (
+      <Modal
+        onBackdropPress={() => setImgModal(false)}
+        isVisible={imgModal}
+        style={styles.modal}>
+        <View>
+          <TouchableOpacity
+            style={styles.closeIcon}
+            onPress={() => setImgModal(false)}>
+            <CircleCloseIcon />
+          </TouchableOpacity>
+          <Image source={{uri: thumbnailUrl}} style={styles.modalImg} />
+        </View>
+      </Modal>
+    );
+  };
 
   //===================== UseEffect Function =========================
   useEffect(() => {
@@ -395,6 +526,9 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <AppHeader
         showBackButton
+        onPressBack={() => {
+          navigation.goBack();
+        }}
         title={translate('wallet.common.detail')}
         showRightComponent={
           <View style={{paddingRight: 10}}>
@@ -436,6 +570,7 @@ const DetailScreen = ({navigation, route}) => {
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
+          setImgModal(true);
           if (showThumb) {
             setVideoLoad(true);
           } else {
@@ -450,18 +585,21 @@ const DetailScreen = ({navigation, route}) => {
         {categoryType === CATEGORY_VALUE.movie ? (
           <View style={{...styles.modalImage}}>
             {showThumb && (
-              <C_Image
-                uri={thumbnailUrl}
-                imageStyle={styles.modalImage}
-                // isContain
+              <Image source={{uri: thumbnailUrl}} style={styles.modalImage} />
+            )}
+            {showThumb && (
+              <ActivityIndicator
+                style={styles.activity}
+                size="medium"
+                color={COLORS.BLACK1}
               />
             )}
             <Video
-              key={videoKey}
               ref={refVideo}
               source={{uri: mediaUrl}}
               repeat
               playInBackground={false}
+              controls={true}
               paused={!playVideo}
               onProgress={r => {
                 setVideoLoad(false);
@@ -480,19 +618,9 @@ const DetailScreen = ({navigation, route}) => {
               }}
               style={[styles.video]}
             />
-
-            {!playVideo && !videoLoad && (
-              <View style={styles.videoPlayIconCont}>
-                <View style={styles.videoPlayIconChild}>
-                  <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                </View>
-              </View>
-            )}
-            {(videoLoad || playVideoLoad) && !videoLoadErr && (
-              <View style={styles.videoPlayIconCont}>
-                <View style={styles.videoPlayIconChild}>
-                  <ActivityIndicator size="large" color="white" />
-                </View>
+            {!playVideo && (
+              <View style={styles.videoIcon}>
+                <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
             )}
             {videoLoadErr && (
@@ -514,19 +642,141 @@ const DetailScreen = ({navigation, route}) => {
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{...styles.modalImage}}>
-            <C_Image
-              uri={thumbnailUrl}
-              imageStyle={styles.modalImage}
-              // isContain
-            />
+            <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
+            <View style={styles.musicPlayer}>
+              {duration === -1 ? (
+                <View style={styles.controlView}>
+                  <ActivityIndicator size="small" color="#0b0b0b" />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    onPlayPausePress();
+                  }}
+                  style={styles.controlView}>
+                  <PlayPause
+                    name={isPlaying ? 'pause' : 'play'}
+                    size={wp('6.5%')}
+                  />
+                </TouchableOpacity>
+              )}
+
+              {duration !== -1 ? (
+                <View style={styles.timeView}>
+                  <Text>
+                    {currentmin}:
+                    {currentSec > 9 ? currentSec : '0' + currentSec} /{' '}
+                    {durationMin}:
+                    {durationSec > 9 ? durationSec : '0' + durationSec}
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.timeView}>
+                  <Text>0:00 / 0:00</Text>
+                </View>
+              )}
+              <View style={{width: SIZE(150)}}>
+                <Slider
+                  style={{width: SIZE(140)}}
+                  value={currentTime === 0 ? -1 : currentTime}
+                  tapToSeek={true}
+                  minimumValue={0}
+                  maximumValue={duration}
+                  minimumTrackTintColor={Colors.GREY1}
+                  maximumTrackTintColor={Colors.GREY2}
+                  onSlidingComplete={value => {
+                    seekAudio(value);
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.controlView}
+                onPress={() => setMute(!mute)}>
+                <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
+              </TouchableOpacity>
+              <View>
+                <Menu
+                  onSelect={() => {
+                    setOpenPlaySpeed(true);
+                  }}>
+                  <MenuTrigger
+                    style={styles.optionView}
+                    children={<ThreeDotsVerticalIcon />}
+                  />
+                  <MenuOptions>
+                    <MenuOption style={styles.menuOption}>
+                      <PlaySpeed size={wp('5%')} name={'play-speed'} />
+                      <Text>{translate('common.playbackSpeed')}</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              </View>
+              <View>
+                <Menu
+                  key={openPlaySpeed}
+                  opened={openPlaySpeed}
+                  onBackdropPress={() => setOpenPlaySpeed(false)}
+                  style={
+                    Platform.OS === 'android'
+                      ? {
+                          position: 'absolute',
+                          left: 50,
+                        }
+                      : {}
+                  }>
+                  <MenuTrigger />
+                  <MenuOptions>
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(0.25)}
+                      style={styles.speedMenuOption}
+                      text="0.25"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(0.5)}
+                      style={styles.speedMenuOption}
+                      text="0.5"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(0.75)}
+                      style={styles.speedMenuOption}
+                      text="0.75"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(1)}
+                      style={styles.speedMenuOption}
+                      text="Normal"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(1.25)}
+                      style={styles.speedMenuOption}
+                      text="1.25"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(1.5)}
+                      style={styles.speedMenuOption}
+                      text="1.5"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(1.75)}
+                      style={styles.speedMenuOption}
+                      text="1.75"
+                    />
+                    <MenuOption
+                      onSelect={() => setAudioSpeed(2)}
+                      style={styles.speedMenuOption}
+                      text="2"
+                    />
+                  </MenuOptions>
+                </Menu>
+              </View>
+            </View>
           </View>
         ) : (
-          <C_Image
-            uri={mediaUrl}
-            imageStyle={styles.modalImage}
-            // isContain
-          />
+          <C_Image uri={mediaUrl} imageStyle={styles.modalImage} />
         )}
+        {categoryType !== CATEGORY_VALUE.music &&
+          categoryType !== CATEGORY_VALUE.movie &&
+          imageModal()}
       </TouchableOpacity>
     );
   };
@@ -2838,7 +3088,7 @@ const DetailScreen = ({navigation, route}) => {
             style={styles.marginRight}
             hitSlop={hitSlop}
             onPress={() => Linking.openURL(twitterFullLink)}>
-            <TwiiterIcon />
+            <TwitterIcon />
           </TouchableOpacity>
         ) : null}
         {detailNFT?.creator?.instagramLink ? (
@@ -2869,7 +3119,7 @@ const DetailScreen = ({navigation, route}) => {
         {renderDetail(
           'wallet.common.contractAddress',
           'address',
-          showContractAddress(item),
+          showContractAddress(),
         )}
         {renderDetail('wallet.common.nftId', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
@@ -3074,7 +3324,6 @@ const DetailScreen = ({navigation, route}) => {
 
   //=================== Other Functions =====================
   let disableCreator = false;
-
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   let ownerName = ownerDataN?.name?.trim()
     ? ownerDataN.name
@@ -3131,7 +3380,6 @@ const DetailScreen = ({navigation, route}) => {
       method: 'GET',
     })
       .then(res => {
-        console.log('🚀 ~ file: detail.js ~ line 1677 ~ ~ res', res);
         if (res?.length > 0) {
           let tempList = [];
 
@@ -3147,7 +3395,6 @@ const DetailScreen = ({navigation, route}) => {
             ];
             tempList.push(temp);
           });
-          console.log('🚀 ~ file: detail.js ~ line 1700 ~  ~ ', tempList);
 
           setOfferList(tempList);
         }
@@ -3179,7 +3426,6 @@ const DetailScreen = ({navigation, route}) => {
           };
     sendRequest(payload)
       .then(res => {
-        console.log('🚀 ~ file: detail.js ~ line 1656 ~ ~ res', history, res);
         if (res?.items?.length > 0) {
           if (history === 'bid') {
             let tempList = [];
@@ -3193,7 +3439,6 @@ const DetailScreen = ({navigation, route}) => {
               ];
               tempList.push(temp);
             });
-            console.log('🚀 ~ file: detail.js ~ line 1780 ~  ~ ', tempList);
 
             setSellDetails(tempList);
           } else {
@@ -3220,7 +3465,7 @@ const DetailScreen = ({navigation, route}) => {
               tradingList.push(temp);
               filterList.push(getEventByValue(item?.action));
             });
-            console.log('🚀 ~ file: detail.js ~ line 1680 ~  ~ ', tradingList);
+            // console.log('🚀 ~ file: detail.js ~ line 1680 ~  ~ ', tradingList);
 
             // setTradingList(res?.items);
             setTradingTableData(tradingList);
@@ -3297,7 +3542,9 @@ const DetailScreen = ({navigation, route}) => {
         <AppBackground isBusy={load}>
           <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
             {renderBannerImageVideo()}
-            {renderHeartIcon()}
+            {categoryType === CATEGORY_VALUE.movie
+              ? !playVideo && renderHeartIcon()
+              : renderHeartIcon()}
             {!load && renderCreatorCollectionOwnerName()}
             {renderCreatorAndNFTName()}
             {renderDescription()}

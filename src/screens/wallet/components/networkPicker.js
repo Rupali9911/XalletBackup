@@ -15,12 +15,13 @@ import ImagesSrc from '../../../constants/Images';
 import TextView from '../../../components/appText';
 import Checkbox from '../../../components/checkbox';
 import { networkChain } from '../../../walletUtils';
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 const NetworkPicker = (props) => {
 
     const { visible, onRequestClose, network, onItemSelect } = props;
     const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+    const { networks } = useSelector(state => state.NetworkReducer);
 
     return (
         <Modal
@@ -31,12 +32,13 @@ const NetworkPicker = (props) => {
                 <TouchableOpacity style={styles.emptyView} onPress={onRequestClose} />
                 <View style={styles.contentContainer}>
                     <FlatList
-                        data={networkChain}
+                        data={networks}
                         keyExtractor={(item, index) => `_${index}`}
                         renderItem={({ item, index }) => {
                             const isCheck = network ? network.name === item.name : false;
                             return <TouchableOpacity style={styles.listItem} onPress={() => onItemSelect(item)}>
-                                <TextView style={styles.text}>{selectedLanguageItem.language_name === 'ja' ? item.translatedName : item.name}</TextView>
+                                {/* <TextView style={styles.text}>{selectedLanguageItem.language_name === 'ja' ? item.translatedName : item.name}</TextView> */}
+                                <TextView style={styles.text}>{item.name}</TextView>
                                 <Image style={[styles.logoSize, props.logoStyle]} resizeMode="contain" source={isCheck ? ImagesSrc.checkIcon : ImagesSrc.unCheckIcon} />
                             </TouchableOpacity>
                         }} />
