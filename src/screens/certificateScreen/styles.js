@@ -729,11 +729,13 @@ const styles = StyleSheet.create({
     tintColor: Colors.GREY1,
   },
   inputWrapperView: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     // paddingHorizontal: SIZE(39),
-    marginVertical: SIZE(35),
+    margin: SIZE(35),
+    marginTop: SIZE(0),
+    // backgroundColor: 'red',
   },
   inputWrapperView1: {
     flexDirection: 'row',
@@ -768,8 +770,8 @@ const styles = StyleSheet.create({
     // fontWeight: "bold"
   },
   editPriceGroupBButtonView: {
-    bottom: SIZE(10),
-    paddingHorizontal: SIZE(35),
+    // bottom: SIZE(10),
+    // paddingHorizontal: SIZE(35),
   },
   editPriceGroupButton: {
     borderWidth: 1,

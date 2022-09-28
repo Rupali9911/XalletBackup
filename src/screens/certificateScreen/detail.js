@@ -39,6 +39,7 @@ import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import Checkbox from '../../components/checkbox';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
+import PaymentMethod from '../../components/PaymentMethod';
 import NFTItem from '../../components/NFTItem';
 import TransactionPending from '../../components/Popup/transactionPending';
 import SuccessModalContent from '../../components/successModal';
@@ -161,7 +162,6 @@ const DetailScreen = ({navigation, route}) => {
     translate('common.expiration'),
   ]);
   const [filterTableList, setFilterTableList] = useState([]);
-  // const [tradingTableData1, setTradingTableData1] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
   // const [tradingList, setTradingList] = useState([]);
@@ -170,15 +170,15 @@ const DetailScreen = ({navigation, route}) => {
   const [detailNFT, setDetailNFT] = useState({});
 
   const [currentNetwork, setCurrentNetwork] = useState({});
-
-  // const [isVisible, setVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const [reclaimModal, setReclaimModal] = useState(false);
   const [cancelAuctionModal, setCancelAuctionModal] = useState(false);
   const [editedPrice, setEditedPrice] = useState('');
-  const [priceEdit, setPriceEdit] = useState(false);
-  const [cancel, setCancel] = useState(false);
+  const [priceEditModal, setPriceEditModal] = useState(false);
+
+  const [cancelResellModal, setCancelResellModal] = useState(false);
+
   const [placeABid, setPlaceABid] = useState(false);
   const [isCheckService, setCheckService] = useState(false);
   const [isCheckError, setIsCheckError] = useState(false);
@@ -227,6 +227,11 @@ const DetailScreen = ({navigation, route}) => {
       startTime: '',
       startPrice: '',
     },
+  });
+
+  const [editPriceData, setEditPriceData] = useState({
+    price: '',
+    priceError: '',
   });
 
   const categoryType = detailNFT?.category
@@ -707,9 +712,8 @@ const DetailScreen = ({navigation, route}) => {
     return null;
   };
 
-  const cancelModalConfirm = () => {};
-  const cancelModal = () => {
-    setCancel(false);
+  const closeCancelModal = () => {
+    setCancelResellModal(false);
   };
   const closeReclaimModal = () => {
     setReclaimModal(false);
@@ -724,8 +728,6 @@ const DetailScreen = ({navigation, route}) => {
       setOpenTransactionPending(value);
     }, 500);
   };
-
-  // console.log("🚀 ~ file: detail.js ~ line 183 ~ ~ openTransactionPending", reclaimModal, openTransactionPending)
 
   const reClaimApi = () => {
     setReclaimModal(false);
@@ -832,61 +834,158 @@ const DetailScreen = ({navigation, route}) => {
       });
   };
 
-  const editPriceApi = () => {
-    const url = `${NEW_BASE_URL}/sale-nft?saleId=${saleId}`;
-    sendRequest({
-      url,
-      method: 'PUT',
-      editedPrice,
-    }).then(response => {
-      console.log('edit==>', response);
-    });
+  //==========>Edit Price API ======>
+
+  const editPriceApi = async () => {
+    try {
+      setPriceEditModal(false);
+      handlePendingModal(true);
+      const url = `${NEW_BASE_URL}/sale-nft?saleId=${saleId}`;
+      const data = {
+        price: Number(editPriceData.price),
+      };
+      const priceRes = await sendRequest({
+        url,
+        method: 'PUT',
+        data,
+      });
+      console.log(
+        '🚀 ~ file: detail.js ~ line 888 ~ editPriceApi ~ priceRes',
+        priceRes,
+      );
+
+      if (priceRes?.messageCode) {
+        handlePendingModal(false);
+        handleTransactionError(priceRes?.messageCode, translate);
+        // toast.error(t('SALE_NFT_BALANCE_NOT_ENOUGH'))
+      } else {
+        const approveData = priceRes?.dataReturn?.approveData;
+        if (approveData) {
+          try {
+            const transactionParameters = {
+              nonce: approveData.nonce, // ignored by MetaMask
+              to: approveData.to, // Required except during contract publications.
+              from: approveData.from, // must match user's active address.
+              data: approveData.data, // Optional, but used for defining smart contract creation and interaction.
+              chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+            };
+            console.log(
+              '🚀 ~ file: detail.js ~ line 929 ~ transactionParameters ~ approveData ',
+              transactionParameters,
+            );
+
+            const txnResult = await sendCustomTransaction(
+              transactionParameters,
+              walletAddress,
+              nftTokenId,
+              network?.networkName,
+            );
+            if (txnResult) {
+              // toast.success(t('APPROVE_TOKEN_SUCCESS'))
+            }
+          } catch (error) {
+            handlePendingModal(false);
+            // toast.error(t('APPROVE_TOKEN_FAIL'))
+          }
+        }
+        const signData = priceRes?.dataReturn?.signData;
+        if (signData) {
+          const transactionParameters = {
+            nonce: signData.nonce, // ignored by MetaMask
+            to: signData.to, // Required except during contract publications.
+            from: signData.from, // must match user's active address.
+            data: signData.data, // Optional, but used for defining smart contract creation and interaction.
+            chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+          };
+          console.log(
+            '🚀 ~ file: detail.js ~ line 929 ~ transactionParameters ~ signData ',
+            transactionParameters,
+          );
+
+          sendCustomTransaction(
+            transactionParameters,
+            walletAddress,
+            nftTokenId,
+            network?.networkName,
+          )
+            .then(res => {
+              console.log('approve payByWallet 331', res);
+              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // setLoading(false);
+              getNFTDetails(true);
+            })
+            .catch(err => {
+              console.log('payByWallet_err payByWallet 339', err);
+              handlePendingModal(false);
+              handleTransactionError(err, translate);
+            });
+        }
+      }
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: detail.js ~ line 953 ~ editPriceApi ~ error',
+        error,
+      );
+      handlePendingModal(false);
+      handleTransactionError(error, t);
+    }
+  };
+
+  const onChangeEditPrice = value => {
+    if (validateNumber(value).status) {
+      setEditPriceData({
+        ...editPriceData,
+        price: value,
+      });
+    }
+  };
+
+  const isValidEditPrice = () => {
+    if (
+      !editPriceData.price ||
+      Number(editPriceData.price) === 0 ||
+      Number(editPriceData.price) ===
+        Number(detailNFT?.saleData?.fixPrice?.price)
+    ) {
+      return false;
+    }
+
+    return true;
   };
 
   const editPriceModal = () => {
     const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice;
     return (
-      <View style={styles.modalContainer}>
-        <Modal isVisible={priceEdit}>
-          <View style={styles.editPriceContainner}>
-            <View style={styles.editPriceHeaderView}>
-              <Text style={styles.editPriceText}>
-                {translate('common.editPrice')}
-              </Text>
+      <Modal isVisible={priceEditModal}>
+        <View style={styles.editPriceContainner}>
+          <View style={styles.editPriceHeaderView}>
+            <Text style={styles.editPriceText}>
+              {translate('common.editPrice')}
+            </Text>
 
-              <TouchableOpacity onPress={() => setPriceEdit(false)}>
-                <Image source={cancelImg} style={styles.cancelButton} />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.inputWrapperView}>
-              <TextInput
-                value={editedPrice}
-                keyboardType="numeric"
-                style={styles.inputField}
-                onChangeText={text => setEditedPrice(text)}
-                maxLength={10}
-              />
-
-              <View style={styles.tokenView}>
-                <Text style={styles.tokenText}>{tokenName}</Text>
-              </View>
-            </View>
-
-            <View style={styles.editPriceGroupBButtonView}>
-              <GroupButton
-                leftText={translate('common.change')}
-                leftDisabled={false}
-                leftLoading={false}
-                onLeftPress={() => editPriceApi()}
-                rightStyle={styles.editPriceGroupButton}
-                rightTextStyle={styles.editPriceGroupButtonText}
-                rightHide
-              />
-            </View>
+            <TouchableOpacity onPress={() => setPriceEditModal(false)}>
+              <Image source={cancelImg} style={styles.cancelButton} />
+            </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+
+          <View style={styles.inputWrapperView}>
+            <TokenInput
+              value={editPriceData.price}
+              onChangeText={onChangeEditPrice}
+              tokenName={tokenName}
+            />
+
+            <GroupButton
+              leftText={translate('common.change')}
+              leftDisabled={!isValidEditPrice()}
+              // leftDisabled={!isValidEditPrice() || !editPriceData.price}
+              leftLoading={false}
+              onLeftPress={() => editPriceApi()}
+              rightHide
+            />
+          </View>
+        </View>
+      </Modal>
     );
   };
 
@@ -1004,9 +1103,6 @@ const DetailScreen = ({navigation, route}) => {
     }
   };
 
-  const openBidModal = () => {
-    setPlaceABid(true);
-  };
   const closeBidModal = () => {
     setErrorMessage('');
     setEditedPrice('');
@@ -1580,6 +1676,9 @@ const DetailScreen = ({navigation, route}) => {
     } else {
       setCheckOut(false);
     }
+    setErrorMessage('');
+    setIsCheckError(false);
+    setCheckService(false);
   };
 
   const handleMakeOffer = async () => {
@@ -1727,6 +1826,137 @@ const DetailScreen = ({navigation, route}) => {
     } else {
       setIsTopUpError(false);
       handleMakeOffer();
+    }
+  };
+
+  //============== Buy Nft API ===========>
+  const handleBuyNft = () => {
+    try {
+      setIsChecking(true);
+      const url = `${NEW_BASE_URL}/sale-nft/buy-nft`;
+      const data = {
+        quantity: 1,
+        // saleId: saleId,
+        saleNftId: detailNFT?.saleData?.fixPrice?.id,
+      };
+      // const buyNFTRes =await
+      sendRequest({
+        url,
+        method: 'POST',
+        data,
+      })
+        .then(buyNFTRes => {
+          console.log(
+            '🚀 ~ file: detail.js ~ line 1845 ~ handleBuyNft ~ buyNFTRes',
+            buyNFTRes,
+          );
+          setIsChecking(false);
+          if (buyNFTRes.messageCode) {
+            setErrorMessage(buyNFTRes.messageCode);
+            // toast.error(t(buyNFTRes.messageCode))
+          } else {
+            setCheckOut(false);
+            setTimeout(() => {
+              setShowPaymentMethod(true);
+            }, 500);
+          }
+        })
+        .catch(error => {
+          console.log(
+            '🚀 ~ file: detail.js ~ line 1850 ~ handleBuyNft ~ error',
+            error,
+          );
+        });
+
+      // if (buyNFTRes.messageCode) {
+      //   setIsChecking(false);
+      //   setErrorMessage(buyNFTRes.messageCode);
+      //   // toast.error(t(buyNFTRes.messageCode))
+      // } else {
+      //   setIsChecking(false);
+      //   const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
+      //   const approveData = buyNFTRes?.dataReturn?.approveData;
+      //   const signData = buyNFTRes?.dataReturn?.signData;
+      //   if (approveAllData) {
+      //     console.log(
+      //       '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
+      //       approveAllData,
+      //     );
+      //     // console.log(approveAllData)
+      //   }
+      //   // setOpen(false);
+      //   setOpenTransactionPending(true);
+      //   let approved = true;
+      //   let noncePlus = 0;
+
+      //   if (approveData) {
+      //     try {
+      //       const transactionParameters = {
+      //         nonce: approveData.nonce, // ignored by MetaMask
+      //         to: approveData.to, // Required except during contract publications.
+      //         from: approveData.from, // must match user's active address.
+      //         data: approveData.data, // Optional, but used for defining smart contract creation and interaction.
+      //         chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+      //       };
+
+      //       const txnResult = await sendCustomTransaction(
+      //         transactionParameters,
+      //         walletAddress,
+      //         nftTokenId,
+      //         network?.networkName,
+      //       );
+
+      //       if (txnResult) {
+      //         noncePlus = 1;
+      //         // toast.success(t('APPROVE_TOKEN_SUCCESS'))
+      //       }
+      //     } catch (error) {
+      //       approved = false;
+      //       setOpen(true);
+      //       setOpenTransactionPending(false);
+      //       setErrorMessage('APPROVE_TOKEN_FAIL');
+      //     }
+      //   }
+      //   if (signData && approved) {
+      //     try {
+      //       const transactionParameters = {
+      //         nonce: signData.nonce + noncePlus, // ignored by MetaMask
+      //         to: signData.to, // Required except during contract publications.
+      //         from: signData.from, // must match user's active address.
+      //         value: signData?.value, // Only required to send ether to the recipient from the initiating external account.
+      //         data: signData.data, // Optional, but used for defining smart contract creation and interaction.
+      //         chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+      //       };
+
+      //       sendCustomTransaction(
+      //         transactionParameters,
+      //         walletAddress,
+      //         nftTokenId,
+      //         network?.networkName,
+      //       )
+      //         .then(res => {
+      //           console.log('approve payByWallet 331', res);
+      //           // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+      //           // setLoading(false);
+      //           getNFTDetails(true);
+      //         })
+      //         .catch(err => {
+      //           console.log('payByWallet_err payByWallet 339', err);
+      //           handlePendingModal(false);
+      //           handleTransactionError(err, translate);
+      //         });
+      //     } catch (error) {
+      //       setOpen(true);
+      //       setOpenTransactionPending(false);
+      //       handleTransactionError(error, translate);
+      //     }
+      //   }
+      // }
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: detail.js ~ line 1947 ~ handleBuyNft ~ error',
+        error,
+      );
     }
   };
 
@@ -1911,7 +2141,10 @@ const DetailScreen = ({navigation, route}) => {
             <Checkbox
               isCheck={isCheckService}
               iconSize={wp('7%')}
-              onChecked={() => setCheckService(!isCheckService)}
+              onChecked={() => {
+                setCheckService(!isCheckService);
+                setErrorMessage('');
+              }}
             />
             <Text style={styles.footerText}>
               {translate('common.byCheckingTheBox')}{' '}
@@ -1921,12 +2154,10 @@ const DetailScreen = ({navigation, route}) => {
             </Text>
           </View>
 
-          {isCheckError && (
+          {(errorMessage || offerData.error.totalPrice) !== '' && (
             <View style={{marginTop: 10}}>
               <Text style={styles.errorText}>
-                {modalVisible
-                  ? 'This field is require. It must be greater than 0'
-                  : 'Please tick to agree service button to send transaction.'}
+                {errorMessage || offerData.error.totalPrice}
               </Text>
             </View>
           )}
@@ -1938,10 +2169,24 @@ const DetailScreen = ({navigation, route}) => {
               leftLoading={isChecking}
               onLeftPress={() => {
                 if (!isCheckService) {
+                  setErrorMessage(
+                    'Please tick to agree service button to send transaction.',
+                  );
                   setIsCheckError(true);
+
+                  if (modalVisible) {
+                    setErrorMessage(
+                      'This field is require. It must be greater than 0',
+                    );
+                  }
                 } else {
                   setIsCheckError(false);
-                  onMakeOffer();
+
+                  if (modalVisible) {
+                    onMakeOffer();
+                  } else {
+                    handleBuyNft();
+                  }
                 }
               }}
               rightText={translate('common.topUp')}
@@ -1964,6 +2209,63 @@ const DetailScreen = ({navigation, route}) => {
       expried: new Date(new Date().getTime() + DAY14),
     });
   };
+
+  //============= Cancel Sell API =========>
+  const handleCancelSell = async () => {
+    try {
+      closeCancelModal();
+      handlePendingModal(true);
+      const url = `${NEW_BASE_URL}/sale-nft/cancel-put-on-sale`;
+      const data = {
+        id: detailNFT?.saleData?.fixPrice?.id,
+      };
+      const cancelSellRes = await sendRequest({
+        url,
+        method: 'POST',
+        params: data,
+      });
+      console.log(
+        '🚀 ~ file: detail.js ~ line 3104 ~  ~ cancelSellRes',
+        cancelSellRes,
+      );
+
+      if (cancelSellRes) {
+        const signData = cancelSellRes.dataReturn?.signData;
+        if (signData) {
+          const transactionParameters = {
+            nonce: signData.nonce, // ignored by MetaMask
+            to: signData.to, // Required except during contract publications.
+            from: signData.from, // must match user's active address.
+            data: signData.data, // Optional, but used for defining smart contract creation and interaction.
+            chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
+          };
+          
+          sendCustomTransaction(
+            transactionParameters,
+            walletAddress,
+            nftTokenId,
+            network?.networkName,
+          )
+            .then(res => {
+              console.log('approve payByWallet 331', res);
+              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // setLoading(false);
+              getNFTDetails(true);
+            })
+            .catch(err => {
+              console.log('payByWallet_err payByWallet 339', err);
+              handlePendingModal(false);
+              handleTransactionError(err, translate);
+            });
+        }
+      }
+    } catch (error) {
+      handlePendingModal(false);
+      handleTransactionError(error, translate);
+      // toast.error(t(error.message))
+    }
+  };
+
   //================== Render Group Button Function ==================
 
   const renderContentAction = () => {
@@ -2022,13 +2324,13 @@ const DetailScreen = ({navigation, route}) => {
             leftDisabled={false}
             leftLoading={false}
             onLeftPress={() => {
-              setCancel(true);
+              setCancelResellModal(true);
             }}
             rightText={translate('common.editPrice')}
             rightDisabled={false}
             rightLoading={false}
             onRightPress={() => {
-              setPriceEdit(true);
+              setPriceEditModal(true);
             }}
             rightStyle={styles.rightButton}
             rightTextStyle={styles.rightButtonText}
@@ -2660,39 +2962,40 @@ const DetailScreen = ({navigation, route}) => {
   const memoizedItem = useMemo(() => renderItem, [moreData]);
 
   //=============== Render Payment Method Function ===============
-  // const renderPaymentMethod = () => {
-  //   return (
-  //     <PaymentMethod
-  //       visible={showPaymentMethod}
-  //       payableIn={payableIn}
-  //       price={
-  //         payableIn && data?.user?.role === 'crypto'
-  //           ? payableInCurrency
-  //           : priceNFT
-  //         //  nftPrice
-  //         //   ? nftPrice
-  //         //   : 0
-  //       }
-  //       priceStr={priceNFTString}
-  //       priceInDollar={
-  //         payableIn && data?.user?.role === 'crypto'
-  //           ? payableInDollar
-  //           : priceInDollar
-  //       }
-  //       baseCurrency={baseCurrency}
-  //       allowedTokens={availableTokens}
-  //       ownerAddress={
-  //         ownerAddress?.includes('0x')
-  //           ? ownerAddress
-  //           : walletAddressForNonCrypto
-  //       }
-  //       id={singleNFT.id}
-  //       collectionAddress={collectionAddress}
-  //       chain={chainType}
-  //       onRequestClose={() => setShowPaymentMethod(false)}
-  //     />
-  //   )
-  // }
+  const renderPaymentMethod = () => {
+    return (
+      <PaymentMethod
+        visible={showPaymentMethod}
+        payableIn={payableIn}
+        price={
+          payableIn && data?.user?.role === 'crypto'
+            ? payableInCurrency
+            : priceNFT
+          //  nftPrice
+          //   ? nftPrice
+          //   : 0
+        }
+        priceStr={priceNFTString}
+        priceInDollar={
+          payableIn && data?.user?.role === 'crypto'
+            ? payableInDollar
+            : priceInDollar
+        }
+        baseCurrency={baseCurrency}
+        allowedTokens={availableTokens}
+        ownerAddress={
+          walletAddress
+          // ownerAddress?.includes('0x')
+          //   ? ownerAddress
+          //   : walletAddressForNonCrypto
+        }
+        id={singleNFT.id}
+        collectionAddress={collectionAddress}
+        // chain={chainType}
+        onRequestClose={() => setShowPaymentMethod(false)}
+      />
+    );
+  };
 
   //=============== Render Payment Now Function ===============
   // const renderPaymentNow = () => {
@@ -2703,8 +3006,8 @@ const DetailScreen = ({navigation, route}) => {
   //         payableIn && data?.user?.role === 'crypto'
   //           ? payableInCurrency
   //           : nftPrice
-  //             ? nftPrice
-  //             : 0
+  //           ? nftPrice
+  //           : 0
   //       }
   //       priceInDollar={
   //         payableIn && data?.user?.role === 'crypto'
@@ -2732,8 +3035,8 @@ const DetailScreen = ({navigation, route}) => {
   //         setSuccessModalVisible(true);
   //       }}
   //     />
-  //   )
-  // }
+  //   );
+  // };
 
   //=============== Render Tab Modal Function ===============
   // const renderTabModal = () => {
@@ -2919,7 +3222,7 @@ const DetailScreen = ({navigation, route}) => {
             });
             console.log('🚀 ~ file: detail.js ~ line 1680 ~  ~ ', tradingList);
 
-            setTradingList(res?.items);
+            // setTradingList(res?.items);
             setTradingTableData(tradingList);
             setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
             // setTradingTableData1(tradingList)
@@ -3035,13 +3338,13 @@ const DetailScreen = ({navigation, route}) => {
               onRightPress={reClaimApi}
             />
             <ShowModal
-              isVisible={cancel}
+              isVisible={cancelResellModal}
               title={translate('common.cancelResell')}
               description={translate(
                 'common.cancellingYourlistingWillUnPublish',
               )}
-              closeModal={cancelModal}
-              onRightPress={cancelModalConfirm}
+              closeModal={closeCancelModal}
+              onRightPress={handleCancelSell}
             />
 
             <DatePicker
@@ -3087,10 +3390,10 @@ const DetailScreen = ({navigation, route}) => {
           </ScrollView>
         </AppBackground>
       </SafeAreaView>
-      {/* {renderPaymentMethod()}
-      {renderPaymentNow()} 
-      {renderTabModal()}
-      {renderAppModal()} */}
+      {renderPaymentMethod()}
+      {/* {renderPaymentNow()} */}
+      {/* {renderTabModal()} */}
+      {/* {renderAppModal()} */}
     </>
   );
 };
