@@ -74,7 +74,7 @@ export default {
     edit: require("../../assets/images/edit.png"),
     imagePlaceholder: require("../../assets/images/cropped-placeholder.png"),
     brokenIcon: require("../../assets/images/brokenIcon.png"),
-    tweetPng:require("../../assets/images/tweet.png"),
+    tweetPng: require("../../assets/images/tweet.png"),
 
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),
@@ -98,6 +98,7 @@ export default {
     usdtNew: require("../../assets/images/USDT-Ethereum.png"),
     ethnew: require("../../assets/images/ETH-Polygon.png"),
     polygonNew: require("../../assets/images/polygon-new.png"),
-    default_user: require("../../assets/images/default-user.png")
+    default_user: require("../../assets/images/default-user.png"),
+    confirm: require('../../assets/images/confirm-icon.png')
 
 };

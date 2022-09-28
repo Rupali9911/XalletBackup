@@ -2,6 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppModal from '../../components/appModal';
@@ -32,6 +33,8 @@ import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
+import { SvgUri } from 'react-native-svg';
+import { SIZE } from 'src/constants';
 import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from "../../common/function";
 import { CommonActions } from '@react-navigation/native';
@@ -514,6 +517,13 @@ const Wallet = ({ route, navigation }) => {
     return getBalances(wallet?.address);
   };
 
+  const onItemSelectNetworkPicker = async (item) => {
+    await AsyncStorage.setItem("@CURRENT_NETWORK_CHAIN_ID", item.chainId.toString());
+    dispatch(updateNetworkType(item));
+    setPickerVisible(false);
+    // setBalances(null);
+  }
+
   return (
     <AppBackground isBusy={balances ? loading : true}>
       <GradientBackground>
@@ -528,9 +538,14 @@ const Wallet = ({ route, navigation }) => {
               style={styles.networkIcon}
               hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
               onPress={() => setPickerVisible(true)}>
-              <Image
+              {/* <Image
                 source={networkType.icon}
                 style={[CommonStyles.imageStyles(6)]}
+              /> */}
+              <SvgUri
+                width={SIZE(25)}
+                height={SIZE(25)}
+                uri={networkType.image}
               />
             </TouchableOpacity>
           </View>
@@ -650,9 +665,7 @@ const Wallet = ({ route, navigation }) => {
         onRequestClose={setPickerVisible}
         network={networkType}
         onItemSelect={item => {
-          dispatch(updateNetworkType(item));
-          setPickerVisible(false);
-          setBalances(null);
+          onItemSelectNetworkPicker(item);
         }}
       />
       <SelectToken

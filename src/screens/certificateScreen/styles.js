@@ -138,6 +138,13 @@ const styles = StyleSheet.create({
     borderColor: '#979797',
     borderWidth: 1,
   },
+  userImage: {
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40),
+    // marginLeft: SIZE(28),
+    // marginTop:SIZE(15),
+  },
   personTypeText: {
     fontSize: RF(1.3),
     fontFamily: fonts.ARIAL,

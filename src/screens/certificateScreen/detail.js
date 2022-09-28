@@ -17,15 +17,15 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
-import {Row, Table, Cell, TableWrapper} from 'react-native-table-component';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
+import { Row, Table, Cell, TableWrapper } from 'react-native-table-component';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
 import grid from '../../../assets/images/grid.png';
 import tradingImg from '../../../assets/images/trading.png';
 import historyImg from '../../../assets/images/history.png';
-import {networkType} from '../../common/networkType';
-import {AppHeader, C_Image, GroupButton} from '../../components';
+import { networkType } from '../../common/networkType';
+import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
@@ -33,23 +33,23 @@ import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import SuccessModalContent from '../../components/successModal';
 import Colors from '../../constants/Colors';
-import {hp, wp} from '../../constants/responsiveFunct';
+import { hp, wp } from '../../constants/responsiveFunct';
 import {
   getAllCards,
   setPaymentObject,
 } from '../../store/reducer/paymentReducer';
-import {alertWithSingleBtn, divideNo, numberWithCommas} from '../../utils';
-import {translate} from '../../walletUtils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig, CDN_LINK} from '../../web3/config/blockChainConfig';
-import {CardField, TabModal} from '../createNFTScreen/components';
+import { alertWithSingleBtn, divideNo, numberWithCommas } from '../../utils';
+import { translate } from '../../walletUtils';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
+import { CardField, TabModal } from '../createNFTScreen/components';
 import styles from './styles';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
-import {ActivityIndicator} from 'react-native-paper';
-import {currencyInDollar} from '../wallet/functions';
-import {getBaseCurrency} from '../../utils/parseNFTObj';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
+import { ActivityIndicator } from 'react-native-paper';
+import { currencyInDollar } from '../wallet/functions';
+import { getBaseCurrency } from '../../utils/parseNFTObj';
 import AppBackground from '../../components/appBackground';
 import {
   Menu,
@@ -76,7 +76,7 @@ import {
   NFT_MARKET_STATUS,
   SORT_TRADING_HISTORY,
 } from '../../constants';
-import {ApiRequest} from '../../helpers/ApiRequest';
+import { ApiRequest } from '../../helpers/ApiRequest';
 import NFTItem from '../../components/NFTItem';
 import {
   getEventByValue,
@@ -84,8 +84,8 @@ import {
   getKeyEventByValue,
   getToAddress,
 } from '../../constants/tradingHistory';
-import {formatAddress} from '../../constants/addressFormat';
-import {getDateString, getExpirationDate} from '../../constants/date';
+import { formatAddress } from '../../constants/addressFormat';
+import { getDateString, getExpirationDate } from '../../constants/date';
 import CountDown from 'react-native-countdown-component';
 import {twitterLink} from '../../common/function';
 import sendRequest from '../../helpers/AxiosApiRequest';
@@ -117,7 +117,7 @@ const DetailScreen = ({navigation, route}) => {
   const refVideo = useRef(null);
 
   // =============== Props Destructuring ========================
-  const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
+  const { item, setNftItem, networkName, collectionAddress, nftTokenId } =
     route.params;
 
   // =============== Getting data from reducer ========================
@@ -203,15 +203,15 @@ const DetailScreen = ({navigation, route}) => {
   const thumbnailUrl = detailNFT?.thumbnailUrl
     ? detailNFT.thumbnailUrl
     : categoryType === CATEGORY_VALUE.music
-    ? item?.mediaUrl
-    : item?.thumbnailUrl;
+      ? item?.mediaUrl
+      : item?.thumbnailUrl;
   // const nftTokenId = detailNFT?.tokenId ? detailNFT.tokenId : item?.tokenId
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId;
   const network = detailNFT?.network ? detailNFT.network : item?.network;
   // const collectionAddress = item?.collectionAddress ? item.collectionAddress : item?.collection?.address
   const userId = userData?.id;
 
-  const hitSlop = {top: 5, bottom: 5, left: 5, right: 5};
+  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
 
   //================== Unused State Declaration ===================
   // const [updateComponent, setUpdateComponent] = useState(false);
@@ -672,7 +672,7 @@ const DetailScreen = ({navigation, route}) => {
                       setVideoLoadErr(false);
                       setVideoKey(videoKey + 1);
                     }}
-                    style={{paddingHorizontal: 15, paddingVertical: 10}}>
+                    style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
                     <Text style={styles.retry}>
                       {translate('common.retryLoading')}
                     </Text>
@@ -878,15 +878,15 @@ const DetailScreen = ({navigation, route}) => {
           source={
             key === 'creator'
               ? artistDetail?.avatar
-                ? {uri: artistDetail.avatar}
+                ? { uri: artistDetail.avatar }
                 : IMAGES.DEFAULTPROFILE
               : key === 'collection'
-              ? collectCreat
-                ? {uri: collectCreat.avatar}
-                : IMAGES.DEFAULTPROFILE
-              : key === 'owner' && ownerDataN?.avatar
-              ? {uri: ownerDataN.avatar}
-              : IMAGES.DEFAULTPROFILE
+                ? collectCreat
+                  ? { uri: collectCreat.avatar }
+                  : IMAGES.DEFAULTPROFILE
+                : key === 'owner' && ownerDataN?.avatar
+                  ? { uri: ownerDataN.avatar }
+                  : IMAGES.DEFAULTPROFILE
           }
         />
         <View>
@@ -895,8 +895,8 @@ const DetailScreen = ({navigation, route}) => {
               {key === 'creator'
                 ? translate('common.creator')
                 : key === 'collection'
-                ? translate('common.collected')
-                : key === 'owner' && translate('common.owner')}
+                  ? translate('wallet.common.collection')
+                  : key === 'owner' && translate('common.owner')}
             </Text>
           )}
           {key !== 'collection' ? (
@@ -951,7 +951,7 @@ const DetailScreen = ({navigation, route}) => {
     ) {
       label =
         detailNFT?.saleData?.auction?.highestPrice ===
-        detailNFT?.saleData?.auction?.startPrice
+          detailNFT?.saleData?.auction?.startPrice
           ? translate('common.minimumBid')
           : translate('common.highestBid');
       tokenIcon = detailNFT?.saleData?.auction?.tokenIcon;
@@ -966,10 +966,10 @@ const DetailScreen = ({navigation, route}) => {
     }
 
     return (
-      <View style={{paddingHorizontal: SIZE(12), paddingBottom: SIZE(5)}}>
+      <View style={{ paddingHorizontal: SIZE(12), paddingBottom: SIZE(5) }}>
         {label && <Text style={styles.labelText}>{label}</Text>}
         <View style={styles.priceView}>
-          <Image style={styles.tokenIcon} source={{uri: tokenIcon}} />
+          <Image style={styles.tokenIcon} source={{ uri: tokenIcon }} />
 
           {!load && (
             <Text style={styles.price}>
@@ -1082,7 +1082,7 @@ const DetailScreen = ({navigation, route}) => {
             leftText={translate('common.cancelResell')}
             leftDisabled={false}
             leftLoading={false}
-            onLeftPress={() => {}}
+            onLeftPress={() => { }}
             rightText={translate('common.editPrice')}
             rightDisabled={false}
             rightLoading={false}
@@ -1362,16 +1362,16 @@ const DetailScreen = ({navigation, route}) => {
       history === 'bid'
         ? sellDetails
         : history === 'offers'
-        ? offerList
-        : tradingTableData;
+          ? offerList
+          : tradingTableData;
     return (
       <NFTDetailDropdown
         title={
           history === 'bid'
             ? translate('wallet.common.bidHistory')
             : history === 'offers'
-            ? 'Offers'
-            : translate('common.tradingHistory')
+              ? 'Offers'
+              : translate('common.tradingHistory')
         }
         containerChildStyles={{
           height:
@@ -1380,19 +1380,19 @@ const DetailScreen = ({navigation, route}) => {
                 ? hp(28)
                 : hp(19)
               : listData?.length < 5
-              ? hp(16) +
+                ? hp(16) +
                 hp(4) *
-                  (history === 'trading' && listData.length <= 3
-                    ? 3
-                    : listData?.length)
-              : hp(35.7),
+                (history === 'trading' && listData.length <= 3
+                  ? 3
+                  : listData?.length)
+                : hp(35.7),
         }}
         icon={
           history === 'bid'
             ? historyImg
             : history === 'offers'
-            ? tradingImg
-            : detailsImg
+              ? tradingImg
+              : detailsImg
         }>
         {history === 'trading' && (
           <Filters
@@ -1406,7 +1406,7 @@ const DetailScreen = ({navigation, route}) => {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           // nestedScrollEnabled={true}
-          style={{marginVertical: hp(2)}}>
+          style={{ marginVertical: hp(2) }}>
           <Table borderStyle={styles.cellBorderStyle}>
             <Row
               data={
@@ -1500,7 +1500,7 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <TouchableOpacity
         disabled={!cellData}
-        onPress={() => navigation.push('ArtistDetail', {id: cellData})}>
+        onPress={() => navigation.push('ArtistDetail', { id: cellData })}>
         <Text numberOfLines={1} style={[styles.text, styles.themeColor]}>
           {formatAddress(cellData)}
         </Text>
@@ -1597,7 +1597,7 @@ const DetailScreen = ({navigation, route}) => {
         </TouchableOpacity>
 
         {detailNFT?.creator?.description ? (
-          <TextView style={[styles.rowText, {marginTop: SIZE(10)}]}>
+          <TextView style={[styles.rowText, { marginTop: SIZE(10) }]}>
             {detailNFT?.creator?.description}
           </TextView>
         ) : null}
@@ -1668,8 +1668,8 @@ const DetailScreen = ({navigation, route}) => {
             key === ''
               ? styles.rowText
               : key === 'blockChainType'
-              ? [styles.rowText, {textTransform: 'uppercase'}]
-              : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
+                ? [styles.rowText, { textTransform: 'uppercase' }]
+                : [styles.rowTextcontractaddress, { color: Colors.themeColor }]
           }
           ellipsizeMode="middle"
           numberOfLines={1}>
@@ -1686,7 +1686,7 @@ const DetailScreen = ({navigation, route}) => {
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
         icon={detailsImg}
-        containerStyles={{width: wp(100)}}
+        containerStyles={{ width: wp(100) }}
         containerChildStyles={styles.containerChildStyles}>
         {moreData.length !== 0 ? (
           <>
@@ -1701,7 +1701,7 @@ const DetailScreen = ({navigation, route}) => {
               leftText={translate('common.viewAllCollection')}
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
-              leftTextStyle={{color: Colors.BLUE4}}
+              leftTextStyle={{ color: Colors.BLUE4 }}
               onLeftPress={() =>
                 navigation.push('CollectionDetail', {
                   networkName: detailNFT?.network?.networkName,

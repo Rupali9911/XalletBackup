@@ -20,7 +20,7 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
