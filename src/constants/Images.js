@@ -4,6 +4,7 @@ export default {
     BARCODE: require(`src/assets/pngs/img-barcode.png`),
     TROUBLELOGIN: require(`src/assets/pngs/trouble_login_icon.png`),
     DEFAULTPROFILE: require(`src/assets/pngs/default_profile_img.png`),
+    
 
 
     // XANALIA images
@@ -26,6 +27,7 @@ export default {
     loadergif: require("../assets/gifs/loadergif.gif"),
     typingLoading: require("../assets/gifs/typing-loading.gif"),
     sendChatMessage: require("../../assets/images/sendChatMessage.png"),
+    DEFAULTUSER: require("../../assets/images/default-user.png"),
 
     //tab icons
     wallet: require("../../assets/images/wallet.png"),

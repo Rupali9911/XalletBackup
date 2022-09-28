@@ -2,7 +2,6 @@ import {useIsFocused} from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import Modal from 'react-native-modal';
 import {
   Alert,
   FlatList,
@@ -94,6 +93,7 @@ import PlaySpeed from 'react-native-vector-icons/MaterialCommunityIcons';
 import PlayPause from 'react-native-vector-icons/MaterialCommunityIcons';
 import Sound from 'react-native-sound';
 import Slider from '@react-native-community/slider';
+import ImageModal from '../../components/ImageModal';
 
 const Web3 = require('web3');
 
@@ -328,26 +328,6 @@ const DetailScreen = ({navigation, route}) => {
   const setAudioSpeed = speed => {
     setOpenPlaySpeed(false);
     music.setSpeed(speed);
-  };
-
-  //====================== Full image Function =======================
-
-  const imageModal = () => {
-    return (
-      <Modal
-        onBackdropPress={() => setImgModal(false)}
-        isVisible={imgModal}
-        style={styles.modal}>
-        <View>
-          <TouchableOpacity
-            style={styles.closeIcon}
-            onPress={() => setImgModal(false)}>
-            <CircleCloseIcon />
-          </TouchableOpacity>
-          <Image source={{uri: thumbnailUrl}} style={styles.modalImg} />
-        </View>
-      </Modal>
-    );
   };
 
   //===================== UseEffect Function =========================
@@ -816,8 +796,15 @@ const DetailScreen = ({navigation, route}) => {
           <C_Image uri={mediaUrl} imageStyle={styles.modalImage} />
         )}
         {categoryType !== CATEGORY_VALUE.music &&
-          categoryType !== CATEGORY_VALUE.movie &&
-          imageModal()}
+          categoryType !== CATEGORY_VALUE.movie && (
+            <ImageModal
+              visible={imgModal}
+              setVisible={setImgModal}
+              uri={thumbnailUrl}
+              iconSize={wp('7%')}
+              iconColor={Colors.WHITE1}
+            />
+          )}
       </TouchableOpacity>
     );
   };
@@ -881,14 +868,14 @@ const DetailScreen = ({navigation, route}) => {
             key === 'creator'
               ? artistDetail?.avatar
                 ? {uri: artistDetail.avatar}
-                : IMAGES.DEFAULTPROFILE
+                : IMAGES.DEFAULTUSER
               : key === 'collection'
               ? collectCreat
                 ? {uri: collectCreat.avatar}
-                : IMAGES.DEFAULTPROFILE
+                : IMAGES.DEFAULTUSER
               : key === 'owner' && ownerDataN?.avatar
               ? {uri: ownerDataN.avatar}
-              : IMAGES.DEFAULTPROFILE
+              : IMAGES.DEFAULTUSER
           }
         />
         <View>

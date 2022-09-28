@@ -158,8 +158,8 @@ function Profile({navigation, connector, route}) {
           },
           tabBarIndicatorStyle: {
             backgroundColor: COLORS.BLUE4,
-            top: 1,
-            height: 2,
+            top: SIZE(5),
+            height: SIZE(2),
           },
         }}>
         <Tab.Screen

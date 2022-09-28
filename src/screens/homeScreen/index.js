@@ -267,10 +267,10 @@ const HomeScreen = ({navigation}) => {
             //imageType="profile"
             imageStyle={{width: '100%', height: '100%'}}
           />
+          <Text numberOfLines={1} style={styles.userText}>
+            {item?.name}
+          </Text>
         </View>
-        <Text numberOfLines={1} style={styles.userText}>
-          {item?.name}
-        </Text>
       </TouchableOpacity>
     );
   };
