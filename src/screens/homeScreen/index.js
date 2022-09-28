@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { useFocusEffect } from '@react-navigation/native';
-import { FlatList } from 'native-base';
-import React, { useEffect, useMemo, useState } from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {FlatList} from 'native-base';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   AppState,
+  BackHandler,
   Dimensions,
   Image,
   Linking,
@@ -13,37 +14,37 @@ import {
   SafeAreaView,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
   openSettings,
-  requestNotifications
+  requestNotifications,
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
-import { TabBar, TabView } from 'react-native-tab-view';
+import {TabBar, TabView} from 'react-native-tab-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
-import { NEW_BASE_URL } from '../../common/constants';
-import { AppHeader, C_Image } from '../../components';
+import {useDispatch, useSelector} from 'react-redux';
+import {NEW_BASE_URL} from '../../common/constants';
+import {AppHeader, C_Image} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
-import { SORT_FILTER_OPTONS } from '../../constants';
+import {SORT_FILTER_OPTONS} from '../../constants';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { colors } from '../../res';
-import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
-import { getAllArtist } from '../../store/actions/nftTrendList';
-import { setNetworkData } from '../../store/reducer/networkReducer';
+import {colors} from '../../res';
+import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
+import {getAllArtist} from '../../store/actions/nftTrendList';
+import {setNetworkData} from '../../store/reducer/networkReducer';
 import {
   updateCreateState,
-  updatePassStatus
+  updatePassStatus,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
-import { translate } from '../../walletUtils';
+import {alertWithSingleBtn} from '../../utils';
+import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
 import Collection from './collection';
@@ -386,6 +387,26 @@ const HomeScreen = ({navigation}) => {
     console.log('Index', index);
     setIndex(index);
   };
+
+  useEffect(() => {
+    if (index) {
+      const backAction = () => {
+        if (index !== 0) {
+          setIndex(0);
+        } else {
+          BackHandler.exitApp();
+        }
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
+
+      return () => backHandler.remove();
+    }
+  }, [index]);
 
   const renderTabBar = props => (
     <TabBar
