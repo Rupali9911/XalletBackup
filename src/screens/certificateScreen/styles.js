@@ -496,6 +496,561 @@ const styles = StyleSheet.create({
     minHeight: wp('100%'),
     resizeMode: 'contain',
   },
+  mainview: {
+    backgroundColor: Colors.WHITE1,
+    // height: hp(65),
+    paddingVertical: SIZE(20),
+    width: wp(95),
+    right: SIZE(10),
+    borderRadius: SIZE(10),
+    justifyContent: 'center',
+    paddingHorizontal: SIZE(22),
+  },
+  headerview: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // paddingHorizontal: SIZE(22),
+    alignItems: 'center',
+  },
+  bidtext: {
+    fontWeight: 'bold',
+    fontSize: SIZE(20),
+  },
+  userView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // marginHorizontal: 22,
+    marginTop: 10,
+  },
+  headerCancelButton: {tintColor: Colors.GREY1},
+  feeText: {
+    paddingTop: SIZE(30),
+    // paddingLeft: SIZE(20),
+    fontWeight: 'bold',
+  },
+  footerText: {
+    color: Colors.GREY1,
+    fontWeight: '300',
+  },
+  feeErrorView: {
+    paddingVertical: SIZE(23),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    color: Colors.DANGER,
+    fontWeight: 'bold',
+  },
+  errorText1: {
+    marginTop: SIZE(10),
+    color: Colors.DANGER,
+    fontWeight: 'bold',
+  },
+  checkboxImg: {tintColor: Colors.GREY1},
+  royaltyFeeView: {
+    flexDirection: 'row',
+    marginTop: 18,
+    // marginHorizontal: 22,
+    justifyContent: 'space-between',
+  },
+  nftPrice: {
+    color: Colors.BLUE2,
+    fontWeight: 'bold',
+  },
+  termsText: {
+    color: Colors.BLUE2,
+    fontWeight: 'bold',
+  },
+  checkBoxView: {
+    flexDirection: 'row',
+    marginTop: 18,
+    // marginHorizontal: 22,
+    justifyContent: 'space-between',
+  },
+  willPayView: {
+    flexDirection: 'row',
+    marginTop: 18,
+    // marginHorizontal: 22,
+    justifyContent: 'space-between',
+  },
+  breakLine: {
+    // marginHorizontal: 22,
+    height: 0.7,
+    backgroundColor: Colors.GREY1,
+    marginTop: 15,
+  },
+  priceInPercent: {
+    color: Colors.BLUE2,
+    fontWeight: 'bold',
+  },
+  serviceFeeView: {
+    flexDirection: 'row',
+    marginTop: 18,
+    // marginHorizontal: 22,
+    justifyContent: 'space-between',
+  },
+  itemText: {
+    paddingTop: SIZE(30),
+    // paddingLeft: SIZE(20),
+    fontWeight: 'bold',
+  },
+  amountText: {
+    fontWeight: 'bold',
+    paddingLeft: SIZE(10),
+  },
+  modalBody: {flex: 1},
+  groupButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingHorizontal: SIZE(10),
+    marginVertical: SIZE(25),
+  },
+  rightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE2,
+    backgroundColor: Colors.white,
+  },
+  rightGroupButtonText: {
+    color: Colors.BLUE3,
+  },
+  expirationText: {
+    marginTop: SIZE(15),
+    // marginLeft: 22,
+    color: '#151e3d',
+  },
+  dateText: {
+    padding: SIZE(8),
+  },
+  numberView: {
+    // marginHorizontal: SIZE(20),
+    marginTop: SIZE(10),
+    borderColor: Colors.GREY1,
+    borderWidth: 1,
+    borderRadius: 4,
+    // height: hp(4),
+  },
+  curancyInput: {
+    // backgroundColor: Colors.WHITE1,
+    // borderWidth: 1,
+    // borderColor: Colors.GREY1,
+    // height: hp(4.1),
+    // width: wp(30),
+    // borderBottomLeftRadius: 8,
+    // borderTopLeftRadius: 8,
+    // borderRightWidth: 0
+    paddingLeft: 10,
+  },
+  curancyInputPrice: {
+    // backgroundColor: Colors.WHITE1,
+    // borderWidth: 1,
+    // borderColor: Colors.GREY1,
+    // height: hp(4.3),
+    // marginTop:0.5,
+    // width: wp(30),
+    // borderBottomLeftRadius: 8,
+    // borderTopLeftRadius: 8,
+    // borderRightWidth: 0,
+    paddingHorizontal: SIZE(10),
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  curancyInputChange: {
+    // backgroundColor: Colors.WHITE1,
+    // // borderWidth: 1,
+    // borderColor: Colors.GREY1,
+    // height: hp(4.4),
+    // width: wp(15),
+    // borderBottomLeftRadius: 8,
+    // borderTopLeftRadius: 8,
+    flex: 1 / 2,
+  },
+  busdText: {
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    right: SIZE(2),
+  },
+  busdTextView: {
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    right: SIZE(2),
+    borderLeftWidth: 0,
+  },
+  imageTextView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderRadius: 8,
+    flex: 1,
+    marginLeft: 10,
+    height: hp(5),
+  },
+  currencyView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // width: wp(20),
+    height: hp(5),
+    justifyContent: 'center',
+    flex: 1 / 2,
+    borderLeftWidth: 1,
+    borderColor: Colors.GREY1,
+  },
+  priceBoxView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: SIZE(25),
+    marginBottom: SIZE(30),
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  reClaimcontainer: {
+    backgroundColor: 'white',
+    height: hp(42),
+    width: wp(95),
+    paddingHorizontal: SIZE(20),
+    paddingTop: SIZE(15),
+    borderRadius: SIZE(18),
+    right: SIZE(8),
+  },
+  reClaimCancelBTNview: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  reClaimCancelButton: {
+    tintColor: Colors.GREY1,
+  },
+  centerImg: {
+    height: hp(17),
+    alignSelf: 'center',
+  },
+  reclaimView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: SIZE(15),
+  },
+  reclaimText: {
+    fontWeight: 'bold',
+    fontSize: SIZE(25),
+  },
+  textView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: SIZE(10),
+  },
+  text: {
+    color: Colors.GREY1,
+  },
+  tokenName: {
+    fontWeight: 'bold',
+  },
+  makkeOfferGroupButtonView: {
+    marginTop: SIZE(25),
+    // paddingHorizontal: SIZE(20),
+  },
+  reClaimRightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.BLUE4,
+  },
+  reClaimrightGroupButtonText: {
+    color: Colors.white,
+  },
+  rightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.white,
+  },
+  rightGroupButtonText: {
+    color: Colors.BLUE3,
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  editPriceContainner: {
+    backgroundColor: Colors.WHITE1,
+    height: hp(27),
+    width: wp(95),
+    paddingTop: SIZE(15),
+    borderRadius: SIZE(18),
+    right: SIZE(8),
+  },
+  editPriceHeaderView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: SIZE(25),
+  },
+  editPriceText: {
+    fontWeight: 'bold',
+    fontSize: SIZE(18),
+  },
+  cancelButton: {
+    tintColor: Colors.GREY1,
+  },
+  inputWrapperView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    // paddingHorizontal: SIZE(39),
+    marginVertical: SIZE(35),
+  },
+  inputWrapperView1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  inputFieldView: {
+    alignItems: 'center',
+  },
+  inputField: {
+    backgroundColor: Colors.WHITE1,
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    height: hp(5.2),
+    width: wp(60),
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
+    paddingLeft: SIZE(10),
+  },
+  tokenView: {
+    borderWidth: 0.5,
+    height: hp(5.2),
+    width: wp(15),
+    borderLeftWidth: 0,
+    borderColor: Colors.GREY1,
+    borderBottomRightRadius: 8,
+    borderTopRightRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tokenText: {
+    // fontWeight: "bold"
+  },
+  editPriceGroupBButtonView: {
+    bottom: SIZE(10),
+    paddingHorizontal: SIZE(35),
+  },
+  editPriceGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.BLUE1,
+  },
+  editPriceGroupButtonText: {
+    fontWeight: 'bold',
+  },
+
+  //===========>
+  placeAbbidView: {
+    backgroundColor: Colors.WHITE1,
+    borderRadius: SIZE(10),
+    justifyContent: 'center',
+    paddingBottom: SIZE(20),
+    paddingHorizontal: SIZE(35),
+  },
+  PlaceAbidHeaderview: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: SIZE(12),
+    // paddingHorizontal: SIZE(35)
+  },
+  bidtext: {
+    fontWeight: 'bold',
+    fontSize: SIZE(20),
+  },
+  priceText: {
+    paddingTop: SIZE(30),
+    // paddingLeft: SIZE(35),
+    fontWeight: 'bold',
+  },
+  placeAbidgroupButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    // paddingHorizontal: SIZE(35)
+  },
+  rightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.white,
+  },
+  rightGroupButtonText: {
+    color: Colors.BLUE3,
+  },
+  numberText: {
+    padding: SIZE(10),
+  },
+  placeAbidNumberView: {
+    width: wp(61),
+    borderColor: Colors.GREY1,
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderWidth: 1,
+    borderRightWidth: 0,
+  },
+  busdView: {
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+    right: SIZE(3),
+  },
+  priceBoxView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: SIZE(25),
+    marginBottom: SIZE(30),
+  },
+  cancelimg: {
+    tintColor: Colors.GREY1,
+    marginTop: SIZE(5),
+  },
+  priceNFT: {
+    padding: SIZE(10),
+    fontWeight: 'bold',
+  },
+
+  //=========Sell NFT Modal
+  sellModalView: {
+    backgroundColor: Colors.WHITE1,
+    // height: hp(43),
+    width: wp(90),
+    paddingTop: SIZE(10),
+    borderRadius: SIZE(10),
+
+    paddingHorizontal: SIZE(20),
+    // backgroundColor:'red'
+  },
+  sellModalHeaderView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // paddingHorizontal: SIZE(20),
+  },
+  sellNftText: {
+    fontWeight: 'bold',
+    fontSize: SIZE(20),
+  },
+  saleTypeText: {
+    paddingVertical: SIZE(20),
+    paddingHorizontal: SIZE(8),
+    fontWeight: 'bold',
+  },
+  sellRightGroupButtonText: {
+    color: Colors.BLUE4,
+    fontWeight: '100',
+  },
+  sellRightGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE4,
+    backgroundColor: Colors.white,
+  },
+  sellInputFieldView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: Colors.GREY1,
+    width: wp(75),
+    // marginHorizontal: SIZE(28),
+    borderRadius: 5,
+  },
+  sellGroupBButtonView: {
+    paddingHorizontal: SIZE(8),
+    paddingVertical: SIZE(45),
+  },
+  sellTokenPicker: {
+    minHeight: 46,
+    width: wp(30),
+    borderColor: Colors.GREY1,
+    borderWidth: 1,
+    borderRadius: 0,
+    borderRightWidth: 0,
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    marginRight: 5,
+  },
+  auctionModalView: {
+    backgroundColor: Colors.WHITE1,
+    height: hp(57),
+    width: wp(90),
+    paddingVertical: SIZE(10),
+    borderRadius: SIZE(10),
+  },
+  opneTimeView: {
+    flexDirection: 'row',
+    // width: "100%"
+    // paddingHorizontal: SIZE(27),
+  },
+  openTimeText: {
+    // flex: 0.5,
+    color: '#3e4676',
+    // paddingLeft: SIZE(28),
+    paddingBottom: SIZE(10),
+  },
+  closeTimeText: {
+    // flex: 0.5,
+    color: '#3e4676',
+    // paddingRight: SIZE(15),
+  },
+  dateFieldView: {
+    flexDirection: 'row',
+    // width: "100%",
+    paddingHorizontal: SIZE(27),
+  },
+  openTimeField: {
+    // flex: 0.5,
+    borderWidth: 1,
+    width: wp(36.5),
+    height: hp(5),
+    // margin: SIZE(10) ,
+    borderRadius: 5,
+    borderColor: Colors.GREY1,
+    marginRight: SIZE(10),
+  },
+  minPriceText: {
+    // paddingHorizontal: SIZE(29),
+    color: '#3e4676',
+    paddingVertical: SIZE(15),
+  },
+  sellLeftGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.BLUE3,
+    backgroundColor: Colors.BLUE2,
+  },
+  sellLeftGroupButtonText: {
+    color: Colors.WHITE2,
+  },
+  sellDropDownContainer: {
+    backgroundColor: Colors.white,
+  },
+  showTime: {
+    alignSelf: 'center',
+    paddingVertical: SIZE(12),
+    fontSize: SIZE(10),
+    fontWeight: '700',
+  },
+  sellInputField: {
+    width: '55%',
+    paddingHorizontal: SIZE(10),
+  },
+  sellGroupButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingHorizontal: SIZE(8),
+  },
 });
 
 export default styles;
