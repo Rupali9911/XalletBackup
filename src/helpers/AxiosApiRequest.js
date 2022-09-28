@@ -67,18 +67,45 @@ export const axiosInstance = axios.create();
 
 //=============== Axios Interceptors ========================
 axiosInstance.interceptors.response.use(
-  response => {
-    console.log('@@@ API response in interceptor ==========>', response);
-    return response;
-  },
-  async err => {
-    console.log('@@@ API request error ======>', err);
-    const {response, config} = err;
-    try {
-      if (response?.status === 401) {
-        const rest = await APIRefreshToken();
-        if (!rest || !rest.newToken) {
-          return response;
+    (response) => {
+        console.log("@@@ API response in interceptor ==========>", response)
+        return response
+    },
+    async (err) => {
+        console.log("@@@ API request error ======>", err)
+        const { response, config } = err
+        try {
+            if (response?.status === 401) {
+                const rest = await APIRefreshToken()
+                if (!rest || !rest.newToken) {
+                    return response
+                }
+                await setAccesToken(rest.newToken)
+                config.headers['Authorization'] = 'Bearer ' + rest.newToken
+                return axiosInstance(config)
+            } else if (response?.status === 403) {
+                // if (!!location && !!localStorage) {
+                //     localStorage.clear()
+                //     location.href = location.origin
+                // }
+            } else if (response?.status === 455) {
+                // const { data } = err.response?.data
+                // if (
+                //     !!err.response?.data &&
+                //     !!data &&
+                //     !!location &&
+                //     !location.pathname.includes('maintenance')
+                // ) {
+                //     location.href = location.origin + '/maintenance'
+                // }
+            } else if (response?.status === 502) {
+
+            }
+
+            return response
+        } catch (error) {
+            console.log("@@@ error in interceptors ==========>", error)
+            return response
         }
         await setAccesToken(rest.newToken);
         config.headers['Authorization'] = 'Bearer ' + rest.newToken;
@@ -149,17 +176,17 @@ export async function getAccessToken(tokenName) {
 
 //================== Get Wallet Function  =====================
 export const getWallet = async () => {
-  try {
-    let userWallet = null;
-    const wallet = await EncryptedStorage.getItem('@WALLET');
-    if (wallet !== undefined) {
-      return JSON.parse(wallet);
-    } else {
-      return null;
+    try {
+        const wallet = await EncryptedStorage.getItem("@WALLET");
+        if (wallet !== undefined) {
+            return JSON.parse(wallet);
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.log("@@@ Get wallet error =========>", error);
+        return null;
     }
-  } catch (error) {
-    console.log('@@@ Get wallet error =========>', error);
-  }
 };
 
 //================== Refresh Token API call =====================

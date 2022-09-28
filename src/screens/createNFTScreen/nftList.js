@@ -125,6 +125,7 @@ const NFTList = ({
   const { networkType } = useSelector(
     state => state.WalletReducer
   );
+  console.log("@@@ on nft list ========>", networkType)
 
   const { networks } = useSelector(
     state => state.NetworkReducer
@@ -244,7 +245,7 @@ const NFTList = ({
   const getNftList = (num, status) => {
     let params = {
       pageIndex: num,
-      pageSize: 50
+      pageSize: 5
     }
     if (!status) {
       if (createdCollected) {
@@ -378,19 +379,19 @@ const NFTList = ({
       <CardCont style={{ flex: 1 }} >
         <CardLabel>{translate("common.CREATED_COLLECTED")}</CardLabel>
         <CardField
-          inputProps={{ value: createdCollected ? createdCollected?.value : "" }}
+          inputProps={{ value: createdCollected ? createdCollected?.value : "Choose Value" }}
           onPress={() => showModal({ data: createdCollectedList, title: translate("common.CREATED_COLLECTED"), itemToRender: "value" })}
           pressable
           showRight />
         <CardLabel>{translate("wallet.common.network")}</CardLabel>
         <CardField
-          inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "" }}
+          inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "Choose Network" }}
           onPress={() => showModal({ data: networkList, title: translate("wallet.common.network"), itemToRender: "name" })}
           pressable
           showRight />
         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
-          inputProps={{ value: collection ? collection?.name : "" }}
+          inputProps={{ value: collection ? collection?.name : "Choose Collection" }}
           onPress={() => showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "name" })}
           pressable
           showRight />
