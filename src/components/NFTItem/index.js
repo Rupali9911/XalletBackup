@@ -5,6 +5,7 @@ import styles from './styles';
 import {
   SIZE,
   SVGS,
+  IMAGES,
   AWARD_GOLD,
   AWARD_BRONZE,
   AWARD_SILVER,
@@ -390,7 +391,7 @@ export default function NFTItem(props, {navigation}) {
                 source={{uri: item?.creator?.avatar}}
               />
             ) : (
-              <Image style={styles.creatorIcon} source={ProfileImg} />
+              <Image style={styles.creatorIcon} source={IMAGES.DEFAULTUSER} />
             )}
           </TouchableOpacity>
           <View style={styles.ownerContainer}>
@@ -408,7 +409,7 @@ export default function NFTItem(props, {navigation}) {
                   source={{uri: item?.owner?.avatar}}
                 />
               ) : (
-                <Image style={styles.ownerIcon} source={ProfileImg} />
+                <Image style={styles.ownerIcon} source={IMAGES.DEFAULTUSER} />
               )}
             </TouchableOpacity>
           </View>

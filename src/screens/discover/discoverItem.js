@@ -44,7 +44,7 @@ const AvatarImage = ({imageSource}) => {
         <Image
           size="8"
           rounded="full"
-          source={IMAGES.DEFAULTPROFILE}
+          source={IMAGES.DEFAULTUSER}
           alt="Profile Picture"
         />
       )}
