@@ -21,14 +21,15 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import { nftMakingMethods, setApprovalForAll } from '../wallet/functions';
-import { getUploadData, putNFTMedia, supportMediaType } from '../../utils/uploadMediaS3';
+import { getUploadData, putNFTMedia } from '../../utils/uploadMediaS3';
 import TransactionPending from "../../components/Popup/transactionPending"
 import { sendCustomTransaction } from '../wallet/functions/transactionFunctions';
 import SOCKET_EVENTS from '../../constants/socketContants';
 import { useSocketGlobal } from '../../helpers/useSocketGlobal';
 import { socket } from '../../helpers/socket'
-import { PriceUnits, NFT_TYPE_TO_ID, ImageType, royalityData } from './nftConstants';
+import { PriceUnits, NFT_TYPE_TO_ID, ImageType, royalityData, supportMediaType } from './nftConstants';
 
+import AudioPlayer from '../../components/AudioPlayer/AudioPlayer';
 
 const Web3 = require('web3');
 
@@ -306,35 +307,58 @@ const UploadNFT = ({
             if (res.size > 50457280) {
                 setImageError("File size should not exceed 50MB")
             } else {
-                if (res.mime.includes("image")) {
-                    if (res.height >= 512 && res.width >= 512) {
-                        let setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie" && v.name !== "Audio")
-                        setImageTypeList(setImageTList)
-                        setNftImageType(null);
-                        setNftImage(res)
-                        cropImage(res)
-                    } else {
-                        if (res.mime.includes("gif")) {
-                            let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "Movie" && v.name !== "Audio")
-                            // console.log(setImageTList, res, "aaaaaaaaaaaaa")
-                            setNftImage(res)
-                            setImageTypeList(setImageTList)
-                            setNftImageType(null);
-                        } else {
-                            setImageError("Image size should be greater than 512*512")
-                        }
-                    }
-                } else {
-                    //  space for video croping code
-                    console.log("@@@ onPhoto func res ========>", res)
-                    setNftImage(res)
-                    let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Audio")
-                    setImageTypeList(setImageTList)
-                    setNftImageType(null);
-                    videoCropping(res)
-                }
+                handleFile(res);
             }
         });
+    }
+
+    const validMediaType = (type) => {
+        if (!type) return false
+        return supportMediaType.combind.includes(type)
+    }
+
+    const handleFile = (res) => {
+        const type = res.mime.split('/')[0];
+        if (validMediaType(res.mime)) {
+            if (res.mime.includes("image")) {
+                if (res.height >= 512 && res.width >= 512) {
+                    let setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie" && v.name !== "Audio")
+                    setImageTypeList(setImageTList)
+                    setNftImageType(null);
+                    setNftImage(res)
+                    cropImage(res)
+                } else {
+                    console.log("@@@ if size is big ======>", res)
+                    if (res.mime.includes("gif")) {
+                        console.log("@@@ if size is big but gif ======>", res)
+                        let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "Movie" && v.name !== "Audio")
+                        // console.log(setImageTList, res, "aaaaaaaaaaaaa")
+                        setNftImage(res)
+                        setImageTypeList(setImageTList)
+                        setNftImageType(null);
+                    } else {
+                        console.log("@@@ if size is big but not also gif ======>", res)
+                        setImageError("Image size should be greater than 512*512")
+                    }
+                }
+            } else if (res.mime.includes("video")) {
+                //  space for video croping code
+                console.log("@@@ onPhoto func res ========>", res)
+                setNftImage(res)
+                let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Audio")
+                setImageTypeList(setImageTList)
+                setNftImageType(null);
+                videoCropping(res)
+            } else {
+                console.log("@@@ onPhoto func res audio case ========>", res)
+                setNftImage(res)
+                let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Movie")
+                setImageTypeList(setImageTList)
+                setNftImageType(null);
+            }
+
+        }
+        return false
     }
 
     const updateThumbnail = () => {
@@ -1015,16 +1039,20 @@ const UploadNFT = ({
                                             style={styles.completeImage}
                                             source={{ uri: nftImage.path }}
                                         /> :
-                                        <TouchableOpacity style={styles.cardImageCont} activeOpacity={1} onPress={() => toggleVideoPlay(!playVideo)}>
-                                            <Video
-                                                source={{ uri: nftImage.path }}
-                                                // style={styles.completeImage}
-                                                style={{ height: 300, width: 400 }}
-                                                playInBackground={false}
-                                                paused={playVideo}
-                                            // resizeMode='contain'
-                                            />
-                                        </TouchableOpacity>
+                                        nftImage.mime.includes("audio") ?
+                                            <AudioPlayer
+                                                mediaUrl={nftImage.path} />
+                                            :
+                                            <TouchableOpacity style={styles.cardImageCont} activeOpacity={1} onPress={() => toggleVideoPlay(!playVideo)}>
+                                                <Video
+                                                    source={{ uri: nftImage.path }}
+                                                    // style={styles.completeImage}
+                                                    style={{ height: 300, width: 400 }}
+                                                    playInBackground={false}
+                                                    paused={playVideo}
+                                                // resizeMode='contain'
+                                                />
+                                            </TouchableOpacity>
                                     :
                                     <Image
                                         style={styles.completeImage}

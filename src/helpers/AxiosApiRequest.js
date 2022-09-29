@@ -1,5 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 import { NEW_BASE_URL } from '../common/constants';
 import { alertWithSingleBtn } from '../common/function';
@@ -114,11 +115,11 @@ axiosInstance.interceptors.response.use(
 export async function setAccesToken(value) {
   try {
     let sessionToken = null;
-    const token = await EncryptedStorage.getItem('SESSION_TOKEN');
+    const token = await AsyncStorage.getItem('SESSION_TOKEN');
     if (token !== undefined) {
       sessionToken = JSON.parse(token);
       const newSessionToken = { ...sessionToken, accessToken: value };
-      await EncryptedStorage.setItem(
+      await AsyncStorage.setItem(
         'SESSION_TOKEN',
         JSON.stringify(newSessionToken),
       );
@@ -133,7 +134,7 @@ export async function setAccesToken(value) {
 export async function getAccessToken(tokenName) {
   try {
     let sessionToken = null;
-    const token = await EncryptedStorage.getItem('SESSION_TOKEN');
+    const token = await AsyncStorage.getItem('SESSION_TOKEN');
     if (token !== undefined) {
       sessionToken = JSON.parse(token);
       return tokenName === 'ACCESS_TOKEN'
@@ -151,7 +152,7 @@ export async function getAccessToken(tokenName) {
 //================== Get Wallet Function  =====================
 export const getWallet = async () => {
   try {
-    const wallet = await EncryptedStorage.getItem("@WALLET");
+    const wallet = await AsyncStorage.getItem("@WALLET");
     if (wallet !== undefined) {
       return JSON.parse(wallet);
     } else {
