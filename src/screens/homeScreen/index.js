@@ -63,7 +63,6 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-import LaunchPad from './launchPad';
 import { updateNetworkType } from '../../store/reducer/walletReducer';
 
 const HomeScreen = ({ navigation }) => {
