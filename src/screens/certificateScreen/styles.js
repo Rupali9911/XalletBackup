@@ -127,16 +127,12 @@ const styles = StyleSheet.create({
     height: SIZE(30),
     borderRadius: SIZE(30),
     marginRight: SIZE(10),
-    borderColor: '#979797',
-    borderWidth: 1,
   },
   creatorImage: {
     width: SIZE(40),
     height: SIZE(40),
     borderRadius: SIZE(40),
     marginRight: SIZE(15),
-    borderColor: '#979797',
-    borderWidth: 1,
   },
   userImage: {
     width: SIZE(40),
