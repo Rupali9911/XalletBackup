@@ -1,7 +1,7 @@
 import Slider from '@react-native-community/slider';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -12,30 +12,30 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
 import Modal from 'react-native-modal';
-import { Menu, MenuTrigger } from 'react-native-popup-menu';
+import {Menu, MenuTrigger} from 'react-native-popup-menu';
 import Sound from 'react-native-sound';
-import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
+import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
 import {
   default as PlayPause,
-  default as PlaySpeed
+  default as PlaySpeed,
 } from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMute from 'react-native-vector-icons/Octicons';
-import { useDispatch, useSelector } from 'react-redux';
-import { IMAGES, SIZE, SVGS } from 'src/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {IMAGES, SIZE, SVGS} from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
 import historyImg from '../../../assets/images/history.png';
 import tradingImg from '../../../assets/images/trading.png';
-import { NEW_BASE_URL } from '../../common/constants';
+import {NEW_BASE_URL} from '../../common/constants';
 import Fee from '../../common/fee';
-import { twitterLink } from '../../common/function';
-import { AppHeader, C_Image, GroupButton } from '../../components';
+import {twitterLink} from '../../common/function';
+import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
@@ -55,35 +55,35 @@ import {
   NFT_MARKET_STATUS,
   saleType,
   SERVICE_FEE,
-  SORT_TRADING_HISTORY
+  SORT_TRADING_HISTORY,
 } from '../../constants';
-import { formatAddress } from '../../constants/addressFormat';
+import {formatAddress} from '../../constants/addressFormat';
 import Colors from '../../constants/Colors';
-import { getDateString, getExpirationDate } from '../../constants/date';
+import {getDateString, getExpirationDate} from '../../constants/date';
 import Images from '../../constants/Images';
-import { hp, wp } from '../../constants/responsiveFunct';
+import {hp, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {
   getEventByValue,
   getFromAddress,
-  getToAddress
+  getToAddress,
 } from '../../constants/tradingHistory';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
-import { alertWithSingleBtn, numberWithCommas } from '../../utils';
-import { collectionClick } from '../../utils/detailHelperFunctions';
-import { getTokenNameFromId } from '../../utils/nft';
-import { getDefaultToken, getERC20Tokens } from '../../utils/token';
-import { translate } from '../../walletUtils';
-import { toFixCustom } from '../createNFTScreen/helperFunction';
-import { handleLike } from '../discover/discoverItem';
+import {alertWithSingleBtn, numberWithCommas} from '../../utils';
+import {collectionClick} from '../../utils/detailHelperFunctions';
+import {getTokenNameFromId} from '../../utils/nft';
+import {getDefaultToken, getERC20Tokens} from '../../utils/token';
+import {translate} from '../../walletUtils';
+import {toFixCustom} from '../createNFTScreen/helperFunction';
+import {handleLike} from '../discover/discoverItem';
 import {
   handleTransactionError,
-  sendCustomTransaction
+  sendCustomTransaction,
 } from '../wallet/functions/transactionFunctions';
 import ShowModal from './modal';
 import styles from './styles';
-import { validatePrice } from './supportiveFunctions';
+import {validatePrice} from './supportiveFunctions';
 
 const Web3 = require('web3');
 
