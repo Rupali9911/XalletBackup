@@ -117,8 +117,6 @@ const CollectionList = ({
     const { networks } = useSelector(
         state => state.NetworkReducer
     );
-    console.log("@@@ on collection list ========>", networks)
-
     const [collectionList, setCollectionList] = useState([]);
     const [collectionListPage, setcollectionListPage] = useState(1);
     // const [networkList, setNetworkList] = useState(networks);

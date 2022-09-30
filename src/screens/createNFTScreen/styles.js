@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GREY11,
     height: null,
     width: null,
-    resizeMode: 'contain',
+    // resizeMode: 'contain',
   },
   bannerCardCont: {
     paddingHorizontal: wp('5%'),

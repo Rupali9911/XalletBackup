@@ -41,7 +41,9 @@ const AudioPlayer = ({ mediaUrl }) => {
 
     useEffect(() => {
         if (true) {
-            const audio = new Sound(mediaUrl, undefined, err => {
+            console.log("@@@ media props ========>", mediaUrl)
+            const audio = new Sound(mediaUrl, '', err => {
+                console.log("@@@ sound load error  ========>", err)
                 if (err) {
                     return;
                 }
