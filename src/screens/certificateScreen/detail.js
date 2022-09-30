@@ -962,7 +962,7 @@ const DetailScreen = ({navigation, route}) => {
 
           {!load && (
             <Text style={styles.price}>
-              {price ? numberWithCommas(Number(price).toFixed(2)) : ''}
+              {price ? Number(price) : ''}
               <Text style={styles.priceUnit}>
                 {` ${tokenPrice}`}
                 <Text style={styles.dollarText}>
