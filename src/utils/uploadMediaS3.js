@@ -2,15 +2,6 @@ import sendRequest, { getAccessToken } from '../helpers/AxiosApiRequest';
 import { API_GATEWAY_URL } from '../common/constants';
 import RNFetchBlob from "rn-fetch-blob";
 
-
-const supportMediaType = {
-    image: 'image/jpeg, image/jpg, image/png, image/gif',
-    video: 'video/mp4',
-    audio: 'audio/mpeg, audio/mp3',
-    combind:
-        'image/jpeg, image/jpg, image/png, image/gif, video/mp4, audio/mp3, audio/mpeg',
-}
-
 // Get Image name 
 const getFileImageName = (imgFile) => {
     const name = new Date().getTime()
@@ -136,7 +127,6 @@ const putNFTMedia = async ({
 }
 
 export {
-    supportMediaType,
     getFileImageName,
     getUploadData,
     putCollectionMedia,

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
+// import EncryptedStorage from 'react-native-encrypted-storage';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import {
@@ -184,9 +184,9 @@ function Setting({ navigation }) {
                 '',
                 async () => {
                   const _selectedLanguageItem = selectedLanguageItem;
-                  await EncryptedStorage.clear();
+                  await AsyncStorage.clear();
                   AsyncStorage.multiRemove(
-                    ['@passcode', '@WALLET', '@USERDATA', '@BackedUp', '@apps', '@CURRENT_NETWORK_CHAIN_ID'],
+                    ['@passcode', '@WALLET', 'SESSION_TOKEN', '@USERDATA', '@BackedUp', '@apps', '@CURRENT_NETWORK_CHAIN_ID'],
                     err => console.log(err),
                   ).then(() => {
                     dispatch(_logout());
