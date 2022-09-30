@@ -125,7 +125,6 @@ const NFTList = ({
   const { networkType } = useSelector(
     state => state.WalletReducer
   );
-  console.log("@@@ on nft list ========>", networkType)
 
   const { networks } = useSelector(
     state => state.NetworkReducer
