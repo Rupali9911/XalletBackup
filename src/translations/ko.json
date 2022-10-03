@@ -735,7 +735,13 @@
     "LIST_COLLECTION_TABLE_SYMBOL": "심볼",
     "RESET_TEXT": "초기화",
     "PLATFORM_FEE_MSG": "추가로 2.5%의 플랫폼 수수료가 부과됩니다.",
-    "MINT_NOW": "Mint Now"
+    "MINT_NOW": "Mint Now",
+    "CHOOSE_VALUE": "선택",
+    "CHOOSE_NETWORK": "네트워크 선택",
+    "CHOOSE_COLLECTION": "컬렉션 선택",
+    "INVALID_ART_TYPE": "아트는 (*.png, *.jpeg, *.jpg) 파일만 지원합니다",
+    "INVALID_MOVIE_TYPE": "동영상은 (*.mp4) 파일만 지원합니다",
+    "INVALID_AUDIO_TYPE": "오디오는 (*.mp3) 파일만 지원합니다"
   },
   "AwardPage": {},
   "wallet": {

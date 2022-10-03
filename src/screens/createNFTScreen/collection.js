@@ -563,5 +563,5 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
   );
 };
 
-export default Collection;
+export default React.memo(Collection);
 

@@ -266,4 +266,4 @@ const AudioPlayer = ({ mediaUrl }) => {
     )
 }
 
-export default AudioPlayer;
+export default React.memo(AudioPlayer);
