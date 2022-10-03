@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
 import { colors } from '../../res';
 import styles from './styles';
@@ -250,6 +250,11 @@ const CollectionList = ({
     let showList = (collectionList.length !== 0) ?
         collectionList : []
 
+    const memoizedValue = useMemo(
+        () => renderListItem,
+        [collectionList],
+    );
+
     const handleFlastListEndReached = () => {
         if (!onEndReachedCalledDuringMomentum) {
             setPageLoader(true);
@@ -278,7 +283,7 @@ const CollectionList = ({
             <CardCont style={{ flex: 1 }} >
                 <CardLabel>{translate("wallet.common.network")}</CardLabel>
                 <CardField
-                    inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "Choose Network" }}
+                    inputProps={{ value: selectedNetwork ? selectedNetwork?.name : translate("common.CHOOSE_NETWORK") }}
                     onPress={() => showModal({ data: networks ? networks : [], title: translate("wallet.common.network"), itemToRender: "name" })}
                     pressable
                     showRight />
@@ -324,7 +329,7 @@ const CollectionList = ({
                                 data={showList}
                                 showsVerticalScrollIndicator={false}
                                 initialNumToRender={50}
-                                renderItem={renderListItem}
+                                renderItem={memoizedValue}
                                 keyExtractor={keyExtractor}
                                 ItemSeparatorComponent={() => <View style={styles.separator} />}
                                 onEndReachedThreshold={0.1}
@@ -429,4 +434,4 @@ const CollectionList = ({
     );
 };
 
-export default CollectionList;
+export default React.memo(CollectionList);

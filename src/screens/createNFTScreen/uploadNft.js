@@ -370,7 +370,7 @@ const UploadNFT = ({
             setImageTypeList(setImageTList)
             setNftImageType(null);
         } else {
-            setImageError("AUDIO support (*.mp3) files only.")
+            setImageError(translate("common.INVALID_AUDIO_TYPE"))
         }
     }
 
@@ -409,9 +409,9 @@ const UploadNFT = ({
 
         } else {
             if (res.mime.includes("video")) {
-                setImageError("Movie supports(*.mp4) file only")
+                setImageError(translate("common.INVALID_MOVIE_TYPE"))
             } else if (res.mime.includes("image")) {
-                setImageError("Photo and Art supports( *.png, *.jpeg,* .jpg, *.gif ) files only")
+                setImageError(translate("common.INVALID_ART_TYPE"))
             }
         }
     }
@@ -1102,10 +1102,22 @@ const UploadNFT = ({
                                             <TouchableOpacity style={styles.cardImageCont} activeOpacity={1} onPress={() => toggleVideoPlay(!playVideo)}>
                                                 <Video
                                                     source={{ uri: nftImage.path }}
+                                                    // source={nftImage.path}
                                                     style={styles.completeImage}
                                                     controls={true}
                                                     playInBackground={false}
                                                     paused={playVideo}
+                                                    onError={error => {
+                                                        console.log("@@@ loaded error =========>", error);
+                                                        // setVideoLoadErr(true);
+                                                    }}
+                                                    onReadyForDisplay={() => {
+                                                        // toggleThumb(false);
+                                                    }}
+                                                    onLoad={data => {
+                                                        console.log("@@@ loaded successfully ==========>", data)
+                                                        // refVideo.current.seek(0);
+                                                    }}
                                                 />
                                             </TouchableOpacity>
                                     :
@@ -1416,4 +1428,4 @@ const UploadNFT = ({
     );
 };
 
-export default UploadNFT;
+export default React.memo(UploadNFT);
