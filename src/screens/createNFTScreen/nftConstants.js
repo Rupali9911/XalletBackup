@@ -25,7 +25,16 @@ const ImageType = [
 
 const royalityData = ["2.5%", "5%", "7.5%", "10%"];
 
+const supportMediaType = {
+    image: 'image/jpeg, image/jpg, image/png, image/gif',
+    video: 'video/mp4',
+    audio: 'audio/mpeg, audio/mp3',
+    combind:
+        'image/jpeg, image/jpg, image/png, image/gif, video/mp4, audio/mp3, audio/mpeg',
+}
+
 export {
+    supportMediaType,
     PriceUnits,
     NFT_TYPE_TO_ID,
     ImageType,

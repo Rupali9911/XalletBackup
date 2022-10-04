@@ -45,10 +45,12 @@ import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import Checkbox from '../../components/checkbox';
+import ImageModal from '../../components/ImageModal';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import NFTItem from '../../components/NFTItem';
+import PaymentMethod from '../../components/PaymentMethod';
 import TransactionPending from '../../components/Popup/transactionPending';
 import SuccessModalContent from '../../components/successModal';
 import {
@@ -93,6 +95,8 @@ import TokenInput from '../../components/TextInput/tokenInput';
 import {ActivityIndicator} from 'react-native-paper';
 import {buyNFTApi} from '../../store/actions/detailsNFTAction';
 import {setPaymentObject} from '../../store/reducer/paymentReducer';
+
+const Web3 = require('web3');
 
 // =============== SVGS Destructuring ========================
 const {
@@ -395,26 +399,6 @@ const DetailScreen = ({navigation, route}) => {
   const setAudioSpeed = speed => {
     setOpenPlaySpeed(false);
     music.setSpeed(speed);
-  };
-
-  //====================== Full image Function =======================
-
-  const imageModal = () => {
-    return (
-      <Modal
-        onBackdropPress={() => setImgModal(false)}
-        isVisible={imgModal}
-        style={styles.modal}>
-        <View>
-          <TouchableOpacity
-            style={styles.closeIcon}
-            onPress={() => setImgModal(false)}>
-            <CircleCloseIcon />
-          </TouchableOpacity>
-          <Image source={{uri: thumbnailUrl}} style={styles.modalImg} />
-        </View>
-      </Modal>
-    );
   };
 
   //===================== UseEffect Function =========================
@@ -799,8 +783,15 @@ const DetailScreen = ({navigation, route}) => {
           <C_Image uri={mediaUrl} imageStyle={styles.modalImage} />
         )}
         {categoryType !== CATEGORY_VALUE.music &&
-          categoryType !== CATEGORY_VALUE.movie &&
-          imageModal()}
+          categoryType !== CATEGORY_VALUE.movie && (
+            <ImageModal
+              visible={imgModal}
+              setVisible={setImgModal}
+              uri={thumbnailUrl}
+              iconSize={wp('7%')}
+              iconColor={Colors.WHITE1}
+            />
+          )}
       </TouchableOpacity>
     );
   };
@@ -864,14 +855,14 @@ const DetailScreen = ({navigation, route}) => {
             key === 'creator'
               ? artistDetail?.avatar
                 ? {uri: artistDetail.avatar}
-                : IMAGES.DEFAULTPROFILE
+                : IMAGES.DEFAULTUSER
               : key === 'collection'
               ? collectCreat
                 ? {uri: collectCreat.avatar}
-                : IMAGES.DEFAULTPROFILE
+                : IMAGES.DEFAULTUSER
               : key === 'owner' && ownerDataN?.avatar
               ? {uri: ownerDataN.avatar}
-              : IMAGES.DEFAULTPROFILE
+              : IMAGES.DEFAULTUSER
           }
         />
         <View>

@@ -117,10 +117,11 @@ const CollectionList = ({
     const { networks } = useSelector(
         state => state.NetworkReducer
     );
+    console.log("@@@ on collection list ========>", networks)
 
     const [collectionList, setCollectionList] = useState([]);
     const [collectionListPage, setcollectionListPage] = useState(1);
-    const [networkList, setNetworkList] = useState(networks);
+    // const [networkList, setNetworkList] = useState(networks);
     const [selectedNetwork, setSelectedNetwork] = useState(null);
     const [nftListDraftPage, setNftListDraftPage] = useState(1);
     const [toggle, setToggle] = useState("mint");
@@ -279,8 +280,8 @@ const CollectionList = ({
             <CardCont style={{ flex: 1 }} >
                 <CardLabel>{translate("wallet.common.network")}</CardLabel>
                 <CardField
-                    inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "" }}
-                    onPress={() => showModal({ data: networkList ? networkList : [], title: translate("wallet.common.network"), itemToRender: "name" })}
+                    inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "Choose Network" }}
+                    onPress={() => showModal({ data: networks ? networks : [], title: translate("wallet.common.network"), itemToRender: "name" })}
                     pressable
                     showRight />
                 <View style={[styles.saveBtnGroup]}>

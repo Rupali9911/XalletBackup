@@ -150,7 +150,6 @@ export async function getAccessToken(tokenName) {
 //================== Get Wallet Function  =====================
 export const getWallet = async () => {
   try {
-    let userWallet = null;
     const wallet = await EncryptedStorage.getItem('@WALLET');
     if (wallet !== undefined) {
       return JSON.parse(wallet);
@@ -159,6 +158,7 @@ export const getWallet = async () => {
     }
   } catch (error) {
     console.log('@@@ Get wallet error =========>', error);
+    return null;
   }
 };
 
@@ -177,7 +177,6 @@ export async function APIRefreshToken() {
 
 //=================== Get Headers =====================
 const getHeaders = header => {
-  console.log('@@@ hello header how are you ======>', header);
   delete header['Authorization'];
   return header;
 };
