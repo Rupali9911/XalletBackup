@@ -20,6 +20,7 @@ import CollectionReducer from './collectionReducer';
 import LaunchpadReducer from './launchpadReducer'
 import NetworkReducer from './networkReducer'
 import chatReducer from './chatReducer';
+import detailsNFTReducer from './detailsNFTReducer';
 import { reducer as formReducer } from 'redux-form'
 
 const RootReducer = combineReducers({
@@ -43,6 +44,7 @@ const RootReducer = combineReducers({
     LaunchpadReducer,
     NetworkReducer,
     chatReducer,
+    detailsNFTReducer,
     form: formReducer
 });
 

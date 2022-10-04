@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -13,39 +13,36 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
-import { RF, wp, hp } from '../../constants/responsiveFunct';
-import ButtonGroup from '../buttonGroup';
-import { translate, CARD_MASK, environment } from '../../walletUtils';
+import {RF, wp, hp} from '../../constants/responsiveFunct';
+import {translate, CARD_MASK, environment} from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-import { formatWithMask } from 'react-native-mask-input';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import {formatWithMask} from 'react-native-mask-input';
 import {
   getPaymentIntent,
   getTransactionHash,
   updateTransactionSuccess,
 } from '../../store/reducer/paymentReducer';
-import { useStripe } from '@stripe/stripe-react-native';
+import {useStripe} from '@stripe/stripe-react-native';
+import {StripeApiRequest} from '../../helpers/ApiRequest';
+import {alertWithSingleBtn} from '../../common/function';
+import {BlurView} from '@react-native-community/blur';
+import {IconButton} from 'react-native-paper';
+import {numberWithCommas} from '../../utils';
 import {
-  StripeApiRequest,
-} from '../../helpers/ApiRequest';
-import { alertWithSingleBtn } from '../../common/function';
-import {
-  approvebnb,
-  buyNft,
-  buyNftBnb,
-  checkAllowance,
-} from '../../screens/wallet/functions';
-import { BlurView } from '@react-native-community/blur';
-import { IconButton } from 'react-native-paper';
-import { numberWithCommas } from '../../utils';
+  handleTransactionError,
+  sendCustomTransaction,
+} from '../../screens/wallet/functions/transactionFunctions';
 
 const PaymentNow = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { userData, wallet } = useSelector(state => state.UserReducer);
+  const {paymentObject} = useSelector(state => state.PaymentReducer);
+  const {userData} = useSelector(state => state.UserReducer);
+  const {buyNFTRes} = useSelector(state => state.detailsNFTReducer);
+  const walletAddress = userData?.userWallet?.address;
 
   const {
     initPaymentSheet,
@@ -57,22 +54,19 @@ const PaymentNow = props => {
   const {
     visible,
     onRequestClose,
-    NftId,
-    IdWithChain,
+    nftId,
     price,
     priceInDollar,
     chain,
     ownerId,
     onPaymentDone,
-    lastBidAmount,
-    ownerAddress,
     baseCurrency,
     collectionAddress,
   } = props;
   const [opacity, setOpacity] = useState(0.88);
-  const [selectedMethod, setSelectedMethod] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [redirectURL, setRedirectURL] = useState('');
+  // const [selectedMethod, setSelectedMethod] = useState(null);
+  // const [redirectURL, setRedirectURL] = useState('');
 
   const getTitle = () => {
     let title = '';
@@ -86,7 +80,7 @@ const PaymentNow = props => {
     return title;
   };
 
-  const nftErrorMessage = (message) => {
+  const nftErrorMessage = message => {
     let msg = '';
     if (message === 'NFT not on sell') {
       msg = translate('common.nftNotOnSell');
@@ -99,44 +93,22 @@ const PaymentNow = props => {
   const _getPaymentIntent = () => {
     const params = {
       cardId: paymentObject.item.id,
-      nftId: IdWithChain,
-      chainType: chain || 'binance',
+      nftId: nftId,
+      chainType: chain || 'bsc',
     };
     console.log('params', params);
     dispatch(getPaymentIntent(userData.access_token, params))
       .then(async res => {
         console.log('108 _getPaymentIntent :res', res);
         if (res.success) {
-          // const {error, paymentIntent} = await confirmPayment(res.data.client_secret, {
-          //     type: 'Card',
-          //     billingDetails: {
-          //         email: "Robert@mailinator.com",
-          //         name: "Robert",
-          //         addressPostalCode: "123456",
-          //         addressCity: "Mumbai",
-          //         addressCountry: "India",
-          //         addressLine1: "Mumbai",
-          //         addressLine2: "",
-          //         addressState: "Maharashtra"
-          //     }
-          // });
-
-          // if(error){
-          //     console.log('error',error);
-          // }else{
-          //     console.log('paymentIntent',paymentIntent);
-          // }
-
           _confirmPayment(res.data.id, res.data.client_secret);
-          console.log("131_getPaymentIntent: response", res.data.id, res.data.client_secret);
-          // initializePaymentSheet({
-          //     paymentIntent: res.data.client_secret,
-          //     customer: res.data.customer
-          // });
+          console.log(
+            '131_getPaymentIntent: response',
+            res.data.id,
+            res.data.client_secret,
+          );
         } else {
           if (res.error) {
-            // alertWithSingleBtn(translate(`common.${res.error.code}`));
-            // alertWithSingleBtn(nftErrorMessage(res.message));
             alertWithSingleBtn(translate('common.amountMoreThan'));
           } else {
             alertWithSingleBtn(nftErrorMessage(res.data));
@@ -160,7 +132,7 @@ const PaymentNow = props => {
       key: environment.stripeKey.p_key,
       client_secret: clientSecret,
     };
-    console.log(params, "162_confirmPayment")
+    console.log(params, '162_confirmPayment');
     StripeApiRequest(`payment_intents/${paymentIntentId}/confirm`, params)
       .then(response => {
         console.log('165_confirmPayment response', response);
@@ -200,7 +172,7 @@ const PaymentNow = props => {
   };
 
   const manageOnRequireAction = async payment_intent_client_secret => {
-    const { error, paymentIntent } = await handleCardAction(
+    const {error, paymentIntent} = await handleCardAction(
       payment_intent_client_secret,
     );
     if (error) {
@@ -214,9 +186,9 @@ const PaymentNow = props => {
 
   const checkPaymentStatus = paymentIntentId => {
     const params = {
-      nftId: IdWithChain,
+      nftId: nftId,
       paymentIntentId: paymentIntentId,
-      chainType: chain || 'binance',
+      chainType: chain || 'bsc',
     };
 
     dispatch(getTransactionHash(userData.access_token, params))
@@ -238,8 +210,8 @@ const PaymentNow = props => {
     const params = {
       transactionHash: trans_hash,
       locale: 'en',
-      chainType: chain || 'binance',
-      previousOwnerId: ownerId,
+      chainType: chain || 'bsc',
+      previousOwnerId: '', // ownerId
     };
 
     dispatch(updateTransactionSuccess(userData.access_token, params))
@@ -259,185 +231,94 @@ const PaymentNow = props => {
       });
   };
 
-  // const initializePaymentSheet = async (_data) => {
-  //     const {
-  //         paymentIntent,
-  //         ephemeralKey,
-  //         customer,
-  //     } = _data;
+  const payByWallet = async () => {
+    try {
+      console.log('paymentObject', paymentObject, buyNFTRes);
 
-  //     const { error } = await initPaymentSheet({
-  //         customerId: customer,
-  //         // customerEphemeralKeySecret: ephemeralKey,
-  //         paymentIntentClientSecret: paymentIntent,
-  //     });
-  //     if (!error) {
-  //         setLoading(true);
-  //         openPaymentSheet(paymentIntent);
-  //     }
-  // };
+      const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
+      const approveData = buyNFTRes?.dataReturn?.approveData;
+      const signData = buyNFTRes?.dataReturn?.signData;
+      if (approveAllData) {
+        console.log(
+          '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
+          approveAllData,
+        );
+      }
 
-  // const openPaymentSheet = async (clientSecret) => {
-  //     console.log('clientSecret',clientSecret);
-  //     const { error } = await presentPaymentSheet({ clientSecret });
-  //     console.log('error',error);
-  //     if (error) {
-  //         // Alert.alert(`Error code: ${error.code}`, error.message);
-  //         const { error, paymentIntent } = await handleCardAction(clientSecret);
-  //         if (error) {
-  //             Alert.alert(`Error code: ${error.code}`, error.message);
-  //         } else if (paymentIntent) {
-  //             console.log('paymentIntent', paymentIntent);
-  //             checkPaymentStatus(paymentIntent.id);
-  //         }
-  //     } else {
-  //         Alert.alert('Success', 'Your order is confirmed!');
-  //     }
-  // };
+      // setOpenTransactionPending(true);
+      let approved = true;
+      let noncePlus = 0;
 
-  const payByWallet = () => {
-    console.log('paymentObject', paymentObject);
-    if (paymentObject?.currency?.approvalRequired) {
-      checkAllowance(
-        wallet?.address,
-        chain || 'binance',
-        paymentObject?.currency?.approvalAdd,
-      )
-        .then(async ({ balance, contract }) => {
-          console.log('balance', balance, lastBidAmount);
+      if (approveData) {
+        try {
+          const transactionParameters = {
+            nonce: approveData.nonce, // ignored by MetaMask
+            to: approveData.to, // Required except during contract publications.
+            from: approveData.from, // must match user's active address.
+            data: approveData.data, // Optional, but used for defining smart contract creation and interaction.
+            chainId: buyNFTRes?.currentNetwork?.chainId, // Used to prevent transaction reuse across b
+          };
 
-          let decimals = await contract.methods.decimals().call();
-          if (parseInt(balance) / Math.pow(10, parseInt(decimals)) <= 0) {
-            // if (parseFloat(`${balance}`) < parseFloat(`${lastBidAmount}`)) {
-            approvebnb(
-              wallet?.address,
-              wallet.privateKey,
-              chain || 'binance',
-              contract,
-            )
-              .then(res => {
-                buyNft(
-                  wallet?.address,
-                  wallet.privateKey,
-                  NftId,
-                  chain || 'binance',
-                  10,
-                  1000000,
-                  collectionAddress,
-                  paymentObject?.currency?.order,
-                )
-                  .then(bnbBalance => {
-                    console.log('approve bnbBalance 331', bnbBalance);
-                    // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
-                    onPaymentDone();
-                    setLoading(false);
-                  })
-                  .catch(err => {
-                    console.log('payByWallet_err payByWallet 339', err);
-                    if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                      alertWithSingleBtn(
-                        translate('wallet.common.alert'),
-                        translate('common.blanceLow'),
-                      );
-                    } else {
-                      showErrorAlert("");
-                    }
-                    setLoading(false);
-                  });
-              })
-              .catch(err => {
-                console.log('approve_err 341', err);
-                if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('common.blanceLow'),
-                  );
-                } else {
-                  showErrorAlert('');
-                }
-                setLoading(false);
-              });
-          } else {
-            buyNft(
-              wallet?.address,
-              wallet.privateKey,
-              NftId,
-              chain || 'binance',
-              10,
-              600000,
-              collectionAddress,
-              paymentObject?.currency?.order,
-            )
-              .then(bnbBalance => {
-                console.log('bnbBalance 361', bnbBalance);
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
-                onPaymentDone();
-                setLoading(false);
-              })
-              .catch(err => {
-                console.log('payByWallet_err payByWallet 367', err);
-                setLoading(false);
-                if (typeof err === 'string' && err.includes('transaction underpriced')) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.alert'),
-                    translate('common.blanceLow'),
-                  );
-                } else {
-                  showErrorAlert("");
-                }
-              });
-          }
-        })
-        .catch(err => {
-          console.log('err 375', err);
-          setLoading(false);
-        });
-    } else {
-      _buyNFTBnb();
-    }
-  };
-
-  const _buyNFTBnb = async () => {
-    let addedFivePercent = paymentObject.priceInToken;
-    if (!baseCurrency?.chainCurrency && paymentObject.currency.chainCurrency) {
-      let percetile = (parseFloat(paymentObject.priceInToken) / 100) * 5;
-      addedFivePercent = (
-        parseFloat(paymentObject.priceInToken) + parseFloat(percetile)
-      ).toFixed(18);
-    }
-    console.log('fixed', addedFivePercent, collectionAddress);
-    buyNftBnb(
-      wallet?.address,
-      wallet.privateKey,
-      NftId,
-      chain || 'binance',
-      10,
-      1000000,
-      collectionAddress,
-      addedFivePercent,
-    )
-      .then(bnbBalance => {
-        console.log('_bnbBalance 398', bnbBalance);
-        // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
-        onPaymentDone();
-        setLoading(false);
-      })
-      .catch(err => {
-        console.log('payByWallet_err _buyNFTBnb 404', err);
-        setLoading(false);
-        if (typeof err === 'string' && err.includes('transaction underpriced')) {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.blanceLow'),
+          const txnResult = await sendCustomTransaction(
+            transactionParameters,
+            walletAddress,
+            buyNFTRes?.nftTokenId,
+            buyNFTRes?.nftNetwork?.networkName,
           );
-        } else {
-          showErrorAlert("");
-        }
-      });
-  };
 
-  const showErrorAlert = msg => {
-    alertWithSingleBtn(translate('common.error'), msg);
+          if (txnResult) {
+            noncePlus = 1;
+            // toast.success(t('APPROVE_TOKEN_SUCCESS'))
+          }
+        } catch (error) {
+          approved = false;
+          // setOpen(true);
+          // setOpenTransactionPending(false);
+          // setErrorMessage('APPROVE_TOKEN_FAIL');
+        }
+      }
+      if (signData && approved) {
+        try {
+          const transactionParameters = {
+            nonce: signData.nonce + noncePlus, // ignored by MetaMask
+            to: signData.to, // Required except during contract publications.
+            from: signData.from, // must match user's active address.
+            value: signData?.value, // Only required to send ether to the recipient from the initiating external account.
+            data: signData.data, // Optional, but used for defining smart contract creation and interaction.
+            chainId: buyNFTRes?.currentNetwork?.chainId, // Used to prevent transaction reuse across b
+          };
+
+          sendCustomTransaction(
+            transactionParameters,
+            walletAddress,
+            buyNFTRes?.nftTokenId,
+            buyNFTRes?.nftNetwork?.networkName,
+          )
+            .then(res => {
+              console.log('approve payByWallet 331', res);
+              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+
+              // getNFTDetails(true);
+              setLoading(false);
+              onRequestClose();
+            })
+            .catch(err => {
+              console.log('payByWallet_err payByWallet 339', err);
+              handlePendingModal(false);
+              handleTransactionError(err);
+            });
+        } catch (error) {
+          // setOpenTransactionPending(false);
+          setLoading(false);
+          handleTransactionError(error);
+        }
+      }
+    } catch (error) {
+      console.log(
+        '🚀 ~ file: payNowModal.js ~ line 322 ~ payByWal ~ error',
+        error,
+      );
+    }
   };
 
   return (
@@ -464,7 +345,7 @@ const PaymentNow = props => {
         />
         <View style={styles.contentContainer}>
           <TouchableOpacity
-            style={{ alignSelf: 'flex-end' }}
+            style={{alignSelf: 'flex-end'}}
             onPress={() => {
               // setOpacity(0);
               onRequestClose();
@@ -507,8 +388,12 @@ const PaymentNow = props => {
             )}
             <Text numberOfLines={1} style={styles.amount}>
               {paymentObject && paymentObject.type == 'wallet'
-                ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4))) + ' '
-                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
+                ? numberWithCommas(
+                    parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
+                  ) + ' '
+                : numberWithCommas(
+                    parseFloat(Number(priceInDollar).toFixed(2)),
+                  ) || 0}
             </Text>
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
@@ -525,7 +410,7 @@ const PaymentNow = props => {
 
           {paymentObject && paymentObject.type == 'card' && (
             <View style={styles.totalContainer}>
-              <Text style={[styles.totalLabel, { textTransform: 'uppercase' }]}>
+              <Text style={[styles.totalLabel, {textTransform: 'uppercase'}]}>
                 {translate('wallet.common.topup.creditCard')}
               </Text>
               {paymentObject && (
@@ -541,7 +426,7 @@ const PaymentNow = props => {
               <TouchableOpacity
                 style={styles.editContainer}
                 onPress={() => {
-                  navigation.navigate('Cards', { price });
+                  navigation.navigate('Cards', {price});
                   onRequestClose();
                 }}>
                 <Image
@@ -561,9 +446,15 @@ const PaymentNow = props => {
             <Text style={styles.value}>
               {paymentObject && paymentObject.type == 'card' ? '$' : ''}{' '}
               {paymentObject && paymentObject.type == 'wallet'
-                ? numberWithCommas(parseFloat(Number(paymentObject.priceInToken).toFixed(4)))
-                : numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))) || 0}
-              {' '}{paymentObject && paymentObject.type == 'wallet' ? `${paymentObject.item.type}` : ''}
+                ? numberWithCommas(
+                    parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
+                  )
+                : numberWithCommas(
+                    parseFloat(Number(priceInDollar).toFixed(2)),
+                  ) || 0}{' '}
+              {paymentObject && paymentObject.type == 'wallet'
+                ? `${paymentObject.item.type}`
+                : ''}
             </Text>
           </View>
 
@@ -572,7 +463,7 @@ const PaymentNow = props => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
-              if (NftId && paymentObject) {
+              if (nftId && paymentObject) {
                 setLoading(true);
                 if (paymentObject.type == 'card') {
                   _getPaymentIntent();
@@ -585,7 +476,7 @@ const PaymentNow = props => {
             view={loading}
           />
         </View>
-        <SafeAreaView style={{ backgroundColor: Colors.white }} />
+        <SafeAreaView style={{backgroundColor: Colors.white}} />
       </View>
     </Modal>
   );
@@ -644,12 +535,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // marginBottom: hp("1%"),
     marginVertical: hp('2.5%'),
   },
   separator: {
     width: wp('100%'),
-    // marginVertical: hp("2%")
   },
   totalLabel: {
     fontSize: RF(1.9),

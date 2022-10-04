@@ -1,5 +1,4 @@
 import {networkType} from '../../../common/networkType';
-
 const Web3 = require('web3');
 const EthereumTx = require('ethereumjs-tx').Transaction;
 import Common from 'ethereumjs-common';
@@ -27,17 +26,12 @@ const getGasPrice = async rpcURL => {
 };
 
 const getGasLimit = async (data, rpcURL) => {
-  console.log(
-    '🚀 ~ file: transactionFunctions.js ~ line 33 ~  ~ data, rpcURL',
-    data,
-    rpcURL,
-  );
   const provider = new Web3(new Web3.providers.HttpProvider(rpcURL));
 
   return provider.eth.estimateGas(data);
 };
 
-const estimateGasTransactions = async (transaction, rpcURL) => {
+export const estimateGasTransactions = async (transaction, rpcURL) => {
   const data = {
     from: transaction.from,
     to: transaction.to,
@@ -48,18 +42,7 @@ const estimateGasTransactions = async (transaction, rpcURL) => {
     data.value = transaction.value;
   }
 
-  console.log(
-    '🚀 ~ file: transactionFunctions.js ~ line 50 ~  ~ transaction',
-    transaction,
-    data,
-    rpcURL,
-  );
-
   const gasLimit = await getGasLimit(data, rpcURL);
-  console.log(
-    '🚀 ~ file: transactionFunctions.js ~ line 56 ~  ~ gasLimit',
-    gasLimit,
-  );
 
   const gasPrice = await getGasPrice(rpcURL);
   console.log('🚀 ~ file: transactionFunctions.js ~ line 56 ~ ~ gasPrice', {
@@ -73,32 +56,43 @@ const estimateGasTransactions = async (transaction, rpcURL) => {
   };
 };
 
+export const getConfigDetails = type => {
+  const config = {
+    rpcURL: '',
+    contractAddress: '',
+    abiArray: '',
+    error: '',
+  };
+  const chainType = type?.toLowerCase();
+  if (chainType === 'polygon') {
+    (config.rpcURL = blockChainConfig[1].providerUrl),
+      (config.contractAddress = blockChainConfig[1].marketConConfig.add);
+    // config.abiArray = blockChainConfig[1].marketConConfig.abi
+  } else if (chainType === 'bsc') {
+    (config.rpcURL = blockChainConfig[0].providerUrl),
+      (config.contractAddress = blockChainConfig[0].marketConConfig.add);
+    // config.abiArray =  blockChainConfig[0].marketConConfig.abi
+  } else if (chainType === 'ethereum') {
+    (config.rpcURL = blockChainConfig[2].providerUrl),
+      (config.contractAddress = blockChainConfig[2].marketConConfig.add);
+    // config.abiArray = blockChainConfig[2].marketConConfig.abi
+  } else {
+    config.error = 'invalid chainType';
+  }
+  return config;
+};
+
 export const sendCustomTransaction = async (
   transaction,
   publicKey,
   nftId,
-  type,
+  chainType,
 ) => {
-  console.log('buyNft params 369', transaction, publicKey, nftId, type);
+  console.log('buyNft params 369', transaction, publicKey, nftId, chainType);
   return new Promise(async (resolve, reject) => {
-    let rpcURL;
-    let contractAddress;
-    // let abiArray;
-    const chainType = type?.toLowerCase();
+    const config = getConfigDetails(chainType);
 
-    if (chainType === 'polygon') {
-      rpcURL = blockChainConfig[1].providerUrl;
-      // abiArray = blockChainConfig[1].marketConConfig.abi;
-      contractAddress = blockChainConfig[1].marketConConfig.add;
-    } else if (chainType === 'bsc') {
-      rpcURL = blockChainConfig[0].providerUrl;
-      // abiArray = blockChainConfig[0].marketConConfig.abi;
-      contractAddress = blockChainConfig[0].marketConConfig.add;
-    } else if (chainType === 'ethereum') {
-      rpcURL = blockChainConfig[2].providerUrl;
-      // abiArray = blockChainConfig[2].marketConConfig.abi;
-      contractAddress = blockChainConfig[2].marketConConfig.add;
-    } else {
+    if (config.error === 'invalid chainType') {
       console.log('invalid chainType');
       reject('invalid chainType');
       return;
@@ -114,7 +108,7 @@ export const sendCustomTransaction = async (
       data.value = transaction.value;
     }
 
-    const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
+    const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
 
     console.log('398 - buy nft web,3', web3);
     const txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
@@ -123,7 +117,7 @@ export const sendCustomTransaction = async (
     let txObject;
     const {gasLimit, gasPrice} = await estimateGasTransactions(
       transaction,
-      rpcURL,
+      config.rpcURL,
     );
     const {privateKey} = await getWallet();
 
@@ -132,7 +126,7 @@ export const sendCustomTransaction = async (
       gasPrice: gasPrice,
       gasLimit: gasLimit,
       chainId: chainType === 'polygon' ? 80001 : undefined,
-      to: contractAddress,
+      to: config.contractAddress,
       value: '0x0',
       data: transaction?.data,
       nonce: web3.utils.toHex(txCount),
@@ -212,24 +206,25 @@ export const sendCustomTransaction = async (
         console.log('Catch 472', e);
         reject(e);
       });
-
-    // console.log(result);
-    // return result
   });
 };
 
-export const handleTransactionError = (error, translate) => {
+export const handleTransactionError = error => {
   console.log(
     '🚀 ~ file: transactionFunctions.js ~ line 192 ~ handleTransactionError ~ error',
     error,
   );
 
-  if (typeof error === 'string' && error.includes('transaction underpriced')) {
+  if (
+    typeof error === 'string' &&
+    (error.includes('transaction underpriced') ||
+      error.includes('insufficient funds for gas *  price + value'))
+  ) {
     alertWithSingleBtn(
       translate('wallet.common.alert'),
       translate('common.blanceLow'),
     );
   } else {
-    alertWithSingleBtn(translate('common.error'), '');
+    alertWithSingleBtn(translate('common.error'), error?.message);
   }
 };
