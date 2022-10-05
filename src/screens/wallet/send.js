@@ -25,6 +25,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
+import { getWallet } from '../../helpers/AxiosApiRequest';
+
 
 const verifyAddress = (address) => {
     return new Promise((resolve, reject) => {
@@ -62,116 +64,6 @@ export const AddressField = (props) => {
     )
 }
 
-const getTokenValue = (item) => {
-    const { ethBalance, bnbBalance, maticBalance } = useSelector(state => state.WalletReducer);
-    let totalValue = 0;
-    if (item.type == 'ETH') {
-        let value = parseFloat(ethBalance) //+ parseFloat(balances.USDT)
-        console.log('Ethereum value', value);
-        totalValue = value;
-    } else if (item.type == 'BNB') {
-        let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-        console.log('BSC value', value);
-        totalValue = value;
-    } else if (item.type == 'Matic') {
-        let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-        console.log('Polygon value', value);
-        totalValue = value;
-    }
-    return totalValue;
-}
-
-const transferAmount = async () => {
-    const { wallet } = useSelector(state => state.UserReducer);
-    const publicAddress = wallet?.address;
-    const privKey = wallet.privateKey;
-    const toAddress = address;
-    setLoading(true);
-    switch (type) {
-        case 'ETH':
-            transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
-                console.log("ethBalance", ethBalance);
-                if (ethBalance.success) {
-                    showSuccessAlert();
-                }
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-            return;
-        case 'USDT':
-            transfer(publicAddress, privKey, amount, toAddress, "usdt", "ethereum", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
-                console.log("usdtBalance", usdtBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-
-            return;
-        case 'BNB':
-            transfer(publicAddress, privKey, amount, toAddress, "bnb", "binance", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
-                console.log("bnbBalance", bnbBalance);
-                if (bnbBalance.success) {
-                    showSuccessAlert();
-                }
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-            return;
-        case 'BUSD':
-            transfer(publicAddress, privKey, amount, toAddress, "busd", "binance", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
-                console.log("busdBalance", busdBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-            return;
-        case 'ALIA':
-            transfer(publicAddress, privKey, amount, toAddress, "alia", "", environment.aliaCont, environment.aliaAbi, environment.bnbRpc, 10, 81778).then((aliaBalance) => {
-                console.log("aliaBalance", aliaBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-            return;
-        case 'Matic':
-            transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", "", environment.polRpc, 10, 21000).then((maticBalance) => {
-                console.log("maticBalance", maticBalance);
-                if (maticBalance.success) {
-                    showSuccessAlert();
-                }
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-            return;
-        case 'USDC':
-            transfer(publicAddress, privKey, amount, toAddress, "usdc", 'polygon', environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
-                console.log("usdcBalance", usdcBalance);
-                setLoading(false);
-            }).catch((err) => {
-                console.log("err", err);
-                setLoading(false);
-                showErrorAlert(err.msg);
-            });
-            return;
-        default:
-    }
-}
-
 export const PaymentField = (props) => {
     return (
         <View style={[styles.inputMainCont]} >
@@ -194,6 +86,9 @@ export const PaymentField = (props) => {
     )
 }
 
+//*************************************************************************/
+//=========================Scan Screen Start ==============================
+/*************************************************************************/
 const ScanScreen = React.memo((props) => {
     let refScanner = null;
     const { camera } = useSelector(state => state.PermissionReducer);
@@ -290,13 +185,29 @@ const ScanScreen = React.memo((props) => {
     )
 });
 
+/*************************************************************************/
+//=========================SendScreen Start ==============================
+/*************************************************************************/
 const SendScreen = React.memo((props) => {
     const navigation = useNavigation();
-    const { wallet } = useSelector(state => state.UserReducer);
+    //====================== Props Destructuring =========================
+    const { item, type, setLoading, loading } = props;
+
+    //====================== Getting data from reducers =========================
+    const { userData } = useSelector(state => state.UserReducer);
     const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
+
+    //====================== States Initiliazation =========================
     const [address, setAddress] = useState(props.address);
     const [amount, setAmount] = useState(props.amount);
-    const { item, type, setLoading, loading } = props;
+
+    //==================== Global Variables =======================
+    let wallet = null
+
+    //====================== Use Effect Start =========================
+    useEffect(async () => {
+        wallet = await getWallet();
+    }, [])
 
     useEffect(() => {
         setAddress(props.address);
@@ -355,12 +266,12 @@ const SendScreen = React.memo((props) => {
     }
 
     const transferAmount = async () => {
+        console.log("@@@ On Actual Send screen wallet details==============>", wallet)
         const publicAddress = wallet?.address;
         const privKey = wallet.privateKey;
         const toAddress = address;
         const { item, type, setLoading } = props;
         setLoading(true);
-
         switch (type) {
             case 'ETH':
                 transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
@@ -567,7 +478,7 @@ const SendScreen = React.memo((props) => {
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
-
+                            transferAmount();
                             if (address && address !== '' && amount > 0) {
                                 if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
                                     setLoading(true);
@@ -591,27 +502,27 @@ const SendScreen = React.memo((props) => {
     )
 });
 
+//*************************************************************************/
+//=========================Send Screen Start ==============================
+/*************************************************************************/
 const Send = ({ route, navigation }) => {
-
+    //================= Props Destructuring =============================
     const { item, type } = route.params;
+    console.log("@@@ Send screen props ============>", item, type)
+    //================= States Initialiazation =============================
     const [loading, setLoading] = useState(false);
     const [sendToAddress, setSendToAddress] = useState(null);
     const [amountToSend, setAmountToSend] = useState('');
-
     const [index, setIndex] = useState(0);
     const [routes] = useState([
         { key: 'Send', title: translate("wallet.common.send") },
         { key: 'Scan', title: translate("wallet.common.scan") },
     ]);
+
     const setResult = (address, amount) => {
         setAmountToSend(amount);
         setSendToAddress(address);
     }
-
-    const renderScene = SceneMap({
-        Send: SendScreen,
-        Scan: ScanScreen,
-    });
 
     const _renderScene = ({ route, jumpTo, position }) => {
         switch (route.key) {
