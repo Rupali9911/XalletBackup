@@ -19,11 +19,12 @@ import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
 import Modal from 'react-native-modal';
+import {ActivityIndicator} from 'react-native-paper';
 import {
   Menu,
-  MenuTrigger,
   MenuOption,
   MenuOptions,
+  MenuTrigger,
 } from 'react-native-popup-menu';
 import Sound from 'react-native-sound';
 import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
@@ -47,12 +48,12 @@ import TextView from '../../components/appText';
 import Checkbox from '../../components/checkbox';
 import ImageModal from '../../components/ImageModal';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
-import PaymentMethod from '../../components/PaymentMethod';
-import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import NFTItem from '../../components/NFTItem';
 import PaymentMethod from '../../components/PaymentMethod';
+import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import TransactionPending from '../../components/Popup/transactionPending';
 import SuccessModalContent from '../../components/successModal';
+import TokenInput from '../../components/TextInput/tokenInput';
 import {
   AMOUNT_BID_HIGHER,
   CATEGORY_VALUE,
@@ -77,6 +78,8 @@ import {
 } from '../../constants/tradingHistory';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
+import {buyNFTApi} from '../../store/actions/detailsNFTAction';
+import {setPaymentObject} from '../../store/reducer/paymentReducer';
 import {alertWithSingleBtn, numberWithCommas} from '../../utils';
 import {collectionClick} from '../../utils/detailHelperFunctions';
 import {getTokenNameFromId} from '../../utils/nft';
@@ -91,10 +94,6 @@ import {
 import ShowModal from './modal';
 import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
-import TokenInput from '../../components/TextInput/tokenInput';
-import {ActivityIndicator} from 'react-native-paper';
-import {buyNFTApi} from '../../store/actions/detailsNFTAction';
-import {setPaymentObject} from '../../store/reducer/paymentReducer';
 
 const Web3 = require('web3');
 
