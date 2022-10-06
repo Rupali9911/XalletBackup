@@ -103,7 +103,7 @@ function Setting({navigation}) {
   const {userData} = useSelector(state => state.UserReducer);
 
   useEffect(() => {
-    dispatch(getAllCards(userData.access_token));
+    // dispatch(getAllCards(userData.access_token));
   }, []);
 
   const updateLanguage = language => {

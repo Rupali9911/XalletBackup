@@ -19,7 +19,12 @@ import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Video from 'react-native-fast-video';
 import Modal from 'react-native-modal';
-import {Menu, MenuTrigger} from 'react-native-popup-menu';
+import {
+  Menu,
+  MenuTrigger,
+  MenuOption,
+  MenuOptions,
+} from 'react-native-popup-menu';
 import Sound from 'react-native-sound';
 import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
 import {
@@ -42,6 +47,8 @@ import TextView from '../../components/appText';
 import Checkbox from '../../components/checkbox';
 import ImageModal from '../../components/ImageModal';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
+import PaymentMethod from '../../components/PaymentMethod';
+import PaymentNow from '../../components/PaymentMethod/payNowModal';
 import NFTItem from '../../components/NFTItem';
 import PaymentMethod from '../../components/PaymentMethod';
 import TransactionPending from '../../components/Popup/transactionPending';
@@ -84,6 +91,10 @@ import {
 import ShowModal from './modal';
 import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
+import TokenInput from '../../components/TextInput/tokenInput';
+import {ActivityIndicator} from 'react-native-paper';
+import {buyNFTApi} from '../../store/actions/detailsNFTAction';
+import {setPaymentObject} from '../../store/reducer/paymentReducer';
 
 const Web3 = require('web3');
 
@@ -116,32 +127,20 @@ const DetailScreen = ({navigation, route}) => {
   const {paymentObject} = useSelector(state => state.PaymentReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const {networks} = useSelector(state => state.NetworkReducer);
+  const {buyNFTRes, isBuyLoading} = useSelector(
+    state => state.detailsNFTReducer,
+  );
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
   const [ownerN, setOwnerN] = useState();
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
-  const [singleNFT, setSingleNFT] = useState({});
-  const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [priceNFT, setPriceNFT] = useState('');
-  const [priceNFTString, setPriceNFTString] = useState('');
-  const [auctionETime, setAuctionETime] = useState('');
-  const [buyLoading, setBuyLoading] = useState(false);
-  const [availableTokens, setAvailableTokens] = useState([]);
   const [ownerAddress, setOwnerAddress] = useState('');
-  const [baseCurrency, setBaseCurrency] = useState(null);
   const [sellDetails, setSellDetails] = useState([]);
-  const [currencyPrices, setCurrencyPrices] = useState({});
-  const [priceInDollar, setPriceInDollar] = useState('');
-  const [nftPrice, setNFTPrice] = useState('');
-  const [payableInCurrency, setPayableInCurrency] = useState('');
-  const [payableInDollar, setPayableInDollar] = useState('');
   const [moreData, setMoreData] = useState([]);
-  const [allowedTokenModal, setAllowedTokenModal] = useState(false);
   const [load, setLoad] = useState(true);
-  const [payableIn, setPayableIn] = useState('');
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState();
   const [artist, setArtist] = useState();
@@ -151,7 +150,6 @@ const DetailScreen = ({navigation, route}) => {
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
   const [playVideo, toggleVideoPlay] = useState(false);
-  // const [artistRole, setArtistRole] = useState('');
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
     translate('common.price'),
@@ -168,7 +166,6 @@ const DetailScreen = ({navigation, route}) => {
   const [filterTableList, setFilterTableList] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
-  // const [tradingList, setTradingList] = useState([]);
   const [offerList, setOfferList] = useState([]);
   const [isLike, setLike] = useState();
   const [detailNFT, setDetailNFT] = useState({});
@@ -186,7 +183,6 @@ const DetailScreen = ({navigation, route}) => {
 
   const [placeABid, setPlaceABid] = useState(false);
   const [isCheckService, setCheckService] = useState(false);
-  const [isCheckError, setIsCheckError] = useState(false);
   const [isTopUpError, setIsTopUpError] = useState(false);
   const [checkOut, setCheckOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -266,6 +262,21 @@ const DetailScreen = ({navigation, route}) => {
   // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
   // const [bidHistory, setBidHistory] = useState([]);
   // const [tableData, setTableData] = useState([]);
+  // const [baseCurrency, setBaseCurrency] = useState(null);
+  // const [singleNFT, setSingleNFT] = useState({});
+  // const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
+  // const [priceNFT, setPriceNFT] = useState('');
+  // const [priceNFTString, setPriceNFTString] = useState('');
+  // const [auctionETime, setAuctionETime] = useState('');
+  // const [buyLoading, setBuyLoading] = useState(false);
+  // const [availableTokens, setAvailableTokens] = useState([]);
+  // const [currencyPrices, setCurrencyPrices] = useState({});
+  // const [priceInDollar, setPriceInDollar] = useState('');
+  // const [payableInCurrency, setPayableInCurrency] = useState('');
+  // const [payableInDollar, setPayableInDollar] = useState('');
+  // const [allowedTokenModal, setAllowedTokenModal] = useState(false);
+  // const [payableIn, setPayableIn] = useState('');
+  // const [nftPrice, setNFTPrice] = useState('');
 
   //================== Timer =======================
 
@@ -280,6 +291,20 @@ const DetailScreen = ({navigation, route}) => {
   const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
   const [mute, setMute] = useState(false);
   const [songCompleted, setSongCompleted] = useState(false);
+
+  useEffect(() => {
+    if (buyNFTRes && isCheckService) {
+      if (buyNFTRes?.messageCode) {
+        setErrorMessage(buyNFTRes?.messageCode);
+      }
+      if (checkOut && buyNFTRes?.dataReturn) {
+        setCheckOut(false);
+        setTimeout(() => {
+          setShowPaymentMethod(true);
+        }, 500);
+      }
+    }
+  }, [buyNFTRes]);
 
   useEffect(() => {
     if (categoryType === CATEGORY_VALUE.music) {
@@ -480,7 +505,7 @@ const DetailScreen = ({navigation, route}) => {
           json?.collection &&
           json?.owner
         ) {
-          setNFTPrice(json?.price);
+          // setNFTPrice(json?.price);
           setDetailNFT(json);
           setLike(Number(json?.isLike));
 
@@ -1203,7 +1228,7 @@ const DetailScreen = ({navigation, route}) => {
             </Text>
 
             <TouchableOpacity onPress={() => setPriceEditModal(false)}>
-              <Image source={cancelImg} style={styles.cancelButton} />
+              <Image source={Images.cancelIcon} style={styles.cancelButton} />
             </TouchableOpacity>
           </View>
 
@@ -1379,7 +1404,7 @@ const DetailScreen = ({navigation, route}) => {
           <View style={styles.PlaceAbidHeaderview}>
             <Text style={styles.bidtext}>{translate('common.placeABid')}</Text>
             <TouchableOpacity onPress={closeBidModal}>
-              <Image source={cancelImg} style={styles.cancelimg} />
+              <Image source={Images.cancelIcon} style={styles.cancelimg} />
             </TouchableOpacity>
           </View>
 
@@ -1687,7 +1712,7 @@ const DetailScreen = ({navigation, route}) => {
             <Text style={styles.sellNftText}>{'Sell NFT'}</Text>
 
             <TouchableOpacity onPress={() => setSellVisible(false)}>
-              <Image source={cancelImg} style={styles.cancelimg} />
+              <Image source={Images.cancelIcon} style={styles.cancelimg} />
             </TouchableOpacity>
           </View>
 
@@ -1916,7 +1941,7 @@ const DetailScreen = ({navigation, route}) => {
       setCheckOut(false);
     }
     setErrorMessage('');
-    setIsCheckError(false);
+    // setIsCheckError(false);
     setCheckService(false);
   };
 
@@ -2095,6 +2120,8 @@ const DetailScreen = ({navigation, route}) => {
             // toast.error(t(buyNFTRes.messageCode))
           } else {
             setCheckOut(false);
+            // setBuyNFTData(buyNFTRes);
+
             setTimeout(() => {
               setShowPaymentMethod(true);
             }, 500);
@@ -2404,14 +2431,13 @@ const DetailScreen = ({navigation, route}) => {
           <View style={styles.makkeOfferGroupButtonView}>
             <GroupButton
               leftText={translate('common.Confirm')}
-              leftDisabled={isChecking}
-              leftLoading={isChecking}
+              leftDisabled={modalVisible ? isChecking : isBuyLoading}
+              leftLoading={modalVisible ? isChecking : isBuyLoading}
               onLeftPress={() => {
                 if (!isCheckService) {
                   setErrorMessage(
                     'Please tick to agree service button to send transaction.',
                   );
-                  setIsCheckError(true);
 
                   if (modalVisible) {
                     setErrorMessage(
@@ -2419,12 +2445,18 @@ const DetailScreen = ({navigation, route}) => {
                     );
                   }
                 } else {
-                  setIsCheckError(false);
-
                   if (modalVisible) {
                     onMakeOffer();
                   } else {
-                    handleBuyNft();
+                    // handleBuyNft();
+                    dispatch(
+                      buyNFTApi(
+                        detailNFT?.saleData?.fixPrice?.id,
+                        currentNetwork,
+                        network,
+                        nftTokenId,
+                      ),
+                    );
                   }
                 }
               }}
@@ -3202,101 +3234,51 @@ const DetailScreen = ({navigation, route}) => {
 
   //=============== Render Payment Method Function ===============
   const renderPaymentMethod = () => {
+    const fixPrice = detailNFT?.saleData?.fixPrice;
     return (
       <PaymentMethod
         visible={showPaymentMethod}
-        payableIn={payableIn}
-        price={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInCurrency
-            : priceNFT
-          //  nftPrice
-          //   ? nftPrice
-          //   : 0
-        }
-        priceStr={priceNFTString}
-        priceInDollar={
-          payableIn && data?.user?.role === 'crypto'
-            ? payableInDollar
-            : priceInDollar
-        }
-        baseCurrency={baseCurrency}
-        allowedTokens={availableTokens}
-        ownerAddress={
-          walletAddress
-          // ownerAddress?.includes('0x')
-          //   ? ownerAddress
-          //   : walletAddressForNonCrypto
-        }
-        id={singleNFT.id}
+        price={fixPrice?.price}
+        priceInDollar={fixPrice?.priceToUsd}
+        baseCurrency={fixPrice?.tokenPrice}
+        id={fixPrice?.id}
         collectionAddress={collectionAddress}
-        // chain={chainType}
-        onRequestClose={() => setShowPaymentMethod(false)}
+        chain={networkName?.toLowerCase()}
+        onRequestClose={() => {
+          console.log(
+            '🚀 ~ file: detail.js ~ line 3263 ~ renderPaymentMethod ~ onRequestClose',
+          );
+          setShowPaymentMethod(false);
+          // dispatch(setPaymentObject(null));
+        }}
       />
     );
   };
 
   //=============== Render Payment Now Function ===============
-  // const renderPaymentNow = () => {
-  //   return (
-  //     <PaymentNow
-  //       visible={showPaymentNow}
-  //       price={
-  //         payableIn && data?.user?.role === 'crypto'
-  //           ? payableInCurrency
-  //           : nftPrice
-  //           ? nftPrice
-  //           : 0
-  //       }
-  //       priceInDollar={
-  //         payableIn && data?.user?.role === 'crypto'
-  //           ? payableInDollar
-  //           : priceInDollar
-  //       }
-  //       chain={chainType}
-  //       NftId={_tokenId}
-  //       IdWithChain={nft}
-  //       ownerId={nonCryptoOwnerId}
-  //       ownerAddress={
-  //         ownerAddress.includes('0x') ? ownerAddress : walletAddressForNonCrypto
-  //       }
-  //       baseCurrency={baseCurrency}
-  //       collectionAddress={collectionAddress}
-  //       lastBidAmount={priceNFT}
-  //       onRequestClose={() => {
-  //         dispatch(setPaymentObject(null));
-  //         setShowPaymentNow(false);
-  //       }}
-  //       onPaymentDone={() => {
-  //         dispatch(setPaymentObject(null));
-  //         setBuyLoading(true);
-  //         setShowPaymentNow(false);
-  //         setSuccessModalVisible(true);
-  //       }}
-  //     />
-  //   );
-  // };
-
-  //=============== Render Tab Modal Function ===============
-  // const renderTabModal = () => {
-  //   return (
-  //     <TabModal
-  //       modalProps={{
-  //         isVisible: allowedTokenModal,
-  //         onBackdropPress: () => {
-  //           setAllowedTokenModal(false);
-  //         },
-  //       }}
-  //       data={{ data: availableTokens }}
-  //       title={translate('common.allowedcurrency')}
-  //       itemPress={async tradeCurr => {
-  //         setAllowedTokenModal(false);
-  //         await calculatePrice(tradeCurr);
-  //       }}
-  //       renderItemName={'name'}
-  //     />
-  //   )
-  // }
+  const renderPaymentNow = () => {
+    const fixPrice = detailNFT?.saleData?.fixPrice;
+    return (
+      <PaymentNow
+        visible={showPaymentNow}
+        price={fixPrice?.price}
+        priceInDollar={fixPrice?.priceToUsd}
+        chain={networkName?.toLowerCase()}
+        nftId={nftId}
+        baseCurrency={fixPrice?.tokenPrice}
+        collectionAddress={collectionAddress}
+        onRequestClose={() => {
+          dispatch(setPaymentObject(null));
+          setShowPaymentNow(false);
+        }}
+        onPaymentDone={() => {
+          dispatch(setPaymentObject(null));
+          setShowPaymentNow(false);
+          setSuccessModalVisible(true);
+        }}
+      />
+    );
+  };
 
   //=============== Render Tab Modal Function ===============
   const renderAppModal = () => {
@@ -3524,6 +3506,29 @@ const DetailScreen = ({navigation, route}) => {
     setLoad(true);
   };
 
+  const handleConfirmDate = date => {
+    if (handleDate.for === 'open') {
+      setSellData({
+        ...sellData,
+        startTime: date,
+      });
+    } else if (handleDate.for === 'close') {
+      setSellData({
+        ...sellData,
+        closeTime: date,
+      });
+    } else {
+      setOfferData({
+        ...offerData,
+        expried: date,
+      });
+    }
+    setHandleDate({
+      open: false,
+      for: '',
+    });
+  };
+
   return (
     <>
       <SafeAreaView style={styles.mainContainer}>
@@ -3594,28 +3599,7 @@ const DetailScreen = ({navigation, route}) => {
                   ? sellData.closeTime
                   : offerData.expried
               }
-              onConfirm={date => {
-                if (handleDate.for === 'open') {
-                  setSellData({
-                    ...sellData,
-                    startTime: date,
-                  });
-                } else if (handleDate.for === 'close') {
-                  setSellData({
-                    ...sellData,
-                    closeTime: date,
-                  });
-                } else {
-                  setOfferData({
-                    ...offerData,
-                    expried: date,
-                  });
-                }
-                setHandleDate({
-                  open: false,
-                  for: '',
-                });
-              }}
+              onConfirm={handleConfirmDate}
               onCancel={() => {
                 setHandleDate({
                   open: false,
@@ -3627,9 +3611,8 @@ const DetailScreen = ({navigation, route}) => {
         </AppBackground>
       </SafeAreaView>
       {renderPaymentMethod()}
-      {/* {renderPaymentNow()} */}
-      {/* {renderTabModal()} */}
-      {/* {renderAppModal()} */}
+      {renderPaymentNow()}
+      {renderAppModal()}
     </>
   );
 };
