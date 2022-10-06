@@ -191,14 +191,6 @@ const RecoveryPhrase = ({route, navigation}) => {
       <AppHeader
         showBackButton
         title={translate('wallet.common.backup')}
-        showRightButton
-        rightButtonComponent={
-          <IconButton
-            icon={ImagesSrc.infoIcon}
-            color={Colors.labelButtonColor}
-            size={20}
-          />
-        }
       />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}

@@ -921,10 +921,9 @@ const DetailScreen = ({navigation, route}) => {
         {label && <Text style={styles.labelText}>{label}</Text>}
         <View style={styles.priceView}>
           <Image style={styles.tokenIcon} source={{uri: tokenIcon}} />
-
           {!load && (
             <Text style={styles.price}>
-              {price ? numberWithCommas(Number(price).toFixed(2)) : ''}
+              {price ? Number(price) : ''}
               <Text style={styles.priceUnit}>
                 {` ${tokenPrice}`}
                 <Text style={styles.dollarText}>

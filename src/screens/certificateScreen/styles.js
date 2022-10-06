@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK3,
   },
   modalImage: {
+    position: 'relative',
     width: wp('100%'),
     height: wp('100%'),
     justifyContent: 'center',
@@ -316,12 +317,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   video: {
-    // flex: 1,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
+    width: wp('100%'),
+    height: wp('100%'),
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    // bottom: 0,
   },
   retry: {
     fontSize: 20,
