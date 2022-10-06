@@ -735,7 +735,13 @@
     "LIST_COLLECTION_TABLE_SYMBOL": "シンボル",
     "RESET_TEXT": "リセット",
     "PLATFORM_FEE_MSG": "別途プラットフォーム手数料2.5%が発生します",
-    "MINT_NOW": "アップロード"
+    "MINT_NOW": "アップロード",
+    "CHOOSE_VALUE": "選択",
+    "CHOOSE_NETWORK": "選択",
+    "CHOOSE_COLLECTION": "選択",
+    "INVALID_ART_TYPE": "アートには（png, jpeg, jpg）ファイルのみアップロード可能です",
+    "INVALID_MOVIE_TYPE": "動画には（mp4）ファイルのみアップロード可能です",
+    "INVALID_AUDIO_TYPE": "オーディオには（mp3）ファイルのみアップロード可能です"
   },
   "AwardPage": {},
   "wallet": {

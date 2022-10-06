@@ -4,6 +4,7 @@ import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from 'react
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-fast-video';
 import ImagePicker from 'react-native-image-crop-picker';
+import DocumentPicker from 'react-native-document-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSelector } from 'react-redux';
 import { colors } from '../../res';
@@ -56,6 +57,7 @@ const UploadNFT = ({
     const [collectionList, setCollectionList] = useState([]);
     const [collection, setCollection] = useState(null);
     const [nftImage, setNftImage] = useState(null);
+    const [nftMediaType, setNftMediaType] = useState(null);
     const [imageError, setImageError] = useState("");
     const [nftImageThumb, setNftImageThumb] = useState(null);
     const [activeModal, setActiveModal] = useState("");
@@ -84,7 +86,7 @@ const UploadNFT = ({
     const [nftSupply, setNftSupply] = useState(1);
     const [nftExternalLink, setnftExternalLink] = useState("");
     const [openTransactionPending, setOpenTransactionPending] = useState(false);
-    const [playVideo, toggleVideoPlay] = useState(false);
+    const [playVideo, toggleVideoPlay] = useState(true);
 
     //==================== Global Variables =======================
     //#region SmartContract
@@ -126,6 +128,16 @@ const UploadNFT = ({
                     setNftImageType(modalItem)
                 } else if (activeModal === "royality") {
                     setRoyality(modalItem)
+                } else if (activeModal === "nftMediaType") {
+                    if (modalItem && modalItem?.name === "Audio") {
+                        setTimeout(() => {
+                            openDocumentPicker();
+                        }, 1200);
+                    } else {
+                        setTimeout(() => {
+                            openImagePicker();
+                        }, 1200);
+                    }
                 } else if (activeModal == filterSelect) {
                     let filterItem = { ...filterItemActive };
                     filterItem[activeModal] = modalItem;
@@ -303,13 +315,46 @@ const UploadNFT = ({
     //========================== Select NFT Media Function =========================
     const onPhoto = () => {
         setImageError("")
-        ImagePicker.openPicker({}).then(res => {
+        setActiveModal("nftMediaType")
+        showModal({
+            data: ImageType,
+            title: translate("wallet.common.nftType"),
+            itemToRender: "name",
+            translate: "code"
+        })
+    }
+
+    const openImagePicker = () => {
+        ImagePicker.openPicker({
+            mediaType: modalItem.name === 'Movie' ? 'video' : 'photo'
+        }).then(res => {
+            console.log("@@@ image picker res ======>", res)
             if (res.size > 50457280) {
                 setImageError("File size should not exceed 50MB")
             } else {
                 handleFile(res);
             }
-        });
+        })
+            .catch((err => {
+                console.log("@@@ image picker error =======>", err.code)
+                err.code !== 'E_PICKER_CANCELLED' && setImageError("Invalid Format")
+            }))
+    }
+
+    const openDocumentPicker = async () => {
+        try {
+            const res = await DocumentPicker.pickSingle({
+                allowMultiSelection: false,
+                presentationStyle: 'fullScreen',
+                type: [DocumentPicker.types.audio],
+                copyTo: "cachesDirectory"
+            });
+            res['mime'] = res.type;
+            res['path'] = res.fileCopyUri;
+            handleAudioFile(res);
+        } catch (error) {
+            console.log("@@@ Document picker error ======>", error)
+        }
     }
 
     const validMediaType = (type) => {
@@ -317,48 +362,58 @@ const UploadNFT = ({
         return supportMediaType.combind.includes(type)
     }
 
+    const handleAudioFile = (res) => {
+        if (validMediaType(res.type)) {
+            console.log("@@@ handleAudioFile func res ========>", res)
+            setNftImage(res)
+            let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Movie")
+            setImageTypeList(setImageTList)
+            setNftImageType(null);
+        } else {
+            setImageError(translate("common.INVALID_AUDIO_TYPE"))
+        }
+    }
+
     const handleFile = (res) => {
-        const type = res.mime.split('/')[0];
+        console.log("@@@ handle file func res ==========>", res);
         if (validMediaType(res.mime)) {
+            console.log("@@@ handle file func res with valid type==========>", res);
             if (res.mime.includes("image")) {
                 if (res.height >= 512 && res.width >= 512) {
+                    console.log("@@@ handle file func res in image inside if==========>", res);
                     let setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie" && v.name !== "Audio")
                     setImageTypeList(setImageTList)
                     setNftImageType(null);
                     setNftImage(res)
                     cropImage(res)
                 } else {
-                    console.log("@@@ if size is big ======>", res)
+                    console.log("@@@ handle file func res in image inside else==========>", res);
                     if (res.mime.includes("gif")) {
-                        console.log("@@@ if size is big but gif ======>", res)
+                        console.log("@@@ handle file func res in image inside else gif==========>", res);
                         let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "Movie" && v.name !== "Audio")
-                        // console.log(setImageTList, res, "aaaaaaaaaaaaa")
                         setNftImage(res)
                         setImageTypeList(setImageTList)
                         setNftImageType(null);
                     } else {
-                        console.log("@@@ if size is big but not also gif ======>", res)
                         setImageError("Image size should be greater than 512*512")
                     }
                 }
-            } else if (res.mime.includes("video")) {
+            } else {
                 //  space for video croping code
-                console.log("@@@ onPhoto func res ========>", res)
                 setNftImage(res)
                 let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Audio")
                 setImageTypeList(setImageTList)
                 setNftImageType(null);
                 videoCropping(res)
-            } else {
-                console.log("@@@ onPhoto func res audio case ========>", res)
-                setNftImage(res)
-                let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Movie")
-                setImageTypeList(setImageTList)
-                setNftImageType(null);
             }
 
+        } else {
+            if (res.mime.includes("video")) {
+                setImageError(translate("common.INVALID_MOVIE_TYPE"))
+            } else if (res.mime.includes("image")) {
+                setImageError(translate("common.INVALID_ART_TYPE"))
+            }
         }
-        return false
     }
 
     const updateThumbnail = () => {
@@ -370,12 +425,13 @@ const UploadNFT = ({
             if (res.size > 50457280) {
                 setImageError("File size should not exceed 50MB")
             } else {
-                if (res.mime.includes("image")) {
+                if (res.mime.includes("image") && !res.mime.includes("gif")) {
                     if (res.height >= 512 && res.width >= 512) {
                         cropImage(res)
                     }
                 } else {
                     //  space for video croping code
+                    setImageError("Thumbnail supports( *.png, *.jpeg,* .jpg) files only")
                     console.log("@@@ onPhoto func res ========>", res)
                 }
             }
@@ -1015,7 +1071,7 @@ const UploadNFT = ({
             setFixedPrice(v)
         }
     }
-    let disableBtn = collection && nftName && nftDesc && nftImageType && nftImage && basePrice && (toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate) : fixedPrice > 0);
+    let disableBtn = collection && nftName && nftDesc && nftImageType && nftImage && (!nftImage.mime.includes("gif") && nftImageThumb) && basePrice && (toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate) : fixedPrice > 0);
 
     let networkTypeStatus = networkType.name == "BSC" ?
         translate("common.BinanceNtwk") : networkType.name == "Polygon" ?
@@ -1046,11 +1102,22 @@ const UploadNFT = ({
                                             <TouchableOpacity style={styles.cardImageCont} activeOpacity={1} onPress={() => toggleVideoPlay(!playVideo)}>
                                                 <Video
                                                     source={{ uri: nftImage.path }}
-                                                    // style={styles.completeImage}
-                                                    style={{ height: 300, width: 400 }}
+                                                    // source={nftImage.path}
+                                                    style={styles.completeImage}
+                                                    controls={true}
                                                     playInBackground={false}
                                                     paused={playVideo}
-                                                // resizeMode='contain'
+                                                    onError={error => {
+                                                        console.log("@@@ loaded error =========>", error);
+                                                        // setVideoLoadErr(true);
+                                                    }}
+                                                    onReadyForDisplay={() => {
+                                                        // toggleThumb(false);
+                                                    }}
+                                                    onLoad={data => {
+                                                        console.log("@@@ loaded successfully ==========>", data)
+                                                        // refVideo.current.seek(0);
+                                                    }}
                                                 />
                                             </TouchableOpacity>
                                     :
@@ -1361,4 +1428,4 @@ const UploadNFT = ({
     );
 };
 
-export default UploadNFT;
+export default React.memo(UploadNFT);

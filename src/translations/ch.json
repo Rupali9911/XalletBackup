@@ -735,7 +735,13 @@
     "LIST_COLLECTION_TABLE_SYMBOL": "图标",
     "RESET_TEXT": "重置",
     "PLATFORM_FEE_MSG": "额外收取2.5%的平台费",
-    "MINT_NOW": "铸造"
+    "MINT_NOW": "铸造",
+    "CHOOSE_VALUE": "选择价值",
+    "CHOOSE_NETWORK": "选择网络",
+    "CHOOSE_COLLECTION": "选择收藏",
+    "INVALID_ART_TYPE": "ART 仅支持 (* .png, *.jpeg, *.jpg) 文件",
+    "INVALID_MOVIE_TYPE": "电影仅支持 (*.mp4) 文件",
+    "INVALID_AUDIO_TYPE": "仅支持音频 (*.mp3) 文件。"
   },
   "AwardPage": {},
   "wallet": {

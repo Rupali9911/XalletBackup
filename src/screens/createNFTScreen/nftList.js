@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
 import { colors } from '../../res';
 import { networkType as networkStatus } from "../../common/networkType";
@@ -125,7 +125,6 @@ const NFTList = ({
   const { networkType } = useSelector(
     state => state.WalletReducer
   );
-  console.log("@@@ on nft list ========>", networkType)
 
   const { networks } = useSelector(
     state => state.NetworkReducer
@@ -351,6 +350,11 @@ const NFTList = ({
   let showList = (toggle == "mint" && nftListCreated.length !== 0) ?
     nftListCreated : (toggle == "draft" && nftListDraft.length !== 0) ?
       nftListDraft : []
+
+  const memoizedValue = useMemo(
+    () => renderListItem,
+    [showList],
+  );
   const handleFlastListEndReached = () => {
     if (!onEndReachedCalledDuringMomentum) {
       setPageLoader(true);
@@ -379,19 +383,19 @@ const NFTList = ({
       <CardCont style={{ flex: 1 }} >
         <CardLabel>{translate("common.CREATED_COLLECTED")}</CardLabel>
         <CardField
-          inputProps={{ value: createdCollected ? createdCollected?.value : "Choose Value" }}
+          inputProps={{ value: createdCollected ? createdCollected?.value : translate("common.CHOOSE_VALUE") }}
           onPress={() => showModal({ data: createdCollectedList, title: translate("common.CREATED_COLLECTED"), itemToRender: "value" })}
           pressable
           showRight />
         <CardLabel>{translate("wallet.common.network")}</CardLabel>
         <CardField
-          inputProps={{ value: selectedNetwork ? selectedNetwork?.name : "Choose Network" }}
+          inputProps={{ value: selectedNetwork ? selectedNetwork?.name : translate("common.CHOOSE_NETWORK") }}
           onPress={() => showModal({ data: networkList, title: translate("wallet.common.network"), itemToRender: "name" })}
           pressable
           showRight />
         <CardLabel>{translate("wallet.common.collection")}</CardLabel>
         <CardField
-          inputProps={{ value: collection ? collection?.name : "Choose Collection" }}
+          inputProps={{ value: collection ? collection?.name : translate("common.CHOOSE_COLLECTION") }}
           onPress={() => showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "name" })}
           pressable
           showRight />
@@ -439,7 +443,7 @@ const NFTList = ({
                 data={showList}
                 showsVerticalScrollIndicator={false}
                 initialNumToRender={50}
-                renderItem={renderListItem}
+                renderItem={memoizedValue}
                 keyExtractor={keyExtractor}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
                 onEndReachedThreshold={0.1}
@@ -546,4 +550,4 @@ const NFTList = ({
   );
 };
 
-export default NFTList;
+export default React.memo(NFTList);
