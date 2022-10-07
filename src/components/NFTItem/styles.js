@@ -64,12 +64,14 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
+    backgroundColor: 'white'
   },
   collectionListVideo: {
     width: '100%',
     height: (wp('100%') / 2) - wp('1%'),
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
+    backgroundColor: 'white'
   },
   likeButton: {
     position: 'absolute',
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#56bbf8'
   },
-  statusNotOnSale: {
+  statusSoldOut: {
     fontSize: SIZE(12),
     fontWeight: '700',
     color: '#ff0125'

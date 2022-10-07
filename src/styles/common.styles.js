@@ -118,6 +118,10 @@ const SearchInput = styled.TextInput`
 const RowWrap = styled.View`
   flex-direction: row;
   align-items: center;
+  margin-left: ${props => props.mLeft || 0}px;
+  margin-top: ${props => props.mTop || 0}px;
+  margin-right: ${props => props.mRight || 0}px;
+  margin-bottom: ${props => props.mBottom || 0}px;
 `;
 
 const RowBottomWrap = styled.View`

@@ -1,7 +1,7 @@
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import Web3 from 'web3';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
@@ -13,16 +13,16 @@ import Separator from '../../components/separator';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
-import { hp, RF, wp } from '../../constants/responsiveFunct';
+import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { setPaymentObject } from '../../store/reducer/paymentReducer';
+import {setPaymentObject} from '../../store/reducer/paymentReducer';
 import {
   updateBalances,
   updateBSCBalances,
   updateEthereumBalances,
   updatePolygonBalances,
 } from '../../store/reducer/walletReducer';
-import { divideNo, numberWithCommas } from '../../utils';
+import {divideNo, numberWithCommas} from '../../utils';
 import {
   environment,
   IsTestNet,
@@ -30,24 +30,22 @@ import {
   tokens,
   translate,
 } from '../../walletUtils';
-import { basePriceTokens } from '../../web3/config/availableTokens';
-import { blockChainConfig } from '../../web3/config/blockChainConfig';
-import { HeaderBtns } from '../wallet/components/HeaderButtons';
+import {basePriceTokens} from '../../web3/config/availableTokens';
+import {blockChainConfig} from '../../web3/config/blockChainConfig';
+import {HeaderBtns} from '../wallet/components/HeaderButtons';
 import NetworkPicker from '../wallet/components/networkPicker';
 import Tokens from '../wallet/components/Tokens';
-import { balance, currencyInDollar } from '../wallet/functions';
-import { SIZE } from 'src/constants';
-import { alertWithSingleBtn } from '../../common/function';
-import { Loader } from '../../components';
+import {balance, currencyInDollar} from '../wallet/functions';
+import {SIZE} from 'src/constants';
+import {alertWithSingleBtn} from '../../common/function';
+import {Loader} from '../../components';
+import {getWallet} from '../../helpers/AxiosApiRequest';
 
-const ethers = require('ethers');
-
-var Accounts = require('web3-eth-accounts');
-var accounts = new Accounts('');
-
-const WalletPay = ({ route, navigation }) => {
-  const { wallet, isCreate, userData } = useSelector(state => state.UserReducer);
-  const { paymentObject } = useSelector(state => state.PaymentReducer);
+const WalletPay = ({route, navigation}) => {
+  let wallet = null;
+  const {isCreate, userData} = useSelector(state => state.UserReducer);
+  const {paymentObject} = useSelector(state => state.PaymentReducer);
+  const walletAddress = userData?.userWallet?.address;
   const {
     bnbBalance,
     tnftBalance,
@@ -68,25 +66,24 @@ const WalletPay = ({ route, navigation }) => {
     priceStr,
     id,
     baseCurrency,
-    ownerAddress,
     collectionAddress,
     allowedTokens,
     payableIn,
   } = route.params;
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [balances, setBalances] = useState(null);
-  const [totalValue, setTotalValue] = useState(0);
-  const [walletAccount, setWalletAccount] = useState();
   const [pickerVisible, setPickerVisible] = useState(false);
-  const [selectTokenVisible, setSelectTokenVisible] = useState(false);
-  const [isSend, setIsSend] = useState(false);
+  // const [totalValue, setTotalValue] = useState(0);
+  // const [walletAccount, setWalletAccount] = useState();
+  // const [selectTokenVisible, setSelectTokenVisible] = useState(false);
+  // const [isSend, setIsSend] = useState(false);
   const [network, setNetwork] = useState(
     chainType === 'polygon'
       ? networkChain[2]
       : chainType === 'ethereum'
-        ? networkChain[0]
-        : networkChain[1],
+      ? networkChain[0]
+      : networkChain[1],
   );
   const [selectedObject, setSelectedObject] = useState(null);
   const [tradeCurrency, setTradeCurrency] = useState(null);
@@ -117,31 +114,30 @@ const WalletPay = ({ route, navigation }) => {
     ApproveAbi = blockChainConfig[2].marketApproveConConfig.abi;
   }
 
-  useEffect(() => {
-    console.log('useEffect');
+  useEffect(async () => {
+    wallet = await getWallet();
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
       getBalances(wallet.address);
     }
-    console.log('wallet pay use effect', userData, route.params);
   }, [isFocused]);
 
   useEffect(() => {
     if (
-      allowedTokens.length > 0 &&
+      allowedTokens?.length > 0 &&
       payableIn == translate('common.allowedcurrency')
     ) {
       console.log('116 >>>>', allowedTokens, payableIn);
       let array = [];
       allowedTokens.map(_ => {
-        array.push(_.key.toLowerCase());
+        array.push(_.key?.toLowerCase());
       });
       console.log('tokens', tokens);
       let result = tokens.filter(item => {
         console.log('item', item);
-        if (item.network.toLowerCase() === chainType) {
+        if (item.network?.toLowerCase() === chainType) {
           console.log('same chain');
-          if (array.includes(item.type.toLowerCase())) {
+          if (array.includes(item.type?.toLowerCase())) {
             console.log('same name');
             return true;
           } else if (
@@ -159,14 +155,13 @@ const WalletPay = ({ route, navigation }) => {
       // console.log('141 result of active tokens', result);
       setActiveTokens(result);
     } else {
-      if (payableIn) {
+      if (baseCurrency) {
         let result = tokens.filter(_ => {
-          let setChain = chainType === 'binance' ? 'BSC' : chainType;
-          if (_.network.toLowerCase() === setChain.toLowerCase()) {
-            if (payableIn.toLowerCase() === _.type.toLowerCase()) {
+          if (_.network?.toLowerCase() === chainType?.toLowerCase()) {
+            if (baseCurrency?.toLowerCase() === _.type?.toLowerCase()) {
               return true;
             } else if (
-              payableIn.toLowerCase() === 'alia' &&
+              baseCurrency?.toLowerCase() === 'alia' &&
               (_.type === 'TAL' || _.type === 'TNFT')
             ) {
               return true;
@@ -184,12 +179,12 @@ const WalletPay = ({ route, navigation }) => {
       } else {
         let result = tokens.filter(_ => {
           if (
-            _.network.toLowerCase() === chainType &&
-            baseCurrency?.key?.toLowerCase() === _.tokenName.toLowerCase()
+            _.network?.toLowerCase() === chainType &&
+            baseCurrency?.key?.toLowerCase() === _.tokenName?.toLowerCase()
           ) {
             return true;
           } else if (
-            _.network.toLowerCase() === chainType &&
+            _.network?.toLowerCase() === chainType &&
             baseCurrency?.key?.toLowerCase() === 'alia' &&
             (_.tokenName === 'TAL' || _.tokenName === 'TNFT')
           ) {
@@ -207,24 +202,24 @@ const WalletPay = ({ route, navigation }) => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log('202 update Total', network);
-    if (balances) {
-      if (network.name == 'Ethereum') {
-        let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-        console.log('value', value);
-        setTotalValue(value);
-      } else if (network.name == 'BSC') {
-        let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-        console.log('value', value);
-        setTotalValue(value);
-      } else if (network.name == 'Polygon') {
-        let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-        console.log('value', value);
-        setTotalValue(value);
-      }
-    }
-  }, [network, ethBalance, bnbBalance, maticBalance]);
+  // useEffect(() => {
+  //   console.log('202 update Total', network);
+  //   if (balances) {
+  //     if (network.name == 'Ethereum') {
+  //       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
+  //       console.log('value', value);
+  //       setTotalValue(value);
+  //     } else if (network.name == 'BSC') {
+  //       let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+  //       console.log('value', value);
+  //       setTotalValue(value);
+  //     } else if (network.name == 'Polygon') {
+  //       let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
+  //       console.log('value', value);
+  //       setTotalValue(value);
+  //     }
+  //   }
+  // }, [network, ethBalance, bnbBalance, maticBalance]);
 
   const calculatePrice = async tradeCurr => {
     const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
@@ -238,7 +233,7 @@ const WalletPay = ({ route, navigation }) => {
       baseCurrency.order,
       tradeCurr,
       id,
-      ownerAddress,
+      walletAddress,
       collectionAddress,
     );
     let res = await MarketPlaceContract.methods
@@ -247,7 +242,7 @@ const WalletPay = ({ route, navigation }) => {
         baseCurrency.order,
         tradeCurr,
         id,
-        ownerAddress,
+        walletAddress,
         collectionAddress,
       )
       .call();
@@ -345,7 +340,6 @@ const WalletPay = ({ route, navigation }) => {
               totalValue = totalValue + usdcValue;
               break;
             case 'WETH':
-              // case 'WETH':
               totalValue = totalValue + wethValue;
               break;
           }
@@ -612,26 +606,20 @@ const WalletPay = ({ route, navigation }) => {
       });
     }
   };
+
   const onRefreshToken = () => {
     return getBalances(wallet.address);
   };
 
   const getCurrencyOnSelect = item => {
-    let chain =
-      item.network === 'BSC'
-        ? 'binance'
-        : item.network === 'Ethereum'
-          ? 'ethereum'
-          : item.network === 'Polygon'
-            ? 'polygon'
-            : '';
+    let chain = item.network?.toLowerCase();
     let result = basePriceTokens.find(_ => {
       if (_.chain === chain) {
-        if (_.key.toLowerCase() === item.type.toLowerCase()) {
+        if (_.key?.toLowerCase() === item.type?.toLowerCase()) {
           return true;
         } else if (
           (item.type === 'TAL' || item.type === 'TNFT') &&
-          _.key.toLowerCase() === 'alia'
+          _.key?.toLowerCase() === 'alia'
         ) {
           return true;
         } else {
@@ -661,127 +649,128 @@ const WalletPay = ({ route, navigation }) => {
     setIsNextDisabled(false);
   };
 
-  // console.log(tokens)
-  // console.log(basePriceTokens)
-  return (
-    (typeof balances === 'object' ? loading : true) ?
-      <Loader />
-      :
-      <AppBackground
-      // isBusy={typeof balances === 'object' ? loading : true}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButtonWrap}>
-          <Image style={styles.backIcon} source={ImagesSrc.backArrow} />
-        </TouchableOpacity>
-        <GradientBackground>
-          <View style={styles.gradient}>
-            <AppHeader
-              title={translate('wallet.common.pay')}
-              titleStyle={styles.title}
-            />
-
-            <View style={styles.balanceContainer}>
-              <PriceText
-                price={setBalanceField()}
-                isWhite
-                isDollar
-                containerStyle={styles.priceCont}
-              />
-              <TextView style={styles.balanceLabel}>
-                {translate('wallet.common.mainWallet')}
-              </TextView>
-            </View>
-
-            <View style={[styles.headerBtns, styles.headerBottomCont]}>
-              <HeaderBtns
-                image={ImagesSrc.receive}
-                label={translate('wallet.common.receive')}
-                onPress={() => {
-                  // setIsSend(false); setSelectTokenVisible(true)
-                }}
-              />
-              <HeaderBtns
-                onPress={() => { }}
-                image={ImagesSrc.topup}
-                label={translate('wallet.common.buy')}
-              />
-            </View>
-          </View>
-        </GradientBackground>
-
-        <Tokens
-          values={balances}
-          network={network}
-          // allowedTokens={payableIn ? tokens.filter((item) => item.type == payableIn): tokens}
-          allowedTokens={activeTokens}
-          onTokenPress={currencySelect}
-          onRefresh={onRefreshToken}
-        />
-        <Separator style={styles.separator} />
-
-        {selectedObject && (
-          <View style={styles.totalContainer}>
-            <View style={styles.payObject}>
-              <Text style={styles.totalLabel}>{translate('wallet.common.total')}</Text>
-              <Text style={styles.value}>
-                {numberWithCommas(parseFloat(Number(priceInToken || price).toFixed(4)))} {selectedObject.type}
-              </Text>
-            </View>
-            {!IsActiveToPay() && (
-              <TextView style={styles.alertMsg}>
-                {translate('wallet.common.insufficientToken', {
-                  token: chainType === 'polygon' ? 'TAL' : 'TNFT',
-                })}
-              </TextView>
-            )}
-          </View>
-        )}
-
-        <View style={styles.buttonContainer}>
-          <AppButton
-            label={translate('wallet.common.next')}
-            containerStyle={CommonStyles.button}
-            labelStyle={CommonStyles.buttonLabel}
-            onPress={() => {
-              // navigation.navigate("AddCard")
-              if (
-                selectedObject &&
-                selectedObject.tokenValue !== '0' &&
-                priceInToken < selectedObject?.tokenValue
-              ) {
-                navigation.goBack();
-                dispatch(
-                  setPaymentObject({
-                    item: selectedObject,
-                    currency: tradeCurrency,
-                    priceInToken,
-                    type: 'wallet',
-                  }),
-                );
-              } else {
-                alertWithSingleBtn(
-                  translate('wallet.common.alert'),
-                  translate('common.blanceLow'),
-                );
-              }
-            }}
-            // view={!IsActiveToPay()}
-            view={isNextDisabled}
+  return (typeof balances === 'object' ? loading : true) ? (
+    <Loader />
+  ) : (
+    <AppBackground
+    // isBusy={typeof balances === 'object' ? loading : true}
+    >
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButtonWrap}>
+        <Image style={styles.backIcon} source={ImagesSrc.backArrow} />
+      </TouchableOpacity>
+      <GradientBackground>
+        <View style={styles.gradient}>
+          <AppHeader
+            title={translate('wallet.common.pay')}
+            titleStyle={styles.title}
           />
-        </View>
 
-        <NetworkPicker
-          visible={pickerVisible}
-          onRequestClose={setPickerVisible}
-          network={network}
-          onItemSelect={item => {
-            setNetwork(item);
-            setPickerVisible(false);
+          <View style={styles.balanceContainer}>
+            <PriceText
+              price={setBalanceField()}
+              isWhite
+              isDollar
+              containerStyle={styles.priceCont}
+            />
+            <TextView style={styles.balanceLabel}>
+              {translate('wallet.common.mainWallet')}
+            </TextView>
+          </View>
+
+          <View style={[styles.headerBtns, styles.headerBottomCont]}>
+            <HeaderBtns
+              image={ImagesSrc.receive}
+              label={translate('wallet.common.receive')}
+              onPress={() => {
+                // setIsSend(false); setSelectTokenVisible(true)
+              }}
+            />
+            <HeaderBtns
+              onPress={() => {}}
+              image={ImagesSrc.topup}
+              label={translate('wallet.common.buy')}
+            />
+          </View>
+        </View>
+      </GradientBackground>
+
+      <Tokens
+        values={balances}
+        network={network}
+        allowedTokens={activeTokens}
+        onTokenPress={currencySelect}
+        onRefresh={onRefreshToken}
+      />
+      <Separator style={styles.separator} />
+
+      {selectedObject && (
+        <View style={styles.totalContainer}>
+          <View style={styles.payObject}>
+            <Text style={styles.totalLabel}>
+              {translate('wallet.common.total')}
+            </Text>
+            <Text style={styles.value}>
+              {numberWithCommas(
+                parseFloat(Number(priceInToken || price).toFixed(4)),
+              )}{' '}
+              {selectedObject.type}
+            </Text>
+          </View>
+          {!IsActiveToPay() && (
+            <TextView style={styles.alertMsg}>
+              {translate('wallet.common.insufficientToken', {
+                token: chainType === 'polygon' ? 'TAL' : 'TNFT',
+              })}
+            </TextView>
+          )}
+        </View>
+      )}
+
+      <View style={styles.buttonContainer}>
+        <AppButton
+          label={translate('wallet.common.next')}
+          containerStyle={CommonStyles.button}
+          labelStyle={CommonStyles.buttonLabel}
+          onPress={() => {
+            // navigation.navigate("AddCard")
+            if (
+              selectedObject &&
+              selectedObject.tokenValue !== '0' &&
+              priceInToken < selectedObject?.tokenValue
+            ) {
+              navigation.goBack();
+              dispatch(
+                setPaymentObject({
+                  item: selectedObject,
+                  currency: tradeCurrency,
+                  priceInToken,
+                  type: 'wallet',
+                }),
+              );
+            } else {
+              alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate('common.blanceLow'),
+              );
+            }
           }}
+          // view={!IsActiveToPay()}
+          view={isNextDisabled}
         />
-      </AppBackground>
+      </View>
+
+      <NetworkPicker
+        visible={pickerVisible}
+        onRequestClose={setPickerVisible}
+        network={network}
+        onItemSelect={item => {
+          setNetwork(item);
+          setPickerVisible(false);
+        }}
+      />
+    </AppBackground>
   );
 };
 

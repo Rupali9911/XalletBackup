@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useKeyboard } from '@react-native-community/hooks';
+import {useKeyboard} from '@react-native-community/hooks';
 import axios from 'axios';
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   FlatList,
   Platform,
@@ -12,7 +12,8 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {SIGN_MESSAGE} from '../../common/constants';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
@@ -21,9 +22,9 @@ import TextView from '../../components/appText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import SelectButtongroup from '../../components/selectButtonGroup';
 import Colors from '../../constants/Colors';
-import { hp, RF, wp } from '../../constants/responsiveFunct';
+import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { colors } from '../../res';
+import {colors} from '../../res';
 import {
   endLoader,
   loginExternalWallet,
@@ -31,19 +32,19 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
-import { translate } from '../../walletUtils';
+import {alertWithSingleBtn} from '../../utils';
+import {translate} from '../../walletUtils';
 //================= =================
-import "react-native-get-random-values"
-import "@ethersproject/shims"
-import { ethers } from "ethers";
+import '@ethersproject/shims';
+import {hdkey} from 'ethereumjs-wallet';
+import {ethers, utils} from 'ethers';
 import bip39 from 'react-native-bip39';
-import { hdkey } from 'ethereumjs-wallet';
+import 'react-native-get-random-values';
 const Web3 = require('web3');
 //================= =================
 
 const toastConfig = {
-  my_custom_type: ({ text1, props, ...rest }) => (
+  my_custom_type: ({text1, props, ...rest}) => (
     <View
       style={{
         paddingHorizontal: wp('20%'),
@@ -51,15 +52,15 @@ const toastConfig = {
         paddingVertical: hp('2%'),
         backgroundColor: colors.GREY5,
       }}>
-      <Text style={{ color: colors.white, fontWeight: 'bold' }}>{text1}</Text>
+      <Text style={{color: colors.white, fontWeight: 'bold'}}>{text1}</Text>
     </View>
   ),
 };
 
-const ImportWallet = ({ route, navigation }) => {
+const ImportWallet = ({route, navigation}) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
-  const { loading } = useSelector(state => state.UserReducer);
+  const {loading} = useSelector(state => state.UserReducer);
   const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -79,38 +80,51 @@ const ImportWallet = ({ route, navigation }) => {
     });
     Clipboard.setString(wallet.mnemonic.phrase);
   };
+
   const recoverWalletByPhrase = () => {
-    if (phrase !== '') {
+    if (phrase?.trim()?.length !== 0) {
       dispatch(startLoader())
         .then(async () => {
           let mnemonic = phrase.trim();
-          const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
-          const path = "m/44'/60'/0'/0/0";
-          const wallet = hdwallet.derivePath(path).getWallet();
-          const address = `0x${wallet.getAddress().toString('hex')}`;
-          const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
-          var web3 = new Web3(Web3.givenProvider);
-          const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey);
-          // console.log('HD wallet ----------------->', hdwallet)
-          // console.log('wallet ----------------->', wallet)
-          // console.log('address ----------------->', address)
-          // console.log(await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', privateKey));
-          const account = {
-            mnemonic: mnemonic,
-            address: address,
-            privateKey: privateKey,
-            signature: signature.signature
+          let isValidPhrase = utils.isValidMnemonic(mnemonic);
+          if (isValidPhrase) {
+            const hdwallet = hdkey.fromMasterSeed(
+              bip39.mnemonicToSeed(mnemonic),
+            );
+            const path = "m/44'/60'/0'/0/0";
+            const wallet = hdwallet.derivePath(path).getWallet();
+            const address = `0x${wallet.getAddress().toString('hex')}`;
+            const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
+            var web3 = new Web3(Web3.givenProvider);
+
+            console.log('SIGN_MESSAGE', SIGN_MESSAGE);
+            const signature = await web3.eth.accounts.sign(
+              SIGN_MESSAGE,
+              privateKey,
+            );
+            const account = {
+              mnemonic: mnemonic,
+              address: address,
+              privateKey: privateKey,
+              signature: signature.signature,
+            };
+            setWallet(account);
+            // dispatch(setUserAuthData(account));
+            dispatch(setPasscode(''));
+            dispatch(loginExternalWallet(account, false))
+              .then(() => {
+                dispatch(setBackupStatus(true));
+              })
+              .catch(err => {
+                alertWithSingleBtn(translate('wallet.common.tryAgain'));
+              });
+          } else {
+            alertWithSingleBtn(
+              translate('wallet.common.verification'),
+              translate('wallet.common.error.invalidPhrase'),
+            );
+            dispatch(endLoader());
           }
-          setWallet(account);
-          // dispatch(setUserAuthData(account));
-          dispatch(setPasscode(''));
-          dispatch(loginExternalWallet(account, false))
-            .then(() => {
-              dispatch(setBackupStatus(true));
-            })
-            .catch(err => {
-              alertWithSingleBtn(translate('wallet.common.tryAgain'));
-            });
         })
         .catch(err => {
           console.log('err', err.toString());
@@ -140,12 +154,15 @@ const ImportWallet = ({ route, navigation }) => {
           let private_key = phrase.trim();
           let mnemonicWallet = new ethers.Wallet(private_key);
           var web3 = new Web3(Web3.givenProvider);
-          const signature = await web3.eth.accounts.sign('Welcome. By signing this message you are verifying your digital identity. This is completely secure and does not cost anything!', mnemonicWallet.privateKey);
+          const signature = await web3.eth.accounts.sign(
+            SIGN_MESSAGE,
+            mnemonicWallet.privateKey,
+          );
           const account = {
             mnemonic: mnemonicWallet.mnemonic,
             address: mnemonicWallet.address,
             privateKey: mnemonicWallet.privateKey,
-            signature: signature.signature
+            signature: signature.signature,
           };
           console.log(mnemonicWallet.mnemonic);
           console.log(mnemonicWallet.address);
@@ -206,16 +223,17 @@ const ImportWallet = ({ route, navigation }) => {
     setShowSuggestions(false);
   };
 
-  const handleFlatListRenderItem = ({ item, index }) => (
+  const handleFlatListRenderItem = ({item, index}) => (
     <TouchableOpacity
       style={styles.suggestionContainer}
       onPress={() => setPhraseText(item.word)}>
       <Text style={styles.suggestionText}>{item.word}</Text>
     </TouchableOpacity>
-  )
+  );
 
-  const keyExtractor = (item, index) => { return `_${index}` }
-
+  const keyExtractor = (item, index) => {
+    return `_${index}`;
+  };
 
   return (
     <AppBackground isBusy={loading}>
@@ -232,7 +250,7 @@ const ImportWallet = ({ route, navigation }) => {
               </TextView>
             </View>
             <View>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{flexDirection: 'row'}}>
                 <SelectButtongroup
                   buttons={[
                     translate('wallet.common.phrase'),
@@ -277,7 +295,7 @@ const ImportWallet = ({ route, navigation }) => {
                     paddingHorizontal: wp('3%'),
                     paddingVertical: hp('1%'),
                   }}>
-                  <Text style={{ color: Colors.themeColor }}>
+                  <Text style={{color: Colors.themeColor}}>
                     {translate('wallet.common.paste')}
                   </Text>
                 </TouchableOpacity>
@@ -327,7 +345,7 @@ const WordView = props => {
   return (
     <View style={styles.word}>
       <TextView style={styles.wordTxt}>
-        <Text style={{ color: Colors.townTxt }}>{props.index} </Text>
+        <Text style={{color: Colors.townTxt}}>{props.index} </Text>
         {props.word}
       </TextView>
     </View>

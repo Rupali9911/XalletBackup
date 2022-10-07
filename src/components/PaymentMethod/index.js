@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-  Image,
   TouchableOpacity,
   View,
   Modal,
@@ -12,39 +11,50 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
-import { RF, wp, hp } from '../../constants/responsiveFunct';
+import {RF, wp, hp} from '../../constants/responsiveFunct';
 import ButtonGroup from '../buttonGroup';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import { BlurView } from '@react-native-community/blur';
-import { IconButton } from 'react-native-paper';
-import { numberWithCommas } from '../../utils';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {BlurView} from '@react-native-community/blur';
+import {IconButton} from 'react-native-paper';
+import {numberWithCommas} from '../../utils';
 
 const PaymentMethod = props => {
-  const navigation = useNavigation();
-  const { myCards } = useSelector(state => state.PaymentReducer);
-
   const {
     visible,
     onRequestClose,
     price,
-    priceStr,
     priceInDollar,
     chain,
-    payableIn,
     baseCurrency,
-    allowedTokens,
     id,
-    ownerAddress,
     collectionAddress,
   } = props;
+
+  const navigation = useNavigation();
   const [opacity, setOpacity] = useState(0.88);
-  const [selectedMethod, setSelectedMethod] = useState(0);
-  const isNonCrypto = useSelector(state => state.UserReducer?.userData?.user?.isNonCrypto);
-  let currencyLabel = payableIn !== '' ? payableIn : baseCurrency?.key;
+  const [selectedMethod, setSelectedMethod] = useState(1);
+  const {myCards} = useSelector(state => state.PaymentReducer);
+  const {buyNFTRes} = useSelector(state => state.detailsNFTReducer);
+
+  const {isNonCrypto, userWallet} = useSelector(
+    state => state.UserReducer?.userData,
+  );
+
+  const gasLimit = buyNFTRes?.gasLimit / 1000000000;
+  const totalAmount = Number(price) + gasLimit;
+
+  const detailsRender = (heading, value) => {
+    return (
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalLabel}>{heading}</Text>
+        <Text style={styles.value}>{value}</Text>
+      </View>
+    );
+  };
 
   return (
     <Modal
@@ -75,7 +85,6 @@ const PaymentMethod = props => {
               // setOpacity(0);
               onRequestClose();
             }}>
-            {/* <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} /> */}
             <IconButton
               icon={'close'}
               color={Colors.headerIcon2}
@@ -86,45 +95,36 @@ const PaymentMethod = props => {
           <Text style={styles.title}>
             {translate('wallet.common.selectPaymentMethod')}
           </Text>
+
           <ButtonGroup
-            buttons={isNonCrypto === 0 ?
-              [
-                {
-                  text: translate('wallet.common.payByCreditCard'),
-                  icon: ImagesSrc.cardPay,
-                  onPress: () => {
-                    setSelectedMethod(0);
-                  },
-                },
-                {
-                  text: translate('wallet.common.payByWallet'),
-                  icon: ImagesSrc.walletPay,
-                  onPress: () => {
-                    setSelectedMethod(1);
-                    // onRequestClose();
-                    // navigation.navigate('WalletPay', {
-                    //   price,
-                    //   priceStr,
-                    //   chainType: chain || 'binance',
-                    //   baseCurrency,
-                    //   allowedTokens,
-                    //   id,
-                    //   collectionAddress,
-                    //   ownerAddress,
-                    //   payableIn,
-                    // });
-                  },
-                },
-              ] :
-              [
-                {
-                  text: translate('wallet.common.payByCreditCard'),
-                  icon: ImagesSrc.cardPay,
-                  onPress: () => {
-                    setSelectedMethod(0);
-                  },
-                },
-              ]}
+            buttons={
+              isNonCrypto === 0
+                ? [
+                    {
+                      text: translate('wallet.common.payByCreditCard'),
+                      icon: ImagesSrc.cardPay,
+                      onPress: () => {
+                        // setSelectedMethod(0);
+                      },
+                    },
+                    {
+                      text: translate('wallet.common.payByWallet'),
+                      icon: ImagesSrc.walletPay,
+                      onPress: () => {
+                        setSelectedMethod(1);
+                      },
+                    },
+                  ]
+                : [
+                    {
+                      text: translate('wallet.common.payByCreditCard'),
+                      icon: ImagesSrc.cardPay,
+                      onPress: () => {
+                        setSelectedMethod(0);
+                      },
+                    },
+                  ]
+            }
             style={styles.optionContainer}
             selectable
             selectedIndex={selectedMethod}
@@ -134,81 +134,55 @@ const PaymentMethod = props => {
           <Separator style={styles.separator} />
 
           <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>{'Gas Price'}</Text>
             <Text style={styles.totalLabel}>
-              {translate('wallet.common.totalAmount')}
-            </Text>
-            <Text style={styles.value}>
-              {isNonCrypto === 0 ?
-                selectedMethod
-                  ?
-                  (numberWithCommas(parseFloat(Number(price).toFixed(4)))
-                    + ' '
-                    + currencyLabel
-                    + (Number(priceInDollar).toFixed(2).toString().length > 8 ? '\n = ' : ' = ')
-                    + '$ '
-                    + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))))
-                  :
-                  ('$ '
-                    + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2)))
-                    + (Number(priceInDollar).toFixed(2).toString().length > 8 ? '\n = ' : ' = ')
-                    + numberWithCommas(parseFloat(Number(price).toFixed(4)))
-                    + ' '
-                    + currencyLabel)
-                :
-                ('$ '
-                  + numberWithCommas(parseFloat(Number(priceInDollar).toFixed(2))))
-              }
+              {numberWithCommas(parseFloat(Number(gasLimit).toFixed(6)))}
             </Text>
           </View>
+
+          {detailsRender(
+            translate('common.total'),
+            numberWithCommas(parseFloat(Number(totalAmount).toFixed(4))) +
+              ' ' +
+              baseCurrency,
+          )}
 
           <AppButton
             label={translate('wallet.common.next')}
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
-              // console.log("testing", {
-              //   price,
-              //   priceStr,
-              //   chainType: chain || 'binance',
-              //   baseCurrency,
-              //   allowedTokens,
-              //   id,
-              //   collectionAddress,
-              //   ownerAddress,
-              //   payableIn,
-              // })
               if (selectedMethod == 0) {
                 onRequestClose();
-                console.log("1----selectedMethod")
+                console.log('1----selectedMethod');
                 if (myCards.length > 0) {
-                  console.log("2----selectedMethod -- IF")
+                  console.log('2----selectedMethod -- IF');
                   navigation.navigate('Cards', {
                     price: priceInDollar,
                     isCardPay: true,
                   });
                 } else {
                   // navigation.navigate('Cards', { price });
-                  navigation.navigate('AddCard', { price: priceInDollar, isCardPay: true });
+                  navigation.navigate('AddCard', {
+                    price: priceInDollar,
+                    isCardPay: true,
+                  });
                 }
               } else if (selectedMethod == 1) {
                 onRequestClose();
-                console.log("1.1----selectedMethod -")
+                console.log('1.1----selectedMethod -');
                 navigation.navigate('WalletPay', {
-                  price,
-                  priceStr,
-                  chainType: chain || 'binance',
+                  price: totalAmount,
+                  chainType: chain || 'bsc',
                   baseCurrency,
-                  allowedTokens,
                   id,
                   collectionAddress,
-                  ownerAddress,
-                  payableIn,
                 });
               }
             }}
           />
         </View>
-        <SafeAreaView style={{ backgroundColor: Colors.white }} />
+        <SafeAreaView style={{backgroundColor: Colors.white}} />
       </View>
     </Modal>
   );
@@ -279,7 +253,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.ARIAL_BOLD,
     color: Colors.themeColor,
     width: wp('68%'),
-    textAlign: 'right'
+    textAlign: 'right',
+  },
+  gasPrice: {
+    fontSize: RF(2.3),
+    fontFamily: Fonts.ARIAL_BOLD,
+    color: Colors.themeColor,
+    textAlign: 'right',
   },
 });
 

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
-import { C_Image } from '../../components';
+import React, {useEffect, useState} from 'react';
+import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
+import {C_Image} from '../../components';
 import styles from './styles';
-import { SIZE, SVGS } from 'src/constants';
-import { translate } from '../../walletUtils';
+import {SIZE, SVGS} from 'src/constants';
+import {translate} from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
-import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
-import { Verifiedcollections } from '../verifiedCollection';
-import { COLORS, IMAGES } from '../../constants';
-import { SvgWithCssUri } from 'react-native-svg';
-const { NewPolygonIcon, Ethereum, BitmapIcon,VerficationIcon } = SVGS;
+import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
+import {Verifiedcollections} from '../verifiedCollection';
+import {COLORS, IMAGES} from '../../constants';
+import {SvgWithCssUri} from 'react-native-svg';
+const {NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon} = SVGS;
 
 export default function CollectionItem(props) {
   const {
@@ -28,12 +28,12 @@ export default function CollectionItem(props) {
     blind,
     address,
     isCollection,
+    verified,
     cryptoAllowed,
-    colId
+    colId,
   } = props;
   const [onPressButton, setOnPressButton] = useState(false);
 
-  
   const getByUser = () => {
     // if (creator) return creator;
     // if (creatorInfo[0].title) return creatorInfo[0].title;
@@ -42,10 +42,16 @@ export default function CollectionItem(props) {
     // } else {
     //   return creatorInfo[0].username;
     // }
-    let creatorAddress = `${creator?.address?.substring(0,6)}...${creator?.address?.substring(creator.address.length - 4,creator.address.length)}`
-    let creatorName = creator.name ? creator.name : creatorAddress
+    let creatorAddress = `${creator?.address?.substring(
+      0,
+      6,
+    )}...${creator?.address?.substring(
+      creator.address.length - 4,
+      creator.address.length,
+    )}`;
+    let creatorName = creator.name ? creator.name : creatorAddress;
     return creatorName;
-  }
+  };
 
   let uriType = bannerImage?.split('.')[bannerImage?.split('.').length - 1];
   const checkVideoUrl =
@@ -83,34 +89,37 @@ export default function CollectionItem(props) {
   // };
 
   const renderChain = () => {
-    return <SvgWithCssUri
-    width={isHotCollection ? SIZE(18) : SIZE(23)}
-    height={isHotCollection ? SIZE(18) : SIZE(23)}
-    uri={network?.image}
-  />
-  }
+    return (
+      <SvgWithCssUri
+        width={isHotCollection ? SIZE(18) : SIZE(23)}
+        height={isHotCollection ? SIZE(18) : SIZE(23)}
+        uri={network?.image}
+      />
+    );
+  };
 
   const renderVerifiedCollection = () => {
-    return (
-            <VerficationIcon/>
-    )
-}
+    return <VerficationIcon />;
+  };
 
   useEffect(() => {
     if (onPressButton) {
       onPress();
       setTimeout(() => {
         setOnPressButton(false);
-      }, 1000)
+      }, 1000);
     }
-  }, [onPressButton])
+  }, [onPressButton]);
 
   const handleOnPress = () => {
     setOnPressButton(true);
-  }
+  };
 
   return (
-    <TouchableOpacity onPress={handleOnPress} style={styles.collectionListItem} activeOpacity={1}>
+    <TouchableOpacity
+      onPress={handleOnPress}
+      style={styles.collectionListItem}
+      activeOpacity={1}>
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
@@ -138,17 +147,26 @@ export default function CollectionItem(props) {
               <Text numberOfLines={1} style={styles.collectionName}>
                 {collectionName}
               </Text>
-              {!collectionTab && renderVerifiedCollection()}
+              {verified === 1 && renderVerifiedCollection()}
             </View>
             {!isCollection && (
-              <Text style={styles.byUser}>{collectionTab ? `${getByUser()}` : `by ${getByUser()}`}</Text>
+              <Text style={styles.byUser}>
+                {collectionTab ? `${getByUser()}` : `by ${getByUser()}`}
+              </Text>
             )}
           </View>
-          <View style={collectionTab ? styles.bottomWrap2 :  styles.bottomWrap}>
+          <View style={collectionTab ? styles.bottomWrap2 : styles.bottomWrap}>
             {/* {!isCollection ? renderChain() : <View />} */}
             {renderChain()}
-            {count <= 1 ? <Text style={styles.count}>{count ? count : 0} Item</Text> :
-            <Text style={styles.count}>{count ? count : 0} Items</Text>}
+            {count <= 1 ? (
+              <Text style={styles.count}>
+                {count ? count : 0} {translate('common.ITEM')}
+              </Text>
+            ) : (
+              <Text style={styles.count}>
+                {count ? count : 0} {translate('common.ITEMS')}
+              </Text>
+            )}
             {/* {items !== null && <Text style={{ fontSize: SIZE(12), color: '#8e9bba' }}>
               {`${items} ` + translate('common.itemsCollection')}
             </Text>} */}

@@ -360,3 +360,42 @@ export const FILTER_TRADING_HISTORY_OPTIONS = [
 
 export const nftGridClass = 'gx-2 gy-3 gx-lg-3 gy-lg-4'
 export const collectionGridClass = 'gx-2 gy-3'
+
+
+export const UserErrorMessage = {
+    'USER.USER_NOT_FOUND': {
+        messageCode: 'USER.USER_NOT_FOUND',
+        t: 'User not found',
+        key: 'usernotfound',
+    },
+    'USER.USER_ALREADY_EXIST': {
+        messageCode: 'USER.USER_ALREADY_EXIST',
+        t: 'User already exist',
+        key: 'USER_ALREADY_EXIST',
+    },
+    'USER.USER_WITH_EMAIL_NOT_EXIST': {
+        messageCode: 'USER.USER_WITH_EMAIL_NOT_EXIST',
+        t: 'User with email not exist',
+        key: 'USER_WITH_EMAIL_NOT_EXIST',
+    },
+    'USER.USER_WITH_EMAIL_ALREADY_EXIST': {
+        messageCode: 'USER.USER_WITH_EMAIL_ALREADY_EXIST',
+        t: 'User with email already exist',
+        key: 'USER_WITH_EMAIL_ALREADY_EXIST',
+    },
+    'USER.USER_WITH_TWITTER_ALREADY_EXIST': {
+        messageCode: 'USER.USER_WITH_TWITTER_ALREADY_EXIST',
+        t: 'User with twitter already exist',
+        key: 'USER_WITH_TWITTER_ALREADY_EXIST',
+    },
+    'USER.USER_ALREADY EXISTS': {
+        messageCode: 'USER.USER_ALREADY EXISTS',
+        t: 'User with username already exist',
+        key: 'USER_ALREADY EXISTS',
+    },
+    'AUTH.BANNED': {
+        messageCode: 'AUTH.BANNED',
+        t: 'USER HAS BEEN BANNED',
+        key: 'AUTH_BANNED',
+    },
+  }

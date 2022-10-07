@@ -1,7 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SvgUri } from 'react-native-svg';
 import { useDispatch, useSelector } from 'react-redux';
+import { SIZE } from 'src/constants';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppModal from '../../components/appModal';
@@ -17,6 +20,7 @@ import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
+import { getWallet } from '../../helpers/AxiosApiRequest';
 import SingleSocket from '../../helpers/SingleSocket';
 import { updateCreateState } from '../../store/reducer/userReducer';
 import {
@@ -24,7 +28,7 @@ import {
   updateBSCBalances,
   updateEthereumBalances,
   updateNetworkType,
-  updatePolygonBalances,
+  updatePolygonBalances
 } from '../../store/reducer/walletReducer';
 import { environment, translate } from '../../walletUtils';
 import { HeaderBtns } from './components/HeaderButtons';
@@ -32,10 +36,6 @@ import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
-import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
-import { alertWithSingleBtn } from "../../common/function";
-import { CommonActions } from '@react-navigation/native';
-import { get } from 'lodash';
 
 const ethers = require('ethers');
 
@@ -84,30 +84,11 @@ const Wallet = ({ route, navigation }) => {
   let subscribeBnb;
   let subscribeMatic;
 
-  useEffect(async () => {
-    wallet = await getWallet();
-    if (wallet && !isCreate && isFocused) {
-      setLoading(true);
-      getBalances(wallet.address);
-    } else {
-      subscribeEth &&
-        subscribeEth.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeBnb &&
-        subscribeBnb.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeMatic &&
-        subscribeMatic.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-    }
-    console.log('wallet use effect', userData, wallet);
-  }, [isFocused]);
-
+  //======================== Use Effect First 1111 =======================
   useEffect(() => {
+    console.log("@@@ useEffect 1111 without array ==========>")
     singleSocket.connectSocket().then(() => {
+      console.log("@@@ Single socket connected ==========>")
       // ping(wallet.address);
     });
 
@@ -126,7 +107,9 @@ const Wallet = ({ route, navigation }) => {
     };
   }, []);
 
+  //======================== Use Effect Second 2222 =======================
   useEffect(() => {
+    console.log("@@@ useEffect 2222 without array ==========>")
     const unsubscribeBlur = navigation.addListener('blur', () => {
       setIsBackedUp(isBackup);
     });
@@ -134,11 +117,43 @@ const Wallet = ({ route, navigation }) => {
       unsubscribeBlur();
     };
   }, []);
+
+  //======================== Use Effect Third 3333 =======================
+  useEffect(async () => {
+    console.log("@@@ useEffect 3333 with array[isFocused] ==========>")
+    wallet = await getWallet();
+    if (wallet && !isCreate && isFocused) {
+      console.log("@@@ On index.js(wallet tab) inside if =========>", wallet, isCreate, isFocused)
+      setLoading(true);
+      getBalances(wallet.address);
+    } else {
+      console.log("@@@ On index.js(wallet tab) inside else =========>", wallet, isCreate, isFocused)
+      subscribeEth &&
+        subscribeEth.unsubscribe((error, success) => {
+          if (success) console.log('Successfully unsubscribed!');
+        });
+      subscribeBnb &&
+        subscribeBnb.unsubscribe((error, success) => {
+          if (success) console.log('Successfully unsubscribed!');
+        });
+      subscribeMatic &&
+        subscribeMatic.unsubscribe((error, success) => {
+          if (success) console.log('Successfully unsubscribed!');
+        });
+    }
+    console.log('wallet use effect', userData, wallet);
+  }, [isFocused]);
+
+  //======================== Use Effect Four 4444=======================
   useEffect(() => {
+    console.log("@@@ useEffect 4444 with array[isFocused] ==========>")
     setIsBackedUp(isBackup);
   }, [isFocused]);
 
-  useEffect(() => {
+  //======================== Use Effect Four 5555 =======================
+  useEffect(async () => {
+    console.log("@@@ useEffect when nettypes update 5555======>", wallet?.address)
+    wallet = await getWallet();
     setLoading(true);
     getBalances(wallet?.address);
     // if (network.name == 'Ethereum' && subscribeEth == null) {
@@ -197,7 +212,9 @@ const Wallet = ({ route, navigation }) => {
     };
   }, [networkType]);
 
+  //======================== Use Effect Four 6666 =======================
   useEffect(() => {
+    console.log("@@@ useEffect when nettypes update 6666======>", balances)
     if (balances) {
       if (networkType.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
@@ -212,6 +229,7 @@ const Wallet = ({ route, navigation }) => {
     }
   }, [networkType, wethBalance, bnbBalance, maticBalance]);
 
+  //======================== Other functions =======================
   const setBalanceField = () => {
     let totalValue = 0;
     if (networkType.name == 'Ethereum') {
@@ -283,6 +301,7 @@ const Wallet = ({ route, navigation }) => {
   };
 
   const getEthereumBalances = pubKey => {
+    console.log("@@@ get Ethereum balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.ethRpc, 'eth'),
@@ -344,6 +363,7 @@ const Wallet = ({ route, navigation }) => {
   };
 
   const getBSCBalances = pubKey => {
+    console.log("@@@ get BSC balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
@@ -386,6 +406,7 @@ const Wallet = ({ route, navigation }) => {
   };
 
   const getPolygonBalances = pubKey => {
+    console.log("@@@ get polygon balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.polRpc, 'matic'),
@@ -514,6 +535,14 @@ const Wallet = ({ route, navigation }) => {
     return getBalances(wallet?.address);
   };
 
+  const onItemSelectNetworkPicker = async (item) => {
+    await AsyncStorage.setItem("@CURRENT_NETWORK_CHAIN_ID", item.chainId.toString());
+    dispatch(updateNetworkType(item));
+    setPickerVisible(false);
+    // getBalances(wallet?.address);
+    setBalances(null);
+  }
+
   return (
     <AppBackground isBusy={balances ? loading : true}>
       <GradientBackground>
@@ -528,9 +557,10 @@ const Wallet = ({ route, navigation }) => {
               style={styles.networkIcon}
               hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
               onPress={() => setPickerVisible(true)}>
-              <Image
-                source={networkType.icon}
-                style={[CommonStyles.imageStyles(6)]}
+              <SvgUri
+                width={SIZE(25)}
+                height={SIZE(25)}
+                uri={networkType.image}
               />
             </TouchableOpacity>
           </View>
@@ -650,9 +680,7 @@ const Wallet = ({ route, navigation }) => {
         onRequestClose={setPickerVisible}
         network={networkType}
         onItemSelect={item => {
-          dispatch(updateNetworkType(item));
-          setPickerVisible(false);
-          setBalances(null);
+          onItemSelectNetworkPicker(item);
         }}
       />
       <SelectToken

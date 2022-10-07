@@ -42,7 +42,7 @@ const Web3 = require('web3');
 
 const {
   CommentIcon,
-  HeartIcon,
+  HeartWhiteIcon,
   HeartActiveIcon,
   ShareIcon,
   BookMarkIcon,
@@ -798,7 +798,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                     onPress={() => {
                       dispatch(handleLikeDislike(item, index, screenName));
                     }}>
-                    {isLike ? <HeartActiveIcon /> : <HeartIcon />}
+                    {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
                   </TouchableOpacity>
                   {/* <SpaceView mRight={SIZE(15)} />
                   <TouchableOpacity>

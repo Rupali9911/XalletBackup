@@ -1,21 +1,31 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
-import { C_Image } from '../../components';
+import React, {useState} from 'react';
+import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
+import {C_Image} from '../../components';
 import styles from './styles';
-import { SIZE, SVGS, AWARD_GOLD, AWARD_BRONZE, AWARD_SILVER, AWARD_SPECIAL, NFT_MARKET_STATUS } from 'src/constants';
+import {
+  SIZE,
+  SVGS,
+  IMAGES,
+  AWARD_GOLD,
+  AWARD_BRONZE,
+  AWARD_SILVER,
+  AWARD_SPECIAL,
+  NFT_MARKET_STATUS,
+} from 'src/constants';
 import insertComma from '../../utils/insertComma';
-import { basePriceTokens } from '../../web3/config/basePriceTokens';
-import { basePriceTokens as availableTokens } from '../../web3/config/availableTokens';
-import { SvgWithCssUri } from 'react-native-svg';
-import { translate } from '../../walletUtils';
-import { handleLikeDislike } from '../../store/actions/nftTrendList';
-import { useDispatch, useSelector } from 'react-redux';
-import FixedTouchableHighlight from '../../components/FixedTouchableHighlight'
-import ProfileImg from '../../assets/pngs/default_profile_img.png'
-import Ethereum from '../../assets/pngs/ethereum.png'
-import { handleLike } from '../../screens/discover/discoverItem';
+import {basePriceTokens} from '../../web3/config/basePriceTokens';
+import {basePriceTokens as availableTokens} from '../../web3/config/availableTokens';
+import {SvgWithCssUri} from 'react-native-svg';
+import {translate} from '../../walletUtils';
+import {handleLikeDislike} from '../../store/actions/nftTrendList';
+import {useDispatch, useSelector} from 'react-redux';
+import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
+import ProfileImg from '../../assets/pngs/default_profile_img.png';
+import Ethereum from '../../assets/pngs/ethereum.png';
+import {handleLike} from '../../screens/discover/discoverItem';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
-export default function NFTItem(props) {
+export default function NFTItem(props, {navigation}) {
   const dispatch = useDispatch();
 
   // ======================= Props Destructing =======================
@@ -33,14 +43,16 @@ export default function NFTItem(props) {
   } = props;
 
   // ======================= SVGS Destructing =======================
-  const { PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIconNew, HeartActiveIconNew } = SVGS;
+  const {PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon} =
+    SVGS;
 
   // =============== Getting data from reducer ========================
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
-  //================== Components State Declaration ===================  
-  const [isLike, setIsLike] = useState(Number(item.isLike))
-  // const [liked,setLiked]
+  //================== Components State Declaration ===================
+  const [isLike, setIsLike] = useState(Number(item.isLike));
+  const screenNavigation = useNavigation();
+
   //================== Render Me Collection Images Function ===================
   const renderMeCollection = () => {
     return (
@@ -54,11 +66,11 @@ export default function NFTItem(props) {
           imageStyle={styles.listImage}
         />
       </FixedTouchableHighlight>
-    )
-  }
+    );
+  };
 
   //======== Render NFT Collection Items Collection Images Function ============
-  const renderNFTCollectionItem = (isCollection) => {
+  const renderNFTCollectionItem = isCollection => {
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -72,8 +84,8 @@ export default function NFTItem(props) {
           {renderCollectionWrapper(isCollection)}
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   //================== Render Heart Icon Function ===================
   const handleLikeMethod = async () => {
@@ -82,43 +94,52 @@ export default function NFTItem(props) {
       isLike: isLike,
       // totalLike: nftData?.totalLike
     };
+    console.log(nftItem, 'like nftItem');
     const nftData = await handleLike(nftItem);
     if (nftData) {
-      setIsLike(!Number(nftItem.isLike))
+      setIsLike(!Number(nftItem.isLike));
       // console.log("🚀 ~ file: index.js ~ line 87 ~ ", item)
     }
   };
-
 
   const renderHeartIcon = () => {
     return (
       <TouchableOpacity
         onPress={() => handleLikeMethod()}
         style={styles.likeButton}>
-        {isLike ? <HeartActiveIconNew /> : <HeartWhiteIconNew />}
+        {isLike ? <HeartActiveIcon /> : <HeartWhiteIcon />}
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   //================== Render Collection List Image/video Function ===================
-  const renderCollectionImageNvideo = (isCollection) => {
+  const renderCollectionImageNvideo = isCollection => {
     return (
       <View>
         <C_Image
           category={item.category}
           // type={isCollection ? isBlind ? uriType : item?.type : uriType}
           uri={getImageUri()}
-          imageStyle={Platform.OS === "ios" ? (checkVideoUrl ? styles.collectionListVideo : styles.collectionListImage) : styles.collectionListImage}
+          imageStyle={
+            Platform.OS === 'ios'
+              ? checkVideoUrl
+                ? styles.collectionListVideo
+                : styles.collectionListImage
+              : styles.collectionListImage
+          }
         />
       </View>
-    )
-  }
+    );
+  };
 
   //================== Render Collection wrapper Function ======================
-  const renderCollectionWrapper = (isCollection) => {
+  const renderCollectionWrapper = isCollection => {
     if (isCollection) {
       return (
-        <View style={isBlind ? styles.collectionWrapperBlind : styles.collectionWrapper}>
+        <View
+          style={
+            isBlind ? styles.collectionWrapperBlind : styles.collectionWrapper
+          }>
           {renderNameNcreatorName(true)}
           {renderPriceNcurrencyIconContainer(true)}
           {/* {isBlind && <View style={styles.Line} />} */}
@@ -145,24 +166,31 @@ export default function NFTItem(props) {
               </View>
             </View>} */}
         </View>
-      )
+      );
     } else {
       return (
         <View style={styles.collectionWrapper}>
-          <View style={{ paddingHorizontal: SIZE(15), paddingVertical: SIZE(10), borderBottomWidth: SIZE(1), borderBottomColor: '#f0f0f0', }}>
+          <View
+            style={{
+              paddingHorizontal: SIZE(15),
+              paddingVertical: SIZE(10),
+              borderBottomWidth: SIZE(1),
+              borderBottomColor: '#f0f0f0',
+            }}>
             {renderNameNcreatorName(false)}
             {renderPriceNcurrencyIconContainer(false)}
           </View>
-          <View style={{ paddingHorizontal: SIZE(15), paddingVertical: SIZE(6) }}>
+          <View style={{paddingHorizontal: SIZE(15), paddingVertical: SIZE(6)}}>
             {renderbottomView()}
           </View>
         </View>
-      )
+      );
     }
-  }
+  };
 
   //================== Render Name and Creator Name Function ===================
-  const renderNameNcreatorName = (isCollection) => {
+  const renderNameNcreatorName = isCollection => {
+    // console.log('This item is render for name and iscollction : ', isCollection, item);
     if (isCollection) {
       return (
         <View style={styles.nftName}>
@@ -173,37 +201,36 @@ export default function NFTItem(props) {
             {getCreatorName()}
           </Text> */}
         </View>
-      )
+      );
     } else {
       return (
         <View style={styles.nftName}>
-          <Text numberOfLines={1} style={styles.titleText}>{item?.name}</Text>
+          <Text numberOfLines={1} style={styles.titleText}>
+            {item?.name}
+          </Text>
           {/* <Text
             numberOfLines={1}
             style={styles.titleText}>
             {getCreatorName()}
           </Text> */}
         </View>
-      )
+      );
     }
-  }
-
+  };
 
   //================== Render Price and Currency Icons Function ===================
   const getSaleStatus = (marketplaceStatus, saleDataAuction) => {
     switch (marketplaceStatus) {
       case NFT_MARKET_STATUS.NOT_ON_SALE:
         return (
-          <Text style={styles.statusNotOnSale}>
-            {translate('common.notforsale')}
+          <Text style={styles.statusSoldOut}>
+            {translate('common.notOnSell')}
           </Text>
-        )
+        );
       case NFT_MARKET_STATUS.ON_FIX_PRICE:
         return (
-          <Text style={styles.statusOnSale}>
-            {translate('common.onSale')}
-          </Text>
-        )
+          <Text style={styles.statusOnSale}>{translate('common.onSale')}</Text>
+        );
       case NFT_MARKET_STATUS.ON_AUCTION:
       case NFT_MARKET_STATUS.CANCEL_AUCTION:
       case NFT_MARKET_STATUS.UPCOMMING_AUCTION:
@@ -211,27 +238,25 @@ export default function NFTItem(props) {
         if (
           saleDataAuction &&
           Number(saleDataAuction.startPrice) ===
-          Number(saleDataAuction.highestPrice)
+            Number(saleDataAuction.highestPrice)
         ) {
           return (
             <Text style={styles.statusOnSale}>
               {`${translate('common.min')} ${translate('common.Bids')}`}
             </Text>
-          )
+          );
         }
         return (
           <Text style={styles.statusOnSale}>
             {translate('common.highestBid')}
           </Text>
-        )
+        );
     }
-  }
+  };
 
-
-  const renderPriceNcurrencyIconContainer = (isCollection) => {
+  const renderPriceNcurrencyIconContainer = isCollection => {
     return (
-      <View
-        style={styles.newPrice}>
+      <View style={styles.newPrice}>
         {/* {item.newprice &&
           item.newprice.endTime &&
           new Date(item.newprice.endTime) < new Date().getTime() ? (
@@ -247,25 +272,37 @@ export default function NFTItem(props) {
         )} */}
         {/* <Text style={item?.tokenPrice !== "" && item?.tokenPriceIcon ? styles.statusOnSale : styles.statusNotOnSale}>{item?.tokenPrice !== "" && item?.tokenPriceIcon ? 'On Sale' : 'Not On Sale'}</Text> */}
         {getSaleStatus(item?.marketNftStatus, item?.saleData?.auction)}
-        {item.marketNftStatus !== NFT_MARKET_STATUS.NOT_ON_SALE && (<View style={styles.currencyInfoContainer}>
-          {item.saleData?.fixPrice?.tokenPriceIcon ? <Image style={styles.tokenIcon} source={{
-            uri: item.saleData?.fixPrice?.tokenPriceIcon
-          }} /> : item.saleData?.auction?.tokenPriceIcon ? <Image style={styles.tokenIcon} source={{
-            uri: item.saleData?.auction?.tokenPriceIcon
-          }} /> : null}
-          <Text style={styles.price}>
-            {Number(
-              item.saleData?.fixPrice
-                ? item.saleData?.fixPrice?.price
-                : item.saleData?.auction
+        {item.marketNftStatus !== NFT_MARKET_STATUS.NOT_ON_SALE && (
+          <View style={styles.currencyInfoContainer}>
+            {item.saleData?.fixPrice?.tokenPriceIcon ? (
+              <Image
+                style={styles.tokenIcon}
+                source={{
+                  uri: item.saleData?.fixPrice?.tokenPriceIcon,
+                }}
+              />
+            ) : item.saleData?.auction?.tokenPriceIcon ? (
+              <Image
+                style={styles.tokenIcon}
+                source={{
+                  uri: item.saleData?.auction?.tokenPriceIcon,
+                }}
+              />
+            ) : null}
+            <Text style={styles.price}>
+              {Number(
+                item.saleData?.fixPrice
+                  ? item.saleData?.fixPrice?.price
+                  : item.saleData?.auction
                   ? item.saleData?.auction?.highestPrice
                   : 0,
-            )}
-          </Text>
-        </View>)}
+              )}
+            </Text>
+          </View>
+        )}
       </View>
-    )
-  }
+    );
+  };
 
   // const renderPriceNcurrencyIcons = (isCollection) => {
   //   if (isCollection) {
@@ -306,8 +343,14 @@ export default function NFTItem(props) {
   // }
 
   const renderIcon = () => {
-    const baseCurrency = item?.baseCurrency ? item.baseCurrency : item?.newprice?.baseCurrency ? item.newprice.baseCurrency : 0
-    const nftChain = item?.nftChain ? item?.nftChain : item?.newprice?.mainChain
+    const baseCurrency = item?.baseCurrency
+      ? item.baseCurrency
+      : item?.newprice?.baseCurrency
+      ? item.newprice.baseCurrency
+      : 0;
+    const nftChain = item?.nftChain
+      ? item?.nftChain
+      : item?.newprice?.mainChain;
     const uri = nftCurrencyIcon(baseCurrency, nftChain);
     if (uri) {
       if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
@@ -318,36 +361,62 @@ export default function NFTItem(props) {
             height={SIZE(12)}
           />
         );
-      else return <Image source={{ uri: uri }} />;
+      else return <Image source={{uri: uri}} />;
     }
   };
-
 
   //================== Render Chain view column Function ===================
 
   const renderbottomView = () => {
-    return <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-      <SvgWithCssUri
-        uri={item?.network?.avatar}
-        style={styles.tokenIcon2}
-      />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TouchableOpacity activeOpacity={1}>
-          {item?.creator?.avatar ?
-            <Image style={styles.creatorIcon} source={{ uri: item?.creator?.avatar }} /> :
-            <Image style={styles.creatorIcon} source={ProfileImg} />}
-        </TouchableOpacity>
-        <View style={styles.ownerContainer}>
-          <TouchableOpacity activeOpacity={1}>
-            {item?.owner?.avatar ?
-              <Image style={styles.ownerIcon} source={{ uri: item?.owner?.avatar }} /> :
-              <Image style={styles.ownerIcon} source={ProfileImg} />}
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <SvgWithCssUri uri={item?.network?.avatar} style={styles.tokenIcon2} />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() =>
+              screenNavigation.navigate('Profile', {
+                from: 'nftItem',
+                id: item.creator.address,
+              })
+            }>
+            {item?.creator?.avatar ? (
+              <Image
+                style={styles.creatorIcon}
+                source={{uri: item?.creator?.avatar}}
+              />
+            ) : (
+              <Image style={styles.creatorIcon} source={IMAGES.DEFAULTUSER} />
+            )}
           </TouchableOpacity>
+          <View style={styles.ownerContainer}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() =>
+                screenNavigation.navigate('Profile', {
+                  from: 'nftItem',
+                  id: item.owner.address,
+                })
+              }>
+              {item?.owner?.avatar ? (
+                <Image
+                  style={styles.ownerIcon}
+                  source={{uri: item?.owner?.avatar}}
+                />
+              ) : (
+                <Image style={styles.ownerIcon} source={IMAGES.DEFAULTUSER} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
-  }
-
+    );
+  };
 
   // const renderChainViewColumn = (isCollection) => {
   //   if (isCollection) {
@@ -465,19 +534,10 @@ export default function NFTItem(props) {
   const renderEndTimeViewLastPrice = () => {
     return (
       <View style={styles.endTimeView}>
-        <Text
-          style={styles.lastText}>
-          Last:{' '}
-        </Text>
-        <Text
-          style={styles.lastPriceText}>
+        <Text style={styles.lastText}>Last: </Text>
+        <Text style={styles.lastPriceText}>
           {item?.lastCurrencyTraded === 'ALIA'
-            ? insertComma(
-              parseFloat(
-                item?.lastpriceTraded,
-                true,
-              ).toFixed(0),
-            )
+            ? insertComma(parseFloat(item?.lastpriceTraded, true).toFixed(0))
             : insertComma(item?.lastpriceTraded, true)}
         </Text>
         {/* <Text
@@ -496,35 +556,50 @@ export default function NFTItem(props) {
           )
         </Text> */}
       </View>
-    )
-  }
+    );
+  };
 
   //================== Other Functions ===================
   const getImageUri = () => {
-    let imageUri = item?.mediaUrl
-    return imageUri
-  }
+    let imageUri = item?.mediaUrl;
+    return imageUri;
+  };
 
   let mediaUrl = item?.mediaUrl;
   let uriType, checkVideoUrl;
   if (mediaUrl) {
     uriType = mediaUrl.split('.')[mediaUrl.split('.').length - 1];
-    checkVideoUrl = uriType === 'mp4' || uriType === 'MP4' || uriType === 'mov' || uriType === 'MOV';
+    checkVideoUrl =
+      uriType === 'mp4' ||
+      uriType === 'MP4' ||
+      uriType === 'mov' ||
+      uriType === 'MOV';
   }
 
   let lastCurrency = availableTokens.filter(
-    token => item?.newpriceTraded?.mainChain == token?.chain && item?.newpriceTraded?.baseCurrency == token.order
+    token =>
+      item?.newpriceTraded?.mainChain == token?.chain &&
+      item?.newpriceTraded?.baseCurrency == token.order,
   );
 
-  let iconNftChain = isBlind ?
-    item?.newpriceTraded ?
-      item?.Chain ? item.Chain : item?.chain ? item.chain : item?.mainTokenId?.toString().split("-")[0] :
-      item?.nftChain ? item.nftChain : item?.mainTokenId?.toString().split("-")[0] :
-    item?.mainTokenId ? item?.mainTokenId?.toString().split("-")[0]
-      : item?.nftChain ? item.nftChain : ''
+  let iconNftChain = isBlind
+    ? item?.newpriceTraded
+      ? item?.Chain
+        ? item.Chain
+        : item?.chain
+        ? item.chain
+        : item?.mainTokenId?.toString().split('-')[0]
+      : item?.nftChain
+      ? item.nftChain
+      : item?.mainTokenId?.toString().split('-')[0]
+    : item?.mainTokenId
+    ? item?.mainTokenId?.toString().split('-')[0]
+    : item?.nftChain
+    ? item.nftChain
+    : '';
 
-  const chainType = (type) => {
-    ; //Hardcoded as per web requirements
+  const chainType = type => {
+    //Hardcoded as per web requirements
     if (type === 'Polygon') return <PolygonIcon />;
     if (type === 'Ethereum') return <Ethereum />;
     if (type === 'BSC') return <BitmapIcon />;
@@ -538,26 +613,26 @@ export default function NFTItem(props) {
     );
     let search = basePriceTokens.find(
       token => token.order === CurrencyFlag && token.chain === chainTypeFlag,
-    )
+    );
     if (found) {
       return found.icon;
     } else if (search) {
-      return search.icon
+      return search.icon;
     }
   };
 
-  const getAwardsIcon = (awardType) => {
+  const getAwardsIcon = awardType => {
     switch (awardType) {
-      case "GOLD_Award":
-        return AWARD_GOLD
-      case "BRONZE_Award":
-        return AWARD_BRONZE
-      case "SILVER_Award":
-        return AWARD_SILVER
-      case "Special_Award":
-        return AWARD_SPECIAL
+      case 'GOLD_Award':
+        return AWARD_GOLD;
+      case 'BRONZE_Award':
+        return AWARD_BRONZE;
+      case 'SILVER_Award':
+        return AWARD_SILVER;
+      case 'Special_Award':
+        return AWARD_SPECIAL;
       default:
-        return AWARD_SPECIAL
+        return AWARD_SPECIAL;
     }
   };
 
@@ -574,15 +649,41 @@ export default function NFTItem(props) {
         let secs = parseInt(diff / 1000);
 
         if (days > 0) {
-          return translate('common.bidDeadLine') + ' ' + days + ' ' + translate('common.daysleft');
+          return (
+            translate('common.bidDeadLine') +
+            ' ' +
+            days +
+            ' ' +
+            translate('common.daysleft')
+          );
         } else if (hours > 0) {
-          return translate('common.bidDeadLine') + ' ' + hours + ' ' + translate('common.hoursLeft');
+          return (
+            translate('common.bidDeadLine') +
+            ' ' +
+            hours +
+            ' ' +
+            translate('common.hoursLeft')
+          );
         } else if (mins > 0) {
-          return translate('common.bidDeadLine') + ' ' + mins + ' ' + translate('common.minutesLeft');
+          return (
+            translate('common.bidDeadLine') +
+            ' ' +
+            mins +
+            ' ' +
+            translate('common.minutesLeft')
+          );
         } else if (secs > 0) {
-          return translate('common.bidDeadLine') + ' ' + secs + ' ' + translate('common.secondsLeft');
+          return (
+            translate('common.bidDeadLine') +
+            ' ' +
+            secs +
+            ' ' +
+            translate('common.secondsLeft')
+          );
         } else {
-          return translate('common.bidDeadLine') + ' ' + ` ${hours}:${mins}:${secs} `;
+          return (
+            translate('common.bidDeadLine') + ' ' + ` ${hours}:${mins}:${secs} `
+          );
         }
       }
     }
@@ -590,20 +691,34 @@ export default function NFTItem(props) {
   };
 
   const getCreatorName = () => {
-    let creatorName = item?.creatorObj && typeof item?.creatorObj[0] === 'object' ?
-      item.creatorObj[0]?.role === 'crypto' ?
-        item.creatorObj[0]?.title?.trim() ? item.creatorObj[0].title :
-          item.creatorObj[0]?.name?.trim() ? item.creatorObj[0].name :
-            item.creatorObj[0]?.username?.trim() ? item.creatorObj[0].username.includes('0x') ?
-              item.creatorObj[0].username.substring(0, 6) : item.creatorObj[0].username :
-              item.creatorObj[0]?._id ? item.creatorObj[0]._id : ""
-        : item.creatorObj[0]?.username?.trim() ? item.creatorObj[0].username :
-          item.creatorObj[0]?.name?.trim() ? item.creatorObj[0].name :
-            item.creatorObj[0]?.title?.trim() ? item.creatorObj[0].title :
-              item.creatorObj[0]?._id ? item.creatorObj[0]._id : ""
-      : item?.creatorObj && item?.creatorObj[0]?._id ? item.creatorObj[0]._id : ""
-    return creatorName
-  }
+    let creatorName =
+      item?.creatorObj && typeof item?.creatorObj[0] === 'object'
+        ? item.creatorObj[0]?.role === 'crypto'
+          ? item.creatorObj[0]?.title?.trim()
+            ? item.creatorObj[0].title
+            : item.creatorObj[0]?.name?.trim()
+            ? item.creatorObj[0].name
+            : item.creatorObj[0]?.username?.trim()
+            ? item.creatorObj[0].username.includes('0x')
+              ? item.creatorObj[0].username.substring(0, 6)
+              : item.creatorObj[0].username
+            : item.creatorObj[0]?._id
+            ? item.creatorObj[0]._id
+            : ''
+          : item.creatorObj[0]?.username?.trim()
+          ? item.creatorObj[0].username
+          : item.creatorObj[0]?.name?.trim()
+          ? item.creatorObj[0].name
+          : item.creatorObj[0]?.title?.trim()
+          ? item.creatorObj[0].title
+          : item.creatorObj[0]?._id
+          ? item.creatorObj[0]._id
+          : ''
+        : item?.creatorObj && item?.creatorObj[0]?._id
+        ? item.creatorObj[0]._id
+        : '';
+    return creatorName;
+  };
 
   // =================== Start Commented Code =================================
   // const getDollarPrice = async (price = Number(price), baseCurrency) => {
@@ -656,9 +771,14 @@ export default function NFTItem(props) {
   // =================== End Commented Code =================================
 
   //=====================(Main return Function)=============================
+  // console.log('THis is ismecollection and ishotcollection : ', isMeCollection, isCollection)
   return (
     <>
-      {isMeCollection ? renderMeCollection() : isCollection ? renderNFTCollectionItem(true) : renderNFTCollectionItem(false)}
+      {isMeCollection
+        ? renderMeCollection()
+        : isCollection
+        ? renderNFTCollectionItem(true)
+        : renderNFTCollectionItem(false)}
     </>
   );
 }

@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, Text, TouchableOpacity, Platform } from 'react-native';
-import styles from './styles';
-import { colors, fonts } from '../../res';
-import { AppHeader, LoaderIndicator } from '../../components';
-import { TabView, TabBar } from 'react-native-tab-view';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import RNDateTimePicker from '@react-native-community/datetimepicker';
-import DatePicker from 'react-native-date-picker';
 import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { SafeAreaView, Text, View } from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import { TabBar, TabView } from 'react-native-tab-view';
+import { AppHeader, LoaderIndicator } from '../../components';
+import { colors, fonts } from '../../res';
+import styles from './styles';
 
 import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-  responsiveFontSize as RF,
+  responsiveFontSize as RF, widthPercentageToDP as wp
 } from '../../common/responsiveFunction';
 import { translate } from '../../walletUtils';
 
-import Collection from './collection';
-import Filter from './filter';
-import NFTList from './nftList';
-import CollectionList from './CollectionList';
-import UploadNFT from './uploadNft';
-import { TabModal } from './components';
 import { useSelector } from 'react-redux';
-import moment from "moment";
+import Collection from './collection';
+import CollectionList from './CollectionList';
+import { TabModal } from './components';
+import NFTList from './nftList';
+import UploadNFT from './uploadNft';
 
 const CreateNFTScreen = ({ route }) => {
 
@@ -42,19 +36,19 @@ const CreateNFTScreen = ({ route }) => {
   const [date, setDate] = useState(new Date());
   const [nftListDefault, setnftListDefault] = useState(null);
   const [nftItem, setnftItem] = useState(null);
+  const [collectionData, setCollectionData] = useState(null);
 
   const [index, setIndex] = useState(0);
   const routes = isNonCrypto === 0 ?
     [
-      { key: 'Collection', title: translate("common.collectionList") },
+      { key: 'CollectionList', title: translate("common.collectionList") },
+      { key: 'CreateCollection', title: translate("common.createCollection") },
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("common.CreateNFT") },
-      { key: 'Filter', title: translate("wallet.common.filter") },
     ] :
     [
       { key: 'NFTList', title: translate("wallet.common.NFTList") },
       { key: 'UploadNFT', title: translate("wallet.common.uploadNFT") },
-      { key: 'Filter', title: translate("wallet.common.filter") },
     ];
   const navigation = useNavigation();
   const ShowModalAction = (v, screenName) => {
@@ -73,23 +67,25 @@ const CreateNFTScreen = ({ route }) => {
 
   const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
-      case 'Collection':
+      case 'CollectionList':
         return <CollectionList
           modalItem={modalItem}
           modalScreen={modalScreen}
           switchEditNFT={(data) => {
-            setnftItem(data)
-            setIndex(2)
+            setCollectionData(data)
+            setIndex(1)
           }}
           showModal={(v) => ShowModalAction(v, "collectionList")}
           position={index}
           nftListDefault={nftListDefault}
           changeLoadingState={(e) => setLoading(e)} />;
-      // return <Collection
-      //   position={index}
-      //   routeParams={routeParams}
-      //   changeLoadingState={(e) => setLoading(e)}
-      // />;
+      case 'CreateCollection':
+        return <Collection
+          position={index}
+          collectionData={collectionData}
+          routeParams={routeParams}
+          changeLoadingState={(e) => setLoading(e)}
+        />;
       case 'NFTList':
         return <NFTList
           modalItem={modalItem}
@@ -97,7 +93,7 @@ const CreateNFTScreen = ({ route }) => {
           modalScreen={modalScreen}
           switchEditNFT={(data) => {
             setnftItem(data)
-            setIndex(2)
+            setIndex(3)
           }}
           showModal={(v) => ShowModalAction(v, "nftList")}
           position={index}
@@ -119,17 +115,9 @@ const CreateNFTScreen = ({ route }) => {
           nftItem={nftItem}
           switchToNFTList={(v, collect) => {
             setnftListDefault({ name: v, collect: collect })
-            setIndex(1)
+            setIndex(2)
           }}
           changeLoadingState={(e) => setLoading(e)} />;
-      case 'Filter':
-        return <Filter
-          modalItem={modalItem}
-          modalScreen={modalScreen}
-          showModal={(v) => ShowModalAction(v, "filter")}
-          position={index}
-          changeLoadingState={(e) => setLoading(e)}
-        />;
       default:
         return null;
     }
@@ -151,7 +139,9 @@ const CreateNFTScreen = ({ route }) => {
             {route.title}
           </Text>
         )}
-        tabStyle={{ paddingHorizontal: 0 }}
+        tabStyle={{
+          paddingHorizontal: wp('1.3%'),
+        }}
         indicatorStyle={{ backgroundColor: colors.BLUE4 }}
         style={{
           boxShadow: 'none',
@@ -165,30 +155,20 @@ const CreateNFTScreen = ({ route }) => {
     )
   }
 
-  let renderTitle = index == 0 ? translate("wallet.common.collection") :
-    index == 1 ? translate("wallet.common.NFTList") :
-      index == 2 ? translate("wallet.common.uploadNFT") : translate("wallet.common.filter");
+  let renderTitle = index == 0 ? translate("common.collectionList") :
+    index == 1 ? translate("common.createCollection") :
+      index == 2 ? translate("wallet.common.NFTList") : translate("common.CreateNFT");
 
   return (
     <View style={styles.mainContainer}>
       {loading ? <LoaderIndicator /> : null}
       <SafeAreaView style={styles.mainContainer}>
         <AppHeader
-          title={translate("common.CreateNFT")}
+          title={renderTitle}
           showBackButton
           containerStyle={{ backgroundColor: colors.white }}
         />
         <View style={styles.sectionContainer}>
-          {/* <View style={styles.titleWrapper}>
-            <Text style={styles.title}>{renderTitle}</Text>
-            {routeParams?.status === 'created' &&
-              <TouchableOpacity onPress={onViewCollection} style={styles.collectionButton}>
-                <Text style={styles.collectionButtonLabel}>{translate('common.viewCollection')}</Text>
-              </TouchableOpacity>
-            }
-          </View> */}
-          {/* <Text style={styles.titleDes}>{translate("common.createbut")} / {renderTitle}</Text> */}
-
           <TabView
             renderTabBar={renderTabBar}
             navigationState={{ index, routes }}
@@ -198,6 +178,7 @@ const CreateNFTScreen = ({ route }) => {
               setModalItem(null);
               setnftListDefault(null)
               setnftItem(null)
+              setCollectionData(null)
               setModalScreen("");
               setIndex(i);
             }}
@@ -232,11 +213,8 @@ const CreateNFTScreen = ({ route }) => {
             mode="datetime"
             minimumDate={miniDate}
             androidVariant={"iosClone"}
-            // timeZoneOffsetInMinutes={-390}
-            // locale={"en"}
-            // is24hourSource={"locale"}
             onConfirm={date => {
-              console.log("Date Console on conform", moment(date).format('MMMM Do YYYY, h:mm:ss a'))
+              console.log("Date Console on conform UTC", date.toISOString());
               setDate(date)
               setDateVisible(false)
             }}
@@ -246,29 +224,6 @@ const CreateNFTScreen = ({ route }) => {
             }
             }
           />}
-        {/*{dateVisible &&*/}
-        {/*<DatePicker*/}
-        {/*    modal={modalScreen}*/}
-        {/*    open={dateVisible}*/}
-        {/*    date={miniDate}*/}
-        {/*    mode="datetime"*/}
-        {/*    minimumDate={miniDate}*/}
-        {/*    androidVariant={"iosClone"}*/}
-        {/*    // timeZoneOffsetInMinutes={-390}*/}
-        {/*    // locale={"en"}*/}
-        {/*    // is24hourSource={"locale"}*/}
-        {/*    onConfirm={date => {*/}
-        {/*        console.log("Date Console on conform",moment(date).format('MMMM Do YYYY, h:mm:ss a'))*/}
-        {/*        setDate(date)*/}
-        {/*        setDateVisible(false)*/}
-        {/*    }}*/}
-        {/*    onCancel={() => {*/}
-        {/*        setDate("closed")*/}
-        {/*        setDateVisible(false)*/}
-        {/*    }*/}
-        {/*    }*/}
-        {/*/>}*/}
-
       </SafeAreaView>
     </View>
   );

@@ -32,29 +32,27 @@ const EditableInput = styled.TextInput`
 `;
 
 const LimitView = styled.View`
-    width: 100%;
-    height: ${SIZE(36)}px;
-    background-color: ${COLORS.RED1};
-    align-items: center;
-    justify-content: center;
+    width: 90%;
+    margin-left: ${SIZE(20)}px;
 `;
 
 const WhiteText = styled.Text`
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
-    color: ${COLORS.WHITE1};
-    margin-top: ${SIZE(4)}px;
+    color: ${COLORS.RED2};
 `;
 
 const MultiLineEditableInput = styled.TextInput`
     flex: 1;
-    border-width: 0.8px;
-    border-color: ${COLORS.WHITE3};
+    flex-direction: row
+    border-width: 1px;
+    border-radius : ${SIZE(7)}px
+    border-color: ${COLORS.themeColor};
     padding: ${SIZE(12)}px;
     font-size: ${FONT(14)}px;
     font-family: ${FONTS.ARIAL};
     color: ${COLORS.BLACK1};
-    margin-bottom: ${SIZE(20)}px;
+    
 `;
 
 const TextLimit = styled.Text`
@@ -63,8 +61,9 @@ const TextLimit = styled.Text`
     color: ${COLORS.BLACK1};
 `;
 
+
 const LimitableInput = (props) => {
-    const { multiLine, label, value, onChange,about, error, ...inputProps } = props;
+    const { multiLine, label, limit, value, onChange,about, error, ...inputProps } = props;
     return (
         <View>
             {!multiLine ? (
@@ -83,15 +82,17 @@ const LimitableInput = (props) => {
                 </RowBetweenWrap>
             ) : (
                 <>
-                    <RowWrap>
+                    <RowWrap mTop={SIZE(18)}>
                         <SpaceView mLeft={SIZE(19)} />
-                        <NormalText>
+                        <View style={{width:'90%',flexDirection:'row', alignItems:'center',justifyContent:'space-between'}}>
+                        <NormalText style={{fontSize:SIZE(16),fontWeight:'700',color:'#212529'}}>
                             {label}
                         </NormalText>
-                        <TextLimit> ({about? about.length : 0} / 200)</TextLimit>
+                        {limit && <TextLimit>{about? about.length : 0} / 200</TextLimit>}
+                        </View>
                     </RowWrap>
                     <SpaceView mTop={SIZE(12)} />
-                    <RowWrap>
+                    <RowWrap style={{alignItems:'center'}}>
                         <SpaceView mLeft={SIZE(19)} />
                         <MultiLineEditableInput
                             {...inputProps}
@@ -99,7 +100,8 @@ const LimitableInput = (props) => {
                             onChangeText={onChange}
                             multiline
                             autoCapitalize= 'none'
-                            placeholderTextColor={'grey'} />
+                            placeholderTextColor={'grey'} >
+                        </MultiLineEditableInput>
                         <SpaceView mRight={SIZE(19)} />
                     </RowWrap>
                 </>

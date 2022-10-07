@@ -4,6 +4,7 @@ export default {
     BARCODE: require(`src/assets/pngs/img-barcode.png`),
     TROUBLELOGIN: require(`src/assets/pngs/trouble_login_icon.png`),
     DEFAULTPROFILE: require(`src/assets/pngs/default_profile_img.png`),
+    
 
 
     // XANALIA images
@@ -26,6 +27,7 @@ export default {
     loadergif: require("../assets/gifs/loadergif.gif"),
     typingLoading: require("../assets/gifs/typing-loading.gif"),
     sendChatMessage: require("../../assets/images/sendChatMessage.png"),
+    DEFAULTUSER: require("../../assets/images/default-user.png"),
 
     //tab icons
     wallet: require("../../assets/images/wallet.png"),
@@ -74,7 +76,7 @@ export default {
     edit: require("../../assets/images/edit.png"),
     imagePlaceholder: require("../../assets/images/cropped-placeholder.png"),
     brokenIcon: require("../../assets/images/brokenIcon.png"),
-    tweetPng:require("../../assets/images/tweet.png"),
+    tweetPng: require("../../assets/images/tweet.png"),
 
     cardTypeIcon: {
         "visa": require("../../assets/images/visa.png"),
@@ -98,6 +100,7 @@ export default {
     usdtNew: require("../../assets/images/USDT-Ethereum.png"),
     ethnew: require("../../assets/images/ETH-Polygon.png"),
     polygonNew: require("../../assets/images/polygon-new.png"),
-    default_user: require("../../assets/images/default-user.png")
+    default_user: require("../../assets/images/default-user.png"),
+    confirm: require('../../assets/images/confirm-icon.png')
 
 };

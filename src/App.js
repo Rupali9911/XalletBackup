@@ -1,25 +1,25 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { StripeProvider } from '@stripe/stripe-react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {StripeProvider} from '@stripe/stripe-react-native';
 import * as React from 'react';
-import { Image, Keyboard, Linking, LogBox, View } from 'react-native';
+import {Image, Keyboard, Linking, LogBox, View} from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import { Subject } from 'rxjs';
+import {Provider, useDispatch, useSelector} from 'react-redux';
+import {Subject} from 'rxjs';
 import '../shim';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from './common/responsiveFunction';
-import { AppSplash } from './components';
+import {AppSplash} from './components';
 import Colors from './constants/Colors';
 import ImageSrc from './constants/Images';
-import { screenWidth } from './constants/responsiveFunct';
+import {screenWidth} from './constants/responsiveFunct';
 import AuthStack from './navigations/authStack';
-import { fonts, images } from './res';
+import {fonts, images} from './res';
 import ArtistDetail from './screens/ArtistDetail';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
@@ -50,16 +50,17 @@ import transactionsDetail from './screens/wallet/transactionsDetail';
 import SellNFT from './screens/sellNft/index';
 import CollectionDetail from './screens/collectionDetail';
 import Store from './store';
-import { setRequestAppId } from './store/reducer/walletReducer';
-import { environment, translate } from './walletUtils';
+import {setRequestAppId} from './store/reducer/walletReducer';
+import {environment, translate} from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getWallet } from './helpers/AxiosApiRequest';
-import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer';
-import { MenuProvider } from 'react-native-popup-menu';
-import { NativeBaseProvider } from 'native-base';
+import {getWallet} from './helpers/AxiosApiRequest';
+import {setPasscodeAsync, updatePassStatus} from './store/reducer/userReducer';
+import {MenuProvider} from 'react-native-popup-menu';
+import {NativeBaseProvider} from 'native-base';
 import Images from './constants/Images';
 import AiChat from './components/AiChat/index';
 import ChatNFT from './components/AiChat/ChatNFT';
+import WebView from './components/WebView';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -75,33 +76,39 @@ const deepLinkData = {
 };
 
 const TabComponent = () => {
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const { userData } = useSelector(state => state.UserReducer);
-  const { showSuccess, isCreate, connectModalState } = useSelector(state => state.UserReducer);
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const {userData} = useSelector(state => state.UserReducer);
+  const {showSuccess, isCreate, connectModalState} = useSelector(
+    state => state.UserReducer,
+  );
   const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
+
+  const {UserReducer} = useSelector(state => state);
+  const id =
+    UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
 
   React.useEffect(() => {
     if (showSuccess || isCreate || connectModalState) {
-      setIsBottomTabVisible(false)
+      setIsBottomTabVisible(false);
     } else {
-      setIsBottomTabVisible(true)
+      setIsBottomTabVisible(true);
     }
-  }, [showSuccess, isCreate, connectModalState])
+  }, [showSuccess, isCreate, connectModalState]);
 
-  React.useEffect(() => { }, [selectedLanguageItem.language_name]);
+  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
 
   React.useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
         setIsBottomTabVisible(false); // or some other action
-      }
+      },
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
         setIsBottomTabVisible(true); // or some other action
-      }
+      },
     );
 
     return () => {
@@ -123,9 +130,9 @@ const TabComponent = () => {
         },
         activeTintColor: Colors.themeColor,
       }}
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         tabBarVisible: isBottomTabVisible,
-        tabBarIcon: ({ focused, color }) => {
+        tabBarIcon: ({focused, color}) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -151,7 +158,7 @@ const TabComponent = () => {
             <Image
               source={iconName}
               resizeMode="contain"
-              style={{ width: wp('6.5%'), height: wp('4.5%') }}
+              style={{width: wp('6.5%'), height: wp('4.5%')}}
             />
           );
         },
@@ -159,27 +166,28 @@ const TabComponent = () => {
       <Tab.Screen
         name={'Home'}
         component={HomeScreen}
-        options={{ tabBarLabel: translate('common.home') }}
+        options={{tabBarLabel: translate('common.home')}}
       />
       <Tab.Screen
         name={'Discover'}
         component={Discover}
-        options={{ tabBarLabel: translate('wallet.common.explore') }}
+        options={{tabBarLabel: translate('wallet.common.explore')}}
       />
-      {userData.isNonCrypto === 0 &&
+      {userData.isNonCrypto === 0 && (
         <Tab.Screen
           name={'Wallet'}
-          options={{ tabBarLabel: translate('wallet.common.wallet') }}
+          options={{tabBarLabel: translate('wallet.common.wallet')}}
           component={Wallet}
-        />}
+        />
+      )}
       <Tab.Screen
         name={'Connect'}
-        options={{ tabBarLabel: translate('wallet.common.connect') }}
+        options={{tabBarLabel: translate('wallet.common.connect')}}
         component={Connect}
         initialParams={{}}
       />
       <Tab.Screen
-        options={{ tabBarLabel: translate('wallet.common.me') }}
+        options={{tabBarLabel: translate('wallet.common.me')}}
         name={'Me'}
         component={ProfileScreen}
       />
@@ -188,7 +196,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const { passcode, mainLoader, showSplash, userData } = useSelector(
+  const {passcode, mainLoader, showSplash, userData} = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -199,14 +207,14 @@ const AppRoutes = () => {
 
   React.useEffect(async () => {
     LogBox.ignoreAllLogs();
-    Linking.addEventListener('url', async ({ url }) => {
+    Linking.addEventListener('url', async ({url}) => {
       console.log('e', url);
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
         let wallet = await getWallet();
         if (wallet) {
           setTimeout(() => {
-            navigatorRef.current?.navigate('Connect', { appId: id });
+            navigatorRef.current?.navigate('Connect', {appId: id});
           }, 500);
         } else {
           dispatch(setRequestAppId(id));
@@ -216,10 +224,9 @@ const AppRoutes = () => {
   }, []);
 
   React.useEffect(() => {
-    AsyncStorage.getItem('@passcode')
-      .then(val => {
-        setPass(val)
-      })
+    AsyncStorage.getItem('@passcode').then(val => {
+      setPass(val);
+    });
   }, []);
 
   const linking = {
@@ -250,19 +257,19 @@ const AppRoutes = () => {
   };
   if (showSplash) return <AppSplash />;
   if (!showSplash) {
-    SplashScreen.hide()
+    SplashScreen.hide();
     if (!renderPass && pass) {
-      dispatch(updatePassStatus(true))
-      dispatch(setPasscodeAsync(JSON.parse(pass)))
-      toggle(true)
+      dispatch(updatePassStatus(true));
+      dispatch(setPasscodeAsync(JSON.parse(pass)));
+      toggle(true);
     }
-  };
+  }
   if (mainLoader) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <Image source={Images.loadergif} />
       </View>
-    )
+    );
   }
   return (
     <NavigationContainer ref={navigatorRef} linking={linking}>
@@ -272,29 +279,40 @@ const AppRoutes = () => {
           headerMode="none"
           screenOptions={{
             animationEnabled: true,
-            animationTypeForReplace: "pop",
+            animationTypeForReplace: 'pop',
             transitionSpec: {
               open: {
-                animation: "timing",
-                duration: 1000
+                animation: 'timing',
+                duration: 1000,
               },
               close: {
-                animation: "timing",
-                duration: 1000
+                animation: 'timing',
+                duration: 1000,
               },
             },
-            gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
+            gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
-          <Stack.Screen name="PasscodeScreen" initialParams={{ screen: 'Auth' }} component={PasscodeScreen} />
+          <Stack.Screen
+            name="PasscodeScreen"
+            initialParams={{screen: 'Auth'}}
+            component={PasscodeScreen}
+          />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-          <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+          <Stack.Screen
+            name="CertificateDetail"
+            component={CertificateDetailScreen}
+          />
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
-          <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
+          <Stack.Screen
+            name="transactionsDetail"
+            component={transactionsDetail}
+          />
           <Stack.Screen name="send" component={Send} />
           <Stack.Screen name="scanToConnect" component={ScanToConnect} />
           <Stack.Screen name="Create" component={CreateNFTScreen} />
@@ -312,6 +330,7 @@ const AppRoutes = () => {
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
           <Stack.Screen name="AiChat" component={AiChat}/>
           <Stack.Screen name="ChatNFT" component={ChatNFT}/>
+          <Stack.Screen name="WebView" component={WebView} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

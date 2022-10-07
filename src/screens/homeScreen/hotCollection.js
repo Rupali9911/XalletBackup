@@ -1,5 +1,5 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,9 +8,9 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '../../components';
-import { colors } from '../../res';
+import {useDispatch, useSelector} from 'react-redux';
+import {Loader} from '../../components';
+import {colors} from '../../res';
 import CollectionItem from '../../components/CollectionItem';
 import {
   hotCollectionListReset,
@@ -18,7 +18,7 @@ import {
   hotCollectionPageChange,
   hotCollectionList,
 } from '../../store/actions/hotCollectionAction';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import styles from './styles';
 
 const HotCollection = () => {
@@ -28,12 +28,12 @@ const HotCollection = () => {
   let timer = null;
 
   // =============== Getting data from reducer ========================
-  const { HotCollectionReducer } = useSelector(state => state);
+  const {HotCollectionReducer} = useSelector(state => state);
 
-  const isLoading = HotCollectionReducer.hotCollectionLoading
-    const hotCollectionData = HotCollectionReducer.hotCollectionList
-    const page = HotCollectionReducer.hotCollectionPage;
-    const totalCount = HotCollectionReducer.hotCollectionTotalCount;
+  const isLoading = HotCollectionReducer.hotCollectionLoading;
+  const hotCollectionData = HotCollectionReducer.hotCollectionList;
+  const page = HotCollectionReducer.hotCollectionPage;
+  const totalCount = HotCollectionReducer.hotCollectionTotalCount;
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -42,20 +42,20 @@ const HotCollection = () => {
   useEffect(() => {
     if (isFocused && isFirstRender) {
       timer = setTimeout(() => {
-        console.log("hot collection",)
+        console.log('hot collection');
         dispatch(hotCollectionLoadStart());
         dispatch(hotCollectionListReset());
-        getHotCollection(page,totalCount);
-        dispatch(hotCollectionPageChange(1))
-        setIsFirstRender(false)
+        getHotCollection(1, totalCount);
+        dispatch(hotCollectionPageChange(1));
+        setIsFirstRender(false);
       }, 100);
     }
     return () => clearTimeout(timer);
   }, [isFocused]);
 
   //===================== Dispatch Action to Fetch Hot Collection NFT List =========================
-  const getHotCollection = useCallback((page,totalCount) => {
-    dispatch(hotCollectionList(page,totalCount));
+  const getHotCollection = useCallback((page, totalCount) => {
+    dispatch(hotCollectionList(page, totalCount));
   }, []);
 
   // ===================== Render Hot Collectio NFT Flatlist ===================================
@@ -72,34 +72,36 @@ const HotCollection = () => {
           HotCollectionReducer.hotCollectionLoading
         }
         renderItem={memoizedValue}
-        // onEndReached={handleFlastListEndReached}
+        onEndReached={handleFlastListEndReached}
         onEndReachedThreshold={0.4}
         keyExtractor={keyExtractor}
         ListFooterComponent={renderFooter}
         pagingEnabled={false}
         legacyImplementation={false}
       />
-    )
-  }
+    );
+  };
 
   // ===================== Render No NFT Function ===================================
   const renderNoNFT = () => {
     return (
       <View style={styles.sorryMessageCont}>
-        <Text style={styles.sorryMessage}>{translate('common.noDataFound')}</Text>
+        <Text style={styles.sorryMessage}>
+          {translate('common.noDataFound')}
+        </Text>
       </View>
-    )
-  }
+    );
+  };
 
   //=================== Flatlist Functions ====================
   const handleFlatlistRefresh = () => {
     dispatch(hotCollectionLoadStart());
     handleRefresh();
-  }
+  };
 
   const handleRefresh = () => {
     dispatch(hotCollectionListReset());
-    getHotCollection(page,totalCount);
+    getHotCollection(1, totalCount);
     dispatch(hotCollectionPageChange(1));
   };
 
@@ -108,22 +110,24 @@ const HotCollection = () => {
     if (
       !HotCollectionReducer.hotCollectionLoading &&
       HotCollectionReducer.hotCollectionTotalCount !==
-      HotCollectionReducer.hotCollectionList.length
+        HotCollectionReducer.hotCollectionList.length
     ) {
       let num = HotCollectionReducer.hotCollectionPage + 1;
-      getHotCollection(num);
+      getHotCollection(num, totalCount);
       dispatch(hotCollectionPageChange(num));
     }
-  }
+  };
   //=====================================================
-  const keyExtractor = (item, index) => { return 'item_' + index }
+  const keyExtractor = (item, index) => {
+    return 'item_' + index;
+  };
 
   const renderFooter = () => {
     if (!HotCollectionReducer.hotCollectionLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
+    return <ActivityIndicator size="small" color={'red'} />;
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <CollectionItem
         bannerImage={item.bannerImage}
@@ -140,12 +144,18 @@ const HotCollection = () => {
         colId={item._id}
         onPress={() => {
           if (item.collectionName !== 'NFTART AWARD 2021') {
-            navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+            navigation.push('CollectionDetail', {
+              networkName: item?.network?.networkName,
+              contractAddress: item?.contractAddress,
+              launchpadId: null,
+            });
+            // navigation.push('CollectionDetail', { networkName: item.network.networkName, contractAddress: item.contractAddress  });
           } else {
-            Linking.openURL('https://www.xanalia.com/xanalia_nftart_award_2021')
-              .catch(err => {
-                console.error("Failed opening page because: ", err)
-              })
+            Linking.openURL(
+              'https://www.xanalia.com/xanalia_nftart_award_2021',
+            ).catch(err => {
+              console.error('Failed opening page because: ', err);
+            });
           }
         }}
       />
@@ -161,10 +171,16 @@ const HotCollection = () => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? isFirstRender : HotCollectionReducer.hotCollectionPage === 1 &&
+      {isFirstRender ? (
+        isFirstRender
+      ) : HotCollectionReducer.hotCollectionPage === 1 &&
         HotCollectionReducer.hotCollectionLoading ? (
         <Loader />
-      ) : HotCollectionReducer.hotCollectionList.length !== 0 ? renderHotCollectioNFTList() : renderNoNFT()}
+      ) : HotCollectionReducer.hotCollectionList.length !== 0 ? (
+        renderHotCollectioNFTList()
+      ) : (
+        renderNoNFT()
+      )}
     </View>
   );
 };

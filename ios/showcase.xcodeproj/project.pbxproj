@@ -597,10 +597,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = showcase/showcase.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development: Piyush Singh (TH3TS7V57N)";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8XG8724LH8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -683,13 +683,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.09;
+				MARKETING_VERSION = 2.9.23;
 				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nb.xanalia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noborderz.xanalia;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
@@ -711,8 +711,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = showcase/showcase.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development: Piyush Singh (TH3TS7V57N)";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8XG8724LH8;
 				ENABLE_BITCODE = NO;
@@ -797,15 +797,15 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9.09;
+				MARKETING_VERSION = 2.9.23;
 				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nb.xanalia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noborderz.xanalia;
 				PRODUCT_NAME = showcase;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = XANALIA_AppStore;
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

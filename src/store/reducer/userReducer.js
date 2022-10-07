@@ -1,6 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {UserErrorMessage} from '../../constants';
 
 import {
   CONNECT_MODAL_STATE,
@@ -18,15 +19,17 @@ import {
   UPDATE_BACKUP,
   UPDATE_ASYNC_PASSCODE,
   LOG_OUT,
+  SET_TOAST_MESSAGE,
 } from '../types';
-import { getSig } from '../../screens/wallet/functions';
-import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
-import { translate } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../common/function';
-import { setConnectedApps } from './walletReducer';
-import sendRequest from '../../helpers/AxiosApiRequest';
-import { reject } from 'lodash';
-import { resolve } from 'path-browserify';
+import {getSig} from '../../screens/wallet/functions';
+import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
+import {translate} from '../../walletUtils';
+import {alertWithSingleBtn} from '../../common/function';
+import {setConnectedApps} from './walletReducer';
+import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+import {reject} from 'lodash';
+import {resolve} from 'path-browserify';
+import {Alert} from 'react-native';
 
 const initialState = {
   loading: false,
@@ -40,7 +43,8 @@ const initialState = {
   passcodeAsyncStatus: false,
   isBackup: false,
   showSuccess: false,
-  connectModalState: false
+  connectModalState: false,
+  toastMsg: null,
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -93,7 +97,7 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         passcode: action.payload,
-        passcodeAsync: action.payload
+        passcodeAsync: action.payload,
       };
     case UPDATE_ASYNC_PASSCODE:
       return {
@@ -118,11 +122,10 @@ export default UserReducer = (state = initialState, action) => {
       };
 
     case UPDATE_PROFILE:
-      let _data = state.userData;
-      _data.user = action.payload;
+      let _data = action.payload;
       return {
         ...state,
-        userData: { ..._data },
+        userData: {..._data},
       };
 
     case UPDATE_BACKUP:
@@ -137,6 +140,12 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         wallet: null,
       };
+
+    case SET_TOAST_MESSAGE:
+      return {
+        ...state,
+        toastMsg: action.payload,
+      };
     default:
       return state;
   }
@@ -145,7 +154,7 @@ export default UserReducer = (state = initialState, action) => {
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
 });
-export const updatePassStatus = (data) => ({
+export const updatePassStatus = data => ({
   type: UPDATE_PASS_ASYNC,
   payload: data,
 });
@@ -153,9 +162,9 @@ export const hideSplash = () => ({
   type: HIDE_SPLASH,
 });
 
-export const connectStateModal = (data) => ({
+export const connectStateModal = data => ({
   type: CONNECT_MODAL_STATE,
-  payload: data
+  payload: data,
 });
 
 export const endLoading = () => ({
@@ -174,7 +183,7 @@ export const setUserData = data => ({
   payload: data,
 });
 
-export const upateUserData = data => ({
+export const updateUserData = data => ({
   type: UPDATE_PROFILE,
   payload: data,
 });
@@ -206,6 +215,11 @@ export const _logout = () => ({
   type: 'USER_LOGGED_OUT',
 });
 
+export const setToastMsg = data => ({
+  type: SET_TOAST_MESSAGE,
+  payload: data,
+});
+
 export const startLoader = () => dispatch =>
   new Promise((resolve, reject) => {
     dispatch(startLoading());
@@ -222,7 +236,7 @@ export const endLoader = () => dispatch =>
 
 export const loadFromAsync = asyncData => (dispatch, getState) => {
   if (asyncData && asyncData.userData) {
-    const { userData, BackedUp, apps } = asyncData;
+    const {userData, BackedUp, apps} = asyncData;
     dispatch(
       setUserData({
         data: userData,
@@ -252,7 +266,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
     //   .then(response => response.json())
     //   .then(res => {
     //     if (typeof (res.data) !== 'string' && res.data) {
-    //       dispatch(upateUserData(res.data));
+    //       dispatch(updateUserData(res.data));
 
     //     }
     //     dispatch(endMainLoading());
@@ -267,7 +281,7 @@ export const loadFromAsync = asyncData => (dispatch, getState) => {
   dispatch(endMainLoading());
 };
 
-export const loadProfileFromAsync = (id) => (dispatch) => 
+export const loadProfileFromAsync = id => dispatch =>
   new Promise((resolve, reject) => {
     let req_data = {
       owner: id,
@@ -279,28 +293,28 @@ export const loadProfileFromAsync = (id) => (dispatch) =>
       data: req_data,
     })
       .then(res => {
-        if (typeof (res.data) !== 'string' && res.data) {
-          dispatch(upateUserData(res.data));
+        if (typeof res.data !== 'string' && res.data) {
+          dispatch(updateUserData(res.data));
         }
-        resolve()
+        resolve();
       })
       .catch(e => {
-        reject(e)
+        reject(e);
       });
-  })
+  });
 
 export const setUserAuthData =
   (data, isCreate = false) =>
-    dispatch =>
-      new Promise(async (resolve, reject) => {
-        dispatch(startLoading());
-        AsyncStorage.setItem('@WALLET', JSON.stringify(data));
-        dispatch(setUserData({ data, isCreate }));
-      });
+  dispatch =>
+    new Promise(async (resolve, reject) => {
+      dispatch(startLoading());
+      AsyncStorage.setItem('@WALLET', JSON.stringify(data));
+      dispatch(setUserData({data, isCreate}));
+    });
 
 export const updateCreateState = () => dispatch =>
   new Promise((resolve, reject) => {
-    dispatch({ type: UPDATE_CREATE });
+    dispatch({type: UPDATE_CREATE});
     resolve();
   });
 
@@ -311,7 +325,7 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
     const body = {
       signature: wallet.signature,
       address: wallet.address,
-      email: null
+      email: null,
     };
     dispatch(startLoading());
     sendRequest({
@@ -321,13 +335,19 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
     })
       .then(async response => {
         if (response.access_token) {
-          await EncryptedStorage.setItem("SESSION_TOKEN", JSON.stringify({
-            accessToken: response.access_token,
-            refreshToken: response.refresh_token,
-          }));
+          await EncryptedStorage.setItem(
+            'SESSION_TOKEN',
+            JSON.stringify({
+              accessToken: response.access_token,
+              refreshToken: response.refresh_token,
+            }),
+          );
           wallet.address = String(wallet?.address).toLowerCase();
-          await EncryptedStorage.setItem("@WALLET", JSON.stringify(wallet));
-          await AsyncStorage.setItem("@USERDATA", JSON.stringify(response.user));
+          await EncryptedStorage.setItem('@WALLET', JSON.stringify(wallet));
+          await AsyncStorage.setItem(
+            '@USERDATA',
+            JSON.stringify(response.user),
+          );
           dispatch(
             setUserData({
               data: response.user,
@@ -337,13 +357,13 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
           );
           resolve();
         } else {
-          console.log('error 3');
+          console.log('response from login', response);
           dispatch(endLoading());
           reject(response);
         }
       })
       .catch(err => {
-        console.log('error', err);
+        console.log('Error from login', err);
         dispatch(endLoading());
         reject(err);
       });
@@ -367,18 +387,17 @@ export const signOut = () => {
 export const updateProfileImage = formData => async (dispatch, getState) => {
   dispatch(startLoading());
 
-  const { data } = getState().UserReducer;
+  const {data} = getState().UserReducer;
   // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
   const headers = {
-    "Content-Type": 'multipart/form-data',
+    'Content-Type': 'multipart/form-data',
     Authorization: `Bearer ${data.token}`,
   };
   await axios
-    .post(`${BASE_URL}/user/update-profile-image`, formData, { headers: headers })
+    .post(`${BASE_URL}/user/update-profile-image`, formData, {headers: headers})
     .then(res => {
-      console.log('Response from update-profile-image', res.data.data)
-      dispatch(upateUserData(res.data.data));
+      dispatch(updateUserData(res.data.data));
     })
     .catch(err => {
       dispatch(endLoading());
@@ -402,67 +421,37 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     });
 };
 
-export const updateProfile =
-  (props, callBack) => async (dispatch, getState) => {
-    dispatch(startLoading());
-
-    const { data } = getState().UserReducer;
-    const config = {
-      method: 'post',
-      url: `${BASE_URL}/user/update-user-profile`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${data.token}`,
-      },
-      data: props,
-    };
-
-    await axios(config)
-      .then(res => {
-        console.log('res.data.data updateProfile', res.data.data)
-        let data = res.data.data;
-        dispatch(upateUserData(data));
-        dispatch(endLoading());
-        callBack();
-      })
-      .catch(err => {
-        dispatch(endLoading());
-
-        if (err.response.status === 401) {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.sessionexpired'),
-            () => {
-              console.log(err);
-            },
-          );
-          dispatch(signOut());
-          return;
-        }
-        if (err.response.data.data === 'email already taken') {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.emailexists'),
-            () => {
-              console.log(err);
-            },
-          );
-        } else if (err.response.data.data === 'username already taken') {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('common.usrnameexists'),
-            () => {
-              console.log(err.response.data.data);
-            },
-          );
-        } else {
-          // alertWithSingleBtn(
-          //   translate('wallet.common.alert'),
-          //   translate('wallet.common.error.networkFailed'),
-          //   () => {
-          //     console.log(err);
-          //   },
-          // );
-        }
-      });
+export const fetchData = id => {
+  return dispatch => {
+    const url = `${NEW_BASE_URL}/users/${id}`;
+    sendRequest(url).then(res => {
+      dispatch(updateUserData(res));
+    });
   };
+};
+
+export const updateProfile = (props, id) => async dispatch => {
+  sendRequest({
+    url: `${NEW_BASE_URL}/users/update-profile`,
+    method: 'PUT',
+    data: props,
+  }).then(res => {
+    dispatch(fetchData(id));
+    if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
+      let key = UserErrorMessage[res.messageCode].key;
+      dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
+    }
+  });
+};
+
+export const verifyEmail = email => async (dispatch, getState) => {
+  const {userData} = getState().UserReducer;
+  const id = userData.userWallet.address;
+  sendRequest({
+    url: `${NEW_BASE_URL}/users/verify-email`,
+    method: 'POST',
+    data: {account: email},
+  }).then(() => {
+    dispatch(fetchData(id));
+  });
+};

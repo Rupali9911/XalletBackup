@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GREY11,
     height: null,
     width: null,
-    resizeMode: 'contain',
+    // resizeMode: 'contain',
   },
   bannerCardCont: {
     paddingHorizontal: wp('5%'),
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   saveBtnGroup: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   groupField: {
     flexDirection: 'row',
@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
   },
   leftToggle: {
     width: '30%',
-    // borderTopRightRadius: 0,
-    // borderBottomRightRadius: 0,
+    borderTopRightRadius: wp('2%'),
+    borderBottomRightRadius: wp('2%'),
   },
   rightToggle: {
     width: '30%',
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: wp('2%'),
+    borderBottomLeftRadius: wp('2%'),
   },
   imageStyles: size => ({
     height: wp(size),
