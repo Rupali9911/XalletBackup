@@ -688,7 +688,8 @@
         "AIChat":"AI와 채팅",
         "enterMessage":"메시지 입력",
         "CREATED_COLLECTED": "제작 / 소유중",
-        "LIST_COLLECTION_TABLE_SYMBOL": "심볼"
+        "LIST_COLLECTION_TABLE_SYMBOL": "심볼",
+        "others": "기타"
     },
     "AwardPage": {},
     "wallet": {

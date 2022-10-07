@@ -688,7 +688,8 @@
         "AIChat":"與人工智能聊天",
         "enterMessage":"輸入您的信息",
         "CREATED_COLLECTED": "創建/收集",
-        "LIST_COLLECTION_TABLE_SYMBOL": "圖標"
+        "LIST_COLLECTION_TABLE_SYMBOL": "圖標",
+        "others": "其他"
     },
     "AwardPage": {},
     "wallet": {

@@ -687,7 +687,8 @@
         "AIChat":"Chat with AI",
         "enterMessage":"Type your message",
         "CREATED_COLLECTED": "Created / Collected",
-        "LIST_COLLECTION_TABLE_SYMBOL": "Symbol"
+        "LIST_COLLECTION_TABLE_SYMBOL": "Symbol",
+        "others": "Others"
     },
     "AwardPage": {},
     "wallet": {

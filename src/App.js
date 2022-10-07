@@ -59,7 +59,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
 import AiChat from './components/AiChat/index';
-import chatNFT from './components/AiChat/chatNFT';
+import ChatNFT from './components/AiChat/ChatNFT';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -268,7 +268,7 @@ const AppRoutes = () => {
     <NavigationContainer ref={navigatorRef} linking={linking}>
       {userData ? (
         <Stack.Navigator
-          initialRouteName={'AiChat'}
+          initialRouteName={initialRoute}
           headerMode="none"
           screenOptions={{
             animationEnabled: true,
@@ -311,7 +311,7 @@ const AppRoutes = () => {
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
           <Stack.Screen name="AiChat" component={AiChat}/>
-          <Stack.Screen name="chatNFT" component={chatNFT}/>
+          <Stack.Screen name="ChatNFT" component={ChatNFT}/>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

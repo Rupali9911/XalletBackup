@@ -1,20 +1,57 @@
 
-import { CHAT_OTHER_NFT_LOAD_START, CHAT_OTHER_NFT_LOAD_SUCCESS, CHAT_OTHER_NFT_LOAD_FAIL, CHAT_LOAD_START, CHAT_LOAD_SUCCESS, CHAT_LOAD_FAIL, CHAT_OWNED_NFT_START, CHAT_OWNED_NFT_SUCCESS, CHAT_OWNED_NFT_FAIL } from '../types';
+import {
+    //=====================Chatting=====================
+    CHAT_LOAD_START,
+    CHAT_LOAD_SUCCESS,
+    CHAT_LOAD_FAIL,
+
+    //=====================Search=====================
+    CHAT_SEARCH_LOAD_START,
+    CHAT_SEARCH_LOAD_SUCCESS,
+    CHAT_SEARCH_LOAD_FAIL,
+    SEARCH_TEXT,
+
+    //=====================Owned-Other=====================
+    CHAT_NFT_LOAD_START,
+    CHAT_NFT_LOAD_SUCCESS,
+    CHAT_NFT_LOAD_FAIL,
+    CHAT_NFT_LIST_RESET,
+    CHAT_NFT_PAGE_CHANGE,
+    CHAT_NFT_CURSOR_CHANGE,
+
+    CHAT_TAB_TITLE
+} from '../types';
 
 const initialState = {
+    //=====================Chatting=====================
     isChatLoading: false,
     chatLoadSuccess: '',
     chatLoadFail: '',
-    chatOtherNftCollectionLoading: false,
-    chatOtherNftCollectionList: [],
-    chatOtherNftCollectionFail: '',
-    chatOwnedNftCollectionLoading: false,
-    chatOwnedNftCollectionList: [],
-    chatOwnedNftCollectionFail: '',
+
+    //=====================Search=========================
+    searchLoading: false,
+    searchLoadSuccessList: [],
+    searchLoadFail: '',
+    searchText: '',
+
+    //=====================Owned-Other=========================
+    isNftLoading: false,
+    nftList: {
+        ownerNFTS: [],
+        otherNFTs: []
+    },
+    nftLoadFail: '',
+    nftPageChange: 1,
+    nftTotalCount: 0,
+    nftCursor: "",
+
+    tabTitle: true,
 }
 
 export default function chatReducer(state = initialState, action) {
+    // console.log('============',state, action)
     switch (action.type) {
+        //=====================Chatting=====================
         case CHAT_LOAD_START:
             return { ...state, isChatLoading: true };
 
@@ -24,26 +61,56 @@ export default function chatReducer(state = initialState, action) {
         case CHAT_LOAD_FAIL:
             return { ...state, chatLoadFail: action.payload, isChatLoading: false };
 
-        case CHAT_OTHER_NFT_LOAD_START:
-            return { ...state, chatOtherNftCollectionLoading: true };
+        //=====================Owned-Other=====================
+        case CHAT_NFT_LOAD_START:
+            return { ...state, isNftLoading: true };
 
-        case CHAT_OTHER_NFT_LOAD_SUCCESS:
-            return { ...state, chatOtherNftCollectionList: action.payload, chatOtherNftCollectionLoading: false, chatOtherNftCollectionFail: '' };
+        case CHAT_NFT_LOAD_SUCCESS:
+            return {
+                ...state,
+                nftList: { ...state.nftList, ...action.payload.nftList },
+                nftCursor: action.payload.nftCursor,
+                nftTotalCount: action.payload.nftTotalCount,
+                isNftLoading: false,
+                nftLoadFail: '',
+            };
 
-        case CHAT_OTHER_NFT_LOAD_FAIL:
-            return { ...state, chatOtherNftCollectionFail: action.payload, chatOtherNftCollectionLoading: false };
+        case CHAT_NFT_LOAD_FAIL:
+            return { ...state, nftLoadFail: action.payload, isNftLoading: false };
 
-        case CHAT_OWNED_NFT_START:
-            return { ...state, chatOwnedNftCollectionLoading: true };
+        case CHAT_NFT_PAGE_CHANGE:
+            return state = { ...state, nftPageChange: action.payload };
 
-        case CHAT_OWNED_NFT_SUCCESS:
-            return { ...state, chatOwnedNftCollectionList: action.payload, chatOwnedNftCollectionLoading: false, chatOwnedNftCollectionFail: '' };
+        case CHAT_NFT_LIST_RESET:
+            return state = {
+                ...state, nftList: {
+                    ownerNFTS: [],
+                    otherNFTs: []
+                }
+            };
 
-        case CHAT_OWNED_NFT_FAIL:
-            return { ...state, chatOwnedNftCollectionFail: action.payload, chatOwnedNftCollectionLoading: false };
+        case CHAT_NFT_CURSOR_CHANGE:
+            return state = { ...state, nftCursor: action.payload };
 
+        //=====================Search=====================
+        case CHAT_SEARCH_LOAD_START:
+            return { ...state, searchLoading: true };
+
+        case CHAT_SEARCH_LOAD_SUCCESS:
+            return { ...state, searchLoadSuccessList: action.payload, searchLoading: false, searchLoadFail: '' };
+
+        case CHAT_SEARCH_LOAD_FAIL:
+            return { ...state, searchLoadFail: action.payload, searchLoading: false };
+
+        case SEARCH_TEXT:
+            return { ...state, searchText: action.payload };
+
+        case CHAT_TAB_TITLE:
+            return { ...state, tabTitle: action.payload };
 
         default:
             return state;
     }
 }
+
+
