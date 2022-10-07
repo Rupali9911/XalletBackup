@@ -11,7 +11,7 @@ if (networkType === "mainnet") {
   NEW_BASE_URL = "https://prod-backend.xanalia.com";
   PROVIDER_URL = "https://bsc-dataseed.binance.org/";
   API_GATEWAY_URL = "https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1";
-  NEXT_PUBLIC_SOCKET_DOMAIN = "https://socket.xanalia.com"
+  NEXT_PUBLIC_SOCKET_DOMAIN = "https://prod-socket.xanalia.com"
 } else {
   BASE_URL = "https://testapi.xanalia.com";
   NEW_BASE_URL = "https://backend.xanalia.com";

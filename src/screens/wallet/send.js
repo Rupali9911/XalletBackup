@@ -266,9 +266,10 @@ const SendScreen = React.memo((props) => {
     }
 
     const transferAmount = async () => {
+        let wallet = await getWallet();
         console.log("@@@ On Actual Send screen wallet details==============>", wallet)
         const publicAddress = wallet?.address;
-        const privKey = wallet.privateKey;
+        const privKey = wallet?.privateKey;
         const toAddress = address;
         const { item, type, setLoading } = props;
         setLoading(true);
@@ -478,7 +479,7 @@ const SendScreen = React.memo((props) => {
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
-                            transferAmount();
+
                             if (address && address !== '' && amount > 0) {
                                 if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
                                     setLoading(true);

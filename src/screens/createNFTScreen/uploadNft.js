@@ -949,11 +949,6 @@ const UploadNFT = ({
         }
     }
 
-    useSocketGlobal(
-        SOCKET_EVENTS.sendDataSignCreateNftSuccess,
-        handleSocketResultMintNFT,
-    )
-
     const handleSocketResultMintNFT = useCallback(
         async (data) => {
             console.log('SUCCESS_DATA', data)
@@ -970,14 +965,20 @@ const UploadNFT = ({
     )
 
     useSocketGlobal(
-        SOCKET_EVENTS.externalCreateNftSuccess,
-        handleCreateNFTSuccess,
+        SOCKET_EVENTS.sendDataSignCreateNftSuccess,
+        handleSocketResultMintNFT,
     )
 
     const handleCreateNFTSuccess = (data) => {
         console.log('CREATE_SUCCESS', data)
         alertWithSingleBtn('', translate('common.tansactionSuccessFull'));
     }
+
+    useSocketGlobal(
+        SOCKET_EVENTS.externalCreateNftSuccess,
+        handleCreateNFTSuccess,
+    )
+
 
 
     const handleMintAndTradeNFT = async (data, txnType) => {
