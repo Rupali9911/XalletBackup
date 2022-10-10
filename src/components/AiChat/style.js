@@ -3,8 +3,6 @@ import { hp, RF, wp } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import CommonStyles from '../../constants/styles';
 import { SIZE } from '../../common/responsiveFunction';
-import Fonts from '../../constants/Fonts';
-
 
 const styles = StyleSheet.create({
 
@@ -26,7 +24,6 @@ const styles = StyleSheet.create({
     },
     input: {
         paddingHorizontal: 15,
-        // paddingVertical: Platform.OS === 'ios' ? 10 : 8,
         height:  Platform.OS === 'ios' ? hp(5): hp(5),
         borderColor: '#ced4da',
         borderWidth: 2,
@@ -36,7 +33,6 @@ const styles = StyleSheet.create({
     },
     sendBtn: {
         paddingHorizontal: 15,
-        // paddingVertical: 10,
         height:  Platform.OS === 'ios' ? hp(5): hp(5),
         backgroundColor: '#3c7bde',
         justifyContent: 'center',
@@ -137,7 +133,6 @@ const styles = StyleSheet.create({
         height: hp('5%'),
         marginHorizontal: 10,
         paddingVertical: 10,
-        // paddingHorizontal: 10,
         flexDirection: 'row',
         shadowColor: '#fff'
     },
@@ -254,22 +249,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center'
       },
-    //   searchBar: {
-    //     borderWidth: 1,
-    //     borderColor: Colors.borderLightColor3,
-    //     borderRadius: hp('3%'),
-    //     width: wp('95%'),
-    //     height: hp('5%'),
-    //     paddingVertical: 0,
-    //   },
-    //   inputStyle: {
-    //     fontSize: RF(1.8),
-    //     fontFamily: Fonts.PINGfANG,
-    //     color: Colors.BLACK1,
-    //     height: '100%',
-    //     margin: 0,
-    //     padding: 0
-    //   },
 })
 
 export default styles;

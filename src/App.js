@@ -58,7 +58,7 @@ import {setPasscodeAsync, updatePassStatus} from './store/reducer/userReducer';
 import {MenuProvider} from 'react-native-popup-menu';
 import {NativeBaseProvider} from 'native-base';
 import Images from './constants/Images';
-import AiChat from './components/AiChat/index';
+import AiChat from './components/AiChat';
 import ChatNFT from './components/AiChat/ChatNFT';
 import WebView from './components/WebView';
 

@@ -13,12 +13,12 @@ import { ActivityIndicator } from 'react-native-paper';
 const NftCollections = ({ navigation, route }) => {
     const { Owned } = route.params;
 
-    // =============== Getting data from States =================================
+    // =============== Getting data from States =========================
     const [isDetailScreen, setDetailScreen] = useState(false);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
 
-    // =============== Getting data from reducer ======================== 
+    // =============== Getting data from reducer ========================
     const {
         searchText,
         isNftLoading,
@@ -62,7 +62,7 @@ const NftCollections = ({ navigation, route }) => {
 
     // ========================== Footer call =================================
     const renderFooter = () => {
-        if (!isLoading) return null;
+        if (!isLoading && !searchText) return null;
         return (
             <ActivityIndicator size='small' color={Colors.themeColor} />
         );
@@ -72,12 +72,10 @@ const NftCollections = ({ navigation, route }) => {
     const handleFlatListEndReached = () => {
         if (!isLoading && nftCollectionList.length !== totalCount && !searchText) {
             let num = page + 1;
-            console.log(num, cursor)
             dispatch(nftLoadStart());
             getDataCollection(num, cursor);
             dispatch(nftListPageChange(num));
             dispatch(nftListCursorChange(cursor));
-
         }
     };
 

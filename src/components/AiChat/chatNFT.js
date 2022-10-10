@@ -37,7 +37,6 @@ const ChatNFT = ({ route, navigation }) => {
         </View>
         <View style={[styles.timeFormat, { marginRight: 10 }]}>
           <C_Image uri={item.senderImage} imageStyle={styles.bubbleImage} />
-          {/* <Image source={{ uri: item.senderImage }} style={styles.bubbleImage} /> */}
           <Text style={styles.statusText}>{item.time}</Text>
         </View>
       </View>
@@ -51,11 +50,6 @@ const ChatNFT = ({ route, navigation }) => {
       <View style={styles.leftBubbleContainer}>
         <View style={[styles.timeFormat, { marginLeft: 10 }]}>
           <C_Image uri={item.receiverImage} imageStyle={styles.bubbleImage} />
-
-          {/* <Image
-            source={{ uri: item.receiverImage }}
-            style={styles.bubbleImage}
-          /> */}
           <Text style={styles.statusText}>{item.time}</Text>
         </View>
         <View style={styles.talkBubble}>
@@ -137,7 +131,7 @@ const ChatNFT = ({ route, navigation }) => {
               {chatNft.name.slice(chatNft.name.lastIndexOf('#'))}
             </Text>
             {isChatLoading ? (
-              <Text style={styles.typingMessage}>Typing...</Text>
+              <Text style={styles.typingMessage}>{translate('common.typing')}</Text>
             ) : null}
           </View>
         </View>
