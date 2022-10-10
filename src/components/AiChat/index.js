@@ -38,8 +38,8 @@ const AiChat = () => {
             backgroundColor: COLORS.BLUE4,
           }
         }}>
-        <Tab.Screen name={translate("wallet.common.owned")} component={NftCollections} initialParams={{ Owned: true }} />
-        <Tab.Screen name={translate("common.others")} component={NftCollections} initialParams={{ Owned: false }} />
+        <Tab.Screen name={translate("wallet.common.owned")} component={NftCollections} initialParams={{ tabScreen: 'Owned' }} />
+        <Tab.Screen name={translate("common.others")} component={NftCollections} initialParams={{ tabScreen: 'Other' }} />
       </Tab.Navigator>
 
     </SafeAreaView>

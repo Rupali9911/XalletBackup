@@ -98,16 +98,15 @@ export const setTabTitle = (data) => ({
 
 //=====================Chat=====================
 export const getAiChat = (message, address, name, tokenId, is_Owned) => (dispatch) => {
-  console.log(message, address, name, tokenId, is_Owned);
   dispatch(chatLoadingStart(true))
   return new Promise((resolve, reject) => {
     let url = `${NEW_BASE_URL}/xana-genesis-chat/chat-bot`;
     let data = {
-      address: address,
+      address,
       bot_name: name,
       text: message,
-      tokenId: tokenId,
-      is_Owned: is_Owned
+      tokenId,
+      is_Owned: is_Owned === 'Owned' ? true : false
     };
     sendRequest({
       url,
@@ -131,21 +130,20 @@ export const getAiChat = (message, address, name, tokenId, is_Owned) => (dispatc
 
 //==================================Owned-Other==============================
 export const getNftCollections = (page, address, cursor) => (dispatch, getState) => {
-  const { tabTitle } = getState().chatReducer;
+  const { tabTitle, nftList } = getState().chatReducer;
 
   let url = `${NEW_BASE_URL}/xana-genesis-chat`;
-  url = tabTitle ? `${url}/get-my-data` : `${url}/get-other-data`;
-  let limit = 100;
+  url = tabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
+  let limit = 300;
 
   let data = {
     cursor,
     owner: address,
     page,
-    limit
   };
-  // if (owned) {
-  //   data.limit = limit;
-  // }
+  if (tabTitle === 'Owned') {
+    data.limit = limit;
+  }
 
   sendRequest({
     url,
@@ -161,13 +159,14 @@ export const getNftCollections = (page, address, cursor) => (dispatch, getState)
           otherNFTs: []
         }
       }
-      if (tabTitle) {
-        res.nftList.ownerNFTS = response.result;
+      if (tabTitle === 'Owned') {
+        res.nftList.ownerNFTS = nftList.ownerNFTS.concat(response.result);
       }
       else {
-        res.nftList.otherNFTs = response.result;
+        res.nftList.otherNFTs = nftList.otherNFTs.concat(response.result);
       }
       dispatch(nftLoadSuccessList(res));
+
     })
     .catch(err => { console.log('Error : ', err) })
 }

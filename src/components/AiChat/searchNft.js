@@ -71,23 +71,11 @@ const SearchInput = () => {
 
     // <View style={styles.searchBar}>
     //   <SearchIcon width={20} height={20} />
-
     //   <TextInput
     //     style={{ paddingLeft: 10 }}
     //     placeholder={translate("common.search")}
     //     onChangeText={text => { setSearchTxt(text) }}
     //     inputStyle={styles.inputStyle}
-    //     value={searchTxt}
-    //     multiline={false}
-    //   />
-    //    <Searchbar
-    //     style={styles.searchBar}
-    //     inputStyle={styles.inputStyle}
-    //     selectionColor={Colors.BLACK1}
-    //     placeholder={translate('wallet.common.searchHint')}
-    //     onChangeText={txt => {
-    //       setSearchTxt(txt);
-    //     }}
     //     value={searchTxt}
     //     multiline={false}
     //   />

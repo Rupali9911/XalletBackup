@@ -45,7 +45,7 @@ const initialState = {
     nftTotalCount: 0,
     nftCursor: "",
 
-    tabTitle: true,
+    tabTitle: 'Owned',
 }
 
 export default function chatReducer(state = initialState, action) {

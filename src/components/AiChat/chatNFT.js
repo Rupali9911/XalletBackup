@@ -5,9 +5,11 @@ import { getAiChat, chatLoadingSuccess } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { C_Image } from '../../components';
+import { C_Image } from '..';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ChatInput from './ChatInput';
+import moment from 'moment';
+
 
 const ChatNFT = ({ route, navigation }) => {
   let { chatNft, tokenId, is_Owned } = route.params;
@@ -81,11 +83,7 @@ const ChatNFT = ({ route, navigation }) => {
 
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
-    let timeConversion = time.toLocaleTimeString('en-US', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    let timeConversion = moment(time).format('h:mm A');
 
     if (msg && msg != '') {
       let sendObj = {

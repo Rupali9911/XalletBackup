@@ -11,7 +11,7 @@ import { ActivityIndicator } from 'react-native-paper';
 
 
 const NftCollections = ({ navigation, route }) => {
-    const { Owned } = route.params;
+    const { tabScreen } = route.params;
 
     // =============== Getting data from States =========================
     const [isDetailScreen, setDetailScreen] = useState(false);
@@ -31,29 +31,25 @@ const NftCollections = ({ navigation, route }) => {
     const { userData } = useSelector(state => state.UserReducer);
 
     let owner = userData.userWallet.address;
-    const isLoading = isNftLoading;
-    const nftCollectionList = tabTitle ? nftList.ownerNFTS : nftList.otherNFTs;
-    const page = nftPageChange;
-    const totalCount = nftTotalCount;
-    const cursor = nftCursor;
+    const nftCollectionList = tabTitle === 'Owned' ? nftList.ownerNFTS : nftList.otherNFTs;
 
     // ===================== Use-effect call =================================
     useEffect(() => {
         if (isFocused) {
-            dispatch(setTabTitle(Owned));
+            dispatch(setTabTitle(tabScreen));
         }
         if (isFocused && !isDetailScreen && !searchText) {
-            dispatch(setTabTitle(Owned));
+            dispatch(setTabTitle(tabScreen));
 
             dispatch(nftLoadStart());
             dispatch(nftListReset());
-            getDataCollection(page, '');
+            getDataCollection(nftPageChange, '');
             dispatch(nftListPageChange(1));
         }
         else {
             isFocused && setDetailScreen(false);
         }
-    }, [isFocused, searchText, Owned]);
+    }, [isFocused, searchText]);
 
     // ========================== API call =================================
     const getDataCollection = useCallback((page, cursor) => {
@@ -62,7 +58,7 @@ const NftCollections = ({ navigation, route }) => {
 
     // ========================== Footer call =================================
     const renderFooter = () => {
-        if (!isLoading && !searchText) return null;
+        if (!isNftLoading) return null;
         return (
             <ActivityIndicator size='small' color={Colors.themeColor} />
         );
@@ -70,12 +66,12 @@ const NftCollections = ({ navigation, route }) => {
 
     // ========================== On-End Reached of Flatlist =================================
     const handleFlatListEndReached = () => {
-        if (!isLoading && nftCollectionList.length !== totalCount && !searchText) {
-            let num = page + 1;
+        if (!isNftLoading && nftCollectionList.length !== nftTotalCount && !searchText) {
+            let num = nftPageChange + 1;
             dispatch(nftLoadStart());
-            getDataCollection(num, cursor);
+            getDataCollection(num, nftCursor);
             dispatch(nftListPageChange(num));
-            dispatch(nftListCursorChange(cursor));
+            dispatch(nftListCursorChange(nftCursor));
         }
     };
 
@@ -110,7 +106,7 @@ const NftCollections = ({ navigation, route }) => {
             <TouchableOpacity
                 onPress={() => {
                     setDetailScreen(true);
-                    navigation.navigate('ChatNFT', { chatNft: data, tokenId: item.token_id, is_Owned: Owned })
+                    navigation.navigate('ChatNFT', { chatNft: data, tokenId: item.token_id, is_Owned: tabScreen })
                 }}
             >
                 <View style={styles.nftItemContainer}>
@@ -131,7 +127,7 @@ const NftCollections = ({ navigation, route }) => {
     //=====================(Main return Function)=============================
     return (
         <View style={{ backgroundColor: Colors.white, flex: 1 }}>
-            { isLoading && page == 1 || Owned != tabTitle ?
+            { isNftLoading && nftPageChange == 1 || tabScreen != tabTitle ?
                 <View style={styles.centerViewStyle}>
                     <ActivityIndicator size="small" color={Colors.themeColor} />
                 </View>
@@ -148,7 +144,7 @@ const NftCollections = ({ navigation, route }) => {
                                 onEndReached={handleFlatListEndReached}
                                 ListFooterComponent={renderFooter}
                                 onRefresh={handleFlatlistRefresh}
-                                refreshing={isLoading && page == 1}
+                                refreshing={isNftLoading && nftPageChange == 1}
                             />
                         </View>
                     )
