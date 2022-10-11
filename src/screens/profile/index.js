@@ -82,6 +82,7 @@ const {
   EditImage,
   CopyProfile,
   SettingIconBlack,
+  DefaultProfile,
 } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
@@ -258,7 +259,6 @@ function Profile({navigation, connector, route}) {
                 : image.filename;
 
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
-
             let temp = {
               path: image.path,
               uri: uri,
@@ -311,15 +311,23 @@ function Profile({navigation, connector, route}) {
   };
 
   const renderBannerImage = () => {
-    return (
+    return userData.banner ? (
       <C_Image uri={userData.banner} imageStyle={styles.collectionListImage} />
+    ) : (
+      <View style={styles.collectionWrapper} />
     );
   };
 
   const renderIconImage = () => {
     return (
       <TouchableOpacity onPress={() => onSelect('profile')}>
-        <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />
+        {userData.avatar ? (
+          <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />
+        ) : (
+          <View style={styles.iconImage}>
+            <DefaultProfile width={SIZE(150)} height={SIZE(150)} />
+          </View>
+        )}
       </TouchableOpacity>
     );
   };
@@ -498,12 +506,14 @@ const styles = StyleSheet.create({
   collectionWrapper: {
     height: SIZE(200),
     alignItems: 'center',
+    backgroundColor: colors.DARK_GREY,
   },
   iconImage: {
     width: SIZE(150),
     height: SIZE(150),
     borderRadius: SIZE(150),
     marginBottom: SIZE(10),
+    backgroundColor: colors.PERIWINKLE,
   },
   iconWrapper: {
     marginTop: SIZE(-80),

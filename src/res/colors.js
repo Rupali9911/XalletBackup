@@ -60,7 +60,9 @@ const colors = {
     GRADIENTLIGHT: "#5F94FF",
     GRADIENTDARK: "#3F4BAA",
     SUCCESSBUTTON: "#FEB902",
-    GREEN2: "#42ba96"
+    GREEN2: "#42ba96",
+    DARK_GREY:"#3d3d3d",
+    PERIWINKLE:"#bac5e0",
 }
 
 export default colors;
