@@ -99,7 +99,7 @@ const NftCollections = ({ navigation, route }) => {
 
     // ========================== Reender Item of Flatlist ==========================================
     const renderItem = ({ item, index }) => {
-        let metaData = item.metadata;
+        let metaData = item?.metadata;
         const data = JSON.parse(metaData);
 
         return (
@@ -116,7 +116,7 @@ const NftCollections = ({ navigation, route }) => {
                             imageStyle={styles.cImageContainer}
                         />
                     </View>
-                    <Text style={styles.nftTextShow}> {data.name.slice(data.name.lastIndexOf("#"))} </Text>
+                    <Text style={styles.nftTextShow}> {data?.name.slice(data?.name.lastIndexOf("#"))} </Text>
                 </View>
             </TouchableOpacity>
         )
