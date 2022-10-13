@@ -1,6 +1,7 @@
+import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import { CommonActions } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -12,20 +13,20 @@ import DeviceInfo from 'react-native-device-info';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import {useDispatch, useSelector} from 'react-redux';
-import {alertWithSingleBtn, confirmationAlert} from '../../common/function';
+import { useDispatch, useSelector } from 'react-redux';
+import { alertWithSingleBtn, confirmationAlert } from '../../common/function';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader} from '../../components';
+import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
-import {colors} from '../../res';
-import {setAppLanguage} from '../../store/reducer/languageReducer';
-import {endMainLoading, _logout} from '../../store/reducer/userReducer';
-import {languageArray, translate} from '../../walletUtils';
-import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
+import { colors } from '../../res';
+import { setAppLanguage } from '../../store/reducer/languageReducer';
+import { getAllCards } from '../../store/reducer/paymentReducer';
+import { endMainLoading, _logout } from '../../store/reducer/userReducer';
+import { languageArray, translate } from '../../walletUtils';
 import styles from './styled';
 
 const optionalConfigObject = {
@@ -64,7 +65,7 @@ const ListItem = props => {
         {props.rightText ? (
           <Text style={styles.listLabel}>{props.rightText}</Text>
         ) : props.right ? (
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text style={styles.listLabel}>{props.right}</Text>
             <EntypoIcon
               size={RF(2.5)}
@@ -93,13 +94,13 @@ const JapaneseLangTrans = {
   ch: '中国語（簡体）',
 };
 
-function Setting({navigation}) {
+function Setting({ navigation }) {
   const dispatch = useDispatch();
   // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  const {myCards} = useSelector(state => state.PaymentReducer);
-  // const {userData} = useSelector(state => state.UserReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { myCards } = useSelector(state => state.PaymentReducer);
+  const { userData } = useSelector(state => state.UserReducer);
 
   useEffect(() => {
     // dispatch(getAllCards(userData.access_token));
@@ -112,7 +113,7 @@ function Setting({navigation}) {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{name: 'Me'}],
+          routes: [{ name: 'Me' }],
         }),
       );
     } else {
@@ -150,16 +151,16 @@ function Setting({navigation}) {
     );
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{width: '100%', backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ width: '100%', backgroundColor: '#fff' }}>
         <AppHeader
           title={translate('wallet.common.settingRight')}
           showBackButton
         />
       </View>
       <ScrollView>
-        <View style={[styles.section2, {marginTop: 0}]}>
-          {/* <ListItem
+        <View style={[styles.section2, { marginTop: 0 }]}>
+          <ListItem
             onPress={() => {
               if (myCards.length > 0) {
                 navigation.navigate('Cards', { price: 0, isCardPay: false });
@@ -169,13 +170,13 @@ function Setting({navigation}) {
               }
             }}
             label={translate('wallet.common.AECredit')}
-          /> */}
-          <View style={{...styles.separator, width: wp('81%')}} />
+          />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
             label={translate('wallet.common.security')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() =>
               alertWithSingleBtn(
@@ -185,18 +186,18 @@ function Setting({navigation}) {
             }
             label={translate('wallet.common.notifications')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
 
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => navigation.navigate('AiChat')}
             label={translate('common.AIChat')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => null}
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(
@@ -206,7 +207,33 @@ function Setting({navigation}) {
             label={translate('wallet.common.version')}
           />
           <ListItem
-            onPress={onLogout}
+            onPress={() => {
+              confirmationAlert(
+                translate('wallet.common.verification'),
+                translate('wallet.common.logOutQ'),
+                translate('wallet.common.cancel'),
+                '',
+                async () => {
+                  const _selectedLanguageItem = selectedLanguageItem;
+                  await EncryptedStorage.clear();
+                  AsyncStorage.multiRemove(
+                    [
+                      '@passcode',
+                      '@USERDATA',
+                      '@BackedUp',
+                      '@apps',
+                      '@CURRENT_NETWORK_CHAIN_ID',
+                    ],
+                    err => console.log(err),
+                  ).then(() => {
+                    dispatch(_logout());
+                    dispatch(endMainLoading());
+                    dispatch(setAppLanguage(_selectedLanguageItem));
+                  });
+                },
+                () => null,
+              );
+            }}
             rightText={``}
             noArrow={true}
             label={translate('common.Logout')}
@@ -235,7 +262,7 @@ function Setting({navigation}) {
           <Text style={styles.modalTitle}>
             {translate('wallet.common.selectLanguage')}
           </Text>
-          <View style={{marginTop: hp('3%')}}>
+          <View style={{ marginTop: hp('3%') }}>
             {languageArray.map((v, i) => {
               return (
                 <TouchableOpacity
@@ -243,7 +270,7 @@ function Setting({navigation}) {
                   onPress={() => {
                     updateLanguage(v);
                   }}
-                  style={{...styles.centerProfileCont, flex: null}}>
+                  style={{ ...styles.centerProfileCont, flex: null }}>
                   <Text style={styles.listLabel}>
                     {selectedLanguageItem.language_name === 'ja'
                       ? JapaneseLangTrans[v.language_name]
