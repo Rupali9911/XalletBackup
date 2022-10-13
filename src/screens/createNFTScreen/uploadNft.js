@@ -979,8 +979,6 @@ const UploadNFT = ({
         handleCreateNFTSuccess,
     )
 
-
-
     const handleMintAndTradeNFT = async (data, txnType) => {
         try {
             const transactionParameters = {
@@ -992,6 +990,7 @@ const UploadNFT = ({
                 // value: '0x00', // Only required to send ether to the recipient from the initiating external account.
                 data: data.data, // Optional, but used for defining smart contract creation and interaction.
                 chainId: networkType?.chainId, // Used to prevent transaction reuse across b
+                networkId: data?.networkId
             }
             if (txnType) {
                 await sendCustomTransaction(
@@ -1072,7 +1071,7 @@ const UploadNFT = ({
             setFixedPrice(v)
         }
     }
-    let disableBtn = collection && nftName && nftDesc && nftImageType && nftImage && (!nftImage.mime.includes("gif") && nftImageThumb) && basePrice && (toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate) : fixedPrice > 0);
+    let disableBtn = collection && nftName && nftDesc && nftImageType && nftImage && (!nftImage.mime.includes("gif") ? nftImageThumb : true) && basePrice && (toggleButton == "timeAuction" ? (fixedPrice && fixedPrice > 0) && (startTimeDate < endTimeDate) : fixedPrice > 0);
 
     let networkTypeStatus = networkType.name == "BSC" ?
         translate("common.BinanceNtwk") : networkType.name == "Polygon" ?

@@ -554,7 +554,7 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get Ethereum Balances ========================
   const getEthereumBalances = pubKey => {
-    // console.log("@@@ get Ethereum balance ========>", pubKey);
+    console.log("@@@ get Ethereum balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.ethRpc, 'eth'),
@@ -589,7 +589,7 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get BSC Balances ========================
   const getBSCBalances = pubKey => {
-    // console.log("@@@ get BSC balance ========>", pubKey);
+    console.log("@@@ get BSC balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
@@ -611,7 +611,7 @@ const Wallet = ({ route, navigation }) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          console.log('BSC RESPONSES', responses);
+          console.log('@@@ BSC BALANCE RESPONSES ========>', responses);
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
@@ -633,7 +633,7 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get Polygon Balances ========================
   const getPolygonBalances = pubKey => {
-    // console.log("@@@ get polygon balance ========>", pubKey);
+    console.log("@@@ get polygon balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.polRpc, 'matic'),

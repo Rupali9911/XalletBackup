@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, Image,
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 import { RF, hp, wp } from '../../constants/responsiveFunct';
-import { translate, amountValidation, environment, processScanResult, SCAN_WALLET } from '../../walletUtils';
+import { translate, amountValidation, environment, processScanResult, SCAN_WALLET, getConfigDetailsFromEnviorment } from '../../walletUtils';
 import { alertWithSingleBtn } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { transfer } from './functions';
@@ -26,6 +26,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import { getWallet } from '../../helpers/AxiosApiRequest';
+import { balanceTransfer } from '../wallet/functions/transactionFunctions'
 
 
 const verifyAddress = (address) => {
@@ -195,7 +196,7 @@ const SendScreen = React.memo((props) => {
 
     //====================== Getting data from reducers =========================
     const { userData } = useSelector(state => state.UserReducer);
-    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance, usdcBalance, wethBalance } = useSelector(state => state.WalletReducer);
+    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance, usdcBalance, wethBalance, networkType } = useSelector(state => state.WalletReducer);
 
     //====================== States Initiliazation =========================
     const [address, setAddress] = useState(props.address);
@@ -267,153 +268,34 @@ const SendScreen = React.memo((props) => {
 
     const transferAmount = async () => {
         let wallet = await getWallet();
-        console.log("@@@ On Actual Send screen wallet details==============>", wallet)
-        const publicAddress = wallet?.address;
-        const privKey = wallet?.privateKey;
-        const toAddress = address;
         const { item, type, setLoading } = props;
-        setLoading(true);
-        switch (type) {
-            case 'ETH':
-                transfer(publicAddress, privKey, amount, toAddress, "eth", "ethereum", "", "", environment.ethRpc, 10, 21000).then((ethBalance) => {
-                    console.log("ethBalance", ethBalance);
-                    if (ethBalance.success) {
-                        showSuccessAlert();
-                    }
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-                return;
-            case 'USDT':
-                transfer(publicAddress, privKey, amount, toAddress, "usdt", "ethereum", environment.usdtCont, environment.usdtAbi, environment.ethRpc, 10, 81778).then((usdtBalance) => {
-                    console.log("usdtBalance", usdtBalance);
-                    if (usdtBalance.success) {
-                        showSuccessAlert();
-                    }
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
 
-                return;
-            case 'BNB':
-                transfer(publicAddress, privKey, amount, toAddress, "bnb", "binance", "", "", environment.bnbRpc, 10, 21000).then((bnbBalance) => {
-                    console.log("bnbBalance", bnbBalance);
-                    if (bnbBalance.success) {
-                        showSuccessAlert();
-                    }
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-                return;
-            case 'BUSD':
-                transfer(publicAddress, privKey, amount, toAddress, "busd", "binance", environment.busdCont, environment.busdAbi, environment.bnbRpc, 10, 81778).then((busdBalance) => {
-                    console.log("busdBalance@@@@", busdBalance);
-                    showSuccessAlert();
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-                return;
-            case 'ALIA':
-                item.network === "BSC" ?
-                    transfer(publicAddress, privKey, amount, toAddress, "alia", "binance", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
-                        console.log("tnftBalance======>", tnftBalance);
-                        setLoading(false);
-                        if (tnftBalance.success) {
-                            showSuccessAlert();
-                        }
-                    }).catch((err) => {
-                        console.log("err", err);
-                        setLoading(false);
-                        showErrorAlert(err.msg);
-                    }) : transfer(publicAddress, privKey, amount, toAddress, "alia", "polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
-                        console.log("talBalance=====>", talBalance);
-                        setLoading(false);
-                        if (talBalance.success) {
-                            showSuccessAlert();
-                        }
-                    }).catch((err) => {
-                        console.log("err", err);
-                        setLoading(false);
-                        showErrorAlert(err.msg);
-                    });
-                return;
-            case 'Matic':
-                transfer(publicAddress, privKey, amount, toAddress, "matic", "polygon", "", " ", environment.polRpc, 10, 21000).then((maticBalance) => {
-                    console.log("maticBalance", maticBalance);
-                    if (maticBalance.success) {
-                        showSuccessAlert();
-                    }
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
-                return;
-            case 'USDC':
-                transfer(publicAddress, privKey, amount, toAddress, "usdc", "polygon", environment.usdcCont, environment.usdcAbi, environment.polRpc, 10, 81778).then((usdcBalance) => {
-                    console.log("usdcBalance", usdcBalance);
-                    showSuccessAlert();
-                    setLoading(false);
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
-                return;
-            case 'TNFT':
-                transfer(publicAddress, privKey, amount, toAddress, "tnft", "binance", environment.tnftCont, environment.tnftAbi, environment.bnbRpc, 10, 81778).then((tnftBalance) => {
-                    console.log("tnftBalance======>", tnftBalance);
-                    setLoading(false);
-                    if (tnftBalance.success) {
-                        showSuccessAlert();
-                    }
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-
-            case 'TAL':
-                transfer(publicAddress, privKey, amount, toAddress, "tal", "polygon", environment.talCont, environment.tnftAbi, environment.polRpc, 10, 81778).then((talBalance) => {
-                    console.log("talBalance=====>", talBalance);
-                    setLoading(false);
-                    if (talBalance.success) {
-                        showSuccessAlert();
-                    }
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-            case 'WETH':
-                transfer(publicAddress, privKey, amount, toAddress, "weth", "polygon", environment.wethCont, environment.wethAbi, environment.polRpc, 10, 81778).then((wethBalance) => {
-                    console.log("ethBalance", wethBalance);
-                    setLoading(false);
-                    if (talBalance.success) {
-                        showSuccessAlert();
-                    }
-                }).catch((err) => {
-                    console.log("err", err);
-                    setLoading(false);
-                    showErrorAlert(err.msg);
-                });
-            default:
+        const transferParameters = {
+            publicAddress: wallet?.address,
+            privKey: wallet?.privateKey,
+            amount: amount,
+            toAddress: address,
+            tokenType: type,
+            chainType: networkType?.name,
+            chainId: networkType?.chainId,
+            networkId: networkType?.id,
         }
+        setLoading(true);
+        console.log("@@@ parameters in transation function =============>", networkType?.name, type);
+        const config = getConfigDetailsFromEnviorment(networkType?.name, type);
+        console.log("@@@ config in transation function =============>", config);
+
+        balanceTransfer(transferParameters, config).then((transferResponse) => {
+            console.log("Balance Transfer response ======>", transferResponse);
+            setLoading(false);
+            if (transferResponse?.success) {
+                showSuccessAlert();
+            }
+        }).catch((err) => {
+            console.log("err", err);
+            setLoading(false);
+            showErrorAlert(err.msg);
+        });
     }
 
     const showSuccessAlert = () => {
@@ -479,10 +361,9 @@ const SendScreen = React.memo((props) => {
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {
-
                             if (address && address !== '' && amount > 0) {
                                 if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
-                                    setLoading(true);
+                                    // setLoading(true);
                                     verifyAddress(address).then(() => {
                                         transferAmount();
                                     }).catch(() => {
@@ -496,7 +377,8 @@ const SendScreen = React.memo((props) => {
                             } else {
                                 showErrorAlert(translate("wallet.common.requireSendField"));
                             }
-                        }} />
+                        }
+                        } />
                 </View>
             </KeyboardAwareScrollView>
         </View>
