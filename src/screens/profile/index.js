@@ -1,52 +1,55 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import React, { useEffect, useRef, useState } from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  RefreshControl,
+  Image,
+  Dimensions,
 } from 'react-native';
 import {
   Menu,
   MenuOption,
   MenuOptions,
-  MenuTrigger
+  MenuTrigger,
 } from 'react-native-popup-menu';
 
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
-import { openSettings } from 'react-native-permissions';
-import { confirmationAlert } from '../../common/function';
+import {openSettings} from 'react-native-permissions';
+import {confirmationAlert} from '../../common/function';
 
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useIsFocused } from '@react-navigation/native';
-import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
-import { Container } from 'src/styles/common.styles';
+import {useIsFocused} from '@react-navigation/native';
+import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
+import {Container} from 'src/styles/common.styles';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
-  widthPercentageToDP as wp
+  widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image } from '../../components';
+import {AppHeader, C_Image} from '../../components';
 import Colors from '../../constants/Colors';
 import SOCKET_EVENTS from '../../constants/socketContants';
-import { useSocketGlobal } from '../../helpers/useSocketGlobal';
-import { fonts } from '../../res';
+import {useSocketGlobal} from '../../helpers/useSocketGlobal';
+import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
   getUserData,
   loadProfileFromAsync,
   updateAvtar,
-  updateBanner
+  updateBanner,
 } from '../../store/reducer/userReducer';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
-import { EditButton, EditButtonText } from './styled';
+import {EditButton, EditButtonText} from './styled';
 
 const {
   ConnectSmIcon,
@@ -290,7 +293,7 @@ function Profile({navigation, connector, route}) {
           </View>
         );
       } else if (loading) {
-        return <ActivityIndicator size="small" color={colors.themeR} />;
+        return <LoadingView />;
       } else return null;
     };
     return (
