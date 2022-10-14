@@ -1,12 +1,12 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React, { useEffect, useState, useRef } from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import _, {size} from 'lodash';
+import _, { size } from 'lodash';
 import {
   Linking,
   ScrollView,
@@ -20,25 +20,25 @@ import {
 } from 'react-native';
 
 import Hyperlink from 'react-native-hyperlink';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
-import {openSettings} from 'react-native-permissions';
-import {confirmationAlert} from '../../common/function';
+import { openSettings } from 'react-native-permissions';
+import { confirmationAlert } from '../../common/function';
 
-import {COLORS, FONT, FONTS, SIZE, SVGS, IMAGES} from 'src/constants';
-import {Container, RowWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText, SmallNormalText} from 'src/styles/text.styles';
+import { COLORS, FONT, FONTS, SIZE, SVGS, IMAGES } from 'src/constants';
+import { Container, RowWrap, SpaceView } from 'src/styles/common.styles';
+import { SmallBoldText, SmallNormalText } from 'src/styles/text.styles';
 import {
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from '../../common/responsiveFunction';
-import {AppHeader, C_Image} from '../../components';
-import {fonts} from '../../res';
-import {languageArray, translate} from '../../walletUtils';
+import { AppHeader, C_Image } from '../../components';
+import { fonts } from '../../res';
+import { languageArray, translate } from '../../walletUtils';
 import {
   DescriptionView,
   EditButton,
@@ -66,13 +66,13 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../constants/Colors';
 import Images from '../../constants/Images';
-import {SvgWithCssUri} from 'react-native-svg';
-import {NEW_BASE_URL} from '../../common/constants';
+import { SvgWithCssUri } from 'react-native-svg';
+import { NEW_BASE_URL } from '../../common/constants';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message';
-import {DEFAULT_DATE_FORMAT} from '../../constants';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {updateAvtar, updateBanner} from '../../store/actions/myNFTaction';
+import { DEFAULT_DATE_FORMAT } from '../../constants';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { updateAvtar, updateBanner } from '../../store/actions/myNFTaction';
 import sendRequest from '../../helpers/AxiosApiRequest';
 
 const {
@@ -86,20 +86,20 @@ const {
 
 const Tab = createMaterialTopTabNavigator();
 
-function Profile({navigation, connector, route}) {
+function Profile({ navigation, connector, route }) {
   const [userData, setUserData] = useState([]);
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
-  const {UserReducer} = useSelector(state => state);
+  const { UserReducer } = useSelector(state => state);
   const actionSheetRef = useRef(null);
 
   const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
-  let id = UserReducer.userData.userWallet.address;
+  let id = UserReducer.userData.userWallet?.address;
 
   if (typeof route.params === 'undefined') {
-    id = UserReducer.userData.userWallet.address;
+    id = UserReducer.userData.userWallet?.address;
   } else {
     id = route?.params?.id;
   }
@@ -165,12 +165,12 @@ function Profile({navigation, connector, route}) {
         <Tab.Screen
           name={translate('wallet.common.profileCreated')}
           component={NFTCreated}
-          initialParams={{id: id}}
+          initialParams={{ id: id }}
         />
         <Tab.Screen
           name={translate('wallet.common.owned')}
           component={NFTOwned}
-          initialParams={{id: id}}
+          initialParams={{ id: id }}
         />
       </Tab.Navigator>
     );
@@ -206,8 +206,8 @@ function Profile({navigation, connector, route}) {
               Platform.OS === 'android'
                 ? image.path.substring(image.path.lastIndexOf('/') + 1)
                 : image.filename
-                ? image.filename
-                : image.path.substring(image.path.lastIndexOf('/') + 1);
+                  ? image.filename
+                  : image.path.substring(image.path.lastIndexOf('/') + 1);
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
 
             let temp = {
@@ -351,13 +351,13 @@ function Profile({navigation, connector, route}) {
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                  <Text style={{ color: '#FFFFFF' }}>Copied!</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
-              style={{marginLeft: SIZE(6)}}
+              style={{ marginLeft: SIZE(6) }}
               width={SIZE(16)}
               height={SIZE(16)}
             />
@@ -371,13 +371,13 @@ function Profile({navigation, connector, route}) {
     <Container>
       <View
         style={styles.scrollView}
-        // refreshControl={
-        //     <RefreshControl
-        //         refreshing={refreshing}
-        //         onRefresh={onRefresh}
-        //         tintColor={Colors.themeColor}
-        //     />
-        // }
+      // refreshControl={
+      //     <RefreshControl
+      //         refreshing={refreshing}
+      //         onRefresh={onRefresh}
+      //         tintColor={Colors.themeColor}
+      //     />
+      // }
       >
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
@@ -387,7 +387,7 @@ function Profile({navigation, connector, route}) {
             <TouchableOpacity
               style={styles.settings}
               onPress={() =>
-                navigation.navigate('Setting', {connector: connector})
+                navigation.navigate('Setting', { connector: connector })
               }>
               <SettingIcon width={SIZE(23)} height={SIZE(23)} />
             </TouchableOpacity>
@@ -411,7 +411,7 @@ function Profile({navigation, connector, route}) {
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                  <Text style={{ color: '#FFFFFF' }}>Copied!</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
@@ -423,8 +423,8 @@ function Profile({navigation, connector, route}) {
           </View>
           {!route.params && (
             <EditButton
-              style={{alignSelf: 'center', width: wp(60), height: hp(3)}}
-              onPress={() => navigation.navigate('EditProfile', {userData})}>
+              style={{ alignSelf: 'center', width: wp(60), height: hp(3) }}
+              onPress={() => navigation.navigate('EditProfile', { userData })}>
               <EditButtonText>
                 {translate('wallet.common.editprofile')}
               </EditButtonText>
