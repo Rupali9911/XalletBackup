@@ -1,7 +1,6 @@
 import {Magic} from '@magic-sdk/react-native';
 import {ethers} from 'ethers';
 import {NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY} from '../../../common/constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const requestConnectToDApp = async email => {
   return await enable({
@@ -12,13 +11,15 @@ const requestConnectToDApp = async email => {
 
 const enable = async payload => {
   try {
-    if (await isLoggedIn()) return true;
+    console.log(
+      '🚀 ~ file: magiclink.js ~ line 15 ~ enable ~ await isLoggedIn()',
+    );
     const proxy = getProxy();
     if (proxy === undefined) return undefined;
-    const token = await proxy.auth.loginWithMagicLink(payload);
-    return token;
+    return await proxy.auth.loginWithMagicLink(payload);
   } catch (error) {
-    return error;
+    console.log('🚀 ~ file: magicLink.js ~ line 19 ~ enable ~ error', error);
+    return false;
   }
 };
 
@@ -40,15 +41,15 @@ const disable = async () => {
 
 const getProxy = () => {
   const data = createMagicLinkProxy();
+  console.log('🚀 ~ file: magicLink.js ~ line 37 ~ getProxy ~ data', data);
+
   return data?.MagicLink;
 };
 
-const createMagicLinkProxy = async () => {
-  const language_name = await AsyncStorage.getItem('language_name');
+const createMagicLinkProxy = () => {
   const MagicLink = new Magic(NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY, {
-    locale: language_name || 'en',
+    locale: 'en',
   });
-
   const MagicLinkProvider = MagicLink.rpcProvider;
   return {
     MagicLink: MagicLink,
@@ -56,36 +57,36 @@ const createMagicLinkProxy = async () => {
   };
 };
 
-async function isLoggedIn() {
+const isLoggedIn = async () => {
   const proxy = getProxy();
   if (!proxy) return undefined;
   return await proxy.user.isLoggedIn();
-}
+};
 
-function getProxyProvider() {
+const getProxyProvider = () => {
   const data = createMagicLinkProxy();
   return data?.MagicLinkProvider;
-}
+};
 
-function getProvider() {
+const getProvider = () => {
   const proxy = getProxyProvider();
   return new ethers.providers.Web3Provider(proxy, 'any');
-}
+};
 
-async function getAddress() {
+const getAddress = async () => {
   const proxy = getProxy();
   if (!proxy) return undefined;
   const provider = getProvider();
 
   const signer = provider.getSigner();
   return await signer.getAddress();
-}
+};
 
-async function signMessage(message) {
+const signMessage = async message => {
   const provider = getProvider();
   const signer = provider.getSigner();
   return await signer.signMessage(message);
-}
+};
 
 export {
   createMagicLinkProxy,
