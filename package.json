@@ -12,6 +12,7 @@
   "dependencies": {
     "@coffeebeanslabs/react-native-inviewport": "^0.2.0",
     "@ethersproject/shims": "^5.6.0",
+    "@magic-sdk/react-native": "^11.0.0",
     "@react-native-async-storage/async-storage": "^1.15.4",
     "@react-native-clipboard/clipboard": "^1.8.4",
     "@react-native-community/art": "^1.2.0",

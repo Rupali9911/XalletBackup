@@ -1,23 +1,26 @@
-import { networkType } from "./networkType.js";
+import {networkType} from './networkType.js';
 
-let BASE_URL = "";
-let PROVIDER_URL = "";
-let NEW_BASE_URL = "";
-let API_GATEWAY_URL = "";
-let NEXT_PUBLIC_SOCKET_DOMAIN = ""
+let BASE_URL = '';
+let PROVIDER_URL = '';
+let NEW_BASE_URL = '';
+let API_GATEWAY_URL = '';
+let NEXT_PUBLIC_SOCKET_DOMAIN = '';
+let NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = '';
 
-if (networkType === "mainnet") {
-  BASE_URL = "https://api.xanalia.com";
-  NEW_BASE_URL = "https://prod-backend.xanalia.com";
-  PROVIDER_URL = "https://bsc-dataseed.binance.org/";
-  API_GATEWAY_URL = "https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1";
-  NEXT_PUBLIC_SOCKET_DOMAIN = "https://socket.xanalia.com"
+if (networkType === 'mainnet') {
+  BASE_URL = 'https://api.xanalia.com';
+  NEW_BASE_URL = 'https://prod-backend.xanalia.com';
+  PROVIDER_URL = 'https://bsc-dataseed.binance.org/';
+  API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
+  NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
+  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_DD8E7DF0413DBF3D';
 } else {
-  BASE_URL = "https://testapi.xanalia.com";
-  NEW_BASE_URL = "https://backend.xanalia.com";
-  PROVIDER_URL = "https://data-seed-prebsc-1-s1.binance.org:8545";
-  API_GATEWAY_URL = "https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1";
-  NEXT_PUBLIC_SOCKET_DOMAIN = "https://socket.xanalia.com"
+  BASE_URL = 'https://testapi.xanalia.com';
+  NEW_BASE_URL = 'https://backend.xanalia.com';
+  PROVIDER_URL = 'https://data-seed-prebsc-1-s1.binance.org:8545';
+  API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
+  NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
+  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_35B11F036089B82B';
 }
 
 // let API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1'
@@ -32,5 +35,6 @@ export {
   PROVIDER_URL,
   API_GATEWAY_URL,
   NEXT_PUBLIC_SOCKET_DOMAIN,
-  SIGN_MESSAGE
+  SIGN_MESSAGE,
+  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY,
 };

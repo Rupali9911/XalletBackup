@@ -28,6 +28,8 @@ import {getAllCards} from '../../store/reducer/paymentReducer';
 import {endMainLoading, _logout} from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
 import styles from './styled';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -41,18 +43,18 @@ const optionalConfigObject = {
   passcodeFallback: true, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
 };
 
-const _pressHandler = () => {
-  TouchID.authenticate(
-    'to demo this react-native component',
-    optionalConfigObject,
-  )
-    .then(success => {
-      Alert.alert('Authenticated Successfully');
-    })
-    .catch(error => {
-      Alert.alert('Authentication Failed');
-    });
-};
+// const _pressHandler = () => {
+//   TouchID.authenticate(
+//     'to demo this react-native component',
+//     optionalConfigObject,
+//   )
+//     .then(success => {
+//       Alert.alert('Authenticated Successfully');
+//     })
+//     .catch(error => {
+//       Alert.alert('Authentication Failed');
+//     });
+// };
 
 const ListItem = props => {
   return (
@@ -96,11 +98,11 @@ const JapaneseLangTrans = {
 
 function Setting({navigation}) {
   const dispatch = useDispatch();
-  const [toggle, setToggle] = useState(false);
+  // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {myCards} = useSelector(state => state.PaymentReducer);
-  const {userData} = useSelector(state => state.UserReducer);
+  // const {userData} = useSelector(state => state.UserReducer);
 
   useEffect(() => {
     // dispatch(getAllCards(userData.access_token));
@@ -121,6 +123,35 @@ function Setting({navigation}) {
     }
   };
 
+  const onLogout = () => {
+    confirmationAlert(
+      translate('wallet.common.verification'),
+      translate('wallet.common.logOutQ'),
+      translate('wallet.common.cancel'),
+      '',
+      async () => {
+        const _selectedLanguageItem = selectedLanguageItem;
+        await EncryptedStorage.clear();
+        AsyncStorage.multiRemove(
+          [
+            '@passcode',
+            '@WALLET',
+            '@USERDATA',
+            '@BackedUp',
+            '@apps',
+            '@CURRENT_NETWORK_CHAIN_ID',
+          ],
+          err => console.log(err),
+        ).then(() => {
+          dispatch(_logout());
+          dispatch(endMainLoading());
+          dispatch(setAppLanguage(_selectedLanguageItem));
+          requestDisconnectDApp();
+        });
+      },
+      () => null,
+    );
+  };
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{width: '100%', backgroundColor: '#fff'}}>
@@ -178,34 +209,7 @@ function Setting({navigation}) {
             label={translate('wallet.common.version')}
           />
           <ListItem
-            onPress={() => {
-              confirmationAlert(
-                translate('wallet.common.verification'),
-                translate('wallet.common.logOutQ'),
-                translate('wallet.common.cancel'),
-                '',
-                async () => {
-                  const _selectedLanguageItem = selectedLanguageItem;
-                  await EncryptedStorage.clear();
-                  AsyncStorage.multiRemove(
-                    [
-                      '@passcode',
-                      '@WALLET',
-                      '@USERDATA',
-                      '@BackedUp',
-                      '@apps',
-                      '@CURRENT_NETWORK_CHAIN_ID',
-                    ],
-                    err => console.log(err),
-                  ).then(() => {
-                    dispatch(_logout());
-                    dispatch(endMainLoading());
-                    dispatch(setAppLanguage(_selectedLanguageItem));
-                  });
-                },
-                () => null,
-              );
-            }}
+            onPress={onLogout}
             rightText={``}
             noArrow={true}
             label={translate('common.Logout')}
