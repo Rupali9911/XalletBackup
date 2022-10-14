@@ -1,36 +1,28 @@
+<<<<<<< HEAD
 import {networkType} from '../../../common/networkType';
 const Web3 = require('web3');
 const EthereumTx = require('ethereumjs-tx').Transaction;
+=======
+>>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
 import Common from 'ethereumjs-common';
-
+import { getWallet } from '../../../helpers/AxiosApiRequest';
+import { alertWithSingleBtn } from '../../../utils';
 import {
-  binanceNftAbi_new,
-  binanceNftDex_new,
-  environment,
-  ethNftDex_new,
-  maticNftDex_new,
-  translate,
-  lpAliaContractAbi,
-  lpAliaContractAddr,
-  networkChain,
+  translate
 } from '../../../walletUtils';
-import {blockChainConfig} from '../../../web3/config/blockChainConfig';
-import {getChainId, getNetworkId} from '../../../web3/config/chainIds';
-import {getWallet} from '../../../helpers/AxiosApiRequest';
-import {alertWithSingleBtn} from '../../../utils';
+import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 
-const getGasPrice = async rpcURL => {
-  const provider = new Web3(new Web3.providers.HttpProvider(rpcURL));
+const Web3 = require('web3');
+const EthereumTx = require('ethereumjs-tx').Transaction;
 
-  return provider.eth.getGasPrice();
-};
-
+//=========================== Get Gas Limit Function ===============================
 const getGasLimit = async (data, rpcURL) => {
   const provider = new Web3(new Web3.providers.HttpProvider(rpcURL));
 
   return provider.eth.estimateGas(data);
 };
 
+<<<<<<< HEAD
 export const estimateGasTransactions = async (transaction, rpcURL) => {
   const data = {
     from: transaction.from,
@@ -49,13 +41,16 @@ export const estimateGasTransactions = async (transaction, rpcURL) => {
     gasLimit: Number(gasLimit),
     gasPrice: Number(gasPrice),
   });
+=======
+//=========================== Get Gas Price Function ===============================
+const getGasPrice = async rpcURL => {
+  const provider = new Web3(new Web3.providers.HttpProvider(rpcURL));
+>>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
 
-  return {
-    gasLimit: Number(gasLimit),
-    gasPrice: Number(gasPrice),
-  };
+  return provider.eth.getGasPrice();
 };
 
+<<<<<<< HEAD
 export const getConfigDetails = type => {
   const config = {
     rpcURL: '',
@@ -98,6 +93,11 @@ export const sendCustomTransaction = async (
       return;
     }
 
+=======
+//=========================== Estimate Gas Transaction Function ===============================
+export const estimateGasTransactions = async (transaction, rpcURL) => {
+  try {
+>>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
     const data = {
       from: transaction.from,
       to: transaction.to,
@@ -108,6 +108,7 @@ export const sendCustomTransaction = async (
       data.value = transaction.value;
     }
 
+<<<<<<< HEAD
     const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
 
     console.log('398 - buy nft web,3', web3);
@@ -130,64 +131,109 @@ export const sendCustomTransaction = async (
       value: '0x0',
       data: transaction?.data,
       nonce: web3.utils.toHex(txCount),
+=======
+    const gasLimit = await getGasLimit(data, rpcURL);
+
+    const gasPrice = await getGasPrice(rpcURL);
+    console.log('🚀 ~ file: transactionFunctions.js ~ line 56 ~ ~ gasPrice', {
+      gasLimit: Number(gasLimit),
+      gasPrice: Number(gasPrice),
+    });
+
+    return {
+      gasLimit: Number(gasLimit),
+      gasPrice: Number(gasPrice),
+>>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
     };
-    console.log(
-      '🚀 ~ file: transactionFunctions.js ~ line 113 ~ ~ txObject',
-      txObject,
+
+  } catch (error) {
+    console.log("@@@ error gas limit ===>", error)
+  }
+};
+
+//=========================== Get Config Details Function ===============================
+export const getConfigDetails = type => {
+  const config = {
+    rpcURL: '',
+    MarketContractAddress: '',
+    MarketPlaceAbi: '',
+    ApproveAbi: '',
+    error: '',
+  };
+  const chainType = type?.toLowerCase();
+  if (chainType === 'polygon') {
+    config.rpcURL = blockChainConfig[1].providerUrl;
+    config.MarketContractAddress = blockChainConfig[1].marketConConfig.add;
+    config.MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
+    config.ApproveAbi = blockChainConfig[1].marketApproveConConfig.abi;
+  } else if (chainType === 'bsc') {
+    config.rpcURL = blockChainConfig[0].providerUrl;
+    config.MarketContractAddress = blockChainConfig[0].marketConConfig.add;
+    config.MarketPlaceAbi = blockChainConfig[0].marketConConfig.abi;
+    config.ApproveAbi = blockChainConfig[0].marketApproveConConfig.abi;
+  } else if (chainType === 'ethereum') {
+    config.rpcURL = blockChainConfig[2].providerUrl;
+    config.MarketContractAddress = blockChainConfig[2].marketConConfig.add;
+    config.MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi; // as per walletPay
+    config.ApproveAbi = blockChainConfig[2].marketApproveConConfig.abi;
+  } else {
+    config.error = 'invalid chainType';
+  }
+  return config;
+};
+
+//============================== Get Common =======================================
+const getCommon = (chainType, networkObject) => {
+  let common = null;
+  if (chainType === 'bsc') {
+    common = Common.forCustomChain(
+      'mainnet',
+      {
+        name: 'bnb',
+        networkId: networkObject?.networkId,
+        chainId: networkObject?.chainId,
+      },
+      'petersburg',
     );
+  } else if (chainType === 'polygon') {
+    common = Common.forCustomChain(
+      'mainnet',
+      {
+        name: 'matic',
+        networkId: networkObject?.networkId,
+        chainId: networkObject?.chainId,
+      },
+      'petersburg',
+    );
+  } else {
+    common = Common.forCustomChain(
+      'mainnet',
+      {
+        name: 'eth',
+        networkId: networkObject?.networkId,
+        chainId: networkObject?.chainId,
+      },
+      'petersburg',
+    );
+  }
+  return common;
+}
 
-    let common = null;
-    console.log('line 427 ~ buyNFT ~ common');
-    if (chainType === 'bsc') {
-      common = Common.forCustomChain(
-        'mainnet',
-        {
-          name: 'bnb',
-          networkId: getNetworkId(chainType),
-          chainId: getChainId(chainType),
-        },
-        'petersburg',
-      );
-    } else if (chainType === 'polygon') {
-      common = Common.forCustomChain(
-        'mainnet',
-        {
-          name: 'matic',
-          networkId: getNetworkId(chainType),
-          chainId: getChainId(chainType),
-        },
-        'petersburg',
-      );
-    } else {
-      common = Common.forCustomChain(
-        'mainnet',
-        {
-          name: 'eth',
-          networkId: getNetworkId(chainType),
-          chainId: getChainId(chainType),
-        },
-        'petersburg',
-      );
-    }
-    console.log('447 - common if-else', common);
-    console.log('txObject', txObject);
+//=========================== Transaction Processing Function ===============================
+const transactionProcessing = async (txObject, common, privateKey, web3, resolve, reject) => {
+  console.log("@@@ transaction processing parameters ==============>", txObject, common, privateKey)
+  try {
+    const tx = new EthereumTx(txObject, { common });
+    console.log("@@@ Transaction processing (tx) =======>", tx);
 
-    const tx = new EthereumTx(txObject, {common});
-
-    console.log('🚀 ~ file: transactionFunctions.js ~ line 169 ~  ~ tx', tx);
     const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
     tx.sign(privKey);
     const serializedTx = tx.serialize();
     const raw = '0x' + serializedTx.toString('hex');
-
-    console.log('🚀 ~ file: transactionFunctions.js ~ line 175 ~  ~ raw', raw);
+    console.log("@@@ Transaction processing (raw) =======>", raw);
 
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
-        console.log(
-          '🚀 ~ file: transactionFunctions.js ~ line 183 ~ ~ txHash',
-          txHash,
-        );
         if (txHash) {
           console.log('460 - txHash', txHash);
           console.log('461 resp crypto function', new Date().getTime());
@@ -199,16 +245,303 @@ export const sendCustomTransaction = async (
       })
       .once('receipt', receipt => {
         console.log('468 - receipt', receipt);
-        resolve({success: true, status: 200, data: receipt});
+        resolve({ success: true, status: 200, data: receipt });
         console.log('470 - resolve');
       })
       .catch(e => {
         console.log('Catch 472', e);
         reject(e);
       });
+<<<<<<< HEAD
   });
 };
 
+=======
+  } catch (error) {
+    console.log("@@@ transaction processing error =============>", error)
+  }
+}
+
+//=========================== Send Custom Transaction Function ===============================
+export const sendCustomTransaction = async (
+  transaction,
+  publicKey,
+  nftId,
+  nftchainType,
+  price,
+) => {
+  try {
+    console.log(
+      'buyNft params 369',
+      transaction,
+      publicKey,
+      nftId,
+      nftchainType,
+      price,
+    );
+    return new Promise(async (resolve, reject) => {
+      const chainType = nftchainType?.toLowerCase();
+      const config = getConfigDetails(chainType);
+
+      if (config.error === 'invalid chainType') {
+        console.log('invalid chainType');
+        reject('invalid chainType');
+        return;
+      }
+
+      const data = {
+        from: transaction.from,
+        to: transaction.to,
+        data: transaction.data,
+        nonce: transaction.nonce,
+      };
+      if (transaction.value) {
+        data.value = transaction.value;
+      }
+
+      const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
+
+      console.log('398 - buy nft web,3', web3);
+      const txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
+      console.log('🚀 ~ file: index.js ~ line 400 buyNFT ~ txCount', txCount);
+      if (txCount.error) reject(txCount.error);
+      let txObject;
+      const { gasLimit, gasPrice } = await estimateGasTransactions(
+        transaction,
+        config.rpcURL,
+      );
+      const { privateKey } = await getWallet();
+
+      txObject = {
+        from: publicKey,
+        gasPrice: gasPrice,
+        gasLimit: gasLimit,
+        chainId: transaction?.chainId,
+        // chainId: chainType === 'polygon' ? 80001 : undefined,
+        // to: config.MarketContractAddress,
+        to: transaction?.to,
+        value: price ? data.value : '0x0',
+        data: transaction?.data,
+        // nonce: web3.utils.toHex(txCount),
+        nonce: transaction?.nonce,
+      };
+      console.log(
+        '🚀 ~ file: transactionFunctions.js ~ line 113 ~ ~ txObject',
+        txObject,
+      );
+
+      let common = null;
+      console.log('line 427 ~ buyNFT ~ common', chainType, transaction);
+      if (chainType === 'bsc') {
+        common = Common.forCustomChain(
+          'mainnet',
+          {
+            name: 'bnb',
+            networkId: transaction?.networkId,
+            chainId: transaction?.chainId,
+          },
+          'petersburg',
+        );
+      } else if (chainType === 'polygon') {
+        common = Common.forCustomChain(
+          'mainnet',
+          {
+            name: 'matic',
+            networkId: transaction?.networkId,
+            chainId: transaction?.chainId,
+          },
+          'petersburg',
+        );
+      } else {
+        common = Common.forCustomChain(
+          'mainnet',
+          {
+            name: 'eth',
+            networkId: transaction?.networkId,
+            chainId: transaction?.chainId,
+          },
+          'petersburg',
+        );
+      }
+      console.log('447 - common if-else', common);
+      console.log('txObject', txObject);
+
+      const tx = new EthereumTx(txObject, { common });
+
+      console.log('🚀 ~ file: transactionFunctions.js ~ line 169 ~  ~ tx', tx);
+      const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
+      tx.sign(privKey);
+      const serializedTx = tx.serialize();
+      const raw = '0x' + serializedTx.toString('hex');
+
+      console.log(
+        '🚀 ~ file: transactionFunctions.js ~ line 175 ~  ~ raw',
+        raw,
+      );
+
+      await web3.eth
+        .sendSignedTransaction(raw, async (err, txHash) => {
+          console.log(
+            '🚀 ~ file: transactionFunctions.js ~ line 183 ~ ~ txHash',
+            txHash,
+          );
+          if (txHash) {
+            console.log('460 - txHash', txHash);
+            console.log('461 resp crypto function', new Date().getTime());
+            // resolve({ success: true, status: 200, data: txHash });
+          } else if (err) {
+            console.log(err);
+            reject(err.message);
+          }
+        })
+        .once('receipt', receipt => {
+          console.log('468 - receipt', receipt);
+          resolve({ success: true, status: 200, data: receipt });
+          console.log('470 - resolve');
+        })
+        .catch(e => {
+          console.log('Catch 472', e);
+          reject(e);
+        });
+    });
+  } catch (error) {
+    console.log('🚀 ~ file: transactionFunctions.js ~ line 228 ~ error', error);
+  }
+};
+
+//============================== Get SignData =======================================
+const getConvertedDecimalValue = (type, convertto6decimal, web3) => {
+  try {
+    if (type == 'usdc') {
+      // resolve(web3.utils.fromWei(result.toString(), "ether"));
+      return web3.utils.toWei(convertto6decimal.toString(), "mwei");
+    } else if (type == 'alia' || type == 'tnft' || type == 'tal') {
+      return web3.utils.toWei(convertto6decimal.toString(), "ether")
+    } else if (type == 'usdt') {
+      return web3.utils.toWei(convertto6decimal.toString(), 'ether') * 1e12;
+    } else if (type == 'busd') {
+      return web3.utils.toWei(convertto6decimal.toString(), "ether");
+    } else if (type == 'weth') {
+      return web3.utils.toWei(convertto6decimal.toString(), 'ether') * 1e10;
+    }
+  } catch (error) {
+    console.log("@@@ Get ConvertedDecimalValue error =============>", error);
+    reject(error)
+  }
+}
+
+
+const getSignData = (transferParameters, config, web3, reject) => {
+  try {
+    const type = transferParameters?.tokenType?.toLowerCase();
+
+    // let convertto6decimal = parseFloat(transferParameters.amount).toFixed(6) * 1e6;
+    let convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
+
+    convertto6decimal = getConvertedDecimalValue(type, convertto6decimal, web3, reject);
+    console.log("@@@ Get signData (convertTo6Decimal) =========>", convertto6decimal);
+
+    let contract = new web3.eth.Contract(config.ContractAbis, config.ContractAddress, { from: transferParameters.publicAddress });
+    console.log("@@@ Get signData (contract object) =========>", contract);
+    let signData = contract.methods.transfer(transferParameters.toAddress, web3.utils.toHex(convertto6decimal)).encodeABI();
+    console.log("@@@ Get signData (signData) =============>", signData);
+    return signData
+  } catch (error) {
+    console.log("@@@ Get signData error =============>", error);
+    reject(error)
+  }
+}
+
+//============================== Balance Transfer Function =====================================
+export const balanceTransfer = async (transferParameters, config) => {
+  console.log("@@@ balance transfer func (parameters)===========>", transferParameters);
+  console.log("@@@ balance transfer func (config)===========>", config);
+  try {
+    return new Promise(async (resolve, reject) => {
+      const chainType = transferParameters?.chainType?.toLowerCase();
+      const tokenType = transferParameters?.tokenType;
+
+      const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
+
+      const txCount = await web3.eth.getTransactionCount(transferParameters.publicAddress, 'pending');
+      if (txCount.error) reject(txCount.error);
+      console.log('@@@ balance transfer func (txnCount) =========>', txCount);
+
+      let txObject;
+
+      if (tokenType === 'BNB' || tokenType === 'Matic' || tokenType === 'ETH') {
+        //NON ERC20(BNB,MATIC,ETH)
+        console.log("@@@ For NON ERRC20 Token if ============>", tokenType);
+        const gasPrice = await getGasPrice(config.rpcURL);
+
+        let convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
+        const amountToSend = web3.utils.toWei(convertto6decimal.toString(), 'ether');
+        console.log("@@@ For NON ERRC20 Token (amountToSend) ========>", amountToSend)
+
+        txObject = {
+          from: transferParameters.publicAddress,
+          to: transferParameters.toAddress,
+          gasPrice: Number(gasPrice),
+          gasLimit: 21000,
+          value: web3.utils.toHex(amountToSend),
+          nonce: web3.utils.toHex(txCount),
+          chainId: transferParameters.chainId,
+        };
+
+        console.log("@@@ balance transfer (txObject) ======>", txObject)
+
+        let common = getCommon(chainType, transferParameters);
+        console.log("@@@ balance transfer (common) =========>", common);
+
+        await transactionProcessing(txObject, common, transferParameters.privKey, web3, resolve, reject)
+
+      } else {
+        //ERC20(TAL,TNFT etc.)
+        console.log("@@@ For ERRC20 Token else ============>", tokenType);
+        let signData = getSignData(transferParameters, config, web3, reject);
+        if (!signData) return;
+        const transaction = {
+          from: transferParameters.publicAddress,
+          to: config.ContractAddress,
+          data: signData,
+          nonce: web3.utils.toHex(txCount),
+        };
+        console.log("@@@ transaction object ===========>", transaction)
+        // let txObject;
+        const { gasLimit, gasPrice } = await estimateGasTransactions(
+          transaction,
+          config.rpcURL,
+        );
+        console.log("@@@ balance transfer func gasLimit and gasPrice ===========>", { gasLimit: Number(gasLimit), gasPrice: Number(gasPrice) });
+
+        txObject = {
+          from: transferParameters.publicAddress,
+          to: config.ContractAddress,
+          gasPrice: gasPrice,
+          gasLimit: gasLimit,
+          value: "0x0",
+          data: signData,
+          nonce: web3.utils.toHex(txCount),
+          chainId: transferParameters.chainId,
+        };
+        console.log("@@@ balance transfer (txObject) =========>", txObject);
+
+        let common = getCommon(chainType, transferParameters);
+        console.log("@@@ balance transfer (common) =========>", common);
+
+        await transactionProcessing(txObject, common, transferParameters.privKey, web3, resolve, reject)
+      }
+    });
+  } catch (error) {
+    console.log("@@@ balance transfer function =============================>", error);
+    reject(error);
+
+  }
+}
+//========================================================================================================
+
+//=========================== Handle Transaction Error Function ===============================
+>>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
 export const handleTransactionError = error => {
   console.log(
     '🚀 ~ file: transactionFunctions.js ~ line 192 ~ handleTransactionError ~ error',

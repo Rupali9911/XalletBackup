@@ -1,86 +1,52 @@
-import React, {useEffect, useState, useRef} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import _, {size} from 'lodash';
-import {
-  Linking,
-  ScrollView,
+  ActivityIndicator,
+  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  RefreshControl,
-  Image,
-  Dimensions,
-  ActivityIndicator,
 } from 'react-native';
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
-import Hyperlink from 'react-native-hyperlink';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
+import ImagePicker from 'react-native-image-crop-picker';
 import {openSettings} from 'react-native-permissions';
 import {confirmationAlert} from '../../common/function';
 
-import {COLORS, FONT, FONTS, SIZE, SVGS, IMAGES} from 'src/constants';
-import {Container, RowWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText, SmallNormalText} from 'src/styles/text.styles';
+import Clipboard from '@react-native-clipboard/clipboard';
+import {useIsFocused} from '@react-navigation/native';
+import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
+import {Container} from 'src/styles/common.styles';
 import {
+  heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
 } from '../../common/responsiveFunction';
 import {AppHeader, C_Image} from '../../components';
-import {fonts} from '../../res';
-import {languageArray, translate} from '../../walletUtils';
-import {
-  DescriptionView,
-  EditButton,
-  EditButtonText,
-  SmallText,
-  UserImageView,
-  WebsiteLink,
-} from './styled';
-import Collection from './collection';
-import NFTCreated from './nftCreated';
-import NFTOwned from './nftOwned';
-import Draft from './draft';
-import colors from '../../res/colors';
-import {
-  upateUserData,
-  loadFromAsync,
-  loadProfileFromAsync,
-  setUserData,
-  updateUserData,
-} from '../../store/reducer/userReducer';
-import {
-  getAllLanguages,
-  setAppLanguage,
-} from '../../store/reducer/languageReducer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../constants/Colors';
-import Images from '../../constants/Images';
-import {SvgWithCssUri} from 'react-native-svg';
-import {NEW_BASE_URL} from '../../common/constants';
-import Clipboard from '@react-native-clipboard/clipboard';
-import Toast from 'react-native-toast-message';
-import {DEFAULT_DATE_FORMAT} from '../../constants';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {
-  updateAvtar,
-  updateBanner,
-  getUserData,
-} from '../../store/reducer/userReducer';
-import sendRequest from '../../helpers/AxiosApiRequest';
 import SOCKET_EVENTS from '../../constants/socketContants';
 import {useSocketGlobal} from '../../helpers/useSocketGlobal';
+import {fonts} from '../../res';
+import colors from '../../res/colors';
+import {
+  getUserData,
+  loadProfileFromAsync,
+  updateAvtar,
+  updateBanner,
+} from '../../store/reducer/userReducer';
+import {translate} from '../../walletUtils';
+import NFTCreated from './nftCreated';
+import NFTOwned from './nftOwned';
+import {EditButton, EditButtonText} from './styled';
 
 const {
   ConnectSmIcon,
