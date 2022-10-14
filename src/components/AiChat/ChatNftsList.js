@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { C_Image } from '../../components';
+import { C_Image, Loader } from '../../components';
 import Colors from '../../constants/Colors';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,9 +9,8 @@ import { translate } from '../../walletUtils';
 import styles from './style';
 import { ActivityIndicator } from 'react-native-paper';
 
-
-const NftCollections = ({ navigation, route }) => {
-    const { tabScreen } = route.params;
+const ChatNftsList = ({ navigation, route }) => {
+    const { tabTitle } = route.params;
 
     // =============== Getting data from States =========================
     const [isDetailScreen, setDetailScreen] = useState(false);
@@ -26,20 +25,20 @@ const NftCollections = ({ navigation, route }) => {
         nftPageChange,
         nftTotalCount,
         nftCursor,
-        tabTitle
+        reducerTabTitle
     } = useSelector(state => state.chatReducer);
     const { userData } = useSelector(state => state.UserReducer);
-
     let owner = userData.userWallet.address;
+
     const nftCollectionList = tabTitle === 'Owned' ? nftList.ownerNFTS : nftList.otherNFTs;
 
     // ===================== Use-effect call =================================
     useEffect(() => {
         if (isFocused) {
-            dispatch(setTabTitle(tabScreen));
+            dispatch(setTabTitle(tabTitle));
         }
         if (isFocused && !isDetailScreen && !searchText) {
-            dispatch(setTabTitle(tabScreen));
+            dispatch(setTabTitle(tabTitle));
 
             dispatch(nftLoadStart());
             dispatch(nftListReset());
@@ -82,14 +81,12 @@ const NftCollections = ({ navigation, route }) => {
             dispatch(nftListCursorChange(''));
             refreshFunc();
         }
-
     };
 
     // ========================== Refresh Function Call =================================
     const refreshFunc = () => {
-        let refCursor = '';
         dispatch(nftListReset());
-        getDataCollection(1, refCursor);
+        getDataCollection(1, '');
         dispatch(nftListPageChange(1));
         dispatch(nftListCursorChange(''));
     };
@@ -100,23 +97,26 @@ const NftCollections = ({ navigation, route }) => {
     // ========================== Reender Item of Flatlist ==========================================
     const renderItem = ({ item, index }) => {
         let metaData = item?.metadata;
-        const data = JSON.parse(metaData);
+        const ItemDetail = JSON.parse(metaData);
 
         return (
             <TouchableOpacity
                 onPress={() => {
                     setDetailScreen(true);
-                    navigation.navigate('ChatNFT', { chatNft: data, tokenId: item.token_id, is_Owned: tabScreen })
-                }}
-            >
+                    navigation.navigate('ChatDetail', 
+                    { 
+                        nftDetail: ItemDetail, 
+                        tokenId: item.token_id, 
+                    })
+                }}>
                 <View style={styles.nftItemContainer}>
                     <View>
                         <C_Image
-                            uri={data.image}
+                            uri={ItemDetail?.image}
                             imageStyle={styles.cImageContainer}
                         />
                     </View>
-                    <Text style={styles.nftTextShow}> {data?.name.slice(data?.name.lastIndexOf("#"))} </Text>
+                    <Text style={styles.nftTextShow}> {ItemDetail?.name.slice(ItemDetail?.name.lastIndexOf("#"))} </Text>
                 </View>
             </TouchableOpacity>
         )
@@ -127,12 +127,11 @@ const NftCollections = ({ navigation, route }) => {
     //=====================(Main return Function)=============================
     return (
         <View style={{ backgroundColor: Colors.white, flex: 1 }}>
-            { isNftLoading && nftPageChange == 1 || tabScreen != tabTitle ?
+            { isNftLoading && nftPageChange == 1 || tabTitle != reducerTabTitle ?
                 <View style={styles.centerViewStyle}>
-                    <ActivityIndicator size="small" color={Colors.themeColor} />
+                    <Loader />
                 </View>
                 : //else
-
                 nftCollectionList.length !== 0
                     ? (
                         <View style={{ flex: 1, padding: 10 }}>
@@ -162,5 +161,5 @@ const NftCollections = ({ navigation, route }) => {
 
 
 
-export default NftCollections;
+export default ChatNftsList;
 

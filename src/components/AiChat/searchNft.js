@@ -8,8 +8,6 @@ import { translate } from '../../walletUtils';
 import { Searchbar } from 'react-native-paper';
 import Colors from '../../constants/Colors';
 
-const { SearchIcon } = SVGS;
-
 const SearchInput = () => {
 
   // =============== Getting data from States ======================== 
@@ -58,8 +56,8 @@ const SearchInput = () => {
     <View>
       <Searchbar
         style={styles.searchBar}
-        inputStyle={styles.inputStyle}
-        selectionColor={Colors.BLACK1}
+        inputStyle={styles.searchInputStyle}
+        selectionColor={Colors.BLACK5}
         placeholder={translate("common.search")}
         onChangeText={txt => {
           setSearchTxt(txt);
@@ -68,18 +66,6 @@ const SearchInput = () => {
         multiline={false}
       />
     </View>
-
-    // <View style={styles.searchBar}>
-    //   <SearchIcon width={20} height={20} />
-    //   <TextInput
-    //     style={{ paddingLeft: 10 }}
-    //     placeholder={translate("common.search")}
-    //     onChangeText={text => { setSearchTxt(text) }}
-    //     inputStyle={styles.inputStyle}
-    //     value={searchTxt}
-    //     multiline={false}
-    //   />
-    // </View>
   )
 }
 

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     },
     input: {
         paddingHorizontal: 15,
-        height:  Platform.OS === 'ios' ? hp(5): hp(5),
+        height: Platform.OS === 'ios' ? hp(5) : hp(5),
         borderColor: '#ced4da',
         borderWidth: 2,
         width: '80%',
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     },
     sendBtn: {
         paddingHorizontal: 15,
-        height:  Platform.OS === 'ios' ? hp(5): hp(5),
+        height: Platform.OS === 'ios' ? hp(5) : hp(5),
         backgroundColor: '#3c7bde',
         justifyContent: 'center',
         alignItems: 'center',
@@ -50,39 +50,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         maxWidth: '80%',
     },
-    // talkBubbleAbsoluteRight: {
-    //     width: 30,
-    //     height: 30,
-    //     alignSelf: 'flex-end',
-    //     position: 'absolute',
-    //     backgroundColor: 'transparent',
-    //     borderRadius: 50,
-    //     borderTopColor: 'transparent',
-    //     borderTopWidth: 12.5,
-    //     borderLeftWidth: 6.5,
-    //     borderLeftColor: '#fff',
-    //     borderBottomWidth: 0,
-    //     borderBottomColor: 'transparent',
-    //     transform: [{ rotate: '-90deg' }],
-    //     right: -5,
-    //     top: -15,
-    // },
-    // talkBubbleAbsoluteLeft: {
-    //     width: 30,
-    //     height: 30,
-    //     position: 'absolute',
-    //     backgroundColor: 'transparent',
-    //     borderRadius: 50,
-    //     borderTopColor: 'transparent',
-    //     borderTopWidth: 12.5,
-    //     borderRightWidth: 6.5,
-    //     borderRightColor: '#fff',
-    //     borderBottomWidth: 0,
-    //     borderBottomColor: 'transparent',
-    //     transform: [{ rotate: '90deg' }],
-    //     left: -5,
-    //     top: -15,
-    // },
     statusText: {
         color: '#888',
         fontSize: 10,
@@ -136,7 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         shadowColor: '#fff'
     },
-    inputStyle: {
+    searchInputStyle: {
         fontSize: 14,
         color: Colors.BLACK1,
         height: '100%',
@@ -201,54 +168,77 @@ const styles = StyleSheet.create({
         color: '#888',
         fontWeight: 'bold',
         fontStyle: 'italic',
-        fontSize: 11, 
+        fontSize: 11,
         paddingTop: 5
     },
     sendBtnTxt: {
         color: '#fff',
         fontWeight: 'bold'
     },
-    viewAllBtn: {
-        marginVertical: SIZE(12),
-        width: wp(40),
-        alignSelf: 'center'
-      },
-      viewAllBtnInner: {
-        backgroundColor: 'transparent',
-        borderColor: Colors.BLUE4,
-        borderWidth: 2
-      },
-      nftName: {
+    nftName: {
         color: '#fff', fontWeight: '700'
-      },
-      bannerImage: {
+    },
+    bannerImage: {
         width: '100%', height: '100%', resizeMode: 'contain'
-      },
-      rcvReplyContainer: {
-        padding: 10, 
-        backgroundColor: '#000000a1', 
-        width: '100%', 
+    },
+    rcvReplyContainer: {
+        padding: 10,
+        backgroundColor: '#000000a1',
+        width: '100%',
         bottom: 0,
         position: 'absolute',
         zIndex: 2,
-      },
-      nftItemContainer: {
-        flexDirection: 'row', 
-        backgroundColor: Colors.white, 
+    },
+    nftItemContainer: {
+        flexDirection: 'row',
+        backgroundColor: Colors.white,
         paddingVertical: 5
-      },
-      nftTextShow: {
-        paddingVertical: 10, 
-        paddingStart: 10, 
-        marginLeft: 10, 
-        color: '#484848', 
-        fontWeight: '700' 
-      },
-      centerViewStyle: {
-        flex: 1, 
-        justifyContent: 'center', 
+    },
+    nftTextShow: {
+        paddingVertical: 10,
+        paddingStart: 10,
+        marginLeft: 10,
+        color: '#484848',
+        fontWeight: '700'
+    },
+    centerViewStyle: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center'
-      },
+    },
+     // talkBubbleAbsoluteRight: {
+    //     width: 30,
+    //     height: 30,
+    //     alignSelf: 'flex-end',
+    //     position: 'absolute',
+    //     backgroundColor: 'transparent',
+    //     borderRadius: 50,
+    //     borderTopColor: 'transparent',
+    //     borderTopWidth: 12.5,
+    //     borderLeftWidth: 6.5,
+    //     borderLeftColor: '#fff',
+    //     borderBottomWidth: 0,
+    //     borderBottomColor: 'transparent',
+    //     transform: [{ rotate: '-90deg' }],
+    //     right: -5,
+    //     top: -15,
+    // },
+    // talkBubbleAbsoluteLeft: {
+    //     width: 30,
+    //     height: 30,
+    //     position: 'absolute',
+    //     backgroundColor: 'transparent',
+    //     borderRadius: 50,
+    //     borderTopColor: 'transparent',
+    //     borderTopWidth: 12.5,
+    //     borderRightWidth: 6.5,
+    //     borderRightColor: '#fff',
+    //     borderBottomWidth: 0,
+    //     borderBottomColor: 'transparent',
+    //     transform: [{ rotate: '90deg' }],
+    //     left: -5,
+    //     top: -15,
+    // },
 })
 
 export default styles;
