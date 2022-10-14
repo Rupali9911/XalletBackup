@@ -17,7 +17,6 @@ import {
   RefreshControl,
   Image,
   Dimensions,
-  ActivityIndicator,
 } from 'react-native';
 
 import Hyperlink from 'react-native-hyperlink';
@@ -324,7 +323,7 @@ function Profile({navigation, connector, route}) {
           </View>
         );
       } else if (loading) {
-        return <ActivityIndicator size="small" color={colors.themeR} />;
+        return <LoadingView />;
       } else return null;
     };
     return (
