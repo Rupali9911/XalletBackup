@@ -740,7 +740,9 @@
     "CHOOSE_COLLECTION": "Choose Collection",
     "INVALID_ART_TYPE": "ART supports (* .png, *.jpeg, *.jpg) files only",
     "INVALID_MOVIE_TYPE": "Movie supports(*.mp4) file only",
-    "INVALID_AUDIO_TYPE": "AUDIO support (*.mp3) files only."
+    "INVALID_AUDIO_TYPE": "AUDIO support (*.mp3) files only.",
+    "others": "Others",
+    "typing": "Typing..."
   },
   "AwardPage": {},
   "wallet": {
