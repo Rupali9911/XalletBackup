@@ -17,6 +17,7 @@ import {
   RefreshControl,
   Image,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 
 import Hyperlink from 'react-native-hyperlink';
@@ -72,8 +73,14 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-toast-message';
 import {DEFAULT_DATE_FORMAT} from '../../constants';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {updateAvtar, updateBanner} from '../../store/actions/myNFTaction';
+import {
+  updateAvtar,
+  updateBanner,
+  getUserData,
+} from '../../store/reducer/userReducer';
 import sendRequest from '../../helpers/AxiosApiRequest';
+import SOCKET_EVENTS from '../../constants/socketContants';
+import {useSocketGlobal} from '../../helpers/useSocketGlobal';
 
 const {
   ConnectSmIcon,
@@ -82,24 +89,23 @@ const {
   EditImage,
   CopyProfile,
   SettingIconBlack,
+  DefaultProfile,
 } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
 
 function Profile({navigation, connector, route}) {
-  const [userData, setUserData] = useState([]);
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const {UserReducer} = useSelector(state => state);
   const actionSheetRef = useRef(null);
-
   const isFocused = useIsFocused();
-
+  const {userData, loading} = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
-  let id = UserReducer.userData.userWallet.address;
+  let id = UserReducer.userData.userWallet?.address;
 
   if (typeof route.params === 'undefined') {
-    id = UserReducer.userData.userWallet.address;
+    id = UserReducer.userData.userWallet?.address;
   } else {
     id = route?.params?.id;
   }
@@ -107,19 +113,9 @@ function Profile({navigation, connector, route}) {
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
 
-  const fetchData = () => {
-    const url = `${NEW_BASE_URL}/users/${id}`;
-    sendRequest(url).then(res => {
-      setUserData(res);
-      if (typeof route.params === 'undefined') {
-        dispatch(updateUserData(res));
-      }
-    });
-  };
-
   useEffect(() => {
     if (isFocused) {
-      fetchData();
+      dispatch(getUserData(id));
     }
   }, [isFocused]);
 
@@ -218,9 +214,9 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (imageType === 'profile') {
-              updateAvtar(userData.id, temp);
+              dispatch(updateAvtar(userData.id, temp));
             } else if (imageType === 'banner') {
-              updateBanner(userData.id, temp);
+              dispatch(updateBanner(userData.id, temp));
             }
           }
         })
@@ -258,7 +254,6 @@ function Profile({navigation, connector, route}) {
                 : image.filename;
 
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
-
             let temp = {
               path: image.path,
               uri: uri,
@@ -267,9 +262,9 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (imageType === 'profile') {
-              updateAvtar(userData.id, temp);
+              dispatch(updateAvtar(userData.id, temp));
             } else if (imageType === 'banner') {
-              updateBanner(userData.id, temp);
+              dispatch(updateBanner(userData.id, temp));
             }
           }
         })
@@ -311,15 +306,30 @@ function Profile({navigation, connector, route}) {
   };
 
   const renderBannerImage = () => {
-    return (
-      <C_Image uri={userData.banner} imageStyle={styles.collectionListImage} />
+    return userData?.banner ? (
+      <C_Image uri={userData?.banner} imageStyle={styles.collectionListImage} />
+    ) : (
+      <View style={styles.collectionWrapper} />
     );
   };
 
   const renderIconImage = () => {
+    const renderImage = () => {
+      if (userData.avatar && !loading) {
+        return <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />;
+      } else if (!loading && !userData.avatar) {
+        return (
+          <View style={styles.iconImage}>
+            <DefaultProfile width={SIZE(150)} height={SIZE(150)} />
+          </View>
+        );
+      } else if (loading) {
+        return <ActivityIndicator size="small" color={colors.themeR} />;
+      } else return null;
+    };
     return (
       <TouchableOpacity onPress={() => onSelect('profile')}>
-        <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />
+        {renderImage()}
       </TouchableOpacity>
     );
   };
@@ -366,6 +376,22 @@ function Profile({navigation, connector, route}) {
       </View>
     );
   };
+
+  useSocketGlobal(
+    SOCKET_EVENTS.userUpdateAvatar,
+    () => {
+      dispatch(getUserData(id));
+    },
+    false,
+  );
+
+  useSocketGlobal(
+    SOCKET_EVENTS.userUpdateBanner,
+    () => {
+      dispatch(getUserData(id));
+    },
+    false,
+  );
 
   return (
     <Container>
@@ -498,12 +524,14 @@ const styles = StyleSheet.create({
   collectionWrapper: {
     height: SIZE(200),
     alignItems: 'center',
+    backgroundColor: colors.DARK_GREY,
   },
   iconImage: {
     width: SIZE(150),
     height: SIZE(150),
     borderRadius: SIZE(150),
     marginBottom: SIZE(10),
+    backgroundColor: colors.PERIWINKLE,
   },
   iconWrapper: {
     marginTop: SIZE(-80),
