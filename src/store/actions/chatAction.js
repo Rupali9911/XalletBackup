@@ -91,13 +91,16 @@ export const nftListCursorChange = (data) => ({
   payload: data
 });
 
+//=====================SetTabTitle=====================
+
 export const setTabTitle = (data) => ({
   type: CHAT_TAB_TITLE,
   payload: data
 });
 
 //=====================Chat=====================
-export const getAiChat = (message, address, name, tokenId, is_Owned) => (dispatch) => {
+export const getAiChat = ( message, address, name, tokenId ) => (dispatch, getState) => {
+  const { reducerTabTitle } = getState().chatReducer;
   dispatch(chatLoadingStart(true))
   return new Promise((resolve, reject) => {
     let url = `${NEW_BASE_URL}/xana-genesis-chat/chat-bot`;
@@ -106,7 +109,7 @@ export const getAiChat = (message, address, name, tokenId, is_Owned) => (dispatc
       bot_name: name,
       text: message,
       tokenId,
-      is_Owned: is_Owned === 'Owned' ? true : false
+      is_Owned: reducerTabTitle === 'Owned' ? true : false
     };
     sendRequest({
       url,
@@ -130,10 +133,9 @@ export const getAiChat = (message, address, name, tokenId, is_Owned) => (dispatc
 
 //==================================Owned-Other==============================
 export const getNftCollections = (page, address, cursor) => (dispatch, getState) => {
-  const { tabTitle, nftList } = getState().chatReducer;
-
+  const { reducerTabTitle, nftList } = getState().chatReducer;
   let url = `${NEW_BASE_URL}/xana-genesis-chat`;
-  url = tabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
+  url = reducerTabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
   let limit = 300;
 
   let data = {
@@ -141,7 +143,7 @@ export const getNftCollections = (page, address, cursor) => (dispatch, getState)
     owner: address,
     page,
   };
-  if (tabTitle === 'Owned') {
+  if (reducerTabTitle === 'Owned') {
     data.limit = limit;
   }
 
@@ -159,20 +161,19 @@ export const getNftCollections = (page, address, cursor) => (dispatch, getState)
           otherNFTs: []
         }
       }
-      if (tabTitle === 'Owned') {
+      if (reducerTabTitle === 'Owned') {
         res.nftList.ownerNFTS = nftList.ownerNFTS.concat(response.result);
       }
       else {
         res.nftList.otherNFTs = nftList.otherNFTs.concat(response.result);
       }
       dispatch(nftLoadSuccessList(res));
-
     })
     .catch(err => { console.log('Error : ', err) })
 }
 
 //=====================Search=====================
-export const getSearchResult = (text, address) => (dispatch, getState) => {
+export const getSearchResult = (text, address) => (dispatch) => {
   return new Promise((resolve, reject) => {
     let url = `${NEW_BASE_URL}/xana-genesis-chat/search-nft`;
     let data = {

@@ -131,8 +131,8 @@ function Setting({ navigation }) {
         />
       </View>
       <ScrollView>
-        <View style={[styles.section2, { marginTop: 0 }]}>
-          <ListItem
+        <View style={[styles.section2, {marginTop: 0}]}>
+          {/* <ListItem
             onPress={() => {
               if (myCards.length > 0) {
                 navigation.navigate('Cards', { price: 0, isCardPay: false });
@@ -142,8 +142,8 @@ function Setting({ navigation }) {
               }
             }}
             label={translate('wallet.common.AECredit')}
-          />
-          <View style={{ ...styles.separator, width: wp('81%') }} />
+          /> */}
+          <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
             label={translate('wallet.common.security')}

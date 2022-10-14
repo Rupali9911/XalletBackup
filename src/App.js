@@ -59,7 +59,7 @@ import {MenuProvider} from 'react-native-popup-menu';
 import {NativeBaseProvider} from 'native-base';
 import Images from './constants/Images';
 import AiChat from './components/AiChat';
-import ChatNFT from './components/AiChat/ChatNFT';
+import ChatDetail from './components/AiChat/ChatDetail';
 import WebView from './components/WebView';
 
 export const regionLanguage = RNLocalize.getLocales()
@@ -329,7 +329,7 @@ const AppRoutes = () => {
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
           <Stack.Screen name="AiChat" component={AiChat}/>
-          <Stack.Screen name="ChatNFT" component={ChatNFT}/>
+          <Stack.Screen name="ChatDetail" component={ChatDetail}/>
           <Stack.Screen name="WebView" component={WebView} />
         </Stack.Navigator>
       ) : (

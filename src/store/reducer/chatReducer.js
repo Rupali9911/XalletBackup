@@ -45,7 +45,8 @@ const initialState = {
     nftTotalCount: 0,
     nftCursor: "",
 
-    tabTitle: 'Owned',
+    //=====================SetTabTitle=====================
+    reducerTabTitle: 'Owned',
 }
 
 export default function chatReducer(state = initialState, action) {
@@ -105,8 +106,10 @@ export default function chatReducer(state = initialState, action) {
         case SEARCH_TEXT:
             return { ...state, searchText: action.payload };
 
+        //=====================TabTitle===================== 
+
         case CHAT_TAB_TITLE:
-            return { ...state, tabTitle: action.payload };
+            return { ...state, reducerTabTitle: action.payload };
 
         default:
             return state;

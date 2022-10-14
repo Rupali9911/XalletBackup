@@ -24,7 +24,7 @@ import {translate} from '../../walletUtils';
 
 const VerifyPhrase = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {wallet} = route.params;
+  const {wallet} = route.params; 
   const {userData} = useSelector(state => state.UserReducer);
   const [loading, setLoading] = useState(false);
   const [phrase, setPhrase] = useState([]);
@@ -171,7 +171,7 @@ const VerifyPhrase = ({route, navigation}) => {
           containerStyle={CommonStyles.button}
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
-            if (userData && userData.user) {
+            if (userData) {
               dispatch(setBackupStatus(true));
               navigation.goBack();
             } else {

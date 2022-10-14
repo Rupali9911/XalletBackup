@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import {networkType} from '../../../common/networkType';
-const Web3 = require('web3');
-const EthereumTx = require('ethereumjs-tx').Transaction;
-=======
->>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
 import Common from 'ethereumjs-common';
 import { getWallet } from '../../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from '../../../utils';
@@ -22,82 +16,16 @@ const getGasLimit = async (data, rpcURL) => {
   return provider.eth.estimateGas(data);
 };
 
-<<<<<<< HEAD
-export const estimateGasTransactions = async (transaction, rpcURL) => {
-  const data = {
-    from: transaction.from,
-    to: transaction.to,
-    data: transaction.data,
-    nonce: transaction.nonce,
-  };
-  if (transaction.value) {
-    data.value = transaction.value;
-  }
-
-  const gasLimit = await getGasLimit(data, rpcURL);
-
-  const gasPrice = await getGasPrice(rpcURL);
-  console.log('🚀 ~ file: transactionFunctions.js ~ line 56 ~ ~ gasPrice', {
-    gasLimit: Number(gasLimit),
-    gasPrice: Number(gasPrice),
-  });
-=======
 //=========================== Get Gas Price Function ===============================
 const getGasPrice = async rpcURL => {
   const provider = new Web3(new Web3.providers.HttpProvider(rpcURL));
->>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
 
   return provider.eth.getGasPrice();
 };
 
-<<<<<<< HEAD
-export const getConfigDetails = type => {
-  const config = {
-    rpcURL: '',
-    contractAddress: '',
-    abiArray: '',
-    error: '',
-  };
-  const chainType = type?.toLowerCase();
-  if (chainType === 'polygon') {
-    (config.rpcURL = blockChainConfig[1].providerUrl),
-      (config.contractAddress = blockChainConfig[1].marketConConfig.add);
-    // config.abiArray = blockChainConfig[1].marketConConfig.abi
-  } else if (chainType === 'bsc') {
-    (config.rpcURL = blockChainConfig[0].providerUrl),
-      (config.contractAddress = blockChainConfig[0].marketConConfig.add);
-    // config.abiArray =  blockChainConfig[0].marketConConfig.abi
-  } else if (chainType === 'ethereum') {
-    (config.rpcURL = blockChainConfig[2].providerUrl),
-      (config.contractAddress = blockChainConfig[2].marketConConfig.add);
-    // config.abiArray = blockChainConfig[2].marketConConfig.abi
-  } else {
-    config.error = 'invalid chainType';
-  }
-  return config;
-};
-
-export const sendCustomTransaction = async (
-  transaction,
-  publicKey,
-  nftId,
-  chainType,
-) => {
-  console.log('buyNft params 369', transaction, publicKey, nftId, chainType);
-  return new Promise(async (resolve, reject) => {
-    const config = getConfigDetails(chainType);
-
-    if (config.error === 'invalid chainType') {
-      console.log('invalid chainType');
-      reject('invalid chainType');
-      return;
-    }
-
-=======
 //=========================== Estimate Gas Transaction Function ===============================
 export const estimateGasTransactions = async (transaction, rpcURL) => {
   try {
->>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
     const data = {
       from: transaction.from,
       to: transaction.to,
@@ -108,30 +36,6 @@ export const estimateGasTransactions = async (transaction, rpcURL) => {
       data.value = transaction.value;
     }
 
-<<<<<<< HEAD
-    const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
-
-    console.log('398 - buy nft web,3', web3);
-    const txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
-    console.log('🚀 ~ file: index.js ~ line 400 buyNFT ~ txCount', txCount);
-    if (txCount.error) reject(txCount.error);
-    let txObject;
-    const {gasLimit, gasPrice} = await estimateGasTransactions(
-      transaction,
-      config.rpcURL,
-    );
-    const {privateKey} = await getWallet();
-
-    txObject = {
-      from: publicKey,
-      gasPrice: gasPrice,
-      gasLimit: gasLimit,
-      chainId: chainType === 'polygon' ? 80001 : undefined,
-      to: config.contractAddress,
-      value: '0x0',
-      data: transaction?.data,
-      nonce: web3.utils.toHex(txCount),
-=======
     const gasLimit = await getGasLimit(data, rpcURL);
 
     const gasPrice = await getGasPrice(rpcURL);
@@ -143,7 +47,6 @@ export const estimateGasTransactions = async (transaction, rpcURL) => {
     return {
       gasLimit: Number(gasLimit),
       gasPrice: Number(gasPrice),
->>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
     };
 
   } catch (error) {
@@ -252,11 +155,6 @@ const transactionProcessing = async (txObject, common, privateKey, web3, resolve
         console.log('Catch 472', e);
         reject(e);
       });
-<<<<<<< HEAD
-  });
-};
-
-=======
   } catch (error) {
     console.log("@@@ transaction processing error =============>", error)
   }
@@ -541,7 +439,6 @@ export const balanceTransfer = async (transferParameters, config) => {
 //========================================================================================================
 
 //=========================== Handle Transaction Error Function ===============================
->>>>>>> ff2f76c75a47bc376fbe9ef9c7275fb9b8e0e014
 export const handleTransactionError = error => {
   console.log(
     '🚀 ~ file: transactionFunctions.js ~ line 192 ~ handleTransactionError ~ error',

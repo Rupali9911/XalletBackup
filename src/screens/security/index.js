@@ -14,6 +14,7 @@ import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
 import { translate } from '../../walletUtils';
 import styles from './styled';
+import {getWallet} from '../../helpers/AxiosApiRequest';
 
 const ListItem = props => {
   const { isBackup } = useSelector(state => state.UserReducer);
@@ -63,10 +64,16 @@ const ListItem = props => {
   );
 };
 
-function SecurityScreen({ navigation }) {
-  const { wallet , passcodeAsync} = useSelector(state => state.UserReducer);
 
+function SecurityScreen({ navigation }) {
+  const { passcodeAsync } = useSelector(state => state.UserReducer);
   const [toggle, setToggle] = useState(false);
+  const [wallet, setWallet] = useState(null);
+
+  useEffect(async() => {
+    let getData = await getWallet();
+    setWallet(getData);
+  }, []);
 
   useEffect(() => {
     setToggle(passcodeAsync ? true : false);
@@ -77,7 +84,6 @@ function SecurityScreen({ navigation }) {
       <View style={{ width: '100%', backgroundColor: '#fff' }}>
         <AppHeader title={translate('wallet.common.security')} showBackButton />
       </View>
-
       <ScrollView>
         <View style={[styles.section2, { marginTop: 0 }]}>
           <ListItem
@@ -95,7 +101,7 @@ function SecurityScreen({ navigation }) {
               />
             }
           />
-
+          
           {wallet?.mnemonic && (
             <ListItem
               onPress={() => {
