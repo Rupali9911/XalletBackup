@@ -38,14 +38,20 @@ import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
 
 const ethers = require('ethers');
+var Accounts = require('web3-eth-accounts');
 
 const singleSocket = new SingleSocket();
-
-var Accounts = require('web3-eth-accounts');
 var accounts = new Accounts('');
 
 const Wallet = ({ route, navigation }) => {
+
   let wallet = null
+  let subscribeEth;
+  let subscribeBnb;
+  let subscribeMatic;
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
   const { isCreate, userData, isBackup } = useSelector(
     state => state.UserReducer,
   );
@@ -62,36 +68,26 @@ const Wallet = ({ route, navigation }) => {
     networkType,
   } = useSelector(state => state.WalletReducer);
 
-  const dispatch = useDispatch();
-  const isFocused = useIsFocused();
-
   const [isBackedUp, setIsBackedUp] = useState(isBackup);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(isCreate);
   const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [balances, setBalances] = useState(null);
-  const [totalValue, setTotalValue] = useState(0);
-  const [walletAccount, setWalletAccount] = useState();
   const [pickerVisible, setPickerVisible] = useState(false);
   const [selectTokenVisible, setSelectTokenVisible] = useState(false);
   const [isSend, setIsSend] = useState(false);
-
   const [currencyPriceDollar, setCurrencyPriceDollar] = useState(false);
+  const [totalValue, setTotalValue] = useState(0);
+  const [walletAccount, setWalletAccount] = useState();
   // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
 
-  let subscribeEth;
-  let subscribeBnb;
-  let subscribeMatic;
 
   //======================== Use Effect First 1111 =======================
   useEffect(() => {
-    console.log("@@@ useEffect 1111 without array ==========>")
     singleSocket.connectSocket().then(() => {
-      console.log("@@@ Single socket connected ==========>")
       // ping(wallet.address);
     });
-
     // const socketSubscribe = Events.asObservable().subscribe({
     //   next: data => {
     //     console.log('socket subscribe', data);
@@ -109,7 +105,6 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Second 2222 =======================
   useEffect(() => {
-    console.log("@@@ useEffect 2222 without array ==========>")
     const unsubscribeBlur = navigation.addListener('blur', () => {
       setIsBackedUp(isBackup);
     });
@@ -120,14 +115,11 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Third 3333 =======================
   useEffect(async () => {
-    console.log("@@@ useEffect 3333 with array[isFocused] ==========>")
     wallet = await getWallet();
     if (wallet && !isCreate && isFocused) {
-      console.log("@@@ On index.js(wallet tab) inside if =========>", wallet, isCreate, isFocused)
       setLoading(true);
       getBalances(wallet.address);
     } else {
-      console.log("@@@ On index.js(wallet tab) inside else =========>", wallet, isCreate, isFocused)
       subscribeEth &&
         subscribeEth.unsubscribe((error, success) => {
           if (success) console.log('Successfully unsubscribed!');
@@ -141,18 +133,16 @@ const Wallet = ({ route, navigation }) => {
           if (success) console.log('Successfully unsubscribed!');
         });
     }
-    console.log('wallet use effect', userData, wallet);
+    // console.log('wallet use effect', userData, wallet);
   }, [isFocused]);
 
   //======================== Use Effect Four 4444=======================
   useEffect(() => {
-    console.log("@@@ useEffect 4444 with array[isFocused] ==========>")
     setIsBackedUp(isBackup);
   }, [isFocused]);
 
   //======================== Use Effect Four 5555 =======================
   useEffect(async () => {
-    console.log("@@@ useEffect when nettypes update 5555======>", wallet?.address)
     wallet = await getWallet();
     setLoading(true);
     getBalances(wallet?.address);
@@ -214,7 +204,6 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Four 6666 =======================
   useEffect(() => {
-    console.log("@@@ useEffect when nettypes update 6666======>", balances)
     if (balances) {
       if (networkType.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
@@ -229,7 +218,45 @@ const Wallet = ({ route, navigation }) => {
     }
   }, [networkType, wethBalance, bnbBalance, maticBalance]);
 
-  //======================== Other functions =======================
+  //======================== Render Header of Screen =====================
+  const renderHeaderTokenSVGImage = () => {
+    return (
+      <View style={styles.header}>
+        <ToggleButtons
+          labelLeft={translate('wallet.common.tokens')}
+          labelRight={translate('wallet.common.nfts')}
+        />
+        <TouchableOpacity
+          style={styles.networkIcon}
+          hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
+          onPress={() => setPickerVisible(true)}>
+          <SvgUri
+            width={SIZE(25)}
+            height={SIZE(25)}
+            uri={networkType.image}
+          />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  //======================== Render Price and Main wallet Text =====================
+  const renderPriceMainWalletText = () => {
+    return (
+      <View style={styles.balanceContainer}>
+        <PriceText
+          price={setBalanceField()}
+          isWhite
+          isDollar
+          containerStyle={styles.priceCont}
+        />
+        <TextView style={styles.balanceLabel}>
+          {translate('wallet.common.mainWallet')}
+        </TextView>
+      </View>
+    )
+  }
+
   const setBalanceField = () => {
     let totalValue = 0;
     if (networkType.name == 'Ethereum') {
@@ -266,40 +293,266 @@ const Wallet = ({ route, navigation }) => {
     return totalValue;
   };
 
-  const ping = async public_key => {
-    console.log('accounts', public_key);
-    let data = {
-      type: 'ping',
-      data: {
-        type: 'wallet',
-        publicKey: public_key,
-      },
-    };
-    return singleSocket.onSendMessage(data);
+  //======================== Render Header Button (Send & Receive) =====================
+  const renderHeaderButtonSendReceive = () => {
+    return (
+      <View style={[styles.headerBtns, styles.headerBottomCont]}>
+        <HeaderBtns
+          image={ImagesSrc.send}
+          label={translate('wallet.common.send')}
+          onPress={() => {
+            setIsSend(true);
+            setSelectTokenVisible(true);
+          }}
+        />
+        <HeaderBtns
+          image={ImagesSrc.receive}
+          label={translate('wallet.common.receive')}
+          onPress={() => {
+            setIsSend(false);
+            setSelectTokenVisible(true);
+          }}
+        />
+        {/* <HeaderBtns
+              onPress={() => {}}
+              image={ImagesSrc.topup}
+              label={translate('wallet.common.buy')}
+            /> */}
+      </View>
+    )
+  }
+
+  //======================== Render is backup items =====================
+  const renderIsBackupItems = () => {
+    return (
+      <View style={styles.rowContainer}>
+        <AppButton
+          label={translate('wallet.common.later')}
+          containerStyle={styles.outlinedButton}
+          labelStyle={[
+            CommonStyles.outlineButtonLabel,
+            CommonStyles.text(
+              Fonts.ARIAL,
+              Colors.greyButtonLabel,
+              RF(1.55),
+            ),
+          ]}
+          onPress={() => setIsBackedUp(true)}
+        />
+        <AppButton
+          label={translate('wallet.common.backupNow')}
+          containerStyle={styles.button}
+          labelStyle={[
+            CommonStyles.buttonLabel,
+            CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.55)),
+          ]}
+          onPress={() => navigation.navigate('SecurityScreen')}
+        />
+      </View>
+    )
+  }
+
+  //==================== Render Token Items =======================
+  const renderTokensItems = () => {
+    return (
+      <Tokens
+        values={balances}
+        network={networkType}
+        onTokenPress={item => {
+          // console.log('Token details transfered######', item);
+          navigation.navigate('tokenDetail', { item });
+        }}
+        onRefresh={onRefreshToken}
+      />
+    )
+  }
+
+  const onRefreshToken = () => {
+    return getBalances(wallet?.address);
   };
 
-  const getSig = message => {
-    let wlt = accounts.privateKeyToAccount(wallet.privateKey);
-    let sigMsg = wlt.sign(message, wallet.privateKey);
-    return sigMsg.signature;
+  //==================== Render App Modals =======================
+  const renderAppModals = () => {
+    return (
+      <AppModal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        {isSuccessVisible ? (
+          <SuccessModal
+            onClose={() => setModalVisible(false)}
+            onDonePress={() => {
+              setSuccessVisible(false);
+              setNotificationVisible(true);
+              dispatch(updateCreateState());
+            }}
+          />
+        ) : null}
+
+        {isNotificationVisible ? (
+          <NotificationActionModal
+            title={translate('wallet.common.setPushNotification')}
+            hint={translate('wallet.common.notificationHint')}
+            btnText={translate('wallet.common.enable')}
+            onClose={() => setModalVisible(false)}
+            onDonePress={() => {
+              setModalVisible(false);
+              if (wallet) {
+                setLoading(true);
+                getBalances(wallet.address);
+              }
+            }}
+          />
+        ) : null}
+      </AppModal>
+    )
+  }
+
+  //==================== Render Network Picker =======================
+  const renderNetworkPicker = () => {
+    return (
+      <NetworkPicker
+        visible={pickerVisible}
+        onRequestClose={setPickerVisible}
+        network={networkType}
+        onItemSelect={item => {
+          onItemSelectNetworkPicker(item);
+        }}
+      />
+    )
+  }
+
+  const onItemSelectNetworkPicker = async (item) => {
+    await AsyncStorage.setItem("@CURRENT_NETWORK_CHAIN_ID", item.chainId.toString());
+    dispatch(updateNetworkType(item));
+    setPickerVisible(false);
+    // getBalances(wallet?.address);
+    setBalances(null);
+  }
+
+  //==================== Render Select Token =======================
+  const renderSelectToken = () => {
+    return (
+      <SelectToken
+        visible={selectTokenVisible}
+        onRequestClose={setSelectTokenVisible}
+        values={balances}
+        network={networkType}
+        isSend={isSend}
+        onTokenPress={item => {
+          setSelectTokenVisible(false);
+          if (isSend) {
+            navigation.navigate('send', { item, type: item.type });
+          } else {
+            navigation.navigate('receive', { item, type: item.type });
+          }
+        }}
+      />
+    )
+  }
+
+  //======================= Get Balances Function =======================
+  const getBalances = async pubKey => {
+    await priceInDollars(pubKey);
+    if (networkType.name == 'BSC') {
+      return getBSCBalances(pubKey);
+    } else if (networkType.name == 'Ethereum') {
+      return getEthereumBalances(pubKey);
+    } else if (networkType.name == 'Polygon') {
+      return getPolygonBalances(pubKey);
+    } else {
+      return new Promise((resolve, reject) => {
+        let balanceRequests = [
+          balance(pubKey, '', '', environment.ethRpc, 'eth'),
+          balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
+          balance(pubKey, '', '', environment.polRpc, 'matic'),
+          balance(
+            pubKey,
+            environment.tnftCont,
+            environment.tnftAbi,
+            environment.bnbRpc,
+            'alia',
+          ),
+          balance(
+            pubKey,
+            environment.talCont,
+            environment.tnftAbi,
+            environment.polRpc,
+            'alia',
+          ),
+          balance(
+            pubKey,
+            environment.usdtCont,
+            environment.usdtAbi,
+            environment.ethRpc,
+            'usdt',
+          ),
+          balance(
+            pubKey,
+            environment.busdCont,
+            environment.busdAbi,
+            environment.bnbRpc,
+            'busd',
+          ),
+          // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
+          // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
+        ];
+        Promise.all(balanceRequests)
+          .then(responses => {
+            let balances = {
+              ETH: responses[0],
+              BNB: responses[1],
+              Matic: responses[2],
+              TNFT: responses[3],
+              TAL: responses[4],
+              USDT: responses[5],
+              BUSD: responses[6],
+              // ALIA: responses[5],
+              // USDC: responses[6],
+            };
+            dispatch(updateBalances(balances));
+            setBalances(balances);
+            setLoading(false);
+            resolve();
+          })
+          .catch(err => {
+            console.log('err', err);
+            setLoading(false);
+            reject();
+          });
+      });
+    }
   };
 
-  const connect = async msg => {
-    console.log('connecting', msg);
-    let data = {
-      type: 'connect',
-      data: {
-        type: 'wallet',
-        data: {
-          walletId: wallet?.address,
-          publicKey: wallet?.address,
-          sig: `${getSig(msg)}`,
-        },
-      },
-    };
-    singleSocket.onSendMessage(data);
+  //=================== Price In Dollerrs =============================
+  const priceInDollars = pubKey => {
+    return new Promise((resolve, reject) => {
+      let balanceRequests = [
+        currencyInDollar(pubKey, 'BSC'),
+        currencyInDollar(pubKey, 'ETH'),
+        currencyInDollar(pubKey, 'Polygon'),
+        currencyInDollar(pubKey, 'ALIA'),
+      ];
+      Promise.all(balanceRequests)
+        .then(responses => {
+          let balances = {
+            BNB: responses[0],
+            ETH: responses[1],
+            MATIC: responses[2],
+            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+          };
+          setCurrencyPriceDollar(balances);
+          setLoading(false);
+          resolve();
+        })
+        .catch(err => {
+          console.log('err', err);
+          setLoading(false);
+          reject();
+        });
+    });
   };
 
+  //====================== Get Ethereum Balances ========================
   const getEthereumBalances = pubKey => {
     console.log("@@@ get Ethereum balance ========>", pubKey);
     return new Promise((resolve, reject) => {
@@ -333,35 +586,8 @@ const Wallet = ({ route, navigation }) => {
     });
   };
 
-  const priceInDollars = pubKey => {
-    return new Promise((resolve, reject) => {
-      let balanceRequests = [
-        currencyInDollar(pubKey, 'BSC'),
-        currencyInDollar(pubKey, 'ETH'),
-        currencyInDollar(pubKey, 'Polygon'),
-        currencyInDollar(pubKey, 'ALIA'),
-      ];
 
-      Promise.all(balanceRequests)
-        .then(responses => {
-          let balances = {
-            BNB: responses[0],
-            ETH: responses[1],
-            MATIC: responses[2],
-            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
-          };
-          setCurrencyPriceDollar(balances);
-          setLoading(false);
-          resolve();
-        })
-        .catch(err => {
-          console.log('err', err);
-          setLoading(false);
-          reject();
-        });
-    });
-  };
-
+  //====================== Get BSC Balances ========================
   const getBSCBalances = pubKey => {
     console.log("@@@ get BSC balance ========>", pubKey);
     return new Promise((resolve, reject) => {
@@ -385,7 +611,7 @@ const Wallet = ({ route, navigation }) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          console.log('BSC RESPONSES', responses);
+          console.log('@@@ BSC BALANCE RESPONSES ========>', responses);
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
@@ -405,6 +631,7 @@ const Wallet = ({ route, navigation }) => {
     });
   };
 
+  //====================== Get Polygon Balances ========================
   const getPolygonBalances = pubKey => {
     console.log("@@@ get polygon balance ========>", pubKey);
     return new Promise((resolve, reject) => {
@@ -457,149 +684,49 @@ const Wallet = ({ route, navigation }) => {
     });
   };
 
-  const getBalances = async pubKey => {
-    await priceInDollars(pubKey);
-    if (networkType.name == 'BSC') {
-      return getBSCBalances(pubKey);
-    } else if (networkType.name == 'Ethereum') {
-      return getEthereumBalances(pubKey);
-    } else if (networkType.name == 'Polygon') {
-      return getPolygonBalances(pubKey);
-    } else {
-      return new Promise((resolve, reject) => {
-        let balanceRequests = [
-          balance(pubKey, '', '', environment.ethRpc, 'eth'),
-          balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
-          balance(pubKey, '', '', environment.polRpc, 'matic'),
-          balance(
-            pubKey,
-            environment.tnftCont,
-            environment.tnftAbi,
-            environment.bnbRpc,
-            'alia',
-          ),
-          balance(
-            pubKey,
-            environment.talCont,
-            environment.tnftAbi,
-            environment.polRpc,
-            'alia',
-          ),
-          balance(
-            pubKey,
-            environment.usdtCont,
-            environment.usdtAbi,
-            environment.ethRpc,
-            'usdt',
-          ),
-          balance(
-            pubKey,
-            environment.busdCont,
-            environment.busdAbi,
-            environment.bnbRpc,
-            'busd',
-          ),
-
-          // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
-          // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
-        ];
-
-        Promise.all(balanceRequests)
-          .then(responses => {
-            let balances = {
-              ETH: responses[0],
-              BNB: responses[1],
-              Matic: responses[2],
-              TNFT: responses[3],
-              TAL: responses[4],
-              USDT: responses[5],
-              BUSD: responses[6],
-              // ALIA: responses[5],
-              // USDC: responses[6],
-            };
-            dispatch(updateBalances(balances));
-            setBalances(balances);
-            setLoading(false);
-            resolve();
-          })
-          .catch(err => {
-            console.log('err', err);
-            setLoading(false);
-            reject();
-          });
-      });
-    }
+  //======================== Other functions =======================
+  const ping = async public_key => {
+    console.log('accounts', public_key);
+    let data = {
+      type: 'ping',
+      data: {
+        type: 'wallet',
+        publicKey: public_key,
+      },
+    };
+    return singleSocket.onSendMessage(data);
   };
 
-  const onRefreshToken = () => {
-    return getBalances(wallet?.address);
+  const getSig = message => {
+    let wlt = accounts.privateKeyToAccount(wallet.privateKey);
+    let sigMsg = wlt.sign(message, wallet.privateKey);
+    return sigMsg.signature;
   };
 
-  const onItemSelectNetworkPicker = async (item) => {
-    await AsyncStorage.setItem("@CURRENT_NETWORK_CHAIN_ID", item.chainId.toString());
-    dispatch(updateNetworkType(item));
-    setPickerVisible(false);
-    // getBalances(wallet?.address);
-    setBalances(null);
-  }
+  const connect = async msg => {
+    console.log('connecting', msg);
+    let data = {
+      type: 'connect',
+      data: {
+        type: 'wallet',
+        data: {
+          walletId: wallet?.address,
+          publicKey: wallet?.address,
+          sig: `${getSig(msg)}`,
+        },
+      },
+    };
+    singleSocket.onSendMessage(data);
+  };
 
+  //====================== Component render function ========================
   return (
     <AppBackground isBusy={balances ? loading : true}>
       <GradientBackground>
         <View style={styles.gradient}>
-          <View style={styles.header}>
-            <ToggleButtons
-              labelLeft={translate('wallet.common.tokens')}
-              labelRight={translate('wallet.common.nfts')}
-            />
-
-            <TouchableOpacity
-              style={styles.networkIcon}
-              hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
-              onPress={() => setPickerVisible(true)}>
-              <SvgUri
-                width={SIZE(25)}
-                height={SIZE(25)}
-                uri={networkType.image}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.balanceContainer}>
-            <PriceText
-              price={setBalanceField()}
-              isWhite
-              isDollar
-              containerStyle={styles.priceCont}
-            />
-            <TextView style={styles.balanceLabel}>
-              {translate('wallet.common.mainWallet')}
-            </TextView>
-          </View>
-
-          <View style={[styles.headerBtns, styles.headerBottomCont]}>
-            <HeaderBtns
-              image={ImagesSrc.send}
-              label={translate('wallet.common.send')}
-              onPress={() => {
-                setIsSend(true);
-                setSelectTokenVisible(true);
-              }}
-            />
-            <HeaderBtns
-              image={ImagesSrc.receive}
-              label={translate('wallet.common.receive')}
-              onPress={() => {
-                setIsSend(false);
-                setSelectTokenVisible(true);
-              }}
-            />
-            {/* <HeaderBtns
-              onPress={() => {}}
-              image={ImagesSrc.topup}
-              label={translate('wallet.common.buy')}
-            /> */}
-          </View>
+          {renderHeaderTokenSVGImage()}
+          {renderPriceMainWalletText()}
+          {renderHeaderButtonSendReceive()}
         </View>
       </GradientBackground>
       {!isBackedUp && (
@@ -610,98 +737,18 @@ const Wallet = ({ route, navigation }) => {
           <Text style={styles.backupSubTitle}>
             {translate('wallet.common.restorePhraseIsImportant')}
           </Text>
-          <View style={styles.rowContainer}>
-            <AppButton
-              label={translate('wallet.common.later')}
-              containerStyle={styles.outlinedButton}
-              labelStyle={[
-                CommonStyles.outlineButtonLabel,
-                CommonStyles.text(
-                  Fonts.ARIAL,
-                  Colors.greyButtonLabel,
-                  RF(1.55),
-                ),
-              ]}
-              onPress={() => setIsBackedUp(true)}
-            />
-            <AppButton
-              label={translate('wallet.common.backupNow')}
-              containerStyle={styles.button}
-              labelStyle={[
-                CommonStyles.buttonLabel,
-                CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.55)),
-              ]}
-              onPress={() => navigation.navigate('SecurityScreen')}
-            />
-          </View>
+          {renderIsBackupItems()}
         </View>
       )}
-      <Tokens
-        values={balances}
-        network={networkType}
-        onTokenPress={item => {
-          console.log('Token details transfered######', item);
-          navigation.navigate('tokenDetail', { item });
-        }}
-        onRefresh={onRefreshToken}
-      />
-      <AppModal
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        {isSuccessVisible ? (
-          <SuccessModal
-            onClose={() => setModalVisible(false)}
-            onDonePress={() => {
-              setSuccessVisible(false);
-              setNotificationVisible(true);
-              dispatch(updateCreateState());
-            }}
-          />
-        ) : null}
-
-        {isNotificationVisible ? (
-          <NotificationActionModal
-            title={translate('wallet.common.setPushNotification')}
-            hint={translate('wallet.common.notificationHint')}
-            btnText={translate('wallet.common.enable')}
-            onClose={() => setModalVisible(false)}
-            onDonePress={() => {
-              setModalVisible(false);
-              if (wallet) {
-                setLoading(true);
-                getBalances(wallet.address);
-              }
-            }}
-          />
-        ) : null}
-      </AppModal>
-      <NetworkPicker
-        visible={pickerVisible}
-        onRequestClose={setPickerVisible}
-        network={networkType}
-        onItemSelect={item => {
-          onItemSelectNetworkPicker(item);
-        }}
-      />
-      <SelectToken
-        visible={selectTokenVisible}
-        onRequestClose={setSelectTokenVisible}
-        values={balances}
-        network={networkType}
-        isSend={isSend}
-        onTokenPress={item => {
-          setSelectTokenVisible(false);
-          if (isSend) {
-            navigation.navigate('send', { item, type: item.type });
-          } else {
-            navigation.navigate('receive', { item, type: item.type });
-          }
-        }}
-      />
+      {renderTokensItems()}
+      {renderAppModals()}
+      {renderNetworkPicker()}
+      {renderSelectToken()}
     </AppBackground>
   );
 };
 
+//================= StyleSheet ============================
 const styles = StyleSheet.create({
   gradient: {},
   priceCont: {},

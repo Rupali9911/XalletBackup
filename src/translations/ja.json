@@ -741,7 +741,9 @@
     "CHOOSE_COLLECTION": "選択",
     "INVALID_ART_TYPE": "アートには（png, jpeg, jpg）ファイルのみアップロード可能です",
     "INVALID_MOVIE_TYPE": "動画には（mp4）ファイルのみアップロード可能です",
-    "INVALID_AUDIO_TYPE": "オーディオには（mp3）ファイルのみアップロード可能です"
+    "INVALID_AUDIO_TYPE": "オーディオには（mp3）ファイルのみアップロード可能です",
+    "others": "その他",
+    "typing": "タイピング..."
   },
   "AwardPage": {},
   "wallet": {

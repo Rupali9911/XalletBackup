@@ -12,6 +12,7 @@ import NumberFormat from 'react-number-format';
 
 const ListItems = (props) => {
     const { item } = props;
+    console.log("@@@ list items props to render ===========>", props.item)
     return (
         <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
             <View style={styles.profileCont} >
@@ -25,24 +26,29 @@ const ListItems = (props) => {
                 </View> */}
 
             </View>
-            <View style={{flex:1, ...CommonStyles.center, alignItems: 'flex-end' }} >
+            <View style={{ flex: 1, ...CommonStyles.center, alignItems: 'flex-end' }} >
                 <NumberFormat
                     value={parseFloat(`${item.tokenValue}`)}
                     displayType={'text'}
                     decimalScale={4}
                     thousandSeparator={true}
                     renderText={formattedValue => <TextView numberOfLines={1} style={styles.priceTxt}>
-                    {formattedValue} {item.type}
-                </TextView>} // <--- Don't forget this!
+                        {formattedValue} {item.type}
+                    </TextView>} // <--- Don't forget this!
                 />
             </View>
         </TouchableOpacity>
     )
 }
 
+//=================== Select Token Component (Screen) ==============================
 const SelectToken = (props) => {
+    //===================== Props Destructuring ===============================
     const { visible, onRequestClose, network, isSend } = props;
+    console.log("@@@ On select token .js props ========>", props);
+    console.log("@@@ On select token .js token ========>", tokens);
 
+    //===================== States Initiliazation ===============================
     const [balance_Data, setBalanceData] = useState([]);
     const [searchTxt, setSearchTxt] = useState('');
 
@@ -60,9 +66,12 @@ const SelectToken = (props) => {
             // array[4].tokenValue = `${props.values.USDC}`;
             // array[5].tokenValue = `${props.values.USDT}`;
             // array[6].tokenValue = `${props.values.ALIA}`;
+            console.log("@@@ On select token .js array in useEffect ========>", array);
             setBalanceData(array);
         }
     }, [props.values]);
+
+    console.log("@@@ On select token .js balance_Data state =======>", balance_Data)
 
     return (
         <Modal

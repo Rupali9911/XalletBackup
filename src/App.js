@@ -59,6 +59,7 @@ import {MenuProvider} from 'react-native-popup-menu';
 import {NativeBaseProvider} from 'native-base';
 import Images from './constants/Images';
 import AiChat from './components/AiChat';
+import ChatDetail from './components/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import {getProxy} from './screens/AuthScreens/nonCryptoAuth/magic-link';
 
@@ -323,7 +324,8 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
-          <Stack.Screen name="AiChat" component={AiChat} />
+          <Stack.Screen name="AiChat" component={AiChat}/>
+          <Stack.Screen name="ChatDetail" component={ChatDetail}/>
           <Stack.Screen name="WebView" component={WebView} />
         </Stack.Navigator>
       ) : (

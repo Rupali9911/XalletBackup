@@ -741,7 +741,9 @@
     "CHOOSE_COLLECTION": "选择收藏",
     "INVALID_ART_TYPE": "ART 仅支持 (* .png, *.jpeg, *.jpg) 文件",
     "INVALID_MOVIE_TYPE": "电影仅支持 (*.mp4) 文件",
-    "INVALID_AUDIO_TYPE": "仅支持音频 (*.mp3) 文件。"
+    "INVALID_AUDIO_TYPE": "仅支持音频 (*.mp3) 文件。",
+    "others": "其他",
+    "typing": "打字..."
   },
   "AwardPage": {},
   "wallet": {

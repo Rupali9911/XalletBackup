@@ -1,79 +1,54 @@
-import React, {useEffect, useState, useRef} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import _, {size} from 'lodash';
-import {
-  Linking,
-  ScrollView,
+  ActivityIndicator,
+  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   RefreshControl,
   Image,
-  Dimensions,
 } from 'react-native';
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
-import Hyperlink from 'react-native-hyperlink';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
+import ImagePicker from 'react-native-image-crop-picker';
 import {openSettings} from 'react-native-permissions';
 import {confirmationAlert} from '../../common/function';
 
-import {COLORS, FONT, FONTS, SIZE, SVGS, IMAGES} from 'src/constants';
-import {Container, RowWrap, SpaceView} from 'src/styles/common.styles';
-import {SmallBoldText, SmallNormalText} from 'src/styles/text.styles';
+import Clipboard from '@react-native-clipboard/clipboard';
+import {useIsFocused} from '@react-navigation/native';
+import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
+import {Container} from 'src/styles/common.styles';
 import {
+  heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
 } from '../../common/responsiveFunction';
 import {AppHeader, C_Image} from '../../components';
+import Colors from '../../constants/Colors';
+import SOCKET_EVENTS from '../../constants/socketContants';
+import {useSocketGlobal} from '../../helpers/useSocketGlobal';
 import {fonts} from '../../res';
-import {languageArray, translate} from '../../walletUtils';
-import {
-  DescriptionView,
-  EditButton,
-  EditButtonText,
-  SmallText,
-  UserImageView,
-  WebsiteLink,
-} from './styled';
-import Collection from './collection';
-import NFTCreated from './nftCreated';
-import NFTOwned from './nftOwned';
-import Draft from './draft';
 import colors from '../../res/colors';
 import {
-  upateUserData,
-  loadFromAsync,
+  getUserData,
   loadProfileFromAsync,
-  setUserData,
-  updateUserData,
+  updateAvtar,
+  updateBanner,
 } from '../../store/reducer/userReducer';
-import {
-  getAllLanguages,
-  setAppLanguage,
-} from '../../store/reducer/languageReducer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Colors from '../../constants/Colors';
-import Images from '../../constants/Images';
-import {SvgWithCssUri} from 'react-native-svg';
-import {NEW_BASE_URL} from '../../common/constants';
-import Clipboard from '@react-native-clipboard/clipboard';
-import Toast from 'react-native-toast-message';
-import {DEFAULT_DATE_FORMAT} from '../../constants';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {updateAvtar, updateBanner} from '../../store/actions/myNFTaction';
-import sendRequest from '../../helpers/AxiosApiRequest';
+import {translate} from '../../walletUtils';
+import NFTCreated from './nftCreated';
+import NFTOwned from './nftOwned';
+import {EditButton, EditButtonText} from './styled';
 
 const {
   ConnectSmIcon,
@@ -82,24 +57,23 @@ const {
   EditImage,
   CopyProfile,
   SettingIconBlack,
+  DefaultProfile,
 } = SVGS;
 
 const Tab = createMaterialTopTabNavigator();
 
 function Profile({navigation, connector, route}) {
-  const [userData, setUserData] = useState([]);
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const {UserReducer} = useSelector(state => state);
   const actionSheetRef = useRef(null);
-
   const isFocused = useIsFocused();
-
+  const {userData, loading} = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
-  let id = UserReducer.userData.userWallet.address;
+  let id = UserReducer.userData.userWallet?.address;
 
   if (typeof route.params === 'undefined') {
-    id = UserReducer.userData.userWallet.address;
+    id = UserReducer.userData.userWallet?.address;
   } else {
     id = route?.params?.id;
   }
@@ -107,19 +81,9 @@ function Profile({navigation, connector, route}) {
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
 
-  const fetchData = () => {
-    const url = `${NEW_BASE_URL}/users/${id}`;
-    sendRequest(url).then(res => {
-      setUserData(res);
-      if (typeof route.params === 'undefined') {
-        dispatch(updateUserData(res));
-      }
-    });
-  };
-
   useEffect(() => {
     if (isFocused) {
-      fetchData();
+      dispatch(getUserData(id));
     }
   }, [isFocused]);
 
@@ -218,9 +182,9 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (imageType === 'profile') {
-              updateAvtar(userData.id, temp);
+              dispatch(updateAvtar(userData.id, temp));
             } else if (imageType === 'banner') {
-              updateBanner(userData.id, temp);
+              dispatch(updateBanner(userData.id, temp));
             }
           }
         })
@@ -258,7 +222,6 @@ function Profile({navigation, connector, route}) {
                 : image.filename;
 
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
-
             let temp = {
               path: image.path,
               uri: uri,
@@ -267,9 +230,9 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (imageType === 'profile') {
-              updateAvtar(userData.id, temp);
+              dispatch(updateAvtar(userData.id, temp));
             } else if (imageType === 'banner') {
-              updateBanner(userData.id, temp);
+              dispatch(updateBanner(userData.id, temp));
             }
           }
         })
@@ -311,15 +274,30 @@ function Profile({navigation, connector, route}) {
   };
 
   const renderBannerImage = () => {
-    return (
-      <C_Image uri={userData.banner} imageStyle={styles.collectionListImage} />
+    return userData?.banner ? (
+      <C_Image uri={userData?.banner} imageStyle={styles.collectionListImage} />
+    ) : (
+      <View style={styles.collectionWrapper} />
     );
   };
 
   const renderIconImage = () => {
+    const renderImage = () => {
+      if (userData.avatar && !loading) {
+        return <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />;
+      } else if (!loading && !userData.avatar) {
+        return (
+          <View style={styles.iconImage}>
+            <DefaultProfile width={SIZE(150)} height={SIZE(150)} />
+          </View>
+        );
+      } else if (loading) {
+        return <LoadingView />;
+      } else return null;
+    };
     return (
       <TouchableOpacity onPress={() => onSelect('profile')}>
-        <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />
+        {renderImage()}
       </TouchableOpacity>
     );
   };
@@ -366,6 +344,22 @@ function Profile({navigation, connector, route}) {
       </View>
     );
   };
+
+  useSocketGlobal(
+    SOCKET_EVENTS.userUpdateAvatar,
+    () => {
+      dispatch(getUserData(id));
+    },
+    false,
+  );
+
+  useSocketGlobal(
+    SOCKET_EVENTS.userUpdateBanner,
+    () => {
+      dispatch(getUserData(id));
+    },
+    false,
+  );
 
   return (
     <Container>
@@ -498,12 +492,14 @@ const styles = StyleSheet.create({
   collectionWrapper: {
     height: SIZE(200),
     alignItems: 'center',
+    backgroundColor: colors.DARK_GREY,
   },
   iconImage: {
     width: SIZE(150),
     height: SIZE(150),
     borderRadius: SIZE(150),
     marginBottom: SIZE(10),
+    backgroundColor: colors.PERIWINKLE,
   },
   iconWrapper: {
     marginTop: SIZE(-80),

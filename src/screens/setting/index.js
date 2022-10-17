@@ -1,17 +1,16 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
-import TouchID from 'react-native-touch-id';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {useDispatch, useSelector} from 'react-redux';
 import {alertWithSingleBtn, confirmationAlert} from '../../common/function';
@@ -24,12 +23,10 @@ import {AppHeader} from '../../components';
 import Colors from '../../constants/Colors';
 import {colors} from '../../res';
 import {setAppLanguage} from '../../store/reducer/languageReducer';
-import {getAllCards} from '../../store/reducer/paymentReducer';
 import {endMainLoading, _logout} from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
+import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -162,17 +159,17 @@ function Setting({navigation}) {
       </View>
       <ScrollView>
         <View style={[styles.section2, {marginTop: 0}]}>
-          <ListItem
+          {/* <ListItem
             onPress={() => {
               if (myCards.length > 0) {
-                navigation.navigate('Cards', {price: 0, isCardPay: false});
+                navigation.navigate('Cards', { price: 0, isCardPay: false });
               } else {
                 // navigation.navigate('Cards', { price });
-                navigation.navigate('AddCard', {price: 0});
+                navigation.navigate('AddCard', { price: 0 });
               }
             }}
             label={translate('wallet.common.AECredit')}
-          />
+          /> */}
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
