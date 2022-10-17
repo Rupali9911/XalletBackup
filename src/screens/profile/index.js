@@ -9,7 +9,6 @@ import {
   View,
   RefreshControl,
   Image,
-  Dimensions,
 } from 'react-native';
 import {
   Menu,
