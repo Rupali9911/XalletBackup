@@ -1,6 +1,7 @@
 import {Magic} from '@magic-sdk/react-native';
 import {ethers} from 'ethers';
 import {NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY} from '../../../common/constants';
+import Store from '../../../store';
 
 const requestConnectToDApp = async email => {
   return await enable({
@@ -11,14 +12,11 @@ const requestConnectToDApp = async email => {
 
 const enable = async payload => {
   try {
-    console.log(
-      '🚀 ~ file: magiclink.js ~ line 15 ~ enable ~ await isLoggedIn()',
-    );
+    // if (await isLoggedIn()) return true
     const proxy = getProxy();
     if (proxy === undefined) return undefined;
     return await proxy.auth.loginWithMagicLink(payload);
   } catch (error) {
-    console.log('🚀 ~ file: magicLink.js ~ line 19 ~ enable ~ error', error);
     return false;
   }
 };
@@ -40,13 +38,29 @@ const disable = async () => {
 };
 
 const getProxy = () => {
-  const data = createMagicLinkProxy();
-  console.log('🚀 ~ file: magicLink.js ~ line 37 ~ getProxy ~ data', data);
+  const language_name =
+    Store.getState().LanguageReducer.selectedLanguageItem?.language_name;
 
+  const data = createMagicLinkProxy(language_name);
+  console.log('🚀 ~ file: magicLink.js ~ line 37 ~ getProxy ~ data', data);
   return data?.MagicLink;
 };
 
-const createMagicLinkProxy = () => {
+const createMagicLinkProxy = language_name => {
+  let language = 'en';
+  if (language_name === 'tw') {
+    language = 'zh_CN';
+  } else if (language_name === 'ch') {
+    language = 'zh_TW';
+  } else {
+    language = language_name;
+  }
+
+  // console.log(
+  //   '🚀 ~ file: magic-link.js ~ line 63 ~  ~ language_name',
+  //   language_name,
+  //   language,
+  // );
   const MagicLink = new Magic(NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY, {
     locale: 'en',
   });
@@ -64,7 +78,9 @@ const isLoggedIn = async () => {
 };
 
 const getProxyProvider = () => {
-  const data = createMagicLinkProxy();
+  const language_name =
+    Store.getState().LanguageReducer.selectedLanguageItem?.language_name;
+  const data = createMagicLinkProxy(language_name);
   return data?.MagicLinkProvider;
 };
 

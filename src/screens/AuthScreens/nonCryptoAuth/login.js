@@ -20,14 +20,9 @@ import {FormButton, InputFields, Label} from './components';
 import {getAddress, requestConnectToDApp, signMessage} from './magic-link';
 import styles from './styles';
 import {SIGN_MESSAGE} from '../../../common/constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginCrypto = () => {
   const dispatch = useDispatch();
-
-  const language_name = useSelector(
-    state => state.LanguageReducer.selectedLanguageItem?.language_name,
-  );
   const {loading} = useSelector(state => state.UserReducer);
 
   const [sessionStart, setSessionStart] = useState(false);
@@ -36,8 +31,6 @@ const LoginCrypto = () => {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    AsyncStorage.setItem('language_name', language_name);
-
     return () => {
       setEmail('');
       setError('');
@@ -65,7 +58,6 @@ const LoginCrypto = () => {
         .then(() => {
           dispatch(setBackupStatus(true));
           setSessionStart(false);
-          AsyncStorage.removeItem('language_name');
         })
         .catch(err => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
