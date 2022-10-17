@@ -120,7 +120,7 @@ const LoginCrypto = () => {
             onPress={login}
             disable={!email || sessionStart || loading || error}
             gradient={[colors.themeL, colors.themeR]}
-            label={'Log in / Sign up'}
+            label={translate("wallet.common.logInSignUp")}
           />
         </View>
       </KeyboardAwareScrollView>
