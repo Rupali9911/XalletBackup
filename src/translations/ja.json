@@ -741,7 +741,9 @@
     "CHOOSE_COLLECTION": "選択",
     "INVALID_ART_TYPE": "アートには（png, jpeg, jpg）ファイルのみアップロード可能です",
     "INVALID_MOVIE_TYPE": "動画には（mp4）ファイルのみアップロード可能です",
-    "INVALID_AUDIO_TYPE": "オーディオには（mp3）ファイルのみアップロード可能です"
+    "INVALID_AUDIO_TYPE": "オーディオには（mp3）ファイルのみアップロード可能です",
+    "others": "その他",
+    "typing": "タイピング..."
   },
   "AwardPage": {},
   "wallet": {
@@ -1077,6 +1079,7 @@
       "reSell": "再販する",
       "loginWithWallet": "ウォレットでログイン",
       "loginWithAccount": "アカウントでログイン",
+      "logInSignUp": "ログイン /",
       "OfferAccept": "オファー受入れる",
       "updatePrice": "販売価格の変更",
       "bidaward": "入札アワード",

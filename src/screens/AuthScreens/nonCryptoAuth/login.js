@@ -1,165 +1,131 @@
-import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Text, Touchable } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
-import { useDispatch, useSelector } from 'react-redux';
 import KeyboardAwareScrollView from '../../../components/keyboardAwareScrollView';
 
-import styles from "./styles";
-import { Label, InputFields, FormButton } from "./components";
-import { colors, fonts } from '../../../res';
-import {
-    heightPercentageToDP as hp,
-    widthPercentageToDP as wp,
-    responsiveFontSize as RF,
-} from '../../../common/responsiveFunction';
-import axios from "axios";
-import { BASE_URL } from '../../../common/constants';
+import {heightPercentageToDP as hp} from '../../../common/responsiveFunction';
 import AppLogo from '../../../components/appLogo';
-import { translate } from '../../../walletUtils';
-import { setUserData, startLoading, endLoading } from '../../../store/reducer/userReducer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {colors} from '../../../res';
+import {
+  endLoading,
+  loginExternalWallet,
+  setBackupStatus,
+  startLoading,
+} from '../../../store/reducer/userReducer';
+import {alertWithSingleBtn, maxLength50, validateEmail} from '../../../utils';
+import {translate} from '../../../walletUtils';
+import {FormButton, InputFields, Label} from './components';
+import {getAddress, requestConnectToDApp, signMessage} from './magic-link';
+import styles from './styles';
+import {SIGN_MESSAGE} from '../../../common/constants';
 
-const LoginCrypto = ({ route, navigation }) => {
-    const dispatch = useDispatch();
+const LoginCrypto = () => {
+  const dispatch = useDispatch();
+  const {loading} = useSelector(state => state.UserReducer);
 
-    const { loading } = useSelector(state => state.UserReducer);
+  const [sessionStart, setSessionStart] = useState(false);
 
-    const [error, setError] = useState({});
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
 
-    useEffect(() => {
+  useEffect(() => {
+    return () => {
+      setEmail('');
+      setError('');
+    };
+  }, []);
 
-        return () => {
-            setEmail('');
-            setPassword('');
-            setError({});
-        };
-    }, []);
+  const collectWallet = async () => {
+    try {
+      console.log('🚀 ~ file: login.js ~ line 84 ~ collectWal ~ collectWallet');
 
-    const login = () => {
+      let token = await requestConnectToDApp(email);
+      console.log('🚀 ~ file: login.js ~ line 40 ~ collectWal ~ token', token);
+      dispatch(startLoading());
 
-        let errorF = {};
-        dispatch(startLoading());
+      const address = await getAddress();
+      const signature = await signMessage(SIGN_MESSAGE).catch(() => {});
+      const account = {
+        address,
+        signature,
+        email,
+      };
+      console.log('🚀 ~ file: login.js ~ line 71 ~  ~ account', account);
 
-        let url = `${BASE_URL}/auth/signin`;
-
-        let body = {
-            email: email,
-            password: password
-        }
-
-        axios.post(url, body)
-            .then(async response => {
-                console.log(response.data.data, "Sign in success")
-                if (response.data.success) {
-                    let tempData = {
-                        user: response.data.data.user,
-                        token: response.data.data.accessToken
-                    }
-                    await AsyncStorage.setItem('@USERDATA', JSON.stringify(tempData));
-                    dispatch(
-                        setUserData({
-                            data: tempData,
-                            isCreate: false,
-                            showSuccess: false,
-                        }),
-                    );
-                }
-                setError({});
-                dispatch(endLoading());
-
-            })
-            .catch(error => {
-                dispatch(endLoading());
-
-                console.log(error.response.data, "Sign in error")
-                if (!error.response.data.success) {
-                    if (error.response.data.data == "Please verify your email") {
-                        navigation.navigate("CryptoVerify", { email })
-                    } else {
-                        errorF.password = translate(`common.${error.response.data.error_code}`);
-                        setError(errorF);
-                    }
-                } else {
-                    errorF.password = translate(`common.${error.response.data.error_code}`);
-                    setError(errorF);
-                }
-            });
+      dispatch(loginExternalWallet(account, false))
+        .then(() => {
+          dispatch(setBackupStatus(true));
+          setSessionStart(false);
+        })
+        .catch(err => {
+          console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
+          alertWithSingleBtn(translate('wallet.common.tryAgain'));
+        });
+    } catch (error) {
+      console.log('🚀 ~ file: login.js ~ line 62 ~  ~ error', error);
+      setSessionStart(false);
+      dispatch(endLoading());
     }
+  };
 
-    return (
-        <AppBackground isBusy={loading}>
-            <AppHeader showBackButton title={translate('wallet.common.loginWithAccount')} />
-            <KeyboardAwareScrollView
-                contentContainerStyle={styles.scrollContent}
-                KeyboardShiftStyle={styles.keyboardShift}>
-                <View style={styles.sectionCont} >
+  const login = () => {
+    const validate = validateEmail(email);
+    const emailLength = maxLength50(email);
+    setSessionStart(true);
+    if (validate) {
+      setError(validate);
+    } else if (emailLength) {
+      setError(emailLength);
+    } else {
+      collectWallet();
+    }
+  };
 
-                    <AppLogo />
+  return (
+    <AppBackground isBusy={loading}>
+      <AppHeader
+        showBackButton
+        title={translate('wallet.common.loginWithAccount')}
+      />
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        KeyboardShiftStyle={styles.keyboardShift}>
+        <View style={styles.sectionCont}>
+          <AppLogo />
 
-                    <Label label={translate("common.UserLogin")} containerStyle={{ marginTop: hp(4) }} />
+          <Label
+            label={translate('common.UserLogin')}
+            containerStyle={{marginTop: hp(4)}}
+          />
 
-                    <InputFields
-                        label={translate("common.emailAddress")}
-                        inputProps={{
-                            value: email,
-                            onChangeText: (v) => {
-                                let errorRend = {}
-                                setEmail(v)
-                                // if (!v) {
-                                //     errorRend.email = translate("common.emailUserRequired")
-                                // }
-                                setError(errorRend)
-                            },
-                            textContentType: 'username',
-                            autoCompleteType: 'username',
-                            importantForAutofill: 'yes'
-                        }}
-                        error={error["email"]}
-                        inputMainStyle={{ marginTop: hp(4) }}
-                        inputContStyle={{ marginTop: hp(3) }}
-                    />
-                    {/* <InputFields
-                        label={translate("common.password")}
-                        inputProps={{
-                            secureTextEntry: true,
-                            value: password,
-                            onChangeText: (v) => {
-                                let errorRend = {};
-                                setPassword(v)
-                                // if (!v) {
-                                //     errorRend.password = translate("common.passwordReq")
-                                // }
-                                setError(errorRend)
-                            },
-                            textContentType: 'password',
-                            autoCompleteType: 'password' ,
-                            importantForAutofill:'yes'
-                        }}
-                        error={error["password"]}
-                    /> */}
-                    <FormButton
-                        onPress={login}
-                        disable={!email || !password || Object.keys(error).length !== 0}
-                        gradient={[colors.themeL, colors.themeR]}
-                        // label={translate("common.signIn")}
-                        label={"Log in / Sign up"}
-                    />
-
-                    {/* <View style={styles.bottomLogin} >
-                        <TouchableOpacity onPress={() => navigation.navigate("CryptoSignUp")} >
-                            <Text style={styles.loginBTxt} >{translate("common.createNewAccount")}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate("CryptoForget")} >
-                            <Text style={styles.loginBTxt} >{translate("common.ForgottenUser")}</Text>
-                        </TouchableOpacity>
-                    </View> */}
-                </View>
-            </KeyboardAwareScrollView>
-        </AppBackground>
-    );
-}
+          <InputFields
+            label={translate('common.emailAddress')}
+            inputProps={{
+              value: email,
+              onChangeText: v => {
+                setEmail(v);
+                setError('');
+              },
+              textContentType: 'username',
+              autoCompleteType: 'username',
+              importantForAutofill: 'yes',
+            }}
+            error={error}
+            inputMainStyle={{marginTop: hp(4)}}
+            inputContStyle={{marginTop: hp(3)}}
+          />
+          <FormButton
+            onPress={login}
+            disable={!email || sessionStart || loading || error}
+            gradient={[colors.themeL, colors.themeR]}
+            label={translate("wallet.common.logInSignUp")}
+          />
+        </View>
+      </KeyboardAwareScrollView>
+    </AppBackground>
+  );
+};
 
 export default LoginCrypto;

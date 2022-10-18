@@ -2,8 +2,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {StripeProvider} from '@stripe/stripe-react-native';
-import * as React from 'react';
-import {Image, Keyboard, Linking, LogBox, View} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {Image, Keyboard, Linking, LogBox, StyleSheet, View} from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
@@ -59,7 +59,9 @@ import {MenuProvider} from 'react-native-popup-menu';
 import {NativeBaseProvider} from 'native-base';
 import Images from './constants/Images';
 import AiChat from './components/AiChat';
+import ChatDetail from './components/AiChat/ChatDetail';
 import WebView from './components/WebView';
+import {getProxy} from './screens/AuthScreens/nonCryptoAuth/magic-link';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -80,13 +82,9 @@ const TabComponent = () => {
   const {showSuccess, isCreate, connectModalState} = useSelector(
     state => state.UserReducer,
   );
-  const [isBottomTabVisible, setIsBottomTabVisible] = React.useState(true);
+  const [isBottomTabVisible, setIsBottomTabVisible] = useState(true);
 
-  const {UserReducer} = useSelector(state => state);
-  const id =
-    UserReducer?.wallet?.address || UserReducer?.userData?.user?.username;
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (showSuccess || isCreate || connectModalState) {
       setIsBottomTabVisible(false);
     } else {
@@ -94,9 +92,9 @@ const TabComponent = () => {
     }
   }, [showSuccess, isCreate, connectModalState]);
 
-  React.useEffect(() => {}, [selectedLanguageItem.language_name]);
+  useEffect(() => {}, [selectedLanguageItem.language_name]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -199,15 +197,14 @@ const AppRoutes = () => {
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
-  const navigatorRef = React.useRef(null);
+  const navigatorRef = useRef(null);
   let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
-  const [pass, setPass] = React.useState(null);
-  const [renderPass, toggle] = React.useState(false);
+  const [pass, setPass] = useState(null);
+  const [renderPass, toggle] = useState(false);
 
-  React.useEffect(async () => {
+  useEffect(async () => {
     LogBox.ignoreAllLogs();
     Linking.addEventListener('url', async ({url}) => {
-      console.log('e', url);
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
         let wallet = await getWallet();
@@ -222,7 +219,7 @@ const AppRoutes = () => {
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     AsyncStorage.getItem('@passcode').then(val => {
       setPass(val);
     });
@@ -265,7 +262,7 @@ const AppRoutes = () => {
   }
   if (mainLoader) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.flexCenterAlign}>
         <Image source={Images.loadergif} />
       </View>
     );
@@ -327,7 +324,8 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
-          <Stack.Screen name="AiChat" component={AiChat} />
+          <Stack.Screen name="AiChat" component={AiChat}/>
+          <Stack.Screen name="ChatDetail" component={ChatDetail}/>
           <Stack.Screen name="WebView" component={WebView} />
         </Stack.Navigator>
       ) : (
@@ -342,6 +340,13 @@ const AppRoutes = () => {
 export const Events = new Subject();
 
 const App = () => {
+  const [magic, setMagic] = useState({});
+
+  useEffect(() => {
+    const magicLink = getProxy();
+    setMagic(magicLink);
+  }, []);
+
   return (
     <NativeBaseProvider>
       <Provider store={Store}>
@@ -352,6 +357,7 @@ const App = () => {
             merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
           >
             <AppRoutes />
+            {magic?.Relayer && <magic.Relayer />}
           </StripeProvider>
         </MenuProvider>
       </Provider>
@@ -360,3 +366,11 @@ const App = () => {
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  flexCenterAlign: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

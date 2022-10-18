@@ -741,7 +741,9 @@
     "CHOOSE_COLLECTION": "选择收藏",
     "INVALID_ART_TYPE": "ART 仅支持 (* .png, *.jpeg, *.jpg) 文件",
     "INVALID_MOVIE_TYPE": "电影仅支持 (*.mp4) 文件",
-    "INVALID_AUDIO_TYPE": "仅支持音频 (*.mp3) 文件。"
+    "INVALID_AUDIO_TYPE": "仅支持音频 (*.mp3) 文件。",
+    "others": "其他",
+    "typing": "打字..."
   },
   "AwardPage": {},
   "wallet": {
@@ -1077,6 +1079,7 @@
       "reSell": "转售",
       "loginWithWallet": "使用钱包登录",
       "loginWithAccount": "使用帐户登录",
+      "logInSignUp": "登陆注册",
       "OfferAccept": "报价接受",
       "updatePrice": "价格更新",
       "bidaward": "中标",

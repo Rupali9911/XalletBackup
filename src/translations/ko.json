@@ -741,7 +741,9 @@
     "CHOOSE_COLLECTION": "컬렉션 선택",
     "INVALID_ART_TYPE": "아트는 (*.png, *.jpeg, *.jpg) 파일만 지원합니다",
     "INVALID_MOVIE_TYPE": "동영상은 (*.mp4) 파일만 지원합니다",
-    "INVALID_AUDIO_TYPE": "오디오는 (*.mp3) 파일만 지원합니다"
+    "INVALID_AUDIO_TYPE": "오디오는 (*.mp3) 파일만 지원합니다",
+    "others": "기타",
+    "typing": "타자..."
   },
   "AwardPage": {},
   "wallet": {
@@ -1077,6 +1079,7 @@
       "reSell": "재판매",
       "loginWithWallet": "지갑으로 로그인",
       "loginWithAccount": "계정으로 로그인",
+      "logInSignUp": "로그인 / 회원가입",
       "OfferAccept": "제안 수락",
       "updatePrice": "가격 업데이트됨",
       "bidaward": "입찰 낙찰",

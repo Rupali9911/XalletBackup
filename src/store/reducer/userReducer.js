@@ -325,7 +325,7 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
     const body = {
       signature: wallet.signature,
       address: wallet.address,
-      email: null,
+      email: wallet?.email ? wallet.email : null,
     };
     dispatch(startLoading());
     sendRequest({
