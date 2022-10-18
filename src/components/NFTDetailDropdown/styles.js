@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native';
-import { SIZE } from '../../constants';
+import {StyleSheet} from 'react-native';
+import {SIZE} from '../../constants';
 import Colors from '../../constants/Colors';
-import { hp, wp } from '../../constants/responsiveFunct';
+import {hp, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 const styles = StyleSheet.create({
   containerWrapper: {
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
-
   },
   childrenContainer: {
     paddingVertical: hp(1.5),
@@ -36,7 +35,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     width: wp(70),
-    fontWeight: "bold"
+    fontWeight: 'bold',
   },
 });
 export default styles;
