@@ -97,26 +97,55 @@ function Profile({navigation, connector, route}) {
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const {UserReducer} = useSelector(state => state);
+  const [walletId, setWalletId] = useState('');
+  const [userDetails, setUserDetails] = useState(null);
+  const [processing, setProcessing] = useState(true);
   const actionSheetRef = useRef(null);
-  const isFocused = useIsFocused();
   const {userData, loading} = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
   let id = UserReducer.userData.userWallet?.address;
 
-  if (typeof route.params === 'undefined') {
-    id = UserReducer.userData.userWallet?.address;
-  } else {
-    id = route?.params?.id;
-  }
+  const setWalletAddress = async () => {
+    try {
+      if (!route?.params?.id) {
+        let res = await AsyncStorage.getItem('@USERDATA');
+        res = JSON.parse(res);
+        setWalletId(res?.userWallet?.address);
+        id = res?.userWallet?.address;
+        dispatch(getUserData(res?.userWallet?.address));
+        setProcessing(false);
+      } else {
+        setWalletId(route?.params?.id);
+        dispatch(getUserData(route?.params?.id));
+        id = route?.params?.id;
+        setProcessing(false);
+      }
+    } catch (e) {
+      console.log('error', e);
+      setProcessing(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!processing) {
+      if (
+        route?.params?.id === userData.userWallet.address ||
+        walletId === userData.userWallet.address
+      ) {
+        setUserDetails(userData);
+      }
+    }
+  }, [userData, processing]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setWalletAddress();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
-
-  useEffect(() => {
-    if (isFocused) {
-      dispatch(getUserData(id));
-    }
-  }, [isFocused]);
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
@@ -213,9 +242,9 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (imageType === 'profile') {
-              dispatch(updateAvtar(userData.id, temp));
+              dispatch(updateAvtar(userDetails.id, temp));
             } else if (imageType === 'banner') {
-              dispatch(updateBanner(userData.id, temp));
+              dispatch(updateBanner(userDetails.id, temp));
             }
           }
         })
@@ -261,9 +290,9 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (imageType === 'profile') {
-              dispatch(updateAvtar(userData.id, temp));
+              dispatch(updateAvtar(userDetails.id, temp));
             } else if (imageType === 'banner') {
-              dispatch(updateBanner(userData.id, temp));
+              dispatch(updateBanner(userDetails.id, temp));
             }
           }
         })
@@ -305,8 +334,11 @@ function Profile({navigation, connector, route}) {
   };
 
   const renderBannerImage = () => {
-    return userData?.banner ? (
-      <C_Image uri={userData?.banner} imageStyle={styles.collectionListImage} />
+    return userDetails?.banner ? (
+      <C_Image
+        uri={userDetails?.banner}
+        imageStyle={styles.collectionListImage}
+      />
     ) : (
       <View style={styles.collectionWrapper} />
     );
@@ -314,9 +346,11 @@ function Profile({navigation, connector, route}) {
 
   const renderIconImage = () => {
     const renderImage = () => {
-      if (userData.avatar && !loading) {
-        return <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />;
-      } else if (!loading && !userData.avatar) {
+      if (userDetails?.avatar && !loading) {
+        return (
+          <C_Image uri={userDetails.avatar} imageStyle={styles.iconImage} />
+        );
+      } else if (!loading && !userDetails?.avatar) {
         return (
           <View style={styles.iconImage}>
             <DefaultProfile width={SIZE(150)} height={SIZE(150)} />
@@ -340,15 +374,15 @@ function Profile({navigation, connector, route}) {
       <View style={styles.profileInfo}>
         <View style={styles.userNameView}>
           <Text style={styles.userNameText}>
-            {userData.userName ? userData.userName : 'Unnamed'}
+            {userDetails?.userName ? userDetails?.userName : 'Unnamed'}
           </Text>
         </View>
         <View style={styles.userIdView}>
           <Text style={styles.userIdText}>
-            {userData?.userWallet?.address.substring(0, 6)}...
-            {userData?.userWallet?.address.substring(
-              userData?.userWallet?.address.length - 4,
-              userData?.userWallet?.address.length,
+            {userDetails?.userWallet?.address.substring(0, 6)}...
+            {userDetails?.userWallet?.address.substring(
+              userDetails?.userWallet?.address.length - 4,
+              userDetails?.userWallet?.address.length,
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
@@ -449,15 +483,12 @@ function Profile({navigation, connector, route}) {
           {!route.params && (
             <EditButton
               style={{alignSelf: 'center', width: wp(60), height: hp(3)}}
-              onPress={() => navigation.navigate('EditProfile', {userData})}>
+              onPress={() => navigation.navigate('EditProfile', {userDetails})}>
               <EditButtonText>
                 {translate('wallet.common.editprofile')}
               </EditButtonText>
             </EditButton>
           )}
-          <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
-            {renderTabView(id)}
-          </View>
           <ActionSheet
             ref={actionSheetRef}
             title={translate('wallet.common.choosePhoto')}
@@ -470,6 +501,9 @@ function Profile({navigation, connector, route}) {
             onPress={selectActionSheet}
           />
         </View>
+      </View>
+      <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
+        {renderTabView(id)}
       </View>
     </Container>
   );
