@@ -37,7 +37,8 @@ const QRScreen = () => {
 
     console.log('item', item);
 
-    const { wallet } = useSelector((state) => state.UserReducer);
+    const { userData } = useSelector((state) => state.UserReducer);
+    const wallet = userData?.userWallet;
 
     const [price, setPrice] = useState("");
     const [showShare, setShowShare] = useState(false);
@@ -90,8 +91,8 @@ const QRScreen = () => {
                     </TouchableOpacity>
                     <TextView style={styles.codeValue}>{wallet?.address}</TextView>
                     <TextView style={styles.qrLabel}>{""}</TextView>
-                    {price!=="" && <TextView style={styles.price}>{price}</TextView>}
-                    {price!=="" && <TextView style={styles.valueLabel}>{item.type}</TextView>}
+                    {price !== "" && <TextView style={styles.price}>{price}</TextView>}
+                    {price !== "" && <TextView style={styles.valueLabel}>{item.type}</TextView>}
                 </ViewShot>
             </View>
             <View style={styles.actionContainer}>
@@ -104,7 +105,7 @@ const QRScreen = () => {
                         bgColor={Colors.headerIconBg2}
                         labelStyle={styles.btnLabel}
                         onPress={() => copyToClipboard()}
-                        />
+                    />
                     <HeaderBtns
                         image={ImagesSrc.receive}
                         label={translate("wallet.common.setAmount")}
@@ -113,7 +114,7 @@ const QRScreen = () => {
                         labelStyle={styles.btnLabel}
                         bgColor={Colors.headerIconBg2}
                         onPress={() => { setModalVisible(true) }}
-                        />
+                    />
                     <HeaderBtns
                         image={ImagesSrc.topup}
                         label={translate("wallet.common.share")}
