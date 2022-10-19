@@ -279,7 +279,11 @@ const styles = StyleSheet.create({
   },
 
   head: {height: SIZE(40)},
-  text: {margin: SIZE(10), fontSize: SIZE(12)},
+  // text: {
+  //   margin: SIZE(10),
+  //   fontSize: SIZE(12),
+  //   backgroundColor: 'red',
+  // },
   themeColor: {color: Colors.themeColor},
   emptyData: history => ({
     // alignSelf: 'center',
@@ -751,6 +755,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: Colors.GREY1,
+    margin: SIZE(10),
+    fontSize: SIZE(12),
   },
   tokenName: {
     fontWeight: 'bold',

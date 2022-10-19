@@ -2917,7 +2917,7 @@ const DetailScreen = ({navigation, route}) => {
               ? hp(16) +
                 hp(4) *
                   (history === 'trading' && listData.length <= 3
-                    ? 3
+                    ? 3.4
                     : listData?.length)
               : hp(35.7),
         }}
@@ -3481,6 +3481,7 @@ const DetailScreen = ({navigation, route}) => {
         dropDownContainerStyle={styles.dropDownContainer}
         placeholder={translate('wallet.common.filter')}
         maxHeight={hp(20)}
+        listMode="SCROLLVIEW"
       />
     );
   };
