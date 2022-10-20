@@ -16,14 +16,11 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-
 import {useDispatch, useSelector} from 'react-redux';
-
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import {openSettings} from 'react-native-permissions';
 import {confirmationAlert} from '../../common/function';
-
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useIsFocused} from '@react-navigation/native';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
@@ -40,6 +37,8 @@ import {useSocketGlobal} from '../../helpers/useSocketGlobal';
 import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
+  endLoadingBanner,
+  endLoadingImage,
   getUserData,
   loadProfileFromAsync,
   updateAvtar,
@@ -66,49 +65,47 @@ function Profile({navigation, connector, route}) {
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const {UserReducer} = useSelector(state => state);
-  const [walletId, setWalletId] = useState('');
   const [userDetails, setUserDetails] = useState(null);
-  const [processing, setProcessing] = useState(true);
   const actionSheetRef = useRef(null);
-  const {userData, loading} = useSelector(state => state.UserReducer);
+  const {
+    userData,
+    loading,
+    loggedInUser,
+    imageAvatarLoading,
+    imageBannerLoading,
+  } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
   let id = UserReducer.userData.userWallet?.address;
 
-  const setWalletAddress = async () => {
-    try {
-      if (!route?.params?.id) {
-        let res = await AsyncStorage.getItem('@USERDATA');
-        res = JSON.parse(res);
-        setWalletId(res?.userWallet?.address);
-        id = res?.userWallet?.address;
-        dispatch(getUserData(res?.userWallet?.address));
-        setProcessing(false);
-      } else {
-        setWalletId(route?.params?.id);
-        dispatch(getUserData(route?.params?.id));
-        id = route?.params?.id;
-        setProcessing(false);
-      }
-    } catch (e) {
-      console.log('error', e);
-      setProcessing(false);
+  const handleUserData = () => {
+    if (route?.params?.id) {
+      dispatch(getUserData(route?.params?.id));
+    } else {
+      dispatch(getUserData(loggedInUser?.userWallet?.address));
     }
   };
 
   useEffect(() => {
-    if (!processing) {
-      if (
-        route?.params?.id === userData.userWallet.address ||
-        walletId === userData.userWallet.address
-      ) {
-        setUserDetails(userData);
-      }
+    if (
+      !loading &&
+      route?.params?.id &&
+      userData.userWallet?.address === route?.params?.id
+    ) {
+      setUserDetails(userData);
+    } else if (
+      !loading &&
+      !route?.params?.id &&
+      userData.userWallet?.address === loggedInUser?.userWallet?.address
+    ) {
+      setUserDetails(userData);
     }
-  }, [userData, processing]);
+    !loading && dispatch(endLoadingImage());
+    !loading && dispatch(endLoadingBanner());
+  }, [userData, loading]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setWalletAddress();
+      handleUserData();
     });
     return unsubscribe;
   }, [navigation]);
@@ -303,30 +300,42 @@ function Profile({navigation, connector, route}) {
   };
 
   const renderBannerImage = () => {
-    return userDetails?.banner ? (
-      <C_Image
-        uri={userDetails?.banner}
-        imageStyle={styles.collectionListImage}
-      />
-    ) : (
-      <View style={styles.collectionWrapper} />
-    );
+    const renderBanner = () => {
+      if (userDetails?.banner && !imageBannerLoading) {
+        return (
+          <C_Image
+            uri={userDetails?.banner}
+            imageStyle={styles.collectionListImage}
+          />
+        );
+      } else if (!imageBannerLoading && !userDetails?.banner) {
+        return <View style={styles.collectionWrapper}></View>;
+      } else if (imageBannerLoading) {
+        return <LoadingView />;
+      } else return null;
+    };
+
+    return renderBanner();
   };
 
   const renderIconImage = () => {
     const renderImage = () => {
-      if (userDetails?.avatar && !loading) {
+      if (userDetails?.avatar && !imageAvatarLoading) {
         return (
           <C_Image uri={userDetails.avatar} imageStyle={styles.iconImage} />
         );
-      } else if (!loading && !userDetails?.avatar) {
+      } else if (!imageAvatarLoading && !userDetails?.avatar) {
         return (
           <View style={styles.iconImage}>
             <DefaultProfile width={SIZE(150)} height={SIZE(150)} />
           </View>
         );
-      } else if (loading) {
-        return <LoadingView />;
+      } else if (imageAvatarLoading) {
+        return (
+          <View style={styles.loaderImage}>
+            <LoadingView />
+          </View>
+        );
       } else return null;
     };
     return (
@@ -445,13 +454,18 @@ function Profile({navigation, connector, route}) {
             </Menu>
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
-          <View style={styles.iconWrapper}>
-            {renderIconImage()}
+          <View style={styles.iconWrapper}>{renderIconImage()}</View>
+          <View style={styles.userDetailsWrapper}>
             {renderProfileNameAndId()}
           </View>
           {!route.params && (
             <EditButton
-              style={{alignSelf: 'center', width: wp(60), height: hp(3)}}
+              style={{
+                alignSelf: 'center',
+                width: wp(60),
+                height: hp(3),
+                marginTop: SIZE(5),
+              }}
               onPress={() => navigation.navigate('EditProfile', {userDetails})}>
               <EditButtonText>
                 {translate('wallet.common.editprofile')}
@@ -535,9 +549,20 @@ const styles = StyleSheet.create({
     marginBottom: SIZE(10),
     backgroundColor: colors.PERIWINKLE,
   },
+
+  loaderImage: {
+    backgroundColor: 'transparent',
+    width: SIZE(150),
+    height: SIZE(150),
+  },
   iconWrapper: {
     marginTop: SIZE(-80),
     marginBottom: SIZE(10),
+    alignItems: 'center',
+    height: SIZE(150),
+  },
+  userDetailsWrapper: {
+    marginTop: SIZE(5),
     alignItems: 'center',
   },
   collectionListImage: {

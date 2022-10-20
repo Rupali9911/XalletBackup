@@ -203,13 +203,10 @@ export const LAUNCHPAD_NFT_LIST_PAGE_CHANGE = 'LAUNCHPAD_NFT_PAGE_CHANGE';
 //================= Network Reducer =========================
 export const GET_NETWORKS = 'GET_NETWORKS';
 
-
 //================= Chat Types =========================
 export const CHAT_LOAD_START = 'CHAT_LOAD_START';
 export const CHAT_LOAD_SUCCESS = 'CHAT_LOAD_SUCCESS';
 export const CHAT_LOAD_FAIL = 'CHAT_LOAD_FAIL';
-
-
 
 export const CHAT_SEARCH_LOAD_START = 'CHAT_SEARCH_LOAD_START';
 export const CHAT_SEARCH_LOAD_SUCCESS = 'CHAT_SEARCH_LOAD_SUCCESS';
@@ -224,11 +221,15 @@ export const CHAT_NFT_LIST_RESET = 'CHAT_NFT_LIST_RESET';
 export const CHAT_NFT_PAGE_CHANGE = 'CHAT_NFT_PAGE_CHANGE';
 export const CHAT_NFT_CURSOR_CHANGE = 'CHAT_NFT_CURSOR_CHANGE';
 
-export const CHAT_TAB_TITLE = 'CHAT_TAB_TITLE'
-
-
+export const CHAT_TAB_TITLE = 'CHAT_TAB_TITLE';
 
 //================= Buy NFT Reducer =========================
 export const BUY_NFT_START = 'BUY_NFT_START';
 export const BUY_NFT_SUCCESS = 'BUY_NFT_SUCCESS';
 export const BUY_NFT_FAIL = 'BUY_NFT_FAIL';
+
+//================= Profile Reducer =========================
+export const IMAGE_AVATAR_START = 'IMAGE_AVATAR_START';
+export const IMAGE_AVATAR_END = 'IMAGE_AVATAR_END';
+export const IMAGE_BANNER_START = 'IMAGE_BANNER_START';
+export const IMAGE_BANNER_END = 'IMAGE_BANNER_END';
