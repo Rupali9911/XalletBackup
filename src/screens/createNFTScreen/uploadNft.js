@@ -91,14 +91,14 @@ const UploadNFT = ({
     //==================== Global Variables =======================
     //#region SmartContract
     const walletAddress = userData?.userWallet?.address;
-    let MarketPlaceAbi = '';
-    let MarketContractAddress = '';
-    let providerUrl = '';
-    let ERC721Address = '';
-    let NftApprovalAbi = '';
-    let gasFee = "";
-    let gasLimit = "";
-    let ERC721Abi = '';
+    // let MarketPlaceAbi = '';
+    // let MarketContractAddress = '';
+    // let providerUrl = '';
+    // let ERC721Address = '';
+    // let NftApprovalAbi = '';
+    // let gasFee = "";
+    // let gasLimit = "";
+    // let ERC721Abi = '';
 
     //===================== UseEffect Function =========================
     useEffect(() => {
@@ -467,360 +467,396 @@ const UploadNFT = ({
         setEndTimeDate("");
     }
 
-    const uploadImageToStorage = async () => {
-        if (nftItem) {
-            let datares = {
-                image1: nftItem.image,
-                image2: nftItem.thumbnailImage
-            };
+    // const uploadImageToStorage = async () => {
+    //     if (nftItem) {
+    //         let datares = {
+    //             image1: nftItem.image,
+    //             image2: nftItem.thumbnailImage
+    //         };
 
-            return datares;
+    //         return datares;
 
-        } else {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
+    //     } else {
+    //         axios.defaults.headers.common['Authorization'] = `Bearer ${userData.access_token}`;
 
-            let formData = new FormData();
-            formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
+    //         let formData = new FormData();
+    //         formData.append('image', { uri: nftImage.path, name: nftImage.path.split("/").pop(), type: nftImage.mime });
 
-            axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+    //         axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
-            let responseSend = await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
-                .then(async res => {
-                    console.log("upload image nft", res)
-                    if (res.data.success) {
+    //         let responseSend = await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
+    //             .then(async res => {
+    //                 console.log("upload image nft", res)
+    //                 if (res.data.success) {
 
-                        let thumbnailDataFile = new FormData();
-                        thumbnailDataFile.append('imageName', res.data.imageName);
-                        if (nftImageThumb) {
-                            thumbnailDataFile.append('image', {
-                                uri: nftImageThumb.path,
-                                name: nftImageThumb.path.split("/").pop(),
-                                type: nftImageThumb.mime
-                            });
-                        } else {
-                            thumbnailDataFile.append('image', {
-                                uri: nftImage.path,
-                                name: nftImage.path.split("/").pop(),
-                                type: nftImage.mime
-                            });
-                        }
+    //                     let thumbnailDataFile = new FormData();
+    //                     thumbnailDataFile.append('imageName', res.data.imageName);
+    //                     if (nftImageThumb) {
+    //                         thumbnailDataFile.append('image', {
+    //                             uri: nftImageThumb.path,
+    //                             name: nftImageThumb.path.split("/").pop(),
+    //                             type: nftImageThumb.mime
+    //                         });
+    //                     } else {
+    //                         thumbnailDataFile.append('image', {
+    //                             uri: nftImage.path,
+    //                             name: nftImage.path.split("/").pop(),
+    //                             type: nftImage.mime
+    //                         });
+    //                     }
 
-                        let thumbRes = await axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
-                            .then(res2 => {
-                                if (res2.data.success) {
-                                    let datares = {
-                                        image1: res.data.data,
-                                        image2: res2.data.data
-                                    };
-                                    console.log(datares, "thumbnail url")
-                                    return datares;
-                                } else {
-                                    changeLoadingState(false);
-                                    alertWithSingleBtn(
-                                        translate("wallet.common.alert"),
-                                        translate(res.data.data)
-                                    );
-                                    return null;
-                                }
-                            })
-                            .catch(err => {
-                                errorMethod(err, "thumbnail image nft err")
-                                return null;
-                            });
-                        return thumbRes;
-                    } else {
-                        changeLoadingState(false);
-                        alertWithSingleBtn(
-                            translate("wallet.common.alert"),
-                            translate(res.data.data)
-                        );
-                        return null
-                    }
-                })
-                .catch(err => {
-                    errorMethod(err, "upload image nft err")
-                    return null;
-                });
-            return responseSend;
-        }
-    }
+    //                     let thumbRes = await axios.post(`${BASE_URL}/xanalia/thumbUploadS3`, thumbnailDataFile)
+    //                         .then(res2 => {
+    //                             if (res2.data.success) {
+    //                                 let datares = {
+    //                                     image1: res.data.data,
+    //                                     image2: res2.data.data
+    //                                 };
+    //                                 console.log(datares, "thumbnail url")
+    //                                 return datares;
+    //                             } else {
+    //                                 changeLoadingState(false);
+    //                                 alertWithSingleBtn(
+    //                                     translate("wallet.common.alert"),
+    //                                     translate(res.data.data)
+    //                                 );
+    //                                 return null;
+    //                             }
+    //                         })
+    //                         .catch(err => {
+    //                             errorMethod(err, "thumbnail image nft err")
+    //                             return null;
+    //                         });
+    //                     return thumbRes;
+    //                 } else {
+    //                     changeLoadingState(false);
+    //                     alertWithSingleBtn(
+    //                         translate("wallet.common.alert"),
+    //                         translate(res.data.data)
+    //                     );
+    //                     return null
+    //                 }
+    //             })
+    //             .catch(err => {
+    //                 errorMethod(err, "upload image nft err")
+    //                 return null;
+    //             });
+    //         return responseSend;
+    //     }
+    // }
 
-    const handleInfura = async (image1, image2) => {
-        let dataToSend = {
-            name: nftName,
-            description: nftDesc,
-            image: image1,
-            properties: { type: nftImageType.type },
-            totalSupply: nftSupply,
-            thumbnft: image2,
-            externalLink: nftExternalLink,
-        };
+    // const handleInfura = async (image1, image2) => {
+    //     let dataToSend = {
+    //         name: nftName,
+    //         description: nftDesc,
+    //         image: image1,
+    //         properties: { type: nftImageType.type },
+    //         totalSupply: nftSupply,
+    //         thumbnft: image2,
+    //         externalLink: nftExternalLink,
+    //     };
 
-        let blob = JSON.stringify(dataToSend);
-        let formData = new FormData();
-        formData.append('path', blob);
+    //     let blob = JSON.stringify(dataToSend);
+    //     let formData = new FormData();
+    //     formData.append('path', blob);
 
-        let hashRes = await axios
-            .post(
-                "https://ipfs.infura.io:5001/api/v0/add",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-            .then((response) => {
-                return response;
-            })
-            .catch((err) => {
-                errorMethod(err, "error from infura catch")
-                return null;
-            });
-        return hashRes
-    }
+    //     let hashRes = await axios
+    //         .post(
+    //             "https://ipfs.infura.io:5001/api/v0/add",
+    //             formData,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //             }
+    //         )
+    //         .then((response) => {
+    //             return response;
+    //         })
+    //         .catch((err) => {
+    //             errorMethod(err, "error from infura catch")
+    //             return null;
+    //         });
+    //     return hashRes
+    // }
 
-    const handleCreate = async () => {
-        if (userData.access_token) {
-            // changeLoadingState(true);
+    // const handleCreate = async () => {
+    //     if (userData.access_token) {
+    //         // changeLoadingState(true);
 
-            const imageRes = await uploadImageToStorage();
-            console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+", imageRes)
-            if (imageRes) {
+    //         const imageRes = await uploadImageToStorage();
+    //         console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+", imageRes)
+    //         if (imageRes) {
 
-                const infuraRes = await handleInfura(imageRes.image1, imageRes.image2);
+    //             const infuraRes = await handleInfura(imageRes.image1, imageRes.image2);
 
-                if (infuraRes) {
-                    let hashResp = infuraRes.data;
-                    console.log("#@#@#@#@#@#@ infura res #@#@#@#@#@#@#@", hashResp)
-                    let web3 = new Web3(providerUrl);
+    //             if (infuraRes) {
+    //                 let hashResp = infuraRes.data;
+    //                 console.log("#@#@#@#@#@#@ infura res #@#@#@#@#@#@#@", hashResp)
+    //                 let web3 = new Web3(providerUrl);
 
-                    let approvalCheckContract = new web3.eth.Contract(
-                        NftApprovalAbi,
-                        collection.collectionAddress
-                    );
-                    approvalCheckContract.methods
-                        .isApprovedForAll(wallet?.address, MarketContractAddress)
-                        .call((err, res) => {
-                            console.log(res, ":::::::approval response")
-                            console.log(err, ":::::::error")
-                            if (!err) {
+    //                 let approvalCheckContract = new web3.eth.Contract(
+    //                     NftApprovalAbi,
+    //                     collection.collectionAddress
+    //                 );
+    //                 approvalCheckContract.methods
+    //                     .isApprovedForAll(wallet?.address, MarketContractAddress)
+    //                     .call((err, res) => {
+    //                         console.log(res, ":::::::approval response")
+    //                         console.log(err, ":::::::error")
+    //                         if (!err) {
 
-                                if (!res) {
+    //                             if (!res) {
 
-                                    setApprovalForAll(
-                                        wallet?.address,
-                                        wallet.privateKey,
-                                        providerUrl,
-                                        networkType.value,
-                                        approvalCheckContract,
-                                        MarketContractAddress,
-                                        collection.collectionAddress
-                                        , 10, 6000000)
-                                        .then((_) => {
-                                            console.log(_, "__approval set__")
-                                            console.log("####################toggleButton#################", toggleButton)
+    //                                 setApprovalForAll(
+    //                                     wallet?.address,
+    //                                     wallet.privateKey,
+    //                                     providerUrl,
+    //                                     networkType.value,
+    //                                     approvalCheckContract,
+    //                                     MarketContractAddress,
+    //                                     collection.collectionAddress
+    //                                     , 10, 6000000)
+    //                                     .then((_) => {
+    //                                         console.log(_, "__approval set__")
+    //                                         console.log("####################toggleButton#################", toggleButton)
 
-                                            if (toggleButton == "fixPrice") {
-                                                putNftOnSale(hashResp);
-                                            } else {
-                                                putNftOnAuction(hashResp);
-                                            }
+    //                                         if (toggleButton == "fixPrice") {
+    //                                             putNftOnSale(hashResp);
+    //                                         } else {
+    //                                             putNftOnAuction(hashResp);
+    //                                         }
 
-                                        }).catch((err) => {
-                                            changeLoadingState(false);
+    //                                     }).catch((err) => {
+    //                                         changeLoadingState(false);
 
-                                            alertWithSingleBtn(
-                                                translate("wallet.common.alert"),
-                                                translate("wallet.common.insufficientFunds")
-                                            );
-                                        });
+    //                                         alertWithSingleBtn(
+    //                                             translate("wallet.common.alert"),
+    //                                             translate("wallet.common.insufficientFunds")
+    //                                         );
+    //                                     });
 
-                                } else {
-                                    console.log("####################toggle Button#################", toggleButton)
+    //                             } else {
+    //                                 console.log("####################toggle Button#################", toggleButton)
 
-                                    if (toggleButton === "fixPrice") {
-                                        putNftOnSale(hashResp);
-                                    } else {
-                                        putNftOnAuction(hashResp);
-                                    }
+    //                                 if (toggleButton === "fixPrice") {
+    //                                     putNftOnSale(hashResp);
+    //                                 } else {
+    //                                     putNftOnAuction(hashResp);
+    //                                 }
 
-                                }
+    //                             }
 
-                            } else {
-                                changeLoadingState(false);
-                                console.log("@#@#@#@#@#@#@#@ err in balanceOf @#@#@#@#@#@#@#@#@#", err);
-                            }
-                        })
-                }
-            }
-        }
-    }
+    //                         } else {
+    //                             changeLoadingState(false);
+    //                             console.log("@#@#@#@#@#@#@#@ err in balanceOf @#@#@#@#@#@#@#@#@#", err);
+    //                         }
+    //                     })
+    //             }
+    //         }
+    //     }
+    // }
 
-    const errorMethod = (err, v) => {
-        console.log(v)
-        changeLoadingState(false);
-        if (err.response.status === 401) {
-            alertWithSingleBtn(
-                translate("wallet.common.alert"),
-                translate("common.sessionexpired")
-            );
-        }
-        // alertWithSingleBtn(
-        //   translate("wallet.common.alert"),
-        //   translate("wallet.common.error.networkFailed")
-        // );
-    }
+    // const putNftOnAuction = (data) => {
+    //     let foundOrder = basePrice.order;
+    //     const publicAddress = wallet?.address;
+    //     const privKey = wallet.privateKey;
 
-    const putNftOnAuction = (data) => {
-        let foundOrder = basePrice.order;
-        const publicAddress = wallet?.address;
-        const privKey = wallet.privateKey;
+    //     let marketContractData = getMarketContract();
 
-        let marketContractData = getMarketContract();
+    //     let marketData = (collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) ?
+    //         marketContractData.marketContract.methods
+    //             .MintAndAuctionNFT(
+    //                 publicAddress,
+    //                 data.Hash,
+    //                 ERC721Address, // xanalia collection
+    //                 marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+    //                 '',
+    //                 new Date(endTimeDate).getTime() / 1000,
+    //                 (parseFloat(royality) * Math.pow(10, 1)).toString(),
+    //                 foundOrder.toString()
+    //             ).encodeABI() :
+    //         marketContractData.marketContract.methods
+    //             .mintAndAuctionCollectionNFT(
+    //                 collection.collectionAddress,
+    //                 publicAddress,
+    //                 data.Hash,
+    //                 marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+    //                 foundOrder.toString(),
+    //                 new Date(endTimeDate).getTime() / 1000
+    //             )
+    //             .encodeABI();
 
-        let marketData = (collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) ?
-            marketContractData.marketContract.methods
-                .MintAndAuctionNFT(
-                    publicAddress,
-                    data.Hash,
-                    ERC721Address, // xanalia collection
-                    marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
-                    '',
-                    new Date(endTimeDate).getTime() / 1000,
-                    (parseFloat(royality) * Math.pow(10, 1)).toString(),
-                    foundOrder.toString()
-                ).encodeABI() :
-            marketContractData.marketContract.methods
-                .mintAndAuctionCollectionNFT(
-                    collection.collectionAddress,
-                    publicAddress,
-                    data.Hash,
-                    marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
-                    foundOrder.toString(),
-                    new Date(endTimeDate).getTime() / 1000
-                )
-                .encodeABI();
+    //     let dataToAdd = {
+    //         providerUrl,
+    //         publicAddress,
+    //         gasFee: 10,
+    //         gasLimit: 6000000,
+    //         chainType: networkType.value,
+    //         MarketContractAddress,
+    //         privKey,
+    //         data: marketData
+    //     }
 
-        let dataToAdd = {
-            providerUrl,
-            publicAddress,
-            gasFee: 10,
-            gasLimit: 6000000,
-            chainType: networkType.value,
-            MarketContractAddress,
-            privKey,
-            data: marketData
-        }
+    //     nftCallTransaction(dataToAdd)
+    // }
 
-        nftCallTransaction(dataToAdd)
-    }
+    // const putNftOnSale = (data) => {
 
-    const putNftOnSale = (data) => {
+    //     let foundOrder = basePrice.order;
+    //     const publicAddress = wallet?.address;
+    //     const privKey = wallet.privateKey;
+    //     console.log(data, "put nft on sale")
 
-        let foundOrder = basePrice.order;
-        const publicAddress = wallet?.address;
-        const privKey = wallet.privateKey;
-        console.log(data, "put nft on sale")
+    //     let currencyListArr = otherPrice.map(i => Number(i));
 
-        let currencyListArr = otherPrice.map(i => Number(i));
+    //     let marketContractData = getMarketContract();
 
-        let marketContractData = getMarketContract();
+    //     let marketData = (collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) ?
+    //         marketContractData.marketContract.methods
+    //             .MintAndSellNFT(
+    //                 publicAddress,
+    //                 data.Hash,
+    //                 marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+    //                 '',
+    //                 (parseFloat(royality) * Math.pow(10, 1)).toString(),
+    //                 foundOrder.toString(),
+    //                 currencyListArr
+    //             ).encodeABI() :
+    //         marketContractData.marketContract.methods
+    //             .mintAndSellCollectionNFT(
+    //                 collection.collectionAddress,
+    //                 publicAddress,
+    //                 data.Hash,
+    //                 marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
+    //                 foundOrder.toString(),
+    //                 currencyListArr
+    //             )
+    //             .encodeABI();
 
-        let marketData = (collection && collection.collectionAddress.toLowerCase() == ERC721Address.toLowerCase()) ?
-            marketContractData.marketContract.methods
-                .MintAndSellNFT(
-                    publicAddress,
-                    data.Hash,
-                    marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
-                    '',
-                    (parseFloat(royality) * Math.pow(10, 1)).toString(),
-                    foundOrder.toString(),
-                    currencyListArr
-                ).encodeABI() :
-            marketContractData.marketContract.methods
-                .mintAndSellCollectionNFT(
-                    collection.collectionAddress,
-                    publicAddress,
-                    data.Hash,
-                    marketContractData.web3.utils.toWei(fixedPrice.toString(), "ether"),
-                    foundOrder.toString(),
-                    currencyListArr
-                )
-                .encodeABI();
+    //     let dataToAdd = {
+    //         providerUrl,
+    //         publicAddress,
+    //         gasFee: 10,
+    //         gasLimit: 6000000,
+    //         chainType: networkType.value,
+    //         MarketContractAddress,
+    //         privKey,
+    //         data: marketData
+    //     }
 
-        let dataToAdd = {
-            providerUrl,
-            publicAddress,
-            gasFee: 10,
-            gasLimit: 6000000,
-            chainType: networkType.value,
-            MarketContractAddress,
-            privKey,
-            data: marketData
-        }
+    //     nftCallTransaction(dataToAdd)
+    // }
 
-        nftCallTransaction(dataToAdd)
-    }
+    // const nftCallTransaction = (data) => {
+    //     nftMakingMethods(data)
+    //         .then((transRes) => {
+    //             if (transRes.success) {
+    //                 if (nftItem) {
 
-    const nftCallTransaction = (data) => {
-        nftMakingMethods(data)
-            .then((transRes) => {
-                if (transRes.success) {
-                    if (nftItem) {
+    //                     let changeStatusData = {
+    //                         collectionId: nftItem.collectionId,
+    //                         nftDraftId: nftItem._id,
+    //                         transctionHash: transRes.data.transactionHash,
+    //                         chainType: networkType.value
+    //                     };
+    //                     console.log(changeStatusData, "changeStatusData")
+    //                     let url = `${BASE_URL}/user/change-status-draft`
+    //                     axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-                        let changeStatusData = {
-                            collectionId: nftItem.collectionId,
-                            nftDraftId: nftItem._id,
-                            transctionHash: transRes.data.transactionHash,
-                            chainType: networkType.value
-                        };
-                        console.log(changeStatusData, "changeStatusData")
-                        let url = `${BASE_URL}/user/change-status-draft`
-                        axios.defaults.headers.post['Content-Type'] = 'application/json';
+    //                     axios.post(url, changeStatusData)
+    //                         .then(res => {
+    //                             changeLoadingState(false);
+    //                             console.log(res, "__draft status updated__")
 
-                        axios.post(url, changeStatusData)
-                            .then(res => {
-                                changeLoadingState(false);
-                                console.log(res, "__draft status updated__")
+    //                         })
+    //                         .catch(err => {
+    //                             errorMethod(err, "error from delete draft catch")
+    //                         });
+    //                 } else {
+    //                     changeLoadingState(false);
+    //                 }
+    //                 cleanAll();
+    //                 switchToNFTList("mint", collection)
+    //             } else {
+    //                 changeLoadingState(false);
+    //             }
 
-                            })
-                            .catch(err => {
-                                errorMethod(err, "error from delete draft catch")
-                            });
-                    } else {
-                        changeLoadingState(false);
-                    }
-                    cleanAll();
-                    switchToNFTList("mint", collection)
-                } else {
-                    changeLoadingState(false);
-                }
+    //         }).catch((err) => {
+    //             changeLoadingState(false);
 
-            }).catch((err) => {
-                changeLoadingState(false);
+    //             alertWithSingleBtn(
+    //                 translate("wallet.common.alert"),
+    //                 translate("wallet.common.insufficientFunds")
+    //             );
+    //         });
+    // }
 
-                alertWithSingleBtn(
-                    translate("wallet.common.alert"),
-                    translate("wallet.common.insufficientFunds")
-                );
-            });
-    }
+    // const getMarketContract = () => {
+    //     const web3 = new Web3(
+    //         new Web3.providers.HttpProvider(
+    //             providerUrl
+    //         )
+    //     );
 
-    const getMarketContract = () => {
-        const web3 = new Web3(
-            new Web3.providers.HttpProvider(
-                providerUrl
-            )
-        );
+    //     let marketContract = new web3.eth.Contract(
+    //         MarketPlaceAbi,
+    //         MarketContractAddress
+    //     );
 
-        let marketContract = new web3.eth.Contract(
-            MarketPlaceAbi,
-            MarketContractAddress
-        );
+    //     return { marketContract, web3 }
+    // }
 
-        return { marketContract, web3 }
-    }
+    // const saveDraftToDatabase = (res, res2) => {
+    //     let dataToSend = {
+    //         collectionId: collection._id,
+    //         name: nftName,
+    //         description: nftDesc,
+    //         image: res,
+    //         thumbnailImage: res2,
+    //         properties: { type: nftImageType.type },
+    //         salesType: toggleButton,
+    //         minPrice: fixedPrice,
+    //         startTime:
+    //             toggleButton == 'timeAuction'
+    //                 ? startTimeDate
+    //                 : '',
+    //         endTime:
+    //             toggleButton == 'timeAuction'
+    //                 ? endTimeDate
+    //                 : '',
+    //         acceptCoins: otherPrice,
+    //         basePrice: basePrice.name,
+    //         chainType: networkType.value,
+    //     };
+
+    //     let url;
+
+    //     if (nftItem) {
+    //         dataToSend.requestId = nftItem._id,
+    //             url = `${BASE_URL}/user/edit-nft-draft`
+    //     } else {
+    //         url = `${BASE_URL}/user/create-nft-draft`
+    //     }
+
+    //     axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+    //     axios.post(url, dataToSend)
+    //         .then(draftRes => {
+
+    //             console.log(draftRes, "draftRes")
+
+    //             if (draftRes.data.success) {
+    //                 cleanAll();
+    //                 switchToNFTList("draft", collection)
+    //             }
+    //             changeLoadingState(false);
+
+    //         })
+    //         .catch(err => {
+    //             errorMethod(err, "error from infura catch")
+    //         });
+    // }
 
     //===================== Creat NFT Function ============================
     const createNFT = async () => {
@@ -949,6 +985,21 @@ const UploadNFT = ({
         }
     }
 
+    const errorMethod = (err, v) => {
+        console.log(v)
+        changeLoadingState(false);
+        if (err.response.status === 401) {
+            alertWithSingleBtn(
+                translate("wallet.common.alert"),
+                translate("common.sessionexpired")
+            );
+        }
+        // alertWithSingleBtn(
+        //   translate("wallet.common.alert"),
+        //   translate("wallet.common.error.networkFailed")
+        // );
+    }
+
     const handleSocketResultMintNFT = useCallback(
         async (data) => {
             console.log('SUCCESS_DATA', data)
@@ -1013,56 +1064,7 @@ const UploadNFT = ({
     }
     //==============================================================================
 
-    const saveDraftToDatabase = (res, res2) => {
-        let dataToSend = {
-            collectionId: collection._id,
-            name: nftName,
-            description: nftDesc,
-            image: res,
-            thumbnailImage: res2,
-            properties: { type: nftImageType.type },
-            salesType: toggleButton,
-            minPrice: fixedPrice,
-            startTime:
-                toggleButton == 'timeAuction'
-                    ? startTimeDate
-                    : '',
-            endTime:
-                toggleButton == 'timeAuction'
-                    ? endTimeDate
-                    : '',
-            acceptCoins: otherPrice,
-            basePrice: basePrice.name,
-            chainType: networkType.value,
-        };
 
-        let url;
-
-        if (nftItem) {
-            dataToSend.requestId = nftItem._id,
-                url = `${BASE_URL}/user/edit-nft-draft`
-        } else {
-            url = `${BASE_URL}/user/create-nft-draft`
-        }
-
-        axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-        axios.post(url, dataToSend)
-            .then(draftRes => {
-
-                console.log(draftRes, "draftRes")
-
-                if (draftRes.data.success) {
-                    cleanAll();
-                    switchToNFTList("draft", collection)
-                }
-                changeLoadingState(false);
-
-            })
-            .catch(err => {
-                errorMethod(err, "error from infura catch")
-            });
-    }
 
     //======================= Other supportive function ========================
     const changePrice = (v) => {
@@ -1423,6 +1425,7 @@ const UploadNFT = ({
             <TransactionPending
                 isVisible={openTransactionPending}
                 setVisible={setOpenTransactionPending}
+                transactionMsg={'Transaction processing and uploading data...'}
             />
         </View>
     );

@@ -65,6 +65,8 @@ import styles from './styles';
 import Trending from './trending';
 import { updateNetworkType } from '../../store/reducer/walletReducer';
 
+import TabViewScreen from '../../components/TabView/TabViewScreen';
+
 const HomeScreen = ({ navigation }) => {
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
@@ -132,7 +134,7 @@ const HomeScreen = ({ navigation }) => {
           dispatch(updateNetworkType(selectedNetwork));
         }
       } else {
-        dispatch(updateNetworkType(res[2]));
+        dispatch(updateNetworkType(res[1]));
       }
       dispatch(setNetworkData(res));
     }
@@ -390,14 +392,11 @@ const HomeScreen = ({ navigation }) => {
   // ===================== Render NFT Categories Tab View =======================
   const renderNFTCategoriesTabs = () => {
     return (
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        renderTabBar={renderTabBar}
-        onIndexChange={handleIndexChange}
-        scrollEnabled={true}
-        initialLayout={{ width: Dimensions.get('window').width }}
-        lazy
+      <TabViewScreen
+        index={index}
+        routes={routes}
+        switchRoutes={(r) => renderScene(r)}
+        indexChange={(i) => handleIndexChange(i)}
       />
     );
   };
@@ -426,20 +425,6 @@ const HomeScreen = ({ navigation }) => {
       return () => backHandler.remove();
     }
   }, [index]);
-
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      bounces={false}
-      scrollEnabled={true}
-      indicatorStyle={styles.indicator}
-      activeColor={colors.BLUE4}
-      inactiveColor={colors.GREY1}
-      style={styles.tabbar}
-      labelStyle={styles.label}
-      tabStyle={styles.tabStyle}
-    />
-  );
 
   const renderScene = ({ route }) => {
     switch (route.key) {

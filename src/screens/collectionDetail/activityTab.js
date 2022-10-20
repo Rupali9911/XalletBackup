@@ -1,6 +1,6 @@
-import {useNavigation, useIsFocused} from '@react-navigation/native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   StatusBar,
   Text,
@@ -10,9 +10,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {C_Image, Loader} from '../../components';
-import {colors} from '../../res';
+import { useDispatch, useSelector } from 'react-redux';
+import { C_Image, Loader } from '../../components';
+import { colors } from '../../res';
 import {
   activityHistoryList,
   activityNftListStart,
@@ -28,20 +28,20 @@ import {
   Cell,
   TableWrapper,
 } from 'react-native-table-component';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './styles';
-import {hp} from '../../constants/responsiveFunct';
+import { hp } from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import DropDownPicker from 'react-native-dropdown-picker';
 import PaginationContainer from '../../components/PaginationContainer';
-import {FILTER_TRADING_HISTORY_OPTIONS} from '../../constants';
+import { FILTER_TRADING_HISTORY_OPTIONS } from '../../constants';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import {NEW_BASE_URL} from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 
-const activityTab = ({route}) => {
-  const {tabTitle, collection} = route?.params;
+const ActivityTab = (props) => {
+  const { tabTitle, collection } = props;
 
-  const {NftDataCollectionReducer} = useSelector(state => state);
+  const { NftDataCollectionReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -105,7 +105,7 @@ const activityTab = ({route}) => {
               onPress={() => getNftData(rowIndex)}
               style={styles.tableCellImageView}>
               <C_Image imageStyle={styles.cellImage} uri={cellData.image} />
-              <Text style={{flex: 1, flexWrap: 'wrap'}}>
+              <Text style={{ flex: 1, flexWrap: 'wrap' }}>
                 {cellData.imageName}
               </Text>
             </TouchableOpacity>
@@ -125,8 +125,8 @@ const activityTab = ({route}) => {
           cellIndex === 1 || cellIndex === 5
             ? 180
             : cellIndex === 2 || cellIndex === 3 || cellIndex === 4
-            ? 100
-            : 200
+              ? 100
+              : 200
         }
         height={hp(6.5)}
       />
@@ -177,7 +177,7 @@ const activityTab = ({route}) => {
       style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
 
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Filters />
 
         <View
@@ -187,7 +187,7 @@ const activityTab = ({route}) => {
           }}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View style={styles.tableView}>
-              {tabTitle !== reducerTabTitle || isLoading ? (
+              {isLoading ? (
                 <View
                   style={{
                     height: Dimensions.get('window').height,
@@ -197,11 +197,11 @@ const activityTab = ({route}) => {
                 </View>
               ) : !isLoading && collectionList.length > 0 ? (
                 <Table
-                  borderStyle={{borderWidth: 1, borderColor: Colors.GREY9}}>
+                  borderStyle={{ borderWidth: 1, borderColor: Colors.GREY9 }}>
                   <Row
                     data={tradingTableHead}
-                    style={{marginBottom: hp(0.5)}}
-                    textStyle={{marginLeft: 10}}
+                    style={{ marginBottom: hp(0.5) }}
+                    textStyle={{ marginLeft: 10 }}
                     widthArr={[200, 180, 100, 100, 100, 180]}
                     height={hp(2.5)}
                   />
@@ -210,7 +210,7 @@ const activityTab = ({route}) => {
                       return (
                         <TableWrapper
                           key={rowIndex}
-                          style={{flexDirection: 'row'}}>
+                          style={{ flexDirection: 'row' }}>
                           {rowData?.map((cellData, cellIndex) => {
                             return renderCell(cellIndex, cellData, rowIndex);
                           })}
@@ -281,4 +281,4 @@ const activityTab = ({route}) => {
   );
 };
 
-export default activityTab;
+export default React.memo(ActivityTab);

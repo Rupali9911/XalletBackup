@@ -1,13 +1,13 @@
 //============== Transaction Modal ==================
 import React from 'react';
 import Modal from 'react-native-modal';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import loaderGif from '../../assets/gifs/loadergif.gif';
 import Colors from '../../constants/Colors';
-import {hp} from '../../constants/responsiveFunct';
-import {widthPercentageToDP as wp, SIZE} from '../../common/responsiveFunction';
+import { hp } from '../../constants/responsiveFunct';
+import { widthPercentageToDP as wp, SIZE } from '../../common/responsiveFunction';
 
-const transactionPending = ({isVisible, setVisible}) => {
+const transactionPending = ({ isVisible, setVisible, transactionMsg }) => {
   // console.log("🚀 ~ file: transactionPending.js ~ line 11 ~  ~ isVisible", isVisible)
   return (
     <Modal isVisible={isVisible}>
@@ -20,7 +20,7 @@ const transactionPending = ({isVisible, setVisible}) => {
           <Image source={loaderGif} />
         </View>
         <Text style={styles.purchaseText}>
-          {'Your purchase is being processed'}
+          {transactionMsg ? transactionMsg : 'Your purchase is being processed'}
         </Text>
       </View>
     </Modal>
@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
   purchaseText: {
     fontSize: SIZE(18),
     color: Colors.GREY1,
-    alignSelf: 'center',
+    textAlign: 'center'
   },
 });

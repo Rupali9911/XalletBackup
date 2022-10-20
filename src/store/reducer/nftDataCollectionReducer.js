@@ -21,6 +21,10 @@ import {
 
 const initialState = {
   nftDataCollectionLoading: false,
+  nftDataOnSaleCollectionList: [],
+  nftDataSoldOutCollectionList: [],
+  nftDataOwnedCollectionList: [],
+  nftDataGalleryCollectionList: [],
   nftDataCollectionList: [],
   mysteryBoxCollectionList: [],
   nftDataCollectionPage: 1,
@@ -42,16 +46,43 @@ const initialState = {
 
 export default function nftDataCollectionReducer(state = initialState, action) {
   switch (action.type) {
-
     case NFT_DATA_COLLECTION_START:
       return state = { ...state, nftDataCollectionLoading: true, tabTitle: action.payload };
 
     case NFT_DATA_COLLECTION_SUCCESS:
       // console.log("🚀 ~ file: nftDataCollectionReducer.js ~ line 40 ~ ~ ", state, action.payload)
-      return state = {...state, nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
-         nftDataCollectionTotalCount: action.payload.count,
-            nftDataCollectionLoading: false,
-          }
+      if (action.payload.tabTitle === "On Sale") {
+        return state = {
+          ...state, nftDataOnSaleCollectionList: [...state.nftDataOnSaleCollectionList, ...action.payload.list],
+          nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
+          nftDataCollectionTotalCount: action.payload.count,
+          nftDataCollectionLoading: false,
+        }
+      }
+      if (action.payload.tabTitle === "Sold Out") {
+        return state = {
+          ...state, nftDataSoldOutCollectionList: [...state.nftDataSoldOutCollectionList, ...action.payload.list],
+          nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
+          nftDataCollectionTotalCount: action.payload.count,
+          nftDataCollectionLoading: false,
+        }
+      }
+      if (action.payload.tabTitle === "Owned") {
+        return state = {
+          ...state, nftDataOwnedCollectionList: [...state.nftDataOwnedCollectionList, ...action.payload.list],
+          nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
+          nftDataCollectionTotalCount: action.payload.count,
+          nftDataCollectionLoading: false,
+        }
+      }
+      if (action.payload.tabTitle === "Gallery") {
+        return state = {
+          ...state, nftDataGalleryCollectionList: [...state.nftDataGalleryCollectionList, ...action.payload.list],
+          nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
+          nftDataCollectionTotalCount: action.payload.count,
+          nftDataCollectionLoading: false,
+        }
+      }
 
     case NFT_DATA_COLLECTION_LIST_UPDATE:
       return state = { ...state, nftDataCollectionList: [...action.payload] };
@@ -97,7 +128,7 @@ export default function nftDataCollectionReducer(state = initialState, action) {
         nftActivityPage: 1,
         nftActivityTotalCount: action.payload.count,
         nftActivityItems: action.payload.result,
-        tabTitle: action.payload.tabTitle, 
+        tabTitle: action.payload.tabTitle,
         nftActivityLoading: false
       }
 
