@@ -46,6 +46,7 @@ const ActivityTab = (props) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isDetailScreen, setDetailScreen] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [filterTableList, setFilterTableList] = useState([]);
   const [pageNum, setPageNum] = useState('1');
   const [pageInput, setPageInput] = useState(pageNum);
@@ -72,7 +73,7 @@ const ActivityTab = (props) => {
 
   useEffect(() => {
     if (isFocused) {
-      if (isFocused && !isDetailScreen) {
+      if (isFocused && !isDetailScreen && isFirstRender) {
         dispatch(activityNftListStart(tabTitle));
         dispatch(activityNftListReset());
         if (filterTableValue.length > 0) {
@@ -83,6 +84,7 @@ const ActivityTab = (props) => {
         }
         setPageNum('1');
         setPageInput('1');
+        setIsFirstRender(false);
         dispatch(activityNftListPageChange(1));
       } else {
         isFocused && setDetailScreen(false);
@@ -187,7 +189,7 @@ const ActivityTab = (props) => {
           }}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <View style={styles.tableView}>
-              {isLoading ? (
+              {isFirstRender || isLoading ? (
                 <View
                   style={{
                     height: Dimensions.get('window').height,

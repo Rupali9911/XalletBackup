@@ -1,7 +1,6 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import _, {toFinite} from 'lodash';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import _, { toFinite } from 'lodash';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,21 +12,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {Loader} from '../../components';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
-import {translate} from '../../walletUtils';
+import { colors, fonts } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
+import { translate } from '../../walletUtils';
 
-import {CardButton} from '../createNFTScreen/components';
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {alertWithSingleBtn} from '../../utils';
+import { CardButton } from '../createNFTScreen/components';
+import { BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
+import { alertWithSingleBtn } from '../../utils';
 import axios from 'axios';
 import {
   myNftListReset,
@@ -38,12 +37,12 @@ import {
 } from '../../store/actions/myNFTaction';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-const NFTCreated = ({route}) => {
+const NFTCreated = ({ route }) => {
   const isFocusedHistory = useIsFocused();
 
-  const {id} = route?.params;
-  const {MyNFTReducer} = useSelector(state => state);
-  const {userData, wallet} = useSelector(state => state.UserReducer);
+  const { id } = route?.params;
+  const { MyNFTReducer } = useSelector(state => state);
+  const { userData, wallet } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -73,7 +72,7 @@ const NFTCreated = ({route}) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <NFTItem
         screenName="movieNFT"
@@ -82,7 +81,7 @@ const NFTCreated = ({route}) => {
         profile={true}
         onPress={() => {
           // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', { item: item });
         }}
       />
     );

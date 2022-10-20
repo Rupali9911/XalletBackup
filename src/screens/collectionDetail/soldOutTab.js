@@ -24,11 +24,9 @@ import styles from './styles';
 const { height } = Dimensions.get('window');
 
 const SoldOutTab = props => {
-  // console.log("🚀 ~ file: Owned.js ~ line 41 ~ Owned ~ props", props)
   const { route } = props;
   const { collection, tabTitle, tabStatus, isLaunchPad } = props;
 
-  // console.log("🚀 ~ file: collections.js ~ line 53 ~ nftChain", nftChain, collectionAddress)
   const { NftDataCollectionReducer } = useSelector(state => state);
   const { userData } = useSelector(state => state.UserReducer);
 
@@ -36,6 +34,7 @@ const SoldOutTab = props => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isDetailScreen, setDetailScreen] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
   const collectionList = NftDataCollectionReducer.nftDataSoldOutCollectionList;
@@ -44,10 +43,11 @@ const SoldOutTab = props => {
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
-    if (isFocused && !isDetailScreen) {
+    if (isFocused && !isDetailScreen && isFirstRender) {
       dispatch(nftDataCollectionLoadStart(tabTitle));
       dispatch(nftDataCollectionListReset());
       getNFTlist(1);
+      setIsFirstRender(false);
       dispatch(nftDataCollectionPageChange(1));
     } else {
       isFocused && setDetailScreen(false);
@@ -101,7 +101,6 @@ const SoldOutTab = props => {
   };
 
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
-  // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isSeries, isHotCollection) }
 
   const handleFlatlistRefresh = () => {
     dispatch(nftDataCollectionLoadStart());
@@ -115,7 +114,7 @@ const SoldOutTab = props => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {(page === 1 && isLoading) ? (
+      {isFirstRender || (page === 1 && isLoading) ? (
         <View style={{ marginTop: height / 8 }}>
           <Loader />
         </View>

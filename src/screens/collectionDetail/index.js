@@ -1,4 +1,3 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
@@ -54,14 +53,12 @@ const {
   Ethereum,
   BitmapIcon,
 } = SVGS;
-const Tab = createMaterialTopTabNavigator();
 
 function CollectionDetail(props) {
   const { route } = props;
   const { networkName, contractAddress, launchpadId } = route.params;
   const { NftDataCollectionReducer } = useSelector(state => state);
   const collectionList = NftDataCollectionReducer.nftDataCollectionList;
-  console.log("@@@ On details nft data collection list ******=>", collectionList);
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
   const [descTab, setDescTab] = useState(true);
@@ -358,12 +355,10 @@ function CollectionDetail(props) {
   };
 
   const handleIndexChange = index => {
-    console.log('Index', index);
     setIndex(index);
   };
 
   const renderTabView = tab => {
-    // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
     return (
       <TabViewScreen
         index={index}

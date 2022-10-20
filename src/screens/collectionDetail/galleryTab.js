@@ -33,6 +33,7 @@ const GalleryTab = (props) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isDetailScreen, setDetailScreen] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
   const collectionList = NftDataCollectionReducer.nftDataGalleryCollectionList;
@@ -41,10 +42,11 @@ const GalleryTab = (props) => {
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
-    if (isFocused && !isDetailScreen) {
+    if (isFocused && !isDetailScreen && isFirstRender) {
       dispatch(nftDataCollectionLoadStart(tabTitle));
       dispatch(nftDataCollectionListReset());
       getNFTlist(1);
+      setIsFirstRender(false);
       dispatch(nftDataCollectionPageChange(1));
     } else {
       isFocused && setDetailScreen(false);
@@ -114,7 +116,6 @@ const GalleryTab = (props) => {
   };
 
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
-  // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isSeries, isHotCollection) }
 
   const handleFlatlistRefresh = () => {
     dispatch(nftDataCollectionLoadStart());
@@ -124,12 +125,11 @@ const GalleryTab = (props) => {
   const keyExtractor = (item, index) => {
     return 'item_' + index;
   };
-  // console.log("🚀 ~ file: notOnSale.js ~ line 297 ~ ~ collectionList", collectionList, NftDataCollectionReducer, NftDataCollectionReducer.nftBlindSeriesCollectionList, NftDataCollectionReducer.mysteryBoxCollectionList, NftDataCollectionReducer.nftDataCollectionList)
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {(page === 1 && isLoading) ? (
+      {isFirstRender || (page === 1 && isLoading) ? (
         <View style={{ marginTop: height / 8 }}>
           <Loader />
         </View>
