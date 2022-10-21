@@ -9,6 +9,8 @@ import {
   MY_NFT_LOAD_SUCCESS,
   SET_NFT_USER_ADDRESS,
   MY_PAGE_CHANGE,
+  MY_NFT_CREATED_PAGE_CHANGE,
+  MY_NFT_OWNED_PAGE_CHANGE
 } from '../types';
 
 const initialState = {
@@ -18,6 +20,8 @@ const initialState = {
   myNftOwnedList: [],
   favorite: [],
   myListPage: 1,
+  myNftCreatedListPage: 1,
+  myNftOwnedListPage: 1,
   nftUserAdd: "",
   myNftTotalCount: 0,
 };
@@ -29,6 +33,12 @@ export default function MyNFTReducer(state = initialState, action) {
 
     case MY_PAGE_CHANGE:
       return (state = { ...state, myListPage: action.payload });
+
+    case MY_NFT_CREATED_PAGE_CHANGE:
+      return (state = { ...state, myNftCreatedListPage: action.payload });
+
+    case MY_NFT_OWNED_PAGE_CHANGE:
+      return (state = { ...state, myNftOwnedListPage: action.payload });
 
     case FAVORITE_PAGE_CHANGE:
       return (state = { ...state, favoritePage: action.payload });

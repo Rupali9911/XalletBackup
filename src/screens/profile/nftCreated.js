@@ -33,6 +33,7 @@ import {
   myNFTList,
   myNftLoadStart,
   myPageChange,
+  myNftCreatedPageChange,
   myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -103,7 +104,7 @@ const NFTCreated = ({ route, id }) => {
       {/* {console.log("🚀 ~ file: nftCreated.js ~ line 135 ~ NFTCreated ~ MyNFTReducer", MyNFTReducer)} */}
       {isFirstRender ? (
         isFirstRender
-      ) : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
+      ) : MyNFTReducer.myNftCreatedListPage === 1 && MyNFTReducer.myNftListLoading ? (
         <Loader />
       ) : MyNFTReducer.myNftCreatedList?.length !== 0 ? (
         <View>
@@ -115,7 +116,7 @@ const NFTCreated = ({ route, id }) => {
             initialNumToRender={15}
             onRefresh={pressToggle}
             refreshing={
-              MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading
+              MyNFTReducer.myNftCreatedListPage === 1 && MyNFTReducer.myNftListLoading
             }
             renderItem={memoizedValue}
             onEndReached={() => {
@@ -123,9 +124,9 @@ const NFTCreated = ({ route, id }) => {
                 !MyNFTReducer.myNftListLoading &&
                 MyNFTReducer.myNftCreatedList.length !== MyNFTReducer.myNftTotalCount
               ) {
-                let num = MyNFTReducer.myListPage + 1;
+                let num = MyNFTReducer.myNftCreatedListPage + 1;
                 getNFTlist(num, limit, id, tab);
-                dispatch(myPageChange(num));
+                dispatch(myNftCreatedPageChange(num));
               }
             }}
             ListFooterComponent={renderFooter}

@@ -13,6 +13,8 @@ import {
   MY_NFT_LOAD_START,
   MY_NFT_LOAD_SUCCESS,
   MY_PAGE_CHANGE,
+  MY_NFT_CREATED_PAGE_CHANGE,
+  MY_NFT_OWNED_PAGE_CHANGE
 } from '../types';
 
 export const myNftLoadStart = () => ({
@@ -29,6 +31,16 @@ export const myNftListReset = () => ({
 
 export const myPageChange = data => ({
   type: MY_PAGE_CHANGE,
+  payload: data,
+});
+
+export const myNftCreatedPageChange = data => ({
+  type: MY_NFT_CREATED_PAGE_CHANGE,
+  payload: data,
+});
+
+export const myNftOwnedPageChange = data => ({
+  type: MY_NFT_OWNED_PAGE_CHANGE,
   payload: data,
 });
 
