@@ -4,6 +4,10 @@ import {
   NFT_DATA_COLLECTION_START,
   NFT_DATA_COLLECTION_SUCCESS,
   NFT_DATA_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_ONSALE_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_SOLDOUT_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_OWNED_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_GALARY_COLLECTION_PAGE_CHANGE,
   NFT_DATA_COLLECTION_LIST_UPDATE,
 
   NFT_BLIND_SERIES_COLLECTION_START,
@@ -27,7 +31,13 @@ const initialState = {
   nftDataGalleryCollectionList: [],
   nftDataCollectionList: [],
   mysteryBoxCollectionList: [],
+
   nftDataCollectionPage: 1,
+  nftDataOnSaleCollectionPage: 1,
+  nftDataSoldOutCollectionPage: 1,
+  nftDataOwnedCollectionPage: 1,
+  nftDataGalleryCollectionPage: 1,
+
   nftDataCollectionTotalCount: 0,
   mysteryBoxCollectionTotalCount: 0,
 
@@ -95,6 +105,15 @@ export default function nftDataCollectionReducer(state = initialState, action) {
 
     case NFT_DATA_COLLECTION_PAGE_CHANGE:
       return state = { ...state, nftDataCollectionPage: action.payload };
+
+    case NFT_DATA_ONSALE_COLLECTION_PAGE_CHANGE:
+      return state = { ...state, nftDataOnSaleCollectionPage: action.payload };
+    case NFT_DATA_SOLDOUT_COLLECTION_PAGE_CHANGE:
+      return state = { ...state, nftDataSoldOutCollectionPage: action.payload };
+    case NFT_DATA_OWNED_COLLECTION_PAGE_CHANGE:
+      return state = { ...state, nftDataOwnedCollectionPage: action.payload };
+    case NFT_DATA_GALARY_COLLECTION_PAGE_CHANGE:
+      return state = { ...state, nftDataGalleryCollectionPage: action.payload };
 
     case NFT_BLIND_SERIES_COLLECTION_START:
       return state = { ...state, nftBlindSeriesCollectionLoading: true, tabTitle: action.payload };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
-import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
+import { networkType } from '../../common/networkType';
 import {
   getEventByValue,
   getFromAddress,
@@ -23,6 +23,10 @@ import {
   NFT_DATA_COLLECTION_FAIL,
   NFT_DATA_COLLECTION_LIST_RESET,
   NFT_DATA_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_ONSALE_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_SOLDOUT_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_OWNED_COLLECTION_PAGE_CHANGE,
+  NFT_DATA_GALARY_COLLECTION_PAGE_CHANGE,
   NFT_DATA_COLLECTION_START,
   NFT_DATA_COLLECTION_SUCCESS,
 } from '../types';
@@ -47,6 +51,22 @@ export const nftDataCollectionListReset = () => ({
 
 export const nftDataCollectionPageChange = data => ({
   type: NFT_DATA_COLLECTION_PAGE_CHANGE,
+  payload: data,
+});
+export const nftDataOnSaleCollectionPageChange = data => ({
+  type: NFT_DATA_ONSALE_COLLECTION_PAGE_CHANGE,
+  payload: data,
+});
+export const nftDataSoldOutCollectionPageChange = data => ({
+  type: NFT_DATA_SOLDOUT_COLLECTION_PAGE_CHANGE,
+  payload: data,
+});
+export const nftDataOwnedCollectionPageChange = data => ({
+  type: NFT_DATA_OWNED_COLLECTION_PAGE_CHANGE,
+  payload: data,
+});
+export const nftDataGalarryCollectionPageChange = data => ({
+  type: NFT_DATA_GALARY_COLLECTION_PAGE_CHANGE,
   payload: data,
 });
 
@@ -187,7 +207,7 @@ export const nftDataCollectionList = (
         },
       })
         .then(json => {
-          dispatch(nftDataCollectionLoadSuccess({...json, tabTitle: tabTitle}));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         })
         .catch(err => {
           dispatch(nftDataCollectionLoadFail());
@@ -211,7 +231,7 @@ export const nftDataCollectionList = (
         },
       })
         .then(json => {
-          dispatch(nftDataCollectionLoadSuccess({...json, tabTitle: tabTitle}));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         })
         .catch(err => {
           dispatch(nftDataCollectionLoadFail());
@@ -252,7 +272,7 @@ export const nftBlindDataCollectionList = (
 ) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body, tabTitle)
   return (dispatch, getState) => {
-    const {data, wallet} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
     // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
     const url =
@@ -263,18 +283,18 @@ export const nftBlindDataCollectionList = (
     const requestOptions =
       collectionType == 0
         ? {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(req_body),
-          }
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(req_body),
+        }
         : {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          };
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
 
     // try {
     // let jsonData = handleCollectionList(url, collectionType, req_body);
@@ -324,7 +344,7 @@ export const nftBlindDataCollectionList = (
         const tempData = json.data;
 
         if (collectionType == 0) {
-          dispatch(nftDataCollectionLoadSuccess({...json, tabTitle: tabTitle}));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         } else {
           let nftData = [];
 
@@ -340,7 +360,7 @@ export const nftBlindDataCollectionList = (
 
           json.count = json.data.length;
           json.data = nftData;
-          dispatch(nftDataCollectionLoadSuccess({...json, tabTitle: tabTitle}));
+          dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
         }
       })
       .catch(err => {
@@ -362,7 +382,7 @@ export const nftBlindSeriesCollectionList = (
   tabTitle,
 ) => {
   return (dispatch, getState) => {
-    const {data, wallet} = getState().UserReducer;
+    const { data, wallet } = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
 
     if (type === 'owned') {
@@ -404,7 +424,7 @@ export const nftBlindSeriesCollectionList = (
           if (json.data && json.count) {
             if (callFrom) {
               dispatch(
-                nftDataCollectionLoadSuccess({...json, tabTitle: tabTitle}),
+                nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }),
               );
             } else {
               dispatch(
@@ -425,23 +445,23 @@ export const nftBlindSeriesCollectionList = (
       const req_body =
         seriesInfoId == '61aa058d504d60a828f80113'
           ? {
-              limit: 10,
-              filterType:
-                type == 'minted2' && seriesInfoId == '61aa058d504d60a828f80113'
-                  ? 'gallery'
-                  : type,
-              chainType: chainType,
-              page,
-              seriesInfoId: seriesInfoId,
-            }
+            limit: 10,
+            filterType:
+              type == 'minted2' && seriesInfoId == '61aa058d504d60a828f80113'
+                ? 'gallery'
+                : type,
+            chainType: chainType,
+            page,
+            seriesInfoId: seriesInfoId,
+          }
           : {
-              limit: 10,
-              filterType: type,
-              loggedIn: owner,
-              owner,
-              page,
-              seriesInfoId: collectionAddress,
-            };
+            limit: 10,
+            filterType: type,
+            loggedIn: owner,
+            owner,
+            page,
+            seriesInfoId: collectionAddress,
+          };
 
       const fetch_data_body = {
         method: 'POST',

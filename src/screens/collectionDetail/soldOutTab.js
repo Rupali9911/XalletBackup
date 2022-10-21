@@ -17,6 +17,7 @@ import {
   nftDataCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
+  nftDataSoldOutCollectionPageChange
 } from '../../store/actions/nftDataCollectionAction';
 import { translate } from '../../walletUtils';
 import styles from './styles';
@@ -38,7 +39,7 @@ const SoldOutTab = props => {
 
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
   const collectionList = NftDataCollectionReducer.nftDataSoldOutCollectionList;
-  const page = NftDataCollectionReducer.nftDataCollectionPage;
+  const page = NftDataCollectionReducer.nftDataSoldOutCollectionPage;
   const totalCount = NftDataCollectionReducer.nftDataCollectionTotalCount;
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
@@ -48,7 +49,7 @@ const SoldOutTab = props => {
       dispatch(nftDataCollectionListReset());
       getNFTlist(1);
       setIsFirstRender(false);
-      dispatch(nftDataCollectionPageChange(1));
+      dispatch(nftDataSoldOutCollectionPageChange(1));
     } else {
       isFocused && setDetailScreen(false);
     }
@@ -74,7 +75,7 @@ const SoldOutTab = props => {
     dispatch(nftDataCollectionLoadStart());
     dispatch(nftDataCollectionListReset());
     getNFTlist(1);
-    dispatch(nftDataCollectionPageChange(1));
+    dispatch(nftDataSoldOutCollectionPageChange(1));
   };
 
   const renderFooter = () => {
@@ -134,7 +135,7 @@ const SoldOutTab = props => {
 
               dispatch(nftDataCollectionLoadStart(tabTitle));
               getNFTlist(num);
-              dispatch(nftDataCollectionPageChange(num));
+              dispatch(nftDataSoldOutCollectionPageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
