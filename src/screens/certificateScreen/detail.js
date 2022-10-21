@@ -115,7 +115,6 @@ const DetailScreen = ({navigation, route}) => {
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
-
   const {validateNumber} = useValidate();
 
   // =============== Props Destructuring ========================
@@ -290,6 +289,7 @@ const DetailScreen = ({navigation, route}) => {
   const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
   const [mute, setMute] = useState(false);
   const [songCompleted, setSongCompleted] = useState(false);
+  const [videoError, setVideoError] = useState('');
 
   useEffect(() => {
     if (buyNFTRes && isCheckService) {
@@ -590,7 +590,15 @@ const DetailScreen = ({navigation, route}) => {
           toggleVideoPlay(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <View style={{...styles.modalImage}}>
+          <View
+            style={[
+              styles.modalImage,
+              {
+                backgroundColor: videoLoadErr
+                  ? Colors.BLACK1
+                  : styles.modalImage,
+              },
+            ]}>
             {showThumb && (
               <Image source={{uri: thumbnailUrl}} style={styles.modalImage} />
             )}
@@ -601,36 +609,50 @@ const DetailScreen = ({navigation, route}) => {
                 color={COLORS.BLACK1}
               />
             )}
-            <Video
-              ref={refVideo}
-              source={{uri: mediaUrl}}
-              repeat
-              playInBackground={false}
-              controls={true}
-              paused={!playVideo}
-              onProgress={r => {
-                setVideoLoad(false);
-                setPlayVideoLoad(false);
-              }}
-              resizeMode={'cover'}
-              onError={error => {
-                console.log(error);
-                setVideoLoadErr(true);
-              }}
-              onReadyForDisplay={() => {
-                toggleThumb(false);
-              }}
-              onLoad={data => {
-                refVideo.current.seek(0);
-              }}
-              style={[styles.video]}
-            />
-            {!playVideo && (
+            {videoError !== '' ? (
+              <Text
+                style={{
+                  color: Colors.WHITE1,
+                  fontSize: SIZE(20),
+                  fontWeight: 'bold',
+                }}>
+                {videoError}
+              </Text>
+            ) : (
+              <Video
+                key={videoKey}
+                ref={refVideo}
+                source={{uri: mediaUrl}}
+                repeat
+                playInBackground={false}
+                controls={true}
+                paused={!playVideo}
+                onProgress={r => {
+                  setVideoLoad(false);
+                  setPlayVideoLoad(false);
+                }}
+                resizeMode={'cover'}
+                onError={error => {
+                  console.log(error);
+                  setVideoLoadErr(true);
+                  toggleThumb(false);
+                  setVideoError('This media format is not supported.');
+                }}
+                onReadyForDisplay={() => {
+                  toggleThumb(false);
+                }}
+                onLoad={data => {
+                  refVideo.current.seek(0);
+                }}
+                style={[styles.video]}
+              />
+            )}
+            {!playVideo && videoError === '' && (
               <View style={styles.videoIcon}>
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
             )}
-            {videoLoadErr && (
+            {/* {videoLoadErr && (
               <View style={styles.videoPlayIconCont}>
                 <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
                   <TouchableOpacity
@@ -645,7 +667,7 @@ const DetailScreen = ({navigation, route}) => {
                   </TouchableOpacity>
                 </View>
               </View>
-            )}
+            )} */}
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{...styles.modalImage}}>

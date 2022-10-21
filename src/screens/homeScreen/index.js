@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { useFocusEffect } from '@react-navigation/native';
-import { FlatList } from 'native-base';
-import React, { useEffect, useMemo, useState } from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {FlatList} from 'native-base';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   AppState,
@@ -16,42 +16,42 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { FAB } from 'react-native-paper';
+import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
   openSettings,
   requestNotifications,
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
-import { TabBar, TabView } from 'react-native-tab-view';
+import {TabBar, TabView} from 'react-native-tab-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
-import { NEW_BASE_URL } from '../../common/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {NEW_BASE_URL} from '../../common/constants';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image } from '../../components';
+import {AppHeader, C_Image} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
-import { SORT_FILTER_OPTONS } from '../../constants';
+import {SORT_FILTER_OPTONS} from '../../constants';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { colors } from '../../res';
-import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
-import { getAllArtist } from '../../store/actions/nftTrendList';
-import { setNetworkData } from '../../store/reducer/networkReducer';
+import {colors} from '../../res';
+import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
+import {getAllArtist} from '../../store/actions/nftTrendList';
+import {setNetworkData} from '../../store/reducer/networkReducer';
 import {
   updateCreateState,
   updatePassStatus,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
-import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
-import { translate } from '../../walletUtils';
+import {alertWithSingleBtn} from '../../utils';
+import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
+import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
 import Collection from './collection';
@@ -63,20 +63,20 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-import { updateNetworkType } from '../../store/reducer/walletReducer';
+import {updateNetworkType} from '../../store/reducer/walletReducer';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
   );
-  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
-  const { artistList, artistLoading, sort } = useSelector(
+  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
+  const {artistList, artistLoading, sort} = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess, userData } = useSelector(state => state.UserReducer);
+  const {showSuccess, userData} = useSelector(state => state.UserReducer);
   const modalState = Platform.OS === 'android' ? false : showSuccess;
-  const { requestAppId } = useSelector(state => state.WalletReducer);
+  const {requestAppId} = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
   //================== Components State Defination ===================
@@ -98,19 +98,19 @@ const HomeScreen = ({ navigation }) => {
   let artistLimit = 12;
 
   const [routes] = useState([
-    { key: 'launch', title: translate('common.launchPad') },
-    { key: 'allNft', title: translate('common.allNft') },
-    { key: 'trending', title: translate('common.trending') },
-    { key: 'collect', title: translate('wallet.common.collection') },
-    { key: 'art', title: translate('common.2DArt') },
-    { key: 'image', title: translate('common.image') },
-    { key: 'gif', title: translate('common.gif') },
-    { key: 'movie', title: translate('common.video') },
-    { key: 'music', title: translate('common.music') },
-    { key: 'hotCollection', title: translate('common.hotcollection') },
+    {key: 'launch', title: translate('common.launchPad')},
+    {key: 'allNft', title: translate('common.allNft')},
+    {key: 'trending', title: translate('common.trending')},
+    {key: 'collect', title: translate('wallet.common.collection')},
+    {key: 'art', title: translate('common.2DArt')},
+    {key: 'image', title: translate('common.image')},
+    {key: 'gif', title: translate('common.gif')},
+    {key: 'movie', title: translate('common.video')},
+    {key: 'music', title: translate('common.music')},
+    {key: 'hotCollection', title: translate('common.hotcollection')},
   ]);
 
-  const onStateChange = ({ open }) => setOpenState(open);
+  const onStateChange = ({open}) => setOpenState(open);
 
   //===================== UseEffect Function =========================
   useFocusEffect(
@@ -122,21 +122,23 @@ const HomeScreen = ({ navigation }) => {
   useEffect(async () => {
     const res = await sendRequest({
       url: `${NEW_BASE_URL}/networks`,
-      method: 'GET'
-    })
+      method: 'GET',
+    });
     if (res && typeof res === 'object' && res.length !== 0) {
       const chainId = await AsyncStorage.getItem('@CURRENT_NETWORK_CHAIN_ID');
       if (chainId) {
-        const selectedNetwork = res?.find(item => item?.chainId === Number(chainId));
+        const selectedNetwork = res?.find(
+          item => item?.chainId === Number(chainId),
+        );
         if (selectedNetwork) {
           dispatch(updateNetworkType(selectedNetwork));
         }
       } else {
-        dispatch(updateNetworkType(res[2]));
+        dispatch(updateNetworkType(res[0]));
       }
       dispatch(setNetworkData(res));
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     setActive(0);
@@ -163,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
     });
     AppState.addEventListener('change', appStateChange);
     if (requestAppId) {
-      navigation.navigate('Connect', { appId: requestAppId });
+      navigation.navigate('Connect', {appId: requestAppId});
     }
 
     return () => {
@@ -210,13 +212,13 @@ const HomeScreen = ({ navigation }) => {
         setSuccessVisible(false);
         setModalVisible(false);
         dispatch(updatePassStatus(false));
-        navigation.navigate('PasscodeScreen', { screen: 'active' });
+        navigation.navigate('PasscodeScreen', {screen: 'active'});
       }
     }
   };
 
   const checkPermissions = async () => {
-    PushNotification.checkPermissions(async ({ alert }) => {
+    PushNotification.checkPermissions(async ({alert}) => {
       if (!alert) {
         setNotificationVisible(true);
       } else {
@@ -241,12 +243,12 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.headerMenuContainer}>
             <TouchableOpacity
               onPress={() => onClickButton()}
-              hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+              hitSlop={{top: 5, bottom: 5, left: 5}}>
               <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
-              hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+              hitSlop={{top: 5, bottom: 5, left: 5}}>
               <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
             </TouchableOpacity>
           </View>
@@ -266,7 +268,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   // ===================== Render Artist List ===================================
-  const renderArtistItem = ({ item, index }) => {
+  const renderArtistItem = ({item, index}) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -284,7 +286,7 @@ const HomeScreen = ({ navigation }) => {
             uri={item?.mediaUrl}
             type={item.profile_image}
             //imageType="profile"
-            imageStyle={{ width: '100%', height: '100%' }}
+            imageStyle={{width: '100%', height: '100%'}}
           />
           <Text numberOfLines={1} style={styles.userText}>
             {item?.name}
@@ -391,12 +393,12 @@ const HomeScreen = ({ navigation }) => {
   const renderNFTCategoriesTabs = () => {
     return (
       <TabView
-        navigationState={{ index, routes }}
+        navigationState={{index, routes}}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
         onIndexChange={handleIndexChange}
         scrollEnabled={true}
-        initialLayout={{ width: Dimensions.get('window').width }}
+        initialLayout={{width: Dimensions.get('window').width}}
         lazy
       />
     );
@@ -441,7 +443,7 @@ const HomeScreen = ({ navigation }) => {
     />
   );
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
@@ -568,18 +570,18 @@ const HomeScreen = ({ navigation }) => {
             onDonePress={() => {
               setModalVisible(false);
               Platform.OS === 'ios'
-                ? checkNotifications().then(({ status, settings }) => {
-                  if (status == 'denied') {
-                    requestNotifications(['alert', 'sound']).then(
-                      ({ status, settings }) => {
-                        console.log(status, settings, 'notification');
-                      },
-                    );
-                  }
-                  if (status == 'blocked') {
-                    Linking.openSettings();
-                  }
-                })
+                ? checkNotifications().then(({status, settings}) => {
+                    if (status == 'denied') {
+                      requestNotifications(['alert', 'sound']).then(
+                        ({status, settings}) => {
+                          console.log(status, settings, 'notification');
+                        },
+                      );
+                    }
+                    if (status == 'blocked') {
+                      Linking.openSettings();
+                    }
+                  })
                 : openSettings();
             }}
           />
@@ -754,14 +756,14 @@ const HomeScreen = ({ navigation }) => {
           openState
             ? 'close'
             : props => (
-              <FontAwesome5
-                name={'sort-amount-down'}
-                color={props.color}
-                size={props.size}
-              />
-            )
+                <FontAwesome5
+                  name={'sort-amount-down'}
+                  color={props.color}
+                  size={props.size}
+                />
+              )
         }
-        fabStyle={{ backgroundColor: Colors.themeColor }}
+        fabStyle={{backgroundColor: Colors.themeColor}}
         actions={fabActions}
         onStateChange={onStateChange}
         onPress={() => {
@@ -777,7 +779,7 @@ const HomeScreen = ({ navigation }) => {
   //=====================(Main return Function)=============================
   return (
     <>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         {renderAppHeader()}
         {renderArtistList()}
         {online && (showSuccess ? null : renderNFTCategoriesTabs())}
