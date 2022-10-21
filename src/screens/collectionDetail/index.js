@@ -365,6 +365,12 @@ function CollectionDetail(props) {
         routes={routes}
         switchRoutes={(r) => renderScene(r, tab)}
         indexChange={(i) => handleIndexChange(i)}
+        tabBarStyle={{
+          height: SIZE(40),
+          width: wp('30%'),
+          paddingHorizontal: wp('1%'),
+          justifyContent: 'center',
+        }}
       />
     );
   };

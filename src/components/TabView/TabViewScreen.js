@@ -13,7 +13,7 @@ import {
 import { colors } from '../../res';
 
 
-const TabViewScreen = ({ index, routes, switchRoutes, indexChange }) => {
+const TabViewScreen = ({ index, routes, switchRoutes, indexChange, tabBarStyle }) => {
 
     const renderTabBar = props => (
         <TabBar
@@ -25,7 +25,7 @@ const TabViewScreen = ({ index, routes, switchRoutes, indexChange }) => {
             inactiveColor={colors.GREY1}
             style={styles.tabbar}
             labelStyle={styles.label}
-            tabStyle={styles.tabStyle}
+            tabStyle={{ ...tabBarStyle }}
         />
     );
 

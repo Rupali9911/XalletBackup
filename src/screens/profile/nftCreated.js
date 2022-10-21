@@ -37,10 +37,10 @@ import {
 } from '../../store/actions/myNFTaction';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-const NFTCreated = ({ route }) => {
+const NFTCreated = ({ route, id }) => {
   const isFocusedHistory = useIsFocused();
 
-  const { id } = route?.params;
+  // const { id } = route?.params;
   const { MyNFTReducer } = useSelector(state => state);
   const { userData, wallet } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ const NFTCreated = ({ route }) => {
 
   useEffect(() => {
     if (isFocusedHistory) {
-      if (MyNFTReducer?.myList?.length === 0) {
+      if (MyNFTReducer?.myNftCreatedList?.length === 0) {
         pressToggle();
       } else {
         if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
@@ -87,7 +87,7 @@ const NFTCreated = ({ route }) => {
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myList]);
+  const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myNftCreatedList]);
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
     dispatch(myNFTList(pageIndex, pageSize, address, category));
@@ -105,11 +105,11 @@ const NFTCreated = ({ route }) => {
         isFirstRender
       ) : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
         <Loader />
-      ) : MyNFTReducer.myList?.length !== 0 ? (
+      ) : MyNFTReducer.myNftCreatedList?.length !== 0 ? (
         <View>
           <FlatList
             key={1}
-            data={MyNFTReducer?.myList}
+            data={MyNFTReducer?.myNftCreatedList}
             horizontal={false}
             numColumns={2}
             initialNumToRender={15}
@@ -121,10 +121,10 @@ const NFTCreated = ({ route }) => {
             onEndReached={() => {
               if (
                 !MyNFTReducer.myNftListLoading &&
-                MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+                MyNFTReducer.myNftCreatedList.length !== MyNFTReducer.myNftTotalCount
               ) {
                 let num = MyNFTReducer.myListPage + 1;
-                getNFTlist(num);
+                getNFTlist(num, limit, id, tab);
                 dispatch(myPageChange(num));
               }
             }}
@@ -180,4 +180,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NFTCreated;
+export default React.memo(NFTCreated);

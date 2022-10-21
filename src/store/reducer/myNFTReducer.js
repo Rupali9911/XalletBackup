@@ -14,6 +14,8 @@ import {
 const initialState = {
   myNftListLoading: false,
   myList: [],
+  myNftCreatedList: [],
+  myNftOwnedList: [],
   favorite: [],
   myListPage: 1,
   nftUserAdd: "",
@@ -35,12 +37,31 @@ export default function MyNFTReducer(state = initialState, action) {
       return (state = { ...state, myNftListLoading: true });
 
     case MY_NFT_LOAD_SUCCESS:
-      return (state = {
-        ...state,
-        myList: [...state.myList, ...action.payload.list],
-        myNftTotalCount: action.payload.count,
-        myNftListLoading: false,
-      });
+      if (action.payload.tabTitle === 1) {
+        return (state = {
+          ...state,
+          myNftCreatedList: [...state.myNftCreatedList, ...action.payload.list],
+          myList: [...state.myList, ...action.payload.list],
+          myNftTotalCount: action.payload.count,
+          myNftListLoading: false,
+        });
+      } else if (action.payload.tabTitle === 2) {
+        return (state = {
+          ...state,
+          myNftOwnedList: [...state.myNftOwnedList, ...action.payload.list],
+          myList: [...state.myList, ...action.payload.list],
+          myNftTotalCount: action.payload.count,
+          myNftListLoading: false,
+        });
+      } else {
+        console.log("@@@ My NFT Reducer action last commons ===========>", action.payload)
+        return (state = {
+          ...state,
+          myList: [...state.myList, ...action.payload.list],
+          myNftTotalCount: action.payload.count,
+          myNftListLoading: false,
+        });
+      }
 
     case FAVORITE_NFT_SUCCESS:
       return (state = {

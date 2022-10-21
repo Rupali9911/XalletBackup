@@ -397,6 +397,12 @@ const HomeScreen = ({ navigation }) => {
         routes={routes}
         switchRoutes={(r) => renderScene(r)}
         indexChange={(i) => handleIndexChange(i)}
+        tabBarStyle={{
+          height: SIZE(40),
+          width: wp('30%'),
+          paddingHorizontal: wp('1%'),
+          justifyContent: 'center',
+        }}
       />
     );
   };

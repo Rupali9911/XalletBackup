@@ -1,5 +1,5 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,12 +7,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Loader} from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
-import {translate} from '../../walletUtils';
+import { colors, fonts } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
+import { translate } from '../../walletUtils';
 import {
   myNftListReset,
   myNFTList,
@@ -22,11 +22,11 @@ import {
 } from '../../store/actions/myNFTaction';
 // import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 
-const NFTOwned = ({route, navigation}) => {
+const NFTOwned = ({ route, navigation, id }) => {
   const isFocusedHistory = useIsFocused();
 
-  const {id} = route?.params;
-  const {MyNFTReducer} = useSelector(state => state);
+  // const { id } = route?.params;
+  const { MyNFTReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const [isFirstRender, setIsFirstRender] = useState(true);
 
@@ -36,7 +36,7 @@ const NFTOwned = ({route, navigation}) => {
 
   useEffect(() => {
     if (isFocusedHistory) {
-      if (MyNFTReducer?.myList?.length === 0) {
+      if (MyNFTReducer?.myNftOwnedList?.length === 0) {
         pressToggle();
       } else {
         if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
@@ -55,7 +55,7 @@ const NFTOwned = ({route, navigation}) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <NFTItem
         screenName="movieNFT"
@@ -63,7 +63,7 @@ const NFTOwned = ({route, navigation}) => {
         // image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', { item: item });
         }}
       />
     );
@@ -86,10 +86,10 @@ const NFTOwned = ({route, navigation}) => {
         isFirstRender
       ) : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
         <Loader />
-      ) : MyNFTReducer.myList?.length !== 0 ? (
+      ) : MyNFTReducer.myNftOwnedList?.length !== 0 ? (
         <FlatList
           key={2}
-          data={MyNFTReducer?.myList}
+          data={MyNFTReducer?.myNftOwnedList}
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
@@ -101,10 +101,10 @@ const NFTOwned = ({route, navigation}) => {
           onEndReached={() => {
             if (
               !MyNFTReducer.myNftListLoading &&
-              MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+              MyNFTReducer.myNftOwnedList.length !== MyNFTReducer.myNftTotalCount
             ) {
               let num = MyNFTReducer.myListPage + 1;
-              getNFTlist(num);
+              getNFTlist(num, limit, id, tab);
               dispatch(myPageChange(num));
             }
           }}
@@ -152,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NFTOwned;
+export default React.memo(NFTOwned);
