@@ -82,7 +82,11 @@ const NFTCreated = ({route}) => {
         profile={true}
         onPress={() => {
           // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
     );
