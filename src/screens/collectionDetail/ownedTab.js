@@ -15,6 +15,7 @@ import { colors } from '../../res';
 import {
   nftDataCollectionList,
   nftDataCollectionListReset,
+  nftDataOwnedCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
   nftDataOwnedCollectionPageChange
@@ -38,13 +39,14 @@ const OwnedTab = (props) => {
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
   const collectionList = NftDataCollectionReducer.nftDataOwnedCollectionList;
   const page = NftDataCollectionReducer.nftDataOwnedCollectionPage;
-  const totalCount = NftDataCollectionReducer.nftDataCollectionTotalCount;
+  const totalCount = NftDataCollectionReducer.nftDataOwnedCollectionTotalCount;
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
     if (isFocused && !isDetailScreen && isFirstRender) {
       dispatch(nftDataCollectionLoadStart(tabTitle));
       dispatch(nftDataCollectionListReset());
+      dispatch(nftDataOwnedCollectionListReset());
       getNFTlist(1);
       setIsFirstRender(false);
       dispatch(nftDataOwnedCollectionPageChange(1));
@@ -72,6 +74,7 @@ const OwnedTab = (props) => {
   const refreshFunc = () => {
     dispatch(nftDataCollectionLoadStart());
     dispatch(nftDataCollectionListReset());
+    dispatch(nftDataOwnedCollectionListReset());
     getNFTlist(1);
     dispatch(nftDataOwnedCollectionPageChange(1));
   };

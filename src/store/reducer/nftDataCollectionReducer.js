@@ -1,6 +1,10 @@
 import {
   NFT_DATA_COLLECTION_FAIL,
   NFT_DATA_COLLECTION_LIST_RESET,
+  NFT_DATA_ONSALE_COLLECTION_LIST_RESET,
+  NFT_DATA_SOLDOUT_COLLECTION_LIST_RESET,
+  NFT_DATA_OWNED_COLLECTION_LIST_RESET,
+  NFT_DATA_GALLERY_COLLECTION_LIST_RESET,
   NFT_DATA_COLLECTION_START,
   NFT_DATA_COLLECTION_SUCCESS,
   NFT_DATA_COLLECTION_PAGE_CHANGE,
@@ -39,6 +43,10 @@ const initialState = {
   nftDataGalleryCollectionPage: 1,
 
   nftDataCollectionTotalCount: 0,
+  nftDataOnSaleCollectionTotalCount: 0,
+  nftDataSoldOutCollectionTotalCount: 0,
+  nftDataOwnedCollectionTotalCount: 0,
+  nftDataGalleryCollectionTotalCount: 0,
   mysteryBoxCollectionTotalCount: 0,
 
   nftBlindSeriesCollectionLoading: false,
@@ -66,6 +74,7 @@ export default function nftDataCollectionReducer(state = initialState, action) {
           ...state, nftDataOnSaleCollectionList: [...state.nftDataOnSaleCollectionList, ...action.payload.list],
           nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
           nftDataCollectionTotalCount: action.payload.count,
+          nftDataOnSaleCollectionTotalCount: action.payload.count,
           nftDataCollectionLoading: false,
         }
       }
@@ -74,6 +83,7 @@ export default function nftDataCollectionReducer(state = initialState, action) {
           ...state, nftDataSoldOutCollectionList: [...state.nftDataSoldOutCollectionList, ...action.payload.list],
           nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
           nftDataCollectionTotalCount: action.payload.count,
+          nftDataSoldOutCollectionTotalCount: action.payload.count,
           nftDataCollectionLoading: false,
         }
       }
@@ -82,6 +92,7 @@ export default function nftDataCollectionReducer(state = initialState, action) {
           ...state, nftDataOwnedCollectionList: [...state.nftDataOwnedCollectionList, ...action.payload.list],
           nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
           nftDataCollectionTotalCount: action.payload.count,
+          nftDataOwnedCollectionTotalCount: action.payload.count,
           nftDataCollectionLoading: false,
         }
       }
@@ -90,6 +101,7 @@ export default function nftDataCollectionReducer(state = initialState, action) {
           ...state, nftDataGalleryCollectionList: [...state.nftDataGalleryCollectionList, ...action.payload.list],
           nftDataCollectionList: [...state.nftDataCollectionList, ...action.payload.list],
           nftDataCollectionTotalCount: action.payload.count,
+          nftDataGalleryCollectionTotalCount: action.payload.count,
           nftDataCollectionLoading: false,
         }
       }
@@ -99,6 +111,14 @@ export default function nftDataCollectionReducer(state = initialState, action) {
 
     case NFT_DATA_COLLECTION_LIST_RESET:
       return state = { ...state, nftDataCollectionList: [], mysteryBoxCollectionList: [] };
+    case NFT_DATA_ONSALE_COLLECTION_LIST_RESET:
+      return state = { ...state, nftDataOnSaleCollectionList: [] };
+    case NFT_DATA_SOLDOUT_COLLECTION_LIST_RESET:
+      return state = { ...state, nftDataSoldOutCollectionList: [] };
+    case NFT_DATA_OWNED_COLLECTION_LIST_RESET:
+      return state = { ...state, nftDataOwnedCollectionList: [] };
+    case NFT_DATA_GALLERY_COLLECTION_LIST_RESET:
+      return state = { ...state, nftDataGalleryCollectionList: [] };
 
     case NFT_DATA_COLLECTION_FAIL:
       return state = { ...state, nftDataCollectionLoading: false };

@@ -22,6 +22,10 @@ import {
   NFT_BLIND_SERIES_COLLECTION_SUCCESS,
   NFT_DATA_COLLECTION_FAIL,
   NFT_DATA_COLLECTION_LIST_RESET,
+  NFT_DATA_ONSALE_COLLECTION_LIST_RESET,
+  NFT_DATA_SOLDOUT_COLLECTION_LIST_RESET,
+  NFT_DATA_OWNED_COLLECTION_LIST_RESET,
+  NFT_DATA_GALLERY_COLLECTION_LIST_RESET,
   NFT_DATA_COLLECTION_PAGE_CHANGE,
   NFT_DATA_ONSALE_COLLECTION_PAGE_CHANGE,
   NFT_DATA_SOLDOUT_COLLECTION_PAGE_CHANGE,
@@ -47,6 +51,18 @@ export const nftDataCollectionLoadFail = () => ({
 
 export const nftDataCollectionListReset = () => ({
   type: NFT_DATA_COLLECTION_LIST_RESET,
+});
+export const nftDataOnSaleCollectionListReset = () => ({
+  type: NFT_DATA_ONSALE_COLLECTION_LIST_RESET,
+});
+export const nftDataSoldOutCollectionListReset = () => ({
+  type: NFT_DATA_SOLDOUT_COLLECTION_LIST_RESET,
+});
+export const nftDataOwnedCollectionListReset = () => ({
+  type: NFT_DATA_OWNED_COLLECTION_LIST_RESET,
+});
+export const nftDataGalleryCollectionListReset = () => ({
+  type: NFT_DATA_GALLERY_COLLECTION_LIST_RESET,
 });
 
 export const nftDataCollectionPageChange = data => ({

@@ -15,6 +15,7 @@ import { colors } from '../../res';
 import {
   nftDataCollectionList,
   nftDataCollectionListReset,
+  nftDataOnSaleCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
   nftDataOnSaleCollectionPageChange
@@ -38,13 +39,14 @@ const OnSaleTab = (props) => {
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
   const collectionList = NftDataCollectionReducer.nftDataOnSaleCollectionList;
   const page = NftDataCollectionReducer.nftDataOnSaleCollectionPage;
-  const totalCount = NftDataCollectionReducer.nftDataCollectionTotalCount;
+  const totalCount = NftDataCollectionReducer.nftDataOnSaleCollectionTotalCount;
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
     if (isFocused && !isDetailScreen && isFirstRender) {
       dispatch(nftDataCollectionLoadStart(tabTitle));
       dispatch(nftDataCollectionListReset());
+      dispatch(nftDataOnSaleCollectionListReset());
       getNFTlist(1);
       setIsFirstRender(false);
       dispatch(nftDataOnSaleCollectionPageChange(1));
@@ -71,6 +73,7 @@ const OnSaleTab = (props) => {
 
   const refreshFunc = () => {
     dispatch(nftDataCollectionListReset());
+    dispatch(nftDataOnSaleCollectionListReset());
     getNFTlist(1);
     dispatch(nftDataOnSaleCollectionPageChange(1));
   };
@@ -101,6 +104,7 @@ const OnSaleTab = (props) => {
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
 
   const handleFlatlistRefresh = () => {
+    console.log("@@@ On sale tab refresh function =====>", page === 1 && isLoading)
     dispatch(nftDataCollectionLoadStart());
     refreshFunc();
   };
@@ -112,7 +116,9 @@ const OnSaleTab = (props) => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender || (page === 1 && isLoading) ? (
+      {isFirstRender ? (
+        isFirstRender
+      ) : (page === 1 && isLoading) ? (
         <View style={{ marginTop: height / 8 }}>
           <Loader />
         </View>
@@ -127,6 +133,7 @@ const OnSaleTab = (props) => {
           refreshing={page === 1 && isLoading}
           renderItem={memoizedValue}
           onEndReached={() => {
+            console.log("@@@ On sale tab onEndReached ======>", isLoading, collectionList.length, totalCount)
             if (!isLoading && collectionList.length !== totalCount) {
               let num = page + 1;
 
