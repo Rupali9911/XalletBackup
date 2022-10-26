@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSearchResult, searchText, nftLoadSuccessList, nftLoadStart } from '../../store/actions/chatAction';
 import styles from './style';
-import { SVGS } from '../../constants';
 import { translate } from '../../walletUtils';
 import { Searchbar } from 'react-native-paper';
 import Colors from '../../constants/Colors';

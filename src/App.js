@@ -58,11 +58,11 @@ import {setPasscodeAsync, updatePassStatus} from './store/reducer/userReducer';
 import {MenuProvider} from 'react-native-popup-menu';
 import {NativeBaseProvider} from 'native-base';
 import Images from './constants/Images';
-import AiChat from './components/AiChat';
-import ChatDetail from './components/AiChat/ChatDetail';
+import AiChat from './screens/AiChat';
+import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 
-export const regionLanguage = RNLocalize.getLocales()
+export const regionLanguage = RNLocalize.getLocales() 
   .map(a => a.languageCode)
   .values()
   .next().value;

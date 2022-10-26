@@ -3,19 +3,17 @@ import { C_Image, Loader } from '../../components';
 import Colors from '../../constants/Colors';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import {  getNftCollections , nftLoadStart, nftListReset, nftListPageChange, nftListCursorChange, setTabTitle } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import styles from './style';
 import { ActivityIndicator } from 'react-native-paper';
 
-const ChatNftsList = ({ navigation, route }) => {
-    const { tabTitle } = route.params;
-
+const ChatNftsList = ({ tabTitle }) => {
     // =============== Getting data from States =========================
     const [isDetailScreen, setDetailScreen] = useState(false);
     const dispatch = useDispatch();
-    const isFocused = useIsFocused();
+    const navigation = useNavigation();
 
     // =============== Getting data from reducer ========================
     const {
@@ -29,15 +27,12 @@ const ChatNftsList = ({ navigation, route }) => {
     } = useSelector(state => state.chatReducer);
     const { userData } = useSelector(state => state.UserReducer);
     let owner = userData.userWallet.address;
-
     const nftCollectionList = tabTitle === 'Owned' ? nftList.ownerNFTS : nftList.otherNFTs;
 
     // ===================== Use-effect call =================================
     useEffect(() => {
-        if (isFocused) {
-            dispatch(setTabTitle(tabTitle));
-        }
-        if (isFocused && !isDetailScreen && !searchText) {
+        if (!searchText) {
+            console.log('Tabtitle : ', tabTitle);
             dispatch(setTabTitle(tabTitle));
 
             dispatch(nftLoadStart());
@@ -45,10 +40,7 @@ const ChatNftsList = ({ navigation, route }) => {
             getDataCollection(nftPageChange, '');
             dispatch(nftListPageChange(1));
         }
-        else {
-            isFocused && setDetailScreen(false);
-        }
-    }, [isFocused, searchText]);
+    }, [ searchText]);
 
     // ========================== API call =================================
     const getDataCollection = useCallback((page, cursor) => {
@@ -98,11 +90,11 @@ const ChatNftsList = ({ navigation, route }) => {
     const renderItem = ({ item, index }) => {
         let metaData = item?.metadata;
         const ItemDetail = JSON.parse(metaData);
-
         return (
             <TouchableOpacity
                 onPress={() => {
-                    setDetailScreen(true);
+                    // setDetailScreen(true);
+                    dispatch(setTabTitle(tabTitle));
                     navigation.navigate('ChatDetail', 
                     { 
                         nftDetail: ItemDetail, 
@@ -127,7 +119,7 @@ const ChatNftsList = ({ navigation, route }) => {
     //=====================(Main return Function)=============================
     return (
         <View style={{ backgroundColor: Colors.white, flex: 1 }}>
-            { isNftLoading && nftPageChange == 1 || tabTitle != reducerTabTitle ?
+            { isNftLoading && nftPageChange == 1 ?
                 <View style={styles.centerViewStyle}>
                     <Loader />
                 </View>
@@ -158,8 +150,6 @@ const ChatNftsList = ({ navigation, route }) => {
         </View>
     )
 }
-
-
 
 export default ChatNftsList;
 
