@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -23,9 +23,9 @@ import {AppHeader} from '../../components';
 import Colors from '../../constants/Colors';
 import {colors} from '../../res';
 import {setAppLanguage} from '../../store/reducer/languageReducer';
+import {getAllCards} from '../../store/reducer/paymentReducer';
 import {endMainLoading, _logout} from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
-import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 
 const optionalConfigObject = {
@@ -99,7 +99,7 @@ function Setting({navigation}) {
   const [showLanguage, setShowLanguage] = useState(false);
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {myCards} = useSelector(state => state.PaymentReducer);
-  // const {userData} = useSelector(state => state.UserReducer);
+  const {userData} = useSelector(state => state.UserReducer);
 
   useEffect(() => {
     // dispatch(getAllCards(userData.access_token));
@@ -159,17 +159,17 @@ function Setting({navigation}) {
       </View>
       <ScrollView>
         <View style={[styles.section2, {marginTop: 0}]}>
-          {/* <ListItem
+          <ListItem
             onPress={() => {
               if (myCards.length > 0) {
-                navigation.navigate('Cards', { price: 0, isCardPay: false });
+                navigation.navigate('Cards', {price: 0, isCardPay: false});
               } else {
                 // navigation.navigate('Cards', { price });
-                navigation.navigate('AddCard', { price: 0 });
+                navigation.navigate('AddCard', {price: 0});
               }
             }}
             label={translate('wallet.common.AECredit')}
-          /> */}
+          />
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}

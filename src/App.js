@@ -61,7 +61,7 @@ import Images from './constants/Images';
 import AiChat from './components/AiChat';
 import ChatDetail from './components/AiChat/ChatDetail';
 import WebView from './components/WebView';
-import {getProxy} from './screens/AuthScreens/nonCryptoAuth/magic-link';
+import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
@@ -324,8 +324,8 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
-          <Stack.Screen name="AiChat" component={AiChat}/>
-          <Stack.Screen name="ChatDetail" component={ChatDetail}/>
+          <Stack.Screen name="AiChat" component={AiChat} />
+          <Stack.Screen name="ChatDetail" component={ChatDetail} />
           <Stack.Screen name="WebView" component={WebView} />
         </Stack.Navigator>
       ) : (
@@ -340,13 +340,6 @@ const AppRoutes = () => {
 export const Events = new Subject();
 
 const App = () => {
-  const [magic, setMagic] = useState({});
-
-  useEffect(() => {
-    const magicLink = getProxy();
-    setMagic(magicLink);
-  }, []);
-
   return (
     <NativeBaseProvider>
       <Provider store={Store}>
@@ -357,7 +350,7 @@ const App = () => {
             merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
           >
             <AppRoutes />
-            {magic?.Relayer && <magic.Relayer />}
+            {<MagicLayer />}
           </StripeProvider>
         </MenuProvider>
       </Provider>

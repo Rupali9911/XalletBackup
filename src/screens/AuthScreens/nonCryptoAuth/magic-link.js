@@ -47,22 +47,8 @@ const getProxy = () => {
 };
 
 const createMagicLinkProxy = language_name => {
-  let language = 'en';
-  if (language_name === 'tw') {
-    language = 'zh_CN';
-  } else if (language_name === 'ch') {
-    language = 'zh_TW';
-  } else {
-    language = language_name;
-  }
-
-  // console.log(
-  //   '🚀 ~ file: magic-link.js ~ line 63 ~  ~ language_name',
-  //   language_name,
-  //   language,
-  // );
   const MagicLink = new Magic(NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY, {
-    locale: 'en',
+    locale: language_name,
   });
   const MagicLinkProvider = MagicLink.rpcProvider;
   return {
