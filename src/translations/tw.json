@@ -743,7 +743,8 @@
     "INVALID_MOVIE_TYPE": "電影僅支持 (*.mp4) 文件",
     "INVALID_AUDIO_TYPE": "僅支持音頻 (*.mp3) 文件。",
     "others": "其他",
-    "typing": "打字..."
+    "typing": "打字...",
+    "TOKEN_ID": "TOKEN ID"
   },
   "AwardPage": {},
   "wallet": {

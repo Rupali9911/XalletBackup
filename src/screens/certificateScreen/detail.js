@@ -121,7 +121,6 @@ const DetailScreen = ({navigation, route}) => {
   // =============== Props Destructuring ========================
   const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
     route.params;
-
   // =============== Getting data from reducer ========================
   const {paymentObject} = useSelector(state => state.PaymentReducer);
   const {userData} = useSelector(state => state.UserReducer);
@@ -233,7 +232,6 @@ const DetailScreen = ({navigation, route}) => {
     price: '',
     priceError: '',
   });
-
   const categoryType = detailNFT?.category
     ? detailNFT?.category
     : item?.category;
@@ -958,7 +956,11 @@ const DetailScreen = ({navigation, route}) => {
               <Text style={styles.priceUnit}>
                 {` ${tokenPrice}`}
                 <Text style={styles.dollarText}>
-                  {priceToUsd ? ` ($${parseFloat(priceToUsd).toFixed(2)})` : ''}
+                  {priceToUsd
+                    ? Number(parseFloat(priceToUsd).toFixed(2)) < 1
+                      ? ` ($${parseFloat(priceToUsd).toFixed(0)})`
+                      : ` ($${parseFloat(priceToUsd).toFixed(2)})`
+                    : ''}
                 </Text>
               </Text>
             </Text>
@@ -1008,10 +1010,6 @@ const DetailScreen = ({navigation, route}) => {
       method: 'GET',
     })
       .then(claimNFTRes => {
-        console.log(
-          '🚀 ~ file: detail.js ~ line 755 ~ .then ~ claimNFTRes',
-          claimNFTRes,
-        );
         if (claimNFTRes.messageCode) {
           // toast.error(claimNFTRes.messageCode)
           handlePendingModal(false);
@@ -1474,8 +1472,6 @@ const DetailScreen = ({navigation, route}) => {
       setSellVisible(false);
       handlePendingModal(true);
       const url = `${NEW_BASE_URL}/sale-nft/put-on-sale`;
-      console.log('🚀 ~ file: detail.js ~ line 1266 ~ ~ ~', url);
-
       const data = {
         price: Number(sellData.fixedPrice),
         quantity: 1,
@@ -3072,14 +3068,8 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
-  const showContractAddress = item => {
-    return typeof item?.collection === 'object'
-      ? item?.collection?.address
-      : item?.collection
-      ? item?.collection?.substring(0, 5) +
-        ' ... ' +
-        item.collection.slice([item.collection.length - 4])
-      : '';
+  const showContractAddress = address => {
+    return address?.substring(0, 6);
   };
 
   //===================== Render Creator NFTDetailDropdown Function =======================
@@ -3146,9 +3136,9 @@ const DetailScreen = ({navigation, route}) => {
         {renderDetail(
           'wallet.common.contractAddress',
           'address',
-          showContractAddress(),
+          showContractAddress(collectionAddress),
         )}
-        {renderDetail('wallet.common.nftId', '', nftTokenId)}
+        {renderDetail('common.TOKEN_ID', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
         {renderDetail(
           'wallet.common.blockChainType',
