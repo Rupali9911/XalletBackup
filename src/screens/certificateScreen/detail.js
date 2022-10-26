@@ -3461,11 +3461,11 @@ const DetailScreen = ({navigation, route}) => {
 
             // setTradingList(res?.items);
             setTradingTableData(tradingList);
-            setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
             // setTradingTableData1(tradingList)
             // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
           }
         }
+        setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
       })
       .catch(err => {
         console.log(err);

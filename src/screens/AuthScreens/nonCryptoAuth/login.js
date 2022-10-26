@@ -61,6 +61,7 @@ const LoginCrypto = () => {
         })
         .catch(err => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
+          setSessionStart(false);
           alertWithSingleBtn(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
