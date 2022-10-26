@@ -26,6 +26,7 @@ import {setAppLanguage} from '../../store/reducer/languageReducer';
 import {getAllCards} from '../../store/reducer/paymentReducer';
 import {endMainLoading, _logout} from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
+import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 
 const optionalConfigObject = {
