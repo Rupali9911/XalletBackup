@@ -42,7 +42,7 @@ const getProxy = () => {
     Store.getState().LanguageReducer.selectedLanguageItem?.language_name;
 
   const data = createMagicLinkProxy(language_name);
-  console.log('🚀 ~ file: magicLink.js ~ line 37 ~ getProxy ~ data', data);
+  // console.log('🚀 ~ file: magicLink.js ~ line 37 ~ getProxy ~ data', data);
   return data?.MagicLink;
 };
 

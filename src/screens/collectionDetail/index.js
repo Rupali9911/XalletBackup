@@ -32,11 +32,11 @@ import { NEW_BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../common/function';
 import { wp } from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import ActivityTab from './ActivityTab';
-import GalleryTab from './GalleryTab';
-import OnSaleTab from './OnSaleTab';
-import OwnedTab from './OwnedTab';
-import SoldOutTab from './SoldOutTab';
+import ActivityTab from './activityTab';
+import GalleryTab from './galleryTab';
+import OnSaleTab from './onSaleTab';
+import OwnedTab from './ownedTab';
+import SoldOutTab from './soldOutTab';
 
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 
