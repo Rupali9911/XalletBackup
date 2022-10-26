@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
         width: '80%',
         borderRightColor: '#3c7bde',
         borderRightWidth: 0,
-        textAlignVertical : "top"
     },
     sendBtn: {
         paddingHorizontal: 15,

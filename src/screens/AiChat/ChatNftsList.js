@@ -40,7 +40,7 @@ const ChatNftsList = ({ tabTitle }) => {
             getDataCollection(nftPageChange, '');
             dispatch(nftListPageChange(1));
         }
-    }, [ searchText]);
+    }, [searchText]);
 
     // ========================== API call =================================
     const getDataCollection = useCallback((page, cursor) => {

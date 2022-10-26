@@ -107,7 +107,7 @@ export const getAiChat = ( message, address, locale, name, tokenId ) => (dispatc
     let data = {
       address,
       locale,
-      bot_name: 'Kamille',
+      bot_name: name,
       text: message,
       tokenId,
       is_owned: reducerTabTitle === 'Owned' ? true : false
