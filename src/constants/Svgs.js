@@ -85,6 +85,7 @@ import ArtistSvg from 'src/assets/svgs/icon-artist.svg'
 import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg'
 import SuccessIcon from 'src/assets/svgs/icon-toast-success.svg'
 import ErrorIcon from 'src/assets/svgs/icon-toast-error.svg'
+import DefaultProfile from 'src/assets/svgs/default-avatar.svg'
 
 export default {
   GirlIcon,
@@ -171,4 +172,5 @@ export default {
   SuccessIcon,
   ErrorIcon,
   ThreeDotsVerticalIcon,
+  DefaultProfile,
 };

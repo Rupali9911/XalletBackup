@@ -1,4 +1,4 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {
@@ -7,11 +7,10 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
-import TouchID from 'react-native-touch-id';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {useDispatch, useSelector} from 'react-redux';
 import {alertWithSingleBtn, confirmationAlert} from '../../common/function';
@@ -41,18 +40,18 @@ const optionalConfigObject = {
   passcodeFallback: true, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
 };
 
-const _pressHandler = () => {
-  TouchID.authenticate(
-    'to demo this react-native component',
-    optionalConfigObject,
-  )
-    .then(success => {
-      Alert.alert('Authenticated Successfully');
-    })
-    .catch(error => {
-      Alert.alert('Authentication Failed');
-    });
-};
+// const _pressHandler = () => {
+//   TouchID.authenticate(
+//     'to demo this react-native component',
+//     optionalConfigObject,
+//   )
+//     .then(success => {
+//       Alert.alert('Authenticated Successfully');
+//     })
+//     .catch(error => {
+//       Alert.alert('Authentication Failed');
+//     });
+// };
 
 const ListItem = props => {
   return (
@@ -96,7 +95,7 @@ const JapaneseLangTrans = {
 
 function Setting({navigation}) {
   const dispatch = useDispatch();
-  const [toggle, setToggle] = useState(false);
+  // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {myCards} = useSelector(state => state.PaymentReducer);
@@ -121,6 +120,35 @@ function Setting({navigation}) {
     }
   };
 
+  const onLogout = () => {
+    confirmationAlert(
+      translate('wallet.common.verification'),
+      translate('wallet.common.logOutQ'),
+      translate('wallet.common.cancel'),
+      '',
+      async () => {
+        const _selectedLanguageItem = selectedLanguageItem;
+        await EncryptedStorage.clear();
+        AsyncStorage.multiRemove(
+          [
+            '@passcode',
+            '@WALLET',
+            '@USERDATA',
+            '@BackedUp',
+            '@apps',
+            '@CURRENT_NETWORK_CHAIN_ID',
+          ],
+          err => console.log(err),
+        ).then(() => {
+          dispatch(_logout());
+          dispatch(endMainLoading());
+          dispatch(setAppLanguage(_selectedLanguageItem));
+          requestDisconnectDApp();
+        });
+      },
+      () => null,
+    );
+  };
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{width: '100%', backgroundColor: '#fff'}}>
@@ -131,7 +159,7 @@ function Setting({navigation}) {
       </View>
       <ScrollView>
         <View style={[styles.section2, {marginTop: 0}]}>
-          {/* <ListItem
+          <ListItem
             onPress={() => {
               if (myCards.length > 0) {
                 navigation.navigate('Cards', {price: 0, isCardPay: false});
@@ -141,7 +169,7 @@ function Setting({navigation}) {
               }
             }}
             label={translate('wallet.common.AECredit')}
-          /> */}
+          />
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
@@ -178,34 +206,7 @@ function Setting({navigation}) {
             label={translate('wallet.common.version')}
           />
           <ListItem
-            onPress={() => {
-              confirmationAlert(
-                translate('wallet.common.verification'),
-                translate('wallet.common.logOutQ'),
-                translate('wallet.common.cancel'),
-                '',
-                async () => {
-                  const _selectedLanguageItem = selectedLanguageItem;
-                  await EncryptedStorage.clear();
-                  AsyncStorage.multiRemove(
-                    [
-                      '@passcode',
-                      '@WALLET',
-                      '@USERDATA',
-                      '@BackedUp',
-                      '@apps',
-                      '@CURRENT_NETWORK_CHAIN_ID',
-                    ],
-                    err => console.log(err),
-                  ).then(() => {
-                    dispatch(_logout());
-                    dispatch(endMainLoading());
-                    dispatch(setAppLanguage(_selectedLanguageItem));
-                  });
-                },
-                () => null,
-              );
-            }}
+            onPress={onLogout}
             rightText={``}
             noArrow={true}
             label={translate('common.Logout')}

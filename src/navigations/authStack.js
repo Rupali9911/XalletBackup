@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import Backup from '../screens/AuthScreens/backup';
 import chooseWallet from '../screens/AuthScreens/chooseWallet';
@@ -8,14 +8,19 @@ import Policy from '../screens/AuthScreens/policy';
 import RecoveryPhrase from '../screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from '../screens/AuthScreens/verifyPhrase';
 import Welcome from '../screens/AuthScreens/welcome';
-import { SignupCrypto, LoginCrypto, ForgetCrypto, Verify } from '../screens/AuthScreens/nonCryptoAuth';
+import {
+  SignupCrypto,
+  LoginCrypto,
+  ForgetCrypto,
+  Verify,
+} from '../screens/AuthScreens/nonCryptoAuth';
 import WalletBTNS from '../screens/AuthScreens/walletBTNS';
 
 const Auth = createStackNavigator();
 
 const AuthStack = () => {
   return (
-    <Auth.Navigator screenOptions={{ headerShown: false }} headerMode="none">
+    <Auth.Navigator screenOptions={{headerShown: false}} headerMode="none">
       <Auth.Screen name="welcome" component={Welcome} />
       <Auth.Screen name="WalletBTNS" component={WalletBTNS} />
       <Auth.Screen name="CryptoLogin" component={LoginCrypto} />

@@ -2,7 +2,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {UserErrorMessage} from '../../constants';
-
+import RNFetchBlob from 'rn-fetch-blob';
 import {
   CONNECT_MODAL_STATE,
   AUTH_SUCCESS,
@@ -22,7 +22,7 @@ import {
   SET_TOAST_MESSAGE,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
-import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
+import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
 import {translate} from '../../walletUtils';
 import {alertWithSingleBtn} from '../../common/function';
 import {setConnectedApps} from './walletReducer';
@@ -325,7 +325,7 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
     const body = {
       signature: wallet.signature,
       address: wallet.address,
-      email: null,
+      email: wallet?.email ? wallet.email : null,
     };
     dispatch(startLoading());
     sendRequest({
@@ -421,12 +421,19 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     });
 };
 
-export const fetchData = id => {
+export const getUserData = id => {
   return dispatch => {
+    dispatch(startLoading());
     const url = `${NEW_BASE_URL}/users/${id}`;
-    sendRequest(url).then(res => {
-      dispatch(updateUserData(res));
-    });
+    sendRequest(url)
+      .then(res => {
+        dispatch(updateUserData(res));
+        dispatch(endLoading());
+      })
+      .catch(error => {
+        dispatch(endLoading());
+        console.log('Error from login', error);
+      });
   };
 };
 
@@ -436,7 +443,7 @@ export const updateProfile = (props, id) => async dispatch => {
     method: 'PUT',
     data: props,
   }).then(res => {
-    dispatch(fetchData(id));
+    dispatch(getUserData(id));
     if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
       let key = UserErrorMessage[res.messageCode].key;
       dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
@@ -452,6 +459,60 @@ export const verifyEmail = email => async (dispatch, getState) => {
     method: 'POST',
     data: {account: email},
   }).then(() => {
-    dispatch(fetchData(id));
+    dispatch(getUserData(id));
+  });
+};
+
+export const updateAvtar = (userId, file) => async dispatch => {
+  dispatch(startLoading());
+  const extension = file.type.split('/')[1];
+  const name = new Date().getTime();
+  let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`;
+  const token = await getAccessToken('ACCESS_TOKEN');
+  RNFetchBlob.fs.readFile(file.path, 'base64').then(async data => {
+    var Buffer = require('buffer/').Buffer;
+    const imageData = await Buffer.from(data, 'base64');
+    try {
+      const userProfileResponse = await sendRequest({
+        url: url,
+        method: 'PUT',
+        data: imageData,
+        headers: {
+          'Content-Type': 'image/jpeg',
+          Authorization: `${token}`,
+          'x-amz-tagging': `token=${token}`,
+        },
+      });
+      console.log('@@@ after upload media =========>', userProfileResponse);
+    } catch (error) {
+      dispatch(endLoading());
+      console.log('@@@ error ', error);
+    }
+  });
+};
+
+export const updateBanner = (userId, file) => async dispatch => {
+  const extension = file.type.split('/')[1];
+  const name = new Date().getTime();
+  let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`;
+  const token = await getAccessToken('ACCESS_TOKEN');
+  RNFetchBlob.fs.readFile(file.path, 'base64').then(async data => {
+    var Buffer = require('buffer/').Buffer;
+    const imageData = await Buffer.from(data, 'base64');
+    try {
+      const userProfileResponse = await sendRequest({
+        url: url,
+        method: 'PUT',
+        data: imageData,
+        headers: {
+          'Content-Type': 'image/jpeg',
+          Authorization: `${token}`,
+          'x-amz-tagging': `token=${token}&type=cover`,
+        },
+      });
+      console.log('@@@ after upload media =========>', userProfileResponse);
+    } catch (error) {
+      console.log('@@@ error ', error);
+    }
   });
 };

@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
 import LanguageSelector from '../../components/languageSelector';
-import { RF } from '../../constants/responsiveFunct';
+import {RF} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import FastImage from 'react-native-fast-image';
 
-const Welcome = ({ navigation }) => {
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+const Welcome = ({navigation}) => {
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   useEffect(() => {
     FastImage.clearMemoryCache();
@@ -46,12 +46,12 @@ const Welcome = ({ navigation }) => {
               navigation.navigate('WalletBTNS');
             }}
           />
-          {/* <AppButton
+          <AppButton
             label={translate('wallet.common.loginWithAccount')}
             containerStyle={CommonStyles.outlineButton}
             labelStyle={CommonStyles.outlineButtonLabel}
             onPress={() => navigation.navigate('CryptoLogin')}
-          /> */}
+          />
         </View>
       </View>
     </AppBackground>
