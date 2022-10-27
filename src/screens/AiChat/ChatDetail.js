@@ -5,7 +5,7 @@ import { getAiChat, chatLoadingSuccess } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { C_Image } from '..';
+import { C_Image } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
 import moment from 'moment';
@@ -22,6 +22,7 @@ const ChatDetail = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { chatLoadSuccess, isChatLoading } = useSelector(state => state.chatReducer);
   const { userData } = useSelector(state => state.UserReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   const ShowBubble = props => {
     const { item } = props;
@@ -30,35 +31,35 @@ const ChatDetail = ({ route, navigation }) => {
         {
           item?.type == 'sender'
             ?
-              <View style={styles.rightBubbleContainer}>
-                <View style={styles.talkBubble}>
-                  <View style={styles.textContainer}>
-                    <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
-                      { item?.senderName ?item?.senderName : 'Unnamed' }
-                    </Text>
-                    <Text style={styles.bubbleText}> {item?.message} </Text>
-                  </View>
-                </View>
-                <View style={[styles.timeFormat, { marginRight: 10 }]}>
-                  <C_Image uri={item?.senderImage} imageStyle={styles.bubbleImage} />
-                  <Text style={styles.statusText}>{item?.time}</Text>
+            <View style={styles.rightBubbleContainer}>
+              <View style={styles.talkBubble}>
+                <View style={styles.textContainer}>
+                  <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
+                    {item?.senderName ? item?.senderName : 'Unnamed'}
+                  </Text>
+                  <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
+              <View style={[styles.timeFormat, { marginRight: 10 }]}>
+                <C_Image uri={item?.senderImage} imageStyle={styles.bubbleImage} />
+                <Text style={styles.statusText}>{item?.time}</Text>
+              </View>
+            </View>
             :
-              <View style={styles.leftBubbleContainer}>
-                <View style={[styles.timeFormat, { marginLeft: 10 }]}>
-                  <C_Image uri={item?.receiverImage} imageStyle={styles.bubbleImage} />
-                  <Text style={styles.statusText}>{item?.time}</Text>
-                </View>
-                <View style={styles.talkBubble}>
-                  <View style={styles.textContainer}>
-                    <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
-                      {item?.receiverName.slice(item?.receiverName.lastIndexOf('#'))}
-                    </Text>
-                    <Text style={styles.bubbleText}> {item?.message} </Text>
-                  </View>
+            <View style={styles.leftBubbleContainer}>
+              <View style={[styles.timeFormat, { marginLeft: 10 }]}>
+                <C_Image uri={item?.receiverImage} imageStyle={styles.bubbleImage} />
+                <Text style={styles.statusText}>{item?.time}</Text>
+              </View>
+              <View style={styles.talkBubble}>
+                <View style={styles.textContainer}>
+                  <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
+                    {item?.receiverName.slice(item?.receiverName.lastIndexOf('#'))}
+                  </Text>
+                  <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
+            </View>
         }
       </View>
     );
@@ -66,6 +67,7 @@ const ChatDetail = ({ route, navigation }) => {
 
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
+    console.log('Langusge Dispaly : ', selectedLanguageItem)
     let timeConversion = moment(time).format('h:mm A');
     if (msg && msg != '') {
 
@@ -79,9 +81,10 @@ const ChatDetail = ({ route, navigation }) => {
       setChatBotData(chatBotData => [...chatBotData, sendObj]);
 
       dispatch(
-        getAiChat(msg, userData.userWallet.address, nftDetail.name, tokenId),
+        getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
       )
         .then(response => {
+          console.log('Response is here : ', response)
           let receiveObj = {
             message: response,
             type: 'receiver',
@@ -134,7 +137,9 @@ const ChatDetail = ({ route, navigation }) => {
       >
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
-      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} automaticallyAdjustKeyboardInsets={true}>
+      
+      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} >
+
         <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
             <Text style={styles.nftName}>
@@ -153,6 +158,7 @@ const ChatDetail = ({ route, navigation }) => {
           </View>
           <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
         </View>
+        
         <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
@@ -174,12 +180,14 @@ const ChatDetail = ({ route, navigation }) => {
               showsVerticalScrollIndicator={false}
             />
           </View>
+
           <MessageInput
-            placeholder={translate('common.enterMessage')}
+            placeholder={translate('common.enterMessage')} 
             value={message}
             onChangeText={text => setMessage(text)}
-            onPress={() => sendMessage(message, new Date())}
+            onPress={() => sendMessage(message, new Date())} 
           />
+
         </View>
 
       </KeyboardAwareScrollView>

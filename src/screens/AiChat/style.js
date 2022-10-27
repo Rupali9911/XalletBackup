@@ -11,20 +11,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     chatContainer: {
-        flex: 2,
+        flex: 1,
+        height: '100%',
         width: '100%',
-        backgroundColor: '#fff',
     },
     inputContainer: {
         width: '100%',
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'center',
-        marginVertical: Platform.OS === 'ios' ? 0 : 5
+        marginVertical: Platform.OS === 'ios' ? 0 : 5,
     },
     input: {
         paddingHorizontal: 15,
-        height: Platform.OS === 'ios' ? hp(5) : hp(5),
+        height: hp(5),
         borderColor: '#ced4da',
         borderWidth: 2,
         width: '80%',
@@ -206,6 +206,40 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    tabbar: {
+        elevation: 0,
+        borderTopColor: '#EFEFEF',
+        borderTopWidth: 1,
+        shadowOpacity: 0,
+        backgroundColor: 'white',
+        marginVertical: 10
+      },
+      label: {
+        fontSize: RF(1.6),
+        fontFamily: 'Arial',
+        textTransform: 'none',
+      },
+      tabStyle: {
+        height: SIZE(40),
+        width: wp('50%'),
+        paddingHorizontal: wp('1%'),
+        justifyContent: 'center',
+      },
+      indicator: {
+        borderBottomColor: Colors.BLUE4,
+        height: 1,
+        marginBottom: SIZE(39),
+        backgroundColor: Colors.BLUE4,
+      },
+      mainListContainer: {
+        backgroundColor: Colors.white,
+        flex: 1
+      },
+      nftListContainer: {
+        flex: 1, 
+        padding: 10 
+      }
+
      // talkBubbleAbsoluteRight: {
     //     width: 30,
     //     height: 30,
