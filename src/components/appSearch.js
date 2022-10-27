@@ -106,7 +106,7 @@ export default function AppSearch() {
               nftTokenId: item?.tokenId,
             });
           } else if (item.type == 'Artist') {
-            navigation.navigate('ArtistDetail', {
+            navigation.navigate('Profile', {
               id: item?.address,
             });
           } else if (item.type == 'Collections') {

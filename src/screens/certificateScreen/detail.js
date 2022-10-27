@@ -840,6 +840,9 @@ const DetailScreen = ({navigation, route}) => {
             if (!disableCreator) {
               onProfile(false);
             }
+            navigation.navigate('Profile', {
+              id: detailNFT?.creator?.address,
+            });
           }}
           style={styles.personType}>
           {renderIconImage('creator', false)}
@@ -859,7 +862,11 @@ const DetailScreen = ({navigation, route}) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => onProfile(true)}
+          onPress={() =>
+            navigation.navigate('Profile', {
+              id: detailNFT?.owner?.address,
+            })
+          }
           style={styles.personType}>
           {renderIconImage('owner', false)}
         </TouchableOpacity>

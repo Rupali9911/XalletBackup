@@ -1,55 +1,50 @@
 
+import Clipboard from '@react-native-clipboard/clipboard';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  RefreshControl,
-  Image,
+  View
 } from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
+import ImagePicker from 'react-native-image-crop-picker';
+import { openSettings } from 'react-native-permissions';
 import {
   Menu,
   MenuOption,
   MenuOptions,
-  MenuTrigger,
+  MenuTrigger
 } from 'react-native-popup-menu';
-
 import { useDispatch, useSelector } from 'react-redux';
-
-import ActionSheet from 'react-native-actionsheet';
-import ImagePicker from 'react-native-image-crop-picker';
-import { openSettings } from 'react-native-permissions';
-import { confirmationAlert } from '../../common/function';
-
-import Clipboard from '@react-native-clipboard/clipboard';
-import { useIsFocused } from '@react-navigation/native';
 import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
 import { Container } from 'src/styles/common.styles';
+import { confirmationAlert } from '../../common/function';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
-  widthPercentageToDP as wp,
+  widthPercentageToDP as wp
 } from '../../common/responsiveFunction';
 import { AppHeader, C_Image } from '../../components';
+import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
 import SOCKET_EVENTS from '../../constants/socketContants';
 import { useSocketGlobal } from '../../helpers/useSocketGlobal';
 import { fonts } from '../../res';
 import colors from '../../res/colors';
 import {
+  endLoadingBanner,
+  endLoadingImage,
   getUserData,
   loadProfileFromAsync,
   updateAvtar,
-  updateBanner,
+  updateBanner
 } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
 import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
 import { EditButton, EditButtonText } from './styled';
-import TabViewScreen from '../../components/TabView/TabViewScreen';
 
 const {
   ConnectSmIcon,
@@ -65,6 +60,8 @@ const {
 function Profile({ navigation, connector, route }) {
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
+
+
   const { UserReducer } = useSelector(state => state);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -72,25 +69,53 @@ function Profile({ navigation, connector, route }) {
     { key: 'nftOwned', title: translate('wallet.common.owned') },
   ]);
   const actionSheetRef = useRef(null);
-  const isFocused = useIsFocused();
-  const { userData, loading } = useSelector(state => state.UserReducer);
+
+  const [userDetails, setUserDetails] = useState(null);
+  const {
+    userData,
+    loading,
+    loggedInUser,
+    imageAvatarLoading,
+    imageBannerLoading,
+  } = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
   let id = UserReducer.userData.userWallet?.address;
 
-  if (typeof route.params === 'undefined') {
-    id = UserReducer.userData.userWallet?.address;
-  } else {
-    id = route?.params?.id;
-  }
+  const handleUserData = () => {
+    if (route?.params?.id) {
+      dispatch(getUserData(route?.params?.id));
+    } else {
+      dispatch(getUserData(loggedInUser?.userWallet?.address));
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !loading &&
+      route?.params?.id &&
+      userData.userWallet?.address === route?.params?.id
+    ) {
+      setUserDetails(userData);
+    } else if (
+      !loading &&
+      !route?.params?.id &&
+      userData.userWallet?.address === loggedInUser?.userWallet?.address
+    ) {
+      setUserDetails(userData);
+    }
+    !loading && dispatch(endLoadingImage());
+    !loading && dispatch(endLoadingBanner());
+  }, [userData, loading]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      handleUserData();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
-
-  useEffect(() => {
-    if (isFocused) {
-      dispatch(getUserData(id));
-    }
-  }, [isFocused]);
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
@@ -191,9 +216,9 @@ function Profile({ navigation, connector, route }) {
               image: image,
             };
             if (imageType === 'profile') {
-              dispatch(updateAvtar(userData.id, temp));
+              dispatch(updateAvtar(userDetails.id, temp));
             } else if (imageType === 'banner') {
-              dispatch(updateBanner(userData.id, temp));
+              dispatch(updateBanner(userDetails.id, temp));
             }
           }
         })
@@ -239,9 +264,9 @@ function Profile({ navigation, connector, route }) {
               image: image,
             };
             if (imageType === 'profile') {
-              dispatch(updateAvtar(userData.id, temp));
+              dispatch(updateAvtar(userDetails.id, temp));
             } else if (imageType === 'banner') {
-              dispatch(updateBanner(userData.id, temp));
+              dispatch(updateBanner(userDetails.id, temp));
             }
           }
         })
@@ -283,25 +308,42 @@ function Profile({ navigation, connector, route }) {
   };
 
   const renderBannerImage = () => {
-    return userData?.banner ? (
-      <C_Image uri={userData?.banner} imageStyle={styles.collectionListImage} />
-    ) : (
-      <View style={styles.collectionWrapper} />
-    );
+    const renderBanner = () => {
+      if (userDetails?.banner && !imageBannerLoading) {
+        return (
+          <C_Image
+            uri={userDetails?.banner}
+            imageStyle={styles.collectionListImage}
+          />
+        );
+      } else if (!imageBannerLoading && !userDetails?.banner) {
+        return <View style={styles.collectionWrapper}></View>;
+      } else if (imageBannerLoading) {
+        return <LoadingView />;
+      } else return null;
+    };
+
+    return renderBanner();
   };
 
   const renderIconImage = () => {
     const renderImage = () => {
-      if (userData.avatar && !loading) {
-        return <C_Image uri={userData.avatar} imageStyle={styles.iconImage} />;
-      } else if (!loading && !userData.avatar) {
+      if (userDetails?.avatar && !imageAvatarLoading) {
+        return (
+          <C_Image uri={userDetails.avatar} imageStyle={styles.iconImage} />
+        );
+      } else if (!imageAvatarLoading && !userDetails?.avatar) {
         return (
           <View style={styles.iconImage}>
             <DefaultProfile width={SIZE(150)} height={SIZE(150)} />
           </View>
         );
-      } else if (loading) {
-        return <LoadingView />;
+      } else if (imageAvatarLoading) {
+        return (
+          <View style={styles.loaderImage}>
+            <LoadingView />
+          </View>
+        );
       } else return null;
     };
     return (
@@ -318,15 +360,15 @@ function Profile({ navigation, connector, route }) {
       <View style={styles.profileInfo}>
         <View style={styles.userNameView}>
           <Text style={styles.userNameText}>
-            {userData.userName ? userData.userName : 'Unnamed'}
+            {userDetails?.userName ? userDetails?.userName : 'Unnamed'}
           </Text>
         </View>
         <View style={styles.userIdView}>
           <Text style={styles.userIdText}>
-            {userData?.userWallet?.address.substring(0, 6)}...
-            {userData?.userWallet?.address.substring(
-              userData?.userWallet?.address.length - 4,
-              userData?.userWallet?.address.length,
+            {userDetails?.userWallet?.address.substring(0, 6)}...
+            {userDetails?.userWallet?.address.substring(
+              userDetails?.userWallet?.address.length - 4,
+              userDetails?.userWallet?.address.length,
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
@@ -420,22 +462,24 @@ function Profile({ navigation, connector, route }) {
             </Menu>
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
-          <View style={styles.iconWrapper}>
-            {renderIconImage()}
+          <View style={styles.iconWrapper}>{renderIconImage()}</View>
+          <View style={styles.userDetailsWrapper}>
             {renderProfileNameAndId()}
           </View>
           {!route.params && (
             <EditButton
-              style={{ alignSelf: 'center', width: wp(60), height: hp(3) }}
-              onPress={() => navigation.navigate('EditProfile', { userData })}>
+              style={{
+                alignSelf: 'center',
+                width: wp(60),
+                height: hp(3),
+                marginTop: SIZE(5),
+              }}
+              onPress={() => navigation.navigate('EditProfile', {userDetails})}>
               <EditButtonText>
                 {translate('wallet.common.editprofile')}
               </EditButtonText>
             </EditButton>
           )}
-          <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
-            {renderTabView(id)}
-          </View>
           <ActionSheet
             ref={actionSheetRef}
             title={translate('wallet.common.choosePhoto')}
@@ -448,6 +492,9 @@ function Profile({ navigation, connector, route }) {
             onPress={selectActionSheet}
           />
         </View>
+      </View>
+      <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
+        {renderTabView(id)}
       </View>
     </Container>
   );
@@ -510,9 +557,20 @@ const styles = StyleSheet.create({
     marginBottom: SIZE(10),
     backgroundColor: colors.PERIWINKLE,
   },
+
+  loaderImage: {
+    backgroundColor: 'transparent',
+    width: SIZE(150),
+    height: SIZE(150),
+  },
   iconWrapper: {
     marginTop: SIZE(-80),
     marginBottom: SIZE(10),
+    alignItems: 'center',
+    height: SIZE(150),
+  },
+  userDetailsWrapper: {
+    marginTop: SIZE(5),
     alignItems: 'center',
   },
   collectionListImage: {

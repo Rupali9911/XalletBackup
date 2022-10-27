@@ -20,6 +20,10 @@ import {
   UPDATE_ASYNC_PASSCODE,
   LOG_OUT,
   SET_TOAST_MESSAGE,
+  IMAGE_AVATAR_START,
+  IMAGE_AVATAR_END,
+  IMAGE_BANNER_START,
+  IMAGE_BANNER_END,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
@@ -45,6 +49,9 @@ const initialState = {
   showSuccess: false,
   connectModalState: false,
   toastMsg: null,
+  loggedInUser: null,
+  imageAvatarLoading: false,
+  imageBannerLoading: false,
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -80,13 +87,11 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         loading: true,
       };
-
     case AUTH_LOADING_END:
       return {
         ...state,
         loading: false,
       };
-
     case SET_PASSCODE:
       return {
         ...state,
@@ -112,6 +117,7 @@ export default UserReducer = (state = initialState, action) => {
         isCreate: action.payload.isCreate,
         showSuccess: action.payload.showSuccess,
         loading: false,
+        loggedInUser: action.payload.data,
       };
 
     case UPDATE_CREATE:
@@ -145,6 +151,26 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         toastMsg: action.payload,
+      };
+    case IMAGE_AVATAR_START:
+      return {
+        ...state,
+        imageAvatarLoading: true,
+      };
+    case IMAGE_AVATAR_END:
+      return {
+        ...state,
+        imageAvatarLoading: false,
+      };
+    case IMAGE_BANNER_START:
+      return {
+        ...state,
+        imageBannerLoading: true,
+      };
+    case IMAGE_BANNER_END:
+      return {
+        ...state,
+        imageBannerLoading: false,
       };
     default:
       return state;
@@ -219,7 +245,18 @@ export const setToastMsg = data => ({
   type: SET_TOAST_MESSAGE,
   payload: data,
 });
-
+export const startLoadingImage = () => ({
+  type: IMAGE_AVATAR_START,
+});
+export const startLoadingBanner = () => ({
+  type: IMAGE_BANNER_START,
+});
+export const endLoadingImage = () => ({
+  type: IMAGE_AVATAR_END,
+});
+export const endLoadingBanner = () => ({
+  type: IMAGE_BANNER_END,
+});
 export const startLoader = () => dispatch =>
   new Promise((resolve, reject) => {
     dispatch(startLoading());
@@ -464,7 +501,7 @@ export const verifyEmail = email => async (dispatch, getState) => {
 };
 
 export const updateAvtar = (userId, file) => async dispatch => {
-  dispatch(startLoading());
+  dispatch(startLoadingImage());
   const extension = file.type.split('/')[1];
   const name = new Date().getTime();
   let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`;
@@ -483,15 +520,17 @@ export const updateAvtar = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}`,
         },
       });
+
       console.log('@@@ after upload media =========>', userProfileResponse);
     } catch (error) {
-      dispatch(endLoading());
+      dispatch(endLoadingImage());
       console.log('@@@ error ', error);
     }
   });
 };
 
 export const updateBanner = (userId, file) => async dispatch => {
+  dispatch(startLoadingBanner());
   const extension = file.type.split('/')[1];
   const name = new Date().getTime();
   let url = `${API_GATEWAY_URL}/user-avatar/${userId}/${name}.${extension}`;
@@ -512,6 +551,7 @@ export const updateBanner = (userId, file) => async dispatch => {
       });
       console.log('@@@ after upload media =========>', userProfileResponse);
     } catch (error) {
+      dispatch(endLoadingBanner());
       console.log('@@@ error ', error);
     }
   });
