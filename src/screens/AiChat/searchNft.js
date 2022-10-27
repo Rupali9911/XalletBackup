@@ -14,7 +14,7 @@ const SearchInput = () => {
 
   // =============== Getting data from reducer ======================== 
   const { userData } = useSelector(state => state.UserReducer);
-  const { reducerTabTitle } = useSelector(state => state.chatReducer);
+  const { reducerTabTitle, isNftLoading } = useSelector(state => state.chatReducer);
   const owner = userData.userWallet.address;
   const dispatch = useDispatch();
 
@@ -33,8 +33,12 @@ const SearchInput = () => {
               }
             };
             if (response?.otherNFTs || response?.ownerNFTS) {
+              {
+                reducerTabTitle === 'Owned' ?
                 res.nftList.ownerNFTS = response.ownerNFTS
+                :
                 res.nftList.otherNFTs = response.otherNFTs;
+              }
             }
             dispatch(nftLoadSuccessList(res));
 
