@@ -1,7 +1,7 @@
 import { View, TextInput } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSearchResult, searchText, nftLoadSuccessList, nftLoadStart } from '../../store/actions/chatAction';
+import { getSearchResult, searchText, nftLoadSuccessList, nftLoadStart, setTabTitle } from '../../store/actions/chatAction';
 import styles from './style';
 import { translate } from '../../walletUtils';
 import { Searchbar } from 'react-native-paper';
@@ -14,6 +14,7 @@ const SearchInput = () => {
 
   // =============== Getting data from reducer ======================== 
   const { userData } = useSelector(state => state.UserReducer);
+  const { reducerTabTitle } = useSelector(state => state.chatReducer);
   const owner = userData.userWallet.address;
   const dispatch = useDispatch();
 
@@ -32,8 +33,8 @@ const SearchInput = () => {
               }
             };
             if (response?.otherNFTs || response?.ownerNFTS) {
-              res.nftList.ownerNFTS = response.ownerNFTS;
-              res.nftList.otherNFTs = response.otherNFTs;
+                res.nftList.ownerNFTS = response.ownerNFTS
+                res.nftList.otherNFTs = response.otherNFTs;
             }
             dispatch(nftLoadSuccessList(res));
 
@@ -46,6 +47,7 @@ const SearchInput = () => {
     }
     else {
       dispatch(searchText(''));
+      dispatch(setTabTitle(reducerTabTitle));
     }
 
   }, [searchTxt]);

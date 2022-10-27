@@ -32,7 +32,6 @@ const ChatNftsList = ({ tabTitle }) => {
     // ===================== Use-effect call =================================
     useEffect(() => {
         if (!searchText) {
-            console.log('Tabtitle : ', tabTitle);
             dispatch(setTabTitle(tabTitle));
 
             dispatch(nftLoadStart());
@@ -118,7 +117,7 @@ const ChatNftsList = ({ tabTitle }) => {
 
     //=====================(Main return Function)=============================
     return (
-        <View style={{ backgroundColor: Colors.white, flex: 1 }}>
+        <View style={styles.mainListContainer}>
             { isNftLoading && nftPageChange == 1 ?
                 <View style={styles.centerViewStyle}>
                     <Loader />
@@ -126,7 +125,7 @@ const ChatNftsList = ({ tabTitle }) => {
                 : //else
                 nftCollectionList.length !== 0
                     ? (
-                        <View style={{ flex: 1, padding: 10 }}>
+                        <View style={styles.nftListContainer}>
                             <FlatList
                                 showsVerticalScrollIndicator={true}
                                 data={nftCollectionList}

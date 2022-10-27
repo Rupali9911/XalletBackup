@@ -231,6 +231,14 @@ const styles = StyleSheet.create({
         marginBottom: SIZE(39),
         backgroundColor: Colors.BLUE4,
       },
+      mainListContainer: {
+        backgroundColor: Colors.white,
+        flex: 1
+      },
+      nftListContainer: {
+        flex: 1, 
+        padding: 10 
+      }
 
      // talkBubbleAbsoluteRight: {
     //     width: 30,
