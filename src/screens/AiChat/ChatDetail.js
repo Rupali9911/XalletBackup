@@ -8,7 +8,10 @@ import styles from './style';
 import { C_Image } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
+import { SIZE, SVGS} from '../../constants';
 import moment from 'moment';
+
+const { DefaultProfile } = SVGS;
 
 const ChatDetail = ({ route, navigation }) => {
   let { nftDetail, tokenId } = route.params;
@@ -24,6 +27,18 @@ const ChatDetail = ({ route, navigation }) => {
   const { userData } = useSelector(state => state.UserReducer);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
+  const renderImage = () => {
+    if (userData.avatar) {
+      return <C_Image uri={userData.avatar} imageStyle={styles.bubbleImage} />;
+    } else {
+      return (
+        <View style={[styles.bubbleImage, { alignItems: 'center', borderColor: '#888', borderWidth: 2}]}>
+          <DefaultProfile width={SIZE(40)} height={SIZE(40)} fill="#888" />
+        </View>
+      );
+    } 
+  };
+
   const ShowBubble = props => {
     const { item } = props;
     return (
@@ -35,13 +50,13 @@ const ChatDetail = ({ route, navigation }) => {
               <View style={styles.talkBubble}>
                 <View style={styles.textContainer}>
                   <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
-                    {item?.senderName ? item?.senderName : 'Unnamed'}
+                    {item?.senderName}
                   </Text>
                   <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
               <View style={[styles.timeFormat, { marginRight: 10 }]}>
-                <C_Image uri={item?.senderImage} imageStyle={styles.bubbleImage} />
+                {renderImage()}
                 <Text style={styles.statusText}>{item?.time}</Text>
               </View>
             </View>
@@ -76,7 +91,7 @@ const ChatDetail = ({ route, navigation }) => {
         type: 'sender',
         time: timeConversion,
         senderImage: userData.avatar,
-        senderName: userData.userName,
+        senderName: userData.userName != '' ? userData.userName : userData?.userWallet?.address.substring(0, 6),
       };
       setChatBotData(chatBotData => [...chatBotData, sendObj]);
 
@@ -130,8 +145,8 @@ const ChatDetail = ({ route, navigation }) => {
     <SafeAreaView style={styles.mainContainer}>
       <TouchableOpacity
         onPress={() => {
+          navigation.goBack();
           dispatch(chatLoadingSuccess(''));
-          navigation.goBack()
         }}
         style={styles.backButtonWrap}
       >
