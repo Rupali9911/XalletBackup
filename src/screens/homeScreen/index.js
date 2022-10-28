@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   AppState,
   BackHandler,
-  Dimensions,
   Image,
   Linking,
   Platform,
@@ -50,7 +49,6 @@ import {
   updatePassStatus,
 } from '../../store/reducer/userReducer';
 import {alertWithSingleBtn} from '../../utils';
-import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
 import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
@@ -67,7 +65,7 @@ import {updateNetworkType} from '../../store/reducer/walletReducer';
 
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
@@ -242,18 +240,20 @@ const HomeScreen = ({ navigation }) => {
       <AppHeader
         title={translate('common.home')}
         showRightComponent={
-          <View style={styles.headerMenuContainer}>
-            <TouchableOpacity
-              onPress={() => onClickButton()}
-              hitSlop={{top: 5, bottom: 5, left: 5}}>
-              <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
-              hitSlop={{top: 5, bottom: 5, left: 5}}>
-              <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
-            </TouchableOpacity>
-          </View>
+          false && (
+            <View style={styles.headerMenuContainer}>
+              <TouchableOpacity
+                onPress={() => onClickButton()}
+                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
+                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
+              </TouchableOpacity>
+            </View>
+          )
         }
       />
     );
@@ -397,8 +397,8 @@ const HomeScreen = ({ navigation }) => {
       <TabViewScreen
         index={index}
         routes={routes}
-        switchRoutes={(r) => renderScene(r)}
-        indexChange={(i) => handleIndexChange(i)}
+        switchRoutes={r => renderScene(r)}
+        indexChange={i => handleIndexChange(i)}
         tabBarStyle={{
           height: SIZE(40),
           width: wp('30%'),
@@ -434,7 +434,7 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [index]);
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
