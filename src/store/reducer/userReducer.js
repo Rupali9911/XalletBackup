@@ -24,6 +24,7 @@ import {
   IMAGE_AVATAR_END,
   IMAGE_BANNER_START,
   IMAGE_BANNER_END,
+  SET_PROFILE_DETAILS,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
@@ -133,6 +134,11 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         userData: {..._data},
       };
+    case SET_PROFILE_DETAILS:
+      return {
+        ...state,
+        profileData: {...action.payload},
+      };
 
     case UPDATE_BACKUP:
       return {
@@ -211,6 +217,11 @@ export const setUserData = data => ({
 
 export const updateUserData = data => ({
   type: UPDATE_PROFILE,
+  payload: data,
+});
+
+export const setProfileDetails = data => ({
+  type: SET_PROFILE_DETAILS,
   payload: data,
 });
 
@@ -458,13 +469,17 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     });
 };
 
-export const getUserData = id => {
+export const getUserData = (id, profile = false) => {
   return dispatch => {
     dispatch(startLoading());
     const url = `${NEW_BASE_URL}/users/${id}`;
     sendRequest(url)
       .then(res => {
-        dispatch(updateUserData(res));
+        if (profile) {
+          dispatch(setProfileDetails(res));
+        } else {
+          dispatch(updateUserData(res));
+        }
         dispatch(endLoading());
       })
       .catch(error => {
