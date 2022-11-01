@@ -1,6 +1,6 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import _, { toFinite } from 'lodash';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import _, {toFinite} from 'lodash';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,21 +12,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { Loader } from '../../components';
+import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
-import { colors, fonts } from '../../res';
-import { changeScreenName } from '../../store/actions/authAction';
-import { translate } from '../../walletUtils';
+import {colors, fonts} from '../../res';
+import {changeScreenName} from '../../store/actions/authAction';
+import {translate} from '../../walletUtils';
 
-import { CardButton } from '../createNFTScreen/components';
-import { BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
+import {CardButton} from '../createNFTScreen/components';
+import {BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {alertWithSingleBtn} from '../../utils';
 import axios from 'axios';
 import {
   myNftListReset,
@@ -35,15 +35,16 @@ import {
   myPageChange,
   myNftCreatedPageChange,
   myNftLoadFail,
+  myNftCreatedListingReset,
 } from '../../store/actions/myNFTaction';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-const NFTCreated = ({ route, id }) => {
+const NFTCreated = ({route, id}) => {
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
-  const { MyNFTReducer } = useSelector(state => state);
-  const { userData, wallet } = useSelector(state => state.UserReducer);
+  const {MyNFTReducer} = useSelector(state => state);
+  const {userData, wallet} = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -54,26 +55,25 @@ const NFTCreated = ({ route, id }) => {
 
   useEffect(() => {
     if (isFocusedHistory) {
-      if (MyNFTReducer?.myNftCreatedList?.length === 0) {
+      if (!MyNFTReducer?.myNftCreatedList?.length) {
         pressToggle();
       } else {
         if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
           dispatch(myNftLoadFail());
         } else {
-          dispatch(myNftListReset());
           pressToggle();
         }
       }
       setIsFirstRender(false);
     }
-  }, [isFocusedHistory]);
+  }, [isFocusedHistory, id]);
 
   const renderFooter = () => {
     if (!MyNFTReducer.myNftListLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <NFTItem
         screenName="movieNFT"
@@ -92,25 +92,28 @@ const NFTCreated = ({ route, id }) => {
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myNftCreatedList]);
+  const memoizedValue = useMemo(
+    () => renderItem,
+    [MyNFTReducer.myNftCreatedList],
+  );
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
+    dispatch(myNftCreatedListingReset());
     dispatch(myNFTList(pageIndex, pageSize, address, category));
   }, []);
 
   const pressToggle = () => {
-    dispatch(myNftListReset());
     getNFTlist(pageNum, limit, id, tab);
   };
-
   return (
     <View style={styles.trendCont}>
       {/* {console.log("🚀 ~ file: nftCreated.js ~ line 135 ~ NFTCreated ~ MyNFTReducer", MyNFTReducer)} */}
       {isFirstRender ? (
         isFirstRender
-      ) : MyNFTReducer.myNftCreatedListPage === 1 && MyNFTReducer.myNftListLoading ? (
+      ) : MyNFTReducer.myNftCreatedListPage === 1 &&
+        MyNFTReducer.myNftListLoading ? (
         <Loader />
-      ) : MyNFTReducer.myNftCreatedList?.length !== 0 ? (
+      ) : MyNFTReducer.myNftCreatedList?.length ? (
         <View>
           <FlatList
             key={1}
@@ -120,13 +123,15 @@ const NFTCreated = ({ route, id }) => {
             initialNumToRender={15}
             onRefresh={pressToggle}
             refreshing={
-              MyNFTReducer.myNftCreatedListPage === 1 && MyNFTReducer.myNftListLoading
+              MyNFTReducer.myNftCreatedListPage === 1 &&
+              MyNFTReducer.myNftListLoading
             }
             renderItem={memoizedValue}
             onEndReached={() => {
               if (
                 !MyNFTReducer.myNftListLoading &&
-                MyNFTReducer.myNftCreatedList.length !== MyNFTReducer.myNftTotalCount
+                MyNFTReducer.myNftCreatedList.length !==
+                  MyNFTReducer.myNftTotalCount
               ) {
                 let num = MyNFTReducer.myNftCreatedListPage + 1;
                 getNFTlist(num, limit, id, tab);

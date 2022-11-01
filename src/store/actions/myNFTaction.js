@@ -1,8 +1,8 @@
-import { BASE_URL, NEW_BASE_URL, API_GATEWAY_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { ApiRequest } from '../../helpers/ApiRequest';
-import { getAccessToken } from '../../helpers/AxiosApiRequest';
-import { parseNftObject } from '../../utils/parseNFTObj';
+import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {ApiRequest} from '../../helpers/ApiRequest';
+import {getAccessToken} from '../../helpers/AxiosApiRequest';
+import {parseNftObject} from '../../utils/parseNFTObj';
 
 import {
   FAVORITE_NFT_SUCCESS,
@@ -14,7 +14,9 @@ import {
   MY_NFT_LOAD_SUCCESS,
   MY_PAGE_CHANGE,
   MY_NFT_CREATED_PAGE_CHANGE,
-  MY_NFT_OWNED_PAGE_CHANGE
+  MY_NFT_OWNED_PAGE_CHANGE,
+  MY_NFT_CREATED_LIST_RESET,
+  MY_NFT_OWNED_LIST_RESET,
 } from '../types';
 
 export const myNftLoadStart = () => ({
@@ -27,6 +29,14 @@ export const myNftLoadFail = () => ({
 
 export const myNftListReset = () => ({
   type: MY_NFT_LOAD_RESET,
+});
+
+export const myNftCreatedListingReset = () => ({
+  type: MY_NFT_CREATED_LIST_RESET,
+});
+
+export const myNftOwnedListingReset = () => ({
+  type: MY_NFT_OWNED_LIST_RESET,
 });
 
 export const myPageChange = data => ({
@@ -71,7 +81,7 @@ export const myNFTList = (pageIndex, pageSize, address, category) => {
     const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}`;
     fetch(url)
       .then(response => response.json())
-      .then(data => dispatch(myNftLoadSuccess({ ...data, tabTitle: category })));
+      .then(data => dispatch(myNftLoadSuccess({...data, tabTitle: category})));
   };
 };
 
@@ -91,7 +101,7 @@ const createFormData = (photo, body = {}) => {
   return data;
 };
 
-export const removeBanner = () => { };
+export const removeBanner = () => {};
 
 // export const myNFTList = (page, ownerId) => {
 

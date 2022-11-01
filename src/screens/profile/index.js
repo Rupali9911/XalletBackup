@@ -1,50 +1,50 @@
-
 import Clipboard from '@react-native-clipboard/clipboard';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
-import { openSettings } from 'react-native-permissions';
+import {openSettings} from 'react-native-permissions';
 import {
   Menu,
   MenuOption,
   MenuOptions,
-  MenuTrigger
+  MenuTrigger,
 } from 'react-native-popup-menu';
-import { useDispatch, useSelector } from 'react-redux';
-import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
-import { Container } from 'src/styles/common.styles';
-import { confirmationAlert } from '../../common/function';
+import {useDispatch, useSelector} from 'react-redux';
+import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
+import {Container} from 'src/styles/common.styles';
+import {confirmationAlert} from '../../common/function';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
-  widthPercentageToDP as wp
+  widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image } from '../../components';
+import {AppHeader, C_Image} from '../../components';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
-import SOCKET_EVENTS from '../../constants/socketContants';
-import { useSocketGlobal } from '../../helpers/useSocketGlobal';
-import { fonts } from '../../res';
+import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
   endLoadingBanner,
   endLoadingImage,
   getUserData,
   loadProfileFromAsync,
+  startLoadingBanner,
+  startLoadingImage,
   updateAvtar,
-  updateBanner
+  updateBanner,
 } from '../../store/reducer/userReducer';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
-import { EditButton, EditButtonText } from './styled';
+import {SocketHandler} from './socketHandler';
+import {EditButton, EditButtonText} from './styled';
 
 const {
   ConnectSmIcon,
@@ -56,36 +56,38 @@ const {
   DefaultProfile,
 } = SVGS;
 
-
-function Profile({ navigation, connector, route }) {
+function Profile({navigation, connector, route}) {
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
-
-
-  const { UserReducer } = useSelector(state => state);
+  const {UserReducer} = useSelector(state => state);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: 'profileCreated', title: translate('wallet.common.profileCreated') },
-    { key: 'nftOwned', title: translate('wallet.common.owned') },
+    {key: 'profileCreated', title: translate('wallet.common.profileCreated')},
+    {key: 'nftOwned', title: translate('wallet.common.owned')},
   ]);
   const actionSheetRef = useRef(null);
 
   const [userDetails, setUserDetails] = useState(null);
   const {
-    userData,
+    profileData,
     loading,
     loggedInUser,
     imageAvatarLoading,
     imageBannerLoading,
   } = useSelector(state => state.UserReducer);
+
+  const [id, setId] = useState();
   const dispatch = useDispatch();
-  let id = UserReducer.userData.userWallet?.address;
 
   const handleUserData = () => {
+    dispatch(startLoadingBanner());
+    dispatch(startLoadingImage());
     if (route?.params?.id) {
-      dispatch(getUserData(route?.params?.id));
+      setId(route?.params?.id);
+      dispatch(getUserData(route?.params?.id, true));
     } else {
-      dispatch(getUserData(loggedInUser?.userWallet?.address));
+      setId(loggedInUser?.userWallet?.address);
+      dispatch(getUserData(loggedInUser?.userWallet?.address, true));
     }
   };
 
@@ -93,19 +95,19 @@ function Profile({ navigation, connector, route }) {
     if (
       !loading &&
       route?.params?.id &&
-      userData.userWallet?.address === route?.params?.id
+      profileData?.userWallet?.address === route?.params?.id
     ) {
-      setUserDetails(userData);
+      setUserDetails({...profileData});
     } else if (
       !loading &&
       !route?.params?.id &&
-      userData.userWallet?.address === loggedInUser?.userWallet?.address
+      profileData?.userWallet?.address === loggedInUser?.userWallet?.address
     ) {
-      setUserDetails(userData);
+      setUserDetails({...profileData});
     }
     !loading && dispatch(endLoadingImage());
     !loading && dispatch(endLoadingBanner());
-  }, [userData, loading]);
+  }, [profileData, loading]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -138,20 +140,12 @@ function Profile({ navigation, connector, route }) {
     setIndex(index);
   };
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'profileCreated':
-        return (
-          <NFTCreated
-            id={id}
-          />
-        );
+        return <NFTCreated key={id} id={id} />;
       case 'nftOwned':
-        return (
-          <NFTOwned
-            id={id}
-          />
-        );
+        return <NFTOwned key={id} id={id} />;
       default:
         return null;
     }
@@ -162,8 +156,8 @@ function Profile({ navigation, connector, route }) {
       <TabViewScreen
         index={index}
         routes={routes}
-        switchRoutes={(r) => renderScene(r)}
-        indexChange={(i) => handleIndexChange(i)}
+        switchRoutes={r => renderScene(r)}
+        indexChange={i => handleIndexChange(i)}
         tabBarStyle={{
           height: SIZE(40),
           width: wp('50%'),
@@ -204,8 +198,8 @@ function Profile({ navigation, connector, route }) {
               Platform.OS === 'android'
                 ? image.path.substring(image.path.lastIndexOf('/') + 1)
                 : image.filename
-                  ? image.filename
-                  : image.path.substring(image.path.lastIndexOf('/') + 1);
+                ? image.filename
+                : image.path.substring(image.path.lastIndexOf('/') + 1);
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
 
             let temp = {
@@ -346,11 +340,17 @@ function Profile({ navigation, connector, route }) {
         );
       } else return null;
     };
-    return (
-      <TouchableOpacity onPress={() => onSelect('profile')}>
-        {renderImage()}
-      </TouchableOpacity>
-    );
+    if (route.params) {
+      return renderImage();
+    } else {
+      return (
+        <TouchableOpacity
+          key={userDetails?.avatar}
+          onPress={() => onSelect('profile')}>
+          {renderImage()}
+        </TouchableOpacity>
+      );
+    }
   };
 
   const hideDialog = () => setVisible(false);
@@ -380,13 +380,13 @@ function Profile({ navigation, connector, route }) {
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{ color: '#FFFFFF' }}>Copied!</Text>
+                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
-              style={{ marginLeft: SIZE(6) }}
+              style={{marginLeft: SIZE(6)}}
               width={SIZE(16)}
               height={SIZE(16)}
             />
@@ -396,34 +396,19 @@ function Profile({ navigation, connector, route }) {
     );
   };
 
-  useSocketGlobal(
-    SOCKET_EVENTS.userUpdateAvatar,
-    () => {
-      dispatch(getUserData(id));
-    },
-    false,
-  );
-
-  useSocketGlobal(
-    SOCKET_EVENTS.userUpdateBanner,
-    () => {
-      dispatch(getUserData(id));
-    },
-    false,
-  );
-
   return (
     <Container>
       <View
         style={styles.scrollView}
-      // refreshControl={
-      //     <RefreshControl
-      //         refreshing={refreshing}
-      //         onRefresh={onRefresh}
-      //         tintColor={Colors.themeColor}
-      //     />
-      // }
+        // refreshControl={
+        //     <RefreshControl
+        //         refreshing={refreshing}
+        //         onRefresh={onRefresh}
+        //         tintColor={Colors.themeColor}
+        //     />
+        // }
       >
+        {id && <SocketHandler id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
         )}
@@ -432,7 +417,7 @@ function Profile({ navigation, connector, route }) {
             <TouchableOpacity
               style={styles.settings}
               onPress={() =>
-                navigation.navigate('Setting', { connector: connector })
+                navigation.navigate('Setting', {connector: connector})
               }>
               <SettingIcon width={SIZE(23)} height={SIZE(23)} />
             </TouchableOpacity>
@@ -456,7 +441,7 @@ function Profile({ navigation, connector, route }) {
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{ color: '#FFFFFF' }}>Copied!</Text>
+                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
