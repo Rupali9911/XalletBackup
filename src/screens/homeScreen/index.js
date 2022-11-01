@@ -325,7 +325,7 @@ const HomeScreen = ({navigation}) => {
             autoPlay={true}
             style={{
               width: wp(100),
-              height: hp(11),
+              height: Platform.OS === 'android' ? hp(12) : hp(11),
             }}
             width={wp(29.5)}
             data={artistList}
