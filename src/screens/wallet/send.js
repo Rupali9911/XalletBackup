@@ -131,7 +131,7 @@ const ScanScreen = React.memo((props) => {
     }
 
     const onSuccess = (e) => {
-        console.log('e', e);
+        console.log('@@@ QR Code scan success =======>', e);
         processScanResult(e, SCAN_WALLET).then((result) => {
             if (result.walletAddress) {
                 verifyAddress(result.walletAddress).then(() => {

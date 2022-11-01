@@ -46,8 +46,13 @@ const QRScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        // setQrData(wallet.address);
-    }, [])
+        setQrData(wallet?.address + ' ');
+        if (Number(price) !== 0) {
+            setQrData(wallet?.address + ' ' + price)
+        } else {
+            setQrData(wallet.address);
+        }
+    }, [price])
 
     let qrRef = useRef(null);
 
@@ -91,8 +96,8 @@ const QRScreen = () => {
                     </TouchableOpacity>
                     <TextView style={styles.codeValue}>{wallet?.address}</TextView>
                     <TextView style={styles.qrLabel}>{""}</TextView>
-                    {price !== "" && <TextView style={styles.price}>{price}</TextView>}
-                    {price !== "" && <TextView style={styles.valueLabel}>{item.type}</TextView>}
+                    {(price !== "" && Number(price) !== 0) && <TextView style={styles.price}>{price}</TextView>}
+                    {(price !== "" && Number(price) !== 0) && <TextView style={styles.valueLabel}>{item.type}</TextView>}
                 </ViewShot>
             </View>
             <View style={styles.actionContainer}>
