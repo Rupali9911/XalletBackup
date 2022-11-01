@@ -71,7 +71,7 @@ const HomeScreen = ({navigation}) => {
     state => state.UserReducer?.userData?.isNonCrypto,
   );
   const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
-  const {artistList, artistLoading} = useSelector(
+  const {artistList, artistLoading, artistTotalCount} = useSelector(
     state => state.ListReducer,
   );
   const {showSuccess} = useSelector(state => state.UserReducer);
@@ -330,6 +330,16 @@ const HomeScreen = ({navigation}) => {
             width={wp(29.5)}
             data={artistList}
             renderItem={renderArtistItem}
+            onScrollEnd={num => {
+              if (
+                num === artistList.length - 4 &&
+                artistList.length < artistTotalCount
+              ) {
+                let pageNum = artistPage + 1;
+                dispatch(getAllArtist(pageNum, artistLimit));
+                setArtistPage(pageNum);
+              }
+            }}
           />
           // <FlatList
           //   horizontal={true}
