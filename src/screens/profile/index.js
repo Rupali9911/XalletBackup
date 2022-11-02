@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -54,6 +55,11 @@ const {
   CopyProfile,
   SettingIconBlack,
   DefaultProfile,
+  YouTubeIcon,
+  WebIcon,
+  Twitter,
+  Instagram,
+  DiscordIcon,
 } = SVGS;
 
 function Profile({navigation, connector, route}) {
@@ -78,6 +84,12 @@ function Profile({navigation, connector, route}) {
 
   const [id, setId] = useState();
   const dispatch = useDispatch();
+  const socialSite =
+    userDetails?.twitterSite ||
+    userDetails?.instagramSite ||
+    userDetails?.youtubeSite ||
+    userDetails?.discordSite ||
+    userDetails?.website;
 
   const handleUserData = () => {
     dispatch(startLoadingBanner());
@@ -159,7 +171,6 @@ function Profile({navigation, connector, route}) {
         switchRoutes={r => renderScene(r)}
         indexChange={i => handleIndexChange(i)}
         tabBarStyle={{
-          height: SIZE(40),
           width: wp('50%'),
           paddingHorizontal: wp('1%'),
           justifyContent: 'center',
@@ -395,91 +406,147 @@ function Profile({navigation, connector, route}) {
       </View>
     );
   };
-
   return (
     <Container>
-      <View
-        style={styles.scrollView}
-        // refreshControl={
-        //     <RefreshControl
-        //         refreshing={refreshing}
-        //         onRefresh={onRefresh}
-        //         tintColor={Colors.themeColor}
-        //     />
-        // }
-      >
-        {id && <SocketHandler id={id} />}
-        {route.params && (
-          <AppHeader title={translate('common.profile')} showBackButton />
-        )}
-        <View>
-          {!route.params && (
-            <TouchableOpacity
-              style={styles.settings}
-              onPress={() =>
-                navigation.navigate('Setting', {connector: connector})
-              }>
-              <SettingIcon width={SIZE(23)} height={SIZE(23)} />
-            </TouchableOpacity>
-          )}
-          <View style={styles.collectionWrapper}>{renderBannerImage()}</View>
-          {!route.params && (
-            <TouchableOpacity
-              style={styles.editImage}
-              onPress={() => onSelect('banner')}>
-              <EditImage width={SIZE(12)} height={SIZE(12)} />
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            style={styles.copyProfile}
-            onPress={() => copyProfileToClipboard()}>
-            <Menu opened={openDial2}>
-              <MenuTrigger />
-              <MenuOptions
-                optionsContainerStyle={{
-                  width: SIZE(60),
-                  backgroundColor: Colors.BLACK1,
-                }}>
-                <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
-            <CopyProfile width={SIZE(12)} height={SIZE(12)} />
-          </TouchableOpacity>
-          <View style={styles.iconWrapper}>{renderIconImage()}</View>
-          <View style={styles.userDetailsWrapper}>
-            {renderProfileNameAndId()}
+      <View style={styles.scrollView}>
+        <View
+          style={{
+            flex: socialSite ? 0.6 : 0.55,
+            position: 'relative',
+          }}>
+          <View
+          // style={styles.scrollView}
+          // refreshControl={
+          //     <RefreshControl
+          //         refreshing={refreshing}
+          //         onRefresh={onRefresh}
+          //         tintColor={Colors.themeColor}
+          //     />
+          // }
+          >
+            {id && <SocketHandler id={id} />}
+            {route.params && (
+              <AppHeader title={translate('common.profile')} showBackButton />
+            )}
+            <View>
+              {!route.params && (
+                <TouchableOpacity
+                  style={styles.settings}
+                  onPress={() =>
+                    navigation.navigate('Setting', {connector: connector})
+                  }>
+                  <SettingIcon width={SIZE(23)} height={SIZE(23)} />
+                </TouchableOpacity>
+              )}
+              <View style={styles.collectionWrapper}>
+                {renderBannerImage()}
+              </View>
+              {!route.params && (
+                <TouchableOpacity
+                  style={styles.editImage}
+                  onPress={() => onSelect('banner')}>
+                  <EditImage width={SIZE(12)} height={SIZE(12)} />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={styles.copyProfile}
+                onPress={() => copyProfileToClipboard()}>
+                <Menu opened={openDial2}>
+                  <MenuTrigger />
+                  <MenuOptions
+                    optionsContainerStyle={{
+                      width: SIZE(60),
+                      backgroundColor: Colors.BLACK1,
+                    }}>
+                    <MenuOption>
+                      <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+                <CopyProfile width={SIZE(12)} height={SIZE(12)} />
+              </TouchableOpacity>
+              <View style={styles.iconWrapper}>{renderIconImage()}</View>
+              <View style={styles.userDetailsWrapper}>
+                {renderProfileNameAndId()}
+              </View>
+              <View style={styles.socialSiteView}>
+                {userDetails?.twitterSite ? (
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(
+                        'https://twitter.com/' + userDetails?.twitterSite,
+                      )
+                    }>
+                    <Twitter width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.instagramSite ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() =>
+                      Linking.openURL(
+                        'https://www.instagram.com/' +
+                          userDetails?.instagramSite,
+                      )
+                    }>
+                    <Instagram width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.youtubeSite ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() => Linking.openURL(userDetails?.youtubeSite)}>
+                    <YouTubeIcon width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.discordSite ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() => Linking.openURL(userDetails?.discordSite)}>
+                    <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.website ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() => Linking.openURL(userDetails?.website)}>
+                    <WebIcon width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+              {!route.params && (
+                <EditButton
+                  style={{
+                    alignSelf: 'center',
+                    width: wp(60),
+                    height: hp(3),
+                    marginTop: SIZE(5),
+                  }}
+                  onPress={() =>
+                    navigation.navigate('EditProfile', {userDetails})
+                  }>
+                  <EditButtonText>
+                    {translate('wallet.common.editprofile')}
+                  </EditButtonText>
+                </EditButton>
+              )}
+              <ActionSheet
+                ref={actionSheetRef}
+                title={translate('wallet.common.choosePhoto')}
+                options={[
+                  translate('wallet.common.takePhoto'),
+                  translate('wallet.common.choosePhotoFromGallery'),
+                  translate('wallet.common.cancel'),
+                ]}
+                cancelButtonIndex={2}
+                onPress={selectActionSheet}
+              />
+            </View>
           </View>
-          {!route.params && (
-            <EditButton
-              style={{
-                alignSelf: 'center',
-                width: wp(60),
-                height: hp(3),
-                marginTop: SIZE(5),
-              }}
-              onPress={() => navigation.navigate('EditProfile', {userDetails})}>
-              <EditButtonText>
-                {translate('wallet.common.editprofile')}
-              </EditButtonText>
-            </EditButton>
-          )}
-          <ActionSheet
-            ref={actionSheetRef}
-            title={translate('wallet.common.choosePhoto')}
-            options={[
-              translate('wallet.common.takePhoto'),
-              translate('wallet.common.choosePhotoFromGallery'),
-              translate('wallet.common.cancel'),
-            ]}
-            cancelButtonIndex={2}
-            onPress={selectActionSheet}
-          />
         </View>
-      </View>
-      <View style={!route.params ? styles.tabBarView1 : styles.tabBarView2}>
-        {renderTabView(id)}
+        <View style={{flex: socialSite ? 0.4 : 0.45}}>
+          <View style={styles.tabView}>{renderTabView(id)}</View>
+        </View>
       </View>
     </Container>
   );
@@ -589,16 +656,6 @@ const styles = StyleSheet.create({
   userIdText: {
     fontFamily: 'Arial',
   },
-  tabBarView1: {
-    marginTop: SIZE(5),
-    width: '100%',
-    height: Dimensions.get('window').height - hp(60),
-  },
-  tabBarView2: {
-    marginTop: SIZE(5),
-    width: '100%',
-    height: Dimensions.get('window').height - hp(55),
-  },
   editImage: {
     zIndex: 20,
     position: 'absolute',
@@ -624,5 +681,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: SIZE(150),
     right: SIZE(10),
+  },
+  socialSiteButton: {
+    marginLeft: SIZE(12),
+  },
+  socialSiteView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: SIZE(15),
+  },
+  tabView: {
+    flex: 1,
+    marginTop: 5,
   },
 });
