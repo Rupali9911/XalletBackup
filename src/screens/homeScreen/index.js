@@ -66,10 +66,6 @@ import Trending from './trending';
 const HomeScreen = ({navigation}) => {
   const artistRef = useRef(null);
 
-<<<<<<< HEAD
-const HomeScreen = ({navigation}) => {
-=======
->>>>>>> c11ebe98b6f8d7b795b6da370df0396a5f57afb5
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
