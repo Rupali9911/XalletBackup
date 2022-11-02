@@ -15,6 +15,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
+import {Easing} from 'react-native-reanimated';
 import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
@@ -339,6 +340,14 @@ const HomeScreen = ({navigation}) => {
                 dispatch(getAllArtist(pageNum, artistLimit));
                 setArtistPage(pageNum);
               }
+            }}
+            autoPlayInterval={0}
+            withAnimation={{
+              type: 'timing',
+              config: {
+                duration: 7000,
+                easing: Easing.linear,
+              },
             }}
           />
           // <FlatList
