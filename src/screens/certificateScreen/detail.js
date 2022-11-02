@@ -3563,9 +3563,11 @@ const DetailScreen = ({navigation, route}) => {
             {renderDescription()}
             {renderNFTPriceNToken()}
 
-            <View style={styles.bottomView}>
-              {!load && renderContentAction()}
-            </View>
+            {false && (
+              <View style={styles.bottomView}>
+                {!load && renderContentAction()}
+              </View>
+            )}
 
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
