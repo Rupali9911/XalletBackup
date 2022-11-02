@@ -150,11 +150,16 @@ const ActivityTab = (props) => {
         multiple={true}
         min={0}
         mode={'BADGE'}
+        listMode={'SCROLLVIEW'}
+        scrollViewProps={{
+          nestedScrollEnabled: true
+        }}
         setOpen={setOpen}
         setValue={setFilterTableValue}
         setItems={setFilterTableList}
         closeAfterSelecting={true}
         style={styles.tokenPicker}
+        dropDownDirection={'BOTTOM'}
         dropDownContainerStyle={styles.dropDownContainer}
         placeholder={translate('wallet.common.filter')}
         maxHeight={hp(45)}
@@ -176,6 +181,7 @@ const ActivityTab = (props) => {
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.containerStyle}
+      nestedScrollEnabled={true}
       style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
 
