@@ -43,7 +43,7 @@ export const test_ethRpc =
   'https://goerli.infura.io/v3/e2fddb9deb984ba0b9e9daa116d1702a';
 export const test_bnbRpc = 'https://data-seed-prebsc-2-s1.binance.org:8545/';
 // export const test_bnbRpc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
-export const test_polRpc = 'https://rpc-mumbai.matic.today';
+export const test_polRpc = 'https://rpc-mumbai.maticvigil.com/';
 
 //===================== RPC Urls (mainnet) ===============================
 export const ethRpc =
@@ -7141,7 +7141,7 @@ export const environment = {
     ],
 
   usdtCont: IsTestNet
-    ? '0xD92E713d051C37EbB2561803a3b5FBAbc4962431'
+    ? '0x2D212E5bB3CB9604FBb903E3574CbC804213bCa1'
     : '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   usdtAbi: [
     {
