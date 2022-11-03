@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
     },
     bubbleImage: {
-        height: 40,
-        width: 40,
-        borderRadius: 40 / 2,
+        height: SIZE(40),
+        width: SIZE(40),
+        borderRadius: SIZE(40) / SIZE(2),
         marginBottom: 5,
     },
     bubbleText: {
@@ -178,12 +178,17 @@ const styles = StyleSheet.create({
     nftName: {
         color: '#fff', fontWeight: '700'
     },
+    msgHolderName: {
+        fontWeight: '700',
+        color: '#46446e', 
+        marginBottom: 5
+    },
     bannerImage: {
         width: '100%', height: '100%', resizeMode: 'contain'
     },
     rcvReplyContainer: {
         padding: 10,
-        backgroundColor: '#000000a1',
+        backgroundColor: '#3b3b3b',
         width: '100%',
         bottom: 0,
         position: 'absolute',

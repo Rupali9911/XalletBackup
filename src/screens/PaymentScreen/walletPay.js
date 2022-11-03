@@ -16,7 +16,7 @@ import ImagesSrc from '../../constants/Images';
 import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {setPaymentObject} from '../../store/reducer/paymentReducer';
-import {
+import {  
   updateBalances,
   updateBSCBalances,
   updateEthereumBalances,

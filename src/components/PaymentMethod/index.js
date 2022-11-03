@@ -27,7 +27,6 @@ const PaymentMethod = props => {
     visible,
     onRequestClose,
     price,
-    priceInDollar,
     chain,
     baseCurrency,
     id,
@@ -37,12 +36,9 @@ const PaymentMethod = props => {
   const navigation = useNavigation();
   const [opacity, setOpacity] = useState(0.88);
   const [selectedMethod, setSelectedMethod] = useState(1);
-  const {myCards} = useSelector(state => state.PaymentReducer);
   const {buyNFTRes} = useSelector(state => state.detailsNFTReducer);
 
-  const {isNonCrypto, userWallet} = useSelector(
-    state => state.UserReducer?.userData,
-  );
+  const {isNonCrypto} = useSelector(state => state.UserReducer?.userData);
 
   const gasLimit = buyNFTRes?.gasLimit / 1000000000;
   const totalAmount = Number(price) + gasLimit;
@@ -101,29 +97,14 @@ const PaymentMethod = props => {
               isNonCrypto === 0
                 ? [
                     {
-                      text: translate('wallet.common.payByCreditCard'),
-                      icon: ImagesSrc.cardPay,
-                      onPress: () => {
-                        // setSelectedMethod(0);
-                      },
-                    },
-                    {
                       text: translate('wallet.common.payByWallet'),
                       icon: ImagesSrc.walletPay,
-                      onPress: () => {
-                        setSelectedMethod(1);
-                      },
-                    },
-                  ]
-                : [
-                    {
-                      text: translate('wallet.common.payByCreditCard'),
-                      icon: ImagesSrc.cardPay,
                       onPress: () => {
                         setSelectedMethod(0);
                       },
                     },
                   ]
+                : []
             }
             style={styles.optionContainer}
             selectable
@@ -153,22 +134,6 @@ const PaymentMethod = props => {
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
               if (selectedMethod == 0) {
-                onRequestClose();
-                console.log('1----selectedMethod');
-                if (myCards.length > 0) {
-                  console.log('2----selectedMethod -- IF');
-                  navigation.navigate('Cards', {
-                    price: priceInDollar,
-                    isCardPay: true,
-                  });
-                } else {
-                  // navigation.navigate('Cards', { price });
-                  navigation.navigate('AddCard', {
-                    price: priceInDollar,
-                    isCardPay: true,
-                  });
-                }
-              } else if (selectedMethod == 1) {
                 onRequestClose();
                 console.log('1.1----selectedMethod -');
                 navigation.navigate('WalletPay', {

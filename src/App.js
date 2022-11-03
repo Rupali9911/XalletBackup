@@ -1,7 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {StripeProvider} from '@stripe/stripe-react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {Image, Keyboard, Linking, LogBox, StyleSheet, View} from 'react-native';
 import 'react-native-gesture-handler';
@@ -63,7 +62,7 @@ import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
 
-export const regionLanguage = RNLocalize.getLocales() 
+export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
   .values()
   .next().value;
@@ -344,14 +343,8 @@ const App = () => {
     <NativeBaseProvider>
       <Provider store={Store}>
         <MenuProvider>
-          <StripeProvider
-            publishableKey={environment.stripeKey.p_key}
-            urlScheme="xanalia" // required for 3D Secure and bank redirects
-            merchantIdentifier="merchant.com.xanalia" // required for Apple Pay
-          >
-            <AppRoutes />
-            {<MagicLayer />}
-          </StripeProvider>
+          <AppRoutes />
+          {<MagicLayer />}
         </MenuProvider>
       </Provider>
     </NativeBaseProvider>

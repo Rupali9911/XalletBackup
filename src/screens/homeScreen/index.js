@@ -1,13 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {useFocusEffect} from '@react-navigation/native';
-import {FlatList} from 'native-base';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   AppState,
   BackHandler,
-  Dimensions,
   Image,
   Linking,
   Platform,
@@ -15,7 +13,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
+import {Easing} from 'react-native-reanimated';
 import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
@@ -23,13 +23,12 @@ import {
   requestNotifications,
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
-import {TabBar, TabView} from 'react-native-tab-view';
+import Carousel from 'react-native-reanimated-carousel';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useDispatch, useSelector} from 'react-redux';
 import {NEW_BASE_URL} from '../../common/constants';
 import {
   heightPercentageToDP as hp,
-  responsiveFontSize as RF,
   SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
@@ -37,6 +36,7 @@ import {AppHeader, C_Image} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
+import TabViewScreen from '../../components/TabView/TabViewScreen';
 import {SORT_FILTER_OPTONS} from '../../constants';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
@@ -49,8 +49,8 @@ import {
   updateCreateState,
   updatePassStatus,
 } from '../../store/reducer/userReducer';
+import {updateNetworkType} from '../../store/reducer/walletReducer';
 import {alertWithSingleBtn} from '../../utils';
-import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
 import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
@@ -63,20 +63,19 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-import {updateNetworkType} from '../../store/reducer/walletReducer';
 
-import TabViewScreen from '../../components/TabView/TabViewScreen';
+const HomeScreen = ({navigation}) => {
+  const artistRef = useRef(null);
 
-const HomeScreen = ({ navigation }) => {
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
   );
   const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
-  const {artistList, artistLoading, sort} = useSelector(
+  const {artistList, artistLoading, artistTotalCount} = useSelector(
     state => state.ListReducer,
   );
-  const {showSuccess, userData} = useSelector(state => state.UserReducer);
+  const {showSuccess} = useSelector(state => state.UserReducer);
   const modalState = Platform.OS === 'android' ? false : showSuccess;
   const {requestAppId} = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
@@ -242,18 +241,20 @@ const HomeScreen = ({ navigation }) => {
       <AppHeader
         title={translate('common.home')}
         showRightComponent={
-          <View style={styles.headerMenuContainer}>
-            <TouchableOpacity
-              onPress={() => onClickButton()}
-              hitSlop={{top: 5, bottom: 5, left: 5}}>
-              <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
-              hitSlop={{top: 5, bottom: 5, left: 5}}>
-              <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
-            </TouchableOpacity>
-          </View>
+          false && (
+            <View style={styles.headerMenuContainer}>
+              <TouchableOpacity
+                onPress={() => onClickButton()}
+                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
+                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
+              </TouchableOpacity>
+            </View>
+          )
         }
       />
     );
@@ -298,20 +299,20 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const renderFooter = () => {
-    if (artistLoading) {
-      return (
-        <View style={styles.artistLoader1}>
-          <ActivityIndicator size="small" color={colors.themeR} />
-        </View>
-      );
-    }
-    return null;
-  };
+  // const renderFooter = () => {
+  //   if (artistLoading) {
+  //     return (
+  //       <View style={styles.artistLoader1}>
+  //         <ActivityIndicator size="small" color={colors.themeR} />
+  //       </View>
+  //     );
+  //   }
+  //   return null;
+  // };
 
-  const keyExtractor = (item, index) => {
-    return 'item_' + index;
-  };
+  // const keyExtractor = (item, index) => {
+  //   return 'item_' + index;
+  // };
 
   const renderArtistList = () => {
     return (
@@ -321,53 +322,83 @@ const HomeScreen = ({ navigation }) => {
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
-          <FlatList
-            horizontal={true}
+          <Carousel
+            ref={artistRef}
+            loop={true}
+            autoPlay={true}
+            style={{
+              width: wp(100),
+              height: Platform.OS === 'android' ? hp(12) : hp(11),
+            }}
+            width={wp(29.5)}
             data={artistList}
             renderItem={renderArtistItem}
-            onEndReached={() => {
-              if (!end) {
+            onScrollEnd={num => {
+              if (
+                num === artistList.length - 4 &&
+                artistList.length < artistTotalCount
+              ) {
                 let pageNum = artistPage + 1;
                 dispatch(getAllArtist(pageNum, artistLimit));
                 setArtistPage(pageNum);
-                setEnd(true);
               }
             }}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={keyExtractor}
-            onEndReachedThreshold={0.6}
-            ListFooterComponent={renderFooter}
-            onMomentumScrollBegin={() => setEnd(false)}
-            style={styles.headerList}
+            autoPlayInterval={0}
+            withAnimation={{
+              type: 'timing',
+              config: {
+                duration: 7000,
+                easing: Easing.linear,
+              },
+            }}
           />
-          // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          //   {artistList && artistList.length !== 0
-          //     ? artistList.map((item, index) => {
-          //       return (
-          //         <TouchableOpacity
-          //           style={styles.headerView}
-          //           onPress={() => {
-          //             const id =
-          //               item.role === 'crypto' ? item.username : item._id;
-          //             navigation.navigate('ArtistDetail', { id: id });
-          //           }}
-          //           key={`_${index}`}>
-          //           <View style={styles.userCircle}>
-          //             <C_Image
-          //               uri={item?.mediaUrl}
-          //               type={item.profile_image}
-          //               imageType="profile"
-          //               imageStyle={{ width: '100%', height: '100%' }}
-          //             />
-          //           </View>
-          //           <Text numberOfLines={1} style={styles.userText}>
-          //             {getArtistName(item)}
-          //           </Text>
-          //         </TouchableOpacity>
-          //       );
-          //     })
-          //     : null}
-          // </ScrollView>
+          // <FlatList
+          //   horizontal={true}
+          //   data={artistList}
+          //   renderItem={renderArtistItem}
+          //   onEndReached={() => {
+          //     if (!end) {
+          //       let pageNum = artistPage + 1;
+          //       dispatch(getAllArtist(pageNum, artistLimit));
+          //       setArtistPage(pageNum);
+          //       setEnd(true);
+          //     }
+          //   }}
+          //   showsHorizontalScrollIndicator={false}
+          //   keyExtractor={keyExtractor}
+          //   onEndReachedThreshold={0.6}
+          //   ListFooterComponent={renderFooter}
+          //   onMomentumScrollBegin={() => setEnd(false)}
+          //   style={styles.headerList}
+          // />
+          // // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          // //   {artistList && artistList.length !== 0
+          // //     ? artistList.map((item, index) => {
+          // //       return (
+          // //         <TouchableOpacity
+          // //           style={styles.headerView}
+          // //           onPress={() => {
+          // //             const id =
+          // //               item.role === 'crypto' ? item.username : item._id;
+          // //             navigation.navigate('ArtistDetail', { id: id });
+          // //           }}
+          // //           key={`_${index}`}>
+          // //           <View style={styles.userCircle}>
+          // //             <C_Image
+          // //               uri={item?.mediaUrl}
+          // //               type={item.profile_image}
+          // //               imageType="profile"
+          // //               imageStyle={{ width: '100%', height: '100%' }}
+          // //             />
+          // //           </View>
+          // //           <Text numberOfLines={1} style={styles.userText}>
+          // //             {getArtistName(item)}
+          // //           </Text>
+          // //         </TouchableOpacity>
+          // //       );
+          // //     })
+          // //     : null}
+          // // </ScrollView>
         )}
       </View>
     );
@@ -397,8 +428,8 @@ const HomeScreen = ({ navigation }) => {
       <TabViewScreen
         index={index}
         routes={routes}
-        switchRoutes={(r) => renderScene(r)}
-        indexChange={(i) => handleIndexChange(i)}
+        switchRoutes={r => renderScene(r)}
+        indexChange={i => handleIndexChange(i)}
         tabBarStyle={{
           height: SIZE(40),
           width: wp('30%'),
@@ -434,7 +465,7 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [index]);
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;

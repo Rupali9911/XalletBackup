@@ -39,6 +39,7 @@ const SOCKET_EVENTS = {
         'externalAcceptBidAuctionSessionSuccess',
     externalCanceOfferSuccess: 'externalCanceOfferSuccess',
     externalEditOrderSuccess: 'externalEditOrderSuccess',
+    // Done
     userUpdateAvatar: 'userUpdateAvatar',
     userUpdateBanner: 'userUpdateBanner',
 }

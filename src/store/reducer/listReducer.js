@@ -28,6 +28,7 @@ const initialState = {
   gifList: [],
   movieList: [],
   artistList: [],
+  artistTotalCount: 0,
   page: 1,
   totalCount: 0,
   artistLoading: false,
@@ -44,7 +45,7 @@ export default function ListReducer(state = initialState, action) {
 
     case HOT_NFT_LOAD_START:
       return (state = {...state, isHotNftLoading: true});
-      
+
     case LOAD_NFT_START:
       return (state = {...state, nftListLoading: true});
 
@@ -63,7 +64,7 @@ export default function ListReducer(state = initialState, action) {
         gifList: [...state.gifList, ...action.payload.data],
         totalCount: action.payload.count,
         nftListLoading: false,
-        isGifNftLoading: false
+        isGifNftLoading: false,
       });
     case MOVIE_NFT_LIST_SUCCESS:
       return (state = {
@@ -71,7 +72,7 @@ export default function ListReducer(state = initialState, action) {
         movieList: [...state.movieList, ...action.payload.data],
         totalCount: action.payload.count,
         nftListLoading: false,
-        isMovieNftLoading:false,
+        isMovieNftLoading: false,
       });
 
     case NFT_LIST_UPDATE:
@@ -81,25 +82,25 @@ export default function ListReducer(state = initialState, action) {
       switch (action.payload) {
         case 'hot':
           return (state = {...state, nftList: []});
-          case 'gif':
+        case 'gif':
           return (state = {...state, gifList: []});
-          case 'movie':
+        case 'movie':
           return (state = {...state, movieList: []});
         default:
           return (state = {...state, nftList: [], gifList: [], movieList: []});
       }
 
     case MOVIE_NFT_LOAD_FAIL:
-      return (state = {...state, isMovieNftLoading: false });
-    
+      return (state = {...state, isMovieNftLoading: false});
+
     case HOT_NFT_LOAD_FAIL:
-      return (state = {...state, isHotNftLoading: false });
-    
+      return (state = {...state, isHotNftLoading: false});
+
     case GIF_NFT_LOAD_FAIL:
-      return (state = {...state, isGifNftLoading: false });
-    
+      return (state = {...state, isGifNftLoading: false});
+
     case NFT_LIST_FAIL:
-      return (state = {...state, nftListLoading: false });
+      return (state = {...state, nftListLoading: false});
 
     case PAGE_CHANGE:
       return (state = {...state, page: action.payload});
@@ -108,7 +109,12 @@ export default function ListReducer(state = initialState, action) {
       return {...state, artistLoading: true};
 
     case ALL_ARTIST_SUCCESS:
-      return {...state, artistList: [...state.artistList, ...action.payload.list], artistLoading: false};
+      return {
+        ...state,
+        artistList: [...state.artistList, ...action.payload.list],
+        artistLoading: false,
+        artistTotalCount: action.payload.count,
+      };
 
     case ARTIST_LOADING_END:
       return {...state, artistLoading: false};
