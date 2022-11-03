@@ -11,8 +11,8 @@ import WalletIcon from 'src/assets/svgs/icon-wallet.svg';
 import WalletActiveIcon from 'src/assets/svgs/icon-wallet-active.svg';
 import ChatIcon from 'src/assets/svgs/icon-chat.svg';
 import ChatActiveIcon from 'src/assets/svgs/icon-chat-active.svg';
-import HeartWhiteIcon from 'src/assets/svgs/icon-new-heart.svg'
-import HeartActiveIcon from 'src/assets/svgs/icon-new-activeHeart.svg'
+import HeartWhiteIcon from 'src/assets/svgs/icon-new-heart.svg';
+import HeartActiveIcon from 'src/assets/svgs/icon-new-activeHeart.svg';
 import RiseIcon from 'src/assets/svgs/icon-rise.svg';
 import RiseActiveIcon from 'src/assets/svgs/icon-rise-active.svg';
 import TradeIcon from 'src/assets/svgs/icon-trade.svg';
@@ -42,7 +42,7 @@ import CommentIcon from 'src/assets/svgs/icon-comment.svg';
 import BookMarkIcon from 'src/assets/svgs/icon-book-mark.svg';
 import PlayButtonIcon from 'src/assets/svgs/icon-play.svg';
 import PlayButtonBlack from 'src/assets/svgs/icon-play-black.svg';
-import PauseButtonBlack from 'src/assets/svgs/icon-pause-black.svg'
+import PauseButtonBlack from 'src/assets/svgs/icon-pause-black.svg';
 import ConnectSmIcon from 'src/assets/svgs/icon-connect-sm.svg';
 
 import FitIcon from 'src/assets/svgs/icon-fit.svg';
@@ -70,7 +70,7 @@ import PolygonIcon from 'src/assets/svgs/icon-polygon.svg';
 import Ethereum from 'src/assets/svgs/icon-etherium.svg';
 // import BitmapIcon from 'src/assets/svgs/icon-bitmap.svg';
 import BitmapIcon from 'src/assets/svgs/icon-smart-chain.svg';
-import CopyToClipboard from 'src/assets/svgs/icon-copyToClipboard.svg'
+import CopyToClipboard from 'src/assets/svgs/icon-copyToClipboard.svg';
 import FantaseedIcon from 'src/assets/svgs/icon-fantaseed.svg';
 import TwitterIcon from 'src/assets/svgs/icon-twitter.svg';
 import TwitterIconNew from 'src/assets/svgs/icon-twitter-new.svg';
@@ -78,15 +78,19 @@ import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
 import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
 import ThreeDotsVerticalIcon from 'src/assets/svgs/icon-three-dots-vertical.svg';
 import VerficationIcon from 'src/assets/svgs/icon-verified-nft.svg';
-import NewPolygonIcon from 'src/assets/svgs/icon-new-polygon.svg'
-import EditImage from 'src/assets/svgs/icon-edit-image.svg'
-import CopyProfile from 'src/assets/svgs/icon-copy-profile.svg'
-import ArtistSvg from 'src/assets/svgs/icon-artist.svg'
-import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg'
-import SuccessIcon from 'src/assets/svgs/icon-toast-success.svg'
-import ErrorIcon from 'src/assets/svgs/icon-toast-error.svg'
-import DefaultProfile from 'src/assets/svgs/default-avatar.svg'
-
+import NewPolygonIcon from 'src/assets/svgs/icon-new-polygon.svg';
+import EditImage from 'src/assets/svgs/icon-edit-image.svg';
+import CopyProfile from 'src/assets/svgs/icon-copy-profile.svg';
+import ArtistSvg from 'src/assets/svgs/icon-artist.svg';
+import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg';
+import SuccessIcon from 'src/assets/svgs/icon-toast-success.svg';
+import ErrorIcon from 'src/assets/svgs/icon-toast-error.svg';
+import DefaultProfile from 'src/assets/svgs/default-avatar.svg';
+import YouTubeIcon from 'src/assets/svgs/icon-youtube.svg';
+import WebIcon from 'src/assets/svgs/icon-web.svg';
+import Twitter from 'src/assets/svgs/twitter.svg';
+import Instagram from 'src/assets/svgs/instagram.svg';
+import DiscordIcon from 'src/assets/svgs/icon-discord.svg';
 export default {
   GirlIcon,
   LogoIcon,
@@ -173,4 +177,9 @@ export default {
   ErrorIcon,
   ThreeDotsVerticalIcon,
   DefaultProfile,
+  YouTubeIcon,
+  WebIcon,
+  Twitter,
+  Instagram,
+  DiscordIcon,
 };
