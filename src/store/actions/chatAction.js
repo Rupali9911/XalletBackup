@@ -180,7 +180,7 @@ export const getNftCollections = (page, address, cursor, tabTitle) => (dispatch,
 
   let data = {
     cursor,
-    owner: tabTitle === 'Owned' ? '0xfd009cc11ad2e5296d52995bbdaeb6f4c2b86792' : address,
+    owner: address,
     page,
   };
   if (tabTitle === 'Owned') {

@@ -34,7 +34,7 @@ const SearchInput = () => {
             }
             if (response?.otherNFTs || response?.ownerNFTS) {
               {
-                res.searchList.ownerNFTS = response.ownerNFTS
+                res.searchList.ownerNFTS = response.ownerNFTS;
                 res.searchList.otherNFTs = response.otherNFTs;
               }
             }

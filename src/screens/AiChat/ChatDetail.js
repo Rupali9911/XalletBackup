@@ -32,7 +32,9 @@ const ChatDetail = ({ route, navigation }) => {
       return <C_Image uri={userData.avatar} imageStyle={styles.bubbleImage} />;
     } else {
       return (
+        <View style={styles.bubbleImage}>
         <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)}/>
+        </View>
       );
     } 
   };
