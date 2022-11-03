@@ -534,7 +534,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NU3TW5CK58;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -569,7 +569,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = NU3TW5CK58;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				INFOPLIST_FILE = showcaseTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -600,7 +600,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = NU3TW5CK58;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -683,13 +683,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.11.04;
+				MARKETING_VERSION = 2.11.11;
 				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.noborderz.xanalia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noborderz.xallet;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
@@ -714,7 +714,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = NU3TW5CK58;
+				DEVELOPMENT_TEAM = UU2MB56ZR2;
 				ENABLE_BITCODE = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				HEADER_SEARCH_PATHS = (
@@ -797,13 +797,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.11.04;
+				MARKETING_VERSION = 2.11.11;
 				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.noborderz.xanalia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noborderz.xallet;
 				PRODUCT_NAME = showcase;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "showcase-Bridging-Header.h";
