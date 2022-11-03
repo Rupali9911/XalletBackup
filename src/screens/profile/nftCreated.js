@@ -54,6 +54,7 @@ const NFTCreated = ({route, id}) => {
   let tab = 1;
 
   useEffect(() => {
+    dispatch(myNftCreatedListingReset());
     if (isFocusedHistory) {
       if (!MyNFTReducer?.myNftCreatedList?.length) {
         pressToggle();
@@ -98,12 +99,16 @@ const NFTCreated = ({route, id}) => {
   );
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-    dispatch(myNftCreatedListingReset());
     dispatch(myNFTList(pageIndex, pageSize, address, category));
   }, []);
 
   const pressToggle = () => {
     getNFTlist(pageNum, limit, id, tab);
+  };
+
+  const handlePullRefresh = () => {
+    dispatch(myNftCreatedListingReset());
+    pressToggle();
   };
   return (
     <View style={styles.trendCont}>
@@ -121,7 +126,7 @@ const NFTCreated = ({route, id}) => {
             horizontal={false}
             numColumns={2}
             initialNumToRender={15}
-            onRefresh={pressToggle}
+            onRefresh={handlePullRefresh}
             refreshing={
               MyNFTReducer.myNftCreatedListPage === 1 &&
               MyNFTReducer.myNftListLoading
