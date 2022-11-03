@@ -10,13 +10,21 @@ import {
   CHAT_SEARCH_LOAD_FAIL,
   SEARCH_TEXT,
 
-  //=====================Owned-Other=====================
-  CHAT_NFT_LOAD_START,
-  CHAT_NFT_LOAD_SUCCESS,
-  CHAT_NFT_LOAD_FAIL,
-  CHAT_NFT_LIST_RESET,
-  CHAT_NFT_PAGE_CHANGE,
-  CHAT_NFT_CURSOR_CHANGE,
+  //=========Owned==================
+  OWNED_LOAD_START,
+  OWNED_LOAD_SUCCESS,
+  OWNED_LOAD_FAIL,
+  OWNED_LIST_RESET,
+  OWNED_PAGE_CHANGE,
+  OWNED_CURSOR_CHANGE,
+
+  //================Other==============
+  OTHER_LOAD_START,
+  OTHER_LOAD_SUCCESS,
+  OTHER_LOAD_FAIL,
+  OTHER_LIST_RESET,
+  OTHER_PAGE_CHANGE,
+  OTHER_CURSOR_CHANGE,
 
   CHAT_TAB_TITLE
 } from '../types';
@@ -61,34 +69,64 @@ export const searchText = (data) => ({
   payload: data
 })
 
-//=========================Owned-Other=================================
+//==============OWNED===================
 
-export const nftLoadStart = () => ({
-  type: CHAT_NFT_LOAD_START,
+export const ownedNftLoadStart = () => ({
+  type: OWNED_LOAD_START,
 });
 
-export const nftLoadSuccessList = (data) => ({
-  type: CHAT_NFT_LOAD_SUCCESS,
+export const ownedNftLoadSuccess = (data) => ({
+  type: OWNED_LOAD_SUCCESS,
   payload: data,
 });
 
-export const nftLoadFail = (error) => ({
-  type: CHAT_NFT_LOAD_FAIL,
+export const ownedNftFail = (error) => ({
+  type: OWNED_LOAD_FAIL,
   payload: error,
 });
 
-export const nftListReset = () => ({
-  type: CHAT_NFT_LIST_RESET
+export const ownedNftListReset = () => ({
+  type: OWNED_LIST_RESET,
 });
 
-export const nftListPageChange = (data) => ({
-  type: CHAT_NFT_PAGE_CHANGE,
+export const ownedNftPageChange = (page) => ({
+  type: OWNED_PAGE_CHANGE,
+  payload: page
+});
+
+export const ownedNftCursorChange = (cursor) => ({
+  type: OWNED_CURSOR_CHANGE,
+  payload: cursor
+});
+
+//==============Other===================
+
+export const otherNftLoadStart = () => ({
+  type: OTHER_LOAD_START,
+});
+
+export const otherNftLoadSuccess = (data) => ({
+  type: OTHER_LOAD_SUCCESS,
   payload: data
 });
 
-export const nftListCursorChange = (data) => ({
-  type: CHAT_NFT_CURSOR_CHANGE,
-  payload: data
+export const otherNftFail = (error) => ({
+  type: OTHER_LOAD_FAIL,
+  payload: error
+});
+
+export const otherNftListReset = () => ({
+  type: OTHER_LIST_RESET,
+});
+
+export const otherNftPageChange = (page) => ({
+  type: OTHER_PAGE_CHANGE,
+  payload: page
+});
+
+export const otherNftCursorChange = (cursor) => ({
+  type: OTHER_CURSOR_CHANGE,
+  payload: cursor
 });
 
 //=====================SetTabTitle=====================
@@ -99,7 +137,7 @@ export const setTabTitle = (data) => ({
 });
 
 //=====================Chat=====================
-export const getAiChat = ( message, address, locale, name, tokenId ) => (dispatch, getState) => {
+export const getAiChat = (message, address, locale, name, tokenId) => (dispatch, getState) => {
   const { reducerTabTitle } = getState().chatReducer;
   dispatch(chatLoadingStart(true))
   return new Promise((resolve, reject) => {
@@ -112,7 +150,6 @@ export const getAiChat = ( message, address, locale, name, tokenId ) => (dispatc
       tokenId,
       is_owned: reducerTabTitle === 'Owned' ? true : false
     };
-    console.log('This is Data : ', data);
     sendRequest({
       url,
       method: 'POST',
@@ -120,7 +157,7 @@ export const getAiChat = ( message, address, locale, name, tokenId ) => (dispatc
     })
       .then(res => {
         dispatch(chatLoadingStart(false))
-        if (res?.data?.response) {
+        if (res?.data) {
           dispatch(chatLoadingSuccess(res?.data?.response));
           resolve(res?.data?.response);
         }
@@ -134,18 +171,19 @@ export const getAiChat = ( message, address, locale, name, tokenId ) => (dispatc
 }
 
 //==================================Owned-Other==============================
-export const getNftCollections = (page, address, cursor) => (dispatch, getState) => {
-  const { reducerTabTitle, nftList } = getState().chatReducer;
+export const getNftCollections = (page, address, cursor, tabTitle) => (dispatch, getState) => {
+  dispatch(setTabTitle(tabTitle));
+  const { ownerList, otherList } = getState().chatReducer;
   let url = `${NEW_BASE_URL}/xana-genesis-chat`;
-  url = reducerTabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
-  let limit = 300;
+  url = tabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
+  let limit = 100;
 
   let data = {
     cursor,
-    owner: address,
+    owner: tabTitle === 'Owned' ? '0xfd009cc11ad2e5296d52995bbdaeb6f4c2b86792' : address,
     page,
   };
-  if (reducerTabTitle === 'Owned') {
+  if (tabTitle === 'Owned') {
     data.limit = limit;
   }
 
@@ -158,20 +196,22 @@ export const getNftCollections = (page, address, cursor) => (dispatch, getState)
       let res = {
         nftTotalCount: response.total,
         nftCursor: response.cursor,
-        nftList: {
-          ownerNFTS: [],
-          otherNFTs: []
-        }
+        ownerList: {},
+        otherList: {},
       }
-      if (reducerTabTitle === 'Owned') {
-        res.nftList.ownerNFTS = nftList.ownerNFTS.concat(response.result);
+      if (tabTitle === 'Owned') {
+        res.ownerList['ownerNFTS'] = ownerList.ownerNFTS.concat(response?.result);
+        dispatch(ownedNftLoadSuccess(res));
       }
       else {
-        res.nftList.otherNFTs = nftList.otherNFTs.concat(response.result);
+        res.otherList['otherNFTs'] = otherList.otherNFTs.concat(response?.result);
+        dispatch(otherNftLoadSuccess(res));
       }
-      dispatch(nftLoadSuccessList(res));
     })
-    .catch(err => { console.log('Error : ', err) })
+    .catch(err => {
+      console.log('Error : ', err);
+      tabTitle === 'Owned' ? dispatch(ownedNftLoadSuccess([])) : dispatch(otherNftLoadSuccess([]));
+    });
 }
 
 //=====================Search=====================

@@ -8,10 +8,10 @@ import styles from './style';
 import { C_Image } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import { SIZE, SVGS} from '../../constants';
+import { SIZE, SVGS, IMAGES} from '../../constants';
 import moment from 'moment';
 
-const { DefaultProfile } = SVGS;
+const { ChatDefaultProfile } = SVGS;
 
 const ChatDetail = ({ route, navigation }) => {
   let { nftDetail, tokenId } = route.params;
@@ -32,9 +32,7 @@ const ChatDetail = ({ route, navigation }) => {
       return <C_Image uri={userData.avatar} imageStyle={styles.bubbleImage} />;
     } else {
       return (
-        <View style={[styles.bubbleImage, { alignItems: 'center', borderColor: '#888', borderWidth: 2}]}>
-          <DefaultProfile width={SIZE(40)} height={SIZE(40)} fill="#888" />
-        </View>
+        <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)}/>
       );
     } 
   };
@@ -49,9 +47,7 @@ const ChatDetail = ({ route, navigation }) => {
             <View style={styles.rightBubbleContainer}>
               <View style={styles.talkBubble}>
                 <View style={styles.textContainer}>
-                  <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
-                    {item?.senderName}
-                  </Text>
+                  <Text style={styles.msgHolderName}> {item?.senderName} </Text>
                   <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
@@ -68,9 +64,7 @@ const ChatDetail = ({ route, navigation }) => {
               </View>
               <View style={styles.talkBubble}>
                 <View style={styles.textContainer}>
-                  <Text style={[styles.nftName, { color: '#46446e', marginBottom: 5 }]}>
-                    {item?.receiverName.slice(item?.receiverName.lastIndexOf('#'))}
-                  </Text>
+                  <Text style={styles.msgHolderName}> {item?.receiverName.slice(item?.receiverName.lastIndexOf('#'))} </Text>
                   <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
@@ -82,7 +76,6 @@ const ChatDetail = ({ route, navigation }) => {
 
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
-    console.log('Langusge Dispaly : ', selectedLanguageItem)
     let timeConversion = moment(time).format('h:mm A');
     if (msg && msg != '') {
 
@@ -99,7 +92,6 @@ const ChatDetail = ({ route, navigation }) => {
         getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
       )
         .then(response => {
-          console.log('Response is here : ', response)
           let receiveObj = {
             message: response,
             type: 'receiver',

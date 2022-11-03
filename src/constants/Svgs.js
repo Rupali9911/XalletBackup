@@ -11,8 +11,8 @@ import WalletIcon from 'src/assets/svgs/icon-wallet.svg';
 import WalletActiveIcon from 'src/assets/svgs/icon-wallet-active.svg';
 import ChatIcon from 'src/assets/svgs/icon-chat.svg';
 import ChatActiveIcon from 'src/assets/svgs/icon-chat-active.svg';
-import HeartWhiteIcon from 'src/assets/svgs/icon-new-heart.svg'
-import HeartActiveIcon from 'src/assets/svgs/icon-new-activeHeart.svg'
+import HeartWhiteIcon from 'src/assets/svgs/icon-new-heart.svg';
+import HeartActiveIcon from 'src/assets/svgs/icon-new-activeHeart.svg';
 import RiseIcon from 'src/assets/svgs/icon-rise.svg';
 import RiseActiveIcon from 'src/assets/svgs/icon-rise-active.svg';
 import TradeIcon from 'src/assets/svgs/icon-trade.svg';
@@ -86,6 +86,7 @@ import ArtistSvgI from 'src/assets/svgs/icon-artist-i.svg'
 import SuccessIcon from 'src/assets/svgs/icon-toast-success.svg'
 import ErrorIcon from 'src/assets/svgs/icon-toast-error.svg'
 import DefaultProfile from 'src/assets/svgs/default-avatar.svg'
+import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg'
 
 export default {
   GirlIcon,
@@ -173,4 +174,5 @@ export default {
   ErrorIcon,
   ThreeDotsVerticalIcon,
   DefaultProfile,
+  ChatDefaultProfile
 };
