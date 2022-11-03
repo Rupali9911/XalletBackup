@@ -743,7 +743,8 @@
     "INVALID_AUDIO_TYPE": "AUDIO support (*.mp3) files only.",
     "others": "Others",
     "typing": "Typing...",
-    "TOKEN_ID": "Token Id"
+    "TOKEN_ID": "Token Id",
+    "loginWithEmail": "Login with Email"
   },
   "AwardPage": {},
   "wallet": {

@@ -99,8 +99,6 @@ axiosInstance.interceptors.response.use(
         //     location.href = location.origin + '/maintenance'
         // }
       } else if (response?.status === 502) {
-      }else if (response?.status === 400) {
-        throw response
       }
 
       return response;

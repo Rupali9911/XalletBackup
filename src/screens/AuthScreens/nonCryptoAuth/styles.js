@@ -39,6 +39,13 @@ const styles = StyleSheet.create({
     keyboardShift: {
         flex: 1,
     },
+    title: {
+        alignSelf: 'center',
+        fontSize: RF(2.7),
+    },
+    contentContainer: {
+        flex: 1,
+    },
 })
 
 export default styles;

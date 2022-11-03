@@ -744,7 +744,8 @@
     "INVALID_AUDIO_TYPE": "仅支持音频 (*.mp3) 文件。",
     "others": "其他",
     "typing": "打字...",
-    "TOKEN_ID": "TOKEN ID"
+    "TOKEN_ID": "TOKEN ID",
+    "loginWithEmail": "使用电子邮件登录"
   },
   "AwardPage": {},
   "wallet": {
