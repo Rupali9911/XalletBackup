@@ -332,16 +332,23 @@ const getConvertedDecimalValue = (type, convertto6decimal, web3) => {
 const getSignData = (transferParameters, config, web3, reject) => {
   try {
     const type = transferParameters?.tokenType?.toLowerCase();
-
-    // let convertto6decimal = parseFloat(transferParameters.amount).toFixed(6) * 1e6;
-    let convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
-
-    convertto6decimal = getConvertedDecimalValue(type, convertto6decimal, web3, reject);
-    console.log("@@@ Get signData (convertTo6Decimal) =========>", convertto6decimal);
-
+    let convertto6decimal;
+    let signData;
     let contract = new web3.eth.Contract(config.ContractAbis, config.ContractAddress, { from: transferParameters.publicAddress });
     console.log("@@@ Get signData (contract object) =========>", contract);
-    let signData = contract.methods.transfer(transferParameters.toAddress, web3.utils.toHex(convertto6decimal)).encodeABI();
+
+    if (type == 'usdt') {
+      convertto6decimal = parseFloat(transferParameters.amount).toFixed(6) * 1e6;
+      signData = contract.methods.transfer(transferParameters.toAddress, convertto6decimal).encodeABI();
+    } else {
+      convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
+
+      convertto6decimal = getConvertedDecimalValue(type, convertto6decimal, web3, reject);
+      console.log("@@@ Get signData (convertTo6Decimal) =========>", convertto6decimal);
+
+      signData = contract.methods.transfer(transferParameters.toAddress, web3.utils.toHex(convertto6decimal)).encodeABI();
+    }
+
     console.log("@@@ Get signData (signData) =============>", signData);
     return signData
   } catch (error) {
