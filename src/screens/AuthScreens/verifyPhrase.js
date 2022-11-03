@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {IconButton} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { IconButton } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
@@ -13,27 +13,27 @@ import HintText from '../../components/hintText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {
   loginExternalWallet,
   setBackupStatus,
 } from '../../store/reducer/userReducer';
-import {alertWithSingleBtn} from '../../utils';
-import {translate} from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
+import { translate } from '../../walletUtils';
 
-const VerifyPhrase = ({route, navigation}) => {
+const VerifyPhrase = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const {wallet} = route.params;
-  const {userData} = useSelector(state => state.UserReducer);
+  const { wallet } = route.params;
+  const { userData } = useSelector(state => state.UserReducer);
   const [loading, setLoading] = useState(false);
   const [phrase, setPhrase] = useState([]);
   const [covertWallet, setConvertWallet] = useState([]);
-  const [message, setMessage] = useState({status: '', message: ''});
+  const [message, setMessage] = useState({ status: '', message: '' });
 
   useEffect(() => {
     setLoading(true);
-    let convertStringToArray = wallet.mnemonic.phrase.split(' ');
+    let convertStringToArray = wallet?.mnemonic.split(' ');
     for (let i = convertStringToArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [convertStringToArray[i], convertStringToArray[j]] = [
@@ -60,11 +60,11 @@ const VerifyPhrase = ({route, navigation}) => {
   };
 
   const checkingOrder = phraseArr => {
-    let convertStringToArray = wallet.mnemonic.phrase.split(' ');
+    let convertStringToArray = wallet?.mnemonic.split(' ');
     let walletListConvert = convertStringToArray.slice(0, phraseArr.length);
 
     if (phraseArr.length == 0) {
-      setMessage({status: '', message: ''});
+      setMessage({ status: '', message: '' });
       return;
     } else if (walletListConvert.join(' ') !== phraseArr.join(' ')) {
       setMessage({
@@ -77,10 +77,10 @@ const VerifyPhrase = ({route, navigation}) => {
       JSON.stringify(walletListConvert) === JSON.stringify(phraseArr) &&
       phraseArr.length === convertStringToArray.length
     ) {
-      setMessage({status: 'success'});
+      setMessage({ status: 'success' });
       return;
     } else {
-      setMessage({status: '', message: ''});
+      setMessage({ status: '', message: '' });
       return;
     }
   };
@@ -121,15 +121,15 @@ const VerifyPhrase = ({route, navigation}) => {
               <View style={styles.selectedPhraseCont}>
                 {phrase
                   ? phrase.map((item, index) => {
-                      return (
-                        <WordView
-                          onPress={() => removeSelectedPhrase(item, index)}
-                          word={item}
-                          index={index + 1}
-                          key={`_${index}`}
-                        />
-                      );
-                    })
+                    return (
+                      <WordView
+                        onPress={() => removeSelectedPhrase(item, index)}
+                        word={item}
+                        index={index + 1}
+                        key={`_${index}`}
+                      />
+                    );
+                  })
                   : null}
               </View>
               <View style={styles.bottomMessageCont}>
@@ -148,16 +148,16 @@ const VerifyPhrase = ({route, navigation}) => {
               <View style={styles.phraseContainer}>
                 {covertWallet
                   ? covertWallet.map((item, index) => {
-                      return (
-                        <WordView
-                          onPress={() => addSelectedPhrase(item, index)}
-                          hideNumber={true}
-                          word={item}
-                          index={index + 1}
-                          key={`_${index}`}
-                        />
-                      );
-                    })
+                    return (
+                      <WordView
+                        onPress={() => addSelectedPhrase(item, index)}
+                        hideNumber={true}
+                        word={item}
+                        index={index + 1}
+                        key={`_${index}`}
+                      />
+                    );
+                  })
                   : null}
               </View>
             </View>
@@ -204,11 +204,11 @@ const WordView = props => {
       onPress={props.onPress}
       style={[
         styles.word,
-        {backgroundColor: !props.hideNumber ? Colors.white : 'transparent'},
+        { backgroundColor: !props.hideNumber ? Colors.white : 'transparent' },
       ]}>
       <TextView style={styles.wordTxt}>
         {!props.hideNumber ? (
-          <Text style={{color: Colors.townTxt}}>{props.index} </Text>
+          <Text style={{ color: Colors.townTxt }}>{props.index} </Text>
         ) : null}
         {props.word}
       </TextView>

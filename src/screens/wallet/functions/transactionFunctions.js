@@ -114,7 +114,7 @@ const getCommon = (chainType, networkObject) => {
       {
         name: 'eth',
         networkId: networkObject?.networkId,
-        chainId: networkObject?.chainId,
+        chainId: chainType === "ethereum" ? 5 : networkObject?.chainId,
       },
       'petersburg',
     );
@@ -383,7 +383,7 @@ export const balanceTransfer = async (transferParameters, config) => {
           gasLimit: 21000,
           value: web3.utils.toHex(amountToSend),
           nonce: web3.utils.toHex(txCount),
-          chainId: transferParameters.chainId,
+          chainId: chainType === "ethereum" ? 5 : transferParameters.chainId,
         };
 
         console.log("@@@ balance transfer (txObject) ======>", txObject)
@@ -420,7 +420,7 @@ export const balanceTransfer = async (transferParameters, config) => {
           value: "0x0",
           data: signData,
           nonce: web3.utils.toHex(txCount),
-          chainId: transferParameters.chainId,
+          chainId: chainType === "ethereum" ? 5 : transferParameters.chainId,
         };
         console.log("@@@ balance transfer (txObject) =========>", txObject);
 
