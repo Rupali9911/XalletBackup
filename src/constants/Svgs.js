@@ -91,6 +91,8 @@ import WebIcon from 'src/assets/svgs/icon-web.svg';
 import Twitter from 'src/assets/svgs/twitter.svg';
 import Instagram from 'src/assets/svgs/instagram.svg';
 import DiscordIcon from 'src/assets/svgs/icon-discord.svg';
+import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg'
+
 export default {
   GirlIcon,
   LogoIcon,
@@ -182,4 +184,5 @@ export default {
   Twitter,
   Instagram,
   DiscordIcon,
+  ChatDefaultProfile
 };

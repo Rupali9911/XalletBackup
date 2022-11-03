@@ -1,6 +1,6 @@
-import { View, SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar, BackHandler } from 'react-native';
 import { AppHeader } from '../../components';
-import React, { } from 'react';
+import React, {useEffect } from 'react';
 import { translate } from '../../walletUtils';
 import styles from './style';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -11,13 +11,33 @@ import { TabBar, TabView } from 'react-native-tab-view';
 
 const Tab = createMaterialTopTabNavigator();
 
-// ====================== Main return function ================================ 
+ // ====================== Main return function ================================ 
 const AiChat = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'Owner', title: translate("wallet.common.owned") },
     { key: 'Others', title: translate("common.others") },
-  ]); 
+  ]);
+
+  useEffect(() => {
+    if (index) {
+      const backAction = () => {
+        if (index !== 0) {
+          setIndex(0);
+        } else {
+          BackHandler.exitApp();
+        }
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
+
+      return () => backHandler.remove();
+    }
+  }, [index]);
 
   const renderTabBar = props => (
     <TabBar
@@ -47,6 +67,8 @@ const AiChat = () => {
             tabTitle={'Other'}
           />
         );
+      default:
+        return null;
     }
   }
 
@@ -75,4 +97,3 @@ const AiChat = () => {
 }
 
 export default AiChat;
-

@@ -1,7 +1,7 @@
 import { View, TextInput } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSearchResult, searchText, nftLoadSuccessList, nftLoadStart, setTabTitle } from '../../store/actions/chatAction';
+import { getSearchResult, searchText, nftLoadSuccessList, nftLoadStart, setTabTitle, nftListReset, getNftCollections, nftListPageChange, ownedNftLoadStart, otherNftLoadStart, searchLoadSuccessList, searchLoadingStart, searchLoadingSuccess } from '../../store/actions/chatAction';
 import styles from './style';
 import { translate } from '../../walletUtils';
 import { Searchbar } from 'react-native-paper';
@@ -23,35 +23,32 @@ const SearchInput = () => {
     if (searchTxt) {
       const delayDebounceFn = setTimeout(() => {
         dispatch(searchText(searchTxt));
-        dispatch(nftLoadStart());
+        dispatch(searchLoadingStart());
         dispatch(getSearchResult(searchTxt, owner))
           .then(response => {
             let res = {
-              nftList: {
+              searchList: {
                 ownerNFTS: [],
                 otherNFTs: []
-              }
-            };
+              },
+            }
             if (response?.otherNFTs || response?.ownerNFTS) {
               {
-                reducerTabTitle === 'Owned' ?
-                res.nftList.ownerNFTS = response.ownerNFTS
-                :
-                res.nftList.otherNFTs = response.otherNFTs;
+                res.searchList.ownerNFTS = response.ownerNFTS;
+                res.searchList.otherNFTs = response.otherNFTs;
               }
             }
-            dispatch(nftLoadSuccessList(res));
-
+            dispatch(searchLoadingSuccess(res));
           })
           .catch(err => {
             console.log('search response error', err);
+            dispatch(searchLoadingSuccess([]));
           });
       }, 1000)
       return () => clearTimeout(delayDebounceFn);
     }
     else {
       dispatch(searchText(''));
-      dispatch(setTabTitle(reducerTabTitle));
     }
 
   }, [searchTxt]);

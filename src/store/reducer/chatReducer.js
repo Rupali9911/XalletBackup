@@ -1,23 +1,30 @@
-
 import {
     //=====================Chatting=====================
     CHAT_LOAD_START,
     CHAT_LOAD_SUCCESS,
     CHAT_LOAD_FAIL,
 
-    //=====================Search=====================
+    //=====================Search========================
     CHAT_SEARCH_LOAD_START,
     CHAT_SEARCH_LOAD_SUCCESS,
     CHAT_SEARCH_LOAD_FAIL,
     SEARCH_TEXT,
 
-    //=====================Owned-Other=====================
-    CHAT_NFT_LOAD_START,
-    CHAT_NFT_LOAD_SUCCESS,
-    CHAT_NFT_LOAD_FAIL,
-    CHAT_NFT_LIST_RESET,
-    CHAT_NFT_PAGE_CHANGE,
-    CHAT_NFT_CURSOR_CHANGE,
+    //=========Owned==================
+    OWNED_LOAD_START,
+    OWNED_LOAD_SUCCESS,
+    OWNED_LOAD_FAIL,
+    OWNED_LIST_RESET,
+    OWNED_PAGE_CHANGE,
+    OWNED_CURSOR_CHANGE,
+
+    //================Other==============
+    OTHER_LOAD_START,
+    OTHER_LOAD_SUCCESS,
+    OTHER_LOAD_FAIL,
+    OTHER_LIST_RESET,
+    OTHER_PAGE_CHANGE,
+    OTHER_CURSOR_CHANGE,
 
     CHAT_TAB_TITLE
 } from '../types';
@@ -31,21 +38,34 @@ const initialState = {
     //=====================Search=========================
     searchLoading: false,
     searchLoadSuccessList: [],
-    searchLoadFail: '',
-    searchText: '',
-
-    //=====================Owned-Other=========================
-    isNftLoading: false,
-    nftList: {
+    searchList: {
         ownerNFTS: [],
         otherNFTs: []
     },
-    nftLoadFail: '',
-    nftPageChange: 1,
-    nftTotalCount: 0,
-    nftCursor: "",
+    searchLoadFail: '',
+    searchText: '',
 
-    //=====================SetTabTitle=====================
+    //=========Owned=====================
+    isOwnedLoading: false,
+    ownerList: {
+        ownerNFTS: []
+    },
+    ownedLoadFail: '',
+    ownedPageChange: 1,
+    ownedTotalCount: 0,
+    ownedCursor: '',
+
+    //================Other==============
+    isOtherLoading: false,
+    otherList: {
+        otherNFTs: []
+    },
+    otherLoadFail: '',
+    otherPageChange: 1,
+    otherTotalCount: 0,
+    otherCursor: '',
+
+    //=====================SetTabTitle===================== 
     reducerTabTitle: 'Owned',
 }
 
@@ -62,43 +82,81 @@ export default function chatReducer(state = initialState, action) {
         case CHAT_LOAD_FAIL:
             return { ...state, chatLoadFail: action.payload, isChatLoading: false };
 
-        //=====================Owned-Other=====================
-        case CHAT_NFT_LOAD_START:
-            return { ...state, isNftLoading: true };
+        //================OWNED====================
 
-        case CHAT_NFT_LOAD_SUCCESS:
+        case OWNED_LOAD_START:
+            return { ...state, isOwnedLoading: true };
+
+        case OWNED_LOAD_SUCCESS:
             return {
                 ...state,
-                nftList: { ...state.nftList, ...action.payload.nftList },
-                nftCursor: action.payload.nftCursor,
-                nftTotalCount: action.payload.nftTotalCount,
-                isNftLoading: false,
-                nftLoadFail: '',
+                ownerList: { ...state.ownerList, ...action.payload.ownerList },
+                ownedCursor: action.payload.nftCursor,
+                ownedTotalCount: action.payload.nftTotalCount,
+                isOwnedLoading: false,
+                ownedLoadFail: '',
             };
 
-        case CHAT_NFT_LOAD_FAIL:
-            return { ...state, nftLoadFail: action.payload, isNftLoading: false };
+        case OWNED_LOAD_FAIL:
+            return { ...state, ownedLoadFail: action.payload, isOwnedLoading: false };
 
-        case CHAT_NFT_PAGE_CHANGE:
-            return state = { ...state, nftPageChange: action.payload };
+        case OWNED_PAGE_CHANGE:
+            return state = { ...state, ownedPageChange: action.payload };
 
-        case CHAT_NFT_LIST_RESET:
+        case OWNED_LIST_RESET:
             return state = {
-                ...state, nftList: {
-                    ownerNFTS: [],
-                    otherNFTs: []
-                }
+                ...state,
+                ownerList: {
+                    ownerNFTS: []
+                },
             };
 
-        case CHAT_NFT_CURSOR_CHANGE:
-            return state = { ...state, nftCursor: action.payload };
+        case OWNED_CURSOR_CHANGE:
+            return state = { ...state, ownedCursor: action.payload };
+
+        //================OTHER====================
+
+        case OTHER_LOAD_START:
+            return { ...state, isOtherLoading: true };
+
+        case OTHER_LOAD_SUCCESS:
+            return {
+                ...state,
+                otherList: { ...state.otherList, ...action.payload.otherList },
+                otherCursor: action.payload.nftCursor,
+                otherTotalCount: action.payload.nftTotalCount,
+                isOtherLoading: false,
+                otherLoadFail: '',
+            };
+
+        case OTHER_LOAD_FAIL:
+            return { ...state, otherLoadFail: action.payload, isOtherLoading: false };
+
+        case OTHER_PAGE_CHANGE:
+            return state = { ...state, otherPageChange: action.payload };
+
+        case OTHER_LIST_RESET:
+            return state = {
+                ...state,
+                otherList: {
+                    otherNFTs: []
+                },
+            };
+
+        case OTHER_CURSOR_CHANGE:
+            return state = { ...state, otherCursor: action.payload };
 
         //=====================Search=====================
         case CHAT_SEARCH_LOAD_START:
             return { ...state, searchLoading: true };
 
         case CHAT_SEARCH_LOAD_SUCCESS:
-            return { ...state, searchLoadSuccessList: action.payload, searchLoading: false, searchLoadFail: '' };
+            return {
+                ...state,
+                searchList: { ...state.searchList, ...action.payload.searchList },
+                searchLoading: false,
+                searchLoadFail: ''
+            };
 
         case CHAT_SEARCH_LOAD_FAIL:
             return { ...state, searchLoadFail: action.payload, searchLoading: false };
