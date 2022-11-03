@@ -115,13 +115,11 @@ const DetailScreen = ({navigation, route}) => {
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
   const refVideo = useRef(null);
-
   const {validateNumber} = useValidate();
 
   // =============== Props Destructuring ========================
   const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
     route.params;
-
   // =============== Getting data from reducer ========================
   const {paymentObject} = useSelector(state => state.PaymentReducer);
   const {userData} = useSelector(state => state.UserReducer);
@@ -233,7 +231,6 @@ const DetailScreen = ({navigation, route}) => {
     price: '',
     priceError: '',
   });
-
   const categoryType = detailNFT?.category
     ? detailNFT?.category
     : item?.category;
@@ -290,6 +287,7 @@ const DetailScreen = ({navigation, route}) => {
   const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
   const [mute, setMute] = useState(false);
   const [songCompleted, setSongCompleted] = useState(false);
+  const [videoError, setVideoError] = useState('');
 
   useEffect(() => {
     if (buyNFTRes && isCheckService) {
@@ -590,7 +588,15 @@ const DetailScreen = ({navigation, route}) => {
           toggleVideoPlay(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <View style={{...styles.modalImage}}>
+          <View
+            style={[
+              styles.modalImage,
+              {
+                backgroundColor: videoLoadErr
+                  ? Colors.BLACK1
+                  : styles.modalImage,
+              },
+            ]}>
             {showThumb && (
               <Image source={{uri: thumbnailUrl}} style={styles.modalImage} />
             )}
@@ -601,36 +607,50 @@ const DetailScreen = ({navigation, route}) => {
                 color={COLORS.BLACK1}
               />
             )}
-            <Video
-              ref={refVideo}
-              source={{uri: mediaUrl}}
-              repeat
-              playInBackground={false}
-              controls={true}
-              paused={!playVideo}
-              onProgress={r => {
-                setVideoLoad(false);
-                setPlayVideoLoad(false);
-              }}
-              resizeMode={'cover'}
-              onError={error => {
-                console.log(error);
-                setVideoLoadErr(true);
-              }}
-              onReadyForDisplay={() => {
-                toggleThumb(false);
-              }}
-              onLoad={data => {
-                refVideo.current.seek(0);
-              }}
-              style={[styles.video]}
-            />
-            {!playVideo && (
+            {videoError !== '' ? (
+              <Text
+                style={{
+                  color: Colors.WHITE1,
+                  fontSize: SIZE(20),
+                  fontWeight: 'bold',
+                }}>
+                {videoError}
+              </Text>
+            ) : (
+              <Video
+                key={videoKey}
+                ref={refVideo}
+                source={{uri: mediaUrl}}
+                repeat
+                playInBackground={false}
+                controls={true}
+                paused={!playVideo}
+                onProgress={r => {
+                  setVideoLoad(false);
+                  setPlayVideoLoad(false);
+                }}
+                resizeMode={'cover'}
+                onError={error => {
+                  console.log(error);
+                  setVideoLoadErr(true);
+                  toggleThumb(false);
+                  setVideoError('This media format is not supported.');
+                }}
+                onReadyForDisplay={() => {
+                  toggleThumb(false);
+                }}
+                onLoad={data => {
+                  refVideo.current.seek(0);
+                }}
+                style={[styles.video]}
+              />
+            )}
+            {!playVideo && videoError === '' && (
               <View style={styles.videoIcon}>
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
             )}
-            {videoLoadErr && (
+            {/* {videoLoadErr && (
               <View style={styles.videoPlayIconCont}>
                 <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
                   <TouchableOpacity
@@ -645,7 +665,7 @@ const DetailScreen = ({navigation, route}) => {
                   </TouchableOpacity>
                 </View>
               </View>
-            )}
+            )} */}
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{...styles.modalImage}}>
@@ -818,6 +838,9 @@ const DetailScreen = ({navigation, route}) => {
             if (!disableCreator) {
               onProfile(false);
             }
+            navigation.navigate('Profile', {
+              id: detailNFT?.creator?.address,
+            });
           }}
           style={styles.personType}>
           {renderIconImage('creator', false)}
@@ -837,7 +860,11 @@ const DetailScreen = ({navigation, route}) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => onProfile(true)}
+          onPress={() =>
+            navigation.navigate('Profile', {
+              id: detailNFT?.owner?.address,
+            })
+          }
           style={styles.personType}>
           {renderIconImage('owner', false)}
         </TouchableOpacity>
@@ -951,7 +978,11 @@ const DetailScreen = ({navigation, route}) => {
               <Text style={styles.priceUnit}>
                 {` ${tokenPrice}`}
                 <Text style={styles.dollarText}>
-                  {priceToUsd ? ` ($${parseFloat(priceToUsd).toFixed(2)})` : ''}
+                  {priceToUsd
+                    ? Number(parseFloat(priceToUsd).toFixed(2)) < 1
+                      ? ` ($${parseFloat(priceToUsd).toFixed(0)})`
+                      : ` ($${parseFloat(priceToUsd).toFixed(2)})`
+                    : ''}
                 </Text>
               </Text>
             </Text>
@@ -1001,10 +1032,6 @@ const DetailScreen = ({navigation, route}) => {
       method: 'GET',
     })
       .then(claimNFTRes => {
-        console.log(
-          '🚀 ~ file: detail.js ~ line 755 ~ .then ~ claimNFTRes',
-          claimNFTRes,
-        );
         if (claimNFTRes.messageCode) {
           // toast.error(claimNFTRes.messageCode)
           handlePendingModal(false);
@@ -1467,8 +1494,6 @@ const DetailScreen = ({navigation, route}) => {
       setSellVisible(false);
       handlePendingModal(true);
       const url = `${NEW_BASE_URL}/sale-nft/put-on-sale`;
-      console.log('🚀 ~ file: detail.js ~ line 1266 ~ ~ ~', url);
-
       const data = {
         price: Number(sellData.fixedPrice),
         quantity: 1,
@@ -3065,14 +3090,8 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
-  const showContractAddress = item => {
-    return typeof item?.collection === 'object'
-      ? item?.collection?.address
-      : item?.collection
-      ? item?.collection?.substring(0, 5) +
-        ' ... ' +
-        item.collection.slice([item.collection.length - 4])
-      : '';
+  const showContractAddress = address => {
+    return address?.substring(0, 6);
   };
 
   //===================== Render Creator NFTDetailDropdown Function =======================
@@ -3139,9 +3158,9 @@ const DetailScreen = ({navigation, route}) => {
         {renderDetail(
           'wallet.common.contractAddress',
           'address',
-          showContractAddress(),
+          showContractAddress(collectionAddress),
         )}
-        {renderDetail('wallet.common.nftId', '', nftTokenId)}
+        {renderDetail('common.TOKEN_ID', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
         {renderDetail(
           'wallet.common.blockChainType',
@@ -3439,11 +3458,11 @@ const DetailScreen = ({navigation, route}) => {
 
             // setTradingList(res?.items);
             setTradingTableData(tradingList);
-            setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
             // setTradingTableData1(tradingList)
             // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
           }
         }
+        setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
       })
       .catch(err => {
         console.log(err);
@@ -3544,9 +3563,11 @@ const DetailScreen = ({navigation, route}) => {
             {renderDescription()}
             {renderNFTPriceNToken()}
 
-            <View style={styles.bottomView}>
-              {!load && renderContentAction()}
-            </View>
+            {false && (
+              <View style={styles.bottomView}>
+                {!load && renderContentAction()}
+              </View>
+            )}
 
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}

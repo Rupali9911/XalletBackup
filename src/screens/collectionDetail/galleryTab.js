@@ -1,5 +1,5 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -8,44 +8,49 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Loader} from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors} from '../../res';
+import { colors } from '../../res';
 import {
   nftDataCollectionList,
   nftDataCollectionListReset,
+  nftDataGalleryCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
+  nftDataGalarryCollectionPageChange
 } from '../../store/actions/nftDataCollectionAction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './styles';
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
-const galleryTab = ({route}) => {
-  const {tabTitle, collection, tabStatus, isLaunchPad} = route?.params;
+const GalleryTab = (props) => {
+  const { tabTitle, collection, tabStatus, isLaunchPad } = props;
 
-  const {NftDataCollectionReducer} = useSelector(state => state);
-  const {userData} = useSelector(state => state.UserReducer);
+  const { NftDataCollectionReducer } = useSelector(state => state);
+  const { userData } = useSelector(state => state.UserReducer);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isDetailScreen, setDetailScreen] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
-  const collectionList = NftDataCollectionReducer.nftDataCollectionList;
-  const page = NftDataCollectionReducer.nftDataCollectionPage;
-  const totalCount = NftDataCollectionReducer.nftDataCollectionTotalCount;
+  const collectionList = NftDataCollectionReducer.nftDataGalleryCollectionList;
+  const page = NftDataCollectionReducer.nftDataGalleryCollectionPage;
+  const totalCount = NftDataCollectionReducer.nftDataGalleryCollectionTotalCount;
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
-    if (isFocused && !isDetailScreen) {
+    if (isFocused && !isDetailScreen && isFirstRender) {
       dispatch(nftDataCollectionLoadStart(tabTitle));
       dispatch(nftDataCollectionListReset());
+      dispatch(nftDataGalleryCollectionListReset());
       getNFTlist(1);
-      dispatch(nftDataCollectionPageChange(1));
+      setIsFirstRender(false);
+      dispatch(nftDataGalarryCollectionPageChange(1));
     } else {
       isFocused && setDetailScreen(false);
     }
@@ -86,8 +91,9 @@ const galleryTab = ({route}) => {
   const refreshFunc = () => {
     dispatch(nftDataCollectionLoadStart());
     dispatch(nftDataCollectionListReset());
+    dispatch(nftDataGalleryCollectionListReset());
     getNFTlist(1);
-    dispatch(nftDataCollectionPageChange(1));
+    dispatch(nftDataGalarryCollectionPageChange(1));
   };
 
   const renderFooter = () => {
@@ -95,7 +101,7 @@ const galleryTab = ({route}) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     let imageUri = item?.mediaUrl;
     return (
       <NFTItem
@@ -114,7 +120,6 @@ const galleryTab = ({route}) => {
   };
 
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
-  // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isSeries, isHotCollection) }
 
   const handleFlatlistRefresh = () => {
     dispatch(nftDataCollectionLoadStart());
@@ -124,13 +129,12 @@ const galleryTab = ({route}) => {
   const keyExtractor = (item, index) => {
     return 'item_' + index;
   };
-  // console.log("🚀 ~ file: notOnSale.js ~ line 297 ~ ~ collectionList", collectionList, NftDataCollectionReducer, NftDataCollectionReducer.nftBlindSeriesCollectionList, NftDataCollectionReducer.mysteryBoxCollectionList, NftDataCollectionReducer.nftDataCollectionList)
 
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {tabTitle !== reducerTabTitle || (page === 1 && isLoading) ? (
-        <View style={{marginTop: height / 8}}>
+      {isFirstRender || (page === 1 && isLoading) ? (
+        <View style={{ marginTop: height / 8 }}>
           <Loader />
         </View>
       ) : collectionList.length !== 0 ? (
@@ -148,7 +152,7 @@ const galleryTab = ({route}) => {
               let num = page + 1;
               dispatch(nftDataCollectionLoadStart(tabTitle));
               getNFTlist(num);
-              dispatch(nftDataCollectionPageChange(num));
+              dispatch(nftDataGalarryCollectionPageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
@@ -156,7 +160,7 @@ const galleryTab = ({route}) => {
           ListFooterComponent={renderFooter}
         />
       ) : (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.sorryMessageCont}>
             <Text style={styles.sorryMessage}>
               {translate('common.noNFTsFound')}
@@ -168,4 +172,4 @@ const galleryTab = ({route}) => {
   );
 };
 
-export default galleryTab;
+export default React.memo(GalleryTab);

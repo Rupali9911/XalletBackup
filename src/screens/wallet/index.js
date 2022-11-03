@@ -205,13 +205,13 @@ const Wallet = ({ route, navigation }) => {
   //======================== Use Effect Four 6666 =======================
   useEffect(() => {
     if (balances) {
-      if (networkType.name == 'Ethereum') {
+      if (networkType?.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
         setTotalValue(value);
-      } else if (networkType.name == 'BSC') {
+      } else if (networkType?.name == 'BSC') {
         let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
         setTotalValue(value);
-      } else if (networkType.name == 'Polygon') {
+      } else if (networkType?.name == 'Polygon') {
         let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
         setTotalValue(value);
       }
@@ -233,7 +233,7 @@ const Wallet = ({ route, navigation }) => {
           <SvgUri
             width={SIZE(25)}
             height={SIZE(25)}
-            uri={networkType.image}
+            uri={networkType?.image}
           />
         </TouchableOpacity>
       </View>
@@ -259,12 +259,12 @@ const Wallet = ({ route, navigation }) => {
 
   const setBalanceField = () => {
     let totalValue = 0;
-    if (networkType.name == 'Ethereum') {
+    if (networkType?.name == 'Ethereum') {
       let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH; //+ parseFloat(balances.USDT)
       let usdtValue = parseFloat(usdtBalance) * 1;
       let value = eth + usdtValue;
       totalValue = value;
-    } else if (networkType.name == 'BSC') {
+    } else if (networkType?.name == 'BSC') {
       // for mainnet
       // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
       // for testing
@@ -273,7 +273,7 @@ const Wallet = ({ route, navigation }) => {
       let busdValue = parseFloat(busdBalance) * 1;
       let value = bnbValue + tnftValue + busdValue;
       totalValue = value;
-    } else if (networkType.name == 'Polygon') {
+    } else if (networkType?.name == 'Polygon') {
       //for mainnet
       // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
       // for testing
@@ -453,11 +453,11 @@ const Wallet = ({ route, navigation }) => {
   //======================= Get Balances Function =======================
   const getBalances = async pubKey => {
     await priceInDollars(pubKey);
-    if (networkType.name == 'BSC') {
+    if (networkType?.name == 'BSC') {
       return getBSCBalances(pubKey);
-    } else if (networkType.name == 'Ethereum') {
+    } else if (networkType?.name == 'Ethereum') {
       return getEthereumBalances(pubKey);
-    } else if (networkType.name == 'Polygon') {
+    } else if (networkType?.name == 'Polygon') {
       return getPolygonBalances(pubKey);
     } else {
       return new Promise((resolve, reject) => {

@@ -96,17 +96,25 @@ const ScanScreen = React.memo((props) => {
     const dispatch = useDispatch();
     const { jumpTo, setResult, position } = props;
 
-    useEffect(() => {
+    const [isActive, setIsActive] = useState(false);
+
+    useEffect(async () => {
         if (position == 1) {
-            checkCameraPermission();
-            refScanner && refScanner.reactivate();
+            console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
+            await checkCameraPermission();
+            console.log("@@@ Scan screen useEffect to reactive 22222=========>")
+            setIsActive(true);
+            console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
         }
     }, [position, camera]);
 
     const checkCameraPermission = async () => {
         const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
+        console.log("@@@ Scan screen check permission 11111=========>", granted)
         if (!granted) {
+            console.log("@@@ Scan screen check permission 22222=========>", granted)
             const requestPer = await Permission.requestPermission(PERMISSION_TYPE.camera);
+            console.log("@@@ Scan screen check permission 33333=========>", requestPer)
             if (requestPer == false) {
                 confirmationAlert(
                     translate("wallet.common.cameraPermissionHeader"),
@@ -119,10 +127,11 @@ const ScanScreen = React.memo((props) => {
             }
             return
         }
+        console.log("@@@ Scan screen useEffect to reactive 4444=========>")
     }
 
     const onSuccess = (e) => {
-        console.log('e', e);
+        console.log('@@@ QR Code scan success =======>', e);
         processScanResult(e, SCAN_WALLET).then((result) => {
             if (result.walletAddress) {
                 verifyAddress(result.walletAddress).then(() => {
@@ -158,11 +167,12 @@ const ScanScreen = React.memo((props) => {
             </View>
         )
     }
-
+    console
     return (
         <View style={[styles.scene]} >
-            {
+            {isActive ?
                 <QRCodeScanner
+                    reactivate={isActive}
                     containerStyle={styles.cameraContainer}
                     ref={(scanner) => refScanner = scanner}
                     onRead={onSuccess}
@@ -181,6 +191,7 @@ const ScanScreen = React.memo((props) => {
                     topViewStyle={{ flex: 0 }}
                     bottomViewStyle={{ flex: 0 }}
                 />
+                : null
             }
         </View>
     )

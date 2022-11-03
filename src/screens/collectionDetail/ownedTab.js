@@ -1,5 +1,5 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -8,43 +8,48 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Loader} from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors} from '../../res';
+import { colors } from '../../res';
 import {
   nftDataCollectionList,
   nftDataCollectionListReset,
+  nftDataOwnedCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
+  nftDataOwnedCollectionPageChange
 } from '../../store/actions/nftDataCollectionAction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './styles';
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
-const ownedTab = ({route}) => {
-  const {tabTitle, collection, isLaunchPad} = route?.params;
-  const {NftDataCollectionReducer} = useSelector(state => state);
-  const {userData} = useSelector(state => state.UserReducer);
+const OwnedTab = (props) => {
+  const { tabTitle, collection, isLaunchPad } = props;
+  const { NftDataCollectionReducer } = useSelector(state => state);
+  const { userData } = useSelector(state => state.UserReducer);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [isDetailScreen, setDetailScreen] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
-  const collectionList = NftDataCollectionReducer.nftDataCollectionList;
-  const page = NftDataCollectionReducer.nftDataCollectionPage;
-  const totalCount = NftDataCollectionReducer.nftDataCollectionTotalCount;
+  const collectionList = NftDataCollectionReducer.nftDataOwnedCollectionList;
+  const page = NftDataCollectionReducer.nftDataOwnedCollectionPage;
+  const totalCount = NftDataCollectionReducer.nftDataOwnedCollectionTotalCount;
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
-    if (isFocused && !isDetailScreen) {
+    if (isFocused && !isDetailScreen && isFirstRender) {
       dispatch(nftDataCollectionLoadStart(tabTitle));
       dispatch(nftDataCollectionListReset());
+      dispatch(nftDataOwnedCollectionListReset());
       getNFTlist(1);
-      dispatch(nftDataCollectionPageChange(1));
+      setIsFirstRender(false);
+      dispatch(nftDataOwnedCollectionPageChange(1));
     } else {
       isFocused && setDetailScreen(false);
     }
@@ -69,8 +74,9 @@ const ownedTab = ({route}) => {
   const refreshFunc = () => {
     dispatch(nftDataCollectionLoadStart());
     dispatch(nftDataCollectionListReset());
+    dispatch(nftDataOwnedCollectionListReset());
     getNFTlist(1);
-    dispatch(nftDataCollectionPageChange(1));
+    dispatch(nftDataOwnedCollectionPageChange(1));
   };
 
   const renderFooter = () => {
@@ -78,7 +84,7 @@ const ownedTab = ({route}) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     let imageUri = item?.mediaUrl;
     return (
       <NFTItem
@@ -97,7 +103,6 @@ const ownedTab = ({route}) => {
   };
 
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
-  // { console.log("🚀 ~ file: collections.js ~ line 249 ~ ", collectionList, isStore, isSeries, isHotCollection) }
 
   const handleFlatlistRefresh = () => {
     dispatch(nftDataCollectionLoadStart());
@@ -108,12 +113,11 @@ const ownedTab = ({route}) => {
     return 'item_' + index;
   };
 
-  // console.log("🚀 ~ file: onSale.js ~ line 297 ~ OnSale ~ collectionList", collectionList)
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {tabTitle !== reducerTabTitle || (page === 1 && isLoading) ? (
-        <View style={{marginTop: height / 8}}>
+      {isFirstRender || (page === 1 && isLoading) ? (
+        <View style={{ marginTop: height / 8 }}>
           <Loader />
         </View>
       ) : collectionList.length !== 0 ? (
@@ -131,7 +135,7 @@ const ownedTab = ({route}) => {
               let num = page + 1;
               dispatch(nftDataCollectionLoadStart(tabTitle));
               getNFTlist(num);
-              dispatch(nftDataCollectionPageChange(num));
+              dispatch(nftDataOwnedCollectionPageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
@@ -139,7 +143,7 @@ const ownedTab = ({route}) => {
           ListFooterComponent={renderFooter}
         />
       ) : (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.sorryMessageCont}>
             <Text style={styles.sorryMessage}>
               {translate('common.noNFTsFound')}
@@ -151,4 +155,4 @@ const ownedTab = ({route}) => {
   );
 };
 
-export default ownedTab;
+export default React.memo(OwnedTab);

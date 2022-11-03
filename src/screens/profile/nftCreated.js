@@ -1,4 +1,3 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import _, {toFinite} from 'lodash';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -34,14 +33,16 @@ import {
   myNFTList,
   myNftLoadStart,
   myPageChange,
+  myNftCreatedPageChange,
   myNftLoadFail,
+  myNftCreatedListingReset,
 } from '../../store/actions/myNFTaction';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-const NFTCreated = ({route}) => {
+const NFTCreated = ({route, id}) => {
   const isFocusedHistory = useIsFocused();
 
-  const {id} = route?.params;
+  // const { id } = route?.params;
   const {MyNFTReducer} = useSelector(state => state);
   const {userData, wallet} = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
@@ -54,19 +55,18 @@ const NFTCreated = ({route}) => {
 
   useEffect(() => {
     if (isFocusedHistory) {
-      if (MyNFTReducer?.myList?.length === 0) {
+      if (!MyNFTReducer?.myNftCreatedList?.length) {
         pressToggle();
       } else {
         if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
           dispatch(myNftLoadFail());
         } else {
-          dispatch(myNftListReset());
           pressToggle();
         }
       }
       setIsFirstRender(false);
     }
-  }, [isFocusedHistory]);
+  }, [isFocusedHistory, id]);
 
   const renderFooter = () => {
     if (!MyNFTReducer.myNftListLoading) return null;
@@ -82,51 +82,60 @@ const NFTCreated = ({route}) => {
         profile={true}
         onPress={() => {
           // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, [MyNFTReducer.myList]);
+  const memoizedValue = useMemo(
+    () => renderItem,
+    [MyNFTReducer.myNftCreatedList],
+  );
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
+    dispatch(myNftCreatedListingReset());
     dispatch(myNFTList(pageIndex, pageSize, address, category));
   }, []);
 
   const pressToggle = () => {
-    dispatch(myNftListReset());
     getNFTlist(pageNum, limit, id, tab);
   };
-
   return (
     <View style={styles.trendCont}>
       {/* {console.log("🚀 ~ file: nftCreated.js ~ line 135 ~ NFTCreated ~ MyNFTReducer", MyNFTReducer)} */}
       {isFirstRender ? (
         isFirstRender
-      ) : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
+      ) : MyNFTReducer.myNftCreatedListPage === 1 &&
+        MyNFTReducer.myNftListLoading ? (
         <Loader />
-      ) : MyNFTReducer.myList?.length !== 0 ? (
+      ) : MyNFTReducer.myNftCreatedList?.length ? (
         <View>
           <FlatList
             key={1}
-            data={MyNFTReducer?.myList}
+            data={MyNFTReducer?.myNftCreatedList}
             horizontal={false}
             numColumns={2}
             initialNumToRender={15}
             onRefresh={pressToggle}
             refreshing={
-              MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading
+              MyNFTReducer.myNftCreatedListPage === 1 &&
+              MyNFTReducer.myNftListLoading
             }
             renderItem={memoizedValue}
             onEndReached={() => {
               if (
                 !MyNFTReducer.myNftListLoading &&
-                MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+                MyNFTReducer.myNftCreatedList.length !==
+                  MyNFTReducer.myNftTotalCount
               ) {
-                let num = MyNFTReducer.myListPage + 1;
-                getNFTlist(num);
-                dispatch(myPageChange(num));
+                let num = MyNFTReducer.myNftCreatedListPage + 1;
+                getNFTlist(num, limit, id, tab);
+                dispatch(myNftCreatedPageChange(num));
               }
             }}
             ListFooterComponent={renderFooter}
@@ -181,4 +190,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NFTCreated;
+export default React.memo(NFTCreated);

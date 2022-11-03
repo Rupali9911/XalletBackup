@@ -18,14 +18,16 @@ import {
   myNFTList,
   myNftLoadStart,
   myPageChange,
+  myNftOwnedPageChange,
   myNftLoadFail,
+  myNftOwnedListingReset,
 } from '../../store/actions/myNFTaction';
 // import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 
-const NFTOwned = ({route, navigation}) => {
+const NFTOwned = ({route, navigation, id}) => {
   const isFocusedHistory = useIsFocused();
 
-  const {id} = route?.params;
+  // const { id } = route?.params;
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -36,7 +38,8 @@ const NFTOwned = ({route, navigation}) => {
 
   useEffect(() => {
     if (isFocusedHistory) {
-      if (MyNFTReducer?.myList?.length === 0) {
+      if (MyNFTReducer?.myNftOwnedList?.length === 0) {
+        dispatch(myNftListReset());
         pressToggle();
       } else {
         if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
@@ -48,7 +51,7 @@ const NFTOwned = ({route, navigation}) => {
       }
       setIsFirstRender(false);
     }
-  }, [isFocusedHistory]);
+  }, [isFocusedHistory, id]);
 
   const renderFooter = () => {
     if (!MyNFTReducer.myNftListLoading) return null;
@@ -63,7 +66,11 @@ const NFTOwned = ({route, navigation}) => {
         // image={imageUri}
         onPress={() => {
           // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', {item: item});
+          navigation.push('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+          });
         }}
       />
     );
@@ -75,7 +82,8 @@ const NFTOwned = ({route, navigation}) => {
   }, []);
 
   const pressToggle = () => {
-    dispatch(myNftListReset());
+    dispatch(myNftOwnedListingReset());
+
     getNFTlist(pageNum, limit, id, tab);
   };
 
@@ -84,28 +92,31 @@ const NFTOwned = ({route, navigation}) => {
       {/* { isFocusedHistory &&console.log("🚀 ~ file: nftOwned.js ~ line 85 ~ NFTOwned ~ MyCollectionReducer", MyCollectionReducer)} */}
       {isFirstRender ? (
         isFirstRender
-      ) : MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading ? (
+      ) : MyNFTReducer.myNftOwnedListPage === 1 &&
+        MyNFTReducer.myNftListLoading ? (
         <Loader />
-      ) : MyNFTReducer.myList?.length !== 0 ? (
+      ) : MyNFTReducer.myNftOwnedList?.length ? (
         <FlatList
           key={2}
-          data={MyNFTReducer?.myList}
+          data={MyNFTReducer?.myNftOwnedList}
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
           onRefresh={pressToggle}
           refreshing={
-            MyNFTReducer.myListPage === 1 && MyNFTReducer.myNftListLoading
+            MyNFTReducer.myNftOwnedListPage === 1 &&
+            MyNFTReducer.myNftListLoading
           }
           renderItem={renderItem}
           onEndReached={() => {
             if (
               !MyNFTReducer.myNftListLoading &&
-              MyNFTReducer.myList.length !== MyNFTReducer.myNftTotalCount
+              MyNFTReducer.myNftOwnedList.length !==
+                MyNFTReducer.myNftTotalCount
             ) {
-              let num = MyNFTReducer.myListPage + 1;
-              getNFTlist(num);
-              dispatch(myPageChange(num));
+              let num = MyNFTReducer.myNftOwnedListPage + 1;
+              getNFTlist(num, limit, id, tab);
+              dispatch(myNftOwnedPageChange(num));
             }
           }}
           ListFooterComponent={renderFooter}
@@ -152,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NFTOwned;
+export default React.memo(NFTOwned);

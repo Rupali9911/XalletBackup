@@ -61,6 +61,7 @@ const LoginCrypto = () => {
         })
         .catch(err => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
+          setSessionStart(false);
           alertWithSingleBtn(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
@@ -73,12 +74,12 @@ const LoginCrypto = () => {
   const login = () => {
     const validate = validateEmail(email);
     const emailLength = maxLength50(email);
-    setSessionStart(true);
     if (validate) {
       setError(validate);
     } else if (emailLength) {
       setError(emailLength);
     } else {
+      setSessionStart(true);
       collectWallet();
     }
   };
@@ -120,7 +121,7 @@ const LoginCrypto = () => {
             onPress={login}
             disable={!email || sessionStart || loading || error}
             gradient={[colors.themeL, colors.themeR]}
-            label={translate("wallet.common.logInSignUp")}
+            label={translate('wallet.common.logInSignUp')}
           />
         </View>
       </KeyboardAwareScrollView>

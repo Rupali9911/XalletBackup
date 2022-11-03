@@ -13,6 +13,10 @@ import {
   MY_NFT_LOAD_START,
   MY_NFT_LOAD_SUCCESS,
   MY_PAGE_CHANGE,
+  MY_NFT_CREATED_PAGE_CHANGE,
+  MY_NFT_OWNED_PAGE_CHANGE,
+  MY_NFT_CREATED_LIST_RESET,
+  MY_NFT_OWNED_LIST_RESET,
 } from '../types';
 
 export const myNftLoadStart = () => ({
@@ -27,8 +31,26 @@ export const myNftListReset = () => ({
   type: MY_NFT_LOAD_RESET,
 });
 
+export const myNftCreatedListingReset = () => ({
+  type: MY_NFT_CREATED_LIST_RESET,
+});
+
+export const myNftOwnedListingReset = () => ({
+  type: MY_NFT_OWNED_LIST_RESET,
+});
+
 export const myPageChange = data => ({
   type: MY_PAGE_CHANGE,
+  payload: data,
+});
+
+export const myNftCreatedPageChange = data => ({
+  type: MY_NFT_CREATED_PAGE_CHANGE,
+  payload: data,
+});
+
+export const myNftOwnedPageChange = data => ({
+  type: MY_NFT_OWNED_PAGE_CHANGE,
   payload: data,
 });
 
@@ -59,7 +81,7 @@ export const myNFTList = (pageIndex, pageSize, address, category) => {
     const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}`;
     fetch(url)
       .then(response => response.json())
-      .then(data => dispatch(myNftLoadSuccess(data)));
+      .then(data => dispatch(myNftLoadSuccess({...data, tabTitle: category})));
   };
 };
 

@@ -14,30 +14,32 @@ const ListItems = (props) => {
     const { item } = props;
     console.log("@@@ list items props to render ===========>", props.item)
     return (
-        <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
-            <View style={styles.profileCont} >
-                <Image style={styles.profileImage} source={item.icon} />
-            </View>
-            <View style={styles.centerCont} >
-                <TextView style={styles.tokenName} >{item.tokenName}</TextView>
-                {/* <View style={styles.detailsContainer}>
+        <View style={{ flex: 1, marginVertical: 15 }}>
+            <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
+                <View style={styles.profileCont} >
+                    <Image style={styles.profileImage} source={item.icon} />
+                </View>
+                <View style={styles.centerCont} >
+                    <TextView style={styles.tokenName} >{item.tokenName}</TextView>
+                    {/* <View style={styles.detailsContainer}>
                     <TextView style={styles.townTxt} >{item.amount}</TextView>
                     <TextView style={styles.percentTxt} >{item.percent}</TextView>
                 </View> */}
 
-            </View>
-            <View style={{ flex: 1, ...CommonStyles.center, alignItems: 'flex-end' }} >
-                <NumberFormat
-                    value={parseFloat(`${item.tokenValue}`)}
-                    displayType={'text'}
-                    decimalScale={4}
-                    thousandSeparator={true}
-                    renderText={formattedValue => <TextView numberOfLines={1} style={styles.priceTxt}>
-                        {formattedValue} {item.type}
-                    </TextView>} // <--- Don't forget this!
-                />
-            </View>
-        </TouchableOpacity>
+                </View>
+                <View style={{ flex: 1, ...CommonStyles.center, alignItems: 'flex-end' }} >
+                    <NumberFormat
+                        value={parseFloat(`${item.tokenValue}`)}
+                        displayType={'text'}
+                        decimalScale={4}
+                        thousandSeparator={true}
+                        renderText={formattedValue => <TextView numberOfLines={1} style={styles.priceTxt}>
+                            {formattedValue} {item.type}
+                        </TextView>} // <--- Don't forget this!
+                    />
+                </View>
+            </TouchableOpacity>
+        </View>
     )
 }
 
@@ -98,8 +100,9 @@ const SelectToken = (props) => {
                         contentContainerStyle={{ paddingVertical: hp("1.8%") }}
                         data={balance_Data.filter((_) => {
                             if (searchTxt !== '') {
-                                console.log(searchTxt.toLowerCase(), _.tokenName.toLowerCase());
-                                return (_.network == network.name && _.tokenName.includes(searchTxt))
+                                console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
+                                // return (_.network == network.name && _.tokenName.includes(searchTxt))
+                                return (_.network == network.name && _.tokenName.toLowerCase() == searchTxt?.toLowerCase())
                             } else {
                                 return _.network == network.name
                             }

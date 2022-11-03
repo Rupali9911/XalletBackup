@@ -1,4 +1,3 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
@@ -33,13 +32,17 @@ import { NEW_BASE_URL } from '../../common/constants';
 import { alertWithSingleBtn } from '../../common/function';
 import { wp } from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import activityTab from './activityTab';
-import galleryTab from './galleryTab';
-import onSaleTab from './onSaleTab';
-import ownedTab from './ownedTab';
-import soldOutTab from './soldOutTab';
+import ActivityTab from './activityTab';
+import GalleryTab from './galleryTab';
+import OnSaleTab from './onSaleTab';
+import OwnedTab from './ownedTab';
+import SoldOutTab from './soldOutTab';
 
-const {height} = Dimensions.get('window');
+import TabViewScreen from '../../components/TabView/TabViewScreen';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+const { height } = Dimensions.get('window');
 
 const {
   TwiiterIcon,
@@ -50,17 +53,28 @@ const {
   Ethereum,
   BitmapIcon,
 } = SVGS;
-const Tab = createMaterialTopTabNavigator();
 
 function CollectionDetail(props) {
-  const {route} = props;
-  const {networkName, contractAddress, launchpadId} = route.params;
+  const { route } = props;
+  const { networkName, contractAddress, launchpadId } = route.params;
+  const { NftDataCollectionReducer } = useSelector(state => state);
+  const collectionList = NftDataCollectionReducer.nftDataCollectionList;
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
   const [descTab, setDescTab] = useState(true);
   const navigation = useNavigation();
 
   const isLaunchPad = launchpadId ? true : false;
+
+  const [index, setIndex] = useState(0);
+
+  const [routes] = useState(!launchpadId ? [
+    { key: 'onSale', title: translate('common.onSale') },
+    { key: 'notOnSell', title: translate('common.notOnSell') },
+    { key: 'owned', title: translate('wallet.common.owned') },
+    { key: 'activity', title: translate('common.activity') },
+  ]
+    : [{ key: 'gallery', title: translate('common.gallery') }]);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
@@ -129,7 +143,7 @@ function CollectionDetail(props) {
 
     return (
       <View style={styles.bannerIconWrap}>
-        <Image source={{uri: bannerUrl}} style={styles.bannerIcon} />
+        <Image source={{ uri: bannerUrl }} style={styles.bannerIcon} />
         {/* {Verifiedcollections.find((id) => id === collectionId) && (
                     <View>
                         <Image
@@ -147,8 +161,8 @@ function CollectionDetail(props) {
       <View style={styles.socialLinksWrap}>
         {collection?.userInfo?.links?.twitter ? (
           <TouchableOpacity
-            style={{marginRight: 10}}
-            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
+            style={{ marginRight: 10 }}
+            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
             onPress={() =>
               Linking.openURL(collection?.userInfo?.links?.twitter)
             }>
@@ -157,8 +171,8 @@ function CollectionDetail(props) {
         ) : null}
         {collection?.userInfo?.links?.instagram ? (
           <TouchableOpacity
-            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
-            style={{marginRight: 6}}
+            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            style={{ marginRight: 6 }}
             onPress={() =>
               Linking.openURL(collection?.userInfo?.links?.instagram)
             }>
@@ -167,7 +181,7 @@ function CollectionDetail(props) {
         ) : null}
         {collection?.userInfo?.links?.facebook ? (
           <TouchableOpacity
-            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
+            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
             onPress={() =>
               Linking.openURL(collection?.userInfo?.links?.facebook)
             }>
@@ -284,96 +298,80 @@ function CollectionDetail(props) {
     return <Text style={styles.collectionName}>{collection?.name}</Text>;
   };
 
+  const renderScene = ({ route }, tab) => {
+    if (tab) {
+      switch (route.key) {
+        case 'onSale':
+          return (
+            <OnSaleTab
+              tabTitle={translate('common.onSale')}
+              collection={collection}
+              tabStatus={1}
+              isLaunchPad={isLaunchPad}
+            />
+          );
+        case 'notOnSell':
+          return (
+            <SoldOutTab
+              tabTitle={translate('common.notOnSell')}
+              collection={collection}
+              tabStatus={2}
+              isLaunchPad={isLaunchPad}
+            />
+          );
+        case 'owned':
+          return (
+            <OwnedTab
+              tabTitle={translate('wallet.common.owned')}
+              collection={collection}
+              isLaunchPad={isLaunchPad}
+            />
+          );
+        case 'activity':
+          return (
+            <ActivityTab
+              tabTitle={translate('common.activity')}
+              collection={collection}
+            />
+          );
+        default:
+          return null;
+      }
+    } else {
+      switch (route.key) {
+        case 'gallery':
+          return (
+            <GalleryTab
+              tabTitle={translate('common.gallery')}
+              collection={collection}
+              tabStatus={3}
+              isLaunchPad={isLaunchPad}
+            />
+          );
+        default:
+          return null;
+      }
+    }
+  };
+
+  const handleIndexChange = index => {
+    setIndex(index);
+  };
+
   const renderTabView = tab => {
-    // console.log("🚀 ~ file: index.js ~ line 1008 ~ renderTabView ~ ", isBlind, nftId, isBlind && nftId)
     return (
-      <Tab.Navigator
-        screenOptions={{
-          tabBarScrollEnabled: true,
-          tabBarActiveTintColor: COLORS.BLUE2,
-          tabBarInactiveTintColor: COLORS.BLACK5,
-          tabBarStyle: {
-            boxShadow: 'none',
-            elevation: 0,
-            borderBottomColor: '#EFEFEF',
-            borderBottomWidth: 1,
-          },
-          tabBarItemStyle: {
-            height: SIZE(42),
-            marginTop: SIZE(-10),
-            width: wp('25%'),
-            paddingHorizontal: wp('1%'),
-            justifyContent: 'center',
-            fontFamily: fonts.SegoeUIRegular,
-            textTransform: 'capitalize',
-          },
-          tabBarLabelStyle: {
-            fontSize: FONT(12),
-            textTransform: 'none',
-          },
-          tabBarIndicatorStyle: {
-            backgroundColor: COLORS.BLUE4,
-            height: 2,
-          },
-        }}>
-        {tab && (
-          <Tab.Screen
-            name={translate('common.onSale')}
-            component={onSaleTab}
-            initialParams={{
-              tabTitle: translate('common.onSale'),
-              collection: collection,
-              tabStatus: 1,
-              isLaunchPad: isLaunchPad,
-            }}
-          />
-        )}
-        {tab && (
-          <Tab.Screen
-            name={translate('common.notOnSell')}
-            component={soldOutTab}
-            initialParams={{
-              tabTitle: translate('common.notOnSell'),
-              collection: collection,
-              tabStatus: 2,
-              isLaunchPad: isLaunchPad,
-            }}
-          />
-        )}
-        {tab && (
-          <Tab.Screen
-            name={translate('wallet.common.owned')}
-            component={ownedTab}
-            initialParams={{
-              tabTitle: translate('wallet.common.owned'),
-              collection: collection,
-              isLaunchPad: isLaunchPad,
-            }}
-          />
-        )}
-        {
-          <Tab.Screen
-            name={translate('common.gallery')}
-            component={galleryTab}
-            initialParams={{
-              tabTitle: translate('common.gallery'),
-              collection: collection,
-              tabStatus: 3,
-              isLaunchPad: isLaunchPad,
-            }}
-          />
-        }
-        {tab && (
-          <Tab.Screen
-            name={translate('common.activity')}
-            component={activityTab}
-            initialParams={{
-              tabTitle: translate('common.activity'),
-              collection: collection,
-            }}
-          />
-        )}
-      </Tab.Navigator>
+      <TabViewScreen
+        index={index}
+        routes={routes}
+        switchRoutes={(r) => renderScene(r, tab)}
+        indexChange={(i) => handleIndexChange(i)}
+        tabBarStyle={{
+          height: SIZE(40),
+          width: wp('30%'),
+          paddingHorizontal: wp('1%'),
+          justifyContent: 'center',
+        }}
+      />
     );
   };
 
@@ -384,7 +382,7 @@ function CollectionDetail(props) {
         contentContainerStyle={{
           flexGrow: 1,
         }}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButtonWrap}>
@@ -403,12 +401,12 @@ function CollectionDetail(props) {
             <MenuTrigger children={<ThreeDotsVerticalIcon />} />
             <MenuOptions>
               <MenuOption value={1}>
-                <Text style={{marginVertical: 10}}>
+                <Text style={{ marginVertical: 10 }}>
                   {translate('common.reportCollection')}
                 </Text>
               </MenuOption>
               <MenuOption value={2}>
-                <Text style={{marginVertical: 10}}>
+                <Text style={{ marginVertical: 10 }}>
                   {translate('common.blockUser')}
                 </Text>
               </MenuOption>
@@ -425,7 +423,7 @@ function CollectionDetail(props) {
         {/* {renderChainList()} */}
         {renderDescription()}
 
-        <View style={{height: height / 1.5}}>
+        <View style={{ height: height / 1.5 }}>
           {!loading && !isLaunchPad ? (
             renderTabView(true)
           ) : isLaunchPad && !loading ? (
