@@ -37,6 +37,7 @@ const NFTOwned = ({route, navigation, id}) => {
   let tab = 2;
 
   useEffect(() => {
+    dispatch(myNftOwnedListingReset());
     if (isFocusedHistory) {
       if (MyNFTReducer?.myNftOwnedList?.length === 0) {
         dispatch(myNftListReset());
@@ -82,9 +83,12 @@ const NFTOwned = ({route, navigation, id}) => {
   }, []);
 
   const pressToggle = () => {
-    dispatch(myNftOwnedListingReset());
-
     getNFTlist(pageNum, limit, id, tab);
+  };
+
+  const handlePullRefresh = () => {
+    dispatch(myNftOwnedListingReset());
+    pressToggle();
   };
 
   return (
@@ -102,7 +106,7 @@ const NFTOwned = ({route, navigation, id}) => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
-          onRefresh={pressToggle}
+          onRefresh={handlePullRefresh}
           refreshing={
             MyNFTReducer.myNftOwnedListPage === 1 &&
             MyNFTReducer.myNftListLoading
