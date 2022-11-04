@@ -20,7 +20,6 @@
 		1835A89C270AE55D00F26038 /* Metropolis-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D5711B1E38CF4D06B7B52C64 /* Metropolis-Bold.otf */; };
 		1835A89D270AE55D00F26038 /* PingFangSC-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E61E32BD63194F2BB45EAB5C /* PingFangSC-Regular.ttf */; };
 		1835A89E270AE55D00F26038 /* PingFangSC-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E69E31E04B349798F0EB5CD /* PingFangSC-Semibold.ttf */; };
-		18386CC127219B9F007133A4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18386CC027219B9F007133A4 /* StoreKit.framework */; };
 		1848960227100BBD00840834 /* Fix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1848960127100BBD00840834 /* Fix.swift */; };
 		18C78DB827710A7D00E6B855 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18C78DBA27710A7D00E6B855 /* InfoPlist.strings */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -52,7 +51,6 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = showcase/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = showcase/main.m; sourceTree = "<group>"; };
 		180EDEAC232940A88A629437 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
-		18386CC027219B9F007133A4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1848960027100BBC00840834 /* showcase-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "showcase-Bridging-Header.h"; sourceTree = "<group>"; };
 		1848960127100BBD00840834 /* Fix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fix.swift; sourceTree = "<group>"; };
 		1878292D272846630092CE11 /* showcase.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = showcase.entitlements; path = showcase/showcase.entitlements; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18386CC127219B9F007133A4 /* StoreKit.framework in Frameworks */,
 				0448FB807DE752DD01B45574 /* libPods-showcase.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,7 +159,6 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				18386CC027219B9F007133A4 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				0D754D3F53BE89B50E8B1887 /* libPods-showcase.a */,
 				8FEF835B76A02C87921E6306 /* libPods-showcase-showcaseTests.a */,
