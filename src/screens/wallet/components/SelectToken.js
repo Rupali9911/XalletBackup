@@ -12,7 +12,7 @@ import NumberFormat from 'react-number-format';
 
 const ListItems = (props) => {
     const { item } = props;
-    console.log("@@@ list items props to render ===========>", props.item)
+    // console.log("@@@ list items props to render ===========>", props.item)
     return (
         <View style={{ flex: 1, marginVertical: 15 }}>
             <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
@@ -47,8 +47,8 @@ const ListItems = (props) => {
 const SelectToken = (props) => {
     //===================== Props Destructuring ===============================
     const { visible, onRequestClose, network, isSend } = props;
-    console.log("@@@ On select token .js props ========>", props);
-    console.log("@@@ On select token .js token ========>", tokens);
+    // console.log("@@@ On select token .js props ========>", props);
+    // console.log("@@@ On select token .js token ========>", tokens);
 
     //===================== States Initiliazation ===============================
     const [balance_Data, setBalanceData] = useState([]);
@@ -68,12 +68,10 @@ const SelectToken = (props) => {
             // array[4].tokenValue = `${props.values.USDC}`;
             // array[5].tokenValue = `${props.values.USDT}`;
             // array[6].tokenValue = `${props.values.ALIA}`;
-            console.log("@@@ On select token .js array in useEffect ========>", array);
+            // console.log("@@@ On select token .js array in useEffect ========>", array);
             setBalanceData(array);
         }
     }, [props.values]);
-
-    console.log("@@@ On select token .js balance_Data state =======>", balance_Data)
 
     return (
         <Modal
@@ -100,7 +98,7 @@ const SelectToken = (props) => {
                         contentContainerStyle={{ paddingVertical: hp("1.8%") }}
                         data={balance_Data.filter((_) => {
                             if (searchTxt !== '') {
-                                console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
+                                // console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
                                 // return (_.network == network.name && _.tokenName.includes(searchTxt))
                                 return (_.network == network.name && _.tokenName.toLowerCase() == searchTxt?.toLowerCase())
                             } else {
