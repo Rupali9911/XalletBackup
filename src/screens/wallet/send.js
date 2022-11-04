@@ -100,21 +100,21 @@ const ScanScreen = React.memo((props) => {
 
     useEffect(async () => {
         if (position == 1) {
-            console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
+            // console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
             await checkCameraPermission();
-            console.log("@@@ Scan screen useEffect to reactive 22222=========>")
+            // console.log("@@@ Scan screen useEffect to reactive 22222=========>")
             setIsActive(true);
-            console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
+            // console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
         }
     }, [position, camera]);
 
     const checkCameraPermission = async () => {
         const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-        console.log("@@@ Scan screen check permission 11111=========>", granted)
+        // console.log("@@@ Scan screen check permission 11111=========>", granted)
         if (!granted) {
-            console.log("@@@ Scan screen check permission 22222=========>", granted)
+            // console.log("@@@ Scan screen check permission 22222=========>", granted)
             const requestPer = await Permission.requestPermission(PERMISSION_TYPE.camera);
-            console.log("@@@ Scan screen check permission 33333=========>", requestPer)
+            // console.log("@@@ Scan screen check permission 33333=========>", requestPer)
             if (requestPer == false) {
                 confirmationAlert(
                     translate("wallet.common.cameraPermissionHeader"),
@@ -127,7 +127,6 @@ const ScanScreen = React.memo((props) => {
             }
             return
         }
-        console.log("@@@ Scan screen useEffect to reactive 4444=========>")
     }
 
     const onSuccess = (e) => {
@@ -292,12 +291,12 @@ const SendScreen = React.memo((props) => {
             networkId: networkType?.id,
         }
         setLoading(true);
-        console.log("@@@ parameters in transation function =============>", networkType?.name, type);
+        // console.log("@@@ parameters in transation function =============>", networkType?.name, type);
         const config = getConfigDetailsFromEnviorment(networkType?.name, type);
-        console.log("@@@ config in transation function =============>", config);
+        // console.log("@@@ config in transation function =============>", config);
 
         balanceTransfer(transferParameters, config).then((transferResponse) => {
-            console.log("Balance Transfer response ======>", transferResponse);
+            // console.log("Balance Transfer response ======>", transferResponse);
             setLoading(false);
             if (transferResponse?.success) {
                 showSuccessAlert();
@@ -402,7 +401,7 @@ const SendScreen = React.memo((props) => {
 const Send = ({ route, navigation }) => {
     //================= Props Destructuring =============================
     const { item, type } = route.params;
-    console.log("@@@ Send screen props ============>", item, type)
+    // console.log("@@@ Send screen props ============>", item, type)
     //================= States Initialiazation =============================
     const [loading, setLoading] = useState(false);
     const [sendToAddress, setSendToAddress] = useState(null);
