@@ -40,10 +40,10 @@ export const amountValidation = (e, currentValue = '') => {
 //===================== RPC Urls (testnet) ===============================
 // export const test_ethRpc = 'https://kovan.infura.io/v3/d9d12a4cf6ec4ea786890cd8c5dcc599';
 export const test_ethRpc =
-  'https://goerli.infura.io/v3/e2fddb9deb984ba0b9e9daa116d1702a';
+  'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
 export const test_bnbRpc = 'https://data-seed-prebsc-2-s1.binance.org:8545/';
 // export const test_bnbRpc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
-export const test_polRpc = 'https://rpc-mumbai.matic.today';
+export const test_polRpc = 'https://rpc-mumbai.maticvigil.com/';
 
 //===================== RPC Urls (mainnet) ===============================
 export const ethRpc =
@@ -7141,31 +7141,21 @@ export const environment = {
     ],
 
   usdtCont: IsTestNet
-    ? '0xD92E713d051C37EbB2561803a3b5FBAbc4962431'
+    ? '0x7c83dc9221cfd48ac760710b7f1cd7b76ff6fcc2'
     : '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   usdtAbi: [
     {
       constant: true,
       inputs: [],
       name: 'name',
-      outputs: [
-        {
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ name: '', type: 'string' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: '_upgradedAddress',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '_upgradedAddress', type: 'address' }],
       name: 'deprecate',
       outputs: [],
       payable: false,
@@ -7175,14 +7165,8 @@ export const environment = {
     {
       constant: false,
       inputs: [
-        {
-          name: '_spender',
-          type: 'address',
-        },
-        {
-          name: '_value',
-          type: 'uint256',
-        },
+        { name: '_spender', type: 'address' },
+        { name: '_value', type: 'uint256' },
       ],
       name: 'approve',
       outputs: [],
@@ -7194,24 +7178,14 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'deprecated',
-      outputs: [
-        {
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ name: '', type: 'bool' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: '_evilUser',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '_evilUser', type: 'address' }],
       name: 'addBlackList',
       outputs: [],
       payable: false,
@@ -7222,12 +7196,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'totalSupply',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7235,18 +7204,9 @@ export const environment = {
     {
       constant: false,
       inputs: [
-        {
-          name: '_from',
-          type: 'address',
-        },
-        {
-          name: '_to',
-          type: 'address',
-        },
-        {
-          name: '_value',
-          type: 'uint256',
-        },
+        { name: '_from', type: 'address' },
+        { name: '_to', type: 'address' },
+        { name: '_value', type: 'uint256' },
       ],
       name: 'transferFrom',
       outputs: [],
@@ -7258,31 +7218,16 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'upgradedAddress',
-      outputs: [
-        {
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ name: '', type: 'address' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: true,
-      inputs: [
-        {
-          name: '',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '', type: 'address' }],
       name: 'balances',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7291,12 +7236,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'decimals',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7305,12 +7245,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'maximumFee',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7319,12 +7254,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: '_totalSupply',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7340,19 +7270,9 @@ export const environment = {
     },
     {
       constant: true,
-      inputs: [
-        {
-          name: '_maker',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '_maker', type: 'address' }],
       name: 'getBlackListStatus',
-      outputs: [
-        {
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ name: '', type: 'bool' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7360,22 +7280,11 @@ export const environment = {
     {
       constant: true,
       inputs: [
-        {
-          name: '',
-          type: 'address',
-        },
-        {
-          name: '',
-          type: 'address',
-        },
+        { name: '', type: 'address' },
+        { name: '', type: 'address' },
       ],
       name: 'allowed',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7384,31 +7293,16 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'paused',
-      outputs: [
-        {
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ name: '', type: 'bool' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: true,
-      inputs: [
-        {
-          name: 'who',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: 'who', type: 'address' }],
       name: 'balanceOf',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7426,12 +7320,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'getOwner',
-      outputs: [
-        {
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ name: '', type: 'address' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7440,12 +7329,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'owner',
-      outputs: [
-        {
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ name: '', type: 'address' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7454,12 +7338,7 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'symbol',
-      outputs: [
-        {
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ name: '', type: 'string' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7467,14 +7346,8 @@ export const environment = {
     {
       constant: false,
       inputs: [
-        {
-          name: '_to',
-          type: 'address',
-        },
-        {
-          name: '_value',
-          type: 'uint256',
-        },
+        { name: '_to', type: 'address' },
+        { name: '_value', type: 'uint256' },
       ],
       name: 'transfer',
       outputs: [],
@@ -7485,14 +7358,8 @@ export const environment = {
     {
       constant: false,
       inputs: [
-        {
-          name: 'newBasisPoints',
-          type: 'uint256',
-        },
-        {
-          name: 'newMaxFee',
-          type: 'uint256',
-        },
+        { name: 'newBasisPoints', type: 'uint256' },
+        { name: 'newMaxFee', type: 'uint256' },
       ],
       name: 'setParams',
       outputs: [],
@@ -7502,12 +7369,7 @@ export const environment = {
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: 'amount',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ name: 'amount', type: 'uint256' }],
       name: 'issue',
       outputs: [],
       payable: false,
@@ -7516,12 +7378,7 @@ export const environment = {
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: 'amount',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ name: 'amount', type: 'uint256' }],
       name: 'redeem',
       outputs: [],
       payable: false,
@@ -7531,22 +7388,11 @@ export const environment = {
     {
       constant: true,
       inputs: [
-        {
-          name: '_owner',
-          type: 'address',
-        },
-        {
-          name: '_spender',
-          type: 'address',
-        },
+        { name: '_owner', type: 'address' },
+        { name: '_spender', type: 'address' },
       ],
       name: 'allowance',
-      outputs: [
-        {
-          name: 'remaining',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: 'remaining', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
@@ -7555,43 +7401,23 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'basisPointsRate',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: true,
-      inputs: [
-        {
-          name: '',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '', type: 'address' }],
       name: 'isBlackListed',
-      outputs: [
-        {
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ name: '', type: 'bool' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: '_clearedUser',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '_clearedUser', type: 'address' }],
       name: 'removeBlackList',
       outputs: [],
       payable: false,
@@ -7602,24 +7428,14 @@ export const environment = {
       constant: true,
       inputs: [],
       name: 'MAX_UINT',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ name: '', type: 'uint256' }],
       payable: false,
       stateMutability: 'view',
       type: 'function',
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: 'newOwner',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: 'newOwner', type: 'address' }],
       name: 'transferOwnership',
       outputs: [],
       payable: false,
@@ -7628,12 +7444,7 @@ export const environment = {
     },
     {
       constant: false,
-      inputs: [
-        {
-          name: '_blackListedUser',
-          type: 'address',
-        },
-      ],
+      inputs: [{ name: '_blackListedUser', type: 'address' }],
       name: 'destroyBlackFunds',
       outputs: [],
       payable: false,
@@ -7642,22 +7453,10 @@ export const environment = {
     },
     {
       inputs: [
-        {
-          name: '_initialSupply',
-          type: 'uint256',
-        },
-        {
-          name: '_name',
-          type: 'string',
-        },
-        {
-          name: '_symbol',
-          type: 'string',
-        },
-        {
-          name: '_decimals',
-          type: 'uint256',
-        },
+        { name: '_initialSupply', type: 'uint256' },
+        { name: '_name', type: 'string' },
+        { name: '_symbol', type: 'string' },
+        { name: '_decimals', type: 'uint256' },
       ],
       payable: false,
       stateMutability: 'nonpayable',
@@ -7665,53 +7464,27 @@ export const environment = {
     },
     {
       anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          name: 'amount',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ indexed: false, name: 'amount', type: 'uint256' }],
       name: 'Issue',
       type: 'event',
     },
     {
       anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          name: 'amount',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ indexed: false, name: 'amount', type: 'uint256' }],
       name: 'Redeem',
       type: 'event',
     },
     {
       anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          name: 'newAddress',
-          type: 'address',
-        },
-      ],
+      inputs: [{ indexed: false, name: 'newAddress', type: 'address' }],
       name: 'Deprecate',
       type: 'event',
     },
     {
       anonymous: false,
       inputs: [
-        {
-          indexed: false,
-          name: 'feeBasisPoints',
-          type: 'uint256',
-        },
-        {
-          indexed: false,
-          name: 'maxFee',
-          type: 'uint256',
-        },
+        { indexed: false, name: 'feeBasisPoints', type: 'uint256' },
+        { indexed: false, name: 'maxFee', type: 'uint256' },
       ],
       name: 'Params',
       type: 'event',
@@ -7719,62 +7492,30 @@ export const environment = {
     {
       anonymous: false,
       inputs: [
-        {
-          indexed: false,
-          name: '_blackListedUser',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          name: '_balance',
-          type: 'uint256',
-        },
+        { indexed: false, name: '_blackListedUser', type: 'address' },
+        { indexed: false, name: '_balance', type: 'uint256' },
       ],
       name: 'DestroyedBlackFunds',
       type: 'event',
     },
     {
       anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          name: '_user',
-          type: 'address',
-        },
-      ],
+      inputs: [{ indexed: false, name: '_user', type: 'address' }],
       name: 'AddedBlackList',
       type: 'event',
     },
     {
       anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          name: '_user',
-          type: 'address',
-        },
-      ],
+      inputs: [{ indexed: false, name: '_user', type: 'address' }],
       name: 'RemovedBlackList',
       type: 'event',
     },
     {
       anonymous: false,
       inputs: [
-        {
-          indexed: true,
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          indexed: true,
-          name: 'spender',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          name: 'value',
-          type: 'uint256',
-        },
+        { indexed: true, name: 'owner', type: 'address' },
+        { indexed: true, name: 'spender', type: 'address' },
+        { indexed: false, name: 'value', type: 'uint256' },
       ],
       name: 'Approval',
       type: 'event',
@@ -7782,37 +7523,15 @@ export const environment = {
     {
       anonymous: false,
       inputs: [
-        {
-          indexed: true,
-          name: 'from',
-          type: 'address',
-        },
-        {
-          indexed: true,
-          name: 'to',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          name: 'value',
-          type: 'uint256',
-        },
+        { indexed: true, name: 'from', type: 'address' },
+        { indexed: true, name: 'to', type: 'address' },
+        { indexed: false, name: 'value', type: 'uint256' },
       ],
       name: 'Transfer',
       type: 'event',
     },
-    {
-      anonymous: false,
-      inputs: [],
-      name: 'Pause',
-      type: 'event',
-    },
-    {
-      anonymous: false,
-      inputs: [],
-      name: 'Unpause',
-      type: 'event',
-    },
+    { anonymous: false, inputs: [], name: 'Pause', type: 'event' },
+    { anonymous: false, inputs: [], name: 'Unpause', type: 'event' },
   ],
 
   tnftCont: IsTestNet
