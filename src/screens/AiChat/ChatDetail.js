@@ -19,6 +19,7 @@ const ChatDetail = ({ route, navigation }) => {
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
+  const [remainWordText, setRemainWordText] = useState(false);
   const flatList = React.useRef(null);
 
   // =============== Getting data from reducer ========================
@@ -33,7 +34,7 @@ const ChatDetail = ({ route, navigation }) => {
     } else {
       return (
         <View style={styles.bubbleImage}>
-          <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)}/>
+          <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)} />
         </View>
       );
     }
@@ -94,15 +95,17 @@ const ChatDetail = ({ route, navigation }) => {
         getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
       )
         .then(response => {
-          let receiveObj = {
-            message: response.recvResp,
-            type: 'receiver',
-            time: timeConversion,
-            receiverImage: nftDetail.image,
-            receiverName: nftDetail.name,
-            remainWords: response.remainWord
-          };
-          setChatBotData(chatBotData => [...chatBotData, receiveObj]);
+            setRemainWordText(true);
+         
+            let receiveObj = {
+              message: response.recvResp,
+              type: 'receiver',
+              time: timeConversion,
+              receiverImage: nftDetail.image,
+              receiverName: nftDetail.name,
+              remainWords: response.remainWord
+            };
+            setChatBotData(chatBotData => [...chatBotData, receiveObj]);
         })
         .catch(err => {
           console.log('Error Chat : ', err);
@@ -130,7 +133,7 @@ const ChatDetail = ({ route, navigation }) => {
                 {isChatLoading && <Text style={styles.typingMessage}>{translate('common.typing')}</Text>}
               </View>
               {
-                chatLoadSuccess?.remainWord && <Text style={styles.remainWordText}>{'Remaining Chat Limit'}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
+                !chatLoadSuccess?.messageCode && <Text style={styles.remainWordText}>{ remainWordText ? translate('common.remainWordCount') : ''}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
               }
             </View>
           </View>
