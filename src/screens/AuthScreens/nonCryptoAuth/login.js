@@ -1,29 +1,33 @@
-import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
 import KeyboardAwareScrollView from '../../../components/keyboardAwareScrollView';
 
-import {heightPercentageToDP as hp} from '../../../common/responsiveFunction';
+import { heightPercentageToDP as hp } from '../../../common/responsiveFunction';
 import AppLogo from '../../../components/appLogo';
-import {colors} from '../../../res';
+import { colors } from '../../../res';
 import {
   endLoading,
   loginExternalWallet,
   setBackupStatus,
   startLoading,
 } from '../../../store/reducer/userReducer';
-import {alertWithSingleBtn, maxLength50, validateEmail} from '../../../utils';
-import {translate} from '../../../walletUtils';
-import {FormButton, InputFields, Label} from './components';
-import {getAddress, requestConnectToDApp, signMessage} from './magic-link';
+import { alertWithSingleBtn, maxLength50, validateEmail } from '../../../utils';
+import { translate } from '../../../walletUtils';
+import { FormButton, InputFields, Label } from './components';
+import { getAddress, requestConnectToDApp, signMessage } from './magic-link';
 import styles from './styles';
-import {SIGN_MESSAGE} from '../../../common/constants';
+import { SIGN_MESSAGE } from '../../../common/constants';
+import TextView from '../../../components/appText';
+import AppButton from '../../../components/appButton';
+import CommonStyles from '../../../constants/styles';
+
 
 const LoginCrypto = () => {
   const dispatch = useDispatch();
-  const {loading} = useSelector(state => state.UserReducer);
+  const { loading } = useSelector(state => state.UserReducer);
 
   const [sessionStart, setSessionStart] = useState(false);
 
@@ -46,7 +50,7 @@ const LoginCrypto = () => {
       dispatch(startLoading());
 
       const address = await getAddress();
-      const signature = await signMessage(SIGN_MESSAGE).catch(() => {});
+      const signature = await signMessage(SIGN_MESSAGE).catch(() => { });
       const account = {
         address,
         signature,
@@ -88,21 +92,21 @@ const LoginCrypto = () => {
     <AppBackground isBusy={loading}>
       <AppHeader
         showBackButton
-        title={translate('wallet.common.loginWithAccount')}
       />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
         KeyboardShiftStyle={styles.keyboardShift}>
         <View style={styles.sectionCont}>
-          <AppLogo />
 
-          <Label
-            label={translate('common.UserLogin')}
-            containerStyle={{marginTop: hp(4)}}
-          />
+          <View style={styles.contentContainer}>
+          <AppLogo />
+            <TextView style={styles.title}>
+              {translate('common.loginWithEmail')}
+            </TextView>
+          </View>
 
           <InputFields
-            label={translate('common.emailAddress')}
+            // label={translate('common.emailAddress')} 
             inputProps={{
               value: email,
               onChangeText: v => {
@@ -112,16 +116,19 @@ const LoginCrypto = () => {
               textContentType: 'username',
               autoCompleteType: 'username',
               importantForAutofill: 'yes',
+              placeholder: translate('common.emailAddress')
+
             }}
             error={error}
-            inputMainStyle={{marginTop: hp(4)}}
-            inputContStyle={{marginTop: hp(3)}}
+            inputMainStyle={{ marginTop: hp(6) }}
+            inputContStyle={{ marginTop: hp(5) }}
           />
-          <FormButton
-            onPress={login}
-            disable={!email || sessionStart || loading || error}
-            gradient={[colors.themeL, colors.themeR]}
+          <AppButton
             label={translate('wallet.common.logInSignUp')}
+            containerStyle={CommonStyles.button}
+            labelStyle={CommonStyles.buttonLabel}
+            onPress={() => login()} 
+            view={!email || sessionStart || loading || error}
           />
         </View>
       </KeyboardAwareScrollView>

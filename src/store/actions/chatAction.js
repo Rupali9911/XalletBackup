@@ -193,19 +193,24 @@ export const getNftCollections = (page, address, cursor, tabTitle) => (dispatch,
     data,
   })
     .then(response => {
-      let res = {
-        nftTotalCount: response.total,
-        nftCursor: response.cursor,
-        ownerList: {},
-        otherList: {},
+      if (response?.result) {
+        let res = {
+          nftTotalCount: response.total,
+          nftCursor: response.cursor,
+          ownerList: {},
+          otherList: {},
+        }
+        if (tabTitle === 'Owned') {
+          res.ownerList['ownerNFTS'] = ownerList.ownerNFTS.concat(response?.result);
+          dispatch(ownedNftLoadSuccess(res));
+        }
+        else {
+          res.otherList['otherNFTs'] = otherList.otherNFTs.concat(response?.result);
+          dispatch(otherNftLoadSuccess(res));
+        }
       }
-      if (tabTitle === 'Owned') {
-        res.ownerList['ownerNFTS'] = ownerList.ownerNFTS.concat(response?.result);
-        dispatch(ownedNftLoadSuccess(res));
-      }
-      else {
-        res.otherList['otherNFTs'] = otherList.otherNFTs.concat(response?.result);
-        dispatch(otherNftLoadSuccess(res));
+      else{
+        tabTitle === 'Owned' ? dispatch(ownedNftLoadSuccess([])) : dispatch(otherNftLoadSuccess([]));
       }
     })
     .catch(err => {

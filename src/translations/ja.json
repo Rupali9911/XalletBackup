@@ -744,7 +744,8 @@
     "INVALID_AUDIO_TYPE": "オーディオには（mp3）ファイルのみアップロード可能です",
     "others": "その他",
     "typing": "タイピング...",
-    "TOKEN_ID": "トークンID"
+    "TOKEN_ID": "トークンID",
+    "loginWithEmail": "メールでログイン"
   },
   "AwardPage": {},
   "wallet": {

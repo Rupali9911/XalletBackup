@@ -744,7 +744,8 @@
     "INVALID_AUDIO_TYPE": "오디오는 (*.mp3) 파일만 지원합니다",
     "others": "기타",
     "typing": "타자...",
-    "TOKEN_ID": "토큰 ID"
+    "TOKEN_ID": "토큰 ID",
+    "loginWithEmail": "이메일로 로그인"
   },
   "AwardPage": {},
   "wallet": {

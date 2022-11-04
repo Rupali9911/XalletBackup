@@ -1,4 +1,5 @@
 import { SafeAreaView, StatusBar, BackHandler } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import { AppHeader } from '../../components';
 import React, {useEffect } from 'react';
 import { translate } from '../../walletUtils';
@@ -8,6 +9,9 @@ import ChatNftsList from './ChatNftsList';
 import SearchInput from './searchNft';
 import { COLORS } from '../../constants';
 import { TabBar, TabView } from 'react-native-tab-view';
+import { useDispatch } from 'react-redux';
+import { otherNftListReset, ownedNftListReset } from '../../store/actions/chatAction';
+
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -18,6 +22,10 @@ const AiChat = () => {
     { key: 'Owner', title: translate("wallet.common.owned") },
     { key: 'Others', title: translate("common.others") },
   ]);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+
 
   useEffect(() => {
     if (index) {
@@ -35,7 +43,9 @@ const AiChat = () => {
         backAction,
       );
 
-      return () => backHandler.remove();
+      return () => {
+        backHandler.remove();
+      }
     }
   }, [index]);
 
@@ -82,6 +92,11 @@ const AiChat = () => {
       <AppHeader
         title={translate("common.AIChat")}
         showBackButton
+        onPressBack={() => {
+        dispatch(ownedNftListReset());
+        dispatch(otherNftListReset());
+        navigation.goBack();
+        }}
       />
       <SearchInput />
       <TabView
