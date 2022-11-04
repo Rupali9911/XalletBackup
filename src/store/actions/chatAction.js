@@ -139,7 +139,7 @@ export const setTabTitle = (data) => ({
 //=====================Chat=====================
 export const getAiChat = (message, address, locale, name, tokenId) => (dispatch, getState) => {
   const { reducerTabTitle } = getState().chatReducer;
-  dispatch(chatLoadingStart(true))
+  dispatch(chatLoadingStart(true));
   return new Promise((resolve, reject) => {
     let url = `${NEW_BASE_URL}/xana-genesis-chat/chat-bot`;
     let data = {
@@ -156,14 +156,16 @@ export const getAiChat = (message, address, locale, name, tokenId) => (dispatch,
       data,
     })
       .then(res => {
-        dispatch(chatLoadingStart(false))
+        dispatch(chatLoadingStart(false));
         if (res?.data) {
-          dispatch(chatLoadingSuccess(res?.data?.response));
-          resolve(res?.data?.response);
+          dispatch(chatLoadingSuccess({recvResp : res?.data?.response, remainWord: res?.remainWordLimit}));
+          resolve({recvResp : res?.data?.response, remainWord: res?.remainWordLimit});
+        }
+        else{
+          dispatch(chatLoadingSuccess(res));
         }
       })
       .catch(err => {
-        dispatch(chatLoadingStart(false))
         dispatch(chatLoadFail(err));
         reject(err);
       })

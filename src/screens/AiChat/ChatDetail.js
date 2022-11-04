@@ -8,7 +8,7 @@ import styles from './style';
 import { C_Image } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import { SIZE, SVGS, IMAGES} from '../../constants';
+import { SIZE, SVGS, IMAGES } from '../../constants';
 import moment from 'moment';
 
 const { ChatDefaultProfile } = SVGS;
@@ -33,10 +33,10 @@ const ChatDetail = ({ route, navigation }) => {
     } else {
       return (
         <View style={styles.bubbleImage}>
-        <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)}/>
+          <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)}/>
         </View>
       );
-    } 
+    }
   };
 
   const ShowBubble = props => {
@@ -95,11 +95,12 @@ const ChatDetail = ({ route, navigation }) => {
       )
         .then(response => {
           let receiveObj = {
-            message: response,
+            message: response.recvResp,
             type: 'receiver',
             time: timeConversion,
             receiverImage: nftDetail.image,
             receiverName: nftDetail.name,
+            remainWords: response.remainWord
           };
           setChatBotData(chatBotData => [...chatBotData, receiveObj]);
         })
@@ -124,9 +125,14 @@ const ChatDetail = ({ route, navigation }) => {
             <Text style={styles.headerNftName}>
               {nftDetail.name.slice(nftDetail.name.lastIndexOf('#'))}
             </Text>
-            {isChatLoading ? (
-              <Text style={styles.typingMessage}>{translate('common.typing')}</Text>
-            ) : null}
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.typingContainer}>
+                {isChatLoading && <Text style={styles.typingMessage}>{translate('common.typing')}</Text>}
+              </View>
+              {
+                chatLoadSuccess?.remainWord && <Text style={styles.remainWordText}>{'Remaining Chat Limit'}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
+              }
+            </View>
           </View>
         </View>
         <View style={styles.separator} />
@@ -146,7 +152,7 @@ const ChatDetail = ({ route, navigation }) => {
       >
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
-      
+
       <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} >
 
         <View style={{ flex: 0.4 }}>
@@ -160,14 +166,14 @@ const ChatDetail = ({ route, navigation }) => {
                 <Text
                   style={[styles.nftName, { marginVertical: 3 }]}
                   numberOfLines={2}>
-                  {chatLoadSuccess}
+                  {chatLoadSuccess?.recvResp}
                 </Text>
               </View>
             ) : null}
           </View>
           <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
         </View>
-        
+
         <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
@@ -191,10 +197,10 @@ const ChatDetail = ({ route, navigation }) => {
           </View>
 
           <MessageInput
-            placeholder={translate('common.enterMessage')} 
+            placeholder={translate('common.enterMessage')}
             value={message}
             onChangeText={text => setMessage(text)}
-            onPress={() => sendMessage(message, new Date())} 
+            onPress={() => sendMessage(message, new Date())}
           />
 
         </View>
