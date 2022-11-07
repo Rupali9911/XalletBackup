@@ -745,7 +745,8 @@
     "others": "기타",
     "typing": "타자...",
     "TOKEN_ID": "토큰 ID",
-    "loginWithEmail": "이메일로 로그인"
+    "loginWithEmail": "이메일로 로그인",
+    "playbackSpeed": "재생 속도"
   },
   "AwardPage": {},
   "wallet": {

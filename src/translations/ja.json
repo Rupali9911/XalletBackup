@@ -745,7 +745,8 @@
     "others": "その他",
     "typing": "タイピング...",
     "TOKEN_ID": "トークンID",
-    "loginWithEmail": "メールでログイン"
+    "loginWithEmail": "メールでログイン",
+    "playbackSpeed": "再生速度"
   },
   "AwardPage": {},
   "wallet": {

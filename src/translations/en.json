@@ -744,7 +744,8 @@
     "others": "Others",
     "typing": "Typing...",
     "TOKEN_ID": "Token Id",
-    "loginWithEmail": "Login with Email"
+    "loginWithEmail": "Login with Email",
+    "playbackSpeed": "Playback"
   },
   "AwardPage": {},
   "wallet": {
