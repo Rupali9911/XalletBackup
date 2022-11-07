@@ -163,6 +163,7 @@ export const getAiChat = (message, address, locale, name, tokenId) => (dispatch,
         }
         else{
           dispatch(chatLoadingSuccess(res));
+          resolve(res)
         }
       })
       .catch(err => {

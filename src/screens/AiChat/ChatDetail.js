@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, FlatList } from 'react-native';
-import React, { useState, } from 'react';
+import React, { useRef, useState, } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAiChat, chatLoadingSuccess } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
@@ -10,6 +10,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import MessageInput from './MessageInput';
 import { SIZE, SVGS, IMAGES } from '../../constants';
 import moment from 'moment';
+import Toast from 'react-native-toast-message'
+import { Button } from 'react-native-paper';
+
+
 
 const { ChatDefaultProfile } = SVGS;
 
@@ -21,6 +25,7 @@ const ChatDetail = ({ route, navigation }) => {
   const [chatBotData, setChatBotData] = useState([]);
   const [remainWordText, setRemainWordText] = useState(false);
   const flatList = React.useRef(null);
+  const toastRef = useRef(null);
 
   // =============== Getting data from reducer ========================
   const dispatch = useDispatch();
@@ -77,6 +82,13 @@ const ChatDetail = ({ route, navigation }) => {
     );
   };
 
+  const showToast = () => {
+    toastRef.current.show({
+      type: 'info',
+      text1: translate('common.exceededToastWord'),
+    });
+  }
+
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
     let timeConversion = moment(time).format('h:mm A');
@@ -95,8 +107,14 @@ const ChatDetail = ({ route, navigation }) => {
         getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
       )
         .then(response => {
+          console.log('Respppss : ', response)
+          if(response?.messageCode || response?.description)
+          {
+            showToast();
+          }
+          else
+          {
             setRemainWordText(true);
-         
             let receiveObj = {
               message: response.recvResp,
               type: 'receiver',
@@ -106,6 +124,8 @@ const ChatDetail = ({ route, navigation }) => {
               remainWords: response.remainWord
             };
             setChatBotData(chatBotData => [...chatBotData, receiveObj]);
+          }
+         
         })
         .catch(err => {
           console.log('Error Chat : ', err);
@@ -114,6 +134,7 @@ const ChatDetail = ({ route, navigation }) => {
     }
     setMessage('');
   };
+
 
   // ===================== FlatList Header Call ===================================
   const ListHeader = () => {
@@ -133,7 +154,7 @@ const ChatDetail = ({ route, navigation }) => {
                 {isChatLoading && <Text style={styles.typingMessage}>{translate('common.typing')}</Text>}
               </View>
               {
-                !chatLoadSuccess?.messageCode && <Text style={styles.remainWordText}>{ remainWordText ? translate('common.remainWordCount') : ''}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
+                !chatLoadSuccess?.messageCode && <Text style={styles.remainWordText}>{remainWordText ? translate('common.remainWordCount') : ''}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
               }
             </View>
           </View>
@@ -198,6 +219,10 @@ const ChatDetail = ({ route, navigation }) => {
               showsVerticalScrollIndicator={false}
             />
           </View>
+          <Button
+            title='Show toast'
+            onPress={() => showToast()}
+          />
 
           <MessageInput
             placeholder={translate('common.enterMessage')}
@@ -209,6 +234,13 @@ const ChatDetail = ({ route, navigation }) => {
         </View>
 
       </KeyboardAwareScrollView>
+      <Toast
+        position='bottom'
+        visibilityTime={2000}
+        autoHide={true}
+        ref={toastRef}
+        
+      />
     </SafeAreaView>
   );
 };

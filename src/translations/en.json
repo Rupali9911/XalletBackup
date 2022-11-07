@@ -745,7 +745,8 @@
     "typing": "Typing...",
     "TOKEN_ID": "Token Id",
     "loginWithEmail": "Login with Email",
-    "remainWordCount": "Remaining Chat Limit"
+    "remainWordCount": "Remaining Chat Limit",
+    "exceededToastWord": "You have exceeded word limit"
   },
   "AwardPage": {},
   "wallet": {

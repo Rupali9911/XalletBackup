@@ -746,7 +746,8 @@
     "typing": "타자...",
     "TOKEN_ID": "토큰 ID",
     "loginWithEmail": "이메일로 로그인",
-    "remainWordCount": "남은 채팅 한도"
+    "remainWordCount": "남은 채팅 한도",
+    "exceededToastWord": "단어 제한을 초과했습니다."
   },
   "AwardPage": {},
   "wallet": {
