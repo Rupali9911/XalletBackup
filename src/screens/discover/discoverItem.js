@@ -15,7 +15,8 @@ import {colors, fonts} from '../../res';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 import {TouchableOpacity, View, Dimensions, Text as RNText} from 'react-native';
 import {C_Image} from '../../components';
-import Video from 'react-native-fast-video';
+//import Video from 'react-native-fast-video';
+import Video from 'react-native-video';
 import {styles} from './styled';
 import {
   Menu,

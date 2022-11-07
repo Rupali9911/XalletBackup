@@ -17,7 +17,8 @@ import {
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Video from 'react-native-fast-video';
+//import Video from 'react-native-fast-video';
+import Video from 'react-native-video';
 import Modal from 'react-native-modal';
 import { ActivityIndicator } from 'react-native-paper';
 import {
