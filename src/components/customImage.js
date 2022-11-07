@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform,Image } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import Video from 'react-native-fast-video';
 import { SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID } from '../constants';
 import Colors from '../constants/Colors';
 import Audio from '../assets/pngs/headphone-icon.png'

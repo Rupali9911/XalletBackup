@@ -11,7 +11,8 @@ import {
   ActivityIndicator,
   ScrollView
 } from 'react-native';
-import Video from 'react-native-fast-video';
+//import Video from 'react-native-fast-video';
+import Video from 'react-native-video';
 import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig, CDN_LINK } from '../../web3/config/blockChainConfig';
 import { useDispatch, useSelector } from 'react-redux';
