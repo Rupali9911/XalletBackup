@@ -1,7 +1,7 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
@@ -13,16 +13,16 @@ import Separator from '../../components/separator';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {setPaymentObject} from '../../store/reducer/paymentReducer';
-import {  
+import { setPaymentObject } from '../../store/reducer/paymentReducer';
+import {
   updateBalances,
   updateBSCBalances,
   updateEthereumBalances,
   updatePolygonBalances,
 } from '../../store/reducer/walletReducer';
-import {divideNo, numberWithCommas} from '../../utils';
+import { divideNo, numberWithCommas } from '../../utils';
 import {
   environment,
   IsTestNet,
@@ -30,21 +30,21 @@ import {
   tokens,
   translate,
 } from '../../walletUtils';
-import {basePriceTokens} from '../../web3/config/availableTokens';
-import {blockChainConfig} from '../../web3/config/blockChainConfig';
-import {HeaderBtns} from '../wallet/components/HeaderButtons';
+import { basePriceTokens } from '../../web3/config/availableTokens';
+import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { HeaderBtns } from '../wallet/components/HeaderButtons';
 import NetworkPicker from '../wallet/components/networkPicker';
 import Tokens from '../wallet/components/Tokens';
-import {balance, currencyInDollar} from '../wallet/functions';
-import {SIZE} from 'src/constants';
-import {alertWithSingleBtn} from '../../common/function';
-import {Loader} from '../../components';
-import {getWallet} from '../../helpers/AxiosApiRequest';
+import { balance, currencyInDollar } from '../wallet/functions';
+import { SIZE } from 'src/constants';
+import { alertWithSingleBtn } from '../../common/function';
+import { Loader } from '../../components';
+import { getWallet } from '../../helpers/AxiosApiRequest';
 
-const WalletPay = ({route, navigation}) => {
+const WalletPay = ({ route, navigation }) => {
   let wallet = null;
-  const {isCreate, userData} = useSelector(state => state.UserReducer);
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
+  const { isCreate, userData } = useSelector(state => state.UserReducer);
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
   const walletAddress = userData?.userWallet?.address;
   const {
     bnbBalance,
@@ -82,8 +82,8 @@ const WalletPay = ({route, navigation}) => {
     chainType === 'polygon'
       ? networkChain[2]
       : chainType === 'ethereum'
-      ? networkChain[0]
-      : networkChain[1],
+        ? networkChain[0]
+        : networkChain[1],
   );
   const [selectedObject, setSelectedObject] = useState(null);
   const [tradeCurrency, setTradeCurrency] = useState(null);
@@ -127,18 +127,13 @@ const WalletPay = ({route, navigation}) => {
       allowedTokens?.length > 0 &&
       payableIn == translate('common.allowedcurrency')
     ) {
-      console.log('116 >>>>', allowedTokens, payableIn);
       let array = [];
       allowedTokens.map(_ => {
         array.push(_.key?.toLowerCase());
       });
-      console.log('tokens', tokens);
       let result = tokens.filter(item => {
-        console.log('item', item);
         if (item.network?.toLowerCase() === chainType) {
-          console.log('same chain');
           if (array.includes(item.type?.toLowerCase())) {
-            console.log('same name');
             return true;
           } else if (
             array.includes('alia') &&
@@ -152,7 +147,6 @@ const WalletPay = ({route, navigation}) => {
           return false;
         }
       });
-      // console.log('141 result of active tokens', result);
       setActiveTokens(result);
     } else {
       if (baseCurrency) {
@@ -227,15 +221,6 @@ const WalletPay = ({route, navigation}) => {
       MarketPlaceAbi,
       MarketContractAddress,
     );
-    console.log('price & priceStr', price, priceStr);
-    console.log(
-      `priceStr_${priceStr}`,
-      baseCurrency.order,
-      tradeCurr,
-      id,
-      walletAddress,
-      collectionAddress,
-    );
     let res = await MarketPlaceContract.methods
       .calculatePrice(
         priceStr,
@@ -246,7 +231,6 @@ const WalletPay = ({route, navigation}) => {
         collectionAddress,
       )
       .call();
-    console.log('calculate price response', res, price);
     if (res) return res;
     else return '';
   };
@@ -268,7 +252,6 @@ const WalletPay = ({route, navigation}) => {
             MATIC: responses[2],
             ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
           };
-          // console.log('priceInDollars 273', balances);
           setCurrencyPriceDollar(balances);
           setLoading(false);
           resolve();
@@ -427,7 +410,6 @@ const WalletPay = ({route, navigation}) => {
             ETH: responses[0],
             USDT: responses[1],
           };
-          // console.log('ETH 404 balances',responses);
           dispatch(updateEthereumBalances(balances));
           setBalances(balances);
           setLoading(false);
@@ -470,7 +452,6 @@ const WalletPay = ({route, navigation}) => {
             BUSD: responses[2],
             // ALIA: responses[3],
           };
-          // console.log('BSC 440 balances', responses);
           dispatch(updateBSCBalances(balances));
           setBalances(balances);
           setLoading(false);
@@ -634,17 +615,10 @@ const WalletPay = ({route, navigation}) => {
   };
 
   const currencySelect = async item => {
-    console.log('522 currencySelect', item);
     setSelectedObject(item);
     let tradeCurrency = getCurrencyOnSelect(item);
     setTradeCurrency(tradeCurrency);
     let priceInToken = await calculatePrice(tradeCurrency.order);
-    console.log(
-      'value 667',
-      parseFloat(divideNo(priceInToken)),
-      priceInToken,
-      tradeCurrency.order,
-    );
     setPriceInToken(parseFloat(divideNo(priceInToken)));
     setIsNextDisabled(false);
   };
@@ -688,7 +662,7 @@ const WalletPay = ({route, navigation}) => {
               }}
             />
             <HeaderBtns
-              onPress={() => {}}
+              onPress={() => { }}
               image={ImagesSrc.topup}
               label={translate('wallet.common.buy')}
             />

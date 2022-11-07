@@ -175,7 +175,6 @@ const CollectionList = ({
             params
         })
             .then(res => {
-                console.log("@@@ Get Actual collection API response  ==========>", res)
                 if (res && res?.data && res?.data?.length !== 0) {
                     console.log("@@@ inside if after response")
                     setOnEndReachedCalledDuringMomentum(true)

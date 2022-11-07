@@ -31,22 +31,22 @@ const initialState = {
 export default function MyNFTReducer(state = initialState, action) {
   switch (action.type) {
     case SET_NFT_USER_ADDRESS:
-      return (state = {...state, nftUserAdd: action.payload});
+      return (state = { ...state, nftUserAdd: action.payload });
 
     case MY_PAGE_CHANGE:
-      return (state = {...state, myListPage: action.payload});
+      return (state = { ...state, myListPage: action.payload });
 
     case MY_NFT_CREATED_PAGE_CHANGE:
-      return (state = {...state, myNftCreatedListPage: action.payload});
+      return (state = { ...state, myNftCreatedListPage: action.payload });
 
     case MY_NFT_OWNED_PAGE_CHANGE:
-      return (state = {...state, myNftOwnedListPage: action.payload});
+      return (state = { ...state, myNftOwnedListPage: action.payload });
 
     case FAVORITE_PAGE_CHANGE:
-      return (state = {...state, favoritePage: action.payload});
+      return (state = { ...state, favoritePage: action.payload });
 
     case MY_NFT_LOAD_START:
-      return (state = {...state, myNftListLoading: true});
+      return (state = { ...state, myNftListLoading: true });
 
     case MY_NFT_LOAD_SUCCESS:
       if (action.payload.tabTitle === 1) {
@@ -67,10 +67,6 @@ export default function MyNFTReducer(state = initialState, action) {
           myNftListLoading: false,
         });
       } else {
-        console.log(
-          '@@@ My NFT Reducer action last commons ===========>',
-          action.payload,
-        );
         return (state = {
           ...state,
           myList: [...state.myList, ...action.payload.list],
@@ -87,13 +83,13 @@ export default function MyNFTReducer(state = initialState, action) {
       });
 
     case FAVORITE_LIST_UPDATE:
-      return (state = {...state, favorite: [...action.payload.data]});
+      return (state = { ...state, favorite: [...action.payload.data] });
 
     case MYLIST_LIST_UPDATE:
-      return (state = {...state, myList: [...action.payload.data]});
+      return (state = { ...state, myList: [...action.payload.data] });
 
     case MY_NFT_LOAD_FAIL:
-      return (state = {...state, myNftListLoading: false});
+      return (state = { ...state, myNftListLoading: false });
 
     case MY_NFT_LOAD_RESET:
       return (state = {

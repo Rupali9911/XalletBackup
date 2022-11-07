@@ -1,5 +1,5 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,12 +7,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Loader} from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Loader } from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
-import {translate} from '../../walletUtils';
+import { colors, fonts } from '../../res';
+import { changeScreenName } from '../../store/actions/authAction';
+import { translate } from '../../walletUtils';
 import {
   myNftListReset,
   myNFTList,
@@ -24,11 +24,11 @@ import {
 } from '../../store/actions/myNFTaction';
 // import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
 
-const NFTOwned = ({route, navigation, id}) => {
+const NFTOwned = ({ route, navigation, id }) => {
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
-  const {MyNFTReducer} = useSelector(state => state);
+  const { MyNFTReducer } = useSelector(state => state);
   const dispatch = useDispatch();
   const [isFirstRender, setIsFirstRender] = useState(true);
 
@@ -58,7 +58,7 @@ const NFTOwned = ({route, navigation, id}) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <NFTItem
         screenName="movieNFT"
@@ -77,7 +77,6 @@ const NFTOwned = ({route, navigation, id}) => {
   };
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-    console.log('getNFTlist, id', id);
     dispatch(myNFTList(pageIndex, pageSize, address, category));
   }, []);
 
@@ -112,7 +111,7 @@ const NFTOwned = ({route, navigation, id}) => {
             if (
               !MyNFTReducer.myNftListLoading &&
               MyNFTReducer.myNftOwnedList.length !==
-                MyNFTReducer.myNftTotalCount
+              MyNFTReducer.myNftTotalCount
             ) {
               let num = MyNFTReducer.myNftOwnedListPage + 1;
               getNFTlist(num, limit, id, tab);

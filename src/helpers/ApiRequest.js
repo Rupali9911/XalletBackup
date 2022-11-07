@@ -8,7 +8,7 @@ var isAlert = false;
 export const STRIPE_API_URL = "https://api.stripe.com/v1/";
 export const BASE_URL = "https://testapi.xanalia.com/";
 
-export const ApiRequest = async (url, method, body, headers) => {   
+export const ApiRequest = async (url, method, body, headers) => {
 
     const requestOptions = {
         method,
@@ -119,7 +119,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
         formBody = formBody.join("&");
         requestOptions.body = formBody;
     }
-    console.log('requestOptions', requestOptions);
+    // console.log('requestOptions', requestOptions);
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
             // console.log("Connection type", state.type, state.isConnected);

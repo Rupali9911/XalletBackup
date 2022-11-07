@@ -150,7 +150,6 @@ function AddCard({ route, navigation }) {
     }
 
     const isValidState = () => {
-        console.log('State', state)
         if (state === null || state.trim().length <= 0) {
             alertWithSingleBtn(
                 translate("wallet.common.alert"),
@@ -217,7 +216,6 @@ function AddCard({ route, navigation }) {
         }
 
         StripeApiRequest(`tokens`, body).then((response) => {
-            console.log('Response from STRIPE', response);
             if (response.id) {
                 addCustomerCard(response.id);
             } else if (response.error) {
@@ -251,7 +249,6 @@ function AddCard({ route, navigation }) {
         }
 
         dispatch(addCard(userData.access_token, params)).then((response) => {
-            console.log('response', response);
             setLoading(false);
             if (response.success) {
                 alertWithSingleBtn(

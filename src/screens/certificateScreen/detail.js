@@ -454,12 +454,7 @@ const DetailScreen = ({ navigation, route }) => {
         });
         setTokenList(tokenTemp);
         setValue(tokenTemp && tokenTemp[0]?.value);
-        console.log(
-          '🚀 ~ file: detail.js ~ line 303 ~ useEffect ~ tokenTemp',
-          tokenTemp,
-          '<<<!>>>',
-          currNetwork,
-        );
+
       }
     }
   }, [nftId]);
@@ -1081,10 +1076,7 @@ const DetailScreen = ({ navigation, route }) => {
       method: 'POST',
     })
       .then(cancelAuctionRes => {
-        console.log(
-          '🚀 ~ file: detail.js ~ line 759 ~ .then ~ cancelAuctionRes',
-          cancelAuctionRes,
-        );
+
         if (cancelAuctionRes?.error) {
           handlePendingModal(false);
           throw new Error(cancelAuctionRes.message);
@@ -1105,7 +1097,6 @@ const DetailScreen = ({ navigation, route }) => {
               network?.networkName,
             )
               .then(res => {
-                console.log('approve payByWallet 331', res);
                 // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
@@ -1159,10 +1150,7 @@ const DetailScreen = ({ navigation, route }) => {
               data: approveData.data, // Optional, but used for defining smart contract creation and interaction.
               chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
             };
-            console.log(
-              '🚀 ~ file: detail.js ~ line 929 ~ transactionParameters ~ approveData ',
-              transactionParameters,
-            );
+
 
             const txnResult = await sendCustomTransaction(
               transactionParameters,
@@ -1187,11 +1175,6 @@ const DetailScreen = ({ navigation, route }) => {
             data: signData.data, // Optional, but used for defining smart contract creation and interaction.
             chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
           };
-          console.log(
-            '🚀 ~ file: detail.js ~ line 929 ~ transactionParameters ~ signData ',
-            transactionParameters,
-          );
-
           sendCustomTransaction(
             transactionParameters,
             walletAddress,
@@ -1199,13 +1182,13 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
+              // console.log('approve payByWallet 331', res);
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
+              // console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
@@ -1353,10 +1336,7 @@ const DetailScreen = ({ navigation, route }) => {
               data: signData.data, // Optional, but used for defining smart contract creation and interaction.
               chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
             };
-            console.log(
-              '🚀 ~ file: detail.js ~ line 1035 ~ //.then ~ transactionParameters',
-              transactionParameters,
-            );
+
 
             sendCustomTransaction(
               transactionParameters,
@@ -1610,7 +1590,6 @@ const DetailScreen = ({ navigation, route }) => {
         endTime: new Date(sellData.closeTime),
         nftId: nftId,
       };
-      console.log('🚀 ~ file: index.tsx ~ line 254 ~ data ~ ', data);
 
       const resPutOnAuction = await sendRequest({
         url,
@@ -1644,7 +1623,6 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
@@ -2033,7 +2011,6 @@ const DetailScreen = ({ navigation, route }) => {
         }
       }
       const signData = res?.dataReturn?.signData;
-      console.log('🚀 ~ file: index.tsx ~ line 219 ~  ~ signData', signData);
       if (signData && approved) {
         try {
           const transactionParameters = {

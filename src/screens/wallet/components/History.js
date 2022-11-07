@@ -118,8 +118,6 @@ const History = props => {
     };
 
     const getTransactions = () => {
-        console.log('transection coin type=====> setBalance', coin.type, "  ")
-        console.log('transection coin network=====>', coin.network, "  ")
         if (coin.type === 'ETH') {
             return ethTransactions;
         } else if (coin.type === 'BNB') {
@@ -138,60 +136,59 @@ const History = props => {
             return talTransactions;
         } else if (coin.type === 'WETH') {
             return wethTransactions;
-        }else if (coin.type ==='ALIA') {
+        } else if (coin.type === 'ALIA') {
             return aliaTransactions;
         }
-                return [];
-            };
-            console.log("Transaction (get transaction)", getTransactions())
-            return (
-                <View style={[styles.scene]}>
-                    <FlatList
-                        data={getTransactions()}
-                        // contentContainerStyle={{flex: 1,backgroundColor:'white'}}
-                        renderItem={({item}) => {
-                            return (
+        return [];
+    };
+    return (
+        <View style={[styles.scene]}>
+            <FlatList
+                data={getTransactions()}
+                // contentContainerStyle={{flex: 1,backgroundColor:'white'}}
+                renderItem={({ item }) => {
+                    return (
 
-                                <ListItems
-                                    item={item}
-                                    onPress={_item =>
-                                        navigation.navigate('transactionsDetail', {
-                                            data: _item,
-                                            coin: coin,
-                                        })
-                                    }
-                                />
-                            );
-                        }}
-                        keyExtractor={(item, index) => `_${index}`}
-                        // ItemSeparatorComponent={() => <Separator style={styles.separator} />}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={isRefreshing}
-                                onRefresh={onRefresh}
-                                tintColor={Colors.themeColor}
-                                // colors={[Colors.primary]}
-                            />
-                        }
-                        ListEmptyComponent={() => {
-                            return (
-                                <View style={styles.emptyView}>
-                                    <Image source={ImagesSrc.transaction} style={styles.emptyImage}/>
-                                    <TextView style={styles.noData}>
-                                        {translate('wallet.common.transactionsHint')}
-                                    </TextView>
-                                    <Button
-                                        mode={'text'}
-                                        uppercase={false}
-                                        color={Colors.buttonTxtColor2}>
-                                        {translate('wallet.common.buy')} {coin.type}
-                                    </Button>
-                                </View>
-                            );
-                        }}
+                        <ListItems
+                            item={item}
+                            onPress={_item =>
+                                navigation.navigate('transactionsDetail', {
+                                    data: _item,
+                                    coin: coin,
+                                })
+                            }
+                        />
+                    );
+                }}
+                keyExtractor={(item, index) => `_${index}`}
+                // ItemSeparatorComponent={() => <Separator style={styles.separator} />}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={onRefresh}
+                        tintColor={Colors.themeColor}
+                    // colors={[Colors.primary]}
                     />
-                </View>
-            );
+                }
+                ListEmptyComponent={() => {
+                    return (
+                        <View style={styles.emptyView}>
+                            <Image source={ImagesSrc.transaction} style={styles.emptyImage} />
+                            <TextView style={styles.noData}>
+                                {translate('wallet.common.transactionsHint')}
+                            </TextView>
+                            <Button
+                                mode={'text'}
+                                uppercase={false}
+                                color={Colors.buttonTxtColor2}>
+                                {translate('wallet.common.buy')} {coin.type}
+                            </Button>
+                        </View>
+                    );
+                }}
+            />
+        </View>
+    );
 
 
 };

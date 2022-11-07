@@ -68,7 +68,6 @@ export default function nftDataCollectionReducer(state = initialState, action) {
       return state = { ...state, nftDataCollectionLoading: true, tabTitle: action.payload };
 
     case NFT_DATA_COLLECTION_SUCCESS:
-      // console.log("🚀 ~ file: nftDataCollectionReducer.js ~ line 40 ~ ~ ", state, action.payload)
       if (action.payload.tabTitle === "On Sale") {
         return state = {
           ...state, nftDataOnSaleCollectionList: [...state.nftDataOnSaleCollectionList, ...action.payload.list],

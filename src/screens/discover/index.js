@@ -18,7 +18,6 @@ import { useIsFocused } from '@react-navigation/native';
 
 function ExploreScreen() {
   const { wallet, userData } = useSelector(state => state.UserReducer);
-  // console.log("🚀 ~ file: index.js ~ line 20 ~ ExploreScreen ~ userData", userData)
 
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
@@ -32,9 +31,9 @@ function ExploreScreen() {
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    if(isFocused){
+    if (isFocused) {
       setLoader(true)
-    loadNFTList(1, true)
+      loadNFTList(1, true)
     }
   }, [isFocused]);
 

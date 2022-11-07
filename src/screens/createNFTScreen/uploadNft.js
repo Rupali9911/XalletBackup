@@ -107,7 +107,6 @@ const UploadNFT = ({
             getCollectionList()
             cleanAll();
             if (nftItem) {
-                console.log(nftItem)
                 updateNFTData(nftItem)
             }
             // if (networkType.value !== 'ethereum') {
@@ -118,7 +117,6 @@ const UploadNFT = ({
 
     useEffect(() => {
         if (modalScreen === "uploadNFT" && modalItem) {
-            console.log("@@@ on Upload NFT, Modal Item dropdown =======>", modalScreen, modalItem)
             if (modalItem !== "closed") {
                 if (activeModal === "collection") {
                     setCollection(modalItem)
@@ -328,7 +326,6 @@ const UploadNFT = ({
         ImagePicker.openPicker({
             mediaType: modalItem.name === 'Movie' ? 'video' : 'photo'
         }).then(res => {
-            console.log("@@@ image picker res ======>", res)
             if (res.size > 50457280) {
                 setImageError("File size should not exceed 50MB")
             } else {
@@ -706,7 +703,6 @@ const UploadNFT = ({
     //     let foundOrder = basePrice.order;
     //     const publicAddress = wallet?.address;
     //     const privKey = wallet.privateKey;
-    //     console.log(data, "put nft on sale")
 
     //     let currencyListArr = otherPrice.map(i => Number(i));
 
@@ -860,7 +856,6 @@ const UploadNFT = ({
 
     //===================== Creat NFT Function ============================
     const createNFT = async () => {
-        console.log("@@@ Mint nft before========>", socket)
         try {
             setOpenTransactionPending(true);
             const nftData = {
@@ -884,15 +879,11 @@ const UploadNFT = ({
                 nftData.startTime = startDate.toISOString()
                 nftData.endTime = endDate.toISOString()
             }
-            console.log("@@@ create NFT Data ========>", nftData)
             const res = await sendRequest({
                 url: `${NEW_BASE_URL}/nfts`,
                 method: 'POST',
                 data: nftData
             })
-            console.log("@@@ Create NFT API res =========>", res)
-            console.log("@@@ Thumbnail image  =========>", nftImageThumb)
-            console.log("@@@ Main image =========>", nftImage)
             if (res && res?.savedNft) {
                 const nftId = res.savedNft.id;
                 const thumbnailFile = nftImageThumb;
@@ -900,16 +891,13 @@ const UploadNFT = ({
 
                 let resPreview = ''
                 const nftType = NFT_TYPE_TO_ID[nftImageType?.value];
-                console.log("@@@ nft type in mint func =========>", nftType)
                 if (nftImageThumb && nftImageThumb?.mime !== 'image/gif') {
-                    console.log("@@@ image type is not image/gif =========>", nftImageThumb.mime)
                     resPreview = await getUploadData({
                         mediaFile: nftImageThumb,
                         collectionId: nftId,
                         userId: userData.id,
                         type: 'preview'
                     })
-                    console.log("@@@ image type is not image/gif (getUploadData Res...) =========>", resPreview)
                     await putNFTMedia({
                         mediaFile: thumbnailFile,
                         nftId: nftId,
@@ -919,16 +907,13 @@ const UploadNFT = ({
 
                 // handle upload media to S3
                 if (nftType === 4 || nftType === 5) {
-                    console.log("@@@ image type is 4 or 5 =========>")
                     // upload thumnail
                     const previewMediaId = resPreview?.path?.replace(
                         'input',
                         'output',
                     )
-                    console.log("@@@ image type is 4 or 5 (previewMediaID) =========>", previewMediaId)
                     if (supportMediaType.audio.includes(mainFile?.mime)) {
                         // upload audio
-                        console.log('UPLOAD AUDIO AUDIO')
                         const resAudio = await getUploadData({
                             mediaFile: mainFile,
                             collectionId: nftId,
@@ -965,7 +950,6 @@ const UploadNFT = ({
                         collectionId: nftId,
                         userId: userData.id,
                     })
-                    console.log("@@@ image type is normal last condition (resPresign)=========>", resPresign)
                     await putNFTMedia({
                         nftId: nftId,
                         mediaFile: mainFile,
@@ -986,7 +970,6 @@ const UploadNFT = ({
     }
 
     const errorMethod = (err, v) => {
-        console.log(v)
         changeLoadingState(false);
         if (err.response.status === 401) {
             alertWithSingleBtn(
@@ -1002,12 +985,9 @@ const UploadNFT = ({
 
     const handleSocketResultMintNFT = useCallback(
         async (data) => {
-            console.log('SUCCESS_DATA', data)
             const signData = data?.data?.dataReturn?.signData
             // 0 mint 1 mintandputonsale 2 mintonputonauction
             const txnType = data?.data?.nftType
-            console.log("@@@ signData on create NFT success ===========>", signData)
-            console.log("@@@ txnType on create NFT success ===========>", txnType)
             if (signData) {
                 await handleMintAndTradeNFT(signData, txnType)
             }
@@ -1021,7 +1001,6 @@ const UploadNFT = ({
     )
 
     const handleCreateNFTSuccess = (data) => {
-        console.log('CREATE_SUCCESS', data)
         alertWithSingleBtn('', translate('common.tansactionSuccessFull'));
     }
 
@@ -1117,7 +1096,6 @@ const UploadNFT = ({
                                                         // toggleThumb(false);
                                                     }}
                                                     onLoad={data => {
-                                                        console.log("@@@ loaded successfully ==========>", data)
                                                         // refVideo.current.seek(0);
                                                     }}
                                                 />
