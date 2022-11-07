@@ -14,9 +14,9 @@ if (networkType === 'mainnet') {
   API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
   NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
   //For Xanalia
-  // NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_DD8E7DF0413DBF3D';
+  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_DD8E7DF0413DBF3D';
   //Specific for Xallet
-  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_EABDAA09882492C6';
+  // NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_EABDAA09882492C6';
 
 } else {
   BASE_URL = 'https://testapi.xanalia.com';
@@ -25,9 +25,9 @@ if (networkType === 'mainnet') {
   API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
   NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
   //For Xanalia
-  // NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_35B11F036089B82B';
+  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_35B11F036089B82B';
   //Specific for Xallet
-  NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_1840F2D0EC9301CB';
+  // NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_1840F2D0EC9301CB';
 }
 
 // let API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1'
