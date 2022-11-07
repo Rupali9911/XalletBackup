@@ -251,6 +251,10 @@ const styles = StyleSheet.create({
     fontSize: SIZE(12),
     color: '#ff6e44',
   },
+  userIconLoader: {
+    bottom: SIZE(165),
+    zIndex: 11,
+  },
 });
 
 export default styles;
