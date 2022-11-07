@@ -745,7 +745,8 @@
     "others": "其他",
     "typing": "打字...",
     "TOKEN_ID": "TOKEN ID",
-    "loginWithEmail": "使用電子郵件登錄"
+    "loginWithEmail": "使用電子郵件登錄",
+    "remainWordCount": "剩餘聊天限制"
   },
   "AwardPage": {},
   "wallet": {

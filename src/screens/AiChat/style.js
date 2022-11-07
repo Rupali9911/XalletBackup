@@ -169,6 +169,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontStyle: 'italic',
         fontSize: 11,
+        paddingTop: 5,
+    },
+    remainWordText: {
+        fontSize: 11,
+        fontStyle: 'italic',
         paddingTop: 5
     },
     sendBtnTxt: {
@@ -243,6 +248,13 @@ const styles = StyleSheet.create({
       nftListContainer: {
         flex: 1, 
         padding: 10 
+      },
+      remainWordCount: {
+        fontWeight: 'bold', 
+        fontStyle: 'normal'
+      },
+      typingContainer: {
+        width: '45%'
       }
 
      // talkBubbleAbsoluteRight: {
