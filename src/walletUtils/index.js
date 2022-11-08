@@ -8950,7 +8950,7 @@ export const tokens = [
   {
     type: 'XETA',
     tokenName: 'XETA',
-    icon: ImagesSrc.usdtNew,
+    icon: ImagesSrc.xetaNew,
     amount: '$3,177.94',
     percent: '+2.21%',
     tokenValue: `0`,
