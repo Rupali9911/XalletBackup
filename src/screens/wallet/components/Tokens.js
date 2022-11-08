@@ -79,7 +79,7 @@ const Tokens = props => {
 
   useEffect(() => {
     let array = tokens;
-    if (network.name == 'Ethereum') {
+    if (network?.name == 'Ethereum') {
       array[1].tokenValue = `${ethBalance}`;
       array[8].tokenValue = `${usdtBalance}`;
     } else if (network.name == 'BSC') {
