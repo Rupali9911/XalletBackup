@@ -1,13 +1,14 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import styles from "./styles";
-import { GroupButton } from "../../components";
-import Modal from "react-native-modal";
-import Images from "../../constants/Images";
-import cancelImg from "../../../assets/images/cancel.png"
-import { translate } from '../../walletUtils';
+import React from 'react';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
+import styles from './styles';
+import {GroupButton} from '../../components';
+import Modal from 'react-native-modal';
+import Images from '../../constants/Images';
+import cancelImg from '../../../assets/images/cancel.png';
+import {translate} from '../../walletUtils';
+import {SIZE} from '../../constants';
 
-const ShowModal = (props) => {
+const ShowModal = props => {
   const {
     title,
     description,
@@ -17,59 +18,89 @@ const ShowModal = (props) => {
     rightButtonTitle,
     onLeftPress,
     onRightPress,
-    isTitleCapital
-  } = props
+    isDelete,
+    onBackdrop,
+  } = props;
   return (
     <View style={styles.modalContainer}>
-      <Modal isVisible={isVisible}>
-        <View style={styles.reClaimcontainer}>
-
+      <Modal
+        isVisible={isVisible}
+        onBackdropPress={onBackdrop ? closeModal : null}>
+        <View
+          style={[styles.reClaimcontainer, isDelete && styles.deleteAccount]}>
           <TouchableOpacity
             style={styles.reClaimCancelBTNview}
             onPress={closeModal}>
             <Image
-              source={cancelImg}
-              style={styles.reClaimCancelButton}
+              source={isDelete ? Images.closeIcon : cancelImg}
+              style={isDelete ? {} : styles.reClaimCancelButton}
             />
           </TouchableOpacity>
-
-          <Image
-            source={Images.confirm}
-            style={styles.centerImg}
-          />
-
-          <View style={styles.reclaimView}>
-            <Text style={styles.reclaimText}>
-              {title}
-            </Text>
+          {isDelete ? (
+            <View style={{paddingTop: SIZE(25)}}>
+              <Image source={Images.deleteRed} style={styles.deleteRedImg} />
+            </View>
+          ) : (
+            <Image source={Images.confirm} style={styles.centerImg} />
+          )}
+          <View
+            style={{
+              paddingTop: isDelete ? SIZE(15) : {},
+            }}>
+            <View
+              style={isDelete ? styles.deleteAccountView : styles.reclaimView}>
+              <Text
+                style={
+                  isDelete ? styles.deleteAccountText : styles.reclaimText
+                }>
+                {title}
+              </Text>
+            </View>
           </View>
 
           <View style={styles.textView}>
-            <Text style={styles.text}>
+            <Text style={[styles.text, isDelete && styles.descriptionCenter]}>
               {description}
             </Text>
           </View>
 
           <View style={styles.groupButtonView}>
             <GroupButton
-              leftText={leftButtonTitle ? leftButtonTitle : translate('common.Cancel')}
+              leftText={
+                leftButtonTitle ? leftButtonTitle : translate('common.Cancel')
+              }
               leftDisabled={false}
               leftLoading={false}
-              onLeftPress={() => closeModal ? closeModal() : onLeftPress}
-              leftStyle={styles.rightGroupButton}
-              leftTextStyle={styles.rightGroupButtonText}
-
-              rightText={rightButtonTitle ? rightButtonTitle : translate('common.Confirm')}
+              onLeftPress={() => (closeModal ? closeModal() : onLeftPress)}
+              leftStyle={
+                isDelete
+                  ? styles.reClaimRightGroupButton
+                  : styles.rightGroupButton
+              }
+              leftTextStyle={
+                isDelete
+                  ? styles.reClaimrightGroupButtonText
+                  : styles.rightGroupButtonText
+              }
+              rightText={
+                rightButtonTitle
+                  ? rightButtonTitle
+                  : translate('common.Confirm')
+              }
               rightDisabled={false}
               rightLoading={false}
               onRightPress={onRightPress}
-              rightStyle={styles.reClaimRightGroupButton}
+              rightStyle={
+                isDelete
+                  ? styles.rightDeleteGroupButton
+                  : styles.reClaimRightGroupButton
+              }
               rightTextStyle={styles.reClaimrightGroupButtonText}
             />
           </View>
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 export default ShowModal;

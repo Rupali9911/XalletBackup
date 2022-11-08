@@ -25,6 +25,9 @@ import {
   IMAGE_BANNER_START,
   IMAGE_BANNER_END,
   SET_PROFILE_DETAILS,
+  DELETE_ACCOUNT_START,
+  DELETE_ACCOUNT_SUCCESS,
+  DELETE_ACCOUNT_FAILD,
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL, NEW_BASE_URL, API_GATEWAY_URL } from '../../common/constants';
@@ -53,6 +56,7 @@ const initialState = {
   loggedInUser: null,
   imageAvatarLoading: false,
   imageBannerLoading: false,
+  deleteAccountLoading: false,
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -178,10 +182,36 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         imageBannerLoading: false,
       };
+    case DELETE_ACCOUNT_START:
+      return {
+        ...state,
+        deleteAccountLoading: true,
+      };
+    case DELETE_ACCOUNT_SUCCESS:
+      return {
+        ...state,
+        deleteAccountLoading: false,
+      };
+    case DELETE_ACCOUNT_FAILD:
+      return {
+        ...state,
+        deleteAccountLoading: false,
+      };
     default:
       return state;
   }
 };
+
+export const deleteAccountStart = () => ({
+  type: DELETE_ACCOUNT_START,
+});
+export const deleteAccountFaild = () => ({
+  type: DELETE_ACCOUNT_FAILD,
+});
+export const deleteAccountSucces = data => ({
+  type: DELETE_ACCOUNT_SUCCESS,
+  payload: data,
+});
 
 export const startLoading = () => ({
   type: AUTH_LOADING_START,
@@ -415,6 +445,31 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
         reject(err);
       });
   });
+
+//================ Delete Account API =============
+export const deleteAccountApi = () => dispatch =>
+  new Promise((resolve, reject) => {
+    const url = `${NEW_BASE_URL}/mobile/deactivate-account`;
+    dispatch(deleteAccountStart());
+    sendRequest({
+      url: url,
+      method: 'POST',
+    })
+      .then(response => {
+        console.log(
+          '🚀 ~ file: userReducer.js ~ line 440 ~ newPromise ~ response',
+          response,
+          response?.status?.toLowerCase() === 'status deleted updated',
+        );
+        dispatch(deleteAccountSucces(response));
+        resolve(response);
+      })
+      .catch(error => {
+        dispatch(deleteAccountFaild());
+        reject(error);
+      });
+  });
+
 // =====================================================================
 
 export const setBackupStatus = data => dispatch =>

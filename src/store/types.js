@@ -263,3 +263,8 @@ export const IMAGE_AVATAR_START = 'IMAGE_AVATAR_START';
 export const IMAGE_AVATAR_END = 'IMAGE_AVATAR_END';
 export const IMAGE_BANNER_START = 'IMAGE_BANNER_START';
 export const IMAGE_BANNER_END = 'IMAGE_BANNER_END';
+
+//================= User Reducer =========================
+export const DELETE_ACCOUNT_START = 'DELETE_ACCOUNT_START';
+export const DELETE_ACCOUNT_SUCCESS = 'DELETE_ACCOUNT_SUCCESS';
+export const DELETE_ACCOUNT_FAILD = 'DELETE_ACCOUNT_FAILD';

@@ -615,8 +615,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.BLUE2,
     backgroundColor: Colors.white,
   },
+  rightDeleteGroupButton: {
+    borderWidth: 1,
+    borderColor: Colors.RED3,
+    backgroundColor: Colors.RED3,
+  },
   rightGroupButtonText: {
     color: Colors.BLUE3,
+  },
+  rightDeleteGroupButtonText: {
+    color: Colors.WHITE1,
   },
   expirationText: {
     marginTop: SIZE(15),
@@ -720,13 +728,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   reClaimcontainer: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     height: hp(42),
     width: wp(95),
     paddingHorizontal: SIZE(20),
     paddingTop: SIZE(15),
     borderRadius: SIZE(18),
     right: SIZE(8),
+  },
+  deleteAccount: {
+    height: Platform.OS === 'ios' ? hp(51) : hp(55)
   },
   reClaimCancelBTNview: {
     flexDirection: 'row',
@@ -739,13 +750,25 @@ const styles = StyleSheet.create({
     height: hp(17),
     alignSelf: 'center',
   },
+  deleteRedImg: {
+    alignSelf: 'center',
+  },
   reclaimView: {
     flexDirection: 'row',
     justifyContent: 'center',
     paddingTop: SIZE(15),
   },
+  deleteAccountView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: SIZE(35),
+  },
   reclaimText: {
     fontWeight: 'bold',
+    fontSize: SIZE(25),
+  },
+  deleteAccountText: {
+    // fontWeight: 'bold',
     fontSize: SIZE(25),
   },
   textView: {
@@ -757,6 +780,10 @@ const styles = StyleSheet.create({
     color: Colors.GREY1,
     margin: SIZE(10),
     fontSize: SIZE(12),
+  },
+  descriptionCenter:{
+    textAlign: 'center',
+    lineHeight: 16,
   },
   tokenName: {
     fontWeight: 'bold',

@@ -729,6 +729,8 @@
     "collectionList": "Collections List",
     "createCollection": "Create Collection",
     "AIChat": "Chat with AI",
+    "deleteAccount": "Delete Account",
+    "deleteAccountDescription": "Are you sure you want to delete your account? If you delete your account, you will permanently loss your data.",
     "enterMessage": "Type your message",
     "CREATED_COLLECTED": "Created / Collected",
     "LIST_COLLECTION_TABLE_SYMBOL": "Symbol",
