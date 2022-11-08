@@ -7,12 +7,7 @@ import {
   Image,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-<<<<<<< HEAD
 import { SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID } from '../constants';
-=======
-import Video from 'react-native-fast-video';
-import {SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID} from '../constants';
->>>>>>> a75e33bfb4654955f8678383557b12f6b7ad8ca0
 import Colors from '../constants/Colors';
 import Audio from '../assets/pngs/headphone-icon.png';
 

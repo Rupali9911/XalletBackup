@@ -745,11 +745,8 @@
     "typing": "Typing...",
     "TOKEN_ID": "Token Id",
     "loginWithEmail": "Login with Email",
-<<<<<<< HEAD
-    "remainWordCount": "Remaining Chat Limit"
-=======
+    "remainWordCount": "Remaining Chat Limit",
     "playbackSpeed": "Playback"
->>>>>>> b8c598cbde5935edc6e5b1132872aedf4e374218
   },
   "AwardPage": {},
   "wallet": {
