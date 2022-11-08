@@ -75,6 +75,7 @@ const Wallet = ({ route, navigation }) => {
 
   const [isBackedUp, setIsBackedUp] = useState(isBackup);
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [modalVisible, setModalVisible] = useState(isCreate);
   const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
@@ -123,6 +124,7 @@ const Wallet = ({ route, navigation }) => {
     wallet = await getWallet();
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
+      setFetching(true);
       getBalances(wallet?.address);
     } else {
       subscribeEth &&
@@ -149,6 +151,7 @@ const Wallet = ({ route, navigation }) => {
   useEffect(async () => {
     wallet = await getWallet();
     setLoading(true);
+    setFetching(true);
     getBalances(wallet?.address);
     // if (network.name == 'Ethereum' && subscribeEth == null) {
     //   subscribeEth = watchBalanceUpdate(() => {
@@ -417,6 +420,7 @@ const Wallet = ({ route, navigation }) => {
               setModalVisible(false);
               if (wallet) {
                 setLoading(true);
+                setFetching(true);
                 getBalances(wallet.address);
               }
             }}
@@ -537,11 +541,13 @@ const Wallet = ({ route, navigation }) => {
               dispatch(updateBalances(balances));
               setBalances(balances);
               setLoading(false);
+              setFetching(false);
               resolve();
             })
             .catch(err => {
               console.log('@@@ Get balance load fun error', err);
               setLoading(false);
+              setFetching(false);
               reject();
             });
         });
@@ -549,6 +555,7 @@ const Wallet = ({ route, navigation }) => {
     } else {
       console.log("@@@ Get balance inside else =======>")
       setLoading(false);
+      setFetching(false);
       alertWithSingleBtn(
         translate('wallet.common.alert'),
         translate('wallet.common.error.networkError'))
@@ -577,10 +584,12 @@ const Wallet = ({ route, navigation }) => {
             };
             setCurrencyPriceDollar(balances);
             setLoading(false);
+            setFetching(false);
             resolve();
           })
           .catch(err => {
             setLoading(false);
+            setFetching(false);
             console.log('@@@ Price in Dollarr errrrrrrrrrrrrrr', err);
             alertWithSingleBtn(
               translate('wallet.common.alert'),
@@ -617,11 +626,13 @@ const Wallet = ({ route, navigation }) => {
           dispatch(updateEthereumBalances(balances));
           setBalances(balances);
           setLoading(false);
+          setFetching(false);
           resolve();
         })
         .catch(err => {
           console.log('err', err);
           setLoading(false);
+          setFetching(false);
           reject();
         });
     });
@@ -660,10 +671,12 @@ const Wallet = ({ route, navigation }) => {
           dispatch(updateBSCBalances(balances));
           setBalances(balances);
           setLoading(false);
+          setFetching(false);
           resolve();
         })
         .catch(err => {
           setLoading(false);
+          setFetching(false);
           reject();
         });
     });
@@ -710,11 +723,13 @@ const Wallet = ({ route, navigation }) => {
           dispatch(updatePolygonBalances(balances));
           setBalances(balances);
           setLoading(false);
+          setFetching(false);
           resolve();
         })
         .catch(err => {
           console.log('err', err);
           setLoading(false);
+          setFetching(false);
           reject();
         });
     });
@@ -755,11 +770,13 @@ const Wallet = ({ route, navigation }) => {
           dispatch(updateXanaBalances(balances));
           setBalances(balances);
           setLoading(false);
+          setFetching(false);
           resolve();
         })
         .catch(err => {
           console.log('err', err);
           setLoading(false);
+          setFetching(false);
           reject();
         });
     });
@@ -801,8 +818,8 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Component render function ========================
   return (
-    // <AppBackground isBusy={balances ? loading : true}>
-    <AppBackground isBusy={balances ? loading : false}>
+    <AppBackground isBusy={balances ? loading : fetching}>
+      {/* // <AppBackground isBusy={loading}> */}
       <GradientBackground>
         <View style={styles.gradient}>
           {renderHeaderTokenSVGImage()}

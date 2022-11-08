@@ -8727,6 +8727,14 @@ export const getConfigDetailsFromEnviorment = (type, tokenType) => {
     } else {
       config.error = 'invalid tokenType';
     }
+  } else if (chainType === 'xana chain') {
+    if (tokenType === 'XETA') {
+      config.rpcURL = environment.xanaRpc;
+      config.ContractAddress = '';
+      config.ContractAbis = '';
+    } else {
+      config.error = 'invalid tokenType';
+    }
   } else {
     config.error = 'invalid chainType';
   }
