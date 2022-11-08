@@ -164,7 +164,7 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
 }
 
 export const currencyInDollar = async (pubkey, type) => {
-    console.log("@@@ currency in dollar func =======>", type)
+    // console.log("@@@ currency in dollar func =======>", type)
     let rpcUrl = ''
     let nftDex = ''
     let nftAbi = ''

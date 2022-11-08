@@ -54,9 +54,13 @@ const initialState = {
     socketOpen: false,
     requestAppId: null,
     networkType: {
-        name: "BSC",
-        value: 'binance',
-        icon: ImagesSrc.smartChain
+        id: 4,
+        name: "XANA CHAIN",
+        chainId: 76798,
+        rpc: "https://testnet.xana.net/ext/bc/2dNW4t2bMKcnAamjCX7e79iFw1LEvyb8CYWXcX7NeUUQM9TdM8/rpc",
+        image: "https://ik.imagekit.io/xanalia/Images/Logo.png",
+        status: 1,
+        networkTokens: []
     }
 }
 

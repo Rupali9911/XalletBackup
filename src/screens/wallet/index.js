@@ -38,6 +38,9 @@ import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import { balance, currencyInDollar } from './functions';
 
+import NetInfo from '@react-native-community/netinfo';
+import { alertWithSingleBtn } from '../../common/function';
+
 const ethers = require('ethers');
 var Accounts = require('web3-eth-accounts');
 
@@ -468,76 +471,87 @@ const Wallet = ({ route, navigation }) => {
 
   //======================= Get Balances Function =======================
   const getBalances = async pubKey => {
-    await priceInDollars(pubKey);
-    if (networkType?.name == 'BSC') {
-      return getBSCBalances(pubKey);
-    } else if (networkType?.name == 'Ethereum') {
-      return getEthereumBalances(pubKey);
-    } else if (networkType?.name == 'Polygon') {
-      return getPolygonBalances(pubKey);
-    } else if (networkType?.name == 'XANA CHAIN') {
-      return getXanaChainBalances(pubKey);
+    const state = await NetInfo.fetch();
+    console.log("@@@ Get balance net state ======>", state);
+    if (state.isConnected) {
+      console.log("@@@ Get balance inside if =======>")
+      await priceInDollars(pubKey);
+      if (networkType?.name == 'BSC') {
+        return getBSCBalances(pubKey);
+      } else if (networkType?.name == 'Ethereum') {
+        return getEthereumBalances(pubKey);
+      } else if (networkType?.name == 'Polygon') {
+        return getPolygonBalances(pubKey);
+      } else if (networkType?.name == 'XANA CHAIN') {
+        return getXanaChainBalances(pubKey);
+      } else {
+        return new Promise((resolve, reject) => {
+          let balanceRequests = [
+            balance(pubKey, '', '', environment.ethRpc, 'eth'),
+            balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
+            balance(pubKey, '', '', environment.polRpc, 'matic'),
+            balance(
+              pubKey,
+              environment.tnftCont,
+              environment.tnftAbi,
+              environment.bnbRpc,
+              'alia',
+            ),
+            balance(
+              pubKey,
+              environment.talCont,
+              environment.tnftAbi,
+              environment.polRpc,
+              'alia',
+            ),
+            balance(
+              pubKey,
+              environment.usdtCont,
+              environment.usdtAbi,
+              environment.ethRpc,
+              'usdt',
+            ),
+            balance(
+              pubKey,
+              environment.busdCont,
+              environment.busdAbi,
+              environment.bnbRpc,
+              'busd',
+            ),
+            // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
+            // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
+          ];
+          Promise.all(balanceRequests)
+            .then(responses => {
+              let balances = {
+                ETH: responses[0],
+                BNB: responses[1],
+                Matic: responses[2],
+                TNFT: responses[3],
+                TAL: responses[4],
+                USDT: responses[5],
+                BUSD: responses[6],
+                // ALIA: responses[5],
+                // USDC: responses[6],
+              };
+              dispatch(updateBalances(balances));
+              setBalances(balances);
+              setLoading(false);
+              resolve();
+            })
+            .catch(err => {
+              console.log('@@@ Get balance load fun error', err);
+              setLoading(false);
+              reject();
+            });
+        });
+      }
     } else {
-      return new Promise((resolve, reject) => {
-        let balanceRequests = [
-          balance(pubKey, '', '', environment.ethRpc, 'eth'),
-          balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
-          balance(pubKey, '', '', environment.polRpc, 'matic'),
-          balance(
-            pubKey,
-            environment.tnftCont,
-            environment.tnftAbi,
-            environment.bnbRpc,
-            'alia',
-          ),
-          balance(
-            pubKey,
-            environment.talCont,
-            environment.tnftAbi,
-            environment.polRpc,
-            'alia',
-          ),
-          balance(
-            pubKey,
-            environment.usdtCont,
-            environment.usdtAbi,
-            environment.ethRpc,
-            'usdt',
-          ),
-          balance(
-            pubKey,
-            environment.busdCont,
-            environment.busdAbi,
-            environment.bnbRpc,
-            'busd',
-          ),
-          // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
-          // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
-        ];
-        Promise.all(balanceRequests)
-          .then(responses => {
-            let balances = {
-              ETH: responses[0],
-              BNB: responses[1],
-              Matic: responses[2],
-              TNFT: responses[3],
-              TAL: responses[4],
-              USDT: responses[5],
-              BUSD: responses[6],
-              // ALIA: responses[5],
-              // USDC: responses[6],
-            };
-            dispatch(updateBalances(balances));
-            setBalances(balances);
-            setLoading(false);
-            resolve();
-          })
-          .catch(err => {
-            console.log('@@@ Get balance load fun error', err);
-            setLoading(false);
-            reject();
-          });
-      });
+      console.log("@@@ Get balance inside else =======>")
+      setLoading(false);
+      alertWithSingleBtn(
+        translate('wallet.common.alert'),
+        translate('wallet.common.error.networkError'))
     }
   };
 
@@ -568,6 +582,9 @@ const Wallet = ({ route, navigation }) => {
           .catch(err => {
             setLoading(false);
             console.log('@@@ Price in Dollarr errrrrrrrrrrrrrr', err);
+            alertWithSingleBtn(
+              translate('wallet.common.alert'),
+              translate('wallet.common.error.networkError'))
             reject();
           });
       });
@@ -784,7 +801,8 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Component render function ========================
   return (
-    <AppBackground isBusy={balances ? loading : true}>
+    // <AppBackground isBusy={balances ? loading : true}>
+    <AppBackground isBusy={balances ? loading : false}>
       <GradientBackground>
         <View style={styles.gradient}>
           {renderHeaderTokenSVGImage()}

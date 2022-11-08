@@ -135,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
           dispatch(updateNetworkType(selectedNetwork));
         }
       } else {
-        dispatch(updateNetworkType(res[2]));
+        dispatch(updateNetworkType(res[3]));
       }
       dispatch(setNetworkData(res));
     }
