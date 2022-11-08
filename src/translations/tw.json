@@ -746,7 +746,11 @@
     "typing": "打字...",
     "TOKEN_ID": "TOKEN ID",
     "loginWithEmail": "使用電子郵件登錄",
+<<<<<<< HEAD
     "remainWordCount": "剩餘聊天限制"
+=======
+    "playbackSpeed": "播放速度"
+>>>>>>> b8c598cbde5935edc6e5b1132872aedf4e374218
   },
   "AwardPage": {},
   "wallet": {

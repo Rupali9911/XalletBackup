@@ -746,7 +746,11 @@
     "typing": "タイピング...",
     "TOKEN_ID": "トークンID",
     "loginWithEmail": "メールでログイン",
+<<<<<<< HEAD
     "remainWordCount": "残りのチャット制限"
+=======
+    "playbackSpeed": "再生速度"
+>>>>>>> b8c598cbde5935edc6e5b1132872aedf4e374218
   },
   "AwardPage": {},
   "wallet": {
