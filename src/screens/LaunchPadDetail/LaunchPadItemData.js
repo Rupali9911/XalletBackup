@@ -74,6 +74,7 @@ export default function LaunchPadItemData(props) {
   const renderBannerIconImage = () => {
     return (
       <C_Image
+        style={styles.userIconLoader}
         type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
         uri={iconImage}
         imageStyle={styles.iconImage}
