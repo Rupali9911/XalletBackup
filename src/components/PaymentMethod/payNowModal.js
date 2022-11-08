@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -12,27 +12,27 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
-import {RF, wp, hp} from '../../constants/responsiveFunct';
-import {translate} from '../../walletUtils';
+import { RF, wp, hp } from '../../constants/responsiveFunct';
+import { translate } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
-import {useSelector} from 'react-redux';
-import {alertWithSingleBtn} from '../../common/function';
-import {BlurView} from '@react-native-community/blur';
-import {IconButton} from 'react-native-paper';
-import {numberWithCommas} from '../../utils';
+import { useSelector } from 'react-redux';
+import { alertWithSingleBtn } from '../../common/function';
+import { BlurView } from '@react-native-community/blur';
+import { IconButton } from 'react-native-paper';
+import { numberWithCommas } from '../../utils';
 import {
   handleTransactionError,
   sendCustomTransaction,
 } from '../../screens/wallet/functions/transactionFunctions';
 
 const PaymentNow = props => {
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
-  const {userData} = useSelector(state => state.UserReducer);
-  const {buyNFTRes} = useSelector(state => state.detailsNFTReducer);
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
+  const { userData } = useSelector(state => state.UserReducer);
+  const { buyNFTRes } = useSelector(state => state.detailsNFTReducer);
   const walletAddress = userData?.userWallet?.address;
 
-  const {visible, onRequestClose, nftId, priceInDollar} = props;
+  const { visible, onRequestClose, nftId, priceInDollar } = props;
   const [opacity, setOpacity] = useState(0.88);
   const [loading, setLoading] = useState(false);
 
@@ -48,16 +48,16 @@ const PaymentNow = props => {
 
   const payByWallet = async () => {
     try {
-      console.log('paymentObject', paymentObject, buyNFTRes);
+      // console.log('paymentObject', paymentObject, buyNFTRes);
 
       const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
       const approveData = buyNFTRes?.dataReturn?.approveData;
       const signData = buyNFTRes?.dataReturn?.signData;
       if (approveAllData) {
-        console.log(
-          '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
-          approveAllData,
-        );
+        // console.log(
+        //   '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
+        //   approveAllData,
+        // );
       }
 
       // setOpenTransactionPending(true);
@@ -110,7 +110,6 @@ const PaymentNow = props => {
             buyNFTRes?.nftNetwork?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
 
               // getNFTDetails(true);
@@ -160,7 +159,7 @@ const PaymentNow = props => {
         />
         <View style={styles.contentContainer}>
           <TouchableOpacity
-            style={{alignSelf: 'flex-end'}}
+            style={{ alignSelf: 'flex-end' }}
             onPress={() => {
               // setOpacity(0);
               onRequestClose();
@@ -192,11 +191,11 @@ const PaymentNow = props => {
             <Text numberOfLines={1} style={styles.amount}>
               {paymentObject && paymentObject.type == 'wallet'
                 ? numberWithCommas(
-                    parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
-                  ) + ' '
+                  parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
+                ) + ' '
                 : numberWithCommas(
-                    parseFloat(Number(priceInDollar).toFixed(2)),
-                  ) || 0}
+                  parseFloat(Number(priceInDollar).toFixed(2)),
+                ) || 0}
             </Text>
             {paymentObject && paymentObject.type !== 'card' && (
               <Text style={styles.symbol}>
@@ -216,11 +215,11 @@ const PaymentNow = props => {
             <Text style={styles.value}>
               {paymentObject && paymentObject.type == 'wallet'
                 ? numberWithCommas(
-                    parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
-                  )
+                  parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
+                )
                 : numberWithCommas(
-                    parseFloat(Number(priceInDollar).toFixed(2)),
-                  ) || 0}{' '}
+                  parseFloat(Number(priceInDollar).toFixed(2)),
+                ) || 0}{' '}
               {paymentObject && paymentObject.type == 'wallet'
                 ? `${paymentObject.item.type}`
                 : ''}
@@ -243,7 +242,7 @@ const PaymentNow = props => {
             view={loading}
           />
         </View>
-        <SafeAreaView style={{backgroundColor: Colors.white}} />
+        <SafeAreaView style={{ backgroundColor: Colors.white }} />
       </View>
     </Modal>
   );

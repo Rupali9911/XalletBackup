@@ -85,9 +85,10 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect First 1111 =======================
   useEffect(() => {
-    singleSocket.connectSocket().then(() => {
-      // ping(wallet.address);
-    });
+    console.log("@@@ On wallet tab, first useEffect =======>");
+    // singleSocket.connectSocket().then(() => {
+    //   // ping(wallet.address);
+    // });
     // const socketSubscribe = Events.asObservable().subscribe({
     //   next: data => {
     //     console.log('socket subscribe', data);
@@ -105,7 +106,9 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Second 2222 =======================
   useEffect(() => {
+    console.log("@@@ On wallet tab, second useEffect blur =======>");
     const unsubscribeBlur = navigation.addListener('blur', () => {
+      console.log("@@@ On wallet tab, second useEffect blur inside=======>");
       setIsBackedUp(isBackup);
     });
     return () => {
@@ -116,10 +119,13 @@ const Wallet = ({ route, navigation }) => {
   //======================== Use Effect Third 3333 =======================
   useEffect(async () => {
     wallet = await getWallet();
+    console.log("@@@ On wallet tab, third useEffect wallet 1111=======>");
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
-      getBalances(wallet.address);
+      getBalances(wallet?.address);
+      console.log("@@@ On wallet tab, third useEffect wallet 2222 if=======>");
     } else {
+      console.log("@@@ On wallet tab, third useEffect wallet 3333 else =======>");
       subscribeEth &&
         subscribeEth.unsubscribe((error, success) => {
           if (success) console.log('Successfully unsubscribed!');
@@ -138,14 +144,17 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Four 4444=======================
   useEffect(() => {
+    console.log("@@@ On wallet tab, Is backup useEffect wallet 1111 =======>");
     setIsBackedUp(isBackup);
   }, [isFocused]);
 
   //======================== Use Effect Four 5555 =======================
   useEffect(async () => {
+    console.log("@@@ On wallet tab, fourth useEffect wallet 1111 =======>");
     wallet = await getWallet();
     setLoading(true);
     getBalances(wallet?.address);
+    console.log("@@@ On wallet tab, fourth useEffect wallet 2222=======>");
     // if (network.name == 'Ethereum' && subscribeEth == null) {
     //   subscribeEth = watchBalanceUpdate(() => {
     //     getBalances(wallet.address);
@@ -204,7 +213,9 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Four 6666 =======================
   useEffect(() => {
+    console.log("@@@ On wallet tab, If balance useEffect wallet 1111 =======>");
     if (balances) {
+      console.log("@@@ On wallet tab, Inside If balance useEffect wallet 1111 =======>");
       if (networkType?.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
         setTotalValue(value);
@@ -452,8 +463,10 @@ const Wallet = ({ route, navigation }) => {
 
   //======================= Get Balances Function =======================
   const getBalances = async pubKey => {
+    console.log("@@@ get balance fun =======>")
     await priceInDollars(pubKey);
     if (networkType?.name == 'BSC') {
+      console.log("@@@ get balance fun BSC=======>")
       return getBSCBalances(pubKey);
     } else if (networkType?.name == 'Ethereum') {
       return getEthereumBalances(pubKey);
@@ -515,7 +528,7 @@ const Wallet = ({ route, navigation }) => {
             resolve();
           })
           .catch(err => {
-            console.log('err', err);
+            console.log('@@@ Get balance load fun error', err);
             setLoading(false);
             reject();
           });
@@ -525,31 +538,35 @@ const Wallet = ({ route, navigation }) => {
 
   //=================== Price In Dollerrs =============================
   const priceInDollars = pubKey => {
-    return new Promise((resolve, reject) => {
-      let balanceRequests = [
-        currencyInDollar(pubKey, 'BSC'),
-        currencyInDollar(pubKey, 'ETH'),
-        currencyInDollar(pubKey, 'Polygon'),
-        currencyInDollar(pubKey, 'ALIA'),
-      ];
-      Promise.all(balanceRequests)
-        .then(responses => {
-          let balances = {
-            BNB: responses[0],
-            ETH: responses[1],
-            MATIC: responses[2],
-            ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
-          };
-          setCurrencyPriceDollar(balances);
-          setLoading(false);
-          resolve();
-        })
-        .catch(err => {
-          console.log('err', err);
-          setLoading(false);
-          reject();
-        });
-    });
+    try {
+      return new Promise((resolve, reject) => {
+        let balanceRequests = [
+          currencyInDollar(pubKey, 'BSC'),
+          currencyInDollar(pubKey, 'ETH'),
+          currencyInDollar(pubKey, 'Polygon'),
+          currencyInDollar(pubKey, 'ALIA'),
+        ];
+        Promise.all(balanceRequests)
+          .then(responses => {
+            let balances = {
+              BNB: responses[0],
+              ETH: responses[1],
+              MATIC: responses[2],
+              ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+            };
+            setCurrencyPriceDollar(balances);
+            setLoading(false);
+            resolve();
+          })
+          .catch(err => {
+            console.log('err', err);
+            setLoading(false);
+            reject();
+          });
+      });
+    } catch (error) {
+      console.log("@@@ price in dollars error ========>", error)
+    }
   };
 
   //====================== Get Ethereum Balances ========================
@@ -589,7 +606,7 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get BSC Balances ========================
   const getBSCBalances = pubKey => {
-    // console.log("@@@ get BSC balance ========>", pubKey);
+    console.log("@@@ get BSC balance ========>",);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
@@ -674,7 +691,6 @@ const Wallet = ({ route, navigation }) => {
           setBalances(balances);
           setLoading(false);
           resolve();
-          console.log("balance po######", balances)
         })
         .catch(err => {
           console.log('err', err);
@@ -686,7 +702,7 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Other functions =======================
   const ping = async public_key => {
-    console.log('accounts', public_key);
+
     let data = {
       type: 'ping',
       data: {
@@ -704,7 +720,6 @@ const Wallet = ({ route, navigation }) => {
   };
 
   const connect = async msg => {
-    console.log('connecting', msg);
     let data = {
       type: 'connect',
       data: {

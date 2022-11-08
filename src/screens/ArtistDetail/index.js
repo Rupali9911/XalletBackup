@@ -114,7 +114,6 @@ const Created = ({ route }) => {
     }, [isFocusedHistory])
 
     const getNFTlist = useCallback((page) => {
-        console.log('getNFTlist, id', id)
         dispatch(myNFTList(page, id));
     }, []);
 
@@ -347,7 +346,7 @@ function ArtistDetail({
     const isMounted = useIsMounted();
 
     useEffect(() => {
-        console.log('route.params.id', route?.params?.id)
+        // console.log('route.params.id', route?.params?.id)
         const url = route?.params?.id.includes('0x') ?
             `${BASE_URL}/user/get-public-profile?publicAddress=${route?.params?.id}` :
             `${BASE_URL}/user/get-public-profile?userId=${route?.params?.id}`
@@ -362,7 +361,6 @@ function ArtistDetail({
         fetch(url, body)
             .then(response => response.json())
             .then(res => {
-                console.log(res.data, "res.data testing", res, isMounted.current)
                 if (isMounted.current) {
                     if (res.data) {
                         setData(res.data);

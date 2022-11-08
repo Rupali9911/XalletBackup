@@ -332,7 +332,6 @@ const RecoveryPhrase = ({ route, navigation }) => {
                   if (recover) {
                     recoverWallet();
                   } else {
-                    // dispatch(setUserAuthData(wallet, true));
                     navigation.replace('verifyPhrase', { wallet });
                   }
                 }

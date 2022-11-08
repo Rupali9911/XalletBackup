@@ -100,9 +100,9 @@ export const newPageChange = data => ({
   payload: data,
 });
 
-export const newNFTData = (category, sort, limit, pageNum) => {  
-  return (dispatch,getState) => {
-    const {userData} = getState().UserReducer;
+export const newNFTData = (category, sort, limit, pageNum) => {
+  return (dispatch, getState) => {
+    const { userData } = getState().UserReducer;
     let userId = userData.id
     let pageSize = limit ? limit : 10;
     dispatch(newNftLoadStart())
@@ -239,7 +239,6 @@ export const favoriteNFTList = (page, limit, sort) => {
     if (user) {
       body_data.owner = wallet?.address || user?._id;
     }
-    // console.log('body_data',body_data);
     let fetch_data_body = {
       method: 'POST',
       body: JSON.stringify(body_data),
@@ -248,7 +247,6 @@ export const favoriteNFTList = (page, limit, sort) => {
         'Content-Type': 'application/json',
       },
     };
-    console.log('fetch_data_body', JSON.stringify(fetch_data_body))
     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
       .then(response => response.json())
       .then(json => {

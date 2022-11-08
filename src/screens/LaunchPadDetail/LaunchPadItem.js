@@ -13,7 +13,7 @@ import { Loader } from '../../components';
 import { colors } from '../../res';
 import CollectionItem from '../../components/CollectionItem';
 import LaunchPadItemData from '../LaunchPadDetail/LaunchPadItemData'
-import {launchpadData} from "./launchpadData";
+import { launchpadData } from "./launchpadData";
 import {
     collectionListReset,
     collectionLoadStart,
@@ -65,24 +65,24 @@ const LaunchPadItem = () => {
                 creatorInfo={item.creatorInfo}
                 blind={item.blind}
                 onPress={() => {
-                    console.log('LaunchPadItem ========', item);
-                   navigation.push('CollectionDetail', { isBlind: true, collectionId: "61c9adbfa8a0114d059c89c3", isHotCollection: false });
+                    // console.log('LaunchPadItem ========', item);
+                    navigation.push('CollectionDetail', { isBlind: true, collectionId: "61c9adbfa8a0114d059c89c3", isHotCollection: false });
 
-                //     if (item.redirect) {
-                //         navigation.push('CollectionDetail',
-                //             {
-                //                 isBlind: false,
-                //                 collectionId: item._id,
-                //                 isHotCollection: true,
-                //                 isStore: item.redirect,
-                //             });
-                //     } else if (item.blind) {
-                //         console.log('LaunchPadItem ========collection tab => blind1', item.blind, item.collectionId)
-                //         navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
-                //     } else {
-                //        navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
-                //     }
-                 }}
+                    //     if (item.redirect) {
+                    //         navigation.push('CollectionDetail',
+                    //             {
+                    //                 isBlind: false,
+                    //                 collectionId: item._id,
+                    //                 isHotCollection: true,
+                    //                 isStore: item.redirect,
+                    //             });
+                    //     } else if (item.blind) {
+                    //         console.log('LaunchPadItem ========collection tab => blind1', item.blind, item.collectionId)
+                    //         navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
+                    //     } else {
+                    //        navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
+                    //     }
+                }}
             />
         );
     };
@@ -95,38 +95,38 @@ const LaunchPadItem = () => {
             {/*CollectionReducer.collectionLoading ? (*/}
             {/*    <Loader />*/}
             {/*) : CollectionReducer.collectionList.length !== 0 ? (*/}
-                <FlatList
-                    //data={CollectionReducer.collectionList}
-                    data={launchpadData}
-                    horizontal={false}
-                    numColumns={2}
-                    initialNumToRender={14}
-                    // onRefresh={() => {
-                    //     dispatch(collectionLoadStart());
-                    //     handleRefresh();
-                    // }}
-                    // refreshing={
-                    //     CollectionReducer.collectionPage === 1 &&
-                    //     CollectionReducer.collectionLoading
-                    // }
-                    renderItem={renderItem}
-                    // onEndReached={() => {
-                    //     if (
-                    //         !CollectionReducer.collectionLoading &&
-                    //         CollectionReducer.collectionTotalCount !==
-                    //         CollectionReducer.collectionList.length
-                    //     ) {
-                    //         let num = CollectionReducer.collectionPage + 1;
-                    //         getCollection(num, isSelectTab);
-                    //         dispatch(collectionPageChange(num));
-                    //     }
-                    // }}
-                    onEndReachedThreshold={0.4}
-                    keyExtractor={(v, i) => 'item_' + i}
-                    ListFooterComponent={renderFooter}
-                    pagingEnabled={false}
-                    legacyImplementation={false}
-                />
+            <FlatList
+                //data={CollectionReducer.collectionList}
+                data={launchpadData}
+                horizontal={false}
+                numColumns={2}
+                initialNumToRender={14}
+                // onRefresh={() => {
+                //     dispatch(collectionLoadStart());
+                //     handleRefresh();
+                // }}
+                // refreshing={
+                //     CollectionReducer.collectionPage === 1 &&
+                //     CollectionReducer.collectionLoading
+                // }
+                renderItem={renderItem}
+                // onEndReached={() => {
+                //     if (
+                //         !CollectionReducer.collectionLoading &&
+                //         CollectionReducer.collectionTotalCount !==
+                //         CollectionReducer.collectionList.length
+                //     ) {
+                //         let num = CollectionReducer.collectionPage + 1;
+                //         getCollection(num, isSelectTab);
+                //         dispatch(collectionPageChange(num));
+                //     }
+                // }}
+                onEndReachedThreshold={0.4}
+                keyExtractor={(v, i) => 'item_' + i}
+                ListFooterComponent={renderFooter}
+                pagingEnabled={false}
+                legacyImplementation={false}
+            />
             {/*// ) : (*/}
             {/*//     <View style={styles.sorryMessageCont}>*/}
             {/*//         <Text style={styles.sorryMessage}>No Launch Pad</Text>*/}

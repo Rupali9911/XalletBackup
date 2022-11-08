@@ -97,7 +97,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       }
       if (routeParams && routeParams.name == "collection") {
         let collectData = routeParams.data;
-        // console.log(collectData)
         setScreenStatus(routeParams.status);
         setCollectionName(collectData.collectionName);
         setCollectionSymbol(collectData.collectionSymbol);
@@ -105,7 +104,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         setCollectionAdd(collectData.collectionAddress);
         setBannerImage({ path: collectData.bannerImage });
         setIconImage({ path: collectData.iconImage })
-        // console.log("CollectionAddress######", collectionAdd)
         if (collectData.chainType !== networkType.value) {
           let networktype = collectData.chainType.toLowerCase() == "binance" ?
             translate("common.BinanceNtwk") :
@@ -117,7 +115,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
             setDisableAll(true) : setDisableAll(false);
         }
       } else if (collectionData) {
-        // console.log("@@@ Edit collection data =========>", collectionData)
         updateCollectionData(collectionData)
       }
     }
@@ -135,7 +132,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         }
       })
       if (res && res?.id) {
-        // console.log(res.type, userData?.id, res.userId)
         if (res?.userId === userData?.id && res?.type === 4) {
           setCollectionName(res?.name);
           setCollectionSymbol(res?.symbol);
@@ -163,7 +159,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       height: v == "banner" ? 300 : 512,
       cropping: true
     }).then(image => {
-      // console.log("@@@ On photo upload image ==========>", image);
       if (v == "banner") {
         if (image.height <= 300 && image.width <= 1600) {
           if (image.size > 100 * 1024 * 1024) {
@@ -227,7 +222,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       method: 'POST',
       data
     })
-    console.log("@@@ Create collection API =========>", res)
     if (res.collection && res.dataReturn?.signData) {
       handleUploadMedia(res.collection.id);
       await mintCollection(res.dataReturn.signData);
@@ -258,8 +252,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
 
   // ============== Handle Upload Media Function ========================
   const handleUploadMedia = async (collectionId) => {
-    console.log("@@@ Handle upload media func banner =========>", bannerImage);
-    console.log("@@@ Handle upload media func icon =========>", iconImage);
     if (screenStatus === 'new') {
       if (bannerImage && iconImage) {
         // For banner image
@@ -342,7 +334,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       data: signData.data,
       chainId: currentNetwork?.chainId,
     }
-    console.log("@@@ transaction parameters ==========>", transactionParameters)
     sendCustomTransaction(
       transactionParameters,
       walletAddress,
@@ -350,7 +341,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       currentNetwork?.name,
     )
       .then(res => {
-        console.log('@@@ Transaction response on collection.js ===========>', res);
         alertWithSingleBtn('', translate('common.tansactionSuccessFull'));
         setOpenTransactionPending(false)
       })
@@ -372,7 +362,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
 
   //====================== Edit/Update Old Collection Function =======================
   const saveEditAsDraftCollection = async () => {
-    console.log("@@@ Update collection part ========>", collectionData);
     changeLoadingState(true);
     await handleUploadMedia(collectionData?.id);
     const data = getUpdatedData()

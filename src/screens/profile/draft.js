@@ -89,7 +89,6 @@ const Draft = ({ route }) => {
             .then(res => {
                 setMainLoader(false);
                 setChildLoader(false);
-                console.log(res, "res collection draft success")
 
                 if (res.data.success) {
 
@@ -122,7 +121,6 @@ const Draft = ({ route }) => {
             .catch(e => {
                 setMainLoader(false);
                 setChildLoader(false)
-                console.log(e.response, "collection created list error");
                 alertWithSingleBtn(
                     translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed")

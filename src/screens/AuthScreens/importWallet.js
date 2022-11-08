@@ -97,7 +97,6 @@ const ImportWallet = ({ route, navigation }) => {
             const privateKey = `0x${wallet.getPrivateKey().toString('hex')}`;
             var web3 = new Web3(Web3.givenProvider);
 
-            console.log('SIGN_MESSAGE', SIGN_MESSAGE);
             const signature = await web3.eth.accounts.sign(
               SIGN_MESSAGE,
               privateKey,
@@ -109,7 +108,6 @@ const ImportWallet = ({ route, navigation }) => {
               signature: signature.signature,
             };
             setWallet(account);
-            // dispatch(setUserAuthData(account));
             dispatch(setPasscode(''));
             dispatch(loginExternalWallet(account, false))
               .then(() => {
@@ -164,11 +162,7 @@ const ImportWallet = ({ route, navigation }) => {
             privateKey: mnemonicWallet.privateKey,
             signature: signature.signature,
           };
-          console.log(mnemonicWallet.mnemonic);
-          console.log(mnemonicWallet.address);
-          console.log(mnemonicWallet.privateKey);
           setWallet(account);
-          // dispatch(setUserAuthData(account));
           dispatch(setPasscode(''));
           dispatch(loginExternalWallet(account, false))
             .then(() => {

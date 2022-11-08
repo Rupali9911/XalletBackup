@@ -61,7 +61,6 @@ export const getAllCards = (token) => (dispatch) =>
 
 export const addCard = (token, data) => (dispatch) =>
     new Promise((resolve, reject) => {
-        console.log('request data save user card', data)
         sendRequest({
             url: `${BASE_URL}/stripe/save-user-card`,
             method: 'POST',

@@ -17,7 +17,6 @@ import { environment, translate } from '../../walletUtils';
 export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
   const coin = route?.params?.coin;
-  console.log("Checking coin type", coin.type)
   const copyAddress = () => {
     Clipboard.setString(
       transactionInfo?.direction == 'in'
@@ -39,8 +38,7 @@ export default function transactionsDetail({ route }) {
       Linking.openURL(`${environment.ethereumScanURL}${transactionInfo?.hash}`);
     }
   };
-  console.log(coin, "coin #########")
-  { console.log(transactionInfo) }
+  { }
   return (
     <AppBackground>
       <AppHeader

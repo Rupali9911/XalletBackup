@@ -1,8 +1,8 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
 import NumberFormat from 'react-number-format';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -10,25 +10,25 @@ import TextView from '../../components/appText';
 import GradientBackground from '../../components/gradientBackground';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {BASE_URL} from '../../common/constants';
+import { BASE_URL } from '../../common/constants';
 import {
     addAllBnbTransactions,
     addAllEthTransactions,
     addAllMaticTransactions,
 } from '../../store/reducer/walletReducer';
 import testnet from "../../common/networkType"
-import {environment, IsTestNet, translate} from '../../walletUtils';
-import {HeaderBtns} from './components/HeaderButtons';
+import { environment, IsTestNet, translate } from '../../walletUtils';
+import { HeaderBtns } from './components/HeaderButtons';
 import History from './components/History';
-import {balance} from './functions';
-import {networkType} from '../../common/networkType'
-import {Loader} from "../../components";
+import { balance } from './functions';
+import { networkType } from '../../common/networkType'
+import { Loader } from "../../components";
 
-const TokenDetail = ({route, navigation}) => {
-    const {} = route.params;
-    const {wallet} = useSelector(state => state.UserReducer);
+const TokenDetail = ({ route, navigation }) => {
+    const { } = route.params;
+    const { wallet } = useSelector(state => state.UserReducer);
     const {
         ethBalance,
         bnbBalance,
@@ -67,7 +67,7 @@ const TokenDetail = ({route, navigation}) => {
         let type = '';
 
         switch (item.type) {
-            case 'ETH' :
+            case 'ETH':
                 rpc = environment.ethRpc;
                 type = 'eth';
                 break;
@@ -116,14 +116,14 @@ const TokenDetail = ({route, navigation}) => {
 
     const getData = () => {
         return new Promise((resolve, reject) => {
-            getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase()) .then(responses => {
-                console.log('responses', responses)
+            getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase()).then(responses => {
+                // console.log('responses', responses)
                 resolve();
             })
-            .catch(err => {
-                console.log('err', err);
-                reject();
-            });
+                .catch(err => {
+                    console.log('err', err);
+                    reject();
+                });
 
 
             // const requests = [getBalance()];
@@ -146,7 +146,7 @@ const TokenDetail = ({route, navigation}) => {
     const getTokenValue = () => {
         let totalValue = 0;
         if (item.type == 'ETH' && item.network !== 'Polygon') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
             totalValue = value;
         } else if (item.type == 'BNB') {
@@ -156,26 +156,26 @@ const TokenDetail = ({route, navigation}) => {
             let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.type === 'TNFT') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.type == 'TAL') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.type == 'USDC') {
             let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.type === 'WETH' && item.network === "Polygon") {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(wethBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.network === 'BSC' && item.type == 'ALIA') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.network === 'Polygon' && item.type == 'ALIA') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
         } else if (item.type == 'BUSD') {
@@ -191,7 +191,7 @@ const TokenDetail = ({route, navigation}) => {
 
     const getTransactionsByType = (address, type, coin) => {
         coin === "tnft" || coin === "tal" ? coin = "alia" : coin
-        console.log('address,type,coin', address, type, coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
+        // console.log('address,type,coin', address, type, coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
         return new Promise((resolve, reject) => {
             fetch(
                 `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type === "ethereum" ? type = "eth" : type}&networkType=${networkType}&coin=${coin}`,
@@ -201,7 +201,7 @@ const TokenDetail = ({route, navigation}) => {
                     return response.json();
                 })
                 .then(res => {
-                    console.log('response of xanawallet/fetch-transactions', res);
+                    // console.log('response of xanawallet/fetch-transactions', res);
                     setLoading(false);
                     if (res.success) {
                         if (type == 'eth') {
@@ -223,15 +223,15 @@ const TokenDetail = ({route, navigation}) => {
     };
     return (
         <AppBackground
-            //isBusy={loading}
+        //isBusy={loading}
         >
             <GradientBackground>
                 <View style={styles.gradient}>
-                    <AppHeader showBackButton isWhite title={item.tokenName}/>
+                    <AppHeader showBackButton isWhite title={item.tokenName} />
                     {item && (
                         <View style={styles.balanceContainer}>
                             <View style={styles.profileCont}>
-                                <Image style={styles.profileImage} source={item.icon}/>
+                                <Image style={styles.profileImage} source={item.icon} />
                             </View>
 
                             <NumberFormat
@@ -253,13 +253,13 @@ const TokenDetail = ({route, navigation}) => {
                     <View style={[styles.headerBtns, styles.headerBottomCont]}>
                         <HeaderBtns
                             onPress={() => {
-                                navigation.navigate('send', {item, type: item.type});
+                                navigation.navigate('send', { item, type: item.type });
                             }}
                             image={ImagesSrc.send}
                             label={translate('wallet.common.send')}
                         />
                         <HeaderBtns
-                            onPress={() => navigation.navigate('receive', {item})}
+                            onPress={() => navigation.navigate('receive', { item })}
                             image={ImagesSrc.receive}
                             label={translate('wallet.common.receive')}
                         />
@@ -271,8 +271,8 @@ const TokenDetail = ({route, navigation}) => {
                     </View>
                 </View>
             </GradientBackground>
-            {loading ? <Loader/> :
-                <History coin={item} onRefresh={getData}/>}
+            {loading ? <Loader /> :
+                <History coin={item} onRefresh={getData} />}
         </AppBackground>
     );
 };

@@ -90,7 +90,6 @@ const Collection = ({ route }) => {
             .then(res => {
                 setChildLoader(false);
                 setMainLoader(false);
-                console.log(res, "res collection created success")
 
                 if (res.data.success) {
 
@@ -116,7 +115,6 @@ const Collection = ({ route }) => {
             .catch(e => {
                 setChildLoader(false);
                 setMainLoader(false);
-                console.log(e.response, "collection created list error");
                 // alertWithSingleBtn(
                 //     translate("wallet.common.alert"),
                 //     translate("wallet.common.error.networkFailed")

@@ -531,7 +531,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
 
           //       // checkNFTOnAuction();
         } else if (res.data === 'No record found') {
-          console.log('res.data.data', res.data, "getDetailNFT_res");
         }
       })
       .catch(err => {

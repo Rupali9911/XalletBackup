@@ -85,11 +85,9 @@ const Cards = ({ route, navigation }) => {
     const params = {
       customerCardId: id,
     };
-    console.log('params', params);
     setLoading(true);
     dispatch(deleteCard(userData.access_token, params))
       .then(response => {
-        console.log('delete response', response);
         if (response.success) {
           alertWithSingleBtn(
             translate('wallet.common.alert'),
@@ -204,7 +202,6 @@ const Cards = ({ route, navigation }) => {
               onPress={() => {
                 // navigation.navigate("AddCard")
                 if (defaultCard) {
-                  console.log("4-Default card selected", defaultCard);
                   dispatch(
                     setPaymentObject({
                       item: defaultCard,

@@ -18,11 +18,11 @@ export const ApiCalls = async (url, method, body, headers) => {
         fetch(url, requestOptions)
             .then(response => {
                 const statusCode = response.status;
-                console.log('response', response.status);
 
-                try{
+
+                try {
                     return response.json();
-                }catch(err){
+                } catch (err) {
                     if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
                         throw `Try again !!!`;
                     }

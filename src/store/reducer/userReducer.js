@@ -1,7 +1,7 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {UserErrorMessage} from '../../constants';
+import { UserErrorMessage } from '../../constants';
 import RNFetchBlob from 'rn-fetch-blob';
 import {
   CONNECT_MODAL_STATE,
@@ -26,15 +26,15 @@ import {
   IMAGE_BANNER_END,
   SET_PROFILE_DETAILS,
 } from '../types';
-import {getSig} from '../../screens/wallet/functions';
-import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
-import {translate} from '../../walletUtils';
-import {alertWithSingleBtn} from '../../common/function';
-import {setConnectedApps} from './walletReducer';
-import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
-import {reject} from 'lodash';
-import {resolve} from 'path-browserify';
-import {Alert} from 'react-native';
+import { getSig } from '../../screens/wallet/functions';
+import { BASE_URL, NEW_BASE_URL, API_GATEWAY_URL } from '../../common/constants';
+import { translate } from '../../walletUtils';
+import { alertWithSingleBtn } from '../../common/function';
+import { setConnectedApps } from './walletReducer';
+import sendRequest, { getAccessToken } from '../../helpers/AxiosApiRequest';
+import { reject } from 'lodash';
+import { resolve } from 'path-browserify';
+import { Alert } from 'react-native';
 
 const initialState = {
   loading: false,
@@ -132,12 +132,12 @@ export default UserReducer = (state = initialState, action) => {
       let _data = action.payload;
       return {
         ...state,
-        userData: {..._data},
+        userData: { ..._data },
       };
     case SET_PROFILE_DETAILS:
       return {
         ...state,
-        profileData: {...action.payload},
+        profileData: { ...action.payload },
       };
 
     case UPDATE_BACKUP:
@@ -284,7 +284,7 @@ export const endLoader = () => dispatch =>
 
 export const loadFromAsync = asyncData => (dispatch, getState) => {
   if (asyncData && asyncData.userData) {
-    const {userData, BackedUp, apps} = asyncData;
+    const { userData, BackedUp, apps } = asyncData;
     dispatch(
       setUserData({
         data: userData,
@@ -353,16 +353,16 @@ export const loadProfileFromAsync = id => dispatch =>
 
 export const setUserAuthData =
   (data, isCreate = false) =>
-  dispatch =>
-    new Promise(async (resolve, reject) => {
-      dispatch(startLoading());
-      AsyncStorage.setItem('@WALLET', JSON.stringify(data));
-      dispatch(setUserData({data, isCreate}));
-    });
+    dispatch =>
+      new Promise(async (resolve, reject) => {
+        dispatch(startLoading());
+        AsyncStorage.setItem('@WALLET', JSON.stringify(data));
+        dispatch(setUserData({ data, isCreate }));
+      });
 
 export const updateCreateState = () => dispatch =>
   new Promise((resolve, reject) => {
-    dispatch({type: UPDATE_CREATE});
+    dispatch({ type: UPDATE_CREATE });
     resolve();
   });
 
@@ -405,7 +405,6 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
           );
           resolve();
         } else {
-          console.log('response from login', response);
           dispatch(endLoading());
           reject(response);
         }
@@ -435,7 +434,7 @@ export const signOut = () => {
 export const updateProfileImage = formData => async (dispatch, getState) => {
   dispatch(startLoading());
 
-  const {data} = getState().UserReducer;
+  const { data } = getState().UserReducer;
   // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
   const headers = {
@@ -443,7 +442,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     Authorization: `Bearer ${data.token}`,
   };
   await axios
-    .post(`${BASE_URL}/user/update-profile-image`, formData, {headers: headers})
+    .post(`${BASE_URL}/user/update-profile-image`, formData, { headers: headers })
     .then(res => {
       dispatch(updateUserData(res.data.data));
     })
@@ -498,18 +497,18 @@ export const updateProfile = (props, id) => async dispatch => {
     dispatch(getUserData(id));
     if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
       let key = UserErrorMessage[res.messageCode].key;
-      dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
+      dispatch(setToastMsg({ error: true, msg: translate(`common.${key}`) }));
     }
   });
 };
 
 export const verifyEmail = email => async (dispatch, getState) => {
-  const {userData} = getState().UserReducer;
+  const { userData } = getState().UserReducer;
   const id = userData.userWallet.address;
   sendRequest({
     url: `${NEW_BASE_URL}/users/verify-email`,
     method: 'POST',
-    data: {account: email},
+    data: { account: email },
   }).then(() => {
     dispatch(getUserData(id));
   });
@@ -536,7 +535,6 @@ export const updateAvtar = (userId, file) => async dispatch => {
         },
       });
 
-      console.log('@@@ after upload media =========>', userProfileResponse);
     } catch (error) {
       dispatch(endLoadingImage());
       console.log('@@@ error ', error);
@@ -564,7 +562,6 @@ export const updateBanner = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}&type=cover`,
         },
       });
-      console.log('@@@ after upload media =========>', userProfileResponse);
     } catch (error) {
       dispatch(endLoadingBanner());
       console.log('@@@ error ', error);

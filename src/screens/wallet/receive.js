@@ -35,7 +35,7 @@ const QRScreen = () => {
 
     const { item } = route.params;
 
-    console.log('item', item);
+    // console.log('item', item);
 
     const { userData } = useSelector((state) => state.UserReducer);
     const wallet = userData?.userWallet;
@@ -58,7 +58,7 @@ const QRScreen = () => {
 
     const onSharing = () => {
         qrRef && qrRef.capture().then(uri => {
-            console.log("do something with ", uri);
+            // console.log("do something with ", uri);
             let options = {
                 title: "Share code",
                 message: "Please scan code to send token",
@@ -68,7 +68,7 @@ const QRScreen = () => {
             // Share.share(shareImage).catch(err => console.log(err));
             Share.open(options)
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                 })
                 .catch((err) => {
                     err && console.log(err);

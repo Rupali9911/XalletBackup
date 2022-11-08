@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -10,16 +10,16 @@ import {
   View,
 } from 'react-native';
 import NumberFormat from 'react-number-format';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import TextView from '../../../components/appText';
 import Colors from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import {hp, RF, wp} from '../../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../../constants/responsiveFunct';
 import CommonStyles from '../../../constants/styles';
-import {tokens, translate} from '../../../walletUtils';
+import { tokens, translate } from '../../../walletUtils';
 
 const ListItems = props => {
-  const {item} = props;
+  const { item } = props;
   return (
     <TouchableOpacity
       onPress={() => props.onPress && props.onPress(item)}
@@ -34,7 +34,7 @@ const ListItems = props => {
         {/*<Text style={styles.percentTxt} >{item.percent}</Text>*/}
         {/*</View>*/}
       </View>
-      <View style={{...CommonStyles.center, alignItems: 'flex-end'}}>
+      <View style={{ ...CommonStyles.center, alignItems: 'flex-end' }}>
         <Text style={styles.townTxt}>{item.network}</Text>
         <NumberFormat
           value={parseFloat(`${item.tokenValue}`)}
@@ -53,7 +53,7 @@ const ListItems = props => {
 };
 
 const Tokens = props => {
-  const {network, allowedTokens} = props;
+  const { network, allowedTokens } = props;
 
   const [balance_Data, setBalanceData] = useState([]);
   const [isRefreshing, setRefreshing] = useState(false);
@@ -78,7 +78,6 @@ const Tokens = props => {
 
   useEffect(() => {
     let array = tokens;
-    console.log('TOKENS', tokens);
     if (network.name == 'Ethereum') {
       array[1].tokenValue = `${ethBalance}`;
       array[8].tokenValue = `${usdtBalance}`;
@@ -141,7 +140,7 @@ const Tokens = props => {
         });
   };
 
-  const renderItems = ({item, index}) => {
+  const renderItems = ({ item, index }) => {
     return <ListItems item={item} onPress={props.onTokenPress} />;
   };
 
