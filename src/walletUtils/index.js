@@ -44,6 +44,7 @@ export const test_ethRpc =
 export const test_bnbRpc = 'https://data-seed-prebsc-2-s1.binance.org:8545/';
 // export const test_bnbRpc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 export const test_polRpc = 'https://rpc-mumbai.maticvigil.com/';
+export const test_xanaRpc = 'https://testnet.xana.net/ext/bc/2dNW4t2bMKcnAamjCX7e79iFw1LEvyb8CYWXcX7NeUUQM9TdM8/rpc';
 
 //===================== RPC Urls (mainnet) ===============================
 export const ethRpc =
@@ -1790,6 +1791,7 @@ export const polygonNftAbi = [
 export const maticNftDex_new = '0x604229c960e5CACF2aaEAc8Be68Ac07BA9dF81c3';
 export const ethNftDex_new = '0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852';
 export const binanceNftDex_new = '0x1B96B92314C44b159149f7E0303511fB2Fc4774f';
+export const xetaNftDex_new = '0x1B96B92314C44b159149f7E0303511fB2Fc4774f';
 export const binanceNftAbi_new = [
   {
     anonymous: false,
@@ -4936,6 +4938,7 @@ export const environment = {
   ethRpc: IsTestNet ? test_ethRpc : ethRpc,
   bnbRpc: IsTestNet ? test_bnbRpc : bnbRpc,
   polRpc: IsTestNet ? test_polRpc : polRpc,
+  xanaRpc: IsTestNet ? test_xanaRpc : test_xanaRpc,
 
   //======================== Websocket Links ========================
   wsEth: IsTestNet ? _webSocketLinkEth : webSocketLinkEth,
@@ -8851,6 +8854,12 @@ export const networkChain = [
     icon: ImagesSrc.polygonNew,
     translatedName: 'ポリゴン',
   },
+  {
+    name: 'Xana',
+    value: 'xana',
+    icon: ImagesSrc.polygonNew,
+    translatedName: 'ポリゴン',
+  },
 ];
 
 //=========================== Token Constant =============================
@@ -8937,6 +8946,15 @@ export const tokens = [
     percent: '+2.21%',
     tokenValue: `0`,
     network: 'Ethereum',
+  },
+  {
+    type: 'XETA',
+    tokenName: 'XETA',
+    icon: ImagesSrc.usdtNew,
+    amount: '$3,177.94',
+    percent: '+2.21%',
+    tokenValue: `0`,
+    network: 'XANA CHAIN',
   },
 ];
 

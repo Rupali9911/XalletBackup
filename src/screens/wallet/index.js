@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { SIZE } from 'src/constants';
@@ -28,7 +28,8 @@ import {
   updateBSCBalances,
   updateEthereumBalances,
   updateNetworkType,
-  updatePolygonBalances
+  updatePolygonBalances,
+  updateXanaBalances
 } from '../../store/reducer/walletReducer';
 import { environment, translate } from '../../walletUtils';
 import { HeaderBtns } from './components/HeaderButtons';
@@ -65,6 +66,7 @@ const Wallet = ({ route, navigation }) => {
     talBalance,
     usdcBalance,
     wethBalance,
+    xetaBalance,
     networkType,
   } = useSelector(state => state.WalletReducer);
 
@@ -85,7 +87,6 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect First 1111 =======================
   useEffect(() => {
-    console.log("@@@ On wallet tab, first useEffect =======>");
     // singleSocket.connectSocket().then(() => {
     //   // ping(wallet.address);
     // });
@@ -106,9 +107,7 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Second 2222 =======================
   useEffect(() => {
-    console.log("@@@ On wallet tab, second useEffect blur =======>");
     const unsubscribeBlur = navigation.addListener('blur', () => {
-      console.log("@@@ On wallet tab, second useEffect blur inside=======>");
       setIsBackedUp(isBackup);
     });
     return () => {
@@ -119,13 +118,10 @@ const Wallet = ({ route, navigation }) => {
   //======================== Use Effect Third 3333 =======================
   useEffect(async () => {
     wallet = await getWallet();
-    console.log("@@@ On wallet tab, third useEffect wallet 1111=======>");
     if (wallet && !isCreate && isFocused) {
       setLoading(true);
       getBalances(wallet?.address);
-      console.log("@@@ On wallet tab, third useEffect wallet 2222 if=======>");
     } else {
-      console.log("@@@ On wallet tab, third useEffect wallet 3333 else =======>");
       subscribeEth &&
         subscribeEth.unsubscribe((error, success) => {
           if (success) console.log('Successfully unsubscribed!');
@@ -139,22 +135,18 @@ const Wallet = ({ route, navigation }) => {
           if (success) console.log('Successfully unsubscribed!');
         });
     }
-    // console.log('wallet use effect', userData, wallet);
   }, [isFocused]);
 
   //======================== Use Effect Four 4444=======================
   useEffect(() => {
-    console.log("@@@ On wallet tab, Is backup useEffect wallet 1111 =======>");
     setIsBackedUp(isBackup);
   }, [isFocused]);
 
   //======================== Use Effect Four 5555 =======================
   useEffect(async () => {
-    console.log("@@@ On wallet tab, fourth useEffect wallet 1111 =======>");
     wallet = await getWallet();
     setLoading(true);
     getBalances(wallet?.address);
-    console.log("@@@ On wallet tab, fourth useEffect wallet 2222=======>");
     // if (network.name == 'Ethereum' && subscribeEth == null) {
     //   subscribeEth = watchBalanceUpdate(() => {
     //     getBalances(wallet.address);
@@ -213,9 +205,7 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Use Effect Four 6666 =======================
   useEffect(() => {
-    console.log("@@@ On wallet tab, If balance useEffect wallet 1111 =======>");
     if (balances) {
-      console.log("@@@ On wallet tab, Inside If balance useEffect wallet 1111 =======>");
       if (networkType?.name == 'Ethereum') {
         let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
         setTotalValue(value);
@@ -225,9 +215,12 @@ const Wallet = ({ route, navigation }) => {
       } else if (networkType?.name == 'Polygon') {
         let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
         setTotalValue(value);
+      } else if (networkType?.name == 'XANA CHAIN') {
+        let value = parseFloat(xetaBalance); //+ parseFloat(balances.USDC)
+        setTotalValue(value);
       }
     }
-  }, [networkType, wethBalance, bnbBalance, maticBalance]);
+  }, [networkType, wethBalance, bnbBalance, maticBalance, xetaBalance]);
 
   //======================== Render Header of Screen =====================
   const renderHeaderTokenSVGImage = () => {
@@ -241,11 +234,16 @@ const Wallet = ({ route, navigation }) => {
           style={styles.networkIcon}
           hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
           onPress={() => setPickerVisible(true)}>
-          <SvgUri
-            width={SIZE(25)}
-            height={SIZE(25)}
-            uri={networkType?.image}
-          />
+          {
+            networkType?.name !== 'XANA CHAIN' ?
+              <SvgUri
+                width={SIZE(25)}
+                height={SIZE(25)}
+                uri={networkType?.image}
+              />
+              :
+              <Image style={{ height: SIZE(25), width: SIZE(25) }} source={{ uri: networkType?.image }} />
+          }
         </TouchableOpacity>
       </View>
     )
@@ -283,6 +281,13 @@ const Wallet = ({ route, navigation }) => {
       let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
       let busdValue = parseFloat(busdBalance) * 1;
       let value = bnbValue + tnftValue + busdValue;
+      totalValue = value;
+    } else if (networkType?.name == 'XANA CHAIN') {
+      // for mainnet
+      // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+      // for testing
+      let xetaValue = parseFloat(xetaBalance) * currencyPriceDollar?.XETA;
+      let value = xetaValue;
       totalValue = value;
     } else if (networkType?.name == 'Polygon') {
       //for mainnet
@@ -463,15 +468,15 @@ const Wallet = ({ route, navigation }) => {
 
   //======================= Get Balances Function =======================
   const getBalances = async pubKey => {
-    console.log("@@@ get balance fun =======>")
     await priceInDollars(pubKey);
     if (networkType?.name == 'BSC') {
-      console.log("@@@ get balance fun BSC=======>")
       return getBSCBalances(pubKey);
     } else if (networkType?.name == 'Ethereum') {
       return getEthereumBalances(pubKey);
     } else if (networkType?.name == 'Polygon') {
       return getPolygonBalances(pubKey);
+    } else if (networkType?.name == 'XANA CHAIN') {
+      return getXanaChainBalances(pubKey);
     } else {
       return new Promise((resolve, reject) => {
         let balanceRequests = [
@@ -545,6 +550,7 @@ const Wallet = ({ route, navigation }) => {
           currencyInDollar(pubKey, 'ETH'),
           currencyInDollar(pubKey, 'Polygon'),
           currencyInDollar(pubKey, 'ALIA'),
+          // currencyInDollar(pubKey, 'Xana Chain'),
         ];
         Promise.all(balanceRequests)
           .then(responses => {
@@ -553,14 +559,15 @@ const Wallet = ({ route, navigation }) => {
               ETH: responses[1],
               MATIC: responses[2],
               ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+              XETA: responses[4]
             };
             setCurrencyPriceDollar(balances);
             setLoading(false);
             resolve();
           })
           .catch(err => {
-            console.log('err', err);
             setLoading(false);
+            console.log('@@@ Price in Dollarr errrrrrrrrrrrrrr', err);
             reject();
           });
       });
@@ -606,7 +613,6 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get BSC Balances ========================
   const getBSCBalances = pubKey => {
-    console.log("@@@ get BSC balance ========>",);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.bnbRpc, 'bnb'),
@@ -628,7 +634,6 @@ const Wallet = ({ route, navigation }) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-          // console.log('@@@ BSC BALANCE RESPONSES ========>', responses);
           let balances = {
             BNB: responses[0],
             TNFT: responses[1],
@@ -641,7 +646,6 @@ const Wallet = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          //console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -650,7 +654,6 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get Polygon Balances ========================
   const getPolygonBalances = pubKey => {
-    // console.log("@@@ get polygon balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.polRpc, 'matic'),
@@ -688,6 +691,51 @@ const Wallet = ({ route, navigation }) => {
           };
 
           dispatch(updatePolygonBalances(balances));
+          setBalances(balances);
+          setLoading(false);
+          resolve();
+        })
+        .catch(err => {
+          console.log('err', err);
+          setLoading(false);
+          reject();
+        });
+    });
+  };
+
+  const getXanaChainBalances = pubKey => {
+    return new Promise((resolve, reject) => {
+      let balanceRequests = [
+        balance(pubKey, '', '', environment.xanaRpc, 'xeta'),
+        // balance(
+        //   pubKey,
+        //   environment.talCont,
+        //   environment.tnftAbi,
+        //   environment.polRpc,
+        //   'alia',
+        // ),
+        // balance(
+        //   pubKey,
+        //   environment.usdcCont,
+        //   environment.usdcAbi,
+        //   environment.polRpc,
+        //   'usdc',
+        // ),
+        // balance(
+        //   pubKey,
+        //   environment.wethCont,
+        //   environment.wethAbi,
+        //   environment.polRpc,
+        //   'weth',
+        // ),
+      ];
+
+      Promise.all(balanceRequests)
+        .then(responses => {
+          let balances = {
+            Xeta: responses[0],
+          };
+          dispatch(updateXanaBalances(balances));
           setBalances(balances);
           setLoading(false);
           resolve();
