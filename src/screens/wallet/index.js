@@ -72,6 +72,7 @@ const Wallet = ({ route, navigation }) => {
     xetaBalance,
     networkType,
   } = useSelector(state => state.WalletReducer);
+  console.log("@@@ network type on wallet =======>", networkType)
 
   const [isBackedUp, setIsBackedUp] = useState(isBackup);
   const [loading, setLoading] = useState(false);
@@ -243,8 +244,8 @@ const Wallet = ({ route, navigation }) => {
           {
             networkType?.name !== 'XANA CHAIN' ?
               <SvgWithCssUri
-                width={SIZE(30)}
-                height={SIZE(30)}
+                width={SIZE(25)}
+                height={SIZE(25)}
                 uri={networkType?.image}
               />
               :

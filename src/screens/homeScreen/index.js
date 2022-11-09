@@ -16,7 +16,7 @@ import {
   FlatList,
 } from 'react-native';
 // import {Easing} from 'react-native-reanimated';
-import {FAB} from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import {
   checkNotifications,
   openSettings,
@@ -135,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
           dispatch(updateNetworkType(selectedNetwork));
         }
       } else {
-        dispatch(updateNetworkType(res[3]));
+        dispatch(updateNetworkType(res[3] ? res[3] : res[2]));
       }
       dispatch(setNetworkData(res));
     }
