@@ -731,7 +731,7 @@
     "createCollection": "創建收藏",
     "AIChat": "與人工智能聊天",
     "deleteAccount": "刪除帳戶",
-    "deleteAccountDescription": "您確定要刪除您的帳戶嗎？\n如果您刪除您的帳戶，您將永久\n丟失您的數據。",
+    "deleteAccountDescription": "您確定要刪除您的帳戶嗎？ 如果您刪除您的帳戶，您將永久丟失您的數據。",
     "enterMessage": "輸入您的信息",
     "CREATED_COLLECTED": "創建/收集",
     "LIST_COLLECTION_TABLE_SYMBOL": "圖標",

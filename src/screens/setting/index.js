@@ -107,6 +107,12 @@ function Setting({navigation}) {
   const {myCards} = useSelector(state => state.PaymentReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const [deletePopup, setDeletePopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const {deleteAccountLoading} = useSelector(state => state.UserReducer);
+  console.log(
+    '🚀 ~ file: index.js ~ line 112 ~ Setting ~ deleteAccountLoading',
+    deleteAccountLoading,
+  );
 
   useEffect(() => {
     // dispatch(getAllCards(userData.access_token));
@@ -159,23 +165,23 @@ function Setting({navigation}) {
     );
   };
 
+  const handleDeletePopup = value => {
+    setTimeout(() => {
+      setDeletePopup(value);
+    }, 500);
+  };
+
   const deleteAccount = () => {
-    setDeletePopup(false);
     dispatch(deleteAccountApi())
       .then(async res => {
-        if (res?.status?.toLowerCase() === 'status deleted updated') {
-          logoutConfirm();
-        } else {
-          alertWithSingleBtn(
-            translate('wallet.common.alert'),
-            translate('wallet.common.tryAgain'),
-          );
-        }
+        logoutConfirm();
+        handleDeletePopup(false);
       })
       .catch(err => {
         alertWithSingleBtn(
           translate('wallet.common.alert'),
           translate('wallet.common.tryAgain'),
+          () => handleDeletePopup(true),
         );
       });
   };
@@ -278,7 +284,7 @@ function Setting({navigation}) {
           />
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
-            onPress={() => setDeletePopup(true)}
+            onPress={() => handleDeletePopup(true)}
             rightText={``}
             noArrow={true}
             label={translate('common.deleteAccount')}
@@ -300,11 +306,16 @@ function Setting({navigation}) {
       {languageModal()}
       <ShowModal
         isDelete={true}
-        onBackdrop={true}
         isVisible={deletePopup}
+        onBackdrop={deleteAccountLoading}
+        leftDisabled={deleteAccountLoading}
+        rightDisabled={deleteAccountLoading}
+        rightLoading={deleteAccountLoading}
         title={translate('common.deleteAccount') + '!'}
         description={translate('common.deleteAccountDescription')}
-        closeModal={() => setDeletePopup(false)}
+        closeModal={
+          deleteAccountLoading ? null : () => handleDeletePopup(false)
+        }
         rightButtonTitle={translate('wallet.common.delete')}
         onRightPress={deleteAccount}
       />

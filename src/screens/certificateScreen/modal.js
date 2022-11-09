@@ -20,12 +20,16 @@ const ShowModal = props => {
     onRightPress,
     isDelete,
     onBackdrop,
+    rightLoading,
+    rightDisabled,
+    leftDisabled,
   } = props;
+
   return (
     <View style={styles.modalContainer}>
       <Modal
         isVisible={isVisible}
-        onBackdropPress={onBackdrop ? closeModal : null}>
+        onBackdropPress={onBackdrop ? null : closeModal}>
         <View
           style={[styles.reClaimcontainer, isDelete && styles.deleteAccount]}>
           <TouchableOpacity
@@ -69,7 +73,7 @@ const ShowModal = props => {
               leftText={
                 leftButtonTitle ? leftButtonTitle : translate('common.Cancel')
               }
-              leftDisabled={false}
+              leftDisabled={leftDisabled ? leftDisabled : false}
               leftLoading={false}
               onLeftPress={() => (closeModal ? closeModal() : onLeftPress)}
               leftStyle={
@@ -87,8 +91,8 @@ const ShowModal = props => {
                   ? rightButtonTitle
                   : translate('common.Confirm')
               }
-              rightDisabled={false}
-              rightLoading={false}
+              rightDisabled={rightDisabled ? rightDisabled : false}
+              rightLoading={rightLoading ? rightLoading : false}
               onRightPress={onRightPress}
               rightStyle={
                 isDelete
