@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
-import { SvgUri } from 'react-native-svg';
+import { SvgWithCssUri } from 'react-native-svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { SIZE } from 'src/constants';
 import AppBackground from '../../components/appBackground';
@@ -242,13 +242,13 @@ const Wallet = ({ route, navigation }) => {
           onPress={() => setPickerVisible(true)}>
           {
             networkType?.name !== 'XANA CHAIN' ?
-              <SvgUri
-                width={SIZE(25)}
-                height={SIZE(25)}
+              <SvgWithCssUri
+                width={SIZE(30)}
+                height={SIZE(30)}
                 uri={networkType?.image}
               />
               :
-              <Image style={{ height: SIZE(25), width: SIZE(25) }} source={{ uri: networkType?.image }} />
+              <Image style={{ height: SIZE(30), width: SIZE(30) }} source={{ uri: networkType?.image }} />
           }
         </TouchableOpacity>
       </View>
@@ -476,9 +476,7 @@ const Wallet = ({ route, navigation }) => {
   //======================= Get Balances Function =======================
   const getBalances = async pubKey => {
     const state = await NetInfo.fetch();
-    console.log("@@@ Get balance net state ======>", state);
     if (state.isConnected) {
-      console.log("@@@ Get balance inside if =======>")
       await priceInDollars(pubKey);
       if (networkType?.name == 'BSC') {
         return getBSCBalances(pubKey);
@@ -553,7 +551,6 @@ const Wallet = ({ route, navigation }) => {
         });
       }
     } else {
-      console.log("@@@ Get balance inside else =======>")
       setLoading(false);
       setFetching(false);
       alertWithSingleBtn(
@@ -584,13 +581,11 @@ const Wallet = ({ route, navigation }) => {
             };
             setCurrencyPriceDollar(balances);
             setLoading(false);
-            setFetching(false);
             resolve();
           })
           .catch(err => {
             setLoading(false);
             setFetching(false);
-            console.log('@@@ Price in Dollarr errrrrrrrrrrrrrr', err);
             alertWithSingleBtn(
               translate('wallet.common.alert'),
               translate('wallet.common.error.networkError'))
@@ -604,7 +599,6 @@ const Wallet = ({ route, navigation }) => {
 
   //====================== Get Ethereum Balances ========================
   const getEthereumBalances = pubKey => {
-    // console.log("@@@ get Ethereum balance ========>", pubKey);
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.ethRpc, 'eth'),
