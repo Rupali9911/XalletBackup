@@ -35,7 +35,7 @@ function ExploreScreen() {
       setLoader(true)
       loadNFTList(1, true)
     }
-  }, [isFocused]);
+  }, []);
 
   const loadNFTList = (page, refresh) => {
     const url = `${NEW_BASE_URL}/nfts/nfts-discover`
