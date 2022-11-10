@@ -43,8 +43,14 @@ export default function NFTItem(props, {navigation}) {
   } = props;
 
   // ======================= SVGS Destructing =======================
-  const {PolygonIcon, Ethereum, BitmapIcon, HeartWhiteIcon, HeartActiveIcon} =
-    SVGS;
+  const {
+    PolygonIcon,
+    Ethereum,
+    BitmapIcon,
+    HeartWhiteIcon,
+    HeartActiveIcon,
+    VerficationIcon,
+  } = SVGS;
 
   // =============== Getting data from reducer ========================
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
@@ -365,8 +371,11 @@ export default function NFTItem(props, {navigation}) {
     }
   };
 
-  //================== Render Chain view column Function ===================
+  const renderVerifiedIcon = () => {
+    return <VerficationIcon />;
+  };
 
+  //================== Render Chain view column Function ==================
   const renderbottomView = () => {
     return (
       <View
@@ -376,13 +385,22 @@ export default function NFTItem(props, {navigation}) {
           alignItems: 'center',
         }}>
         <SvgWithCssUri uri={item?.network?.avatar} style={styles.tokenIcon2} />
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            position: 'relative',
+          }}>
+          {item?.creator?.role === 4 ? (
+            <View style={styles.creatorTickIcon}>{renderVerifiedIcon()}</View>
+          ) : null}
           <TouchableOpacity
             activeOpacity={1}
             onPress={() =>
               screenNavigation.navigate('Profile', {
                 from: 'nftItem',
                 id: item.creator.address,
+                role: item?.creator?.role,
               })
             }>
             {item?.creator?.avatar ? (
@@ -395,12 +413,16 @@ export default function NFTItem(props, {navigation}) {
             )}
           </TouchableOpacity>
           <View style={styles.ownerContainer}>
+            {item?.owner?.role === 4 ? (
+              <View style={styles.ownerTickIcon}>{renderVerifiedIcon()}</View>
+            ) : null}
             <TouchableOpacity
               activeOpacity={1}
               onPress={() =>
                 screenNavigation.navigate('Profile', {
                   from: 'nftItem',
                   id: item.owner.address,
+                  role: item?.owner?.role,
                 })
               }>
               {item?.owner?.avatar ? (

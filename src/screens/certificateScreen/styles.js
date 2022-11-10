@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#ffffff',
     paddingVertical: SIZE(13),
     justifyContent: 'space-between',
+    position: 'relative',
   },
   personType: {
     flex: 0.5,
@@ -1084,6 +1085,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'flex-end',
     paddingHorizontal: SIZE(8),
+  },
+  creatorMarkIcon: {
+    position: 'absolute',
+    left: 30,
+    bottom: 12,
+    zIndex: 10,
+  },
+  ownerMarkIcon: {
+    position: 'absolute',
+    right: 92,
+    bottom: 12,
+    zIndex: 10,
   },
 });
 

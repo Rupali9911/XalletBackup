@@ -59,6 +59,7 @@ const {
   Twitter,
   Instagram,
   DiscordIcon,
+  VerficationIcon,
 } = SVGS;
 
 function Profile({ navigation, connector, route }) {
@@ -315,7 +316,9 @@ function Profile({ navigation, connector, route }) {
         setRefreshing(false);
       });
   };
-
+  const renderVerifiedIcon = () => {
+    return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
+  };
   const renderBannerImage = () => {
     const renderBanner = () => {
       if (userDetails?.banner && !imageBannerLoading) {
@@ -469,7 +472,29 @@ function Profile({ navigation, connector, route }) {
                 </Menu>
                 <CopyProfile width={SIZE(12)} height={SIZE(12)} />
               </TouchableOpacity>
-              <View style={styles.iconWrapper}>{renderIconImage()}</View>
+              <View style={styles.iconWrapper}>
+                <View
+                  style={{
+                    borderColor:
+                      route?.params?.role === 4
+                        ? Colors.buttonBackground
+                        : 'transparent',
+                    borderWidth: 3,
+                    width: SIZE(155),
+                    height: SIZE(155),
+                    position: 'relative',
+                    borderRadius: 100,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {renderIconImage()}
+                  {route?.params?.role === 4 ? (
+                    <View style={styles.markIconView}>
+                      {renderVerifiedIcon()}
+                    </View>
+                  ) : null}
+                </View>
+              </View>
               <View style={styles.userDetailsWrapper}>
                 {renderProfileNameAndId()}
               </View>
@@ -607,10 +632,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.DARK_GREY,
   },
   iconImage: {
-    width: SIZE(150),
-    height: SIZE(150),
+    width: SIZE(140),
+    height: SIZE(140),
     borderRadius: SIZE(150),
-    marginBottom: SIZE(10),
     backgroundColor: colors.PERIWINKLE,
   },
 
@@ -698,5 +722,10 @@ const styles = StyleSheet.create({
   tabView: {
     flex: 1,
     marginTop: 5,
+  },
+  markIconView: {
+    position: 'absolute',
+    top: 145,
+    zIndex: 10,
   },
 });
