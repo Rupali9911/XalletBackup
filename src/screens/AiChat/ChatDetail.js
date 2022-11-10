@@ -1,19 +1,17 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, FlatList } from 'react-native';
-import React, { useRef, useState, } from 'react';
+import React, { useEffect, useRef, useState, } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAiChat, chatLoadingSuccess } from '../../store/actions/chatAction';
+import { getAiChat, chatLoadingSuccess, getChatBotHistory, ChatHistoryPageChange, chatHistoryLoading } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { C_Image } from '../../components';
+import { AppHeader, C_Image } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import { SIZE, SVGS, IMAGES } from '../../constants';
+import { SIZE, SVGS, IMAGES, COLORS } from '../../constants';
 import moment from 'moment';
 import Toast from 'react-native-toast-message'
-import { Button } from 'react-native-paper';
-
-
+import { ActivityIndicator, Button } from 'react-native-paper';
 
 const { ChatDefaultProfile } = SVGS;
 
@@ -29,9 +27,50 @@ const ChatDetail = ({ route, navigation }) => {
 
   // =============== Getting data from reducer ========================
   const dispatch = useDispatch();
-  const { chatLoadSuccess, isChatLoading } = useSelector(state => state.chatReducer);
+  const { chatLoadSuccess, isChatLoading, chatHistoryPage, isHistoryLoading, isHistoryNextPage, remainCount } = useSelector(state => state.chatReducer);
   const { userData } = useSelector(state => state.UserReducer);
+  const userAdd = userData?.userWallet?.address;
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+
+  useEffect(() => {
+    dispatch(chatHistoryLoading());
+    getHistoryData(chatHistoryPage);
+    dispatch(ChatHistoryPageChange(1));
+  }, []);
+
+  const getHistoryData = (page) => {
+    dispatch(getChatBotHistory(page, userAdd, tokenId))
+      .then((response) => {
+        if (response.length > 0) {
+          // let history = []
+          response.map((data) => {
+
+            let second = data.date._seconds;
+            let milisecond = Number(second) * 1000;
+            let getDate = new Date(milisecond);
+            let timeConversion = moment(getDate).format('h:mm A');
+
+            let sender = {
+              message: data?.question,
+              type: 'sender',
+              time: timeConversion,
+              senderImage: userData.avatar,
+              senderName: userData.userName != '' ? userData.userName : userData?.userWallet?.address.substring(0, 6)
+            }
+
+            let receiver = {
+              message: data.reply,
+              type: 'receiver',
+              time: timeConversion,
+              receiverImage: nftDetail.image,
+              receiverName: nftDetail.name,
+            }
+            // history.push(receiver, sender);
+            setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
+          })
+        }
+      })
+  }
 
   const renderImage = () => {
     if (userData.avatar) {
@@ -72,7 +111,7 @@ const ChatDetail = ({ route, navigation }) => {
               </View>
               <View style={styles.talkBubble}>
                 <View style={styles.textContainer}>
-                  <Text style={styles.msgHolderName}> {item?.receiverName.slice(item?.receiverName.lastIndexOf('#'))} </Text>
+                  <Text style={styles.msgHolderName}> {item?.receiverName} </Text>
                   <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
@@ -82,6 +121,7 @@ const ChatDetail = ({ route, navigation }) => {
     );
   };
 
+  //=========================Toast Message=================================
   const showToast = () => {
     toastRef.current.show({
       type: 'info',
@@ -101,19 +141,16 @@ const ChatDetail = ({ route, navigation }) => {
         senderImage: userData.avatar,
         senderName: userData.userName != '' ? userData.userName : userData?.userWallet?.address.substring(0, 6),
       };
-      setChatBotData(chatBotData => [...chatBotData, sendObj]);
+      setChatBotData(chatBotData => [sendObj, ...chatBotData]);
 
       dispatch(
         getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
       )
         .then(response => {
-          console.log('Respppss : ', response)
-          if(response?.messageCode || response?.description)
-          {
+          if (response?.messageCode || response?.description) {
             showToast();
           }
-          else
-          {
+          else {
             setRemainWordText(true);
             let receiveObj = {
               message: response.recvResp,
@@ -123,18 +160,34 @@ const ChatDetail = ({ route, navigation }) => {
               receiverName: nftDetail.name,
               remainWords: response.remainWord
             };
-            setChatBotData(chatBotData => [...chatBotData, receiveObj]);
+            setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
-         
         })
         .catch(err => {
           console.log('Error Chat : ', err);
         });
-
     }
     setMessage('');
   };
 
+  //==================== On Scroll-to-Top ===========================
+  const handleFlatListEndReached = () => {
+    console.log('NextPage : ', isHistoryNextPage)
+    let num = chatHistoryPage + 1;
+    if (isHistoryNextPage) {
+      dispatch(chatHistoryLoading());
+      getHistoryData(num);
+      dispatch(ChatHistoryPageChange(num));
+    }
+  };
+
+  //========================Loader Call=================================
+  const renderHeader = () => {
+    if (!isHistoryLoading) return null;
+    return (
+      <ActivityIndicator size='small' color={COLORS.themeColor} />
+    );
+  }
 
   // ===================== FlatList Header Call ===================================
   const ListHeader = () => {
@@ -154,7 +207,7 @@ const ChatDetail = ({ route, navigation }) => {
                 {isChatLoading && <Text style={styles.typingMessage}>{translate('common.typing')}</Text>}
               </View>
               {
-                !chatLoadSuccess?.messageCode && <Text style={styles.remainWordText}>{remainWordText ? translate('common.remainWordCount') : ''}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
+                remainCount > 0 && <Text style={styles.remainWordText}>{translate('common.remainWordCount')}<Text style={styles.remainWordCount}> {remainCount}</Text></Text>
               }
             </View>
           </View>
@@ -177,10 +230,11 @@ const ChatDetail = ({ route, navigation }) => {
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
 
-      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} >
+      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} keyboardShouldPersistTaps={'always'} >
 
         <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
+          <View style={styles.rcvContainerArrow}/>
             <Text style={styles.nftName}>
               {nftDetail.name.slice(nftDetail.name.lastIndexOf('#'))}
             </Text>
@@ -195,7 +249,9 @@ const ChatDetail = ({ route, navigation }) => {
               </View>
             ) : null}
           </View>
-          <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
+          <View style={{ width: '100%', height: '100%', alignItems: 'center', padding: 10}}>
+            <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
+          </View>
         </View>
 
         <View style={{ flex: 0.6 }}>
@@ -203,13 +259,6 @@ const ChatDetail = ({ route, navigation }) => {
           <View style={styles.chatContainer}>
             <FlatList
               ref={flatList}
-              onContentSizeChange={(item, index) => {
-                flatList.current.scrollToEnd({ animated: true });
-                flatList.current.scrollToOffset({
-                  animated: true,
-                  offset: index,
-                });
-              }}
               data={chatBotData}
               renderItem={({ item }) => <ShowBubble item={item} />}
               keyExtractor={(item, index) => {
@@ -217,29 +266,25 @@ const ChatDetail = ({ route, navigation }) => {
               }}
               onLayout={() => flatList.current.scrollToEnd({ animated: true })}
               showsVerticalScrollIndicator={false}
+              inverted={true}
+              onEndReached={handleFlatListEndReached}
+              ListFooterComponent={renderHeader}
             />
           </View>
-          <Button
-            title='Show toast'
-            onPress={() => showToast()}
-          />
-
           <MessageInput
             placeholder={translate('common.enterMessage')}
             value={message}
             onChangeText={text => setMessage(text)}
             onPress={() => sendMessage(message, new Date())}
           />
-
         </View>
-
       </KeyboardAwareScrollView>
       <Toast
         position='bottom'
         visibilityTime={2000}
         autoHide={true}
         ref={toastRef}
-        
+
       />
     </SafeAreaView>
   );

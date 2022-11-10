@@ -26,7 +26,16 @@ import {
     OTHER_PAGE_CHANGE,
     OTHER_CURSOR_CHANGE,
 
-    CHAT_TAB_TITLE
+    CHAT_TAB_TITLE,
+
+    CHAT_BOT_HISTORY_LOADING,
+    CHAT_BOT_HISTORY_SUCCESS,
+    CHAT_BOT_HISTORY_FAIL,
+    CHAT_BOT_HISTORY_PAGE_CHANGE,
+    CHAT_BOT_HISTORY_NEXT_PAGE,
+
+    CHAT_REMAIN_COUNT,
+
 } from '../types';
 
 const initialState = {
@@ -65,8 +74,21 @@ const initialState = {
     otherTotalCount: 0,
     otherCursor: '',
 
-    //=====================SetTabTitle===================== 
+    //=====================SetTabTitle==========================
     reducerTabTitle: 'Owned',
+
+    //====================ChatHistory===========================
+
+    isHistoryLoading: false,
+    chatHistoryList: [],
+    chatHistoryFailed: '',
+    chatHistoryPage: 1,
+    historyTotal: 0,
+    isHistoryNextPage: true,
+
+    //======================== Remain Words ======================
+    remainCount: ''
+
 }
 
 export default function chatReducer(state = initialState, action) {
@@ -168,6 +190,34 @@ export default function chatReducer(state = initialState, action) {
 
         case CHAT_TAB_TITLE:
             return { ...state, reducerTabTitle: action.payload };
+
+        //====================Chat History==================
+
+        case CHAT_BOT_HISTORY_LOADING:
+            return { ...state, isHistoryLoading: true };
+
+        case CHAT_BOT_HISTORY_SUCCESS:
+            return {
+                ...state,
+                chatHistoryList: { ...state.chatHistoryList, ...action.payload.chatHistoryList },
+                isHistoryLoading: false,
+                chatHistoryFailed: '',
+            };
+
+        case CHAT_BOT_HISTORY_FAIL:
+            return { ...state, chatHistoryFailed: action.payload, isHistoryLoading: false };
+
+        case CHAT_BOT_HISTORY_PAGE_CHANGE:
+            return state = { ...state, chatHistoryPage: action.payload };
+
+
+        case CHAT_BOT_HISTORY_NEXT_PAGE:
+            return state = { ...state, isHistoryNextPage: action.payload };
+
+        //======================== Remain Words====================
+
+        case CHAT_REMAIN_COUNT:
+            return { ...state, remainCount: action.payload };
 
         default:
             return state;

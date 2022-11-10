@@ -15,11 +15,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
-<<<<<<< HEAD
-import {Easing} from 'react-native-reanimated';
-=======
 // import {Easing} from 'react-native-reanimated';
->>>>>>> 9308bd679c0dc2ce4e6ed5956d0de30ca439f74c
 import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
@@ -326,40 +322,6 @@ const HomeScreen = ({navigation}) => {
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
-<<<<<<< HEAD
-          <Carousel
-            ref={artistRef}
-            loop={true}
-            autoPlay={true}
-            style={{
-              width: wp(100),
-              height: Platform.OS === 'android' ? hp(12) : hp(11),
-            }}
-            width={wp(29.5)}
-            data={artistList}
-            renderItem={renderArtistItem}
-            onScrollEnd={num => {
-              if (
-                num === artistList.length - 4 &&
-                artistList.length < artistTotalCount
-              ) {
-                let pageNum = artistPage + 1;
-                dispatch(getAllArtist(pageNum, artistLimit));
-                setArtistPage(pageNum);
-              }
-            }}
-            autoPlayInterval={0}
-            withAnimation={{
-              type: 'timing',
-              config: {
-                duration: 7000,
-                easing: Easing.linear,
-              },
-            }}
-          />
-          // <FlatList
-          //   horizontal={true}
-=======
           // <Carousel
           //   ref={artistRef}
           //   loop={true}
@@ -369,7 +331,6 @@ const HomeScreen = ({navigation}) => {
           //     height: Platform.OS === 'android' ? hp(12) : hp(11),
           //   }}
           //   width={wp(29.5)}
->>>>>>> 9308bd679c0dc2ce4e6ed5956d0de30ca439f74c
           //   data={artistList}
           //   renderItem={renderArtistItem}
           //   onScrollEnd={num => {

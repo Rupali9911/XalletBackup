@@ -42,4 +42,9 @@ allprojects {
         google()
         jcenter()
     }
+      configurations.all {
+        resolutionStrategy {
+            force 'com.facebook.react:react-native:0.64.2'
+        }
+    }
 }
