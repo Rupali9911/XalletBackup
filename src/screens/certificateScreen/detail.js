@@ -3501,10 +3501,11 @@ const DetailScreen = ({navigation, route}) => {
       setDetailNFT(nftData);
       if (typeof setNftItem == 'function') {
         let nftItem = {
-          ...item,
+          ...detailNFT,
           isLike: nftData?.isLike,
           totalLike: nftData?.totalLike,
         };
+        console.log("@@@ On Detail screen, handle like method ==========>", nftItem)
         setNftItem(nftItem);
       }
     }

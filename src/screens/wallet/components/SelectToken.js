@@ -100,9 +100,9 @@ const SelectToken = (props) => {
                             if (searchTxt !== '') {
                                 // console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
                                 // return (_.network == network.name && _.tokenName.includes(searchTxt))
-                                return (_.network == network.name && _.tokenName.toLowerCase() == searchTxt?.toLowerCase())
+                                return (_?.network == network?.name && _?.tokenName.toLowerCase() == searchTxt?.toLowerCase())
                             } else {
-                                return _.network == network.name
+                                return _?.network == network?.name
                             }
                         })}
                         renderItem={({ item }) => {
