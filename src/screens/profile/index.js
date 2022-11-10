@@ -159,9 +159,9 @@ function Profile({ navigation, connector, route }) {
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'profileCreated':
-        return <NFTCreated key={id} id={id} />;
+        return <NFTCreated key={id} id={id} navigation={navigation} />;
       case 'nftOwned':
-        return <NFTOwned key={id} id={id} />;
+        return <NFTOwned key={id} id={id} navigation={navigation} />;
       default:
         return null;
     }

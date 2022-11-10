@@ -2906,7 +2906,7 @@ const DetailScreen = ({ navigation, route }) => {
           history === 'bid'
             ? translate('wallet.common.bidHistory')
             : history === 'offers'
-              ? 'Offers'
+              ? translate('common.offers')
               : translate('common.tradingHistory')
         }
         containerChildStyles={{

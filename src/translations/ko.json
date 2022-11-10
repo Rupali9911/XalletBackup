@@ -645,7 +645,7 @@
     "ALABSC": "ALIA는 BSC에 있습니다. BSC 또는 ETH 지갑 주소를 제공해야 합니다.",
     "cannotenterBTC": "BTC 또는 기타 EVM 이외의 네트워크 주소는 입력할 수 없습니다.",
     "youexchangeAddress": "교환 주소는 입력할 수 없습니다.",
-    "wrongOperation": "XANALIA는 잘못된 작동에 대한 어떠한 책임도 지지하지 않습니다.",
+    "wrongOperation": "XALLET는 잘못된 작동에 대한 어떠한 책임도 지지하지 않습니다.",
     "YougotFreeNFT": "무료 NFT를 입수했습니다！",
     "award": "어워드",
     "Giveaway": "헐값으로 파는",
@@ -747,7 +747,8 @@
     "TOKEN_ID": "토큰 ID",
     "loginWithEmail": "이메일로 로그인",
     "remainWordCount": "남은 채팅 한도",
-    "playbackSpeed": "재생 속도"
+    "playbackSpeed": "재생 속도",
+    "offers": "Offers"
   },
   "AwardPage": {},
   "wallet": {

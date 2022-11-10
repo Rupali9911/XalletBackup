@@ -645,7 +645,7 @@
     "ALABSC": "ALIA是在BSC上。你需要提供你的BSC或ETH钱包地址。",
     "cannotenterBTC": "你不能输入BTC或任何其他非EVM网络地址。",
     "youexchangeAddress": "您不能输入任何交易所地址。",
-    "wrongOperation": "XANALIA将不承担任何责任，也不支持错误的操作。",
+    "wrongOperation": "XALLET将不承担任何责任，也不支持错误的操作。",
     "YougotFreeNFT": "你获得了免费的NFT",
     "award": "奖",
     "Giveaway": "免费样品",
@@ -747,7 +747,8 @@
     "TOKEN_ID": "TOKEN ID",
     "loginWithEmail": "使用电子邮件登录",
     "remainWordCount": "剩余聊天限制",
-    "playbackSpeed": "播放速度"
+    "playbackSpeed": "播放速度",
+    "offers": "Offers"
   },
   "AwardPage": {},
   "wallet": {

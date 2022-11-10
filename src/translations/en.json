@@ -746,7 +746,8 @@
     "TOKEN_ID": "Token Id",
     "loginWithEmail": "Login with Email",
     "remainWordCount": "Remaining Chat Limit",
-    "playbackSpeed": "Playback"
+    "playbackSpeed": "Playback",
+    "offers": "Offers"
   },
   "AwardPage": {},
   "wallet": {

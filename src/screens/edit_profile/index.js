@@ -653,8 +653,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: SIZE(8),
-    borderTopRightRadius: SIZE(8),
+    borderBottomRightRadius: SIZE(5),
+    borderTopRightRadius: SIZE(5),
   },
   verifyBtnActive: {
     paddingHorizontal: SIZE(15),
@@ -662,8 +662,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2280e1',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: SIZE(8),
-    borderTopRightRadius: SIZE(8),
+    borderBottomRightRadius: SIZE(5),
+    borderTopRightRadius: SIZE(5),
   },
   msgModalView: {
     height: SIZE(80),

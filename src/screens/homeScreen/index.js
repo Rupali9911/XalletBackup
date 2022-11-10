@@ -100,9 +100,9 @@ const HomeScreen = ({ navigation }) => {
 
   const [routes] = useState([
     { key: 'launch', title: translate('common.launchPad') },
+    { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'allNft', title: translate('common.allNft') },
     { key: 'trending', title: translate('common.trending') },
-    { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'art', title: translate('common.2DArt') },
     { key: 'image', title: translate('common.image') },
     { key: 'gif', title: translate('common.gif') },

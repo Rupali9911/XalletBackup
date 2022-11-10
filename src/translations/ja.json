@@ -645,7 +645,7 @@
     "ALABSC": "ALIAはBSCを利用しているため、BSCまたはETHのウォレットアドレスを入力する必要があります。",
     "cannotenterBTC": "BTCやその他のEVMネットワーク以外のアドレスは入力できません。",
     "youexchangeAddress": "取引所のアドレスは入力できません。",
-    "wrongOperation": "XANALIAは、誤った操作に対する責任やサポートを一切負うことができません。",
+    "wrongOperation": "XALLETは、誤った操作に対する責任やサポートを一切負うことができません。",
     "YougotFreeNFT": "無料のNFTをゲットしました！",
     "award": "アワード",
     "Giveaway": "ギブアウェイ",
@@ -747,7 +747,8 @@
     "TOKEN_ID": "トークンID",
     "loginWithEmail": "メールでログイン",
     "remainWordCount": "残りのチャット制限",
-    "playbackSpeed": "再生速度"
+    "playbackSpeed": "再生速度",
+    "offers": "オファー履歴"
   },
   "AwardPage": {},
   "wallet": {
@@ -1018,7 +1019,7 @@
       "searchHint": "NFT、コレクション、アーティストを検索",
       "emailValidation": "入力されたメールアドレスは有効ではありません。",
       "limitInputLength": "{{number}}文字以下にしてください。",
-      "xanaliaWallet": "XANALIA アプリ",
+      "xanaliaWallet": "XALLETアプリ",
       "otherWallet": "他のウォレット（メタマスクなど）",
       "filter": "フィルター",
       "blockChainType": "ブロックチェーン種別",
@@ -1083,7 +1084,7 @@
       "reSell": "再販する",
       "loginWithWallet": "ウォレットでログイン",
       "loginWithAccount": "アカウントでログイン",
-      "logInSignUp": "ログイン /",
+      "logInSignUp": "ログイン",
       "OfferAccept": "オファー受入れる",
       "updatePrice": "販売価格の変更",
       "bidaward": "入札アワード",
