@@ -47,14 +47,12 @@ const ListItems = (props) => {
         }
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-                console.log('______socket subscribe', data);
                 try {
                     const response = JSON.parse(data);
                     if (response.status == 'success' && response.type == 'appInfo') {
                         setDetails(response.data);
                     }
                 } catch (err) {
-                    console.log('err________', err, data);
                 }
             },
         });
@@ -129,7 +127,6 @@ const Connect = ({ route, navigation }) => {
 
     const keyExtractor = (item, index) => { return `_${index}` }
 
-    console.log('appId', appId);
 
     const onSocketOpen = () => {
         dispatch(setSocketOpenStatus(true));
@@ -159,7 +156,6 @@ const Connect = ({ route, navigation }) => {
 
     useEffect(async () => {
         let wallet = await getWallet();
-        console.log('useEffect, passcode', passcode, !passcode, socketOpen)
         if (socketOpen) {
             if (appId && !passcode) {
                 connectApp(appId);
@@ -167,9 +163,7 @@ const Connect = ({ route, navigation }) => {
             getAppId();
         } else {
             singleSocket.connectSocket(onSocketOpen, onSocketClose).then(() => {
-                console.log('Socket connected')
                 if (appId && !passcode) {
-                    console.log('Connect app called')
                     connectApp(appId);
                 }
                 getAppId();
@@ -178,7 +172,6 @@ const Connect = ({ route, navigation }) => {
 
         const socketSubscribe = Events.asObservable().subscribe({
             next: data => {
-                console.log('socket subscribe', data);
                 try {
                     const response = JSON.parse(data);
 
@@ -208,11 +201,9 @@ const Connect = ({ route, navigation }) => {
 
                                 axios.post(url, body)
                                     .then(response => {
-                                        console.log(response.data?.data, "Get Nonce response")
                                         let signature = getSig(response.data?.data?.nonce, wallet.privateKey);
                                         axios.post(urlXanalia, bodyXanalia)
                                             .then(responseXanalia => {
-                                                console.log(responseXanalia.data?.data, "Get Nonce response Xanalia")
                                                 let signatureXanalia = getSig(responseXanalia.data?.data, wallet.privateKey);
                                                 let _data = {
                                                     type: "sig",
@@ -224,7 +215,6 @@ const Connect = ({ route, navigation }) => {
                                                         nonceXanalia: responseXanalia.data?.data
                                                     }
                                                 }
-                                                console.log('Data sent to sig event', _data)
                                                 singleSocket.onSendMessage(_data);
                                             })
                                             .catch(error => {
@@ -254,7 +244,6 @@ const Connect = ({ route, navigation }) => {
                                 }
                             }
                         } else if (response.type == 'asksig') {
-                            console.log('message_data', response.data);
                             let signature = getSig(response.data.msg, wallet.privateKey);
                             let _data = {
                                 type: "sig",
@@ -300,7 +289,6 @@ const Connect = ({ route, navigation }) => {
     }, [appId]);
 
     const connectApp = (appId) => {
-        console.log('connecting', appId);
         dispatch(setRequestAppId(null));
         let data = {
             type: 'connect',
@@ -347,7 +335,6 @@ const Connect = ({ route, navigation }) => {
                         walletId: wallet?.address
                     }
                 }
-                console.log('disconnect app', data);
                 singleSocket.onSendMessage(data);
             },
             () => null

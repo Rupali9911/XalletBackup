@@ -747,7 +747,8 @@
     "TOKEN_ID": "TOKEN ID",
     "loginWithEmail": "使用電子郵件登錄",
     "remainWordCount": "剩餘聊天限制",
-    "exceededToastWord": "您已超出字數限制"
+    "exceededToastWord": "您已超出字數限制",
+    "playbackSpeed": "播放速度"
   },
   "AwardPage": {},
   "wallet": {

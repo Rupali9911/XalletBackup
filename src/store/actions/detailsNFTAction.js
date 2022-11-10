@@ -1,4 +1,4 @@
-import {NEW_BASE_URL} from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import {
   getConfigDetails,
@@ -6,7 +6,7 @@ import {
   estimateGasTransactions,
   handleTransactionError,
 } from '../../screens/wallet/functions/transactionFunctions';
-import {BUY_NFT_START, BUY_NFT_SUCCESS, BUY_NFT_FAIL} from '../types';
+import { BUY_NFT_START, BUY_NFT_SUCCESS, BUY_NFT_FAIL } from '../types';
 
 export const buyNFTStart = () => ({
   type: BUY_NFT_START,
@@ -29,7 +29,7 @@ export const buyNFTApi = (
   nftTokenId,
 ) => {
   return (dispatch, getState) => {
-    const {userData} = getState().UserReducer;
+    const { userData } = getState().UserReducer;
     const walletAddress = userData?.userWallet?.address;
 
     dispatch(buyNFTStart());
@@ -44,10 +44,8 @@ export const buyNFTApi = (
       data,
     })
       .then(async buyNFTRes => {
-        console.log('🚀 ~ file: .js ~ line 76 ~  ~ buyNFTRes', buyNFTRes);
         const approveData = buyNFTRes?.dataReturn?.approveData;
         const signData = buyNFTRes?.dataReturn?.signData;
-        console.log('🚀 ~ file: .js ~ line 44 ~  ~ signData', signData);
         let transactionParameters = {};
         let noncePlus = 0;
 
@@ -95,7 +93,7 @@ export const buyNFTApi = (
           transactionParameters,
           config.rpcURL,
         );
-        const {gasLimit, gasPrice} = await estimateGasTransactions(
+        const { gasLimit, gasPrice } = await estimateGasTransactions(
           transactionParameters,
           config.rpcURL,
         );

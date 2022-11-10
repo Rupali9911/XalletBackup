@@ -39,10 +39,6 @@ export const estimateGasTransactions = async (transaction, rpcURL) => {
     const gasLimit = await getGasLimit(data, rpcURL);
 
     const gasPrice = await getGasPrice(rpcURL);
-    console.log('🚀 ~ file: transactionFunctions.js ~ line 56 ~ ~ gasPrice', {
-      gasLimit: Number(gasLimit),
-      gasPrice: Number(gasPrice),
-    });
 
     return {
       gasLimit: Number(gasLimit),
@@ -124,22 +120,18 @@ const getCommon = (chainType, networkObject) => {
 
 //=========================== Transaction Processing Function ===============================
 const transactionProcessing = async (txObject, common, privateKey, web3, resolve, reject) => {
-  console.log("@@@ transaction processing parameters ==============>", txObject, common, privateKey)
   try {
     const tx = new EthereumTx(txObject, { common });
-    console.log("@@@ Transaction processing (tx) =======>", tx);
 
     const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
     tx.sign(privKey);
     const serializedTx = tx.serialize();
     const raw = '0x' + serializedTx.toString('hex');
-    console.log("@@@ Transaction processing (raw) =======>", raw);
 
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          console.log('460 - txHash', txHash);
-          console.log('461 resp crypto function', new Date().getTime());
+
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
           console.log(err);
@@ -147,7 +139,7 @@ const transactionProcessing = async (txObject, common, privateKey, web3, resolve
         }
       })
       .once('receipt', receipt => {
-        console.log('468 - receipt', receipt);
+
         resolve({ success: true, status: 200, data: receipt });
         console.log('470 - resolve');
       })
@@ -169,14 +161,6 @@ export const sendCustomTransaction = async (
   price,
 ) => {
   try {
-    console.log(
-      'buyNft params 369',
-      transaction,
-      publicKey,
-      nftId,
-      nftchainType,
-      price,
-    );
     return new Promise(async (resolve, reject) => {
       const chainType = nftchainType?.toLowerCase();
       const config = getConfigDetails(chainType);
@@ -199,9 +183,7 @@ export const sendCustomTransaction = async (
 
       const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
 
-      console.log('398 - buy nft web,3', web3);
       const txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
-      console.log('🚀 ~ file: index.js ~ line 400 buyNFT ~ txCount', txCount);
       if (txCount.error) reject(txCount.error);
       let txObject;
       const { gasLimit, gasPrice } = await estimateGasTransactions(
@@ -223,13 +205,9 @@ export const sendCustomTransaction = async (
         // nonce: web3.utils.toHex(txCount),
         nonce: transaction?.nonce,
       };
-      console.log(
-        '🚀 ~ file: transactionFunctions.js ~ line 113 ~ ~ txObject',
-        txObject,
-      );
+
 
       let common = null;
-      console.log('line 427 ~ buyNFT ~ common', chainType, transaction);
       if (chainType === 'bsc') {
         common = Common.forCustomChain(
           'mainnet',
@@ -261,30 +239,20 @@ export const sendCustomTransaction = async (
           'petersburg',
         );
       }
-      console.log('447 - common if-else', common);
-      console.log('txObject', txObject);
 
       const tx = new EthereumTx(txObject, { common });
 
-      console.log('🚀 ~ file: transactionFunctions.js ~ line 169 ~  ~ tx', tx);
       const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
       tx.sign(privKey);
       const serializedTx = tx.serialize();
       const raw = '0x' + serializedTx.toString('hex');
 
-      console.log(
-        '🚀 ~ file: transactionFunctions.js ~ line 175 ~  ~ raw',
-        raw,
-      );
+
 
       await web3.eth
         .sendSignedTransaction(raw, async (err, txHash) => {
-          console.log(
-            '🚀 ~ file: transactionFunctions.js ~ line 183 ~ ~ txHash',
-            txHash,
-          );
+
           if (txHash) {
-            console.log('460 - txHash', txHash);
             console.log('461 resp crypto function', new Date().getTime());
             // resolve({ success: true, status: 200, data: txHash });
           } else if (err) {
@@ -293,7 +261,6 @@ export const sendCustomTransaction = async (
           }
         })
         .once('receipt', receipt => {
-          console.log('468 - receipt', receipt);
           resolve({ success: true, status: 200, data: receipt });
           console.log('470 - resolve');
         })
@@ -335,7 +302,6 @@ const getSignData = (transferParameters, config, web3, reject) => {
     let convertto6decimal;
     let signData;
     let contract = new web3.eth.Contract(config.ContractAbis, config.ContractAddress, { from: transferParameters.publicAddress });
-    console.log("@@@ Get signData (contract object) =========>", contract);
 
     if (type == 'usdt') {
       convertto6decimal = parseFloat(transferParameters.amount).toFixed(6) * 1e6;
@@ -344,12 +310,11 @@ const getSignData = (transferParameters, config, web3, reject) => {
       convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
 
       convertto6decimal = getConvertedDecimalValue(type, convertto6decimal, web3, reject);
-      console.log("@@@ Get signData (convertTo6Decimal) =========>", convertto6decimal);
+      // console.log("@@@ Get signData (convertTo6Decimal) =========>", convertto6decimal);
 
       signData = contract.methods.transfer(transferParameters.toAddress, web3.utils.toHex(convertto6decimal)).encodeABI();
     }
 
-    console.log("@@@ Get signData (signData) =============>", signData);
     return signData
   } catch (error) {
     console.log("@@@ Get signData error =============>", error);
@@ -359,8 +324,6 @@ const getSignData = (transferParameters, config, web3, reject) => {
 
 //============================== Balance Transfer Function =====================================
 export const balanceTransfer = async (transferParameters, config) => {
-  console.log("@@@ balance transfer func (parameters)===========>", transferParameters);
-  console.log("@@@ balance transfer func (config)===========>", config);
   try {
     return new Promise(async (resolve, reject) => {
       const chainType = transferParameters?.chainType?.toLowerCase();
@@ -370,18 +333,18 @@ export const balanceTransfer = async (transferParameters, config) => {
 
       const txCount = await web3.eth.getTransactionCount(transferParameters.publicAddress, 'pending');
       if (txCount.error) reject(txCount.error);
-      console.log('@@@ balance transfer func (txnCount) =========>', txCount);
+      // console.log('@@@ balance transfer func (txnCount) =========>', txCount);
 
       let txObject;
 
       if (tokenType === 'BNB' || tokenType === 'Matic' || tokenType === 'ETH') {
         //NON ERC20(BNB,MATIC,ETH)
-        console.log("@@@ For NON ERRC20 Token if ============>", tokenType);
+        // console.log("@@@ For NON ERRC20 Token if ============>", tokenType);
         const gasPrice = await getGasPrice(config.rpcURL);
 
         let convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
         const amountToSend = web3.utils.toWei(convertto6decimal.toString(), 'ether');
-        console.log("@@@ For NON ERRC20 Token (amountToSend) ========>", amountToSend)
+        // console.log("@@@ For NON ERRC20 Token (amountToSend) ========>", amountToSend)
 
         txObject = {
           from: transferParameters.publicAddress,
@@ -393,16 +356,15 @@ export const balanceTransfer = async (transferParameters, config) => {
           chainId: chainType === "ethereum" ? 5 : transferParameters.chainId,
         };
 
-        console.log("@@@ balance transfer (txObject) ======>", txObject)
 
         let common = getCommon(chainType, transferParameters);
-        console.log("@@@ balance transfer (common) =========>", common);
+        // console.log("@@@ balance transfer (common) =========>", common);
 
         await transactionProcessing(txObject, common, transferParameters.privKey, web3, resolve, reject)
 
       } else {
         //ERC20(TAL,TNFT etc.)
-        console.log("@@@ For ERRC20 Token else ============>", tokenType);
+        // console.log("@@@ For ERRC20 Token else ============>", tokenType);
         let signData = getSignData(transferParameters, config, web3, reject);
         if (!signData) return;
         const transaction = {
@@ -411,13 +373,12 @@ export const balanceTransfer = async (transferParameters, config) => {
           data: signData,
           nonce: web3.utils.toHex(txCount),
         };
-        console.log("@@@ transaction object ===========>", transaction)
         // let txObject;
         const { gasLimit, gasPrice } = await estimateGasTransactions(
           transaction,
           config.rpcURL,
         );
-        console.log("@@@ balance transfer func gasLimit and gasPrice ===========>", { gasLimit: Number(gasLimit), gasPrice: Number(gasPrice) });
+        // console.log("@@@ balance transfer func gasLimit and gasPrice ===========>", { gasLimit: Number(gasLimit), gasPrice: Number(gasPrice) });
 
         txObject = {
           from: transferParameters.publicAddress,
@@ -429,10 +390,8 @@ export const balanceTransfer = async (transferParameters, config) => {
           nonce: web3.utils.toHex(txCount),
           chainId: chainType === "ethereum" ? 5 : transferParameters.chainId,
         };
-        console.log("@@@ balance transfer (txObject) =========>", txObject);
 
         let common = getCommon(chainType, transferParameters);
-        console.log("@@@ balance transfer (common) =========>", common);
 
         await transactionProcessing(txObject, common, transferParameters.privKey, web3, resolve, reject)
       }

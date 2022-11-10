@@ -746,7 +746,8 @@
     "TOKEN_ID": "Token Id",
     "loginWithEmail": "Login with Email",
     "remainWordCount": "Remaining Chat Limit",
-    "exceededToastWord": "You have exceeded word limit"
+    "exceededToastWord": "You have exceeded word limit",
+    "playbackSpeed": "Playback"
   },
   "AwardPage": {},
   "wallet": {

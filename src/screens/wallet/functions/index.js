@@ -52,13 +52,10 @@ async function getBlockheaders(web3) {
         console.log(error)
     })
         .on('data', async (log) => {
-            console.log("Data", log)
         })
         .on('changed', async (log) => {
-            console.log(`Changed: ${log}`)
         })
         .on('error', (log) => {
-            console.log(`error:  ${log}`)
         })
 }
 
@@ -78,19 +75,16 @@ export const watchBalanceUpdate = (updateBalance, type) => {
         rpcUrl = environment.polRpc;
     }
 
-    console.log('webSocketLink', webSocketLink);
     var web3 = new Web3(new Web3.providers.WebsocketProvider(webSocketLink));
     const subscribe = web3.eth.subscribe('newBlockHeaders', (error, result) => {
         if (error) console.log('watchBalanceUpdate', error)
     }).on("connected", function (subscriptionId) {
-        console.log("connected", subscriptionId);
     })
         .on("data", function (log) {
             // console.log("data",log);
             updateBalance && updateBalance();
         })
         .on("changed", function (log) {
-            console.log("changed", log);
             updateBalance && updateBalance();
         });
 
@@ -102,13 +96,10 @@ export const watchAllTransactions = (pubKey) => {
     const subscribe = web3.eth.subscribe('logs', { fromBlock: 0, address: pubKey }, (error, result) => {
         if (error) console.log('watchAllTransactions', error)
     }).on("connected", function (subscriptionId) {
-        console.log(subscriptionId);
     })
         .on("data", function (log) {
-            console.log(log);
         })
         .on("changed", function (log) {
-            console.log(log);
         });
 
     return subscribe;
@@ -154,13 +145,10 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
                 let transaction = filterTransaction(pubKey, trx);
 
                 if (transaction !== null) {
-                    console.log('trx', trx);
                     addToList && addToList(transaction);
                 }
 
-                // console.log('Found incoming Ether transaction from ' + process.env.WALLET_FROM + ' to ' + process.env.WALLET_TO);
-                // console.log('Transaction value is: ' + process.env.AMOUNT)
-                // console.log('Transaction hash is: ' + txHash + '\n')
+
 
                 // Initiate transaction confirmation
                 // confirmEtherTransaction(txHash)
@@ -217,7 +205,6 @@ export const currencyInDollar = async (pubkey, type) => {
                     var bnbLpReserve = info[0].toString();
                     var busdLpReserve = info[1].toString();
                     var bnbPriceInner = busdLpReserve / bnbLpReserve;
-                    console.log('bnbPriceInner', bnbPriceInner)
                     resolve(bnbPriceInner);
                 })
             } else if (type === 'ALIA') {
@@ -225,14 +212,13 @@ export const currencyInDollar = async (pubkey, type) => {
                     var aliaReserve = info[0].toString();
                     var BNBReserve = info[1].toString();
                     var newbnbPerAlia = aliaReserve / BNBReserve;
-                    console.log('newbnbPerAlia', newbnbPerAlia)
+
                     resolve(newbnbPerAlia);
                 })
             } else {
                 await contract.methods.getReserves().call().then(function (info) {
                     maticQuickReserve = web3.utils.fromWei(info._reserve0.toString(), "ether");
                     aliaQuickReserve = web3.utils.fromWei(info._reserve1.toString(), "mwei");
-                    console.log('maticQuickReserve and aliaQuickReserve', maticQuickReserve, aliaQuickReserve)
                     resolve(parseFloat(aliaQuickReserve) / parseFloat(maticQuickReserve));
                 })
             }
@@ -243,15 +229,12 @@ export const currencyInDollar = async (pubkey, type) => {
 }
 
 // export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
-//   // console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
-//   //  console.log('pubKey', pubKey)
 //   return new Promise(async (resolve, reject) => {
 //       const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
 //       if (contractAddr) {
 //           const contract = new web3.eth.Contract(contractAbi, contractAddr);
 //           let reserves = {};
 //           await contract.methods.balanceOf(pubKey).call().then(function (result) {
-//               console.log('Results from balance of', result)
 //               if (type == 'usdc') {
 //                   // resolve(web3.utils.fromWei(result.toString(), "ether"));
 //                   resolve(web3.utils.fromWei(result.toString(), "mwei"));
@@ -283,47 +266,48 @@ export const currencyInDollar = async (pubkey, type) => {
 // }
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
-    console.log('pubKey, contractAddr, contractAbi, rpc, type', pubKey, contractAddr, contractAbi, rpc, type)
-    //  console.log('pubKey', pubKey)
-
-    return new Promise(async (resolve, reject) => {
-        const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
-        if (contractAddr) {
-            const contract = new web3.eth.Contract(contractAbi, contractAddr);
-            let reserves = {};
-            await contract.methods.balanceOf(pubKey).call().then(function (result) {
-                console.log('Results from balance of', result)
-                if (type == 'usdc') {
-                    // resolve(web3.utils.fromWei(result.toString(), "ether"));
-                    resolve(web3.utils.fromWei(result.toString(), "mwei"));
-                } else if (type == 'alia') {
-                    resolve(web3.utils.fromWei(result.toString(), "ether"));
-                } else if (type == 'usdt') {
-                    resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
-                } else if (type == 'busd') {
-                    resolve(web3.utils.fromWei(result.toString(), "ether"));
-                } else if (type == 'weth') {
-                    resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
-                }
-            }).catch(function (error) {
-                console.log(error + ' is the error');
-                reject(error);
-            })
-        } else {
-            await web3.eth.getBalance(pubKey, function (error, ethbalance) {
-                console.log('ETH BALANCE', ethbalance)
-                if (error) {
+    try {
+        return new Promise(async (resolve, reject) => {
+            const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
+            if (contractAddr) {
+                const contract = new web3.eth.Contract(contractAbi, contractAddr);
+                let reserves = {};
+                await contract.methods.balanceOf(pubKey).call().then(function (result) {
+                    // console.log('Results from balance of', result)
+                    if (type == 'usdc') {
+                        // resolve(web3.utils.fromWei(result.toString(), "ether"));
+                        resolve(web3.utils.fromWei(result.toString(), "mwei"));
+                    } else if (type == 'alia') {
+                        resolve(web3.utils.fromWei(result.toString(), "ether"));
+                    } else if (type == 'usdt') {
+                        resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e12);
+                    } else if (type == 'busd') {
+                        resolve(web3.utils.fromWei(result.toString(), "ether"));
+                    } else if (type == 'weth') {
+                        resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
+                    }
+                }).catch(function (error) {
+                    console.log(error + ' is the error');
                     reject(error);
-                } else {
-                    resolve(web3.utils.fromWei(ethbalance.toString(10), 'ether'));
-                }
-            })
-        }
-    })
+                })
+            } else {
+                await web3.eth.getBalance(pubKey, function (error, ethbalance) {
+                    console.log('ETH BALANCE', ethbalance)
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(web3.utils.fromWei(ethbalance.toString(10), 'ether'));
+                    }
+                })
+            }
+        })
+    } catch (error) {
+        console.log("@@@ Balance load error=========>", error)
+        return null;
+    }
 }
 
 export const transfer = (pubkey, privkey, amount, toAddress, type, chainType, contractAddr, contractAbi, rpc, gasPr, gasLmt) => {
-    console.log('params_________', pubkey, privkey, amount, toAddress, type, chainType, contractAddr, contractAbi, rpc, gasPr, gasLmt)
     return new Promise(async (resolve, reject) => {
 
         const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
@@ -339,9 +323,9 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, chainType, co
             }
             var amountToSend = web3.utils.toWei(amount.toString(), 'ether');
             // HERE
-            console.log("Custom gas price===>", customGasPrice)
-            console.log("Custom gas price===>", web3.utils.toHex(customGasPrice))
-            console.log(" gas lmt price===>", web3.utils.toHex(gasLmt))
+            // console.log("Custom gas price===>", customGasPrice)
+            // console.log("Custom gas price===>", web3.utils.toHex(customGasPrice))
+            // console.log(" gas lmt price===>", web3.utils.toHex(gasLmt))
 
             const txObject = {
                 //nonce: web3.utils.toHex(txCount),
@@ -465,7 +449,6 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, chainType, co
                         networkId: getNetworkId(chainType),
                         chainId: getChainId(chainType)
                     }, 'petersburg');
-                    console.log("POLYGON WETH CAllED", chainType)
                 }
             }
 
@@ -475,14 +458,11 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, chainType, co
             // const tx = Transaction.fromTxData(txObject, {common});
 
             tx.sign(privKey);
-            console.log('tx', tx);
             const serializedTx = tx.serialize()
 
-            console.log('serializedTx', serializedTx);
             const raw = '0x' + serializedTx.toString('hex')
             await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
                 if (txHash) {
-                    console.log(txHash)
 
                     resolve({ success: true, data: txHash });
 
@@ -502,9 +482,7 @@ export const transfer = (pubkey, privkey, amount, toAddress, type, chainType, co
 }
 
 export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, order) => {
-    console.log('buyNft params 369', publicKey, privKey, nftId, chainType, gasPr, gasLmt);
     return new Promise(async (resolve, reject) => {
-        console.log('chainType', chainType);
         let rpcURL;
         let contractAddress;
         let abiArray;
@@ -525,21 +503,17 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
             reject('invalid chainType');
             return;
         }
-        console.log("392 - buy nft if-else", rpcURL, abiArray, contractAddress)
         const web3 = new Web3(
             new Web3.providers.HttpProvider(
                 rpcURL
             )
         );
-        console.log("398 - buy nft web,3", web3)
         const txCount = await web3.eth.getTransactionCount(publicKey, "pending");
-        console.log("🚀 ~ file: index.js ~ line 400 buyNFT ~ txCount", txCount)
         if (txCount.error) reject(txCount.error);
         var customGasLimit = gasLmt;
         customGasPrice = gasPr * 1000000000;
         // const contractAddress = chainType === "polygon" ? blockChainConfig[1].marketConConfig.add : binanceNftDex;
         // const abiArray = chainType === "polygon" ? environment.polygonNftAbi : binanceNftAbi;
-        console.log('406 - contractAddress', contractAddress);
         var contract = new web3.eth.Contract(abiArray, contractAddress, {
             from: publicKey
         });
@@ -580,8 +554,6 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
                 chainId: getChainId(chainType)
             }, 'petersburg');
         }
-        console.log("447 - common if-else", common)
-        console.log('txObject', txObject);
         const tx = new EthereumTx(txObject, { common });
         privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
         tx.sign(privateKey);
@@ -593,7 +565,6 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
 
         await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
             if (txHash) {
-                console.log("460 - txHash", txHash)
                 console.log("461 resp crypto function", new Date().getTime());
                 // resolve({ success: true, status: 200, data: txHash });
             } else if (err) {
@@ -601,7 +572,6 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
                 reject(err.message);
             }
         }).once('receipt', (receipt) => {
-            console.log("468 - receipt", receipt)
             resolve({ success: true, status: 200, data: receipt });
             console.log("470 - resolve")
         }).catch(e => {
@@ -615,9 +585,8 @@ export const buyNft = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt
 }
 
 export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent) => {
-    console.log('params', publicKey, privKey, nftId, chainType, gasPr, gasLmt, collectionAddress, addedFivePercent);
     return new Promise(async (resolve, reject) => {
-        console.log('chainType', chainType);
+
         let rpcURL;
         let abiArray;
         let contractAddress;
@@ -639,7 +608,6 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
             return;
         }
 
-        console.log('rpcURL', rpcURL);
 
         const web3 = new Web3(
             new Web3.providers.HttpProvider(
@@ -653,7 +621,6 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
         customGasPrice = gasPr * 1000000000;
         // const contractAddress = chainType === "polygon" ? blockChainConfig[1].marketConConfig.add : binanceNftDex;
         // const abiArray = chainType === "polygon" ? blockChainConfig[1].marketConConfig.abi : binanceNftAbi;
-        console.log('contractAddress', contractAddress);
         var contract = new web3.eth.Contract(abiArray, contractAddress, {
             from: publicKey
         });
@@ -696,7 +663,6 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
             }, 'petersburg');
         }
 
-        console.log('txObject', txObject);
         const tx = new EthereumTx(txObject, { common });
         privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
         tx.sign(privateKey);
@@ -708,7 +674,6 @@ export const buyNftBnb = async (publicKey, privKey, nftId, chainType, gasPr, gas
 
         await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
             if (txHash) {
-                console.log('575 txHash', txHash)
                 console.log("resp noncrypto function 576", new Date().getTime());
                 // resolve({ success: true, status: 200, data: txHash });
             } else if (err) {
@@ -759,7 +724,6 @@ export const checkAllowance = async (publicAddr, chainType, approvalAdd) => {
             if (contract) {
                 await contract.methods.allowance(publicAddr, NFTDex).call().then(async function (info) {
                     var balance = await web3.utils.fromWei(info.toString(), "ether")
-                    console.log(balance)
                     resolve({ balance, contract });
                 })
             } else {
@@ -802,9 +766,9 @@ export const approvebnb = async (publicKey, privateKey, chainType, contract) => 
 
             // var andVal = await web3.utils.toWei("10000000000000000000000000000000000000000000000000000000", 'ether');
             var andVal = await web3.utils.toWei(appprovalValue, 'ether');
-            console.log("andVal", andVal)
+            // console.log("andVal", andVal)
             amount = web3.utils.toHex(andVal);
-            console.log("amount")
+            // console.log("amount")
 
             try {
                 const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
@@ -859,7 +823,6 @@ export const approvebnb = async (publicKey, privateKey, chainType, contract) => 
                 const raw = '0x' + serializedTx.toString('hex')
                 await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
                     if (txHash) {
-                        console.log(txHash)
                         resolve({ success: true, data: txHash });
                         return;
                     } else if (err && err.message) {
@@ -892,14 +855,12 @@ export const getBalanceInDollar = () => {
 }
 
 export const createCollection = async (publicKey, privKey, chainType, providerUrl, abiArray, contractAddress, gasPr, gasLmt, collectionN, collectionS) => {
-    console.log("🚀 ~ file: index.js ~ line 759 ~ createCollection", publicKey, providerUrl)
     return new Promise(async (resolve, reject) => {
         const web3 = new Web3(
             new Web3.providers.HttpProvider(
                 providerUrl
             )
         );
-        console.log("🚀 ~ file: index.js ~ line 766 ~ returnnewPromise ~ web3", web3)
 
         let txCount = "";
         try {
@@ -962,7 +923,7 @@ export const createCollection = async (publicKey, privKey, chainType, providerUr
             console.log(txHash, "tx hash count create collection 823", err)
 
             if (txHash) {
-                console.log("🚀 ~ file: index.js ~ line 819 ~ awaitweb3.eth.sendSignedTransaction ~ txHash", txHash)
+                // console.log("🚀 ~ file: index.js ~ line 819 ~ awaitweb3.eth.sendSignedTransaction ~ txHash", txHash)
                 const interval = setInterval(() => checkingProgressTransaction(), 10000)
                 const checkingProgressTransaction = async () => {
                     try {
@@ -1014,7 +975,6 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
 
         var customGasLimit = gasLmt;
         customGasPrice = gasPr * 1000000000;
-        // console.log('contract',contract);
         let txObject;
         // HERE
         txObject = {
@@ -1052,7 +1012,6 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
             }, 'petersburg');
         }
 
-        console.log('txObject', txObject);
         const tx = new EthereumTx(txObject, { common });
         privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
         tx.sign(privateKey);
@@ -1064,8 +1023,8 @@ export const setApprovalForAll = async (publicKey, privKey, rpcURL, chainType, a
 
         await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
             if (txHash) {
-                console.log(txHash)
-                console.log("resp noncrypto function", new Date().getTime());
+                // console.log(txHash)
+                // console.log("resp noncrypto function", new Date().getTime());
                 // resolve({ success: true, status: 200, data: txHash });
             } else if (err) {
                 console.log(err);
@@ -1136,7 +1095,6 @@ export const nftMakingMethods = async (data) => {
             }, 'petersburg');
         }
 
-        console.log('txObject', txObject);
         const tx = new EthereumTx(txObject, { common });
         privateKey = Buffer.from(data.privKey.substring(2, 66), 'hex');
         tx.sign(privateKey);
@@ -1147,8 +1105,8 @@ export const nftMakingMethods = async (data) => {
         // );
         await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
             if (txHash) {
-                console.log(txHash)
-                console.log("resp noncrypto function", new Date().getTime());
+                // console.log(txHash)
+                // console.log("resp noncrypto function", new Date().getTime());
                 // resolve({ success: true, status: 200, data: txHash });
             } else if (err) {
                 console.log(err, "testing txHash error");
@@ -1213,7 +1171,6 @@ export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlace
             }, 'petersburg');
         }
 
-        console.log('txObject', txObject);
         const tx = new EthereumTx(txObject, { common });
         privateKey = Buffer.from(privKey.substring(2, 66), 'hex');
         tx.sign(privateKey);
@@ -1236,7 +1193,6 @@ export const sellNFT = async (publicKey, privKey, rpcURL, chainType, MarketPlace
             resolve({ success: true, status: 200, data: receipt });
         });
 
-        // console.log(result);
         // return result
     })
 }

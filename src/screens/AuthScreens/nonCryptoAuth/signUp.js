@@ -43,7 +43,7 @@ const SignupCrypto = ({ route }) => {
         // if (!v) {
         //     errorRend.email = translate("wallet.common.error.emailRequired")
         // } else
-            if (v && !regEmail.test(v)) {
+        if (v && !regEmail.test(v)) {
             errorRend.email = translate("common.emailval")
         } else {
             if (errorRend.hasOwnProperty('email')) {
@@ -66,11 +66,11 @@ const SignupCrypto = ({ route }) => {
             email: email,
             password: password,
         }
-        console.log(body, "Sign up body")
+        // console.log(body, "Sign up body")
 
         axios.post(url, body)
             .then(response => {
-                console.log(response, "Sign up success")
+                // console.log(response, "Sign up success")
                 navigation.navigate("CryptoVerify", { email })
                 setError({});
                 setLoading(false);
@@ -113,10 +113,10 @@ const SignupCrypto = ({ route }) => {
                                 // if (!v) {
                                 //     errorRend.name = translate("wallet.common.error.fieldRequired")
                                 // } else {
-                                    if (errorRend.hasOwnProperty('name')) {
-                                        delete errorRend.name
-                                    }
-                               // }
+                                if (errorRend.hasOwnProperty('name')) {
+                                    delete errorRend.name
+                                }
+                                // }
                                 setError(errorRend)
                             }
                         }}
@@ -146,7 +146,7 @@ const SignupCrypto = ({ route }) => {
                                 // if (!v) {
                                 //     errorRend.password = translate("common.passwordReq")
                                 // } else
-                                    if (v && !passwordRegex.test(v)) {
+                                if (v && !passwordRegex.test(v)) {
                                     errorRend.password = translate("common.PassVal")
                                 } else {
                                     if (errorRend.hasOwnProperty('password')) {
@@ -172,7 +172,7 @@ const SignupCrypto = ({ route }) => {
                                 // if (!v) {
                                 //     errorRend.cPassword = translate("wallet.common.error.confirmPasswordRequired")
                                 // } else
-                                    if (v && v !== password) {
+                                if (v && v !== password) {
                                     errorRend.cPassword = translate("common.passwordmismatch")
                                 } else {
                                     if (errorRend.hasOwnProperty('cPassword')) {

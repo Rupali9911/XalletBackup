@@ -44,7 +44,6 @@ export const hotCollectionList = (page, limit) => {
       }
     })
       .then(json => {
-        console.log(json, 'mainData')
         // const obj = {
         //   bannerImage: "https://ik.imagekit.io/xanalia/CollectionMainData/NFTAward.png",
         //   chainType: "",
@@ -101,7 +100,7 @@ export const getHotCollectionDetail = (networkName, contractAddress) => {
   // axios.defaults.headers.post['Content-Type'] = 'application/json';
   // // const sub_url = isBlind ? 'blindBox/view-blind-collection-data' : 'user/specific-collection';
   // return axios.get(`https://prod-backend.xanalia.com/collections/collectionId?networkName=${networkName}&contractAddress=${contractAddress}`);
-  
+
   return sendRequest({
     url: `${NEW_BASE_URL}/collections/collectionId`,
     params: {

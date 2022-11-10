@@ -100,21 +100,21 @@ const ScanScreen = React.memo((props) => {
 
     useEffect(async () => {
         if (position == 1) {
-            console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
+            // console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
             await checkCameraPermission();
-            console.log("@@@ Scan screen useEffect to reactive 22222=========>")
+            // console.log("@@@ Scan screen useEffect to reactive 22222=========>")
             setIsActive(true);
-            console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
+            // console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
         }
     }, [position, camera]);
 
     const checkCameraPermission = async () => {
         const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-        console.log("@@@ Scan screen check permission 11111=========>", granted)
+        // console.log("@@@ Scan screen check permission 11111=========>", granted)
         if (!granted) {
-            console.log("@@@ Scan screen check permission 22222=========>", granted)
+            // console.log("@@@ Scan screen check permission 22222=========>", granted)
             const requestPer = await Permission.requestPermission(PERMISSION_TYPE.camera);
-            console.log("@@@ Scan screen check permission 33333=========>", requestPer)
+            // console.log("@@@ Scan screen check permission 33333=========>", requestPer)
             if (requestPer == false) {
                 confirmationAlert(
                     translate("wallet.common.cameraPermissionHeader"),
@@ -127,11 +127,9 @@ const ScanScreen = React.memo((props) => {
             }
             return
         }
-        console.log("@@@ Scan screen useEffect to reactive 4444=========>")
     }
 
     const onSuccess = (e) => {
-        console.log('@@@ QR Code scan success =======>', e);
         processScanResult(e, SCAN_WALLET).then((result) => {
             if (result.walletAddress) {
                 verifyAddress(result.walletAddress).then(() => {
@@ -230,49 +228,49 @@ const SendScreen = React.memo((props) => {
         let totalValue = 0;
         if (item.type == 'ETH' && item.network !== 'Polygon') {
             let value = parseFloat(ethBalance)
-            console.log('Ethereum value', value);
+            // console.log('Ethereum value', value);
             totalValue = value;
         } else if (item.type == 'BNB') {
             let value = parseFloat(bnbBalance)
-            console.log('BSC value', value);
+            // console.log('BSC value', value);
             totalValue = value;
         } else if (item.type == 'BUSD') {
             let value = parseFloat(busdBalance)
-            console.log('BUSD value', value);
+            // console.log('BUSD value', value);
             totalValue = value;
         } else if (item.type == 'USDT') {
             let value = parseFloat(usdtBalance)
-            console.log('USDT value', value);
+            // console.log('USDT value', value);
             totalValue = value;
         } else if (item.type == 'Matic') {
             let value = parseFloat(maticBalance)
-            console.log('Polygon value', value);
+            // console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == 'TNFT') {
             let value = parseFloat(tnftBalance)
-            console.log('Polygon value', value);
+            // console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == 'TAL') {
             let value = parseFloat(talBalance)
-            console.log('Polygon value', value);
+            // console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == 'USDC') {
             let value = parseFloat(usdcBalance)
-            console.log('Polygon value', value);
+            // console.log('Polygon value', value);
             totalValue = value;
         } else if (item.type == "WETH" && item.network === 'Polygon') {
             let value = parseFloat(wethBalance)
-            console.log('Polygon value', value);
+            // console.log('Polygon value', value);
             totalValue = value;
         } else if (item.network === 'BSC' && item.type == 'ALIA') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(tnftBalance);
             totalValue = value;
         } else if (item.network === 'Polygon' && item.type == 'ALIA') {
-            console.log("Item network", item.network)
+            // console.log("Item network", item.network)
             let value = parseFloat(talBalance);
             totalValue = value;
-            console.log("Total value is ", totalValue)
+            // console.log("Total value is ", totalValue)
         }
         return totalValue;
     }
@@ -292,12 +290,12 @@ const SendScreen = React.memo((props) => {
             networkId: networkType?.id,
         }
         setLoading(true);
-        console.log("@@@ parameters in transation function =============>", networkType?.name, type);
+        // console.log("@@@ parameters in transation function =============>", networkType?.name, type);
         const config = getConfigDetailsFromEnviorment(networkType?.name, type);
-        console.log("@@@ config in transation function =============>", config);
+        // console.log("@@@ config in transation function =============>", config);
 
         balanceTransfer(transferParameters, config).then((transferResponse) => {
-            console.log("Balance Transfer response ======>", transferResponse);
+            // console.log("Balance Transfer response ======>", transferResponse);
             setLoading(false);
             if (transferResponse?.success) {
                 showSuccessAlert();
@@ -402,7 +400,7 @@ const SendScreen = React.memo((props) => {
 const Send = ({ route, navigation }) => {
     //================= Props Destructuring =============================
     const { item, type } = route.params;
-    console.log("@@@ Send screen props ============>", item, type)
+    // console.log("@@@ Send screen props ============>", item, type)
     //================= States Initialiazation =============================
     const [loading, setLoading] = useState(false);
     const [sendToAddress, setSendToAddress] = useState(null);

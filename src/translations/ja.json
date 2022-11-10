@@ -747,8 +747,8 @@
     "TOKEN_ID": "トークンID",
     "loginWithEmail": "メールでログイン",
     "remainWordCount": "残りのチャット制限",
-    "exceededToastWord": "文字数制限を超えました"
-
+    "exceededToastWord": "文字数制限を超えました",
+    "playbackSpeed": "再生速度"
   },
   "AwardPage": {},
   "wallet": {

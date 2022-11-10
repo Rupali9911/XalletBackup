@@ -214,7 +214,6 @@ const CreateNFTScreen = ({ route }) => {
             minimumDate={miniDate}
             androidVariant={"iosClone"}
             onConfirm={date => {
-              console.log("Date Console on conform UTC", date.toISOString());
               setDate(date)
               setDateVisible(false)
             }}

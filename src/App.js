@@ -176,12 +176,12 @@ const TabComponent = () => {
           component={Wallet}
         />
       )}
-      <Tab.Screen
+      {/* <Tab.Screen
         name={'Connect'}
         options={{tabBarLabel: translate('wallet.common.connect')}}
         component={Connect}
         initialParams={{}}
-      />
+      /> */}
       <Tab.Screen
         options={{tabBarLabel: translate('wallet.common.me')}}
         name={'Me'}

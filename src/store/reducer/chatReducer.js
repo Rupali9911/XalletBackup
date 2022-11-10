@@ -92,7 +92,6 @@ const initialState = {
 }
 
 export default function chatReducer(state = initialState, action) {
-    // console.log('============',state, action)
     switch (action.type) {
         //=====================Chatting=====================
         case CHAT_LOAD_START:

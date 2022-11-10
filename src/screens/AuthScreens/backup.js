@@ -24,7 +24,7 @@ import { loginExternalWallet } from '../../store/reducer/userReducer';
 import { translate } from '../../walletUtils';
 const Web3 = require('web3');
 
-const Backup = ({navigation}) => {
+const Backup = ({ navigation }) => {
   const dispatch = useDispatch();
   // const { loading } = useSelector(state => state.UserReducer);
   const [loading, setLoading] = useState(true);
@@ -46,9 +46,7 @@ const Backup = ({navigation}) => {
     var web3 = new Web3(Web3.givenProvider);
     const signature = await web3.eth.accounts.sign(SIGN_MESSAGE, privateKey);
     const account = {
-      mnemonic: {
-        phrase: randomSeed,
-      },
+      mnemonic: randomSeed,
       address: address,
       privateKey: privateKey,
       signature: signature.signature,
@@ -59,7 +57,7 @@ const Backup = ({navigation}) => {
 
   const saveWallet = () => {
     dispatch(loginExternalWallet(wallet, false, true))
-      .then(() => {})
+      .then(() => { })
       .catch(err => {
         alertWithSingleBtn(
           translate('wallet.common.alert'),
@@ -108,13 +106,13 @@ const Backup = ({navigation}) => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => {
-              navigation.navigate('recoveryPhrase', {hide: false, wallet});
+              navigation.navigate('recoveryPhrase', { hide: false, wallet });
             }}
           />
           <Button
             uppercase={false}
             color={Colors.themeColor}
-            style={{marginBottom: hp('1%')}}
+            style={{ marginBottom: hp('1%') }}
             onPress={saveWallet}>
             {translate('wallet.common.doItLater')}
           </Button>
