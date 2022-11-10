@@ -474,19 +474,7 @@ function Profile({ navigation, connector, route }) {
               </TouchableOpacity>
               <View style={styles.iconWrapper}>
                 <View
-                  style={{
-                    borderColor:
-                      route?.params?.role === 4
-                        ? Colors.buttonBackground
-                        : 'transparent',
-                    borderWidth: 3,
-                    width: SIZE(155),
-                    height: SIZE(155),
-                    position: 'relative',
-                    borderRadius: 100,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                  style={[styles.iconBadgeVw, route?.params?.role === 4 ? styles.borderBtnColor : styles.borderTrans]}>
                   {renderIconImage()}
                   {route?.params?.role === 4 ? (
                     <View style={styles.markIconView}>
@@ -728,4 +716,19 @@ const styles = StyleSheet.create({
     top: 145,
     zIndex: 10,
   },
+  iconBadgeVw:{
+    borderWidth: 3,
+    width: SIZE(155),
+    height: SIZE(155),
+    position: 'relative',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  borderTrans:{
+    borderColor: 'transparent',
+  }, 
+  borderBtnColor:{ 
+    borderColor: Colors.buttonBackground
+  }
 });
