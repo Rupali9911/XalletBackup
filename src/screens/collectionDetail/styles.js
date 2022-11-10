@@ -1,15 +1,22 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import Colors from '../../constants/Colors';
 
-import { SIZE } from '../../common/responsiveFunction';
-import { colors, fonts } from '../../res';
+import {SIZE} from '../../common/responsiveFunction';
+import {colors, fonts} from '../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../common/responsiveFunction';
+import {Dimensions} from 'react-native';
+const {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  loaderParentActivity: {
+    height: height / 6,
+    width: width,
+  },
+  loaderParent: {marginTop: height / 8},
   backIcon: {
     width: SIZE(16),
     height: SIZE(16),
@@ -63,23 +70,23 @@ const styles = StyleSheet.create({
     left: 23,
     width: SIZE(22),
     height: SIZE(22),
-    borderRadius: SIZE(10)
+    borderRadius: SIZE(10),
   },
   tokenPicker: {
     borderColor: colors.themeR,
-    width:'90%',
-    height:'10%',
-    alignSelf:'center',
-    borderRadius:0,
-    marginTop:10
+    width: '90%',
+    height: '10%',
+    alignSelf: 'center',
+    borderRadius: 0,
+    marginTop: 10,
   },
   dropDownContainer: {
     borderColor: colors.themeR,
     backgroundColor: colors.white,
-    marginTop:10,
-    width:'90%',
-    borderRadius:0,
-    alignSelf:'center',
+    marginTop: 10,
+    width: '90%',
+    borderRadius: 0,
+    alignSelf: 'center',
   },
   verifyIcon1: {
     width: SIZE(15),
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginLeft: -1,
     borderColor: '#eeeeee',
-    paddingHorizontal: SIZE(15)
+    paddingHorizontal: SIZE(15),
   },
   collectionTableRowText: {
     fontSize: SIZE(14),
@@ -123,7 +130,7 @@ const styles = StyleSheet.create({
     width: SIZE(14),
     height: SIZE(14),
     marginRight: SIZE(2),
-    resizeMode: "contain"
+    resizeMode: 'contain',
   },
   descriptionTabWrapper: {
     flexDirection: 'row',
@@ -151,7 +158,7 @@ const styles = StyleSheet.create({
   descriptionTabText: {
     fontSize: SIZE(13),
     color: '#575e64',
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontFamily: fonts.ARIAL,
   },
   description: {
@@ -170,8 +177,16 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     color: '#212529',
   },
+  sorryMessageActivity: {
+    width: width,
+    // height: Dimensions.get('window').height,
+    marginTop: height / 13,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   sorryMessageCont: {
-    flex: 1,
+    // flex: 1,
+    marginTop: height / 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -195,9 +210,8 @@ const styles = StyleSheet.create({
     fontSize: RF(1.6),
     fontFamily: fonts.SegoeUIRegular,
     textTransform: 'capitalize',
-    fontWeight: "400",
-    color: '#212529'
-
+    fontWeight: '400',
+    color: '#212529',
   },
   socialLinksWrap: {
     alignItems: 'center',
@@ -264,57 +278,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: wp('100%')
+    width: wp('100%'),
   },
   descriptionTabData: {
     fontSize: SIZE(18),
     fontWeight: 'bold',
     marginBottom: 10,
-    marginTop: 5
+    marginTop: 5,
   },
   floorPriceVw: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   blindBoxLoader: {
-    position:"absolute",
-    alignSelf:'center'
+    position: 'absolute',
+    alignSelf: 'center',
   },
   containerStyle: {
     flex: 1,
-    justifyContent: 'flex-start' 
+    justifyContent: 'flex-start',
   },
   tableView: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center' 
+    justifyContent: 'center',
   },
   tableCellImageView: {
     // flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    maxWidth: 200
+    maxWidth: 200,
   },
   cellImage: {
-    height: hp(5.5), 
-    width: hp(5.5), 
-    borderRadius: 3, 
+    height: hp(5.5),
+    width: hp(5.5),
+    borderRadius: 3,
     marginHorizontal: 5,
   },
   cellAddress: {
     color: 'black',
     marginLeft: hp(0.5),
-    marginRight: hp(0.5)
+    marginRight: hp(0.5),
   },
   textStyle: {
-    margin: SIZE(10), 
-    fontSize: SIZE(12) 
+    margin: SIZE(10),
+    fontSize: SIZE(12),
   },
-  text: { margin: SIZE(10), fontSize: SIZE(12) },
-  themeColor: { color: Colors.themeColor },
-
+  text: {margin: SIZE(10), fontSize: SIZE(12)},
+  themeColor: {color: Colors.themeColor},
 });
 
 export default styles;

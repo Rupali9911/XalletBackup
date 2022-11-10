@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -38,6 +39,8 @@ import {
   myNftCreatedListingReset,
 } from '../../store/actions/myNFTaction';
 import Clipboard from '@react-native-clipboard/clipboard';
+
+const {height} = Dimensions.get('window');
 
 const NFTCreated = ({route, id}) => {
   const isFocusedHistory = useIsFocused();
@@ -117,8 +120,10 @@ const NFTCreated = ({route, id}) => {
         isFirstRender
       ) : MyNFTReducer.myNftCreatedListPage === 1 &&
         MyNFTReducer.myNftListLoading ? (
-        <Loader />
-      ) : MyNFTReducer.myNftCreatedList?.length ? (
+        <View style={styles.sorryMessageCont}>
+          <Loader />
+        </View>
+      ) : MyNFTReducer?.myNftCreatedList?.length ? (
         <View>
           <FlatList
             key={1}
@@ -166,7 +171,8 @@ const NFTCreated = ({route, id}) => {
 
 const styles = StyleSheet.create({
   sorryMessageCont: {
-    flex: 1,
+    // flex: 1,
+    marginTop: height / 6.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
