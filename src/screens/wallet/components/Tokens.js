@@ -68,6 +68,7 @@ const Tokens = props => {
     wethBalance,
     busdBalance,
     usdtBalance,
+    xetaBalance
   } = useSelector(state => state.WalletReducer);
 
   useEffect(() => {
@@ -90,6 +91,8 @@ const Tokens = props => {
       array[4].tokenValue = `${talBalance}`;
       array[5].tokenValue = `${usdcBalance}`;
       array[6].tokenValue = `${wethBalance}`;
+    } else if (network.name == 'XANA CHAIN') {
+      array[9].tokenValue = `${xetaBalance}`;
     }
 
     let result = [];
@@ -123,6 +126,7 @@ const Tokens = props => {
     talBalance,
     busdBalance,
     usdtBalance,
+    xetaBalance
   ]);
 
   const navigation = useNavigation();

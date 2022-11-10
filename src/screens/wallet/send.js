@@ -205,7 +205,7 @@ const SendScreen = React.memo((props) => {
 
     //====================== Getting data from reducers =========================
     const { userData } = useSelector(state => state.UserReducer);
-    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance, usdcBalance, wethBalance, networkType } = useSelector(state => state.WalletReducer);
+    const { ethBalance, bnbBalance, maticBalance, tnftBalance, talBalance, busdBalance, usdtBalance, usdcBalance, wethBalance, xetaBalance, networkType } = useSelector(state => state.WalletReducer);
 
     //====================== States Initiliazation =========================
     const [address, setAddress] = useState(props.address);
@@ -269,6 +269,11 @@ const SendScreen = React.memo((props) => {
         } else if (item.network === 'Polygon' && item.type == 'ALIA') {
             // console.log("Item network", item.network)
             let value = parseFloat(talBalance);
+            totalValue = value;
+            // console.log("Total value is ", totalValue)
+        } else if (item.network === 'XANA CHAIN' && item.type == 'XETA') {
+            // console.log("Item network", item.network)
+            let value = parseFloat(xetaBalance);
             totalValue = value;
             // console.log("Total value is ", totalValue)
         }
