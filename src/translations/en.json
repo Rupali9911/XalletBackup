@@ -746,7 +746,9 @@
     "TOKEN_ID": "Token Id",
     "loginWithEmail": "Login with Email",
     "remainWordCount": "Remaining Chat Limit",
-    "playbackSpeed": "Playback"
+    "playbackSpeed": "Playback",
+    "PASTE_PRIVATE_KEY": "Paste the private key string",
+    "EXAMPLE_PLACEHOLDER_TEXT": "e.g. 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266"
   },
   "AwardPage": {},
   "wallet": {

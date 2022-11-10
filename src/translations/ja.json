@@ -747,7 +747,9 @@
     "TOKEN_ID": "トークンID",
     "loginWithEmail": "メールでログイン",
     "remainWordCount": "残りのチャット制限",
-    "playbackSpeed": "再生速度"
+    "playbackSpeed": "再生速度",
+    "PASTE_PRIVATE_KEY": "秘密キーの文字列をペーストしてください",
+    "EXAMPLE_PLACEHOLDER_TEXT": "例: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266"
   },
   "AwardPage": {},
   "wallet": {

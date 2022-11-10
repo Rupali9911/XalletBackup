@@ -747,7 +747,9 @@
     "TOKEN_ID": "토큰 ID",
     "loginWithEmail": "이메일로 로그인",
     "remainWordCount": "남은 채팅 한도",
-    "playbackSpeed": "재생 속도"
+    "playbackSpeed": "재생 속도",
+    "PASTE_PRIVATE_KEY": "개인 키 문자열 붙여넣기",
+    "EXAMPLE_PLACEHOLDER_TEXT": "예를 들어: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266"
   },
   "AwardPage": {},
   "wallet": {
