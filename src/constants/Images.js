@@ -56,6 +56,8 @@ export default {
     group3: require("../../assets/images/Group3.png"),
 
     deleteIcon: require("../../assets/images/delete.png"),
+    deleteRed: require("../../assets/images/deleteRed.png"),
+
     scanRectangle: require("../../assets/images/scanRectangle.png"),
 
     modalBg: require("../../assets/images/modalBg.png"),

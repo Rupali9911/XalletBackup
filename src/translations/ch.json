@@ -730,6 +730,8 @@
     "collectionList": "收藏列表",
     "createCollection": "创建收藏",
     "AIChat": "与人工智能聊天",
+    "deleteAccount": "删除帐户",
+    "deleteAccountDescription": "您确定要删除您的帐户吗？ 如果您删除您的帐户，您将永久丢失您的数据。",
     "enterMessage": "输入您的信息",
     "CREATED_COLLECTED": "创建/收集",
     "LIST_COLLECTION_TABLE_SYMBOL": "图标",
