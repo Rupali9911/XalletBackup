@@ -408,7 +408,7 @@
     "USER_WITH_TWITTER_ALREADY_EXIST": "このツイッターユーザーは既に存在します",
     "BTN_EMAIL_REQUEST": "認証する",
     "BTN_EMAIL_APPROVED": "認証済",
-    "BTN_TWITTER_REQUEST": "認証する",
+    "BTN_TWITTER_REQUEST": "確認",
     "BTN_TWITTER_APPROVED": "ツイッター認証が完了しました",
     "LABEL_EMAIL_SUCCESS": "認証メールを送信しましたので、メールボックスを確認してください",
     "USER_ALREADY_EXIST": "既にこのユーザーは存在します",
@@ -747,7 +747,11 @@
     "TOKEN_ID": "トークンID",
     "loginWithEmail": "メールでログイン",
     "remainWordCount": "残りのチャット制限",
-    "playbackSpeed": "再生速度"
+    "playbackSpeed": "再生速度",
+    "ARTIST_BTN_REQUEST": "申請する",
+    "ARTIST_DESCRIPTION_LINE_1": "Xalletの公式アーティストになるためには「プロフィール情報」を全て埋め、申請が必要です。",
+    "ARTIST_DESCRIPTION_LINE_2": "申請情報を下にXalletチームにて公平な審査を行い、承認された場合は正式に認証バッジが付きます（審査には数週間の時間を要すため、今暫くお待ち願います）",
+    "ARTIST_NOTE": "先にユーザー名、プロフィール画像、メールアドレス、ツイッターアカウントを入力してください"
   },
   "AwardPage": {},
   "wallet": {
