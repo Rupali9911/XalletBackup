@@ -1,5 +1,5 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -8,28 +8,28 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Loader } from '../../components';
+import {useDispatch, useSelector} from 'react-redux';
+import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
-import { colors } from '../../res';
+import {colors} from '../../res';
 import {
   nftDataCollectionList,
   nftDataCollectionListReset,
   nftDataGalleryCollectionListReset,
   nftDataCollectionLoadStart,
   nftDataCollectionPageChange,
-  nftDataGalarryCollectionPageChange
+  nftDataGalarryCollectionPageChange,
 } from '../../store/actions/nftDataCollectionAction';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import styles from './styles';
 
-const { height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
-const GalleryTab = (props) => {
-  const { tabTitle, collection, tabStatus, isLaunchPad } = props;
+const GalleryTab = props => {
+  const {tabTitle, collection, tabStatus, isLaunchPad} = props;
 
-  const { NftDataCollectionReducer } = useSelector(state => state);
-  const { userData } = useSelector(state => state.UserReducer);
+  const {NftDataCollectionReducer} = useSelector(state => state);
+  const {userData} = useSelector(state => state.UserReducer);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -40,7 +40,8 @@ const GalleryTab = (props) => {
   const isLoading = NftDataCollectionReducer.nftDataCollectionLoading;
   const collectionList = NftDataCollectionReducer.nftDataGalleryCollectionList;
   const page = NftDataCollectionReducer.nftDataGalleryCollectionPage;
-  const totalCount = NftDataCollectionReducer.nftDataGalleryCollectionTotalCount;
+  const totalCount =
+    NftDataCollectionReducer.nftDataGalleryCollectionTotalCount;
   const reducerTabTitle = NftDataCollectionReducer.tabTitle;
 
   useEffect(() => {
@@ -101,7 +102,7 @@ const GalleryTab = (props) => {
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({item, index}) => {
     let imageUri = item?.mediaUrl;
     return (
       <NFTItem
@@ -134,7 +135,7 @@ const GalleryTab = (props) => {
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       {isFirstRender || (page === 1 && isLoading) ? (
-        <View style={{ marginTop: height / 8 }}>
+        <View style={styles.loaderParent}>
           <Loader />
         </View>
       ) : collectionList.length !== 0 ? (
@@ -160,12 +161,10 @@ const GalleryTab = (props) => {
           ListFooterComponent={renderFooter}
         />
       ) : (
-        <View style={{ flex: 1 }}>
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>
-              {translate('common.noNFTsFound')}
-            </Text>
-          </View>
+        <View style={styles.sorryMessageCont}>
+          <Text style={styles.sorryMessage}>
+            {translate('common.noNFTsFound')}
+          </Text>
         </View>
       )}
     </View>
