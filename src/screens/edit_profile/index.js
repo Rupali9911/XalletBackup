@@ -146,7 +146,7 @@ function Profile(props) {
                 fontSize: SIZE(24),
                 fontWeight: '700',
               }}>
-              Become an Artist
+              {translate('common.ARTIST_BTN_REQUEST')}
             </Text>
             <Text
               style={{
@@ -156,9 +156,7 @@ function Profile(props) {
                 textAlign: 'center',
                 marginBottom: SIZE(12),
               }}>
-              You are only a form away from becoming an Artist on Xanalia. After
-              winning the Artist title, you will be given a rare Blue
-              Verification Badge that is only available to verified Artists.
+              {translate('common.ARTIST_DESCRIPTION_LINE_1')}
             </Text>
             <Text
               style={{
@@ -168,8 +166,7 @@ function Profile(props) {
                 textAlign: 'center',
                 marginBottom: SIZE(28),
               }}>
-              All applications will go through several thorough screening rounds
-              from Xanalia team to ensure the authencity of the Artist.
+              {translate('common.ARTIST_DESCRIPTION_LINE_2')}
             </Text>
             <View style={{flexDirection: 'row'}}>
               <Text>
@@ -185,8 +182,7 @@ function Profile(props) {
                   marginBottom: SIZE(22),
                   color: COLORS.themeColor,
                 }}>
-                You must input a username, upload a profile picture, verify your
-                email address and Twitter account first.
+                {translate('common.ARTIST_NOTE')}
               </Text>
             </View>
             <GroupButton
@@ -194,7 +190,7 @@ function Profile(props) {
               onLeftPress={() => setIsVisible(false)}
               leftStyle={{backgroundColor: '#2280e1'}}
               leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
-              leftText="OK"
+              leftText={translate('common.OK')}
               rightHide
             />
           </View>

@@ -408,7 +408,7 @@
     "USER_WITH_TWITTER_ALREADY_EXIST": "User with twitter already exist",
     "BTN_EMAIL_REQUEST": "Verify email address",
     "BTN_EMAIL_APPROVED": "Email verified!",
-    "BTN_TWITTER_REQUEST": "Verify twitter",
+    "BTN_TWITTER_REQUEST": "Verify",
     "BTN_TWITTER_APPROVED": "Twitter verified!",
     "LABEL_EMAIL_SUCCESS": "Sent a message to your email address! Please check your email.",
     "USER_ALREADY_EXIST": "User already exist",
@@ -749,7 +749,11 @@
     "loginWithEmail": "Login with Email",
     "remainWordCount": "Remaining Chat Limit",
     "playbackSpeed": "Playback",
-    "offers": "Offers"
+    "offers": "Offers",
+    "ARTIST_BTN_REQUEST": "Become an Artist",
+    "ARTIST_DESCRIPTION_LINE_1": "You are only a form away from becoming an Artist on Xallet. After winning the Artist title, you will be given a rare Blue Verification Badge that is only available to verified Artists.",
+    "ARTIST_DESCRIPTION_LINE_2": "All applications will go through several thorough screening rounds from Xallet team to ensure the authencity of the Artist.",
+    "ARTIST_NOTE": "You must input a username, upload a profile picture, verify your email address and Twitter account first."
   },
   "AwardPage": {},
   "wallet": {

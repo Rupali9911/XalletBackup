@@ -408,7 +408,7 @@
     "USER_WITH_TWITTER_ALREADY_EXIST": "已存在該 twitter 用戶",
     "BTN_EMAIL_REQUEST": "確認電子郵件地址",
     "BTN_EMAIL_APPROVED": "郵箱驗證！",
-    "BTN_TWITTER_REQUEST": "驗證推特",
+    "BTN_TWITTER_REQUEST": "核實",
     "BTN_TWITTER_APPROVED": "推特已驗證！",
     "LABEL_EMAIL_SUCCESS": "向您的電子郵件地址發送消息！請查看你的郵箱。",
     "USER_ALREADY_EXIST": "用戶已經存在",
@@ -750,7 +750,11 @@
     "loginWithEmail": "使用電子郵件登錄",
     "remainWordCount": "剩餘聊天限制",
     "playbackSpeed": "播放速度",
-    "offers": "Offers"
+    "offers": "Offers",
+    "ARTIST_BTN_REQUEST": "成為藝術家",
+    "ARTIST_DESCRIPTION_LINE_1": "您距離成為 Xallet 的藝術家僅一步之遙。贏得藝術家頭銜後，您將獲得一個稀有的藍色驗證徽章，該徽章僅供經過驗證的藝術家使用。",
+    "ARTIST_DESCRIPTION_LINE_2": "所有申請都將經過 Xallet 團隊的幾輪全面篩選，以確保藝術家的真實性。",
+    "ARTIST_NOTE": "您必須先輸入用戶名、上傳個人資料圖片、驗證您的電子郵件地址和 Twitter 帳戶。"
   },
   "AwardPage": {},
   "wallet": {
