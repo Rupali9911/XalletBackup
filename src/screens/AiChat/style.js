@@ -16,11 +16,12 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     inputContainer: {
-        width: '100%',
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'center',
         marginVertical: Platform.OS === 'ios' ? 0 : 5,
+        marginHorizontal: 10,
+        alignSelf: 'center',
     },
     input: {
         paddingHorizontal: 15,
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         alignItems: 'center',
-        padding: 10
+        padding: 0,
     },
     rcvReplyContainer: {
         flex: 1,
@@ -269,52 +270,7 @@ const styles = StyleSheet.create({
     typingContainer: {
         width: '45%'
     },
-
-    //  talkBubbleAbsoluteRight: {
-    //     width: 30,
-    //     height: 30,
-    //     alignSelf: 'flex-end',
-    //     position: 'absolute',
-    //     backgroundColor: 'red',
-    //     borderRadius: 50,
-    //     borderTopColor: 'transparent',
-    //     borderTopWidth: 12.5,
-    //     borderLeftWidth: 6.5,
-    //     borderLeftColor: '#fff',
-    //     borderBottomWidth: 0,
-    //     borderBottomColor: 'transparent',
-    //     transform: [{ rotate: '-90deg' }],
-    //     right: -5,
-    //     top: -15,
-    // },
-    // talkBubbleAbsoluteLeft: {
-    //     width: 30,
-    //     height: 30,
-    //     position: 'absolute',
-    //     backgroundColor: 'transparent',
-    //     borderRadius: 50,
-    //     borderTopColor: 'transparent',
-    //     borderTopWidth: 12.5,
-    //     borderRightWidth: 6.5,
-    //     borderRightColor: '#fff',
-    //     borderBottomWidth: 0,
-    //     borderBottomColor: 'transparent',
-    //     transform: [{ rotate: '90deg' }],
-    //     left: -5,
-    //     top: -15,
-    // },
-
     rcvContainerArrow: {
-        // width: 50, height: 50,
-        // backgroundColor: 'red',
-        // position: 'absolute',
-        // zIndex: 2,
-        // left: 30,
-        // top:-30,
-        // transform: [{ rotate: '90deg' }],
-        // borderRadius: 50,
-
-
         borderLeftWidth: 25,
         borderRightWidth: 25,
         borderBottomWidth: 70,
@@ -326,34 +282,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 25,
         transform: [{ rotate: '36deg' }],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // width: 30,
-        // height: 30,
-        // position: 'absolute',
-        // backgroundColor: 'red',
-        // borderRadius: 50,
-        // borderTopColor: 'transparent',
-        // borderTopWidth: 12.5,
-        // borderRightWidth: 6.5,
-        // borderRightColor: '#fff',
-        // borderBottomWidth: 0,
-        // borderBottomColor: 'transparent',
-        // transform: [{ rotate: '90deg' }],
-        // left: -5,
-        // top: -15,
     },
 })
 

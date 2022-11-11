@@ -4,12 +4,10 @@ import Colors from '../../constants/Colors';
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { getNftCollections, setTabTitle, ownedNftLoadStart, otherNftLoadStart, ownedNftListReset, otherNftListReset, ownedNftPageChange, otherNftPageChange, ownedNftCursorChange, otherNftCursorChange, remainWordCountData } from '../../store/actions/chatAction';
+import { getNftCollections, setTabTitle, ownedNftLoadStart, otherNftLoadStart, ownedNftListReset, otherNftListReset, ownedNftPageChange, otherNftPageChange, ownedNftCursorChange, otherNftCursorChange } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import styles from './style';
 import { ActivityIndicator } from 'react-native-paper';
-import { NEW_BASE_URL } from '../../common/constants';
-import sendRequest from '../../helpers/AxiosApiRequest';
 
 const ChatNftsList = ({ tabTitle }) => {
     // =============== Getting data from States =========================
@@ -43,11 +41,6 @@ const ChatNftsList = ({ tabTitle }) => {
     const nftCollectionList = searchText ? searchListing : tabTitle === 'Owned' ? ownerList.ownerNFTS : otherList.otherNFTs;
 
     // ===================== Use-effect call =================================
-
-    useEffect(() => {
-        getRemainingWords();
-    }, [])
-
     useEffect(() => {
         if (tabTitle === 'Owned') {
             dispatch(ownedNftLoadStart());
@@ -62,25 +55,6 @@ const ChatNftsList = ({ tabTitle }) => {
             dispatch(otherNftPageChange(1));
         }
     }, []);
-
-    //=========================Remaining Words Api Call===========================
-    
-    const getRemainingWords = () => {
-        let url = `${NEW_BASE_URL}/xana-genesis-chat/get-user-word-limit`;
-        let data = {
-            cursor: "",
-            owner: owner
-        };
-        sendRequest({
-          url,
-          method: 'POST',
-          data,
-        })
-        .then(res => {
-            dispatch(remainWordCountData(res?.userWordLimit));
-        })
-        .catch(err => console.log(err))
-    }
 
     // ========================== API call ================================= 
     const getDataCollection = useCallback((page, cursor) => {

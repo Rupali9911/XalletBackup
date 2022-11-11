@@ -5,13 +5,12 @@ import { getAiChat, chatLoadingSuccess, getChatBotHistory, ChatHistoryPageChange
 import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { AppHeader, C_Image } from '../../components';
+import { C_Image, Loader } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import { SIZE, SVGS, IMAGES, COLORS } from '../../constants';
+import { SIZE, SVGS } from '../../constants';
 import moment from 'moment';
-import Toast from 'react-native-toast-message'
-import { ActivityIndicator, Button } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 const { ChatDefaultProfile } = SVGS;
 
@@ -21,8 +20,8 @@ const ChatDetail = ({ route, navigation }) => {
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
-  const [remainWordText, setRemainWordText] = useState(false);
   const flatList = React.useRef(null);
+  const scroll = React.useRef(null);
   const toastRef = useRef(null);
 
   // =============== Getting data from reducer ========================
@@ -32,12 +31,14 @@ const ChatDetail = ({ route, navigation }) => {
   const userAdd = userData?.userWallet?.address;
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
+  //====================== UseEffect Call ===============================
   useEffect(() => {
     dispatch(chatHistoryLoading());
-    getHistoryData(chatHistoryPage);
+    getHistoryData(1);
     dispatch(ChatHistoryPageChange(1));
   }, []);
 
+  //================== Get History Data =================================
   const getHistoryData = (page) => {
     dispatch(getChatBotHistory(page, userAdd, tokenId))
       .then((response) => {
@@ -72,6 +73,7 @@ const ChatDetail = ({ route, navigation }) => {
       })
   }
 
+  //====================== Chat Sender Image =========================
   const renderImage = () => {
     if (userData.avatar) {
       return <C_Image uri={userData.avatar} imageStyle={styles.bubbleImage} />;
@@ -84,6 +86,7 @@ const ChatDetail = ({ route, navigation }) => {
     }
   };
 
+  //======================== Show Bubbles =============================
   const ShowBubble = props => {
     const { item } = props;
     return (
@@ -144,21 +147,18 @@ const ChatDetail = ({ route, navigation }) => {
       setChatBotData(chatBotData => [sendObj, ...chatBotData]);
 
       dispatch(
-        getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
-      )
+        getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId))
         .then(response => {
           if (response?.messageCode || response?.description) {
             showToast();
           }
           else {
-            setRemainWordText(true);
             let receiveObj = {
-              message: response.recvResp,
+              message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
               receiverImage: nftDetail.image,
               receiverName: nftDetail.name,
-              remainWords: response.remainWord
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
@@ -172,7 +172,6 @@ const ChatDetail = ({ route, navigation }) => {
 
   //==================== On Scroll-to-Top ===========================
   const handleFlatListEndReached = () => {
-    console.log('NextPage : ', isHistoryNextPage)
     let num = chatHistoryPage + 1;
     if (isHistoryNextPage) {
       dispatch(chatHistoryLoading());
@@ -185,7 +184,7 @@ const ChatDetail = ({ route, navigation }) => {
   const renderHeader = () => {
     if (!isHistoryLoading) return null;
     return (
-      <ActivityIndicator size='small' color={COLORS.themeColor} />
+      <Loader />
     );
   }
 
@@ -230,11 +229,11 @@ const ChatDetail = ({ route, navigation }) => {
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
 
-      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} keyboardShouldPersistTaps={'always'} >
+      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} keyboardShouldPersistTaps={'always'} >
 
         <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
-          <View style={styles.rcvContainerArrow}/>
+            <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>
               {nftDetail.name.slice(nftDetail.name.lastIndexOf('#'))}
             </Text>
@@ -244,16 +243,15 @@ const ChatDetail = ({ route, navigation }) => {
                 <Text
                   style={[styles.nftName, { marginVertical: 3 }]}
                   numberOfLines={2}>
-                  {chatLoadSuccess?.recvResp}
+                  {chatLoadSuccess?.data?.response}
                 </Text>
               </View>
             ) : null}
           </View>
-          <View style={{ width: '100%', height: '100%', alignItems: 'center', padding: 10}}>
+          <View style={styles.bannerImgContainer}>
             <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
           </View>
         </View>
-
         <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
@@ -264,10 +262,9 @@ const ChatDetail = ({ route, navigation }) => {
               keyExtractor={(item, index) => {
                 return `_${index}`;
               }}
-              onLayout={() => flatList.current.scrollToEnd({ animated: true })}
               showsVerticalScrollIndicator={false}
               inverted={true}
-              onEndReached={handleFlatListEndReached}
+              onScrollEndDrag={handleFlatListEndReached}
               ListFooterComponent={renderHeader}
             />
           </View>
@@ -275,16 +272,20 @@ const ChatDetail = ({ route, navigation }) => {
             placeholder={translate('common.enterMessage')}
             value={message}
             onChangeText={text => setMessage(text)}
-            onPress={() => sendMessage(message, new Date())}
+            onPress={() => {
+              sendMessage(message, new Date());
+              chatBotData.length > 0 && flatList.current.scrollToIndex({ animated: true, index: 0 })
+            }
+            }
           />
         </View>
+
       </KeyboardAwareScrollView>
       <Toast
         position='bottom'
         visibilityTime={2000}
         autoHide={true}
         ref={toastRef}
-
       />
     </SafeAreaView>
   );

@@ -26,14 +26,17 @@ import {
   OTHER_PAGE_CHANGE,
   OTHER_CURSOR_CHANGE,
 
+  //==============TabTitle================
   CHAT_TAB_TITLE,
 
+  //===============History================
   CHAT_BOT_HISTORY_LOADING,
   CHAT_BOT_HISTORY_SUCCESS,
   CHAT_BOT_HISTORY_FAIL,
   CHAT_BOT_HISTORY_PAGE_CHANGE,
   CHAT_BOT_HISTORY_NEXT_PAGE,
 
+  //=============Reamin Count==============
   CHAT_REMAIN_COUNT
 
 } from '../types';
@@ -172,7 +175,6 @@ export const chatHistoryNextPage = (nextPage) => ({
 });
 
 //===================Set Remaining Words============================
-
 export const remainWordCountData = (count) => ({
   type: CHAT_REMAIN_COUNT,
   payload: count
@@ -200,13 +202,9 @@ export const getAiChat = (message, address, locale, name, tokenId) => (dispatch,
       .then(res => {
         dispatch(chatLoadingStart(false));
         if (res?.data) {
-          dispatch(chatLoadingSuccess({ recvResp: res?.data?.response, remainWord: res?.remainWordLimit }));
-          dispatch(remainWordCountData(res?.remainWordLimit))
-          resolve({ recvResp: res?.data?.response, remainWord: res?.remainWordLimit });
-        }
-        else {
           dispatch(chatLoadingSuccess(res));
-          resolve(res)
+          dispatch(remainWordCountData(res?.remainWordLimit));
+          resolve(res);
         }
       })
       .catch(err => {
@@ -256,12 +254,20 @@ export const getNftCollections = (page, address, cursor, tabTitle) => (dispatch,
         }
       }
       else {
-        tabTitle === 'Owned' ? dispatch(ownedNftLoadSuccess([])) : dispatch(otherNftLoadSuccess([]));
+        tabTitle === 'Owned' 
+        ? 
+        dispatch(ownedNftLoadSuccess([])) 
+        : 
+        dispatch(otherNftLoadSuccess([]));
       }
     })
     .catch(err => {
       console.log('Error : ', err);
-      tabTitle === 'Owned' ? dispatch(ownedNftLoadSuccess([])) : dispatch(otherNftLoadSuccess([]));
+      tabTitle === 'Owned' 
+      ? 
+      dispatch(ownedNftLoadSuccess([])) 
+      : 
+      dispatch(otherNftLoadSuccess([]));
     });
 }
 
@@ -288,11 +294,9 @@ export const getSearchResult = (text, address) => (dispatch) => {
         reject(err);
       });
   })
-
 }
 
 export const getChatBotHistory = (page, address, tokenId) => (dispatch, getState) => {
-  const { chatHistoryList } = getState().chatReducer;
   return new Promise((resolve, reject) => {
     let limit = 5;
     sendRequest({
@@ -306,14 +310,12 @@ export const getChatBotHistory = (page, address, tokenId) => (dispatch, getState
       }
     })
       .then((res) => {
-        console.log(limit, res.length)
-
-        if (limit > res.length) {
-          dispatch(chatHistoryNextPage(false))
-        }
-        else{
-          dispatch(chatHistoryNextPage(true))
-        }
+          if (limit > res.length) {
+            dispatch(chatHistoryNextPage(false));
+          }
+          else{
+            dispatch(chatHistoryNextPage(true));
+          }
           dispatch(chatHistorySuccess(res));
           resolve(res);
       })

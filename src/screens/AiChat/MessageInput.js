@@ -21,6 +21,8 @@ import {
             onChangeText={props.onChangeText}
             style={styles.input}
             placeholderTextColor={'#212529'}
+            selectionColor={'#212529'}
+            
           />
           <TouchableOpacity style={styles.sendBtn} onPress={props.onPress}>
             <Text style={styles.sendBtnTxt}>{translate("wallet.common.send")}</Text>
