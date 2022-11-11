@@ -731,6 +731,7 @@
     "AIChat": "Chat with AI",
     "deleteAccount": "Delete Account",
     "deleteAccountDescription": "Are you sure you want to delete your account? If you delete your account, you will permanently loss your data.",
+    "deleteCheckBoxDiscription": "I understand that all data in my account will be deleted and cannot be recovered again, and I agree to delete my account.",
     "enterMessage": "Type your message",
     "CREATED_COLLECTED": "Created / Collected",
     "LIST_COLLECTION_TABLE_SYMBOL": "Symbol",
