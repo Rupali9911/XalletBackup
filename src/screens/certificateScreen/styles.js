@@ -603,6 +603,10 @@ const styles = StyleSheet.create({
     paddingLeft: SIZE(10),
   },
   modalBody: {flex: 1},
+  checkBoxLabel: {
+    marginRight: 0,
+    color: Colors.BLACK1,
+  },
   groupButtonView: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -615,10 +619,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.BLUE2,
     backgroundColor: Colors.white,
   },
-  rightDeleteGroupButton: {
+  rightDeleteDisabled: {
     borderWidth: 1,
-    borderColor: Colors.RED3,
-    backgroundColor: Colors.RED3,
+    borderColor: Colors.REDLIGHT,
+    backgroundColor: Colors.REDLIGHT,
   },
   rightGroupButtonText: {
     color: Colors.BLUE3,
@@ -737,7 +741,7 @@ const styles = StyleSheet.create({
     right: SIZE(8),
   },
   deleteAccount: {
-    height: Platform.OS === 'ios' ? hp(51) : hp(55)
+    height: Platform.OS === 'ios' ? hp(57) : hp(62),
   },
   reClaimCancelBTNview: {
     flexDirection: 'row',
@@ -781,9 +785,10 @@ const styles = StyleSheet.create({
     margin: SIZE(10),
     fontSize: SIZE(12),
   },
-  descriptionCenter:{
+  descriptionCenter: {
     textAlign: 'center',
     lineHeight: 16,
+    color: Colors.BLACK1,
   },
   tokenName: {
     fontWeight: 'bold',
