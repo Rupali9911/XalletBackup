@@ -142,6 +142,7 @@ const HotCollection = () => {
         count={item.totalNft}
         network={item.network}
         colId={item._id}
+        verified={item.isOfficial}
         onPress={() => {
           if (item.collectionName !== 'NFTART AWARD 2021') {
             navigation.push('CollectionDetail', {

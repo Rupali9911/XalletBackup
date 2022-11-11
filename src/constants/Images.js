@@ -4,7 +4,7 @@ export default {
     BARCODE: require(`src/assets/pngs/img-barcode.png`),
     TROUBLELOGIN: require(`src/assets/pngs/trouble_login_icon.png`),
     DEFAULTPROFILE: require(`src/assets/pngs/default_profile_img.png`),
-    
+
 
 
     // XANALIA images
@@ -56,6 +56,8 @@ export default {
     group3: require("../../assets/images/Group3.png"),
 
     deleteIcon: require("../../assets/images/delete.png"),
+    deleteRed: require("../../assets/images/deleteRed.png"),
+
     scanRectangle: require("../../assets/images/scanRectangle.png"),
 
     modalBg: require("../../assets/images/modalBg.png"),
@@ -98,6 +100,7 @@ export default {
     aliaNew: require("../../assets/images/alia-new.png"),
     usdcNew: require("../../assets/images/USDC-Polygon.png"),
     usdtNew: require("../../assets/images/USDT-Ethereum.png"),
+    xetaNew: require("../../assets/images/XETA-XanaChain.png"),
     ethnew: require("../../assets/images/ETH-Polygon.png"),
     polygonNew: require("../../assets/images/polygon-new.png"),
     default_user: require("../../assets/images/default-user.png"),

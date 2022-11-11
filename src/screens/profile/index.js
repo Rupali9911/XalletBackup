@@ -59,6 +59,7 @@ const {
   Twitter,
   Instagram,
   DiscordIcon,
+  VerficationIcon,
 } = SVGS;
 
 function Profile({ navigation, connector, route }) {
@@ -159,9 +160,9 @@ function Profile({ navigation, connector, route }) {
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'profileCreated':
-        return <NFTCreated key={id} id={id} />;
+        return <NFTCreated key={id} id={id} navigation={navigation} />;
       case 'nftOwned':
-        return <NFTOwned key={id} id={id} />;
+        return <NFTOwned key={id} id={id} navigation={navigation} />;
       default:
         return null;
     }
@@ -315,7 +316,9 @@ function Profile({ navigation, connector, route }) {
         setRefreshing(false);
       });
   };
-
+  const renderVerifiedIcon = () => {
+    return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
+  };
   const renderBannerImage = () => {
     const renderBanner = () => {
       if (userDetails?.banner && !imageBannerLoading) {
@@ -469,7 +472,17 @@ function Profile({ navigation, connector, route }) {
                 </Menu>
                 <CopyProfile width={SIZE(12)} height={SIZE(12)} />
               </TouchableOpacity>
-              <View style={styles.iconWrapper}>{renderIconImage()}</View>
+              <View style={styles.iconWrapper}>
+                <View
+                  style={[styles.iconBadgeVw, route?.params?.role === 4 ? styles.borderBtnColor : styles.borderTrans]}>
+                  {renderIconImage()}
+                  {route?.params?.role === 4 ? (
+                    <View style={styles.markIconView}>
+                      {renderVerifiedIcon()}
+                    </View>
+                  ) : null}
+                </View>
+              </View>
               <View style={styles.userDetailsWrapper}>
                 {renderProfileNameAndId()}
               </View>
@@ -607,10 +620,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.DARK_GREY,
   },
   iconImage: {
-    width: SIZE(150),
-    height: SIZE(150),
+    width: SIZE(140),
+    height: SIZE(140),
     borderRadius: SIZE(150),
-    marginBottom: SIZE(10),
     backgroundColor: colors.PERIWINKLE,
   },
 
@@ -699,4 +711,24 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 5,
   },
+  markIconView: {
+    position: 'absolute',
+    top: 145,
+    zIndex: 10,
+  },
+  iconBadgeVw:{
+    borderWidth: 3,
+    width: SIZE(155),
+    height: SIZE(155),
+    position: 'relative',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  borderTrans:{
+    borderColor: 'transparent',
+  }, 
+  borderBtnColor:{ 
+    borderColor: Colors.buttonBackground
+  }
 });

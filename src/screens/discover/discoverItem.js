@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   Avatar,
   Box,
@@ -9,38 +9,38 @@ import {
   Pressable,
   Text,
 } from 'native-base';
-import {IMAGES, NFT_TYPE_TO_ID, SIZE, SVGS} from '../../constants';
-import {translate} from '../../walletUtils';
-import {colors, fonts} from '../../res';
+import { IMAGES, NFT_TYPE_TO_ID, SIZE, SVGS } from '../../constants';
+import { translate } from '../../walletUtils';
+import { colors, fonts } from '../../res';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
-import {TouchableOpacity, View, Dimensions, Text as RNText} from 'react-native';
-import {C_Image} from '../../components';
+import { TouchableOpacity, View, Dimensions, Text as RNText } from 'react-native';
+import { C_Image } from '../../components';
 //import Video from 'react-native-fast-video';
 import Video from 'react-native-video';
-import {styles} from './styled';
+import { styles } from './styled';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {alertWithSingleBtn, numberWithCommas} from '../../utils';
-import {useNavigation} from '@react-navigation/native';
-import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
-import {useSelector} from 'react-redux';
-import {networkType} from '../../common/networkType';
-import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+import { alertWithSingleBtn, numberWithCommas } from '../../utils';
+import { useNavigation } from '@react-navigation/native';
+import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
+import { useSelector } from 'react-redux';
+import { networkType } from '../../common/networkType';
+import sendRequest, { getAccessToken } from '../../helpers/AxiosApiRequest';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const {PlayButtonIcon, ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} =
+const { PlayButtonIcon, ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon } =
   SVGS;
 
-const AvatarImage = ({imageSource}) => {
+const AvatarImage = ({ imageSource }) => {
   return (
     <Box>
       {imageSource ? (
-        <Avatar alignSelf="center" size="8" source={{uri: imageSource}} />
+        <Avatar alignSelf="center" size="8" source={{ uri: imageSource }} />
       ) : (
         <Image
           size="8"
@@ -53,7 +53,7 @@ const AvatarImage = ({imageSource}) => {
   );
 };
 
-const Label = ({label}) => {
+const Label = ({ label }) => {
   return (
     <Text color="black" fontFamily={fonts.SegoeUIRegular} fontSize="11">
       {label}
@@ -61,7 +61,7 @@ const Label = ({label}) => {
   );
 };
 
-const Name = ({label}) => {
+const Name = ({ label }) => {
   return (
     <Text
       color="black"
@@ -74,7 +74,7 @@ const Name = ({label}) => {
 };
 
 export const handleLike = async nftItem => {
-  let getNftItem = {...nftItem};
+  let getNftItem = { ...nftItem };
   return new Promise(async (resolve, reject) => {
     let data = {
       nftId: nftItem.nftId,
@@ -102,8 +102,8 @@ export const handleLike = async nftItem => {
   });
 };
 
-function discoverItem({item}) {
-  const {wallet, userData} = useSelector(state => state.UserReducer);
+function discoverItem({ item }) {
+  const { wallet, userData } = useSelector(state => state.UserReducer);
   const navigation = useNavigation();
   const [isPlay, setPlay] = useState(false);
   const refVideo = useRef(null);
@@ -121,22 +121,22 @@ function discoverItem({item}) {
   let creatorName = nftItem?.creator?.name
     ? nftItem.creator.name
     : nftItem?.creator?.address?.includes('0x')
-    ? nftItem.creator.address.substring(0, 6)
-    : '---';
+      ? nftItem.creator.address.substring(0, 6)
+      : '---';
   let ownerImage = nftItem?.owner?.avatar ? nftItem.owner.avatar : null;
   let ownerName = nftItem?.owner?.name
     ? nftItem.owner.name
     : nftItem?.owner?.address?.includes('0x')
-    ? nftItem.owner.address.substring(0, 6)
-    : '---';
+      ? nftItem.owner.address.substring(0, 6)
+      : '---';
 
   const avatarpress = v => {
     if (v === 'owner') {
       if (nftItem?.owner?.address)
-        navigation.push('Profile', {id: nftItem?.owner?.address});
+        navigation.push('Profile', { id: nftItem?.owner?.address });
     } else {
       if (nftItem?.creator?.address)
-        navigation.push('Profile', {id: nftItem?.creator?.address});
+        navigation.push('Profile', { id: nftItem?.creator?.address });
     }
   };
 
@@ -159,7 +159,7 @@ function discoverItem({item}) {
         <Flex flex={1}>
           <Pressable
             onPress={() => avatarpress('creator')}
-            _pressed={{opacity: 60}}>
+            _pressed={{ opacity: 60 }}>
             <HStack>
               <AvatarImage imageSource={creatorImage} />
               <Box px="3">
@@ -172,7 +172,7 @@ function discoverItem({item}) {
         <Flex flex={1}>
           <Pressable
             onPress={() => avatarpress('owner')}
-            _pressed={{opacity: 60}}>
+            _pressed={{ opacity: 60 }}>
             <HStack>
               <AvatarImage imageSource={ownerImage} />
               <Box px="3">
@@ -192,23 +192,24 @@ function discoverItem({item}) {
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
+            console.log("@@@ On discover Item screen, navigate details =======>", item)
             isPlay
               ? setPlay(!isPlay)
               : navigation.navigate('CertificateDetail', {
-                  networkName: item?.network?.networkName,
-                  collectionAddress: item?.collection?.address,
-                  nftTokenId: item?.tokenId,
-                  setNftItem,
-                });
+                networkName: item?.network?.networkName,
+                collectionAddress: item?.collection?.address,
+                nftTokenId: item?.tokenId,
+                setNftItem,
+              });
           }}>
           {fileType === 'mp4' ||
-          fileType === 'MP4' ||
-          fileType === 'mov' ||
-          fileType === 'MOV' ? (
+            fileType === 'MP4' ||
+            fileType === 'mov' ||
+            fileType === 'MOV' ? (
             <View style={styles.modalImage}>
               <Video
                 ref={refVideo}
-                source={{uri: videoUri}}
+                source={{ uri: videoUri }}
                 playInBackground={false}
                 paused={!isPlay}
                 resizeMode={'cover'}
@@ -251,7 +252,7 @@ function discoverItem({item}) {
           <TouchableOpacity onPress={handleLikeMethod}>
             {Number(nftItem?.isLike) ? <HeartActiveIcon /> : <HeartWhiteIcon />}
           </TouchableOpacity>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Menu
               onSelect={value => {
                 alertWithSingleBtn(
@@ -264,12 +265,12 @@ function discoverItem({item}) {
               <MenuTrigger children={<ThreeDotsVerticalIcon />} />
               <MenuOptions>
                 <MenuOption value={1}>
-                  <Text style={{marginVertical: 10}}>
+                  <Text style={{ marginVertical: 10 }}>
                     {translate('common.reportNft')}
                   </Text>
                 </MenuOption>
                 <MenuOption value={2}>
-                  <Text style={{marginVertical: 10}}>
+                  <Text style={{ marginVertical: 10 }}>
                     {translate('common.blockUser')}
                   </Text>
                 </MenuOption>
@@ -283,8 +284,8 @@ function discoverItem({item}) {
           color="black"
           fontWeight="bold"
           fontSize={'12'}>{`${numberWithCommas(nftItem.totalLike)} ${translate(
-          'common.Likes',
-        )}`}</Text>
+            'common.Likes',
+          )}`}</Text>
         <Text
           mt={2}
           fontFamily={fonts.ARIAL_BOLD}
