@@ -40,14 +40,7 @@ import {View} from 'native-base';
 import Colors from '../../constants/Colors';
 import {COLORS} from '../../constants';
 
-const {
-  TwitterIconNew,
-  InstagramIcon,
-  ArtistSvg,
-  ArtistSvgI,
-  SuccessIcon,
-  ErrorIcon,
-} = SVGS;
+const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon} = SVGS;
 
 function Profile(props) {
   const {navigation, handleSubmit} = props;
@@ -121,7 +114,7 @@ function Profile(props) {
 
   const renderArtistModal = () => {
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.contentView}>
         <Modal
           backdropColor="#000000"
           backdropOpacity={0.6}
@@ -130,66 +123,30 @@ function Profile(props) {
           }}
           isVisible={isVisible}
           transparent={true}>
-          <View
-            style={{
-              paddingHorizontal: SIZE(54),
-              paddingVertical: SIZE(30),
-              backgroundColor: COLORS.WHITE1,
-              alignItems: 'center',
-              borderRadius: SIZE(7),
-            }}>
+          <View style={styles.artistModalView}>
             <ArtistSvg />
-            <Text
-              style={{
-                textAlign: 'center',
-                marginVertical: SIZE(15),
-                fontSize: SIZE(24),
-                fontWeight: '700',
-              }}>
+            <Text style={styles.artistTitle}>
               {translate('common.ARTIST_BTN_REQUEST')}
             </Text>
-            <Text
-              style={{
-                lineHeight: SIZE(17),
-                fontSize: SIZE(14),
-                fontFamily: 'Arial',
-                textAlign: 'center',
-                marginBottom: SIZE(12),
-              }}>
+            <Text style={styles.artistDescription}>
               {translate('common.ARTIST_DESCRIPTION_LINE_1')}
             </Text>
-            <Text
-              style={{
-                lineHeight: SIZE(17),
-                fontSize: SIZE(14),
-                fontFamily: 'Arial',
-                textAlign: 'center',
-                marginBottom: SIZE(28),
-              }}>
+            <Text style={[styles.artistDescription, {marginBottom: SIZE(28)}]}>
               {translate('common.ARTIST_DESCRIPTION_LINE_2')}
             </Text>
-            <View style={{flexDirection: 'row'}}>
+            <View style={styles.infoView}>
               <Text>
                 <ArtistSvgI />
               </Text>
-              <Text
-                style={{
-                  lineHeight: SIZE(17),
-                  marginRight: 19,
-                  fontSize: SIZE(14),
-                  fontFamily: 'Arial',
-                  textAlign: 'center',
-                  marginBottom: SIZE(22),
-                  color: COLORS.themeColor,
-                }}>
+              <Text style={styles.infoTitle}>
                 {translate('common.ARTIST_NOTE')}
               </Text>
             </View>
             <GroupButton
-              style={{width: '120%'}}
+              style={styles.artistGroupView}
               onLeftPress={() => setIsVisible(false)}
-              leftStyle={{backgroundColor: '#2280e1'}}
-              leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
+              leftStyle={styles.artistLeft}
+              leftTextStyle={styles.groupLeftTitle}
               leftText={translate('common.OK')}
               rightHide
             />
@@ -201,20 +158,13 @@ function Profile(props) {
 
   const messageModal = () => {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Modal
-          isVisible={msgModal}
-          style={{justifyContent: 'flex-end', margin: 0}}>
+      <View style={styles.msgModalContent}>
+        <Modal isVisible={msgModal} style={styles.msgModal}>
           <View style={styles.msgModalView}>
             {toastMsg?.error ? (
-              <ErrorIcon width={SIZE(20)} height={SIZE(20)} />
+              <ErrorIcon style={styles.ErrorIcon} />
             ) : (
-              <SuccessIcon width={SIZE(20)} height={SIZE(20)} />
+              <SuccessIcon style={styles.ErrorIcon} />
             )}
             <Text style={styles.msgModalText}>{msg}</Text>
           </View>
@@ -356,12 +306,11 @@ function Profile(props) {
 
   return (
     <AppBackground isBusy={UserReducer.loading}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.contentView}>
         <AppHeader
           title={translate('wallet.common.profileSettings')}
           showBackButton
         />
-
         <ScrollView onScroll={() => Keyboard.dismiss()}>
           <LimitableInput
             multiLine
@@ -379,15 +328,16 @@ function Profile(props) {
           <View style={styles.mainView}>
             <Text style={styles.label}>{translate('common.twitter')}</Text>
             <View style={styles.inputView}>
-              <View style={styles.iconConatainer}>
-                <TwitterIconNew width={SIZE(24)} height={SIZE(24)} />
-              </View>
               <TextInput
-                style={{
-                  padding: SIZE(12),
-                  width:
-                    UserReducer.userData.twitterVerified === 0 ? '55%' : '48%',
-                }}
+                style={[
+                  styles.verifiedView,
+                  {
+                    maxWidth:
+                      UserReducer.userData.twitterVerified === 0
+                        ? '80%'
+                        : '88%',
+                  },
+                ]}
                 placeholderTextColor="grey"
                 value={twitter}
                 onChangeText={text => {
@@ -410,28 +360,14 @@ function Profile(props) {
                 onPress={() => {
                   navigation.navigate('WebView');
                 }}>
-                <Text
-                  style={{
-                    color: '#FFFFFF',
-                    fontSize: SIZE(14),
-                    fontWeight: '700',
-                  }}>
+                <Text style={styles.verifyBtnTitle}>
                   {UserReducer.userData.twitterVerified === 0
                     ? translate('common.BTN_TWITTER_REQUEST')
-                    : translate('common.BTN_TWITTER_APPROVED')}
+                    : translate('common.BTN_TWITTER_REQUEST')}
                 </Text>
               </TouchableOpacity>
             </View>
-            {errTwitter && (
-              <Text
-                style={{
-                  fontSize: SIZE(14),
-                  fontFamily: 'Arial',
-                  color: COLORS.RED2,
-                }}>
-                {errTwitter}
-              </Text>
-            )}
+            {errTwitter && <Text style={styles.errorMsg}>{errTwitter}</Text>}
           </View>
           {UserReducer?.userData?.isNonCrypto === 1 && (
             <LimitableInput
@@ -453,11 +389,15 @@ function Profile(props) {
               <Text style={styles.label}>{translate('common.userEmail')}</Text>
               <View style={styles.inputView}>
                 <TextInput
-                  style={{
-                    padding: SIZE(12),
-                    maxWidth:
-                      UserReducer.userData.emailVerified === 0 ? '50%' : '62%',
-                  }}
+                  style={[
+                    styles.verifiedView,
+                    {
+                      maxWidth:
+                        UserReducer.userData.emailVerified === 0
+                          ? '80%'
+                          : '88%',
+                    },
+                  ]}
                   placeholderTextColor="grey"
                   value={email}
                   onChangeText={text => {
@@ -480,28 +420,14 @@ function Profile(props) {
                   onPress={() => {
                     verifyEmailId(email);
                   }}>
-                  <Text
-                    style={{
-                      color: '#FFFFFF',
-                      fontSize: SIZE(14),
-                      fontWeight: '700',
-                    }}>
+                  <Text style={styles.verifyBtnTitle}>
                     {UserReducer.userData.emailVerified === 0
-                      ? translate('common.BTN_EMAIL_REQUEST')
-                      : translate('common.BTN_EMAIL_APPROVED')}
+                      ? translate('common.BTN_TWITTER_REQUEST')
+                      : translate('common.BTN_TWITTER_REQUEST')}
                   </Text>
                 </TouchableOpacity>
               </View>
-              {errEmail && (
-                <Text
-                  style={{
-                    fontSize: SIZE(14),
-                    fontFamily: 'Arial',
-                    color: COLORS.RED2,
-                  }}>
-                  {errEmail}
-                </Text>
-              )}
+              {errEmail && <Text style={styles.errorMsg}>{errEmail}</Text>}
             </View>
           )}
           <LimitableInput
@@ -544,10 +470,10 @@ function Profile(props) {
             <Text style={styles.label}>{translate('common.instagram')}</Text>
             <View style={styles.inputView}>
               <View style={styles.iconConatainer}>
-                <InstagramIcon width={SIZE(24)} height={SIZE(24)} />
+                <InstagramIcon style={styles.InstagramIcon} />
               </View>
               <TextInput
-                style={{padding: SIZE(12), width: '90%'}}
+                style={styles.instagramView}
                 placeholderTextColor="grey"
                 value={instagram}
                 onChangeText={text => {
@@ -558,29 +484,22 @@ function Profile(props) {
               />
             </View>
             {errInstagram && (
-              <Text
-                style={{
-                  fontSize: SIZE(14),
-                  fontFamily: 'Arial',
-                  color: COLORS.RED2,
-                }}>
-                {errInstagram}
-              </Text>
+              <Text style={styles.errorMsg}>{errInstagram}</Text>
             )}
           </View>
           <GroupButton
-            style={{marginVertical: SIZE(10), marginTop: SIZE(30)}}
+            style={styles.groupBtnView}
             onLeftPress={() => setIsVisible(true)}
-            leftStyle={{marginHorizontal: '5%', backgroundColor: '#0b5ed7'}}
-            leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
+            leftStyle={styles.groupBtnLeft}
+            leftTextStyle={styles.groupLeftTitle}
             leftText={translate('common.ARTIST_LABEL')}
             rightHide
           />
-          <SpaceView mTop={SIZE(12)} />
+          <SpaceView style={styles.spaceView} />
           <LimitableInput
             multiLine
             limit
-            style={{height: 230}}
+            style={styles.limitableInput}
             value={about && about.trimStart()}
             onChange={text => {
               setAbout(text.slice(0, 200));
@@ -596,9 +515,9 @@ function Profile(props) {
           <GroupButton
             leftDisabled={disable}
             onLeftPress={() => onSave()}
-            style={{marginVertical: SIZE(10), marginTop: SIZE(30)}}
-            leftStyle={{marginHorizontal: '5%', backgroundColor: '#0d6efd'}}
-            leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
+            style={styles.groupBtnView}
+            leftStyle={styles.groupBtnLeft}
+            leftTextStyle={styles.groupLeftTitle}
             leftText={translate('common.BTN_SAVE_CHANGE')}
             rightHide
           />
@@ -613,6 +532,9 @@ function Profile(props) {
 export default Profile;
 
 const styles = StyleSheet.create({
+  contentView: {
+    flex: 1,
+  },
   iconConatainer: {
     width: '7%',
     height: SIZE(40),
@@ -652,6 +574,11 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: SIZE(8),
     borderTopRightRadius: SIZE(8),
   },
+  verifyBtnTitle: {
+    color: '#FFFFFF',
+    fontSize: SIZE(14),
+    fontWeight: '700',
+  },
   verifyBtnActive: {
     paddingHorizontal: SIZE(15),
     height: SIZE(38),
@@ -677,5 +604,90 @@ const styles = StyleSheet.create({
     fontSize: SIZE(14),
     fontFamily: 'Arial',
     color: '#757575',
+  },
+  errorMsg: {
+    fontSize: SIZE(14),
+    fontFamily: 'Arial',
+    color: COLORS.RED2,
+  },
+  instagramView: {
+    padding: SIZE(12),
+    width: '90%',
+  },
+  groupBtnView: {
+    marginVertical: SIZE(10),
+    marginTop: SIZE(30),
+  },
+  groupBtnLeft: {
+    marginHorizontal: '5%',
+    backgroundColor: '#0d6efd',
+  },
+  groupLeftTitle: {
+    fontWeight: '600',
+    fontSize: SIZE(14),
+  },
+  spaceView: {
+    marginTop: SIZE(12),
+  },
+  limitableInput: {
+    height: 230,
+  },
+  InstagramIcon: {
+    width: SIZE(24),
+    height: SIZE(24),
+  },
+  ErrorIcon: {
+    width: SIZE(20),
+    height: SIZE(20),
+  },
+  verifiedView: {
+    padding: SIZE(12),
+  },
+  msgModalContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  msgModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  artistModalView: {
+    paddingHorizontal: SIZE(54),
+    paddingVertical: SIZE(30),
+    backgroundColor: COLORS.WHITE1,
+    alignItems: 'center',
+    borderRadius: SIZE(7),
+  },
+  artistTitle: {
+    textAlign: 'center',
+    marginVertical: SIZE(15),
+    fontSize: SIZE(24),
+    fontWeight: '700',
+  },
+  artistDescription: {
+    lineHeight: SIZE(17),
+    fontSize: SIZE(14),
+    fontFamily: 'Arial',
+    textAlign: 'center',
+    marginBottom: SIZE(12),
+  },
+  infoView: {
+    flexDirection: 'row',
+  },
+  infoTitle: {
+    lineHeight: SIZE(17),
+    marginRight: 19,
+    fontSize: SIZE(14),
+    fontFamily: 'Arial',
+    textAlign: 'center',
+    marginBottom: SIZE(22),
+    color: COLORS.themeColor,
+  },
+  artistGroupView: {
+    width: '120%',
+  },
+  artistLeft: {
+    backgroundColor: '#2280e1',
   },
 });
