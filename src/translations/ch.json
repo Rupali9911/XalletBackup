@@ -750,6 +750,7 @@
     "TOKEN_ID": "TOKEN ID",
     "loginWithEmail": "使用电子邮件登录",
     "remainWordCount": "剩余聊天限制",
+    "exceededToastWord": "您已超出字数限制",
     "playbackSpeed": "播放速度",
     "offers": "Offers",
     "ARTIST_BTN_REQUEST": "成为艺术家",

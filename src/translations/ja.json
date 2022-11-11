@@ -750,6 +750,7 @@
     "TOKEN_ID": "トークンID",
     "loginWithEmail": "メールでログイン",
     "remainWordCount": "残りのチャット制限",
+    "exceededToastWord": "文字数制限を超えました",
     "playbackSpeed": "再生速度",
     "offers": "オファー履歴",
     "ARTIST_BTN_REQUEST": "申請する",

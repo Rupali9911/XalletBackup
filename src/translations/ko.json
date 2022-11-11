@@ -750,6 +750,7 @@
     "TOKEN_ID": "토큰 ID",
     "loginWithEmail": "이메일로 로그인",
     "remainWordCount": "남은 채팅 한도",
+    "exceededToastWord": "단어 제한을 초과했습니다.",
     "playbackSpeed": "재생 속도",
     "offers": "Offers",
     "ARTIST_BTN_REQUEST": "아티스트 되기",

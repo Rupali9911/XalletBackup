@@ -1,15 +1,16 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, FlatList } from 'react-native';
-import React, { useState, } from 'react';
+import React, { useEffect, useRef, useState, } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAiChat, chatLoadingSuccess } from '../../store/actions/chatAction';
+import { getAiChat, chatLoadingSuccess, getChatBotHistory, ChatHistoryPageChange, chatHistoryLoading } from '../../store/actions/chatAction';
 import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import { C_Image } from '../../components';
+import { C_Image, Loader } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import { SIZE, SVGS, IMAGES } from '../../constants';
+import { SIZE, SVGS } from '../../constants';
 import moment from 'moment';
+import Toast from 'react-native-toast-message';
 
 const { ChatDefaultProfile } = SVGS;
 
@@ -19,15 +20,60 @@ const ChatDetail = ({ route, navigation }) => {
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
-  const [remainWordText, setRemainWordText] = useState(false);
   const flatList = React.useRef(null);
+  const scroll = React.useRef(null);
+  const toastRef = useRef(null);
 
   // =============== Getting data from reducer ========================
   const dispatch = useDispatch();
-  const { chatLoadSuccess, isChatLoading } = useSelector(state => state.chatReducer);
+  const { chatLoadSuccess, isChatLoading, chatHistoryPage, isHistoryLoading, isHistoryNextPage, remainCount } = useSelector(state => state.chatReducer);
   const { userData } = useSelector(state => state.UserReducer);
+  const userAdd = userData?.userWallet?.address;
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
+  //====================== UseEffect Call ===============================
+  useEffect(() => {
+    dispatch(chatHistoryLoading());
+    getHistoryData(1);
+    dispatch(ChatHistoryPageChange(1));
+  }, []);
+
+  //================== Get History Data =================================
+  const getHistoryData = (page) => {
+    dispatch(getChatBotHistory(page, userAdd, tokenId))
+      .then((response) => {
+        if (response.length > 0) {
+          // let history = []
+          response.map((data) => {
+
+            let second = data.date._seconds;
+            let milisecond = Number(second) * 1000;
+            let getDate = new Date(milisecond);
+            let timeConversion = moment(getDate).format('h:mm A');
+
+            let sender = {
+              message: data?.question,
+              type: 'sender',
+              time: timeConversion,
+              senderImage: userData.avatar,
+              senderName: userData.userName != '' ? userData.userName : userData?.userWallet?.address.substring(0, 6)
+            }
+
+            let receiver = {
+              message: data.reply,
+              type: 'receiver',
+              time: timeConversion,
+              receiverImage: nftDetail.image,
+              receiverName: nftDetail.name,
+            }
+            // history.push(receiver, sender);
+            setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
+          })
+        }
+      })
+  }
+
+  //====================== Chat Sender Image =========================
   const renderImage = () => {
     if (userData.avatar) {
       return <C_Image uri={userData.avatar} imageStyle={styles.bubbleImage} />;
@@ -40,6 +86,7 @@ const ChatDetail = ({ route, navigation }) => {
     }
   };
 
+  //======================== Show Bubbles =============================
   const ShowBubble = props => {
     const { item } = props;
     return (
@@ -67,7 +114,7 @@ const ChatDetail = ({ route, navigation }) => {
               </View>
               <View style={styles.talkBubble}>
                 <View style={styles.textContainer}>
-                  <Text style={styles.msgHolderName}> {item?.receiverName.slice(item?.receiverName.lastIndexOf('#'))} </Text>
+                  <Text style={styles.msgHolderName}> {item?.receiverName} </Text>
                   <Text style={styles.bubbleText}> {item?.message} </Text>
                 </View>
               </View>
@@ -76,6 +123,14 @@ const ChatDetail = ({ route, navigation }) => {
       </View>
     );
   };
+
+  //=========================Toast Message=================================
+  const showToast = () => {
+    toastRef.current.show({
+      type: 'info',
+      text1: translate('common.exceededToastWord'),
+    });
+  }
 
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
@@ -89,31 +144,49 @@ const ChatDetail = ({ route, navigation }) => {
         senderImage: userData.avatar,
         senderName: userData.userName != '' ? userData.userName : userData?.userWallet?.address.substring(0, 6),
       };
-      setChatBotData(chatBotData => [...chatBotData, sendObj]);
+      setChatBotData(chatBotData => [sendObj, ...chatBotData]);
 
       dispatch(
-        getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId),
-      )
+        getAiChat(msg, userData.userWallet.address, selectedLanguageItem.language_name, nftDetail.name, tokenId))
         .then(response => {
-            setRemainWordText(true);
-         
+          if (response?.messageCode || response?.description) {
+            showToast();
+          }
+          else {
             let receiveObj = {
-              message: response.recvResp,
+              message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
               receiverImage: nftDetail.image,
               receiverName: nftDetail.name,
-              remainWords: response.remainWord
             };
-            setChatBotData(chatBotData => [...chatBotData, receiveObj]);
+            setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
+          }
         })
         .catch(err => {
           console.log('Error Chat : ', err);
         });
-
     }
     setMessage('');
   };
+
+  //==================== On Scroll-to-Top ===========================
+  const handleFlatListEndReached = () => {
+    let num = chatHistoryPage + 1;
+    if (isHistoryNextPage) {
+      dispatch(chatHistoryLoading());
+      getHistoryData(num);
+      dispatch(ChatHistoryPageChange(num));
+    }
+  };
+
+  //========================Loader Call=================================
+  const renderHeader = () => {
+    if (!isHistoryLoading) return null;
+    return (
+      <Loader />
+    );
+  }
 
   // ===================== FlatList Header Call ===================================
   const ListHeader = () => {
@@ -133,7 +206,7 @@ const ChatDetail = ({ route, navigation }) => {
                 {isChatLoading && <Text style={styles.typingMessage}>{translate('common.typing')}</Text>}
               </View>
               {
-                !chatLoadSuccess?.messageCode && <Text style={styles.remainWordText}>{ remainWordText ? translate('common.remainWordCount') : ''}<Text style={styles.remainWordCount}> {chatLoadSuccess?.remainWord}</Text></Text>
+                remainCount > 0 && <Text style={styles.remainWordText}>{translate('common.remainWordCount')}<Text style={styles.remainWordCount}> {remainCount}</Text></Text>
               }
             </View>
           </View>
@@ -156,10 +229,11 @@ const ChatDetail = ({ route, navigation }) => {
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
 
-      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} scrollEnabled={false} >
+      <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} keyboardShouldPersistTaps={'always'} >
 
         <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
+            <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>
               {nftDetail.name.slice(nftDetail.name.lastIndexOf('#'))}
             </Text>
@@ -169,46 +243,50 @@ const ChatDetail = ({ route, navigation }) => {
                 <Text
                   style={[styles.nftName, { marginVertical: 3 }]}
                   numberOfLines={2}>
-                  {chatLoadSuccess?.recvResp}
+                  {chatLoadSuccess?.data?.response}
                 </Text>
               </View>
             ) : null}
           </View>
-          <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
+          <View style={styles.bannerImgContainer}>
+            <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
+          </View>
         </View>
-
         <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
             <FlatList
               ref={flatList}
-              onContentSizeChange={(item, index) => {
-                flatList.current.scrollToEnd({ animated: true });
-                flatList.current.scrollToOffset({
-                  animated: true,
-                  offset: index,
-                });
-              }}
               data={chatBotData}
               renderItem={({ item }) => <ShowBubble item={item} />}
               keyExtractor={(item, index) => {
                 return `_${index}`;
               }}
-              onLayout={() => flatList.current.scrollToEnd({ animated: true })}
               showsVerticalScrollIndicator={false}
+              inverted={true}
+              onScrollEndDrag={handleFlatListEndReached}
+              ListFooterComponent={renderHeader}
             />
           </View>
-
           <MessageInput
             placeholder={translate('common.enterMessage')}
             value={message}
             onChangeText={text => setMessage(text)}
-            onPress={() => sendMessage(message, new Date())}
+            onPress={() => {
+              sendMessage(message, new Date());
+              chatBotData.length > 0 && flatList.current.scrollToIndex({ animated: true, index: 0 })
+            }
+            }
           />
-
         </View>
 
       </KeyboardAwareScrollView>
+      <Toast
+        position='bottom'
+        visibilityTime={2000}
+        autoHide={true}
+        ref={toastRef}
+      />
     </SafeAreaView>
   );
 };

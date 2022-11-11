@@ -41,15 +41,14 @@ const ChatNftsList = ({ tabTitle }) => {
     const nftCollectionList = searchText ? searchListing : tabTitle === 'Owned' ? ownerList.ownerNFTS : otherList.otherNFTs;
 
     // ===================== Use-effect call =================================
-
     useEffect(() => {
         if (tabTitle === 'Owned') {
             dispatch(ownedNftLoadStart());
             dispatch(ownedNftListReset());
             getDataCollection(ownedPageChange, '');
-            dispatch(ownedNftPageChange(1))
+            dispatch(ownedNftPageChange(1));
         }
-        else {
+        else { 
             dispatch(otherNftLoadStart());
             dispatch(otherNftListReset());
             getDataCollection(otherPageChange, '');

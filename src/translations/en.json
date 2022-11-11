@@ -749,6 +749,7 @@
     "TOKEN_ID": "Token Id",
     "loginWithEmail": "Login with Email",
     "remainWordCount": "Remaining Chat Limit",
+    "exceededToastWord": "You have exceeded word limit",
     "playbackSpeed": "Playback",
     "offers": "Offers",
     "ARTIST_BTN_REQUEST": "Become an Artist",
