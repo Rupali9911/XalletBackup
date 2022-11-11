@@ -754,7 +754,9 @@
     "ARTIST_BTN_REQUEST": "成为艺术家",
     "ARTIST_DESCRIPTION_LINE_1": "您距离成为 XALLET 的艺术家仅一步之遥。赢得艺术家头衔后，您将获得一个稀有的蓝色验证徽章，该徽章仅供经过验证的艺术家使用。",
     "ARTIST_DESCRIPTION_LINE_2": "所有申请都将经过 XALLET 团队的几轮全面筛选，以确保艺术家的真实性。",
-    "ARTIST_NOTE": "您必须先输入用户名、上传个人资料图片、验证您的电子邮件地址和 Twitter 帐户。"
+    "ARTIST_NOTE": "您必须先输入用户名、上传个人资料图片、验证您的电子邮件地址和 Twitter 帐户。",
+    "PASTE_PRIVATE_KEY": "粘贴私钥字符串",
+    "EXAMPLE_PLACEHOLDER_TEXT": "例如: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266"
   },
   "AwardPage": {},
   "wallet": {
