@@ -39,8 +39,14 @@ import {hp} from '../../constants/responsiveFunct';
 import {View} from 'native-base';
 import Colors from '../../constants/Colors';
 import {COLORS} from '../../constants';
-
-const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon} = SVGS;
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon, InfoIcon} =
+  SVGS;
 
 function Profile(props) {
   const {navigation, handleSubmit} = props;
@@ -81,6 +87,8 @@ function Profile(props) {
   const [msg, setMsg] = useState('');
   const [disable, setDisable] = useState(true);
   const [firstTime, setFirstTime] = useState(false);
+  const [infoTwitter, setInfoTwitter] = useState(false);
+  const [infoEmail, setInfoEmail] = useState(false);
 
   const dispatch = useDispatch();
   let id = UserReducer.userData.userWallet.address;
@@ -304,6 +312,39 @@ function Profile(props) {
     );
   };
 
+  const infoModal = (title, opened, onClick) => {
+    return (
+      <View style={styles.infoPPopUpView}>
+        <Text style={styles.label}>{translate(title)}</Text>
+        <TouchableOpacity onPress={() => onClick(true)}>
+          <Menu opened={opened}>
+            <MenuTrigger />
+            <MenuOptions optionsContainerStyle={styles.menuOption}>
+              <MenuOption>
+                <Text style={{color: '#FFFFFF'}} onPress={() => onClick(false)}>
+                  {translate('common.PROFILE_SAVE_MSG')}
+                </Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+          <InfoIcon style={styles.infoIcon} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  const twitterInfoPopUp = info => {
+    setInfoTwitter(info);
+    setTimeout(() => {
+      setInfoTwitter(false);
+    }, 5000);
+  };
+
+  const emailInfoPopUp = info => {
+    setInfoEmail(info);
+    setTimeout(() => {
+      setInfoEmail(false);
+    }, 5000);
+  };
   return (
     <AppBackground isBusy={UserReducer.loading}>
       <SafeAreaView style={styles.contentView}>
@@ -313,6 +354,7 @@ function Profile(props) {
         />
         <ScrollView onScroll={() => Keyboard.dismiss()}>
           <LimitableInput
+            singleLine={false}
             multiLine
             value={username && username.trimStart().replace(/\s\s+/g, ' ')}
             onChange={text => {
@@ -326,7 +368,7 @@ function Profile(props) {
             error={errUsername}
           />
           <View style={styles.mainView}>
-            <Text style={styles.label}>{translate('common.twitter')}</Text>
+            {infoModal('common.twitter', infoTwitter, twitterInfoPopUp)}
             <View style={styles.inputView}>
               <TextInput
                 style={[
@@ -353,7 +395,8 @@ function Profile(props) {
                 }
                 style={
                   UserReducer.userData.twitterVerified === 0 &&
-                  twitter === beforeTwitter
+                  twitter === beforeTwitter &&
+                  (twitter !== '' || beforeTwitter !== '')
                     ? styles.verifyBtnActive
                     : styles.verifyBtn
                 }
@@ -372,6 +415,7 @@ function Profile(props) {
           {UserReducer?.userData?.isNonCrypto === 1 && (
             <LimitableInput
               multiLine
+              singleLine={false}
               value={email && email.trimStart()}
               onChange={text => {
                 setEmail(text);
@@ -386,7 +430,7 @@ function Profile(props) {
           )}
           {UserReducer?.userData?.isNonCrypto === 0 && (
             <View style={styles.mainView}>
-              <Text style={styles.label}>{translate('common.userEmail')}</Text>
+              {infoModal('common.userEmail', infoEmail, emailInfoPopUp)}
               <View style={styles.inputView}>
                 <TextInput
                   style={[
@@ -432,6 +476,7 @@ function Profile(props) {
           )}
           <LimitableInput
             multiLine
+            singleLine={false}
             value={website && website.trimStart()}
             onChange={text => {
               setWebsite(text);
@@ -444,6 +489,7 @@ function Profile(props) {
           />
           <LimitableInput
             multiLine
+            singleLine={false}
             value={youtube && youtube.trimStart()}
             onChange={text => {
               setYoutube(text);
@@ -456,6 +502,7 @@ function Profile(props) {
           />
           <LimitableInput
             multiLine
+            singleLine={false}
             value={discord && discord.trimStart()}
             onChange={text => {
               setDiscord(text);
@@ -689,5 +736,19 @@ const styles = StyleSheet.create({
   },
   artistLeft: {
     backgroundColor: '#2280e1',
+  },
+  infoPPopUpView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuOption: {
+    width: SIZE(140),
+    marginLeft: SIZE(30),
+    marginTop: SIZE(-25),
+    backgroundColor: Colors.BLACK1,
+  },
+  infoIcon: {
+    marginLeft: 5,
+    alignSelf: 'center',
   },
 });

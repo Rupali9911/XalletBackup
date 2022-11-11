@@ -789,7 +789,8 @@
         "appNotConnected": "The app you are trying to connect is not connected with server. Please connect app with server and try again.",
         "oldAndNewPasswordIsSameText": "Old password and new password should not be same",
         "oldPasswordNCorrect": "Old Password is not correct!",
-        "appAlreadyConnected": "The app you are trying to connect is already connected"
+        "appAlreadyConnected": "The app you are trying to connect is already connected",
+        "PROFILE_SAVE_MSG": "※ [Verify] Button will get active only after clicking on [Save Changes]"
       },
       "welcomeTxt": "Welcome",
       "createWallet": "Create a new wallet",
