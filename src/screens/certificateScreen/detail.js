@@ -802,7 +802,7 @@ const DetailScreen = ({ navigation, route }) => {
             <ImageModal
               visible={imgModal}
               setVisible={setImgModal}
-              uri={thumbnailUrl}
+              uri={mediaUrl}
               iconSize={wp('7%')}
               iconColor={Colors.WHITE1}
             />
