@@ -752,8 +752,8 @@
     "playbackSpeed": "再生速度",
     "offers": "オファー履歴",
     "ARTIST_BTN_REQUEST": "申請する",
-    "ARTIST_DESCRIPTION_LINE_1": "Xalletの公式アーティストになるためには「プロフィール情報」を全て埋め、申請が必要です。",
-    "ARTIST_DESCRIPTION_LINE_2": "申請情報を下にXalletチームにて公平な審査を行い、承認された場合は正式に認証バッジが付きます（審査には数週間の時間を要すため、今暫くお待ち願います）",
+    "ARTIST_DESCRIPTION_LINE_1": "XALLETの公式アーティストになるためには「プロフィール情報」を全て埋め、申請が必要です。",
+    "ARTIST_DESCRIPTION_LINE_2": "申請情報を下にXALLETチームにて公平な審査を行い、承認された場合は正式に認証バッジが付きます（審査には数週間の時間を要すため、今暫くお待ち願います）",
     "ARTIST_NOTE": "先にユーザー名、プロフィール画像、メールアドレス、ツイッターアカウントを入力してください"
   },
   "AwardPage": {},

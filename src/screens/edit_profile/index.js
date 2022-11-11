@@ -182,7 +182,7 @@ function Profile(props) {
                   marginBottom: SIZE(22),
                   color: COLORS.themeColor,
                 }}>
-                {translate('common.ARTIST_NOTE')}
+                {' ' + translate('common.ARTIST_NOTE')}
               </Text>
             </View>
             <GroupButton
