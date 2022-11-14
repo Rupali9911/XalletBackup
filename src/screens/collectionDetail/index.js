@@ -324,7 +324,7 @@ function CollectionDetail(props) {
         case 'onSale':
           return (
             <OnSaleTab
-              tabTitle={translate('common.onSale')}
+              tabTitle={'On Sale'}
               collection={collection}
               tabStatus={1}
               isLaunchPad={isLaunchPad}
@@ -333,7 +333,7 @@ function CollectionDetail(props) {
         case 'notOnSell':
           return (
             <SoldOutTab
-              tabTitle={translate('common.notOnSell')}
+              tabTitle={'Sold Out'}
               collection={collection}
               tabStatus={2}
               isLaunchPad={isLaunchPad}
@@ -342,18 +342,13 @@ function CollectionDetail(props) {
         case 'owned':
           return (
             <OwnedTab
-              tabTitle={translate('wallet.common.owned')}
+              tabTitle={'Owned'}
               collection={collection}
               isLaunchPad={isLaunchPad}
             />
           );
         case 'activity':
-          return (
-            <ActivityTab
-              tabTitle={translate('common.activity')}
-              collection={collection}
-            />
-          );
+          return <ActivityTab tabTitle={'Activity'} collection={collection} />;
         default:
           return null;
       }
@@ -362,7 +357,7 @@ function CollectionDetail(props) {
         case 'gallery':
           return (
             <GalleryTab
-              tabTitle={translate('common.gallery')}
+              tabTitle={'Gallery'}
               collection={collection}
               tabStatus={3}
               isLaunchPad={isLaunchPad}
