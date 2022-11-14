@@ -1,7 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   BackHandler,
   Dimensions,
@@ -10,27 +10,27 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import { FONT, SVGS } from 'src/constants';
-import { C_Image, Loader } from '../../components';
+import {FONT, SVGS} from 'src/constants';
+import {C_Image, Loader} from '../../components';
 import AppBackground from '../../components/appBackground';
-import { COLORS, SIZE } from '../../constants';
+import {COLORS, SIZE} from '../../constants';
 import ImageSrc from '../../constants/Images';
-import { fonts } from '../../res';
-import { getHotCollectionDetail } from '../../store/actions/hotCollectionAction';
-import { translate } from '../../walletUtils';
+import {fonts} from '../../res';
+import {getHotCollectionDetail} from '../../store/actions/hotCollectionAction';
+import {translate} from '../../walletUtils';
 import styles from './styles';
 
 import {
   Menu,
   MenuOption,
   MenuOptions,
-  MenuTrigger
+  MenuTrigger,
 } from 'react-native-popup-menu';
-import { NEW_BASE_URL } from '../../common/constants';
-import { alertWithSingleBtn } from '../../common/function';
-import { wp } from '../../constants/responsiveFunct';
+import {NEW_BASE_URL} from '../../common/constants';
+import {alertWithSingleBtn} from '../../common/function';
+import {wp} from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import ActivityTab from './activityTab';
 import GalleryTab from './galleryTab';
@@ -40,9 +40,9 @@ import SoldOutTab from './soldOutTab';
 
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-const { height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const {
   TwiiterIcon,
@@ -55,9 +55,9 @@ const {
 } = SVGS;
 
 function CollectionDetail(props) {
-  const { route } = props;
-  const { networkName, contractAddress, launchpadId } = route.params;
-  const { NftDataCollectionReducer } = useSelector(state => state);
+  const {route} = props;
+  const {networkName, contractAddress, launchpadId} = route.params;
+  const {NftDataCollectionReducer} = useSelector(state => state);
   const collectionList = NftDataCollectionReducer.nftDataCollectionList;
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
@@ -68,13 +68,16 @@ function CollectionDetail(props) {
 
   const [index, setIndex] = useState(0);
 
-  const [routes] = useState(!launchpadId ? [
-    { key: 'onSale', title: translate('common.onSale') },
-    { key: 'notOnSell', title: translate('common.notOnSell') },
-    { key: 'owned', title: translate('wallet.common.owned') },
-    { key: 'activity', title: translate('common.activity') },
-  ]
-    : [{ key: 'gallery', title: translate('common.gallery') }]);
+  const [routes] = useState(
+    !launchpadId
+      ? [
+          {key: 'onSale', title: translate('common.onSale')},
+          {key: 'notOnSell', title: translate('common.notOnSell')},
+          {key: 'owned', title: translate('wallet.common.owned')},
+          {key: 'activity', title: translate('common.activity')},
+        ]
+      : [{key: 'gallery', title: translate('common.gallery')}],
+  );
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
@@ -143,7 +146,7 @@ function CollectionDetail(props) {
 
     return (
       <View style={styles.bannerIconWrap}>
-        <Image source={{ uri: bannerUrl }} style={styles.bannerIcon} />
+        <Image source={{uri: bannerUrl}} style={styles.bannerIcon} />
         {/* {Verifiedcollections.find((id) => id === collectionId) && (
                     <View>
                         <Image
@@ -161,8 +164,8 @@ function CollectionDetail(props) {
       <View style={styles.socialLinksWrap}>
         {collection?.userInfo?.links?.twitter ? (
           <TouchableOpacity
-            style={{ marginRight: 10 }}
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            style={{marginRight: 10}}
+            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
             onPress={() =>
               Linking.openURL(collection?.userInfo?.links?.twitter)
             }>
@@ -171,8 +174,8 @@ function CollectionDetail(props) {
         ) : null}
         {collection?.userInfo?.links?.instagram ? (
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
-            style={{ marginRight: 6 }}
+            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
+            style={{marginRight: 6}}
             onPress={() =>
               Linking.openURL(collection?.userInfo?.links?.instagram)
             }>
@@ -181,7 +184,7 @@ function CollectionDetail(props) {
         ) : null}
         {collection?.userInfo?.links?.facebook ? (
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
             onPress={() =>
               Linking.openURL(collection?.userInfo?.links?.facebook)
             }>
@@ -298,13 +301,13 @@ function CollectionDetail(props) {
     return <Text style={styles.collectionName}>{collection?.name}</Text>;
   };
 
-  const renderScene = ({ route }, tab) => {
+  const renderScene = ({route}, tab) => {
     if (tab) {
       switch (route.key) {
         case 'onSale':
           return (
             <OnSaleTab
-              tabTitle={translate('common.onSale')}
+              tabTitle={'On Sale'}
               collection={collection}
               tabStatus={1}
               isLaunchPad={isLaunchPad}
@@ -313,7 +316,7 @@ function CollectionDetail(props) {
         case 'notOnSell':
           return (
             <SoldOutTab
-              tabTitle={translate('common.notOnSell')}
+              tabTitle={'Sold Out'}
               collection={collection}
               tabStatus={2}
               isLaunchPad={isLaunchPad}
@@ -322,18 +325,13 @@ function CollectionDetail(props) {
         case 'owned':
           return (
             <OwnedTab
-              tabTitle={translate('wallet.common.owned')}
+              tabTitle={'Owned'}
               collection={collection}
               isLaunchPad={isLaunchPad}
             />
           );
         case 'activity':
-          return (
-            <ActivityTab
-              tabTitle={translate('common.activity')}
-              collection={collection}
-            />
-          );
+          return <ActivityTab tabTitle={'Activity'} collection={collection} />;
         default:
           return null;
       }
@@ -342,7 +340,7 @@ function CollectionDetail(props) {
         case 'gallery':
           return (
             <GalleryTab
-              tabTitle={translate('common.gallery')}
+              tabTitle={'Gallery'}
               collection={collection}
               tabStatus={3}
               isLaunchPad={isLaunchPad}
@@ -363,8 +361,8 @@ function CollectionDetail(props) {
       <TabViewScreen
         index={index}
         routes={routes}
-        switchRoutes={(r) => renderScene(r, tab)}
-        indexChange={(i) => handleIndexChange(i)}
+        switchRoutes={r => renderScene(r, tab)}
+        indexChange={i => handleIndexChange(i)}
         tabBarStyle={{
           height: SIZE(40),
           width: wp('30%'),
@@ -382,7 +380,7 @@ function CollectionDetail(props) {
         contentContainerStyle={{
           flexGrow: 1,
         }}
-        style={{ flex: 1 }}>
+        style={{flex: 1}}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButtonWrap}>
@@ -401,12 +399,12 @@ function CollectionDetail(props) {
             <MenuTrigger children={<ThreeDotsVerticalIcon />} />
             <MenuOptions>
               <MenuOption value={1}>
-                <Text style={{ marginVertical: 10 }}>
+                <Text style={{marginVertical: 10}}>
                   {translate('common.reportCollection')}
                 </Text>
               </MenuOption>
               <MenuOption value={2}>
-                <Text style={{ marginVertical: 10 }}>
+                <Text style={{marginVertical: 10}}>
                   {translate('common.blockUser')}
                 </Text>
               </MenuOption>
@@ -423,7 +421,7 @@ function CollectionDetail(props) {
         {/* {renderChainList()} */}
         {renderDescription()}
 
-        <View style={{ height: height / 1.5 }}>
+        <View style={{height: height / 1.5}}>
           {!loading && !isLaunchPad ? (
             renderTabView(true)
           ) : isLaunchPad && !loading ? (
