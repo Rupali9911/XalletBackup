@@ -19,6 +19,7 @@ import {translate} from '../../walletUtils';
 import AppBackground from '../../components/appBackground';
 import {AppHeader, GroupButton} from '../../components';
 import {
+  maxLength32,
   maxLength50,
   maxLength100,
   maxLength200,
@@ -143,9 +144,7 @@ function Profile(props) {
               {translate('common.ARTIST_DESCRIPTION_LINE_2')}
             </Text>
             <View style={styles.infoView}>
-              <Text>
-                <ArtistSvgI />
-              </Text>
+              <ArtistSvgI />
               <Text style={styles.infoTitle}>
                 {translate('common.ARTIST_NOTE')}
               </Text>
@@ -193,8 +192,8 @@ function Profile(props) {
 
   const onSave = () => {
     let validateNum = 0;
-    if (maxLength50(username)) {
-      setErrUsername(maxLength50(username));
+    if (maxLength32(username)) {
+      setErrUsername(maxLength32(username));
     } else {
       if (validateUserName(username)) {
         setErrUsername(validateUserName(username));
@@ -363,7 +362,7 @@ function Profile(props) {
             }}
             label={translate('common.UserName')}
             placeholder={translate('common.PLACEHOLDER_USERNAME')}
-            validate={[maxLength50, validateUserName]}
+            validate={[maxLength32, validateUserName]}
             editable={true}
             error={errUsername}
           />

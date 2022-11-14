@@ -112,6 +112,7 @@ export const maxLength = max => value =>
 
 export const maxLength13 = maxLength(13);
 export const maxLength20 = maxLength(20);
+export const maxLength32 = maxLength(32);
 export const maxLength50 = maxLength(50);
 export const maxLength100 = maxLength(100);
 export const maxLength200 = maxLength(200);
@@ -122,6 +123,9 @@ const min = 6,
 // const regex = new RegExp(
 //   `^(?=.{${min},${max}}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$`,
 // );
+const userNameRegex = new RegExp(
+  /^[a-zA-Z0-9 !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/,
+);
 const regex = new RegExp(
   /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/,
 );
@@ -135,7 +139,7 @@ export const required = value => (value ? undefined : 'Required');
 export const validateUserName = value => {
   if (!value.trim().length) {
     return translate('common.REQUIRED_USERNAME');
-  } else if (!regex.test(value)) {
+  } else if (!userNameRegex.test(value)) {
     return translate('common.VALIDATE_USERNAME');
   }
 };
