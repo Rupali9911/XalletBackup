@@ -82,7 +82,7 @@ export const myNFTList = (pageIndex, pageSize, address, category) => {
     fetch(url)
       .then(response => response.json())
       .then(data => dispatch(myNftLoadSuccess({...data, tabTitle: category})))
-      .catch(error => dispatch(myNftLoadStart()))
+      .catch(error => dispatch(myNftLoadFail()))
   };
 };
 

@@ -535,7 +535,7 @@ export const updateAvtar = (userId, file) => async dispatch => {
         },
       });
       if(userProfileResponse == undefined) {
-        dispatch(endLoadingBanner());
+        dispatch(endLoadingImage());
       }
     } catch (error) {
       dispatch(endLoadingImage());
