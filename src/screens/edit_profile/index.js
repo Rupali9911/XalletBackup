@@ -146,7 +146,7 @@ function Profile(props) {
             <View style={styles.infoView}>
               <ArtistSvgI />
               <Text style={styles.infoTitle}>
-                {translate('common.ARTIST_NOTE')}
+                {' ' + translate('common.ARTIST_NOTE')}
               </Text>
             </View>
             <GroupButton
@@ -628,8 +628,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: SIZE(8),
-    borderTopRightRadius: SIZE(8),
+    borderBottomRightRadius: SIZE(5),
+    borderTopRightRadius: SIZE(5),
   },
   verifyBtnTitle: {
     color: '#FFFFFF',
@@ -642,8 +642,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2280e1',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: SIZE(8),
-    borderTopRightRadius: SIZE(8),
+    borderBottomRightRadius: SIZE(5),
+    borderTopRightRadius: SIZE(5),
   },
   msgModalView: {
     height: SIZE(80),

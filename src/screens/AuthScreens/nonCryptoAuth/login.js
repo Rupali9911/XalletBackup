@@ -116,7 +116,7 @@ const LoginCrypto = () => {
               textContentType: 'username',
               autoCompleteType: 'username',
               importantForAutofill: 'yes',
-              placeholder: translate('common.emailAddress')
+              placeholder: translate('common.PLACEHOLDER_EMAIL')
 
             }}
             error={error}

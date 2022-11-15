@@ -131,7 +131,7 @@ const transactionProcessing = async (txObject, common, privateKey, web3, resolve
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-
+          console.log("@@@ Transaction hash line-no.-134 ===========>", txHash)
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
           console.log(err);
@@ -337,7 +337,7 @@ export const balanceTransfer = async (transferParameters, config) => {
 
       let txObject;
 
-      if (tokenType === 'BNB' || tokenType === 'Matic' || tokenType === 'ETH') {
+      if (tokenType === 'BNB' || tokenType === 'Matic' || tokenType === 'ETH' || tokenType === 'XETA') {
         //NON ERC20(BNB,MATIC,ETH)
         // console.log("@@@ For NON ERRC20 Token if ============>", tokenType);
         const gasPrice = await getGasPrice(config.rpcURL);
