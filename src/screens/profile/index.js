@@ -1,34 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  Linking, StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { openSettings } from 'react-native-permissions';
+import {openSettings} from 'react-native-permissions';
 import {
   Menu,
   MenuOption,
   MenuOptions,
-  MenuTrigger
+  MenuTrigger,
 } from 'react-native-popup-menu';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import { COLORS, FONT, FONTS, SIZE, SVGS } from 'src/constants';
-import { Container } from 'src/styles/common.styles';
-import { confirmationAlert } from '../../common/function';
+import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
+import {Container} from 'src/styles/common.styles';
+import {confirmationAlert} from '../../common/function';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
-  widthPercentageToDP as wp
+  widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image } from '../../components';
+import {AppHeader, C_Image} from '../../components';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
-import { fonts } from '../../res';
+import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
   endLoadingBanner,
@@ -38,13 +33,13 @@ import {
   startLoadingBanner,
   startLoadingImage,
   updateAvtar,
-  updateBanner
+  updateBanner,
 } from '../../store/reducer/userReducer';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
-import { SocketHandler } from './socketHandler';
-import { EditButton, EditButtonText } from './styled';
+import {SocketHandler} from './socketHandler';
+import {EditButton, EditButtonText} from './styled';
 
 const {
   ConnectSmIcon,
@@ -62,7 +57,7 @@ const {
   VerficationIcon,
 } = SVGS;
 
-function Profile({ navigation, connector, route }) {
+function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -74,7 +69,7 @@ function Profile({ navigation, connector, route }) {
     imageAvatarLoading,
     imageBannerLoading,
   } = useSelector(state => state.UserReducer);
-  const { UserReducer } = useSelector(state => state);
+  const {UserReducer} = useSelector(state => state);
 
   //================== Components State Defination ===================
   const [openDial1, setOpenDial1] = useState(false);
@@ -83,8 +78,8 @@ function Profile({ navigation, connector, route }) {
   const [index, setIndex] = useState(0);
   const [id, setId] = useState();
   const [routes] = useState([
-    { key: 'profileCreated', title: translate('wallet.common.profileCreated') },
-    { key: 'nftOwned', title: translate('wallet.common.owned') },
+    {key: 'profileCreated', title: translate('wallet.common.profileCreated')},
+    {key: 'nftOwned', title: translate('wallet.common.owned')},
   ]);
 
   //================== Global Variables ===================
@@ -102,21 +97,21 @@ function Profile({ navigation, connector, route }) {
       route?.params?.id &&
       profileData?.userWallet?.address === route?.params?.id
     ) {
-      setUserDetails({ ...profileData });
+      setUserDetails({...profileData});
     } else if (
       !loading &&
       !route?.params?.id &&
       profileData?.userWallet?.address === loggedInUser?.userWallet?.address
     ) {
-      setUserDetails({ ...profileData });
+      setUserDetails({...profileData});
     }
     !loading && dispatch(endLoadingImage());
     !loading && dispatch(endLoadingBanner());
   }, [profileData, loading]);
 
   useEffect(() => {
-    handleUserData();
     const unsubscribe = navigation.addListener('focus', () => {
+      handleUserData();
     });
     return unsubscribe;
   }, [navigation]);
@@ -157,7 +152,7 @@ function Profile({ navigation, connector, route }) {
     setIndex(index);
   };
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'profileCreated':
         return <NFTCreated key={id} id={id} navigation={navigation} />;
@@ -214,8 +209,8 @@ function Profile({ navigation, connector, route }) {
               Platform.OS === 'android'
                 ? image.path.substring(image.path.lastIndexOf('/') + 1)
                 : image.filename
-                  ? image.filename
-                  : image.path.substring(image.path.lastIndexOf('/') + 1);
+                ? image.filename
+                : image.path.substring(image.path.lastIndexOf('/') + 1);
             let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
 
             let temp = {
@@ -398,13 +393,13 @@ function Profile({ navigation, connector, route }) {
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{ color: '#FFFFFF' }}>Copied!</Text>
+                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
-              style={{ marginLeft: SIZE(6) }}
+              style={{marginLeft: SIZE(6)}}
               width={SIZE(16)}
               height={SIZE(16)}
             />
@@ -440,7 +435,7 @@ function Profile({ navigation, connector, route }) {
                 <TouchableOpacity
                   style={styles.settings}
                   onPress={() =>
-                    navigation.navigate('Setting', { connector: connector })
+                    navigation.navigate('Setting', {connector: connector})
                   }>
                   <SettingIcon width={SIZE(23)} height={SIZE(23)} />
                 </TouchableOpacity>
@@ -466,7 +461,7 @@ function Profile({ navigation, connector, route }) {
                       backgroundColor: Colors.BLACK1,
                     }}>
                     <MenuOption>
-                      <Text style={{ color: '#FFFFFF' }}>Copied!</Text>
+                      <Text style={{color: '#FFFFFF'}}>Copied!</Text>
                     </MenuOption>
                   </MenuOptions>
                 </Menu>
@@ -474,7 +469,12 @@ function Profile({ navigation, connector, route }) {
               </TouchableOpacity>
               <View style={styles.iconWrapper}>
                 <View
-                  style={[styles.iconBadgeVw, route?.params?.role === 4 ? styles.borderBtnColor : styles.borderTrans]}>
+                  style={[
+                    styles.iconBadgeVw,
+                    route?.params?.role === 4
+                      ? styles.borderBtnColor
+                      : styles.borderTrans,
+                  ]}>
                   {renderIconImage()}
                   {route?.params?.role === 4 ? (
                     <View style={styles.markIconView}>
@@ -503,7 +503,7 @@ function Profile({ navigation, connector, route }) {
                     onPress={() =>
                       Linking.openURL(
                         'https://www.instagram.com/' +
-                        userDetails?.instagramSite,
+                          userDetails?.instagramSite,
                       )
                     }>
                     <Instagram width={SIZE(35)} height={SIZE(35)} />
@@ -540,7 +540,7 @@ function Profile({ navigation, connector, route }) {
                     marginTop: SIZE(5),
                   }}
                   onPress={() =>
-                    navigation.navigate('EditProfile', { userDetails })
+                    navigation.navigate('EditProfile', {userDetails})
                   }>
                   <EditButtonText>
                     {translate('wallet.common.editprofile')}
@@ -561,7 +561,7 @@ function Profile({ navigation, connector, route }) {
             </View>
           </View>
         </View>
-        <View style={{ flex: socialSite ? 0.4 : 0.45 }}>
+        <View style={{flex: socialSite ? 0.4 : 0.45}}>
           <View style={styles.tabView}>{renderTabView(id)}</View>
         </View>
       </View>
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
     top: 145,
     zIndex: 10,
   },
-  iconBadgeVw:{
+  iconBadgeVw: {
     borderWidth: 3,
     width: SIZE(155),
     height: SIZE(155),
@@ -725,10 +725,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  borderTrans:{
+  borderTrans: {
     borderColor: 'transparent',
-  }, 
-  borderBtnColor:{ 
-    borderColor: Colors.buttonBackground
-  }
+  },
+  borderBtnColor: {
+    borderColor: Colors.buttonBackground,
+  },
 });
