@@ -72,7 +72,6 @@ const Wallet = ({ route, navigation }) => {
     xetaBalance,
     networkType,
   } = useSelector(state => state.WalletReducer);
-  console.log("@@@ network type on wallet =======>", networkType)
 
   const [isBackedUp, setIsBackedUp] = useState(isBackup);
   const [loading, setLoading] = useState(false);
@@ -390,7 +389,8 @@ const Wallet = ({ route, navigation }) => {
     )
   }
 
-  const onRefreshToken = () => {
+  const onRefreshToken = async () => {
+    wallet = await getWallet();
     return getBalances(wallet?.address);
   };
 
