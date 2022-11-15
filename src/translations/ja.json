@@ -754,18 +754,12 @@
     "playbackSpeed": "再生速度",
     "offers": "オファー履歴",
     "ARTIST_BTN_REQUEST": "申請する",
-<<<<<<< HEAD
     "ARTIST_DESCRIPTION_LINE_1": "XALLETの公式アーティストになるためには「プロフィール情報」を全て埋め、申請が必要です。",
     "ARTIST_DESCRIPTION_LINE_2": "申請情報を下にXALLETチームにて公平な審査を行い、承認された場合は正式に認証バッジが付きます（審査には数週間の時間を要すため、今暫くお待ち願います）",
     "ARTIST_NOTE": "先にユーザー名、プロフィール画像、メールアドレス、ツイッターアカウントを入力してください",
     "PASTE_PRIVATE_KEY": "秘密キーの文字列をペーストしてください",
-    "EXAMPLE_PLACEHOLDER_TEXT": "例: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266"
-=======
-    "ARTIST_DESCRIPTION_LINE_1": "Xalletの公式アーティストになるためには「プロフィール情報」を全て埋め、申請が必要です。",
-    "ARTIST_DESCRIPTION_LINE_2": "申請情報を下にXalletチームにて公平な審査を行い、承認された場合は正式に認証バッジが付きます（審査には数週間の時間を要すため、今暫くお待ち願います）",
-    "ARTIST_NOTE": "先にユーザー名、プロフィール画像、メールアドレス、ツイッターアカウントを入力してください",
+    "EXAMPLE_PLACEHOLDER_TEXT": "例: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
     "PROFILE_SAVE_MSG": "※ [確認] ボタンは、[変更を保存] をクリックした後に有効になります。"
->>>>>>> 5f1a2e9ec82a14bb624254ee9f9a66a0ff128546
   },
   "AwardPage": {},
   "wallet": {

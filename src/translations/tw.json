@@ -754,18 +754,12 @@
     "playbackSpeed": "播放速度",
     "offers": "Offers",
     "ARTIST_BTN_REQUEST": "成為藝術家",
-<<<<<<< HEAD
     "ARTIST_DESCRIPTION_LINE_1": "您距離成為 XALLET 的藝術家僅一步之遙。贏得藝術家頭銜後，您將獲得一個稀有的藍色驗證徽章，該徽章僅供經過驗證的藝術家使用。",
     "ARTIST_DESCRIPTION_LINE_2": "所有申請都將經過 XALLET 團隊的幾輪全面篩選，以確保藝術家的真實性。",
     "ARTIST_NOTE": "您必須先輸入用戶名、上傳個人資料圖片、驗證您的電子郵件地址和 Twitter 帳戶。",
     "PASTE_PRIVATE_KEY": "粘貼私鑰字符串",
-    "EXAMPLE_PLACEHOLDER_TEXT": "例如: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266"
-=======
-    "ARTIST_DESCRIPTION_LINE_1": "您距離成為 Xallet 的藝術家僅一步之遙。贏得藝術家頭銜後，您將獲得一個稀有的藍色驗證徽章，該徽章僅供經過驗證的藝術家使用。",
-    "ARTIST_DESCRIPTION_LINE_2": "所有申請都將經過 Xallet 團隊的幾輪全面篩選，以確保藝術家的真實性。",
-    "ARTIST_NOTE": "您必須先輸入用戶名、上傳個人資料圖片、驗證您的電子郵件地址和 Twitter 帳戶。",
+    "EXAMPLE_PLACEHOLDER_TEXT": "例如: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
     "PROFILE_SAVE_MSG": "※ [驗證] 按鈕只有在點擊 [保存更改] 後才會激活"
->>>>>>> 5f1a2e9ec82a14bb624254ee9f9a66a0ff128546
   },
   "AwardPage": {},
   "wallet": {
