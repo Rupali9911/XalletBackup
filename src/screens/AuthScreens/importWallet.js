@@ -115,7 +115,7 @@ const ImportWallet = ({ route, navigation }) => {
                 dispatch(setBackupStatus(true));
               })
               .catch(err => {
-                alertWithSingleBtn(translate('wallet.common.tryAgain'));
+                // alertWithSingleBtn(translate('wallet.common.tryAgain'));
               });
           } else {
             alertWithSingleBtn(
@@ -170,7 +170,7 @@ const ImportWallet = ({ route, navigation }) => {
               dispatch(setBackupStatus(true));
             })
             .catch(err => {
-              alertWithSingleBtn(translate('wallet.common.tryAgain'));
+              // alertWithSingleBtn(translate('wallet.common.tryAgain'));
             });
         })
         .catch(err => {
