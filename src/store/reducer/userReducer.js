@@ -534,7 +534,9 @@ export const updateAvtar = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}`,
         },
       });
-
+      if(userProfileResponse == undefined) {
+        dispatch(endLoadingBanner());
+      }
     } catch (error) {
       dispatch(endLoadingImage());
       console.log('@@@ error ', error);
@@ -562,9 +564,14 @@ export const updateBanner = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}&type=cover`,
         },
       });
+      if(userProfileResponse == undefined) {
+        dispatch(endLoadingBanner());
+      }
+      console.log("@@@ Update banner image response =======>", userProfileResponse)
     } catch (error) {
+      console.log("@@@ Update banner image error =======>", error)
       dispatch(endLoadingBanner());
-      console.log('@@@ error ', error);
+      console.log('@@@ update banner error ', error);
     }
   });
 };
