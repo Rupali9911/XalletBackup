@@ -110,6 +110,7 @@ const NFTOwned = ({route, navigation, id}) => {
           horizontal={false}
           numColumns={2}
           initialNumToRender={14}
+          nestedScrollEnabled={true}
           onRefresh={handlePullRefresh}
           refreshing={
             MyNFTReducer.myNftOwnedListPage === 1 &&
