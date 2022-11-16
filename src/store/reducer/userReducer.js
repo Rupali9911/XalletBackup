@@ -556,17 +556,18 @@ export const updateProfile = (props, id) => async dispatch => {
   });
 };
 
-export const verifyEmail = email => async (dispatch, getState) => {
-  const {userData} = getState().UserReducer;
-  const id = userData.userWallet.address;
-  sendRequest({
-    url: `${NEW_BASE_URL}/users/verify-email`,
-    method: 'POST',
-    data: {account: email},
-  }).then(() => {
-    dispatch(getUserData(id));
-  });
-};
+export const verifyEmail =
+  (email, selectedLanguageItem) => async (dispatch, getState) => {
+    const {userData} = getState().UserReducer;
+    const id = userData.userWallet.address;
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/verify-email`,
+      method: 'POST',
+      data: {account: email, locale: selectedLanguageItem},
+    }).then(() => {
+      dispatch(getUserData(id));
+    });
+  };
 
 export const updateAvtar = (userId, file) => async dispatch => {
   dispatch(startLoadingImage());
@@ -588,7 +589,7 @@ export const updateAvtar = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}`,
         },
       });
-      if(userProfileResponse == undefined) {
+      if (userProfileResponse == undefined) {
         dispatch(endLoadingImage());
       }
     } catch (error) {
@@ -618,12 +619,15 @@ export const updateBanner = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}&type=cover`,
         },
       });
-      if(userProfileResponse == undefined) {
+      if (userProfileResponse == undefined) {
         dispatch(endLoadingBanner());
       }
-      console.log("@@@ Update banner image response =======>", userProfileResponse)
+      console.log(
+        '@@@ Update banner image response =======>',
+        userProfileResponse,
+      );
     } catch (error) {
-      console.log("@@@ Update banner image error =======>", error)
+      console.log('@@@ Update banner image error =======>', error);
       dispatch(endLoadingBanner());
       console.log('@@@ update banner error ', error);
     }

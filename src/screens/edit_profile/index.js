@@ -7,7 +7,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  ScrollView,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSelector, useDispatch} from 'react-redux';
@@ -56,7 +55,6 @@ function Profile(props) {
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.user?.isNonCrypto,
   );
-
   const [username, setUsername] = useState(
     isNonCrypto === 0
       ? UserReducer.userData.title
@@ -93,7 +91,9 @@ function Profile(props) {
 
   const dispatch = useDispatch();
   let id = UserReducer.userData.userWallet.address;
-
+  const selectedLanguageItem = useSelector(
+    state => state.LanguageReducer?.selectedLanguageItem?.language_name,
+  );
   const toastMsg = UserReducer.toastMsg;
 
   useEffect(() => {
@@ -304,8 +304,8 @@ function Profile(props) {
     }
   };
 
-  const verifyEmailId = email => {
-    dispatch(verifyEmail(email));
+  const verifyEmailId = (email, selectedLanguageItem) => {
+    dispatch(verifyEmail(email, selectedLanguageItem));
     dispatch(
       setToastMsg({error: false, msg: translate('common.LABEL_EMAIL_SUCCESS')}),
     );
@@ -351,7 +351,7 @@ function Profile(props) {
           title={translate('wallet.common.profileSettings')}
           showBackButton
         />
-        <ScrollView onScroll={() => Keyboard.dismiss()}>
+        <KeyboardAwareScrollView>
           <LimitableInput
             singleLine={false}
             multiLine
@@ -472,7 +472,7 @@ function Profile(props) {
                       : styles.verifyBtn
                   }
                   onPress={() => {
-                    verifyEmailId(email);
+                    verifyEmailId(email, selectedLanguageItem);
                   }}>
                   <Text style={styles.verifyBtnTitle}>
                     {UserReducer.userData.emailVerified === 0
@@ -580,7 +580,7 @@ function Profile(props) {
           />
           {messageModal()}
           {renderArtistModal()}
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     </AppBackground>
   );
