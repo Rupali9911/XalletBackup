@@ -1,13 +1,17 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import styles from "./styles";
-import { GroupButton } from "../../components";
-import Modal from "react-native-modal";
-import Images from "../../constants/Images";
-import cancelImg from "../../../assets/images/cancel.png"
-import { translate } from '../../walletUtils';
+import React from 'react';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
+import styles from './styles';
+import {GroupButton} from '../../components';
+import Modal from 'react-native-modal';
+import Images from '../../constants/Images';
+import cancelImg from '../../../assets/images/cancel.png';
+import {translate} from '../../walletUtils';
+import {SIZE} from '../../constants';
+import Checkbox from '../../components/checkbox';
+import {hp, wp} from '../../constants/responsiveFunct';
+import Colors from '../../constants/Colors';
 
-const ShowModal = (props) => {
+const ShowModal = props => {
   const {
     title,
     description,
@@ -17,59 +21,129 @@ const ShowModal = (props) => {
     rightButtonTitle,
     onLeftPress,
     onRightPress,
-    isTitleCapital
-  } = props
+    isDelete,
+    onBackdrop,
+    rightLoading,
+    rightDisabled,
+    leftDisabled,
+    checkBoxDescription,
+    isCheck,
+    onChecked,
+  } = props;
+
   return (
     <View style={styles.modalContainer}>
-      <Modal isVisible={isVisible}>
-        <View style={styles.reClaimcontainer}>
-
+      <Modal
+        isVisible={isVisible}
+        onBackdropPress={onBackdrop ? null : closeModal}>
+        <View
+          style={[styles.reClaimcontainer, isDelete && styles.deleteAccount]}>
           <TouchableOpacity
             style={styles.reClaimCancelBTNview}
             onPress={closeModal}>
             <Image
-              source={cancelImg}
-              style={styles.reClaimCancelButton}
+              source={isDelete ? Images.closeIcon : cancelImg}
+              style={isDelete ? {} : styles.reClaimCancelButton}
             />
           </TouchableOpacity>
-
-          <Image
-            source={Images.confirm}
-            style={styles.centerImg}
-          />
-
-          <View style={styles.reclaimView}>
-            <Text style={styles.reclaimText}>
-              {title}
-            </Text>
+          {isDelete ? (
+            <View style={{paddingTop: SIZE(25)}}>
+              <Image source={Images.deleteRed} style={styles.deleteRedImg} />
+            </View>
+          ) : (
+            <Image source={Images.confirm} style={styles.centerImg} />
+          )}
+          <View
+            style={{
+              paddingTop: isDelete ? SIZE(15) : {},
+            }}>
+            <View
+              style={isDelete ? styles.deleteAccountView : styles.reclaimView}>
+              <Text
+                style={
+                  isDelete ? styles.deleteAccountText : styles.reclaimText
+                }>
+                {title}
+              </Text>
+            </View>
           </View>
 
           <View style={styles.textView}>
-            <Text style={styles.text}>
+            <Text style={[styles.text, isDelete && styles.descriptionCenter]}>
               {description}
             </Text>
           </View>
 
+          {checkBoxDescription ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginHorizontal: SIZE(10),
+                alignItems: 'center',
+              }}>
+              <Checkbox
+                isCheck={isCheck}
+                iconSize={wp('6%')}
+                onChecked={onChecked}
+                checkboxColor={Colors.BLACK1}
+                label={checkBoxDescription}
+                labelStyle={styles.checkBoxLabel}
+                containerStyle={{
+                  marginRight: 0,
+                }}
+              />
+            </View>
+          ) : null}
+
           <View style={styles.groupButtonView}>
             <GroupButton
-              leftText={leftButtonTitle ? leftButtonTitle : translate('common.Cancel')}
-              leftDisabled={false}
+              leftText={
+                leftButtonTitle ? leftButtonTitle : translate('common.Cancel')
+              }
+              leftDisabled={leftDisabled ? leftDisabled : false}
               leftLoading={false}
-              onLeftPress={() => closeModal ? closeModal() : onLeftPress}
-              leftStyle={styles.rightGroupButton}
-              leftTextStyle={styles.rightGroupButtonText}
-
-              rightText={rightButtonTitle ? rightButtonTitle : translate('common.Confirm')}
-              rightDisabled={false}
-              rightLoading={false}
+              onLeftPress={() => (closeModal ? closeModal() : onLeftPress)}
+              leftStyle={
+                isDelete
+                  ? styles.reClaimRightGroupButton
+                  : styles.rightGroupButton
+              }
+              leftTextStyle={
+                isDelete
+                  ? styles.reClaimrightGroupButtonText
+                  : styles.rightGroupButtonText
+              }
+              rightText={
+                rightButtonTitle
+                  ? rightButtonTitle
+                  : translate('common.Confirm')
+              }
+              rightDisabled={
+                checkBoxDescription
+                  ? isCheck
+                    ? rightDisabled
+                      ? rightDisabled
+                      : false
+                    : true
+                  : rightDisabled
+                  ? rightDisabled
+                  : false
+              }
+              rightLoading={rightLoading ? rightLoading : false}
               onRightPress={onRightPress}
-              rightStyle={styles.reClaimRightGroupButton}
+              rightStyle={
+                checkBoxDescription
+                  ? isCheck
+                    ? {backgroundColor: Colors.RED3}
+                    : styles.rightDeleteDisabled
+                  : styles.reClaimRightGroupButton
+              }
               rightTextStyle={styles.reClaimrightGroupButtonText}
             />
           </View>
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 export default ShowModal;

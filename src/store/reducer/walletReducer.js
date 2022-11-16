@@ -4,16 +4,19 @@ import { resolve } from 'path-browserify';
 import {
     ADD_ETH_TRANSACTION,
     ADD_BNB_TRANSACTION,
-   // ADD_TNFT_TRANSACTION,
+    // ADD_TNFT_TRANSACTION,
     ADD_USDC_TRANSACTION,
     ADD_MATIC_TRANSACTION,
+    ADD_XETA_TRANSACTION,
     ADD_ALL_ETH_TRANSACTIONS,
     ADD_ALL_BNB_TRANSACTIONS,
     ADD_ALL_MATIC_TRANSACTIONS,
+    ADD_ALL_XETA_TRANSACTIONS,
     UPDATE_BALANCES,
     UPDATE_ETH_BALANCES,
     UPDATE_BSC_BALANCES,
     UPDATE_POLY_BALANCES,
+    UPDATE_XANA_BALANCES,
     SET_CONNECTED_APPS,
     SET_SOCKET_OPEN,
     SET_REQUEST_APP_ID,
@@ -31,11 +34,11 @@ const initialState = {
     maticTransactions: [],
     maticBalance: "0",
     Transactions: [],
-    tnftTransactions:[],
+    tnftTransactions: [],
     tnftBalance: "0",
     talTransactions: [],
     talBalance: "0",
-    aliaTransactions:[],
+    aliaTransactions: [],
     aliaBalance: "0",
     busdTransactions: [],
     busdBalance: "0",
@@ -45,13 +48,19 @@ const initialState = {
     usdcBalance: "0",
     wethTransactions: [],
     wethBalance: "0",
+    xetaTransactions: [],
+    xetaBalance: "0",
     connectedApps: [],
     socketOpen: false,
     requestAppId: null,
     networkType: {
-        name: "BSC",
-        value: 'binance',
-        icon: ImagesSrc.smartChain
+        id: 4,
+        name: "XANA CHAIN",
+        chainId: 76798,
+        rpc: "https://testnet.xana.net/ext/bc/2dNW4t2bMKcnAamjCX7e79iFw1LEvyb8CYWXcX7NeUUQM9TdM8/rpc",
+        image: "https://ik.imagekit.io/xanalia/Images/Logo.png",
+        status: 1,
+        networkTokens: []
     }
 }
 
@@ -136,6 +145,26 @@ export default walletReducer = (state = initialState, action) => {
                 aliaTransactions: [...action.payload],
             };
 
+        case ADD_XETA_TRANSACTION:
+            let isXetaExist = state.xetaTransactions.findIndex((_item) => _item.hash == action.payload.hash);
+            if (isXetaExist == -1) {
+                return {
+                    ...state,
+                    xetaTransactions: [...state.xetaTransactions, action.payload],
+
+                };
+            } else {
+                return {
+                    ...state
+                }
+            }
+
+        case ADD_ALL_XETA_TRANSACTIONS:
+            return {
+                ...state,
+                xetaTransactions: [...action.payload],
+            };
+
 
         case UPDATE_BALANCES:
             return {
@@ -148,7 +177,8 @@ export default walletReducer = (state = initialState, action) => {
                 usdtBalance: action.payload.USDT,
                 busdBalance: action.payload.BUSD,
                 wethBalance: action.payload.WETH,
-                aliaBalance: action.payload.ALIA
+                aliaBalance: action.payload.ALIA,
+                xetaBalance: action.payload.XETA
             }
 
         case UPDATE_ETH_BALANCES:
@@ -174,6 +204,12 @@ export default walletReducer = (state = initialState, action) => {
                 usdcBalance: action.payload.USDC,
                 wethBalance: action.payload.WETH,
                 //aliaBalance: action.payload.ALIA,
+            }
+
+        case UPDATE_XANA_BALANCES:
+            return {
+                ...state,
+                xetaBalance: action.payload.Xeta,
             }
 
         case SET_CONNECTED_APPS:
@@ -239,8 +275,18 @@ export const addMaticTransaction = (data) => ({
     payload: data
 });
 
+export const addXetaTransaction = (data) => ({
+    type: ADD_XETA_TRANSACTION,
+    payload: data
+});
+
 export const addAllMaticTransactions = (data) => ({
     type: ADD_ALL_MATIC_TRANSACTIONS,
+    payload: data
+});
+
+export const addAllXetaTransactions = (data) => ({
+    type: ADD_ALL_XETA_TRANSACTIONS,
     payload: data
 });
 
@@ -264,6 +310,11 @@ export const updatePolygonBalances = (data) => ({
     payload: data
 });
 
+export const updateXanaBalances = (data) => ({
+    type: UPDATE_XANA_BALANCES,
+    payload: data
+});
+
 export const setConnectedApps = (data) => ({
     type: SET_CONNECTED_APPS,
     payload: data
@@ -280,12 +331,12 @@ export const setRequestAppId = (data) => ({
 });
 
 
-export const getTransactions = (address, type,coin) => (dispatch) =>
+export const getTransactions = (address, type, coin) => (dispatch) =>
     new Promise((resolve, reject) => {
         const data = {
             addr: address,
             type: type,
-            coin:coin
+            coin: coin
         }
         let fetch_request_param = {
             method: 'GET',
@@ -306,8 +357,8 @@ export const getTransactions = (address, type,coin) => (dispatch) =>
     });
 
 export const setConnectedAppsToLocal = (data) => (dispatch) =>
-    new Promise(async(resolve, reject) => {
-        await AsyncStorage.setItem('@apps',JSON.stringify(data),(err)=>console.log(err));
+    new Promise(async (resolve, reject) => {
+        await AsyncStorage.setItem('@apps', JSON.stringify(data), (err) => console.log(err));
         dispatch(setConnectedApps(data));
         resolve();
     });

@@ -25,6 +25,8 @@ export default {
   DANGER: '#F32013',
   RED1: '#FE4F02',
   RED2: '#FF0000',
+  RED3: '#F44336',
+  REDLIGHT: '#E78F8C',
   PURPLE: '#3B00FF',
   ORANGE: '#DF5700',
   GREEN1: '#32BD00',
@@ -42,7 +44,7 @@ export default {
   black: '#000000',
   danger: '#F32013',
   disabled: '#cccccc',
-  alert: "#ff0000",
+  alert: '#ff0000',
   blackOpacity: opacity => `rgba(0,0,0,${opacity})`,
   whiteOpacity: opacity => `rgba(255,255,255,${opacity})`,
 
@@ -147,5 +149,5 @@ export default {
   receiveColor: '#2DAE6C',
   sendColor: '#F94A42',
   greenLight: '#60C083',
-  grayLight: '#8E9BBA'
+  grayLight: '#8E9BBA',
 };

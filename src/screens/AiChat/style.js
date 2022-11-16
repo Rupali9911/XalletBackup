@@ -16,11 +16,12 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     inputContainer: {
-        width: '100%',
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'center',
         marginVertical: Platform.OS === 'ios' ? 0 : 5,
+        marginHorizontal: 10,
+        alignSelf: 'center',
     },
     input: {
         paddingHorizontal: 15,
@@ -181,23 +182,36 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     nftName: {
-        color: '#fff', fontWeight: '700'
+        color: '#fff', fontWeight: 'bold'
     },
     msgHolderName: {
         fontWeight: '700',
-        color: '#46446e', 
+        color: '#46446e',
         marginBottom: 5
     },
     bannerImage: {
-        width: '100%', height: '100%', resizeMode: 'contain'
+        width: '80%',
+        height: '80%',
+        resizeMode: 'contain'
+    },
+    bannerImgContainer: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        padding: 0,
     },
     rcvReplyContainer: {
-        padding: 10,
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
         backgroundColor: '#3b3b3b',
-        width: '100%',
         bottom: 0,
         position: 'absolute',
         zIndex: 2,
+        width: wp(95),
+        alignSelf: 'center',
+        borderTopStartRadius: 12,
+        borderTopEndRadius: 12
     },
     nftItemContainer: {
         flexDirection: 'row',
@@ -223,73 +237,52 @@ const styles = StyleSheet.create({
         shadowOpacity: 0,
         backgroundColor: 'white',
         marginVertical: 10
-      },
-      label: {
+    },
+    label: {
         fontSize: RF(1.6),
         fontFamily: 'Arial',
         textTransform: 'none',
-      },
-      tabStyle: {
+    },
+    tabStyle: {
         height: SIZE(40),
         width: wp('50%'),
         paddingHorizontal: wp('1%'),
         justifyContent: 'center',
-      },
-      indicator: {
+    },
+    indicator: {
         borderBottomColor: Colors.BLUE4,
         height: 1,
         marginBottom: SIZE(39),
         backgroundColor: Colors.BLUE4,
-      },
-      mainListContainer: {
+    },
+    mainListContainer: {
         backgroundColor: Colors.white,
         flex: 1
-      },
-      nftListContainer: {
-        flex: 1, 
-        padding: 10 
-      },
-      remainWordCount: {
-        fontWeight: 'bold', 
+    },
+    nftListContainer: {
+        flex: 1,
+        padding: 10
+    },
+    remainWordCount: {
+        fontWeight: 'bold',
         fontStyle: 'normal'
-      },
-      typingContainer: {
+    },
+    typingContainer: {
         width: '45%'
-      }
-
-     // talkBubbleAbsoluteRight: {
-    //     width: 30,
-    //     height: 30,
-    //     alignSelf: 'flex-end',
-    //     position: 'absolute',
-    //     backgroundColor: 'transparent',
-    //     borderRadius: 50,
-    //     borderTopColor: 'transparent',
-    //     borderTopWidth: 12.5,
-    //     borderLeftWidth: 6.5,
-    //     borderLeftColor: '#fff',
-    //     borderBottomWidth: 0,
-    //     borderBottomColor: 'transparent',
-    //     transform: [{ rotate: '-90deg' }],
-    //     right: -5,
-    //     top: -15,
-    // },
-    // talkBubbleAbsoluteLeft: {
-    //     width: 30,
-    //     height: 30,
-    //     position: 'absolute',
-    //     backgroundColor: 'transparent',
-    //     borderRadius: 50,
-    //     borderTopColor: 'transparent',
-    //     borderTopWidth: 12.5,
-    //     borderRightWidth: 6.5,
-    //     borderRightColor: '#fff',
-    //     borderBottomWidth: 0,
-    //     borderBottomColor: 'transparent',
-    //     transform: [{ rotate: '90deg' }],
-    //     left: -5,
-    //     top: -15,
-    // },
+    },
+    rcvContainerArrow: {
+        borderLeftWidth: 25,
+        borderRightWidth: 25,
+        borderBottomWidth: 70,
+        backgroundColor: 'transparent',
+        borderLeftColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderBottomColor: '#3b3b3b',
+        top: -35,
+        position: 'absolute',
+        left: 25,
+        transform: [{ rotate: '36deg' }],
+    },
 })
 
 export default styles;

@@ -11,8 +11,8 @@ if (networkType === 'mainnet') {
   BASE_URL = 'https://api.xanalia.com';
   NEW_BASE_URL = 'https://prod-backend.xanalia.com';
   PROVIDER_URL = 'https://bsc-dataseed.binance.org/';
-  API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
-  NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
+  API_GATEWAY_URL = 'https://hgvgnnifc3.execute-api.eu-west-1.amazonaws.com/v1';
+  NEXT_PUBLIC_SOCKET_DOMAIN = 'https://prod-socket.xanalia.com';
   //For Xanalia
   NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_DD8E7DF0413DBF3D';
   //Specific for Xallet

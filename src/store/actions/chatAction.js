@@ -26,7 +26,19 @@ import {
   OTHER_PAGE_CHANGE,
   OTHER_CURSOR_CHANGE,
 
-  CHAT_TAB_TITLE
+  //==============TabTitle================
+  CHAT_TAB_TITLE,
+
+  //===============History================
+  CHAT_BOT_HISTORY_LOADING,
+  CHAT_BOT_HISTORY_SUCCESS,
+  CHAT_BOT_HISTORY_FAIL,
+  CHAT_BOT_HISTORY_PAGE_CHANGE,
+  CHAT_BOT_HISTORY_NEXT_PAGE,
+
+  //=============Reamin Count==============
+  CHAT_REMAIN_COUNT
+
 } from '../types';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { NEW_BASE_URL } from '../../common/constants';
@@ -136,6 +148,38 @@ export const setTabTitle = (data) => ({
   payload: data
 });
 
+//=========================CHATBOTHISTORY====================
+
+export const chatHistoryLoading = () => ({
+  type: CHAT_BOT_HISTORY_LOADING,
+});
+
+export const chatHistorySuccess = (data) => ({
+  type: CHAT_BOT_HISTORY_SUCCESS,
+  payload: data,
+});
+
+export const chatHistoryFail = (error) => ({
+  type: CHAT_BOT_HISTORY_FAIL,
+  payload: error,
+});
+
+export const ChatHistoryPageChange = (page) => ({
+  type: CHAT_BOT_HISTORY_PAGE_CHANGE,
+  payload: page,
+});
+
+export const chatHistoryNextPage = (nextPage) => ({
+  type: CHAT_BOT_HISTORY_NEXT_PAGE,
+  payload: nextPage,
+});
+
+//===================Set Remaining Words============================
+export const remainWordCountData = (count) => ({
+  type: CHAT_REMAIN_COUNT,
+  payload: count
+})
+
 //=====================Chat=====================
 export const getAiChat = (message, address, locale, name, tokenId) => (dispatch, getState) => {
   const { reducerTabTitle } = getState().chatReducer;
@@ -158,11 +202,9 @@ export const getAiChat = (message, address, locale, name, tokenId) => (dispatch,
       .then(res => {
         dispatch(chatLoadingStart(false));
         if (res?.data) {
-          dispatch(chatLoadingSuccess({recvResp : res?.data?.response, remainWord: res?.remainWordLimit}));
-          resolve({recvResp : res?.data?.response, remainWord: res?.remainWordLimit});
-        }
-        else{
           dispatch(chatLoadingSuccess(res));
+          dispatch(remainWordCountData(res?.remainWordLimit));
+          resolve(res);
         }
       })
       .catch(err => {
@@ -175,7 +217,7 @@ export const getAiChat = (message, address, locale, name, tokenId) => (dispatch,
 //==================================Owned-Other==============================
 export const getNftCollections = (page, address, cursor, tabTitle) => (dispatch, getState) => {
   dispatch(setTabTitle(tabTitle));
-  const { ownerList, otherList } = getState().chatReducer;
+  const { ownerList, otherList, reducerTabTitle } = getState().chatReducer;
   let url = `${NEW_BASE_URL}/xana-genesis-chat`;
   url = tabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
   let limit = 100;
@@ -211,13 +253,21 @@ export const getNftCollections = (page, address, cursor, tabTitle) => (dispatch,
           dispatch(otherNftLoadSuccess(res));
         }
       }
-      else{
-        tabTitle === 'Owned' ? dispatch(ownedNftLoadSuccess([])) : dispatch(otherNftLoadSuccess([]));
+      else {
+        tabTitle === 'Owned' 
+        ? 
+        dispatch(ownedNftLoadSuccess([])) 
+        : 
+        dispatch(otherNftLoadSuccess([]));
       }
     })
     .catch(err => {
       console.log('Error : ', err);
-      tabTitle === 'Owned' ? dispatch(ownedNftLoadSuccess([])) : dispatch(otherNftLoadSuccess([]));
+      tabTitle === 'Owned' 
+      ? 
+      dispatch(ownedNftLoadSuccess([])) 
+      : 
+      dispatch(otherNftLoadSuccess([]));
     });
 }
 
@@ -244,5 +294,35 @@ export const getSearchResult = (text, address) => (dispatch) => {
         reject(err);
       });
   })
+}
 
+export const getChatBotHistory = (page, address, tokenId) => (dispatch, getState) => {
+  return new Promise((resolve, reject) => {
+    let limit = 5;
+    sendRequest({
+      url: `${NEW_BASE_URL}/xana-genesis-chat/chat-bot-history`,
+      method: 'GET',
+      params: {
+        page,
+        limit,
+        address,
+        tokenId
+      }
+    })
+      .then((res) => {
+          if (limit > res.length) {
+            dispatch(chatHistoryNextPage(false));
+          }
+          else{
+            dispatch(chatHistoryNextPage(true));
+          }
+          dispatch(chatHistorySuccess(res));
+          resolve(res);
+      })
+      .catch((err) => {
+        dispatch(chatHistoryFail(err));
+        reject(err);
+      })
+
+  })
 }

@@ -1,9 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { hp, wp } from '../../constants/responsiveFunct';
-import {
-  SIZE,
-  COLORS
-} from 'src/constants';
+import {StyleSheet} from 'react-native';
+import {hp, wp} from '../../constants/responsiveFunct';
+import {SIZE, COLORS} from 'src/constants';
 import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
@@ -24,27 +21,27 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     alignItems: 'center',
-    paddingVertical: hp(0.30),
-    backgroundColor: COLORS.BLACKRGBA(0.5)
+    paddingVertical: hp(0.3),
+    backgroundColor: COLORS.BLACKRGBA(0.5),
   },
   collectionListItem: {
-    marginVertical: wp("2"),
-    marginHorizontal: wp("1"),
-    width: (wp('100%') / 2) - wp('2%'),
-    shadowColor: "#000",
+    marginVertical: wp('2'),
+    marginHorizontal: wp('1'),
+    width: wp('100%') / 2 - wp('2%'),
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.25,
-    borderRadius: wp("5"),
+    borderRadius: wp('5'),
     elevation: 5,
   },
   nftListItem: {
-    marginVertical: wp("2"),
-    marginHorizontal: wp("1"),
-    width: (wp('100%') / 3) - wp('3%'),
-    shadowColor: "#000",
+    marginVertical: wp('2'),
+    marginHorizontal: wp('1'),
+    width: wp('100%') / 3 - wp('3%'),
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -54,34 +51,37 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   listItemContainer: {
-    width: "100%",
+    width: '100%',
     borderRadius: SIZE(20),
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   collectionListImage: {
     width: '100%',
-    height: (wp('100%') / 2) - wp('1%'),
+    height: wp('100%') / 2 - wp('1%'),
     resizeMode: 'stretch',
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   collectionListVideo: {
     width: '100%',
-    height: (wp('100%') / 2) - wp('1%'),
+    height: wp('100%') / 2 - wp('1%'),
     borderTopRightRadius: SIZE(12),
     borderTopLeftRadius: SIZE(12),
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   likeButton: {
     position: 'absolute',
     zIndex: 1,
     top: SIZE(10),
-    right: SIZE(10)
+    right: SIZE(10),
   },
   collectionWrapper: {
     backgroundColor: 'white',
-    height: Platform.OS === 'android' ? (wp('100%') / 3) - wp('1%') : (wp('100%') / 3.3) - wp('1%'),
+    height:
+      Platform.OS === 'android'
+        ? wp('100%') / 3 - wp('1%')
+        : wp('100%') / 3.3 - wp('1%'),
   },
   collectionWrapperBlind: {
     padding: SIZE(10),
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: SIZE(12),
     borderBottomLeftRadius: SIZE(12),
     // height: (hp('100%') / 8),
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   titleView: {
     flexDirection: 'row',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontFamily: 'Arial',
     fontSize: SIZE(15),
-    fontWeight: '400'
+    fontWeight: '400',
   },
   titleText2: {
     fontSize: SIZE(12),
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   priceView: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   priceText: {
     color: COLORS.greenLight,
@@ -136,13 +136,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    bottom: SIZE(7)
+    bottom: SIZE(7),
   },
   chainView1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 5
+    marginBottom: 5,
   },
   chainViewColumn: {
     flexDirection: 'row',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     // marginHorizontal: -9,
     // alignItems: 'center',
   },
-  endTimeView: { flexDirection: 'row', alignItems: 'center' },
+  endTimeView: {flexDirection: 'row', alignItems: 'center'},
   priceText1: {
     color: COLORS.grayLight,
     marginRight: SIZE(2),
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   awadImage: {
     height: 20,
     width: 20,
-    left: 2
+    left: 2,
   },
   soldOutText1: {
     color: COLORS.greenLight,
@@ -187,16 +187,16 @@ const styles = StyleSheet.create({
   auctionEnded: {
     color: COLORS.greenLight,
     fontSize: SIZE(12),
-    fontWeight: '700'
+    fontWeight: '700',
   },
   newPrice: {
     marginTop: SIZE(12),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   nftName: {
-    fontFamily:'Arial',
+    fontFamily: 'Arial',
     textAlign: 'left',
     fontSize: SIZE(18),
     fontWeight: '400',
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
 
   currencyInfoContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   tokenIcon: {
     width: SIZE(16),
@@ -215,18 +215,18 @@ const styles = StyleSheet.create({
   price: {
     color: '#60c083',
     fontSize: SIZE(12),
-    fontWeight: '700'
+    fontWeight: '700',
   },
   statusOnSale: {
-    fontFamily:'Arial',
+    fontFamily: 'Arial',
     fontSize: SIZE(12),
     fontWeight: '700',
-    color: '#56bbf8'
+    color: '#56bbf8',
   },
   statusSoldOut: {
     fontSize: SIZE(12),
     fontWeight: '700',
-    color: '#ff0125'
+    color: '#ff0125',
   },
   tokenIcon2: {
     width: SIZE(28),
@@ -237,22 +237,34 @@ const styles = StyleSheet.create({
     width: SIZE(26),
     height: SIZE(26),
     borderRadius: SIZE(26),
-    overlayColor: 'white'
+    overlayColor: 'white',
   },
   ownerIcon: {
     width: SIZE(26),
     height: SIZE(26),
     borderRadius: SIZE(26),
-    overlayColor: 'white'
+    overlayColor: 'white',
+  },
+  creatorTickIcon: {
+    position: 'absolute',
+    left: 10,
+    top: 20,
+    zIndex: 10,
+  },
+  ownerTickIcon: {
+    position: 'absolute',
+    left: 15,
+    top: 18,
+    zIndex: 10,
   },
   ownerContainer: {
-      backgroundColor: Colors.white,
-      width: SIZE(32),
-      height: SIZE(32),
-      borderRadius: SIZE(32),
-      marginLeft: SIZE(-7),
-      alignItems:'center',
-      justifyContent: 'center'
-  }
+    backgroundColor: Colors.white,
+    width: SIZE(32),
+    height: SIZE(32),
+    borderRadius: SIZE(32),
+    marginLeft: SIZE(-7),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 export default styles;

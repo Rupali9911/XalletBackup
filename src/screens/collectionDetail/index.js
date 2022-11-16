@@ -54,6 +54,7 @@ const {
   PolygonIcon,
   Ethereum,
   BitmapIcon,
+  VerficationIcon,
 } = SVGS;
 
 function CollectionDetail(props) {
@@ -304,8 +305,24 @@ function CollectionDetail(props) {
     );
   };
 
+  // ======================= Render Verified Collection Function =======================
+  const renderVerifiedCollection = () => {
+    return <VerficationIcon width={SIZE(20)} height={SIZE(20)} style={{left: 2}} />;
+  };
+
   const renderTitle = () => {
-    return <Text style={styles.collectionName}>{collection?.name}</Text>;
+
+    console.log('route?.params?.isLaunchPad === true || collection?.isOfficial === 1', route?.params?.isLaunchPad === true || collection?.isOfficial === 1)
+    return (
+      <View style={styles.mainNftText}>
+        <Text numberOfLines={1} style={styles.collectionName}>
+          {collection?.name}
+        </Text>
+        {route?.params?.isLaunchPad === true || collection?.isOfficial === 1
+          ? renderVerifiedCollection()
+          : null}
+      </View>
+    );
   };
 
   const renderScene = ({route}, tab) => {

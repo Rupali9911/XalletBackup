@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#ffffff',
     paddingVertical: SIZE(13),
     justifyContent: 'space-between',
+    position: 'relative',
   },
   personType: {
     flex: 0.5,
@@ -603,6 +604,10 @@ const styles = StyleSheet.create({
     paddingLeft: SIZE(10),
   },
   modalBody: {flex: 1},
+  checkBoxLabel: {
+    marginRight: 0,
+    color: Colors.BLACK1,
+  },
   groupButtonView: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -615,8 +620,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.BLUE2,
     backgroundColor: Colors.white,
   },
+  rightDeleteDisabled: {
+    borderWidth: 1,
+    borderColor: Colors.REDLIGHT,
+    backgroundColor: Colors.REDLIGHT,
+  },
   rightGroupButtonText: {
     color: Colors.BLUE3,
+  },
+  rightDeleteGroupButtonText: {
+    color: Colors.WHITE1,
   },
   expirationText: {
     marginTop: SIZE(15),
@@ -720,13 +733,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   reClaimcontainer: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     height: hp(42),
     width: wp(95),
     paddingHorizontal: SIZE(20),
     paddingTop: SIZE(15),
     borderRadius: SIZE(18),
     right: SIZE(8),
+  },
+  deleteAccount: {
+    height: Platform.OS === 'ios' ? hp(57) : hp(62),
   },
   reClaimCancelBTNview: {
     flexDirection: 'row',
@@ -739,13 +755,25 @@ const styles = StyleSheet.create({
     height: hp(17),
     alignSelf: 'center',
   },
+  deleteRedImg: {
+    alignSelf: 'center',
+  },
   reclaimView: {
     flexDirection: 'row',
     justifyContent: 'center',
     paddingTop: SIZE(15),
   },
+  deleteAccountView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: SIZE(35),
+  },
   reclaimText: {
     fontWeight: 'bold',
+    fontSize: SIZE(25),
+  },
+  deleteAccountText: {
+    // fontWeight: 'bold',
     fontSize: SIZE(25),
   },
   textView: {
@@ -757,6 +785,11 @@ const styles = StyleSheet.create({
     color: Colors.GREY1,
     margin: SIZE(10),
     fontSize: SIZE(12),
+  },
+  descriptionCenter: {
+    textAlign: 'center',
+    lineHeight: 16,
+    color: Colors.BLACK1,
   },
   tokenName: {
     fontWeight: 'bold',
@@ -1057,6 +1090,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'flex-end',
     paddingHorizontal: SIZE(8),
+  },
+  creatorMarkIcon: {
+    position: 'absolute',
+    left: 30,
+    bottom: 12,
+    zIndex: 10,
+  },
+  ownerMarkIcon: {
+    position: 'absolute',
+    right: 92,
+    bottom: 12,
+    zIndex: 10,
   },
 });
 

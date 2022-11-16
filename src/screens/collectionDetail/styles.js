@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#000',
     textAlign: 'center',
-    marginTop: SIZE(44),
     fontFamily: fonts.ARIAL,
     marginBottom: SIZE(5),
   },
@@ -328,6 +327,14 @@ const styles = StyleSheet.create({
   },
   text: {margin: SIZE(10), fontSize: SIZE(12)},
   themeColor: {color: Colors.themeColor},
+
+  mainNftText: {
+    marginTop: SIZE(40),
+    marginBottom: SIZE(20),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default styles;

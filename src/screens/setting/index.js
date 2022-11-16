@@ -24,10 +24,15 @@ import Colors from '../../constants/Colors';
 import {colors} from '../../res';
 import {setAppLanguage} from '../../store/reducer/languageReducer';
 import {getAllCards} from '../../store/reducer/paymentReducer';
-import {endMainLoading, _logout} from '../../store/reducer/userReducer';
+import {
+  endMainLoading,
+  _logout,
+  deleteAccountApi,
+} from '../../store/reducer/userReducer';
 import {languageArray, translate} from '../../walletUtils';
 import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
+import ShowModal from '../certificateScreen/modal';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -101,6 +106,10 @@ function Setting({navigation}) {
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {myCards} = useSelector(state => state.PaymentReducer);
   const {userData} = useSelector(state => state.UserReducer);
+  const [deletePopup, setDeletePopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const {deleteAccountLoading} = useSelector(state => state.UserReducer);
+  const [isCheckService, setIsCheckService] = useState(false);
 
   useEffect(() => {
     // dispatch(getAllCards(userData.access_token));
@@ -121,91 +130,61 @@ function Setting({navigation}) {
     }
   };
 
+  const logoutConfirm = async () => {
+    const _selectedLanguageItem = selectedLanguageItem;
+    await EncryptedStorage.clear();
+    AsyncStorage.multiRemove(
+      [
+        '@passcode',
+        '@WALLET',
+        '@USERDATA',
+        '@BackedUp',
+        '@apps',
+        '@CURRENT_NETWORK_CHAIN_ID',
+      ],
+      err => console.log(err),
+    ).then(() => {
+      requestDisconnectDApp();
+      dispatch(_logout());
+      dispatch(endMainLoading());
+      dispatch(setAppLanguage(_selectedLanguageItem));
+    });
+  };
+
   const onLogout = () => {
     confirmationAlert(
       translate('wallet.common.verification'),
       translate('wallet.common.logOutQ'),
       translate('wallet.common.cancel'),
       '',
-      async () => {
-        const _selectedLanguageItem = selectedLanguageItem;
-        await EncryptedStorage.clear();
-        AsyncStorage.multiRemove(
-          [
-            '@passcode',
-            '@WALLET',
-            '@USERDATA',
-            '@BackedUp',
-            '@apps',
-            '@CURRENT_NETWORK_CHAIN_ID',
-          ],
-          err => console.log(err),
-        ).then(() => {
-          requestDisconnectDApp();
-          dispatch(_logout());
-          dispatch(endMainLoading());
-          dispatch(setAppLanguage(_selectedLanguageItem));
-        });
-      },
+      logoutConfirm,
       () => null,
     );
   };
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{width: '100%', backgroundColor: '#fff'}}>
-        <AppHeader
-          title={translate('wallet.common.settingRight')}
-          showBackButton
-        />
-      </View>
-      <ScrollView>
-        <View style={[styles.section2, {marginTop: 0}]}>
-          <ListItem
-            onPress={() => navigation.navigate('SecurityScreen')}
-            label={translate('wallet.common.security')}
-          />
-          <View style={{...styles.separator, width: wp('81%')}} />
-          <ListItem
-            onPress={() =>
-              alertWithSingleBtn(
-                translate('wallet.common.alert'),
-                translate('common.comingSoon'),
-              )
-            }
-            label={translate('wallet.common.notifications')}
-          />
-          <View style={{...styles.separator, width: wp('81%')}} />
 
-          <ListItem
-            onPress={() => setShowLanguage(true)}
-            label={translate('wallet.common.language')}
-          />
-          <View style={{...styles.separator, width: wp('81%')}} />
-          <ListItem
-            onPress={() => navigation.navigate('AiChat')}
-            label={translate('common.AIChat')}
-          />
-          <View style={{...styles.separator, width: wp('81%')}} />
-          <ListItem
-            onPress={() => null}
-            rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(
-              0,
-              1,
-            )}`}
-            label={translate('wallet.common.version')}
-          />
-          <ListItem
-            onPress={onLogout}
-            rightText={``}
-            noArrow={true}
-            label={translate('common.Logout')}
-          />
+  const handleDeletePopup = value => {
+    setTimeout(() => {
+      setDeletePopup(value);
+    }, 500);
+  };
 
-          {/*<TouchableHighlight onPress={_pressHandler}>*/}
-          {/*<Text>Authenticate with Touch ID</Text>*/}
-          {/*</TouchableHighlight>*/}
-        </View>
-      </ScrollView>
+  const deleteAccount = () => {
+    dispatch(deleteAccountApi())
+      .then(async res => {
+        logoutConfirm();
+        handleDeletePopup(false);
+      })
+      .catch(err => {
+        alertWithSingleBtn(
+          translate('wallet.common.alert'),
+          translate('wallet.common.tryAgain'),
+          () => handleDeletePopup(true),
+        );
+      });
+  };
+
+  const languageModal = () => {
+    return (
       <Modal
         isVisible={showLanguage}
         backdropColor="#B4B3DB"
@@ -253,6 +232,93 @@ function Setting({navigation}) {
           </View>
         </View>
       </Modal>
+    );
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{width: '100%', backgroundColor: '#fff'}}>
+        <AppHeader
+          title={translate('wallet.common.settingRight')}
+          showBackButton
+        />
+      </View>
+      <ScrollView>
+        <View style={[styles.section2, {marginTop: 0}]}>
+          <ListItem
+            onPress={() => navigation.navigate('SecurityScreen')}
+            label={translate('wallet.common.security')}
+          />
+          <View style={{...styles.separator, width: wp('81%')}} />
+          <ListItem
+            onPress={() =>
+              alertWithSingleBtn(
+                translate('wallet.common.alert'),
+                translate('common.comingSoon'),
+              )
+            }
+            label={translate('wallet.common.notifications')}
+          />
+          <View style={{...styles.separator, width: wp('81%')}} />
+
+          <ListItem
+            onPress={() => setShowLanguage(true)}
+            label={translate('wallet.common.language')}
+          />
+          <View style={{...styles.separator, width: wp('81%')}} />
+          <ListItem
+            onPress={() => navigation.navigate('AiChat')}
+            label={translate('common.AIChat')}
+          />
+          <View style={{...styles.separator, width: wp('81%')}} />
+          <ListItem
+            onPress={() => null}
+            rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(
+              0,
+              1,
+            )}`}
+            label={translate('wallet.common.version')}
+          />
+          <View style={{...styles.separator, width: wp('81%')}} />
+          <ListItem
+            onPress={() => handleDeletePopup(true)}
+            rightText={``}
+            noArrow={true}
+            label={translate('common.deleteAccount')}
+          />
+          <View style={{...styles.separator, width: wp('81%')}} />
+          <ListItem
+            onPress={onLogout}
+            rightText={``}
+            noArrow={true}
+            label={translate('common.Logout')}
+          />
+
+          {/*<TouchableHighlight onPress={_pressHandler}>*/}
+          {/*<Text>Authenticate with Touch ID</Text>*/}
+          {/*</TouchableHighlight>*/}
+        </View>
+      </ScrollView>
+
+      {languageModal()}
+      <ShowModal
+        isDelete={true}
+        isVisible={deletePopup}
+        onBackdrop={deleteAccountLoading}
+        leftDisabled={deleteAccountLoading}
+        rightDisabled={deleteAccountLoading}
+        rightLoading={deleteAccountLoading}
+        title={translate('common.deleteAccount') + '!'}
+        description={translate('common.deleteAccountDescription')}
+        closeModal={
+          deleteAccountLoading ? null : () => handleDeletePopup(false)
+        }
+        rightButtonTitle={translate('wallet.common.delete')}
+        onRightPress={deleteAccount}
+        checkBoxDescription={translate('common.deleteCheckBoxDiscription')}
+        isCheck={isCheckService}
+        onChecked={setIsCheckService}
+      />
     </SafeAreaView>
   );
 }

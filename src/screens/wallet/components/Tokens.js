@@ -68,6 +68,7 @@ const Tokens = props => {
     wethBalance,
     busdBalance,
     usdtBalance,
+    xetaBalance
   } = useSelector(state => state.WalletReducer);
 
   useEffect(() => {
@@ -78,18 +79,20 @@ const Tokens = props => {
 
   useEffect(() => {
     let array = tokens;
-    if (network.name == 'Ethereum') {
+    if (network?.name == 'Ethereum') {
       array[1].tokenValue = `${ethBalance}`;
-      array[8].tokenValue = `${usdtBalance}`;
-    } else if (network.name == 'BSC') {
+      array[6].tokenValue = `${usdtBalance}`;
+    } else if (network?.name == 'BSC') {
       array[0].tokenValue = `${bnbBalance}`;
-      array[3].tokenValue = `${tnftBalance}`;
-      array[7].tokenValue = `${busdBalance}`;
-    } else if (network.name == 'Polygon') {
+      // array[3].tokenValue = `${tnftBalance}`;
+      array[5].tokenValue = `${busdBalance}`;
+    } else if (network?.name == 'Polygon') {
       array[2].tokenValue = `${maticBalance}`;
-      array[4].tokenValue = `${talBalance}`;
-      array[5].tokenValue = `${usdcBalance}`;
-      array[6].tokenValue = `${wethBalance}`;
+      // array[4].tokenValue = `${talBalance}`;
+      array[3].tokenValue = `${usdcBalance}`;
+      array[4].tokenValue = `${wethBalance}`;
+    } else if (network?.name == 'XANA CHAIN') {
+      array[7].tokenValue = `${xetaBalance}`;
     }
 
     let result = [];
@@ -123,6 +126,7 @@ const Tokens = props => {
     talBalance,
     busdBalance,
     usdtBalance,
+    xetaBalance
   ]);
 
   const navigation = useNavigation();

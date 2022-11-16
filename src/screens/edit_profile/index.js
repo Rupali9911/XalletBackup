@@ -19,6 +19,7 @@ import {translate} from '../../walletUtils';
 import AppBackground from '../../components/appBackground';
 import {AppHeader, GroupButton} from '../../components';
 import {
+  maxLength32,
   maxLength50,
   maxLength100,
   maxLength200,
@@ -39,15 +40,14 @@ import {hp} from '../../constants/responsiveFunct';
 import {View} from 'native-base';
 import Colors from '../../constants/Colors';
 import {COLORS} from '../../constants';
-
-const {
-  TwitterIconNew,
-  InstagramIcon,
-  ArtistSvg,
-  ArtistSvgI,
-  SuccessIcon,
-  ErrorIcon,
-} = SVGS;
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon, InfoIcon} =
+  SVGS;
 
 function Profile(props) {
   const {navigation, handleSubmit} = props;
@@ -88,6 +88,8 @@ function Profile(props) {
   const [msg, setMsg] = useState('');
   const [disable, setDisable] = useState(true);
   const [firstTime, setFirstTime] = useState(false);
+  const [infoTwitter, setInfoTwitter] = useState(false);
+  const [infoEmail, setInfoEmail] = useState(false);
 
   const dispatch = useDispatch();
   let id = UserReducer.userData.userWallet.address;
@@ -121,7 +123,7 @@ function Profile(props) {
 
   const renderArtistModal = () => {
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.contentView}>
         <Modal
           backdropColor="#000000"
           backdropOpacity={0.6}
@@ -130,71 +132,29 @@ function Profile(props) {
           }}
           isVisible={isVisible}
           transparent={true}>
-          <View
-            style={{
-              paddingHorizontal: SIZE(54),
-              paddingVertical: SIZE(30),
-              backgroundColor: COLORS.WHITE1,
-              alignItems: 'center',
-              borderRadius: SIZE(7),
-            }}>
+          <View style={styles.artistModalView}>
             <ArtistSvg />
-            <Text
-              style={{
-                textAlign: 'center',
-                marginVertical: SIZE(15),
-                fontSize: SIZE(24),
-                fontWeight: '700',
-              }}>
-              Become an Artist
+            <Text style={styles.artistTitle}>
+              {translate('common.ARTIST_BTN_REQUEST')}
             </Text>
-            <Text
-              style={{
-                lineHeight: SIZE(17),
-                fontSize: SIZE(14),
-                fontFamily: 'Arial',
-                textAlign: 'center',
-                marginBottom: SIZE(12),
-              }}>
-              You are only a form away from becoming an Artist on Xanalia. After
-              winning the Artist title, you will be given a rare Blue
-              Verification Badge that is only available to verified Artists.
+            <Text style={styles.artistDescription}>
+              {translate('common.ARTIST_DESCRIPTION_LINE_1')}
             </Text>
-            <Text
-              style={{
-                lineHeight: SIZE(17),
-                fontSize: SIZE(14),
-                fontFamily: 'Arial',
-                textAlign: 'center',
-                marginBottom: SIZE(28),
-              }}>
-              All applications will go through several thorough screening rounds
-              from Xanalia team to ensure the authencity of the Artist.
+            <Text style={[styles.artistDescription, {marginBottom: SIZE(28)}]}>
+              {translate('common.ARTIST_DESCRIPTION_LINE_2')}
             </Text>
-            <View style={{flexDirection: 'row'}}>
-              <Text>
-                <ArtistSvgI />
-              </Text>
-              <Text
-                style={{
-                  lineHeight: SIZE(17),
-                  marginRight: 19,
-                  fontSize: SIZE(14),
-                  fontFamily: 'Arial',
-                  textAlign: 'center',
-                  marginBottom: SIZE(22),
-                  color: COLORS.themeColor,
-                }}>
-                You must input a username, upload a profile picture, verify your
-                email address and Twitter account first.
+            <View style={styles.infoView}>
+              <ArtistSvgI />
+              <Text style={styles.infoTitle}>
+                {' ' + translate('common.ARTIST_NOTE')}
               </Text>
             </View>
             <GroupButton
-              style={{width: '120%'}}
+              style={styles.artistGroupView}
               onLeftPress={() => setIsVisible(false)}
-              leftStyle={{backgroundColor: '#2280e1'}}
-              leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
-              leftText="OK"
+              leftStyle={styles.artistLeft}
+              leftTextStyle={styles.groupLeftTitle}
+              leftText={translate('common.OK')}
               rightHide
             />
           </View>
@@ -205,20 +165,13 @@ function Profile(props) {
 
   const messageModal = () => {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Modal
-          isVisible={msgModal}
-          style={{justifyContent: 'flex-end', margin: 0}}>
+      <View style={styles.msgModalContent}>
+        <Modal isVisible={msgModal} style={styles.msgModal}>
           <View style={styles.msgModalView}>
             {toastMsg?.error ? (
-              <ErrorIcon width={SIZE(20)} height={SIZE(20)} />
+              <ErrorIcon width={20} height={20} />
             ) : (
-              <SuccessIcon width={SIZE(20)} height={SIZE(20)} />
+              <SuccessIcon width={20} height={20} />
             )}
             <Text style={styles.msgModalText}>{msg}</Text>
           </View>
@@ -239,8 +192,8 @@ function Profile(props) {
 
   const onSave = () => {
     let validateNum = 0;
-    if (maxLength50(username)) {
-      setErrUsername(maxLength50(username));
+    if (maxLength32(username)) {
+      setErrUsername(maxLength32(username));
     } else {
       if (validateUserName(username)) {
         setErrUsername(validateUserName(username));
@@ -358,16 +311,49 @@ function Profile(props) {
     );
   };
 
+  const infoModal = (title, opened, onClick) => {
+    return (
+      <View style={styles.infoPPopUpView}>
+        <Text style={styles.label}>{translate(title)}</Text>
+        <TouchableOpacity onPress={() => onClick(true)}>
+          <Menu opened={opened}>
+            <MenuTrigger />
+            <MenuOptions optionsContainerStyle={styles.menuOption}>
+              <MenuOption>
+                <Text style={{color: '#FFFFFF'}} onPress={() => onClick(false)}>
+                  {translate('common.PROFILE_SAVE_MSG')}
+                </Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+          <InfoIcon style={styles.infoIcon} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  const twitterInfoPopUp = info => {
+    setInfoTwitter(info);
+    setTimeout(() => {
+      setInfoTwitter(false);
+    }, 5000);
+  };
+
+  const emailInfoPopUp = info => {
+    setInfoEmail(info);
+    setTimeout(() => {
+      setInfoEmail(false);
+    }, 5000);
+  };
   return (
     <AppBackground isBusy={UserReducer.loading}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.contentView}>
         <AppHeader
           title={translate('wallet.common.profileSettings')}
           showBackButton
         />
-
         <ScrollView onScroll={() => Keyboard.dismiss()}>
           <LimitableInput
+            singleLine={false}
             multiLine
             value={username && username.trimStart().replace(/\s\s+/g, ' ')}
             onChange={text => {
@@ -376,22 +362,23 @@ function Profile(props) {
             }}
             label={translate('common.UserName')}
             placeholder={translate('common.PLACEHOLDER_USERNAME')}
-            validate={[maxLength50, validateUserName]}
+            validate={[maxLength32, validateUserName]}
             editable={true}
             error={errUsername}
           />
           <View style={styles.mainView}>
-            <Text style={styles.label}>{translate('common.twitter')}</Text>
+            {infoModal('common.twitter', infoTwitter, twitterInfoPopUp)}
             <View style={styles.inputView}>
-              <View style={styles.iconConatainer}>
-                <TwitterIconNew width={SIZE(24)} height={SIZE(24)} />
-              </View>
               <TextInput
-                style={{
-                  padding: SIZE(12),
-                  width:
-                    UserReducer.userData.twitterVerified === 0 ? '55%' : '48%',
-                }}
+                style={[
+                  styles.verifiedView,
+                  {
+                    maxWidth:
+                      UserReducer.userData.twitterVerified === 0
+                        ? '80%'
+                        : '88%',
+                  },
+                ]}
                 placeholderTextColor="grey"
                 value={twitter}
                 onChangeText={text => {
@@ -402,11 +389,17 @@ function Profile(props) {
               />
               <TouchableOpacity
                 disabled={
-                  !UserReducer.userData.twitterVerified === 0 &&
-                  twitter !== beforeTwitter
+                  UserReducer?.userData?.twitterVerified === 0 &&
+                  twitter &&
+                  beforeTwitter &&
+                  twitter === beforeTwitter
+                    ? false
+                    : true
                 }
                 style={
-                  UserReducer.userData.twitterVerified === 0 &&
+                  UserReducer?.userData?.twitterVerified === 0 &&
+                  twitter &&
+                  beforeTwitter &&
                   twitter === beforeTwitter
                     ? styles.verifyBtnActive
                     : styles.verifyBtn
@@ -414,32 +407,19 @@ function Profile(props) {
                 onPress={() => {
                   navigation.navigate('WebView');
                 }}>
-                <Text
-                  style={{
-                    color: '#FFFFFF',
-                    fontSize: SIZE(14),
-                    fontWeight: '700',
-                  }}>
+                <Text style={styles.verifyBtnTitle}>
                   {UserReducer.userData.twitterVerified === 0
                     ? translate('common.BTN_TWITTER_REQUEST')
-                    : translate('common.BTN_TWITTER_APPROVED')}
+                    : translate('common.BTN_TWITTER_REQUEST')}
                 </Text>
               </TouchableOpacity>
             </View>
-            {errTwitter && (
-              <Text
-                style={{
-                  fontSize: SIZE(14),
-                  fontFamily: 'Arial',
-                  color: COLORS.RED2,
-                }}>
-                {errTwitter}
-              </Text>
-            )}
+            {errTwitter && <Text style={styles.errorMsg}>{errTwitter}</Text>}
           </View>
           {UserReducer?.userData?.isNonCrypto === 1 && (
             <LimitableInput
               multiLine
+              singleLine={false}
               value={email && email.trimStart()}
               onChange={text => {
                 setEmail(text);
@@ -454,14 +434,18 @@ function Profile(props) {
           )}
           {UserReducer?.userData?.isNonCrypto === 0 && (
             <View style={styles.mainView}>
-              <Text style={styles.label}>{translate('common.userEmail')}</Text>
+              {infoModal('common.userEmail', infoEmail, emailInfoPopUp)}
               <View style={styles.inputView}>
                 <TextInput
-                  style={{
-                    padding: SIZE(12),
-                    maxWidth:
-                      UserReducer.userData.emailVerified === 0 ? '50%' : '62%',
-                  }}
+                  style={[
+                    styles.verifiedView,
+                    {
+                      maxWidth:
+                        UserReducer.userData.emailVerified === 0
+                          ? '80%'
+                          : '88%',
+                    },
+                  ]}
                   placeholderTextColor="grey"
                   value={email}
                   onChangeText={text => {
@@ -472,11 +456,17 @@ function Profile(props) {
                 />
                 <TouchableOpacity
                   disabled={
-                    !UserReducer.userData.emailVerified === 0 &&
-                    email !== beforeEmail
+                    UserReducer?.userData?.emailVerified === 0 &&
+                    email &&
+                    beforeEmail &&
+                    email === beforeEmail
+                      ? false
+                      : true
                   }
                   style={
-                    UserReducer.userData.emailVerified === 0 &&
+                    UserReducer?.userData?.emailVerified === 0 &&
+                    email &&
+                    beforeEmail &&
                     email === beforeEmail
                       ? styles.verifyBtnActive
                       : styles.verifyBtn
@@ -484,32 +474,19 @@ function Profile(props) {
                   onPress={() => {
                     verifyEmailId(email);
                   }}>
-                  <Text
-                    style={{
-                      color: '#FFFFFF',
-                      fontSize: SIZE(14),
-                      fontWeight: '700',
-                    }}>
+                  <Text style={styles.verifyBtnTitle}>
                     {UserReducer.userData.emailVerified === 0
-                      ? translate('common.BTN_EMAIL_REQUEST')
-                      : translate('common.BTN_EMAIL_APPROVED')}
+                      ? translate('common.BTN_TWITTER_REQUEST')
+                      : translate('common.BTN_TWITTER_REQUEST')}
                   </Text>
                 </TouchableOpacity>
               </View>
-              {errEmail && (
-                <Text
-                  style={{
-                    fontSize: SIZE(14),
-                    fontFamily: 'Arial',
-                    color: COLORS.RED2,
-                  }}>
-                  {errEmail}
-                </Text>
-              )}
+              {errEmail && <Text style={styles.errorMsg}>{errEmail}</Text>}
             </View>
           )}
           <LimitableInput
             multiLine
+            singleLine={false}
             value={website && website.trimStart()}
             onChange={text => {
               setWebsite(text);
@@ -522,6 +499,7 @@ function Profile(props) {
           />
           <LimitableInput
             multiLine
+            singleLine={false}
             value={youtube && youtube.trimStart()}
             onChange={text => {
               setYoutube(text);
@@ -534,6 +512,7 @@ function Profile(props) {
           />
           <LimitableInput
             multiLine
+            singleLine={false}
             value={discord && discord.trimStart()}
             onChange={text => {
               setDiscord(text);
@@ -548,10 +527,10 @@ function Profile(props) {
             <Text style={styles.label}>{translate('common.instagram')}</Text>
             <View style={styles.inputView}>
               <View style={styles.iconConatainer}>
-                <InstagramIcon width={SIZE(24)} height={SIZE(24)} />
+                <InstagramIcon style={styles.InstagramIcon} />
               </View>
               <TextInput
-                style={{padding: SIZE(12), width: '90%'}}
+                style={styles.instagramView}
                 placeholderTextColor="grey"
                 value={instagram}
                 onChangeText={text => {
@@ -562,29 +541,22 @@ function Profile(props) {
               />
             </View>
             {errInstagram && (
-              <Text
-                style={{
-                  fontSize: SIZE(14),
-                  fontFamily: 'Arial',
-                  color: COLORS.RED2,
-                }}>
-                {errInstagram}
-              </Text>
+              <Text style={styles.errorMsg}>{errInstagram}</Text>
             )}
           </View>
           <GroupButton
-            style={{marginVertical: SIZE(10), marginTop: SIZE(30)}}
+            style={styles.groupBtnView}
             onLeftPress={() => setIsVisible(true)}
-            leftStyle={{marginHorizontal: '5%', backgroundColor: '#0b5ed7'}}
-            leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
+            leftStyle={styles.groupBtnLeft}
+            leftTextStyle={styles.groupLeftTitle}
             leftText={translate('common.ARTIST_LABEL')}
             rightHide
           />
-          <SpaceView mTop={SIZE(12)} />
+          <SpaceView style={styles.spaceView} />
           <LimitableInput
             multiLine
             limit
-            style={{height: 230}}
+            style={styles.limitableInput}
             value={about && about.trimStart()}
             onChange={text => {
               setAbout(text.slice(0, 200));
@@ -600,9 +572,9 @@ function Profile(props) {
           <GroupButton
             leftDisabled={disable}
             onLeftPress={() => onSave()}
-            style={{marginVertical: SIZE(10), marginTop: SIZE(30)}}
-            leftStyle={{marginHorizontal: '5%', backgroundColor: '#0d6efd'}}
-            leftTextStyle={{fontWeight: '600', fontSize: SIZE(14)}}
+            style={styles.groupBtnView}
+            leftStyle={styles.groupBtnLeft}
+            leftTextStyle={styles.groupLeftTitle}
             leftText={translate('common.BTN_SAVE_CHANGE')}
             rightHide
           />
@@ -617,6 +589,9 @@ function Profile(props) {
 export default Profile;
 
 const styles = StyleSheet.create({
+  contentView: {
+    flex: 1,
+  },
   iconConatainer: {
     width: '7%',
     height: SIZE(40),
@@ -653,8 +628,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: SIZE(8),
-    borderTopRightRadius: SIZE(8),
+    borderBottomRightRadius: SIZE(5),
+    borderTopRightRadius: SIZE(5),
+  },
+  verifyBtnTitle: {
+    color: '#FFFFFF',
+    fontSize: SIZE(14),
+    fontWeight: '700',
   },
   verifyBtnActive: {
     paddingHorizontal: SIZE(15),
@@ -662,8 +642,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2280e1',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: SIZE(8),
-    borderTopRightRadius: SIZE(8),
+    borderBottomRightRadius: SIZE(5),
+    borderTopRightRadius: SIZE(5),
   },
   msgModalView: {
     height: SIZE(80),
@@ -681,5 +661,100 @@ const styles = StyleSheet.create({
     fontSize: SIZE(14),
     fontFamily: 'Arial',
     color: '#757575',
+  },
+  errorMsg: {
+    fontSize: SIZE(14),
+    fontFamily: 'Arial',
+    color: COLORS.RED2,
+  },
+  instagramView: {
+    width: '90%',
+  },
+  groupBtnView: {
+    marginVertical: SIZE(10),
+    marginTop: SIZE(30),
+  },
+  groupBtnLeft: {
+    marginHorizontal: '5%',
+    backgroundColor: '#0d6efd',
+  },
+  groupLeftTitle: {
+    fontWeight: '600',
+    fontSize: SIZE(14),
+  },
+  spaceView: {
+    marginTop: SIZE(12),
+  },
+  limitableInput: {
+    height: 230,
+    textAlignVertical: 'top',
+  },
+  InstagramIcon: {
+    width: SIZE(24),
+    height: SIZE(24),
+  },
+  verifiedView: {
+    marginLeft: SIZE(5),
+  },
+  msgModalContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  msgModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  artistModalView: {
+    paddingHorizontal: SIZE(54),
+    paddingVertical: SIZE(30),
+    backgroundColor: COLORS.WHITE1,
+    alignItems: 'center',
+    borderRadius: SIZE(7),
+  },
+  artistTitle: {
+    textAlign: 'center',
+    marginVertical: SIZE(15),
+    fontSize: SIZE(24),
+    fontWeight: '700',
+  },
+  artistDescription: {
+    lineHeight: SIZE(17),
+    fontSize: SIZE(14),
+    fontFamily: 'Arial',
+    textAlign: 'center',
+    marginBottom: SIZE(12),
+  },
+  infoView: {
+    flexDirection: 'row',
+  },
+  infoTitle: {
+    lineHeight: SIZE(17),
+    marginRight: 19,
+    fontSize: SIZE(14),
+    fontFamily: 'Arial',
+    textAlign: 'center',
+    marginBottom: SIZE(22),
+    color: COLORS.themeColor,
+  },
+  artistGroupView: {
+    width: '120%',
+  },
+  artistLeft: {
+    backgroundColor: '#2280e1',
+  },
+  infoPPopUpView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuOption: {
+    width: SIZE(140),
+    marginLeft: SIZE(30),
+    marginTop: SIZE(-25),
+    backgroundColor: Colors.BLACK1,
+  },
+  infoIcon: {
+    marginLeft: 5,
+    alignSelf: 'center',
   },
 });

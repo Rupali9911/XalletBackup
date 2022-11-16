@@ -19,6 +19,7 @@ import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
 import AppLogo from '../../components/appLogo';
 import TextView from '../../components/appText';
+import HintText from '../../components/hintText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import SelectButtongroup from '../../components/selectButtonGroup';
 import Colors from '../../constants/Colors';
@@ -114,7 +115,7 @@ const ImportWallet = ({ route, navigation }) => {
                 dispatch(setBackupStatus(true));
               })
               .catch(err => {
-                alertWithSingleBtn(translate('wallet.common.tryAgain'));
+                // alertWithSingleBtn(translate('wallet.common.tryAgain'));
               });
           } else {
             alertWithSingleBtn(
@@ -169,7 +170,7 @@ const ImportWallet = ({ route, navigation }) => {
               dispatch(setBackupStatus(true));
             })
             .catch(err => {
-              alertWithSingleBtn(translate('wallet.common.tryAgain'));
+              // alertWithSingleBtn(translate('wallet.common.tryAgain'));
             });
         })
         .catch(err => {
@@ -259,6 +260,7 @@ const ImportWallet = ({ route, navigation }) => {
                 <TextInput
                   style={styles.input}
                   multiline={true}
+                  placeholder={inputType == 1 ? translate('common.EXAMPLE_PLACEHOLDER_TEXT') : ' '}
                   value={phrase}
                   autoCorrect={false}
                   keyboardType={
@@ -311,6 +313,9 @@ const ImportWallet = ({ route, navigation }) => {
                   />
                 </View>
               )}
+              <HintText style={{ bottom: hp('2%') }}>
+                {inputType == 0 ? translate('wallet.common.recoveryPhraseInfo') : translate('common.PASTE_PRIVATE_KEY')}
+              </HintText>
             </View>
           </View>
           <View style={styles.bottomView}>

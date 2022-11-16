@@ -1,5 +1,4 @@
 import GirlIcon from 'src/assets/svgs/icon-girl.svg';
-
 import LogoIcon from 'src/assets/svgs/icon-logo.svg';
 import HomeIcon from 'src/assets/svgs/icon-home.svg';
 import HomeActiveIcon from 'src/assets/svgs/icon-home-active.svg';
@@ -91,7 +90,8 @@ import WebIcon from 'src/assets/svgs/icon-web.svg';
 import Twitter from 'src/assets/svgs/twitter.svg';
 import Instagram from 'src/assets/svgs/instagram.svg';
 import DiscordIcon from 'src/assets/svgs/icon-discord.svg';
-import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg'
+import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg';
+import InfoIcon from 'src/assets/svgs/icon-info.svg';
 
 export default {
   GirlIcon,
@@ -184,5 +184,6 @@ export default {
   Twitter,
   Instagram,
   DiscordIcon,
-  ChatDefaultProfile
+  ChatDefaultProfile,
+  InfoIcon,
 };
