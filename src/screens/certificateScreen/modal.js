@@ -20,8 +20,10 @@ const ShowModal = props => {
     leftButtonTitle,
     rightButtonTitle,
     onLeftPress,
+    onBackUpNowPress,
     onRightPress,
     isDelete,
+    backupPhrase,
     onBackdrop,
     rightLoading,
     rightDisabled,
@@ -37,7 +39,7 @@ const ShowModal = props => {
         isVisible={isVisible}
         onBackdropPress={onBackdrop ? null : closeModal}>
         <View
-          style={[styles.reClaimcontainer, isDelete && styles.deleteAccount]}>
+          style={[styles.reClaimcontainer, isDelete && styles.deleteAccount, backupPhrase && styles.backupPhraseContainer]}>
           <TouchableOpacity
             style={styles.reClaimCancelBTNview}
             onPress={closeModal}>
@@ -48,7 +50,7 @@ const ShowModal = props => {
           </TouchableOpacity>
           {isDelete ? (
             <View style={{paddingTop: SIZE(25)}}>
-              <Image source={Images.deleteRed} style={styles.deleteRedImg} />
+              <Image source={backupPhrase ? Images.dangerIcon : Images.deleteRed} style={[styles.deleteRedImg, backupPhrase && styles.dangerIconStyle]} />
             </View>
           ) : (
             <Image source={Images.confirm} style={styles.centerImg} />
@@ -69,7 +71,7 @@ const ShowModal = props => {
           </View>
 
           <View style={styles.textView}>
-            <Text style={[styles.text, isDelete && styles.descriptionCenter]}>
+            <Text style={[styles.text, isDelete && styles.descriptionCenter, backupPhrase && styles.descriptionJustify]}>
               {description}
             </Text>
           </View>
@@ -102,7 +104,7 @@ const ShowModal = props => {
               }
               leftDisabled={leftDisabled ? leftDisabled : false}
               leftLoading={false}
-              onLeftPress={() => (closeModal ? closeModal() : onLeftPress)}
+              onLeftPress={() => (backupPhrase ? onBackUpNowPress() : closeModal ? closeModal() : onLeftPress())}
               leftStyle={
                 isDelete
                   ? styles.reClaimRightGroupButton

@@ -62,7 +62,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
   const { loading } = useSelector(state => state.UserReducer);
-  const { recover } = route.params;
+  const { recover, isSetting } = route.params;
   const [wallet, setWallet] = useState(route.params.wallet);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -193,6 +193,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
       <AppHeader
         showBackButton
         title={translate('wallet.common.backup')}
+        onPressBack={isSetting ? () => navigation.navigate('Setting', {isSetting} ) : () => navigation.goBack()}
       />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
