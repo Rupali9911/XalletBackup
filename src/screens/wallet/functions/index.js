@@ -222,7 +222,7 @@ export const currencyInDollar = async (pubkey, type) => {
                 })
             } else {
                 await contract.methods.getReserves().call().then(function (info) {
-                    console.log("@@@ currency in dollar func =======>", type, info)
+                    // console.log("@@@ currency in dollar func =======>", type, info)
                     maticQuickReserve = web3.utils.fromWei(info._reserve0.toString(), "ether");
                     aliaQuickReserve = web3.utils.fromWei(info._reserve1.toString(), "mwei");
                     resolve(parseFloat(aliaQuickReserve) / parseFloat(maticQuickReserve));
@@ -275,7 +275,7 @@ export const currencyInDollar = async (pubkey, type) => {
 // }
 
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
-    console.log("@@@ Balance function ========>", type)
+    // console.log("@@@ Balance function ========>", type)
     try {
         return new Promise(async (resolve, reject) => {
             const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
@@ -283,7 +283,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
                 const contract = new web3.eth.Contract(contractAbi, contractAddr);
                 let reserves = {};
                 await contract.methods.balanceOf(pubKey).call().then(function (result) {
-                    console.log('Results from balance of', result)
+                    // console.log('Results from balance of', result)
                     if (type == 'usdc') {
                         // resolve(web3.utils.fromWei(result.toString(), "ether"));
                         resolve(web3.utils.fromWei(result.toString(), "mwei"));
@@ -302,7 +302,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
                 })
             } else {
                 await web3.eth.getBalance(pubKey, function (error, ethbalance) {
-                    console.log('ETH BALANCE', ethbalance)
+                    // console.log('ETH BALANCE', ethbalance)
                     if (error) {
                         reject(error);
                     } else {
