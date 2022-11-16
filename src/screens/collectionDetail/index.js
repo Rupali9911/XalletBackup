@@ -37,6 +37,8 @@ import GalleryTab from './galleryTab';
 import OnSaleTab from './onSaleTab';
 import OwnedTab from './ownedTab';
 import SoldOutTab from './soldOutTab';
+import CollectionTab from './collectionTab';
+import {networkType} from '../../common/networkType';
 
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 
@@ -76,6 +78,11 @@ function CollectionDetail(props) {
           {key: 'notOnSell', title: translate('common.notOnSell')},
           {key: 'owned', title: translate('wallet.common.owned')},
           {key: 'activity', title: translate('common.activity')},
+        ]
+      : networkType === 'mainnet'
+      ? [
+          {key: 'collection', title: translate('common.collected')},
+          {key: 'gallery', title: translate('common.gallery')},
         ]
       : [{key: 'gallery', title: translate('common.gallery')}],
   );
@@ -363,6 +370,16 @@ function CollectionDetail(props) {
               isLaunchPad={isLaunchPad}
             />
           );
+
+        case 'collection':
+          return (
+            <CollectionTab
+              tabTitle={'Gallery'}
+              isLaunchPad={isLaunchPad}
+              collectionName={collection?.name}
+            />
+          );
+
         default:
           return null;
       }
