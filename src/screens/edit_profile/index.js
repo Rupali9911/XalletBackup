@@ -668,7 +668,6 @@ const styles = StyleSheet.create({
     color: COLORS.RED2,
   },
   instagramView: {
-    padding: SIZE(12),
     width: '90%',
   },
   groupBtnView: {
@@ -688,13 +687,14 @@ const styles = StyleSheet.create({
   },
   limitableInput: {
     height: 230,
+    textAlignVertical: 'top',
   },
   InstagramIcon: {
     width: SIZE(24),
     height: SIZE(24),
   },
   verifiedView: {
-    padding: SIZE(12),
+    marginLeft: SIZE(5),
   },
   msgModalContent: {
     flex: 1,
