@@ -588,12 +588,9 @@ export const updateAvtar = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}`,
         },
       });
-<<<<<<< HEAD
-=======
       if(userProfileResponse == undefined) {
         dispatch(endLoadingImage());
       }
->>>>>>> 150019b230b811f7fa08af50abf5c1f233b41cd3
     } catch (error) {
       dispatch(endLoadingImage());
       console.log('@@@ error ', error);
