@@ -757,7 +757,7 @@
     "ARTIST_DESCRIPTION_LINE_2": "All applications will go through several thorough screening rounds from XALLET team to ensure the authencity of the Artist.",
     "ARTIST_NOTE": "You must input a username, upload a profile picture, verify your email address and Twitter account first.",
     "PASTE_PRIVATE_KEY": "Paste the private key string",
-    "EXAMPLE_PLACEHOLDER_TEXT": "e.g. 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
+    "EXAMPLE_PLACEHOLDER_TEXT": "e.g. 3a1076bf45ab87yyz2ad64ccb3b102177yzf7faacbf2872e88fdd9a537d8yz266",
     "PROFILE_SAVE_MSG": "※ [Verify] Button will get active only after clicking on [Save Changes]"
   },
   "AwardPage": {},

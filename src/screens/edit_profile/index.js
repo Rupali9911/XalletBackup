@@ -169,9 +169,9 @@ function Profile(props) {
         <Modal isVisible={msgModal} style={styles.msgModal}>
           <View style={styles.msgModalView}>
             {toastMsg?.error ? (
-              <ErrorIcon style={styles.ErrorIcon} />
+              <ErrorIcon width={20} height={20} />
             ) : (
-              <SuccessIcon style={styles.ErrorIcon} />
+              <SuccessIcon width={20} height={20} />
             )}
             <Text style={styles.msgModalText}>{msg}</Text>
           </View>
@@ -389,13 +389,18 @@ function Profile(props) {
               />
               <TouchableOpacity
                 disabled={
-                  !UserReducer.userData.twitterVerified === 0 &&
-                  twitter !== beforeTwitter
+                  UserReducer?.userData?.twitterVerified === 0 &&
+                  twitter &&
+                  beforeTwitter &&
+                  twitter === beforeTwitter
+                    ? false
+                    : true
                 }
                 style={
-                  UserReducer.userData.twitterVerified === 0 &&
-                  twitter === beforeTwitter &&
-                  (twitter !== '' || beforeTwitter !== '')
+                  UserReducer?.userData?.twitterVerified === 0 &&
+                  twitter &&
+                  beforeTwitter &&
+                  twitter === beforeTwitter
                     ? styles.verifyBtnActive
                     : styles.verifyBtn
                 }
@@ -451,11 +456,17 @@ function Profile(props) {
                 />
                 <TouchableOpacity
                   disabled={
-                    !UserReducer.userData.emailVerified === 0 &&
-                    email !== beforeEmail
+                    UserReducer?.userData?.emailVerified === 0 &&
+                    email &&
+                    beforeEmail &&
+                    email === beforeEmail
+                      ? false
+                      : true
                   }
                   style={
-                    UserReducer.userData.emailVerified === 0 &&
+                    UserReducer?.userData?.emailVerified === 0 &&
+                    email &&
+                    beforeEmail &&
                     email === beforeEmail
                       ? styles.verifyBtnActive
                       : styles.verifyBtn
@@ -681,10 +692,6 @@ const styles = StyleSheet.create({
   InstagramIcon: {
     width: SIZE(24),
     height: SIZE(24),
-  },
-  ErrorIcon: {
-    width: SIZE(20),
-    height: SIZE(20),
   },
   verifiedView: {
     padding: SIZE(12),

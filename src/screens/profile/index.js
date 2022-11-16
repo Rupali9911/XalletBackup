@@ -482,7 +482,22 @@ function Profile({navigation, connector, route}) {
                   </Menu>
                   <CopyProfile width={SIZE(12)} height={SIZE(12)} />
                 </TouchableOpacity>
-                <View style={styles.iconWrapper}>{renderIconImage()}</View>
+                 <View style={styles.iconWrapper}>
+                 <View
+                   style={[
+                     styles.iconBadgeVw,
+                     route?.params?.role === 4
+                       ? styles.borderBtnColor
+                       : styles.borderTrans,
+                   ]}>
+                   {renderIconImage()}
+                   {route?.params?.role === 4 ? (
+                     <View style={styles.markIconView}>
+                       {renderVerifiedIcon()}
+                     </View>
+                   ) : null}
+                 </View>
+               </View>
                 <View style={styles.userDetailsWrapper}>
                   {renderProfileNameAndId()}
                 </View>
@@ -564,7 +579,6 @@ function Profile({navigation, connector, route}) {
           {/* <View style={{flex: socialSite ? 0.4 : 0.45}}>
           <View style={styles.tabView}>{renderTabView(id)}</View>
         </View> */}
-
           <View style={styles.tabView}>{renderTabView(id)}</View>
         </View>
       </ScrollView>
@@ -724,7 +738,7 @@ const styles = StyleSheet.create({
     top: 145,
     zIndex: 10,
   },
-  iconBadgeVw:{
+  iconBadgeVw: {
     borderWidth: 3,
     width: SIZE(155),
     height: SIZE(155),
@@ -733,10 +747,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  borderTrans:{
+  borderTrans: {
     borderColor: 'transparent',
-  }, 
-  borderBtnColor:{ 
-    borderColor: Colors.buttonBackground
-  }
+  },
+  borderBtnColor: {
+    borderColor: Colors.buttonBackground,
+  },
 });
