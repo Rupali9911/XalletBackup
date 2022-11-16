@@ -121,7 +121,9 @@ function Setting({route, navigation}) {
     let getData = await getWallet();
     setWallet(getData);
     if(route.params.isSetting) {
-      setBackupPhrasePopup(true);
+      setTimeout(() => {
+        setBackupPhrasePopup(true);
+      }, 500);
     }
   }, [route]);
 
