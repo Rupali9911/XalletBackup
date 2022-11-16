@@ -759,7 +759,11 @@
     "ARTIST_NOTE": "您必須先輸入用戶名、上傳個人資料圖片、驗證您的電子郵件地址和 Twitter 帳戶。",
     "PASTE_PRIVATE_KEY": "粘貼私鑰字符串",
     "EXAMPLE_PLACEHOLDER_TEXT": "例如: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
-    "PROFILE_SAVE_MSG": "※ [驗證] 按鈕只有在點擊 [保存更改] 後才會激活"
+    "PROFILE_SAVE_MSG": "※ [驗證] 按鈕只有在點擊 [保存更改] 後才會激活",
+    "PLEASE_SET_RECOVERY_PHRASE": "請設置恢復短語",
+    "LOGOUT_WITHOUT_PHRASE_BACKUP_DESC": "請注意，您尚未設置恢復短語。您需要 12 個“恢復短語”才能使用相同的錢包信息重新登錄。恢復短語很重要，因為它們可用於在您的設備丟失或被盜等情況下找回您的錢包和資金。如果您在未設置的情況下註銷，您可能無法永久訪問您的錢包。您確定要退出嗎？",
+    "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "我理解並同意我無法永久訪問我的錢包，因為我沒有設置恢復短語。",
+    "BACKUP_NOW": "立即備份"
   },
   "AwardPage": {},
   "wallet": {

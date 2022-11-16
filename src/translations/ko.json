@@ -759,7 +759,11 @@
     "ARTIST_NOTE": "먼저 사용자 이름, 프로필 사진, 이메일, 트위터 계정을 입력해주세요",
     "PASTE_PRIVATE_KEY": "개인 키 문자열 붙여넣기",
     "EXAMPLE_PLACEHOLDER_TEXT": "예를 들어: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
-    "PROFILE_SAVE_MSG": "※ [확인] 버튼은 [변경사항 저장]을 클릭해야만 활성화됩니다."
+    "PROFILE_SAVE_MSG": "※ [확인] 버튼은 [변경사항 저장]을 클릭해야만 활성화됩니다.",
+    "PLEASE_SET_RECOVERY_PHRASE": "복구 문구를 설정하십시오",
+    "LOGOUT_WITHOUT_PHRASE_BACKUP_DESC": "복원 문구를 설정하지 않았음을 유의하십시오. 동일한 지갑 정보로 재로그인 하기 위해서는 12개의 '복구 문구'가 필요합니다. 복구 문구는 예를 들어 장치를 분실하거나 도난당한 경우 지갑과 자금을 복구하는 데 사용되기 때문에 중요합니다. 설정하지 않고 로그아웃하면 지갑에 영구적으로 접근하지 못할 수 있습니다. 로그아웃하시겠습니까?",
+    "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "복원 문구를 설정하지 않았기 때문에 지갑에 영구적으로 액세스할 수 없음을 이해하고 이에 동의합니다.",
+    "BACKUP_NOW": "백업 지금"
   },
   "AwardPage": {},
   "wallet": {

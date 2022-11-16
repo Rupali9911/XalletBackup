@@ -33,6 +33,7 @@ import {languageArray, translate} from '../../walletUtils';
 import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
+import {getWallet} from '../../helpers/AxiosApiRequest';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -99,7 +100,8 @@ const JapaneseLangTrans = {
   ch: '中国語（簡体）',
 };
 
-function Setting({navigation}) {
+function Setting({route, navigation}) {
+  console.log("@@@ setting props ========>", route)
   const dispatch = useDispatch();
   // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
@@ -107,13 +109,23 @@ function Setting({navigation}) {
   const {myCards} = useSelector(state => state.PaymentReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const [deletePopup, setDeletePopup] = useState(false);
+  const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {deleteAccountLoading} = useSelector(state => state.UserReducer);
+  const {deleteAccountLoading, isBackup} = useSelector(state => state.UserReducer);
   const [isCheckService, setIsCheckService] = useState(false);
+  const [isBackupPhraseService, setIsBackupPhraseService] = useState(false);
+  const [wallet, setWallet] = useState(null);
 
-  useEffect(() => {
+  useEffect(async() => {
     // dispatch(getAllCards(userData.access_token));
-  }, []);
+    let getData = await getWallet();
+    setWallet(getData);
+    if(route.params.isSetting) {
+      setTimeout(() => {
+        setBackupPhrasePopup(true);
+      }, 500);
+    }
+  }, [route]);
 
   const updateLanguage = language => {
     if (selectedLanguageItem.language_name !== language.language_name) {
@@ -152,14 +164,18 @@ function Setting({navigation}) {
   };
 
   const onLogout = () => {
-    confirmationAlert(
-      translate('wallet.common.verification'),
-      translate('wallet.common.logOutQ'),
-      translate('wallet.common.cancel'),
-      '',
-      logoutConfirm,
-      () => null,
-    );
+    if(!isBackup) {
+      setBackupPhrasePopup(true)
+    } else {
+      confirmationAlert(
+        translate('wallet.common.verification'),
+        translate('wallet.common.logOutQ'),
+        translate('wallet.common.cancel'),
+        '',
+        logoutConfirm,
+        () => null,
+      );
+    }
   };
 
   const handleDeletePopup = value => {
@@ -318,6 +334,32 @@ function Setting({navigation}) {
         checkBoxDescription={translate('common.deleteCheckBoxDiscription')}
         isCheck={isCheckService}
         onChecked={setIsCheckService}
+      />
+      <ShowModal
+        isDelete={true}
+        backupPhrase={!isBackup ? true : false}
+        isVisible={backupPhrasePopup}
+        onBackdrop={deleteAccountLoading}
+        leftDisabled={deleteAccountLoading}
+        rightDisabled={deleteAccountLoading}
+        rightLoading={deleteAccountLoading}
+        title={translate('common.PLEASE_SET_RECOVERY_PHRASE')}
+        description={translate('common.LOGOUT_WITHOUT_PHRASE_BACKUP_DESC')}
+        closeModal={
+          deleteAccountLoading ? null : () => setBackupPhrasePopup(false)
+        }
+        onBackUpNowPress={() => {
+          setBackupPhrasePopup(false)
+          setTimeout(() => {
+            navigation.navigate('recoveryPhrase', { isSetting: true, wallet })
+          }, 500);
+        }}
+        rightButtonTitle={translate('common.Logout')}
+        leftButtonTitle={translate('common.BACKUP_NOW')}
+        onRightPress={logoutConfirm}
+        checkBoxDescription={translate('common.LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC')}
+        isCheck={isBackupPhraseService}
+        onChecked={setIsBackupPhraseService}
       />
     </SafeAreaView>
   );
