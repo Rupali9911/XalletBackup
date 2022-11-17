@@ -371,7 +371,8 @@ const SendScreen = React.memo((props) => {
                 <View style={{ height: height / 2.7, justifyContent: 'flex-end' }}>
                     <AppButton
                         label={translate("wallet.common.send")}
-                        view={loading}
+                        // view={loading}
+                        view={address && (amount > 0) ? false : true}
                         containerStyle={CommonStyles.button}
                         labelStyle={CommonStyles.buttonLabel}
                         onPress={() => {

@@ -101,7 +101,6 @@ const JapaneseLangTrans = {
 };
 
 function Setting({route, navigation}) {
-  console.log("@@@ setting props ========>", route)
   const dispatch = useDispatch();
   // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
