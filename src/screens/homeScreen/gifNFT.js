@@ -20,7 +20,7 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
+const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -43,14 +43,14 @@ const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      setPage(1);
+      // setPage(1);
       timer = setTimeout(() => {
         dispatch(newNftLoadStart());
         dispatch(newNftListReset(category));
         getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false);
         setSortOption(0);
-        setPage(1);
+        // setPage(1);
         screen(category);
       }, 100);
     }
@@ -112,17 +112,19 @@ const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const refreshFunc = () => {
     dispatch(newNftListReset(3));
     getNFTlist(category, sortOption, limit, 1);
-    setPage(1);
+    // setPage(1);
   };
 
   const handleFlastListEndReached = () => {
     if (
       !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newTotalCount !== NewNFTListReducer.newGifNftList.length
+      NewNFTListReducer.newGIFNftTotalCount !==
+        NewNFTListReducer.newGifNftList.length
     ) {
-      let pageNum = page + 1;
-      getNFTlist(category, sortOption, limit, pageNum);
-      setPage(pageNum);
+      // let pageNum = NewNFTListReducer.newGIFNftPage + 1;
+      // getNFTlist(category, sortOption, limit, pageNum);
+      getNFTlist(category, sortOption, limit, NewNFTListReducer.newGIFNftPage);
+      // setPage(pageNum);
     }
   };
 
@@ -170,9 +172,9 @@ const GifNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? (
-        isFirstRender
-      ) : page === 1 && NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ||
+      (NewNFTListReducer.newGIFNftPage === 1 &&
+        NewNFTListReducer.newNftListLoading) ? (
         <Loader />
       ) : NewNFTListReducer.newGifNftList.length !== 0 ? (
         renderGifNFTList()

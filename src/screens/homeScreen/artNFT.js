@@ -45,7 +45,7 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false);
         setSortOption(0);
-        setPage(1);
+        // setPage(1);
         screen(category);
       }, 100);
     }
@@ -112,11 +112,13 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const handleFlastListEndReached = () => {
     if (
       !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newTotalCount !== NewNFTListReducer.newArtNftList.length
+      NewNFTListReducer.newArtNftTotalCount !==
+        NewNFTListReducer.newArtNftList.length
     ) {
-      let pageNum = page + 1;
-      getNFTlist(category, sortOption, limit, pageNum);
-      setPage(pageNum);
+      // let pageNum = NewNFTListReducer.newArtNftPage + 1;
+      // getNFTlist(category, sortOption, limit, pageNum);
+      getNFTlist(category, sortOption, limit, NewNFTListReducer.newArtNftPage);
+      // setPage(pageNum);
     }
   };
 
@@ -161,9 +163,9 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? (
-        isFirstRender
-      ) : page === 1 && NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ||
+      (NewNFTListReducer.newArtNftPage === 1 &&
+        NewNFTListReducer.newNftListLoading) ? (
         <Loader />
       ) : NewNFTListReducer.newArtNftList.length !== 0 ? (
         renderArtNFTList()
