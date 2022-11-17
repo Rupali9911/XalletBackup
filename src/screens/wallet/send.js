@@ -368,7 +368,7 @@ const SendScreen = React.memo(props => {
       ],
     );
   };
-
+  const decimalDigit = (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8 ? true : false
   const disableButton = address && (amount > 0 && amount < getTokenValue().toFixed(4)) ? false : true
   const alertMsg = (amount >= (getTokenValue().toFixed(4) == '0.0000' ? '0' : getTokenValue().toFixed(4))) ? true : false
   return (
@@ -417,6 +417,11 @@ const SendScreen = React.memo(props => {
          {alertMsg && <View>
             <Text style={{color: 'red'}}>
               {translate('wallet.common.insufficientFunds')}
+            </Text>
+          </View>}
+          {decimalDigit && <View>
+            <Text style={{color: 'red'}}>
+              {translate('common.DECIMAL_POINTS_LIMIT')}
             </Text>
           </View>}
         </View>
