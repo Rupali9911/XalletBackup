@@ -26,7 +26,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
 import { getWallet } from '../../helpers/AxiosApiRequest';
-import { balanceTransfer } from '../wallet/functions/transactionFunctions'
+import { balanceTransfer, handleTransactionError } from '../wallet/functions/transactionFunctions'
 
 
 const verifyAddress = (address) => {
@@ -306,9 +306,9 @@ const SendScreen = React.memo((props) => {
                 showSuccessAlert();
             }
         }).catch((err) => {
-            console.log("err", err);
+            console.log("@@@ balance transfrer error =====>", err);
             setLoading(false);
-            showErrorAlert(err.msg);
+            handleTransactionError(err);
         });
     }
 
