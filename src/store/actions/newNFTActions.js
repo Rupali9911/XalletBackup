@@ -1,9 +1,9 @@
-import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
+import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { alertWithSingleBtn } from '../../utils';
-import { translate } from '../../walletUtils';
-import { useSelector } from 'react-redux';
+import {alertWithSingleBtn} from '../../utils';
+import {translate} from '../../walletUtils';
+import {useSelector} from 'react-redux';
 import {
   FAVORITE_NFT_LOAD_SUCCESS,
   NEW_NFT_LIST_RESET,
@@ -24,7 +24,7 @@ import {
   UPDATE_NFT_DETAIL,
   UPDATE_OWNER_DETAIL,
 } from '../types';
-import { parseNftObject } from '../../utils/parseNFTObj';
+import {parseNftObject} from '../../utils/parseNFTObj';
 
 export const newNftArtLoadSuccess = data => ({
   type: NEW_NFT_ART_LOAD_SUCCESS,
@@ -54,7 +54,6 @@ export const newNftMusicLoadSuccess = data => ({
   type: NEW_NFT_MUSIC_LOAD_SUCCESS,
   payload: data,
 });
-
 
 export const favoriteNftLoadSuccess = data => ({
   type: FAVORITE_NFT_LOAD_SUCCESS,
@@ -102,11 +101,11 @@ export const newPageChange = data => ({
 
 export const newNFTData = (category, sort, limit, pageNum) => {
   return (dispatch, getState) => {
-    const { userData } = getState().UserReducer;
-    let userId = userData.id
+    const {userData} = getState().UserReducer;
+    let userId = userData.id;
     let pageSize = limit ? limit : 10;
-    dispatch(newNftLoadStart())
-    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets`
+    dispatch(newNftLoadStart());
+    const url = `${NEW_BASE_URL}/nfts/all-nfts-markets`;
     sendRequest({
       url,
       method: 'GET',
@@ -115,40 +114,41 @@ export const newNFTData = (category, sort, limit, pageNum) => {
         pageSize,
         sortFilter: sort,
         categoryFilter: category,
-        userId
-      }
+        userId,
+      },
     })
       .then(data => {
+        let temp = {...data, pageNum: pageNum + 1};
         if (category === 0) {
-          dispatch(newNftTrendingLoadSuccess(data))
+          dispatch(newNftTrendingLoadSuccess(temp));
         }
         if (category === 1) {
-          dispatch(newNftArtLoadSuccess(data))
+          dispatch(newNftArtLoadSuccess(temp));
         }
         if (category === 2) {
-          dispatch(newNftImageLoadSuccess(data))
+          dispatch(newNftImageLoadSuccess(temp));
         }
         if (category === 3) {
-          dispatch(newNftGifLoadSuccess(data))
+          dispatch(newNftGifLoadSuccess(temp));
         }
         if (category === 4) {
-          dispatch(newNftMovieLoadSuccess(data))
+          dispatch(newNftMovieLoadSuccess(temp));
         }
         if (category === 5) {
-          dispatch(newNftMusicLoadSuccess(data))
+          dispatch(newNftMusicLoadSuccess(temp));
         }
         if (category === 6) {
-          dispatch(newNftAllLoadSuccess(data))
+          dispatch(newNftAllLoadSuccess(temp));
         }
         // dispatch(newNftLoadSuccess(data))
       })
       .catch(() => {
-        console.log('err')
-        dispatch(newNftLoadFail())
+        console.log('err');
+        dispatch(newNftLoadFail());
         // dispatch(artNftLoadFail());
-      })
-  }
-}
+      });
+  };
+};
 
 // export const newNFTList = (page, limit, sort) => {
 //   return (dispatch, getState) => {
@@ -215,12 +215,11 @@ export const newNFTData = (category, sort, limit, pageNum) => {
 //   };
 // };
 
-
 export const favoriteNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(newNftLoadStart('photo'));
 
-    const { data, wallet } = getState().UserReducer;
+    const {data, wallet} = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -283,8 +282,8 @@ export const searchNFT = searchTxt => dispatch =>
       url: `${NEW_BASE_URL}/users/search`,
       method: 'GET',
       params: {
-        keyword: searchTxt
-      }
+        keyword: searchTxt,
+      },
     })
       .then(response => {
         resolve(response);

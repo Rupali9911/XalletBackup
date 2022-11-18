@@ -43,7 +43,7 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false);
         setSortOption(0);
-        setPage(1);
+        // setPage(1);
         screen(category);
       }, 100);
     }
@@ -105,18 +105,24 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const refreshFunc = () => {
     dispatch(newNftListReset(category));
     getNFTlist(category, sortOption, limit, 1);
-    setPage(1);
+    // setPage(1);
   };
 
   const handleFlastListEndReached = () => {
     if (
       !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newTotalCount !==
+      NewNFTListReducer.newMusicNftTotalCount !==
         NewNFTListReducer.newMusicNftList.length
     ) {
-      let pageNum = page + 1;
-      getNFTlist(category, sortOption, limit, pageNum);
-      setPage(pageNum);
+      // let pageNum = NewNFTListReducer.newMusicNftPage + 1;
+      // getNFTlist(category, sortOption, limit, pageNum);
+      getNFTlist(
+        category,
+        sortOption,
+        limit,
+        NewNFTListReducer.newMusicNftPage,
+      );
+      // setPage(pageNum);
     }
   };
 
@@ -160,9 +166,9 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? (
-        isFirstRender
-      ) : page === 1 && NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ||
+      (NewNFTListReducer.newMusicNftPage === 1 &&
+        NewNFTListReducer.newNftListLoading) ? (
         <Loader />
       ) : NewNFTListReducer.newMusicNftList.length !== 0 ? (
         renderMovieNFTList()

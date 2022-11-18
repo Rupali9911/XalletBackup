@@ -397,6 +397,10 @@ const DetailScreen = ({navigation, route}) => {
   const setAudioSpeed = speed => {
     setOpenPlaySpeed(false);
     music.setSpeed(speed);
+    if (!isPlaying) {
+      music.pause();
+      setPlaying(false);
+    }
   };
 
   //===================== UseEffect Function =========================

@@ -20,19 +20,34 @@ import {
   UPDATE_OWNER_DETAIL,
 } from '../types';
 
-import { CATEGORY_VALUE } from '../../constants'; 
+import {CATEGORY_VALUE} from '../../constants';
 
 const initialState = {
   isArtNftLoading: false,
   isPhotoNftLoading: false,
   newNftListLoading: true,
   newArtNftList: [],
+  newArtNftPage: 1,
+  newArtNftTotalCount: 0,
   newAllNftList: [],
+  newAllNftPage: 1,
+  newAllNftTotalCount: 0,
   newTrendingNftList: [],
+  newTrendingNftPage: 1,
+  newTrendingNftTotalCount: 0,
   newImageNftList: [],
+  newImageNftPage: 1,
+  newImageNftTotalCount: 0,
   newGifNftList: [],
+  newGIFNftPage: 1,
+  newGIFNftTotalCount: 0,
   newMovieNftList: [],
+  newMovieNftPage: 1,
+  newMovieNftTotalCount: 0,
   newMusicNftList: [],
+  newMusicNftPage: 1,
+  newMusicNftTotalCount: 0,
+
   favoriteNftList: [],
   newListPage: 1,
   newTotalCount: 0,
@@ -44,16 +59,17 @@ const initialState = {
 export default function NewNFTListReducer(state = initialState, action) {
   switch (action.type) {
     case ART_NFT_LOAD_START:
-      return (state = { ...state, isArtNftLoading: true });
+      return (state = {...state, isArtNftLoading: true});
 
     case NEW_NFT_LOAD_START:
-      return (state = { ...state, newNftListLoading: true })
+      return (state = {...state, newNftListLoading: true});
 
     case NEW_NFT_ART_LOAD_SUCCESS:
       return (state = {
         ...state,
         newArtNftList: [...state.newArtNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newArtNftTotalCount: action.payload.count,
+        newArtNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
@@ -61,15 +77,20 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {
         ...state,
         newAllNftList: [...state.newAllNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newAllNftTotalCount: action.payload.count,
+        newAllNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
     case NEW_NFT_TRENDING_LOAD_SUCCESS:
       return (state = {
         ...state,
-        newTrendingNftList: [...state.newTrendingNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newTrendingNftList: [
+          ...state.newTrendingNftList,
+          ...action.payload.list,
+        ],
+        newTrendingNftTotalCount: action.payload.count,
+        newTrendingNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
@@ -77,7 +98,8 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {
         ...state,
         newImageNftList: [...state.newImageNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newImageNftTotalCount: action.payload.count,
+        newImageNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
@@ -85,7 +107,8 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {
         ...state,
         newGifNftList: [...state.newGifNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newGIFNftTotalCount: action.payload.count,
+        newGIFNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
@@ -93,7 +116,8 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {
         ...state,
         newMovieNftList: [...state.newMovieNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newMovieNftTotalCount: action.payload.count,
+        newMovieNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
@@ -101,7 +125,8 @@ export default function NewNFTListReducer(state = initialState, action) {
       return (state = {
         ...state,
         newMusicNftList: [...state.newMusicNftList, ...action.payload.list],
-        newTotalCount: action.payload.count,
+        newMusicNftTotalCount: action.payload.count,
+        newMusicNftPage: action.payload.pageNum,
         newNftListLoading: false,
       });
 
@@ -114,41 +139,83 @@ export default function NewNFTListReducer(state = initialState, action) {
         newNftListLoading: false,
       });
     case UPDATE_NFT_DETAIL:
-      return (state = { ...state, nftDetail: action.payload });
+      return (state = {...state, nftDetail: action.payload});
     case UPDATE_ARTIST_DETAIL:
-      return (state = { ...state, artistDetail: action.payload });
+      return (state = {...state, artistDetail: action.payload});
     case UPDATE_OWNER_DETAIL:
-      return (state = { ...state, ownerDetail: action.payload });
+      return (state = {...state, ownerDetail: action.payload});
     case NEW_NFT_LOAD_FAIL:
-      return (state = { ...state, newNftListLoading: false, isPhotoNftLoading: false });
+      return (state = {
+        ...state,
+        newNftListLoading: false,
+        isPhotoNftLoading: false,
+      });
     case ART_NFT_LOAD_FAIL:
-      return (state = { ...state, isArtNftLoading: false });
+      return (state = {...state, isArtNftLoading: false});
 
     case NEW_NFT_LIST_RESET:
       switch (action.payload) {
         case CATEGORY_VALUE.allNft:
-          return (state = { ...state, newAllNftList: [] })
+          return (state = {
+            ...state,
+            newAllNftList: [],
+            newAllNftPage: 1,
+            newAllNftTotalCount: 0,
+          });
         case CATEGORY_VALUE.art:
-          return (state = { ...state, newArtNftList: [] })
+          return (state = {
+            ...state,
+            newArtNftList: [],
+            newArtNftPage: 1,
+            newArtNftTotalCount: 0,
+          });
         case CATEGORY_VALUE.trending:
-          return (state = { ...state, newTrendingNftList: [] })
+          return (state = {
+            ...state,
+            newTrendingNftList: [],
+            newTrendingNftPage: 1,
+            newTrendingNftTotalCount: 0,
+          });
         case CATEGORY_VALUE.image:
-          return (state = { ...state, newImageNftList: [] })
+          return (state = {
+            ...state,
+            newImageNftList: [],
+            newImageNftPage: 1,
+            newImageNftTotalCount: 0,
+          });
         case CATEGORY_VALUE.gif:
-          return (state = { ...state, newGifNftList: [] })
+          return (state = {
+            ...state,
+            newGifNftList: [],
+            newGIFNftPage: 1,
+            newGIFNftTotalCount: 0,
+          });
         case CATEGORY_VALUE.movie:
-          return (state = { ...state, newMovieNftList: [] })
+          return (state = {
+            ...state,
+            newMovieNftList: [],
+            newMovieNftPage: 1,
+            newMovieNftTotalCount: 0,
+          });
         case CATEGORY_VALUE.music:
-          return (state = { ...state, newMusicNftList: [] })
+          return (state = {
+            ...state,
+            newMusicNftList: [],
+            newMusicNftPage: 1,
+            newMusicNftTotalCount: 0,
+          });
         default:
-          return (state = { ...state, newNftList: [] });
+          return (state = {...state, newNftList: []});
       }
 
     case NEW_NFT_LIST_UPDATE:
-      return (state = { ...state, newNftList: [...state.newNftList, ...action.payload] });
+      return (state = {
+        ...state,
+        newNftList: [...state.newNftList, ...action.payload],
+      });
 
     case NEW_PAGE_CHANGE:
-      return (state = { ...state, newListPage: action.payload });
+      return (state = {...state, newListPage: action.payload});
 
     default:
       return state;
