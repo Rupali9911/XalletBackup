@@ -414,7 +414,7 @@ export const handleTransactionError = error => {
   if (
     typeof error === 'string' &&
     (error.includes('transaction underpriced') ||
-      error.includes('insufficient funds for gas *  price + value'))
+      error.includes('insufficient funds for gas * price + value'))
   ) {
     alertWithSingleBtn(
       translate('wallet.common.alert'),

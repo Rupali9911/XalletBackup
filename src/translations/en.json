@@ -762,7 +762,8 @@
     "PLEASE_SET_RECOVERY_PHRASE": "Please set the recovery Phrase",
     "LOGOUT_WITHOUT_PHRASE_BACKUP_DESC": "Please note that you have not set a Restore Phrase. You require 12 'Recovery Phrases' to re-login with the same wallet information. The Recovery Phrases are important because they are used to recover your wallet and funds if your device is lost or stolen, for example. If you log out without setting it up, you may not be able to access your wallet permanently. Are you sure you want to log out?",
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "I understand and agree that I do not have access to my wallet permanently because I have not set a restore phrase.",
-    "BACKUP_NOW": "Back up Now"
+    "BACKUP_NOW": "Back up Now",
+    "DECIMAL_POINTS_LIMIT": "You can enter decimal points only upto 8 digits"
   },
   "AwardPage": {},
   "wallet": {

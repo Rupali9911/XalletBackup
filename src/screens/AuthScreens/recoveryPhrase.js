@@ -335,7 +335,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
                   if (recover) {
                     recoverWallet();
                   } else {
-                    navigation.replace('verifyPhrase', { wallet });
+                    navigation.push('verifyPhrase', { wallet });
                   }
                 }
               }}

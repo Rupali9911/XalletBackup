@@ -122,9 +122,7 @@ function Profile({navigation, connector, route}) {
 
   useEffect(() => {
     handleUserData();
-    const unsubscribe = navigation.addListener('focus', () => {});
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   const handleUserData = () => {
     dispatch(startLoadingBanner());
@@ -587,7 +585,7 @@ function Profile({navigation, connector, route}) {
   );
 }
 
-export default Profile;
+export default React.memo(Profile);
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
