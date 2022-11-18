@@ -176,7 +176,8 @@ const ChatDetail = ({route, navigation}) => {
           msg,
           userData.userWallet.address,
           selectedLanguageItem.language_name,
-          nftDetail.name,
+          // nftDetail.name,
+          nftDetail?.name.slice(nftDetail?.name.lastIndexOf("#")),
           tokenId,
         ),
       )
