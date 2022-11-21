@@ -369,8 +369,11 @@ const SendScreen = React.memo(props => {
     );
   };
   const decimalDigit = (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8 ? true : false
-  const disableButton = address && (amount > 0 && amount < getTokenValue().toFixed(4)) ? false : true
-  const alertMsg = (amount >= (getTokenValue().toFixed(4) == '0.0000' ? '0' : getTokenValue().toFixed(4))) ? true : false
+  const disableButton = address && (Number(amount) > 0 && Number(amount) < Number(getTokenValue().toFixed(4))) ? false : true
+  const alertMsg = (Number(amount) >= (Number(getTokenValue().toFixed(4)) === 0.0000 ? 0 : Number(getTokenValue().toFixed(4)))) ? true : false
+  // console.log("@@@ Alert msg 11111 ===========>", Number(amount))
+  // console.log("@@@ Alert msg 22222 ===========>", Number(getTokenValue().toFixed(4)))
+  // console.log("@@@ Alert msg 33333 ===========>", amount >= Number(getTokenValue().toFixed(4)))
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
