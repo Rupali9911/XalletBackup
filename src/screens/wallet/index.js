@@ -568,7 +568,7 @@ const Wallet = ({ route, navigation }) => {
           currencyInDollar(pubKey, 'BSC'),
           currencyInDollar(pubKey, 'ETH'),
           currencyInDollar(pubKey, 'Polygon'),
-          currencyInDollar(pubKey, 'ALIA'),
+          // currencyInDollar(pubKey, 'ALIA'),
           // currencyInDollar(pubKey, 'Xana Chain'),
         ];
         Promise.all(balanceRequests)
