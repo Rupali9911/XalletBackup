@@ -28,6 +28,8 @@ import {
   DELETE_ACCOUNT_START,
   DELETE_ACCOUNT_SUCCESS,
   DELETE_ACCOUNT_FAILD,
+  MAGIC_LOADING_START,
+  MAGIC_LOADING_END,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
@@ -41,6 +43,7 @@ import {Alert} from 'react-native';
 
 const initialState = {
   loading: false,
+  magicLoading: false,
   showSplash: true,
   mainLoader: false,
   wallet: null,
@@ -96,6 +99,16 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+      };
+    case MAGIC_LOADING_START:
+      return {
+        ...state,
+        magicLoading: true,
+      };
+    case MAGIC_LOADING_END:
+      return {
+        ...state,
+        magicLoading: false,
       };
     case SET_PASSCODE:
       return {
@@ -232,6 +245,15 @@ export const connectStateModal = data => ({
 export const endLoading = () => ({
   type: AUTH_LOADING_END,
 });
+
+//  Magic actions
+export const startMagicLoading = () => ({
+  type: MAGIC_LOADING_START,
+});
+export const endMagicLoading = () => ({
+  type: MAGIC_LOADING_END,
+});
+
 export const startMainLoading = () => ({
   type: MAIN_LOADING_START,
 });
@@ -588,7 +610,7 @@ export const updateAvtar = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}`,
         },
       });
-      if(userProfileResponse == undefined) {
+      if (userProfileResponse == undefined) {
         dispatch(endLoadingImage());
       }
     } catch (error) {
@@ -618,12 +640,11 @@ export const updateBanner = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}&type=cover`,
         },
       });
-      if(userProfileResponse == undefined) {
+      if (userProfileResponse == undefined) {
         dispatch(endLoadingBanner());
       }
-      console.log("@@@ Update banner image response =======>", userProfileResponse)
     } catch (error) {
-      console.log("@@@ Update banner image error =======>", error)
+      console.log('@@@ Update banner image error =======>', error);
       dispatch(endLoadingBanner());
       console.log('@@@ update banner error ', error);
     }
