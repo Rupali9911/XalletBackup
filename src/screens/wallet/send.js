@@ -152,6 +152,7 @@ const ScanScreen = React.memo(props => {
   const onSuccess = e => {
     processScanResult(e, SCAN_WALLET)
       .then(result => {
+        setIsActive(false);
         if (result.walletAddress) {
           verifyAddress(result.walletAddress)
             .then(() => {

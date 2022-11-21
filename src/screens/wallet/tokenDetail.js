@@ -12,11 +12,12 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 import {
     addAllBnbTransactions,
     addAllEthTransactions,
     addAllMaticTransactions,
+    addAllXetaTransactions
 } from '../../store/reducer/walletReducer';
 import testnet from "../../common/networkType"
 import { environment, IsTestNet, translate } from '../../walletUtils';
@@ -25,10 +26,13 @@ import History from './components/History';
 import { balance } from './functions';
 import { networkType } from '../../common/networkType'
 import { Loader } from "../../components";
+import sendRequest, {getWallet} from '../../helpers/AxiosApiRequest';
 
 const TokenDetail = ({ route, navigation }) => {
-    const { } = route.params;
-    const { wallet } = useSelector(state => state.UserReducer);
+    console.log("@@@ Token detail routes =====>", route.params.item)
+    const dispatch = useDispatch();
+    const isFocused = useIsFocused();
+
     const {
         ethBalance,
         bnbBalance,
@@ -38,18 +42,19 @@ const TokenDetail = ({ route, navigation }) => {
         usdcBalance,
         wethBalance,
         busdBalance,
-        usdtBalance
-    } =
-        useSelector(state => state.WalletReducer);
-    const dispatch = useDispatch();
-
-    const isFocused = useIsFocused();
+        usdtBalance,
+        xetaBalance,
+        networkType
+    } = useSelector(state => state.WalletReducer);
 
     const [loading, setLoading] = useState(false);
     const [item, setItem] = useState(route.params.item);
+    const [wallet, setWallet] = useState(null);
 
-    useEffect(() => {
+    useEffect(async() => {
         setLoading(true);
+        let wallet = await getWallet();
+        setWallet(wallet)
         // getData()
         //     .then(() => setLoading(false))
         //     .catch((err) => {
@@ -57,67 +62,65 @@ const TokenDetail = ({ route, navigation }) => {
         //         setLoading(false);
         //     });
         getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase());
-        // console.log("0101010101010", item.network)
     }, []);
 
-    const getBalance = () => {
-        let cont = '';
-        let abi = '';
-        let rpc = '';
-        let type = '';
+    // const getBalance = () => {
+    //     let cont = '';
+    //     let abi = '';
+    //     let rpc = '';
+    //     let type = '';
 
-        switch (item.type) {
-            case 'ETH':
-                rpc = environment.ethRpc;
-                type = 'eth';
-                break;
-            case 'BNB':
-                rpc = environment.bnbRpc;
-                type = 'bnb';
-                break;
-            case 'Matic':
-                rpc = environment.polRpc;
-                type = 'matic';
-                break;
-            case 'USDT':
-                cont = environment.usdtCont;
-                abi = environment.usdtAbi;
-                rpc = environment.ethRpc;
-                type = 'usdt';
-                break;
-            case 'BUSD':
-                cont = environment.busdCont;
-                abi = environment.busdAbi;
-                rpc = environment.bnbRpc;
-                type = 'busd';
-                break;
-            case 'ALIA':
-                cont = item.network === 'BSC' ? environment.tnftCont : environment.talCont;
-                abi = environment.aliaAbi;
-                rpc = item.network === 'BSC' ? environment.bnbRpc : environment.polRpc;
-                type = 'alia';
-                break;
-            case 'USDC':
-                cont = environment.usdcCont;
-                abi = environment.usdcAbi;
-                rpc = environment.polRpc;
-                type = 'usdc';
-                break;
-            case "WETH":
-                cont = environment.wethCont;
-                abi = environment.wethAbi;
-                rpc = environment.polRpc;
-                type = 'weth';
-                break;
-            default:
-        }
-        return balance(wallet?.address, cont, abi, rpc, type);
-    };
+    //     switch (item.type) {
+    //         case 'ETH':
+    //             rpc = environment.ethRpc;
+    //             type = 'eth';
+    //             break;
+    //         case 'BNB':
+    //             rpc = environment.bnbRpc;
+    //             type = 'bnb';
+    //             break;
+    //         case 'Matic':
+    //             rpc = environment.polRpc;
+    //             type = 'matic';
+    //             break;
+    //         case 'USDT':
+    //             cont = environment.usdtCont;
+    //             abi = environment.usdtAbi;
+    //             rpc = environment.ethRpc;
+    //             type = 'usdt';
+    //             break;
+    //         case 'BUSD':
+    //             cont = environment.busdCont;
+    //             abi = environment.busdAbi;
+    //             rpc = environment.bnbRpc;
+    //             type = 'busd';
+    //             break;
+    //         case 'ALIA':
+    //             cont = item.network === 'BSC' ? environment.tnftCont : environment.talCont;
+    //             abi = environment.aliaAbi;
+    //             rpc = item.network === 'BSC' ? environment.bnbRpc : environment.polRpc;
+    //             type = 'alia';
+    //             break;
+    //         case 'USDC':
+    //             cont = environment.usdcCont;
+    //             abi = environment.usdcAbi;
+    //             rpc = environment.polRpc;
+    //             type = 'usdc';
+    //             break;
+    //         case "WETH":
+    //             cont = environment.wethCont;
+    //             abi = environment.wethAbi;
+    //             rpc = environment.polRpc;
+    //             type = 'weth';
+    //             break;
+    //         default:
+    //     }
+    //     return balance(wallet?.address, cont, abi, rpc, type);
+    // };
 
     const getData = () => {
         return new Promise((resolve, reject) => {
             getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase()).then(responses => {
-                // console.log('responses', responses)
                 resolve();
             })
                 .catch(err => {
@@ -184,32 +187,37 @@ const TokenDetail = ({ route, navigation }) => {
         } else if (item.type == 'USDT') {
             let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
             totalValue = value;
+        } else if (item.type == 'XETA') {
+            let value = parseFloat(xetaBalance); 
+            totalValue = value;
         }
 
         return totalValue;
     };
 
-    const getTransactionsByType = (address, type, coin) => {
-        coin === "tnft" || coin === "tal" ? coin = "alia" : coin
-        // console.log('address,type,coin', address, type, coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
+    const getTransactionsByType = (address, type) => {
+            console.log("@@@ Get Transaction By Type ========>", type)
         return new Promise((resolve, reject) => {
-            fetch(
-                `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type === "ethereum" ? type = "eth" : type}&networkType=${networkType}&coin=${coin}`,
-            )
-                .then(response => {
-                    // console.log('response1234512345', response);
-                    return response.json();
-                })
+           sendRequest({
+                url: `${NEW_BASE_URL}/mobile/history`,
+                method: 'GET',
+                params: {
+                    address,
+                    networkId: networkType?.id,
+                    environment: networkType
+                  },
+              })
                 .then(res => {
-                    // console.log('response of xanawallet/fetch-transactions', res);
                     setLoading(false);
                     if (res.success) {
-                        if (type == 'eth') {
+                        if (type == 'ethereum') {
                             dispatch(addAllEthTransactions(res.data));
                         } else if (type == 'bsc') {
                             dispatch(addAllBnbTransactions(res.data));
                         } else if (type == 'polygon') {
                             dispatch(addAllMaticTransactions(res.data));
+                        } else if(type == 'xana chain') {
+                            dispatch(addAllXetaTransactions(res.data));
                         }
                     }
                     resolve();
