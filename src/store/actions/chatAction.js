@@ -182,6 +182,7 @@ export const remainWordCountData = (count) => ({
 
 //=====================Chat=====================
 export const getAiChat = (message, address, locale, name, tokenId) => (dispatch, getState) => {
+  let botName = name?.split(" ").slice?.(1)?.[0] ? name?.split(" ").slice?.(1)?.[0]  : name;
   const { reducerTabTitle } = getState().chatReducer;
   dispatch(chatLoadingStart(true));
   return new Promise((resolve, reject) => {
@@ -189,7 +190,7 @@ export const getAiChat = (message, address, locale, name, tokenId) => (dispatch,
     let data = {
       address,
       locale,
-      bot_name: name,
+      bot_name: botName,
       text: message,
       tokenId,
       is_owned: reducerTabTitle === 'Owned' ? true : false
