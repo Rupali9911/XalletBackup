@@ -109,10 +109,7 @@ function Setting({navigation}) {
   const [deletePopup, setDeletePopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const {deleteAccountLoading} = useSelector(state => state.UserReducer);
-  console.log(
-    '🚀 ~ file: index.js ~ line 112 ~ Setting ~ deleteAccountLoading',
-    deleteAccountLoading,
-  );
+  const [isCheckService, setIsCheckService] = useState(false);
 
   useEffect(() => {
     // dispatch(getAllCards(userData.access_token));
@@ -318,6 +315,9 @@ function Setting({navigation}) {
         }
         rightButtonTitle={translate('wallet.common.delete')}
         onRightPress={deleteAccount}
+        checkBoxDescription={translate('common.deleteCheckBoxDiscription')}
+        isCheck={isCheckService}
+        onChecked={setIsCheckService}
       />
     </SafeAreaView>
   );

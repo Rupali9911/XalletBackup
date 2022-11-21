@@ -114,10 +114,12 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 dispatch(setBackupStatus(true));
               })
               .catch(err => {
-                alertWithSingleBtn(
-                  translate('wallet.common.alert'),
-                  translate('wallet.common.tryAgain'),
-                );
+                console.log("@@@ Login external wallet api error =========>", err);
+                dispatch(endLoader());
+                // alertWithSingleBtn(
+                //   translate('wallet.common.alert'),
+                //   translate('wallet.common.tryAgain'),
+                // );
               });
           } else {
             alertWithSingleBtn(

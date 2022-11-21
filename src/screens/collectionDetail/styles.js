@@ -8,8 +8,15 @@ import {
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../common/responsiveFunction';
+import {Dimensions} from 'react-native';
+const {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  loaderParentActivity: {
+    height: height / 6,
+    width: width,
+  },
+  loaderParent: {marginTop: height / 8},
   backIcon: {
     width: SIZE(16),
     height: SIZE(16),
@@ -169,8 +176,16 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL,
     color: '#212529',
   },
+  sorryMessageActivity: {
+    width: width,
+    // height: Dimensions.get('window').height,
+    marginTop: height / 13,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   sorryMessageCont: {
-    flex: 1,
+    // flex: 1,
+    marginTop: height / 8,
     justifyContent: 'center',
     alignItems: 'center',
   },

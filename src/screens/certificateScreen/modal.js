@@ -7,6 +7,9 @@ import Images from '../../constants/Images';
 import cancelImg from '../../../assets/images/cancel.png';
 import {translate} from '../../walletUtils';
 import {SIZE} from '../../constants';
+import Checkbox from '../../components/checkbox';
+import {hp, wp} from '../../constants/responsiveFunct';
+import Colors from '../../constants/Colors';
 
 const ShowModal = props => {
   const {
@@ -23,6 +26,9 @@ const ShowModal = props => {
     rightLoading,
     rightDisabled,
     leftDisabled,
+    checkBoxDescription,
+    isCheck,
+    onChecked,
   } = props;
 
   return (
@@ -68,6 +74,27 @@ const ShowModal = props => {
             </Text>
           </View>
 
+          {checkBoxDescription ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginHorizontal: SIZE(10),
+                alignItems: 'center',
+              }}>
+              <Checkbox
+                isCheck={isCheck}
+                iconSize={wp('6%')}
+                onChecked={onChecked}
+                checkboxColor={Colors.BLACK1}
+                label={checkBoxDescription}
+                labelStyle={styles.checkBoxLabel}
+                containerStyle={{
+                  marginRight: 0,
+                }}
+              />
+            </View>
+          ) : null}
+
           <View style={styles.groupButtonView}>
             <GroupButton
               leftText={
@@ -91,12 +118,24 @@ const ShowModal = props => {
                   ? rightButtonTitle
                   : translate('common.Confirm')
               }
-              rightDisabled={rightDisabled ? rightDisabled : false}
+              rightDisabled={
+                checkBoxDescription
+                  ? isCheck
+                    ? rightDisabled
+                      ? rightDisabled
+                      : false
+                    : true
+                  : rightDisabled
+                  ? rightDisabled
+                  : false
+              }
               rightLoading={rightLoading ? rightLoading : false}
               onRightPress={onRightPress}
               rightStyle={
-                isDelete
-                  ? styles.rightDeleteGroupButton
+                checkBoxDescription
+                  ? isCheck
+                    ? {backgroundColor: Colors.RED3}
+                    : styles.rightDeleteDisabled
                   : styles.reClaimRightGroupButton
               }
               rightTextStyle={styles.reClaimrightGroupButtonText}

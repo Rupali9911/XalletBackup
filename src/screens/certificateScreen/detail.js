@@ -455,7 +455,6 @@ const DetailScreen = ({navigation, route}) => {
         });
         setTokenList(tokenTemp);
         setValue(tokenTemp && tokenTemp[0]?.value);
-
       }
     }
   }, [nftId]);
@@ -802,7 +801,7 @@ const DetailScreen = ({navigation, route}) => {
             <ImageModal
               visible={imgModal}
               setVisible={setImgModal}
-              uri={thumbnailUrl}
+              uri={mediaUrl}
               iconSize={wp('7%')}
               iconColor={Colors.WHITE1}
             />
@@ -842,7 +841,7 @@ const DetailScreen = ({navigation, route}) => {
             if (!disableCreator) {
               onProfile(false);
             }
-            navigation.navigate('Profile', {
+            navigation.push('Profile', {
               id: detailNFT?.creator?.address,
               role: detailNFT?.creator?.role,
             });
@@ -867,12 +866,12 @@ const DetailScreen = ({navigation, route}) => {
           <View style={styles.ownerMarkIcon}>{renderVerifiedIcon()}</View>
         ) : null}
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('Profile', {
+          onPress={() => {
+            navigation.push('Profile', {
               id: detailNFT?.owner?.address,
-              role: detailNFT?.creator?.role,
-            })
-          }
+              role: detailNFT?.owner?.role,
+            });
+          }}
           style={styles.personType}>
           {renderIconImage('owner', false)}
         </TouchableOpacity>
@@ -1089,7 +1088,6 @@ const DetailScreen = ({navigation, route}) => {
       method: 'POST',
     })
       .then(cancelAuctionRes => {
-
         if (cancelAuctionRes?.error) {
           handlePendingModal(false);
           throw new Error(cancelAuctionRes.message);
@@ -1163,7 +1161,6 @@ const DetailScreen = ({navigation, route}) => {
               data: approveData.data, // Optional, but used for defining smart contract creation and interaction.
               chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
             };
-
 
             const txnResult = await sendCustomTransaction(
               transactionParameters,
@@ -1349,7 +1346,6 @@ const DetailScreen = ({navigation, route}) => {
               data: signData.data, // Optional, but used for defining smart contract creation and interaction.
               chainId: currentNetwork?.chainId, // Used to prevent transaction reuse across b
             };
-
 
             sendCustomTransaction(
               transactionParameters,
@@ -2919,8 +2915,8 @@ const DetailScreen = ({navigation, route}) => {
           history === 'bid'
             ? translate('wallet.common.bidHistory')
             : history === 'offers'
-              ? translate('common.offers')
-              : translate('common.tradingHistory')
+            ? translate('common.offers')
+            : translate('common.tradingHistory')
         }
         containerChildStyles={{
           height:
@@ -3505,7 +3501,10 @@ const DetailScreen = ({navigation, route}) => {
           isLike: nftData?.isLike,
           totalLike: nftData?.totalLike,
         };
-        console.log("@@@ On Detail screen, handle like method ==========>", nftItem)
+        console.log(
+          '@@@ On Detail screen, handle like method ==========>',
+          nftItem,
+        );
         setNftItem(nftItem);
       }
     }

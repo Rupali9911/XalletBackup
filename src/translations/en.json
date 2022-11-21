@@ -731,6 +731,7 @@
     "AIChat": "Chat with AI",
     "deleteAccount": "Delete Account",
     "deleteAccountDescription": "Are you sure you want to delete your account? If you delete your account, you will permanently loss your data.",
+    "deleteCheckBoxDiscription": "I understand that all data in my account will be deleted and cannot be recovered again, and I agree to delete my account.",
     "enterMessage": "Type your message",
     "CREATED_COLLECTED": "Created / Collected",
     "LIST_COLLECTION_TABLE_SYMBOL": "Symbol",
@@ -754,7 +755,10 @@
     "ARTIST_BTN_REQUEST": "Become an Artist",
     "ARTIST_DESCRIPTION_LINE_1": "You are only a form away from becoming an Artist on XALLET. After winning the Artist title, you will be given a rare Blue Verification Badge that is only available to verified Artists.",
     "ARTIST_DESCRIPTION_LINE_2": "All applications will go through several thorough screening rounds from XALLET team to ensure the authencity of the Artist.",
-    "ARTIST_NOTE": "You must input a username, upload a profile picture, verify your email address and Twitter account first."
+    "ARTIST_NOTE": "You must input a username, upload a profile picture, verify your email address and Twitter account first.",
+    "PASTE_PRIVATE_KEY": "Paste the private key string",
+    "EXAMPLE_PLACEHOLDER_TEXT": "e.g. 3a1076bf45ab87yyz2ad64ccb3b102177yzf7faacbf2872e88fdd9a537d8yz266",
+    "PROFILE_SAVE_MSG": "※ [Verify] Button will get active only after clicking on [Save Changes]"
   },
   "AwardPage": {},
   "wallet": {
