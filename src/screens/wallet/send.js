@@ -216,6 +216,7 @@ const ScanScreen = React.memo(props => {
           cameraStyle={styles.qrCameraStyle}
           topViewStyle={{flex: 0}}
           bottomViewStyle={{flex: 0}}
+          vibrate={isActive}
         />
       ) : null}
     </View>
