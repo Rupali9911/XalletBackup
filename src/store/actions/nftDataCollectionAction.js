@@ -206,6 +206,7 @@ export const nftDataCollectionList = (
   userId,
   userAddress,
   launchpadId,
+  sortFilter = 0,
 ) => {
   // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
 
@@ -220,6 +221,7 @@ export const nftDataCollectionList = (
           page,
           limit,
           launchpadId,
+          userId,
         },
       })
         .then(json => {
@@ -244,6 +246,7 @@ export const nftDataCollectionList = (
           networkName,
           contractAddress,
           userId,
+          sortFilter,
         },
       })
         .then(json => {

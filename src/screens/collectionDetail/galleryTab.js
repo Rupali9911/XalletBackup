@@ -67,7 +67,7 @@ const GalleryTab = props => {
           null,
           isLaunchPad,
           null,
-          null,
+          userData?.id,
           null,
           collection?.id,
         ),
