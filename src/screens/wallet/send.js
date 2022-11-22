@@ -86,7 +86,7 @@ export const AddressField = props => {
 export const PaymentField = props => {
   return (
     <View style={[styles.inputMainCont]}>
-      <Text style={styles.inputLeft}>{translate('wallet.common.amount')}</Text>
+      <Text style={styles.inputLeft}>{translate('common.SEND_QUANTITY')}</Text>
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
         <TextInput
           style={[styles.inputCont, styles.paymentField, {fontSize: RF(2)}]}

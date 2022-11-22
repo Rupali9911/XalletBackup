@@ -764,7 +764,8 @@
     "LOGOUT_WITHOUT_PHRASE_BACKUP_DESC": "请注意，您尚未设置恢复短语。您需要 12 个“恢复短语”才能使用相同的钱包信息重新登录。恢复短语很重要，因为它们可用于在您的设备丢失或被盗等情况下找回您的钱包和资金。如果您在未设置的情况下注销，您可能无法永久访问您的钱包。您确定要退出吗？",
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "我理解并同意我无法永久访问我的钱包，因为我没有设置恢复短语。",
     "BACKUP_NOW": "立即备份",
-    "DECIMAL_POINTS_LIMIT": "您最多只能输入 8 位小数点"
+    "DECIMAL_POINTS_LIMIT": "您最多只能输入 8 位小数点",
+    "SEND_QUANTITY": "发送数量"
   },
   "AwardPage": {},
   "wallet": {

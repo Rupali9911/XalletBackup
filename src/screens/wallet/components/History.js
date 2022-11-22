@@ -180,12 +180,12 @@ const History = props => {
                             <TextView style={styles.noData}>
                                 {translate('wallet.common.transactionsHint')}
                             </TextView>
-                            <Button
+                            {/* <Button
                                 mode={'text'}
                                 uppercase={false}
                                 color={Colors.buttonTxtColor2}>
                                 {translate('wallet.common.buy')} {coin.type}
-                            </Button>
+                            </Button> */}
                         </View>
                     );
                 }}
