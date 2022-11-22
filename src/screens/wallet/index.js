@@ -241,14 +241,16 @@ const Wallet = ({ route, navigation }) => {
           hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
           onPress={() => setPickerVisible(true)}>
           {
-            networkType?.name !== 'XANA CHAIN' ?
+            (networkType?.name !== 'XANA CHAIN' && networkType?.name !== 'Ethereum') ?
               <SvgWithCssUri
                 width={SIZE(25)}
                 height={SIZE(25)}
                 uri={networkType?.image}
               />
-              :
+              : networkType?.name !== 'Ethereum' ?
               <Image style={{ height: SIZE(30), width: SIZE(30) }} source={{ uri: networkType?.image }} />
+              :
+              <Image style={{ height: SIZE(25), width: SIZE(25) }} source={ImagesSrc.etherium} />
           }
         </TouchableOpacity>
       </View>
