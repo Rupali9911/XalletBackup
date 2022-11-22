@@ -286,7 +286,7 @@ const Wallet = ({ route, navigation }) => {
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
       let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
       let busdValue = parseFloat(busdBalance) * 1;
-      let value = bnbValue + tnftValue + busdValue;
+      let value = bnbValue + busdValue;
       totalValue = value;
     } else if (networkType?.name == 'XANA CHAIN') {
       // for mainnet
@@ -304,10 +304,10 @@ const Wallet = ({ route, navigation }) => {
       let usdctValue = parseFloat(usdcBalance) * 1;
       let value = ""
       if (networkType == 'testnet') {
-        value = maticValue + talValue + usdctValue;
+        value = maticValue + usdctValue;
       } else {
         let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-        value = maticValue + talValue + usdctValue + wethValue;
+        value = maticValue + usdctValue + wethValue;
       }
       totalValue = value;
 
@@ -568,7 +568,7 @@ const Wallet = ({ route, navigation }) => {
           currencyInDollar(pubKey, 'BSC'),
           currencyInDollar(pubKey, 'ETH'),
           currencyInDollar(pubKey, 'Polygon'),
-          // currencyInDollar(pubKey, 'ALIA'),
+          currencyInDollar(pubKey, 'ALIA'),
           // currencyInDollar(pubKey, 'Xana Chain'),
         ];
         Promise.all(balanceRequests)
