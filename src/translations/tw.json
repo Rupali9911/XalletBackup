@@ -765,7 +765,10 @@
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "我理解並同意我無法永久訪問我的錢包，因為我沒有設置恢復短語。",
     "BACKUP_NOW": "立即備份",
     "DECIMAL_POINTS_LIMIT": "您最多只能輸入 8 位小數點",
-    "SEND_QUANTITY": "發送數量"
+    "SEND_QUANTITY": "發送數量",
+    "NETWORK_GAS_FEE":"網絡煤氣費",
+    "TOTAL_AMOUNT_GAS_FEE":"總計（金額 + 汽油費）",
+    "TRANSACTION_SENT_NETWORK": "交易已發送至網絡！"
   },
   "AwardPage": {},
   "wallet": {

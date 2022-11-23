@@ -274,6 +274,38 @@ const Wallet = ({ route, navigation }) => {
     )
   }
 
+  const getTokenDollarAmount = (type) => {
+    let tokenDollarValue = 0;
+    console.log("@@@ Get Token Dollar Value Function =======>", type)
+    if(type == 'ETH') {
+      let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH;
+      tokenDollarValue = eth;
+    } else if(type == 'USDT') {
+      let usdtValue = parseFloat(usdtBalance) * 1;
+      tokenDollarValue = usdtValue;
+    } else if(type == 'BNB') {
+      let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
+      tokenDollarValue = bnbValue;
+    } else if(type == 'BUSD') {
+      let busdValue = parseFloat(busdBalance) * 1;
+      tokenDollarValue = busdValue;
+    } else if(type == 'Matic') {
+      let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
+      tokenDollarValue = maticValue;
+    } else if(type == 'USDC') {
+      let usdctValue = parseFloat(usdcBalance) * 1;
+      tokenDollarValue = usdctValue;
+    } else if(type == 'WETH') {
+      let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
+      tokenDollarValue = wethValue;
+    } else if(type == 'XETA') {
+      let xetaValue = parseFloat(xetaBalance) * currencyPriceDollar?.XETA;
+      tokenDollarValue = xetaValue;
+    } 
+    return tokenDollarValue;
+  }
+  
+
   const setBalanceField = () => {
     let totalValue = 0;
     if (networkType?.name == 'Ethereum') {
@@ -383,8 +415,9 @@ const Wallet = ({ route, navigation }) => {
         values={balances}
         network={networkType}
         onTokenPress={item => {
-          // console.log('Token details transfered######', item);
-          navigation.navigate('tokenDetail', { item });
+          setSelectTokenVisible(false);
+          const tokenDollarValue = getTokenDollarAmount(item.type);
+          navigation.navigate('tokenDetail', { item, tokenDollarValue });
         }}
         onRefresh={onRefreshToken}
       />
@@ -466,8 +499,9 @@ const Wallet = ({ route, navigation }) => {
         isSend={isSend}
         onTokenPress={item => {
           setSelectTokenVisible(false);
+          const tokenDollarValue = getTokenDollarAmount(item.type);
           if (isSend) {
-            navigation.navigate('send', { item, type: item.type });
+            navigation.navigate('send', { item, type: item.type, tokenDollarValue });
           } else {
             navigation.navigate('receive', { item, type: item.type });
           }

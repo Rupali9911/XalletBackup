@@ -765,7 +765,10 @@
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "我理解并同意我无法永久访问我的钱包，因为我没有设置恢复短语。",
     "BACKUP_NOW": "立即备份",
     "DECIMAL_POINTS_LIMIT": "您最多只能输入 8 位小数点",
-    "SEND_QUANTITY": "发送数量"
+    "SEND_QUANTITY": "发送数量",
+    "NETWORK_GAS_FEE":"网络煤气费",
+    "TOTAL_AMOUNT_GAS_FEE":"总计（金额 + 汽油费）",
+    "TRANSACTION_SENT_NETWORK": "交易已发送至网络!"
   },
   "AwardPage": {},
   "wallet": {

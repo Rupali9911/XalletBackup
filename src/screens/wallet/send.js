@@ -235,7 +235,7 @@ const ScanScreen = React.memo(props => {
 const SendScreen = React.memo(props => {
   const navigation = useNavigation();
   //====================== Props Destructuring =========================
-  const {item, type, setLoading, loading} = props;
+  const {item, type, tokenDollarValue, setLoading, loading} = props;
 
   //====================== Getting data from reducers =========================
   const {userData} = useSelector(state => state.UserReducer);
@@ -412,26 +412,34 @@ const SendScreen = React.memo(props => {
                   fontWeight: 'bold',
                   color: Colors.GREY10,
                 }}>
-                Balance
+                {translate('common.AliaBalance')}
               </Text>
               <NumberFormat
                 value={getTokenValue()}
                 displayType={'text'}
-                decimalScale={4}
+                decimalScale={8}
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView style={styles.priceCont}>{formattedValue} {type}</TextView>
                 )}
               />
-              <Text
+              <NumberFormat
+                value={tokenDollarValue}
+                displayType={'text'}
+                decimalScale={2}
+                thousandSeparator={true}
+                renderText={formattedValue => (
+                  <TextView
                 style={{
                   alignSelf: 'flex-end',
                   fontSize: RF(2.2),
                   fontWeight: 'bold',
                   color: Colors.GREY10,
                 }}>
-                ($134)
-              </Text>
+                {`($${formattedValue})`}
+              </TextView>
+                )}
+              />
             </View>
           </View>
           <View style={styles.inputContainer}>
@@ -539,7 +547,7 @@ const SendScreen = React.memo(props => {
 /*************************************************************************/
 const Send = ({route, navigation}) => {
   //================= Props Destructuring =============================
-  const {item, type} = route.params;
+  const {item, type, tokenDollarValue} = route.params;
   // console.log("@@@ Send screen props ============>", item, type)
   //================= States Initialiazation =============================
   const [loading, setLoading] = useState(false);
@@ -564,6 +572,7 @@ const Send = ({route, navigation}) => {
             setLoading={setLoading}
             item={item}
             type={type}
+            tokenDollarValue={tokenDollarValue}
             loading={loading}
             address={sendToAddress}
             amount={amountToSend}

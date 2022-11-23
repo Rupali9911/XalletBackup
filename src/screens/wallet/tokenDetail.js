@@ -274,7 +274,7 @@ const TokenDetail = ({ route, navigation }) => {
           <View style={[styles.headerBtns, styles.headerBottomCont]}>
             <HeaderBtns
               onPress={() => {
-                navigation.navigate('send', { item, type: item.type });
+                navigation.navigate('send', { item, type: item.type, tokenDollarValue: route.params.tokenDollarValue });
               }}
               image={ImagesSrc.send}
               label={translate('wallet.common.send')}
