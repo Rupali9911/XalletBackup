@@ -16,6 +16,27 @@ const Policy = ({route}) => {
 
   let contentAn = isPolicy ? 'file:///android_asset/policy.html' : 'file:///android_asset/terms.html';
 
+  var  webViewObj = {
+    canGoBack: false,
+    ref: null,
+
+}
+  const onMessage= (event) => {
+    console.log('Meesaage from Webview',event) 
+     Linking.openURL(event.nativeEvent.data)
+  }
+
+  const handleWebViewNavigationStateChange=(navState)=>{
+    console.log('Navstate', navState)
+
+        if (navState.url.indexOf('xanalia.com') > 0) {
+          setLoading(false)
+          webViewObj.ref.stopLoading()
+             Linking.openURL(navState.url);
+            return false
+        }
+  }
+
   return (
     <AppBackground isBusy={loading}>
       <AppHeader showBackButton title={''} />
@@ -30,18 +51,22 @@ const Policy = ({route}) => {
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
+          onNavigationStateChange={(navState) => {handleWebViewNavigationStateChange(navState)}}
+          ref={(webView) => { webViewObj.ref = webView; }}
         />
       ) : (
         <WebView
           style={styles.webview}
           originWhitelist={['*']}
           source={contentIos}
-          onMessage={event => Linking.openURL(event.nativeEvent.data)}
+          onMessage={event => onMessage(event) }
           decelerationRate="normal"
           javaScriptEnabled={true}
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
+          onNavigationStateChange={(navState) => {handleWebViewNavigationStateChange(navState)}}
+          ref={(webView) => { webViewObj.ref = webView; }}
         />
       )}
     </AppBackground>
