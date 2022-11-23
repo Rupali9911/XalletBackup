@@ -182,7 +182,11 @@ export const remainWordCountData = (count) => ({
 
 //=====================Chat=====================
 export const getAiChat = (message, address, locale, name, tokenId) => (dispatch, getState) => {
+<<<<<<< HEAD
   let botName = name.split(" ").splice(1)[0];
+=======
+  let botName = name?.split(" ").slice?.(1)?.[0] ? name?.split(" ").slice?.(1)?.[0]  : name;
+>>>>>>> b5745719539ca815784a2fa15dd707da2a5e27ce
   const { reducerTabTitle } = getState().chatReducer;
   dispatch(chatLoadingStart(true));
   return new Promise((resolve, reject) => {

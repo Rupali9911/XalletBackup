@@ -30,6 +30,7 @@ const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
   let {nftDetail, tokenId} = route.params;
+  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'))
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -74,10 +75,10 @@ const ChatDetail = ({route, navigation}) => {
             message: data?.question,
             type: 'sender',
             time: timeConversion,
-            senderImage: userData.avatar,
+            senderImage: userData?.avatar,
             senderName:
-              userData.userName != ''
-                ? userData.userName
+              userData?.userName != ''
+                ? userData?.userName
                 : userData?.userWallet?.address.substring(0, 6),
           };
 
@@ -85,8 +86,8 @@ const ChatDetail = ({route, navigation}) => {
             message: data.reply,
             type: 'receiver',
             time: timeConversion,
-            receiverImage: nftDetail.image,
-            receiverName: nftDetail.name,
+            receiverImage: nftDetail?.image,
+            receiverName: NFTNAME,
           };
           // history.push(receiver, sender);
           setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
@@ -176,8 +177,12 @@ const ChatDetail = ({route, navigation}) => {
           msg,
           userData.userWallet.address,
           selectedLanguageItem.language_name,
+<<<<<<< HEAD
           // nftDetail.name,
           nftDetail?.name.slice(nftDetail?.name.lastIndexOf("#")),
+=======
+          NFTNAME,
+>>>>>>> b5745719539ca815784a2fa15dd707da2a5e27ce
           tokenId,
         ),
       )
@@ -189,8 +194,8 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail.image,
-              receiverName: nftDetail.name,
+              receiverImage: nftDetail?.image,
+              receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
@@ -226,13 +231,13 @@ const ChatDetail = ({route, navigation}) => {
         <View style={styles.chatHeaderContainer}>
           <View>
             <C_Image
-              uri={nftDetail.image}
+              uri={nftDetail?.image}
               imageStyle={styles.cImageContainer}
             />
           </View>
           <View style={{paddingStart: 10}}>
             <Text style={styles.headerNftName}>
-              {nftDetail.name.slice(nftDetail.name.lastIndexOf('#'))}
+              {NFTNAME}
             </Text>
             <View style={{flexDirection: 'row'}}>
               <View style={styles.typingContainer}>
@@ -278,7 +283,7 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>
-              {nftDetail.name.slice(nftDetail.name.lastIndexOf('#'))}
+              {NFTNAME}
             </Text>
             <View style={[styles.separator, {width: '80%'}]} />
             {!chatBotData?.response ? (
@@ -292,7 +297,7 @@ const ChatDetail = ({route, navigation}) => {
             ) : null}
           </View>
           <View style={styles.bannerImgContainer}>
-            <C_Image uri={nftDetail.image} imageStyle={styles.bannerImage} />
+            <C_Image uri={nftDetail?.image} imageStyle={styles.bannerImage} />
           </View>
         </View>
         <View style={{flex: 0.6}}>
