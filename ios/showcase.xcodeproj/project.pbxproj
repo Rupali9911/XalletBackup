@@ -679,7 +679,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.11.18;
+				MARKETING_VERSION = 2.12.02;
 				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -793,7 +793,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.11.18;
+				MARKETING_VERSION = 2.12.02;
 				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
