@@ -30,7 +30,7 @@ async function sendRequest(payload) {
         };
     // console.log('@@@ Axios wrapper params ==========>', payload);
     const state = await NetInfo.fetch();
-    // console.log('Connection type', state.type, state.isConnected);
+    //console.log('Connection type', state.type, state.isConnected);
     if (state.isConnected) {
       isAlert = false;
       const response = await axiosInstance.request(payload);
@@ -51,14 +51,16 @@ async function sendRequest(payload) {
       }
     }
   } catch (error) {
-    alertWithSingleBtn(
-      translate('wallet.common.alert'),
-      translate('wallet.common.error.networkError'),
-      () => {
-        isAlert = false;
-        // return Promise.reject()
-      },
-    );
+    // console.log('networkError2');
+
+    // alertWithSingleBtn(
+    //   translate('wallet.common.alert'),
+    //   translate('wallet.common.error.networkError'),
+    //   () => {
+    //     isAlert = false;
+    //     // return Promise.reject()
+    //   },
+    // );
     return Promise.reject(error);
   }
 }
@@ -105,7 +107,6 @@ axiosInstance.interceptors.response.use(
         console.log('@@@ Axios API Request 502 ======>');
       } else if (response?.status === 400) {
         console.log('@@@ Axios API Request 400 ======>');
-        throw response;
       }
       return Promise.reject(response);
       // return response;

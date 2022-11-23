@@ -407,7 +407,7 @@
     "USER_WITH_EMAIL_ALREADY_EXIST": "이미 등록된 이메일입니다",
     "USER_WITH_TWITTER_ALREADY_EXIST": "이미 등록된 트위터입니다",
     "BTN_EMAIL_REQUEST": "이메일 인증",
-    "BTN_EMAIL_APPROVED": "이메일이 인증되었습니다",
+    "BTN_EMAIL_APPROVED": "검증됨",
     "BTN_TWITTER_REQUEST": "확인하다",
     "BTN_TWITTER_APPROVED": "트위터가 인증되었습니다",
     "LABEL_EMAIL_SUCCESS": "인증 메일을 보냈습니다. 이메일을 확인해주세요",

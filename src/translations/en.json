@@ -407,7 +407,7 @@
     "USER_WITH_EMAIL_ALREADY_EXIST": "User with email already exist",
     "USER_WITH_TWITTER_ALREADY_EXIST": "User with twitter already exist",
     "BTN_EMAIL_REQUEST": "Verify email address",
-    "BTN_EMAIL_APPROVED": "Email verified!",
+    "BTN_EMAIL_APPROVED": "Verified",
     "BTN_TWITTER_REQUEST": "Verify",
     "BTN_TWITTER_APPROVED": "Twitter verified!",
     "LABEL_EMAIL_SUCCESS": "Sent a message to your email address! Please check your email.",

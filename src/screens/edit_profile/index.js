@@ -34,6 +34,7 @@ import userReducer, {
   setToastMsg,
   updateProfile,
   verifyEmail,
+  getUserData,
 } from '../../store/reducer/userReducer';
 import {hp} from '../../constants/responsiveFunct';
 import {View} from 'native-base';
@@ -75,7 +76,7 @@ function Profile(props) {
     UserReducer.userData.instagramSite,
   );
   const [errInstagram, setErrInstagram] = useState(false);
-  const [about, setAbout] = useState(UserReducer.userData.about);
+  const [about, setAbout] = useState(UserReducer.userData.description);
   const [errAbout, setErrAbout] = useState(false);
   const [beforeTwitter, setBeforeTwitter] = useState(
     UserReducer.userData.twitterSite,
@@ -90,7 +91,7 @@ function Profile(props) {
   const [infoEmail, setInfoEmail] = useState(false);
 
   const dispatch = useDispatch();
-  let id = UserReducer.userData.userWallet.address;
+  let id = UserReducer.userData?.userWallet?.address;
   const selectedLanguageItem = useSelector(
     state => state.LanguageReducer?.selectedLanguageItem?.language_name,
   );
@@ -101,6 +102,30 @@ function Profile(props) {
       renderMessageModal(toastMsg.msg);
     }
   }, [toastMsg]);
+
+  useEffect(() => {
+    setEmail(UserReducer.userData.email);
+    setUsername(
+      isNonCrypto === 0
+        ? UserReducer.userData.title
+        : UserReducer.userData.userName,
+    );
+    setTwitter(UserReducer.userData.twitterSite);
+    setWebsite(UserReducer.userData.website);
+    setDiscord(UserReducer.userData.discordSite);
+    setYoutube(UserReducer.userData.youtubeSite);
+    setInstagram(UserReducer.userData.instagramSite);
+    setBeforeEmail(UserReducer.userData.email);
+    setBeforeTwitter(UserReducer.userData.twitterSite);
+    setAbout(UserReducer.userData.description);
+  }, [UserReducer?.userData]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(getUserData(id));
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     if (
@@ -265,11 +290,10 @@ function Profile(props) {
     } else {
       validateNum++;
     }
-
     const req_body =
       isNonCrypto === 0
         ? {
-            description: '',
+            description: about,
             discordSite: discord,
             email: email || undefined,
             instagramSite: instagram,
@@ -280,7 +304,7 @@ function Profile(props) {
             zoomMail: '',
           }
         : {
-            description: '',
+            description: about,
             discordSite: discord,
             email: email || undefined,
             instagramSite: instagram,
@@ -294,12 +318,6 @@ function Profile(props) {
       dispatch(updateProfile(req_body, id));
       setBeforeTwitter(twitter);
       setBeforeEmail(email);
-      dispatch(
-        setToastMsg({
-          error: false,
-          msg: translate('common.USER_SUCCESSFUL_UPDATE'),
-        }),
-      );
       setDisable(true);
     }
   };
@@ -410,7 +428,7 @@ function Profile(props) {
                 <Text style={styles.verifyBtnTitle}>
                   {UserReducer.userData.twitterVerified === 0
                     ? translate('common.BTN_TWITTER_REQUEST')
-                    : translate('common.BTN_TWITTER_REQUEST')}
+                    : translate('common.BTN_EMAIL_APPROVED')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -477,7 +495,7 @@ function Profile(props) {
                   <Text style={styles.verifyBtnTitle}>
                     {UserReducer.userData.emailVerified === 0
                       ? translate('common.BTN_TWITTER_REQUEST')
-                      : translate('common.BTN_TWITTER_REQUEST')}
+                      : translate('common.BTN_EMAIL_APPROVED')}
                   </Text>
                 </TouchableOpacity>
               </View>
