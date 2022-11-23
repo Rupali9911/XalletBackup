@@ -65,34 +65,40 @@ const showErrorAlert = msg => {
 
 export const AddressField = props => {
   return (
-    <View style={styles.inputMainCont}>
+    <View style={{ width: '100%'}}>
       <Text style={styles.inputLeft}>
         {translate('wallet.common.walletAddress')}
       </Text>
-      <TextInput
-        style={[styles.inputCont, styles.paymentField]}
-        placeholder=""
-        placeholderTextColor={Colors.topUpPlaceholder}
-        returnKeyType="done"
-        value={props.value}
-        onChangeText={val => props.onChangeText(val)}
-        onSubmitEditing={props.onSubmitEditing}
-        editable={props.editable}
-      />
+      <View style={styles.inputMainCont}>
+        <TextInput
+          style={[styles.inputCont, styles.paymentField, {fontSize: RF(1.8)}]}
+          placeholder="Please enter wallet address"
+          placeholderTextColor={Colors.GREY4}
+          returnKeyType="done"
+          value={props.value}
+          onChangeText={val => props.onChangeText(val)}
+          onSubmitEditing={props.onSubmitEditing}
+          editable={props.editable}
+        />
+      </View>
     </View>
   );
 };
 
 export const PaymentField = props => {
   return (
-    <View style={[styles.inputMainCont]}>
+    <View style={{ width: '100%',}}>
       <Text style={styles.inputLeft}>{translate('common.SEND_QUANTITY')}</Text>
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+      <View
+        style={[
+          styles.inputMainCont,
+          {flexDirection: 'row', justifyContent: 'space-between'},
+        ]}>
         <TextInput
-          style={[styles.inputCont, styles.paymentField, {fontSize: RF(2)}]}
+          style={[styles.inputCont, styles.paymentField, {fontSize: RF(1.8)}]}
           keyboardType="decimal-pad"
-          placeholder="0"
-          placeholderTextColor={Colors.topUpPlaceholder}
+          placeholder="Please enter amount"
+          placeholderTextColor={Colors.GREY4}
           returnKeyType="done"
           value={props.value}
           onChangeText={props.onChangeText}
@@ -370,9 +376,23 @@ const SendScreen = React.memo(props => {
       ],
     );
   };
-  const decimalDigit = (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8 ? true : false
-  const disableButton = address && (Number(amount) > 0 && Number(amount) < Number(getTokenValue().toFixed(4))) ? false : true
-  const alertMsg = (Number(amount) >= (Number(getTokenValue().toFixed(4)) === 0.0000 ? 0 : Number(getTokenValue().toFixed(4)))) ? true : false
+  const decimalDigit =
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
+      ? true
+      : false;
+  const disableButton =
+    address &&
+    Number(amount) > 0 &&
+    Number(amount) < Number(getTokenValue().toFixed(4))
+      ? false
+      : true;
+  const alertMsg =
+    Number(amount) >=
+    (Number(getTokenValue().toFixed(4)) === 0.0
+      ? 0
+      : Number(getTokenValue().toFixed(4)))
+      ? true
+      : false;
   // console.log("@@@ Alert msg 11111 ===========>", Number(amount))
   // console.log("@@@ Alert msg 22222 ===========>", Number(getTokenValue().toFixed(4)))
   // console.log("@@@ Alert msg 33333 ===========>", amount >= Number(getTokenValue().toFixed(4)))
@@ -384,16 +404,35 @@ const SendScreen = React.memo(props => {
             <View style={styles.profileCont}>
               <Image style={styles.profileImage} source={item.icon} />
             </View>
-
-            <NumberFormat
-              value={getTokenValue()}
-              displayType={'text'}
-              decimalScale={4}
-              thousandSeparator={true}
-              renderText={formattedValue => (
-                <TextView style={styles.priceCont}>{formattedValue}</TextView>
-              )}
-            />
+            <View style={{}}>
+              <Text
+                style={{
+                  alignSelf: 'flex-end',
+                  fontSize: RF(2.2),
+                  fontWeight: 'bold',
+                  color: Colors.GREY10,
+                }}>
+                Balance
+              </Text>
+              <NumberFormat
+                value={getTokenValue()}
+                displayType={'text'}
+                decimalScale={4}
+                thousandSeparator={true}
+                renderText={formattedValue => (
+                  <TextView style={styles.priceCont}>{formattedValue} {type}</TextView>
+                )}
+              />
+              <Text
+                style={{
+                  alignSelf: 'flex-end',
+                  fontSize: RF(2.2),
+                  fontWeight: 'bold',
+                  color: Colors.GREY10,
+                }}>
+                ($134)
+              </Text>
+            </View>
           </View>
           <View style={styles.inputContainer}>
             <AddressField
@@ -418,19 +457,51 @@ const SendScreen = React.memo(props => {
                 }
               }}
             />
+            {
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignSelf: 'flex-end',
+                  marginVertical: hp('1%'),
+                }}>
+                <Text
+                  style={{
+                    color: Colors.GREY4,
+                    fontSize: RF(1.6),
+                    marginRight: wp('15%'),
+                  }}>
+                  + Network Gas Fee
+                </Text>
+                <Text style={{color: Colors.GREY4, fontSize: RF(1.6)}}>
+                  0.0003ETH
+                </Text>
+              </View>
+            }
           </View>
-         {alertMsg && <View>
-            <Text style={{color: 'red'}}>
-              {translate('wallet.common.insufficientFunds')}
+          {alertMsg && (
+            <View>
+              <Text style={{color: 'red'}}>
+                {translate('wallet.common.insufficientFunds')}
+              </Text>
+            </View>
+          )}
+          {decimalDigit && (
+            <View>
+              <Text style={{color: 'red'}}>
+                {translate('common.DECIMAL_POINTS_LIMIT')}
+              </Text>
+            </View>
+          )}
+          <View style={{marginTop: hp('2.5%')}}>
+            <Text style={styles.inputLeft}>
+              Total (Amount + Network Gas Fee)
             </Text>
-          </View>}
-          {decimalDigit && <View>
-            <Text style={{color: 'red'}}>
-              {translate('common.DECIMAL_POINTS_LIMIT')}
-            </Text>
-          </View>}
+            <View style={styles.totalAmountContainer}>
+              <Text style={[styles.priceCont, {marginRight: hp('1%')}]}>0.0004 ETH</Text>
+            </View>
+          </View>
         </View>
-        <View style={{height: height / 2.7, justifyContent: 'flex-end'}}>
+        <View style={{height: height / 2.7, paddingVertical: hp('13%')}}>
           <AppButton
             label={translate('wallet.common.send')}
             // view={loading}
@@ -571,7 +642,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputContainer: {
-    marginVertical: hp('2%'),
+    marginVertical: hp('1.5%'),
   },
   input: {
     padding: wp('2%'),
@@ -593,31 +664,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   balanceContainer: {
-    marginVertical: hp('2%'),
+    paddingVertical: wp('5%'),
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   profileCont: {
     ...CommonStyles.circle('13'),
   },
   profileImage: {
-    ...CommonStyles.imageStyles(13),
+    ...CommonStyles.imageStyles(12),
   },
   inputCont: {
-    paddingHorizontal: wp('1%'),
-    height: hp('5%'),
+    // backgroundColor: 'red',
+    paddingHorizontal: wp('4%'),
+    height: hp('5.5%'),
   },
   inputLeft: {
-    ...CommonStyles.text(Fonts.ARIAL, Colors.GREY1, RF(1.6)),
+    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.8)),
   },
   paymentField: {
-    paddingHorizontal: wp('1.5%'),
-    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.6)),
+    paddingHorizontal: wp('4%'),
+    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.8)),
     flex: 1,
   },
   inputRight: {
-    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(2)),
+    ...CommonStyles.text(Fonts.ARIAL, Colors.GREY4, RF(1.8)),
     marginBottom: hp('0.2%'),
+    marginRight: hp('1%'),
     alignSelf: 'center',
   },
   inputBottom: {
@@ -627,10 +701,19 @@ const styles = StyleSheet.create({
   },
   inputMainCont: {
     width: '100%',
-    // height: hp("7%"),
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.GREY1,
+    borderWidth: 0.5,
+    borderRadius: hp('1%'),
+    marginTop: hp('1%'),
+    borderColor: Colors.GREY4,
+  },
+  totalAmountContainer: {
+    borderWidth: 1,
+    borderRadius: hp('1%'),
+    marginTop: hp('1%'),
+    height: hp('7%'),
+    borderColor: Colors.GREY4,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   qrCameraStyle: {
     height: '100%',
