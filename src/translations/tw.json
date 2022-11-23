@@ -764,7 +764,8 @@
     "LOGOUT_WITHOUT_PHRASE_BACKUP_DESC": "請注意，您尚未設置恢復短語。您需要 12 個“恢復短語”才能使用相同的錢包信息重新登錄。恢復短語很重要，因為它們可用於在您的設備丟失或被盜等情況下找回您的錢包和資金。如果您在未設置的情況下註銷，您可能無法永久訪問您的錢包。您確定要退出嗎？",
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "我理解並同意我無法永久訪問我的錢包，因為我沒有設置恢復短語。",
     "BACKUP_NOW": "立即備份",
-    "DECIMAL_POINTS_LIMIT": "您最多只能輸入 8 位小數點"
+    "DECIMAL_POINTS_LIMIT": "您最多只能輸入 8 位小數點",
+    "SEND_QUANTITY": "發送數量"
   },
   "AwardPage": {},
   "wallet": {
@@ -941,7 +942,7 @@
       "payByGold": "金幣支付（應用內）",
       "totalAmount": "總金額",
       "me": "我",
-      "alert": "Xanalia",
+      "alert": "XALLET",
       "legalHint1": "仔細閱讀服務條款和隱私",
       "legalHint2": "薩納利亞政策",
       "verifyPhrase": "驗證恢復階段",

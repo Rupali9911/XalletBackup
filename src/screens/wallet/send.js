@@ -86,7 +86,7 @@ export const AddressField = props => {
 export const PaymentField = props => {
   return (
     <View style={[styles.inputMainCont]}>
-      <Text style={styles.inputLeft}>{translate('wallet.common.amount')}</Text>
+      <Text style={styles.inputLeft}>{translate('common.SEND_QUANTITY')}</Text>
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
         <TextInput
           style={[styles.inputCont, styles.paymentField, {fontSize: RF(2)}]}
@@ -152,6 +152,7 @@ const ScanScreen = React.memo(props => {
   const onSuccess = e => {
     processScanResult(e, SCAN_WALLET)
       .then(result => {
+        setIsActive(false);
         if (result.walletAddress) {
           verifyAddress(result.walletAddress)
             .then(() => {
@@ -215,6 +216,7 @@ const ScanScreen = React.memo(props => {
           cameraStyle={styles.qrCameraStyle}
           topViewStyle={{flex: 0}}
           bottomViewStyle={{flex: 0}}
+          vibrate={isActive}
         />
       ) : null}
     </View>
@@ -369,8 +371,11 @@ const SendScreen = React.memo(props => {
     );
   };
   const decimalDigit = (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8 ? true : false
-  const disableButton = address && (amount > 0 && amount < getTokenValue().toFixed(4)) ? false : true
-  const alertMsg = (amount >= (getTokenValue().toFixed(4) == '0.0000' ? '0' : getTokenValue().toFixed(4))) ? true : false
+  const disableButton = address && (Number(amount) > 0 && Number(amount) < Number(getTokenValue().toFixed(4))) ? false : true
+  const alertMsg = (Number(amount) >= (Number(getTokenValue().toFixed(4)) === 0.0000 ? 0 : Number(getTokenValue().toFixed(4)))) ? true : false
+  // console.log("@@@ Alert msg 11111 ===========>", Number(amount))
+  // console.log("@@@ Alert msg 22222 ===========>", Number(getTokenValue().toFixed(4)))
+  // console.log("@@@ Alert msg 33333 ===========>", amount >= Number(getTokenValue().toFixed(4)))
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>

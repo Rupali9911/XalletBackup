@@ -12,317 +12,337 @@ import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { BASE_URL } from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 import {
-    addAllBnbTransactions,
-    addAllEthTransactions,
-    addAllMaticTransactions,
+  addAllBnbTransactions,
+  addAllEthTransactions,
+  addAllMaticTransactions,
+  addAllXetaTransactions,
 } from '../../store/reducer/walletReducer';
-import testnet from "../../common/networkType"
+import testnet from '../../common/networkType';
 import { environment, IsTestNet, translate } from '../../walletUtils';
 import { HeaderBtns } from './components/HeaderButtons';
 import History from './components/History';
 import { balance } from './functions';
-import { networkType } from '../../common/networkType'
-import { Loader } from "../../components";
+import { networkType } from '../../common/networkType';
+import { Loader } from '../../components';
+import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
 
 const TokenDetail = ({ route, navigation }) => {
-    const { } = route.params;
-    const { wallet } = useSelector(state => state.UserReducer);
-    const {
-        ethBalance,
-        bnbBalance,
-        maticBalance,
-        tnftBalance,
-        talBalance,
-        usdcBalance,
-        wethBalance,
-        busdBalance,
-        usdtBalance
-    } =
-        useSelector(state => state.WalletReducer);
-    const dispatch = useDispatch();
 
-    const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const environment = IsTestNet ? 'testnet' : 'mainnet';
 
-    const [loading, setLoading] = useState(false);
-    const [item, setItem] = useState(route.params.item);
+  const {
+    ethBalance,
+    bnbBalance,
+    maticBalance,
+    tnftBalance,
+    talBalance,
+    usdcBalance,
+    wethBalance,
+    busdBalance,
+    usdtBalance,
+    xetaBalance,
+    networkType,
+  } = useSelector(state => state.WalletReducer);
 
-    useEffect(() => {
-        setLoading(true);
-        // getData()
-        //     .then(() => setLoading(false))
-        //     .catch((err) => {
-        //         console.log('err', err);
-        //         setLoading(false);
-        //     });
-        getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase());
-        // console.log("0101010101010", item.network)
-    }, []);
+  const [loading, setLoading] = useState(false);
+  const [item, setItem] = useState(route.params.item);
+  const [wallet, setWallet] = useState(null);
 
-    const getBalance = () => {
-        let cont = '';
-        let abi = '';
-        let rpc = '';
-        let type = '';
+  useEffect(async () => {
+    setLoading(true);
+    let wallet = await getWallet();
+    setWallet(wallet);
+    // getData()
+    //     .then(() => setLoading(false))
+    //     .catch((err) => {
+    //         console.log('err', err);
+    //         setLoading(false);
+    //     });
+    getTransactionsByType(
+      wallet?.address,
+      item.network.toLowerCase(),
+      item.type,
+    );
+  }, []);
 
-        switch (item.type) {
-            case 'ETH':
-                rpc = environment.ethRpc;
-                type = 'eth';
-                break;
-            case 'BNB':
-                rpc = environment.bnbRpc;
-                type = 'bnb';
-                break;
-            case 'Matic':
-                rpc = environment.polRpc;
-                type = 'matic';
-                break;
-            case 'USDT':
-                cont = environment.usdtCont;
-                abi = environment.usdtAbi;
-                rpc = environment.ethRpc;
-                type = 'usdt';
-                break;
-            case 'BUSD':
-                cont = environment.busdCont;
-                abi = environment.busdAbi;
-                rpc = environment.bnbRpc;
-                type = 'busd';
-                break;
-            case 'ALIA':
-                cont = item.network === 'BSC' ? environment.tnftCont : environment.talCont;
-                abi = environment.aliaAbi;
-                rpc = item.network === 'BSC' ? environment.bnbRpc : environment.polRpc;
-                type = 'alia';
-                break;
-            case 'USDC':
-                cont = environment.usdcCont;
-                abi = environment.usdcAbi;
-                rpc = environment.polRpc;
-                type = 'usdc';
-                break;
-            case "WETH":
-                cont = environment.wethCont;
-                abi = environment.wethAbi;
-                rpc = environment.polRpc;
-                type = 'weth';
-                break;
-            default:
-        }
-        return balance(wallet?.address, cont, abi, rpc, type);
-    };
+  // const getBalance = () => {
+  //     let cont = '';
+  //     let abi = '';
+  //     let rpc = '';
+  //     let type = '';
 
-    const getData = () => {
-        return new Promise((resolve, reject) => {
-            getTransactionsByType(wallet?.address, item.network.toLowerCase(), item.type.toLowerCase()).then(responses => {
-                // console.log('responses', responses)
-                resolve();
-            })
-                .catch(err => {
-                    console.log('err', err);
-                    reject();
-                });
+  //     switch (item.type) {
+  //         case 'ETH':
+  //             rpc = environment.ethRpc;
+  //             type = 'eth';
+  //             break;
+  //         case 'BNB':
+  //             rpc = environment.bnbRpc;
+  //             type = 'bnb';
+  //             break;
+  //         case 'Matic':
+  //             rpc = environment.polRpc;
+  //             type = 'matic';
+  //             break;
+  //         case 'USDT':
+  //             cont = environment.usdtCont;
+  //             abi = environment.usdtAbi;
+  //             rpc = environment.ethRpc;
+  //             type = 'usdt';
+  //             break;
+  //         case 'BUSD':
+  //             cont = environment.busdCont;
+  //             abi = environment.busdAbi;
+  //             rpc = environment.bnbRpc;
+  //             type = 'busd';
+  //             break;
+  //         case 'ALIA':
+  //             cont = item.network === 'BSC' ? environment.tnftCont : environment.talCont;
+  //             abi = environment.aliaAbi;
+  //             rpc = item.network === 'BSC' ? environment.bnbRpc : environment.polRpc;
+  //             type = 'alia';
+  //             break;
+  //         case 'USDC':
+  //             cont = environment.usdcCont;
+  //             abi = environment.usdcAbi;
+  //             rpc = environment.polRpc;
+  //             type = 'usdc';
+  //             break;
+  //         case "WETH":
+  //             cont = environment.wethCont;
+  //             abi = environment.wethAbi;
+  //             rpc = environment.polRpc;
+  //             type = 'weth';
+  //             break;
+  //         default:
+  //     }
+  //     return balance(wallet?.address, cont, abi, rpc, type);
+  // };
 
-
-            // const requests = [getBalance()];
-            // Promise.all(requests)
-            //     .then(responses => {
-            //         console.log('responses ###############', responses);
-            //         const balance = responses[0];
-            //         let _item = item;
-            //         _item.tokenValue = balance;
-            //         setItem(_item);
-            //         resolve();
-            //     })
-            //     .catch(err => {
-            //         console.log('err', err);
-            //         reject();
-            //     });
+  const getData = () => {
+    return new Promise((resolve, reject) => {
+      getTransactionsByType(
+        wallet?.address,
+        item.network.toLowerCase(),
+        item.type,
+      )
+        .then(responses => {
+          resolve();
+        })
+        .catch(err => {
+          console.log('err', err);
+          reject();
         });
-    };
 
-    const getTokenValue = () => {
-        let totalValue = 0;
-        if (item.type == 'ETH' && item.network !== 'Polygon') {
-            // console.log("Item network", item.network)
-            let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-            totalValue = value;
-        } else if (item.type == 'BNB') {
-            let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-            totalValue = value;
-        } else if (item.type == 'Matic') {
-            let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.type === 'TNFT') {
-            // console.log("Item network", item.network)
-            let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.type == 'TAL') {
-            // console.log("Item network", item.network)
-            let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.type == 'USDC') {
-            let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.type === 'WETH' && item.network === "Polygon") {
-            // console.log("Item network", item.network)
-            let value = parseFloat(wethBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.network === 'BSC' && item.type == 'ALIA') {
-            // console.log("Item network", item.network)
-            let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.network === 'Polygon' && item.type == 'ALIA') {
-            // console.log("Item network", item.network)
-            let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.type == 'BUSD') {
-            let value = parseFloat(busdBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        } else if (item.type == 'USDT') {
-            let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
-            totalValue = value;
-        }
+      // const requests = [getBalance()];
+      // Promise.all(requests)
+      //     .then(responses => {
+      //         console.log('responses ###############', responses);
+      //         const balance = responses[0];
+      //         let _item = item;
+      //         _item.tokenValue = balance;
+      //         setItem(_item);
+      //         resolve();
+      //     })
+      //     .catch(err => {
+      //         console.log('err', err);
+      //         reject();
+      //     });
+    });
+  };
 
-        return totalValue;
-    };
+  const getTokenValue = () => {
+    let totalValue = 0;
+    if (item.type == 'ETH' && item.network !== 'Polygon') {
+      // console.log("Item network", item.network)
+      let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
+      totalValue = value;
+    } else if (item.type == 'BNB') {
+      let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
+      totalValue = value;
+    } else if (item.type == 'Matic') {
+      let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type === 'TNFT') {
+      // console.log("Item network", item.network)
+      let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'TAL') {
+      // console.log("Item network", item.network)
+      let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'USDC') {
+      let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type === 'WETH' && item.network === 'Polygon') {
+      // console.log("Item network", item.network)
+      let value = parseFloat(wethBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.network === 'BSC' && item.type == 'ALIA') {
+      // console.log("Item network", item.network)
+      let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.network === 'Polygon' && item.type == 'ALIA') {
+      // console.log("Item network", item.network)
+      let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'BUSD') {
+      let value = parseFloat(busdBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'USDT') {
+      let value = parseFloat(usdtBalance); //+ parseFloat(balances.USDC)
+      totalValue = value;
+    } else if (item.type == 'XETA') {
+      let value = parseFloat(xetaBalance);
+      totalValue = value;
+    }
 
-    const getTransactionsByType = (address, type, coin) => {
-        coin === "tnft" || coin === "tal" ? coin = "alia" : coin
-        // console.log('address,type,coin', address, type, coin, `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type == 'ethereum' ? 'eth' : type}&networkType=${networkType}&coin=${coin}`)
-        return new Promise((resolve, reject) => {
-            fetch(
-                `${BASE_URL}/xanawallet/fetch-transactions?addr=${address}&type=${type === "ethereum" ? type = "eth" : type}&networkType=${networkType}&coin=${coin}`,
-            )
-                .then(response => {
-                    // console.log('response1234512345', response);
-                    return response.json();
-                })
-                .then(res => {
-                    // console.log('response of xanawallet/fetch-transactions', res);
-                    setLoading(false);
-                    if (res.success) {
-                        if (type == 'eth') {
-                            dispatch(addAllEthTransactions(res.data));
-                        } else if (type == 'bsc') {
-                            dispatch(addAllBnbTransactions(res.data));
-                        } else if (type == 'polygon') {
-                            dispatch(addAllMaticTransactions(res.data));
-                        }
-                    }
-                    resolve();
-                })
-                .catch(err => {
-                    console.log('err', err);
-                    setLoading(false);
-                    reject();
-                });
+    return totalValue;
+  };
+
+  const getTransactionsByType = (address, type, coin) => {
+    console.log('@@@ Get Transaction By Type ========>', type, coin, networkType);
+    return new Promise((resolve, reject) => {
+      let params = {
+        address,
+        networkId: networkType?.id,
+        environment
+      };
+      if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic') {
+        params.tokenName = coin
+      }
+      sendRequest({
+        url: `${NEW_BASE_URL}/mobile/history`,
+        method: 'GET',
+        params
+      })
+        .then(res => {
+          setLoading(false);
+          if (res.success) {
+            if (type == 'ethereum') {
+              dispatch(addAllEthTransactions(res.data));
+            } else if (type == 'bsc') {
+              dispatch(addAllBnbTransactions(res.data));
+            } else if (type == 'polygon') {
+              dispatch(addAllMaticTransactions(res.data));
+            } else if (type == 'xana chain') {
+              dispatch(addAllXetaTransactions(res.data));
+            }
+          }
+          resolve();
+        })
+        .catch(err => {
+          console.log('err', err);
+          setLoading(false);
+          reject();
         });
-    };
-    return (
-        <AppBackground
-        //isBusy={loading}
-        >
-            <GradientBackground>
-                <View style={styles.gradient}>
-                    <AppHeader showBackButton isWhite title={item.tokenName} />
-                    {item && (
-                        <View style={styles.balanceContainer}>
-                            <View style={styles.profileCont}>
-                                <Image style={styles.profileImage} source={item.icon} />
-                            </View>
+    });
+  };
+  return (
+    <AppBackground
+    //isBusy={loading}
+    >
+      <GradientBackground>
+        <View style={styles.gradient}>
+          <AppHeader showBackButton isWhite title={item.tokenName} />
+          {item && (
+            <View style={styles.balanceContainer}>
+              <View style={styles.profileCont}>
+                <Image style={styles.profileImage} source={item.icon} />
+              </View>
 
-                            <NumberFormat
-                                value={getTokenValue()}
-                                displayType={'text'}
-                                decimalScale={4}
-                                thousandSeparator={true}
-                                renderText={formattedValue => (
-                                    <TextView style={styles.priceCont}>{formattedValue}</TextView>
-                                )}
-                            />
-                            {/*<View style={styles.tokenDetail}>*/}
-                            {/*<TextView style={styles.amount}>{item.amount}</TextView>*/}
-                            {/*<TextView style={styles.percent}>{item.percent}</TextView>*/}
-                            {/*</View>*/}
-                        </View>
-                    )}
+              <NumberFormat
+                value={getTokenValue()}
+                displayType={'text'}
+                decimalScale={4}
+                thousandSeparator={true}
+                renderText={formattedValue => (
+                  <TextView style={styles.priceCont}>{formattedValue}</TextView>
+                )}
+              />
+              {/*<View style={styles.tokenDetail}>*/}
+              {/*<TextView style={styles.amount}>{item.amount}</TextView>*/}
+              {/*<TextView style={styles.percent}>{item.percent}</TextView>*/}
+              {/*</View>*/}
+            </View>
+          )}
 
-                    <View style={[styles.headerBtns, styles.headerBottomCont]}>
-                        <HeaderBtns
-                            onPress={() => {
-                                navigation.navigate('send', { item, type: item.type });
-                            }}
-                            image={ImagesSrc.send}
-                            label={translate('wallet.common.send')}
-                        />
-                        <HeaderBtns
-                            onPress={() => navigation.navigate('receive', { item })}
-                            image={ImagesSrc.receive}
-                            label={translate('wallet.common.receive')}
-                        />
-                        {/* <HeaderBtns
+          <View style={[styles.headerBtns, styles.headerBottomCont]}>
+            <HeaderBtns
+              onPress={() => {
+                navigation.navigate('send', { item, type: item.type });
+              }}
+              image={ImagesSrc.send}
+              label={translate('wallet.common.send')}
+            />
+            <HeaderBtns
+              onPress={() => navigation.navigate('receive', { item })}
+              image={ImagesSrc.receive}
+              label={translate('wallet.common.receive')}
+            />
+            {/* <HeaderBtns
               onPress={() => {}}
               image={ImagesSrc.topup}
               label={translate('wallet.common.buy')}
             /> */}
-                    </View>
-                </View>
-            </GradientBackground>
-            {loading ? <Loader /> :
-                <History coin={item} onRefresh={getData} />}
-        </AppBackground>
-    );
+          </View>
+        </View>
+      </GradientBackground>
+      {loading ? <Loader /> : <History coin={item} onRefresh={getData} />}
+    </AppBackground>
+  );
 };
 
 const styles = StyleSheet.create({
-    gradient: {},
-    priceCont: {
-        fontSize: RF(4),
-        color: Colors.white,
-        fontWeight: 'bold',
-    },
-    headerBtns: {
-        flexDirection: 'row',
-    },
-    headerBottomCont: {
-        width: wp('70%'),
-        alignSelf: 'center',
-        paddingTop: hp('1%'),
-        paddingBottom: hp('2%'),
-    },
-    balanceContainer: {
-        marginVertical: hp('2%'),
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    balanceLabel: {
-        color: Colors.white,
-        fontSize: RF(1.8),
-    },
-    profileCont: {
-        ...CommonStyles.circle('15'),
-    },
-    profileImage: {
-        ...CommonStyles.imageStyles(15),
-    },
-    tokenDetail: {
-        position: 'absolute',
-        right: 10,
-        alignItems: 'flex-end',
-    },
-    amount: {
-        fontSize: RF(1.6),
-        color: Colors.white,
-        marginVertical: hp('0.1%'),
-    },
-    percent: {
-        fontSize: RF(1.6),
-        color: Colors.percentColor2,
-        marginVertical: hp('0.1%'),
-    },
+  gradient: {},
+  priceCont: {
+    fontSize: RF(4),
+    color: Colors.white,
+    fontWeight: 'bold',
+  },
+  headerBtns: {
+    flexDirection: 'row',
+  },
+  headerBottomCont: {
+    width: wp('70%'),
+    alignSelf: 'center',
+    paddingTop: hp('1%'),
+    paddingBottom: hp('2%'),
+  },
+  balanceContainer: {
+    marginVertical: hp('2%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  balanceLabel: {
+    color: Colors.white,
+    fontSize: RF(1.8),
+  },
+  profileCont: {
+    ...CommonStyles.circle('15'),
+  },
+  profileImage: {
+    ...CommonStyles.imageStyles(15),
+  },
+  tokenDetail: {
+    position: 'absolute',
+    right: 10,
+    alignItems: 'flex-end',
+  },
+  amount: {
+    fontSize: RF(1.6),
+    color: Colors.white,
+    marginVertical: hp('0.1%'),
+  },
+  percent: {
+    fontSize: RF(1.6),
+    color: Colors.percentColor2,
+    marginVertical: hp('0.1%'),
+  },
 });
 
 export default TokenDetail;

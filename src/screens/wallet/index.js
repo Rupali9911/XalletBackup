@@ -241,14 +241,16 @@ const Wallet = ({ route, navigation }) => {
           hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
           onPress={() => setPickerVisible(true)}>
           {
-            networkType?.name !== 'XANA CHAIN' ?
+            (networkType?.name !== 'XANA CHAIN' && networkType?.name !== 'Ethereum') ?
               <SvgWithCssUri
                 width={SIZE(25)}
                 height={SIZE(25)}
                 uri={networkType?.image}
               />
-              :
+              : networkType?.name !== 'Ethereum' ?
               <Image style={{ height: SIZE(30), width: SIZE(30) }} source={{ uri: networkType?.image }} />
+              :
+              <Image style={{ height: SIZE(25), width: SIZE(25) }} source={ImagesSrc.etherium} />
           }
         </TouchableOpacity>
       </View>
@@ -286,7 +288,7 @@ const Wallet = ({ route, navigation }) => {
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
       let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
       let busdValue = parseFloat(busdBalance) * 1;
-      let value = bnbValue + tnftValue + busdValue;
+      let value = bnbValue + busdValue;
       totalValue = value;
     } else if (networkType?.name == 'XANA CHAIN') {
       // for mainnet
@@ -304,10 +306,10 @@ const Wallet = ({ route, navigation }) => {
       let usdctValue = parseFloat(usdcBalance) * 1;
       let value = ""
       if (networkType == 'testnet') {
-        value = maticValue + talValue + usdctValue;
+        value = maticValue + usdctValue;
       } else {
         let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-        value = maticValue + talValue + usdctValue + wethValue;
+        value = maticValue + usdctValue + wethValue;
       }
       totalValue = value;
 

@@ -41,7 +41,7 @@ export const amountValidation = (e, currentValue = '') => {
 // export const test_ethRpc = 'https://kovan.infura.io/v3/d9d12a4cf6ec4ea786890cd8c5dcc599';
 export const test_ethRpc =
   'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
-export const test_bnbRpc = 'https://data-seed-prebsc-2-s1.binance.org:8545/';
+export const test_bnbRpc = 'https://data-seed-prebsc-1-s2.binance.org:8545/';
 // export const test_bnbRpc = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 export const test_polRpc = 'https://rpc-mumbai.maticvigil.com/';
 export const test_xanaRpc = 'https://testnet.xana.net/ext/bc/2dNW4t2bMKcnAamjCX7e79iFw1LEvyb8CYWXcX7NeUUQM9TdM8/rpc';
@@ -51,6 +51,7 @@ export const ethRpc =
   'https://mainnet.infura.io/v3/e2fddb9deb984ba0b9e9daa116d1702a';
 export const bnbRpc = 'https://bsc-dataseed1.binance.org/';
 export const polRpc = 'https://polygon-rpc.com/';
+export const xanaRpc = 'https://mainnet.xana.net/rpc';
 
 //===================== WebSocket Links ===============================
 export const _webSocketLinkEth =
@@ -70,11 +71,13 @@ export const webSocketLinkPolygon = 'wss://ws-matic-mainnet.chainstacklabs.com';
 //========================= Urls (testnet) ================================
 export const test_BscScanURL = 'https://testnet.bscscan.com/tx/';
 export const test_PolygonScanURL = 'https://mumbai.polygonscan.com/tx/';
-export const test_EthereumScanURL = 'https://kovan.etherscan.io/tx/';
+export const test_EthereumScanURL = 'https://goerli.etherscan.io/tx/';
+export const test_XanaScanURL = 'https://testnet.avascan.info/blockchain/xanachain/';
 //========================= Urls (mainnet) ================================
 export const BscScanURL = 'https://testnet.bscscan.com/tx/';
 export const PolygonScanURL = 'https://mumbai.polygonscan.com/tx/';
 export const EthereumScanURL = 'https://kovan.etherscan.io/tx/';
+export const XanaScanURL = 'https://xanachain.xana.net/';
 
 //testnet
 export const polygonNftDex = '0xC84E3F06Ae0f2cf2CA782A1cd0F653663c99280d';
@@ -4938,7 +4941,7 @@ export const environment = {
   ethRpc: IsTestNet ? test_ethRpc : ethRpc,
   bnbRpc: IsTestNet ? test_bnbRpc : bnbRpc,
   polRpc: IsTestNet ? test_polRpc : polRpc,
-  xanaRpc: IsTestNet ? test_xanaRpc : test_xanaRpc,
+  xanaRpc: IsTestNet ? test_xanaRpc : xanaRpc,
 
   //======================== Websocket Links ========================
   wsEth: IsTestNet ? _webSocketLinkEth : webSocketLinkEth,
@@ -4949,6 +4952,7 @@ export const environment = {
   bscScanURL: IsTestNet ? test_BscScanURL : BscScanURL,
   polygonScanURL: IsTestNet ? test_PolygonScanURL : PolygonScanURL,
   ethereumScanURL: IsTestNet ? test_EthereumScanURL : EthereumScanURL,
+  xanaScanURL: IsTestNet ? test_XanaScanURL : XanaScanURL,
 
   // usdcCont: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   usdcCont: IsTestNet
