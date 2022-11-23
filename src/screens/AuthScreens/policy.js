@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {StyleSheet, Platform, Linking} from 'react-native';
+import React, { useRef, useState } from 'react';
+import { StyleSheet, Platform, Linking } from 'react-native';
 import AppBackground from '../../components/appBackground';
 import WebView from 'react-native-webview';
 import AppHeader from '../../components/appHeader';
@@ -7,8 +7,8 @@ import AppHeader from '../../components/appHeader';
 const policy = require('../../walletUtils/policy.html');
 const terms = require('../../walletUtils/terms.html');
 
-const Policy = ({route}) => {
-  const {isPolicy} = route.params;
+const Policy = ({ route }) => {
+  const { isPolicy } = route.params;
 
   const [loading, setLoading] = useState(true);
 
@@ -16,25 +16,25 @@ const Policy = ({route}) => {
 
   let contentAn = isPolicy ? 'file:///android_asset/policy.html' : 'file:///android_asset/terms.html';
 
-  var  webViewObj = {
+  var webViewObj = {
     canGoBack: false,
     ref: null,
 
-}
-  const onMessage= (event) => {
-    console.log('Meesaage from Webview',event) 
-     Linking.openURL(event.nativeEvent.data)
+  }
+  const onMessage = (event) => {
+    console.log('Meesaage from Webview', event)
+    Linking.openURL(event.nativeEvent.data)
   }
 
-  const handleWebViewNavigationStateChange=(navState)=>{
+  const handleWebViewNavigationStateChange = (navState) => {
     console.log('Navstate', navState)
 
-        if (navState.url.indexOf('xanalia.com') > 0) {
-          setLoading(false)
-          webViewObj.ref.stopLoading()
-             Linking.openURL(navState.url);
-            return false
-        }
+    if (navState.url.indexOf('xanalia.com') > 0) {
+      setLoading(false)
+      webViewObj.ref.stopLoading()
+      Linking.openURL(navState.url);
+      return false
+    }
   }
 
   return (
@@ -44,14 +44,14 @@ const Policy = ({route}) => {
         <WebView
           style={styles.webview}
           originWhitelist={['*']}
-          source={{uri: contentAn}}
+          source={{ uri: contentAn }}
           decelerationRate="normal"
           onMessage={event => Linking.openURL(event.nativeEvent.data)}
           javaScriptEnabled={true}
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
-          onNavigationStateChange={(navState) => {handleWebViewNavigationStateChange(navState)}}
+          onNavigationStateChange={(navState) => { handleWebViewNavigationStateChange(navState) }}
           ref={(webView) => { webViewObj.ref = webView; }}
         />
       ) : (
@@ -59,13 +59,13 @@ const Policy = ({route}) => {
           style={styles.webview}
           originWhitelist={['*']}
           source={contentIos}
-          onMessage={event => onMessage(event) }
+          onMessage={event => onMessage(event)}
           decelerationRate="normal"
           javaScriptEnabled={true}
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
-          onNavigationStateChange={(navState) => {handleWebViewNavigationStateChange(navState)}}
+          onNavigationStateChange={(navState) => { handleWebViewNavigationStateChange(navState) }}
           ref={(webView) => { webViewObj.ref = webView; }}
         />
       )}
