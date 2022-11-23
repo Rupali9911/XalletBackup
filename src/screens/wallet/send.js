@@ -72,7 +72,7 @@ export const AddressField = props => {
       <View style={styles.inputMainCont}>
         <TextInput
           style={[styles.inputCont, styles.paymentField, {fontSize: RF(1.8)}]}
-          placeholder="Please enter wallet address"
+          placeholder={translate('common.TRANSACTION_ENTER_WALLET_ADDRESS')}
           placeholderTextColor={Colors.GREY4}
           returnKeyType="done"
           value={props.value}
@@ -97,7 +97,7 @@ export const PaymentField = props => {
         <TextInput
           style={[styles.inputCont, styles.paymentField, {fontSize: RF(1.8)}]}
           keyboardType="decimal-pad"
-          placeholder="Please enter amount"
+          placeholder={translate('common.TRANSACTION_ENTER_AMOUNT')}
           placeholderTextColor={Colors.GREY4}
           returnKeyType="done"
           value={props.value}
@@ -426,7 +426,7 @@ const SendScreen = React.memo(props => {
               <NumberFormat
                 value={tokenDollarValue}
                 displayType={'text'}
-                decimalScale={2}
+                decimalScale={4}
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView
@@ -465,6 +465,20 @@ const SendScreen = React.memo(props => {
                 }
               }}
             />
+            {alertMsg && (
+            <View>
+              <Text style={{color: 'red', marginTop: hp('0.5%')}}>
+                {translate('wallet.common.insufficientFunds')}
+              </Text>
+            </View>
+          )}
+          {decimalDigit && (
+            <View>
+              <Text style={{color: 'red'}}>
+                {translate('common.DECIMAL_POINTS_LIMIT')}
+              </Text>
+            </View>
+          )}
             {
               <View
                 style={{
@@ -478,7 +492,7 @@ const SendScreen = React.memo(props => {
                     fontSize: RF(1.6),
                     marginRight: wp('15%'),
                   }}>
-                  + Network Gas Fee
+                   + {translate('common.NETWORK_GAS_FEE')}
                 </Text>
                 <Text style={{color: Colors.GREY4, fontSize: RF(1.6)}}>
                   0.0003ETH
@@ -486,30 +500,17 @@ const SendScreen = React.memo(props => {
               </View>
             }
           </View>
-          {alertMsg && (
-            <View>
-              <Text style={{color: 'red'}}>
-                {translate('wallet.common.insufficientFunds')}
-              </Text>
-            </View>
-          )}
-          {decimalDigit && (
-            <View>
-              <Text style={{color: 'red'}}>
-                {translate('common.DECIMAL_POINTS_LIMIT')}
-              </Text>
-            </View>
-          )}
           <View style={{marginTop: hp('2.5%')}}>
             <Text style={styles.inputLeft}>
-              Total (Amount + Network Gas Fee)
+            {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
               <Text style={[styles.priceCont, {marginRight: hp('1%')}]}>0.0004 ETH</Text>
             </View>
           </View>
         </View>
-        <View style={{height: height / 2.7, paddingVertical: hp('13%')}}>
+      </KeyboardAwareScrollView>
+      <View style={{justifyContent: 'flex-end'}}>
           <AppButton
             label={translate('wallet.common.send')}
             // view={loading}
@@ -537,7 +538,6 @@ const SendScreen = React.memo(props => {
             }}
           />
         </View>
-      </KeyboardAwareScrollView>
     </View>
   );
 });

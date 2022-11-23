@@ -768,7 +768,9 @@
     "SEND_QUANTITY": "发送数量",
     "NETWORK_GAS_FEE":"网络煤气费",
     "TOTAL_AMOUNT_GAS_FEE":"总计（金额 + 汽油费）",
-    "TRANSACTION_SENT_NETWORK": "交易已发送至网络!"
+    "TRANSACTION_SENT_NETWORK": "交易已发送至网络!",
+    "TRANSACTION_ENTER_WALLET_ADDRESS": "请输入钱包地址",
+    "TRANSACTION_ENTER_AMOUNT": "请输入金额"
   },
   "AwardPage": {},
   "wallet": {

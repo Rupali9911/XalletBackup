@@ -276,7 +276,6 @@ const Wallet = ({ route, navigation }) => {
 
   const getTokenDollarAmount = (type) => {
     let tokenDollarValue = 0;
-    console.log("@@@ Get Token Dollar Value Function =======>", type)
     if(type == 'ETH') {
       let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH;
       tokenDollarValue = eth;

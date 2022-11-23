@@ -768,7 +768,9 @@
     "SEND_QUANTITY": "送信数量",
     "NETWORK_GAS_FEE":"ネットワーク手数料",
     "TOTAL_AMOUNT_GAS_FEE":"合計 (数量 + ガス代）",
-    "TRANSACTION_SENT_NETWORK": "トランザクションはネットワークに送信されました！"
+    "TRANSACTION_SENT_NETWORK": "トランザクションはネットワークに送信されました！",
+    "TRANSACTION_ENTER_WALLET_ADDRESS": "ウォレットアドレスを入力してください",
+    "TRANSACTION_ENTER_AMOUNT": "数量を入力してください"
   },
   "AwardPage": {},
   "wallet": {
