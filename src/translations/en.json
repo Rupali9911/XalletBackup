@@ -758,7 +758,8 @@
     "ARTIST_NOTE": "You must input a username, upload a profile picture, verify your email address and Twitter account first.",
     "PASTE_PRIVATE_KEY": "Paste the private key string",
     "EXAMPLE_PLACEHOLDER_TEXT": "e.g. 3a1076bf45ab87yyz2ad64ccb3b102177yzf7faacbf2872e88fdd9a537d8yz266",
-    "PROFILE_SAVE_MSG": "※ [Verify] Button will get active only after clicking on [Save Changes]"
+    "PROFILE_SAVE_MSG": "※ [Verify] Button will get active only after clicking on [Save Changes]",
+    "recoveryPhrase": "Recovery Phrase"
   },
   "AwardPage": {},
   "wallet": {
@@ -938,7 +939,7 @@
       "alert": "Xallet",
       "legalHint1": "Carefully read the Terms of Service and Privacy",
       "legalHint2": "Policy of Xallet",
-      "verifyPhrase": "Verify Recovery Phase",
+      "verifyPhrase": "Verify Recovery Phrase",
       "verifyHint1": "Tap the words to put them next to each",
       "verifyHint2": "other in the correct order",
       "addCreditCard": "Add Credit card",

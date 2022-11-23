@@ -759,7 +759,8 @@
     "ARTIST_NOTE": "先にユーザー名、プロフィール画像、メールアドレス、ツイッターアカウントを入力してください",
     "PASTE_PRIVATE_KEY": "秘密キーの文字列をペーストしてください",
     "EXAMPLE_PLACEHOLDER_TEXT": "例: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
-    "PROFILE_SAVE_MSG": "※ [確認] ボタンは、[変更を保存] をクリックした後に有効になります。"
+    "PROFILE_SAVE_MSG": "※ [確認] ボタンは、[変更を保存] をクリックした後に有効になります。",
+    "recoveryPhrase": "回復フレーズ"
   },
   "AwardPage": {},
   "wallet": {
@@ -802,7 +803,7 @@
       },
       "welcomeTxt": "ようこそ",
       "createWallet": "新しいウォレットを作成する",
-      "haveWallet": "既存のアドレスを使用してログイン",
+      "haveWallet": "既存のウォレットをインポート",
       "legal": "利用規約",
       "privacyPolicy": "プライバシーポリシー",
       "termsServices": "利用規約",

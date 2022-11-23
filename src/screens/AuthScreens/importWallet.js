@@ -242,7 +242,7 @@ const ImportWallet = ({route, navigation}) => {
               <View style={{flexDirection: 'row'}}>
                 <SelectButtongroup
                   buttons={[
-                    translate('wallet.common.phrase'),
+                    translate('common.recoveryPhrase'),
                     translate('wallet.common.privateKey'),
                   ]}
                   onButtonPress={(item, index) => {

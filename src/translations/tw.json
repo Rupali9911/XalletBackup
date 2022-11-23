@@ -759,7 +759,8 @@
     "ARTIST_NOTE": "您必須先輸入用戶名、上傳個人資料圖片、驗證您的電子郵件地址和 Twitter 帳戶。",
     "PASTE_PRIVATE_KEY": "粘貼私鑰字符串",
     "EXAMPLE_PLACEHOLDER_TEXT": "例如: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
-    "PROFILE_SAVE_MSG": "※ [驗證] 按鈕只有在點擊 [保存更改] 後才會激活"
+    "PROFILE_SAVE_MSG": "※ [驗證] 按鈕只有在點擊 [保存更改] 後才會激活",
+    "recoveryPhrase": "助記詞"
   },
   "AwardPage": {},
   "wallet": {

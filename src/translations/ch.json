@@ -759,7 +759,8 @@
     "ARTIST_NOTE": "您必须先输入用户名、上传个人资料图片、验证您的电子邮件地址和 Twitter 帐户。",
     "PASTE_PRIVATE_KEY": "粘贴私钥字符串",
     "EXAMPLE_PLACEHOLDER_TEXT": "例如: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
-    "PROFILE_SAVE_MSG": "※ [验证] 按钮只有在点击 [保存更改] 后才会激活"
+    "PROFILE_SAVE_MSG": "※ [验证] 按钮只有在点击 [保存更改] 后才会激活",
+    "recoveryPhrase": "助记词"
   },
   "AwardPage": {},
   "wallet": {

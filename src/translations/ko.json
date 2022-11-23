@@ -759,7 +759,8 @@
     "ARTIST_NOTE": "먼저 사용자 이름, 프로필 사진, 이메일, 트위터 계정을 입력해주세요",
     "PASTE_PRIVATE_KEY": "개인 키 문자열 붙여넣기",
     "EXAMPLE_PLACEHOLDER_TEXT": "예를 들어: 3a1076bf45ab87712ad64ccb3b10217787f7faacbf2872e88fdd9a537d8fe266",
-    "PROFILE_SAVE_MSG": "※ [확인] 버튼은 [변경사항 저장]을 클릭해야만 활성화됩니다."
+    "PROFILE_SAVE_MSG": "※ [확인] 버튼은 [변경사항 저장]을 클릭해야만 활성화됩니다.",
+    "recoveryPhrase": "복구 문구"
   },
   "AwardPage": {},
   "wallet": {
