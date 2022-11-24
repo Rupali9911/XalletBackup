@@ -58,6 +58,10 @@ export const axiosInstance = axios.create();
 //=============== Axios Interceptors ========================
 axiosInstance.interceptors.response.use(
   response => {
+<<<<<<< HEAD
+=======
+    // console.log('@@@ API response in interceptor ==========>', response);
+>>>>>>> 4985f459eeb89a3567ea35ea339e18bb50c9ec02
     return response;
   },
   async err => {
