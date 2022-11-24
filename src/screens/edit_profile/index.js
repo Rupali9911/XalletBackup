@@ -51,37 +51,19 @@ const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon, InfoIcon} =
 
 function Profile(props) {
   const {navigation, handleSubmit} = props;
-
   const {UserReducer} = useSelector(state => state);
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.user?.isNonCrypto,
   );
-  const [username, setUsername] = useState(
-    isNonCrypto === 0
-      ? UserReducer.userData.title
-      : UserReducer.userData.userName,
-  );
+  const [editProfileData, setEditProfileData] = useState({});
   const [errUsername, setErrUsername] = useState(false);
-  const [email, setEmail] = useState(UserReducer.userData.email);
   const [errEmail, setErrEmail] = useState(false);
-  const [website, setWebsite] = useState(UserReducer.userData.website);
   const [errWebsite, setErrWebsite] = useState(false);
-  const [discord, setDiscord] = useState(UserReducer.userData.discordSite);
   const [errDiscord, setErrDiscord] = useState(false);
-  const [twitter, setTwitter] = useState(UserReducer.userData.twitterSite);
   const [errTwitter, setErrTwitter] = useState(false);
-  const [youtube, setYoutube] = useState(UserReducer.userData.youtubeSite);
   const [errYoutube, setErrYoutube] = useState(false);
-  const [instagram, setInstagram] = useState(
-    UserReducer.userData.instagramSite,
-  );
   const [errInstagram, setErrInstagram] = useState(false);
-  const [about, setAbout] = useState(UserReducer.userData.description);
   const [errAbout, setErrAbout] = useState(false);
-  const [beforeTwitter, setBeforeTwitter] = useState(
-    UserReducer.userData.twitterSite,
-  );
-  const [beforeEmail, setBeforeEmail] = useState(UserReducer.userData.email);
   const [isVisible, setIsVisible] = useState(false);
   const [msgModal, setMsgModal] = useState(false);
   const [msg, setMsg] = useState('');
@@ -104,20 +86,21 @@ function Profile(props) {
   }, [toastMsg]);
 
   useEffect(() => {
-    setEmail(UserReducer.userData.email);
-    setUsername(
-      isNonCrypto === 0
-        ? UserReducer.userData.title
-        : UserReducer.userData.userName,
-    );
-    setTwitter(UserReducer.userData.twitterSite);
-    setWebsite(UserReducer.userData.website);
-    setDiscord(UserReducer.userData.discordSite);
-    setYoutube(UserReducer.userData.youtubeSite);
-    setInstagram(UserReducer.userData.instagramSite);
-    setBeforeEmail(UserReducer.userData.email);
-    setBeforeTwitter(UserReducer.userData.twitterSite);
-    setAbout(UserReducer.userData.description);
+    setEditProfileData({
+      username:
+        isNonCrypto === 0
+          ? UserReducer.userData.title
+          : UserReducer.userData.userName,
+      email: UserReducer.userData.email,
+      twitter: UserReducer.userData.twitterSite,
+      website: UserReducer.userData.website,
+      discord: UserReducer.userData.discordSite,
+      youtube: UserReducer.userData.youtubeSite,
+      instagram: UserReducer.userData.instagramSite,
+      about: UserReducer.userData.description,
+      beforeTwitter: UserReducer.userData.twitterSite,
+      beforeEmail: UserReducer.userData.email,
+    });
   }, [UserReducer?.userData]);
 
   useEffect(() => {
@@ -129,14 +112,14 @@ function Profile(props) {
 
   useEffect(() => {
     if (
-      username ||
-      twitter ||
-      email ||
-      website ||
-      youtube ||
-      discord ||
-      instagram ||
-      about
+      editProfileData.username ||
+      editProfileData.twitter ||
+      editProfileData.email ||
+      editProfileData.website ||
+      editProfileData.youtube ||
+      editProfileData.discord ||
+      editProfileData.instagram ||
+      editProfileData.about
     ) {
       if (firstTime) {
         setDisable(false);
@@ -144,7 +127,16 @@ function Profile(props) {
         setFirstTime(true);
       }
     }
-  }, [username, twitter, email, website, youtube, discord, instagram, about]);
+  }, [
+    editProfileData.username,
+    editProfileData.twitter,
+    editProfileData.email,
+    editProfileData.website,
+    editProfileData.youtube,
+    editProfileData.discord,
+    editProfileData.instagram,
+    editProfileData.about,
+  ]);
 
   const renderArtistModal = () => {
     return (
@@ -204,7 +196,6 @@ function Profile(props) {
       </View>
     );
   };
-
   const renderMessageModal = msg => {
     setMsg(msg);
     setMsgModal(true);
@@ -217,107 +208,105 @@ function Profile(props) {
 
   const onSave = () => {
     let validateNum = 0;
-    if (maxLength32(username)) {
-      setErrUsername(maxLength32(username));
+    if (maxLength32(editProfileData.username)) {
+      setErrUsername(maxLength32(editProfileData.username));
     } else {
-      if (validateUserName(username)) {
-        setErrUsername(validateUserName(username));
+      if (validateUserName(editProfileData.username)) {
+        setErrUsername(validateUserName(editProfileData.username));
       } else {
         validateNum++;
       }
     }
-    if (maxLength50(email)) {
-      setErrEmail(maxLength50(email));
+    if (maxLength50(editProfileData.email)) {
+      setErrEmail(maxLength50(editProfileData.email));
     } else {
-      if (validateEmail(email)) {
-        setErrEmail(validateEmail(email));
+      if (validateEmail(editProfileData.email)) {
+        setErrEmail(validateEmail(editProfileData.email));
       } else {
         validateNum++;
       }
     }
-
-    if (maxLength100(website)) {
-      setErrWebsite(maxLength100(website));
+    if (maxLength100(editProfileData.website)) {
+      setErrWebsite(maxLength100(editProfileData.website));
     } else {
-      if (validateWebsiteURL(website)) {
-        setErrWebsite(validateWebsiteURL(website));
+      if (validateWebsiteURL(editProfileData.website)) {
+        setErrWebsite(validateWebsiteURL(editProfileData.website));
       } else {
         validateNum++;
       }
     }
-
-    if (maxLength100(discord)) {
-      setErrDiscord(maxLength100(discord));
+    if (maxLength100(editProfileData.discord)) {
+      setErrDiscord(maxLength100(editProfileData.discord));
     } else {
-      if (validateDiscordURL(discord)) {
-        setErrDiscord(validateDiscordURL(discord));
+      if (validateDiscordURL(editProfileData.discord)) {
+        setErrDiscord(validateDiscordURL(editProfileData.discord));
       } else {
         validateNum++;
       }
     }
-
-    if (maxLength100(twitter)) {
-      setErrTwitter(maxLength100(twitter));
+    if (maxLength100(editProfileData.twitter)) {
+      setErrTwitter(maxLength100(editProfileData.twitter));
     } else {
-      if (validateTwitterURL(twitter)) {
-        setErrTwitter(validateTwitterURL(twitter));
+      if (validateTwitterURL(editProfileData.twitter)) {
+        setErrTwitter(validateTwitterURL(editProfileData.twitter));
       } else {
         validateNum++;
       }
     }
-
-    if (maxLength100(youtube)) {
-      setErrYoutube(maxLength100(youtube));
+    if (maxLength100(editProfileData.youtube)) {
+      setErrYoutube(maxLength100(editProfileData.youtube));
     } else {
-      if (validateYoutubeURL(youtube)) {
-        setErrYoutube(validateYoutubeURL(youtube));
+      if (validateYoutubeURL(editProfileData.youtube)) {
+        setErrYoutube(validateYoutubeURL(editProfileData.youtube));
       } else {
         validateNum++;
       }
     }
-
-    if (maxLength100(instagram)) {
-      setErrInstagram(maxLength100(instagram));
+    if (maxLength100(editProfileData.instagram)) {
+      setErrInstagram(maxLength100(editProfileData.instagram));
     } else {
-      if (validateInstagramURL(instagram)) {
-        setErrInstagram(validateInstagramURL(instagram));
+      if (validateInstagramURL(editProfileData.instagram)) {
+        setErrInstagram(validateInstagramURL(editProfileData.instagram));
       } else {
         validateNum++;
       }
     }
-    if (maxLength200(about)) {
-      setErrAbout(maxLength200(about));
+    if (maxLength200(editProfileData.about)) {
+      setErrAbout(maxLength200(editProfileData.about));
     } else {
       validateNum++;
     }
     const req_body =
       isNonCrypto === 0
         ? {
-            description: about,
-            discordSite: discord,
-            email: email || undefined,
-            instagramSite: instagram,
-            twitterSite: twitter,
-            title: username,
-            website: website,
-            youtubeSite: youtube,
+            description: editProfileData.about,
+            discordSite: editProfileData.discord,
+            email: editProfileData.email || undefined,
+            instagramSite: editProfileData.instagram,
+            twitterSite: editProfileData.twitter,
+            title: editProfileData.username,
+            website: editProfileData.website,
+            youtubeSite: editProfileData.youtube,
             zoomMail: '',
           }
         : {
-            description: about,
-            discordSite: discord,
-            email: email || undefined,
-            instagramSite: instagram,
-            twitterSite: twitter,
-            userName: username,
-            website: website,
-            youtubeSite: youtube,
+            description: editProfileData.about,
+            discordSite: editProfileData.discord,
+            email: editProfileData.email || undefined,
+            instagramSite: editProfileData.instagram,
+            twitterSite: editProfileData.twitter,
+            userName: editProfileData.username,
+            website: editProfileData.website,
+            youtubeSite: editProfileData.youtube,
             zoomMail: '',
           };
     if (validateNum === 8) {
       dispatch(updateProfile(req_body, id));
-      setBeforeTwitter(twitter);
-      setBeforeEmail(email);
+      setEditProfileData({
+        ...editProfileData,
+        beforeTwitter: editProfileData.twitter,
+        beforeEmail: editProfileData.email,
+      });
       setDisable(true);
     }
   };
@@ -373,9 +362,12 @@ function Profile(props) {
           <LimitableInput
             singleLine={false}
             multiLine
-            value={username && username.trimStart().replace(/\s\s+/g, ' ')}
+            value={
+              editProfileData.username &&
+              editProfileData.username.trimStart().replace(/\s\s+/g, ' ')
+            }
             onChange={text => {
-              setUsername(text);
+              setEditProfileData({...editProfileData, username: text});
               setErrUsername(false);
             }}
             label={translate('common.UserName')}
@@ -398,9 +390,9 @@ function Profile(props) {
                   },
                 ]}
                 placeholderTextColor="grey"
-                value={twitter}
+                value={editProfileData.twitter}
                 onChangeText={text => {
-                  setTwitter(text);
+                  setEditProfileData({...editProfileData, twitter: text});
                   setErrTwitter(false);
                 }}
                 placeholder={translate('common.PLACEHOLDER_TWITTER')}
@@ -408,17 +400,17 @@ function Profile(props) {
               <TouchableOpacity
                 disabled={
                   UserReducer?.userData?.twitterVerified === 0 &&
-                  twitter &&
-                  beforeTwitter &&
-                  twitter === beforeTwitter
+                  editProfileData.twitter &&
+                  editProfileData.beforeTwitter &&
+                  editProfileData.twitter === editProfileData.beforeTwitter
                     ? false
                     : true
                 }
                 style={
                   UserReducer?.userData?.twitterVerified === 0 &&
-                  twitter &&
-                  beforeTwitter &&
-                  twitter === beforeTwitter
+                  editProfileData.twitter &&
+                  editProfileData.beforeTwitter &&
+                  editProfileData.twitter === editProfileData.beforeTwitter
                     ? styles.verifyBtnActive
                     : styles.verifyBtn
                 }
@@ -438,9 +430,9 @@ function Profile(props) {
             <LimitableInput
               multiLine
               singleLine={false}
-              value={email && email.trimStart()}
+              value={editProfileData.email && editProfileData.email.trimStart()}
               onChange={text => {
-                setEmail(text);
+                setEditProfileData({...editProfileData, email: text});
                 setErrEmail(false);
               }}
               label={translate('common.email')}
@@ -465,9 +457,9 @@ function Profile(props) {
                     },
                   ]}
                   placeholderTextColor="grey"
-                  value={email}
+                  value={editProfileData.email}
                   onChangeText={text => {
-                    setEmail(text);
+                    setEditProfileData({...editProfileData, email: text});
                     setErrEmail(false);
                   }}
                   placeholder={translate('common.PLACEHOLDER_EMAIL')}
@@ -475,22 +467,22 @@ function Profile(props) {
                 <TouchableOpacity
                   disabled={
                     UserReducer?.userData?.emailVerified === 0 &&
-                    email &&
-                    beforeEmail &&
-                    email === beforeEmail
+                    editProfileData.email &&
+                    editProfileData.beforeEmail &&
+                    editProfileData.email === editProfileData.beforeEmail
                       ? false
                       : true
                   }
                   style={
                     UserReducer?.userData?.emailVerified === 0 &&
-                    email &&
-                    beforeEmail &&
-                    email === beforeEmail
+                    editProfileData.email &&
+                    editProfileData.beforeEmail &&
+                    editProfileData.email === editProfileData.beforeEmail
                       ? styles.verifyBtnActive
                       : styles.verifyBtn
                   }
                   onPress={() => {
-                    verifyEmailId(email, selectedLanguageItem);
+                    verifyEmailId(editProfileData.email, selectedLanguageItem);
                   }}>
                   <Text style={styles.verifyBtnTitle}>
                     {UserReducer.userData.emailVerified === 0
@@ -505,9 +497,11 @@ function Profile(props) {
           <LimitableInput
             multiLine
             singleLine={false}
-            value={website && website.trimStart()}
+            value={
+              editProfileData.website && editProfileData.website.trimStart()
+            }
             onChange={text => {
-              setWebsite(text);
+              setEditProfileData({...editProfileData, website: text});
               setErrWebsite(false);
             }}
             label={translate('common.website')}
@@ -518,9 +512,11 @@ function Profile(props) {
           <LimitableInput
             multiLine
             singleLine={false}
-            value={youtube && youtube.trimStart()}
+            value={
+              editProfileData.youtube && editProfileData.youtube.trimStart()
+            }
             onChange={text => {
-              setYoutube(text);
+              setEditProfileData({...editProfileData, youtube: text});
               setErrYoutube(false);
             }}
             label={translate('common.youtube')}
@@ -531,9 +527,11 @@ function Profile(props) {
           <LimitableInput
             multiLine
             singleLine={false}
-            value={discord && discord.trimStart()}
+            value={
+              editProfileData.discord && editProfileData.discord.trimStart()
+            }
             onChange={text => {
-              setDiscord(text);
+              setEditProfileData({...editProfileData, discord: text});
               setErrDiscord(false);
             }}
             label={translate('common.discord')}
@@ -550,9 +548,9 @@ function Profile(props) {
               <TextInput
                 style={styles.instagramView}
                 placeholderTextColor="grey"
-                value={instagram}
+                value={editProfileData.instagram}
                 onChangeText={text => {
-                  setInstagram(text);
+                  setEditProfileData({...editProfileData, instagram: text});
                   setErrInstagram(false);
                 }}
                 placeholder={translate('common.PLACEHOLDER_INSTAGRAM')}
@@ -575,9 +573,12 @@ function Profile(props) {
             multiLine
             limit
             style={styles.limitableInput}
-            value={about && about.trimStart()}
+            value={editProfileData.about && editProfileData.about.trimStart()}
             onChange={text => {
-              setAbout(text.slice(0, 200));
+              setEditProfileData({
+                ...editProfileData,
+                about: text.slice(0, 200),
+              });
               setErrAbout(false);
             }}
             label={translate('common.bio')}
@@ -585,7 +586,7 @@ function Profile(props) {
             validate={[maxLength200]}
             error={errAbout}
             maxLength={200}
-            about={about}
+            about={editProfileData.about}
           />
           <GroupButton
             leftDisabled={disable}
