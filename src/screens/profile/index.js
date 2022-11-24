@@ -399,11 +399,13 @@ function Profile({navigation, connector, route}) {
               <MenuTrigger />
               <MenuOptions
                 optionsContainerStyle={{
-                  width: SIZE(60),
+                  width: 'auto',
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                  <Text style={{color: '#FFFFFF'}}>
+                    {`${translate('common.Copied')}!`}
+                  </Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
@@ -472,11 +474,13 @@ function Profile({navigation, connector, route}) {
                     <MenuTrigger />
                     <MenuOptions
                       optionsContainerStyle={{
-                        width: SIZE(60),
+                        width: 'auto',
                         backgroundColor: Colors.BLACK1,
                       }}>
                       <MenuOption>
-                        <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                        <Text style={{color: '#FFFFFF'}}>
+                          {`${translate('common.Copied')}!`}
+                        </Text>
                       </MenuOption>
                     </MenuOptions>
                   </Menu>
