@@ -407,7 +407,7 @@
     "USER_WITH_EMAIL_ALREADY_EXIST": "このメールアドレスは既に使われています",
     "USER_WITH_TWITTER_ALREADY_EXIST": "このツイッターユーザーは既に存在します",
     "BTN_EMAIL_REQUEST": "認証する",
-    "BTN_EMAIL_APPROVED": "認証済",
+    "BTN_EMAIL_APPROVED": "検証済み",
     "BTN_TWITTER_REQUEST": "確認",
     "BTN_TWITTER_APPROVED": "ツイッター認証が完了しました",
     "LABEL_EMAIL_SUCCESS": "認証メールを送信しましたので、メールボックスを確認してください",

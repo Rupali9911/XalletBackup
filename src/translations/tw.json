@@ -407,7 +407,7 @@
     "USER_WITH_EMAIL_ALREADY_EXIST": "該電子郵件的用戶已存在",
     "USER_WITH_TWITTER_ALREADY_EXIST": "已存在該 twitter 用戶",
     "BTN_EMAIL_REQUEST": "確認電子郵件地址",
-    "BTN_EMAIL_APPROVED": "郵箱驗證！",
+    "BTN_EMAIL_APPROVED": "已驗證",
     "BTN_TWITTER_REQUEST": "核實",
     "BTN_TWITTER_APPROVED": "推特已驗證！",
     "LABEL_EMAIL_SUCCESS": "向您的電子郵件地址發送消息！請查看你的郵箱。",
