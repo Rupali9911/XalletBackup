@@ -1,13 +1,7 @@
 import React, {useState} from 'react';
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  Platform,
-  Image,
-} from 'react-native';
+import {View, ActivityIndicator, StyleSheet, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID } from '../constants';
+import {SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID} from '../constants';
 import Colors from '../constants/Colors';
 import Audio from '../assets/pngs/headphone-icon.png';
 
@@ -22,6 +16,58 @@ const C_Image = props => {
 
   return (
     <>
+      {brokenUrl ? (
+        <Image
+          style={props.imageStyle}
+          onLoadStart={() => setLoadImage(true)}
+          onLoadEnd={() => setLoadImage(false)}
+          onError={({nativeEvent}) => {
+            console.log(nativeEvent, 'errror => 74', props.uri);
+            setIsBroken(true);
+          }}
+          source={
+            props.uri
+              ? isBroken
+                ? IMAGES.brokenIcon
+                : {
+                    uri: props.uri,
+                  }
+              : props.imageType == 'profile'
+              ? IMAGES.DEFAULTPROFILE
+              : IMAGES.imagePlaceholder
+          }
+          resizeMode={
+            props.isContain
+              ? FastImage.resizeMode.contain
+              : FastImage.resizeMode.cover
+          }
+        />
+      ) : (
+        <FastImage
+          style={props.imageStyle}
+          onLoadStart={() => setLoadImage(true)}
+          onLoadEnd={() => setLoadImage(false)}
+          onError={({nativeEvent}) => {
+            setBrokenUrl(true);
+          }}
+          source={
+            props.uri
+              ? {
+                  uri: props.uri,
+                  priority: FastImage.priority.high,
+                }
+              : props.imageType == 'profile'
+              ? IMAGES.DEFAULTPROFILE
+              : IMAGES.imagePlaceholder
+          }
+          resizeMode={
+            props.isContain
+              ? FastImage.resizeMode.contain
+              : FastImage.resizeMode.cover
+          }
+        />
+      )}
+
       {loadImage && (
         <View
           style={[
@@ -32,94 +78,7 @@ const C_Image = props => {
           <ActivityIndicator size="small" color={Colors.themeColor} />
         </View>
       )}
-      {
-        // checkVideoUrl ?
-        //     Platform.OS === "ios" ?
-        //         <Video
-        //             source={{ uri: props.uri }}
-        //             paused={true}
-        //             resizeMode={'cover'}
-        //             style={props.imageStyle} />
-        //         :
-        //         // <Video
-        //         //     source={{ uri: props.uri }}
-        //         //     resizeMode={'cover'}
-        //         //     paused={true}
-        //         //     onError={(e) => console.log("error", e)}
-        //         //     style={props.imageStyle} />
-        //         <FastImage
-        //             style={props.imageStyle}
-        //             onLoadStart={() => setLoadImage(true)}
-        //             onLoadEnd={() => setLoadImage(false)}
-        //             onError={({ nativeEvent }) => {
-        //                 console.log(nativeEvent, "errror", props.uri)
-        //                 setBrokenUrl(true)
-        //             }}
-        //             source={props.uri ?
-        //                 brokenUrl ?
-        //                     IMAGES.brokenIcon :
-        //                     {
-        //                         uri: props.uri,
-        //                         priority: FastImage.priority.high,
-        //                     } : (props.imageType == "profile" ? IMAGES.DEFAULTPROFILE : IMAGES.imagePlaceholder)}
-        //             resizeMode={props.isContain ? FastImage.resizeMode.contain : FastImage.resizeMode.cover}
-        //         />
-        //     :
-        brokenUrl ? (
-          <FastImage
-            style={props.imageStyle}
-            onLoadStart={() => setLoadImage(true)}
-            onLoadEnd={() => setLoadImage(false)}
-            onError={({nativeEvent}) => {
-              console.log(nativeEvent, 'errror', props.uri);
-              setIsBroken(true);
-            }}
-            fallback={isBroken ? false : true}
-            source={
-              props.uri
-                ? isBroken
-                  ? IMAGES.brokenIcon
-                  : {
-                      uri: props.uri,
-                      priority: FastImage.priority.high,
-                    }
-                : props.imageType == 'profile'
-                ? IMAGES.DEFAULTPROFILE
-                : IMAGES.imagePlaceholder
-            }
-            resizeMode={
-              props.isContain
-                ? FastImage.resizeMode.contain
-                : FastImage.resizeMode.cover
-            }
-          />
-        ) : (
-          <FastImage
-            style={props.imageStyle}
-            onLoadStart={() => setLoadImage(true)}
-            onLoadEnd={() => setLoadImage(false)}
-            onError={({nativeEvent}) => {
-              // console.log(nativeEvent, "errror", props.uri)
-              setBrokenUrl(true);
-            }}
-            source={
-              props.uri
-                ? {
-                    uri: props.uri,
-                    priority: FastImage.priority.high,
-                  }
-                : props.imageType == 'profile'
-                ? IMAGES.DEFAULTPROFILE
-                : IMAGES.imagePlaceholder
-            }
-            resizeMode={
-              props.isContain
-                ? FastImage.resizeMode.contain
-                : FastImage.resizeMode.cover
-            }
-          />
-        )
-      }
+
       {checkVideoUrl === NFT_TYPE_TO_ID.video ? (
         <View style={styles.imageCont}>
           <View style={styles.playCont}>

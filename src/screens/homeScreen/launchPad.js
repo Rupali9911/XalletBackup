@@ -73,7 +73,7 @@ const LaunchPad = () => {
         creatorInfo={item.owner.description}
         blind={item.blind}
         collectionId={item._id}
-        disabled={item.totalNft === 0}
+        // disabled={item.totalNft === 0}
         onPress={() => {
           navigation.push('CollectionDetail', {
             networkName: null,
