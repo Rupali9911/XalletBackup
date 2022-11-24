@@ -771,7 +771,9 @@
     "TOTAL_AMOUNT_GAS_FEE":"合計 (数量 + ガス代）",
     "TRANSACTION_SENT_NETWORK": "トランザクションはネットワークに送信されました！",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "ウォレットアドレスを入力してください",
-    "TRANSACTION_ENTER_AMOUNT": "数量を入力してください"
+    "TRANSACTION_ENTER_AMOUNT": "数量を入力してください",
+    "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
+    "IS_REQUIRED": "が必要です"
   },
   "AwardPage": {},
   "wallet": {
