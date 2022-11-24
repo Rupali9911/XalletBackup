@@ -19,6 +19,7 @@ export default {
     infoIcon: require("../../assets/images/info.png"),
     dangerIcon: require("../../assets/images/danger.png"),
     success: require("../../assets/images/success.png"),
+    transactionDone: require("../../assets/images/transactionDone.png"),
     notificationAction: require("../../assets/images/loudspeaker.png"),
     send: require("../../assets/images/send.png"),
     receive: require("../../assets/images/receive.png"),

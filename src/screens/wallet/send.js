@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,9 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from 'react-native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-import {RF, hp, wp} from '../../constants/responsiveFunct';
+import { RF, hp, wp } from '../../constants/responsiveFunct';
 import {
   translate,
   amountValidation,
@@ -21,15 +21,15 @@ import {
   SCAN_WALLET,
   getConfigDetailsFromEnviorment,
 } from '../../walletUtils';
-import {alertWithSingleBtn} from '../../utils';
-import {useDispatch, useSelector} from 'react-redux';
-import {transfer} from './functions';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
-import {confirmationAlert} from '../../common/function';
-import {openSettings} from 'react-native-permissions';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-const {height} = Dimensions.get('window');
+import { alertWithSingleBtn } from '../../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { transfer } from './functions';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
+import { openSettings } from 'react-native-permissions';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+const { height } = Dimensions.get('window');
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
@@ -42,12 +42,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
-import {getWallet} from '../../helpers/AxiosApiRequest';
+import { getWallet } from '../../helpers/AxiosApiRequest';
 import {
   balanceTransfer,
   handleTransactionError,
   getGasPrice,
 } from '../wallet/functions/transactionFunctions';
+import AppModal from '../../components/appModal';
+import SuccessModalContent from '../../components/successModal';
+
 
 const verifyAddress = address => {
   return new Promise((resolve, reject) => {
@@ -72,7 +75,7 @@ export const AddressField = props => {
       </Text>
       <View style={styles.inputMainCont}>
         <TextInput
-          style={[styles.inputCont, styles.paymentField, {fontSize: RF(1.8)}]}
+          style={[styles.inputCont, styles.paymentField, { fontSize: RF(1.8) }]}
           placeholder={translate('common.TRANSACTION_ENTER_WALLET_ADDRESS')}
           placeholderTextColor={Colors.GREY4}
           returnKeyType="done"
@@ -93,10 +96,10 @@ export const PaymentField = props => {
       <View
         style={[
           styles.inputMainCont,
-          {flexDirection: 'row', justifyContent: 'space-between'},
+          { flexDirection: 'row', justifyContent: 'space-between' },
         ]}>
         <TextInput
-          style={[styles.inputCont, styles.paymentField, {fontSize: RF(1.8)}]}
+          style={[styles.inputCont, styles.paymentField, { fontSize: RF(1.8) }]}
           keyboardType="decimal-pad"
           placeholder={translate('common.TRANSACTION_ENTER_AMOUNT')}
           placeholderTextColor={Colors.GREY4}
@@ -117,9 +120,9 @@ export const PaymentField = props => {
 /*************************************************************************/
 const ScanScreen = React.memo(props => {
   let refScanner = null;
-  const {camera} = useSelector(state => state.PermissionReducer);
+  const { camera } = useSelector(state => state.PermissionReducer);
   const dispatch = useDispatch();
-  const {jumpTo, setResult, position} = props;
+  const { jumpTo, setResult, position } = props;
 
   const [isActive, setIsActive] = useState(false);
 
@@ -207,7 +210,7 @@ const ScanScreen = React.memo(props => {
           notAuthorizedView={cameraNotAuthView()}
           checkAndroid6Permissions={true}
           customMarker={
-            <TouchableOpacity disabled style={{zIndex: 1000}}>
+            <TouchableOpacity disabled style={{ zIndex: 1000 }}>
               <Image
                 style={styles.scanStyle}
                 source={ImagesSrc.scanRectangle}
@@ -215,8 +218,8 @@ const ScanScreen = React.memo(props => {
             </TouchableOpacity>
           }
           cameraStyle={styles.qrCameraStyle}
-          topViewStyle={{flex: 0}}
-          bottomViewStyle={{flex: 0}}
+          topViewStyle={{ flex: 0 }}
+          bottomViewStyle={{ flex: 0 }}
           vibrate={isActive}
         />
       ) : null}
@@ -230,10 +233,10 @@ const ScanScreen = React.memo(props => {
 const SendScreen = React.memo(props => {
   const navigation = useNavigation();
   //====================== Props Destructuring =========================
-  const {item, type, tokenInfo, setLoading, loading} = props;
+  const { item, type, tokenInfo, setLoading, loading } = props;
 
   //====================== Getting data from reducers =========================
-  const {userData} = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const {
     ethBalance,
     bnbBalance,
@@ -253,6 +256,7 @@ const SendScreen = React.memo(props => {
   const [amount, setAmount] = useState(props.amount);
   const [networkConfig, setNetworkConfig] = useState(null);
   const [gasPrice, setGasPrice] = useState(0);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   //==================== Global Variables =======================
   let wallet = null;
@@ -348,7 +352,7 @@ const SendScreen = React.memo(props => {
 
   const transferAmount = async () => {
     let wallet = await getWallet();
-    const {item, type, setLoading} = props;
+    const { item, type, setLoading } = props;
 
     const transferParameters = {
       publicAddress: wallet?.address,
@@ -367,7 +371,7 @@ const SendScreen = React.memo(props => {
       .then(transferResponse => {
         setLoading(false);
         if (transferResponse?.success) {
-          showSuccessAlert();
+          setSuccessModalVisible(true);
         }
       })
       .catch(err => {
@@ -377,21 +381,26 @@ const SendScreen = React.memo(props => {
       });
   };
 
-  const showSuccessAlert = () => {
-    Alert.alert(
-      translate('wallet.common.transferInProgress', {
-        token: `${amount} ${type}`,
-      }),
-      translate('wallet.common.reflectInHistory', {token: `${amount} ${type}`}),
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.popToTop();
-          },
-        },
-      ],
-    );
+  // const showSuccessAlert = () => {
+  //   Alert.alert(
+  //     translate('wallet.common.transferInProgress', {
+  //       token: `${amount} ${type}`,
+  //     }),
+  //     translate('wallet.common.reflectInHistory', { token: `${amount} ${type}` }),
+  //     [
+  //       {
+  //         text: 'OK',
+  //         onPress: () => {
+  //           navigation.popToTop();
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
+
+  const closeSuccess = () => {
+    setSuccessModalVisible(false);
+    navigation.popToTop();
   };
 
   gasFeeAlert =
@@ -404,24 +413,24 @@ const SendScreen = React.memo(props => {
 
   const disableButton =
     address &&
-    Number(amount) > 0 &&
-    Number(amount) < Number(getTokenValue().toFixed(4)) &&
-    !gasFeeAlert
+      Number(amount) > 0 &&
+      Number(amount) < Number(getTokenValue().toFixed(4)) &&
+      !gasFeeAlert
       ? false
       : true;
 
   const networkFeeShow =
     Number(amount) > 0 &&
-    Number(amount) < Number(getTokenValue().toFixed(4)) &&
-    !gasFeeAlert
+      Number(amount) < Number(getTokenValue().toFixed(4)) &&
+      !gasFeeAlert
       ? true
       : false;
 
   const alertMsg =
     Number(amount) >=
-    (Number(getTokenValue().toFixed(4)) === 0.0
-      ? 0
-      : Number(getTokenValue().toFixed(4)))
+      (Number(getTokenValue().toFixed(4)) === 0.0
+        ? 0
+        : Number(getTokenValue().toFixed(4)))
       ? true
       : false;
 
@@ -508,27 +517,27 @@ const SendScreen = React.memo(props => {
                 <Text style={styles.gasFeeText}>
                   + {translate('common.NETWORK_GAS_FEE')}
                 </Text>
-                <Text style={{color: Colors.GREY4, fontSize: RF(1.6)}}>
+                <Text style={{ color: Colors.GREY4, fontSize: RF(1.6) }}>
                   {gasPrice} {tokenInfo.tokenName}
                 </Text>
               </View>
             )}
           </View>
-          <View style={{marginTop: hp('2.5%')}}>
+          <View style={{ marginTop: hp('2.5%') }}>
             <Text style={styles.inputLeft}>
               {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
               {networkFeeShow && (
-                <Text style={[styles.priceCont, {marginRight: hp('1%')}]}>
-                  0.0004 {tokenInfo.tokenName}
+                <Text style={[styles.priceCont, { marginRight: hp('1%') }]}>
+                  {Number(amount) + gasPrice} {tokenInfo.tokenName}
                 </Text>
               )}
             </View>
           </View>
         </View>
       </KeyboardAwareScrollView>
-      <View style={{justifyContent: 'flex-end'}}>
+      <View style={{ justifyContent: 'flex-end' }}>
         <AppButton
           label={translate('wallet.common.send')}
           // view={loading}
@@ -556,6 +565,14 @@ const SendScreen = React.memo(props => {
           }}
         />
       </View>
+      <AppModal visible={successModalVisible} onRequestClose={closeSuccess}>
+        <SuccessModalContent
+          onClose={closeSuccess}
+          onDonePress={closeSuccess}
+          sucessMsg={translate('common.TRANSACTION_SENT_NETWORK')}
+          transactionDone={true}
+        />
+      </AppModal>
     </View>
   );
 });
@@ -563,17 +580,17 @@ const SendScreen = React.memo(props => {
 //*************************************************************************/
 //=========================Send Screen Start ==============================
 /*************************************************************************/
-const Send = ({route, navigation}) => {
+const Send = ({ route, navigation }) => {
   //================= Props Destructuring =============================
-  const {item, type, tokenInfo} = route.params;
+  const { item, type, tokenInfo } = route.params;
   //================= States Initialiazation =============================
   const [loading, setLoading] = useState(false);
   const [sendToAddress, setSendToAddress] = useState(null);
   const [amountToSend, setAmountToSend] = useState('');
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'Send', title: translate('wallet.common.send')},
-    {key: 'Scan', title: translate('wallet.common.scan')},
+    { key: 'Send', title: translate('wallet.common.send') },
+    { key: 'Scan', title: translate('wallet.common.scan') },
   ]);
 
   const setResult = (address, amount) => {
@@ -581,7 +598,7 @@ const Send = ({route, navigation}) => {
     setSendToAddress(address);
   };
 
-  const _renderScene = ({route, jumpTo, position}) => {
+  const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Send':
         return (
@@ -614,11 +631,11 @@ const Send = ({route, navigation}) => {
     return (
       <TabBar
         {...props}
-        renderLabel={({route, focused, color}) => (
-          <Text style={{color, ...styles.tabLabel}}>{route.title}</Text>
+        renderLabel={({ route, focused, color }) => (
+          <Text style={{ color, ...styles.tabLabel }}>{route.title}</Text>
         )}
-        contentContainerStyle={{height: 45}}
-        indicatorStyle={{backgroundColor: Colors.scanActive}}
+        contentContainerStyle={{ height: 45 }}
+        indicatorStyle={{ backgroundColor: Colors.scanActive }}
         style={styles.tabItem}
         inactiveColor={Colors.sectionLabel}
         activeColor={Colors.scanActive}
@@ -629,12 +646,12 @@ const Send = ({route, navigation}) => {
 
   return (
     <AppBackground isBusy={loading} hideBottomSafeArea={index == 1}>
-      <KeyboardAvoidingView behavior="height" style={{flexGrow: 1}}>
+      <KeyboardAvoidingView behavior="height" style={{ flexGrow: 1 }}>
         <AppHeader showBackButton title={translate('wallet.common.send')} />
         <TabView
           lazy={true}
           renderTabBar={renderTabBar}
-          navigationState={{index, routes}}
+          navigationState={{ index, routes }}
           renderScene={_renderScene}
           onIndexChange={index => {
             setIndex(index);
