@@ -765,7 +765,12 @@
     "BACKUP_NOW": "Back up Now",
     "DECIMAL_POINTS_LIMIT": "You can enter decimal points only upto 8 digits",
     "SEND_QUANTITY": "Amount",
-    "recoveryPhrase": "Recovery Phrase"
+    "recoveryPhrase": "Recovery Phrase",
+    "NETWORK_GAS_FEE":"Network gas fee",
+    "TOTAL_AMOUNT_GAS_FEE":"TOTAL (Amount + gas fee)",
+    "TRANSACTION_SENT_NETWORK": "The transaction has been sent to the network!",
+    "TRANSACTION_ENTER_WALLET_ADDRESS": "Please enter wallet address",
+    "TRANSACTION_ENTER_AMOUNT": "Please enter amount !!!"
   },
   "AwardPage": {},
   "wallet": {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,9 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from 'react-native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-import {RF, hp, wp} from '../../constants/responsiveFunct';
+import { RF, hp, wp } from '../../constants/responsiveFunct';
 import {
   translate,
   amountValidation,
@@ -21,15 +21,15 @@ import {
   SCAN_WALLET,
   getConfigDetailsFromEnviorment,
 } from '../../walletUtils';
-import {alertWithSingleBtn} from '../../utils';
-import {useDispatch, useSelector} from 'react-redux';
-import {transfer} from './functions';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {Permission, PERMISSION_TYPE} from '../../utils/appPermission';
-import {confirmationAlert} from '../../common/function';
-import {openSettings} from 'react-native-permissions';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-const {height} = Dimensions.get('window');
+import { alertWithSingleBtn } from '../../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { transfer } from './functions';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Permission, PERMISSION_TYPE } from '../../utils/appPermission';
+import { confirmationAlert } from '../../common/function';
+import { openSettings } from 'react-native-permissions';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+const { height } = Dimensions.get('window');
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
@@ -42,11 +42,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import NumberFormat from 'react-number-format';
 import Web3 from 'web3';
-import {getWallet} from '../../helpers/AxiosApiRequest';
+import { getWallet } from '../../helpers/AxiosApiRequest';
 import {
   balanceTransfer,
   handleTransactionError,
+  getGasPrice,
 } from '../wallet/functions/transactionFunctions';
+import AppModal from '../../components/appModal';
+import SuccessModalContent from '../../components/successModal';
+
 
 const verifyAddress = address => {
   return new Promise((resolve, reject) => {
@@ -65,34 +69,40 @@ const showErrorAlert = msg => {
 
 export const AddressField = props => {
   return (
-    <View style={styles.inputMainCont}>
+    <View>
       <Text style={styles.inputLeft}>
         {translate('wallet.common.walletAddress')}
       </Text>
-      <TextInput
-        style={[styles.inputCont, styles.paymentField]}
-        placeholder=""
-        placeholderTextColor={Colors.topUpPlaceholder}
-        returnKeyType="done"
-        value={props.value}
-        onChangeText={val => props.onChangeText(val)}
-        onSubmitEditing={props.onSubmitEditing}
-        editable={props.editable}
-      />
+      <View style={styles.inputMainCont}>
+        <TextInput
+          style={[styles.inputCont, styles.paymentField, { fontSize: RF(1.8) }]}
+          placeholder={translate('common.TRANSACTION_ENTER_WALLET_ADDRESS')}
+          placeholderTextColor={Colors.GREY4}
+          returnKeyType="done"
+          value={props.value}
+          onChangeText={val => props.onChangeText(val)}
+          onSubmitEditing={props.onSubmitEditing}
+          editable={props.editable}
+        />
+      </View>
     </View>
   );
 };
 
 export const PaymentField = props => {
   return (
-    <View style={[styles.inputMainCont]}>
+    <View>
       <Text style={styles.inputLeft}>{translate('common.SEND_QUANTITY')}</Text>
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+      <View
+        style={[
+          styles.inputMainCont,
+          { flexDirection: 'row', justifyContent: 'space-between' },
+        ]}>
         <TextInput
-          style={[styles.inputCont, styles.paymentField, {fontSize: RF(2)}]}
+          style={[styles.inputCont, styles.paymentField, { fontSize: RF(1.8) }]}
           keyboardType="decimal-pad"
-          placeholder="0"
-          placeholderTextColor={Colors.topUpPlaceholder}
+          placeholder={translate('common.TRANSACTION_ENTER_AMOUNT')}
+          placeholderTextColor={Colors.GREY4}
           returnKeyType="done"
           value={props.value}
           onChangeText={props.onChangeText}
@@ -110,31 +120,25 @@ export const PaymentField = props => {
 /*************************************************************************/
 const ScanScreen = React.memo(props => {
   let refScanner = null;
-  const {camera} = useSelector(state => state.PermissionReducer);
+  const { camera } = useSelector(state => state.PermissionReducer);
   const dispatch = useDispatch();
-  const {jumpTo, setResult, position} = props;
+  const { jumpTo, setResult, position } = props;
 
   const [isActive, setIsActive] = useState(false);
 
   useEffect(async () => {
     if (position == 1) {
-      // console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
       await checkCameraPermission();
-      // console.log("@@@ Scan screen useEffect to reactive 22222=========>")
       setIsActive(true);
-      // console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
     }
   }, [position, camera]);
 
   const checkCameraPermission = async () => {
     const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-    // console.log("@@@ Scan screen check permission 11111=========>", granted)
     if (!granted) {
-      // console.log("@@@ Scan screen check permission 22222=========>", granted)
       const requestPer = await Permission.requestPermission(
         PERMISSION_TYPE.camera,
       );
-      // console.log("@@@ Scan screen check permission 33333=========>", requestPer)
       if (requestPer == false) {
         confirmationAlert(
           translate('wallet.common.cameraPermissionHeader'),
@@ -206,7 +210,7 @@ const ScanScreen = React.memo(props => {
           notAuthorizedView={cameraNotAuthView()}
           checkAndroid6Permissions={true}
           customMarker={
-            <TouchableOpacity disabled style={{zIndex: 1000}}>
+            <TouchableOpacity disabled style={{ zIndex: 1000 }}>
               <Image
                 style={styles.scanStyle}
                 source={ImagesSrc.scanRectangle}
@@ -214,8 +218,8 @@ const ScanScreen = React.memo(props => {
             </TouchableOpacity>
           }
           cameraStyle={styles.qrCameraStyle}
-          topViewStyle={{flex: 0}}
-          bottomViewStyle={{flex: 0}}
+          topViewStyle={{ flex: 0 }}
+          bottomViewStyle={{ flex: 0 }}
           vibrate={isActive}
         />
       ) : null}
@@ -229,10 +233,10 @@ const ScanScreen = React.memo(props => {
 const SendScreen = React.memo(props => {
   const navigation = useNavigation();
   //====================== Props Destructuring =========================
-  const {item, type, setLoading, loading} = props;
+  const { item, type, tokenInfo, setLoading, loading } = props;
 
   //====================== Getting data from reducers =========================
-  const {userData} = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const {
     ethBalance,
     bnbBalance,
@@ -250,19 +254,45 @@ const SendScreen = React.memo(props => {
   //====================== States Initiliazation =========================
   const [address, setAddress] = useState(props.address);
   const [amount, setAmount] = useState(props.amount);
+  const [networkConfig, setNetworkConfig] = useState(null);
+  const [gasPrice, setGasPrice] = useState(0);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
 
   //==================== Global Variables =======================
   let wallet = null;
+  let gasFeeAlert = null;
 
   //====================== Use Effect Start =========================
   useEffect(async () => {
     wallet = await getWallet();
+    const config = getConfigDetailsFromEnviorment(networkType?.name, type);
+    const gasPrice = await getGasPrice(config.rpcURL);
+    setGasPrice(Number(gasPrice));
+    setNetworkConfig(config);
   }, []);
 
   useEffect(() => {
     setAddress(props.address);
     setAmount(props.amount);
   }, [props.address, props.amount]);
+
+  const getSelfTokenValue = type => {
+    let tokenValue = 0;
+    if (type == 'Ethereum') {
+      let value = parseFloat(ethBalance);
+      tokenValue = value;
+    } else if (type == 'BSC') {
+      let value = parseFloat(bnbBalance);
+      tokenValue = value;
+    } else if (type == 'Polygon') {
+      let value = parseFloat(maticBalance);
+      tokenValue = value;
+    } else if (type == 'XANA CHAIN') {
+      let value = parseFloat(xetaBalance);
+      tokenValue = value;
+    }
+    return tokenValue;
+  };
 
   const getTokenValue = () => {
     let totalValue = 0;
@@ -322,7 +352,7 @@ const SendScreen = React.memo(props => {
 
   const transferAmount = async () => {
     let wallet = await getWallet();
-    const {item, type, setLoading} = props;
+    const { item, type, setLoading } = props;
 
     const transferParameters = {
       publicAddress: wallet?.address,
@@ -335,16 +365,13 @@ const SendScreen = React.memo(props => {
       networkId: networkType?.id,
     };
     setLoading(true);
-    // console.log("@@@ parameters in transation function =============>", networkType?.name, type);
-    const config = getConfigDetailsFromEnviorment(networkType?.name, type);
-    // console.log("@@@ config in transation function =============>", config);
+    // const config = getConfigDetailsFromEnviorment(networkType?.name, type);
 
-    balanceTransfer(transferParameters, config)
+    balanceTransfer(transferParameters, networkConfig)
       .then(transferResponse => {
-        // console.log("Balance Transfer response ======>", transferResponse);
         setLoading(false);
         if (transferResponse?.success) {
-          showSuccessAlert();
+          setSuccessModalVisible(true);
         }
       })
       .catch(err => {
@@ -354,28 +381,59 @@ const SendScreen = React.memo(props => {
       });
   };
 
-  const showSuccessAlert = () => {
-    Alert.alert(
-      translate('wallet.common.transferInProgress', {
-        token: `${amount} ${type}`,
-      }),
-      translate('wallet.common.reflectInHistory', {token: `${amount} ${type}`}),
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.popToTop();
-          },
-        },
-      ],
-    );
+  // const showSuccessAlert = () => {
+  //   Alert.alert(
+  //     translate('wallet.common.transferInProgress', {
+  //       token: `${amount} ${type}`,
+  //     }),
+  //     translate('wallet.common.reflectInHistory', { token: `${amount} ${type}` }),
+  //     [
+  //       {
+  //         text: 'OK',
+  //         onPress: () => {
+  //           navigation.popToTop();
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
+
+  const closeSuccess = () => {
+    setSuccessModalVisible(false);
+    navigation.popToTop();
   };
-  const decimalDigit = (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8 ? true : false
-  const disableButton = address && (Number(amount) > 0 && Number(amount) < Number(getTokenValue().toFixed(4))) ? false : true
-  const alertMsg = (Number(amount) >= (Number(getTokenValue().toFixed(4)) === 0.0000 ? 0 : Number(getTokenValue().toFixed(4)))) ? true : false
-  // console.log("@@@ Alert msg 11111 ===========>", Number(amount))
-  // console.log("@@@ Alert msg 22222 ===========>", Number(getTokenValue().toFixed(4)))
-  // console.log("@@@ Alert msg 33333 ===========>", amount >= Number(getTokenValue().toFixed(4)))
+
+  gasFeeAlert =
+    Number(getSelfTokenValue(item?.network).toFixed(4)) === 0 ? true : false;
+
+  const decimalDigit =
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
+      ? true
+      : false;
+
+  const disableButton =
+    address &&
+      Number(amount) > 0 &&
+      Number(amount) < Number(getTokenValue().toFixed(4)) &&
+      !gasFeeAlert
+      ? false
+      : true;
+
+  const networkFeeShow =
+    Number(amount) > 0 &&
+      Number(amount) < Number(getTokenValue().toFixed(4)) &&
+      !gasFeeAlert
+      ? true
+      : false;
+
+  const alertMsg =
+    Number(amount) >=
+      (Number(getTokenValue().toFixed(4)) === 0.0
+        ? 0
+        : Number(getTokenValue().toFixed(4)))
+      ? true
+      : false;
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
@@ -384,16 +442,33 @@ const SendScreen = React.memo(props => {
             <View style={styles.profileCont}>
               <Image style={styles.profileImage} source={item.icon} />
             </View>
-
-            <NumberFormat
-              value={getTokenValue()}
-              displayType={'text'}
-              decimalScale={4}
-              thousandSeparator={true}
-              renderText={formattedValue => (
-                <TextView style={styles.priceCont}>{formattedValue}</TextView>
-              )}
-            />
+            <View>
+              <Text style={styles.balanceText}>
+                {translate('common.AliaBalance')}
+              </Text>
+              <NumberFormat
+                value={getTokenValue()}
+                displayType={'text'}
+                decimalScale={8}
+                thousandSeparator={true}
+                renderText={formattedValue => (
+                  <TextView style={styles.priceCont}>
+                    {formattedValue} {type}
+                  </TextView>
+                )}
+              />
+              <NumberFormat
+                value={tokenInfo.tokenDollarValue}
+                displayType={'text'}
+                decimalScale={4}
+                thousandSeparator={true}
+                renderText={formattedValue => (
+                  <TextView style={styles.balanceText}>
+                    {`($${formattedValue})`}
+                  </TextView>
+                )}
+              />
+            </View>
           </View>
           <View style={styles.inputContainer}>
             <AddressField
@@ -418,47 +493,86 @@ const SendScreen = React.memo(props => {
                 }
               }}
             />
+            {alertMsg && (
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('wallet.common.insufficientFunds')}
+                </Text>
+              </View>
+            )}
+            {decimalDigit && (
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('common.DECIMAL_POINTS_LIMIT')}
+                </Text>
+              </View>
+            )}
+            {!alertMsg && gasFeeAlert && (
+              <View>
+                <Text style={styles.alertText}>Insufficient funds for gas</Text>
+              </View>
+            )}
+            {networkFeeShow && (
+              <View style={styles.gasFeeTextContainer}>
+                <Text style={styles.gasFeeText}>
+                  + {translate('common.NETWORK_GAS_FEE')}
+                </Text>
+                <Text style={{ color: Colors.GREY4, fontSize: RF(1.6) }}>
+                  {gasPrice} {tokenInfo.tokenName}
+                </Text>
+              </View>
+            )}
           </View>
-         {alertMsg && <View>
-            <Text style={{color: 'red'}}>
-              {translate('wallet.common.insufficientFunds')}
+          <View style={{ marginTop: hp('2.5%') }}>
+            <Text style={styles.inputLeft}>
+              {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
-          </View>}
-          {decimalDigit && <View>
-            <Text style={{color: 'red'}}>
-              {translate('common.DECIMAL_POINTS_LIMIT')}
-            </Text>
-          </View>}
-        </View>
-        <View style={{height: height / 2.7, justifyContent: 'flex-end'}}>
-          <AppButton
-            label={translate('wallet.common.send')}
-            // view={loading}
-            view={disableButton}
-            containerStyle={CommonStyles.button}
-            labelStyle={CommonStyles.buttonLabel}
-            onPress={() => {
-              if (address && address !== '' && amount > 0) {
-                if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
-                  // setLoading(true);
-                  verifyAddress(address)
-                    .then(() => {
-                      transferAmount();
-                    })
-                    .catch(() => {
-                      showErrorAlert(translate('wallet.common.invalidAddress'));
-                      setLoading(false);
-                    });
-                } else {
-                  showErrorAlert(translate('wallet.common.insufficientFunds'));
-                }
-              } else {
-                showErrorAlert(translate('wallet.common.requireSendField'));
-              }
-            }}
-          />
+            <View style={styles.totalAmountContainer}>
+              {networkFeeShow && (
+                <Text style={[styles.priceCont, { marginRight: hp('1%') }]}>
+                  {Number(amount) + gasPrice} {tokenInfo.tokenName}
+                </Text>
+              )}
+            </View>
+          </View>
         </View>
       </KeyboardAwareScrollView>
+      <View style={{ justifyContent: 'flex-end' }}>
+        <AppButton
+          label={translate('wallet.common.send')}
+          // view={loading}
+          view={disableButton}
+          containerStyle={CommonStyles.button}
+          labelStyle={CommonStyles.buttonLabel}
+          onPress={() => {
+            if (address && address !== '' && amount > 0) {
+              if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
+                // setLoading(true);
+                verifyAddress(address)
+                  .then(() => {
+                    transferAmount();
+                  })
+                  .catch(() => {
+                    showErrorAlert(translate('wallet.common.invalidAddress'));
+                    setLoading(false);
+                  });
+              } else {
+                showErrorAlert(translate('wallet.common.insufficientFunds'));
+              }
+            } else {
+              showErrorAlert(translate('wallet.common.requireSendField'));
+            }
+          }}
+        />
+      </View>
+      <AppModal visible={successModalVisible} onRequestClose={closeSuccess}>
+        <SuccessModalContent
+          onClose={closeSuccess}
+          onDonePress={closeSuccess}
+          sucessMsg={translate('common.TRANSACTION_SENT_NETWORK')}
+          transactionDone={true}
+        />
+      </AppModal>
     </View>
   );
 });
@@ -466,18 +580,17 @@ const SendScreen = React.memo(props => {
 //*************************************************************************/
 //=========================Send Screen Start ==============================
 /*************************************************************************/
-const Send = ({route, navigation}) => {
+const Send = ({ route, navigation }) => {
   //================= Props Destructuring =============================
-  const {item, type} = route.params;
-  // console.log("@@@ Send screen props ============>", item, type)
+  const { item, type, tokenInfo } = route.params;
   //================= States Initialiazation =============================
   const [loading, setLoading] = useState(false);
   const [sendToAddress, setSendToAddress] = useState(null);
   const [amountToSend, setAmountToSend] = useState('');
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'Send', title: translate('wallet.common.send')},
-    {key: 'Scan', title: translate('wallet.common.scan')},
+    { key: 'Send', title: translate('wallet.common.send') },
+    { key: 'Scan', title: translate('wallet.common.scan') },
   ]);
 
   const setResult = (address, amount) => {
@@ -485,7 +598,7 @@ const Send = ({route, navigation}) => {
     setSendToAddress(address);
   };
 
-  const _renderScene = ({route, jumpTo, position}) => {
+  const _renderScene = ({ route, jumpTo, position }) => {
     switch (route.key) {
       case 'Send':
         return (
@@ -493,6 +606,7 @@ const Send = ({route, navigation}) => {
             setLoading={setLoading}
             item={item}
             type={type}
+            tokenInfo={tokenInfo}
             loading={loading}
             address={sendToAddress}
             amount={amountToSend}
@@ -517,11 +631,11 @@ const Send = ({route, navigation}) => {
     return (
       <TabBar
         {...props}
-        renderLabel={({route, focused, color}) => (
-          <Text style={{color, ...styles.tabLabel}}>{route.title}</Text>
+        renderLabel={({ route, focused, color }) => (
+          <Text style={{ color, ...styles.tabLabel }}>{route.title}</Text>
         )}
-        contentContainerStyle={{height: 45}}
-        indicatorStyle={{backgroundColor: Colors.scanActive}}
+        contentContainerStyle={{ height: 45 }}
+        indicatorStyle={{ backgroundColor: Colors.scanActive }}
         style={styles.tabItem}
         inactiveColor={Colors.sectionLabel}
         activeColor={Colors.scanActive}
@@ -532,12 +646,12 @@ const Send = ({route, navigation}) => {
 
   return (
     <AppBackground isBusy={loading} hideBottomSafeArea={index == 1}>
-      <KeyboardAvoidingView behavior="height" style={{flexGrow: 1}}>
+      <KeyboardAvoidingView behavior="height" style={{ flexGrow: 1 }}>
         <AppHeader showBackButton title={translate('wallet.common.send')} />
         <TabView
           lazy={true}
           renderTabBar={renderTabBar}
-          navigationState={{index, routes}}
+          navigationState={{ index, routes }}
           renderScene={_renderScene}
           onIndexChange={index => {
             setIndex(index);
@@ -571,7 +685,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputContainer: {
-    marginVertical: hp('2%'),
+    marginVertical: hp('1.5%'),
   },
   input: {
     padding: wp('2%'),
@@ -587,37 +701,60 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingVertical: wp('2%'),
   },
+  balanceText: {
+    alignSelf: 'flex-end',
+    fontSize: RF(2.2),
+    fontWeight: 'bold',
+    color: Colors.GREY10,
+  },
+  alertText: {
+    color: 'red',
+    marginTop: hp('0.5%'),
+  },
+  gasFeeTextContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginVertical: hp('1%'),
+  },
+  gasFeeText: {
+    color: Colors.GREY4,
+    fontSize: RF(1.6),
+    marginRight: wp('15%'),
+  },
   priceCont: {
     fontSize: RF(3.4),
     color: Colors.black,
     fontWeight: 'bold',
   },
   balanceContainer: {
-    marginVertical: hp('2%'),
+    paddingVertical: wp('5%'),
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   profileCont: {
     ...CommonStyles.circle('13'),
   },
   profileImage: {
-    ...CommonStyles.imageStyles(13),
+    ...CommonStyles.imageStyles(12),
   },
   inputCont: {
-    paddingHorizontal: wp('1%'),
-    height: hp('5%'),
+    // backgroundColor: 'red',
+    paddingHorizontal: wp('4%'),
+    height: hp('5.5%'),
   },
   inputLeft: {
-    ...CommonStyles.text(Fonts.ARIAL, Colors.GREY1, RF(1.6)),
+    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.8)),
   },
   paymentField: {
-    paddingHorizontal: wp('1.5%'),
-    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.6)),
+    paddingHorizontal: wp('4%'),
+    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(1.8)),
     flex: 1,
   },
   inputRight: {
-    ...CommonStyles.text(Fonts.ARIAL, Colors.black, RF(2)),
+    ...CommonStyles.text(Fonts.ARIAL, Colors.GREY4, RF(1.8)),
     marginBottom: hp('0.2%'),
+    marginRight: hp('1%'),
     alignSelf: 'center',
   },
   inputBottom: {
@@ -627,10 +764,19 @@ const styles = StyleSheet.create({
   },
   inputMainCont: {
     width: '100%',
-    // height: hp("7%"),
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.GREY1,
+    borderWidth: 0.5,
+    borderRadius: hp('1%'),
+    marginTop: hp('1%'),
+    borderColor: Colors.GREY4,
+  },
+  totalAmountContainer: {
+    borderWidth: 1,
+    borderRadius: hp('1%'),
+    marginTop: hp('1%'),
+    height: hp('7%'),
+    borderColor: Colors.GREY4,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   qrCameraStyle: {
     height: '100%',

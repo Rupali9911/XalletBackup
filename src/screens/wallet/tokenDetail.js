@@ -29,7 +29,6 @@ import { Loader } from '../../components';
 import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
 
 const TokenDetail = ({ route, navigation }) => {
-
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const environment = IsTestNet ? 'testnet' : 'mainnet';
@@ -205,20 +204,25 @@ const TokenDetail = ({ route, navigation }) => {
   };
 
   const getTransactionsByType = (address, type, coin) => {
-    console.log('@@@ Get Transaction By Type ========>', type, coin, networkType);
+    console.log(
+      '@@@ Get Transaction By Type ========>',
+      type,
+      coin,
+      networkType,
+    );
     return new Promise((resolve, reject) => {
       let params = {
         address,
         networkId: networkType?.id,
-        environment
+        environment,
       };
       if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic') {
-        params.tokenName = coin
+        params.tokenName = coin;
       }
       sendRequest({
         url: `${NEW_BASE_URL}/mobile/history`,
         method: 'GET',
-        params
+        params,
       })
         .then(res => {
           setLoading(false);
@@ -274,7 +278,11 @@ const TokenDetail = ({ route, navigation }) => {
           <View style={[styles.headerBtns, styles.headerBottomCont]}>
             <HeaderBtns
               onPress={() => {
-                navigation.navigate('send', { item, type: item.type });
+                navigation.navigate('send', {
+                  item,
+                  type: item.type,
+                  tokenInfo: route.params.tokenInfo,
+                });
               }}
               image={ImagesSrc.send}
               label={translate('wallet.common.send')}

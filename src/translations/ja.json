@@ -766,7 +766,12 @@
     "BACKUP_NOW": "今すぐ設定",
     "DECIMAL_POINTS_LIMIT": "小数点は第8位までしか入力できません",
     "SEND_QUANTITY": "送信数量",
-    "recoveryPhrase": "回復フレーズ"
+    "recoveryPhrase": "回復フレーズ",
+    "NETWORK_GAS_FEE":"ネットワーク手数料",
+    "TOTAL_AMOUNT_GAS_FEE":"合計 (数量 + ガス代）",
+    "TRANSACTION_SENT_NETWORK": "トランザクションはネットワークに送信されました！",
+    "TRANSACTION_ENTER_WALLET_ADDRESS": "ウォレットアドレスを入力してください",
+    "TRANSACTION_ENTER_AMOUNT": "数量を入力してください"
   },
   "AwardPage": {},
   "wallet": {
