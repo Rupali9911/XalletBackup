@@ -688,6 +688,7 @@ const styles = StyleSheet.create({
   },
   instagramView: {
     width: '90%',
+    includeFontPadding: false,
   },
   groupBtnView: {
     marginVertical: SIZE(10),
@@ -714,6 +715,7 @@ const styles = StyleSheet.create({
   },
   verifiedView: {
     marginLeft: SIZE(5),
+    includeFontPadding: false,
   },
   msgModalContent: {
     flex: 1,
