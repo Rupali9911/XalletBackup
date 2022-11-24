@@ -116,7 +116,7 @@ const Tokens = props => {
     } else {
       result = array;
     }
-    console.log("@@@ On Token screen ========>", result)
+    // console.log("@@@ On Token screen ========>", result)
     setBalanceData(result);
   }, [
     network,
@@ -127,7 +127,9 @@ const Tokens = props => {
     talBalance,
     busdBalance,
     usdtBalance,
-    xetaBalance
+    usdcBalance,
+    xetaBalance,
+    wethBalance
   ]);
 
   const navigation = useNavigation();

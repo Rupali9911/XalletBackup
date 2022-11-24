@@ -65,7 +65,7 @@ const showErrorAlert = msg => {
 
 export const AddressField = props => {
   return (
-    <View style={{ width: '100%'}}>
+    <View>
       <Text style={styles.inputLeft}>
         {translate('wallet.common.walletAddress')}
       </Text>
@@ -87,7 +87,7 @@ export const AddressField = props => {
 
 export const PaymentField = props => {
   return (
-    <View style={{ width: '100%',}}>
+    <View>
       <Text style={styles.inputLeft}>{translate('common.SEND_QUANTITY')}</Text>
       <View
         style={[
@@ -124,23 +124,17 @@ const ScanScreen = React.memo(props => {
 
   useEffect(async () => {
     if (position == 1) {
-      // console.log("@@@ Scan screen useEffect to reactive 11111=========>", position, camera)
       await checkCameraPermission();
-      // console.log("@@@ Scan screen useEffect to reactive 22222=========>")
       setIsActive(true);
-      // console.log("@@@ Scan screen useEffect to reactive 33333=========>", isActive)
     }
   }, [position, camera]);
 
   const checkCameraPermission = async () => {
     const granted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-    // console.log("@@@ Scan screen check permission 11111=========>", granted)
     if (!granted) {
-      // console.log("@@@ Scan screen check permission 22222=========>", granted)
       const requestPer = await Permission.requestPermission(
         PERMISSION_TYPE.camera,
       );
-      // console.log("@@@ Scan screen check permission 33333=========>", requestPer)
       if (requestPer == false) {
         confirmationAlert(
           translate('wallet.common.cameraPermissionHeader'),
@@ -259,6 +253,7 @@ const SendScreen = React.memo(props => {
 
   //==================== Global Variables =======================
   let wallet = null;
+  let gasFeeAlert = null;
 
   //====================== Use Effect Start =========================
   useEffect(async () => {
@@ -269,6 +264,24 @@ const SendScreen = React.memo(props => {
     setAddress(props.address);
     setAmount(props.amount);
   }, [props.address, props.amount]);
+
+  const getSelfTokenValue = type => {
+    let tokenValue = 0;
+    if (type == 'Ethereum') {
+      let value = parseFloat(ethBalance);
+      tokenValue = value;
+    } else if (type == 'BSC') {
+      let value = parseFloat(bnbBalance);
+      tokenValue = value;
+    } else if (type == 'Polygon') {
+      let value = parseFloat(maticBalance);
+      tokenValue = value;
+    } else if (type == 'XANA CHAIN') {
+      let value = parseFloat(xetaBalance);
+      tokenValue = value;
+    }
+    return tokenValue;
+  };
 
   const getTokenValue = () => {
     let totalValue = 0;
@@ -341,13 +354,10 @@ const SendScreen = React.memo(props => {
       networkId: networkType?.id,
     };
     setLoading(true);
-    // console.log("@@@ parameters in transation function =============>", networkType?.name, type);
     const config = getConfigDetailsFromEnviorment(networkType?.name, type);
-    // console.log("@@@ config in transation function =============>", config);
 
     balanceTransfer(transferParameters, config)
       .then(transferResponse => {
-        // console.log("Balance Transfer response ======>", transferResponse);
         setLoading(false);
         if (transferResponse?.success) {
           showSuccessAlert();
@@ -376,16 +386,30 @@ const SendScreen = React.memo(props => {
       ],
     );
   };
+
+  gasFeeAlert =
+    Number(getSelfTokenValue(item?.network).toFixed(4)) === 0 ? true : false;
+
   const decimalDigit =
     (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
       ? true
       : false;
+
   const disableButton =
     address &&
     Number(amount) > 0 &&
-    Number(amount) < Number(getTokenValue().toFixed(4))
+    Number(amount) < Number(getTokenValue().toFixed(4)) &&
+    !gasFeeAlert
       ? false
       : true;
+
+  const networkFeeShow =
+    Number(amount) > 0 &&
+    Number(amount) < Number(getTokenValue().toFixed(4)) &&
+    !gasFeeAlert
+      ? true
+      : false;
+
   const alertMsg =
     Number(amount) >=
     (Number(getTokenValue().toFixed(4)) === 0.0
@@ -393,9 +417,7 @@ const SendScreen = React.memo(props => {
       : Number(getTokenValue().toFixed(4)))
       ? true
       : false;
-  // console.log("@@@ Alert msg 11111 ===========>", Number(amount))
-  // console.log("@@@ Alert msg 22222 ===========>", Number(getTokenValue().toFixed(4)))
-  // console.log("@@@ Alert msg 33333 ===========>", amount >= Number(getTokenValue().toFixed(4)))
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
@@ -404,14 +426,8 @@ const SendScreen = React.memo(props => {
             <View style={styles.profileCont}>
               <Image style={styles.profileImage} source={item.icon} />
             </View>
-            <View style={{}}>
-              <Text
-                style={{
-                  alignSelf: 'flex-end',
-                  fontSize: RF(2.2),
-                  fontWeight: 'bold',
-                  color: Colors.GREY10,
-                }}>
+            <View>
+              <Text style={styles.balanceText}>
                 {translate('common.AliaBalance')}
               </Text>
               <NumberFormat
@@ -420,7 +436,9 @@ const SendScreen = React.memo(props => {
                 decimalScale={8}
                 thousandSeparator={true}
                 renderText={formattedValue => (
-                  <TextView style={styles.priceCont}>{formattedValue} {type}</TextView>
+                  <TextView style={styles.priceCont}>
+                    {formattedValue} {type}
+                  </TextView>
                 )}
               />
               <NumberFormat
@@ -429,15 +447,9 @@ const SendScreen = React.memo(props => {
                 decimalScale={4}
                 thousandSeparator={true}
                 renderText={formattedValue => (
-                  <TextView
-                style={{
-                  alignSelf: 'flex-end',
-                  fontSize: RF(2.2),
-                  fontWeight: 'bold',
-                  color: Colors.GREY10,
-                }}>
-                {`($${formattedValue})`}
-              </TextView>
+                  <TextView style={styles.balanceText}>
+                    {`($${formattedValue})`}
+                  </TextView>
                 )}
               />
             </View>
@@ -466,78 +478,77 @@ const SendScreen = React.memo(props => {
               }}
             />
             {alertMsg && (
-            <View>
-              <Text style={{color: 'red', marginTop: hp('0.5%')}}>
-                {translate('wallet.common.insufficientFunds')}
-              </Text>
-            </View>
-          )}
-          {decimalDigit && (
-            <View>
-              <Text style={{color: 'red'}}>
-                {translate('common.DECIMAL_POINTS_LIMIT')}
-              </Text>
-            </View>
-          )}
-            {
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignSelf: 'flex-end',
-                  marginVertical: hp('1%'),
-                }}>
-                <Text
-                  style={{
-                    color: Colors.GREY4,
-                    fontSize: RF(1.6),
-                    marginRight: wp('15%'),
-                  }}>
-                   + {translate('common.NETWORK_GAS_FEE')}
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('wallet.common.insufficientFunds')}
+                </Text>
+              </View>
+            )}
+            {decimalDigit && (
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('common.DECIMAL_POINTS_LIMIT')}
+                </Text>
+              </View>
+            )}
+            {!alertMsg && gasFeeAlert && (
+              <View>
+                <Text style={styles.alertText}>Insufficient funds for gas</Text>
+              </View>
+            )}
+            {networkFeeShow && (
+              <View style={styles.gasFeeTextContainer}>
+                <Text style={styles.gasFeeText}>
+                  + {translate('common.NETWORK_GAS_FEE')}
                 </Text>
                 <Text style={{color: Colors.GREY4, fontSize: RF(1.6)}}>
                   0.0003ETH
                 </Text>
               </View>
-            }
+            )}
           </View>
           <View style={{marginTop: hp('2.5%')}}>
             <Text style={styles.inputLeft}>
-            {translate('common.TOTAL_AMOUNT_GAS_FEE')}
+              {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
-              <Text style={[styles.priceCont, {marginRight: hp('1%')}]}>0.0004 ETH</Text>
+              {networkFeeShow && (
+                <Text style={[styles.priceCont, {marginRight: hp('1%')}]}>
+                  0.0004 ETH
+                </Text>
+              )}
             </View>
           </View>
         </View>
       </KeyboardAwareScrollView>
       <View style={{justifyContent: 'flex-end'}}>
-          <AppButton
-            label={translate('wallet.common.send')}
-            // view={loading}
-            view={disableButton}
-            containerStyle={CommonStyles.button}
-            labelStyle={CommonStyles.buttonLabel}
-            onPress={() => {
-              if (address && address !== '' && amount > 0) {
-                if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
-                  // setLoading(true);
-                  verifyAddress(address)
-                    .then(() => {
-                      transferAmount();
-                    })
-                    .catch(() => {
-                      showErrorAlert(translate('wallet.common.invalidAddress'));
-                      setLoading(false);
-                    });
-                } else {
-                  showErrorAlert(translate('wallet.common.insufficientFunds'));
-                }
+        <AppButton
+          label={translate('wallet.common.send')}
+          // view={loading}
+          view={disableButton}
+          containerStyle={CommonStyles.button}
+          labelStyle={CommonStyles.buttonLabel}
+          onPress={() => {
+            if (address && address !== '' && amount > 0) {
+              if (parseFloat(amount) <= parseFloat(`${item.tokenValue}`)) {
+                // setLoading(true);
+                verifyAddress(address)
+                  .then(() => {
+                    transferAmount();
+                  })
+                  .catch(() => {
+                    showErrorAlert(translate('wallet.common.invalidAddress'));
+                    setLoading(false);
+                  });
               } else {
-                showErrorAlert(translate('wallet.common.requireSendField'));
+                showErrorAlert(translate('wallet.common.insufficientFunds'));
               }
-            }}
-          />
-        </View>
+            } else {
+              showErrorAlert(translate('wallet.common.requireSendField'));
+            }
+          }}
+        />
+      </View>
     </View>
   );
 });
@@ -548,7 +559,6 @@ const SendScreen = React.memo(props => {
 const Send = ({route, navigation}) => {
   //================= Props Destructuring =============================
   const {item, type, tokenDollarValue} = route.params;
-  // console.log("@@@ Send screen props ============>", item, type)
   //================= States Initialiazation =============================
   const [loading, setLoading] = useState(false);
   const [sendToAddress, setSendToAddress] = useState(null);
@@ -666,6 +676,26 @@ const styles = StyleSheet.create({
     fontSize: RF(2.2),
     fontWeight: 'bold',
     paddingVertical: wp('2%'),
+  },
+  balanceText: {
+    alignSelf: 'flex-end',
+    fontSize: RF(2.2),
+    fontWeight: 'bold',
+    color: Colors.GREY10,
+  },
+  alertText: {
+    color: 'red',
+    marginTop: hp('0.5%'),
+  },
+  gasFeeTextContainer: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    marginVertical: hp('1%'),
+  },
+  gasFeeText: {
+    color: Colors.GREY4,
+    fontSize: RF(1.6),
+    marginRight: wp('15%'),
   },
   priceCont: {
     fontSize: RF(3.4),
