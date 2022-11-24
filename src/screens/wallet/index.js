@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
-import { SvgWithCssUri } from 'react-native-svg';
-import { useDispatch, useSelector } from 'react-redux';
-import { SIZE } from 'src/constants';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {SvgWithCssUri} from 'react-native-svg';
+import {useDispatch, useSelector} from 'react-redux';
+import {SIZE} from 'src/constants';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppModal from '../../components/appModal';
@@ -14,32 +14,32 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import PriceText from '../../components/priceText';
 import SuccessModal from '../../components/successModal';
 import ToggleButtons from '../../components/toggleButton';
-import { COLORS } from '../../constants';
+import {COLORS} from '../../constants';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
-import { hp, RF, wp } from '../../constants/responsiveFunct';
+import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { getWallet } from '../../helpers/AxiosApiRequest';
+import {getWallet} from '../../helpers/AxiosApiRequest';
 import SingleSocket from '../../helpers/SingleSocket';
-import { updateCreateState } from '../../store/reducer/userReducer';
+import {updateCreateState} from '../../store/reducer/userReducer';
 import {
   updateBalances,
   updateBSCBalances,
   updateEthereumBalances,
   updateNetworkType,
   updatePolygonBalances,
-  updateXanaBalances
+  updateXanaBalances,
 } from '../../store/reducer/walletReducer';
-import { environment, translate } from '../../walletUtils';
-import { HeaderBtns } from './components/HeaderButtons';
+import {environment, translate} from '../../walletUtils';
+import {HeaderBtns} from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
-import { balance, currencyInDollar } from './functions';
+import {balance, currencyInDollar} from './functions';
 
 import NetInfo from '@react-native-community/netinfo';
-import { alertWithSingleBtn } from '../../common/function';
+import {alertWithSingleBtn} from '../../common/function';
 
 const ethers = require('ethers');
 var Accounts = require('web3-eth-accounts');
@@ -47,16 +47,15 @@ var Accounts = require('web3-eth-accounts');
 const singleSocket = new SingleSocket();
 var accounts = new Accounts('');
 
-const Wallet = ({ route, navigation }) => {
-
-  let wallet = null
+const Wallet = ({route, navigation}) => {
+  let wallet = null;
   let subscribeEth;
   let subscribeBnb;
   let subscribeMatic;
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
-  const { isCreate, userData, isBackup } = useSelector(
+  const {isCreate, userData, isBackup} = useSelector(
     state => state.UserReducer,
   );
   const {
@@ -87,7 +86,6 @@ const Wallet = ({ route, navigation }) => {
   const [totalValue, setTotalValue] = useState(0);
   const [walletAccount, setWalletAccount] = useState();
   // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
-
 
   //======================== Use Effect First 1111 =======================
   useEffect(() => {
@@ -238,24 +236,30 @@ const Wallet = ({ route, navigation }) => {
         />
         <TouchableOpacity
           style={styles.networkIcon}
-          hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
+          hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
           onPress={() => setPickerVisible(true)}>
-          {
-            (networkType?.name !== 'XANA CHAIN' && networkType?.name !== 'Ethereum') ?
-              <SvgWithCssUri
-                width={SIZE(25)}
-                height={SIZE(25)}
-                uri={networkType?.image}
-              />
-              : networkType?.name !== 'Ethereum' ?
-              <Image style={{ height: SIZE(30), width: SIZE(30) }} source={{ uri: networkType?.image }} />
-              :
-              <Image style={{ height: SIZE(25), width: SIZE(25) }} source={ImagesSrc.etherium} />
-          }
+          {networkType?.name !== 'XANA CHAIN' &&
+          networkType?.name !== 'Ethereum' ? (
+            <SvgWithCssUri
+              width={SIZE(25)}
+              height={SIZE(25)}
+              uri={networkType?.image}
+            />
+          ) : networkType?.name !== 'Ethereum' ? (
+            <Image
+              style={{height: SIZE(30), width: SIZE(30)}}
+              source={{uri: networkType?.image}}
+            />
+          ) : (
+            <Image
+              style={{height: SIZE(25), width: SIZE(25)}}
+              source={ImagesSrc.etherium}
+            />
+          )}
         </TouchableOpacity>
       </View>
-    )
-  }
+    );
+  };
 
   //======================== Render Price and Main wallet Text =====================
   const renderPriceMainWalletText = () => {
@@ -271,39 +275,46 @@ const Wallet = ({ route, navigation }) => {
           {translate('wallet.common.mainWallet')}
         </TextView>
       </View>
-    )
-  }
+    );
+  };
 
-  const getTokenDollarAmount = (type) => {
-    let tokenDollarValue = 0;
-    if(type == 'ETH') {
+  const getTokenDollarAmount = type => {
+    let tokenInfo = {};
+    if (type == 'ETH') {
       let eth = parseFloat(ethBalance) * currencyPriceDollar?.ETH;
-      tokenDollarValue = eth;
-    } else if(type == 'USDT') {
+      tokenInfo.tokenDollarValue = eth;
+      tokenInfo.tokenName = 'ETH';
+    } else if (type == 'USDT') {
       let usdtValue = parseFloat(usdtBalance) * 1;
-      tokenDollarValue = usdtValue;
-    } else if(type == 'BNB') {
+      tokenInfo.tokenDollarValue = usdtValue;
+      tokenInfo.tokenName = 'ETH';
+    } else if (type == 'BNB') {
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
-      tokenDollarValue = bnbValue;
-    } else if(type == 'BUSD') {
+      tokenInfo.tokenDollarValue = bnbValue;
+      tokenInfo.tokenName = 'BNB';
+    } else if (type == 'BUSD') {
       let busdValue = parseFloat(busdBalance) * 1;
-      tokenDollarValue = busdValue;
-    } else if(type == 'Matic') {
+      tokenInfo.tokenDollarValue = busdValue;
+      tokenInfo.tokenName = 'BNB';
+    } else if (type == 'Matic') {
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
-      tokenDollarValue = maticValue;
-    } else if(type == 'USDC') {
-      let usdctValue = parseFloat(usdcBalance) * 1;
-      tokenDollarValue = usdctValue;
-    } else if(type == 'WETH') {
+      tokenInfo.tokenDollarValue = maticValue;
+      tokenInfo.tokenName = 'Matic';
+    } else if (type == 'USDC') {
+      let usdcValue = parseFloat(usdcBalance) * 1;
+      tokenInfo.tokenDollarValue = usdcValue;
+      tokenInfo.tokenName = 'Matic';
+    } else if (type == 'WETH') {
       let wethValue = parseFloat(wethBalance) * currencyPriceDollar?.ETH;
-      tokenDollarValue = wethValue;
-    } else if(type == 'XETA') {
+      tokenInfo.tokenDollarValue = wethValue;
+      tokenInfo.tokenName = 'Matic';
+    } else if (type == 'XETA') {
       let xetaValue = parseFloat(xetaBalance) * currencyPriceDollar?.XETA;
-      tokenDollarValue = xetaValue;
-    } 
-    return tokenDollarValue;
-  }
-  
+      tokenInfo.tokenDollarValue = xetaValue;
+      tokenInfo.tokenName = 'XETA';
+    }
+    return tokenInfo;
+  };
 
   const setBalanceField = () => {
     let totalValue = 0;
@@ -335,7 +346,7 @@ const Wallet = ({ route, navigation }) => {
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
       let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
-      let value = ""
+      let value = '';
       if (networkType == 'testnet') {
         value = maticValue + usdctValue;
       } else {
@@ -343,7 +354,6 @@ const Wallet = ({ route, navigation }) => {
         value = maticValue + usdctValue + wethValue;
       }
       totalValue = value;
-
     }
     return totalValue;
   };
@@ -374,8 +384,8 @@ const Wallet = ({ route, navigation }) => {
               label={translate('wallet.common.buy')}
             /> */}
       </View>
-    )
-  }
+    );
+  };
 
   //======================== Render is backup items =====================
   const renderIsBackupItems = () => {
@@ -386,11 +396,7 @@ const Wallet = ({ route, navigation }) => {
           containerStyle={styles.outlinedButton}
           labelStyle={[
             CommonStyles.outlineButtonLabel,
-            CommonStyles.text(
-              Fonts.ARIAL,
-              Colors.greyButtonLabel,
-              RF(1.55),
-            ),
+            CommonStyles.text(Fonts.ARIAL, Colors.greyButtonLabel, RF(1.55)),
           ]}
           onPress={() => setIsBackedUp(true)}
         />
@@ -404,8 +410,8 @@ const Wallet = ({ route, navigation }) => {
           onPress={() => navigation.navigate('SecurityScreen')}
         />
       </View>
-    )
-  }
+    );
+  };
 
   //==================== Render Token Items =======================
   const renderTokensItems = () => {
@@ -415,13 +421,13 @@ const Wallet = ({ route, navigation }) => {
         network={networkType}
         onTokenPress={item => {
           setSelectTokenVisible(false);
-          const tokenDollarValue = getTokenDollarAmount(item.type);
-          navigation.navigate('tokenDetail', { item, tokenDollarValue });
+          const tokenInfo = getTokenDollarAmount(item.type);
+          navigation.navigate('tokenDetail', {item, tokenInfo});
         }}
         onRefresh={onRefreshToken}
       />
-    )
-  }
+    );
+  };
 
   const onRefreshToken = async () => {
     wallet = await getWallet();
@@ -462,8 +468,8 @@ const Wallet = ({ route, navigation }) => {
           />
         ) : null}
       </AppModal>
-    )
-  }
+    );
+  };
 
   //==================== Render Network Picker =======================
   const renderNetworkPicker = () => {
@@ -476,16 +482,19 @@ const Wallet = ({ route, navigation }) => {
           onItemSelectNetworkPicker(item);
         }}
       />
-    )
-  }
+    );
+  };
 
-  const onItemSelectNetworkPicker = async (item) => {
-    await AsyncStorage.setItem("@CURRENT_NETWORK_CHAIN_ID", item.chainId.toString());
+  const onItemSelectNetworkPicker = async item => {
+    await AsyncStorage.setItem(
+      '@CURRENT_NETWORK_CHAIN_ID',
+      item.chainId.toString(),
+    );
     dispatch(updateNetworkType(item));
     setPickerVisible(false);
     // getBalances(wallet?.address);
     setBalances(null);
-  }
+  };
 
   //==================== Render Select Token =======================
   const renderSelectToken = () => {
@@ -498,16 +507,20 @@ const Wallet = ({ route, navigation }) => {
         isSend={isSend}
         onTokenPress={item => {
           setSelectTokenVisible(false);
-          const tokenDollarValue = getTokenDollarAmount(item.type);
+          const tokenInfo = getTokenDollarAmount(item.type);
           if (isSend) {
-            navigation.navigate('send', { item, type: item.type, tokenDollarValue });
+            navigation.navigate('send', {
+              item,
+              type: item.type,
+              tokenInfo,
+            });
           } else {
-            navigation.navigate('receive', { item, type: item.type });
+            navigation.navigate('receive', {item, type: item.type});
           }
         }}
       />
-    )
-  }
+    );
+  };
 
   //======================= Get Balances Function =======================
   const getBalances = async pubKey => {
@@ -591,7 +604,8 @@ const Wallet = ({ route, navigation }) => {
       setFetching(false);
       alertWithSingleBtn(
         translate('wallet.common.alert'),
-        translate('wallet.common.error.networkError'))
+        translate('wallet.common.error.networkError'),
+      );
     }
   };
 
@@ -613,7 +627,7 @@ const Wallet = ({ route, navigation }) => {
               ETH: responses[1],
               MATIC: responses[2],
               ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
-              XETA: responses[4]
+              XETA: responses[4],
             };
             setCurrencyPriceDollar(balances);
             setLoading(false);
@@ -624,12 +638,13 @@ const Wallet = ({ route, navigation }) => {
             setFetching(false);
             alertWithSingleBtn(
               translate('wallet.common.alert'),
-              translate('wallet.common.error.networkError'))
+              translate('wallet.common.error.networkError'),
+            );
             reject();
           });
       });
     } catch (error) {
-      console.log("@@@ price in dollars error ========>", error)
+      console.log('@@@ price in dollars error ========>', error);
     }
   };
 
@@ -667,7 +682,6 @@ const Wallet = ({ route, navigation }) => {
         });
     });
   };
-
 
   //====================== Get BSC Balances ========================
   const getBSCBalances = pubKey => {
@@ -742,7 +756,6 @@ const Wallet = ({ route, navigation }) => {
 
       Promise.all(balanceRequests)
         .then(responses => {
-
           let balances = {
             Matic: responses[0],
             TAL: responses[1],
@@ -814,7 +827,6 @@ const Wallet = ({ route, navigation }) => {
 
   //======================== Other functions =======================
   const ping = async public_key => {
-
     let data = {
       type: 'ping',
       data: {

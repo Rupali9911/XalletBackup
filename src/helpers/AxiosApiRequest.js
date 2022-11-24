@@ -49,14 +49,6 @@ async function sendRequest(payload) {
       }
     }
   } catch (error) {
-    alertWithSingleBtn(
-      translate('wallet.common.alert'),
-      translate('wallet.common.error.networkError'),
-      () => {
-        isAlert = false;
-        // return Promise.reject()
-      },
-    );
     return Promise.reject(error);
   }
 }
@@ -75,36 +67,21 @@ axiosInstance.interceptors.response.use(
       if (response?.status === 401) {
         const rest = await APIRefreshToken();
         if (!rest || !rest.newToken) {
-          return response;
+          return Promise.reject(response);
         }
         await setAccesToken(rest.newToken);
         config.headers['Authorization'] = 'Bearer ' + rest.newToken;
         return axiosInstance(config);
       } else if (response?.status === 403) {
-        // if (!!location && !!localStorage) {
-        //     localStorage.clear()
-        //     location.href = location.origin
-        // }
       } else if (response?.status === 455) {
-        // const { data } = err.response?.data
-        // if (
-        // !!err.response?.data &&
-        // !!data &&
-        // !!location &&
-        // !location.pathname.includes('maintenance')
-        // ) {
-        //     location.href = location.origin + '/maintenance'
-        // }
       } else if (response?.status === 502) {
       } else if (response?.status === 400) {
         throw response;
       }
       return Promise.reject(response);
-      // return response;
     } catch (error) {
       console.log('@@@ error in interceptors ==========>', error);
       return Promise.reject(error);
-      // return response;
     }
   },
 );

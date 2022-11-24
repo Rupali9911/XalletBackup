@@ -46,6 +46,7 @@ import {getWallet} from '../../helpers/AxiosApiRequest';
 import {
   balanceTransfer,
   handleTransactionError,
+  getGasPrice,
 } from '../wallet/functions/transactionFunctions';
 
 const verifyAddress = address => {
@@ -229,7 +230,7 @@ const ScanScreen = React.memo(props => {
 const SendScreen = React.memo(props => {
   const navigation = useNavigation();
   //====================== Props Destructuring =========================
-  const {item, type, tokenDollarValue, setLoading, loading} = props;
+  const {item, type, tokenInfo, setLoading, loading} = props;
 
   //====================== Getting data from reducers =========================
   const {userData} = useSelector(state => state.UserReducer);
@@ -250,6 +251,8 @@ const SendScreen = React.memo(props => {
   //====================== States Initiliazation =========================
   const [address, setAddress] = useState(props.address);
   const [amount, setAmount] = useState(props.amount);
+  const [networkConfig, setNetworkConfig] = useState(null);
+  const [gasPrice, setGasPrice] = useState(0);
 
   //==================== Global Variables =======================
   let wallet = null;
@@ -258,6 +261,10 @@ const SendScreen = React.memo(props => {
   //====================== Use Effect Start =========================
   useEffect(async () => {
     wallet = await getWallet();
+    const config = getConfigDetailsFromEnviorment(networkType?.name, type);
+    const gasPrice = await getGasPrice(config.rpcURL);
+    setGasPrice(Number(gasPrice));
+    setNetworkConfig(config);
   }, []);
 
   useEffect(() => {
@@ -354,9 +361,9 @@ const SendScreen = React.memo(props => {
       networkId: networkType?.id,
     };
     setLoading(true);
-    const config = getConfigDetailsFromEnviorment(networkType?.name, type);
+    // const config = getConfigDetailsFromEnviorment(networkType?.name, type);
 
-    balanceTransfer(transferParameters, config)
+    balanceTransfer(transferParameters, networkConfig)
       .then(transferResponse => {
         setLoading(false);
         if (transferResponse?.success) {
@@ -442,7 +449,7 @@ const SendScreen = React.memo(props => {
                 )}
               />
               <NumberFormat
-                value={tokenDollarValue}
+                value={tokenInfo.tokenDollarValue}
                 displayType={'text'}
                 decimalScale={4}
                 thousandSeparator={true}
@@ -502,7 +509,7 @@ const SendScreen = React.memo(props => {
                   + {translate('common.NETWORK_GAS_FEE')}
                 </Text>
                 <Text style={{color: Colors.GREY4, fontSize: RF(1.6)}}>
-                  0.0003ETH
+                  {gasPrice} {tokenInfo.tokenName}
                 </Text>
               </View>
             )}
@@ -514,7 +521,7 @@ const SendScreen = React.memo(props => {
             <View style={styles.totalAmountContainer}>
               {networkFeeShow && (
                 <Text style={[styles.priceCont, {marginRight: hp('1%')}]}>
-                  0.0004 ETH
+                  0.0004 {tokenInfo.tokenName}
                 </Text>
               )}
             </View>
@@ -558,7 +565,7 @@ const SendScreen = React.memo(props => {
 /*************************************************************************/
 const Send = ({route, navigation}) => {
   //================= Props Destructuring =============================
-  const {item, type, tokenDollarValue} = route.params;
+  const {item, type, tokenInfo} = route.params;
   //================= States Initialiazation =============================
   const [loading, setLoading] = useState(false);
   const [sendToAddress, setSendToAddress] = useState(null);
@@ -582,7 +589,7 @@ const Send = ({route, navigation}) => {
             setLoading={setLoading}
             item={item}
             type={type}
-            tokenDollarValue={tokenDollarValue}
+            tokenInfo={tokenInfo}
             loading={loading}
             address={sendToAddress}
             amount={amountToSend}
