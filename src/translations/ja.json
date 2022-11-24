@@ -468,7 +468,7 @@
     "Trackingwait": "ARビュー・トラッキング初期化にお待ち",
     "toseelogin": "NFTを見える際にログインしてください。",
     "currentprice": "現価",
-    "lastprice": "最後価",
+    "lastprice": "最終価格",
     "noNFT": "データはありません。",
     "noNFTsFound": "データはありません。",
     "Selectcardtopay": "使用するカードの選択",
@@ -765,7 +765,8 @@
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "復元フレーズを設定していないため、永久にウォレットへアクセスできないことを理解し、同意します。",
     "BACKUP_NOW": "今すぐ設定",
     "DECIMAL_POINTS_LIMIT": "小数点は第8位までしか入力できません",
-    "SEND_QUANTITY": "送信数量"
+    "SEND_QUANTITY": "送信数量",
+    "recoveryPhrase": "回復フレーズ"
   },
   "AwardPage": {},
   "wallet": {
@@ -808,7 +809,7 @@
       },
       "welcomeTxt": "ようこそ",
       "createWallet": "新しいウォレットを作成する",
-      "haveWallet": "既存のアドレスを使用してログイン",
+      "haveWallet": "既存のウォレットをインポート",
       "legal": "利用規約",
       "privacyPolicy": "プライバシーポリシー",
       "termsServices": "利用規約",

@@ -765,7 +765,8 @@
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "복원 문구를 설정하지 않았기 때문에 지갑에 영구적으로 액세스할 수 없음을 이해하고 이에 동의합니다.",
     "BACKUP_NOW": "백업 지금",
     "DECIMAL_POINTS_LIMIT": "소수점은 8자리까지만 입력 가능합니다.",
-    "SEND_QUANTITY": "전송 수량"
+    "SEND_QUANTITY": "전송 수량",
+    "recoveryPhrase": "복구 문구"
   },
   "AwardPage": {},
   "wallet": {

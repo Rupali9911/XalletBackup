@@ -764,7 +764,8 @@
     "LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC": "I understand and agree that I do not have access to my wallet permanently because I have not set a recovery phrase.",
     "BACKUP_NOW": "Back up Now",
     "DECIMAL_POINTS_LIMIT": "You can enter decimal points only upto 8 digits",
-    "SEND_QUANTITY": "Amount"
+    "SEND_QUANTITY": "Amount",
+    "recoveryPhrase": "Recovery Phrase"
   },
   "AwardPage": {},
   "wallet": {
@@ -944,7 +945,7 @@
       "alert": "XALLET",
       "legalHint1": "Carefully read the Terms of Service and Privacy",
       "legalHint2": "Policy of Xallet",
-      "verifyPhrase": "Verify Recovery Phase",
+      "verifyPhrase": "Verify Recovery Phrase",
       "verifyHint1": "Tap the words to put them next to each",
       "verifyHint2": "other in the correct order",
       "addCreditCard": "Add Credit card",

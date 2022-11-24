@@ -121,12 +121,7 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   };
 
   const renderFooter = () => {
-    if (
-      !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newAllNftTotalCount !==
-        NewNFTListReducer.newAllNftList.length
-    )
-      return null;
+    if (!NewNFTListReducer.newNftListLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
