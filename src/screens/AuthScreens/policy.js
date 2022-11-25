@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {StyleSheet, Platform, Linking} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {StyleSheet, Platform, Linking, BackHandler} from 'react-native';
 import AppBackground from '../../components/appBackground';
 import WebView from 'react-native-webview';
 import AppHeader from '../../components/appHeader';
@@ -9,12 +9,47 @@ const terms = require('../../walletUtils/terms.html');
 
 const Policy = ({route}) => {
   const {isPolicy} = route.params;
+  let count = 1;
 
   const [loading, setLoading] = useState(true);
 
   let contentIos = isPolicy ? policy : terms;
 
-  let contentAn = isPolicy ? 'file:///android_asset/policy.html' : 'file:///android_asset/terms.html';
+  let contentAn = isPolicy
+    ? 'file:///android_asset/policy.html'
+    : 'file:///android_asset/terms.html';
+
+  var webViewObj = {
+    canGoBack: false,
+    ref: null,
+  };
+  const onMessage = event => {
+    console.log('Meesaage from Webview', event);
+    Linking.openURL(event.nativeEvent.data);
+  };
+
+  const handleWebViewNavigationStateChange = navState => {
+    console.log('Navstate', navState);
+
+    if (Platform.OS === 'ios') {
+      if (count > 0) {
+        count = 0;
+      } else {
+        if (navState.url.indexOf('xanalia.com') > 0) {
+          webViewObj.canGoBack = navState.canGoBack;
+          webViewObj.ref.goBack();
+          Linking.openURL(navState.url);
+          return false;
+        }
+      }
+    } else {
+      if (navState.url.indexOf('xanalia.com') > 0) {
+        webViewObj.ref.goBack();
+        Linking.openURL(navState.url);
+        return false;
+      }
+    }
+  };
 
   return (
     <AppBackground isBusy={loading}>
@@ -30,6 +65,15 @@ const Policy = ({route}) => {
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
+          onNavigationStateChange={navState => {
+            handleWebViewNavigationStateChange(navState);
+          }}
+          ref={webView => {
+            webViewObj.ref = webView;
+          }}
+          allowsBackForwardNavigationGestures={true}
+          androidHardwareAccelerationDisabled={true}
+          renderToHardwareTextureAndroid={true}
         />
       ) : (
         <WebView
@@ -42,6 +86,14 @@ const Policy = ({route}) => {
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
+          onNavigationStateChange={navState => {
+            handleWebViewNavigationStateChange(navState);
+          }}
+          bounces={false}
+          loading
+          ref={webView => {
+            webViewObj.ref = webView;
+          }}
         />
       )}
     </AppBackground>
