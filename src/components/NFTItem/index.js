@@ -397,7 +397,7 @@ export default function NFTItem(props, {navigation}) {
           <TouchableOpacity
             activeOpacity={1}
             onPress={() =>
-              screenNavigation.navigate('Profile', {
+              screenNavigation.push('Profile', {
                 from: 'nftItem',
                 id: item.creator.address,
                 role: item?.creator?.role,
@@ -419,7 +419,7 @@ export default function NFTItem(props, {navigation}) {
             <TouchableOpacity
               activeOpacity={1}
               onPress={() =>
-                screenNavigation.navigate('Profile', {
+                screenNavigation.push('Profile', {
                   from: 'nftItem',
                   id: item.owner.address,
                   role: item?.owner?.role,
