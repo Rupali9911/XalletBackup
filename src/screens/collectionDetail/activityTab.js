@@ -119,7 +119,11 @@ const ActivityTab = props => {
               </Text>
             </TouchableOpacity>
           ) : (
-            cellData
+            <Text
+              numberOfLines={1}
+              style={[styles.text, styles.blackTextColor]}>
+              {cellData}
+            </Text>
           )
         }
         textStyle={styles.textStyle}

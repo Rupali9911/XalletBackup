@@ -28,6 +28,8 @@ import {
   DELETE_ACCOUNT_START,
   DELETE_ACCOUNT_SUCCESS,
   DELETE_ACCOUNT_FAILD,
+  MAGIC_LOADING_START,
+  MAGIC_LOADING_END,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
@@ -41,6 +43,7 @@ import {Alert} from 'react-native';
 
 const initialState = {
   loading: false,
+  magicLoading: false,
   showSplash: true,
   mainLoader: false,
   wallet: null,
@@ -96,6 +99,16 @@ export default UserReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+      };
+    case MAGIC_LOADING_START:
+      return {
+        ...state,
+        magicLoading: true,
+      };
+    case MAGIC_LOADING_END:
+      return {
+        ...state,
+        magicLoading: false,
       };
     case SET_PASSCODE:
       return {
@@ -232,6 +245,15 @@ export const connectStateModal = data => ({
 export const endLoading = () => ({
   type: AUTH_LOADING_END,
 });
+
+//  Magic actions
+export const startMagicLoading = () => ({
+  type: MAGIC_LOADING_START,
+});
+export const endMagicLoading = () => ({
+  type: MAGIC_LOADING_END,
+});
+
 export const startMainLoading = () => ({
   type: MAIN_LOADING_START,
 });
@@ -543,30 +565,47 @@ export const getUserData = (id, profile = false) => {
 };
 
 export const updateProfile = (props, id) => async dispatch => {
+  dispatch(startLoading());
   sendRequest({
     url: `${NEW_BASE_URL}/users/update-profile`,
     method: 'PUT',
     data: props,
-  }).then(res => {
-    dispatch(getUserData(id));
-    if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
-      let key = UserErrorMessage[res.messageCode].key;
+  })
+    .then(res => {
+      if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
+        let key = UserErrorMessage[res.messageCode].key;
+        dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
+      } else {
+        dispatch(getUserData(id));
+        dispatch(
+          setToastMsg({
+            error: false,
+            msg: translate('common.USER_SUCCESSFUL_UPDATE'),
+          }),
+        );
+      }
+      dispatch(endLoading());
+    })
+    .catch(error => {
+      dispatch(endLoading());
+      let key = UserErrorMessage[error.data.messageCode].key;
       dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
-    }
-  });
+      console.log('@@@ error ', error.data.messageCode);
+    });
 };
 
-export const verifyEmail = email => async (dispatch, getState) => {
-  const {userData} = getState().UserReducer;
-  const id = userData.userWallet.address;
-  sendRequest({
-    url: `${NEW_BASE_URL}/users/verify-email`,
-    method: 'POST',
-    data: {account: email},
-  }).then(() => {
-    dispatch(getUserData(id));
-  });
-};
+export const verifyEmail =
+  (email, selectedLanguageItem) => async (dispatch, getState) => {
+    const {userData} = getState().UserReducer;
+    const id = userData.userWallet.address;
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/verify-email`,
+      method: 'POST',
+      data: {account: email, locale: selectedLanguageItem},
+    }).then(() => {
+      dispatch(getUserData(id));
+    });
+  };
 
 export const updateAvtar = (userId, file) => async dispatch => {
   dispatch(startLoadingImage());
@@ -588,7 +627,7 @@ export const updateAvtar = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}`,
         },
       });
-      if(userProfileResponse == undefined) {
+      if (userProfileResponse == undefined) {
         dispatch(endLoadingImage());
       }
     } catch (error) {
@@ -618,12 +657,11 @@ export const updateBanner = (userId, file) => async dispatch => {
           'x-amz-tagging': `token=${token}&type=cover`,
         },
       });
-      if(userProfileResponse == undefined) {
+      if (userProfileResponse == undefined) {
         dispatch(endLoadingBanner());
       }
-      console.log("@@@ Update banner image response =======>", userProfileResponse)
     } catch (error) {
-      console.log("@@@ Update banner image error =======>", error)
+      console.log('@@@ Update banner image error =======>', error);
       dispatch(endLoadingBanner());
       console.log('@@@ update banner error ', error);
     }

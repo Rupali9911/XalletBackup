@@ -43,7 +43,7 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         dispatch(newNftListReset(category));
         getNFTlist(category, sortCategory, limit, 1);
         setSortOption(0);
-        setPage(1);
+        // setPage(1);
         setIsFirstRender(false);
         screen(category);
       }, 100);
@@ -106,11 +106,13 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const handleFlastListEndReached = () => {
     if (
       !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newTotalCount !== NewNFTListReducer.newAllNftList.length
+      NewNFTListReducer.newAllNftTotalCount !==
+        NewNFTListReducer.newAllNftList.length
     ) {
-      let pageNum = page + 1;
-      getNFTlist(category, sortOption, limit, pageNum);
-      setPage(pageNum);
+      // let pageNum = NewNFTListReducer.newAllNftPage + 1;
+      // getNFTlist(category, sortOption, limit, pageNum);
+      getNFTlist(category, sortOption, limit, NewNFTListReducer.newAllNftPage);
+      // setPage(pageNum);
     }
   };
 
@@ -119,11 +121,7 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   };
 
   const renderFooter = () => {
-    if (
-      !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newTotalCount !== NewNFTListReducer.newAllNftList.length
-    )
-      return null;
+    if (!NewNFTListReducer.newNftListLoading) return null;
     return <ActivityIndicator size="small" color={colors.themeR} />;
   };
 
@@ -152,7 +150,7 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const handleRefresh = () => {
     dispatch(newNftListReset(category));
     getNFTlist(category, sortOption, limit, 1);
-    setPage(1);
+    // setPage(1);
   };
 
   const renderItemFIndIndex = item => {
@@ -166,9 +164,9 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? (
-        isFirstRender
-      ) : page === 1 && NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ||
+      (NewNFTListReducer.newAllNftPage === 1 &&
+        NewNFTListReducer.newNftListLoading) ? (
         <Loader />
       ) : NewNFTListReducer.newAllNftList.length !== 0 ? (
         renderAllNFTList()

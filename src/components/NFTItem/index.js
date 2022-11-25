@@ -248,7 +248,7 @@ export default function NFTItem(props, {navigation}) {
         ) {
           return (
             <Text style={styles.statusOnSale}>
-              {`${translate('common.min')} ${translate('common.Bids')}`}
+              {translate('common.lastprice')}
             </Text>
           );
         }

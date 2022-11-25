@@ -20,7 +20,7 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
+const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
@@ -49,7 +49,7 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
         getNFTlist(category, sortCategory, limit, 1);
         setIsFirstRender(false);
         setSortOption(0);
-        setPage(1);
+        // setPage(1);
         screen(category);
       }, 100);
     }
@@ -111,18 +111,24 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   const refreshFunc = () => {
     dispatch(newNftListReset(category));
     getNFTlist(category, sortOption, limit, 1);
-    setPage(1);
+    // setPage(1);
   };
 
   const handleFlastListEndReached = () => {
     if (
       !NewNFTListReducer.newNftListLoading &&
-      NewNFTListReducer.newTotalCount !==
+      NewNFTListReducer.newMovieNftTotalCount !==
         NewNFTListReducer.newMovieNftList.length
     ) {
-      let pageNum = page + 1;
-      getNFTlist(category, sortOption, limit, pageNum);
-      setPage(pageNum);
+      // let pageNum = NewNFTListReducer.newMovieNftPage + 1;
+      // getNFTlist(category, sortOption, limit, pageNum);
+      getNFTlist(
+        category,
+        sortOption,
+        limit,
+        NewNFTListReducer.newMovieNftPage,
+      );
+      // setPage(pageNum);
     }
   };
 
@@ -163,9 +169,9 @@ const MovieNFT = ({ screen, sortOption, setSortOption, page, setPage }) => {
   return (
     <View style={styles.trendCont}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      {isFirstRender ? (
-        isFirstRender
-      ) : page === 1 && NewNFTListReducer.newNftListLoading ? (
+      {isFirstRender ||
+      (NewNFTListReducer.newMovieNftPage === 1 &&
+        NewNFTListReducer.newNftListLoading) ? (
         <Loader />
       ) : NewNFTListReducer.newMovieNftList.length !== 0 ? (
         renderMovieNFTList()

@@ -28,6 +28,11 @@ const Policy = ({route}) => {
     Linking.openURL(event.nativeEvent.data);
   };
 
+  var webViewObj = {
+    canGoBack: false,
+    ref: null,
+  };
+
   const handleWebViewNavigationStateChange = navState => {
     console.log('Navstate', navState);
 
@@ -80,7 +85,7 @@ const Policy = ({route}) => {
           style={styles.webview}
           originWhitelist={['*']}
           source={contentIos}
-          onMessage={event => Linking.openURL(event.nativeEvent.data)}
+          onMessage={event => onMessage(event)}
           decelerationRate="normal"
           javaScriptEnabled={true}
           domStorageEnabled={true}

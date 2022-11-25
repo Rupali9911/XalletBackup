@@ -173,7 +173,7 @@ const VerifyPhrase = ({ route, navigation }) => {
           onPress={() => {
             if (userData) {
               dispatch(setBackupStatus(true));
-              navigation.goBack();
+              navigation.pop(2);
             } else {
               if (wallet) {
                 setLoading(true);

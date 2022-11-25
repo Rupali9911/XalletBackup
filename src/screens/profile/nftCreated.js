@@ -131,6 +131,7 @@ const NFTCreated = ({route, id}) => {
             horizontal={false}
             numColumns={2}
             initialNumToRender={15}
+            nestedScrollEnabled={true}
             onRefresh={handlePullRefresh}
             refreshing={
               MyNFTReducer.myNftCreatedListPage === 1 &&
