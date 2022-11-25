@@ -395,7 +395,7 @@
     "followedBy": "フォロワー ",
     "bio": "ユーザー情報",
     "PLACEHOLDER_USERNAME": "ユーザーネームを入力してください",
-    "PLACEHOLDER_TWITTER": "@を省く、ユーザーネームを入力ください",
+    "PLACEHOLDER_TWITTER": "ユーザーネーム(@を省く)を入力ください",
     "PLACEHOLDER_EMAIL": "メールアドレスを入力してください",
     "PLACEHOLDER_INSTAGRAM": "インスタグラムのユーザーネームを入力してください",
     "PLACEHOLDER_DESCRIPTION": "自己紹介を入力してください",

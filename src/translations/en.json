@@ -395,7 +395,7 @@
     "followedBy": "Followed By",
     "bio": "Bio",
     "PLACEHOLDER_USERNAME": "Enter username",
-    "PLACEHOLDER_TWITTER": "Please omit @ and Enter your Twitter Username",
+    "PLACEHOLDER_TWITTER": "Enter Twitter Username (omit @)",
     "PLACEHOLDER_EMAIL": "Enter email",
     "PLACEHOLDER_INSTAGRAM": "Enter a Valid Instagram Username",
     "PLACEHOLDER_DESCRIPTION": "Tell the world your story!",
