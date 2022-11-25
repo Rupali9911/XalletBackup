@@ -390,6 +390,7 @@ export default function NFTItem(props, {navigation}) {
             flexDirection: 'row',
             alignItems: 'center',
             position: 'relative',
+            marginLeft: 'auto',
           }}>
           {item?.creator?.role === 4 ? (
             <View style={styles.creatorTickIcon}>{renderVerifiedIcon()}</View>
