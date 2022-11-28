@@ -59,6 +59,8 @@ export default function NFTItem(props, {navigation}) {
   const [isLike, setIsLike] = useState(Number(item.isLike));
   const screenNavigation = useNavigation();
 
+  let timeout = null;
+
   //================== Render Me Collection Images Function ===================
   const renderMeCollection = () => {
     return (
@@ -82,7 +84,12 @@ export default function NFTItem(props, {navigation}) {
         activeOpacity={1}
         // disabled={isDisable}
         onLongPress={onLongPress}
-        onPress={onPress}
+        onPress={() => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            onPress();
+          }, 500);
+        }}
         style={styles.collectionListItem}>
         <View style={styles.listItemContainer}>
           {renderHeartIcon()}
