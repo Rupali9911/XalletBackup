@@ -344,7 +344,7 @@ const SendScreen = React.memo(props => {
           );
           if (
             !isSelftToken() &&
-            amount &&
+            amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert &&
             Number(amount) > 0 &&
             Number(amount) <= Number(getTokenBalance())
           ) {
@@ -580,7 +580,7 @@ const SendScreen = React.memo(props => {
 
   const OnPressMax = () => {
     if (isSelftToken()) {
-      const maxAmount = (getTokenBalance() - Number(gasFee)).toFixed(8);
+      const maxAmount = (getTokenBalance() - Number(gasFee)).toFixed(7);
       setAmount((maxAmount.toString()))
     } else {
       setAmount(getTokenBalance().toString())
@@ -610,7 +610,7 @@ const SendScreen = React.memo(props => {
   };
 
   const decimalDigitAlert =
-    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
       ? true
       : false;
 
@@ -734,7 +734,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               ) : amount &&
                 Number(amount) > 0 &&
-                !alertMessage.isInsufficientFund ? (
+                !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert ? (
                 <ActivityIndicator
                   style={{ marginRight: hp('1%') }}
                   color={Colors.BLUE1}
