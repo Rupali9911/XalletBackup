@@ -126,7 +126,7 @@ export const PaymentField = props => {
               borderColor: (props.alertMessage.isInsufficientFund || props.alertMessage.gasFeeAlert || !props.editable) ? Colors.GREY6 : Colors.BLUE2,
             },
           ]}
-          onPress={() => console.log("@@@ On press max button ======>")}>
+          onPress={props.onPressMax}>
           <Text style={{ color: Colors.WHITE1, textTransform: 'uppercase' }}>
             {translate('common.max')}
           </Text>
@@ -286,6 +286,7 @@ const SendScreen = React.memo(props => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState({
     isAddressInvalid: false,
+    isPaymentFielDisable: false,
     isInsufficientFund: false,
     isButtonDisable: true,
     gasFeeAlert: false,
@@ -300,8 +301,13 @@ const SendScreen = React.memo(props => {
     let walletAddress = await getWallet();
     const gasPrice = await getGasPrice(networkConfig.rpcURL);
     console.log('@@@ Gas price=======>', gasPrice);
+    if (isSelftToken()) {
+      const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether',);
+      console.log('@@@ Gas Fee self =======>', gasFee);
+      setGasFee(gasFee);
+    }
     setWallet(walletAddress);
-    setGasPrice(Number(gasPrice));
+    setGasPrice(gasPrice);
   }, []);
 
   useEffect(() => {
@@ -313,10 +319,12 @@ const SendScreen = React.memo(props => {
     let timerOut = setTimeout(() => {
       if (address) {
         verifyAddress(address)
-          .then(() => { })
+          .then(() => {
+            setAlertMessage({ ...alertMessage, isPaymentFielDisable: true });
+          })
           .catch(() => {
             console.log("@@@ address verify=====>", alertMessage)
-            setAlertMessage({ ...alertMessage, isAddressInvalid: true });
+            setAlertMessage({ ...alertMessage, isPaymentFielDisable: false, isAddressInvalid: true });
           });
       }
     }, 500);
@@ -367,18 +375,6 @@ const SendScreen = React.memo(props => {
               'ether',
             );
             console.log('@@@ Gas Fee  =======>', gasFee);
-            setGasFee(gasFee);
-          } else if (
-            isSelftToken() &&
-            amount &&
-            Number(amount) > 0 &&
-            Number(amount) < Number(getTokenBalance())
-          ) {
-            const gasFee = web3.utils.fromWei(
-              (gasPrice * 21000).toString(),
-              'ether',
-            );
-            console.log('@@@ Gas Fee self =======>', gasFee);
             setGasFee(gasFee);
           }
         });
@@ -437,7 +433,7 @@ const SendScreen = React.memo(props => {
           isButtonDisable: true,
           networkFeeShow: false,
         });
-      } else if (Number(getSelfTokenBalance(item?.network)) === 0 || gasFee >= getSelfTokenBalance(item?.network)) {
+      } else if (Number(getSelfTokenBalance(item?.network)) === 0 || gasFee > getSelfTokenBalance(item?.network)) {
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
@@ -582,6 +578,15 @@ const SendScreen = React.memo(props => {
       });
   };
 
+  const OnPressMax = () => {
+    if (isSelftToken()) {
+      const maxAmount = (getTokenBalance() - Number(gasFee)).toFixed(8);
+      setAmount((maxAmount.toString()))
+    } else {
+      setAmount(getTokenBalance().toString())
+    }
+  }
+
   // const showSuccessAlert = () => {
   //   Alert.alert(
   //     translate('wallet.common.transferInProgress', {
@@ -605,7 +610,7 @@ const SendScreen = React.memo(props => {
   };
 
   const decimalDigitAlert =
-    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8
       ? true
       : false;
 
@@ -669,7 +674,7 @@ const SendScreen = React.memo(props => {
             <PaymentField
               type={type}
               value={amount}
-              editable={!address ? false : true}
+              editable={alertMessage.isPaymentFielDisable}
               alertMessage={alertMessage}
               onChangeText={e => {
                 let value = amountValidation(e, amount);
@@ -679,6 +684,7 @@ const SendScreen = React.memo(props => {
                   setAmount('');
                 }
               }}
+              onPressMax={() => OnPressMax()}
             />
             {alertMessage.isInsufficientFund && (
               <View>
