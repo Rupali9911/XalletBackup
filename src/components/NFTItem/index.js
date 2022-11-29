@@ -59,6 +59,8 @@ export default function NFTItem(props, {navigation}) {
   const [isLike, setIsLike] = useState(Number(item.isLike));
   const screenNavigation = useNavigation();
 
+  let timeout = null;
+
   //================== Render Me Collection Images Function ===================
   const renderMeCollection = () => {
     return (
@@ -82,7 +84,12 @@ export default function NFTItem(props, {navigation}) {
         activeOpacity={1}
         // disabled={isDisable}
         onLongPress={onLongPress}
-        onPress={onPress}
+        onPress={() => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            onPress();
+          }, 500);
+        }}
         style={styles.collectionListItem}>
         <View style={styles.listItemContainer}>
           {renderHeartIcon()}
@@ -390,6 +397,7 @@ export default function NFTItem(props, {navigation}) {
             flexDirection: 'row',
             alignItems: 'center',
             position: 'relative',
+            marginLeft: 'auto',
           }}>
           {item?.creator?.role === 4 ? (
             <View style={styles.creatorTickIcon}>{renderVerifiedIcon()}</View>
@@ -397,7 +405,7 @@ export default function NFTItem(props, {navigation}) {
           <TouchableOpacity
             activeOpacity={1}
             onPress={() =>
-              screenNavigation.navigate('Profile', {
+              screenNavigation.push('Profile', {
                 from: 'nftItem',
                 id: item.creator.address,
                 role: item?.creator?.role,
@@ -419,7 +427,7 @@ export default function NFTItem(props, {navigation}) {
             <TouchableOpacity
               activeOpacity={1}
               onPress={() =>
-                screenNavigation.navigate('Profile', {
+                screenNavigation.push('Profile', {
                   from: 'nftItem',
                   id: item.owner.address,
                   role: item?.owner?.role,
