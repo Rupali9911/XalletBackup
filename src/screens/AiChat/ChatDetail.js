@@ -30,7 +30,7 @@ const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
   let {nftDetail, tokenId} = route.params;
-  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'))
+  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -231,9 +231,7 @@ const ChatDetail = ({route, navigation}) => {
             />
           </View>
           <View style={{paddingStart: 10}}>
-            <Text style={styles.headerNftName}>
-              {NFTNAME}
-            </Text>
+            <Text style={styles.headerNftName}>{NFTNAME}</Text>
             <View style={{flexDirection: 'row'}}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
@@ -270,16 +268,20 @@ const ChatDetail = ({route, navigation}) => {
 
       <KeyboardAwareScrollView
         contentContainerStyle={{flex: 1}}
+        // enableOnAndroid={true}
         scrollEnabled={false}
-        extraScrollHeight={Platform.OS === 'ios' ? 10 : 0}
+        extraScrollHeight={Platform.OS === 'ios' ? SIZE(10) : 0}
+        overScrollMode="never"
+        resetScrollToCoords={true}
         keyboardShouldPersistTaps={'always'}
-        keyboardOpeningTime={0}>
+        keyboardOpeningTime={0}
+        enableAutomaticScroll={true}
+        viewIsInsideTabBar={false}
+        enableResetScrollToCoords={true}>
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
-            <Text style={styles.nftName}>
-              {NFTNAME}
-            </Text>
+            <Text style={styles.nftName}>{NFTNAME}</Text>
             <View style={[styles.separator, {width: '80%'}]} />
             {!chatBotData?.response ? (
               <View>

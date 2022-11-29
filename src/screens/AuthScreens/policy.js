@@ -9,7 +9,6 @@ const terms = require('../../walletUtils/terms.html');
 
 const Policy = ({route}) => {
   const {isPolicy} = route.params;
-  let count = 1;
 
   const [loading, setLoading] = useState(true);
 
@@ -22,6 +21,7 @@ const Policy = ({route}) => {
   var webViewObj = {
     canGoBack: false,
     ref: null,
+    canGoForward: true,
   };
   const onMessage = event => {
     console.log('Meesaage from Webview', event);
@@ -31,21 +31,19 @@ const Policy = ({route}) => {
   var webViewObj = {
     canGoBack: false,
     ref: null,
+    canGoForward: false,
   };
 
   const handleWebViewNavigationStateChange = navState => {
     console.log('Navstate', navState);
+    setLoading(false);
 
     if (Platform.OS === 'ios') {
-      if (count > 0) {
-        count = 0;
-      } else {
-        if (navState.url.indexOf('xanalia.com') > 0) {
-          webViewObj.canGoBack = navState.canGoBack;
-          webViewObj.ref.goBack();
-          Linking.openURL(navState.url);
-          return false;
-        }
+      if (navState.url.indexOf('xanalia.com') > 0) {
+        webViewObj.ref.stopLoading();
+        webViewObj.ref.goBack();
+        Linking.openURL(navState.url);
+        return false;
       }
     } else {
       if (navState.url.indexOf('xanalia.com') > 0) {
@@ -95,7 +93,7 @@ const Policy = ({route}) => {
             handleWebViewNavigationStateChange(navState);
           }}
           bounces={false}
-          loading
+          // loading
           ref={webView => {
             webViewObj.ref = webView;
           }}
