@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Platform, Linking, BackHandler} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {StyleSheet, Platform, Linking} from 'react-native';
 import AppBackground from '../../components/appBackground';
 import WebView from 'react-native-webview';
 import AppHeader from '../../components/appHeader';
@@ -18,11 +18,6 @@ const Policy = ({route}) => {
     ? 'file:///android_asset/policy.html'
     : 'file:///android_asset/terms.html';
 
-  var webViewObj = {
-    canGoBack: false,
-    ref: null,
-    canGoForward: true,
-  };
   const onMessage = event => {
     console.log('Meesaage from Webview', event);
     Linking.openURL(event.nativeEvent.data);
@@ -74,9 +69,6 @@ const Policy = ({route}) => {
           ref={webView => {
             webViewObj.ref = webView;
           }}
-          allowsBackForwardNavigationGestures={true}
-          androidHardwareAccelerationDisabled={true}
-          renderToHardwareTextureAndroid={true}
         />
       ) : (
         <WebView
@@ -93,7 +85,6 @@ const Policy = ({route}) => {
             handleWebViewNavigationStateChange(navState);
           }}
           bounces={false}
-          // loading
           ref={webView => {
             webViewObj.ref = webView;
           }}
