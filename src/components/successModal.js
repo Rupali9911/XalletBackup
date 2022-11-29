@@ -1,17 +1,17 @@
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {IconButton} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import { Image, StyleSheet, View } from 'react-native';
+import { IconButton } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import Colors from '../constants/Colors';
 import ImagesSrc from '../constants/Images';
-import {hp, RF, wp} from '../constants/responsiveFunct';
+import { hp, RF, wp } from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
-import {translate} from '../walletUtils';
+import { translate } from '../walletUtils';
 import AppButton from './appButton';
 import TextView from './appText';
 
 const SuccessModalContent = props => {
-  const {isCreate} = useSelector(state => state.UserReducer);
+  const { isCreate } = useSelector(state => state.UserReducer);
   return (
     <View style={styles.container}>
       <IconButton
@@ -23,7 +23,7 @@ const SuccessModalContent = props => {
           props.onClose && props.onClose();
         }}
       />
-      <Image style={styles.img} source={ImagesSrc.success} />
+      <Image style={styles.img} source={props?.transactionDone ? ImagesSrc.transactionDone : ImagesSrc.success} />
       {isCreate ? (
         <>
           <TextView style={styles.title}>
@@ -39,7 +39,7 @@ const SuccessModalContent = props => {
             {translate('wallet.common.success')} !
           </TextView>
           <TextView style={styles.hint}>
-            {props.sucessMsg?props.sucessMsg:translate('wallet.common.walletImported')}
+            {props.sucessMsg ? props.sucessMsg : translate('wallet.common.walletImported')}
           </TextView>
         </>
       )}

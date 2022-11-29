@@ -36,6 +36,8 @@ export default function transactionsDetail({ route }) {
       Linking.openURL(`${environment.polygonScanURL}${transactionInfo?.hash}`);
     } else if (coin?.network == 'Ethereum') {
       Linking.openURL(`${environment.ethereumScanURL}${transactionInfo?.hash}`);
+    } else if (coin?.network == 'XANA CHAIN') {
+      Linking.openURL(`${environment.xanaScanURL}${transactionInfo?.hash}`);
     }
   };
   { }

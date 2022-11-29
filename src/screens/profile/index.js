@@ -122,9 +122,7 @@ function Profile({navigation, connector, route}) {
 
   useEffect(() => {
     handleUserData();
-    const unsubscribe = navigation.addListener('focus', () => {});
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   const handleUserData = () => {
     dispatch(startLoadingBanner());
@@ -399,11 +397,13 @@ function Profile({navigation, connector, route}) {
               <MenuTrigger />
               <MenuOptions
                 optionsContainerStyle={{
-                  width: SIZE(60),
+                  width: 'auto',
                   backgroundColor: Colors.BLACK1,
                 }}>
                 <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                  <Text style={{color: '#FFFFFF'}}>
+                    {`${translate('common.Copied')}!`}
+                  </Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
@@ -472,32 +472,34 @@ function Profile({navigation, connector, route}) {
                     <MenuTrigger />
                     <MenuOptions
                       optionsContainerStyle={{
-                        width: SIZE(60),
+                        width: 'auto',
                         backgroundColor: Colors.BLACK1,
                       }}>
                       <MenuOption>
-                        <Text style={{color: '#FFFFFF'}}>Copied!</Text>
+                        <Text style={{color: '#FFFFFF'}}>
+                          {`${translate('common.Copied')}!`}
+                        </Text>
                       </MenuOption>
                     </MenuOptions>
                   </Menu>
                   <CopyProfile width={SIZE(12)} height={SIZE(12)} />
                 </TouchableOpacity>
-                 <View style={styles.iconWrapper}>
-                 <View
-                   style={[
-                     styles.iconBadgeVw,
-                     route?.params?.role === 4
-                       ? styles.borderBtnColor
-                       : styles.borderTrans,
-                   ]}>
-                   {renderIconImage()}
-                   {route?.params?.role === 4 ? (
-                     <View style={styles.markIconView}>
-                       {renderVerifiedIcon()}
-                     </View>
-                   ) : null}
-                 </View>
-               </View>
+                <View style={styles.iconWrapper}>
+                  <View
+                    style={[
+                      styles.iconBadgeVw,
+                      route?.params?.role === 4
+                        ? styles.borderBtnColor
+                        : styles.borderTrans,
+                    ]}>
+                    {renderIconImage()}
+                    {route?.params?.role === 4 ? (
+                      <View style={styles.markIconView}>
+                        {renderVerifiedIcon()}
+                      </View>
+                    ) : null}
+                  </View>
+                </View>
                 <View style={styles.userDetailsWrapper}>
                   {renderProfileNameAndId()}
                 </View>
@@ -587,7 +589,7 @@ function Profile({navigation, connector, route}) {
   );
 }
 
-export default Profile;
+export default React.memo(Profile);
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
@@ -646,6 +648,7 @@ const styles = StyleSheet.create({
     height: SIZE(140),
     borderRadius: SIZE(150),
     backgroundColor: colors.PERIWINKLE,
+    alignItems: 'center',
   },
 
   loaderImage: {

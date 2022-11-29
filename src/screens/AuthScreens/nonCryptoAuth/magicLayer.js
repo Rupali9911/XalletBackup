@@ -20,17 +20,19 @@ const MagicLayer = () => {
     setMagic(magicLink);
   }, [selectedLanguageItem]);
 
-  return magicLoading ? (
-    <View style={styles.container}>
-      <View style={styles.magicRelayer}>
-        <magic.Relayer />
-      </View>
+  return magic.Relayer ? <magic.Relayer /> : null
 
-      <View style={styles.loader}>
-        <Loader />
-      </View>
-    </View>
-  ) : null;
+  // return magicLoading ? (
+  //   <View style={styles.container}>
+  //     <View style={styles.magicRelayer}>
+  //       <magic.Relayer />
+  //     </View>
+
+  //     <View style={styles.loader}>
+  //       <Loader />
+  //     </View>
+  //   </View>
+  // ) : null;
 };
 
 export default MagicLayer;

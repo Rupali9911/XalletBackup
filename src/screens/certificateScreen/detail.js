@@ -3176,7 +3176,12 @@ const DetailScreen = ({navigation, route}) => {
           <TouchableOpacity
             hitSlop={hitSlop}
             style={{marginRight: 6}}
-            onPress={() => Linking.openURL(detailNFT?.creator?.instagramLink)}>
+            onPress={() =>
+              Linking.openURL(
+                'https://www.instagram.com/' +
+                  detailNFT?.creator?.instagramLink,
+              )
+            }>
             <InstagramIcon />
           </TouchableOpacity>
         ) : null}

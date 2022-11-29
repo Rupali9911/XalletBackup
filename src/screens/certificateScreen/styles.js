@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
   },
   reClaimcontainer: {
     backgroundColor: Colors.white,
-    height: hp(42),
+    // height: hp(42),
     width: wp(95),
     paddingHorizontal: SIZE(20),
     paddingTop: SIZE(15),
@@ -747,7 +747,10 @@ const styles = StyleSheet.create({
     right: SIZE(8),
   },
   deleteAccount: {
-    height: Platform.OS === 'ios' ? hp(57) : hp(62),
+    // height: Platform.OS === 'ios' ? hp(57) : hp(62),
+  },
+  backupPhraseContainer: {
+    // height: Platform.OS === 'ios' ? hp(65) : hp(70),
   },
   reClaimCancelBTNview: {
     flexDirection: 'row',
@@ -762,6 +765,10 @@ const styles = StyleSheet.create({
   },
   deleteRedImg: {
     alignSelf: 'center',
+  },
+  dangerIconStyle:{
+    height: hp(8),
+    width: hp(8.8)
   },
   reclaimView: {
     flexDirection: 'row',
@@ -780,6 +787,7 @@ const styles = StyleSheet.create({
   deleteAccountText: {
     // fontWeight: 'bold',
     fontSize: SIZE(25),
+    textAlign: 'center'
   },
   textView: {
     flexDirection: 'row',
@@ -793,6 +801,11 @@ const styles = StyleSheet.create({
   },
   descriptionCenter: {
     textAlign: 'center',
+    lineHeight: 16,
+    color: Colors.BLACK1,
+  },
+  descriptionJustify:{
+    textAlign: 'justify',
     lineHeight: 16,
     color: Colors.BLACK1,
   },

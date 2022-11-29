@@ -28,9 +28,7 @@ async function sendRequest(payload) {
       : {
           'content-type': 'application/json',
         };
-    // console.log('@@@ Axios wrapper params ==========>', payload);
     const state = await NetInfo.fetch();
-    // console.log('Connection type', state.type, state.isConnected);
     if (state.isConnected) {
       isAlert = false;
       const response = await axiosInstance.request(payload);
@@ -51,14 +49,6 @@ async function sendRequest(payload) {
       }
     }
   } catch (error) {
-    alertWithSingleBtn(
-      translate('wallet.common.alert'),
-      translate('wallet.common.error.networkError'),
-      () => {
-        isAlert = false;
-        // return Promise.reject()
-      },
-    );
     return Promise.reject(error);
   }
 }
@@ -68,7 +58,6 @@ export const axiosInstance = axios.create();
 //=============== Axios Interceptors ========================
 axiosInstance.interceptors.response.use(
   response => {
-    // console.log('@@@ API response in interceptor ==========>', response);
     return response;
   },
   async err => {
@@ -76,43 +65,23 @@ axiosInstance.interceptors.response.use(
     const {response, config} = err;
     try {
       if (response?.status === 401) {
-        console.log('@@@ Axios API Request 401 ======>');
         const rest = await APIRefreshToken();
         if (!rest || !rest.newToken) {
-          return response;
+          return Promise.reject(response);
         }
         await setAccesToken(rest.newToken);
         config.headers['Authorization'] = 'Bearer ' + rest.newToken;
         return axiosInstance(config);
       } else if (response?.status === 403) {
-        console.log('@@@ Axios API Request 403 ======>');
-        // if (!!location && !!localStorage) {
-        //     localStorage.clear()
-        //     location.href = location.origin
-        // }
       } else if (response?.status === 455) {
-        console.log('@@@ Axios API Request 455 ======>');
-        // const { data } = err.response?.data
-        // if (
-        // !!err.response?.data &&
-        // !!data &&
-        // !!location &&
-        // !location.pathname.includes('maintenance')
-        // ) {
-        //     location.href = location.origin + '/maintenance'
-        // }
       } else if (response?.status === 502) {
-        console.log('@@@ Axios API Request 502 ======>');
       } else if (response?.status === 400) {
         console.log('@@@ Axios API Request 400 ======>');
-        throw response;
       }
       return Promise.reject(response);
-      // return response;
     } catch (error) {
       console.log('@@@ error in interceptors ==========>', error);
       return Promise.reject(error);
-      // return response;
     }
   },
 );
