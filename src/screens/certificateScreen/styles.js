@@ -76,6 +76,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  videoError: {
+    color: Colors.WHITE1,
+    fontSize: SIZE(20),
+    fontWeight: 'bold',
+  },
   nftTitle: {
     fontSize: RF(1.75),
     fontFamily: fonts.ARIAL_BOLD,

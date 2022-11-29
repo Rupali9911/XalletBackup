@@ -17,8 +17,8 @@ import {
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-//import Video from 'react-native-fast-video';
-import Video from 'react-native-video';
+import VideoPlayer from 'react-native-video-controls';
+import Orientation from 'react-native-orientation-locker';
 import Modal from 'react-native-modal';
 import {ActivityIndicator} from 'react-native-paper';
 import {
@@ -32,6 +32,7 @@ import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
 import {
   default as PlayPause,
   default as PlaySpeed,
+  default as FullScreen,
 } from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMute from 'react-native-vector-icons/Octicons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -95,6 +96,8 @@ import {
 import ShowModal from './modal';
 import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
+import Video from 'react-native-video';
+import {VideoModel} from './ModalVideo';
 
 const Web3 = require('web3');
 
@@ -145,6 +148,9 @@ const DetailScreen = ({navigation, route}) => {
   const [showThumb, toggleThumb] = useState(true);
   const [videoLoad, setVideoLoad] = useState(false);
   const [playVideoLoad, setPlayVideoLoad] = useState(false);
+  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [isFullScreeen, setFullScreeen] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
   const [playVideo, toggleVideoPlay] = useState(false);
@@ -253,30 +259,8 @@ const DetailScreen = ({navigation, route}) => {
   const price = detailNFT?.saleData?.fixPrice?.price;
 
   //================== Unused State Declaration ===================
-  // const [updateComponent, setUpdateComponent] = useState(false);
-  // const [discount, setDiscount] = useState(false);
-  // const [discountValue, setDiscountValue] = useState('');
-  // const [sellDetailsFiltered, setSellDetailsFiltered] = useState([]);
-  // const [bidHistory, setBidHistory] = useState([]);
-  // const [tableData, setTableData] = useState([]);
-  // const [baseCurrency, setBaseCurrency] = useState(null);
-  // const [singleNFT, setSingleNFT] = useState({});
-  // const [nonCryptoOwnerId, setNonCryptoOwnerId] = useState('');
-  // const [priceNFT, setPriceNFT] = useState('');
-  // const [priceNFTString, setPriceNFTString] = useState('');
-  // const [auctionETime, setAuctionETime] = useState('');
-  // const [buyLoading, setBuyLoading] = useState(false);
-  // const [availableTokens, setAvailableTokens] = useState([]);
-  // const [currencyPrices, setCurrencyPrices] = useState({});
-  // const [priceInDollar, setPriceInDollar] = useState('');
-  // const [payableInCurrency, setPayableInCurrency] = useState('');
-  // const [payableInDollar, setPayableInDollar] = useState('');
-  // const [allowedTokenModal, setAllowedTokenModal] = useState(false);
-  // const [payableIn, setPayableIn] = useState('');
-  // const [nftPrice, setNFTPrice] = useState('');
 
   //================== Timer =======================
-
   const [music, setMusic] = useState(null);
   const [isPlaying, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -479,6 +463,17 @@ const DetailScreen = ({navigation, route}) => {
     }
   }, [paymentObject]);
 
+  useEffect(() => {
+    if (!showVideoModal) {
+      console.log(
+        '🚀 ~ file: detail.js ~ line 472 ~ useEffect ~ videoCurrentTime',
+        videoCurrentTime,
+        showVideoModal,
+      );
+      refVideo?.current?.player?.ref?.seek(videoCurrentTime);
+    }
+  }, [showVideoModal]);
+
   //===================== API Call Functions =========================
 
   const getNFTDetails = async reload => {
@@ -568,6 +563,13 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
+  const toggleModal = state => {
+    setShowVideoModal(state);
+    if (!state) {
+      toggleVideoPlay(true);
+    }
+  };
+
   //================== Render Banner Image/Video Function ==================
   const renderBannerImageVideo = () => {
     return (
@@ -585,6 +587,7 @@ const DetailScreen = ({navigation, route}) => {
             setPlayVideoLoad(false);
           }
           toggleVideoPlay(!playVideo);
+          setFullScreeen(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
           <View
@@ -607,43 +610,92 @@ const DetailScreen = ({navigation, route}) => {
               />
             )}
             {videoError !== '' ? (
-              <Text
-                style={{
-                  color: Colors.WHITE1,
-                  fontSize: SIZE(20),
-                  fontWeight: 'bold',
-                }}>
-                {videoError}
-              </Text>
+              <Text style={styles.videoError}>{videoError}</Text>
             ) : (
-              <Video
-                key={videoKey}
-                ref={refVideo}
-                source={{uri: mediaUrl}}
-                repeat
-                playInBackground={false}
-                controls={true}
-                paused={!playVideo}
-                onProgress={r => {
-                  setVideoLoad(false);
-                  setPlayVideoLoad(false);
-                }}
-                resizeMode={'cover'}
-                onError={error => {
-                  console.log(error);
-                  setVideoLoadErr(true);
-                  toggleThumb(false);
-                  setVideoError('This media format is not supported.');
-                }}
-                onReadyForDisplay={() => {
-                  toggleThumb(false);
-                }}
-                onLoad={data => {
-                  refVideo.current.seek(0);
-                }}
-                style={[styles.video]}
-              />
+              <>
+                <VideoPlayer
+                  repeat
+                  disableBack
+                  disableVolume
+                  key={videoKey}
+                  ref={refVideo}
+                  source={{uri: mediaUrl}}
+                  playInBackground={false}
+                  disableFullscreen={!playVideo}
+                  disablePlayPause={!playVideo}
+                  disableSeekbar={!playVideo}
+                  disableTimer={!playVideo}
+                  tapAnywhereToPause={true}
+                  paused={!playVideo}
+                  onProgress={r => {
+                    // console.log(
+                    //   '🚀 ~ file: detail.js ~ line 642 ~ onPro ~ r',
+                    //   r?.currentTime,
+                    // );
+                    setVideoLoad(false);
+                    setPlayVideoLoad(false);
+                    setVideoCurrentTime(r?.currentTime);
+                  }}
+                  resizeMode={'cover'}
+                  onError={error => {
+                    console.log(error);
+                    setVideoLoadErr(true);
+                    toggleThumb(false);
+                    setVideoError('This media format is not supported.');
+                  }}
+                  onReadyForDisplay={() => toggleThumb(false)}
+                  onPlay={() => {
+                    toggleVideoPlay(true);
+                    setFullScreeen(true);
+                  }}
+                  onPause={() => {
+                    toggleVideoPlay(false);
+                    setFullScreeen(false);
+                  }}
+                  onLoad={o => {
+                    console.log(
+                      '🚀 ~ file: detail.js ~ line 646 ~ onLoad ~ o',
+                      o,
+                    );
+                    refVideo?.current?.player?.ref?.seek(videoCurrentTime);
+                  }}
+                  onHideControls={() => setFullScreeen(false)}
+                  onShowControls={() => setFullScreeen(true)}
+                  style={styles.video}
+                />
+                {/* {showVideoModal ? ( */}
+                <VideoModel
+                  url={mediaUrl}
+                  toggleModal={toggleModal}
+                  isVisible={showVideoModal}
+                  currentTime={videoCurrentTime}
+                  updateTime={setVideoCurrentTime}
+                />
+                {/* ) : null} */}
+              </>
             )}
+
+            {playVideo && isFullScreeen && (
+              <TouchableOpacity
+                onPress={() => {
+                  toggleModal(true);
+                  toggleVideoPlay(!playVideo);
+                }}
+                style={{
+                  // height: 40,
+                  // width: 50,
+                  position: 'absolute',
+                  top: wp('6.2%'),
+                  left: wp('6%'),
+                }}>
+                <FullScreen
+                  size={wp('6%')}
+                  name={'fullscreen'}
+                  color={Colors.white}
+                />
+              </TouchableOpacity>
+            )}
+
             {!playVideo && videoError === '' && (
               <View style={styles.videoIcon}>
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
