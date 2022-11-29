@@ -767,7 +767,7 @@
     "SEND_QUANTITY": "Amount",
     "recoveryPhrase": "Recovery Phrase",
     "NETWORK_GAS_FEE":"Network gas fee",
-    "TOTAL_AMOUNT_GAS_FEE":"TOTAL (Amount + gas fee)",
+    "TOTAL_AMOUNT_GAS_FEE":"Total (Amount + Network Gas Fee)",
     "TRANSACTION_SENT_NETWORK": "The transaction has been sent to the network!",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "Please enter wallet address",
     "TRANSACTION_ENTER_AMOUNT": "Please enter amount !!!",
