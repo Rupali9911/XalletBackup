@@ -19,7 +19,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
 import {Container} from 'src/styles/common.styles';
 import {confirmationAlert} from '../../common/function';
@@ -148,7 +148,7 @@ function Profile({navigation, connector, route}) {
   };
 
   const copyProfileToClipboard = () => {
-    Clipboard.setString(`https://xanalia.com/profile/${id}`);
+    Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
     setOpenDial2(true);
     setTimeout(() => {
       setOpenDial2(false);
