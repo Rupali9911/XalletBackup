@@ -9,6 +9,7 @@ import {
   Image,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator
 } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
@@ -47,6 +48,8 @@ import {
   balanceTransfer,
   handleTransactionError,
   getGasPrice,
+  getGasLimit,
+  getSignData
 } from '../wallet/functions/transactionFunctions';
 import AppModal from '../../components/appModal';
 import SuccessModalContent from '../../components/successModal';
@@ -251,10 +254,16 @@ const SendScreen = React.memo(props => {
     networkType,
   } = useSelector(state => state.WalletReducer);
 
+  const config = getConfigDetailsFromEnviorment(networkType?.name, type);
+
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
+
   //====================== States Initiliazation =========================
+  const [wallet, setWallet] = useState(null);
   const [address, setAddress] = useState(props.address);
   const [amount, setAmount] = useState(props.amount);
-  const [networkConfig, setNetworkConfig] = useState(null);
+  const [networkConfig, setNetworkConfig] = useState(config);
+  const [gasPrice, setGasPrice] = useState(0);
   const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState({
@@ -266,34 +275,15 @@ const SendScreen = React.memo(props => {
   });
 
   //==================== Global Variables =======================
-  let wallet = null;
   let gasFeeAlert = null;
 
   //====================== Use Effect Start =========================
   useEffect(async () => {
-    wallet = await getWallet();
-    const config = getConfigDetailsFromEnviorment(networkType?.name, type);
-
-    const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
-
-    const gasPrice = await getGasPrice(config.rpcURL);
-
-    const gasLimit = await web3.eth.estimateGas({
-      to: '0x0a7ed0fb11c8d86abfa022a74c3d425312bc3483',
-      from: '0x3cc51779881e3723d5aa23a2adf0b215124a177d',
-      value: web3.utils.toWei('0.001', 'ether'),
-    });
-
-    const gasFee = web3.utils.fromWei(gasPrice, 'ether') * gasLimit;
-    // console.log("@@@ Token Name ======>", type)
-    // console.log("@@@ gas price ======>", gasPrice)
-    // console.log("@@@ gas price conver ======>", web3.utils.fromWei(gasPrice, 'ether'))
-    // console.log("@@@ gas limit ======>", gasLimit)
-    // console.log("@@@ gas Fee 1111======>", web3.utils.fromWei((gasPrice * gasLimit).toString(), 'ether'))
-    // console.log("@@@ gas Fee convert 2222======>", web3.utils.fromWei(gasPrice, 'ether') * gasLimit)
-
-    setGasFee(gasFee);
-    setNetworkConfig(config);
+    let walletAddress = await getWallet();
+    const gasPrice = await getGasPrice(networkConfig.rpcURL);
+    console.log("@@@ Gas price=======>", gasPrice)
+    setWallet(walletAddress);
+    setGasPrice(Number(gasPrice))
   }, []);
 
   useEffect(() => {
@@ -312,10 +302,56 @@ const SendScreen = React.memo(props => {
       } else {
         setAlertMessage({ ...alertMessage, isAddressInvalid: false })
       }
-    }, 800);
+    }, 500);
 
     return () => clearTimeout(timerOut)
   }, [address])
+
+  useEffect(async () => {
+    let signData;
+    let txCount;
+    let timerAmountOut = setTimeout(() => {
+      try {
+        return new Promise(async (resolve, reject) => {
+          txCount = await web3.eth.getTransactionCount(
+            wallet?.address,
+            'pending',
+          );
+          if (!isSelftToken() && amount && Number(amount) > 0 && Number(amount) <= Number(getTokenBalance())) {
+            const transferParameters = {
+              publicAddress: wallet?.address,
+              amount: amount,
+              toAddress: address,
+              tokenType: type,
+            };
+            signData = getSignData(transferParameters, networkConfig, web3, reject);
+            console.log("@@@ Getting sign data ========>", signData)
+            if (!signData) return;
+            const data = {
+              from: transferParameters.publicAddress,
+              to: networkConfig.ContractAddress,
+              data: signData,
+              nonce: web3.utils.toHex(txCount),
+            };
+            const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
+            console.log("@@@ Gas limit after signdata =======>", gasLimit)
+            const gasFee = web3.utils.fromWei((gasPrice * gasLimit).toString(), 'ether')
+            console.log("@@@ Gas Fee  =======>", gasFee)
+            setGasFee(gasFee);
+          } else if (isSelftToken() && amount && Number(amount) > 0 && Number(amount) < Number(getTokenBalance())) {
+            const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether')
+            console.log("@@@ Gas Fee self =======>", gasFee)
+            setGasFee(gasFee);
+          }
+        });
+      } catch (error) {
+        console.log("@@@ Getting Sign data error 1111 ============>", error)
+      }
+    }, 1000);
+
+    return () => clearTimeout(timerAmountOut)
+  }, [amount])
+
 
 
   useEffect(() => {
@@ -583,7 +619,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               </View>
             )}
-            {alertMessage.networkFeeShow && (
+            {(alertMessage.networkFeeShow && (gasFee !== 0)) && (
               <View style={styles.gasFeeTextContainer}>
                 <Text style={styles.gasFeeText}>
                   + {translate('common.NETWORK_GAS_FEE')}
@@ -599,11 +635,11 @@ const SendScreen = React.memo(props => {
               {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
-              {alertMessage.networkFeeShow && (
+              {(alertMessage.networkFeeShow && (gasFee !== 0)) ? (
                 <Text style={[styles.priceCont, { marginRight: hp('1%') }]}>
-                  {Number(amount) + gasFee} {tokenInfo.tokenName}
+                  {(Number(amount) + Number(gasFee)).toFixed(8)} {tokenInfo.tokenName}
                 </Text>
-              )}
+              ) : (amount && Number(amount) > 0 && !alertMessage.isInsufficientFund) ? <ActivityIndicator style={{ marginRight: hp('1%') }} color={Colors.BLUE1} /> : null}
             </View>
           </View>
         </View>

@@ -295,7 +295,7 @@ const getConvertedDecimalValue = (type, convertto6decimal, web3) => {
   }
 };
 
-const getSignData = (transferParameters, config, web3, reject) => {
+export const getSignData = (transferParameters, config, web3, reject) => {
   try {
     const type = transferParameters?.tokenType?.toLowerCase();
     let convertto6decimal;
