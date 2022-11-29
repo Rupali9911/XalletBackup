@@ -96,7 +96,7 @@ export const PaymentField = props => {
       <View
         style={[
           styles.inputMainCont,
-          { flexDirection: 'row', justifyContent: 'space-between' },
+          { flexDirection: 'row', justifyContent: 'space-between', backgroundColor: !props.editable ? Colors.WHITE2 : Colors.WHITE1 },
         ]}>
         <TextInput
           style={[styles.inputCont, styles.paymentField, { fontSize: RF(1.8) }]}
@@ -258,9 +258,9 @@ const SendScreen = React.memo(props => {
   const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState({
+    isAddressInvalid: false,
     isInsufficientFund: false,
     isButtonDisable: true,
-    decimalDigitAlert: false,
     gasFeeAlert: false,
     networkFeeShow: false
   });
@@ -302,47 +302,49 @@ const SendScreen = React.memo(props => {
   }, [props.address, props.amount]);
 
   useEffect(() => {
-    console.log("@@@ Alert effect =======>", Number(amount))
+    let timerOut = setTimeout(() => {
+      if (address) {
+        verifyAddress(address)
+          .then(() => { })
+          .catch(() => {
+            setAlertMessage({ ...alertMessage, isAddressInvalid: true })
+          });
+      } else {
+        setAlertMessage({ ...alertMessage, isAddressInvalid: false })
+      }
+    }, 800);
+
+    return () => clearTimeout(timerOut)
+  }, [address])
+
+
+  useEffect(() => {
     if (isSelftToken()) {
       //For Self Token 
       if (getTokenBalance() === 0 || Number(amount) >= Number(getTokenBalance())) {
-        console.log("@@@ Alert effect self 1111=======>")
-        setAlertMessage({ ...alertMessage, isInsufficientFund: true, isButtonDisable: true, decimalDigitAlert: false, networkFeeShow: false, })
+        setAlertMessage({ ...alertMessage, isInsufficientFund: true, isButtonDisable: true, networkFeeShow: false, })
       } else if (gasFee >= getTokenBalance()) {
-        console.log("@@@ Alert effect self 2222=======>")
         setAlertMessage({ ...alertMessage, gasFeeAlert: true, isInsufficientFund: false })
       } else if (address && Number(amount) > 0 && Number(amount) < Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
-        console.log("@@@ Alert effect self 3333=======>")
-        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: false, decimalDigitAlert: false })
+        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: false, })
       } else if (Number(amount) > 0 && Number(amount) < Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
-        console.log("@@@ Alert effect self 4444=======>")
-        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: true, decimalDigitAlert: false })
+        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: true, })
       } else if (!address || Number(amount) === 0) {
-        console.log("@@@ Alert effect self 5555=======>")
-        setAlertMessage({ ...alertMessage, isButtonDisable: true, isInsufficientFund: false, networkFeeShow: false, decimalDigitAlert: false })
+        setAlertMessage({ ...alertMessage, isButtonDisable: true, isInsufficientFund: false, networkFeeShow: false, })
       }
     } else {
       //For ERC-20 Token 
       if (getTokenBalance() === 0 || Number(amount) > Number(getTokenBalance())) {
-        console.log("@@@ Alert effect 1111=======>")
-        setAlertMessage({ ...alertMessage, isInsufficientFund: true, isButtonDisable: true, decimalDigitAlert: false, networkFeeShow: false, });
+        setAlertMessage({ ...alertMessage, isInsufficientFund: true, isButtonDisable: true, networkFeeShow: false, });
       } else if (Number(getSelfTokenBalance(item?.network)) === 0 || gasFee >= getSelfTokenBalance(item?.network)) {
-        console.log("@@@ Alert effect 2222=======>")
         setAlertMessage({ ...alertMessage, gasFeeAlert: true, isInsufficientFund: false })
       } else if (address && Number(amount) > 0 && Number(amount) <= Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
-        console.log("@@@ Alert effect 3333=======>")
-        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: false, decimalDigitAlert: false })
-      } else if (Number(amount) > 0 && Number(amount) < Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
-        console.log("@@@ Alert effect 4444=======>")
-        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: true, decimalDigitAlert: false })
+        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: false, })
+      } else if (Number(amount) > 0 && Number(amount) <= Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
+        setAlertMessage({ ...alertMessage, networkFeeShow: true, isInsufficientFund: false, isButtonDisable: true, })
       } else if (!address || Number(amount) === 0) {
-        console.log("@@@ Alert effect 5555=======>")
-        setAlertMessage({ ...alertMessage, isInsufficientFund: false, isButtonDisable: true, networkFeeShow: false, decimalDigitAlert: false, gasFeeAlert: false })
+        setAlertMessage({ ...alertMessage, isInsufficientFund: false, isButtonDisable: true, networkFeeShow: false, gasFeeAlert: false })
       }
-    }
-    if ((amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8) {
-      console.log("@@@ Alert effect self 6666=======>")
-      setAlertMessage({ ...alertMessage, decimalDigitAlert: true })
     }
   }, [amount, address])
 
@@ -481,36 +483,10 @@ const SendScreen = React.memo(props => {
     navigation.popToTop();
   };
 
-  // gasFeeAlert =
-  //   Number(getSelfTokenBalance(item?.network).toFixed(4)) === 0 ? true : false;
-
-  // const decimalDigit =
-  //   (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
-  //     ? true
-  //     : false;
-
-  // const isButtonDisable =
-  //   address &&
-  //     Number(amount) > 0 &&
-  //     Number(amount) < Number(getTokenBalance().toFixed(4)) &&
-  //     !gasFeeAlert
-  //     ? false
-  //     : true;
-
-  // const networkFeeShow =
-  //   Number(amount) > 0 &&
-  //     Number(amount) < Number(getTokenBalance().toFixed(4)) &&
-  //     !gasFeeAlert
-  //     ? true
-  //     : false;
-
-  // const isInsufficientFund =
-  //   Number(amount) >=
-  //     (Number(getTokenBalance().toFixed(4)) === 0.0
-  //       ? 0
-  //       : Number(getTokenBalance().toFixed(4)))
-  //     ? true
-  //     : false;
+  const decimalDigitAlert =
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
+      ? true
+      : false;
 
   return (
     <View style={styles.container}>
@@ -550,19 +526,29 @@ const SendScreen = React.memo(props => {
           </View>
           <View style={styles.inputContainer}>
             <AddressField
-              onChangeText={setAddress}
+              onChangeText={(val) => {
+                setAddress(val)
+                setAlertMessage({ ...alertMessage, isAddressInvalid: false })
+              }}
               onSubmitEditing={txt => {
                 // verifyAddress(txt);
               }}
               value={address}
             />
+            {alertMessage.isAddressInvalid && (
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('wallet.common.invalidAddress')}
+                </Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.inputContainer}>
             <PaymentField
               type={type}
               value={amount}
-              // editable={!address ? false : true}
+              editable={!address ? false : true}
               onChangeText={e => {
                 let value = amountValidation(e, amount);
                 if (value) {
@@ -579,7 +565,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               </View>
             )}
-            {alertMessage.decimalDigitAlert && (
+            {decimalDigitAlert && (
               <View>
                 <Text style={styles.alertText}>
                   {translate('common.DECIMAL_POINTS_LIMIT')}
