@@ -138,7 +138,6 @@ export default function AppSearch() {
         value={searchTxt}
         multiline={false}
       />
-
       {loading || searchData?.length ? (
         <View style={styles.listContainer}>
           {loading ? (
@@ -191,7 +190,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
           {loading && <LoadingView />}
         </View>
         <Text style={styles.name} numberOfLines={1}>
-          {item?.name ? item.name : '---'}
+          {item?.name ? item?.name : item?.address}
           <View style={{paddingLeft: 5}}>
             {Verifiedcollections.find(id => id === item._id) && (
               <Image style={styles.verifyIcon} source={IMAGES.tweetPng} />
