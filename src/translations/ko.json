@@ -767,8 +767,8 @@
     "DECIMAL_POINTS_LIMIT": "소수점은 8자리까지만 입력 가능합니다.",
     "SEND_QUANTITY": "전송 수량",
     "recoveryPhrase": "복구 문구",
-    "NETWORK_GAS_FEE":"네트워크 가스 요금",
-    "TOTAL_AMOUNT_GAS_FEE":"TOTAL (수량 + 가스비)",
+    "NETWORK_GAS_FEE": "네트워크 가스 요금",
+    "TOTAL_AMOUNT_GAS_FEE": "TOTAL (수량 + 가스비)",
     "TRANSACTION_SENT_NETWORK": "트랜잭션이 네트워크로 전송되었습니다!",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "지갑주소를 입력해주세요",
     "TRANSACTION_ENTER_AMOUNT": "금액을 입력하세요"

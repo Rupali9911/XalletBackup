@@ -86,7 +86,7 @@ const ChatDetail = ({route, navigation}) => {
             message: data.reply,
             type: 'receiver',
             time: timeConversion,
-            receiverImage: nftDetail?.image,
+            receiverImage: nftDetail?.image + '?tr=w-120,tr=h-120',
             receiverName: NFTNAME,
           };
           // history.push(receiver, sender);
@@ -189,7 +189,7 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.image,
+              receiverImage: nftDetail?.image + '?tr=w-120,tr=h-120',
               receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -226,7 +226,7 @@ const ChatDetail = ({route, navigation}) => {
         <View style={styles.chatHeaderContainer}>
           <View>
             <C_Image
-              uri={nftDetail?.image}
+              uri={nftDetail?.image + '?tr=w-120,tr=h-120'}
               imageStyle={styles.cImageContainer}
             />
           </View>
@@ -268,16 +268,11 @@ const ChatDetail = ({route, navigation}) => {
 
       <KeyboardAwareScrollView
         contentContainerStyle={{flex: 1}}
-        // enableOnAndroid={true}
         scrollEnabled={false}
         extraScrollHeight={Platform.OS === 'ios' ? SIZE(10) : 0}
-        overScrollMode="never"
-        resetScrollToCoords={true}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}
-        enableAutomaticScroll={true}
-        viewIsInsideTabBar={false}
-        enableResetScrollToCoords={true}>
+        enableAutomaticScroll={true}>
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />

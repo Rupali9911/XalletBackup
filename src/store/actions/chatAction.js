@@ -207,6 +207,9 @@ export const getAiChat =
             dispatch(chatLoadingSuccess(res));
             dispatch(remainWordCountData(res?.remainWordLimit));
             resolve(res);
+          } else {
+            dispatch(chatLoadingSuccess(res));
+            resolve(res);
           }
         })
         .catch(err => {
