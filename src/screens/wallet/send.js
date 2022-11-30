@@ -401,6 +401,7 @@ const SendScreen = React.memo(props => {
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
+          networkFeeShow: true,
           isButtonDisable: true,
           isInsufficientFund: false,
         });
@@ -441,6 +442,7 @@ const SendScreen = React.memo(props => {
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
+          networkFeeShow: (Number(gasFee) > 0 && amount) ? true : false,
           isButtonDisable: true,
           isInsufficientFund: false,
         });
