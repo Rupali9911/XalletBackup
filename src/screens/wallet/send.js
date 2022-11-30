@@ -396,10 +396,12 @@ const SendScreen = React.memo(props => {
           isButtonDisable: true,
           networkFeeShow: false,
         });
-      } else if (gasFee >= getTokenBalance()) {
+      } else if (Number(gasFee) >= Number(getTokenBalance())) {
+        console.log("@@@ Self token gas fee check ========>", gasFee, Number(gasFee), Number(getTokenBalance()))
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
+          isButtonDisable: true,
           isInsufficientFund: false,
         });
       } else if (address && Number(amount) > 0 && Number(amount) < Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
@@ -427,19 +429,23 @@ const SendScreen = React.memo(props => {
     } else {
       //For ERC-20 Token
       if (getTokenBalance() === 0 || Number(amount) > Number(getTokenBalance())) {
+        console.log("@@@ Alert message (ERC-20) 1111 ===========>")
         setAlertMessage({
           ...alertMessage,
           isInsufficientFund: true,
           isButtonDisable: true,
           networkFeeShow: false,
         });
-      } else if (Number(getSelfTokenBalance(item?.network)) === 0 || gasFee > getSelfTokenBalance(item?.network)) {
+      } else if (Number(getSelfTokenBalance(item?.network)) === 0 || Number(gasFee) > getSelfTokenBalance(item?.network)) {
+        console.log("@@@ Alert message (ERC-20) 2222 ===========>")
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
+          isButtonDisable: true,
           isInsufficientFund: false,
         });
       } else if (address && Number(amount) > 0 && Number(amount) <= Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
+        console.log("@@@ Alert message (ERC-20) 3333 ===========>")
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -447,6 +453,7 @@ const SendScreen = React.memo(props => {
           isButtonDisable: false,
         });
       } else if (Number(amount) > 0 && Number(amount) <= Number(getTokenBalance()) && !alertMessage.gasFeeAlert) {
+        console.log("@@@ Alert message (ERC-20) 4444 ===========>")
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -454,6 +461,7 @@ const SendScreen = React.memo(props => {
           isButtonDisable: true,
         });
       } else if (!address || Number(amount) === 0) {
+        console.log("@@@ Alert message (ERC-20) 5555 ===========>")
         setAlertMessage({
           ...alertMessage,
           isInsufficientFund: false,
@@ -463,7 +471,7 @@ const SendScreen = React.memo(props => {
         });
       }
     }
-  }, [amount, address]);
+  }, [amount, address, gasFee]);
 
   const getSelfTokenBalance = type => {
     let tokenValue = 0;
@@ -717,7 +725,7 @@ const SendScreen = React.memo(props => {
                   + {translate('common.NETWORK_GAS_FEE')}
                 </Text>
                 <Text style={{ color: Colors.GREY4, fontSize: RF(1.6) }}>
-                  {gasFee} {tokenInfo.tokenName}
+                  {Number(gasFee).toFixed(8)} {tokenInfo.tokenName}
                 </Text>
               </View>
             )}
