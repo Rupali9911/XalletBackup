@@ -767,11 +767,12 @@
     "DECIMAL_POINTS_LIMIT": "您最多只能輸入 8 位小數點",
     "SEND_QUANTITY": "發送數量",
     "recoveryPhrase": "助記詞",
-    "NETWORK_GAS_FEE":"網絡煤氣費",
-    "TOTAL_AMOUNT_GAS_FEE":"總計（金額 + 汽油費）",
+    "NETWORK_GAS_FEE": "網絡煤氣費",
+    "TOTAL_AMOUNT_GAS_FEE": "總計（金額 + 汽油費）",
     "TRANSACTION_SENT_NETWORK": "交易已發送至網絡！",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "請輸入錢包地址",
-    "TRANSACTION_ENTER_AMOUNT": "請輸入金額"
+    "TRANSACTION_ENTER_AMOUNT": "請輸入金額",
+    "REMOVE_BANNER": "刪除橫幅"
   },
   "AwardPage": {},
   "wallet": {
