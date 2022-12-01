@@ -607,6 +607,21 @@ export const verifyEmail =
     });
   };
 
+export const removeBanner = (banner, id) => async dispatch => {
+  dispatch(startLoadingBanner());
+  sendRequest({
+    url: `${NEW_BASE_URL}/users/`,
+    method: 'PUT',
+    data: {banner: banner},
+  })
+    .then(res => {
+      dispatch(getUserData(id, true));
+    })
+    .catch(error => {
+      dispatch(endLoadingBanner());
+      return error;
+    });
+};
 export const updateAvtar = (userId, file) => async dispatch => {
   dispatch(startLoadingImage());
   const extension = file.type.split('/')[1];
