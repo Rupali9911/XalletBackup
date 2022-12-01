@@ -772,7 +772,12 @@
     "TRANSACTION_SENT_NETWORK": "トランザクションはネットワークに送信されました！",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "ウォレットアドレスを入力してください",
     "TRANSACTION_ENTER_AMOUNT": "数量を入力してください",
+<<<<<<< HEAD
     "REMOVE_BANNER": "バナー画像の削除"
+=======
+    "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
+    "IS_REQUIRED": "が必要です"
+>>>>>>> 2749bb2fd9700a74b9b236f8067b4aa3154cceed
   },
   "AwardPage": {},
   "wallet": {

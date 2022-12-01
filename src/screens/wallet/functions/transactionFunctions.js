@@ -126,12 +126,13 @@ const transactionProcessing = async (
 ) => {
   try {
     const tx = new EthereumTx(txObject, { common });
-
+    console.log("@@@ tx =====>", tx)
     const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
     tx.sign(privKey);
     const serializedTx = tx.serialize();
+    console.log("@@@ serializedTx =====>", serializedTx)
     const raw = '0x' + serializedTx.toString('hex');
-
+    console.log("@@@ raw =====>", raw)
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
@@ -294,7 +295,7 @@ const getConvertedDecimalValue = (type, convertto6decimal, web3) => {
   }
 };
 
-const getSignData = (transferParameters, config, web3, reject) => {
+export const getSignData = (transferParameters, config, web3, reject) => {
   try {
     const type = transferParameters?.tokenType?.toLowerCase();
     let convertto6decimal;
