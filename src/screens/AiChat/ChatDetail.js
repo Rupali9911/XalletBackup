@@ -29,8 +29,9 @@ import {Platform} from 'expo-modules-core';
 const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
-  let {nftDetail, tokenId} = route.params;
-  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
+  const {nftDetail, tokenId} = route.params;
+  const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
+  const cropImgSize = '?tr=w-120,tr=h-120';
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -86,7 +87,7 @@ const ChatDetail = ({route, navigation}) => {
             message: data.reply,
             type: 'receiver',
             time: timeConversion,
-            receiverImage: nftDetail?.image + '?tr=w-120,tr=h-120',
+            receiverImage: nftDetail?.image + cropImgSize,
             receiverName: NFTNAME,
           };
           // history.push(receiver, sender);
@@ -118,8 +119,8 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rightBubbleContainer}>
             <View style={styles.talkBubble}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}> {item?.senderName} </Text>
-                <Text style={styles.bubbleText}> {item?.message} </Text>
+                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
+                <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
             <View style={[styles.timeFormat, {marginRight: 10}]}>
@@ -138,8 +139,8 @@ const ChatDetail = ({route, navigation}) => {
             </View>
             <View style={styles.talkBubble}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}> {item?.receiverName} </Text>
-                <Text style={styles.bubbleText}> {item?.message} </Text>
+                <Text style={styles.msgHolderName}>{item?.receiverName}</Text>
+                <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
           </View>
@@ -189,7 +190,7 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.image + '?tr=w-120,tr=h-120',
+              receiverImage: nftDetail?.image + cropImgSize,
               receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -226,7 +227,7 @@ const ChatDetail = ({route, navigation}) => {
         <View style={styles.chatHeaderContainer}>
           <View>
             <C_Image
-              uri={nftDetail?.image + '?tr=w-120,tr=h-120'}
+              uri={nftDetail?.image + cropImgSize}
               imageStyle={styles.cImageContainer}
             />
           </View>
