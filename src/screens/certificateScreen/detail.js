@@ -449,15 +449,12 @@ const DetailScreen = ({navigation, route}) => {
     }
   }, [nftId]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      // getRealtedNFT();
-      // getNFTSellDetails();
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {});
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (paymentObject) {
@@ -474,7 +471,6 @@ const DetailScreen = ({navigation, route}) => {
   //===================== API Call Functions =========================
 
   const getNFTDetails = async reload => {
-    // setLoad(true);
     let url = `${NEW_BASE_URL}/nfts/details`;
 
     sendRequest({
@@ -493,7 +489,6 @@ const DetailScreen = ({navigation, route}) => {
           json?.collection &&
           json?.owner
         ) {
-          // setNFTPrice(json?.price);
           setDetailNFT(json);
           setLike(Number(json?.isLike));
 
@@ -574,15 +569,6 @@ const DetailScreen = ({navigation, route}) => {
         activeOpacity={1}
         onPress={() => {
           setImgModal(true);
-          // if (showThumb) {
-          //   // setVideoLoad(true);
-          // } else {
-          //   // setPlayVideoLoad((true);
-          // }
-          // if (playVideo) {
-          //   // setVideoLoad(false);
-          //   // setPlayVideoLoad((false);
-          // }
           toggleVideoPlay(!playVideo);
           setFullScreeen(!playVideo);
         }}>
@@ -624,15 +610,7 @@ const DetailScreen = ({navigation, route}) => {
                   disableTimer={!playVideo}
                   tapAnywhereToPause={true}
                   paused={showVideoModal ? true : !playVideo}
-                  onProgress={r => {
-                    // console.log(
-                    //   '🚀 ~ file: detail.js ~ line 642 ~ onPro ~ r',
-                    //   r?.currentTime,
-                    // );
-                    // setVideoLoad(false);
-                    // setPlayVideoLoad((false);
-                    setVideoCurrentTime(r?.currentTime);
-                  }}
+                  onProgress={r => setVideoCurrentTime(r?.currentTime)}
                   resizeMode={'cover'}
                   onError={error => {
                     console.log(error);
@@ -649,13 +627,9 @@ const DetailScreen = ({navigation, route}) => {
                     toggleVideoPlay(false);
                     setFullScreeen(false);
                   }}
-                  onLoad={o => {
-                    console.log(
-                      '🚀 ~ file: detail.js ~ line 646 ~ onLoad ~ o',
-                      // o,
-                    );
-                    refVideo?.current?.player?.ref?.seek(videoCurrentTime);
-                  }}
+                  onLoad={o =>
+                    refVideo?.current?.player?.ref?.seek(videoCurrentTime)
+                  }
                   onHideControls={() => setFullScreeen(false)}
                   onShowControls={() => setFullScreeen(true)}
                   style={styles.video}
@@ -667,7 +641,6 @@ const DetailScreen = ({navigation, route}) => {
                     isVisible={showVideoModal}
                     currentTime={videoCurrentTime}
                     updateTime={setVideoCurrentTime}
-                    videoPlay={!playVideo}
                     toggleVideoPlay={toggleVideoPlay}
                   />
                 ) : null}
@@ -692,22 +665,6 @@ const DetailScreen = ({navigation, route}) => {
                 <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
               </View>
             )}
-            {/* {videoLoadErr && (
-              <View style={styles.videoPlayIconCont}>
-                <View style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setVideoLoadErr(false);
-                      setVideoKey(videoKey + 1);
-                    }}
-                    style={{paddingHorizontal: 15, paddingVertical: 10}}>
-                    <Text style={styles.retry}>
-                      {translate('common.retryLoading')}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )} */}
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{...styles.modalImage}}>
@@ -719,9 +676,7 @@ const DetailScreen = ({navigation, route}) => {
                 </View>
               ) : (
                 <TouchableOpacity
-                  onPress={() => {
-                    onPlayPausePress();
-                  }}
+                  onPress={() => onPlayPausePress()}
                   style={styles.controlView}>
                   <PlayPause
                     name={isPlaying ? 'pause' : 'play'}
@@ -764,10 +719,7 @@ const DetailScreen = ({navigation, route}) => {
                 <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
               </TouchableOpacity>
               <View>
-                <Menu
-                  onSelect={() => {
-                    setOpenPlaySpeed(true);
-                  }}>
+                <Menu onSelect={() => setOpenPlaySpeed(true)}>
                   <MenuTrigger
                     style={styles.optionView}
                     children={<ThreeDotsVerticalIcon />}
