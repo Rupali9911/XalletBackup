@@ -30,7 +30,7 @@ const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
   let {nftDetail, tokenId} = route.params;
-  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'))
+  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -86,7 +86,7 @@ const ChatDetail = ({route, navigation}) => {
             message: data.reply,
             type: 'receiver',
             time: timeConversion,
-            receiverImage: nftDetail?.image,
+            receiverImage: nftDetail?.image + '?tr=w-120,tr=h-120',
             receiverName: NFTNAME,
           };
           // history.push(receiver, sender);
@@ -189,7 +189,7 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.image,
+              receiverImage: nftDetail?.image + '?tr=w-120,tr=h-120',
               receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -226,14 +226,12 @@ const ChatDetail = ({route, navigation}) => {
         <View style={styles.chatHeaderContainer}>
           <View>
             <C_Image
-              uri={nftDetail?.image}
+              uri={nftDetail?.image + '?tr=w-120,tr=h-120'}
               imageStyle={styles.cImageContainer}
             />
           </View>
           <View style={{paddingStart: 10}}>
-            <Text style={styles.headerNftName}>
-              {NFTNAME}
-            </Text>
+            <Text style={styles.headerNftName}>{NFTNAME}</Text>
             <View style={{flexDirection: 'row'}}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
@@ -271,15 +269,14 @@ const ChatDetail = ({route, navigation}) => {
       <KeyboardAwareScrollView
         contentContainerStyle={{flex: 1}}
         scrollEnabled={false}
-        extraScrollHeight={Platform.OS === 'ios' ? 10 : 0}
+        extraScrollHeight={Platform.OS === 'ios' ? SIZE(10) : 0}
         keyboardShouldPersistTaps={'always'}
-        keyboardOpeningTime={0}>
+        keyboardOpeningTime={0}
+        enableAutomaticScroll={true}>
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
-            <Text style={styles.nftName}>
-              {NFTNAME}
-            </Text>
+            <Text style={styles.nftName}>{NFTNAME}</Text>
             <View style={[styles.separator, {width: '80%'}]} />
             {!chatBotData?.response ? (
               <View>

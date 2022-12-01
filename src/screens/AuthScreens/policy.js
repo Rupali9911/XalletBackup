@@ -14,28 +14,40 @@ const Policy = ({route}) => {
 
   let contentIos = isPolicy ? policy : terms;
 
-  let contentAn = isPolicy ? 'file:///android_asset/policy.html' : 'file:///android_asset/terms.html';
+  let contentAn = isPolicy
+    ? 'file:///android_asset/policy.html'
+    : 'file:///android_asset/terms.html';
 
-  var  webViewObj = {
+  const onMessage = event => {
+    console.log('Meesaage from Webview', event);
+    Linking.openURL(event.nativeEvent.data);
+  };
+
+  var webViewObj = {
     canGoBack: false,
     ref: null,
+    canGoForward: false,
+  };
 
-}
-  const onMessage= (event) => {
-    console.log('Meesaage from Webview',event) 
-     Linking.openURL(event.nativeEvent.data)
-  }
+  const handleWebViewNavigationStateChange = navState => {
+    console.log('Navstate', navState);
+    setLoading(false);
 
-  const handleWebViewNavigationStateChange=(navState)=>{
-    console.log('Navstate', navState)
-
-        if (navState.url.indexOf('xanalia.com') > 0) {
-          setLoading(false)
-          webViewObj.ref.stopLoading()
-             Linking.openURL(navState.url);
-            return false
-        }
-  }
+    if (Platform.OS === 'ios') {
+      if (navState.url.indexOf('xanalia.com') > 0) {
+        webViewObj.ref.stopLoading();
+        webViewObj.ref.goBack();
+        Linking.openURL(navState.url);
+        return false;
+      }
+    } else {
+      if (navState.url.indexOf('xanalia.com') > 0) {
+        webViewObj.ref.goBack();
+        Linking.openURL(navState.url);
+        return false;
+      }
+    }
+  };
 
   return (
     <AppBackground isBusy={loading}>
@@ -51,22 +63,31 @@ const Policy = ({route}) => {
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
-          onNavigationStateChange={(navState) => {handleWebViewNavigationStateChange(navState)}}
-          ref={(webView) => { webViewObj.ref = webView; }}
+          onNavigationStateChange={navState => {
+            handleWebViewNavigationStateChange(navState);
+          }}
+          ref={webView => {
+            webViewObj.ref = webView;
+          }}
         />
       ) : (
         <WebView
           style={styles.webview}
           originWhitelist={['*']}
           source={contentIos}
-          onMessage={event => onMessage(event) }
+          onMessage={event => onMessage(event)}
           decelerationRate="normal"
           javaScriptEnabled={true}
           domStorageEnabled={true}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
-          onNavigationStateChange={(navState) => {handleWebViewNavigationStateChange(navState)}}
-          ref={(webView) => { webViewObj.ref = webView; }}
+          onNavigationStateChange={navState => {
+            handleWebViewNavigationStateChange(navState);
+          }}
+          bounces={false}
+          ref={webView => {
+            webViewObj.ref = webView;
+          }}
         />
       )}
     </AppBackground>
