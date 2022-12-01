@@ -4,33 +4,44 @@ import VideoPlayer from 'react-native-video-controls';
 import Orientation from 'react-native-orientation-locker';
 import Colors from '../../constants/Colors';
 
-export const VideoModel = props => {
-  const {url, isVisible, toggleModal, currentTime, updateTime} = props;
+const VideoModel = props => {
+  const {
+    url,
+    isVisible,
+    toggleModal,
+    currentTime,
+    updateTime,
+    videoPlay,
+    toggleVideoPlay,
+  } = props;
+
   const refVideo = useRef(null);
-  const [screenState, setScreenState] = useState({
-    fullScreen: false,
-    Width_Layout: '',
-    Height_Layout: '',
-    potraitMode: true,
-  });
+  // const [screenState, setScreenState] = useState({
+  //   fullScreen: false,
+  //   Width_Layout: '',
+  //   Height_Layout: '',
+  //   potraitMode: true,
+  // });
+  const [status, setStatus] = useState(false);
 
   useEffect(() => {
+    setStatus(true);
     Orientation.lockToPortrait();
   }, []);
 
-  useEffect(() => {
-    let {fullScreen, potraitMode} = screenState;
-    !fullScreen && !potraitMode ? Orientation.lockToPortrait() : '';
-  }, [screenState.fullScreen]);
+  // useEffect(() => {
+  //   let {fullScreen, potraitMode} = screenState;
+  //   !fullScreen && !potraitMode ? Orientation.lockToPortrait() : '';
+  // }, [screenState.fullScreen]);
 
-  const changeState = values => {
-    setScreenState(prevState => {
-      return {
-        ...prevState,
-        ...values,
-      };
-    });
-  };
+  // const changeState = values => {
+  //   setScreenState(prevState => {
+  //     return {
+  //       ...prevState,
+  //       ...values,
+  //     };
+  //   });
+  // };
 
   const videoPlayerView = () => {
     return (
@@ -38,14 +49,33 @@ export const VideoModel = props => {
         repeat
         ref={refVideo}
         source={{uri: url}}
-        onBack={() => toggleModal(false)}
+        onBack={() => {
+          console.log(
+            '🚀 ~ file: ModalVideo.js ~ line 55 ~ videoPlayerView ~ onBack',
+            // currentTime,
+            status,
+          );
+          toggleModal(false);
+        }}
         resizeMode={'contain'}
         toggleResizeModeOnFullscreen={false}
         playInBackground={false}
         tapAnywhereToPause={true}
-        onEnterFullscreen={() => toggleModal(false)}
+        paused={!status}
+        onEnterFullscreen={() => {
+          console.log(
+            '🚀 ~ file: ModalVideo.js ~ line 65 ~ videoPlayerView ~ onEnterFullscreen',
+            // currentTime,
+            status,
+          );
+          toggleModal(false);
+        }}
         onLoad={l => {
-          console.log('🚀 ~ file: ModalVideo.js ~ line 70 ~ onLoad ~ l', l);
+          console.log(
+            '🚀 ~ file: ModalVideo.js ~ line 70 ~ onLoad ~ l',
+            currentTime,
+            // l,
+          );
           refVideo?.current?.player?.ref?.seek(currentTime);
         }}
         onProgress={r => {
@@ -54,6 +84,16 @@ export const VideoModel = props => {
           //     r?.currentTime,
           //   );
           updateTime(r?.currentTime);
+        }}
+        onPlay={() => {
+          console.log('🚀 ~ file: ModalVideo.js ~ line 100 ~  ~ onPlay');
+          setStatus(true);
+          toggleVideoPlay(true);
+        }}
+        onPause={() => {
+          console.log('🚀 ~ file: ModalVideo.js ~ line 106 ~  ~ onPause');
+          setStatus(false);
+          toggleVideoPlay(false);
         }}
       />
     );
@@ -67,15 +107,37 @@ export const VideoModel = props => {
       visible={isVisible}>
       <View
         style={styles.ModalWrapper}
-        onLayout={event => {
-          const {layout} = event.nativeEvent;
-          changeState({
-            Width_Layout: layout.width,
-            Height_Layout: layout.height,
-          });
-        }}>
+        // onLayout={event => {
+        //   const {layout} = event.nativeEvent;
+        //   // changeState({
+        //   //   Width_Layout: layout.width,
+        //   //   Height_Layout: layout.height,
+        //   // });
+        // }}
+      >
         {videoPlayerView()}
       </View>
+
+      {/* <TouchableOpacity
+        onPress={() => {
+          console.log('Modal Close');
+          console.log(
+            '🚀 ~ file: ModalVideo.js ~ line 55 ~ videoPlayerView ~ onBack',
+            // currentTime,
+            status,
+          );
+          toggleModal(false);
+        }}
+        // hitSlop={hitSlop}
+        style={{
+          // height: 40,
+          // width: 50,
+          position: 'absolute',
+          top: 150,
+          left: 10,
+        }}>
+        <FullScreen size={30} name={'fullscreen'} color={Colors.white} />
+      </TouchableOpacity> */}
     </Modal>
   );
 };
@@ -113,3 +175,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default React.memo(VideoModel);

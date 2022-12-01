@@ -472,6 +472,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  videoFullScreen: {
+    position: 'absolute',
+    top: wp('6.2%'),
+    left: wp('6%'),
+  },
   timeView: {
     width: SIZE(90),
     justifyContent: 'center',

@@ -771,7 +771,8 @@
     "TOTAL_AMOUNT_GAS_FEE":"总计（金额 + 汽油费）",
     "TRANSACTION_SENT_NETWORK": "交易已发送至网络!",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "请输入钱包地址",
-    "TRANSACTION_ENTER_AMOUNT": "请输入金额"
+    "TRANSACTION_ENTER_AMOUNT": "请输入金额",
+    "VIDEO_FORMAT_ERROR":"不支持此媒体格式。"
   },
   "AwardPage": {},
   "wallet": {

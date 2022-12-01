@@ -96,8 +96,7 @@ import {
 import ShowModal from './modal';
 import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
-import Video from 'react-native-video';
-import {VideoModel} from './ModalVideo';
+import VideoModel from './ModalVideo';
 
 const Web3 = require('web3');
 
@@ -144,16 +143,15 @@ const DetailScreen = ({navigation, route}) => {
   const [load, setLoad] = useState(true);
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState();
-  const [artist, setArtist] = useState();
   const [showThumb, toggleThumb] = useState(true);
-  const [videoLoad, setVideoLoad] = useState(false);
-  const [playVideoLoad, setPlayVideoLoad] = useState(false);
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
   const [isFullScreeen, setFullScreeen] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoLoadErr, setVideoLoadErr] = useState(false);
   const [videoKey, setVideoKey] = useState(1);
   const [playVideo, toggleVideoPlay] = useState(false);
+  const [videoError, setVideoError] = useState('');
+
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
     translate('common.price'),
@@ -175,6 +173,7 @@ const DetailScreen = ({navigation, route}) => {
   const [detailNFT, setDetailNFT] = useState({});
   const [imgModal, setImgModal] = useState(false);
 
+  //================== Payment Modal States =======================
   const [currentNetwork, setCurrentNetwork] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -238,6 +237,25 @@ const DetailScreen = ({navigation, route}) => {
     price: '',
     priceError: '',
   });
+
+  //================== Audio Timer =======================
+  const [music, setMusic] = useState(null);
+  const [isPlaying, setPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [durationMin, setDurationMin] = useState(0);
+  const [durationSec, setDurationSec] = useState(0);
+  const [currentSec, setCurrentSec] = useState(0);
+  const [currentmin, setCurrentmin] = useState(0);
+  const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
+  const [mute, setMute] = useState(false);
+  const [songCompleted, setSongCompleted] = useState(false);
+
+  //================== Unused State Declaration ===================
+  // const [artist, setArtist] = useState();
+  // const [videoLoad, setVideoLoad] = useState(false);
+  // const [playVideoLoad, setPlayVideoLoad] = useState(false);
+
   const categoryType = detailNFT?.category
     ? detailNFT?.category
     : item?.category;
@@ -257,22 +275,6 @@ const DetailScreen = ({navigation, route}) => {
   const auctionId = detailNFT?.saleData?.auction?.auctionId;
   const saleId = detailNFT?.saleData?.fixPrice?.id;
   const price = detailNFT?.saleData?.fixPrice?.price;
-
-  //================== Unused State Declaration ===================
-
-  //================== Timer =======================
-  const [music, setMusic] = useState(null);
-  const [isPlaying, setPlaying] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [durationMin, setDurationMin] = useState(0);
-  const [durationSec, setDurationSec] = useState(0);
-  const [currentSec, setCurrentSec] = useState(0);
-  const [currentmin, setCurrentmin] = useState(0);
-  const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
-  const [mute, setMute] = useState(false);
-  const [songCompleted, setSongCompleted] = useState(false);
-  const [videoError, setVideoError] = useState('');
 
   useEffect(() => {
     if (buyNFTRes && isCheckService) {
@@ -465,11 +467,6 @@ const DetailScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (!showVideoModal) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 472 ~ useEffect ~ videoCurrentTime',
-        videoCurrentTime,
-        showVideoModal,
-      );
       refVideo?.current?.player?.ref?.seek(videoCurrentTime);
     }
   }, [showVideoModal]);
@@ -565,7 +562,7 @@ const DetailScreen = ({navigation, route}) => {
 
   const toggleModal = state => {
     setShowVideoModal(state);
-    if (!state) {
+    if (state) {
       toggleVideoPlay(true);
     }
   };
@@ -577,15 +574,15 @@ const DetailScreen = ({navigation, route}) => {
         activeOpacity={1}
         onPress={() => {
           setImgModal(true);
-          if (showThumb) {
-            setVideoLoad(true);
-          } else {
-            setPlayVideoLoad(true);
-          }
-          if (playVideo) {
-            setVideoLoad(false);
-            setPlayVideoLoad(false);
-          }
+          // if (showThumb) {
+          //   // setVideoLoad(true);
+          // } else {
+          //   // setPlayVideoLoad((true);
+          // }
+          // if (playVideo) {
+          //   // setVideoLoad(false);
+          //   // setPlayVideoLoad((false);
+          // }
           toggleVideoPlay(!playVideo);
           setFullScreeen(!playVideo);
         }}>
@@ -626,14 +623,14 @@ const DetailScreen = ({navigation, route}) => {
                   disableSeekbar={!playVideo}
                   disableTimer={!playVideo}
                   tapAnywhereToPause={true}
-                  paused={!playVideo}
+                  paused={showVideoModal ? true : !playVideo}
                   onProgress={r => {
                     // console.log(
                     //   '🚀 ~ file: detail.js ~ line 642 ~ onPro ~ r',
                     //   r?.currentTime,
                     // );
-                    setVideoLoad(false);
-                    setPlayVideoLoad(false);
+                    // setVideoLoad(false);
+                    // setPlayVideoLoad((false);
                     setVideoCurrentTime(r?.currentTime);
                   }}
                   resizeMode={'cover'}
@@ -641,7 +638,7 @@ const DetailScreen = ({navigation, route}) => {
                     console.log(error);
                     setVideoLoadErr(true);
                     toggleThumb(false);
-                    setVideoError('This media format is not supported.');
+                    setVideoError(translate('common.VIDEO_FORMAT_ERROR'));
                   }}
                   onReadyForDisplay={() => toggleThumb(false)}
                   onPlay={() => {
@@ -655,7 +652,7 @@ const DetailScreen = ({navigation, route}) => {
                   onLoad={o => {
                     console.log(
                       '🚀 ~ file: detail.js ~ line 646 ~ onLoad ~ o',
-                      o,
+                      // o,
                     );
                     refVideo?.current?.player?.ref?.seek(videoCurrentTime);
                   }}
@@ -663,31 +660,25 @@ const DetailScreen = ({navigation, route}) => {
                   onShowControls={() => setFullScreeen(true)}
                   style={styles.video}
                 />
-                {/* {showVideoModal ? ( */}
-                <VideoModel
-                  url={mediaUrl}
-                  toggleModal={toggleModal}
-                  isVisible={showVideoModal}
-                  currentTime={videoCurrentTime}
-                  updateTime={setVideoCurrentTime}
-                />
-                {/* ) : null} */}
+                {showVideoModal ? (
+                  <VideoModel
+                    url={mediaUrl}
+                    toggleModal={toggleModal}
+                    isVisible={showVideoModal}
+                    currentTime={videoCurrentTime}
+                    updateTime={setVideoCurrentTime}
+                    videoPlay={!playVideo}
+                    toggleVideoPlay={toggleVideoPlay}
+                  />
+                ) : null}
               </>
             )}
 
             {playVideo && isFullScreeen && (
               <TouchableOpacity
-                onPress={() => {
-                  toggleModal(true);
-                  toggleVideoPlay(!playVideo);
-                }}
-                style={{
-                  // height: 40,
-                  // width: 50,
-                  position: 'absolute',
-                  top: wp('6.2%'),
-                  left: wp('6%'),
-                }}>
+                onPress={() => toggleModal(true)}
+                hitSlop={hitSlop}
+                style={styles.videoFullScreen}>
                 <FullScreen
                   size={wp('6%')}
                   name={'fullscreen'}
@@ -892,17 +883,7 @@ const DetailScreen = ({navigation, route}) => {
         {detailNFT?.creator?.role === 4 ? (
           <View style={styles.creatorMarkIcon}>{renderVerifiedIcon()}</View>
         ) : null}
-        <TouchableOpacity
-          onPress={() => {
-            if (!disableCreator) {
-              onProfile(false);
-            }
-            navigation.push('Profile', {
-              id: detailNFT?.creator?.address,
-              role: detailNFT?.creator?.role,
-            });
-          }}
-          style={styles.personType}>
+        <TouchableOpacity onPress={() => onProfile()} style={styles.personType}>
           {renderIconImage('creator', false)}
         </TouchableOpacity>
 
@@ -3140,13 +3121,7 @@ const DetailScreen = ({navigation, route}) => {
   const renderCreatorNFTDetailDropdown = () => {
     return (
       <NFTDetailDropdown title={translate('common.creator')} icon={detailsImg}>
-        <TouchableOpacity
-          onPress={() => {
-            if (!disableCreator) {
-              onProfile(false);
-            }
-          }}
-          style={styles.personType}>
+        <TouchableOpacity onPress={() => onProfile()} style={styles.personType}>
           {renderIconImage('creator', true)}
         </TouchableOpacity>
 
@@ -3359,7 +3334,8 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   //=================== Other Functions =====================
-  let disableCreator = false;
+  // let disableCreator = false;
+
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   let ownerName = ownerDataN?.name?.trim()
     ? ownerDataN.name
@@ -3515,18 +3491,22 @@ const DetailScreen = ({navigation, route}) => {
         console.log(err);
       });
   };
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  const onProfile = ownerStatus => {
-    if (ownerStatus) {
-      if (ownerN) {
-        navigation.push('ArtistDetail', {id: ownerN});
-      }
-    } else {
-      if (artist) {
-        navigation.push('ArtistDetail', {id: artist});
-      }
-    }
+  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Creator Profile Navigtaion >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  const onProfile = () => {
+    navigation.push('Profile', {
+      id: detailNFT?.creator?.address,
+      role: detailNFT?.creator?.role,
+    });
+    // if (ownerStatus) {
+    //   if (ownerN) {
+    //     navigation.push('ArtistDetail', {id: ownerN});
+    //   }
+    // } else {
+    //   if (artist) {
+    //     navigation.push('ArtistDetail', {id: artist});
+    //   }
+    // }
   };
 
   const Filters = props => {
