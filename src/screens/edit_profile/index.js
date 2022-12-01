@@ -550,7 +550,10 @@ function Profile(props) {
                 placeholderTextColor="grey"
                 value={editProfileData.instagram}
                 onChangeText={text => {
-                  setEditProfileData({...editProfileData, instagram: text});
+                  setEditProfileData({
+                    ...editProfileData,
+                    instagram: text.toLowerCase(),
+                  });
                   setErrInstagram(false);
                 }}
                 placeholder={translate('common.PLACEHOLDER_INSTAGRAM')}

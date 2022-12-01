@@ -594,7 +594,7 @@ function Profile({navigation, connector, route}) {
                   key={options}
                   title={translate('wallet.common.choosePhoto')}
                   options={options}
-                  cancelButtonIndex={3}
+                  cancelButtonIndex={selectedImage === 'profile' ? 2 : 3}
                   onPress={selectActionSheet}
                 />
               </View>
