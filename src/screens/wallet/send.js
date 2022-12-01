@@ -317,8 +317,9 @@ const SendScreen = React.memo(props => {
     console.log('@@@ Gas price=======>', gasPrice);
     if (isSelftToken()) {
       const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
-      console.log('@@@ Gas Fee self =======>', gasFee);
-      setGasFee(gasFee);
+      const finalGasFee = Number(Number(gasFee).toFixed(7));
+      console.log('@@@ Gas Fee self =======>', typeof finalGasFee, finalGasFee);
+      setGasFee(finalGasFee.toString());
     }
     setWallet(walletAddress);
     setGasPrice(gasPrice);
@@ -388,13 +389,14 @@ const SendScreen = React.memo(props => {
               nonce: web3.utils.toHex(txCount),
             };
             const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
-            console.log('@@@ Gas limit after signdata =======>', gasLimit);
+            console.log('@@@ Gas limit after signdata =======>', typeof gasLimit);
             const gasFee = web3.utils.fromWei(
               (gasPrice * gasLimit).toString(),
               'ether',
             );
-            console.log('@@@ Gas Fee  =======>', gasFee);
-            setGasFee(gasFee);
+            const finalGasFee = Number(Number(gasFee).toFixed(8));
+            console.log('@@@ Gas Fee ERC-20 =======>', typeof finalGasFee, finalGasFee);
+            setGasFee(finalGasFee.toString());
           }
         });
       } catch (error) {
@@ -420,8 +422,8 @@ const SendScreen = React.memo(props => {
           networkFeeShow: false,
         });
       } else if (
-        Number(gasFee) + Number(amount) > Number(getTokenBalance()) ||
-        Number(gasFee) >= Number(getTokenBalance())
+        Number(gasFee).toFixed(7) + Number(amount) > Number(getTokenBalance().toFixed(7)) ||
+        Number(gasFee) > Number(getTokenBalance())
       ) {
         console.log('@@@ Alert message (Self) 2222 ===========>');
         setAlertMessage({
@@ -645,29 +647,13 @@ const SendScreen = React.memo(props => {
 
   const OnPressMax = () => {
     if (isSelftToken()) {
-      const maxAmount = (getTokenBalance() - Number(gasFee)).toFixed(7);
-      setAmount(maxAmount.toString());
+      const maxAmount = (getTokenBalance().toFixed(7) - Number(gasFee).toFixed(7));
+      const finalMaxAmount = maxAmount.toFixed(7);
+      setAmount(finalMaxAmount.toString());
     } else {
       setAmount(getTokenBalance().toString());
     }
   };
-
-  // const showSuccessAlert = () => {
-  //   Alert.alert(
-  //     translate('wallet.common.transferInProgress', {
-  //       token: `${amount} ${type}`,
-  //     }),
-  //     translate('wallet.common.reflectInHistory', { token: `${amount} ${type}` }),
-  //     [
-  //       {
-  //         text: 'OK',
-  //         onPress: () => {
-  //           navigation.popToTop();
-  //         },
-  //       },
-  //     ],
-  //   );
-  // };
 
   const closeSuccess = () => {
     setSuccessModalVisible(false);
@@ -806,9 +792,8 @@ const SendScreen = React.memo(props => {
               {alertMessage.networkFeeShow &&
                 Number(amount) > 0 &&
                 gasFee !== 0 ? (
-                <Text style={[styles.priceCont, { marginRight: hp('1%') }]}>
-                  {(Number(amount) + Number(gasFee)).toString()}{' '}
-                  {tokenInfo.tokenName}
+                <Text style={[styles.priceCont, { marginRight: hp('1%'), fontSize: isSelftToken() ? RF(3.4) : RF(2) }]}>
+                  {isSelftToken() ? (Number(amount) + Number(gasFee)).toFixed(8).toString() + ' ' + tokenInfo.tokenName : amount + ' ' + type + ' + ' + gasFee + ' ' + tokenInfo.tokenName}
                 </Text>
               ) : amount &&
                 Number(amount) > 0 &&
