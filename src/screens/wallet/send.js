@@ -468,6 +468,11 @@ const SendScreen = React.memo(props => {
           isInsufficientFund: false,
           networkFeeShow: false,
         });
+      } else {
+        setAlertMessage({
+          ...alertMessage,
+          gasFeeAlert: false,
+        });
       }
     } else {
       //For ERC-20 Token
