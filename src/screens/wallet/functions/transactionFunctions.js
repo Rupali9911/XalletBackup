@@ -1,7 +1,7 @@
 import Common from 'ethereumjs-common';
 import { getWallet } from '../../../helpers/AxiosApiRequest';
 import { alertWithSingleBtn } from '../../../utils';
-import { translate } from '../../../walletUtils';
+import { translate, IsTestNet } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 
 const Web3 = require('web3');
@@ -107,7 +107,7 @@ const getCommon = (chainType, networkObject) => {
       {
         name: 'eth',
         networkId: networkObject?.networkId,
-        chainId: chainType === 'ethereum' ? 5 : networkObject?.chainId,
+        chainId: IsTestNet ? chainType === 'ethereum' ? 5 : networkObject?.chainId : networkObject?.chainId,
       },
       'petersburg',
     );
@@ -126,13 +126,13 @@ const transactionProcessing = async (
 ) => {
   try {
     const tx = new EthereumTx(txObject, { common });
-    console.log("@@@ tx =====>", tx)
+    // console.log("@@@ tx =====>", tx)
     const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
     tx.sign(privKey);
     const serializedTx = tx.serialize();
-    console.log("@@@ serializedTx =====>", serializedTx)
+    // console.log("@@@ serializedTx =====>", serializedTx)
     const raw = '0x' + serializedTx.toString('hex');
-    console.log("@@@ raw =====>", raw)
+    // console.log("@@@ raw =====>", raw)
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
@@ -200,7 +200,7 @@ export const sendCustomTransaction = async (
         from: publicKey,
         gasPrice: gasPrice,
         gasLimit: gasLimit,
-        chainId: transaction?.chainId,
+        chainId: IsTestNet ? chainType === 'ethereum' ? 5 : transaction?.chainId : transaction?.chainId,
         // chainId: chainType === 'polygon' ? 80001 : undefined,
         // to: config.MarketContractAddress,
         to: transaction?.to,
@@ -237,7 +237,7 @@ export const sendCustomTransaction = async (
           {
             name: 'eth',
             networkId: transaction?.networkId,
-            chainId: transaction?.chainId,
+            chainId: IsTestNet ? chainType === 'ethereum' ? 5 : transaction?.chainId : transaction?.chainId,
           },
           'petersburg',
         );
@@ -382,11 +382,10 @@ export const balanceTransfer = async (transferParameters, config) => {
           gasLimit: 21000,
           value: web3.utils.toHex(amountToSend),
           nonce: web3.utils.toHex(txCount),
-          chainId: chainType === 'ethereum' ? 5 : transferParameters.chainId,
+          chainId: IsTestNet ? chainType === 'ethereum' ? 5 : transferParameters.chainId : transferParameters.chainId,
         };
 
         let common = getCommon(chainType, transferParameters);
-        // console.log("@@@ balance transfer (common) =========>", common);
 
         await transactionProcessing(
           txObject,
@@ -422,7 +421,7 @@ export const balanceTransfer = async (transferParameters, config) => {
           value: '0x0',
           data: signData,
           nonce: web3.utils.toHex(txCount),
-          chainId: chainType === 'ethereum' ? 5 : transferParameters.chainId,
+          chainId: IsTestNet ? chainType === 'ethereum' ? 5 : transferParameters.chainId : transferParameters.chainId,
         };
 
         let common = getCommon(chainType, transferParameters);
