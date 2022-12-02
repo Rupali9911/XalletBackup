@@ -773,7 +773,8 @@
     "TRANSACTION_ENTER_AMOUNT": "Please enter amount !!!",
     "REMOVE_BANNER": "Remove banner",
     "INSUFFICIENT_FUND_FOR_GAS": "Insufficient fund for Gas fee,",
-    "IS_REQUIRED": "is required."
+    "IS_REQUIRED": "is required.",
+    "VIDEO_FORMAT_ERROR":"This media format is not supported."
   },
   "AwardPage": {},
   "wallet": {

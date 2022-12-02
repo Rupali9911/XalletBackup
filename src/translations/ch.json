@@ -774,7 +774,8 @@
     "TRANSACTION_ENTER_AMOUNT": "请输入金额",
     "REMOVE_BANNER": "删除横幅",
     "INSUFFICIENT_FUND_FOR_GAS": "Gas费资金不足，",
-    "IS_REQUIRED": "是必须的。"
+    "IS_REQUIRED": "是必须的。",
+    "VIDEO_FORMAT_ERROR":"不支持此媒体格式。"
   },
   "AwardPage": {},
   "wallet": {

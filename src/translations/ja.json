@@ -774,7 +774,8 @@
     "TRANSACTION_ENTER_AMOUNT": "数量を入力してください",
     "REMOVE_BANNER": "バナー画像の削除",
     "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
-    "IS_REQUIRED": "が必要です"
+    "IS_REQUIRED": "が必要です",
+    "VIDEO_FORMAT_ERROR":"このメディア形式はサポートされていません。"
   },
   "AwardPage": {},
   "wallet": {
