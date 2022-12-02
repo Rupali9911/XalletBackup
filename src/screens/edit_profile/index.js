@@ -469,6 +469,7 @@ function Profile(props) {
                 <TouchableOpacity
                   disabled={
                     UserReducer?.userData?.emailVerified === 0 &&
+                    showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
                     editProfileData.email === editProfileData.beforeEmail
@@ -723,6 +724,7 @@ const styles = StyleSheet.create({
   verifiedView: {
     marginLeft: SIZE(5),
     includeFontPadding: false,
+    width: '75%',
   },
   msgModalContent: {
     flex: 1,
