@@ -71,6 +71,7 @@ function Profile(props) {
   const [firstTime, setFirstTime] = useState(false);
   const [infoTwitter, setInfoTwitter] = useState(false);
   const [infoEmail, setInfoEmail] = useState(false);
+  const [showVerifyEmail, setShowVerifyEmail] = useState(false);
 
   const dispatch = useDispatch();
   let id = UserReducer.userData?.userWallet?.address;
@@ -82,6 +83,7 @@ function Profile(props) {
   useEffect(() => {
     if (toastMsg) {
       renderMessageModal(toastMsg.msg);
+      toastMsg.error ? setShowVerifyEmail(false) : setShowVerifyEmail(true);
     }
   }, [toastMsg]);
 
@@ -467,6 +469,7 @@ function Profile(props) {
                 <TouchableOpacity
                   disabled={
                     UserReducer?.userData?.emailVerified === 0 &&
+                    showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
                     editProfileData.email === editProfileData.beforeEmail
@@ -475,6 +478,7 @@ function Profile(props) {
                   }
                   style={
                     UserReducer?.userData?.emailVerified === 0 &&
+                    showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
                     editProfileData.email === editProfileData.beforeEmail
@@ -485,9 +489,10 @@ function Profile(props) {
                     verifyEmailId(editProfileData.email, selectedLanguageItem);
                   }}>
                   <Text style={styles.verifyBtnTitle}>
-                    {UserReducer.userData.emailVerified === 0
-                      ? translate('common.BTN_TWITTER_REQUEST')
-                      : translate('common.BTN_EMAIL_APPROVED')}
+                    {editProfileData.email === editProfileData.beforeEmail &&
+                    UserReducer.userData.emailVerified === 1
+                      ? translate('common.BTN_EMAIL_APPROVED')
+                      : translate('common.BTN_TWITTER_REQUEST')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -625,7 +630,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.themeColor,
     borderWidth: SIZE(1),
     borderRadius: SIZE(7),
-    height: SIZE(40),
+    height: SIZE(50),
     color: Colors.BLACK1,
     marginTop: SIZE(12),
     flexDirection: 'row',
@@ -646,7 +651,7 @@ const styles = StyleSheet.create({
   },
   verifyBtn: {
     paddingHorizontal: SIZE(15),
-    height: SIZE(38),
+    height: SIZE(50),
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
@@ -660,7 +665,7 @@ const styles = StyleSheet.create({
   },
   verifyBtnActive: {
     paddingHorizontal: SIZE(15),
-    height: SIZE(38),
+    height: SIZE(50),
     backgroundColor: '#2280e1',
     justifyContent: 'center',
     alignItems: 'center',
@@ -719,6 +724,7 @@ const styles = StyleSheet.create({
   verifiedView: {
     marginLeft: SIZE(5),
     includeFontPadding: false,
+    width: '75%',
   },
   msgModalContent: {
     flex: 1,
