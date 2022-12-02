@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.themeColor,
     borderWidth: SIZE(1),
     borderRadius: SIZE(7),
-    height: SIZE(40),
+    height: SIZE(50),
     color: Colors.BLACK1,
     marginTop: SIZE(12),
     flexDirection: 'row',
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
   },
   verifyBtn: {
     paddingHorizontal: SIZE(15),
-    height: SIZE(38),
+    height: SIZE(50),
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   verifyBtnActive: {
     paddingHorizontal: SIZE(15),
-    height: SIZE(38),
+    height: SIZE(50),
     backgroundColor: '#2280e1',
     justifyContent: 'center',
     alignItems: 'center',

@@ -35,6 +35,7 @@ const MultiLineEditableInput = styled.TextInput`
     flex: 1;
     flex-direction: row
     border-width: 1px;
+    height: ${SIZE(50)}px;
     border-radius : ${SIZE(7)}px
     border-color: ${COLORS.themeColor};
     padding: ${SIZE(12)}px;
