@@ -126,13 +126,13 @@ const transactionProcessing = async (
 ) => {
   try {
     const tx = new EthereumTx(txObject, { common });
-    console.log("@@@ tx =====>", tx)
+    // console.log("@@@ tx =====>", tx)
     const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
     tx.sign(privKey);
     const serializedTx = tx.serialize();
-    console.log("@@@ serializedTx =====>", serializedTx)
+    // console.log("@@@ serializedTx =====>", serializedTx)
     const raw = '0x' + serializedTx.toString('hex');
-    console.log("@@@ raw =====>", raw)
+    // console.log("@@@ raw =====>", raw)
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
@@ -386,17 +386,15 @@ export const balanceTransfer = async (transferParameters, config) => {
         };
 
         let common = getCommon(chainType, transferParameters);
-        console.log("@@@ balance transfer (txObject) self=========>", txObject);
-        console.log("@@@ balance transfer (common) self=========>", common);
 
-        // await transactionProcessing(
-        //   txObject,
-        //   common,
-        //   transferParameters.privKey,
-        //   web3,
-        //   resolve,
-        //   reject,
-        // );
+        await transactionProcessing(
+          txObject,
+          common,
+          transferParameters.privKey,
+          web3,
+          resolve,
+          reject,
+        );
       } else {
         //ERC20(TAL,TNFT etc.)
         // console.log("@@@ For ERRC20 Token else ============>", tokenType);
