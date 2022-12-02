@@ -317,8 +317,9 @@ const SendScreen = React.memo(props => {
     console.log('@@@ Gas price=======>', gasPrice);
     if (isSelftToken()) {
       const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
-      const finalGasFee = Number(Number(gasFee).toFixed(7));
-      console.log('@@@ Gas Fee self =======>', typeof finalGasFee, finalGasFee);
+      console.log("@@@ gas fee self 1111 =======>", gasFee)
+      const finalGasFee = Number(Number(gasFee).toFixed(8));
+      console.log('@@@ Gas Fee self 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
       setGasFee(finalGasFee.toString());
     }
     setWallet(walletAddress);
@@ -422,10 +423,10 @@ const SendScreen = React.memo(props => {
           networkFeeShow: false,
         });
       } else if (
-        Number(gasFee).toFixed(7) + Number(amount) > Number(getTokenBalance().toFixed(7)) ||
-        Number(gasFee) > Number(getTokenBalance())
+        Number(gasFee) + Number(amount) > getTokenBalance() ||
+        Number(gasFee) > getTokenBalance()
       ) {
-        console.log('@@@ Alert message (Self) 2222 ===========>');
+        console.log('@@@ Alert message (Self) 2222 1111===========>');
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
@@ -436,10 +437,10 @@ const SendScreen = React.memo(props => {
       } else if (
         address &&
         Number(amount) > 0 &&
-        Number(amount) < Number(getTokenBalance()) &&
+        Number(amount) < getTokenBalance() &&
         !alertMessage.gasFeeAlert
       ) {
-        console.log('@@@ Alert message (Self) 3333 ===========>');
+        console.log('@@@ Alert message (Self) 3333 ===========>',);
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -448,7 +449,7 @@ const SendScreen = React.memo(props => {
         });
       } else if (
         Number(amount) > 0 &&
-        Number(amount) < Number(getTokenBalance()) &&
+        Number(amount) < getTokenBalance() &&
         !alertMessage.gasFeeAlert
       ) {
         console.log('@@@ Alert message (Self) 4444 ===========>');
@@ -611,7 +612,8 @@ const SendScreen = React.memo(props => {
       totalValue = value;
       // console.log("Total value is ", totalValue)
     }
-    return totalValue;
+    // console.log("@@@ Get token balance func =======>", ethBalance, typeof totalValue, Number(totalValue.toFixed(8)), typeof Number(totalValue.toFixed(8)))
+    return Number(totalValue.toFixed(8));
   };
 
   const transferAmount = async () => {
@@ -647,8 +649,9 @@ const SendScreen = React.memo(props => {
 
   const OnPressMax = () => {
     if (isSelftToken()) {
-      const maxAmount = (getTokenBalance().toFixed(7) - Number(gasFee).toFixed(7));
-      const finalMaxAmount = maxAmount.toFixed(7);
+      const maxAmount = (getTokenBalance() - Number(gasFee));
+      console.log("@@@ On press max ========>", getTokenBalance(), typeof getTokenBalance(), gasFee, typeof gasFee, Number(gasFee))
+      const finalMaxAmount = maxAmount.toFixed(8);
       setAmount(finalMaxAmount.toString());
     } else {
       setAmount(getTokenBalance().toString());
@@ -661,7 +664,7 @@ const SendScreen = React.memo(props => {
   };
 
   const decimalDigitAlert =
-    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8
       ? true
       : false;
 
@@ -793,7 +796,7 @@ const SendScreen = React.memo(props => {
                 Number(amount) > 0 &&
                 gasFee !== 0 ? (
                 <Text style={[styles.priceCont, { marginRight: hp('1%'), fontSize: isSelftToken() ? RF(3.4) : RF(2) }]}>
-                  {isSelftToken() ? (Number(amount) + Number(gasFee)).toFixed(8).toString() + ' ' + tokenInfo.tokenName : amount + ' ' + type + ' + ' + gasFee + ' ' + tokenInfo.tokenName}
+                  {isSelftToken() ? Number((Number(amount) + Number(gasFee)).toFixed(8)) + ' ' + tokenInfo.tokenName : amount + ' ' + type + ' + ' + gasFee + ' ' + tokenInfo.tokenName}
                 </Text>
               ) : amount &&
                 Number(amount) > 0 &&
