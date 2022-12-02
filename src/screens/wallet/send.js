@@ -121,7 +121,7 @@ export const PaymentField = props => {
           disabled={
             props.alertMessage.isInsufficientFund ||
             props.alertMessage.gasFeeAlert ||
-            !props.editable
+            !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
           }
           style={[
             styles.maxContainer,
@@ -129,13 +129,13 @@ export const PaymentField = props => {
               backgroundColor:
                 props.alertMessage.isInsufficientFund ||
                   props.alertMessage.gasFeeAlert ||
-                  !props.editable
+                  !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
                   ? Colors.GREY6
                   : Colors.BLUE2,
               borderColor:
                 props.alertMessage.isInsufficientFund ||
                   props.alertMessage.gasFeeAlert ||
-                  !props.editable
+                  !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
                   ? Colors.GREY6
                   : Colors.BLUE2,
             },
@@ -735,6 +735,8 @@ const SendScreen = React.memo(props => {
               value={amount}
               editable={alertMessage.isPaymentFielDisable}
               alertMessage={alertMessage}
+              gasFee={gasFee}
+              balance={getTokenBalance()}
               onChangeText={e => {
                 let value = amountValidation(e, amount);
                 if (value) {
