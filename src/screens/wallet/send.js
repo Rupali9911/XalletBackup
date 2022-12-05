@@ -295,7 +295,6 @@ const SendScreen = React.memo(props => {
   const [address, setAddress] = useState(props.address);
   const [amount, setAmount] = useState(props.amount);
   const [networkConfig, setNetworkConfig] = useState(config);
-  const [gasPrice, setGasPrice] = useState(0);
   const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState({
@@ -313,17 +312,7 @@ const SendScreen = React.memo(props => {
   //====================== Use Effect Start =========================
   useEffect(async () => {
     let walletAddress = await getWallet();
-    const gasPrice = await getGasPrice(networkConfig.rpcURL);
-    console.log('@@@ Gas price=======>', gasPrice);
-    if (isSelftToken()) {
-      const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
-      console.log("@@@ gas fee self 1111 =======>", gasFee)
-      const finalGasFee = Number(Number(gasFee).toFixed(8));
-      console.log('@@@ Gas Fee self 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
-      setGasFee(finalGasFee.toString());
-    }
     setWallet(walletAddress);
-    setGasPrice(gasPrice);
   }, []);
 
   useEffect(() => {
@@ -389,14 +378,23 @@ const SendScreen = React.memo(props => {
               data: signData,
               nonce: web3.utils.toHex(txCount),
             };
+            const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
             console.log('@@@ Gas limit after signdata =======>', typeof gasLimit);
             const gasFee = web3.utils.fromWei(
               (gasPrice * gasLimit).toString(),
               'ether',
             );
+            console.log("@@@ gas fee ERC-20 1111 =======>", gasFee)
             const finalGasFee = Number(Number(gasFee).toFixed(8));
-            console.log('@@@ Gas Fee ERC-20 =======>', typeof finalGasFee, finalGasFee);
+            console.log('@@@ Gas Fee ERC-20 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
+            setGasFee(finalGasFee.toString());
+          } else if (isSelftToken() && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
+            const gasPrice = await getGasPrice(networkConfig.rpcURL);
+            const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
+            console.log("@@@ gas fee self 1111 =======>", gasFee)
+            const finalGasFee = Number(Number(gasFee).toFixed(8));
+            console.log('@@@ Gas Fee self 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
           }
         });
@@ -781,17 +779,6 @@ const SendScreen = React.memo(props => {
                   {gasFee} {tokenInfo.tokenName}
                 </Text>
               </View>
-            ) : isSelftToken() &&
-              gasFee === 0 &&
-              !alertMessage.isInsufficientFund ? (
-              <ActivityIndicator
-                style={{
-                  // alignSelf: 'flex-end',
-                  marginTop: hp('2.5%'),
-                  marginRight: hp('3%'),
-                }}
-                color={Colors.BLUE1}
-              />
             ) : null}
           </View>
           <View style={{ marginTop: hp('2.5%') }}>
