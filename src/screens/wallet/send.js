@@ -10,6 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
@@ -325,7 +326,15 @@ const SendScreen = React.memo(props => {
       if (address) {
         verifyAddress(address)
           .then(() => {
-            setAlertMessage({ ...alertMessage, isPaymentFielDisable: true });
+            if (address !== wallet?.address) {
+              setAlertMessage({ ...alertMessage, isPaymentFielDisable: true });
+            } else {
+              setAlertMessage({
+                ...alertMessage,
+                isPaymentFielDisable: false,
+                isAddressInvalid: true,
+              });
+            }
           })
           .catch(() => {
             setAlertMessage({
@@ -989,7 +998,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.6),
   },
   priceCont: {
-    fontSize: RF(3.3),
+    fontSize: Platform.OS === 'ios' ? RF(3.3) : RF(2.9),
     color: Colors.black,
     fontWeight: 'bold',
   },
