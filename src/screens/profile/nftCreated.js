@@ -1,53 +1,25 @@
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import _, {toFinite} from 'lodash';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Linking,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Dimensions,
-} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  responsiveFontSize as RF,
-  widthPercentageToDP as wp,
-} from '../../common/responsiveFunction';
 import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
+import {colors} from '../../res';
 import {translate} from '../../walletUtils';
-
-import {CardButton} from '../createNFTScreen/components';
-import {BASE_URL} from '../../common/constants';
-import {networkType} from '../../common/networkType';
-import {alertWithSingleBtn} from '../../utils';
-import axios from 'axios';
 import {
-  myNftListReset,
-  myNFTList,
-  myNftLoadStart,
-  myPageChange,
-  myNftCreatedPageChange,
-  myNftLoadFail,
   myNftCreatedListingReset,
+  myNftCreatedPageChange,
+  myNFTList,
+  myNftLoadFail,
 } from '../../store/actions/myNFTaction';
-import Clipboard from '@react-native-clipboard/clipboard';
+import styles from './styles';
 
-const {height} = Dimensions.get('window');
-
-const NFTCreated = ({route, id}) => {
+const NFTCreated = props => {
+  const {route, id, setProfileScroll, scrollEnabled} = props;
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
   const {MyNFTReducer} = useSelector(state => state);
-  const {userData, wallet} = useSelector(state => state.UserReducer);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -115,7 +87,6 @@ const NFTCreated = ({route, id}) => {
   };
   return (
     <View style={styles.trendCont}>
-      {/* {console.log("🚀 ~ file: nftCreated.js ~ line 135 ~ NFTCreated ~ MyNFTReducer", MyNFTReducer)} */}
       {isFirstRender ? (
         isFirstRender
       ) : MyNFTReducer.myNftCreatedListPage === 1 &&
@@ -127,6 +98,7 @@ const NFTCreated = ({route, id}) => {
         <View>
           <FlatList
             key={1}
+            scrollEnabled={scrollEnabled}
             data={MyNFTReducer?.myNftCreatedList}
             horizontal={false}
             numColumns={2}
@@ -149,6 +121,24 @@ const NFTCreated = ({route, id}) => {
                 dispatch(myNftCreatedPageChange(num));
               }
             }}
+            onScrollBeginDrag={s => {
+              console.log(
+                '🚀 ~ ~ onScrollBeginDrag ~ ~',
+                s?.nativeEvent?.contentOffset,
+              );
+              setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+            }}
+            onScroll={s => {
+              console.log('🚀 ~ c ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
+              setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+            }}
+            onScrollEndDrag={s => {
+              console.log(
+                '🚀 ~ ~ onScrollEndDrag ~ ~',
+                s?.nativeEvent?.contentOffset,
+              );
+              setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+            }}
             ListFooterComponent={renderFooter}
             onEndReachedThreshold={0.4}
             keyExtractor={(v, i) => 'item_' + i}
@@ -159,47 +149,8 @@ const NFTCreated = ({route, id}) => {
           <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
         </View>
       )}
-      {/*{modalData && (*/}
-      {/*<DetailModal*/}
-      {/*data={modalData}*/}
-      {/*isModalVisible={isModalVisible}*/}
-      {/*toggleModal={() => setModalVisible(false)}*/}
-      {/*/>*/}
-      {/*)}*/}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  sorryMessageCont: {
-    // flex: 1,
-    marginTop: height / 6.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sorryMessage: {
-    fontSize: 15,
-    fontFamily: fonts.SegoeUIRegular,
-  },
-  trendCont: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
-  leftToggle: {
-    width: '30%',
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  rightToggle: {
-    width: '30%',
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-  saveBtnGroup: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-  },
-});
 
 export default React.memo(NFTCreated);

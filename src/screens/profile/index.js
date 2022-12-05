@@ -70,6 +70,7 @@ const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
+  const scrollRef = useRef(null);
   const dispatch = useDispatch();
 
   // =============== Getting data from reducer ========================
@@ -85,6 +86,9 @@ function Profile({navigation, connector, route}) {
   //================== Components State Defination ===================
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
+  const [profileScroll, setProfileScroll] = useState(0);
+  const [profilePScroll, setProfilePScroll] = useState(0);
+  const [layout, setLayout] = useState(0);
   const [userDetails, setUserDetails] = useState(null);
   const [index, setIndex] = useState(0);
   const [id, setId] = useState();
@@ -119,6 +123,24 @@ function Profile({navigation, connector, route}) {
     !loading && dispatch(endLoadingImage());
     !loading && dispatch(endLoadingBanner());
   }, [profileData, loading]);
+
+  console.log(
+    '🚀 ~ file: .js ~ line 127 ~ ~ profileScroll',
+    layout,
+    profileScroll,
+    profilePScroll,
+    //   profilePScroll < layout ? false : true,
+    //   layout,
+    //   profilePScroll,
+  );
+  useEffect(() => {
+    if (!profileScroll) {
+      scrollRef.current?.scrollTo({
+        y: hp(0),
+        animated: true,
+      });
+    }
+  }, [profileScroll]);
 
   useEffect(() => {
     handleUserData();
@@ -161,11 +183,28 @@ function Profile({navigation, connector, route}) {
   };
 
   const renderScene = ({route}) => {
+    let scrollEnabled = profilePScroll < layout ? false : true;
     switch (route.key) {
       case 'profileCreated':
-        return <NFTCreated key={id} id={id} navigation={navigation} />;
+        return (
+          <NFTCreated
+            key={id}
+            id={id}
+            navigation={navigation}
+            scrollEnabled={scrollEnabled}
+            setProfileScroll={setProfileScroll}
+          />
+        );
       case 'nftOwned':
-        return <NFTOwned key={id} id={id} navigation={navigation} />;
+        return (
+          <NFTOwned
+            key={id}
+            id={id}
+            navigation={navigation}
+            scrollEnabled={scrollEnabled}
+            setProfileScroll={setProfileScroll}
+          />
+        );
       default:
         return null;
     }
@@ -301,24 +340,24 @@ function Profile({navigation, connector, route}) {
     }
   };
 
-  const [refreshing, setRefreshing] = React.useState(false);
-  const wait = timeout => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  };
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadAllData();
-  };
+  // const [refreshing, setRefreshing] = React.useState(false);
+  // const wait = timeout => {
+  //   return new Promise(resolve => setTimeout(resolve, timeout));
+  // };
+  // const onRefresh = () => {
+  //   setRefreshing(true);
+  //   loadAllData();
+  // };
 
-  const loadAllData = () => {
-    dispatch(loadProfileFromAsync(id))
-      .then(() => {
-        setRefreshing(false);
-      })
-      .catch(err => {
-        setRefreshing(false);
-      });
-  };
+  // const loadAllData = () => {
+  //   dispatch(loadProfileFromAsync(id))
+  //     .then(() => {
+  //       setRefreshing(false);
+  //     })
+  //     .catch(err => {
+  //       setRefreshing(false);
+  //     });
+  // };
   const renderVerifiedIcon = () => {
     return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
   };
@@ -418,173 +457,221 @@ function Profile({navigation, connector, route}) {
       </View>
     );
   };
+
+  // console.log(
+  //   '🚀 ~ file: index.js ~ line 432 ~ Profile ~ profileScroll',
+  //   profileScroll,
+  // );
+
   return (
     // <Container>
+    // <View
+    //   style={[
+    //     styles.scrollView,
+    //     {
+    //       marginTop: 40,
+    //     },
+    //   ]}
+    //   onStartShouldSetResponderCapture={() => {
+    //     setProfileScroll(true);
+    //   }}>
     <AppBackground>
       <ScrollView
+        ref={scrollRef}
+        // scrollEnabled={profileScroll}
         nestedScrollEnabled={true}
         contentContainerStyle={styles.scrollViewContainer}
-        style={styles.scrollView}>
-        <View style={styles.scrollView}>
+        style={styles.scrollView}
+        onScroll={s => {
+          const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
+          const sensitivity = 50;
+
+          console.log(
+            '🚀 ~ p ~ onScroll ~ ~',
+            currentScrollPos,
+            profilePScroll,
+            Math.abs(currentScrollPos - profilePScroll),
+            Math.abs(currentScrollPos - profilePScroll) > sensitivity,
+          );
+          if (Math.abs(currentScrollPos - profilePScroll) > sensitivity) {
+            setProfilePScroll(s?.nativeEvent?.contentOffset?.y);
+          }
+
+          // setProfilePScroll(s?.nativeEvent?.contentOffset?.y);
+        }}>
+        {/* <View style={styles.scrollView}> */}
+        <View
+          style={{
+            flex: socialSite ? 0.6 : 0.55,
+            position: 'relative',
+            paddingBottom: SIZE(10),
+          }}
+          onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}>
           <View
-            style={{
-              flex: socialSite ? 0.6 : 0.55,
-              position: 'relative',
-            }}>
-            <View
-            // style={styles.scrollView}
-            // refreshControl={
-            //     <RefreshControl
-            //         refreshing={refreshing}
-            //         onRefresh={onRefresh}
-            //         tintColor={Colors.themeColor}
-            //     />
-            // }
-            >
-              {id && <SocketHandler id={id} />}
-              {route.params && (
-                <AppHeader title={translate('common.profile')} showBackButton />
-              )}
-              <View>
-                {!route.params && (
-                  <TouchableOpacity
-                    style={styles.settings}
-                    onPress={() =>
-                      navigation.navigate('Setting', {connector: connector})
-                    }>
-                    <SettingIcon width={SIZE(23)} height={SIZE(23)} />
-                  </TouchableOpacity>
-                )}
-                <View style={styles.collectionWrapper}>
-                  {renderBannerImage()}
-                </View>
-                {!route.params && (
-                  <TouchableOpacity
-                    style={styles.editImage}
-                    onPress={() => onSelect('banner')}>
-                    <EditImage width={SIZE(12)} height={SIZE(12)} />
-                  </TouchableOpacity>
-                )}
+          // style={styles.scrollView}
+          // refreshControl={
+          //     <RefreshControl
+          //         refreshing={refreshing}
+          //         onRefresh={onRefresh}
+          //         tintColor={Colors.themeColor}
+          //     />
+          // }
+          >
+            {id && <SocketHandler id={id} />}
+            {route.params && (
+              <AppHeader title={translate('common.profile')} showBackButton />
+            )}
+            <View>
+              {!route.params && (
                 <TouchableOpacity
-                  style={styles.copyProfile}
-                  onPress={() => copyProfileToClipboard()}>
-                  <Menu opened={openDial2}>
-                    <MenuTrigger />
-                    <MenuOptions
-                      optionsContainerStyle={{
-                        width: 'auto',
-                        backgroundColor: Colors.BLACK1,
-                      }}>
-                      <MenuOption>
-                        <Text style={{color: '#FFFFFF'}}>
-                          {`${translate('common.Copied')}!`}
-                        </Text>
-                      </MenuOption>
-                    </MenuOptions>
-                  </Menu>
-                  <CopyProfile width={SIZE(12)} height={SIZE(12)} />
+                  style={styles.settings}
+                  onPress={() =>
+                    navigation.navigate('Setting', {connector: connector})
+                  }>
+                  <SettingIcon width={SIZE(23)} height={SIZE(23)} />
                 </TouchableOpacity>
-                <View style={styles.iconWrapper}>
-                  <View
-                    style={[
-                      styles.iconBadgeVw,
-                      route?.params?.role === 4
-                        ? styles.borderBtnColor
-                        : styles.borderTrans,
-                    ]}>
-                    {renderIconImage()}
-                    {route?.params?.role === 4 ? (
-                      <View style={styles.markIconView}>
-                        {renderVerifiedIcon()}
-                      </View>
-                    ) : null}
-                  </View>
-                </View>
-                <View style={styles.userDetailsWrapper}>
-                  {renderProfileNameAndId()}
-                </View>
-                <View style={styles.socialSiteView}>
-                  {userDetails?.twitterSite ? (
-                    <TouchableOpacity
-                      onPress={() =>
-                        Linking.openURL(
-                          'https://twitter.com/' + userDetails?.twitterSite,
-                        )
-                      }>
-                      <Twitter width={SIZE(35)} height={SIZE(35)} />
-                    </TouchableOpacity>
-                  ) : null}
-                  {userDetails?.instagramSite ? (
-                    <TouchableOpacity
-                      style={styles.socialSiteButton}
-                      onPress={() =>
-                        Linking.openURL(
-                          'https://www.instagram.com/' +
-                            userDetails?.instagramSite,
-                        )
-                      }>
-                      <Instagram width={SIZE(35)} height={SIZE(35)} />
-                    </TouchableOpacity>
-                  ) : null}
-                  {userDetails?.youtubeSite ? (
-                    <TouchableOpacity
-                      style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.youtubeSite)}>
-                      <YouTubeIcon width={SIZE(35)} height={SIZE(35)} />
-                    </TouchableOpacity>
-                  ) : null}
-                  {userDetails?.discordSite ? (
-                    <TouchableOpacity
-                      style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.discordSite)}>
-                      <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
-                    </TouchableOpacity>
-                  ) : null}
-                  {userDetails?.website ? (
-                    <TouchableOpacity
-                      style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.website)}>
-                      <WebIcon width={SIZE(35)} height={SIZE(35)} />
-                    </TouchableOpacity>
-                  ) : null}
-                </View>
-                {!route.params && (
-                  <EditButton
-                    style={{
-                      alignSelf: 'center',
-                      width: wp(60),
-                      height: hp(4),
-                      marginTop: SIZE(5),
-                    }}
-                    onPress={() =>
-                      navigation.navigate('EditProfile', {userDetails})
-                    }>
-                    <EditButtonText>
-                      {translate('wallet.common.editprofile')}
-                    </EditButtonText>
-                  </EditButton>
-                )}
-                <ActionSheet
-                  ref={actionSheetRef}
-                  title={translate('wallet.common.choosePhoto')}
-                  options={[
-                    translate('wallet.common.takePhoto'),
-                    translate('wallet.common.choosePhotoFromGallery'),
-                    translate('wallet.common.cancel'),
-                  ]}
-                  cancelButtonIndex={2}
-                  onPress={selectActionSheet}
-                />
+              )}
+              <View style={styles.collectionWrapper}>
+                {renderBannerImage()}
               </View>
+              {!route.params && (
+                <TouchableOpacity
+                  style={styles.editImage}
+                  onPress={() => onSelect('banner')}>
+                  <EditImage width={SIZE(12)} height={SIZE(12)} />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={styles.copyProfile}
+                onPress={() => copyProfileToClipboard()}>
+                <Menu opened={openDial2}>
+                  <MenuTrigger />
+                  <MenuOptions
+                    optionsContainerStyle={{
+                      width: 'auto',
+                      backgroundColor: Colors.BLACK1,
+                    }}>
+                    <MenuOption>
+                      <Text style={{color: '#FFFFFF'}}>
+                        {`${translate('common.Copied')}!`}
+                      </Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+                <CopyProfile width={SIZE(12)} height={SIZE(12)} />
+              </TouchableOpacity>
+              <View style={styles.iconWrapper}>
+                <View
+                  style={[
+                    styles.iconBadgeVw,
+                    route?.params?.role === 4
+                      ? styles.borderBtnColor
+                      : styles.borderTrans,
+                  ]}>
+                  {renderIconImage()}
+                  {route?.params?.role === 4 ? (
+                    <View style={styles.markIconView}>
+                      {renderVerifiedIcon()}
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+              <View style={styles.userDetailsWrapper}>
+                {renderProfileNameAndId()}
+              </View>
+              <View style={styles.socialSiteView}>
+                {userDetails?.twitterSite ? (
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(
+                        'https://twitter.com/' + userDetails?.twitterSite,
+                      )
+                    }>
+                    <Twitter width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.instagramSite ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() =>
+                      Linking.openURL(
+                        'https://www.instagram.com/' +
+                          userDetails?.instagramSite,
+                      )
+                    }>
+                    <Instagram width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.youtubeSite ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() => Linking.openURL(userDetails?.youtubeSite)}>
+                    <YouTubeIcon width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.discordSite ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() => Linking.openURL(userDetails?.discordSite)}>
+                    <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+                {userDetails?.website ? (
+                  <TouchableOpacity
+                    style={styles.socialSiteButton}
+                    onPress={() => Linking.openURL(userDetails?.website)}>
+                    <WebIcon width={SIZE(35)} height={SIZE(35)} />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+              {!route.params && (
+                <EditButton
+                  style={{
+                    alignSelf: 'center',
+                    width: wp(60),
+                    height: hp(4),
+                    marginTop: SIZE(5),
+                  }}
+                  onPress={() =>
+                    navigation.navigate('EditProfile', {userDetails})
+                  }>
+                  <EditButtonText>
+                    {translate('wallet.common.editprofile')}
+                  </EditButtonText>
+                </EditButton>
+              )}
+              <ActionSheet
+                ref={actionSheetRef}
+                title={translate('wallet.common.choosePhoto')}
+                options={[
+                  translate('wallet.common.takePhoto'),
+                  translate('wallet.common.choosePhotoFromGallery'),
+                  translate('wallet.common.cancel'),
+                ]}
+                cancelButtonIndex={2}
+                onPress={selectActionSheet}
+              />
             </View>
           </View>
-          {/* <View style={{flex: socialSite ? 0.4 : 0.45}}>
-          <View style={styles.tabView}>{renderTabView(id)}</View>
-        </View> */}
-          <View style={styles.tabView}>{renderTabView(id)}</View>
         </View>
+        {/* <View style={{flex: socialSite ? 0.4 : 0.45}}>
+                <View style={styles.tabView}>{renderTabView(id)}</View>
+              </View> */}
+        {/* <View style={styles.tabView}>{renderTabView(id)}</View> */}
+        <View
+          style={{
+            height: height / (Platform.OS == 'ios' ? 1.17 : 1.06),
+            // marginTop: SIZE(10),
+            // flex: 1,
+          }}>
+          {renderTabView(id)}
+        </View>
+        {/* {renderTabView(id)} */}
+        {/* <NFTCreated key={id} id={id} navigation={navigation} /> */}
+        {/* </View> */}
       </ScrollView>
     </AppBackground>
+    // </View>
     // </Container>
   );
 }
