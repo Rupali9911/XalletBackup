@@ -233,7 +233,7 @@ const TokenDetail = ({ route, navigation }) => {
               dispatch(addAllBnbTransactions(res.data));
             } else if (type == 'polygon') {
               dispatch(addAllMaticTransactions(res.data));
-            } else if (type == 'xana chain') {
+            } else if (type == 'xanachain') {
               dispatch(addAllXetaTransactions(res.data));
             }
           }

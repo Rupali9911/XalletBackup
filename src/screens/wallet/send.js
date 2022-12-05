@@ -549,7 +549,7 @@ const SendScreen = React.memo(props => {
     } else if (type == 'Polygon') {
       let value = parseFloat(maticBalance);
       tokenValue = value;
-    } else if (type == 'XANA CHAIN') {
+    } else if (type == 'XANACHAIN') {
       let value = parseFloat(xetaBalance);
       tokenValue = value;
     }
@@ -557,7 +557,7 @@ const SendScreen = React.memo(props => {
   };
 
   const isSelftToken = () => {
-    if (type !== 'ETH' && type !== 'BNB' && type !== 'Matic') {
+    if (type !== 'ETH' && type !== 'BNB' && type !== 'Matic' && type !== 'XETA') {
       return false;
     } else {
       return true;
@@ -611,7 +611,7 @@ const SendScreen = React.memo(props => {
       let value = parseFloat(talBalance);
       totalValue = value;
       // console.log("Total value is ", totalValue)
-    } else if (item.network === 'XANA CHAIN' && item.type == 'XETA') {
+    } else if (item.network === 'XANACHAIN' && item.type == 'XETA') {
       // console.log("Item network", item.network)
       let value = parseFloat(xetaBalance);
       totalValue = value;
@@ -1002,7 +1002,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.6),
   },
   priceCont: {
-    fontSize: RF(3.4),
+    fontSize: RF(3.3),
     color: Colors.black,
     fontWeight: 'bold',
   },
