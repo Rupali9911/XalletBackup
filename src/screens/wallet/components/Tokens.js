@@ -91,7 +91,7 @@ const Tokens = props => {
       // array[4].tokenValue = `${talBalance}`;
       array[3].tokenValue = `${usdcBalance}`;
       array[4].tokenValue = `${wethBalance}`;
-    } else if (network?.name == 'XANA CHAIN') {
+    } else if (network?.name == 'XANACHAIN') {
       array[7].tokenValue = `${xetaBalance}`;
     }
 
