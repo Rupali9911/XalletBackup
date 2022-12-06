@@ -216,7 +216,7 @@ const TokenDetail = ({ route, navigation }) => {
         networkId: networkType?.id,
         environment,
       };
-      if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic') {
+      if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic' && coin !== 'XETA') {
         params.tokenName = coin;
       }
       sendRequest({

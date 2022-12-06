@@ -420,6 +420,8 @@ const styles = StyleSheet.create({
     fontSize: RF(2),
     color: Colors.black,
     minHeight: hp('20%'),
+    maxHeight: hp('20%'),
+    marginBottom: Platform.OS !== 'ios' ? hp('0.7%') : hp('2%'),
     textAlignVertical: 'top',
   },
   padding: {
