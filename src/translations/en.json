@@ -865,7 +865,7 @@
       "copied": "Copied to clipboard",
       "transferSuccess": "Successfully Transfer {{token}}",
       "transferInProgress": "Transfer in progress",
-      "requirePhrase": "Please enter phrase to recover your wallet",
+      "requirePhrase": "Please enter phrase to import your wallet",
       "insufficientFunds": "Insufficient funds for this transaction",
       "search": "Search",
       "received": "Received",

@@ -58,6 +58,7 @@ const ImportWallet = ({route, navigation}) => {
   const {loading} = useSelector(state => state.UserReducer);
   const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
+  const [pvtKey, setPvtKey] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
@@ -141,10 +142,10 @@ const ImportWallet = ({route, navigation}) => {
   };
 
   const recoverWalletByPrivateKey = () => {
-    if (phrase !== '') {
+    if (pvtKey !== '') {
       dispatch(startLoader())
         .then(async () => {
-          let private_key = phrase.trim();
+          let private_key = pvtKey.trim();
           let mnemonicWallet = new ethers.Wallet(private_key);
           var web3 = new Web3(Web3.givenProvider);
           const signature = await web3.eth.accounts.sign(
@@ -185,7 +186,7 @@ const ImportWallet = ({route, navigation}) => {
 
   const pastePhrase = async () => {
     const text = await Clipboard.getString();
-    setPhrase(text);
+    inputType == 0 ? setPhrase(text) : setPvtKey(text);
   };
   const getSuggestions = async val => {
     setTimeout(async () => {
@@ -195,18 +196,18 @@ const ImportWallet = ({route, navigation}) => {
   };
   const setPhraseText = val => {
     if (userTyping) {
-      var myString = phrase;
+      var myString = inputType == 0 ? phrase : pvtKey;
       myString = myString.substring(0, myString.lastIndexOf(' '));
       if (myString.lastIndexOf(' ') == -1 && myString.length < 1) {
         const newPhrase = `${val} `;
-        setPhrase(newPhrase);
+        inputType == 0 ? setPhrase(newPhrase) : setPvtKey(newPhrase);
       } else {
         const newPhrase = myString + ` ${val} `;
-        setPhrase(newPhrase);
+        inputType == 0 ? setPhrase(newPhrase) : setPvtKey(newPhrase);
       }
     } else {
-      const newPhrase = phrase.trim() + ` ${val} `;
-      setPhrase(newPhrase);
+      const newPhrase = myString.trim() + ` ${val} `;
+      inputType == 0 ? setPhrase(newPhrase) : setPvtKey(newPhrase);
     }
     setUserTyping(false);
     setShowSuggestions(false);
@@ -259,13 +260,13 @@ const ImportWallet = ({route, navigation}) => {
                       ? translate('common.EXAMPLE_PLACEHOLDER_TEXT')
                       : ' '
                   }
-                  value={phrase}
+                  value={inputType == 0 ? phrase : pvtKey}
                   autoCorrect={false}
                   keyboardType={
                     Platform.OS === 'ios' ? 'default' : 'visible-password'
                   }
                   onChangeText={val => {
-                    setPhrase(val);
+                    inputType == 0 ? setPhrase(val) : setPvtKey(val);
                     setTimeout(() => {
                       const newWord = val.split(' ').splice(-1);
                       if (newWord != '') {
@@ -321,7 +322,7 @@ const ImportWallet = ({route, navigation}) => {
           <View style={styles.bottomView}>
             <AppButton
               label={translate('wallet.common.next')}
-              view={!phrase}
+              view={inputType == 0 ? !phrase : !pvtKey}
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
