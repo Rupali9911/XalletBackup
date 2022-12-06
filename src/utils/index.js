@@ -134,6 +134,12 @@ const emailRegex =
 const linkRegex =
   /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
+const webURLRegex =
+  /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
+
+const youtubeURLRegex =
+  /(www)?\/\/(www\.)?(youtube.com|youtu.be)\/(watch)?(\?v=)?(\S+)?/;
+
 export const required = value => (value ? undefined : 'Required');
 
 export const validateUserName = value => {
@@ -150,12 +156,12 @@ export const validateEmail = value =>
     : undefined;
 
 export const validateWebsiteURL = value =>
-  value && !linkRegex.test(value)
+  value && !webURLRegex.test(value)
     ? translate('common.CHECK_YOUR_WEBSITE')
     : undefined;
 
 export const validateDiscordURL = value =>
-  value && !linkRegex.test(value)
+  value && !webURLRegex.test(value)
     ? translate('common.CHECK_YOUR_DISCORD')
     : undefined;
 
@@ -165,7 +171,7 @@ export const validateTwitterURL = value =>
     : undefined;
 
 export const validateYoutubeURL = value =>
-  value && !linkRegex.test(value)
+  value && !youtubeURLRegex.test(value)
     ? translate('common.CHECK_YOUR_YOUTUBE')
     : undefined;
 
