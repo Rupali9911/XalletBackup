@@ -637,10 +637,10 @@ const Wallet = ({ route, navigation }) => {
           .catch(err => {
             setLoading(false);
             setFetching(false);
-            alertWithSingleBtn(
-              translate('wallet.common.alert'),
-              translate('wallet.common.error.networkError'),
-            );
+            // alertWithSingleBtn(
+            //   translate('wallet.common.alert'),
+            //   translate('wallet.common.error.networkError'),
+            // );
             reject();
           });
       });

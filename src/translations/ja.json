@@ -773,7 +773,8 @@
     "TRANSACTION_ENTER_WALLET_ADDRESS": "ウォレットアドレスを入力してください",
     "TRANSACTION_ENTER_AMOUNT": "数量を入力してください",
     "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
-    "IS_REQUIRED": "が必要です"
+    "IS_REQUIRED": "が必要です",
+    "ACCOUNT_DELETED": "あなたのアカウントは削除されました"
   },
   "AwardPage": {},
   "wallet": {

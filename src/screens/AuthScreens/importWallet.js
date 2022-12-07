@@ -112,7 +112,12 @@ const ImportWallet = ({ route, navigation }) => {
                 dispatch(setBackupStatus(true));
               })
               .catch(err => {
-                // alertWithSingleBtn(translate('wallet.common.tryAgain'));
+                if (err.data.messageCode === 'AUTH.DELETED') {
+                  alertWithSingleBtn(
+                    translate('wallet.common.alert'),
+                    translate('common.ACCOUNT_DELETED'),
+                  );
+                }
               });
           } else {
             alertWithSingleBtn(
@@ -144,10 +149,10 @@ const ImportWallet = ({ route, navigation }) => {
   };
 
   const recoverWalletByPrivateKey = () => {
-    if (phrase !== '') {
+    if (pvtKey !== '') {
       dispatch(startLoader())
         .then(async () => {
-          let private_key = phrase.trim();
+          let private_key = pvtKey.trim();
           let mnemonicWallet = new ethers.Wallet(private_key);
           var web3 = new Web3(Web3.givenProvider);
           const signature = await web3.eth.accounts.sign(
@@ -167,7 +172,12 @@ const ImportWallet = ({ route, navigation }) => {
               dispatch(setBackupStatus(true));
             })
             .catch(err => {
-              // alertWithSingleBtn(translate('wallet.common.tryAgain'));
+              if (err.data.messageCode === 'AUTH.DELETED') {
+                alertWithSingleBtn(
+                  translate('wallet.common.alert'),
+                  translate('common.ACCOUNT_DELETED'),
+                );
+              }
             });
         })
         .catch(err => {
@@ -192,12 +202,7 @@ const ImportWallet = ({ route, navigation }) => {
       let newArray = text.split(' ');
       newArray.splice(12, newArray.length);
       let finalPhrase = newArray.join(' ');
-      console.log(
-        '@@@ paste phrease func 2222========>',
-        finalPhrase,
-        typeof finalPhrase,
-      );
-      setPhrase(text);
+      setPhrase(finalPhrase);
     } else {
       setPvtKey(text);
     }
@@ -243,14 +248,14 @@ const ImportWallet = ({ route, navigation }) => {
     let strArr = val.split(' ').filter(function (str) {
       return /\S/.test(str);
     });
-    console.log('@@@ Phrase validation========>', strArr, strArr.length);
+    // console.log('@@@ Phrase validation========>', strArr, strArr.length);
     return strArr;
   };
 
   const phraseAlert = phraseValidation(phrase).length <= 12 ? false : true;
   const phraseWarning = regPhrase.test(phrase);
 
-  const privateKeyAlert = regPvtKey.test(pvtKey);
+  const privateKeyAlert = pvtKey !== '' ? !regPvtKey.test(pvtKey) : false;
 
   return (
     <AppBackground isBusy={loading}>
@@ -344,14 +349,14 @@ const ImportWallet = ({ route, navigation }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {(phraseAlert || !phraseWarning) && (
+              {(phraseAlert || !phraseWarning) && inputType === 0 && (
                 <View style={{ alignSelf: 'center', marginTop: hp('1%') }}>
                   <Text style={{ color: 'red' }}>
                     {translate('wallet.common.error.invalidPhrase')}
                   </Text>
                 </View>
               )}
-              {!privateKeyAlert && (
+              {(privateKeyAlert && inputType === 1) && (
                 <View style={{ alignSelf: 'center', marginTop: hp('1%') }}>
                   <Text style={{ color: 'red' }}>
                     {translate('wallet.common.error.invalidPrivateKey')}
@@ -385,7 +390,7 @@ const ImportWallet = ({ route, navigation }) => {
           <View style={styles.bottomView}>
             <AppButton
               label={translate('wallet.common.next')}
-              view={!phrase}
+              view={inputType !== 1 ? (!phrase || (phraseValidation(phrase).length === 12 ? false : true)) : !pvtKey}
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {

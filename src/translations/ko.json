@@ -773,7 +773,8 @@
     "TRANSACTION_ENTER_WALLET_ADDRESS": "지갑주소를 입력해주세요",
     "TRANSACTION_ENTER_AMOUNT": "금액을 입력하세요",
     "INSUFFICIENT_FUND_FOR_GAS": "가스비 부족,",
-    "IS_REQUIRED": "필요합니다."
+    "IS_REQUIRED": "필요합니다.",
+    "ACCOUNT_DELETED": "귀하의 계정이 삭제되었습니다"
   },
   "AwardPage": {},
   "wallet": {
