@@ -73,12 +73,11 @@ export const webSocketLinkPolygon = 'wss://ws-matic-mainnet.chainstacklabs.com';
 export const test_BscScanURL = 'https://testnet.bscscan.com/tx/';
 export const test_PolygonScanURL = 'https://mumbai.polygonscan.com/tx/';
 export const test_EthereumScanURL = 'https://goerli.etherscan.io/tx/';
-export const test_XanaScanURL =
-  'https://testnet.avascan.info/blockchain/xanachain/';
+export const test_XanaScanURL = 'https://xanachain-test.xana.net/tx/';
 //========================= Urls (mainnet) ================================
 export const BscScanURL = 'https://testnet.bscscan.com/tx/';
 export const PolygonScanURL = 'https://mumbai.polygonscan.com/tx/';
-export const EthereumScanURL = 'https://kovan.etherscan.io/tx/';
+export const EthereumScanURL = 'https://etherscan.io/tx/';
 export const XanaScanURL = 'https://xanachain.xana.net/';
 
 //testnet
