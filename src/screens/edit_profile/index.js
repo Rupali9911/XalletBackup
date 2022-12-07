@@ -72,6 +72,7 @@ function Profile(props) {
   const [infoTwitter, setInfoTwitter] = useState(false);
   const [infoEmail, setInfoEmail] = useState(false);
   const [showVerifyEmail, setShowVerifyEmail] = useState(false);
+  const [instagramValue, setInstagramValue] = useState('');
 
   const dispatch = useDispatch();
   let id = UserReducer.userData?.userWallet?.address;
@@ -128,6 +129,7 @@ function Profile(props) {
       } else {
         setFirstTime(true);
       }
+      setInstagramValue(editProfileData.instagram);
     }
   }, [
     editProfileData.username,
@@ -139,6 +141,13 @@ function Profile(props) {
     editProfileData.instagram,
     editProfileData.about,
   ]);
+
+  useEffect(() => {
+    setEditProfileData({
+      ...editProfileData,
+      instagram: instagramValue ? instagramValue.toLowerCase() : '',
+    });
+  }, [instagramValue]);
 
   const renderArtistModal = () => {
     return (
@@ -555,10 +564,7 @@ function Profile(props) {
                 placeholderTextColor="grey"
                 value={editProfileData.instagram}
                 onChangeText={text => {
-                  setEditProfileData({
-                    ...editProfileData,
-                    instagram: text.toLowerCase(),
-                  });
+                  setInstagramValue(text);
                   setErrInstagram(false);
                 }}
                 placeholder={translate('common.PLACEHOLDER_INSTAGRAM')}
