@@ -130,8 +130,9 @@ export default function AppSearch() {
       <Searchbar
         style={styles.searchBar}
         inputStyle={styles.inputStyle}
-        selectionColor={Colors.BLACK1}
+        selectionColor={Platform.OS === 'ios' ? Colors.BLACK1 : Colors.GREY5}
         placeholder={translate('wallet.common.searchHint')}
+        cursorColor={Colors.BLACK1}
         onChangeText={txt => {
           setSearchTxt(txt);
         }}
