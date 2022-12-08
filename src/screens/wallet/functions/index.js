@@ -231,9 +231,14 @@ export const currencyInDollar = async (pubkey, type) => {
             vs_currencies: 'usd',
           },
         }).then(function (info) {
-          // console.log('@@@ xana chain dollar price =====>', info);
           resolve(info.xana.usd);
-        });
+        }).catch((e) => {
+          console.log('@@@ xana chain dollar price error=====>', e);
+          reject({
+            success: false,
+            data: 'Smart contract not deployed to detected network.',
+          });
+        })
       } else {
         await contract.methods
           .getReserves()

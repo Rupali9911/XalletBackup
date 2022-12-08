@@ -39,7 +39,7 @@ const ListItems = props => {
         <NumberFormat
           value={parseFloat(`${item.tokenValue}`)}
           displayType={'text'}
-          decimalScale={4}
+          decimalScale={8}
           thousandSeparator={true}
           renderText={formattedValue => (
             <Text numberOfLines={1} style={styles.priceTxt}>

@@ -775,7 +775,11 @@
     "REMOVE_BANNER": "배너 삭제",
     "INSUFFICIENT_FUND_FOR_GAS": "가스비 부족,",
     "IS_REQUIRED": "필요합니다.",
+<<<<<<< HEAD
     "VIDEO_FORMAT_ERROR":"이 미디어 형식은 지원되지 않습니다."
+=======
+    "ACCOUNT_DELETED": "귀하의 계정이 삭제되었습니다"
+>>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
   },
   "AwardPage": {},
   "wallet": {
