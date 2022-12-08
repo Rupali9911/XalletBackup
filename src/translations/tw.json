@@ -775,11 +775,8 @@
     "REMOVE_BANNER": "刪除橫幅",
     "INSUFFICIENT_FUND_FOR_GAS": "Gas費資金不足，",
     "IS_REQUIRED": "是必須的。",
-<<<<<<< HEAD
-    "VIDEO_FORMAT_ERROR":"不支持此媒體格式。"
-=======
+    "VIDEO_FORMAT_ERROR":"不支持此媒體格式。",
     "ACCOUNT_DELETED": "您的帳戶已被刪除"
->>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
   },
   "AwardPage": {},
   "wallet": {

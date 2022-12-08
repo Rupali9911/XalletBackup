@@ -775,11 +775,8 @@
     "REMOVE_BANNER": "バナー画像の削除",
     "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
     "IS_REQUIRED": "が必要です",
-<<<<<<< HEAD
-    "VIDEO_FORMAT_ERROR":"このメディア形式はサポートされていません。"
-=======
+    "VIDEO_FORMAT_ERROR":"このメディア形式はサポートされていません。",
     "ACCOUNT_DELETED": "あなたのアカウントは削除されました"
->>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
   },
   "AwardPage": {},
   "wallet": {

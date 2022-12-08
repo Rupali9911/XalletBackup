@@ -198,9 +198,6 @@ const ImportWallet = ({ route, navigation }) => {
 
   const pastePhrase = async () => {
     const text = await Clipboard.getString();
-<<<<<<< HEAD
-    inputType == 0 ? setPhrase(text) : setPvtKey(text);
-=======
     if (inputType !== 1) {
       let newArray = text.split(' ');
       newArray.splice(12, newArray.length);
@@ -209,7 +206,6 @@ const ImportWallet = ({ route, navigation }) => {
     } else {
       setPvtKey(text);
     }
->>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
   };
   const getSuggestions = async val => {
     setTimeout(async () => {
@@ -295,25 +291,12 @@ const ImportWallet = ({ route, navigation }) => {
                       ? translate('common.EXAMPLE_PLACEHOLDER_TEXT')
                       : ' '
                   }
-<<<<<<< HEAD
-                  value={inputType == 0 ? phrase : pvtKey}
-=======
                   value={inputType !== 1 ? phrase : pvtKey}
->>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
                   autoCorrect={false}
                   keyboardType={
                     Platform.OS === 'ios' ? 'default' : 'visible-password'
                   }
                   onChangeText={val => {
-<<<<<<< HEAD
-                    inputType == 0 ? setPhrase(val) : setPvtKey(val);
-                    setTimeout(() => {
-                      const newWord = val.split(' ').splice(-1);
-                      if (newWord != '') {
-                        getSuggestions(newWord);
-                        setShowSuggestions(true);
-                        setUserTyping(true);
-=======
                     if (val.trim() !== '') {
                       if (inputType !== 1) {
                         setPhrase(val);
@@ -327,7 +310,6 @@ const ImportWallet = ({ route, navigation }) => {
                             setShowSuggestions(false);
                           }
                         }, 100);
->>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
                       } else {
                         setPvtKey(val);
                         setTimeout(() => {
@@ -407,11 +389,7 @@ const ImportWallet = ({ route, navigation }) => {
           <View style={styles.bottomView}>
             <AppButton
               label={translate('wallet.common.next')}
-<<<<<<< HEAD
-              view={inputType == 0 ? !phrase : !pvtKey}
-=======
               view={inputType !== 1 ? (!phrase || (phraseValidation(phrase).length === 12 ? false : true)) : !pvtKey}
->>>>>>> ba5a93bfd52cfb6d02c69cfb80038a32c54b6efd
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
