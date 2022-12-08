@@ -248,7 +248,6 @@ const ImportWallet = ({ route, navigation }) => {
     let strArr = val.split(' ').filter(function (str) {
       return /\S/.test(str);
     });
-    // console.log('@@@ Phrase validation========>', strArr, strArr.length);
     return strArr;
   };
 
