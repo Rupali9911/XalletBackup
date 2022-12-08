@@ -16,7 +16,6 @@ import {
   OWNED_LOAD_FAIL,
   OWNED_LIST_RESET,
   OWNED_PAGE_CHANGE,
-  OWNED_CURSOR_CHANGE,
 
   //================Other==============
   OTHER_LOAD_START,
@@ -24,7 +23,6 @@ import {
   OTHER_LOAD_FAIL,
   OTHER_LIST_RESET,
   OTHER_PAGE_CHANGE,
-  OTHER_CURSOR_CHANGE,
 
   //==============TabTitle================
   CHAT_TAB_TITLE,
@@ -40,7 +38,6 @@ import {
   CHAT_REMAIN_COUNT,
 } from '../types';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import {NEW_BASE_URL} from '../../common/constants';
 
 //=====================Chat=====================
 export const chatLoadingStart = data => ({
@@ -104,11 +101,6 @@ export const ownedNftPageChange = page => ({
   payload: page,
 });
 
-export const ownedNftCursorChange = cursor => ({
-  type: OWNED_CURSOR_CHANGE,
-  payload: cursor,
-});
-
 //==============Other===================
 
 export const otherNftLoadStart = () => ({
@@ -132,11 +124,6 @@ export const otherNftListReset = () => ({
 export const otherNftPageChange = page => ({
   type: OTHER_PAGE_CHANGE,
   payload: page,
-});
-
-export const otherNftCursorChange = cursor => ({
-  type: OTHER_CURSOR_CHANGE,
-  payload: cursor,
 });
 
 //=====================SetTabTitle=====================
@@ -180,19 +167,22 @@ export const remainWordCountData = count => ({
 
 //=====================Chat=====================
 export const getAiChat =
-  (message, address, locale, name, tokenId) => (dispatch, getState) => {
-    let botName = name?.split(' ').slice?.(1)?.[0]
+  (address, name, collectionAddress, locale, nftId, text, tokenId) =>
+  (dispatch, getState) => {
+    let bot_name = name?.split(' ').slice?.(1)?.[0]
       ? name?.split(' ').slice?.(1)?.[0]
       : name;
     const {reducerTabTitle} = getState().chatReducer;
     dispatch(chatLoadingStart(true));
     return new Promise((resolve, reject) => {
-      let url = `${NEW_BASE_URL}/xana-genesis-chat/chat-bot`;
+      let url = `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-ai`;
       let data = {
         address,
+        bot_name,
+        collectionAddress,
         locale,
-        bot_name: botName,
-        text: message,
+        nftId: nftId.toString(),
+        text,
         tokenId,
         is_owned: reducerTabTitle === 'Owned' ? true : false,
       };
@@ -221,43 +211,45 @@ export const getAiChat =
 
 //==================================Owned-Other==============================
 export const getNftCollections =
-  (page, address, cursor, tabTitle) => (dispatch, getState) => {
+  (page, address, tabTitle) => (dispatch, getState) => {
     dispatch(setTabTitle(tabTitle));
-    const {ownerList, otherList, reducerTabTitle} = getState().chatReducer;
-    let url = `${NEW_BASE_URL}/xana-genesis-chat`;
-    url = tabTitle === 'Owned' ? `${url}/get-my-data` : `${url}/get-other-data`;
+    const {ownerList, otherList} = getState().chatReducer;
+    let url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
+    url = tabTitle === 'Owned' ? `${url}/my-data` : `${url}/other-data`;
 
-    let data = {
-      cursor,
+    const data = {
+      cursor: '',
       owner: address,
-      page,
-      limit: 30,
+      page: page,
+      limit: 50,
     };
-    // if (tabTitle === 'Owned') {
-    //   data.limit = limit;
-    // }
 
-    sendRequest({
-      url,
-      method: 'POST',
-      data,
-    })
+    (tabTitle === 'Owned'
+      ? sendRequest({
+          url,
+          method: 'POST',
+        })
+      : sendRequest({
+          url,
+          method: 'POST',
+          data,
+        })
+    )
       .then(response => {
-        if (response?.result) {
+        if (response) {
           let res = {
-            nftTotalCount: response.total,
-            nftCursor: response.cursor,
+            nftTotalCount: response.count,
             ownerList: {},
             otherList: {},
           };
           if (tabTitle === 'Owned') {
             res.ownerList['ownerNFTS'] = ownerList.ownerNFTS.concat(
-              response?.result,
+              response?.list,
             );
             dispatch(ownedNftLoadSuccess(res));
           } else {
             res.otherList['otherNFTs'] = otherList.otherNFTs.concat(
-              response?.result,
+              response?.list,
             );
             dispatch(otherNftLoadSuccess(res));
           }
@@ -278,7 +270,7 @@ export const getNftCollections =
 //=====================Search=====================
 export const getSearchResult = (text, address) => dispatch => {
   return new Promise((resolve, reject) => {
-    let url = `${NEW_BASE_URL}/xana-genesis-chat/search-nft`;
+    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/search-nfts`;
     let data = {
       owner: address,
       searchValue: text,
@@ -305,7 +297,7 @@ export const getChatBotHistory =
     return new Promise((resolve, reject) => {
       let limit = 5;
       sendRequest({
-        url: `${NEW_BASE_URL}/xana-genesis-chat/chat-bot-history`,
+        url: `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-history`,
         method: 'GET',
         params: {
           page,
