@@ -268,7 +268,8 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
   },
   typingContainer: {
-    width: '45%',
+    flexDirection: 'row',
+    width: '30%',
   },
   rcvContainerArrow: {
     borderLeftWidth: 25,

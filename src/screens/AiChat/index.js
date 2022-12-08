@@ -4,7 +4,6 @@ import {AppHeader} from '../../components';
 import React, {useEffect} from 'react';
 import {translate} from '../../walletUtils';
 import styles from './style';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import ChatNftsList from './ChatNftsList';
 import SearchInput from './searchNft';
 import {COLORS} from '../../constants';
@@ -15,7 +14,6 @@ import {
   ownedNftListReset,
   remainWordCountData,
 } from '../../store/actions/chatAction';
-import {NEW_BASE_URL} from '../../common/constants';
 import sendRequest from '../../helpers/AxiosApiRequest';
 
 // ====================== Main return function ================================
@@ -59,12 +57,12 @@ const AiChat = () => {
 
   //=========================Remaining Words Api Call===========================
   const getRemainingWords = () => {
-    let url = `${NEW_BASE_URL}/xana-genesis-chat/get-user-word-limit`;
+    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/get-user-word-limit`;
     let data = {
       cursor: '',
       owner: address,
-      // limit: 0,
-      // page: 1,
+      limit: 0,
+      page: 1,
     };
     sendRequest({
       url,
