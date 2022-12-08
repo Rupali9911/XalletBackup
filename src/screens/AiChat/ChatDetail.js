@@ -36,6 +36,8 @@ const ChatDetail = ({route, navigation}) => {
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
+  const [contentBottom, setContentBottom] = useState(0);
+
   const flatList = React.useRef(null);
   const toastRef = useRef(null);
 
@@ -277,10 +279,27 @@ const ChatDetail = ({route, navigation}) => {
       <KeyboardAwareScrollView
         contentContainerStyle={{flex: 1}}
         scrollEnabled={false}
-        extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
+        extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : SIZE(50)}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}
-        enableAutomaticScroll={true}>
+        enableResetScrollToCoords
+        enableOnAndroid
+        // onKeyboardWillHide={() => setContentBottom(0)}
+        // onKeyboardWillShow={() => setContentBottom(150)}
+        // contentInset={{bottom: contentBottom, paddingStart: 50}}
+        // extraHeight={SIZE(50)}
+        bounces={false}
+        bouncesZoom={false}
+        // style={{flex: 1}}
+
+        // enableAutomaticScroll={true}
+        // enableOnAndroid
+        // // style={{flex: 1, paddingBottom: 0}}
+        // onKeyboardWillShow={() => setContentBottom(200)}
+        // alwaysBounceVertical={false}
+        // bounces={false}
+        // resetScrollToCoords={{x: 0, y: 76}}
+      >
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
@@ -317,6 +336,7 @@ const ChatDetail = ({route, navigation}) => {
               inverted={true}
               onScrollEndDrag={handleFlatListEndReached}
               ListFooterComponent={renderHeader}
+              removeClippedSubview={true}
             />
           </View>
           <MessageInput
