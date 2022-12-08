@@ -230,7 +230,7 @@ const ScanScreen = React.memo(props => {
       </View>
     );
   };
-  console;
+
   return (
     <View style={[styles.scene]}>
       {isActive ? (
@@ -379,7 +379,7 @@ const SendScreen = React.memo(props => {
               web3,
               reject,
             );
-            console.log('@@@ Getting sign data ========>', signData);
+            // console.log('@@@ Getting sign data ========>', signData);
             if (!signData) return;
             const data = {
               from: transferParameters.publicAddress,
@@ -389,14 +389,14 @@ const SendScreen = React.memo(props => {
             };
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
-            console.log('@@@ Gas limit after signdata =======>', typeof gasLimit);
+            console.log('@@@ Gas limit  ERC-20 1111 =======>', typeof gasLimit);
             const gasFee = web3.utils.fromWei(
               (gasPrice * gasLimit).toString(),
               'ether',
             );
-            console.log("@@@ gas fee ERC-20 1111 =======>", gasFee)
+            console.log("@@@ gas fee ERC-20 2222 =======>", gasFee)
             const finalGasFee = Number(Number(gasFee).toFixed(8));
-            console.log('@@@ Gas Fee ERC-20 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
+            console.log('@@@ Gas Fee ERC-20 3333=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
           } else if (isSelftToken() && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
@@ -575,23 +575,23 @@ const SendScreen = React.memo(props => {
     let totalValue = 0;
     if (item.type == 'ETH' && item.network !== 'Polygon') {
       let value = parseFloat(ethBalance);
-      // console.log('Ethereum value', value);
+      // console.log('Eth value', value, ethBalance);
       totalValue = value;
     } else if (item.type == 'BNB') {
       let value = parseFloat(bnbBalance);
-      // console.log('BSC value', value);
+      // console.log('BNB value', value, bnbBalance);
       totalValue = value;
     } else if (item.type == 'BUSD') {
       let value = parseFloat(busdBalance);
-      // console.log('BUSD value', value);
+      // console.log('BUSD value', value, busdBalance);
       totalValue = value;
     } else if (item.type == 'USDT') {
       let value = parseFloat(usdtBalance);
-      // console.log('USDT value', value);
+      // console.log('USDT value', value, usdtBalance);
       totalValue = value;
     } else if (item.type == 'Matic') {
       let value = parseFloat(maticBalance);
-      // console.log('Polygon value', value);
+      // console.log('Matic value', value, maticBalance);
       totalValue = value;
     } else if (item.type == 'TNFT') {
       let value = parseFloat(tnftBalance);
@@ -603,7 +603,7 @@ const SendScreen = React.memo(props => {
       totalValue = value;
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance);
-      // console.log('Polygon value', value);
+      // console.log('USDC value', value, usdcBalance);
       totalValue = value;
     } else if (item.type == 'WETH' && item.network === 'Polygon') {
       let value = parseFloat(wethBalance);
@@ -622,7 +622,7 @@ const SendScreen = React.memo(props => {
       // console.log("Item network", item.network)
       let value = parseFloat(xetaBalance);
       totalValue = value;
-      // console.log("Total value is ", totalValue)
+      // console.log("Xeta ", totalValue, xetaBalance)
     }
     // console.log("@@@ Get token balance func =======>", ethBalance, typeof totalValue, Number(totalValue.toFixed(8)), typeof Number(totalValue.toFixed(8)))
     return Number(totalValue.toFixed(8));
@@ -662,7 +662,7 @@ const SendScreen = React.memo(props => {
   const OnPressMax = () => {
     if (isSelftToken()) {
       const maxAmount = (getTokenBalance() - Number(gasFee));
-      console.log("@@@ On press max ========>", getTokenBalance(), typeof getTokenBalance(), gasFee, typeof gasFee, Number(gasFee))
+      // console.log("@@@ On press max ========>", getTokenBalance(), typeof getTokenBalance(), gasFee, typeof gasFee, Number(gasFee))
       const finalMaxAmount = maxAmount.toFixed(8);
       setAmount(finalMaxAmount.toString());
     } else {
@@ -779,7 +779,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               </View>
             )}
-            {alertMessage.networkFeeShow && gasFee !== 0 ? (
+            {alertMessage.networkFeeShow && gasFee !== 0 && !decimalDigitAlert ? (
               <View style={styles.gasFeeTextContainer}>
                 <Text style={styles.gasFeeText}>
                   + {translate('common.NETWORK_GAS_FEE')}
@@ -795,7 +795,7 @@ const SendScreen = React.memo(props => {
               {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
-              {alertMessage.networkFeeShow &&
+              {alertMessage.networkFeeShow && !decimalDigitAlert &&
                 Number(amount) > 0 &&
                 gasFee !== 0 ? (
                 <Text style={[styles.priceCont, { marginRight: hp('1%'), fontSize: isSelftToken() ? RF(3.4) : RF(2) }]}>
@@ -803,7 +803,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               ) : amount &&
                 Number(amount) > 0 &&
-                !alertMessage.isInsufficientFund &&
+                !alertMessage.isInsufficientFund && !decimalDigitAlert &&
                 !alertMessage.gasFeeAlert ? (
                 <ActivityIndicator
                   style={{ marginRight: hp('1%') }}
@@ -1029,7 +1029,6 @@ const styles = StyleSheet.create({
   },
   inputRight: {
     ...CommonStyles.text(Fonts.ARIAL, Colors.GREY4, RF(1.8)),
-    marginBottom: hp('0.2%'),
     marginRight: hp('1%'),
     alignSelf: 'center',
   },
