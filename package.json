@@ -7,7 +7,12 @@
     "ios": "npx rn-nodeify --install --hack && npx react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "rc-start": "npm start -- --reset-cache",
+    "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
+    "clean-start": "npm run clean && npm run rc-start",
+    "fresh-install": "rm -rf $TMPDIR/react-* && watchman watch-del-all && rm -rf ios/build/ModuleCache/* && rm -rf node_modules/ && npm cache clean && npm install",
+    "fresh-start": "npm run fresh-install && npm run rc-start"
   },
   "dependencies": {
     "@coffeebeanslabs/react-native-inviewport": "^0.2.0",
@@ -113,6 +118,7 @@
     "react-native-udp": "^2.7.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-video": "^5.2.1",
+    "react-native-video-controls": "^2.8.1",
     "react-native-view-shot": "^3.1.2",
     "react-native-webview": "^11.13.1",
     "react-number-format": "^4.7.3",

@@ -55,7 +55,7 @@ const initialState = {
     requestAppId: null,
     networkType: {
         id: 4,
-        name: "XANA CHAIN",
+        name: "XANACHAIN",
         chainId: 76798,
         rpc: "https://testnet.xana.net/ext/bc/2dNW4t2bMKcnAamjCX7e79iFw1LEvyb8CYWXcX7NeUUQM9TdM8/rpc",
         image: "https://ik.imagekit.io/xanalia/Images/Logo.png",

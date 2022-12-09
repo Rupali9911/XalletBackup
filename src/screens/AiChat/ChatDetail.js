@@ -29,14 +29,14 @@ import {Platform} from 'expo-modules-core';
 const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
-  let {nftDetail, tokenId} = route.params;
-  let NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'))
+  const {nftDetail} = route.params;
+  const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
+  const cropImgSize = '?tr=w-120,tr=h-120';
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
   const flatList = React.useRef(null);
-  const scroll = React.useRef(null);
   const toastRef = useRef(null);
 
   // =============== Getting data from reducer ========================
@@ -62,38 +62,40 @@ const ChatDetail = ({route, navigation}) => {
 
   //================== Get History Data =================================
   const getHistoryData = page => {
-    dispatch(getChatBotHistory(page, userAdd, tokenId)).then(response => {
-      if (response.length > 0) {
-        // let history = []
-        response.map(data => {
-          let second = data.date._seconds;
-          let milisecond = Number(second) * 1000;
-          let getDate = new Date(milisecond);
-          let timeConversion = moment(getDate).format('h:mm A');
+    dispatch(getChatBotHistory(page, userAdd, nftDetail?.tokenId)).then(
+      response => {
+        if (response.length > 0) {
+          // let history = []
+          response.map(data => {
+            let second = data.date._seconds;
+            let milisecond = Number(second) * 1000;
+            let getDate = new Date(milisecond);
+            let timeConversion = moment(getDate).format('h:mm A');
 
-          let sender = {
-            message: data?.question,
-            type: 'sender',
-            time: timeConversion,
-            senderImage: userData?.avatar,
-            senderName:
-              userData?.userName != ''
-                ? userData?.userName
-                : userData?.userWallet?.address.substring(0, 6),
-          };
+            let sender = {
+              message: data?.question,
+              type: 'sender',
+              time: timeConversion,
+              senderImage: userData?.avatar,
+              senderName:
+                userData?.userName != ''
+                  ? userData?.userName
+                  : userData?.userWallet?.address.substring(0, 6),
+            };
 
-          let receiver = {
-            message: data.reply,
-            type: 'receiver',
-            time: timeConversion,
-            receiverImage: nftDetail?.image,
-            receiverName: NFTNAME,
-          };
-          // history.push(receiver, sender);
-          setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
-        });
-      }
-    });
+            let receiver = {
+              message: data.reply,
+              type: 'receiver',
+              time: timeConversion,
+              receiverImage: nftDetail?.smallImage + cropImgSize,
+              receiverName: NFTNAME,
+            };
+            // history.push(receiver, sender);
+            setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
+          });
+        }
+      },
+    );
   };
 
   //====================== Chat Sender Image =========================
@@ -118,8 +120,8 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rightBubbleContainer}>
             <View style={styles.talkBubble}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}> {item?.senderName} </Text>
-                <Text style={styles.bubbleText}> {item?.message} </Text>
+                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
+                <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
             <View style={[styles.timeFormat, {marginRight: 10}]}>
@@ -138,8 +140,8 @@ const ChatDetail = ({route, navigation}) => {
             </View>
             <View style={styles.talkBubble}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}> {item?.receiverName} </Text>
-                <Text style={styles.bubbleText}> {item?.message} </Text>
+                <Text style={styles.msgHolderName}>{item?.receiverName}</Text>
+                <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
           </View>
@@ -174,11 +176,13 @@ const ChatDetail = ({route, navigation}) => {
 
       dispatch(
         getAiChat(
-          msg,
-          userData.userWallet.address,
-          selectedLanguageItem.language_name,
+          userData?.userWallet?.address,
           NFTNAME,
-          tokenId,
+          nftDetail?.collection?.address,
+          selectedLanguageItem?.language_name,
+          nftDetail?.owner?.nftId,
+          msg,
+          nftDetail?.tokenId,
         ),
       )
         .then(response => {
@@ -189,7 +193,7 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.image,
+              receiverImage: nftDetail?.smallImage + cropImgSize,
               receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -226,14 +230,12 @@ const ChatDetail = ({route, navigation}) => {
         <View style={styles.chatHeaderContainer}>
           <View>
             <C_Image
-              uri={nftDetail?.image}
+              uri={nftDetail?.smallImage + cropImgSize}
               imageStyle={styles.cImageContainer}
             />
           </View>
           <View style={{paddingStart: 10}}>
-            <Text style={styles.headerNftName}>
-              {NFTNAME}
-            </Text>
+            <Text style={styles.headerNftName}>{NFTNAME}</Text>
             <View style={{flexDirection: 'row'}}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
@@ -242,10 +244,14 @@ const ChatDetail = ({route, navigation}) => {
                   </Text>
                 )}
               </View>
+
               {remainCount > 0 && (
                 <Text style={styles.remainWordText}>
                   {translate('common.remainWordCount')}
-                  <Text style={styles.remainWordCount}> {remainCount}</Text>
+                  <Text style={styles.remainWordCount}>
+                    {' '}
+                    {parseInt(remainCount)}
+                  </Text>
                 </Text>
               )}
             </View>
@@ -271,15 +277,14 @@ const ChatDetail = ({route, navigation}) => {
       <KeyboardAwareScrollView
         contentContainerStyle={{flex: 1}}
         scrollEnabled={false}
-        extraScrollHeight={Platform.OS === 'ios' ? 10 : 0}
+        extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
         keyboardShouldPersistTaps={'always'}
-        keyboardOpeningTime={0}>
+        keyboardOpeningTime={0}
+        enableAutomaticScroll={true}>
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
-            <Text style={styles.nftName}>
-              {NFTNAME}
-            </Text>
+            <Text style={styles.nftName}>{NFTNAME}</Text>
             <View style={[styles.separator, {width: '80%'}]} />
             {!chatBotData?.response ? (
               <View>
@@ -292,7 +297,10 @@ const ChatDetail = ({route, navigation}) => {
             ) : null}
           </View>
           <View style={styles.bannerImgContainer}>
-            <C_Image uri={nftDetail?.image} imageStyle={styles.bannerImage} />
+            <C_Image
+              uri={nftDetail?.smallImage}
+              imageStyle={styles.bannerImage}
+            />
           </View>
         </View>
         <View style={{flex: 0.6}}>

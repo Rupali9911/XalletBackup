@@ -9,6 +9,8 @@ import {
   Image,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
@@ -47,10 +49,11 @@ import {
   balanceTransfer,
   handleTransactionError,
   getGasPrice,
+  getGasLimit,
+  getSignData,
 } from '../wallet/functions/transactionFunctions';
 import AppModal from '../../components/appModal';
 import SuccessModalContent from '../../components/successModal';
-
 
 const verifyAddress = address => {
   return new Promise((resolve, reject) => {
@@ -96,7 +99,11 @@ export const PaymentField = props => {
       <View
         style={[
           styles.inputMainCont,
-          { flexDirection: 'row', justifyContent: 'space-between' },
+          {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            backgroundColor: !props.editable ? Colors.WHITE2 : Colors.WHITE1,
+          },
         ]}>
         <TextInput
           style={[styles.inputCont, styles.paymentField, { fontSize: RF(1.8) }]}
@@ -110,6 +117,35 @@ export const PaymentField = props => {
           editable={props.editable}
         />
         <Text style={styles.inputRight}>{props.type}</Text>
+        <TouchableOpacity
+          activeOpacity={1}
+          disabled={
+            props.alertMessage.isInsufficientFund ||
+            props.alertMessage.gasFeeAlert ||
+            !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
+          }
+          style={[
+            styles.maxContainer,
+            {
+              backgroundColor:
+                props.alertMessage.isInsufficientFund ||
+                  props.alertMessage.gasFeeAlert ||
+                  !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
+                  ? Colors.GREY6
+                  : Colors.BLUE2,
+              borderColor:
+                props.alertMessage.isInsufficientFund ||
+                  props.alertMessage.gasFeeAlert ||
+                  !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
+                  ? Colors.GREY6
+                  : Colors.BLUE2,
+            },
+          ]}
+          onPress={props.onPressMax}>
+          <Text style={{ color: Colors.WHITE1, textTransform: 'uppercase' }}>
+            {translate('common.max')}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -194,7 +230,7 @@ const ScanScreen = React.memo(props => {
       </View>
     );
   };
-  console;
+
   return (
     <View style={[styles.scene]}>
       {isActive ? (
@@ -251,24 +287,33 @@ const SendScreen = React.memo(props => {
     networkType,
   } = useSelector(state => state.WalletReducer);
 
+  const config = getConfigDetailsFromEnviorment(networkType?.name, type);
+
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.rpcURL));
+
   //====================== States Initiliazation =========================
+  const [wallet, setWallet] = useState(null);
   const [address, setAddress] = useState(props.address);
   const [amount, setAmount] = useState(props.amount);
-  const [networkConfig, setNetworkConfig] = useState(null);
-  const [gasPrice, setGasPrice] = useState(0);
+  const [networkConfig, setNetworkConfig] = useState(config);
+  const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState({
+    isAddressInvalid: false,
+    isPaymentFielDisable: false,
+    isInsufficientFund: false,
+    isButtonDisable: true,
+    gasFeeAlert: false,
+    networkFeeShow: false,
+  });
 
   //==================== Global Variables =======================
-  let wallet = null;
   let gasFeeAlert = null;
 
   //====================== Use Effect Start =========================
   useEffect(async () => {
-    wallet = await getWallet();
-    const config = getConfigDetailsFromEnviorment(networkType?.name, type);
-    const gasPrice = await getGasPrice(config.rpcURL);
-    setGasPrice(Number(gasPrice));
-    setNetworkConfig(config);
+    let walletAddress = await getWallet();
+    setWallet(walletAddress);
   }, []);
 
   useEffect(() => {
@@ -276,7 +321,231 @@ const SendScreen = React.memo(props => {
     setAmount(props.amount);
   }, [props.address, props.amount]);
 
-  const getSelfTokenValue = type => {
+  useEffect(() => {
+    let timerOut = setTimeout(() => {
+      if (address) {
+        verifyAddress(address)
+          .then(() => {
+            if (address !== wallet?.address) {
+              setAlertMessage({ ...alertMessage, isPaymentFielDisable: true });
+            } else {
+              setAlertMessage({
+                ...alertMessage,
+                isPaymentFielDisable: false,
+                isAddressInvalid: true,
+              });
+            }
+          })
+          .catch(() => {
+            setAlertMessage({
+              ...alertMessage,
+              isPaymentFielDisable: false,
+              isAddressInvalid: true,
+            });
+          });
+      }
+    }, 500);
+
+    return () => clearTimeout(timerOut);
+  }, [address]);
+
+  useEffect(async () => {
+    let signData;
+    let txCount;
+    let timerAmountOut = setTimeout(() => {
+      try {
+        return new Promise(async (resolve, reject) => {
+          txCount = await web3.eth.getTransactionCount(
+            wallet?.address,
+            'pending',
+          );
+          if (
+            !isSelftToken() &&
+            amount &&
+            !alertMessage.isInsufficientFund &&
+            !alertMessage.gasFeeAlert &&
+            Number(amount) > 0 &&
+            Number(amount) <= Number(getTokenBalance())
+          ) {
+            const transferParameters = {
+              publicAddress: wallet?.address,
+              amount: amount,
+              toAddress: address,
+              tokenType: type,
+            };
+            signData = getSignData(
+              transferParameters,
+              networkConfig,
+              web3,
+              reject,
+            );
+            // console.log('@@@ Getting sign data ========>', signData);
+            if (!signData) return;
+            const data = {
+              from: transferParameters.publicAddress,
+              to: networkConfig.ContractAddress,
+              data: signData,
+              nonce: web3.utils.toHex(txCount),
+            };
+            const gasPrice = await getGasPrice(networkConfig.rpcURL);
+            const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
+            console.log('@@@ Gas limit  ERC-20 1111 =======>', typeof gasLimit);
+            const gasFee = web3.utils.fromWei(
+              (gasPrice * gasLimit).toString(),
+              'ether',
+            );
+            console.log("@@@ gas fee ERC-20 2222 =======>", gasFee)
+            const finalGasFee = Number(Number(gasFee).toFixed(8));
+            console.log('@@@ Gas Fee ERC-20 3333=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
+            setGasFee(finalGasFee.toString());
+          } else if (isSelftToken() && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
+            const gasPrice = await getGasPrice(networkConfig.rpcURL);
+            const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
+            console.log("@@@ gas fee self 1111 =======>", gasFee)
+            const finalGasFee = Number(Number(gasFee).toFixed(8));
+            console.log('@@@ Gas Fee self 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
+            setGasFee(finalGasFee.toString());
+          }
+        });
+      } catch (error) {
+        console.log('@@@ Getting Sign data error 1111 ============>', error);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timerAmountOut);
+  }, [amount]);
+
+  useEffect(() => {
+    if (isSelftToken()) {
+      //For Self Token
+      if (
+        getTokenBalance() === 0 ||
+        Number(amount) >= Number(getTokenBalance())
+      ) {
+        console.log('@@@ Alert message (Self) 1111 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          isInsufficientFund: true,
+          isButtonDisable: true,
+          networkFeeShow: false,
+        });
+      } else if (
+        Number(gasFee) + Number(amount) > getTokenBalance() ||
+        Number(gasFee) > getTokenBalance()
+      ) {
+        console.log('@@@ Alert message (Self) 2222 1111===========>');
+        setAlertMessage({
+          ...alertMessage,
+          gasFeeAlert: true,
+          networkFeeShow: true,
+          isButtonDisable: true,
+          isInsufficientFund: false,
+        });
+      } else if (
+        address &&
+        Number(amount) > 0 &&
+        Number(amount) < getTokenBalance() &&
+        !alertMessage.gasFeeAlert
+      ) {
+        console.log('@@@ Alert message (Self) 3333 ===========>',);
+        setAlertMessage({
+          ...alertMessage,
+          networkFeeShow: true,
+          isInsufficientFund: false,
+          isButtonDisable: false,
+        });
+      } else if (
+        Number(amount) > 0 &&
+        Number(amount) < getTokenBalance() &&
+        !alertMessage.gasFeeAlert
+      ) {
+        console.log('@@@ Alert message (Self) 4444 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          networkFeeShow: true,
+          isInsufficientFund: false,
+          isButtonDisable: true,
+        });
+      } else if (!address || Number(amount) === 0) {
+        console.log('@@@ Alert message (Self) 5555 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          isButtonDisable: true,
+          gasFeeAlert: false,
+          isInsufficientFund: false,
+          networkFeeShow: false,
+        });
+      } else {
+        setAlertMessage({
+          ...alertMessage,
+          gasFeeAlert: false,
+        });
+      }
+    } else {
+      //For ERC-20 Token
+      if (
+        getTokenBalance() === 0 ||
+        Number(amount) > Number(getTokenBalance())
+      ) {
+        console.log('@@@ Alert message (ERC-20) 1111 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          isInsufficientFund: true,
+          isButtonDisable: true,
+          networkFeeShow: false,
+        });
+      } else if (
+        Number(getSelfTokenBalance(item?.network)) === 0 ||
+        Number(gasFee) > getSelfTokenBalance(item?.network)
+      ) {
+        console.log('@@@ Alert message (ERC-20) 2222 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          gasFeeAlert: true,
+          networkFeeShow:
+            Number(gasFee) > 0 && Number(amount) > 0 ? true : false,
+          isButtonDisable: true,
+          isInsufficientFund: false,
+        });
+      } else if (
+        address &&
+        Number(amount) > 0 &&
+        Number(amount) <= Number(getTokenBalance()) &&
+        !alertMessage.gasFeeAlert
+      ) {
+        console.log('@@@ Alert message (ERC-20) 3333 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          networkFeeShow: true,
+          isInsufficientFund: false,
+          isButtonDisable: false,
+        });
+      } else if (
+        Number(amount) > 0 &&
+        Number(amount) <= Number(getTokenBalance()) &&
+        !alertMessage.gasFeeAlert
+      ) {
+        console.log('@@@ Alert message (ERC-20) 4444 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          networkFeeShow: true,
+          isInsufficientFund: false,
+          isButtonDisable: true,
+        });
+      } else if (!address || Number(amount) === 0) {
+        console.log('@@@ Alert message (ERC-20) 5555 ===========>');
+        setAlertMessage({
+          ...alertMessage,
+          isInsufficientFund: false,
+          isButtonDisable: true,
+          networkFeeShow: false,
+          gasFeeAlert: false,
+        });
+      }
+    }
+  }, [amount, address, gasFee]);
+
+  const getSelfTokenBalance = type => {
     let tokenValue = 0;
     if (type == 'Ethereum') {
       let value = parseFloat(ethBalance);
@@ -287,34 +556,42 @@ const SendScreen = React.memo(props => {
     } else if (type == 'Polygon') {
       let value = parseFloat(maticBalance);
       tokenValue = value;
-    } else if (type == 'XANA CHAIN') {
+    } else if (type == 'XANACHAIN') {
       let value = parseFloat(xetaBalance);
       tokenValue = value;
     }
     return tokenValue;
   };
 
-  const getTokenValue = () => {
+  const isSelftToken = () => {
+    if (type !== 'ETH' && type !== 'BNB' && type !== 'Matic' && type !== 'XETA') {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const getTokenBalance = () => {
     let totalValue = 0;
     if (item.type == 'ETH' && item.network !== 'Polygon') {
       let value = parseFloat(ethBalance);
-      // console.log('Ethereum value', value);
+      // console.log('Eth value', value, ethBalance);
       totalValue = value;
     } else if (item.type == 'BNB') {
       let value = parseFloat(bnbBalance);
-      // console.log('BSC value', value);
+      // console.log('BNB value', value, bnbBalance);
       totalValue = value;
     } else if (item.type == 'BUSD') {
       let value = parseFloat(busdBalance);
-      // console.log('BUSD value', value);
+      // console.log('BUSD value', value, busdBalance);
       totalValue = value;
     } else if (item.type == 'USDT') {
       let value = parseFloat(usdtBalance);
-      // console.log('USDT value', value);
+      // console.log('USDT value', value, usdtBalance);
       totalValue = value;
     } else if (item.type == 'Matic') {
       let value = parseFloat(maticBalance);
-      // console.log('Polygon value', value);
+      // console.log('Matic value', value, maticBalance);
       totalValue = value;
     } else if (item.type == 'TNFT') {
       let value = parseFloat(tnftBalance);
@@ -326,7 +603,7 @@ const SendScreen = React.memo(props => {
       totalValue = value;
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance);
-      // console.log('Polygon value', value);
+      // console.log('USDC value', value, usdcBalance);
       totalValue = value;
     } else if (item.type == 'WETH' && item.network === 'Polygon') {
       let value = parseFloat(wethBalance);
@@ -341,13 +618,14 @@ const SendScreen = React.memo(props => {
       let value = parseFloat(talBalance);
       totalValue = value;
       // console.log("Total value is ", totalValue)
-    } else if (item.network === 'XANA CHAIN' && item.type == 'XETA') {
+    } else if (item.network === 'XANACHAIN' && item.type == 'XETA') {
       // console.log("Item network", item.network)
       let value = parseFloat(xetaBalance);
       totalValue = value;
-      // console.log("Total value is ", totalValue)
+      // console.log("Xeta ", totalValue, xetaBalance)
     }
-    return totalValue;
+    // console.log("@@@ Get token balance func =======>", ethBalance, typeof totalValue, Number(totalValue.toFixed(8)), typeof Number(totalValue.toFixed(8)))
+    return Number(totalValue.toFixed(8));
   };
 
   const transferAmount = async () => {
@@ -381,56 +659,24 @@ const SendScreen = React.memo(props => {
       });
   };
 
-  // const showSuccessAlert = () => {
-  //   Alert.alert(
-  //     translate('wallet.common.transferInProgress', {
-  //       token: `${amount} ${type}`,
-  //     }),
-  //     translate('wallet.common.reflectInHistory', { token: `${amount} ${type}` }),
-  //     [
-  //       {
-  //         text: 'OK',
-  //         onPress: () => {
-  //           navigation.popToTop();
-  //         },
-  //       },
-  //     ],
-  //   );
-  // };
+  const OnPressMax = () => {
+    if (isSelftToken()) {
+      const maxAmount = (getTokenBalance() - Number(gasFee));
+      // console.log("@@@ On press max ========>", getTokenBalance(), typeof getTokenBalance(), gasFee, typeof gasFee, Number(gasFee))
+      const finalMaxAmount = maxAmount.toFixed(8);
+      setAmount(finalMaxAmount.toString());
+    } else {
+      setAmount(getTokenBalance().toString());
+    }
+  };
 
   const closeSuccess = () => {
     setSuccessModalVisible(false);
     navigation.popToTop();
   };
 
-  gasFeeAlert =
-    Number(getSelfTokenValue(item?.network).toFixed(4)) === 0 ? true : false;
-
-  const decimalDigit =
-    (amount && amount.includes('.') && amount?.split('.')[1]?.length) >= 8
-      ? true
-      : false;
-
-  const disableButton =
-    address &&
-      Number(amount) > 0 &&
-      Number(amount) < Number(getTokenValue().toFixed(4)) &&
-      !gasFeeAlert
-      ? false
-      : true;
-
-  const networkFeeShow =
-    Number(amount) > 0 &&
-      Number(amount) < Number(getTokenValue().toFixed(4)) &&
-      !gasFeeAlert
-      ? true
-      : false;
-
-  const alertMsg =
-    Number(amount) >=
-      (Number(getTokenValue().toFixed(4)) === 0.0
-        ? 0
-        : Number(getTokenValue().toFixed(4)))
+  const decimalDigitAlert =
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8
       ? true
       : false;
 
@@ -447,7 +693,7 @@ const SendScreen = React.memo(props => {
                 {translate('common.AliaBalance')}
               </Text>
               <NumberFormat
-                value={getTokenValue()}
+                value={getTokenBalance()}
                 displayType={'text'}
                 decimalScale={8}
                 thousandSeparator={true}
@@ -472,18 +718,32 @@ const SendScreen = React.memo(props => {
           </View>
           <View style={styles.inputContainer}>
             <AddressField
-              onChangeText={setAddress}
+              onChangeText={val => {
+                setAddress(val);
+                setAlertMessage({ ...alertMessage, isAddressInvalid: false });
+              }}
               onSubmitEditing={txt => {
                 // verifyAddress(txt);
               }}
               value={address}
             />
+            {alertMessage.isAddressInvalid && (
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('wallet.common.invalidAddress')}
+                </Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.inputContainer}>
             <PaymentField
               type={type}
               value={amount}
+              editable={alertMessage.isPaymentFielDisable}
+              alertMessage={alertMessage}
+              gasFee={gasFee}
+              balance={getTokenBalance()}
               onChangeText={e => {
                 let value = amountValidation(e, amount);
                 if (value) {
@@ -492,47 +752,64 @@ const SendScreen = React.memo(props => {
                   setAmount('');
                 }
               }}
+              onPressMax={() => OnPressMax()}
             />
-            {alertMsg && (
+            {alertMessage.isInsufficientFund && (
               <View>
                 <Text style={styles.alertText}>
                   {translate('wallet.common.insufficientFunds')}
                 </Text>
               </View>
             )}
-            {decimalDigit && (
+            {decimalDigitAlert && (
               <View>
                 <Text style={styles.alertText}>
                   {translate('common.DECIMAL_POINTS_LIMIT')}
                 </Text>
               </View>
             )}
-            {!alertMsg && gasFeeAlert && (
+            {!alertMessage.isInsufficientFund && alertMessage.gasFeeAlert && (
               <View>
-                <Text style={styles.alertText}>Insufficient funds for gas</Text>
+                <Text style={styles.alertText}>
+                  {translate('common.INSUFFICIENT_FUND_FOR_GAS') +
+                    ' ' +
+                    tokenInfo.tokenName +
+                    ' ' +
+                    translate('common.IS_REQUIRED')}
+                </Text>
               </View>
             )}
-            {networkFeeShow && (
+            {alertMessage.networkFeeShow && gasFee !== 0 && !decimalDigitAlert ? (
               <View style={styles.gasFeeTextContainer}>
                 <Text style={styles.gasFeeText}>
                   + {translate('common.NETWORK_GAS_FEE')}
                 </Text>
                 <Text style={{ color: Colors.GREY4, fontSize: RF(1.6) }}>
-                  {gasPrice} {tokenInfo.tokenName}
+                  {gasFee} {tokenInfo.tokenName}
                 </Text>
               </View>
-            )}
+            ) : null}
           </View>
           <View style={{ marginTop: hp('2.5%') }}>
             <Text style={styles.inputLeft}>
               {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
-              {networkFeeShow && (
-                <Text style={[styles.priceCont, { marginRight: hp('1%') }]}>
-                  {Number(amount) + gasPrice} {tokenInfo.tokenName}
+              {alertMessage.networkFeeShow && !decimalDigitAlert &&
+                Number(amount) > 0 &&
+                gasFee !== 0 ? (
+                <Text style={[styles.priceCont, { marginRight: hp('1%'), fontSize: isSelftToken() ? RF(3.4) : RF(2) }]}>
+                  {isSelftToken() ? Number((Number(amount) + Number(gasFee)).toFixed(8)) + ' ' + tokenInfo.tokenName : amount + ' ' + type + ' + ' + gasFee + ' ' + tokenInfo.tokenName}
                 </Text>
-              )}
+              ) : amount &&
+                Number(amount) > 0 &&
+                !alertMessage.isInsufficientFund && !decimalDigitAlert &&
+                !alertMessage.gasFeeAlert ? (
+                <ActivityIndicator
+                  style={{ marginRight: hp('1%') }}
+                  color={Colors.BLUE1}
+                />
+              ) : null}
             </View>
           </View>
         </View>
@@ -541,7 +818,7 @@ const SendScreen = React.memo(props => {
         <AppButton
           label={translate('wallet.common.send')}
           // view={loading}
-          view={disableButton}
+          view={alertMessage.isButtonDisable}
           containerStyle={CommonStyles.button}
           labelStyle={CommonStyles.buttonLabel}
           onPress={() => {
@@ -713,16 +990,15 @@ const styles = StyleSheet.create({
   },
   gasFeeTextContainer: {
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-between',
     marginVertical: hp('1%'),
   },
   gasFeeText: {
     color: Colors.GREY4,
     fontSize: RF(1.6),
-    marginRight: wp('15%'),
   },
   priceCont: {
-    fontSize: RF(3.4),
+    fontSize: Platform.OS === 'ios' ? RF(3.3) : RF(2.9),
     color: Colors.black,
     fontWeight: 'bold',
   },
@@ -753,7 +1029,6 @@ const styles = StyleSheet.create({
   },
   inputRight: {
     ...CommonStyles.text(Fonts.ARIAL, Colors.GREY4, RF(1.8)),
-    marginBottom: hp('0.2%'),
     marginRight: hp('1%'),
     alignSelf: 'center',
   },
@@ -768,6 +1043,15 @@ const styles = StyleSheet.create({
     borderRadius: hp('1%'),
     marginTop: hp('1%'),
     borderColor: Colors.GREY4,
+  },
+  maxContainer: {
+    height: hp('5.5%'),
+    width: wp('18%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0,
+    borderBottomRightRadius: hp('1%'),
+    borderTopRightRadius: hp('1%'),
   },
   totalAmountContainer: {
     borderWidth: 1,
