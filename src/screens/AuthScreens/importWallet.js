@@ -389,7 +389,7 @@ const ImportWallet = ({ route, navigation }) => {
           <View style={styles.bottomView}>
             <AppButton
               label={translate('wallet.common.next')}
-              view={inputType !== 1 ? (!phrase || (phraseValidation(phrase).length === 12 ? false : true)) : !pvtKey}
+              view={inputType !== 1 ? (!phrase || ((phraseValidation(phrase).length === 12 && phraseWarning) ? false : true)) : !pvtKey}
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
