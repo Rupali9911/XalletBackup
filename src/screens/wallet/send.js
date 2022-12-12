@@ -706,7 +706,7 @@ const SendScreen = React.memo(props => {
               <NumberFormat
                 value={tokenInfo.tokenDollarValue}
                 displayType={'text'}
-                decimalScale={4}
+                decimalScale={2}
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView style={styles.balanceText}>

@@ -15,7 +15,7 @@ const PriceText = props => {
       <NumberFormat
         value={props.price || '0.00'}
         displayType={'text'}
-        decimalScale={8}
+        decimalScale={2}
         thousandSeparator={true}
         renderText={formattedValue => (
           <Text numberOfLines={1} style={[styles.paymentTxt, textColor]}>

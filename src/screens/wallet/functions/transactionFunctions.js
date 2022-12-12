@@ -308,12 +308,12 @@ export const getSignData = (transferParameters, config, web3, reject) => {
 
     if (type == 'usdt') {
       convertto6decimal =
-        parseFloat(transferParameters.amount).toFixed(6) * 1e6;
+        parseFloat(transferParameters.amount).toFixed(8) * 1e8;
       signData = contract.methods
         .transfer(transferParameters.toAddress, convertto6decimal)
         .encodeABI();
     } else {
-      convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
+      convertto6decimal = parseFloat(transferParameters.amount).toFixed(8);
 
       convertto6decimal = getConvertedDecimalValue(
         type,
@@ -367,7 +367,7 @@ export const balanceTransfer = async (transferParameters, config) => {
         const gasPrice = await getGasPrice(config.rpcURL);
 
         let convertto6decimal = parseFloat(transferParameters.amount).toFixed(
-          6,
+          8,
         );
         const amountToSend = web3.utils.toWei(
           convertto6decimal.toString(),
