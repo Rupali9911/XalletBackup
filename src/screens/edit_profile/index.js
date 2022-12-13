@@ -46,8 +46,15 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon, InfoIcon} =
-  SVGS;
+const {
+  InstagramIcon,
+  ArtistSvg,
+  ArtistSvgI,
+  SuccessIcon,
+  ErrorIcon,
+  InfoIcon,
+  ComingSoonInfoIcon,
+} = SVGS;
 
 function Profile(props) {
   const {navigation, handleSubmit} = props;
@@ -66,6 +73,7 @@ function Profile(props) {
   const [errAbout, setErrAbout] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [msgModal, setMsgModal] = useState(false);
+  const [isComingSoonModal, setComingSoonModal] = useState(false);
   const [msg, setMsg] = useState('');
   const [disable, setDisable] = useState(true);
   const [firstTime, setFirstTime] = useState(false);
@@ -169,7 +177,12 @@ function Profile(props) {
             </View>
             <GroupButton
               style={styles.artistGroupView}
-              onLeftPress={() => setIsVisible(false)}
+              onLeftPress={() => {
+                setIsVisible(false);
+                setTimeout(() => {
+                  renderComingSoonModal();
+                }, 500);
+              }}
               leftStyle={styles.artistLeft}
               leftTextStyle={styles.groupLeftTitle}
               leftText={translate('common.OK')}
@@ -185,7 +198,7 @@ function Profile(props) {
     return (
       <View style={styles.msgModalContent}>
         <Modal isVisible={msgModal} style={styles.msgModal}>
-          <View style={styles.msgModalView}>
+          <View style={[styles.msgModalView, styles.messageModalView]}>
             {toastMsg?.error ? (
               <ErrorIcon width={20} height={20} />
             ) : (
@@ -197,6 +210,22 @@ function Profile(props) {
       </View>
     );
   };
+
+  const comingSoonModal = () => {
+    return (
+      <View style={styles.msgModalContent}>
+        <Modal isVisible={isComingSoonModal} style={styles.msgModal}>
+          <View style={styles.msgModalView}>
+            <ComingSoonInfoIcon width={20} height={20} />
+            <Text style={styles.msgModalText}>
+              {translate('common.comingSoonApr')}
+            </Text>
+          </View>
+        </Modal>
+      </View>
+    );
+  };
+
   const renderMessageModal = msg => {
     setMsg(msg);
     setMsgModal(true);
@@ -204,6 +233,13 @@ function Profile(props) {
       setMsg('');
       setMsgModal(false);
       dispatch(setToastMsg(null));
+    }, 3000);
+  };
+
+  const renderComingSoonModal = () => {
+    setComingSoonModal(true);
+    setTimeout(() => {
+      setComingSoonModal(false);
     }, 3000);
   };
 
@@ -612,6 +648,7 @@ function Profile(props) {
           />
           {messageModal()}
           {renderArtistModal()}
+          {comingSoonModal()}
         </KeyboardAwareScrollView>
       </SafeAreaView>
     </AppBackground>
@@ -683,9 +720,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: SIZE(40),
     marginBottom: SIZE(15),
     borderRadius: SIZE(5),
-    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  messageModalView: {
+    justifyContent: 'center',
   },
   msgModalText: {
     marginLeft: SIZE(10),
