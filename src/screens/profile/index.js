@@ -561,14 +561,26 @@ function Profile({navigation, connector, route}) {
                   {userDetails?.discordSite ? (
                     <TouchableOpacity
                       style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.discordSite)}>
+                      onPress={() =>
+                        Linking.openURL(
+                          /(http(s?)):\/\//i.test(userDetails?.discordSite)
+                            ? userDetails?.discordSite
+                            : 'https://' + userDetails?.discordSite,
+                        )
+                      }>
                       <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
                     </TouchableOpacity>
                   ) : null}
                   {userDetails?.website ? (
                     <TouchableOpacity
                       style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.website)}>
+                      onPress={() =>
+                        Linking.openURL(
+                          /(http(s?)):\/\//i.test(userDetails?.website)
+                            ? userDetails?.website
+                            : 'https://' + userDetails?.website,
+                        )
+                      }>
                       <WebIcon width={SIZE(35)} height={SIZE(35)} />
                     </TouchableOpacity>
                   ) : null}
