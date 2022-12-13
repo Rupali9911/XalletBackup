@@ -676,7 +676,12 @@ const SendScreen = React.memo(props => {
   };
 
   const decimalDigitAlert =
-    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8 && (type !== 'USDT' && type !== 'USDC')
+      ? true
+      : false;
+
+  const decimalSixDigitAlert =
+    (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 6 && (type == 'USDT' || type == 'USDC')
       ? true
       : false;
 
@@ -768,6 +773,13 @@ const SendScreen = React.memo(props => {
                 </Text>
               </View>
             )}
+            {decimalSixDigitAlert && (
+              <View>
+                <Text style={styles.alertText}>
+                  {translate('common.DECIMAL_POINTS_SIX_DIGIT_LIMIT')}
+                </Text>
+              </View>
+            )}
             {!alertMessage.isInsufficientFund && alertMessage.gasFeeAlert && (
               <View>
                 <Text style={styles.alertText}>
@@ -779,7 +791,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               </View>
             )}
-            {alertMessage.networkFeeShow && gasFee !== 0 && !decimalDigitAlert ? (
+            {alertMessage.networkFeeShow && gasFee !== 0 && !decimalDigitAlert && !decimalSixDigitAlert ? (
               <View style={styles.gasFeeTextContainer}>
                 <Text style={styles.gasFeeText}>
                   + {translate('common.NETWORK_GAS_FEE')}
@@ -795,7 +807,7 @@ const SendScreen = React.memo(props => {
               {translate('common.TOTAL_AMOUNT_GAS_FEE')}
             </Text>
             <View style={styles.totalAmountContainer}>
-              {alertMessage.networkFeeShow && !decimalDigitAlert &&
+              {alertMessage.networkFeeShow && !decimalDigitAlert && !decimalSixDigitAlert &&
                 Number(amount) > 0 &&
                 gasFee !== 0 ? (
                 <Text style={[styles.priceCont, { marginRight: hp('1%'), fontSize: isSelftToken() ? RF(3.4) : RF(2) }]}>
@@ -803,7 +815,7 @@ const SendScreen = React.memo(props => {
                 </Text>
               ) : amount &&
                 Number(amount) > 0 &&
-                !alertMessage.isInsufficientFund && !decimalDigitAlert &&
+                !alertMessage.isInsufficientFund && !decimalDigitAlert && !decimalSixDigitAlert &&
                 !alertMessage.gasFeeAlert ? (
                 <ActivityIndicator
                   style={{ marginRight: hp('1%') }}

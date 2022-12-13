@@ -312,9 +312,8 @@ export const getSignData = (transferParameters, config, web3, reject) => {
       signData = contract.methods
         .transfer(transferParameters.toAddress, convertto6decimal)
         .encodeABI();
-    } if (type == 'usdc') {
-      convertto6decimal =
-        parseFloat(transferParameters.amount).toFixed(6);
+    } else if (type == 'usdc') {
+      convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
 
       convertto6decimal = getConvertedDecimalValue(
         type,
@@ -323,7 +322,10 @@ export const getSignData = (transferParameters, config, web3, reject) => {
         reject,
       );
       signData = contract.methods
-        .transfer(transferParameters.toAddress, convertto6decimal)
+        .transfer(
+          transferParameters.toAddress,
+          web3.utils.toHex(convertto6decimal),
+        )
         .encodeABI();
     } else {
       convertto6decimal = parseFloat(transferParameters.amount).toFixed(8);

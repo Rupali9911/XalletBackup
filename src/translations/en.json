@@ -775,7 +775,8 @@
     "INSUFFICIENT_FUND_FOR_GAS": "Insufficient fund for Gas fee,",
     "IS_REQUIRED": "is required.",
     "VIDEO_FORMAT_ERROR":"This media format is not supported.",
-    "ACCOUNT_DELETED": "Your account was deleted"
+    "ACCOUNT_DELETED": "Your account was deleted",
+    "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "You can enter decimal points only upto 6 digits"
   },
   "AwardPage": {},
   "wallet": {
