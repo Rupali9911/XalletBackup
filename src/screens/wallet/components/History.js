@@ -57,7 +57,8 @@ const ListItems = props => {
             <View style={{ flex: 1, ...CommonStyles.center, alignItems: 'flex-end' }}>
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
                 <NumberFormat
-                    value={coinType.coin.type == "USDC" || coinType.coin.type == "USDT" ? item.value * 1e9 : item.value}
+                    // value={coinType.coin.type == "USDC" || coinType.coin.type == "USDT" ? item.value * 1e9 : item.value}
+                    value={item.value}
                     displayType={'text'}
                     decimalScale={8}
                     thousandSeparator={true}

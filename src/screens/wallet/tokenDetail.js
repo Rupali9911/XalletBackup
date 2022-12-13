@@ -20,7 +20,7 @@ import {
   addAllXetaTransactions,
 } from '../../store/reducer/walletReducer';
 import testnet from '../../common/networkType';
-import { environment, IsTestNet, translate } from '../../walletUtils';
+import { environment, IsTestNet, translate, getConfigDetailsFromEnviorment } from '../../walletUtils';
 import { HeaderBtns } from './components/HeaderButtons';
 import History from './components/History';
 import { balance } from './functions';
@@ -50,6 +50,8 @@ const TokenDetail = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [item, setItem] = useState(route.params.item);
   const [wallet, setWallet] = useState(null);
+
+  const config = getConfigDetailsFromEnviorment(networkType?.name, item.type);
 
   useEffect(async () => {
     setLoading(true);
@@ -204,12 +206,6 @@ const TokenDetail = ({ route, navigation }) => {
   };
 
   const getTransactionsByType = (address, type, coin) => {
-    console.log(
-      '@@@ Get Transaction By Type ========>',
-      type,
-      coin,
-      networkType,
-    );
     return new Promise((resolve, reject) => {
       let params = {
         address,
@@ -218,6 +214,7 @@ const TokenDetail = ({ route, navigation }) => {
       };
       if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic' && coin !== 'XETA') {
         params.tokenName = coin;
+        params.contractAddress = config.ContractAddress
       }
       sendRequest({
         url: `${NEW_BASE_URL}/mobile/history`,

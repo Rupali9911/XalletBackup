@@ -379,7 +379,7 @@ const SendScreen = React.memo(props => {
               web3,
               reject,
             );
-            // console.log('@@@ Getting sign data ========>', signData);
+            console.log('@@@ Getting sign data ========>', signData);
             if (!signData) return;
             const data = {
               from: transferParameters.publicAddress,

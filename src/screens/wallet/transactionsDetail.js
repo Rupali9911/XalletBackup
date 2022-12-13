@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment';
 import React from 'react';
-import {Image, Linking, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 import NumberFormat from 'react-number-format';
 import check from '../../assets/pngs/check.png';
 import copy from '../../assets/pngs/copy.png';
@@ -9,12 +9,12 @@ import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import TextView from '../../components/appText';
 import Colors from '../../constants/Colors';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {alertWithSingleBtn} from '../../utils';
-import {environment, translate} from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
+import { environment, translate } from '../../walletUtils';
 
-export default function transactionsDetail({route}) {
+export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
   const coin = route?.params?.coin;
   const copyAddress = () => {
@@ -59,11 +59,7 @@ export default function transactionsDetail({route}) {
             : translate('wallet.common.remittanceQuantity')}
         </TextView>
         <NumberFormat
-          value={
-            coin.type == 'USDC' || coin.type == 'USDT'
-              ? transactionInfo?.value * 1e9
-              : transactionInfo?.value
-          }
+          value={transactionInfo?.value}
           displayType={'text'}
           decimalScale={8}
           thousandSeparator={true}
@@ -80,13 +76,13 @@ export default function transactionsDetail({route}) {
           <TextView
             style={[
               styles.recieveText,
-              transactionInfo?.hash == '' && {color: Colors.RED2},
+              transactionInfo?.hash == '' && { color: Colors.RED2 },
             ]}>
             {transactionInfo?.hash !== ''
               ? translate('wallet.common.paymentComplete')
               : transactionInfo?.direction == 'in'
-              ? translate('wallet.common.paymentFailed')
-              : translate('wallet.common.remittanceFailure')}
+                ? translate('wallet.common.paymentFailed')
+                : translate('wallet.common.remittanceFailure')}
           </TextView>
         </View>
       </View>
