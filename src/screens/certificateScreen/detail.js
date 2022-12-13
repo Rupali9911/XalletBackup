@@ -3171,7 +3171,7 @@ const DetailScreen = ({navigation, route}) => {
             key === ''
               ? styles.rowText
               : key === 'blockChainType'
-              ? [styles.rowText, {textTransform: 'uppercase'}]
+              ? [styles.rowText]
               : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
           }
           ellipsizeMode="middle"
