@@ -666,7 +666,12 @@ const SendScreen = React.memo(props => {
       const finalMaxAmount = maxAmount.toFixed(8);
       setAmount(finalMaxAmount.toString());
     } else {
-      setAmount(getTokenBalance().toString());
+      if (item.type == 'USDT' || item.type == 'USDC') {
+        let maxValue = Number(getTokenBalance().toFixed(6))
+        setAmount(maxValue.toString());
+      } else {
+        setAmount(getTokenBalance().toString());
+      }
     }
   };
 
