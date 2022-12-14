@@ -37,7 +37,9 @@ const NetworkPicker = props => {
                   style={styles.listItem}
                   onPress={() => onItemSelect(item)}>
                   {/* <TextView style={styles.text}>{selectedLanguageItem.language_name === 'ja' ? item.translatedName : item.name}</TextView> */}
-                  <TextView style={styles.text}>{item.name}</TextView>
+                  <TextView style={styles.text}>
+                    {item.name === 'XANACHAIN' ? 'XANAChain' : item.name}
+                  </TextView>
                   <Image
                     style={[styles.logoSize, props.logoStyle]}
                     resizeMode="contain"
