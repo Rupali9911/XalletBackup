@@ -122,7 +122,7 @@ export const PaymentField = props => {
           disabled={
             props.alertMessage.isInsufficientFund ||
             props.alertMessage.gasFeeAlert ||
-            !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
+            !props.editable || (props.balance > Number(props.gasFee) ? false : true)
           }
           style={[
             styles.maxContainer,
@@ -130,13 +130,13 @@ export const PaymentField = props => {
               backgroundColor:
                 props.alertMessage.isInsufficientFund ||
                   props.alertMessage.gasFeeAlert ||
-                  !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
+                  !props.editable || (props.balance > Number(props.gasFee) ? false : true)
                   ? Colors.GREY6
                   : Colors.BLUE2,
               borderColor:
                 props.alertMessage.isInsufficientFund ||
                   props.alertMessage.gasFeeAlert ||
-                  !props.editable || (Number(props.gasFee) !== 0 ? false : true) || (props.balance > Number(props.gasFee) ? false : true)
+                  !props.editable || (props.balance > Number(props.gasFee) ? false : true)
                   ? Colors.GREY6
                   : Colors.BLUE2,
             },
@@ -298,6 +298,7 @@ const SendScreen = React.memo(props => {
   const [networkConfig, setNetworkConfig] = useState(config);
   const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [isMaxButtonPress, setIsMaxButtonPress] = useState(false)
   const [alertMessage, setAlertMessage] = useState({
     isAddressInvalid: false,
     isPaymentFielDisable: false,
@@ -398,7 +399,7 @@ const SendScreen = React.memo(props => {
             const finalGasFee = Number(Number(gasFee).toFixed(8));
             console.log('@@@ Gas Fee ERC-20 3333=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
-          } else if (isSelftToken() && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
+          } else if (isSelftToken() && !isMaxButtonPress && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
             console.log("@@@ gas fee self 1111 =======>", gasFee)
@@ -468,6 +469,7 @@ const SendScreen = React.memo(props => {
         });
       } else if (!address || Number(amount) === 0) {
         console.log('@@@ Alert message (Self) 5555 ===========>');
+        setGasFee(0)
         setAlertMessage({
           ...alertMessage,
           isButtonDisable: true,
@@ -534,6 +536,7 @@ const SendScreen = React.memo(props => {
         });
       } else if (!address || Number(amount) === 0) {
         console.log('@@@ Alert message (ERC-20) 5555 ===========>');
+        setGasFee(0)
         setAlertMessage({
           ...alertMessage,
           isInsufficientFund: false,
@@ -659,11 +662,15 @@ const SendScreen = React.memo(props => {
       });
   };
 
-  const OnPressMax = () => {
+  const OnPressMax = async () => {
     if (isSelftToken()) {
-      const maxAmount = (getTokenBalance() - Number(gasFee));
-      // console.log("@@@ On press max ========>", getTokenBalance(), typeof getTokenBalance(), gasFee, typeof gasFee, Number(gasFee))
+      setIsMaxButtonPress(true);
+      const gasPrice = await getGasPrice(networkConfig.rpcURL);
+      const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
+      const finalGasFee = Number(Number(gasFee).toFixed(8));
+      const maxAmount = (getTokenBalance() - finalGasFee);
       const finalMaxAmount = maxAmount.toFixed(8);
+      setIsMaxButtonPress(false);
       setAmount(finalMaxAmount.toString());
     } else {
       if (item.type == 'USDT' || item.type == 'USDC') {
@@ -679,6 +686,8 @@ const SendScreen = React.memo(props => {
     setSuccessModalVisible(false);
     navigation.popToTop();
   };
+
+  const invalidAmount = amount.replace(/[^.]/g, "").length > 1 ? true : false
 
   const decimalDigitAlert =
     (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8 && (type !== 'USDT' && type !== 'USDC')
@@ -764,6 +773,13 @@ const SendScreen = React.memo(props => {
               }}
               onPressMax={() => OnPressMax()}
             />
+            {invalidAmount && (
+              <View>
+                <Text style={styles.alertText}>
+                  Invalid amount
+                </Text>
+              </View>
+            )}
             {alertMessage.isInsufficientFund && (
               <View>
                 <Text style={styles.alertText}>
@@ -821,12 +837,15 @@ const SendScreen = React.memo(props => {
               ) : amount &&
                 Number(amount) > 0 &&
                 !alertMessage.isInsufficientFund && !decimalDigitAlert && !decimalSixDigitAlert &&
-                !alertMessage.gasFeeAlert ? (
+                !alertMessage.gasFeeAlert && !isMaxButtonPress ? (
                 <ActivityIndicator
                   style={{ marginRight: hp('1%') }}
                   color={Colors.BLUE1}
                 />
-              ) : null}
+              ) : isMaxButtonPress && (<ActivityIndicator
+                style={{ marginRight: hp('1%') }}
+                color={Colors.BLUE1}
+              />)}
             </View>
           </View>
         </View>
