@@ -776,7 +776,7 @@ const SendScreen = React.memo(props => {
             {invalidAmount && (
               <View>
                 <Text style={styles.alertText}>
-                  Invalid amount
+                  {translate('common.ENTER_INVALID_AMOUNT')}
                 </Text>
               </View>
             )}
