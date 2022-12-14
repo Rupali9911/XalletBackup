@@ -16,7 +16,7 @@ import {translate} from '../../walletUtils';
 import styles from './styles';
 
 const NFTOwned = props => {
-  const {route, id, setProfileScroll, scrollEnabled} = props;
+  const {route, id, setChildScroll, scrollEnabled} = props;
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
@@ -96,7 +96,7 @@ const NFTOwned = props => {
       ) : MyNFTReducer.myNftOwnedList?.length ? (
         <FlatList
           key={2}
-          scrollEnabled={scrollEnabled}
+          // scrollEnabled={scrollEnabled}
           data={MyNFTReducer?.myNftOwnedList}
           horizontal={false}
           numColumns={2}
@@ -120,22 +120,22 @@ const NFTOwned = props => {
             }
           }}
           onScrollBeginDrag={s => {
-            console.log(
-              '🚀 ~ ~ onScrollBeginDrag ~ ~',
-              s?.nativeEvent?.contentOffset,
-            );
-            setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+            // console.log(
+            //   '🚀 ~ o ~ onScrollBeginDrag ~ ~',
+            //   s?.nativeEvent?.contentOffset,
+            // );
+            // setChildScroll(s?.nativeEvent?.contentOffset?.y);
           }}
           onScroll={s => {
-            console.log('🚀 ~ o ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
-            setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+            // console.log('🚀 ~ o ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
+            // setChildScroll(s?.nativeEvent?.contentOffset?.y);
           }}
           onScrollEndDrag={s => {
-            console.log(
-              '🚀 ~ ~ onScrollEndDrag ~ ~',
-              s?.nativeEvent?.contentOffset,
-            );
-            setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+            // console.log(
+            //   '🚀 ~ o ~ onScrollEndDrag ~ ~',
+            //   s?.nativeEvent?.contentOffset,
+            // );
+            // setChildScroll(s?.nativeEvent?.contentOffset?.y);
           }}
           ListFooterComponent={renderFooter}
           onEndReachedThreshold={1}

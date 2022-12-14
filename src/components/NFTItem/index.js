@@ -24,6 +24,7 @@ import ProfileImg from '../../assets/pngs/default_profile_img.png';
 import Ethereum from '../../assets/pngs/ethereum.png';
 import {handleLike} from '../../screens/discover/discoverItem';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {ImagekitType} from '../../common/ImageConstant';
 
 export default function NFTItem(props, {navigation}) {
   const dispatch = useDispatch();
@@ -70,7 +71,7 @@ export default function NFTItem(props, {navigation}) {
         style={styles.listItem}>
         <C_Image
           uri={getImageUri()}
-          type={item?.type}
+          size={ImagekitType.BANNER}
           imageStyle={styles.listImage}
         />
       </FixedTouchableHighlight>
@@ -131,8 +132,8 @@ export default function NFTItem(props, {navigation}) {
       <View>
         <C_Image
           category={item.category}
-          // type={isCollection ? isBlind ? uriType : item?.type : uriType}
           uri={getImageUri()}
+          size={ImagekitType.BANNER}
           imageStyle={
             Platform.OS === 'ios'
               ? checkVideoUrl
@@ -355,28 +356,28 @@ export default function NFTItem(props, {navigation}) {
   //   }
   // }
 
-  const renderIcon = () => {
-    const baseCurrency = item?.baseCurrency
-      ? item.baseCurrency
-      : item?.newprice?.baseCurrency
-      ? item.newprice.baseCurrency
-      : 0;
-    const nftChain = item?.nftChain
-      ? item?.nftChain
-      : item?.newprice?.mainChain;
-    const uri = nftCurrencyIcon(baseCurrency, nftChain);
-    if (uri) {
-      if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
-        return (
-          <SvgWithCssUri
-            uri={nftCurrencyIcon(baseCurrency, nftChain)}
-            width={SIZE(12)}
-            height={SIZE(12)}
-          />
-        );
-      else return <Image source={{uri: uri}} />;
-    }
-  };
+  // const renderIcon = () => {
+  //   const baseCurrency = item?.baseCurrency
+  //     ? item.baseCurrency
+  //     : item?.newprice?.baseCurrency
+  //     ? item.newprice.baseCurrency
+  //     : 0;
+  //   const nftChain = item?.nftChain
+  //     ? item?.nftChain
+  //     : item?.newprice?.mainChain;
+  //   const uri = nftCurrencyIcon(baseCurrency, nftChain);
+  //   if (uri) {
+  //     if (uri?.split('.')[uri?.split('.').length - 1] === 'svg')
+  //       return (
+  //         <SvgWithCssUri
+  //           uri={nftCurrencyIcon(baseCurrency, nftChain)}
+  //           width={SIZE(12)}
+  //           height={SIZE(12)}
+  //         />
+  //       );
+  //     else return <Image source={{uri: uri}} />;
+  //   }
+  // };
 
   const renderVerifiedIcon = () => {
     return <VerficationIcon />;
@@ -412,9 +413,10 @@ export default function NFTItem(props, {navigation}) {
               })
             }>
             {item?.creator?.avatar ? (
-              <Image
-                style={styles.creatorIcon}
-                source={{uri: item?.creator?.avatar}}
+              <C_Image
+                size={ImagekitType.AVATAR}
+                uri={item?.creator?.avatar}
+                imageStyle={styles.creatorIcon}
               />
             ) : (
               <Image style={styles.creatorIcon} source={IMAGES.DEFAULTUSER} />
@@ -434,9 +436,10 @@ export default function NFTItem(props, {navigation}) {
                 })
               }>
               {item?.owner?.avatar ? (
-                <Image
-                  style={styles.ownerIcon}
-                  source={{uri: item?.owner?.avatar}}
+                <C_Image
+                  size={ImagekitType.AVATAR}
+                  uri={item?.owner?.avatar}
+                  imageStyle={styles.ownerIcon}
                 />
               ) : (
                 <Image style={styles.ownerIcon} source={IMAGES.DEFAULTUSER} />
@@ -560,34 +563,34 @@ export default function NFTItem(props, {navigation}) {
   //   )
   // }
 
-  //================== Render End Time View Last Price Function ===================
-  const renderEndTimeViewLastPrice = () => {
-    return (
-      <View style={styles.endTimeView}>
-        <Text style={styles.lastText}>Last: </Text>
-        <Text style={styles.lastPriceText}>
-          {item?.lastCurrencyTraded === 'ALIA'
-            ? insertComma(parseFloat(item?.lastpriceTraded, true).toFixed(0))
-            : insertComma(item?.lastpriceTraded, true)}
-        </Text>
-        {/* <Text
-          style={{
-            color: '#aaa',
-            fontSize: SIZE(10)
-          }}>
-          {item?.lastCurrencyTraded}
-          (~{selectedLanguageItem.language_name !== "ja" ? "$" : null}
-          {
-            getDollarPrice(
-              item?.lastpriceTraded,
-              item?.lastCurrencyTraded)
-          }
-          {selectedLanguageItem.language_name === "ja" ? " ドル" : null}
-          )
-        </Text> */}
-      </View>
-    );
-  };
+  // //================== Render End Time View Last Price Function ===================
+  // const renderEndTimeViewLastPrice = () => {
+  //   return (
+  //     <View style={styles.endTimeView}>
+  //       <Text style={styles.lastText}>Last: </Text>
+  //       <Text style={styles.lastPriceText}>
+  //         {item?.lastCurrencyTraded === 'ALIA'
+  //           ? insertComma(parseFloat(item?.lastpriceTraded, true).toFixed(0))
+  //           : insertComma(item?.lastpriceTraded, true)}
+  //       </Text>
+  //       {/* <Text
+  //         style={{
+  //           color: '#aaa',
+  //           fontSize: SIZE(10)
+  //         }}>
+  //         {item?.lastCurrencyTraded}
+  //         (~{selectedLanguageItem.language_name !== "ja" ? "$" : null}
+  //         {
+  //           getDollarPrice(
+  //             item?.lastpriceTraded,
+  //             item?.lastCurrencyTraded)
+  //         }
+  //         {selectedLanguageItem.language_name === "ja" ? " ドル" : null}
+  //         )
+  //       </Text> */}
+  //     </View>
+  //   );
+  // };
 
   //================== Other Functions ===================
   const getImageUri = () => {
@@ -606,149 +609,149 @@ export default function NFTItem(props, {navigation}) {
       uriType === 'MOV';
   }
 
-  let lastCurrency = availableTokens.filter(
-    token =>
-      item?.newpriceTraded?.mainChain == token?.chain &&
-      item?.newpriceTraded?.baseCurrency == token.order,
-  );
+  // let lastCurrency = availableTokens.filter(
+  //   token =>
+  //     item?.newpriceTraded?.mainChain == token?.chain &&
+  //     item?.newpriceTraded?.baseCurrency == token.order,
+  // );
 
-  let iconNftChain = isBlind
-    ? item?.newpriceTraded
-      ? item?.Chain
-        ? item.Chain
-        : item?.chain
-        ? item.chain
-        : item?.mainTokenId?.toString().split('-')[0]
-      : item?.nftChain
-      ? item.nftChain
-      : item?.mainTokenId?.toString().split('-')[0]
-    : item?.mainTokenId
-    ? item?.mainTokenId?.toString().split('-')[0]
-    : item?.nftChain
-    ? item.nftChain
-    : '';
+  // let iconNftChain = isBlind
+  //   ? item?.newpriceTraded
+  //     ? item?.Chain
+  //       ? item.Chain
+  //       : item?.chain
+  //       ? item.chain
+  //       : item?.mainTokenId?.toString().split('-')[0]
+  //     : item?.nftChain
+  //     ? item.nftChain
+  //     : item?.mainTokenId?.toString().split('-')[0]
+  //   : item?.mainTokenId
+  //   ? item?.mainTokenId?.toString().split('-')[0]
+  //   : item?.nftChain
+  //   ? item.nftChain
+  //   : '';
 
-  const chainType = type => {
-    //Hardcoded as per web requirements
-    if (type === 'Polygon') return <PolygonIcon />;
-    if (type === 'Ethereum') return <Ethereum />;
-    if (type === 'BSC') return <BitmapIcon />;
-  };
+  // const chainType = type => {
+  //   //Hardcoded as per web requirements
+  //   if (type === 'Polygon') return <PolygonIcon />;
+  //   if (type === 'Ethereum') return <Ethereum />;
+  //   if (type === 'BSC') return <BitmapIcon />;
+  // };
 
-  const nftCurrencyIcon = (CurrencyFlag, chainType) => {
-    if (item.isForAward) return basePriceTokens[1].icon; //Hardcoded as per web requirements
-    let chainTypeFlag = chainType;
-    let found = basePriceTokens.find(
-      token => token.value === CurrencyFlag && token.chain === chainTypeFlag,
-    );
-    let search = basePriceTokens.find(
-      token => token.order === CurrencyFlag && token.chain === chainTypeFlag,
-    );
-    if (found) {
-      return found.icon;
-    } else if (search) {
-      return search.icon;
-    }
-  };
+  // const nftCurrencyIcon = (CurrencyFlag, chainType) => {
+  //   if (item.isForAward) return basePriceTokens[1].icon; //Hardcoded as per web requirements
+  //   let chainTypeFlag = chainType;
+  //   let found = basePriceTokens.find(
+  //     token => token.value === CurrencyFlag && token.chain === chainTypeFlag,
+  //   );
+  //   let search = basePriceTokens.find(
+  //     token => token.order === CurrencyFlag && token.chain === chainTypeFlag,
+  //   );
+  //   if (found) {
+  //     return found.icon;
+  //   } else if (search) {
+  //     return search.icon;
+  //   }
+  // };
 
-  const getAwardsIcon = awardType => {
-    switch (awardType) {
-      case 'GOLD_Award':
-        return AWARD_GOLD;
-      case 'BRONZE_Award':
-        return AWARD_BRONZE;
-      case 'SILVER_Award':
-        return AWARD_SILVER;
-      case 'Special_Award':
-        return AWARD_SPECIAL;
-      default:
-        return AWARD_SPECIAL;
-    }
-  };
+  // const getAwardsIcon = awardType => {
+  //   switch (awardType) {
+  //     case 'GOLD_Award':
+  //       return AWARD_GOLD;
+  //     case 'BRONZE_Award':
+  //       return AWARD_BRONZE;
+  //     case 'SILVER_Award':
+  //       return AWARD_SILVER;
+  //     case 'Special_Award':
+  //       return AWARD_SPECIAL;
+  //     default:
+  //       return AWARD_SPECIAL;
+  //   }
+  // };
 
-  const getAuctionTimeRemain = item => {
-    if (item.newprice && item.newprice.endTime) {
-      const diff =
-        new Date(item.newprice.endTime).getTime() - new Date().getTime();
-      if (diff <= 0) {
-        return null;
-      } else {
-        let days = parseInt(diff / (1000 * 60 * 60 * 24));
-        let hours = parseInt(diff / (1000 * 60 * 60));
-        let mins = parseInt(diff / (1000 * 60));
-        let secs = parseInt(diff / 1000);
+  // const getAuctionTimeRemain = item => {
+  //   if (item.newprice && item.newprice.endTime) {
+  //     const diff =
+  //       new Date(item.newprice.endTime).getTime() - new Date().getTime();
+  //     if (diff <= 0) {
+  //       return null;
+  //     } else {
+  //       let days = parseInt(diff / (1000 * 60 * 60 * 24));
+  //       let hours = parseInt(diff / (1000 * 60 * 60));
+  //       let mins = parseInt(diff / (1000 * 60));
+  //       let secs = parseInt(diff / 1000);
 
-        if (days > 0) {
-          return (
-            translate('common.bidDeadLine') +
-            ' ' +
-            days +
-            ' ' +
-            translate('common.daysleft')
-          );
-        } else if (hours > 0) {
-          return (
-            translate('common.bidDeadLine') +
-            ' ' +
-            hours +
-            ' ' +
-            translate('common.hoursLeft')
-          );
-        } else if (mins > 0) {
-          return (
-            translate('common.bidDeadLine') +
-            ' ' +
-            mins +
-            ' ' +
-            translate('common.minutesLeft')
-          );
-        } else if (secs > 0) {
-          return (
-            translate('common.bidDeadLine') +
-            ' ' +
-            secs +
-            ' ' +
-            translate('common.secondsLeft')
-          );
-        } else {
-          return (
-            translate('common.bidDeadLine') + ' ' + ` ${hours}:${mins}:${secs} `
-          );
-        }
-      }
-    }
-    return null;
-  };
+  //       if (days > 0) {
+  //         return (
+  //           translate('common.bidDeadLine') +
+  //           ' ' +
+  //           days +
+  //           ' ' +
+  //           translate('common.daysleft')
+  //         );
+  //       } else if (hours > 0) {
+  //         return (
+  //           translate('common.bidDeadLine') +
+  //           ' ' +
+  //           hours +
+  //           ' ' +
+  //           translate('common.hoursLeft')
+  //         );
+  //       } else if (mins > 0) {
+  //         return (
+  //           translate('common.bidDeadLine') +
+  //           ' ' +
+  //           mins +
+  //           ' ' +
+  //           translate('common.minutesLeft')
+  //         );
+  //       } else if (secs > 0) {
+  //         return (
+  //           translate('common.bidDeadLine') +
+  //           ' ' +
+  //           secs +
+  //           ' ' +
+  //           translate('common.secondsLeft')
+  //         );
+  //       } else {
+  //         return (
+  //           translate('common.bidDeadLine') + ' ' + ` ${hours}:${mins}:${secs} `
+  //         );
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // };
 
-  const getCreatorName = () => {
-    let creatorName =
-      item?.creatorObj && typeof item?.creatorObj[0] === 'object'
-        ? item.creatorObj[0]?.role === 'crypto'
-          ? item.creatorObj[0]?.title?.trim()
-            ? item.creatorObj[0].title
-            : item.creatorObj[0]?.name?.trim()
-            ? item.creatorObj[0].name
-            : item.creatorObj[0]?.username?.trim()
-            ? item.creatorObj[0].username.includes('0x')
-              ? item.creatorObj[0].username.substring(0, 6)
-              : item.creatorObj[0].username
-            : item.creatorObj[0]?._id
-            ? item.creatorObj[0]._id
-            : ''
-          : item.creatorObj[0]?.username?.trim()
-          ? item.creatorObj[0].username
-          : item.creatorObj[0]?.name?.trim()
-          ? item.creatorObj[0].name
-          : item.creatorObj[0]?.title?.trim()
-          ? item.creatorObj[0].title
-          : item.creatorObj[0]?._id
-          ? item.creatorObj[0]._id
-          : ''
-        : item?.creatorObj && item?.creatorObj[0]?._id
-        ? item.creatorObj[0]._id
-        : '';
-    return creatorName;
-  };
+  // const getCreatorName = () => {
+  //   let creatorName =
+  //     item?.creatorObj && typeof item?.creatorObj[0] === 'object'
+  //       ? item.creatorObj[0]?.role === 'crypto'
+  //         ? item.creatorObj[0]?.title?.trim()
+  //           ? item.creatorObj[0].title
+  //           : item.creatorObj[0]?.name?.trim()
+  //           ? item.creatorObj[0].name
+  //           : item.creatorObj[0]?.username?.trim()
+  //           ? item.creatorObj[0].username.includes('0x')
+  //             ? item.creatorObj[0].username.substring(0, 6)
+  //             : item.creatorObj[0].username
+  //           : item.creatorObj[0]?._id
+  //           ? item.creatorObj[0]._id
+  //           : ''
+  //         : item.creatorObj[0]?.username?.trim()
+  //         ? item.creatorObj[0].username
+  //         : item.creatorObj[0]?.name?.trim()
+  //         ? item.creatorObj[0].name
+  //         : item.creatorObj[0]?.title?.trim()
+  //         ? item.creatorObj[0].title
+  //         : item.creatorObj[0]?._id
+  //         ? item.creatorObj[0]._id
+  //         : ''
+  //       : item?.creatorObj && item?.creatorObj[0]?._id
+  //       ? item.creatorObj[0]._id
+  //       : '';
+  //   return creatorName;
+  // };
 
   // =================== Start Commented Code =================================
   // const getDollarPrice = async (price = Number(price), baseCurrency) => {

@@ -4,33 +4,57 @@ import FastImage from 'react-native-fast-image';
 import {SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID} from '../constants';
 import Colors from '../constants/Colors';
 import Audio from '../assets/pngs/headphone-icon.png';
+import {SvgUri} from 'react-native-svg';
+import {getFileType} from '../common/function';
+import {getImageUri} from '../common/ImageConstant';
 
 const {PlayButtonIcon} = SVGS;
 
 const C_Image = props => {
-  let [loadImage, setLoadImage] = useState(false);
+  let [loadImage, setLoadImage] = useState(true);
   let [brokenUrl, setBrokenUrl] = useState(false);
   let [isBroken, setIsBroken] = useState(false);
 
+  let fileType = getFileType(props?.uri);
+  let imageUri = getImageUri(props?.uri, props?.size);
+  // console.log('🚀 ~ file: customImage.js:20 ~ imageUri', imageUri);
   const checkVideoUrl = props?.category;
 
   return (
     <>
-      {brokenUrl ? (
+      {fileType?.toLowerCase() === 'svg' ||
+      fileType?.toLowerCase()?.includes('svg') ? (
+        <View style={props?.imageStyle}>
+          <SvgUri
+            width="100%"
+            height="100%"
+            uri={props?.uri}
+            onLoad={o => {
+              setLoadImage(false);
+              console.log('🚀 ~ file: customImage.js:84 ~ o', o);
+            }}
+            onError={({nativeEvent}) => {
+              console.log(nativeEvent, 'errror => 33', imageUri);
+              setLoadImage(false);
+              setIsBroken(true);
+            }}
+          />
+        </View>
+      ) : brokenUrl ? (
         <Image
           style={props.imageStyle}
           onLoadStart={() => setLoadImage(true)}
           onLoadEnd={() => setLoadImage(false)}
           onError={({nativeEvent}) => {
-            console.log(nativeEvent, 'errror => 74', props.uri);
+            console.log(nativeEvent, 'errror => 74', imageUri);
             setIsBroken(true);
           }}
           source={
-            props.uri
+            imageUri
               ? isBroken
                 ? IMAGES.brokenIcon
                 : {
-                    uri: props.uri,
+                    uri: imageUri,
                   }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE
@@ -51,9 +75,9 @@ const C_Image = props => {
             setBrokenUrl(true);
           }}
           source={
-            props.uri
+            imageUri
               ? {
-                  uri: props.uri,
+                  uri: imageUri,
                   priority: FastImage.priority.high,
                 }
               : props.imageType == 'profile'

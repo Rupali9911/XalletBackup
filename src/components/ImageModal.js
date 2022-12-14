@@ -4,6 +4,8 @@ import {SIZE, SVGS} from '../constants';
 import {wp} from '../constants/responsiveFunct';
 import Modal from 'react-native-modal';
 import CloseIcon from 'react-native-vector-icons/SimpleLineIcons';
+import C_Image from './customImage';
+import {ImagekitType} from '../common/ImageConstant';
 
 const {CircleCloseIcon} = SVGS;
 
@@ -25,14 +27,15 @@ const ImageModal = props => {
       <View>
         <CloseIcon
           name="close"
-          style={[styles.iconStyle,iconStyle]}
+          style={[styles.iconStyle, iconStyle]}
           size={iconSize}
           color={iconColor}
           onPress={() => setVisible(false)}
         />
-        <Image
-          source={{uri: props?.uri}}
-          style={[styles.modalImg, imageStyle]}
+        <C_Image
+          uri={props?.uri}
+          size={ImagekitType.FULLIMAGE}
+          imageStyle={[styles.modalImg, imageStyle]}
         />
       </View>
     </Modal>

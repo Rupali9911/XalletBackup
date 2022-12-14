@@ -15,7 +15,7 @@ import {
 import styles from './styles';
 
 const NFTCreated = props => {
-  const {route, id, setProfileScroll, scrollEnabled} = props;
+  const {route, id, setChildScroll, scrollEnabled} = props;
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
@@ -98,7 +98,7 @@ const NFTCreated = props => {
         <View>
           <FlatList
             key={1}
-            scrollEnabled={scrollEnabled}
+            // scrollEnabled={scrollEnabled}
             data={MyNFTReducer?.myNftCreatedList}
             horizontal={false}
             numColumns={2}
@@ -122,22 +122,25 @@ const NFTCreated = props => {
               }
             }}
             onScrollBeginDrag={s => {
-              console.log(
-                '🚀 ~ ~ onScrollBeginDrag ~ ~',
-                s?.nativeEvent?.contentOffset,
-              );
-              setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+              // console.log(
+              //   '🚀 ~ c ~ onScrollBeginDrag ~ ~',
+              //   s?.nativeEvent?.contentOffset,
+              // );
+              // setChildScroll(s?.nativeEvent?.contentOffset?.y);
             }}
             onScroll={s => {
-              console.log('🚀 ~ c ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
-              setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+              // console.log(
+              //   '🚀 ~ c ~ onScroll ~ ~',
+              //   s?.nativeEvent?.contentOffset,
+              // );
+              // setChildScroll(s?.nativeEvent?.contentOffset?.y);
             }}
             onScrollEndDrag={s => {
-              console.log(
-                '🚀 ~ ~ onScrollEndDrag ~ ~',
-                s?.nativeEvent?.contentOffset,
-              );
-              setProfileScroll(s?.nativeEvent?.contentOffset?.y);
+              // console.log(
+              //   '🚀 ~ c ~ onScrollEndDrag ~ ~',
+              //   s?.nativeEvent?.contentOffset,
+              // );
+              // setChildScroll(s?.nativeEvent?.contentOffset?.y);
             }}
             ListFooterComponent={renderFooter}
             onEndReachedThreshold={0.4}

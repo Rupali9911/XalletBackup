@@ -8,6 +8,7 @@ import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import {Verifiedcollections} from '../../components/verifiedCollection';
 import {IMAGES} from '../../constants';
 import {SvgWithCssUri} from 'react-native-svg';
+import {ImagekitType} from '../../common/ImageConstant';
 const {VerficationIcon} = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -56,7 +57,7 @@ export default function LaunchPadItemData(props) {
     return (
       <View>
         <C_Image
-          type={uriType}
+          size={ImagekitType.BANNER}
           uri={bannerImage}
           imageStyle={
             Platform.OS === 'ios'
@@ -75,7 +76,7 @@ export default function LaunchPadItemData(props) {
     return (
       <C_Image
         style={styles.userIconLoader}
-        type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+        size={ImagekitType.AVATAR}
         uri={iconImage}
         imageStyle={styles.iconImage}
       />

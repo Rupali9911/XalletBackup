@@ -59,20 +59,23 @@ const LaunchPad = () => {
 
   //=====================(Render Flatlist Item Function)=============================
   const renderItem = ({item}) => {
+    let bannerImage = item?.bannerImage
+      ? item.bannerImage
+      : item?.thumbCollectionImage;
     return (
       <LaunchPadItemData
-        bannerImage={item.bannerImage}
-        chainType={item.chainType || 'polygon'}
-        items={item.items}
-        iconImage={item.iconImage}
-        collectionName={item.name}
-        creator={item.owner.name}
-        network={item.networks}
-        count={item.totalNft}
-        status={item.status}
-        creatorInfo={item.owner.description}
-        blind={item.blind}
-        collectionId={item._id}
+        bannerImage={bannerImage}
+        chainType={item?.chainType || 'polygon'}
+        items={item?.items}
+        iconImage={item?.iconImage}
+        collectionName={item?.name}
+        creator={item?.owner.name}
+        network={item?.networks}
+        count={item?.totalNft}
+        status={item?.status}
+        creatorInfo={item?.owner.description}
+        blind={item?.blind}
+        collectionId={item?._id}
         // disabled={item.totalNft === 0}
         onPress={() => {
           navigation.push('CollectionDetail', {

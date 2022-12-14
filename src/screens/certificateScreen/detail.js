@@ -97,6 +97,7 @@ import ShowModal from './modal';
 import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
 import VideoModel from './ModalVideo';
+import {ImagekitType} from '../../common/ImageConstant';
 
 const Web3 = require('web3');
 
@@ -420,9 +421,9 @@ const DetailScreen = ({navigation, route}) => {
         setOfferData({
           ...offerData,
           nftId: detailNFT?.nftId,
-          networkTokenId: getERC20Tokens(currNetwork?.networkTokens)[0].id,
+          networkTokenId: getERC20Tokens(currNetwork?.networkTokens)[0]?.id,
           receiveToken: getTokenNameFromId(
-            Number(getERC20Tokens(currNetwork?.networkTokens)[0].id),
+            Number(getERC20Tokens(currNetwork?.networkTokens)[0]?.id),
             currNetwork?.networkTokens,
           ),
         });
@@ -434,7 +435,7 @@ const DetailScreen = ({navigation, route}) => {
             getERC20Tokens(currNetwork?.networkTokens),
             sellData.saleType,
             currNetwork?.name,
-          ).id,
+          )?.id,
         });
 
         const tokenTemp = currNetwork?.networkTokens?.map(net => {
@@ -583,7 +584,11 @@ const DetailScreen = ({navigation, route}) => {
               },
             ]}>
             {showThumb && (
-              <Image source={{uri: thumbnailUrl}} style={styles.modalImage} />
+              <C_Image
+                uri={thumbnailUrl}
+                size={ImagekitType.FULLIMAGE}
+                imageStyle={styles.modalImage}
+              />
             )}
             {showThumb && (
               <ActivityIndicator
@@ -668,7 +673,11 @@ const DetailScreen = ({navigation, route}) => {
           </View>
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{...styles.modalImage}}>
-            <C_Image uri={thumbnailUrl} imageStyle={styles.modalImage} />
+            <C_Image
+              size={ImagekitType.FULLIMAGE}
+              uri={thumbnailUrl}
+              imageStyle={styles.modalImage}
+            />
             <View style={styles.musicPlayer}>
               {duration === -1 ? (
                 <View style={styles.controlView}>
@@ -793,7 +802,11 @@ const DetailScreen = ({navigation, route}) => {
             </View>
           </View>
         ) : (
-          <C_Image uri={mediaUrl} imageStyle={styles.modalImage} />
+          <C_Image
+            size={ImagekitType.FULLIMAGE}
+            uri={mediaUrl}
+            imageStyle={styles.modalImage}
+          />
         )}
         {categoryType !== CATEGORY_VALUE.music &&
           categoryType !== CATEGORY_VALUE.movie && (
@@ -869,24 +882,26 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const renderIconImage = (key, fromNFT) => {
+    let uri =
+      key === 'creator' && artistDetail?.avatar
+        ? artistDetail?.avatar
+        : key === 'collection' && collectCreat.avatar
+        ? collectCreat.avatar
+        : key === 'owner' && ownerDataN?.avatar
+        ? ownerDataN.avatar
+        : null;
+    let imageStyle = fromNFT ? styles.creatorImage : styles.iconsImage;
     return (
       <>
-        <Image
-          style={fromNFT ? styles.creatorImage : styles.iconsImage}
-          source={
-            key === 'creator'
-              ? artistDetail?.avatar
-                ? {uri: artistDetail.avatar}
-                : IMAGES.DEFAULTUSER
-              : key === 'collection'
-              ? collectCreat
-                ? {uri: collectCreat.avatar}
-                : IMAGES.DEFAULTUSER
-              : key === 'owner' && ownerDataN?.avatar
-              ? {uri: ownerDataN.avatar}
-              : IMAGES.DEFAULTUSER
-          }
-        />
+        {uri ? (
+          <C_Image
+            uri={uri}
+            size={ImagekitType.AVATAR}
+            imageStyle={imageStyle}
+          />
+        ) : (
+          <Image style={imageStyle} source={IMAGES.DEFAULTUSER} />
+        )}
         <View>
           {!fromNFT && (
             <Text style={styles.personTypeText}>
@@ -967,7 +982,11 @@ const DetailScreen = ({navigation, route}) => {
       <View style={{paddingHorizontal: SIZE(12), paddingBottom: SIZE(5)}}>
         {label && <Text style={styles.labelText}>{label}</Text>}
         <View style={styles.priceView}>
-          <Image style={styles.tokenIcon} source={{uri: tokenIcon}} />
+          <C_Image
+            uri={tokenIcon}
+            size={ImagekitType.AVATAR}
+            imageStyle={styles.tokenIcon}
+          />
           {!load && (
             <Text style={styles.price}>
               {price ? Number(price) : ''}
@@ -2253,8 +2272,11 @@ const DetailScreen = ({navigation, route}) => {
 
           <View style={styles.userView}>
             <View style={styles.imageTextView}>
-              <C_Image uri={thumbnailUrl} imageStyle={styles.userImage} />
-
+              <C_Image
+                uri={thumbnailUrl}
+                size={ImagekitType.AVATAR}
+                imageStyle={styles.userImage}
+              />
               <Text style={styles.amountText}>{detailNFT?.name}</Text>
             </View>
 
@@ -3049,7 +3071,11 @@ const DetailScreen = ({navigation, route}) => {
         data={
           index === 0 && iconUri ? (
             <View style={CommonStyles.rowAlign}>
-              <Image style={styles.networkIcon} source={{uri: iconUri}} />
+              <C_Image
+                uri={iconUri}
+                size={ImagekitType.AVATAR}
+                imageStyle={styles.networkIcon}
+              />
               <Text>{cellData}</Text>
             </View>
           ) : index === 1 ? (
