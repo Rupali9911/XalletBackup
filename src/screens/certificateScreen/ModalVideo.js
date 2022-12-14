@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Modal, StyleSheet, View} from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
-import Orientation from 'react-native-orientation-locker';
 import Colors from '../../constants/Colors';
 
 const VideoModel = props => {
@@ -19,7 +18,7 @@ const VideoModel = props => {
 
   useEffect(() => {
     setStatus(true);
-    Orientation.lockToPortrait();
+    // Orientation.lockToPortrait();
   }, []);
 
   const updateStatus = state => {

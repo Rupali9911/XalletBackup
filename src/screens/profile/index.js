@@ -19,7 +19,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
 import {Container} from 'src/styles/common.styles';
 import {confirmationAlert} from '../../common/function';
@@ -42,6 +42,7 @@ import {
   startLoadingImage,
   updateAvtar,
   updateBanner,
+  removeBanner,
 } from '../../store/reducer/userReducer';
 import {translate} from '../../walletUtils';
 import NFTCreated from './nftCreated';
@@ -92,6 +93,8 @@ function Profile({navigation, connector, route}) {
   const [layout, setLayout] = useState(0);
   const [userDetails, setUserDetails] = useState(null);
   const [index, setIndex] = useState(0);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [options, setOptions] = useState([]);
   const [id, setId] = useState();
   const [routes] = useState([
     {key: 'profileCreated', title: translate('wallet.common.profileCreated')},
@@ -151,6 +154,7 @@ function Profile({navigation, connector, route}) {
 
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
+  const REMOVE_BANNER = 2;
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
@@ -161,7 +165,7 @@ function Profile({navigation, connector, route}) {
   };
 
   const copyProfileToClipboard = () => {
-    Clipboard.setString(`https://xanalia.com/profile/${id}`);
+    Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
     setOpenDial2(true);
     setTimeout(() => {
       setOpenDial2(false);
@@ -222,14 +226,16 @@ function Profile({navigation, connector, route}) {
     );
   };
 
-  let imageType = '';
-
   const onSelect = from => {
-    imageType = from;
-    actionSheetRef.current.show();
+    setSelectedImage(from);
+    handleOptions(from);
   };
 
-  const selectActionSheet = async index => {
+  useEffect(() => {
+    options.length && actionSheetRef.current.show();
+  }, [options]);
+
+  const selectActionSheet = async (index, e) => {
     const options = {
       title: 'Select Your Photo',
       storageOptions: {
@@ -263,9 +269,9 @@ function Profile({navigation, connector, route}) {
               fileName: filename,
               image: image,
             };
-            if (imageType === 'profile') {
+            if (selectedImage === 'profile') {
               dispatch(updateAvtar(userDetails.id, temp));
-            } else if (imageType === 'banner') {
+            } else if (selectedImage === 'banner') {
               dispatch(updateBanner(userDetails.id, temp));
             }
           }
@@ -311,9 +317,9 @@ function Profile({navigation, connector, route}) {
               fileName: filename,
               image: image,
             };
-            if (imageType === 'profile') {
+            if (selectedImage === 'profile') {
               dispatch(updateAvtar(userDetails.id, temp));
-            } else if (imageType === 'banner') {
+            } else if (selectedImage === 'banner') {
               dispatch(updateBanner(userDetails.id, temp));
             }
           }
@@ -333,6 +339,8 @@ function Profile({navigation, connector, route}) {
             // }
           }
         });
+    } else if (index === REMOVE_BANNER && selectedImage === 'banner') {
+      dispatch(removeBanner('-1', userDetails.id));
     }
   };
 
@@ -411,6 +419,23 @@ function Profile({navigation, connector, route}) {
           {renderImage()}
         </TouchableOpacity>
       );
+    }
+  };
+
+  const handleOptions = selectedImage => {
+    if (selectedImage === 'banner' && userDetails?.banner) {
+      setOptions([
+        translate('wallet.common.takePhoto'),
+        translate('wallet.common.choosePhotoFromGallery'),
+        translate('common.REMOVE_BANNER'),
+        translate('wallet.common.cancel'),
+      ]);
+    } else {
+      setOptions([
+        translate('wallet.common.takePhoto'),
+        translate('wallet.common.choosePhotoFromGallery'),
+        translate('wallet.common.cancel'),
+      ]);
     }
   };
 

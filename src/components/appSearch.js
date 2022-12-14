@@ -130,15 +130,15 @@ export default function AppSearch() {
       <Searchbar
         style={styles.searchBar}
         inputStyle={styles.inputStyle}
-        selectionColor={Colors.BLACK1}
+        selectionColor={Platform.OS === 'ios' ? Colors.BLACK1 : Colors.GREY5}
         placeholder={translate('wallet.common.searchHint')}
+        cursorColor={Colors.BLACK1}
         onChangeText={txt => {
           setSearchTxt(txt);
         }}
         value={searchTxt}
         multiline={false}
       />
-
       {loading || searchData?.length ? (
         <View style={styles.listContainer}>
           {loading ? (
@@ -191,7 +191,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
           {loading && <LoadingView />}
         </View>
         <Text style={styles.name} numberOfLines={1}>
-          {item?.name ? item.name : '---'}
+          {item?.name ? item?.name : item?.address}
           <View style={{paddingLeft: 5}}>
             {Verifiedcollections.find(id => id === item._id) && (
               <Image style={styles.verifyIcon} source={IMAGES.tweetPng} />

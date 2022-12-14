@@ -18,7 +18,6 @@ import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import VideoPlayer from 'react-native-video-controls';
-import Orientation from 'react-native-orientation-locker';
 import Modal from 'react-native-modal';
 import {ActivityIndicator} from 'react-native-paper';
 import {
@@ -98,6 +97,7 @@ import styles from './styles';
 import {validatePrice} from './supportiveFunctions';
 import VideoModel from './ModalVideo';
 import {ImagekitType} from '../../common/ImageConstant';
+import {isInteger} from 'lodash';
 
 const Web3 = require('web3');
 
@@ -949,6 +949,27 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
+  //==================Convert USD Price =======================
+
+  const convertPriceToUsd = num => {
+    let value = Number(parseFloat(num).toFixed(2));
+    if (isInteger(value)) value = Number(value);
+    else value = Number(value.toFixed(2).toString());
+
+    return ` ($${value})`;
+  };
+
+  //====================Convert Price====================
+
+  const convertPrice = val => {
+    let price = val;
+    let priceArr = price?.split('.');
+    if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
+    else price = parseFloat(Number(price).toFixed(8));
+
+    return Number(price);
+  };
+
   //================== Render NFT Price and Tokens Function ==================
   const renderNFTPriceNToken = () => {
     if (detailNFT.marketNftStatus === NFT_MARKET_STATUS.NOT_ON_SALE) {
@@ -989,15 +1010,11 @@ const DetailScreen = ({navigation, route}) => {
           />
           {!load && (
             <Text style={styles.price}>
-              {price ? Number(price) : ''}
+              {convertPrice(price)}
               <Text style={styles.priceUnit}>
                 {` ${tokenPrice}`}
                 <Text style={styles.dollarText}>
-                  {priceToUsd
-                    ? Number(parseFloat(priceToUsd).toFixed(2)) < 1
-                      ? ` ($${parseFloat(priceToUsd).toFixed(0)})`
-                      : ` ($${parseFloat(priceToUsd).toFixed(2)})`
-                    : ''}
+                  {convertPriceToUsd(priceToUsd)}
                 </Text>
               </Text>
             </Text>

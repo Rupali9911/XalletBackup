@@ -1,35 +1,37 @@
-import { SafeAreaView, StatusBar, BackHandler } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { AppHeader } from '../../components';
-import React, { useEffect } from 'react';
-import { translate } from '../../walletUtils';
+import {SafeAreaView, StatusBar, BackHandler} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {AppHeader} from '../../components';
+import React, {useEffect} from 'react';
+import {translate} from '../../walletUtils';
 import styles from './style';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ChatNftsList from './ChatNftsList';
 import SearchInput from './searchNft';
-import { COLORS } from '../../constants';
-import { TabBar, TabView } from 'react-native-tab-view';
-import { useDispatch, useSelector } from 'react-redux';
-import { otherNftListReset, ownedNftListReset, remainWordCountData } from '../../store/actions/chatAction';
-import { NEW_BASE_URL } from '../../common/constants';
+import {COLORS} from '../../constants';
+import {TabBar, TabView} from 'react-native-tab-view';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  otherNftListReset,
+  ownedNftListReset,
+  remainWordCountData,
+} from '../../store/actions/chatAction';
 import sendRequest from '../../helpers/AxiosApiRequest';
 
-// ====================== Main return function ================================ 
+// ====================== Main return function ================================
 const AiChat = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'Owner', title: translate("wallet.common.owned") },
-    { key: 'Others', title: translate("common.others") },
+    {key: 'Owner', title: translate('wallet.common.owned')},
+    {key: 'Others', title: translate('common.others')},
   ]);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { userData } = useSelector(state => state.UserReducer);
+  const {userData} = useSelector(state => state.UserReducer);
   let address = userData.userWallet.address;
 
   //=========================Use-Effect Call====================
   useEffect(() => {
     getRemainingWords();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (index) {
@@ -49,16 +51,18 @@ const AiChat = () => {
 
       return () => {
         backHandler.remove();
-      }
+      };
     }
   }, [index]);
 
   //=========================Remaining Words Api Call===========================
   const getRemainingWords = () => {
-    let url = `${NEW_BASE_URL}/xana-genesis-chat/get-user-word-limit`;
+    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/get-user-word-limit`;
     let data = {
-      cursor: "",
-      owner: address
+      cursor: '',
+      owner: address,
+      limit: 0,
+      page: 1,
     };
     sendRequest({
       url,
@@ -68,8 +72,8 @@ const AiChat = () => {
       .then(res => {
         dispatch(remainWordCountData(res?.userWordLimit));
       })
-      .catch(err => console.log(err))
-  }
+      .catch(err => console.log(err));
+  };
 
   //====================render-Tab-Bar=======================
   const renderTabBar = props => (
@@ -87,24 +91,16 @@ const AiChat = () => {
   );
 
   //=================render-Scene==========================
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'Owner':
-        return (
-          <ChatNftsList
-            tabTitle={'Owned'}
-          />
-        );
+        return <ChatNftsList tabTitle={'Owned'} />;
       case 'Others':
-        return (
-          <ChatNftsList
-            tabTitle={'Other'}
-          />
-        );
+        return <ChatNftsList tabTitle={'Other'} />;
       default:
         return null;
     }
-  }
+  };
 
   //=================Index-Change============================
   const handleIndexChange = index => {
@@ -113,10 +109,10 @@ const AiChat = () => {
 
   //======================Main-Return========================
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <StatusBar barStyle='dark-content' backgroundColor={'#fff'} />
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
       <AppHeader
-        title={translate("common.AIChat")}
+        title={translate('common.AIChat')}
         showBackButton
         onPressBack={() => {
           dispatch(ownedNftListReset());
@@ -126,7 +122,7 @@ const AiChat = () => {
       />
       <SearchInput />
       <TabView
-        navigationState={{ index, routes }}
+        navigationState={{index, routes}}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
         onIndexChange={handleIndexChange}
@@ -134,7 +130,7 @@ const AiChat = () => {
         lazy={true}
       />
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default AiChat;

@@ -39,7 +39,7 @@ const ListItems = props => {
         <NumberFormat
           value={parseFloat(`${item.tokenValue}`)}
           displayType={'text'}
-          decimalScale={4}
+          decimalScale={8}
           thousandSeparator={true}
           renderText={formattedValue => (
             <Text numberOfLines={1} style={styles.priceTxt}>
@@ -91,7 +91,7 @@ const Tokens = props => {
       // array[4].tokenValue = `${talBalance}`;
       array[3].tokenValue = `${usdcBalance}`;
       array[4].tokenValue = `${wethBalance}`;
-    } else if (network?.name == 'XANA CHAIN') {
+    } else if (network?.name == 'XANACHAIN') {
       array[7].tokenValue = `${xetaBalance}`;
     }
 

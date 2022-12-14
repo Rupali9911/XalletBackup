@@ -7,7 +7,12 @@
     "ios": "npx rn-nodeify --install --hack && npx react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "rc-start": "npm start -- --reset-cache",
+    "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
+    "clean-start": "npm run clean && npm run rc-start",
+    "fresh-install": "rm -rf $TMPDIR/react-* && watchman watch-del-all && rm -rf ios/build/ModuleCache/* && rm -rf node_modules/ && npm cache clean && npm install",
+    "fresh-start": "npm run fresh-install && npm run rc-start"
   },
   "dependencies": {
     "@coffeebeanslabs/react-native-inviewport": "^0.2.0",
@@ -87,7 +92,6 @@
     "react-native-mask-input": "^1.0.3",
     "react-native-modal": "^11.10.0",
     "react-native-modal-datetime-picker": "^13.0.0",
-    "react-native-orientation-locker": "^1.5.0",
     "react-native-os": "^1.0.1",
     "react-native-pager-view": "^5.4.9",
     "react-native-paper": "^4.9.2",

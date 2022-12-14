@@ -13,8 +13,6 @@ import {
   otherNftListReset,
   ownedNftPageChange,
   otherNftPageChange,
-  ownedNftCursorChange,
-  otherNftCursorChange,
 } from '../../store/actions/chatAction';
 import {translate} from '../../walletUtils';
 import styles from './style';
@@ -35,12 +33,10 @@ const ChatNftsList = ({tabTitle}) => {
     ownerList,
     ownedPageChange,
     ownedTotalCount,
-    ownedCursor,
     isOtherLoading,
     otherList,
     otherPageChange,
     otherTotalCount,
-    otherCursor,
   } = useSelector(state => state.chatReducer);
 
   const {userData} = useSelector(state => state.UserReducer);
@@ -50,13 +46,16 @@ const ChatNftsList = ({tabTitle}) => {
     : tabTitle === 'Owned'
     ? isOwnedLoading
     : isOtherLoading;
+
   const nftTotalCount =
     tabTitle === 'Owned' ? ownedTotalCount : otherTotalCount;
+
   const nftPageChange =
     tabTitle === 'Owned' ? ownedPageChange : otherPageChange;
-  const nftCursor = tabTitle === 'Owned' ? ownedCursor : otherCursor;
+
   const searchListing =
     tabTitle === 'Owned' ? searchList.ownerNFTS : searchList.otherNFTs;
+
   const nftCollectionList = searchText
     ? searchListing
     : tabTitle === 'Owned'
@@ -68,19 +67,19 @@ const ChatNftsList = ({tabTitle}) => {
     if (tabTitle === 'Owned') {
       dispatch(ownedNftLoadStart());
       dispatch(ownedNftListReset());
-      getDataCollection(ownedPageChange, '');
+      getDataCollection(1);
       dispatch(ownedNftPageChange(1));
     } else {
       dispatch(otherNftLoadStart());
       dispatch(otherNftListReset());
-      getDataCollection(otherPageChange, '');
+      getDataCollection(1);
       dispatch(otherNftPageChange(1));
     }
   }, []);
 
   // ========================== API call =================================
-  const getDataCollection = useCallback((page, cursor) => {
-    dispatch(getNftCollections(page, owner, cursor, tabTitle));
+  const getDataCollection = useCallback(page => {
+    dispatch(getNftCollections(page, owner, tabTitle));
   }, []);
 
   // ========================== Footer call =================================
@@ -99,14 +98,12 @@ const ChatNftsList = ({tabTitle}) => {
       let num = nftPageChange + 1;
       if (tabTitle === 'Owned') {
         dispatch(ownedNftLoadStart());
-        getDataCollection(num, nftCursor);
+        getDataCollection(num);
         dispatch(ownedNftPageChange(num));
-        dispatch(ownedNftCursorChange(nftCursor));
       } else {
         dispatch(otherNftLoadStart());
-        getDataCollection(num, nftCursor);
+        getDataCollection(num);
         dispatch(otherNftPageChange(num));
-        dispatch(otherNftCursorChange(nftCursor));
       }
     }
   };
@@ -117,15 +114,13 @@ const ChatNftsList = ({tabTitle}) => {
       if (tabTitle === 'Owned') {
         dispatch(ownedNftLoadStart());
         dispatch(ownedNftListReset());
-        getDataCollection(1, '');
+        getDataCollection(1);
         dispatch(ownedNftPageChange(1));
-        dispatch(ownedNftCursorChange(''));
       } else {
         dispatch(otherNftLoadStart());
         dispatch(otherNftListReset());
-        getDataCollection(1, '');
+        getDataCollection(1);
         dispatch(otherNftPageChange(1));
-        dispatch(otherNftCursorChange(''));
       }
     }
   };
@@ -137,27 +132,25 @@ const ChatNftsList = ({tabTitle}) => {
 
   // ========================== Reender Item of Flatlist ==========================================
   const renderItem = ({item, index}) => {
-    let metaData = item?.metadata;
-    const ItemDetail = JSON.parse(metaData);
     return (
       <TouchableOpacity
         onPress={() => {
           dispatch(setTabTitle(tabTitle));
           navigation.navigate('ChatDetail', {
-            nftDetail: ItemDetail,
-            tokenId: item.token_id,
+            nftDetail: item,
           });
         }}>
         <View style={styles.nftItemContainer}>
           <View>
             <C_Image
               size={ImagekitType.AVATAR}
-              uri={ItemDetail?.image}
+              uri={item?.smallImage}
               imageStyle={styles.cImageContainer}
             />
           </View>
           <Text style={styles.nftTextShow}>
-            {ItemDetail?.name.slice(ItemDetail?.name.lastIndexOf('#'))}
+            {' '}
+            {item?.name.slice(item?.name.lastIndexOf('#'))}{' '}
           </Text>
         </View>
       </TouchableOpacity>
@@ -182,6 +175,7 @@ const ChatNftsList = ({tabTitle}) => {
             keyExtractor={keyExtractor}
             renderItem={memoizedValue}
             onEndReached={handleFlatListEndReached}
+            onEndReachedThreshold={0.5}
             ListFooterComponent={renderFooter}
             onRefresh={handleFlatlistRefresh}
             refreshing={isNftLoading && nftPageChange == 1}
