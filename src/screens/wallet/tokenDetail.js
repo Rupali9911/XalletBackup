@@ -216,7 +216,7 @@ const TokenDetail = ({ route, navigation }) => {
         networkId: networkType?.id,
         environment,
       };
-      if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic') {
+      if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic' && coin !== 'XETA') {
         params.tokenName = coin;
       }
       sendRequest({
@@ -233,7 +233,7 @@ const TokenDetail = ({ route, navigation }) => {
               dispatch(addAllBnbTransactions(res.data));
             } else if (type == 'polygon') {
               dispatch(addAllMaticTransactions(res.data));
-            } else if (type == 'xana chain') {
+            } else if (type == 'xanachain') {
               dispatch(addAllXetaTransactions(res.data));
             }
           }
@@ -262,7 +262,7 @@ const TokenDetail = ({ route, navigation }) => {
               <NumberFormat
                 value={getTokenValue()}
                 displayType={'text'}
-                decimalScale={4}
+                decimalScale={8}
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView style={styles.priceCont}>{formattedValue}</TextView>
