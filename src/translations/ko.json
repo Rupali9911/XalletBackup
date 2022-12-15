@@ -776,7 +776,8 @@
     "INSUFFICIENT_FUND_FOR_GAS": "가스비 부족,",
     "IS_REQUIRED": "필요합니다.",
     "VIDEO_FORMAT_ERROR":"이 미디어 형식은 지원되지 않습니다.",
-    "ACCOUNT_DELETED": "귀하의 계정이 삭제되었습니다"
+    "ACCOUNT_DELETED": "귀하의 계정이 삭제되었습니다",
+    "COMING_SOON": "곧 출시"
   },
   "AwardPage": {},
   "wallet": {

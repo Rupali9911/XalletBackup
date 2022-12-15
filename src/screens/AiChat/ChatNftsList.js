@@ -143,14 +143,14 @@ const ChatNftsList = ({tabTitle}) => {
         <View style={styles.nftItemContainer}>
           <View>
             <C_Image
+              imageType={'profile'}
               size={ImagekitType.AVATAR}
               uri={item?.smallImage}
               imageStyle={styles.cImageContainer}
             />
           </View>
           <Text style={styles.nftTextShow}>
-            {' '}
-            {item?.name.slice(item?.name.lastIndexOf('#'))}{' '}
+            {item?.name.slice(item?.name.lastIndexOf('#'))}
           </Text>
         </View>
       </TouchableOpacity>

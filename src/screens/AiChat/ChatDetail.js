@@ -32,7 +32,6 @@ const {ChatDefaultProfile} = SVGS;
 const ChatDetail = ({route, navigation}) => {
   const {nftDetail} = route.params;
   const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
-  const cropImgSize = '?tr=w-120,tr=h-120';
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -88,7 +87,7 @@ const ChatDetail = ({route, navigation}) => {
               message: data.reply,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.smallImage + cropImgSize,
+              receiverImage: nftDetail?.smallImage,
               receiverName: NFTNAME,
             };
             // history.push(receiver, sender);
@@ -104,6 +103,7 @@ const ChatDetail = ({route, navigation}) => {
     if (userData.avatar) {
       return (
         <C_Image
+          imageType={'profile'}
           uri={userData.avatar}
           size={ImagekitType.AVATAR}
           imageStyle={styles.bubbleImage}
@@ -140,6 +140,7 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.leftBubbleContainer}>
             <View style={[styles.timeFormat, {marginLeft: 10}]}>
               <C_Image
+                imageType={'profile'}
                 uri={item?.receiverImage}
                 size={ImagekitType.AVATAR}
                 imageStyle={styles.bubbleImage}
@@ -201,7 +202,7 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.smallImage + cropImgSize,
+              receiverImage: nftDetail?.smallImage,
               receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -238,9 +239,9 @@ const ChatDetail = ({route, navigation}) => {
         <View style={styles.chatHeaderContainer}>
           <View>
             <C_Image
+              imageType={'profile'}
               size={ImagekitType.AVATAR}
-              uri={nftDetail?.image}
-              // uri={nftDetail?.smallImage + cropImgSize}
+              uri={nftDetail?.smallImage}
               imageStyle={styles.cImageContainer}
             />
           </View>

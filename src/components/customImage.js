@@ -17,7 +17,7 @@ const C_Image = props => {
 
   let fileType = getFileType(props?.uri);
   let imageUri = getImageUri(props?.uri, props?.size);
-  // console.log('🚀 ~ file: customImage.js:20 ~ imageUri', imageUri);
+  // console.log('🚀 ~ file: customImage.js:20 ~ imageUri', props?.imageStyle);
   const checkVideoUrl = props?.category;
 
   return (
@@ -29,12 +29,9 @@ const C_Image = props => {
             width="100%"
             height="100%"
             uri={props?.uri}
-            onLoad={o => {
-              setLoadImage(false);
-              console.log('🚀 ~ file: customImage.js:84 ~ o', o);
-            }}
+            onLoad={o => setLoadImage(false)}
             onError={({nativeEvent}) => {
-              console.log(nativeEvent, 'errror => 33', imageUri);
+              console.log(nativeEvent, 'svg errror => 60', props?.uri);
               setLoadImage(false);
               setIsBroken(true);
             }}
@@ -98,6 +95,7 @@ const C_Image = props => {
             styles.imageCont,
             {backgroundColor: Colors.transparent},
             {...props?.style},
+            props?.imageStyle?.width && {width: props?.imageStyle?.width},
           ]}>
           <ActivityIndicator size="small" color={Colors.themeColor} />
         </View>

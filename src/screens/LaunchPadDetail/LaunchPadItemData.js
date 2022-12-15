@@ -144,7 +144,6 @@ export default function LaunchPadItemData(props) {
   const renderChainIconNstatus = () => {
     return (
       <View style={styles.bottomWrap}>
-        {/* {!isCollection ? renderChain() : <View />} */}
         <View style={styles.renderchainstyle}>{renderChain()}</View>
         {count <= 1 ? (
           <Text style={styles.nftCount}>
@@ -156,8 +155,11 @@ export default function LaunchPadItemData(props) {
           </Text>
         )}
         <Text style={styles.statusText}>
-          {/*{`${items} ` + translate('common.itemsCollection')}*/}
-          {status === 1 ? translate('common.ongoinglaunch') : ''}
+          {collectionName === 'NFTDuel - Astroboy x Japan'
+            ? translate('common.COMING_SOON')
+            : status === 1
+            ? translate('common.ongoinglaunch')
+            : ''}
         </Text>
       </View>
     );
@@ -191,15 +193,30 @@ export default function LaunchPadItemData(props) {
     return (
       <View style={styles.renderchainstyle}>
         {network.map((item, index) => {
-          return (
-            <SvgWithCssUri
-              key={index}
-              uri={item.image}
-              width={SIZE(18)}
-              height={SIZE(18)}
-              style={{marginTop: '20%'}}
-            />
-          );
+          if (item.networkName !== 'XANACHAIN') {
+            return (
+              <SvgWithCssUri
+                key={index}
+                uri={item.image}
+                width={SIZE(18)}
+                height={SIZE(18)}
+                style={{marginTop: '20%'}}
+              />
+            );
+          } else {
+            return (
+              <C_Image
+                key={index}
+                imageStyle={{
+                  height: SIZE(18),
+                  width: SIZE(18),
+                  marginTop: '20%',
+                }}
+                uri={item.image}
+                size={ImagekitType.AVATAR}
+              />
+            );
+          }
         })}
       </View>
     );
