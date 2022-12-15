@@ -270,7 +270,8 @@ const styles = StyleSheet.create({
   },
   typingContainer: {
     flexDirection: 'row',
-    width: '30%',
+    width: '45%',
+    flexWrap: 'wrap',
   },
   rcvContainerArrow: {
     borderLeftWidth: 25,

@@ -131,20 +131,22 @@ const ChatNftsList = ({tabTitle}) => {
 
   // ========================== Reender Item of Flatlist ==========================================
   const renderItem = ({item, index}) => {
+    const renderImg = item?.smallImage;
+    const imgUrl = renderImg?.slice(0, renderImg?.lastIndexOf('.'));
+    const imgExtension = renderImg?.slice(renderImg?.lastIndexOf('.'));
+    const ImgNfts = imgUrl + '-thumb' + imgExtension + '?tr=w-120,tr=h-120';
     return (
       <TouchableOpacity
         onPress={() => {
           dispatch(setTabTitle(tabTitle));
           navigation.navigate('ChatDetail', {
             nftDetail: item,
+            nftImage: ImgNfts,
           });
         }}>
         <View style={styles.nftItemContainer}>
           <View>
-            <C_Image
-              uri={item?.smallImage + '?tr=w-120,tr=h-120'}
-              imageStyle={styles.cImageContainer}
-            />
+            <C_Image uri={ImgNfts} imageStyle={styles.cImageContainer} />
           </View>
           <Text style={styles.nftTextShow}>
             {' '}

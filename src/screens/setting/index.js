@@ -110,16 +110,18 @@ function Setting({route, navigation}) {
   const [deletePopup, setDeletePopup] = useState(false);
   const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {deleteAccountLoading, isBackup} = useSelector(state => state.UserReducer);
+  const {deleteAccountLoading, isBackup} = useSelector(
+    state => state.UserReducer,
+  );
   const [isCheckService, setIsCheckService] = useState(false);
   const [isBackupPhraseService, setIsBackupPhraseService] = useState(false);
   const [wallet, setWallet] = useState(null);
 
-  useEffect(async() => {
+  useEffect(async () => {
     // dispatch(getAllCards(userData.access_token));
     let getData = await getWallet();
     setWallet(getData);
-    if(route.params.isSetting) {
+    if (route.params.isSetting) {
       setTimeout(() => {
         setBackupPhrasePopup(true);
       }, 500);
@@ -163,8 +165,8 @@ function Setting({route, navigation}) {
   };
 
   const onLogout = () => {
-    if(!isBackup) {
-      setBackupPhrasePopup(true)
+    if (!isBackup) {
+      setBackupPhrasePopup(true);
     } else {
       confirmationAlert(
         translate('wallet.common.verification'),
@@ -282,11 +284,6 @@ function Setting({route, navigation}) {
           />
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
-            onPress={() => navigation.navigate('AiChat')}
-            label={translate('common.AIChat')}
-          />
-          <View style={{...styles.separator, width: wp('81%')}} />
-          <ListItem
             onPress={() => null}
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(
               0,
@@ -348,15 +345,17 @@ function Setting({route, navigation}) {
           deleteAccountLoading ? null : () => setBackupPhrasePopup(false)
         }
         onBackUpNowPress={() => {
-          setBackupPhrasePopup(false)
+          setBackupPhrasePopup(false);
           setTimeout(() => {
-            navigation.navigate('recoveryPhrase', { isSetting: true, wallet })
+            navigation.navigate('recoveryPhrase', {isSetting: true, wallet});
           }, 500);
         }}
         rightButtonTitle={translate('common.Logout')}
         leftButtonTitle={translate('common.BACKUP_NOW')}
         onRightPress={logoutConfirm}
-        checkBoxDescription={translate('common.LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC')}
+        checkBoxDescription={translate(
+          'common.LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC',
+        )}
         isCheck={isBackupPhraseService}
         onChecked={setIsBackupPhraseService}
       />

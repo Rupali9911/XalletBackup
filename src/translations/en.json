@@ -770,7 +770,8 @@
     "TOTAL_AMOUNT_GAS_FEE": "TOTAL (Amount + gas fee)",
     "TRANSACTION_SENT_NETWORK": "The transaction has been sent to the network!",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "Please enter wallet address",
-    "TRANSACTION_ENTER_AMOUNT": "Please enter amount !!!"
+    "TRANSACTION_ENTER_AMOUNT": "Please enter amount !!!",
+    "chat": "Chat"
   },
   "AwardPage": {},
   "wallet": {

@@ -771,7 +771,8 @@
     "TOTAL_AMOUNT_GAS_FEE": "TOTAL (수량 + 가스비)",
     "TRANSACTION_SENT_NETWORK": "트랜잭션이 네트워크로 전송되었습니다!",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "지갑주소를 입력해주세요",
-    "TRANSACTION_ENTER_AMOUNT": "금액을 입력하세요"
+    "TRANSACTION_ENTER_AMOUNT": "금액을 입력하세요",
+    "chat": "채팅"
   },
   "AwardPage": {},
   "wallet": {

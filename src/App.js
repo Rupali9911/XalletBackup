@@ -145,6 +145,8 @@ const TabComponent = () => {
             iconName = focused ? images.icons.meA : images.icons.meD;
           } else if (route.name === 'Wallet') {
             iconName = focused ? ImageSrc.walletActive : ImageSrc.wallet;
+          } else if (route.name === 'AiChat') {
+            iconName = focused ? ImageSrc.chatActive : ImageSrc.chat;
           } else if (route.name === 'Connect') {
             iconName = focused ? ImageSrc.connectA : ImageSrc.connect;
           }
@@ -182,6 +184,11 @@ const TabComponent = () => {
         component={Connect}
         initialParams={{}}
       /> */}
+      <Tab.Screen
+        name={'AiChat'}
+        component={AiChat}
+        options={{tabBarLabel: translate('common.chat')}}
+      />
       <Tab.Screen
         options={{tabBarLabel: translate('wallet.common.me')}}
         name={'Me'}
@@ -323,7 +330,7 @@ const AppRoutes = () => {
           <Stack.Screen name="verifyPhrase" component={VerifyPhrase} />
           <Stack.Screen name="sellNft" component={SellNFT} />
           <Stack.Screen name="CollectionDetail" component={CollectionDetail} />
-          <Stack.Screen name="AiChat" component={AiChat} />
+          {/* <Stack.Screen name="AiChat" component={AiChat} /> */}
           <Stack.Screen name="ChatDetail" component={ChatDetail} />
           <Stack.Screen name="WebView" component={WebView} />
         </Stack.Navigator>
