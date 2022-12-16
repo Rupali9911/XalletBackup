@@ -771,10 +771,11 @@
     "TRANSACTION_SENT_NETWORK": "The transaction has been sent to the network!",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "Please enter wallet address",
     "TRANSACTION_ENTER_AMOUNT": "Please enter amount !!!",
+    "chat": "Chat",
     "REMOVE_BANNER": "Remove banner",
     "INSUFFICIENT_FUND_FOR_GAS": "Insufficient fund for Gas fee,",
     "IS_REQUIRED": "is required.",
-    "VIDEO_FORMAT_ERROR":"This media format is not supported.",
+    "VIDEO_FORMAT_ERROR": "This media format is not supported.",
     "ACCOUNT_DELETED": "Your account was deleted"
   },
   "AwardPage": {},

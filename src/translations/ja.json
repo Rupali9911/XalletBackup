@@ -772,10 +772,11 @@
     "TRANSACTION_SENT_NETWORK": "トランザクションはネットワークに送信されました！",
     "TRANSACTION_ENTER_WALLET_ADDRESS": "ウォレットアドレスを入力してください",
     "TRANSACTION_ENTER_AMOUNT": "数量を入力してください",
+    "chat": "チャット",
     "REMOVE_BANNER": "バナー画像の削除",
     "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
     "IS_REQUIRED": "が必要です",
-    "VIDEO_FORMAT_ERROR":"このメディア形式はサポートされていません。",
+    "VIDEO_FORMAT_ERROR": "このメディア形式はサポートされていません。",
     "ACCOUNT_DELETED": "あなたのアカウントは削除されました"
   },
   "AwardPage": {},

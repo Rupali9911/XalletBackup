@@ -29,13 +29,15 @@ import {Platform} from 'expo-modules-core';
 const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
-  const {nftDetail} = route.params;
+  const {nftDetail, nftImage} = route.params;
   const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
   const cropImgSize = '?tr=w-120,tr=h-120';
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
+  const [contentBottom, setContentBottom] = useState(0);
+
   const flatList = React.useRef(null);
   const toastRef = useRef(null);
 
@@ -87,7 +89,7 @@ const ChatDetail = ({route, navigation}) => {
               message: data.reply,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.smallImage + cropImgSize,
+              receiverImage: nftImage,
               receiverName: NFTNAME,
             };
             // history.push(receiver, sender);
@@ -180,7 +182,7 @@ const ChatDetail = ({route, navigation}) => {
           NFTNAME,
           nftDetail?.collection?.address,
           selectedLanguageItem?.language_name,
-          nftDetail?.owner?.nftId,
+          nftDetail?.id,
           msg,
           nftDetail?.tokenId,
         ),
@@ -193,7 +195,7 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftDetail?.smallImage + cropImgSize,
+              receiverImage: nftImage,
               receiverName: NFTNAME,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -229,10 +231,7 @@ const ChatDetail = ({route, navigation}) => {
       <View>
         <View style={styles.chatHeaderContainer}>
           <View>
-            <C_Image
-              uri={nftDetail?.smallImage + cropImgSize}
-              imageStyle={styles.cImageContainer}
-            />
+            <C_Image uri={nftImage} imageStyle={styles.cImageContainer} />
           </View>
           <View style={{paddingStart: 10}}>
             <Text style={styles.headerNftName}>{NFTNAME}</Text>
@@ -275,12 +274,13 @@ const ChatDetail = ({route, navigation}) => {
       </TouchableOpacity>
 
       <KeyboardAwareScrollView
-        contentContainerStyle={{flex: 1}}
+        contentContainerStyle={{
+          flex: 1,
+        }}
         scrollEnabled={false}
         extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
         keyboardShouldPersistTaps={'always'}
-        keyboardOpeningTime={0}
-        enableAutomaticScroll={true}>
+        keyboardOpeningTime={0}>
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
@@ -317,6 +317,7 @@ const ChatDetail = ({route, navigation}) => {
               inverted={true}
               onScrollEndDrag={handleFlatListEndReached}
               ListFooterComponent={renderHeader}
+              removeClippedSubview={true}
             />
           </View>
           <MessageInput

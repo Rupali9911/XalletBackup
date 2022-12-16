@@ -113,7 +113,6 @@ const AiChat = () => {
       <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
       <AppHeader
         title={translate('common.AIChat')}
-        showBackButton
         onPressBack={() => {
           dispatch(ownedNftListReset());
           dispatch(otherNftListReset());
