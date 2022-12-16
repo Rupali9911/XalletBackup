@@ -61,11 +61,9 @@ const QRScreen = () => {
             // console.log("do something with ", uri);
             let options = {
                 title: "Share code",
-                message: "Please scan code to send token",
-                // url: `file://${uri}`,
                 url: `${uri}`,
             };
-            // Share.share(shareImage).catch(err => console.log(err));
+
             Share.open(options)
                 .then((res) => {
                     // console.log(res);
