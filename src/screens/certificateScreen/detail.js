@@ -3171,7 +3171,7 @@ const DetailScreen = ({navigation, route}) => {
             key === ''
               ? styles.rowText
               : key === 'blockChainType'
-              ? [styles.rowText, {textTransform: 'uppercase'}]
+              ? [styles.rowText]
               : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
           }
           ellipsizeMode="middle"
@@ -3415,7 +3415,7 @@ const DetailScreen = ({navigation, route}) => {
               let temp = [
                 `${Number(item?.price)} ${item?.receiveToken}`,
                 item?.fromUser?.userWallet?.address,
-                moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
+                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
                 getExpirationDate(item?.expired),
               ];
               tempList.push(temp);
@@ -3441,7 +3441,7 @@ const DetailScreen = ({navigation, route}) => {
                   : '',
                 getFromAddress(from, item?.action),
                 getToAddress(to, item?.action),
-                moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
+                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
               ];
               tradingList.push(temp);
               filterList.push(getEventByValue(item?.action));

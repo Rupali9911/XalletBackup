@@ -138,7 +138,6 @@ function Profile({navigation, connector, route}) {
       dispatch(getUserData(loggedInUser?.userWallet?.address, true));
     }
   };
-
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
   const REMOVE_BANNER = 2;
@@ -164,6 +163,23 @@ function Profile({navigation, connector, route}) {
     setIndex(index);
   };
 
+  const LinkingUrl = type => {
+    let url;
+    if (type === 'discordSite') {
+      url = /(http(s?)):\/\//i.test(userDetails?.discordSite)
+        ? userDetails?.discordSite
+        : 'https://' + userDetails?.discordSite;
+    } else if (type === 'webSite') {
+      url = /(http(s?)):\/\//i.test(userDetails?.website)
+        ? userDetails?.website
+        : 'https://' + userDetails?.website;
+    } else if (type === 'twitterSite') {
+      url = 'https://twitter.com/' + userDetails?.twitterSite;
+    } else if (type === 'instagramSite') {
+      url = 'https://www.instagram.com/' + userDetails?.instagramSite;
+    }
+    return Linking.openURL(url);
+  };
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'profileCreated':
@@ -530,24 +546,14 @@ function Profile({navigation, connector, route}) {
                 </View>
                 <View style={styles.socialSiteView}>
                   {userDetails?.twitterSite ? (
-                    <TouchableOpacity
-                      onPress={() =>
-                        Linking.openURL(
-                          'https://twitter.com/' + userDetails?.twitterSite,
-                        )
-                      }>
+                    <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
                       <Twitter width={SIZE(35)} height={SIZE(35)} />
                     </TouchableOpacity>
                   ) : null}
                   {userDetails?.instagramSite ? (
                     <TouchableOpacity
                       style={styles.socialSiteButton}
-                      onPress={() =>
-                        Linking.openURL(
-                          'https://www.instagram.com/' +
-                            userDetails?.instagramSite,
-                        )
-                      }>
+                      onPress={() => LinkingUrl('instagramSite')}>
                       <Instagram width={SIZE(35)} height={SIZE(35)} />
                     </TouchableOpacity>
                   ) : null}
@@ -561,14 +567,14 @@ function Profile({navigation, connector, route}) {
                   {userDetails?.discordSite ? (
                     <TouchableOpacity
                       style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.discordSite)}>
+                      onPress={() => LinkingUrl('discordSite')}>
                       <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
                     </TouchableOpacity>
                   ) : null}
                   {userDetails?.website ? (
                     <TouchableOpacity
                       style={styles.socialSiteButton}
-                      onPress={() => Linking.openURL(userDetails?.website)}>
+                      onPress={() => LinkingUrl('webSite')}>
                       <WebIcon width={SIZE(35)} height={SIZE(35)} />
                     </TouchableOpacity>
                   ) : null}

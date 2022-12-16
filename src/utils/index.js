@@ -129,6 +129,9 @@ const userNameRegex = new RegExp(
 const regex = new RegExp(
   /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/,
 );
+const instagramRegex = new RegExp(
+  /^[a-z0-9]([._-](?![._-])|[a-z0-9]){3,18}[a-z0-9]$/,
+);
 const emailRegex =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const linkRegex =
@@ -176,7 +179,7 @@ export const validateYoutubeURL = value =>
     : undefined;
 
 export const validateInstagramURL = value =>
-  value && !regex.test(value)
+  value && !instagramRegex.test(value)
     ? translate('common.CHECK_YOUR_INSTAGRAM')
     : undefined;
 

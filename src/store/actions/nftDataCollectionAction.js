@@ -173,7 +173,7 @@ export const activityHistoryList = (
                 : '',
               getFromAddress(from, item?.action),
               getToAddress(to, item?.action),
-              moment(item?.createdAt).format('YYYY/MM/DD hh:mm:ss'),
+              moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
             ];
 
             tradingList.push(temp);

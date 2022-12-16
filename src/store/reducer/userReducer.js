@@ -576,7 +576,7 @@ export const updateProfile = (props, id) => async dispatch => {
         let key = UserErrorMessage[res.messageCode].key;
         dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
       } else {
-        dispatch(getUserData(id));
+        dispatch(getUserData(id, true));
         dispatch(
           setToastMsg({
             error: false,
