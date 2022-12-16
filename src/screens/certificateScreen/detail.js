@@ -891,6 +891,7 @@ const DetailScreen = ({navigation, route}) => {
         ? ownerDataN.avatar
         : null;
     let imageStyle = fromNFT ? styles.creatorImage : styles.iconsImage;
+    let imageView = fromNFT ? SIZE(40) : SIZE(30);
     return (
       <>
         {uri ? (
@@ -898,6 +899,7 @@ const DetailScreen = ({navigation, route}) => {
             uri={uri}
             size={ImagekitType.AVATAR}
             imageStyle={imageStyle}
+            style={{width: imageView}}
           />
         ) : (
           <Image style={imageStyle} source={IMAGES.DEFAULTUSER} />
@@ -1007,6 +1009,7 @@ const DetailScreen = ({navigation, route}) => {
             uri={tokenIcon}
             size={ImagekitType.AVATAR}
             imageStyle={styles.tokenIcon}
+            style={{width: SIZE(33)}}
           />
           {!load && (
             <Text style={styles.price}>

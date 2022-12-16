@@ -167,6 +167,7 @@ function discoverItem({item}) {
                 uri={creatorImage}
                 size={ImagekitType.AVATAR}
                 imageStyle={styles.avatar}
+                style={styles.avatarView}
               />
               <Box px="3">
                 <Label label={translate('common.creator')} />
@@ -185,6 +186,7 @@ function discoverItem({item}) {
                 uri={ownerImage}
                 size={ImagekitType.AVATAR}
                 imageStyle={styles.avatar}
+                style={styles.avatarView}
               />
               <Box px="3">
                 <Label label={translate('common.owner')} />

@@ -95,7 +95,6 @@ const C_Image = props => {
             styles.imageCont,
             {backgroundColor: Colors.transparent},
             {...props?.style},
-            props?.imageStyle?.width && {width: props?.imageStyle?.width},
           ]}>
           <ActivityIndicator size="small" color={Colors.themeColor} />
         </View>

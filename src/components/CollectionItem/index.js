@@ -138,6 +138,7 @@ export default function CollectionItem(props) {
         <View style={styles.collectionWrapper}>
           <View style={CommonStyles.center}>
             <C_Image
+              style={{marginTop: SIZE(-33)}}
               size={ImagekitType.AVATAR}
               uri={iconImage}
               imageStyle={styles.iconImage}
