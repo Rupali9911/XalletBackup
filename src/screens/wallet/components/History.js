@@ -20,15 +20,26 @@ import ImagesSrc from '../../../constants/Images';
 import { hp, RF, wp } from '../../../constants/responsiveFunct';
 import CommonStyles from '../../../constants/styles';
 
-import { environment, polRpc, translate } from '../../../walletUtils';
-import { chain } from "lodash/seq";
-import { networkType } from "../../../common/networkType";
+import {
+    environment,
+    polRpc,
+    translate,
+    regionLanguage,
+} from '../../../walletUtils';
+import { chain } from 'lodash/seq';
+import { networkType } from '../../../common/networkType';
 
 var coinType = '';
 
 const ListItems = props => {
-    const { item, type } = props;
+    const { item, type, selectedLanguage, regionLanguage } = props;
 
+    let datetime = new Date(item.timeStamp * 1000);
+    let UTCTime = moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss');
+    let localTime = moment.unix(item.timeStamp).format('YYYY-MM-DD HH:mm:ss');
+
+    let displayTime =
+        selectedLanguage.language_name !== regionLanguage ? UTCTime : localTime;
     return (
         <TouchableOpacity
             onPress={() => props.onPress && props.onPress(item)}
@@ -49,15 +60,14 @@ const ListItems = props => {
                 </View>
                 <View style={styles.detailsContainer}>
                     {/* <Text style={styles.townTxt} numberOfLines={1}>{item.direction == 'in'?`${translate("common.from")}: ${item.from}`:`${translate("common.to")}: ${item.to}`}</Text> */}
-                    <Text style={styles.townTxt}>
-                        {moment.unix(item.timeStamp).format('YYYY-MM-DD HH:mm:ss')}
-                    </Text>
+                    <Text style={styles.townTxt}>{displayTime}</Text>
                 </View>
             </View>
             <View style={{ flex: 1, ...CommonStyles.center, alignItems: 'flex-end' }}>
                 {/* <Text style={styles.townTxt} >{item.type}</Text> */}
                 <NumberFormat
-                    value={coinType.coin.type == "USDC" || coinType.coin.type == "USDT" ? item.value * 1e9 : item.value}
+                    // value={coinType.coin.type == "USDC" || coinType.coin.type == "USDT" ? item.value * 1e9 : item.value}
+                    value={item.value}
                     displayType={'text'}
                     decimalScale={8}
                     thousandSeparator={true}
@@ -99,14 +109,15 @@ const History = props => {
         usdcTransactions,
         wethTransactions,
         aliaTransactions,
-        xetaTransactions
+        xetaTransactions,
     } = useSelector(state => state.WalletReducer);
+    const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+
     const [balance_Data, setBalanceData] = useState([]);
     const [isRefreshing, setRefreshing] = useState(false);
     const { coin } = props;
 
-    useEffect(() => {
-    }, []);
+    useEffect(() => { }, []);
     const navigation = useNavigation();
     const onRefresh = () => {
         setRefreshing(true);
@@ -151,9 +162,10 @@ const History = props => {
                 // contentContainerStyle={{flex: 1,backgroundColor:'white'}}
                 renderItem={({ item }) => {
                     return (
-
                         <ListItems
                             item={item}
+                            selectedLanguage={selectedLanguageItem}
+                            regionLanguage={regionLanguage}
                             onPress={_item =>
                                 navigation.navigate('transactionsDetail', {
                                     data: _item,
@@ -192,8 +204,6 @@ const History = props => {
             />
         </View>
     );
-
-
 };
 
 const styles = StyleSheet.create({
@@ -234,7 +244,7 @@ const styles = StyleSheet.create({
     centerCont: {
         height: '100%',
         // flex: 1,
-        paddingHorizontal: wp('4%')
+        paddingHorizontal: wp('4%'),
 
         // justifyContent: "center",
     },

@@ -3,6 +3,7 @@ import memoize from 'lodash.memoize';
 import store from '../store';
 import ImagesSrc from '../constants/Images';
 import { networkType } from '../common/networkType';
+import * as RNLocalize from 'react-native-localize';
 
 //===================== Global Variables ===============================
 export const IsTestNet = networkType === 'testnet' ? true : false;
@@ -8785,6 +8786,11 @@ export const translate = memoize(
   (key, config) => (config ? key + JSON.stringify(config) : key),
 );
 
+//=========================== Get Locales(language) Function =============================
+export const regionLanguage = RNLocalize.getLocales()
+  .map(a => a.languageCode)
+  .values()
+  .next().value;
 //=========================== SetI18nConfig (Language) Function =============================
 export function setI18nConfig(tag) {
   const translationGetters = {

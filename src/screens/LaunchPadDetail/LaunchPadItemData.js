@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native';
+import {View, Text, Image, Platform, TouchableOpacity} from 'react-native';
 import {C_Image} from '../../components';
 import styles from './styles';
 import {SIZE, SVGS} from 'src/constants';
@@ -190,15 +190,25 @@ export default function LaunchPadItemData(props) {
     return (
       <View style={styles.renderchainstyle}>
         {network.map((item, index) => {
-          return (
-            <SvgWithCssUri
-              key={index}
-              uri={item.image}
-              width={SIZE(18)}
-              height={SIZE(18)}
-              style={{marginTop: '20%'}}
-            />
-          );
+          if (item.networkName !== 'XANACHAIN') {
+            return (
+              <SvgWithCssUri
+                key={index}
+                uri={item.image}
+                width={SIZE(18)}
+                height={SIZE(18)}
+                style={{marginTop: '20%'}}
+              />
+            );
+          } else {
+            return (
+              <Image
+                key={index}
+                style={{height: SIZE(18), width: SIZE(18), marginTop: '20%'}}
+                source={{uri: item?.image}}
+              />
+            );
+          }
         })}
       </View>
     );

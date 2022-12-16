@@ -333,7 +333,7 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
             } else if (type == 'busd') {
               resolve(web3.utils.fromWei(result.toString(), 'ether'));
             } else if (type == 'weth') {
-              resolve(web3.utils.fromWei(result.toString(), 'ether') * 1e10);
+              resolve(web3.utils.fromWei(result.toString(), 'ether'));
             }
           })
           .catch(function (error) {

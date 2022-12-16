@@ -287,7 +287,7 @@ const getConvertedDecimalValue = (type, convertto6decimal, web3) => {
     } else if (type == 'busd') {
       return web3.utils.toWei(convertto6decimal.toString(), 'ether');
     } else if (type == 'weth') {
-      return web3.utils.toWei(convertto6decimal.toString(), 'ether') * 1e10;
+      return web3.utils.toWei(convertto6decimal.toString(), 'ether');
     }
   } catch (error) {
     console.log('@@@ Get ConvertedDecimalValue error =============>', error);
@@ -312,8 +312,23 @@ export const getSignData = (transferParameters, config, web3, reject) => {
       signData = contract.methods
         .transfer(transferParameters.toAddress, convertto6decimal)
         .encodeABI();
-    } else {
+    } else if (type == 'usdc') {
       convertto6decimal = parseFloat(transferParameters.amount).toFixed(6);
+
+      convertto6decimal = getConvertedDecimalValue(
+        type,
+        convertto6decimal,
+        web3,
+        reject,
+      );
+      signData = contract.methods
+        .transfer(
+          transferParameters.toAddress,
+          web3.utils.toHex(convertto6decimal),
+        )
+        .encodeABI();
+    } else {
+      convertto6decimal = parseFloat(transferParameters.amount).toFixed(8);
 
       convertto6decimal = getConvertedDecimalValue(
         type,
@@ -367,7 +382,7 @@ export const balanceTransfer = async (transferParameters, config) => {
         const gasPrice = await getGasPrice(config.rpcURL);
 
         let convertto6decimal = parseFloat(transferParameters.amount).toFixed(
-          6,
+          8,
         );
         const amountToSend = web3.utils.toWei(
           convertto6decimal.toString(),

@@ -776,8 +776,10 @@
     "REMOVE_BANNER": "バナー画像の削除",
     "INSUFFICIENT_FUND_FOR_GAS": "ガス代が不足しています、",
     "IS_REQUIRED": "が必要です",
-    "VIDEO_FORMAT_ERROR": "このメディア形式はサポートされていません。",
-    "ACCOUNT_DELETED": "あなたのアカウントは削除されました"
+    "VIDEO_FORMAT_ERROR":"このメディア形式はサポートされていません。",
+    "ACCOUNT_DELETED": "あなたのアカウントは削除されました",
+    "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "小数点は第6位までしか入力できません",
+    "ENTER_INVALID_AMOUNT": "送金可能な残高数量を入力ください"
   },
   "AwardPage": {},
   "wallet": {

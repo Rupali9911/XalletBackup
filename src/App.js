@@ -62,11 +62,6 @@ import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
 
-export const regionLanguage = RNLocalize.getLocales()
-  .map(a => a.languageCode)
-  .values()
-  .next().value;
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
