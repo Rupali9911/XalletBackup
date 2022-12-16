@@ -8,6 +8,7 @@ import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import {Verifiedcollections} from '../../components/verifiedCollection';
 import {IMAGES} from '../../constants';
 import {SvgWithCssUri} from 'react-native-svg';
+import {ImagekitType} from '../../common/ImageConstant';
 const {VerficationIcon} = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -56,7 +57,7 @@ export default function LaunchPadItemData(props) {
     return (
       <View>
         <C_Image
-          type={uriType}
+          size={ImagekitType.BANNER}
           uri={bannerImage}
           imageStyle={
             Platform.OS === 'ios'
@@ -75,7 +76,7 @@ export default function LaunchPadItemData(props) {
     return (
       <C_Image
         style={styles.userIconLoader}
-        type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+        size={ImagekitType.AVATAR}
         uri={iconImage}
         imageStyle={styles.iconImage}
       />
@@ -143,7 +144,6 @@ export default function LaunchPadItemData(props) {
   const renderChainIconNstatus = () => {
     return (
       <View style={styles.bottomWrap}>
-        {/* {!isCollection ? renderChain() : <View />} */}
         <View style={styles.renderchainstyle}>{renderChain()}</View>
         {count <= 1 ? (
           <Text style={styles.nftCount}>
@@ -155,8 +155,11 @@ export default function LaunchPadItemData(props) {
           </Text>
         )}
         <Text style={styles.statusText}>
-          {/*{`${items} ` + translate('common.itemsCollection')}*/}
-          {status === 1 ? translate('common.ongoinglaunch') : ''}
+          {collectionName === 'NFTDuel - Astroboy x Japan'
+            ? translate('common.COMING_SOON')
+            : status === 1
+            ? translate('common.ongoinglaunch')
+            : ''}
         </Text>
       </View>
     );
@@ -202,10 +205,15 @@ export default function LaunchPadItemData(props) {
             );
           } else {
             return (
-              <Image
+              <C_Image
                 key={index}
-                style={{height: SIZE(18), width: SIZE(18), marginTop: '20%'}}
-                source={{uri: item?.image}}
+                imageStyle={{
+                  height: SIZE(18),
+                  width: SIZE(18),
+                  marginTop: '20%',
+                }}
+                uri={item?.image}
+                size={ImagekitType.AVATAR}
               />
             );
           }

@@ -25,6 +25,7 @@ import PushNotification from 'react-native-push-notification';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useDispatch, useSelector} from 'react-redux';
 import {NEW_BASE_URL} from '../../common/constants';
+import {ImagekitType} from '../../common/ImageConstant';
 import {
   heightPercentageToDP as hp,
   SIZE,
@@ -287,8 +288,7 @@ const HomeScreen = ({navigation}) => {
         <View style={styles.userCircle}>
           <C_Image
             uri={item?.mediaUrl}
-            type={item.profile_image}
-            //imageType="profile"
+            size={ImagekitType.PROFILE}
             imageStyle={{width: '100%', height: '100%'}}
           />
           <Text numberOfLines={1} style={styles.userText}>

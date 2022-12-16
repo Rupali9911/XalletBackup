@@ -35,8 +35,7 @@ import Colors from '../../constants/Colors';
 import DropDownPicker from 'react-native-dropdown-picker';
 import PaginationContainer from '../../components/PaginationContainer';
 import {FILTER_TRADING_HISTORY_OPTIONS} from '../../constants';
-import sendRequest from '../../helpers/AxiosApiRequest';
-import {NEW_BASE_URL} from '../../common/constants';
+import {ImagekitType} from '../../common/ImageConstant';
 
 const ActivityTab = props => {
   const {tabTitle, collection} = props;
@@ -106,7 +105,11 @@ const ActivityTab = props => {
             <TouchableOpacity
               onPress={() => getNftData(rowIndex)}
               style={styles.tableCellImageView}>
-              <C_Image imageStyle={styles.cellImage} uri={cellData.image} />
+              <C_Image
+                size={ImagekitType.AVATAR}
+                uri={cellData.image}
+                imageStyle={styles.cellImage}
+              />
               <Text style={{flex: 1, flexWrap: 'wrap'}}>
                 {cellData.imageName}
               </Text>

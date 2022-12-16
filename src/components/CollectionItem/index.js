@@ -9,6 +9,7 @@ import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import {Verifiedcollections} from '../verifiedCollection';
 import {COLORS, IMAGES} from '../../constants';
 import {SvgWithCssUri} from 'react-native-svg';
+import {ImagekitType} from '../../common/ImageConstant';
 const {NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon} = SVGS;
 
 export default function CollectionItem(props) {
@@ -123,7 +124,7 @@ export default function CollectionItem(props) {
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
-            type={uriType}
+            size={ImagekitType.BANNER}
             uri={bannerImage}
             imageStyle={
               Platform.OS === 'ios'
@@ -137,7 +138,7 @@ export default function CollectionItem(props) {
         <View style={styles.collectionWrapper}>
           <View style={CommonStyles.center}>
             <C_Image
-              type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+              size={ImagekitType.AVATAR}
               uri={iconImage}
               imageStyle={styles.iconImage}
             />

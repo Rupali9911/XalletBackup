@@ -39,10 +39,9 @@ import OwnedTab from './ownedTab';
 import SoldOutTab from './soldOutTab';
 import CollectionTab from './collectionTab';
 import {networkType} from '../../common/networkType';
-
 import TabViewScreen from '../../components/TabView/TabViewScreen';
-
 import {useDispatch, useSelector} from 'react-redux';
+import {ImagekitType} from '../../common/ImageConstant';
 
 const {height} = Dimensions.get('window');
 
@@ -144,7 +143,11 @@ function CollectionDetail(props) {
 
     return (
       <View style={styles.bannerView}>
-        <C_Image uri={bannerUrl} type={'jpg'} imageStyle={styles.bannerImage} />
+        <C_Image
+          size={ImagekitType.FULLIMAGE}
+          uri={bannerUrl}
+          imageStyle={styles.bannerImage}
+        />
       </View>
     );
   };
@@ -154,7 +157,11 @@ function CollectionDetail(props) {
 
     return (
       <View style={styles.bannerIconWrap}>
-        <Image source={{uri: bannerUrl}} style={styles.bannerIcon} />
+        <C_Image
+          size={ImagekitType.PROFILE}
+          uri={bannerUrl}
+          imageStyle={styles.bannerIcon}
+        />
         {/* {Verifiedcollections.find((id) => id === collectionId) && (
                     <View>
                         <Image

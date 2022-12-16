@@ -25,13 +25,13 @@ import {PLATFORM, SIZE, SVGS} from '../../constants';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
 import {Platform} from 'expo-modules-core';
+import {ImagekitType} from '../../common/ImageConstant';
 
 const {ChatDefaultProfile} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
   const {nftDetail, nftImage} = route.params;
   const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
-  const cropImgSize = '?tr=w-120,tr=h-120';
 
   //================== Components State Declaration ===================
   const [message, setMessage] = useState('');
@@ -103,7 +103,14 @@ const ChatDetail = ({route, navigation}) => {
   //====================== Chat Sender Image =========================
   const renderImage = () => {
     if (userData.avatar) {
-      return <C_Image uri={userData.avatar} imageStyle={styles.bubbleImage} />;
+      return (
+        <C_Image
+          imageType={'profile'}
+          uri={userData.avatar}
+          size={ImagekitType.AVATAR}
+          imageStyle={styles.bubbleImage}
+        />
+      );
     } else {
       return (
         <View style={styles.bubbleImage}>
@@ -135,7 +142,9 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.leftBubbleContainer}>
             <View style={[styles.timeFormat, {marginLeft: 10}]}>
               <C_Image
+                imageType={'profile'}
                 uri={item?.receiverImage}
+                size={ImagekitType.AVATAR}
                 imageStyle={styles.bubbleImage}
               />
               <Text style={styles.statusText}>{item?.time}</Text>
@@ -231,7 +240,12 @@ const ChatDetail = ({route, navigation}) => {
       <View>
         <View style={styles.chatHeaderContainer}>
           <View>
-            <C_Image uri={nftImage} imageStyle={styles.cImageContainer} />
+            <C_Image
+              imageType={'profile'}
+              size={ImagekitType.AVATAR}
+              uri={nftImage}
+              imageStyle={styles.cImageContainer}
+            />
           </View>
           <View style={{paddingStart: 10}}>
             <Text style={styles.headerNftName}>{NFTNAME}</Text>
@@ -299,6 +313,7 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.bannerImgContainer}>
             <C_Image
               uri={nftDetail?.smallImage}
+              size={ImagekitType.FULLIMAGE}
               imageStyle={styles.bannerImage}
             />
           </View>

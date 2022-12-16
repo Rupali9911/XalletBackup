@@ -17,6 +17,7 @@ import {
 import {translate} from '../../walletUtils';
 import styles from './style';
 import {ActivityIndicator} from 'react-native-paper';
+import {ImagekitType} from '../../common/ImageConstant';
 
 const ChatNftsList = ({tabTitle}) => {
   // =============== Getting data from States =========================
@@ -146,11 +147,15 @@ const ChatNftsList = ({tabTitle}) => {
         }}>
         <View style={styles.nftItemContainer}>
           <View>
-            <C_Image uri={ImgNfts} imageStyle={styles.cImageContainer} />
+            <C_Image
+              imageType={'profile'}
+              size={ImagekitType.AVATAR}
+              uri={ImgNfts}
+              imageStyle={styles.cImageContainer}
+            />
           </View>
           <Text style={styles.nftTextShow}>
-            {' '}
-            {item?.name.slice(item?.name.lastIndexOf('#'))}{' '}
+            {item?.name.slice(item?.name.lastIndexOf('#'))}
           </Text>
         </View>
       </TouchableOpacity>

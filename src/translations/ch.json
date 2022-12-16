@@ -779,7 +779,8 @@
     "VIDEO_FORMAT_ERROR":"不支持此媒体格式。",
     "ACCOUNT_DELETED": "您的帐户已被删除",
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "您最多只能输入 6 位小数点",
-    "ENTER_INVALID_AMOUNT": "请输入有效交易金额"
+    "ENTER_INVALID_AMOUNT": "请输入有效交易金额",
+    "COMING_SOON": "近日发布"
   },
   "AwardPage": {},
   "wallet": {
