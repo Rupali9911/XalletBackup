@@ -26,6 +26,9 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenCentral()
+
+
         mavenLocal()
         maven {
             url 'https://maven.google.com/'
@@ -46,5 +49,11 @@ allprojects {
         resolutionStrategy {
             force 'com.facebook.react:react-native:0.64.2'
         }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.core:core-ktx:1.6.0'
     }
 }
