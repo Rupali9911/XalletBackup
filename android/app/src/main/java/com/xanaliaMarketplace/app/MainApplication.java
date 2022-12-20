@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.reactnativecrispchatsdk.CrispChatSdkPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -16,10 +15,6 @@ import java.util.List;
 import com.facebook.react.bridge.JSIModulePackage; // <- add
 import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add
 // import com.swmansion.reanimated.ReanimatedJSIModulePackage;
-import im.crisp.client.Crisp;
-import androidx.multidex.MultiDexApplication;
-
-
 
 
 public class MainApplication extends Application implements ReactApplication {
@@ -60,7 +55,6 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-    Crisp.configure(getApplicationContext(),"65ecd4df-ee3c-4417-a69f-9795ce5888f6");
 
   }
 
@@ -95,16 +89,3 @@ public class MainApplication extends Application implements ReactApplication {
     }
   }
 }
-
-// public class MainApplication extends MultiDexApplication implements ReactApplication {
-
-//   @Override
-//   public void onCreate() {
-//       super.onCreate();
-
-//       // Replace it with your WEBSITE_ID
-//       // Retrieve it using https://app.crisp.chat/website/[YOUR_WEBSITE_ID]/
-//       Crisp.configure(getApplicationContext(),"65ecd4df-ee3c-4417-a69f-9795ce5888f6");
-//   }
-// }
- 

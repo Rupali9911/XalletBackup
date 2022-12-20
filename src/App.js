@@ -61,12 +61,6 @@ import AiChat from './screens/AiChat';
 import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
-import CrispChat, {
-  setUserEmail,
-  setUserNickname,
-  setUserPhone,
-  resetSession,
-} from 'react-native-crisp-chat-sdk';
 
 export const regionLanguage = RNLocalize.getLocales()
   .map(a => a.languageCode)
