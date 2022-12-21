@@ -151,10 +151,15 @@ export const validateUserName = value => {
   }
 };
 
-export const validateEmail = value =>
-  value && !emailRegex.test(value)
-    ? translate('common.CHECK_YOUR_EMAIL')
-    : undefined;
+export const validateEmail = value => {
+  if (!value.trim()) {
+    return translate('wallet.common.error.emailRequired');
+  } else if (!emailRegex.test(value)) {
+    return translate('common.CHECK_YOUR_EMAIL');
+  } else {
+    return false;
+  }
+};
 
 export const validateWebsiteURL = value =>
   value && !webURLRegex.test(value)
