@@ -91,9 +91,12 @@ export default function CollectionItem(props) {
 
   const renderChain = () => {
     return (
-      <SvgWithCssUri
-        width={isHotCollection ? SIZE(18) : SIZE(23)}
-        height={isHotCollection ? SIZE(18) : SIZE(23)}
+      <C_Image
+        size={ImagekitType.avatar}
+        imageStyle={{
+          width: isHotCollection ? SIZE(18) : SIZE(23),
+          height: isHotCollection ? SIZE(18) : SIZE(23),
+        }}
         uri={network?.image}
       />
     );
