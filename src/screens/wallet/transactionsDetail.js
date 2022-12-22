@@ -13,9 +13,18 @@ import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { alertWithSingleBtn } from '../../utils';
 import { environment, translate } from '../../walletUtils';
+import { useSelector } from 'react-redux';
 
 export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
+  const regionLanguage = route?.params?.regionLanguage;
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  let datetime = new Date(transactionInfo?.timeStamp * 1000);
+  let UTCTime = moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss');
+  let localTime = moment.unix(transactionInfo?.timeStamp).format('YYYY-MM-DD HH:mm:ss');
+
+  let displayTime =
+    selectedLanguageItem.language_name !== regionLanguage ? UTCTime : localTime;
   const coin = route?.params?.coin;
   const copyAddress = () => {
     Clipboard.setString(
@@ -40,8 +49,8 @@ export default function transactionsDetail({ route }) {
       Linking.openURL(`${environment.xanaScanURL}${transactionInfo?.hash}`);
     }
   };
-  {
-  }
+
+
   return (
     <AppBackground>
       <AppHeader
@@ -127,9 +136,10 @@ export default function transactionsDetail({ route }) {
         <View style={styles.rowContainer}>
           <TextView style={styles.rowText}>{translate('common.date')}</TextView>
           <TextView style={styles.rowText}>
-            {moment
+            {/* {moment
               .unix(transactionInfo?.timeStamp)
-              .format('YYYY-MM-DD HH:mm:ss')}
+              .format('YYYY-MM-DD HH:mm:ss')} */}
+            {displayTime}
           </TextView>
         </View>
       </View>
