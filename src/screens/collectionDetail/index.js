@@ -76,6 +76,7 @@ function CollectionDetail(props) {
           {key: 'onSale', title: translate('common.onSale')},
           {key: 'notOnSell', title: translate('common.notOnSell')},
           {key: 'owned', title: translate('wallet.common.owned')},
+          {key: 'gallery', title: translate('common.gallery')},
           {key: 'activity', title: translate('common.activity')},
         ]
       : networkType === 'mainnet'
@@ -362,6 +363,15 @@ function CollectionDetail(props) {
             <OwnedTab
               tabTitle={'Owned'}
               collection={collection}
+              isLaunchPad={isLaunchPad}
+            />
+          );
+        case 'gallery':
+          return (
+            <GalleryTab
+              tabTitle={'Gallery'}
+              collection={collection}
+              tabStatus={3}
               isLaunchPad={isLaunchPad}
             />
           );

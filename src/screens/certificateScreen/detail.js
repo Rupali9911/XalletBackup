@@ -394,10 +394,8 @@ const DetailScreen = ({navigation, route}) => {
   //===================== UseEffect Function =========================
 
   useEffect(() => {
-    console.log('@@@@@@@@@@@@===>Backhandler');
     const backAction = () => {
       {
-        // BackHandler.exitApp();
         navigation.goBack();
         return true;
       }
