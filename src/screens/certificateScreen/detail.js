@@ -3,6 +3,7 @@ import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
+  BackHandler,
   FlatList,
   Image,
   Linking,
@@ -391,6 +392,27 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   //===================== UseEffect Function =========================
+
+  useEffect(() => {
+    console.log('@@@@@@@@@@@@===>Backhandler');
+    const backAction = () => {
+      {
+        // BackHandler.exitApp();
+        navigation.goBack();
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
   useEffect(() => {
     if (isFocused && networkName && collectionAddress && nftTokenId) {
       getNFTDetails();
@@ -891,6 +913,7 @@ const DetailScreen = ({navigation, route}) => {
         ? ownerDataN.avatar
         : null;
     let imageStyle = fromNFT ? styles.creatorImage : styles.iconsImage;
+    let imageView = fromNFT ? SIZE(40) : SIZE(30);
     return (
       <>
         {uri ? (
@@ -898,6 +921,7 @@ const DetailScreen = ({navigation, route}) => {
             uri={uri}
             size={ImagekitType.AVATAR}
             imageStyle={imageStyle}
+            style={{width: imageView}}
           />
         ) : (
           <Image style={imageStyle} source={IMAGES.DEFAULTUSER} />
@@ -1007,6 +1031,7 @@ const DetailScreen = ({navigation, route}) => {
             uri={tokenIcon}
             size={ImagekitType.AVATAR}
             imageStyle={styles.tokenIcon}
+            style={{width: SIZE(33)}}
           />
           {!load && (
             <Text style={styles.price}>
