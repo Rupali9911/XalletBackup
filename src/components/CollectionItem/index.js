@@ -88,11 +88,7 @@ export default function CollectionItem(props) {
   const renderChain = () => {
     return (
       <C_Image
-<<<<<<< HEAD
         size={ImagekitType.AVATAR}
-=======
-        size={ImagekitType.avatar}
->>>>>>> eb3bed6914a571218e939521e389187d61b95b2d
         imageStyle={{
           width: isHotCollection ? SIZE(18) : SIZE(23),
           height: isHotCollection ? SIZE(18) : SIZE(23),
@@ -141,7 +137,6 @@ export default function CollectionItem(props) {
         <View style={styles.collectionWrapper}>
           <View style={CommonStyles.center}>
             <C_Image
-              style={{marginTop: SIZE(-33)}}
               size={ImagekitType.AVATAR}
               uri={iconImage}
               imageStyle={styles.iconImage}
