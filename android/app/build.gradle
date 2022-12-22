@@ -142,6 +142,7 @@ android {
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true
+
     }
     splits {
         abi {
@@ -211,10 +212,12 @@ implementation 'com.facebook.fresco:animated-webp:2.1.0'
   implementation 'com.facebook.fresco:webpsupport:2.0.0'
   implementation 'com.facebook.fresco:webpsupport:2.0.0'
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"  // From node_modules 
     
     implementation platform('com.google.firebase:firebase-bom:28.4.2')
     implementation 'com.google.firebase:firebase-analytics'
+
+
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.annotation:annotation:1.0.2'
@@ -231,7 +234,7 @@ implementation 'com.facebook.fresco:animated-webp:2.1.0'
       exclude group:'com.facebook.fbjni'
     }
 
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") { 
         exclude group:'com.facebook.flipper'
         exclude group:'com.squareup.okhttp3', module:'okhttp'
     }

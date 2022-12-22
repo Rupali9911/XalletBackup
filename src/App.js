@@ -352,7 +352,6 @@ const App = () => {
     </NativeBaseProvider>
   );
 };
-
 export default App;
 
 const styles = StyleSheet.create({
