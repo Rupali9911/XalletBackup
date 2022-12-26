@@ -223,6 +223,9 @@ export const getNftCollections =
       page: page,
       limit: 50,
     };
+    // const headers = {
+    //   Authorization: `Bearer dfsdfsfsfsdfsddfsdfdjsldjflsjdlfj`,
+    // };
 
     (tabTitle === 'Owned'
       ? sendRequest({
