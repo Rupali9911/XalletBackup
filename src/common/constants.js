@@ -22,8 +22,13 @@ if (networkType === 'mainnet') {
   BASE_URL = 'https://testapi.xanalia.com';
   NEW_BASE_URL = 'https://backend.xanalia.com';
   PROVIDER_URL = 'https://data-seed-prebsc-1-s1.binance.org:8545';
-  API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
-  NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
+
+  // API_GATEWAY_URL = 'https://lamde1nmma.execute-api.eu-west-1.amazonaws.com/v1';
+  // NEXT_PUBLIC_SOCKET_DOMAIN = 'https://socket.xanalia.com';
+
+  API_GATEWAY_URL = 'https://jlvot2m1v8.execute-api.eu-west-1.amazonaws.com/v1';
+  NEXT_PUBLIC_SOCKET_DOMAIN = 'https://dev-socket.xanalia.com';
+
   XANALIA_WEB = 'https://frontend.xanalia.com';
   //For Xanalia
   NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = 'pk_live_35B11F036089B82B';

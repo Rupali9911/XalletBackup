@@ -70,7 +70,7 @@ const AiChat = () => {
       data,
     })
       .then(res => {
-        dispatch(remainWordCountData(res?.userWordLimit));
+        dispatch(remainWordCountData(res?.word_count?.userWordLimit));
       })
       .catch(err => console.log(err));
   };

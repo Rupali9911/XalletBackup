@@ -232,6 +232,7 @@ export const LAUNCHPAD_NFT_LIST_PAGE_CHANGE = 'LAUNCHPAD_NFT_PAGE_CHANGE';
 
 //================= Network Reducer =========================
 export const GET_NETWORKS = 'GET_NETWORKS';
+export const ERROR_ALERT = 'ERROR_ALERT';
 
 //================= Chat Types =========================
 export const CHAT_LOAD_START = 'CHAT_LOAD_START';

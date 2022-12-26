@@ -170,6 +170,7 @@ const History = props => {
                                 navigation.navigate('transactionsDetail', {
                                     data: _item,
                                     coin: coin,
+                                    regionLanguage: regionLanguage
                                 })
                             }
                         />
