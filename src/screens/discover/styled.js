@@ -142,6 +142,14 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 10,
       },
+    avatar: {
+        width: hp(4),
+        height: hp(4),
+        borderRadius: hp(4),
+    },
+    avatarView:{
+        width: hp(4)
+    }
 })
 
 export {

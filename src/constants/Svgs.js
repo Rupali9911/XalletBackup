@@ -92,6 +92,7 @@ import Instagram from 'src/assets/svgs/instagram.svg';
 import DiscordIcon from 'src/assets/svgs/icon-discord.svg';
 import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg';
 import InfoIcon from 'src/assets/svgs/icon-info.svg';
+import ComingSoonInfoIcon from 'src/assets/svgs/info.svg';
 
 export default {
   GirlIcon,
@@ -186,4 +187,5 @@ export default {
   DiscordIcon,
   ChatDefaultProfile,
   InfoIcon,
+  ComingSoonInfoIcon,
 };

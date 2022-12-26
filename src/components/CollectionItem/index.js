@@ -1,15 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
-import {C_Image} from '../../components';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
+import { C_Image } from '../../components';
 import styles from './styles';
-import {SIZE, SVGS} from 'src/constants';
-import {translate} from '../../walletUtils';
+import { SIZE, SVGS } from 'src/constants';
+import { translate } from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
-import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
-import {Verifiedcollections} from '../verifiedCollection';
-import {COLORS, IMAGES} from '../../constants';
-import {SvgWithCssUri} from 'react-native-svg';
-const {NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon} = SVGS;
+import { ImagekitType } from '../../common/ImageConstant';
+const { NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon } = SVGS;
 
 export default function CollectionItem(props) {
   const {
@@ -90,9 +87,12 @@ export default function CollectionItem(props) {
 
   const renderChain = () => {
     return (
-      <SvgWithCssUri
-        width={isHotCollection ? SIZE(18) : SIZE(23)}
-        height={isHotCollection ? SIZE(18) : SIZE(23)}
+      <C_Image
+        size={ImagekitType.AVATAR}
+        imageStyle={{
+          width: isHotCollection ? SIZE(18) : SIZE(23),
+          height: isHotCollection ? SIZE(18) : SIZE(23),
+        }}
         uri={network?.image}
       />
     );
@@ -123,7 +123,7 @@ export default function CollectionItem(props) {
       <View style={styles.listItemContainer}>
         <View>
           <C_Image
-            type={uriType}
+            size={ImagekitType.BANNER}
             uri={bannerImage}
             imageStyle={
               Platform.OS === 'ios'
@@ -137,7 +137,7 @@ export default function CollectionItem(props) {
         <View style={styles.collectionWrapper}>
           <View style={CommonStyles.center}>
             <C_Image
-              type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+              size={ImagekitType.AVATAR}
               uri={iconImage}
               imageStyle={styles.iconImage}
             />

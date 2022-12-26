@@ -1,38 +1,28 @@
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-} from 'react-native';
+import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
-import {colors, fonts} from '../../res';
-import {changeScreenName} from '../../store/actions/authAction';
-import {translate} from '../../walletUtils';
+import {colors} from '../../res';
 import {
-  myNftListReset,
   myNFTList,
-  myNftLoadStart,
-  myPageChange,
-  myNftOwnedPageChange,
+  myNftListReset,
   myNftLoadFail,
   myNftOwnedListingReset,
+  myNftOwnedPageChange,
 } from '../../store/actions/myNFTaction';
-// import { myCollectionList, myCollectionLoadFail, myCollectionPageChange, myCollectionListReset } from '../../store/actions/myCollection';
+import {translate} from '../../walletUtils';
+import styles from './styles';
 
-const {height} = Dimensions.get('window');
-
-const NFTOwned = ({route, navigation, id}) => {
+const NFTOwned = props => {
+  const {route, id, setChildScroll, scrollEnabled} = props;
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   let pageNum = 1;
@@ -106,6 +96,7 @@ const NFTOwned = ({route, navigation, id}) => {
       ) : MyNFTReducer.myNftOwnedList?.length ? (
         <FlatList
           key={2}
+          // scrollEnabled={scrollEnabled}
           data={MyNFTReducer?.myNftOwnedList}
           horizontal={false}
           numColumns={2}
@@ -128,6 +119,24 @@ const NFTOwned = ({route, navigation, id}) => {
               dispatch(myNftOwnedPageChange(num));
             }
           }}
+          onScrollBeginDrag={s => {
+            // console.log(
+            //   '🚀 ~ o ~ onScrollBeginDrag ~ ~',
+            //   s?.nativeEvent?.contentOffset,
+            // );
+            // setChildScroll(s?.nativeEvent?.contentOffset?.y);
+          }}
+          onScroll={s => {
+            // console.log('🚀 ~ o ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
+            // setChildScroll(s?.nativeEvent?.contentOffset?.y);
+          }}
+          onScrollEndDrag={s => {
+            // console.log(
+            //   '🚀 ~ o ~ onScrollEndDrag ~ ~',
+            //   s?.nativeEvent?.contentOffset,
+            // );
+            // setChildScroll(s?.nativeEvent?.contentOffset?.y);
+          }}
           ListFooterComponent={renderFooter}
           onEndReachedThreshold={1}
           keyExtractor={(v, i) => 'item_' + i}
@@ -140,37 +149,5 @@ const NFTOwned = ({route, navigation, id}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  sorryMessageCont: {
-    // flex: 1,
-    marginTop: height / 6.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sorryMessage: {
-    fontSize: 15,
-    fontFamily: fonts.SegoeUIRegular,
-  },
-  trendCont: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
-  leftToggle: {
-    width: '30%',
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  rightToggle: {
-    width: '30%',
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-  saveBtnGroup: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-  },
-});
 
 export default React.memo(NFTOwned);

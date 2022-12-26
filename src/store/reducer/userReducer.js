@@ -564,35 +564,37 @@ export const getUserData = (id, profile = false) => {
   };
 };
 
-export const updateProfile = (props, id) => async dispatch => {
-  dispatch(startLoading());
-  sendRequest({
-    url: `${NEW_BASE_URL}/users/update-profile`,
-    method: 'PUT',
-    data: props,
-  })
-    .then(res => {
-      if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
-        let key = UserErrorMessage[res.messageCode].key;
-        dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
-      } else {
-        dispatch(getUserData(id));
-        dispatch(
-          setToastMsg({
-            error: false,
-            msg: translate('common.USER_SUCCESSFUL_UPDATE'),
-          }),
-        );
-      }
-      dispatch(endLoading());
+export const updateProfile =
+  (props, id, isProfile = false) =>
+  async dispatch => {
+    dispatch(startLoading());
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/update-profile`,
+      method: 'PUT',
+      data: props,
     })
-    .catch(error => {
-      dispatch(endLoading());
-      let key = UserErrorMessage[error.data.messageCode].key;
-      dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
-      console.log('@@@ error ', error.data.messageCode);
-    });
-};
+      .then(res => {
+        if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
+          let key = UserErrorMessage[res.messageCode].key;
+          dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
+        } else {
+          dispatch(getUserData(id, isProfile));
+          dispatch(
+            setToastMsg({
+              error: false,
+              msg: translate('common.USER_SUCCESSFUL_UPDATE'),
+            }),
+          );
+        }
+        dispatch(endLoading());
+      })
+      .catch(error => {
+        dispatch(endLoading());
+        let key = UserErrorMessage[error.data.messageCode].key;
+        dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
+        console.log('@@@ error ', error.data.messageCode);
+      });
+  };
 
 export const verifyEmail =
   (email, selectedLanguageItem) => async (dispatch, getState) => {

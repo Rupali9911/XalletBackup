@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native';
+import {View, Text, Image, Platform, TouchableOpacity} from 'react-native';
 import {C_Image} from '../../components';
 import styles from './styles';
 import {SIZE, SVGS} from 'src/constants';
@@ -8,6 +8,7 @@ import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import {Verifiedcollections} from '../../components/verifiedCollection';
 import {IMAGES} from '../../constants';
 import {SvgWithCssUri} from 'react-native-svg';
+import {ImagekitType} from '../../common/ImageConstant';
 const {VerficationIcon} = SVGS;
 
 export default function LaunchPadItemData(props) {
@@ -56,7 +57,7 @@ export default function LaunchPadItemData(props) {
     return (
       <View>
         <C_Image
-          type={uriType}
+          size={ImagekitType.BANNER}
           uri={bannerImage}
           imageStyle={
             Platform.OS === 'ios'
@@ -75,7 +76,7 @@ export default function LaunchPadItemData(props) {
     return (
       <C_Image
         style={styles.userIconLoader}
-        type={bannerImage?.split('.')[bannerImage?.split('.').length - 1]}
+        size={ImagekitType.AVATAR}
         uri={iconImage}
         imageStyle={styles.iconImage}
       />
@@ -143,7 +144,6 @@ export default function LaunchPadItemData(props) {
   const renderChainIconNstatus = () => {
     return (
       <View style={styles.bottomWrap}>
-        {/* {!isCollection ? renderChain() : <View />} */}
         <View style={styles.renderchainstyle}>{renderChain()}</View>
         {count <= 1 ? (
           <Text style={styles.nftCount}>
@@ -155,8 +155,11 @@ export default function LaunchPadItemData(props) {
           </Text>
         )}
         <Text style={styles.statusText}>
-          {/*{`${items} ` + translate('common.itemsCollection')}*/}
-          {status === 1 ? translate('common.ongoinglaunch') : ''}
+          {collectionName === 'NFTDuel - Astroboy x Japan'
+            ? translate('common.COMING_SOON')
+            : status === 1
+            ? translate('common.ongoinglaunch')
+            : ''}
         </Text>
       </View>
     );
@@ -190,15 +193,30 @@ export default function LaunchPadItemData(props) {
     return (
       <View style={styles.renderchainstyle}>
         {network.map((item, index) => {
-          return (
-            <SvgWithCssUri
-              key={index}
-              uri={item.image}
-              width={SIZE(18)}
-              height={SIZE(18)}
-              style={{marginTop: '20%'}}
-            />
-          );
+          if (item.networkName !== 'XANACHAIN') {
+            return (
+              <SvgWithCssUri
+                key={index}
+                uri={item.image}
+                width={SIZE(18)}
+                height={SIZE(18)}
+                style={{marginTop: '20%'}}
+              />
+            );
+          } else {
+            return (
+              <C_Image
+                key={index}
+                imageStyle={{
+                  height: SIZE(18),
+                  width: SIZE(18),
+                  marginTop: '20%',
+                }}
+                uri={item?.image}
+                size={ImagekitType.AVATAR}
+              />
+            );
+          }
         })}
       </View>
     );

@@ -241,19 +241,14 @@ const Wallet = ({ route, navigation }) => {
           {networkType?.name !== 'XANACHAIN' &&
             networkType?.name !== 'Ethereum' ? (
             <SvgWithCssUri
-              width={SIZE(25)}
-              height={SIZE(25)}
+              width={SIZE(28)}
+              height={SIZE(28)}
               uri={networkType?.image}
-            />
-          ) : networkType?.name !== 'Ethereum' ? (
-            <Image
-              style={{ height: SIZE(30), width: SIZE(30) }}
-              source={{ uri: networkType?.image }}
             />
           ) : (
             <Image
-              style={{ height: SIZE(25), width: SIZE(25) }}
-              source={ImagesSrc.etherium}
+              style={{ height: SIZE(28), width: SIZE(28) }}
+              source={networkType?.name !== 'Ethereum' ? ImagesSrc.xetaNew : ImagesSrc.etherium}
             />
           )}
         </TouchableOpacity>

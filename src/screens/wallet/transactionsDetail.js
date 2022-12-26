@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import moment from 'moment';
 import React from 'react';
-import {Image, Linking, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
 import NumberFormat from 'react-number-format';
 import check from '../../assets/pngs/check.png';
 import copy from '../../assets/pngs/copy.png';
@@ -9,13 +9,22 @@ import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import TextView from '../../components/appText';
 import Colors from '../../constants/Colors';
-import {hp, RF, wp} from '../../constants/responsiveFunct';
+import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import {alertWithSingleBtn} from '../../utils';
-import {environment, translate} from '../../walletUtils';
+import { alertWithSingleBtn } from '../../utils';
+import { environment, translate } from '../../walletUtils';
+import { useSelector } from 'react-redux';
 
-export default function transactionsDetail({route}) {
+export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
+  const regionLanguage = route?.params?.regionLanguage;
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  let datetime = new Date(transactionInfo?.timeStamp * 1000);
+  let UTCTime = moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss');
+  let localTime = moment.unix(transactionInfo?.timeStamp).format('YYYY-MM-DD HH:mm:ss');
+
+  let displayTime =
+    selectedLanguageItem.language_name !== regionLanguage ? UTCTime : localTime;
   const coin = route?.params?.coin;
   const copyAddress = () => {
     Clipboard.setString(
@@ -40,8 +49,8 @@ export default function transactionsDetail({route}) {
       Linking.openURL(`${environment.xanaScanURL}${transactionInfo?.hash}`);
     }
   };
-  {
-  }
+
+
   return (
     <AppBackground>
       <AppHeader
@@ -59,11 +68,7 @@ export default function transactionsDetail({route}) {
             : translate('wallet.common.remittanceQuantity')}
         </TextView>
         <NumberFormat
-          value={
-            coin.type == 'USDC' || coin.type == 'USDT'
-              ? transactionInfo?.value * 1e9
-              : transactionInfo?.value
-          }
+          value={transactionInfo?.value}
           displayType={'text'}
           decimalScale={8}
           thousandSeparator={true}
@@ -80,13 +85,13 @@ export default function transactionsDetail({route}) {
           <TextView
             style={[
               styles.recieveText,
-              transactionInfo?.hash == '' && {color: Colors.RED2},
+              transactionInfo?.hash == '' && { color: Colors.RED2 },
             ]}>
             {transactionInfo?.hash !== ''
               ? translate('wallet.common.paymentComplete')
               : transactionInfo?.direction == 'in'
-              ? translate('wallet.common.paymentFailed')
-              : translate('wallet.common.remittanceFailure')}
+                ? translate('wallet.common.paymentFailed')
+                : translate('wallet.common.remittanceFailure')}
           </TextView>
         </View>
       </View>
@@ -131,9 +136,10 @@ export default function transactionsDetail({route}) {
         <View style={styles.rowContainer}>
           <TextView style={styles.rowText}>{translate('common.date')}</TextView>
           <TextView style={styles.rowText}>
-            {moment
+            {/* {moment
               .unix(transactionInfo?.timeStamp)
-              .format('YYYY-MM-DD HH:mm:ss')}
+              .format('YYYY-MM-DD HH:mm:ss')} */}
+            {displayTime}
           </TextView>
         </View>
       </View>

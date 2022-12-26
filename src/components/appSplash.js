@@ -7,14 +7,9 @@ import {
   getAllLanguages,
   setAppLanguage,
 } from '../store/reducer/languageReducer';
-import {languageArray} from '../walletUtils';
+import {languageArray, regionLanguage} from '../walletUtils';
 import * as RNLocalize from 'react-native-localize';
 import {getAccessToken} from '../helpers/AxiosApiRequest';
-
-const regionLanguage = RNLocalize.getLocales()
-  .map(a => a.languageCode)
-  .values()
-  .next().value;
 
 const appSplash = () => {
   const dispatch = useDispatch();

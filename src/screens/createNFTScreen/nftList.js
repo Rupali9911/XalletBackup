@@ -1,25 +1,34 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, Image, FlatList, ActivityIndicator } from 'react-native';
-import { colors } from '../../res';
-import { networkType as networkStatus } from "../../common/networkType";
+import React, {useState, useEffect, useMemo} from 'react';
+import {
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
+import {colors} from '../../res';
+import {networkType as networkStatus} from '../../common/networkType';
 
 import styles from './styles';
-import { CardCont, CardField, CardLabel, CardButton } from './components';
+import {CardCont, CardField, CardLabel, CardButton} from './components';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { IMAGES } from '../../constants';
+import {IMAGES} from '../../constants';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
-import { toFixCustom } from './helperFunction';
-import { translate } from '../../walletUtils';
+import {useSelector} from 'react-redux';
+import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
+import {toFixCustom} from './helperFunction';
+import {translate} from '../../walletUtils';
 import Modal from 'react-native-modal';
-import { C_Image } from '../../components';
+import {C_Image} from '../../components';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { SIZE, SVGS } from 'src/constants';
-const { Ethereum } = SVGS;
+import {SIZE, SVGS} from 'src/constants';
+import {ImagekitType} from '../../common/ImageConstant';
+const {Ethereum} = SVGS;
 
 const ListItem = props => {
   // let dataToRender = props.toggle == "mint" ? props.data.metaData : props.data;
@@ -96,17 +105,21 @@ const basePriceTokens = [
 
 const ModalItems = props => {
   return (
-    <View style={styles.modalNftItemCont} >
-      <View style={{ flex: 1 }} >
-        <Text style={{ ...styles.listLabel, fontWeight: "bold" }}>{props?.label}</Text>
+    <View style={styles.modalNftItemCont}>
+      <View style={{flex: 1}}>
+        <Text style={{...styles.listLabel, fontWeight: 'bold'}}>
+          {props?.label}
+        </Text>
       </View>
-      <View style={{ flex: 1, flexDirection: 'row' }} >
-        {props.label === 'Earned:' && <Ethereum style={{ marginRight: SIZE(5) }} />}
+      <View style={{flex: 1, flexDirection: 'row'}}>
+        {props.label === 'Earned:' && (
+          <Ethereum style={{marginRight: SIZE(5)}} />
+        )}
         <Text style={styles.listLabel}>{props?.value}</Text>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const NFTList = ({
   changeLoadingState,
@@ -116,30 +129,25 @@ const NFTList = ({
   modalScreen,
   nftListDefault,
   switchEditNFT,
-  dropDowntitle
+  dropDowntitle,
 }) => {
+  const {userData} = useSelector(state => state.UserReducer);
+  const {networkType} = useSelector(state => state.WalletReducer);
 
-  const { userData } = useSelector(
-    state => state.UserReducer
-  );
-  const { networkType } = useSelector(
-    state => state.WalletReducer
-  );
-
-  const { networks } = useSelector(
-    state => state.NetworkReducer
-  );
+  const {networks} = useSelector(state => state.NetworkReducer);
 
   const [collectionList, setCollectionList] = useState([]);
   const [collection, setCollection] = useState(null);
-  const [createdCollectedList, setcreatedCollectedList] = useState([{
-    id: 1,
-    value: 'Created',
-  },
-  {
-    id: 2,
-    value: 'Collected',
-  },]);
+  const [createdCollectedList, setcreatedCollectedList] = useState([
+    {
+      id: 1,
+      value: 'Created',
+    },
+    {
+      id: 2,
+      value: 'Collected',
+    },
+  ]);
   const [createdCollected, setcreatedCollected] = useState(null);
   const [networkList, setNetworkList] = useState(networks);
   const [selectedNetwork, setSelectedNetwork] = useState(null);
@@ -147,42 +155,44 @@ const NFTList = ({
   const [nftListDraftPage, setNftListDraftPage] = useState(1);
   const [nftListCreated, setNftListCreated] = useState([]);
   const [nftListDraft, setNftListDraft] = useState([]);
-  const [toggle, setToggle] = useState("mint");
-  const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(true)
-  const [pageLoader, setPageLoader] = useState(false)
+  const [toggle, setToggle] = useState('mint');
+  const [
+    onEndReachedCalledDuringMomentum,
+    setOnEndReachedCalledDuringMomentum,
+  ] = useState(true);
+  const [pageLoader, setPageLoader] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectData, setSelectData] = useState(null);
-
 
   useEffect(async () => {
     if (position === 2) {
       cleanData();
-      changeLoadingState(true)
-      getCollectionList()
-      getNftList(1)
+      changeLoadingState(true);
+      getCollectionList();
+      getNftList(1);
     }
-  }, [position])
+  }, [position]);
 
   useEffect(() => {
-    if (modalScreen === "nftList" && modalItem) {
-      if (modalItem !== "closed") {
-        if (dropDowntitle.title === "Created / Collected") {
-          setcreatedCollected(modalItem)
-        } else if (dropDowntitle.title === "Network") {
-          setSelectedNetwork(modalItem)
+    if (modalScreen === 'nftList' && modalItem) {
+      if (modalItem !== 'closed') {
+        if (dropDowntitle.title === 'Created / Collected') {
+          setcreatedCollected(modalItem);
+        } else if (dropDowntitle.title === 'Network') {
+          setSelectedNetwork(modalItem);
         } else {
-          setCollection(modalItem)
+          setCollection(modalItem);
         }
       }
     }
-  }, [modalItem])
+  }, [modalItem]);
 
   const cleanData = () => {
-    setNftListPage(1)
-    setNftListCreated([])
+    setNftListPage(1);
+    setNftListCreated([]);
     // setNftListDraftPage(1)
     // setNftListDraft([])
-  }
+  };
 
   // useEffect(() => {
   //   if (position == 1) {
@@ -207,8 +217,8 @@ const NFTList = ({
       url: `${NEW_BASE_URL}/collections/user-collections`,
       method: 'GET',
       params: {
-        networkId: networkType?.id
-      }
+        networkId: networkType?.id,
+      },
     })
       .then(res => {
         if (res && res?.data && res?.data?.length !== 0) {
@@ -233,76 +243,76 @@ const NFTList = ({
       })
       .catch(e => {
         changeLoadingState(false);
-        console.log(e, "nftlist collectionList error");
+        console.log(e, 'nftlist collectionList error');
         // alertWithSingleBtn(
         //   translate("wallet.common.alert"),
         //   translate("wallet.common.error.networkFailed")
         // );
-      })
+      });
   };
 
   const getNftList = (num, status) => {
     let params = {
       pageIndex: num,
-      pageSize: 5
-    }
+      pageSize: 5,
+    };
     if (!status) {
       if (createdCollected) {
         params = {
           ...params,
-          ownerNft: createdCollected?.value
-        }
+          ownerNft: createdCollected?.value,
+        };
       }
       if (selectedNetwork) {
         params = {
           ...params,
-          network: selectedNetwork?.id
-        }
+          network: selectedNetwork?.id,
+        };
       }
       if (collection) {
         params = {
           ...params,
-          collection: collection?.id
-        }
+          collection: collection?.id,
+        };
       }
     }
     sendRequest({
       url: `${NEW_BASE_URL}/nfts`,
       method: 'GET',
-      params
+      params,
     })
       .then(res => {
         if (res && res?.list && res?.list?.length !== 0) {
-          setOnEndReachedCalledDuringMomentum(true)
-          setNftListCreated((old) => [...old, ...res.list])
+          setOnEndReachedCalledDuringMomentum(true);
+          setNftListCreated(old => [...old, ...res.list]);
         }
-        changeLoadingState(false)
+        changeLoadingState(false);
         setPageLoader(false);
       })
       .catch(e => {
         changeLoadingState(false);
-        console.log(e, "nftlist collectionList error");
+        console.log(e, 'nftlist collectionList error');
         // alertWithSingleBtn(
         //   translate("wallet.common.alert"),
         //   translate("wallet.common.error.networkFailed")
         // );
-      })
-  }
+      });
+  };
 
   const searchNFTListWithFilter = () => {
-    changeLoadingState(true)
+    changeLoadingState(true);
     setNftListPage(1);
     getNftList(1);
-  }
+  };
 
   const resetFilter = () => {
     setCollection(null);
     setcreatedCollected(null);
     setSelectedNetwork(null);
-    changeLoadingState(true)
+    changeLoadingState(true);
     setNftListPage(1);
     getNftList(1, 'Reset');
-  }
+  };
 
   // const pressToggle = (v, collect) => {
   //   setToggle(v);
@@ -312,93 +322,137 @@ const NFTList = ({
   //   }
   // }
 
-  const selectItem = (v) => {
-    setSelectData(v)
-    setModalVisible(true)
-  }
+  const selectItem = v => {
+    setSelectData(v);
+    setModalVisible(true);
+  };
 
-  const getCoinName = (token, chainType) => {
-    let foundCoin = "";
-    if (token && chainType) {
-      for (let coin in basePriceTokens) {
-        if (basePriceTokens[coin]?.chain == chainType && basePriceTokens[coin]?.order == token) {
-          foundCoin = basePriceTokens[coin]?.value;
-        }
-      }
-    }
-    return foundCoin;
-  }
+  // const getCoinName = (token, chainType) => {
+  //   let foundCoin = '';
+  //   if (token && chainType) {
+  //     for (let coin in basePriceTokens) {
+  //       if (
+  //         basePriceTokens[coin]?.chain == chainType &&
+  //         basePriceTokens[coin]?.order == token
+  //       ) {
+  //         foundCoin = basePriceTokens[coin]?.value;
+  //       }
+  //     }
+  //   }
+  //   return foundCoin;
+  // };
 
-  const renderListItem = ({ item, index }) => {
+  const renderListItem = ({item, index}) => {
     return (
-      <ListItem press={() => {
-        let objectToRender = toggle == "mint" ? {
-          image: item?.thumbnailUrl,
-          name: item?.nftName,
-          // minPrice: parseInt(item.price) / Math.pow(10, 18),
-          minPrice: Number(item?.price),
-          // basePrice: getCoinName(item.receiveToken, item.network),
-          basePrice: item?.marketStatus === 0 ? '' : item?.receiveToken,
-          chainType: typeof item?.network === 'string' && item?.network,
-          earned: toFixCustom(item?.totalPrice) || 0
-        } : item;
-        selectItem(objectToRender)
-      }} data={item} toggle={toggle} />
-    )
-  }
+      <ListItem
+        press={() => {
+          let objectToRender =
+            toggle == 'mint'
+              ? {
+                  image: item?.thumbnailUrl,
+                  name: item?.nftName,
+                  // minPrice: parseInt(item.price) / Math.pow(10, 18),
+                  minPrice: Number(item?.price),
+                  // basePrice: getCoinName(item.receiveToken, item.network),
+                  basePrice: item?.marketStatus === 0 ? '' : item?.receiveToken,
+                  chainType: typeof item?.network === 'string' && item?.network,
+                  earned: toFixCustom(item?.totalPrice) || 0,
+                }
+              : item;
+          selectItem(objectToRender);
+        }}
+        data={item}
+        toggle={toggle}
+      />
+    );
+  };
 
-  let showList = (toggle == "mint" && nftListCreated.length !== 0) ?
-    nftListCreated : (toggle == "draft" && nftListDraft.length !== 0) ?
-      nftListDraft : []
+  let showList =
+    toggle == 'mint' && nftListCreated.length !== 0
+      ? nftListCreated
+      : toggle == 'draft' && nftListDraft.length !== 0
+      ? nftListDraft
+      : [];
 
-  const memoizedValue = useMemo(
-    () => renderListItem,
-    [showList],
-  );
+  const memoizedValue = useMemo(() => renderListItem, [showList]);
   const handleFlastListEndReached = () => {
     if (!onEndReachedCalledDuringMomentum) {
       setPageLoader(true);
       setOnEndReachedCalledDuringMomentum(true);
       let num;
-      if (toggle == "mint") {
+      if (toggle == 'mint') {
         num = nftListPage + 1;
-        setNftListPage(num)
+        setNftListPage(num);
       } else {
         num = nftListDraftPage + 1;
-        setNftListDraftPage(num)
+        setNftListDraftPage(num);
       }
-      getNftList(num)
+      getNftList(num);
     }
-  }
+  };
 
   const _onMomentumScrollBegin = () => {
-    setOnEndReachedCalledDuringMomentum(false)
-  }
+    setOnEndReachedCalledDuringMomentum(false);
+  };
 
-  const keyExtractor = (item, index) => { return 'item_' + index }
+  const keyExtractor = (item, index) => {
+    return 'item_' + index;
+  };
 
   return (
     <View style={styles.childCont}>
-
-      <CardCont style={{ flex: 1 }} >
-        <CardLabel>{translate("common.CREATED_COLLECTED")}</CardLabel>
+      <CardCont style={{flex: 1}}>
+        <CardLabel>{translate('common.CREATED_COLLECTED')}</CardLabel>
         <CardField
-          inputProps={{ value: createdCollected ? createdCollected?.value : translate("common.CHOOSE_VALUE") }}
-          onPress={() => showModal({ data: createdCollectedList, title: translate("common.CREATED_COLLECTED"), itemToRender: "value" })}
+          inputProps={{
+            value: createdCollected
+              ? createdCollected?.value
+              : translate('common.CHOOSE_VALUE'),
+          }}
+          onPress={() =>
+            showModal({
+              data: createdCollectedList,
+              title: translate('common.CREATED_COLLECTED'),
+              itemToRender: 'value',
+            })
+          }
           pressable
-          showRight />
-        <CardLabel>{translate("wallet.common.network")}</CardLabel>
+          showRight
+        />
+        <CardLabel>{translate('wallet.common.network')}</CardLabel>
         <CardField
-          inputProps={{ value: selectedNetwork ? selectedNetwork?.name : translate("common.CHOOSE_NETWORK") }}
-          onPress={() => showModal({ data: networkList, title: translate("wallet.common.network"), itemToRender: "name" })}
+          inputProps={{
+            value: selectedNetwork
+              ? selectedNetwork?.name
+              : translate('common.CHOOSE_NETWORK'),
+          }}
+          onPress={() =>
+            showModal({
+              data: networkList,
+              title: translate('wallet.common.network'),
+              itemToRender: 'name',
+            })
+          }
           pressable
-          showRight />
-        <CardLabel>{translate("wallet.common.collection")}</CardLabel>
+          showRight
+        />
+        <CardLabel>{translate('wallet.common.collection')}</CardLabel>
         <CardField
-          inputProps={{ value: collection ? collection?.name : translate("common.CHOOSE_COLLECTION") }}
-          onPress={() => showModal({ data: collectionList, title: translate("wallet.common.collectionList"), itemToRender: "name" })}
+          inputProps={{
+            value: collection
+              ? collection?.name
+              : translate('common.CHOOSE_COLLECTION'),
+          }}
+          onPress={() =>
+            showModal({
+              data: collectionList,
+              title: translate('wallet.common.collectionList'),
+              itemToRender: 'name',
+            })
+          }
           pressable
-          showRight />
+          showRight
+        />
         <View style={[styles.saveBtnGroup]}>
           <CardButton
             onPress={() => {
@@ -407,9 +461,11 @@ const NFTList = ({
               searchNFTListWithFilter();
               // pressToggle("mint", collection)
             }}
-            disable={createdCollected || selectedNetwork || collection ? false : true}
-            border={toggle !== "mint" ? colors.BLUE6 : null}
-            label={translate("wallet.common.search")}
+            disable={
+              createdCollected || selectedNetwork || collection ? false : true
+            }
+            border={toggle !== 'mint' ? colors.BLUE6 : null}
+            label={translate('wallet.common.search')}
             buttonCont={styles.leftToggle}
           />
           <CardButton
@@ -419,9 +475,11 @@ const NFTList = ({
               resetFilter();
               // pressToggle("mint", collection)
             }}
-            disable={createdCollected || selectedNetwork || collection ? false : true}
-            border={toggle == "mint" ? colors.BLUE6 : null}
-            label={translate("common.RESET_TEXT")}
+            disable={
+              createdCollected || selectedNetwork || collection ? false : true
+            }
+            border={toggle == 'mint' ? colors.BLUE6 : null}
+            label={translate('common.RESET_TEXT')}
             buttonCont={styles.leftToggle}
           />
           {/* <CardButton
@@ -437,25 +495,25 @@ const NFTList = ({
         </View>
 
         <View style={styles.listMainCont}>
-          {
-            showList.length !== 0 ?
-              <FlatList
-                data={showList}
-                showsVerticalScrollIndicator={false}
-                initialNumToRender={50}
-                renderItem={memoizedValue}
-                keyExtractor={keyExtractor}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                onEndReachedThreshold={0.1}
-                onEndReached={handleFlastListEndReached}
-                onMomentumScrollBegin={_onMomentumScrollBegin}
-              /> :
-              <View style={styles.sorryMessageCont}>
-                <Text style={styles.sorryMessage}>
-                  {translate('common.noDataFound')}
-                </Text>
-              </View>
-          }
+          {showList.length !== 0 ? (
+            <FlatList
+              data={showList}
+              showsVerticalScrollIndicator={false}
+              initialNumToRender={50}
+              renderItem={memoizedValue}
+              keyExtractor={keyExtractor}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              onEndReachedThreshold={0.1}
+              onEndReached={handleFlastListEndReached}
+              onMomentumScrollBegin={_onMomentumScrollBegin}
+            />
+          ) : (
+            <View style={styles.sorryMessageCont}>
+              <Text style={styles.sorryMessage}>
+                {translate('common.noDataFound')}
+              </Text>
+            </View>
+          )}
         </View>
         {pageLoader ? (
           <ActivityIndicator size="small" color={'#000000'} />
@@ -464,7 +522,7 @@ const NFTList = ({
       <Modal
         isVisible={modalVisible}
         onBackdropPress={() => {
-          setModalVisible(false)
+          setModalVisible(false);
         }}
         backdropColor="#B4B3DB"
         backdropOpacity={0.8}
@@ -476,34 +534,34 @@ const NFTList = ({
         backdropTransitionOutTiming={600}>
         <View style={styles.modalCont}>
           <Text style={styles.modalTitle}>
-            {translate("wallet.common.nFTDetail")}
+            {translate('wallet.common.nFTDetail')}
           </Text>
-          {
-            selectData ?
-              <ScrollView>
-                <View style={styles.nftImageCont} >
-                  <C_Image
-                    uri={selectData?.image}
-                    imageStyle={{ height: wp(30), width: wp(30) }}
-                  />
-                </View>
-                <ModalItems
-                  label={`${translate("common.nftName")}:`}
-                  value={selectData?.name}
+          {selectData ? (
+            <ScrollView>
+              <View style={styles.nftImageCont}>
+                <C_Image
+                  uri={selectData?.image}
+                  size={ImagekitType.AVATAR}
+                  imageStyle={{height: wp(30), width: wp(30)}}
                 />
-                <ModalItems
-                  label={`${translate("common.price")}:`}
-                  value={selectData?.minPrice}
-                />
-                <ModalItems
-                  label={`${translate("wallet.common.currencyType")}:`}
-                  value={selectData?.basePrice}
-                />
-                <ModalItems
-                  label={`${translate("wallet.common.network")}:`}
-                  value={selectData?.chainType}
-                />
-                {/* <ModalItems
+              </View>
+              <ModalItems
+                label={`${translate('common.nftName')}:`}
+                value={selectData?.name}
+              />
+              <ModalItems
+                label={`${translate('common.price')}:`}
+                value={selectData?.minPrice}
+              />
+              <ModalItems
+                label={`${translate('wallet.common.currencyType')}:`}
+                value={selectData?.basePrice}
+              />
+              <ModalItems
+                label={`${translate('wallet.common.network')}:`}
+                value={selectData?.chainType}
+              />
+              {/* <ModalItems
                   label={`${translate("wallet.common.supply")}:`}
                   value="1/1"
                 />
@@ -519,31 +577,30 @@ const NFTList = ({
                   label={`${translate("common.trade")}:`}
                   value="-"
                 /> */}
-                <ModalItems
-                  label={`${translate("common.Earned")}:`}
-                  value={selectData?.earned}
-                />
-                {
-                  toggle !== "mint" &&
-                  <View style={styles.saveBtnGroup}>
-                    <CardButton
-                      onPress={() => {
-                        setModalVisible(false)
-                        switchEditNFT(selectData)
-                      }}
-                      label={translate("wallet.common.edit")}
-                      buttonCont={{ width: '48%' }}
-                    />
-                    <CardButton
-                      onPress={() => null}
-                      border={colors.BLUE6}
-                      buttonCont={{ width: '48%' }}
-                      label={translate("wallet.common.delete")}
-                    />
-                  </View>
-                }
-
-              </ScrollView> : null}
+              <ModalItems
+                label={`${translate('common.Earned')}:`}
+                value={selectData?.earned}
+              />
+              {toggle !== 'mint' && (
+                <View style={styles.saveBtnGroup}>
+                  <CardButton
+                    onPress={() => {
+                      setModalVisible(false);
+                      switchEditNFT(selectData);
+                    }}
+                    label={translate('wallet.common.edit')}
+                    buttonCont={{width: '48%'}}
+                  />
+                  <CardButton
+                    onPress={() => null}
+                    border={colors.BLUE6}
+                    buttonCont={{width: '48%'}}
+                    label={translate('wallet.common.delete')}
+                  />
+                </View>
+              )}
+            </ScrollView>
+          ) : null}
         </View>
       </Modal>
     </View>

@@ -46,14 +46,21 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-const {InstagramIcon, ArtistSvg, ArtistSvgI, SuccessIcon, ErrorIcon, InfoIcon} =
-  SVGS;
+const {
+  InstagramIcon,
+  ArtistSvg,
+  ArtistSvgI,
+  SuccessIcon,
+  ErrorIcon,
+  InfoIcon,
+  ComingSoonInfoIcon,
+} = SVGS;
 
 function Profile(props) {
   const {navigation, handleSubmit} = props;
   const {UserReducer} = useSelector(state => state);
   const isNonCrypto = useSelector(
-    state => state.UserReducer?.userData?.user?.isNonCrypto,
+    state => state.UserReducer?.profileData?.user?.isNonCrypto,
   );
   const [editProfileData, setEditProfileData] = useState({});
   const [errUsername, setErrUsername] = useState(false);
@@ -66,16 +73,16 @@ function Profile(props) {
   const [errAbout, setErrAbout] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [msgModal, setMsgModal] = useState(false);
+  const [isComingSoonModal, setComingSoonModal] = useState(false);
   const [msg, setMsg] = useState('');
   const [disable, setDisable] = useState(true);
   const [firstTime, setFirstTime] = useState(false);
   const [infoTwitter, setInfoTwitter] = useState(false);
   const [infoEmail, setInfoEmail] = useState(false);
   const [showVerifyEmail, setShowVerifyEmail] = useState(false);
-  const [instagramValue, setInstagramValue] = useState('');
 
   const dispatch = useDispatch();
-  let id = UserReducer.userData?.userWallet?.address;
+  let id = UserReducer.profileData?.userWallet?.address;
   const selectedLanguageItem = useSelector(
     state => state.LanguageReducer?.selectedLanguageItem?.language_name,
   );
@@ -89,26 +96,29 @@ function Profile(props) {
   }, [toastMsg]);
 
   useEffect(() => {
+    setShowVerifyEmail(UserReducer.profileData.emailVerified === 0);
+  }, [UserReducer.profileData.emailVerified]);
+  useEffect(() => {
     setEditProfileData({
       username:
         isNonCrypto === 0
-          ? UserReducer.userData.title
-          : UserReducer.userData.userName,
-      email: UserReducer.userData.email,
-      twitter: UserReducer.userData.twitterSite,
-      website: UserReducer.userData.website,
-      discord: UserReducer.userData.discordSite,
-      youtube: UserReducer.userData.youtubeSite,
-      instagram: UserReducer.userData.instagramSite,
-      about: UserReducer.userData.description,
-      beforeTwitter: UserReducer.userData.twitterSite,
-      beforeEmail: UserReducer.userData.email,
+          ? UserReducer.profileData.title
+          : UserReducer.profileData.userName,
+      email: UserReducer.profileData.email,
+      twitter: UserReducer.profileData.twitterSite,
+      website: UserReducer.profileData.website,
+      discord: UserReducer.profileData.discordSite,
+      youtube: UserReducer.profileData.youtubeSite,
+      instagram: UserReducer.profileData.instagramSite,
+      about: UserReducer.profileData.description,
+      beforeTwitter: UserReducer.profileData.twitterSite,
+      beforeEmail: UserReducer.profileData.email,
     });
-  }, [UserReducer?.userData]);
+  }, [UserReducer?.profileData]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      dispatch(getUserData(id));
+      dispatch(getUserData(id, true));
     });
     return unsubscribe;
   }, [navigation]);
@@ -129,7 +139,6 @@ function Profile(props) {
       } else {
         setFirstTime(true);
       }
-      setInstagramValue(editProfileData.instagram);
     }
   }, [
     editProfileData.username,
@@ -141,14 +150,6 @@ function Profile(props) {
     editProfileData.instagram,
     editProfileData.about,
   ]);
-
-  useEffect(() => {
-    setEditProfileData({
-      ...editProfileData,
-      instagram: instagramValue ? instagramValue.toLowerCase() : '',
-    });
-  }, [instagramValue]);
-
   const renderArtistModal = () => {
     return (
       <View style={styles.contentView}>
@@ -179,7 +180,12 @@ function Profile(props) {
             </View>
             <GroupButton
               style={styles.artistGroupView}
-              onLeftPress={() => setIsVisible(false)}
+              onLeftPress={() => {
+                setIsVisible(false);
+                setTimeout(() => {
+                  renderComingSoonModal();
+                }, 500);
+              }}
               leftStyle={styles.artistLeft}
               leftTextStyle={styles.groupLeftTitle}
               leftText={translate('common.OK')}
@@ -195,7 +201,7 @@ function Profile(props) {
     return (
       <View style={styles.msgModalContent}>
         <Modal isVisible={msgModal} style={styles.msgModal}>
-          <View style={styles.msgModalView}>
+          <View style={[styles.msgModalView, styles.messageModalView]}>
             {toastMsg?.error ? (
               <ErrorIcon width={20} height={20} />
             ) : (
@@ -207,6 +213,22 @@ function Profile(props) {
       </View>
     );
   };
+
+  const comingSoonModal = () => {
+    return (
+      <View style={styles.msgModalContent}>
+        <Modal isVisible={isComingSoonModal} style={styles.msgModal}>
+          <View style={styles.msgModalView}>
+            <ComingSoonInfoIcon width={20} height={20} />
+            <Text style={styles.msgModalText}>
+              {translate('common.comingSoonApr')}
+            </Text>
+          </View>
+        </Modal>
+      </View>
+    );
+  };
+
   const renderMessageModal = msg => {
     setMsg(msg);
     setMsgModal(true);
@@ -214,6 +236,13 @@ function Profile(props) {
       setMsg('');
       setMsgModal(false);
       dispatch(setToastMsg(null));
+    }, 3000);
+  };
+
+  const renderComingSoonModal = () => {
+    setComingSoonModal(true);
+    setTimeout(() => {
+      setComingSoonModal(false);
     }, 3000);
   };
 
@@ -230,9 +259,15 @@ function Profile(props) {
     }
     if (maxLength50(editProfileData.email)) {
       setErrEmail(maxLength50(editProfileData.email));
+    } else if (UserReducer.profileData.email && !editProfileData.email.length) {
+      setErrEmail(validateEmail(editProfileData.email));
     } else {
-      if (validateEmail(editProfileData.email)) {
-        setErrEmail(validateEmail(editProfileData.email));
+      if (editProfileData.email) {
+        if (validateEmail(editProfileData.email)) {
+          setErrEmail(validateEmail(editProfileData.email));
+        } else {
+          validateNum++;
+        }
       } else {
         validateNum++;
       }
@@ -312,13 +347,25 @@ function Profile(props) {
             zoomMail: '',
           };
     if (validateNum === 8) {
-      dispatch(updateProfile(req_body, id));
+      dispatch(updateProfile(req_body, id, true));
       setEditProfileData({
         ...editProfileData,
         beforeTwitter: editProfileData.twitter,
         beforeEmail: editProfileData.email,
       });
       setDisable(true);
+    }
+  };
+
+  const handleChangeInstagram = text => {
+    setEditProfileData({
+      ...editProfileData,
+      instagram: text,
+    });
+    if (validateInstagramURL(text)) {
+      setErrInstagram(validateInstagramURL(text));
+    } else {
+      setErrInstagram(false);
     }
   };
 
@@ -395,7 +442,7 @@ function Profile(props) {
                   styles.verifiedView,
                   {
                     maxWidth:
-                      UserReducer.userData.twitterVerified === 0
+                      UserReducer.profileData.twitterVerified === 0
                         ? '80%'
                         : '88%',
                   },
@@ -410,7 +457,7 @@ function Profile(props) {
               />
               <TouchableOpacity
                 disabled={
-                  UserReducer?.userData?.twitterVerified === 0 &&
+                  UserReducer?.profileData?.twitterVerified === 0 &&
                   editProfileData.twitter &&
                   editProfileData.beforeTwitter &&
                   editProfileData.twitter === editProfileData.beforeTwitter
@@ -418,7 +465,7 @@ function Profile(props) {
                     : true
                 }
                 style={
-                  UserReducer?.userData?.twitterVerified === 0 &&
+                  UserReducer?.profileData?.twitterVerified === 0 &&
                   editProfileData.twitter &&
                   editProfileData.beforeTwitter &&
                   editProfileData.twitter === editProfileData.beforeTwitter
@@ -429,7 +476,7 @@ function Profile(props) {
                   navigation.navigate('WebView');
                 }}>
                 <Text style={styles.verifyBtnTitle}>
-                  {UserReducer.userData.twitterVerified === 0
+                  {UserReducer.profileData.twitterVerified === 0
                     ? translate('common.BTN_TWITTER_REQUEST')
                     : translate('common.BTN_EMAIL_APPROVED')}
                 </Text>
@@ -437,7 +484,7 @@ function Profile(props) {
             </View>
             {errTwitter && <Text style={styles.errorMsg}>{errTwitter}</Text>}
           </View>
-          {UserReducer?.userData?.isNonCrypto === 1 && (
+          {UserReducer?.profileData?.isNonCrypto === 1 && (
             <LimitableInput
               multiLine
               singleLine={false}
@@ -453,7 +500,7 @@ function Profile(props) {
               editable={false}
             />
           )}
-          {UserReducer?.userData?.isNonCrypto === 0 && (
+          {UserReducer?.profileData?.isNonCrypto === 0 && (
             <View style={styles.mainView}>
               {infoModal('common.userEmail', infoEmail, emailInfoPopUp)}
               <View style={styles.inputView}>
@@ -462,7 +509,7 @@ function Profile(props) {
                     styles.verifiedView,
                     {
                       maxWidth:
-                        UserReducer.userData.emailVerified === 0
+                        UserReducer.profileData.emailVerified === 0
                           ? '80%'
                           : '88%',
                     },
@@ -477,7 +524,7 @@ function Profile(props) {
                 />
                 <TouchableOpacity
                   disabled={
-                    UserReducer?.userData?.emailVerified === 0 &&
+                    UserReducer?.profileData?.emailVerified === 0 &&
                     showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
@@ -486,7 +533,7 @@ function Profile(props) {
                       : true
                   }
                   style={
-                    UserReducer?.userData?.emailVerified === 0 &&
+                    UserReducer?.profileData?.emailVerified === 0 &&
                     showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
@@ -499,7 +546,7 @@ function Profile(props) {
                   }}>
                   <Text style={styles.verifyBtnTitle}>
                     {editProfileData.email === editProfileData.beforeEmail &&
-                    UserReducer.userData.emailVerified === 1
+                    UserReducer.profileData.emailVerified === 1
                       ? translate('common.BTN_EMAIL_APPROVED')
                       : translate('common.BTN_TWITTER_REQUEST')}
                   </Text>
@@ -563,10 +610,7 @@ function Profile(props) {
                 style={styles.instagramView}
                 placeholderTextColor="grey"
                 value={editProfileData.instagram}
-                onChangeText={text => {
-                  setInstagramValue(text);
-                  setErrInstagram(false);
-                }}
+                onChangeText={handleChangeInstagram}
                 placeholder={translate('common.PLACEHOLDER_INSTAGRAM')}
               />
             </View>
@@ -613,6 +657,7 @@ function Profile(props) {
           />
           {messageModal()}
           {renderArtistModal()}
+          {comingSoonModal()}
         </KeyboardAwareScrollView>
       </SafeAreaView>
     </AppBackground>
@@ -684,9 +729,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: SIZE(40),
     marginBottom: SIZE(15),
     borderRadius: SIZE(5),
-    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  messageModalView: {
+    justifyContent: 'center',
   },
   msgModalText: {
     marginLeft: SIZE(10),

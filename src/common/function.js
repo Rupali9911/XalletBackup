@@ -1,39 +1,42 @@
-import { Alert } from "react-native";
+import {Alert} from 'react-native';
 
-const confirmationAlert = (title, message, leftText, rightText, onOkPress, onCancelPress) => {
-    Alert.alert(
-        title,
-        message,
-        [
-            onCancelPress && {
-                text: leftText ? leftText : 'Cancel',
-                onPress: () => onCancelPress
-            },
-            {
-                text: rightText ? rightText : 'Ok',
-                onPress: onOkPress
-            }
-        ]
-    );
-}
+const confirmationAlert = (
+  title,
+  message,
+  leftText,
+  rightText,
+  onOkPress,
+  onCancelPress,
+) => {
+  Alert.alert(title, message, [
+    onCancelPress && {
+      text: leftText ? leftText : 'Cancel',
+      onPress: () => onCancelPress,
+    },
+    {
+      text: rightText ? rightText : 'Ok',
+      onPress: onOkPress,
+    },
+  ]);
+};
 
 const alertWithSingleBtn = (title, message, onOkPress, btnTxt) => {
-    Alert.alert(
-        title,
-        message,
-        [
-            {
-                text: btnTxt ? btnTxt : 'Ok',
-                onPress: onOkPress
-            }
-        ]
-    );
-}
+  Alert.alert(title, message, [
+    {
+      text: btnTxt ? btnTxt : 'Ok',
+      onPress: onOkPress,
+    },
+  ]);
+};
 
-const twitterLink = (username) => `https://twitter.com/${username}`
+const twitterLink = username => `https://twitter.com/${username}`;
 
-export {
-    confirmationAlert,
-    alertWithSingleBtn,
-    twitterLink
-}
+const getFileType = uri => {
+  let type = '';
+  if (uri) {
+    type = uri?.split('.')[uri?.split('.').length - 1];
+  }
+  return type;
+};
+
+export {confirmationAlert, alertWithSingleBtn, twitterLink, getFileType};
