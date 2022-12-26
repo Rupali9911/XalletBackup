@@ -106,6 +106,7 @@ const ActivityTab = props => {
               onPress={() => getNftData(rowIndex)}
               style={styles.tableCellImageView}>
               <C_Image
+                style={{width: hp(5.5)}}
                 size={ImagekitType.AVATAR}
                 uri={cellData.image}
                 imageStyle={styles.cellImage}
