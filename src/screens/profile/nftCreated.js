@@ -98,7 +98,7 @@ const NFTCreated = props => {
         <View>
           <FlatList
             key={1}
-            // scrollEnabled={scrollEnabled}
+            scrollEnabled={scrollEnabled}
             data={MyNFTReducer?.myNftCreatedList}
             horizontal={false}
             numColumns={2}
@@ -123,24 +123,24 @@ const NFTCreated = props => {
             }}
             onScrollBeginDrag={s => {
               // console.log(
-              //   '🚀 ~ c ~ onScrollBeginDrag ~ ~',
+              //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
               //   s?.nativeEvent?.contentOffset,
               // );
-              // setChildScroll(s?.nativeEvent?.contentOffset?.y);
+              setChildScroll(s?.nativeEvent?.contentOffset?.y);
             }}
             onScroll={s => {
               // console.log(
               //   '🚀 ~ c ~ onScroll ~ ~',
               //   s?.nativeEvent?.contentOffset,
               // );
-              // setChildScroll(s?.nativeEvent?.contentOffset?.y);
+              setChildScroll(s?.nativeEvent?.contentOffset?.y);
             }}
             onScrollEndDrag={s => {
               // console.log(
-              //   '🚀 ~ c ~ onScrollEndDrag ~ ~',
+              //   '🚀 ~ ~ onScrollEndDrag ~ ~',
               //   s?.nativeEvent?.contentOffset,
               // );
-              // setChildScroll(s?.nativeEvent?.contentOffset?.y);
+              setChildScroll(s?.nativeEvent?.contentOffset?.y);
             }}
             ListFooterComponent={renderFooter}
             onEndReachedThreshold={0.4}
