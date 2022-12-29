@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: fonts.ARIAL,
     marginBottom: SIZE(5),
+    width: '58%',
   },
   verifyIcon: {
     position: 'absolute',

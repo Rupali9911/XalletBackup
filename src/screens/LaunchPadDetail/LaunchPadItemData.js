@@ -155,11 +155,7 @@ export default function LaunchPadItemData(props) {
           </Text>
         )}
         <Text style={styles.statusText}>
-          {collectionName === 'NFTDuel - Astroboy x Japan'
-            ? translate('common.COMING_SOON')
-            : status === 1
-            ? translate('common.ongoinglaunch')
-            : ''}
+          {status === 1 ? translate('common.ongoinglaunch') : ''}
         </Text>
       </View>
     );
