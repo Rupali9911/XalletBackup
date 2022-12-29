@@ -15,6 +15,7 @@ import { nftDataCollectionLoadSuccess } from "../../store/actions/nftDataCollect
 import axios from 'axios';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { useIsFocused } from '@react-navigation/native';
+import { SIZE } from '../../constants';
 
 function ExploreScreen() {
   const { wallet, userData } = useSelector(state => state.UserReducer);
@@ -75,7 +76,13 @@ function ExploreScreen() {
 
   const renderFooter = () => {
     if (!footerLoader) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
+    return (
+      <ActivityIndicator
+        size="small"
+        color={colors.themeR}
+        style={{paddingBottom: SIZE(5)}}
+      />
+    );
   };
 
   const renderItem = ({ item }) => {
