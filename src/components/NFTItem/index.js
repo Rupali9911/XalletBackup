@@ -392,7 +392,11 @@ export default function NFTItem(props, {navigation}) {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <SvgWithCssUri uri={item?.network?.avatar} style={styles.tokenIcon2} />
+        <C_Image
+          size={ImagekitType.AVATAR}
+          imageStyle={styles.tokenIcon2}
+          uri={item?.network?.avatar}
+        />
         <View
           style={{
             flexDirection: 'row',
