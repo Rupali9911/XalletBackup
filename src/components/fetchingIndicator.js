@@ -6,20 +6,26 @@ import Colors from "../constants/Colors";
 import CommonStyles from '../constants/styles';
 
 const FetchingIndicator = () => {
-
-    return (
-        <Modal
-            visible={true}
-            transparent
-            onRequestClose={() => null}>
-            <View style={styles.loaderCont} >
-                <View style={styles.cardLoader} >
+    if (Platform.OS !== 'android') {
+        return (
+            <Modal visible={true} transparent onRequestClose={() => null}>
+                <View style={styles.loaderCont}>
+                    <View style={styles.cardLoader}>
+                        <ActivityIndicator size="large" color={Colors.themeColor} />
+                    </View>
+                </View>
+            </Modal>
+        );
+    } else {
+        return (
+            <View style={styles.loaderCont}>
+                <View style={styles.cardLoader}>
                     <ActivityIndicator size="large" color={Colors.themeColor} />
                 </View>
             </View>
-        </Modal>
-    )
-}
+        );
+    }
+};
 
 const styles = StyleSheet.create({
     loaderCont: {
