@@ -113,11 +113,8 @@ function Profile({navigation, connector, route}) {
   //===================== UseEffect Function =========================
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      handleUserData();
-    });
-    return unsubscribe;
-  }, [navigation]);
+    handleUserData();
+  }, []);
 
   useEffect(() => {
     if (
