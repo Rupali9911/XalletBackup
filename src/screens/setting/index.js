@@ -34,6 +34,7 @@ import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
 import {getWallet} from '../../helpers/AxiosApiRequest';
+import {Portal} from '@gorhom/portal';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -202,53 +203,55 @@ function Setting({route, navigation}) {
 
   const languageModal = () => {
     return (
-      <Modal
-        isVisible={showLanguage}
-        backdropColor="#B4B3DB"
-        backdropOpacity={0.8}
-        onBackdropPress={() => setShowLanguage(false)}
-        animationIn="zoomInDown"
-        animationOut="zoomOutUp"
-        animationInTiming={600}
-        animationOutTiming={600}
-        backdropTransitionInTiming={600}
-        backdropTransitionOutTiming={600}
-        onRequestClose={() => {
-          setShowLanguage(false);
-        }}>
-        <View style={styles.modalCont}>
-          <Text style={styles.modalTitle}>
-            {translate('wallet.common.selectLanguage')}
-          </Text>
-          <View style={{marginTop: hp('3%')}}>
-            {languageArray.map((v, i) => {
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => {
-                    updateLanguage(v);
-                  }}
-                  style={{...styles.centerProfileCont, flex: null}}>
-                  <Text style={styles.listLabel}>
-                    {selectedLanguageItem.language_name === 'ja'
-                      ? JapaneseLangTrans[v.language_name]
+      <Portal>
+        <Modal
+          isVisible={showLanguage}
+          backdropColor="#B4B3DB"
+          backdropOpacity={0.8}
+          onBackdropPress={() => setShowLanguage(false)}
+          animationIn="zoomInDown"
+          animationOut="zoomOutUp"
+          animationInTiming={600}
+          animationOutTiming={600}
+          backdropTransitionInTiming={600}
+          backdropTransitionOutTiming={600}
+          onRequestClose={() => {
+            setShowLanguage(false);
+          }}>
+          <View style={styles.modalCont}>
+            <Text style={styles.modalTitle}>
+              {translate('wallet.common.selectLanguage')}
+            </Text>
+            <View style={{marginTop: hp('3%')}}>
+              {languageArray.map((v, i) => {
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      updateLanguage(v);
+                    }}
+                    style={{...styles.centerProfileCont, flex: null}}>
+                    <Text style={styles.listLabel}>
+                      {selectedLanguageItem.language_name === 'ja'
                         ? JapaneseLangTrans[v.language_name]
-                        : v.language_display
-                      : v.language_display}
-                  </Text>
-                  {selectedLanguageItem.language_name == v.language_name ? (
-                    <EntypoIcon
-                      size={RF(2.5)}
-                      color={colors.DFDFDF}
-                      name="check"
-                    />
-                  ) : null}
-                </TouchableOpacity>
-              );
-            })}
+                          ? JapaneseLangTrans[v.language_name]
+                          : v.language_display
+                        : v.language_display}
+                    </Text>
+                    {selectedLanguageItem.language_name == v.language_name ? (
+                      <EntypoIcon
+                        size={RF(2.5)}
+                        color={colors.DFDFDF}
+                        name="check"
+                      />
+                    ) : null}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </Portal>
     );
   };
 
