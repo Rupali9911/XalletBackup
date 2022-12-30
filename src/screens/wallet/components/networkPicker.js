@@ -23,14 +23,15 @@ import TextView from '../../../components/appText';
 import Checkbox from '../../../components/checkbox';
 import {networkChain} from '../../../walletUtils';
 import {useSelector} from 'react-redux';
+import {Portal} from '@gorhom/portal';
 
 const NetworkPicker = props => {
   const {visible, onRequestClose, network, onItemSelect} = props;
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {networks} = useSelector(state => state.NetworkReducer);
 
-  if (Platform.OS !== 'android') {
-    return (
+  return (
+    <Portal>
       <Modal visible={visible} transparent onRequestClose={onRequestClose}>
         <View style={styles.container}>
           <TouchableOpacity style={styles.emptyView} onPress={onRequestClose} />
@@ -62,48 +63,84 @@ const NetworkPicker = props => {
           </View>
         </View>
       </Modal>
-    );
-  } else {
-    if (visible) {
-      return (
-        <TouchableOpacity activeOpacity={1} style={styles.andcontainer}>
-          <TouchableOpacity
-            style={styles.emptyView}
-            activeOpacity={1}
-            onPress={() => onRequestClose()}
-          />
-          <View style={styles.contentContainer}>
-            <FlatList
-              data={networks}
-              keyExtractor={(item, index) => `_${index}`}
-              renderItem={({item, index}) => {
-                const isCheck = network ? network.name === item.name : false;
-                return (
-                  <TouchableOpacity
-                    style={styles.listItem}
-                    onPress={() => onItemSelect(item)}>
-                    {/* <TextView style={styles.text}>{selectedLanguageItem.language_name === 'ja' ? item.translatedName : item.name}</TextView> */}
-                    <TextView style={styles.text}>
-                      {item.name === 'XANACHAIN' ? 'XANAChain' : item.name}
-                    </TextView>
-                    <Image
-                      style={[styles.logoSize, props.logoStyle]}
-                      resizeMode="contain"
-                      source={
-                        isCheck ? ImagesSrc.checkIcon : ImagesSrc.unCheckIcon
-                      }
-                    />
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          </View>
-        </TouchableOpacity>
-      );
-    } else {
-      return null;
-    }
-  }
+    </Portal>
+  );
+
+  // if (Platform.OS !== 'android') {
+  //   return (
+  //     <Modal visible={visible} transparent onRequestClose={onRequestClose}>
+  //       <View style={styles.container}>
+  //         <TouchableOpacity style={styles.emptyView} onPress={onRequestClose} />
+  //         <View style={styles.contentContainer}>
+  //           <FlatList
+  //             data={networks}
+  //             keyExtractor={(item, index) => `_${index}`}
+  //             renderItem={({item, index}) => {
+  //               const isCheck = network ? network.name === item.name : false;
+  //               return (
+  //                 <TouchableOpacity
+  //                   style={styles.listItem}
+  //                   onPress={() => onItemSelect(item)}>
+  //                   {/* <TextView style={styles.text}>{selectedLanguageItem.language_name === 'ja' ? item.translatedName : item.name}</TextView> */}
+  //                   <TextView style={styles.text}>
+  //                     {item.name === 'XANACHAIN' ? 'XANAChain' : item.name}
+  //                   </TextView>
+  //                   <Image
+  //                     style={[styles.logoSize, props.logoStyle]}
+  //                     resizeMode="contain"
+  //                     source={
+  //                       isCheck ? ImagesSrc.checkIcon : ImagesSrc.unCheckIcon
+  //                     }
+  //                   />
+  //                 </TouchableOpacity>
+  //               );
+  //             }}
+  //           />
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   );
+  // } else {
+  //   if (visible) {
+  //     return (
+  //       <TouchableOpacity activeOpacity={1} style={styles.andcontainer}>
+  //         <TouchableOpacity
+  //           style={styles.emptyView}
+  //           activeOpacity={1}
+  //           onPress={() => onRequestClose()}
+  //         />
+  //         <View style={styles.contentContainer}>
+  //           <FlatList
+  //             data={networks}
+  //             keyExtractor={(item, index) => `_${index}`}
+  //             renderItem={({item, index}) => {
+  //               const isCheck = network ? network.name === item.name : false;
+  //               return (
+  //                 <TouchableOpacity
+  //                   style={styles.listItem}
+  //                   onPress={() => onItemSelect(item)}>
+  //                   {/* <TextView style={styles.text}>{selectedLanguageItem.language_name === 'ja' ? item.translatedName : item.name}</TextView> */}
+  //                   <TextView style={styles.text}>
+  //                     {item.name === 'XANACHAIN' ? 'XANAChain' : item.name}
+  //                   </TextView>
+  //                   <Image
+  //                     style={[styles.logoSize, props.logoStyle]}
+  //                     resizeMode="contain"
+  //                     source={
+  //                       isCheck ? ImagesSrc.checkIcon : ImagesSrc.unCheckIcon
+  //                     }
+  //                   />
+  //                 </TouchableOpacity>
+  //               );
+  //             }}
+  //           />
+  //         </View>
+  //       </TouchableOpacity>
+  //     );
+  //   } else {
+  //     return null;
+  //   }
+  // }
 };
 
 const styles = StyleSheet.create({

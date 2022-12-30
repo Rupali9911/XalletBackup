@@ -61,6 +61,7 @@ import AiChat from './screens/AiChat';
 import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
+import {PortalProvider} from '@gorhom/portal';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -342,14 +343,16 @@ export const Events = new Subject();
 
 const App = () => {
   return (
-    <NativeBaseProvider>
-      <Provider store={Store}>
-        <MenuProvider>
-          <AppRoutes />
-          {<MagicLayer />}
-        </MenuProvider>
-      </Provider>
-    </NativeBaseProvider>
+    <PortalProvider>
+      <NativeBaseProvider>
+        <Provider store={Store}>
+          <MenuProvider>
+            <AppRoutes />
+            {<MagicLayer />}
+          </MenuProvider>
+        </Provider>
+      </NativeBaseProvider>
+    </PortalProvider>
   );
 };
 export default App;
