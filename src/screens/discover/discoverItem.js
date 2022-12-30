@@ -201,7 +201,8 @@ function discoverItem({item}) {
           if (!isVisible) {
             setPlay(false);
           }
-        }}>
+        }}
+        disabled={true}>
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {

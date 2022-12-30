@@ -89,6 +89,7 @@ function Profile({navigation, connector, route}) {
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const [childScroll, setChildScroll] = useState(0);
+  const [profileScroll, setProfileScroll] = useState(false);
   const [profilePScroll, setProfilePScroll] = useState(0);
   const [layout, setLayout] = useState(0);
   const [userDetails, setUserDetails] = useState(null);
@@ -189,8 +190,14 @@ function Profile({navigation, connector, route}) {
     }
     return Linking.openURL(url);
   };
+
   const renderScene = ({route}) => {
-    let scrollEnabled = profilePScroll < layout ? false : true;
+    let scrollEnabled =
+      Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
+        ? false
+        : true;
+    setProfileScroll(scrollEnabled);
+
     switch (route.key) {
       case 'profileCreated':
         return (
@@ -198,8 +205,8 @@ function Profile({navigation, connector, route}) {
             key={id}
             id={id}
             navigation={navigation}
-            // scrollEnabled={scrollEnabled}
-            // setChildScroll={setChildScroll}
+            scrollEnabled={scrollEnabled}
+            setChildScroll={setChildScroll}
           />
         );
       case 'nftOwned':
@@ -208,8 +215,8 @@ function Profile({navigation, connector, route}) {
             key={id}
             id={id}
             navigation={navigation}
-            // scrollEnabled={scrollEnabled}
-            // setChildScroll={setChildScroll}
+            scrollEnabled={scrollEnabled}
+            setChildScroll={setChildScroll}
           />
         );
       default:
@@ -351,24 +358,6 @@ function Profile({navigation, connector, route}) {
     }
   };
 
-  // const [refreshing, setRefreshing] = React.useState(false);
-  // const wait = timeout => {
-  //   return new Promise(resolve => setTimeout(resolve, timeout));
-  // };
-  // const onRefresh = () => {
-  //   setRefreshing(true);
-  //   loadAllData();
-  // };
-
-  // const loadAllData = () => {
-  //   dispatch(loadProfileFromAsync(id))
-  //     .then(() => {
-  //       setRefreshing(false);
-  //     })
-  //     .catch(err => {
-  //       setRefreshing(false);
-  //     });
-  // };
   const renderVerifiedIcon = () => {
     return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
   };
@@ -495,11 +484,11 @@ function Profile({navigation, connector, route}) {
     return (
       <View
         style={{
-          flex: socialSite ? 0.6 : 0.55,
+          // flex: socialSite ? 0.6 : 0.55,
           position: 'relative',
           paddingBottom: SIZE(10),
         }}
-        onLayout={o => {}}>
+        onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}>
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
@@ -623,22 +612,26 @@ function Profile({navigation, connector, route}) {
   return (
     <AppBackground>
       <ScrollView
-        nestedScrollEnabled={true}
+        ref={scrollRef}
+        // scrollEnabled={profileScroll}
         contentContainerStyle={styles.scrollViewContainer}
         style={styles.scrollView}
         onScroll={s => {
-          // console.log(
-          //   '🚀 ~ p ~ onScroll ~ ~',
-          //   s?.nativeEvent?.contentOffset?.y,
-          // );
-          // setProfilePScroll(s?.nativeEvent?.contentOffset?.y);
+          const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
+
+          console.log('🚀 ~ p ~ onScroll ~ ~', currentScrollPos, childScroll);
+          setProfilePScroll(currentScrollPos);
         }}>
         {renderHeader()}
         <View
           style={{
-            // marginTop: SIZE(10),
-            // height: Platform.OS == 'ios' ? hp(85.5) : hp(94),
-            height: height / 1.5,
+            height: !route.params
+              ? Platform.OS == 'ios'
+                ? hp(85.2)
+                : hp(94)
+              : Platform.OS == 'ios'
+              ? hp(90.2)
+              : hp(101),
           }}>
           {renderTabView(id)}
         </View>

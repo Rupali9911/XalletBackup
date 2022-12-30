@@ -396,6 +396,7 @@ export default function NFTItem(props, {navigation}) {
           size={ImagekitType.AVATAR}
           imageStyle={styles.tokenIcon2}
           uri={item?.network?.avatar}
+          style={styles.chainLoaderIcon}
         />
         <View
           style={{

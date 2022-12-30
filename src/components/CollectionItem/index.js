@@ -89,10 +89,8 @@ export default function CollectionItem(props) {
     return (
       <C_Image
         size={ImagekitType.AVATAR}
-        imageStyle={{
-          width: SIZE(23),
-          height: SIZE(23),
-        }}
+        imageStyle={styles.chainUserIcon}
+        style={styles.chainLoaderIcon}
         uri={network?.image}
       />
     );
