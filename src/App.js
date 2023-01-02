@@ -343,16 +343,16 @@ export const Events = new Subject();
 
 const App = () => {
   return (
-    <PortalProvider>
-      <NativeBaseProvider>
+    <NativeBaseProvider>
+      <PortalProvider>
         <Provider store={Store}>
           <MenuProvider>
             <AppRoutes />
             {<MagicLayer />}
           </MenuProvider>
         </Provider>
-      </NativeBaseProvider>
-    </PortalProvider>
+      </PortalProvider>
+    </NativeBaseProvider>
   );
 };
 export default App;

@@ -1,3 +1,4 @@
+import {Portal} from '@gorhom/portal';
 import React, {useState, useEffect, useRef} from 'react';
 import {Modal, StyleSheet, View} from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
@@ -48,13 +49,15 @@ const VideoModel = props => {
   };
 
   return (
-    <Modal
-      animationType={'fade'}
-      supportedOrientations={['portrait']}
-      transparent={true}
-      visible={isVisible}>
-      <View style={styles.ModalWrapper}>{videoPlayerView()}</View>
-    </Modal>
+    <Portal>
+      <Modal
+        animationType={'fade'}
+        supportedOrientations={['portrait']}
+        transparent={true}
+        visible={isVisible}>
+        <View style={styles.ModalWrapper}>{videoPlayerView()}</View>
+      </Modal>
+    </Portal>
   );
 };
 

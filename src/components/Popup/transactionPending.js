@@ -6,24 +6,29 @@ import loaderGif from '../../assets/gifs/loadergif.gif';
 import Colors from '../../constants/Colors';
 import { hp } from '../../constants/responsiveFunct';
 import { widthPercentageToDP as wp, SIZE } from '../../common/responsiveFunction';
+import { Portal } from '@gorhom/portal';
 
 const transactionPending = ({ isVisible, setVisible, transactionMsg }) => {
   // console.log("🚀 ~ file: transactionPending.js ~ line 11 ~  ~ isVisible", isVisible)
   return (
-    <Modal isVisible={isVisible}>
-      <View style={styles.transactionView}>
-        <View style={styles.transactionTextView}>
-          <Text style={styles.transactionText}>{'Transaction pending'}</Text>
-        </View>
+    <Portal>
+      <Modal isVisible={isVisible}>
+        <View style={styles.transactionView}>
+          <View style={styles.transactionTextView}>
+            <Text style={styles.transactionText}>{'Transaction pending'}</Text>
+          </View>
 
-        <View style={styles.loaderGif}>
-          <Image source={loaderGif} />
+          <View style={styles.loaderGif}>
+            <Image source={loaderGif} />
+          </View>
+          <Text style={styles.purchaseText}>
+            {transactionMsg
+              ? transactionMsg
+              : 'Your purchase is being processed'}
+          </Text>
         </View>
-        <Text style={styles.purchaseText}>
-          {transactionMsg ? transactionMsg : 'Your purchase is being processed'}
-        </Text>
-      </View>
-    </Modal>
+      </Modal>
+    </Portal>
   );
 };
 export default transactionPending;
@@ -53,6 +58,6 @@ const styles = StyleSheet.create({
   purchaseText: {
     fontSize: SIZE(18),
     color: Colors.GREY1,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 });

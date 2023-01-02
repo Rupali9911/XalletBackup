@@ -13,6 +13,7 @@ import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import Modal from 'react-native-modal';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
+import { Portal } from '@gorhom/portal';
 
 const ListItem = props => {
   return (
@@ -324,121 +325,123 @@ const Filter = ({
           label={translate("wallet.common.addFilter")}
         />
       </CardCont>
-      <Modal
-        isVisible={modalVisible}
-        onBackdropPress={() => {
-          setFilterActiveStatus("")
-          setModalVisible(false)
-        }}
-        backdropColor="#B4B3DB"
-        backdropOpacity={0.8}
-        animationIn="zoomInDown"
-        animationOut="zoomOutUp"
-        animationInTiming={600}
-        animationOutTiming={600}
-        backdropTransitionInTiming={600}
-        backdropTransitionOutTiming={600}>
-        <View style={styles.modalCont}>
-          <Text style={styles.modalTitle}>{translate("wallet.common.filter")}</Text>
-          <CardLabel style={{ marginTop: hp(5) }}>{translate("wallet.common.filterName")}</CardLabel>
-          <CardField
-            inputProps={{
-              placeholder: translate("wallet.common.filterName"),
-              value: filterActive ? filterActive.filter_name : "",
-              onChangeText: (e) => {
-                let filterActiveItem = filterActive ? { ...filterActive } : null;
-                if (filterActiveItem) {
-                  filterActiveItem.filter_name = e;
-                  setFilterActive(filterActiveItem)
-                }
-              }
-            }}
-          />
-          <CardLabel>{translate("common.type")}</CardLabel>
-          <CardField
-            onPress={() => {
-              setActiveModal("filterType")
-              showModal({ data: filterTypeList, title: translate("common.selectType"), itemToRender: "name", translate: "code" })
-            }}
-            inputProps={{
-              value: filterActive ? translate(`wallet.common.${filterActive.filter_type.toLowerCase()}`) : "",
-            }}
-            pressable
-            showRight
-          />
-          <CardLabel>{translate("wallet.common.value")}</CardLabel>
-          {
-            filterActive && filterActive.filter_type == "Number" ?
-              <>
-                <View style={styles.groupField}>
-                  <CardField
-                    inputProps={{
-                      placeholder: translate("wallet.common.number"),
-                      keyboardType: "number-pad",
-                      value: filterActive ? filterActive.filter_value : "",
-                      onChangeText: (e) => {
-                        let filterActiveItem = filterActive ? { ...filterActive } : null;
-                        if (filterActiveItem) {
-                          filterActiveItem.filter_value = e;
-                          setFilterActive(filterActiveItem)
-                        }
-                      }
-                    }}
-                    contStyle={{ width: '38%' }}
-                  />
-                  <View style={styles.centerFieldCont}>
-                    <Text style={styles.titleDes}>{translate("common.toFilter")}</Text>
-                  </View>
-                  <CardField
-                    inputProps={{
-                      placeholder: translate("wallet.common.number"),
-                      keyboardType: "number-pad",
-                      value: filterActive && filterActive.hasOwnProperty("filter_value2") ? filterActive.filter_value2 : "",
-                      onChangeText: (e) => {
-                        let filterActiveItem = filterActive ? { ...filterActive } : null;
-                        if (filterActive) {
-                          filterActiveItem.filter_value2 = e;
-                          setFilterActive(filterActiveItem)
-                        }
-                      }
-                    }}
-                    contStyle={{ width: '38%' }}
-                  />
-                </View>
-              </> :
-              <CardField
-                inputProps={{
-                  value: filterActive ? filterActive.filter_value : "",
-                  onChangeText: (e) => {
-                    let filterActiveItem = filterActive ? { ...filterActive } : null;
-                    if (filterActiveItem) {
-                      filterActiveItem.filter_value = e;
-                      setFilterActive(filterActiveItem)
-                    }
+      <Portal>
+        <Modal
+          isVisible={modalVisible}
+          onBackdropPress={() => {
+            setFilterActiveStatus("")
+            setModalVisible(false)
+          }}
+          backdropColor="#B4B3DB"
+          backdropOpacity={0.8}
+          animationIn="zoomInDown"
+          animationOut="zoomOutUp"
+          animationInTiming={600}
+          animationOutTiming={600}
+          backdropTransitionInTiming={600}
+          backdropTransitionOutTiming={600}>
+          <View style={styles.modalCont}>
+            <Text style={styles.modalTitle}>{translate("wallet.common.filter")}</Text>
+            <CardLabel style={{ marginTop: hp(5) }}>{translate("wallet.common.filterName")}</CardLabel>
+            <CardField
+              inputProps={{
+                placeholder: translate("wallet.common.filterName"),
+                value: filterActive ? filterActive.filter_name : "",
+                onChangeText: (e) => {
+                  let filterActiveItem = filterActive ? { ...filterActive } : null;
+                  if (filterActiveItem) {
+                    filterActiveItem.filter_name = e;
+                    setFilterActive(filterActiveItem)
                   }
-                }}
-              />
-          }
-
-          <View style={styles.saveBtnGroup}>
-            <CardButton
-              onPress={filterActiveStatus === "New" ? saveFilter : editFilter}
-              disable={!saveEditDisble}
-              label={filterActiveStatus === "New" ? translate("common.save") : translate("wallet.common.edit")}
-              buttonCont={{ width: '48%', backgroundColor: !saveEditDisble ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }} />
-            <CardButton
-              border={colors.BLUE6}
-              buttonCont={{ width: '48%' }}
-              label={translate("common.Cancel")}
-              onPress={() => {
-                setFilterActiveStatus("")
-                setModalVisible(false)
+                }
               }}
             />
-          </View>
+            <CardLabel>{translate("common.type")}</CardLabel>
+            <CardField
+              onPress={() => {
+                setActiveModal("filterType")
+                showModal({ data: filterTypeList, title: translate("common.selectType"), itemToRender: "name", translate: "code" })
+              }}
+              inputProps={{
+                value: filterActive ? translate(`wallet.common.${filterActive.filter_type.toLowerCase()}`) : "",
+              }}
+              pressable
+              showRight
+            />
+            <CardLabel>{translate("wallet.common.value")}</CardLabel>
+            {
+              filterActive && filterActive.filter_type == "Number" ?
+                <>
+                  <View style={styles.groupField}>
+                    <CardField
+                      inputProps={{
+                        placeholder: translate("wallet.common.number"),
+                        keyboardType: "number-pad",
+                        value: filterActive ? filterActive.filter_value : "",
+                        onChangeText: (e) => {
+                          let filterActiveItem = filterActive ? { ...filterActive } : null;
+                          if (filterActiveItem) {
+                            filterActiveItem.filter_value = e;
+                            setFilterActive(filterActiveItem)
+                          }
+                        }
+                      }}
+                      contStyle={{ width: '38%' }}
+                    />
+                    <View style={styles.centerFieldCont}>
+                      <Text style={styles.titleDes}>{translate("common.toFilter")}</Text>
+                    </View>
+                    <CardField
+                      inputProps={{
+                        placeholder: translate("wallet.common.number"),
+                        keyboardType: "number-pad",
+                        value: filterActive && filterActive.hasOwnProperty("filter_value2") ? filterActive.filter_value2 : "",
+                        onChangeText: (e) => {
+                          let filterActiveItem = filterActive ? { ...filterActive } : null;
+                          if (filterActive) {
+                            filterActiveItem.filter_value2 = e;
+                            setFilterActive(filterActiveItem)
+                          }
+                        }
+                      }}
+                      contStyle={{ width: '38%' }}
+                    />
+                  </View>
+                </> :
+                <CardField
+                  inputProps={{
+                    value: filterActive ? filterActive.filter_value : "",
+                    onChangeText: (e) => {
+                      let filterActiveItem = filterActive ? { ...filterActive } : null;
+                      if (filterActiveItem) {
+                        filterActiveItem.filter_value = e;
+                        setFilterActive(filterActiveItem)
+                      }
+                    }
+                  }}
+                />
+            }
 
-        </View>
-      </Modal>
+            <View style={styles.saveBtnGroup}>
+              <CardButton
+                onPress={filterActiveStatus === "New" ? saveFilter : editFilter}
+                disable={!saveEditDisble}
+                label={filterActiveStatus === "New" ? translate("common.save") : translate("wallet.common.edit")}
+                buttonCont={{ width: '48%', backgroundColor: !saveEditDisble ? '#rgba(59,125,221,0.5)' : colors.BLUE6 }} />
+              <CardButton
+                border={colors.BLUE6}
+                buttonCont={{ width: '48%' }}
+                label={translate("common.Cancel")}
+                onPress={() => {
+                  setFilterActiveStatus("")
+                  setModalVisible(false)
+                }}
+              />
+            </View>
+
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 };
