@@ -129,7 +129,8 @@ const styles = StyleSheet.create({
     fontSize: SIZE(12),
   },
   chainLoaderIcon: {
-    right: SIZE(137),
+    left: SIZE(2),
+    alignItems: 'flex-start',
   },
   chainUserIcon: {
     width: SIZE(23),

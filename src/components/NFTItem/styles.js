@@ -267,7 +267,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chainLoaderIcon: {
-    right: SIZE(120),
+    left: SIZE(4),
+    alignItems: 'flex-start',
   },
 });
 export default styles;
