@@ -58,6 +58,8 @@ export default function NFTItem(props, {navigation}) {
 
   //================== Components State Declaration ===================
   const [isLike, setIsLike] = useState(Number(item.isLike));
+  const [isRedirection, setIsRedirection] = useState(false);
+
   const screenNavigation = useNavigation();
 
   let timeout = null;
@@ -86,10 +88,12 @@ export default function NFTItem(props, {navigation}) {
         // disabled={isDisable}
         onLongPress={onLongPress}
         onPress={() => {
-          clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            onPress();
-          }, 500);
+          if (isRedirection) return;
+          setIsRedirection(true);
+          onPress();
+          setTimeout(() => {
+            setIsRedirection(false);
+          }, 2000);
         }}
         style={styles.collectionListItem}>
         <View style={styles.listItemContainer}>
@@ -392,7 +396,12 @@ export default function NFTItem(props, {navigation}) {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <SvgWithCssUri uri={item?.network?.avatar} style={styles.tokenIcon2} />
+        <C_Image
+          size={ImagekitType.AVATAR}
+          imageStyle={styles.tokenIcon2}
+          uri={item?.network?.avatar}
+          style={styles.chainLoaderIcon}
+        />
         <View
           style={{
             flexDirection: 'row',
