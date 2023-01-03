@@ -24,7 +24,7 @@ import {
   IMAGE_AVATAR_END,
   IMAGE_BANNER_START,
   IMAGE_BANNER_END,
-  SET_PROFILE_DETAILS,
+  SET_OTHER_USER_PROFILE_DATA,
   DELETE_ACCOUNT_START,
   DELETE_ACCOUNT_SUCCESS,
   DELETE_ACCOUNT_FAILD,
@@ -56,7 +56,6 @@ const initialState = {
   showSuccess: false,
   connectModalState: false,
   toastMsg: null,
-  loggedInUser: null,
   imageAvatarLoading: false,
   imageBannerLoading: false,
   deleteAccountLoading: false,
@@ -135,7 +134,6 @@ export default UserReducer = (state = initialState, action) => {
         isCreate: action.payload.isCreate,
         showSuccess: action.payload.showSuccess,
         loading: false,
-        loggedInUser: action.payload.data,
       };
 
     case UPDATE_CREATE:
@@ -151,10 +149,10 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         userData: {..._data},
       };
-    case SET_PROFILE_DETAILS:
+    case SET_OTHER_USER_PROFILE_DATA:
       return {
         ...state,
-        profileData: {...action.payload},
+        otherUserProfileData: {...action.payload},
       };
 
     case UPDATE_BACKUP:
@@ -272,8 +270,8 @@ export const updateUserData = data => ({
   payload: data,
 });
 
-export const setProfileDetails = data => ({
-  type: SET_PROFILE_DETAILS,
+export const setOtherUserDetails = data => ({
+  type: SET_OTHER_USER_PROFILE_DATA,
   payload: data,
 });
 
@@ -551,7 +549,7 @@ export const getUserData = (id, profile = false) => {
     sendRequest(url)
       .then(res => {
         if (profile) {
-          dispatch(setProfileDetails(res));
+          dispatch(setOtherUserDetails(res));
         } else {
           dispatch(updateUserData(res));
         }
@@ -565,7 +563,7 @@ export const getUserData = (id, profile = false) => {
 };
 
 export const updateProfile =
-  (props, id, isProfile = false) =>
+  (props, id, isOtherUser = false) =>
   async dispatch => {
     dispatch(startLoading());
     sendRequest({
@@ -578,7 +576,7 @@ export const updateProfile =
           let key = UserErrorMessage[res.messageCode].key;
           dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
         } else {
-          dispatch(getUserData(id, isProfile));
+          dispatch(getUserData(id, isOtherUser));
           dispatch(
             setToastMsg({
               error: false,

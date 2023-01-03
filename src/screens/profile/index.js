@@ -77,11 +77,11 @@ function Profile({navigation, connector, route}) {
 
   // =============== Getting data from reducer ========================
   const {
-    profileData,
+    otherUserProfileData,
     loading,
-    loggedInUser,
     imageAvatarLoading,
     imageBannerLoading,
+    userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
 
@@ -89,6 +89,7 @@ function Profile({navigation, connector, route}) {
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const [childScroll, setChildScroll] = useState(0);
+  const [profileScroll, setProfileScroll] = useState(false);
   const [profilePScroll, setProfilePScroll] = useState(0);
   const [layout, setLayout] = useState(0);
   const [userDetails, setUserDetails] = useState(null);
@@ -110,35 +111,31 @@ function Profile({navigation, connector, route}) {
     userDetails?.website;
 
   //===================== UseEffect Function =========================
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      handleUserData();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   useEffect(() => {
     if (
       !loading &&
       route?.params?.id &&
-      profileData?.userWallet?.address === route?.params?.id
+      otherUserProfileData?.userWallet?.address === route?.params?.id
     ) {
-      setUserDetails({...profileData});
+      setUserDetails({...otherUserProfileData});
     } else if (
       !loading &&
       !route?.params?.id &&
-      profileData?.userWallet?.address === loggedInUser?.userWallet?.address
+      userData?.userWallet?.address
     ) {
-      setUserDetails({...profileData});
+      setUserDetails({...userData});
     }
     !loading && dispatch(endLoadingImage());
     !loading && dispatch(endLoadingBanner());
-  }, [profileData, loading]);
-
-  // console.log(
-  //   '🚀 ~ file: index.js:127 ~ useEffect ~ scrollEnabled',
-  //   layout,
-  //   childScroll,
-  //   profilePScroll,
-  //   scrollEnabled,
-  // );
-
-  useEffect(() => {
-    handleUserData();
-  }, []);
+  }, [userData, loading]);
 
   const handleUserData = () => {
     dispatch(startLoadingBanner());
@@ -147,8 +144,8 @@ function Profile({navigation, connector, route}) {
       setId(route?.params?.id);
       dispatch(getUserData(route?.params?.id, true));
     } else {
-      setId(loggedInUser?.userWallet?.address);
-      dispatch(getUserData(loggedInUser?.userWallet?.address, true));
+      setId(userData?.userWallet?.address);
+      dispatch(getUserData(userData?.userWallet?.address, false));
     }
   };
   const OPEN_CAMERA = 0;
@@ -193,13 +190,14 @@ function Profile({navigation, connector, route}) {
     }
     return Linking.openURL(url);
   };
+
   const renderScene = ({route}) => {
-    let scrollEnabled = profilePScroll < layout ? false : true;
-    // console.log(
-    //   '🚀 ~ file: index.js:177 ~ renderScene ~ profilePScroll < layout ',
-    //   profilePScroll,
-    //   layout,
-    // );
+    let scrollEnabled =
+      Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
+        ? false
+        : true;
+    setProfileScroll(scrollEnabled);
+
     switch (route.key) {
       case 'profileCreated':
         return (
@@ -207,8 +205,8 @@ function Profile({navigation, connector, route}) {
             key={id}
             id={id}
             navigation={navigation}
-            // scrollEnabled={scrollEnabled}
-            // setChildScroll={setChildScroll}
+            scrollEnabled={scrollEnabled}
+            setChildScroll={setChildScroll}
           />
         );
       case 'nftOwned':
@@ -217,8 +215,8 @@ function Profile({navigation, connector, route}) {
             key={id}
             id={id}
             navigation={navigation}
-            // scrollEnabled={scrollEnabled}
-            // setChildScroll={setChildScroll}
+            scrollEnabled={scrollEnabled}
+            setChildScroll={setChildScroll}
           />
         );
       default:
@@ -360,24 +358,6 @@ function Profile({navigation, connector, route}) {
     }
   };
 
-  // const [refreshing, setRefreshing] = React.useState(false);
-  // const wait = timeout => {
-  //   return new Promise(resolve => setTimeout(resolve, timeout));
-  // };
-  // const onRefresh = () => {
-  //   setRefreshing(true);
-  //   loadAllData();
-  // };
-
-  // const loadAllData = () => {
-  //   dispatch(loadProfileFromAsync(id))
-  //     .then(() => {
-  //       setRefreshing(false);
-  //     })
-  //     .catch(err => {
-  //       setRefreshing(false);
-  //     });
-  // };
   const renderVerifiedIcon = () => {
     return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
   };
@@ -504,12 +484,12 @@ function Profile({navigation, connector, route}) {
     return (
       <View
         style={{
-          flex: socialSite ? 0.6 : 0.55,
+          // flex: socialSite ? 0.6 : 0.55,
           position: 'relative',
           paddingBottom: SIZE(10),
         }}
-        onLayout={o => {}}>
-        {id && <SocketHandler id={id} />}
+        onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}>
+        {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
         )}
@@ -569,23 +549,14 @@ function Profile({navigation, connector, route}) {
           </View>
           <View style={styles.socialSiteView}>
             {userDetails?.twitterSite ? (
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    'https://twitter.com/' + userDetails?.twitterSite,
-                  )
-                }>
+              <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
                 <Twitter width={SIZE(35)} height={SIZE(35)} />
               </TouchableOpacity>
             ) : null}
             {userDetails?.instagramSite ? (
               <TouchableOpacity
                 style={styles.socialSiteButton}
-                onPress={() =>
-                  Linking.openURL(
-                    'https://www.instagram.com/' + userDetails?.instagramSite,
-                  )
-                }>
+                onPress={() => LinkingUrl('instagramSite')}>
                 <Instagram width={SIZE(35)} height={SIZE(35)} />
               </TouchableOpacity>
             ) : null}
@@ -599,14 +570,14 @@ function Profile({navigation, connector, route}) {
             {userDetails?.discordSite ? (
               <TouchableOpacity
                 style={styles.socialSiteButton}
-                onPress={() => Linking.openURL(userDetails?.discordSite)}>
+                onPress={() => LinkingUrl('discordSite')}>
                 <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
               </TouchableOpacity>
             ) : null}
             {userDetails?.website ? (
               <TouchableOpacity
                 style={styles.socialSiteButton}
-                onPress={() => Linking.openURL(userDetails?.website)}>
+                onPress={() => LinkingUrl('webSite')}>
                 <WebIcon width={SIZE(35)} height={SIZE(35)} />
               </TouchableOpacity>
             ) : null}
@@ -627,13 +598,10 @@ function Profile({navigation, connector, route}) {
           )}
           <ActionSheet
             ref={actionSheetRef}
+            key={options}
             title={translate('wallet.common.choosePhoto')}
-            options={[
-              translate('wallet.common.takePhoto'),
-              translate('wallet.common.choosePhotoFromGallery'),
-              translate('wallet.common.cancel'),
-            ]}
-            cancelButtonIndex={2}
+            options={options}
+            cancelButtonIndex={selectedImage === 'profile' ? 2 : 3}
             onPress={selectActionSheet}
           />
         </View>
@@ -644,22 +612,26 @@ function Profile({navigation, connector, route}) {
   return (
     <AppBackground>
       <ScrollView
-        nestedScrollEnabled={true}
+        ref={scrollRef}
+        // scrollEnabled={profileScroll}
         contentContainerStyle={styles.scrollViewContainer}
         style={styles.scrollView}
         onScroll={s => {
-          // console.log(
-          //   '🚀 ~ p ~ onScroll ~ ~',
-          //   s?.nativeEvent?.contentOffset?.y,
-          // );
-          // setProfilePScroll(s?.nativeEvent?.contentOffset?.y);
+          const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
+
+          console.log('🚀 ~ p ~ onScroll ~ ~', currentScrollPos, childScroll);
+          setProfilePScroll(currentScrollPos);
         }}>
         {renderHeader()}
         <View
           style={{
-            // marginTop: SIZE(10),
-            // height: Platform.OS == 'ios' ? hp(85.5) : hp(94),
-            height: height / 1.5,
+            height: !route.params
+              ? Platform.OS == 'ios'
+                ? hp(85.2)
+                : hp(94)
+              : Platform.OS == 'ios'
+              ? hp(90.2)
+              : hp(101),
           }}>
           {renderTabView(id)}
         </View>

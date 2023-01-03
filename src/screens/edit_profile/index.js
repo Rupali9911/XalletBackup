@@ -60,7 +60,7 @@ function Profile(props) {
   const {navigation, handleSubmit} = props;
   const {UserReducer} = useSelector(state => state);
   const isNonCrypto = useSelector(
-    state => state.UserReducer?.profileData?.user?.isNonCrypto,
+    state => state.UserReducer?.userData?.user?.isNonCrypto,
   );
   const [editProfileData, setEditProfileData] = useState({});
   const [errUsername, setErrUsername] = useState(false);
@@ -82,7 +82,7 @@ function Profile(props) {
   const [showVerifyEmail, setShowVerifyEmail] = useState(false);
 
   const dispatch = useDispatch();
-  let id = UserReducer.profileData?.userWallet?.address;
+  let id = UserReducer.userData?.userWallet?.address;
   const selectedLanguageItem = useSelector(
     state => state.LanguageReducer?.selectedLanguageItem?.language_name,
   );
@@ -96,25 +96,25 @@ function Profile(props) {
   }, [toastMsg]);
 
   useEffect(() => {
-    setShowVerifyEmail(UserReducer.profileData.emailVerified === 0);
-  }, [UserReducer.profileData.emailVerified]);
+    setShowVerifyEmail(UserReducer.userData.emailVerified === 0);
+  }, [UserReducer.userData.emailVerified]);
   useEffect(() => {
     setEditProfileData({
       username:
         isNonCrypto === 0
-          ? UserReducer.profileData.title
-          : UserReducer.profileData.userName,
-      email: UserReducer.profileData.email,
-      twitter: UserReducer.profileData.twitterSite,
-      website: UserReducer.profileData.website,
-      discord: UserReducer.profileData.discordSite,
-      youtube: UserReducer.profileData.youtubeSite,
-      instagram: UserReducer.profileData.instagramSite,
-      about: UserReducer.profileData.description,
-      beforeTwitter: UserReducer.profileData.twitterSite,
-      beforeEmail: UserReducer.profileData.email,
+          ? UserReducer.userData.title
+          : UserReducer.userData.userName,
+      email: UserReducer.userData.email,
+      twitter: UserReducer.userData.twitterSite,
+      website: UserReducer.userData.website,
+      discord: UserReducer.userData.discordSite,
+      youtube: UserReducer.userData.youtubeSite,
+      instagram: UserReducer.userData.instagramSite,
+      about: UserReducer.userData.description,
+      beforeTwitter: UserReducer.userData.twitterSite,
+      beforeEmail: UserReducer.userData.email,
     });
-  }, [UserReducer?.profileData]);
+  }, [UserReducer?.userData]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -259,7 +259,7 @@ function Profile(props) {
     }
     if (maxLength50(editProfileData.email)) {
       setErrEmail(maxLength50(editProfileData.email));
-    } else if (UserReducer.profileData.email && !editProfileData.email.length) {
+    } else if (UserReducer.userData.email && !editProfileData.email.length) {
       setErrEmail(validateEmail(editProfileData.email));
     } else {
       if (editProfileData.email) {
@@ -347,7 +347,7 @@ function Profile(props) {
             zoomMail: '',
           };
     if (validateNum === 8) {
-      dispatch(updateProfile(req_body, id, true));
+      dispatch(updateProfile(req_body, id, false));
       setEditProfileData({
         ...editProfileData,
         beforeTwitter: editProfileData.twitter,
@@ -442,7 +442,7 @@ function Profile(props) {
                   styles.verifiedView,
                   {
                     maxWidth:
-                      UserReducer.profileData.twitterVerified === 0
+                      UserReducer.userData.twitterVerified === 0
                         ? '80%'
                         : '88%',
                   },
@@ -457,7 +457,7 @@ function Profile(props) {
               />
               <TouchableOpacity
                 disabled={
-                  UserReducer?.profileData?.twitterVerified === 0 &&
+                  UserReducer?.userData?.twitterVerified === 0 &&
                   editProfileData.twitter &&
                   editProfileData.beforeTwitter &&
                   editProfileData.twitter === editProfileData.beforeTwitter
@@ -465,7 +465,7 @@ function Profile(props) {
                     : true
                 }
                 style={
-                  UserReducer?.profileData?.twitterVerified === 0 &&
+                  UserReducer?.userData?.twitterVerified === 0 &&
                   editProfileData.twitter &&
                   editProfileData.beforeTwitter &&
                   editProfileData.twitter === editProfileData.beforeTwitter
@@ -476,7 +476,7 @@ function Profile(props) {
                   navigation.navigate('WebView');
                 }}>
                 <Text style={styles.verifyBtnTitle}>
-                  {UserReducer.profileData.twitterVerified === 0
+                  {UserReducer.userData.twitterVerified === 0
                     ? translate('common.BTN_TWITTER_REQUEST')
                     : translate('common.BTN_EMAIL_APPROVED')}
                 </Text>
@@ -484,7 +484,7 @@ function Profile(props) {
             </View>
             {errTwitter && <Text style={styles.errorMsg}>{errTwitter}</Text>}
           </View>
-          {UserReducer?.profileData?.isNonCrypto === 1 && (
+          {UserReducer?.userData?.isNonCrypto === 1 && (
             <LimitableInput
               multiLine
               singleLine={false}
@@ -500,7 +500,7 @@ function Profile(props) {
               editable={false}
             />
           )}
-          {UserReducer?.profileData?.isNonCrypto === 0 && (
+          {UserReducer?.userData?.isNonCrypto === 0 && (
             <View style={styles.mainView}>
               {infoModal('common.userEmail', infoEmail, emailInfoPopUp)}
               <View style={styles.inputView}>
@@ -509,7 +509,7 @@ function Profile(props) {
                     styles.verifiedView,
                     {
                       maxWidth:
-                        UserReducer.profileData.emailVerified === 0
+                        UserReducer.userData.emailVerified === 0
                           ? '80%'
                           : '88%',
                     },
@@ -524,7 +524,7 @@ function Profile(props) {
                 />
                 <TouchableOpacity
                   disabled={
-                    UserReducer?.profileData?.emailVerified === 0 &&
+                    UserReducer?.userData?.emailVerified === 0 &&
                     showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
@@ -533,7 +533,7 @@ function Profile(props) {
                       : true
                   }
                   style={
-                    UserReducer?.profileData?.emailVerified === 0 &&
+                    UserReducer?.userData?.emailVerified === 0 &&
                     showVerifyEmail &&
                     editProfileData.email &&
                     editProfileData.beforeEmail &&
@@ -546,7 +546,7 @@ function Profile(props) {
                   }}>
                   <Text style={styles.verifyBtnTitle}>
                     {editProfileData.email === editProfileData.beforeEmail &&
-                    UserReducer.profileData.emailVerified === 1
+                    UserReducer.userData.emailVerified === 1
                       ? translate('common.BTN_EMAIL_APPROVED')
                       : translate('common.BTN_TWITTER_REQUEST')}
                   </Text>

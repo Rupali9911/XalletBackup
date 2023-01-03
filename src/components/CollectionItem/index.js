@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
-import { C_Image } from '../../components';
+import React, {useEffect, useState} from 'react';
+import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
+import {C_Image} from '../../components';
 import styles from './styles';
-import { SIZE, SVGS } from 'src/constants';
-import { translate } from '../../walletUtils';
+import {SIZE, SVGS} from 'src/constants';
+import {translate} from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
-import { ImagekitType } from '../../common/ImageConstant';
-const { NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon } = SVGS;
+import {ImagekitType} from '../../common/ImageConstant';
+const {NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon} = SVGS;
 
 export default function CollectionItem(props) {
   const {
@@ -90,8 +90,8 @@ export default function CollectionItem(props) {
       <C_Image
         size={ImagekitType.AVATAR}
         imageStyle={{
-          width: isHotCollection ? SIZE(18) : SIZE(23),
-          height: isHotCollection ? SIZE(18) : SIZE(23),
+          width: SIZE(23),
+          height: SIZE(23),
         }}
         uri={network?.image}
       />

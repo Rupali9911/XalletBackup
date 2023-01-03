@@ -3096,7 +3096,12 @@ const DetailScreen = ({navigation, route}) => {
     return (
       <TouchableOpacity
         disabled={!cellData}
-        onPress={() => navigation.push('ArtistDetail', {id: cellData})}>
+        onPress={() =>
+          navigation.push('Profile', {
+            id: cellData,
+            role: detailNFT?.creator?.role,
+          })
+        }>
         <Text numberOfLines={1} style={[styles.text, styles.themeColor]}>
           {formatAddress(cellData)}
         </Text>
