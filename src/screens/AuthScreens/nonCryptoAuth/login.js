@@ -31,7 +31,7 @@ const LoginCrypto = () => {
 
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
-  const [btnEnable, setBtnEnable] = useState(true);
+  const [loginBtnEnable, setLoginBtnEnable] = useState(true);
 
   useEffect(() => {
     return () => {
@@ -40,7 +40,7 @@ const LoginCrypto = () => {
     };
   }, []);
 
-  const collectWallet = async myTimeout => {
+  const collectWallet = async timeout => {
     try {
       // console.log('🚀 ~ file: login.js ~ line 84 ~ collectWal ~ collectWallet');
 
@@ -61,18 +61,18 @@ const LoginCrypto = () => {
         .then(() => {
           dispatch(setBackupStatus(true));
           dispatch(endMagicLoading());
-          setBtnEnable(true);
+          setLoginBtnEnable(true);
         })
         .catch(err => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
           dispatch(endMagicLoading());
-          setBtnEnable(true);
+          setLoginBtnEnable(true);
           alertWithSingleBtn(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
       console.log('🚀 ~ file: login.js ~ line 62 ~  ~ error', error);
-      setBtnEnable(true);
-      clearTimeout(myTimeout);
+      setLoginBtnEnable(true);
+      clearTimeout(timeout);
       dispatch(endMagicLoading());
       dispatch(endLoading());
     }
@@ -86,16 +86,16 @@ const LoginCrypto = () => {
     } else if (emailLength) {
       setError(emailLength);
     } else {
-      setBtnEnable(false);
-      const myTimeout = setTimeout(() => {
+      setLoginBtnEnable(false);
+      const magicTimeout = setTimeout(() => {
         dispatch(startMagicLoading());
       }, 10000);
-      collectWallet(myTimeout);
+      collectWallet(magicTimeout);
     }
   };
 
-  const buttonEnabled =
-    !email || magicLoading || loading || error || !btnEnable;
+  const loginButtonEnabled =
+    !email || magicLoading || loading || error || !loginBtnEnable;
 
   return (
     <AppBackground isBusy={loading}>
@@ -133,7 +133,7 @@ const LoginCrypto = () => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => login()}
-            view={buttonEnabled}
+            view={loginButtonEnabled}
           />
         </View>
       </KeyboardAwareScrollView>
