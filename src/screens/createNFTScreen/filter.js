@@ -78,7 +78,6 @@ const Filter = ({
   useEffect(() => {
     if (modalScreen === "filter" && modalItem) {
       if (modalItem !== "closed") {
-        console.log(modalItem)
         if (activeModal === "collection") {
           setCollection(modalItem)
           getFiltersList(modalItem._id)
@@ -108,10 +107,8 @@ const Filter = ({
         chainType: networkType.value,
         networkType: networkStatus,
       };
-      console.log(body)
       axios.post(url, body)
         .then(collectionList => {
-          console.log(collectionList, "nftlist collectionList")
           if (collectionList.data.success) {
 
             setCollectionList(collectionList.data.data)

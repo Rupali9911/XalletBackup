@@ -606,8 +606,8 @@ const Wallet = ({ route, navigation }) => {
 
   //=================== Price In Dollerrs =============================
   const priceInDollars = pubKey => {
-    try {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      try {
         let balanceRequests = [
           currencyInDollar(pubKey, 'BSC'),
           currencyInDollar(pubKey, 'ETH'),
@@ -638,10 +638,11 @@ const Wallet = ({ route, navigation }) => {
             // );
             reject();
           });
-      });
-    } catch (error) {
-      console.log('@@@ price in dollars error ========>', error);
-    }
+      } catch (error) {
+        console.log('@@@ price in dollars error ========>', error);
+        reject();
+      }
+    });
   };
 
   //====================== Get Ethereum Balances ========================

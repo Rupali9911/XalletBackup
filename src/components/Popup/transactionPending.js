@@ -9,7 +9,6 @@ import { widthPercentageToDP as wp, SIZE } from '../../common/responsiveFunction
 import { Portal } from '@gorhom/portal';
 
 const transactionPending = ({ isVisible, setVisible, transactionMsg }) => {
-  // console.log("🚀 ~ file: transactionPending.js ~ line 11 ~  ~ isVisible", isVisible)
   return (
     <Portal>
       <Modal isVisible={isVisible}>

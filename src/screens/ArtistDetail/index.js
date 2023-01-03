@@ -346,7 +346,6 @@ function ArtistDetail({
     const isMounted = useIsMounted();
 
     useEffect(() => {
-        // console.log('route.params.id', route?.params?.id)
         const url = route?.params?.id.includes('0x') ?
             `${BASE_URL}/user/get-public-profile?publicAddress=${route?.params?.id}` :
             `${BASE_URL}/user/get-public-profile?userId=${route?.params?.id}`

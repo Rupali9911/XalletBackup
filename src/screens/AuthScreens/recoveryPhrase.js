@@ -114,7 +114,6 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 dispatch(setBackupStatus(true));
               })
               .catch(err => {
-                console.log("@@@ Login external wallet api error =========>", err);
                 dispatch(endLoader());
                 // alertWithSingleBtn(
                 //   translate('wallet.common.alert'),
@@ -130,7 +129,6 @@ const RecoveryPhrase = ({ route, navigation }) => {
           }
         })
         .catch(err => {
-          console.log('err', err.toString());
           if (
             err.toString() == 'Error: invalid mnemonic' ||
             err.toString() == 'Error: invalid checksum'
@@ -193,7 +191,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
       <AppHeader
         showBackButton
         title={translate('wallet.common.backup')}
-        onPressBack={isSetting ? () => navigation.navigate('Setting', {isSetting} ) : () => navigation.goBack()}
+        onPressBack={isSetting ? () => navigation.navigate('Setting', { isSetting }) : () => navigation.goBack()}
       />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}

@@ -1109,7 +1109,6 @@ const DetailScreen = ({ navigation, route }) => {
               network?.networkName,
             )
               .then(res => {
-                console.log('approve payByWallet 331', res);
                 // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
@@ -1190,10 +1189,6 @@ const DetailScreen = ({ navigation, route }) => {
         method: 'PUT',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 888 ~ editPriceApi ~ priceRes',
-        priceRes,
-      );
 
       if (priceRes?.messageCode) {
         handlePendingModal(false);
@@ -1347,10 +1342,6 @@ const DetailScreen = ({ navigation, route }) => {
         setPlaceABid(false);
         handlePendingModal(true);
         const approveData = placeBidRes?.dataReturn?.approveData;
-        console.log(
-          '🚀 ~ file: detail.js ~ line 991 ~ //.then ~ approveData',
-          approveData,
-        );
         let approved = true;
         let noncePlus = 0;
         if (approveData) {
@@ -1405,7 +1396,6 @@ const DetailScreen = ({ navigation, route }) => {
               network?.networkName,
             )
               .then(res => {
-                console.log('approve payByWallet 331', res);
                 // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
@@ -1544,17 +1534,13 @@ const DetailScreen = ({ navigation, route }) => {
         networkTokenId: Number(sellData.basePrice),
         nftId: nftId,
       };
-      console.log('🚀 ~ file: detail.js ~ line 1264 ~  ~ data', data);
 
       const resPutOnsale = await sendRequest({
         url,
         method: 'POST',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1249 ~ .then ~ resPutOnsale',
-        resPutOnsale,
-      );
+
 
       const approveAllData = resPutOnsale?.approveAllData;
       const signData = resPutOnsale?.dataReturn?.signData;
@@ -1606,7 +1592,7 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
+
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
@@ -1660,10 +1646,7 @@ const DetailScreen = ({ navigation, route }) => {
         method: 'POST',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1390 ~ ~ resPutOnAuction',
-        resPutOnAuction,
-      );
+
 
       // const resPutOnAuction = await nftServices.putOnAuction(dataCreateAuction);
       // const approveAllData = resPutOnAuction?.approveAllData
@@ -1709,16 +1692,11 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const onSell = () => {
-    console.log('🚀 ~ file: detail.js ~ line 1232 ~  ~ sellData', sellData);
     if (!isValidate()) {
       console.log('🚀 ~ file: detail.js ~ line 1391 ~ ~ INVALID_DATA');
       // toast.error(t('INVALID_DATA'))
     } else {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1394 ~ ~ sellData.saleType',
-        sellData.saleType,
-        sellData.saleType === saleType.FIXEDPRICE,
-      );
+
       if (sellData.saleType === saleType.FIXEDPRICE) {
         // handlePutOnSaleAuth();
         handlePutOnsale();
@@ -2029,10 +2007,7 @@ const DetailScreen = ({ navigation, route }) => {
       totalPrice: Number(offerData.totalPrice),
       error: undefined,
     };
-    console.log(
-      '🚀 ~ file: index.tsx ~ line 123 ~ onMakeOffer ~ submitData',
-      submitData,
-    );
+
     const resOffer = await sendRequest({
       url,
       method: 'POST',
@@ -2065,10 +2040,7 @@ const DetailScreen = ({ navigation, route }) => {
             nftTokenId,
             network?.networkName,
           );
-          console.log(
-            '🚀 ~ file: index.tsx ~ line 205 ~  ~ txnResult',
-            txnResult,
-          );
+
 
           if (txnResult) {
             noncePlus = 1;
@@ -2100,7 +2072,6 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
@@ -2153,7 +2124,6 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const onMakeOffer = () => {
-    console.log(isOfferValidate());
     if (!isOfferValidate()) {
       // toast.error('INVALID_OFFER_DATA')
       console.log('🚀 ~ file: detail.js ~ line 1779 ~ ~ INVALID_OFFER_DATA');
@@ -2183,10 +2153,7 @@ const DetailScreen = ({ navigation, route }) => {
         data,
       })
         .then(buyNFTRes => {
-          console.log(
-            '🚀 ~ file: detail.js ~ line 1845 ~ handleBuyNft ~ buyNFTRes',
-            buyNFTRes,
-          );
+
           setIsChecking(false);
           if (buyNFTRes.messageCode) {
             setErrorMessage(buyNFTRes.messageCode);
@@ -2572,10 +2539,7 @@ const DetailScreen = ({ navigation, route }) => {
         method: 'POST',
         params: data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 3104 ~  ~ cancelSellRes',
-        cancelSellRes,
-      );
+
 
       if (cancelSellRes) {
         const signData = cancelSellRes.dataReturn?.signData;
@@ -3324,9 +3288,7 @@ const DetailScreen = ({ navigation, route }) => {
         collectionAddress={collectionAddress}
         chain={networkName?.toLowerCase()}
         onRequestClose={() => {
-          console.log(
-            '🚀 ~ file: detail.js ~ line 3263 ~ renderPaymentMethod ~ onRequestClose',
-          );
+
           setShowPaymentMethod(false);
           // dispatch(setPaymentObject(null));
         }}
@@ -3581,10 +3543,7 @@ const DetailScreen = ({ navigation, route }) => {
           isLike: nftData?.isLike,
           totalLike: nftData?.totalLike,
         };
-        console.log(
-          '@@@ On Detail screen, handle like method ==========>',
-          nftItem,
-        );
+
         setNftItem(nftItem);
       }
     }

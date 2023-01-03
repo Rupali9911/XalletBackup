@@ -128,7 +128,6 @@ const ImportWallet = ({ route, navigation }) => {
           }
         })
         .catch(err => {
-          console.log('err', err.toString());
           if (
             err.toString() == 'Error: invalid mnemonic' ||
             err.toString() == 'Error: invalid checksum'
@@ -181,7 +180,6 @@ const ImportWallet = ({ route, navigation }) => {
             });
         })
         .catch(err => {
-          console.log('recoverWalletByPrivateKey err', err.toString());
           alertWithSingleBtn(
             translate('wallet.common.verification'),
             translate('wallet.common.error.invalidPrivateKey'),

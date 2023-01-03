@@ -59,7 +59,6 @@ const SellNFT = ({ route, navigation }) => {
     let chainType = params.length > 1 ? params[0] : 'binance';
     let collectionAddress = params.length > 2 ? params[1] : null;
 
-    // console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
     if (chainType === 'polygon') {
         MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
         MarketContractAddress = blockChainConfig[1].marketConConfig.add;

@@ -42,7 +42,6 @@ const HotCollection = () => {
   useEffect(() => {
     if (isFocused && isFirstRender) {
       timer = setTimeout(() => {
-        console.log('hot collection');
         dispatch(hotCollectionLoadStart());
         dispatch(hotCollectionListReset());
         getHotCollection(1, totalCount);

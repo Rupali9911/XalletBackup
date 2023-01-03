@@ -206,10 +206,6 @@ function discoverItem({item}) {
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
-            console.log(
-              '@@@ On discover Item screen, navigate details =======>',
-              item,
-            );
             isPlay
               ? setPlay(!isPlay)
               : navigation.navigate('CertificateDetail', {

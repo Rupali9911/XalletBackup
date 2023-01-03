@@ -242,7 +242,6 @@ const AppRoutes = () => {
       },
     },
     getStateFromPath: (path, options) => {
-      console.log('path', path);
       let id = path.substring(path.lastIndexOf('/') + 1);
       dispatch(setRequestAppId(id));
       // Return a state object here

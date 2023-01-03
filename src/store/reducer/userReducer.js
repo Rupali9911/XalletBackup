@@ -476,10 +476,6 @@ export const deleteAccountApi = () => dispatch =>
       method: 'POST',
     })
       .then(response => {
-        console.log(
-          '🚀 ~ file: userReducer.js ~ line 440 ~ newPromise ~ response',
-          response,
-        );
         dispatch(deleteAccountSucces(response));
         resolve(response);
       })

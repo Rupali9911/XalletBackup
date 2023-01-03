@@ -49,16 +49,11 @@ const PaymentNow = props => {
 
   const payByWallet = async () => {
     try {
-      // console.log('paymentObject', paymentObject, buyNFTRes);
 
       const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
       const approveData = buyNFTRes?.dataReturn?.approveData;
       const signData = buyNFTRes?.dataReturn?.signData;
       if (approveAllData) {
-        // console.log(
-        //   '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
-        //   approveAllData,
-        // );
       }
 
       // setOpenTransactionPending(true);

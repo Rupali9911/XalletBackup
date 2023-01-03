@@ -137,7 +137,6 @@ const PaymentMethod = props => {
               onPress={() => {
                 if (selectedMethod == 0) {
                   onRequestClose();
-                  console.log('1.1----selectedMethod -');
                   navigation.navigate('WalletPay', {
                     price: totalAmount,
                     chainType: chain || 'bsc',

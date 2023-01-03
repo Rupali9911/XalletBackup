@@ -44,7 +44,6 @@ export default function AppSearch() {
         console.log(searchTxt);
         dispatch(searchNFT(searchTxt))
           .then(response => {
-            console.log('search response', response);
             setloading(false);
             if (
               response?.artistSearch.length > 0 ||

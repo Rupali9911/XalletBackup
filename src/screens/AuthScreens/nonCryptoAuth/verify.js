@@ -42,7 +42,6 @@ const Verify = ({ route }) => {
 
         axios.post(url, body, {})
             .then(response => {
-                console.log(response, "verify success")
                 setError("");
                 setshowSuccess(translate("common.emailverified"));
                 const successTO = setTimeout(() => {
@@ -71,7 +70,6 @@ const Verify = ({ route }) => {
 
         axios.post(url, body)
             .then(response => {
-                console.log(response, "r verify success")
                 setshowSuccess(translate("common.emailsendsuccess"));
                 const successTO = setTimeout(() => {
                     setshowSuccess("")
@@ -93,7 +91,7 @@ const Verify = ({ route }) => {
 
             <View style={styles.sectionCont} >
 
-            <AppLogo />
+                <AppLogo />
 
                 <Text style={[styles.error, { color: colors.GREY14, marginTop: hp(10) }]}>{translate("common.verificationCode")}{email}{translate("common.kindlyEnter")}</Text>
                 {
