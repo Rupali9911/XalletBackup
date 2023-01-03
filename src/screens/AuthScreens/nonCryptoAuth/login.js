@@ -31,6 +31,7 @@ const LoginCrypto = () => {
 
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
+  const [btnEnable, setBtnEnable] = useState(true);
 
   useEffect(() => {
     return () => {
@@ -39,7 +40,7 @@ const LoginCrypto = () => {
     };
   }, []);
 
-  const collectWallet = async () => {
+  const collectWallet = async myTimeout => {
     try {
       // console.log('🚀 ~ file: login.js ~ line 84 ~ collectWal ~ collectWallet');
 
@@ -60,14 +61,18 @@ const LoginCrypto = () => {
         .then(() => {
           dispatch(setBackupStatus(true));
           dispatch(endMagicLoading());
+          setBtnEnable(true);
         })
         .catch(err => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
           dispatch(endMagicLoading());
+          setBtnEnable(true);
           alertWithSingleBtn(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
       console.log('🚀 ~ file: login.js ~ line 62 ~  ~ error', error);
+      setBtnEnable(true);
+      clearTimeout(myTimeout);
       dispatch(endMagicLoading());
       dispatch(endLoading());
     }
@@ -81,10 +86,16 @@ const LoginCrypto = () => {
     } else if (emailLength) {
       setError(emailLength);
     } else {
-      dispatch(startMagicLoading());
-      collectWallet();
+      setBtnEnable(false);
+      const myTimeout = setTimeout(() => {
+        dispatch(startMagicLoading());
+      }, 10000);
+      collectWallet(myTimeout);
     }
   };
+
+  const buttonEnabled =
+    !email || magicLoading || loading || error || !btnEnable;
 
   return (
     <AppBackground isBusy={loading}>
@@ -122,7 +133,7 @@ const LoginCrypto = () => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => login()}
-            view={!email || magicLoading || loading || error}
+            view={buttonEnabled}
           />
         </View>
       </KeyboardAwareScrollView>

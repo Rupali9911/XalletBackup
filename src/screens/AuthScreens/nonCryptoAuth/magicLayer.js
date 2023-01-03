@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, View, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
 import {Loader} from '../../../components';
+import FetchingIndicator from '../../../components/fetchingIndicator';
 import Colors from '../../../constants/Colors';
 import {
   hp,
@@ -20,7 +21,12 @@ const MagicLayer = () => {
     setMagic(magicLink);
   }, [selectedLanguageItem]);
 
-  return magic.Relayer ? <magic.Relayer /> : null
+  return magic.Relayer ? (
+    <>
+      <magic.Relayer />
+      {magicLoading && <FetchingIndicator />}
+    </>
+  ) : null;
 
   // return magicLoading ? (
   //   <View style={styles.container}>
