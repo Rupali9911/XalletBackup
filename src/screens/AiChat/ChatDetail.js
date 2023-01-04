@@ -8,7 +8,7 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getAiChat,
@@ -182,7 +182,7 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //====================== Chat Sender Image =========================
-  const renderImage = () => {
+  const renderImage = useCallback(() => {
     if (userData.avatar) {
       return (
         <C_Image
@@ -199,7 +199,7 @@ const ChatDetail = ({route, navigation}) => {
         </View>
       );
     }
-  };
+  }, []);
 
   const onEditMessage = update_msg => {
     let msg_question = editMessage?.question;
@@ -503,6 +503,7 @@ const ChatDetail = ({route, navigation}) => {
               onScrollEndDrag={handleFlatListEndReached}
               ListFooterComponent={renderHeader}
               removeClippedSubview={true}
+              extraData={chatBotData}
             />
           </View>
 
