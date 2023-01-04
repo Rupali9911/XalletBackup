@@ -6,6 +6,7 @@ import Modal from 'react-native-modal';
 import CloseIcon from 'react-native-vector-icons/SimpleLineIcons';
 import C_Image from './customImage';
 import {ImagekitType} from '../common/ImageConstant';
+import {Portal} from '@gorhom/portal';
 
 const {CircleCloseIcon} = SVGS;
 
@@ -20,25 +21,27 @@ const ImageModal = props => {
     setVisible,
   } = props;
   return (
-    <Modal
-      onBackdropPress={() => props?.setVisible(false)}
-      isVisible={visible}
-      style={[styles.modal, modalStyle]}>
-      <View>
-        <CloseIcon
-          name="close"
-          style={[styles.iconStyle, iconStyle]}
-          size={iconSize}
-          color={iconColor}
-          onPress={() => setVisible(false)}
-        />
-        <C_Image
-          uri={props?.uri}
-          size={ImagekitType.FULLIMAGE}
-          imageStyle={[styles.modalImg, imageStyle]}
-        />
-      </View>
-    </Modal>
+    <Portal>
+      <Modal
+        onBackdropPress={() => props?.setVisible(false)}
+        isVisible={visible}
+        style={[styles.modal, modalStyle]}>
+        <View>
+          <CloseIcon
+            name="close"
+            style={[styles.iconStyle, iconStyle]}
+            size={iconSize}
+            color={iconColor}
+            onPress={() => setVisible(false)}
+          />
+          <C_Image
+            uri={props?.uri}
+            size={ImagekitType.FULLIMAGE}
+            imageStyle={[styles.modalImg, imageStyle]}
+          />
+        </View>
+      </Modal>
+    </Portal>
   );
 };
 

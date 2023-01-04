@@ -47,7 +47,6 @@ import {
 import {translate} from '../../walletUtils';
 import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
-import {SocketHandler} from './socketHandler';
 import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
@@ -281,9 +280,21 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (selectedImage === 'profile') {
-              dispatch(updateAvtar(userDetails.id, temp));
+              dispatch(
+                updateAvtar(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             } else if (selectedImage === 'banner') {
-              dispatch(updateBanner(userDetails.id, temp));
+              dispatch(
+                updateBanner(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             }
           }
         })
@@ -329,9 +340,21 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (selectedImage === 'profile') {
-              dispatch(updateAvtar(userDetails.id, temp));
+              dispatch(
+                updateAvtar(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             } else if (selectedImage === 'banner') {
-              dispatch(updateBanner(userDetails.id, temp));
+              dispatch(
+                updateBanner(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             }
           }
         })
@@ -486,7 +509,6 @@ function Profile({navigation, connector, route}) {
           paddingBottom: SIZE(10),
         }}
         onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}>
-        {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
         )}

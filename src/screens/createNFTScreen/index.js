@@ -22,7 +22,6 @@ import UploadNFT from './uploadNft';
 const CreateNFTScreen = ({ route }) => {
 
   const routeParams = route.params;
-  // console.log("@@@ Created NFT Screen props routes ========>", routeParams)
   const isNonCrypto = useSelector(state => state.UserReducer?.userData?.isNonCrypto);
   const [loading, setLoading] = useState(false);
 

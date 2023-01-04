@@ -500,7 +500,6 @@ const WalletPay = ({ route, navigation }) => {
             USDC: responses[2],
             WETH: responses[3],
           };
-          // console.log('Polygon 488 balances',responses);
           dispatch(updatePolygonBalances(balances));
           setBalances(balances);
           setLoading(false);
@@ -562,7 +561,6 @@ const WalletPay = ({ route, navigation }) => {
 
         Promise.all(balanceRequests)
           .then(responses => {
-            // console.log('balances',responses);
             let balances = {
               ETH: responses[0],
               BNB: responses[1],
@@ -610,7 +608,6 @@ const WalletPay = ({ route, navigation }) => {
         return false;
       }
     });
-    // console.log('@@@@@@@@@@@@', result, item);
     return result;
   };
 

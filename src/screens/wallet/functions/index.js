@@ -81,7 +81,6 @@ export const watchBalanceUpdate = (updateBalance, type) => {
     })
     .on('connected', function (subscriptionId) { })
     .on('data', function (log) {
-      // console.log("data",log);
       updateBalance && updateBalance();
     })
     .on('changed', function (log) {
@@ -165,11 +164,11 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
 };
 
 export const currencyInDollar = async (pubkey, type) => {
-  // console.log("@@@ currency in dollar func =======>", type)
   let rpcUrl = '';
   let nftDex = '';
   let nftAbi = '';
   let key = pubkey;
+  var startTime = performance.now()
 
   switch (type) {
     case 'BSC':
@@ -210,6 +209,8 @@ export const currencyInDollar = async (pubkey, type) => {
             var bnbLpReserve = info[0].toString();
             var busdLpReserve = info[1].toString();
             var bnbPriceInner = busdLpReserve / bnbLpReserve;
+            var endTime = performance.now()
+            console.log(`Call to BSC price in dollar get took ${endTime - startTime} milliseconds`)
             resolve(bnbPriceInner);
           });
       } else if (type === 'ALIA') {
@@ -244,7 +245,6 @@ export const currencyInDollar = async (pubkey, type) => {
           .getReserves()
           .call()
           .then(function (info) {
-            // console.log('@@@ currency in dollar func =======>', type, info);
             maticQuickReserve = web3.utils.fromWei(
               info._reserve0.toString(),
               'ether',
@@ -258,7 +258,6 @@ export const currencyInDollar = async (pubkey, type) => {
             );
           })
           .catch(e => {
-            console.log('@@@ ----------->', e, type);
             reject({
               success: false,
               data: 'Smart contract not deployed to detected network.',
@@ -314,6 +313,7 @@ export const currencyInDollar = async (pubkey, type) => {
 export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
   try {
     return new Promise(async (resolve, reject) => {
+      var startTime = performance.now()
       const web3 = new Web3(new Web3.providers.HttpProvider(rpc));
       if (contractAddr) {
         const contract = new web3.eth.Contract(contractAbi, contractAddr);
@@ -343,6 +343,8 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
       } else {
         await web3.eth.getBalance(pubKey, function (error, ethbalance) {
           // console.log('Results from balance of Self', type, ethbalance);
+          var endTime = performance.now()
+          console.log(`Call to BSC Balance get took ${endTime - startTime} milliseconds`)
           if (error) {
             reject(error);
           } else {

@@ -112,11 +112,9 @@ export default function NFTItem(props, {navigation}) {
       isLike: isLike,
       // totalLike: nftData?.totalLike
     };
-    console.log(nftItem, 'like nftItem');
     const nftData = await handleLike(nftItem);
     if (nftData) {
       setIsLike(!Number(nftItem.isLike));
-      // console.log("🚀 ~ file: index.js ~ line 87 ~ ", item)
     }
   };
 
@@ -208,7 +206,6 @@ export default function NFTItem(props, {navigation}) {
 
   //================== Render Name and Creator Name Function ===================
   const renderNameNcreatorName = isCollection => {
-    // console.log('This item is render for name and iscollction : ', isCollection, item);
     if (isCollection) {
       return (
         <View style={styles.nftName}>
@@ -813,7 +810,6 @@ export default function NFTItem(props, {navigation}) {
   // =================== End Commented Code =================================
 
   //=====================(Main return Function)=============================
-  // console.log('THis is ismecollection and ishotcollection : ', isMeCollection, isCollection)
   return (
     <>
       {isMeCollection

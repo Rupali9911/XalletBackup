@@ -49,7 +49,6 @@ export const useSocketGlobal = (
 //     const router = useRouter()
 //     const dispatch = useAppDispatch()
 //     const handleSocketResult = (data) => {
-//         console.log(data)
 //         setIsLoading(false)
 //         toast.success(message)
 //         dispatch(getNFTDetails(router.query))

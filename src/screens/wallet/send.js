@@ -380,7 +380,6 @@ const SendScreen = React.memo(props => {
               web3,
               reject,
             );
-            console.log('@@@ Getting sign data ========>', signData);
             if (!signData) return;
             const data = {
               from: transferParameters.publicAddress,
@@ -390,21 +389,16 @@ const SendScreen = React.memo(props => {
             };
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
-            console.log('@@@ Gas limit  ERC-20 1111 =======>', typeof gasLimit);
             const gasFee = web3.utils.fromWei(
               (gasPrice * gasLimit).toString(),
               'ether',
             );
-            console.log("@@@ gas fee ERC-20 2222 =======>", gasFee)
             const finalGasFee = Number(Number(gasFee).toFixed(8));
-            console.log('@@@ Gas Fee ERC-20 3333=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
           } else if (isSelftToken() && !isMaxButtonPress && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
-            console.log("@@@ gas fee self 1111 =======>", gasFee)
             const finalGasFee = Number(Number(gasFee).toFixed(8));
-            console.log('@@@ Gas Fee self 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
           }
         });

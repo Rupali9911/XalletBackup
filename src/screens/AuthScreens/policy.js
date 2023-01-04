@@ -19,7 +19,6 @@ const Policy = ({route}) => {
     : 'file:///android_asset/terms.html';
 
   const onMessage = event => {
-    console.log('Meesaage from Webview', event);
     Linking.openURL(event.nativeEvent.data);
   };
 
@@ -30,7 +29,6 @@ const Policy = ({route}) => {
   };
 
   const handleWebViewNavigationStateChange = navState => {
-    console.log('Navstate', navState);
     setLoading(false);
 
     if (Platform.OS === 'ios') {

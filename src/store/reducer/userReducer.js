@@ -476,10 +476,6 @@ export const deleteAccountApi = () => dispatch =>
       method: 'POST',
     })
       .then(response => {
-        console.log(
-          '🚀 ~ file: userReducer.js ~ line 440 ~ newPromise ~ response',
-          response,
-        );
         dispatch(deleteAccountSucces(response));
         resolve(response);
       })
@@ -622,7 +618,7 @@ export const removeBanner = (banner, id) => async dispatch => {
       return error;
     });
 };
-export const updateAvtar = (userId, file) => async dispatch => {
+export const updateAvtar = (address, userId, file) => async dispatch => {
   dispatch(startLoadingImage());
   const extension = file.type.split('/')[1];
   const name = new Date().getTime();
@@ -644,6 +640,10 @@ export const updateAvtar = (userId, file) => async dispatch => {
       });
       if (userProfileResponse == undefined) {
         dispatch(endLoadingImage());
+      } else if (userProfileResponse === '') {
+        setTimeout(() => {
+          dispatch(getUserData(address, false));
+        }, 5000);
       }
     } catch (error) {
       dispatch(endLoadingImage());
@@ -652,7 +652,7 @@ export const updateAvtar = (userId, file) => async dispatch => {
   });
 };
 
-export const updateBanner = (userId, file) => async dispatch => {
+export const updateBanner = (address, userId, file) => async dispatch => {
   dispatch(startLoadingBanner());
   const extension = file.type.split('/')[1];
   const name = new Date().getTime();
@@ -674,6 +674,10 @@ export const updateBanner = (userId, file) => async dispatch => {
       });
       if (userProfileResponse == undefined) {
         dispatch(endLoadingBanner());
+      } else if (userProfileResponse === '') {
+        setTimeout(() => {
+          dispatch(getUserData(address, false));
+        }, 5000);
       }
     } catch (error) {
       console.log('@@@ Update banner image error =======>', error);

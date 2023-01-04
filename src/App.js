@@ -61,6 +61,7 @@ import AiChat from './screens/AiChat';
 import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
+import {PortalProvider} from '@gorhom/portal';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -241,7 +242,6 @@ const AppRoutes = () => {
       },
     },
     getStateFromPath: (path, options) => {
-      console.log('path', path);
       let id = path.substring(path.lastIndexOf('/') + 1);
       dispatch(setRequestAppId(id));
       // Return a state object here
@@ -343,12 +343,14 @@ export const Events = new Subject();
 const App = () => {
   return (
     <NativeBaseProvider>
-      <Provider store={Store}>
-        <MenuProvider>
-          <AppRoutes />
-          {<MagicLayer />}
-        </MenuProvider>
-      </Provider>
+      <PortalProvider>
+        <Provider store={Store}>
+          <MenuProvider>
+            <AppRoutes />
+            {<MagicLayer />}
+          </MenuProvider>
+        </Provider>
+      </PortalProvider>
     </NativeBaseProvider>
   );
 };

@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux';
 import {BlurView} from '@react-native-community/blur';
 import {IconButton} from 'react-native-paper';
 import {numberWithCommas} from '../../utils';
+import {Portal} from '@gorhom/portal';
 
 const PaymentMethod = props => {
   const {
@@ -53,103 +54,104 @@ const PaymentMethod = props => {
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType={'slide'}
-      transparent
-      onShow={() => setOpacity(0.88)}
-      onRequestClose={() => {
-        // setOpacity(0);
-        onRequestClose();
-      }}>
-      <View style={[styles.container]}>
-        <BlurView
-          style={styles.absolute}
-          blurType="light"
-          blurAmount={5}></BlurView>
+    <Portal>
+      <Modal
+        visible={visible}
+        animationType={'slide'}
+        transparent
+        onShow={() => setOpacity(0.88)}
+        onRequestClose={() => {
+          // setOpacity(0);
+          onRequestClose();
+        }}>
+        <View style={[styles.container]}>
+          <BlurView
+            style={styles.absolute}
+            blurType="light"
+            blurAmount={5}></BlurView>
 
-        <TouchableOpacity
-          style={styles.emptyArea}
-          onPress={() => {
-            // setOpacity(0);
-            onRequestClose();
-          }}
-        />
-        <View style={styles.contentContainer}>
           <TouchableOpacity
+            style={styles.emptyArea}
             onPress={() => {
               // setOpacity(0);
               onRequestClose();
-            }}>
-            <IconButton
-              icon={'close'}
-              color={Colors.headerIcon2}
-              size={17}
-              style={styles.closeIcon}
-            />
-          </TouchableOpacity>
-          <Text style={styles.title}>
-            {translate('wallet.common.selectPaymentMethod')}
-          </Text>
-
-          <ButtonGroup
-            buttons={
-              isNonCrypto === 0
-                ? [
-                    {
-                      text: translate('wallet.common.payByWallet'),
-                      icon: ImagesSrc.walletPay,
-                      onPress: () => {
-                        setSelectedMethod(0);
-                      },
-                    },
-                  ]
-                : []
-            }
-            style={styles.optionContainer}
-            selectable
-            selectedIndex={selectedMethod}
-            separatorColor={Colors.white}
-          />
-
-          <Separator style={styles.separator} />
-
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>{'Gas Price'}</Text>
-            <Text style={styles.totalLabel}>
-              {numberWithCommas(parseFloat(Number(gasLimit).toFixed(6)))}
-            </Text>
-          </View>
-
-          {detailsRender(
-            translate('common.total'),
-            numberWithCommas(parseFloat(Number(totalAmount).toFixed(4))) +
-              ' ' +
-              baseCurrency,
-          )}
-
-          <AppButton
-            label={translate('wallet.common.next')}
-            containerStyle={CommonStyles.button}
-            labelStyle={CommonStyles.buttonLabel}
-            onPress={() => {
-              if (selectedMethod == 0) {
-                onRequestClose();
-                console.log('1.1----selectedMethod -');
-                navigation.navigate('WalletPay', {
-                  price: totalAmount,
-                  chainType: chain || 'bsc',
-                  baseCurrency,
-                  id,
-                  collectionAddress,
-                });
-              }
             }}
           />
+          <View style={styles.contentContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                // setOpacity(0);
+                onRequestClose();
+              }}>
+              <IconButton
+                icon={'close'}
+                color={Colors.headerIcon2}
+                size={17}
+                style={styles.closeIcon}
+              />
+            </TouchableOpacity>
+            <Text style={styles.title}>
+              {translate('wallet.common.selectPaymentMethod')}
+            </Text>
+
+            <ButtonGroup
+              buttons={
+                isNonCrypto === 0
+                  ? [
+                      {
+                        text: translate('wallet.common.payByWallet'),
+                        icon: ImagesSrc.walletPay,
+                        onPress: () => {
+                          setSelectedMethod(0);
+                        },
+                      },
+                    ]
+                  : []
+              }
+              style={styles.optionContainer}
+              selectable
+              selectedIndex={selectedMethod}
+              separatorColor={Colors.white}
+            />
+
+            <Separator style={styles.separator} />
+
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalLabel}>{'Gas Price'}</Text>
+              <Text style={styles.totalLabel}>
+                {numberWithCommas(parseFloat(Number(gasLimit).toFixed(6)))}
+              </Text>
+            </View>
+
+            {detailsRender(
+              translate('common.total'),
+              numberWithCommas(parseFloat(Number(totalAmount).toFixed(4))) +
+                ' ' +
+                baseCurrency,
+            )}
+
+            <AppButton
+              label={translate('wallet.common.next')}
+              containerStyle={CommonStyles.button}
+              labelStyle={CommonStyles.buttonLabel}
+              onPress={() => {
+                if (selectedMethod == 0) {
+                  onRequestClose();
+                  navigation.navigate('WalletPay', {
+                    price: totalAmount,
+                    chainType: chain || 'bsc',
+                    baseCurrency,
+                    id,
+                    collectionAddress,
+                  });
+                }
+              }}
+            />
+          </View>
+          <SafeAreaView style={{backgroundColor: Colors.white}} />
         </View>
-        <SafeAreaView style={{backgroundColor: Colors.white}} />
-      </View>
-    </Modal>
+      </Modal>
+    </Portal>
   );
 };
 
