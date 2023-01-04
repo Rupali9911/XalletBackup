@@ -8,7 +8,7 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getAiChat,
@@ -154,7 +154,7 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //====================== Chat Sender Image =========================
-  const renderImage = () => {
+  const renderImage = useCallback(() => {
     if (userData.avatar) {
       return (
         <C_Image
@@ -171,7 +171,7 @@ const ChatDetail = ({route, navigation}) => {
         </View>
       );
     }
-  };
+  }, []);
 
   const onEditMessage = update_msg => {
     console.log(
@@ -207,9 +207,7 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //======================== Show Bubbles =============================
-  const ShowBubble = props => {
-    const {item} = props;
-    const senderName = item?.senderName?.slice(0, 8);
+  const renderItem = ({item, index}) => {
     return (
       <View style={{marginVertical: 8}}>
         {item?.type == 'sender' ? (
@@ -405,11 +403,7 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
-  const renderItem = ({item}) => {
-    return <ShowBubble item={item} />;
-  };
-
-  const memoizedItem = useMemo(() => renderItem, [chatBotData]);
+  const memoizedValue = useMemo(() => renderItem, []);
 
   //=====================(Main return Function)=============================
   return (
@@ -479,7 +473,7 @@ const ChatDetail = ({route, navigation}) => {
             <FlatList
               ref={flatList}
               data={chatBotData}
-              renderItem={memoizedItem}
+              renderItem={memoizedValue}
               keyExtractor={(item, index) => {
                 return `_${index}`;
               }}
@@ -488,6 +482,7 @@ const ChatDetail = ({route, navigation}) => {
               onScrollEndDrag={handleFlatListEndReached}
               ListFooterComponent={renderHeader}
               removeClippedSubview={true}
+              extraData={chatBotData}
             />
           </View>
 
