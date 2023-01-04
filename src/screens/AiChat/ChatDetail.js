@@ -6,7 +6,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getAiChat,
@@ -101,7 +101,7 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //====================== Chat Sender Image =========================
-  const renderImage = () => {
+  const renderImage = useCallback(() => {
     if (userData.avatar) {
       return (
         <C_Image
@@ -118,11 +118,10 @@ const ChatDetail = ({route, navigation}) => {
         </View>
       );
     }
-  };
+  }, []);
 
   //======================== Show Bubbles =============================
-  const ShowBubble = props => {
-    const {item} = props;
+  const renderItem = ({item, index}) => {
     return (
       <View style={{marginVertical: 8}}>
         {item?.type == 'sender' ? (
@@ -275,6 +274,8 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
+  const memoizedValue = useMemo(() => renderItem, []);
+
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -324,7 +325,7 @@ const ChatDetail = ({route, navigation}) => {
             <FlatList
               ref={flatList}
               data={chatBotData}
-              renderItem={({item}) => <ShowBubble item={item} />}
+              renderItem={memoizedValue}
               keyExtractor={(item, index) => {
                 return `_${index}`;
               }}
@@ -333,6 +334,7 @@ const ChatDetail = ({route, navigation}) => {
               onScrollEndDrag={handleFlatListEndReached}
               ListFooterComponent={renderHeader}
               removeClippedSubview={true}
+              extraData={chatBotData}
             />
           </View>
           <MessageInput
