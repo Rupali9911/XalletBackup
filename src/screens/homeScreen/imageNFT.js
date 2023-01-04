@@ -37,17 +37,14 @@ const ImageNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      timer = setTimeout(() => {
-        dispatch(newNftListReset(category));
-        dispatch(newNftLoadStart());
-        getNFTlist(category, sortCategory, limit, 1);
-        setIsFirstRender(false);
-        setSortOption(0);
-        // setPage(1);
-        screen(category);
-      }, 100);
+      dispatch(newNftListReset(category));
+      dispatch(newNftLoadStart());
+      getNFTlist(category, sortCategory, limit, 1);
+      setIsFirstRender(false);
+      setSortOption(0);
+      // setPage(1);
+      screen(category);
     }
-    return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
 
   //===================== Dispatch Action to Fetch Photo NFT List =========================

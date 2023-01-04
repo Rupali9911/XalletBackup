@@ -44,17 +44,14 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   useEffect(() => {
     if (isFocused && isFirstRender) {
       // setPage(1);
-      timer = setTimeout(() => {
-        dispatch(newNftLoadStart());
-        dispatch(newNftListReset(category));
-        getNFTlist(category, sortCategory, limit, 1);
-        setIsFirstRender(false);
-        setSortOption(0);
-        // setPage(1);
-        screen(category);
-      }, 100);
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset(category));
+      getNFTlist(category, sortCategory, limit, 1);
+      setIsFirstRender(false);
+      setSortOption(0);
+      // setPage(1);
+      screen(category);
     }
-    return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
 
   //===================== Dispatch Action to Fetch Gif NFT List =========================
