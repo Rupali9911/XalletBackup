@@ -46,7 +46,9 @@ const LoginCrypto = () => {
 
       let token = await requestConnectToDApp(email);
       // console.log('🚀 ~ file: login.js ~ line 40 ~ collectWal ~ token', token);
-      dispatch(startLoading());
+      if (token) {
+        dispatch(startLoading());
+      }
 
       const address = await getAddress();
       const signature = await signMessage(SIGN_MESSAGE).catch(() => {});
