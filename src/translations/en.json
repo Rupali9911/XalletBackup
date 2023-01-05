@@ -780,7 +780,8 @@
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "You can enter decimal points only upto 6 digits",
     "ENTER_INVALID_AMOUNT": "Please enter the valid amount for transaction.",
     "COMING_SOON": "Coming Soon",
-    "alertTitle": "Alert"
+    "alertTitle": "Alert",
+    "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…"
   },
   "AwardPage": {},
   "wallet": {

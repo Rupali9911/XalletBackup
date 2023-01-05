@@ -781,7 +781,8 @@
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "您最多只能输入 6 位小数点",
     "ENTER_INVALID_AMOUNT": "请输入有效交易金额",
     "COMING_SOON": "近日发布",
-    "alertTitle": "警报"
+    "alertTitle": "警报",
+    "EMAIL_AUTHORIZATION_MSG": "正在处理电子邮件授权，请稍候..."
   },
   "AwardPage": {},
   "wallet": {

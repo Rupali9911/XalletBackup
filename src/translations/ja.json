@@ -781,7 +781,8 @@
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "小数点は第6位までしか入力できません",
     "ENTER_INVALID_AMOUNT": "送金可能な残高数量を入力ください",
     "COMING_SOON": "近日公開",
-    "alertTitle": "アラート"
+    "alertTitle": "アラート",
+    "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…"
   },
   "AwardPage": {},
   "wallet": {
