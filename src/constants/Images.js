@@ -81,6 +81,14 @@ export default {
   brokenIcon: require('../../assets/images/brokenIcon.png'),
   tweetPng: require('../../assets/images/tweet.png'),
 
+  // language type icons
+  english: require('../../assets/images/en_icon.png'),
+  japan: require('../../assets/images/ja_icon.png'),
+  korea: require('../../assets/images/ko_icon.png'),
+  chinese: require('../../assets/images/ch_icon.png'),
+  chineseTw: require('../../assets/images/tw_icon.png'),
+  tick: require('../../assets/images/tick_icon.png'),
+
   cardTypeIcon: {
     visa: require('../../assets/images/visa.png'),
     mastercard: require('../../assets/images/mastercard.png'),
