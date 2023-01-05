@@ -31,6 +31,7 @@ const LoginCrypto = () => {
 
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
+  const [loginBtnEnable, setLoginBtnEnable] = useState(true);
 
   useEffect(() => {
     return () => {
@@ -39,10 +40,13 @@ const LoginCrypto = () => {
     };
   }, []);
 
-  const collectWallet = async () => {
+  const collectWallet = async timeout => {
     try {
       let token = await requestConnectToDApp(email);
-      dispatch(startLoading());
+      // console.log('🚀 ~ file: login.js ~ line 40 ~ collectWal ~ token', token);
+      if (token) {
+        dispatch(startLoading());
+      }
 
       const address = await getAddress();
       const signature = await signMessage(SIGN_MESSAGE).catch(() => {});
@@ -56,14 +60,18 @@ const LoginCrypto = () => {
         .then(() => {
           dispatch(setBackupStatus(true));
           dispatch(endMagicLoading());
+          setLoginBtnEnable(true);
         })
         .catch(err => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
           dispatch(endMagicLoading());
+          setLoginBtnEnable(true);
           alertWithSingleBtn(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
       console.log('🚀 ~ file: login.js ~ line 62 ~  ~ error', error);
+      setLoginBtnEnable(true);
+      clearTimeout(timeout);
       dispatch(endMagicLoading());
       dispatch(endLoading());
     }
@@ -77,10 +85,16 @@ const LoginCrypto = () => {
     } else if (emailLength) {
       setError(emailLength);
     } else {
-      dispatch(startMagicLoading());
-      collectWallet();
+      setLoginBtnEnable(false);
+      const magicTimeout = setTimeout(() => {
+        dispatch(startMagicLoading());
+      }, 10000);
+      collectWallet(magicTimeout);
     }
   };
+
+  const loginButtonEnabled =
+    !email || magicLoading || loading || error || !loginBtnEnable;
 
   return (
     <AppBackground isBusy={loading}>
@@ -118,7 +132,7 @@ const LoginCrypto = () => {
             containerStyle={CommonStyles.button}
             labelStyle={CommonStyles.buttonLabel}
             onPress={() => login()}
-            view={!email || magicLoading || loading || error}
+            view={loginButtonEnabled}
           />
         </View>
       </KeyboardAwareScrollView>

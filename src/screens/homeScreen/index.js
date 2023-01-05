@@ -62,8 +62,8 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-// import {Easing} from 'react-native-reanimated';
-// import Carousel from 'react-native-reanimated-carousel';
+import {Easing} from 'react-native-reanimated';
+import Carousel from 'react-native-reanimated-carousel';
 
 const HomeScreen = ({navigation}) => {
   const artistRef = useRef(null);
@@ -322,55 +322,55 @@ const HomeScreen = ({navigation}) => {
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
         ) : (
-          // <Carousel
-          //   ref={artistRef}
-          //   loop={true}
-          //   autoPlay={true}
-          //   style={{
-          //     width: wp(100),
-          //     height: Platform.OS === 'android' ? hp(12) : hp(11),
-          //   }}
-          //   width={wp(29.5)}
-          //   data={artistList}
-          //   renderItem={renderArtistItem}
-          //   onScrollEnd={num => {
-          //     if (
-          //       num === artistList.length - 4 &&
-          //       artistList.length < artistTotalCount
-          //     ) {
-          //       let pageNum = artistPage + 1;
-          //       dispatch(getAllArtist(pageNum, artistLimit));
-          //       setArtistPage(pageNum);
-          //     }
-          //   }}
-          //   autoPlayInterval={0}
-          //   // withAnimation={{
-          //   //   type: 'timing',
-          //   //   config: {
-          //   //     duration: 7000,
-          //   //     easing: Easing.linear,
-          //   //   },
-          //   // }}
-          // />
-          <FlatList
-            horizontal={true}
+          <Carousel
+            ref={artistRef}
+            loop={true}
+            autoPlay={true}
+            style={{
+              width: wp(100),
+              height: Platform.OS === 'android' ? hp(12) : hp(11),
+            }}
+            width={wp(29.5)}
             data={artistList}
             renderItem={renderArtistItem}
-            onEndReached={() => {
-              if (!end) {
+            onScrollEnd={num => {
+              if (
+                num === artistList.length - 4 &&
+                artistList.length < artistTotalCount
+              ) {
                 let pageNum = artistPage + 1;
                 dispatch(getAllArtist(pageNum, artistLimit));
                 setArtistPage(pageNum);
-                setEnd(true);
               }
             }}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={keyExtractor}
-            onEndReachedThreshold={0.6}
-            ListFooterComponent={renderFooter}
-            onMomentumScrollBegin={() => setEnd(false)}
-            style={styles.headerList}
+            autoPlayInterval={0}
+            withAnimation={{
+              type: 'timing',
+              config: {
+                duration: 7000,
+                easing: Easing.linear,
+              },
+            }}
           />
+          // <FlatList
+          //   horizontal={true}
+          //   data={artistList}
+          //   renderItem={renderArtistItem}
+          //   onEndReached={() => {
+          //     if (!end) {
+          //       let pageNum = artistPage + 1;
+          //       dispatch(getAllArtist(pageNum, artistLimit));
+          //       setArtistPage(pageNum);
+          //       setEnd(true);
+          //     }
+          //   }}
+          //   showsHorizontalScrollIndicator={false}
+          //   keyExtractor={keyExtractor}
+          //   onEndReachedThreshold={0.6}
+          //   ListFooterComponent={renderFooter}
+          //   onMomentumScrollBegin={() => setEnd(false)}
+          //   style={styles.headerList}
+          // />
           // // <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           // //   {artistList && artistList.length !== 0
           // //     ? artistList.map((item, index) => {

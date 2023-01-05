@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Modal } from 'react-native';
-
 import { wp, screenHeight, screenWidth } from '../constants/responsiveFunct';
 import Colors from '../constants/Colors';
 import CommonStyles from '../constants/styles';
