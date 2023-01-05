@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
-import {C_Image} from '../../components';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, View, Text, Image, Platform } from 'react-native';
+import { C_Image } from '../../components';
 import styles from './styles';
-import {SIZE, SVGS} from 'src/constants';
-import {translate} from '../../walletUtils';
+import { SIZE, SVGS } from 'src/constants';
+import { translate } from '../../walletUtils';
 import CommonStyles from '../../constants/styles';
 import {ImagekitType} from '../../common/ImageConstant';
 const {NewPolygonIcon, Ethereum, BitmapIcon, VerficationIcon} = SVGS;

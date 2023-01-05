@@ -906,8 +906,8 @@ const DetailScreen = ({ navigation, route }) => {
     let uri =
       key === 'creator' && artistDetail?.avatar
         ? artistDetail?.avatar
-        : key === 'collection' && collectCreat.avatar
-          ? collectCreat.avatar
+        : key === 'collection' && collectCreat?.avatar
+          ? collectCreat?.avatar
           : key === 'owner' && ownerDataN?.avatar
             ? ownerDataN.avatar
             : null;
@@ -985,11 +985,13 @@ const DetailScreen = ({ navigation, route }) => {
   //====================Convert Price====================
 
   const convertPrice = val => {
+    console.log('Value', val)
     let price = val;
-    let priceArr = price?.split('.');
-    if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
-    else price = parseFloat(Number(price).toFixed(8));
-
+    if(val){
+      let priceArr = price?.split('.');
+      if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
+      else price = parseFloat(Number(price).toFixed(8));
+    }
     return Number(price);
   };
 
