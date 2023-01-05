@@ -12,6 +12,7 @@ import {
 import {getProxy} from './magic-link';
 import CommonStyles from '../../../constants/styles';
 import {Portal} from '@gorhom/portal';
+import {translate} from '../../../walletUtils';
 
 const MagicLayer = () => {
   const [magic, setMagic] = useState({});
@@ -29,7 +30,7 @@ const MagicLayer = () => {
         <View style={styles.container}>
           <View style={styles.messageView}>
             <Text style={styles.messageText}>
-              {'Processing now, Please wait...'}
+              {translate('common.EMAIL_AUTHORIZATION_MSG')}
             </Text>
           </View>
         </View>
@@ -80,14 +81,15 @@ const styles = StyleSheet.create({
   },
   messageView: {
     ...CommonStyles.center,
-    height: wp('10%'),
-    borderRadius: wp('5%'),
+    borderRadius: wp('4%'),
     backgroundColor: Colors.GREY2,
   },
   messageText: {
-    paddingHorizontal: SIZE(18),
-    fontSize: SIZE(14),
+    padding: SIZE(10),
+    textAlign: 'center',
+    fontSize: SIZE(13),
     fontFamily: 'Arial',
     color: Colors.GREY3,
+    width: wp('85%'),
   },
 });

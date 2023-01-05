@@ -780,7 +780,8 @@
     "ACCOUNT_DELETED": "您的帐户已被删除",
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "您最多只能输入 6 位小数点",
     "ENTER_INVALID_AMOUNT": "请输入有效交易金额",
-    "COMING_SOON": "近日发布"
+    "COMING_SOON": "近日发布",
+    "EMAIL_AUTHORIZATION_MSG": "正在处理电子邮件授权，请稍候..."
   },
   "AwardPage": {},
   "wallet": {

@@ -780,7 +780,8 @@
     "ACCOUNT_DELETED": "您的帳戶已被刪除",
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "您最多只能輸入 6 位小數點",
     "ENTER_INVALID_AMOUNT": "請輸入有效交易金額。",
-    "COMING_SOON": "近日發布"
+    "COMING_SOON": "近日發布",
+    "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候..."
   },
   "AwardPage": {},
   "wallet": {

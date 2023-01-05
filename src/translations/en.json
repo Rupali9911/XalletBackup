@@ -779,7 +779,8 @@
     "ACCOUNT_DELETED": "Your account was deleted",
     "DECIMAL_POINTS_SIX_DIGIT_LIMIT": "You can enter decimal points only upto 6 digits",
     "ENTER_INVALID_AMOUNT": "Please enter the valid amount for transaction.",
-    "COMING_SOON": "Coming Soon"
+    "COMING_SOON": "Coming Soon",
+    "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…"
   },
   "AwardPage": {},
   "wallet": {
