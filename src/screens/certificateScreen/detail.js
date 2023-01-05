@@ -1,13 +1,13 @@
-import Slider from '@react-native-community/slider';
-import { useIsFocused } from '@react-navigation/native';
-import moment from 'moment';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Portal } from '@gorhom/portal';
+import { useIsFocused } from '@react-navigation/native';
+import { isInteger } from 'lodash';
+import moment from 'moment';
 import {
   BackHandler,
   FlatList,
   Image,
   Linking,
-  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -18,7 +18,6 @@ import {
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import VideoPlayer from 'react-native-video-controls';
 import Modal from 'react-native-modal';
 import { ActivityIndicator } from 'react-native-paper';
 import {
@@ -27,14 +26,9 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import Sound from 'react-native-sound';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
-import {
-  default as PlayPause,
-  default as PlaySpeed,
-  default as FullScreen,
-} from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconMute from 'react-native-vector-icons/Octicons';
+import { default as FullScreen } from 'react-native-vector-icons/MaterialCommunityIcons';
+import VideoPlayer from 'react-native-video-controls';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
@@ -43,10 +37,12 @@ import tradingImg from '../../../assets/images/trading.png';
 import { NEW_BASE_URL } from '../../common/constants';
 import Fee from '../../common/fee';
 import { twitterLink } from '../../common/function';
+import { ImagekitType } from '../../common/ImageConstant';
 import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
+import AudioPlayer from '../../components/AudioPlayer/AudioPlayer';
 import Checkbox from '../../components/checkbox';
 import ImageModal from '../../components/ImageModal';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
@@ -94,12 +90,9 @@ import {
   sendCustomTransaction,
 } from '../wallet/functions/transactionFunctions';
 import ShowModal from './modal';
+import VideoModel from './ModalVideo';
 import styles from './styles';
 import { validatePrice } from './supportiveFunctions';
-import VideoModel from './ModalVideo';
-import { ImagekitType } from '../../common/ImageConstant';
-import { isInteger } from 'lodash';
-import { Portal } from '@gorhom/portal';
 
 const Web3 = require('web3');
 
@@ -136,7 +129,6 @@ const DetailScreen = ({ navigation, route }) => {
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
-  const [ownerN, setOwnerN] = useState();
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
@@ -241,19 +233,6 @@ const DetailScreen = ({ navigation, route }) => {
     priceError: '',
   });
 
-  //================== Audio Timer =======================
-  const [music, setMusic] = useState(null);
-  const [isPlaying, setPlaying] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [durationMin, setDurationMin] = useState(0);
-  const [durationSec, setDurationSec] = useState(0);
-  const [currentSec, setCurrentSec] = useState(0);
-  const [currentmin, setCurrentmin] = useState(0);
-  const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
-  const [mute, setMute] = useState(false);
-  const [songCompleted, setSongCompleted] = useState(false);
-
   //================== Unused State Declaration ===================
   // const [artist, setArtist] = useState();
   // const [videoLoad, setVideoLoad] = useState(false);
@@ -292,105 +271,6 @@ const DetailScreen = ({ navigation, route }) => {
       }
     }
   }, [buyNFTRes]);
-
-  useEffect(() => {
-    if (categoryType === CATEGORY_VALUE.music) {
-      const audio = new Sound(mediaUrl, undefined, err => {
-        if (err) {
-          return;
-        }
-      });
-      setMusic(audio);
-      return function cleanup() {
-        audio.release();
-      };
-    }
-  }, [mediaUrl]);
-
-  const durationRef = useRef(0);
-
-  useEffect(() => {
-    if (categoryType === CATEGORY_VALUE.music) {
-      const interval = setInterval(() => {
-        if (music && durationRef?.current <= 0) {
-          setDuration(music?.getDuration());
-          setDurationMin(Math.floor(music.getDuration() / 60));
-          setDurationSec(Math.floor(music.getDuration() % 60));
-          durationRef.current = music.getDuration();
-        } else if (music && isPlaying) {
-          music.getCurrentTime(seconds => {
-            setCurrentTime(Math.round(seconds));
-            setCurrentmin(Math.floor(seconds / 60));
-            setCurrentSec(Math.floor(seconds % 60));
-          });
-        }
-      }, 100);
-      return () => clearInterval(interval);
-    }
-  }, [isPlaying, music]);
-
-  useEffect(() => {
-    if (Math.floor(duration) === currentTime) {
-      setCurrentTime(0);
-      setCurrentmin(0);
-      setCurrentSec(0);
-      setPlaying(false);
-      setSongCompleted(true);
-    }
-  }, [currentTime]);
-
-  useEffect(() => {
-    if (songCompleted) {
-      setCurrentSec(0);
-      setSongCompleted(false);
-    }
-  }, [songCompleted]);
-
-  const onPlayPausePress = async () => {
-    if (isPlaying) {
-      music.pause();
-      setPlaying(false);
-    } else {
-      music.play(success => {
-        setPlaying(false);
-      });
-      setPlaying(true);
-    }
-  };
-
-  useEffect(() => {
-    if (mute) {
-      music?.setVolume(0);
-    } else {
-      music?.setVolume(1);
-    }
-  }, [mute, music]);
-
-  const seekAudio = async value => {
-    if (value < 0) {
-      await music?.setCurrentTime(0);
-      setCurrentTime(0);
-      setCurrentmin(0);
-      setCurrentSec(0);
-      return;
-    }
-    await music?.setCurrentTime(value);
-    if (isPlaying) {
-      await music?.play();
-    }
-    setCurrentTime(value);
-    setCurrentmin(Math.floor(value / 60));
-    setCurrentSec(Math.floor(value % 60));
-  };
-
-  const setAudioSpeed = speed => {
-    setOpenPlaySpeed(false);
-    music.setSpeed(speed);
-    if (!isPlaying) {
-      music.pause();
-      setPlaying(false);
-    }
-  };
 
   //===================== UseEffect Function =========================
 
@@ -699,128 +579,7 @@ const DetailScreen = ({ navigation, route }) => {
               uri={thumbnailUrl}
               imageStyle={styles.modalImage}
             />
-            <View style={styles.musicPlayer}>
-              {duration === -1 ? (
-                <View style={styles.controlView}>
-                  <ActivityIndicator size="small" color="#0b0b0b" />
-                </View>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => onPlayPausePress()}
-                  style={styles.controlView}>
-                  <PlayPause
-                    name={isPlaying ? 'pause' : 'play'}
-                    size={wp('6.5%')}
-                  />
-                </TouchableOpacity>
-              )}
-
-              {duration !== -1 ? (
-                <View style={styles.timeView}>
-                  <Text>
-                    {currentmin}:
-                    {currentSec > 9 ? currentSec : '0' + currentSec} /{' '}
-                    {durationMin}:
-                    {durationSec > 9 ? durationSec : '0' + durationSec}
-                  </Text>
-                </View>
-              ) : (
-                <View style={styles.timeView}>
-                  <Text>0:00 / 0:00</Text>
-                </View>
-              )}
-              <View style={{ width: SIZE(150) }}>
-                <Slider
-                  style={{ width: SIZE(140) }}
-                  value={currentTime === 0 ? -1 : currentTime}
-                  tapToSeek={true}
-                  minimumValue={0}
-                  maximumValue={duration}
-                  minimumTrackTintColor={Colors.GREY1}
-                  maximumTrackTintColor={Colors.GREY2}
-                  onSlidingComplete={value => {
-                    seekAudio(value);
-                  }}
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.controlView}
-                onPress={() => setMute(!mute)}>
-                <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
-              </TouchableOpacity>
-              <View>
-                <Menu onSelect={() => setOpenPlaySpeed(true)}>
-                  <MenuTrigger
-                    style={styles.optionView}
-                    children={<ThreeDotsVerticalIcon />}
-                  />
-                  <MenuOptions>
-                    <MenuOption style={styles.menuOption}>
-                      <PlaySpeed size={wp('5%')} name={'play-speed'} />
-                      <Text>{translate('common.playbackSpeed')}</Text>
-                    </MenuOption>
-                  </MenuOptions>
-                </Menu>
-              </View>
-              <View>
-                <Menu
-                  key={openPlaySpeed}
-                  opened={openPlaySpeed}
-                  onBackdropPress={() => setOpenPlaySpeed(false)}
-                  style={
-                    Platform.OS === 'android'
-                      ? {
-                        position: 'absolute',
-                        left: 50,
-                      }
-                      : {}
-                  }>
-                  <MenuTrigger />
-                  <MenuOptions>
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(0.25)}
-                      style={styles.speedMenuOption}
-                      text="0.25"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(0.5)}
-                      style={styles.speedMenuOption}
-                      text="0.5"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(0.75)}
-                      style={styles.speedMenuOption}
-                      text="0.75"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1)}
-                      style={styles.speedMenuOption}
-                      text="Normal"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1.25)}
-                      style={styles.speedMenuOption}
-                      text="1.25"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1.5)}
-                      style={styles.speedMenuOption}
-                      text="1.5"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1.75)}
-                      style={styles.speedMenuOption}
-                      text="1.75"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(2)}
-                      style={styles.speedMenuOption}
-                      text="2"
-                    />
-                  </MenuOptions>
-                </Menu>
-              </View>
-            </View>
+            <AudioPlayer mediaUrl={mediaUrl} />
           </View>
         ) : (
           <C_Image
