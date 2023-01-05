@@ -41,15 +41,12 @@ const HotCollection = () => {
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      timer = setTimeout(() => {
-        dispatch(hotCollectionLoadStart());
-        dispatch(hotCollectionListReset());
-        getHotCollection(1, totalCount);
-        dispatch(hotCollectionPageChange(1));
-        setIsFirstRender(false);
-      }, 100);
+      dispatch(hotCollectionLoadStart());
+      dispatch(hotCollectionListReset());
+      getHotCollection(1, totalCount);
+      dispatch(hotCollectionPageChange(1));
+      setIsFirstRender(false);
     }
-    return () => clearTimeout(timer);
   }, [isFocused]);
 
   //===================== Dispatch Action to Fetch Hot Collection NFT List =========================

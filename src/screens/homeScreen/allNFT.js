@@ -38,17 +38,14 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   // ===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      timer = setTimeout(() => {
-        dispatch(newNftLoadStart());
-        dispatch(newNftListReset(category));
-        getNFTlist(category, sortCategory, limit, 1);
-        setSortOption(0);
-        // setPage(1);
-        setIsFirstRender(false);
-        screen(category);
-      }, 100);
+      dispatch(newNftLoadStart());
+      dispatch(newNftListReset(category));
+      getNFTlist(category, sortCategory, limit, 1);
+      setSortOption(0);
+      // setPage(1);
+      setIsFirstRender(false);
+      screen(category);
     }
-    return () => clearTimeout(timer);
   }, [sortOption, isFocused]);
 
   //===================== Dispatch Action to Fetch Award NFT List =========================
