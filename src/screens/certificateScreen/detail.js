@@ -19,7 +19,6 @@ import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
-import { ActivityIndicator } from 'react-native-paper';
 import {
   Menu,
   MenuOption,
@@ -27,8 +26,6 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
-import { default as FullScreen } from 'react-native-vector-icons/MaterialCommunityIcons';
-import VideoPlayer from 'react-native-video-controls';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
@@ -43,6 +40,7 @@ import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
 import AudioPlayer from '../../components/AudioPlayer/AudioPlayer';
+import CustomVideoPlayer from '../../components/VideoPlayer/CustomVideoPlayer';
 import Checkbox from '../../components/checkbox';
 import ImageModal from '../../components/ImageModal';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
@@ -55,7 +53,6 @@ import TokenInput from '../../components/TextInput/tokenInput';
 import {
   AMOUNT_BID_HIGHER,
   CATEGORY_VALUE,
-  COLORS,
   compareAddress,
   FILTER_TRADING_HISTORY_OPTIONS,
   NFT_MARKET_STATUS,
@@ -90,7 +87,6 @@ import {
   sendCustomTransaction,
 } from '../wallet/functions/transactionFunctions';
 import ShowModal from './modal';
-import VideoModel from './ModalVideo';
 import styles from './styles';
 import { validatePrice } from './supportiveFunctions';
 
@@ -98,7 +94,6 @@ const Web3 = require('web3');
 
 // =============== SVGS Destructuring ========================
 const {
-  PlayButtonIcon,
   HeartWhiteIcon,
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
@@ -106,7 +101,6 @@ const {
   FacebookIcon,
   InstagramIcon,
   VerficationIcon,
-  CircleCloseIcon,
 } = SVGS;
 
 const DetailScreen = ({ navigation, route }) => {
@@ -138,14 +132,16 @@ const DetailScreen = ({ navigation, route }) => {
   const [load, setLoad] = useState(true);
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState();
+
+  //================== Video Player State ===================
   const [showThumb, toggleThumb] = useState(true);
-  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [videoLoadErr, setVideoLoadErr] = useState(false);
+  const [playVideo, toggleVideoPlay] = useState(false);
   const [isFullScreeen, setFullScreeen] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [videoLoadErr, setVideoLoadErr] = useState(false);
-  const [videoKey, setVideoKey] = useState(1);
-  const [playVideo, toggleVideoPlay] = useState(false);
   const [videoError, setVideoError] = useState('');
+  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const [videoKey, setVideoKey] = useState(1);
 
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
@@ -364,11 +360,11 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [paymentObject]);
 
-  useEffect(() => {
-    if (!showVideoModal) {
-      refVideo?.current?.player?.ref?.seek(videoCurrentTime);
-    }
-  }, [showVideoModal]);
+  // useEffect(() => {
+  //   if (!showVideoModal) {
+  //     refVideo?.current?.player?.ref?.seek(videoCurrentTime);
+  //   }
+  // }, [showVideoModal]);
 
   //===================== API Call Functions =========================
 
@@ -457,13 +453,6 @@ const DetailScreen = ({ navigation, route }) => {
     );
   };
 
-  const toggleModal = state => {
-    setShowVideoModal(state);
-    if (state) {
-      toggleVideoPlay(true);
-    }
-  };
-
   //================== Render Banner Image/Video Function ==================
   const renderBannerImageVideo = () => {
     return (
@@ -471,107 +460,12 @@ const DetailScreen = ({ navigation, route }) => {
         activeOpacity={1}
         onPress={() => {
           setImgModal(true);
-          toggleVideoPlay(!playVideo);
-          setFullScreeen(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <View
-            style={[
-              styles.modalImage,
-              {
-                backgroundColor: videoLoadErr
-                  ? Colors.BLACK1
-                  : styles.modalImage,
-              },
-            ]}>
-            {showThumb && (
-              <C_Image
-                uri={thumbnailUrl}
-                size={ImagekitType.FULLIMAGE}
-                imageStyle={styles.modalImage}
-              />
-            )}
-            {showThumb && (
-              <ActivityIndicator
-                style={styles.activity}
-                size="medium"
-                color={COLORS.BLACK1}
-              />
-            )}
-            {videoError !== '' ? (
-              <Text style={styles.videoError}>{videoError}</Text>
-            ) : (
-              <>
-                <VideoPlayer
-                  repeat
-                  disableBack
-                  disableVolume
-                  key={videoKey}
-                  ref={refVideo}
-                  source={{ uri: mediaUrl }}
-                  playInBackground={false}
-                  disableFullscreen={!playVideo}
-                  disablePlayPause={!playVideo}
-                  disableSeekbar={!playVideo}
-                  disableTimer={!playVideo}
-                  tapAnywhereToPause={true}
-                  paused={showVideoModal ? true : !playVideo}
-                  onProgress={r => setVideoCurrentTime(r?.currentTime)}
-                  resizeMode={'cover'}
-                  onError={error => {
-                    console.log(error);
-                    setVideoLoadErr(true);
-                    toggleThumb(false);
-                    setVideoError(translate('common.VIDEO_FORMAT_ERROR'));
-                  }}
-                  onReadyForDisplay={() => toggleThumb(false)}
-                  onPlay={() => {
-                    toggleVideoPlay(true);
-                    setFullScreeen(true);
-                  }}
-                  onPause={() => {
-                    toggleVideoPlay(false);
-                    setFullScreeen(false);
-                  }}
-                  onLoad={o =>
-                    refVideo?.current?.player?.ref?.seek(videoCurrentTime)
-                  }
-                  onHideControls={() => setFullScreeen(false)}
-                  onShowControls={() => setFullScreeen(true)}
-                  style={styles.video}
-                />
-                {showVideoModal ? (
-                  <VideoModel
-                    url={mediaUrl}
-                    toggleModal={toggleModal}
-                    isVisible={showVideoModal}
-                    currentTime={videoCurrentTime}
-                    updateTime={setVideoCurrentTime}
-                    toggleVideoPlay={toggleVideoPlay}
-                  />
-                ) : null}
-              </>
-            )}
-
-            {playVideo && isFullScreeen && (
-              <TouchableOpacity
-                onPress={() => toggleModal(true)}
-                hitSlop={hitSlop}
-                style={styles.videoFullScreen}>
-                <FullScreen
-                  size={wp('6%')}
-                  name={'fullscreen'}
-                  color={Colors.white}
-                />
-              </TouchableOpacity>
-            )}
-
-            {!playVideo && videoError === '' && (
-              <View style={styles.videoIcon}>
-                <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-              </View>
-            )}
-          </View>
+          <CustomVideoPlayer
+            mediaUrl={mediaUrl}
+            thumbnailUrl={thumbnailUrl}
+          />
         ) : categoryType === CATEGORY_VALUE.music ? (
           <View style={{ ...styles.modalImage }}>
             <C_Image
@@ -3344,7 +3238,7 @@ const DetailScreen = ({ navigation, route }) => {
           <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
             {renderBannerImageVideo()}
             {categoryType === CATEGORY_VALUE.movie
-              ? !playVideo && renderHeartIcon()
+              ? renderHeartIcon()
               : renderHeartIcon()}
             {!load && renderCreatorCollectionOwnerName()}
             {renderCreatorAndNFTName()}
