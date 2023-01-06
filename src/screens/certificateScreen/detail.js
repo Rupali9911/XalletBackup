@@ -104,6 +104,7 @@ const {
 } = SVGS;
 
 const DetailScreen = ({ navigation, route }) => {
+  console.log("@@@ Detail screen rendering ======>")
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
