@@ -12,7 +12,7 @@ import {
   MY_COLLECTION_LOAD_SUCCESS,
   SET_COLLECTION_USER_ADDRESS,
 } from '../types';
-import {setNFTUserAddress} from "./myNFTaction";
+import { setNFTUserAddress } from "./myNFTaction";
 
 export const myCollectionLoadStart = () => ({
   type: MY_COLLECTION_LOAD_START,
@@ -79,7 +79,6 @@ export const myCollectionList = (page, ownerId) => {
     fetch(url, fetch_data_body)
       .then(response => response.json()) // promise
       .then(json => {
-         console.log(json, "myCollectionList nft")
         let nftData = [];
         if (!json.count) {
           json.data = [];

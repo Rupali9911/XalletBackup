@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 //import Video from 'react-native-fast-video';
- import Video from 'react-native-video';
+import Video from 'react-native-video';
 
 import { createImageProgress } from 'react-native-image-progress';
 import Modal from 'react-native-modal';
@@ -18,6 +18,7 @@ import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
 import { handleLikeDislike } from '../../store/actions/nftTrendList';
 import { useSelector, useDispatch } from 'react-redux';
+import { Portal } from '@gorhom/portal';
 
 const ModalContainer = styled.View`
   flex: 1;
@@ -142,97 +143,99 @@ const DetailModal = ({ isModalVisible, toggleModal, data, index }) => {
 
   return (
     <ModalContainer>
-      <Modal
-        onRequestClose={toggleModal}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        transparent={true}
-        visible={isModalVisible}
-        style={{ margin: 0 }}>
-        <BlurView
-          blurType="light"
-          style={{
-            flex: 1,
-          }}>
-          <TouchableOpacity
-            onPress={toggleModal}
-            activeOpacity={1}
+      <Portal>
+        <Modal
+          onRequestClose={toggleModal}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          transparent={true}
+          visible={isModalVisible}
+          style={{ margin: 0 }}>
+          <BlurView
+            blurType="light"
             style={{
               flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
             }}>
-            <TouchableWithoutFeedback>
-              <View>
-                <MainContent>
-                  <SpaceView mTop={SIZE(10)} />
-                  <RowWrap>
-                    <SpaceView mLeft={SIZE(10)} />
-                    <ProfileIcon>
-                      <Image
-                        source={
-                          profileImage
-                            ? { uri: profileImage }
-                            : IMAGES.DEFAULTPROFILE
-                        }
-                        style={{ width: '100%', height: '100%' }}
-                      />
-                    </ProfileIcon>
-                    <SpaceView mLeft={SIZE(10)} />
-                    <CreatorName numberOfLines={1}>{artist}</CreatorName>
-                    <SpaceView mRight={SIZE(10)} />
-                  </RowWrap>
-                  <SpaceView mTop={SIZE(10)} />
-                  <ImageView>
-                    {fileType !== 'mp4' && fileType !== 'mov' ? (
-                      <Image
-                        indicator={Progress.Pie}
-                        source={{
-                          uri: imageUrl,
-                          priority: FastImage.priority.normal,
-                        }}
-                        resizeMode={FastImage.resizeMode.cover}
-                        style={{ width: '100%', height: '100%' }}
-                      />
-                    ) : (
-                      <Video
-                        source={{ uri: imageUrl }} // Can be a URL or a local file.
-                        repeat
-                        playInBackground={false}
-                        paused={!isModalVisible}
-                        resizeMode={'cover'} // Store reference
-                        // onBuffer={this.onBuffer}                // Callback when remote video is buffering
-                        // onError={this.videoError}               // Callback when video cannot be loaded
-                        style={{ width: '100%', height: '100%' }}
-                      />
-                    )}
-                  </ImageView>
-                </MainContent>
-                <SpaceView mTop={SIZE(20)} />
-                <ButtonList>
-                  <ButtonItem onPress={onToggleLike}>
-                    <NormalText>
-                      {data.like === 0 ? translate('wallet.common.Like') : translate('wallet.common.Dislike') }
-                    </NormalText>
-                  </ButtonItem>
-                  <BorderView />
-                  <ButtonItem onPress={toggleModal}>
-                    <NormalText>
-                      {translate('wallet.common.Comment')}
-                    </NormalText>
-                  </ButtonItem>
-                  <BorderView />
-                  <ButtonItem onPress={toggleModal}>
-                    <NormalText>
-                      {translate('wallet.common.sendMessage')}
-                    </NormalText>
-                  </ButtonItem>
-                </ButtonList>
-              </View>
-            </TouchableWithoutFeedback>
-          </TouchableOpacity>
-        </BlurView>
-      </Modal>
+            <TouchableOpacity
+              onPress={toggleModal}
+              activeOpacity={1}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableWithoutFeedback>
+                <View>
+                  <MainContent>
+                    <SpaceView mTop={SIZE(10)} />
+                    <RowWrap>
+                      <SpaceView mLeft={SIZE(10)} />
+                      <ProfileIcon>
+                        <Image
+                          source={
+                            profileImage
+                              ? { uri: profileImage }
+                              : IMAGES.DEFAULTPROFILE
+                          }
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      </ProfileIcon>
+                      <SpaceView mLeft={SIZE(10)} />
+                      <CreatorName numberOfLines={1}>{artist}</CreatorName>
+                      <SpaceView mRight={SIZE(10)} />
+                    </RowWrap>
+                    <SpaceView mTop={SIZE(10)} />
+                    <ImageView>
+                      {fileType !== 'mp4' && fileType !== 'mov' ? (
+                        <Image
+                          indicator={Progress.Pie}
+                          source={{
+                            uri: imageUrl,
+                            priority: FastImage.priority.normal,
+                          }}
+                          resizeMode={FastImage.resizeMode.cover}
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      ) : (
+                        <Video
+                          source={{ uri: imageUrl }} // Can be a URL or a local file.
+                          repeat
+                          playInBackground={false}
+                          paused={!isModalVisible}
+                          resizeMode={'cover'} // Store reference
+                          // onBuffer={this.onBuffer}                // Callback when remote video is buffering
+                          // onError={this.videoError}               // Callback when video cannot be loaded
+                          style={{ width: '100%', height: '100%' }}
+                        />
+                      )}
+                    </ImageView>
+                  </MainContent>
+                  <SpaceView mTop={SIZE(20)} />
+                  <ButtonList>
+                    <ButtonItem onPress={onToggleLike}>
+                      <NormalText>
+                        {data.like === 0 ? translate('wallet.common.Like') : translate('wallet.common.Dislike')}
+                      </NormalText>
+                    </ButtonItem>
+                    <BorderView />
+                    <ButtonItem onPress={toggleModal}>
+                      <NormalText>
+                        {translate('wallet.common.Comment')}
+                      </NormalText>
+                    </ButtonItem>
+                    <BorderView />
+                    <ButtonItem onPress={toggleModal}>
+                      <NormalText>
+                        {translate('wallet.common.sendMessage')}
+                      </NormalText>
+                    </ButtonItem>
+                  </ButtonList>
+                </View>
+              </TouchableWithoutFeedback>
+            </TouchableOpacity>
+          </BlurView>
+        </Modal>
+      </Portal>
     </ModalContainer>
   );
 };

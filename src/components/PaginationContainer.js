@@ -13,13 +13,12 @@ const PaginationContainer = (props) => {
             </TouchableOpacity>
             <View>
                 <TextInput
-                    selectTextOnFocus={props.totalPage>1}
-                    editable={props.totalPage>1}
+                    selectTextOnFocus={props.totalPage > 1}
+                    editable={props.totalPage > 1}
                     onSubmitEditing={() => {
                         if (props.pageInput > 0 && props.pageInput <= props.totalPage) {
                             props.setPageNum(props.pageInput)
                             props.onPress(props.pageInput)
-                            console.log(props.pageInput)
                         }
                     }}
                     value={props.pageInput}

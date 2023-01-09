@@ -25,6 +25,7 @@ import {
   handleTransactionError,
   sendCustomTransaction,
 } from '../../screens/wallet/functions/transactionFunctions';
+import { Portal } from '@gorhom/portal'
 
 const PaymentNow = props => {
   const { paymentObject } = useSelector(state => state.PaymentReducer);
@@ -48,16 +49,11 @@ const PaymentNow = props => {
 
   const payByWallet = async () => {
     try {
-      // console.log('paymentObject', paymentObject, buyNFTRes);
 
       const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
       const approveData = buyNFTRes?.dataReturn?.approveData;
       const signData = buyNFTRes?.dataReturn?.signData;
       if (approveAllData) {
-        // console.log(
-        //   '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
-        //   approveAllData,
-        // );
       }
 
       // setOpenTransactionPending(true);
@@ -136,115 +132,117 @@ const PaymentNow = props => {
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType={'slide'}
-      transparent
-      onShow={() => setOpacity(0.88)}
-      onRequestClose={() => {
-        // setOpacity(0);
-        onRequestClose();
-      }}>
-      <View style={[styles.container]}>
-        <BlurView
-          style={styles.absolute}
-          blurType="light"
-          blurAmount={5}></BlurView>
-        <TouchableOpacity
-          style={styles.emptyArea}
-          onPress={() => {
-            // setOpacity(0);
-            onRequestClose();
-          }}
-        />
-        <View style={styles.contentContainer}>
+    <Portal>
+      <Modal
+        visible={visible}
+        animationType={'slide'}
+        transparent
+        onShow={() => setOpacity(0.88)}
+        onRequestClose={() => {
+          // setOpacity(0);
+          onRequestClose();
+        }}>
+        <View style={[styles.container]}>
+          <BlurView
+            style={styles.absolute}
+            blurType="light"
+            blurAmount={5}></BlurView>
           <TouchableOpacity
-            style={{ alignSelf: 'flex-end' }}
+            style={styles.emptyArea}
             onPress={() => {
               // setOpacity(0);
               onRequestClose();
-            }}>
-            {/* <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} /> */}
-            <IconButton
-              icon={'close'}
-              color={Colors.headerIcon2}
-              size={17}
-              style={styles.closeIcon}
-            />
-          </TouchableOpacity>
-          <Text style={styles.title}>{getTitle()}</Text>
-
-          {paymentObject && paymentObject.type == 'wallet' ? (
-            <View style={styles.profileCont}>
-              <Image
-                style={styles.profileImage}
-                source={paymentObject.item.icon}
+            }}
+          />
+          <View style={styles.contentContainer}>
+            <TouchableOpacity
+              style={{ alignSelf: 'flex-end' }}
+              onPress={() => {
+                // setOpacity(0);
+                onRequestClose();
+              }}>
+              {/* <Image style={styles.closeIcon} source={ImagesSrc.cancelIcon} /> */}
+              <IconButton
+                icon={'close'}
+                color={Colors.headerIcon2}
+                size={17}
+                style={styles.closeIcon}
               />
-            </View>
-          ) : (
-            <Text style={styles.balance}>
-              {translate('wallet.common.balanceAmount')}
-            </Text>
-          )}
+            </TouchableOpacity>
+            <Text style={styles.title}>{getTitle()}</Text>
 
-          <View style={styles.valueContainer}>
-            <Text numberOfLines={1} style={styles.amount}>
-              {paymentObject && paymentObject.type == 'wallet'
-                ? numberWithCommas(
-                  parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
-                ) + ' '
-                : numberWithCommas(
-                  parseFloat(Number(priceInDollar).toFixed(2)),
-                ) || 0}
-            </Text>
-            {paymentObject && paymentObject.type !== 'card' && (
-              <Text style={styles.symbol}>
-                {paymentObject && paymentObject.type == 'wallet'
-                  ? `${paymentObject.item.type} `
-                  : ''}
+            {paymentObject && paymentObject.type == 'wallet' ? (
+              <View style={styles.profileCont}>
+                <Image
+                  style={styles.profileImage}
+                  source={paymentObject.item.icon}
+                />
+              </View>
+            ) : (
+              <Text style={styles.balance}>
+                {translate('wallet.common.balanceAmount')}
               </Text>
             )}
-          </View>
 
-          <Separator style={styles.separator} />
+            <View style={styles.valueContainer}>
+              <Text numberOfLines={1} style={styles.amount}>
+                {paymentObject && paymentObject.type == 'wallet'
+                  ? numberWithCommas(
+                    parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
+                  ) + ' '
+                  : numberWithCommas(
+                    parseFloat(Number(priceInDollar).toFixed(2)),
+                  ) || 0}
+              </Text>
+              {paymentObject && paymentObject.type !== 'card' && (
+                <Text style={styles.symbol}>
+                  {paymentObject && paymentObject.type == 'wallet'
+                    ? `${paymentObject.item.type} `
+                    : ''}
+                </Text>
+              )}
+            </View>
 
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>
-              {paymentObject && translate('wallet.common.total')}
-            </Text>
-            <Text style={styles.value}>
-              {paymentObject && paymentObject.type == 'wallet'
-                ? numberWithCommas(
-                  parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
-                )
-                : numberWithCommas(
-                  parseFloat(Number(priceInDollar).toFixed(2)),
-                ) || 0}{' '}
-              {paymentObject && paymentObject.type == 'wallet'
-                ? `${paymentObject.item.type}`
-                : ''}
-            </Text>
-          </View>
+            <Separator style={styles.separator} />
 
-          <AppButton
-            label={translate('common.buyNext')}
-            containerStyle={CommonStyles.button}
-            labelStyle={CommonStyles.buttonLabel}
-            onPress={() => {
-              if (nftId && paymentObject) {
-                setLoading(true);
-                if (paymentObject.type == 'wallet') {
-                  payByWallet();
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalLabel}>
+                {paymentObject && translate('wallet.common.total')}
+              </Text>
+              <Text style={styles.value}>
+                {paymentObject && paymentObject.type == 'wallet'
+                  ? numberWithCommas(
+                    parseFloat(Number(paymentObject.priceInToken).toFixed(4)),
+                  )
+                  : numberWithCommas(
+                    parseFloat(Number(priceInDollar).toFixed(2)),
+                  ) || 0}{' '}
+                {paymentObject && paymentObject.type == 'wallet'
+                  ? `${paymentObject.item.type}`
+                  : ''}
+              </Text>
+            </View>
+
+            <AppButton
+              label={translate('common.buyNext')}
+              containerStyle={CommonStyles.button}
+              labelStyle={CommonStyles.buttonLabel}
+              onPress={() => {
+                if (nftId && paymentObject) {
+                  setLoading(true);
+                  if (paymentObject.type == 'wallet') {
+                    payByWallet();
+                  }
                 }
-              }
-            }}
-            loading={loading}
-            view={loading}
-          />
+              }}
+              loading={loading}
+              view={loading}
+            />
+          </View>
+          <SafeAreaView style={{ backgroundColor: Colors.white }} />
         </View>
-        <SafeAreaView style={{ backgroundColor: Colors.white }} />
-      </View>
-    </Modal>
+      </Modal>
+    </Portal>
   );
 };
 

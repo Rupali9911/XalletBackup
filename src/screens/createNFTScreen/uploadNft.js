@@ -362,7 +362,6 @@ const UploadNFT = ({
 
     const handleAudioFile = (res) => {
         if (validMediaType(res.type)) {
-            console.log("@@@ handleAudioFile func res ========>", res)
             setNftImage(res)
             let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "GIF" && v.name !== "Movie")
             setImageTypeList(setImageTList)
@@ -373,21 +372,16 @@ const UploadNFT = ({
     }
 
     const handleFile = (res) => {
-        console.log("@@@ handle file func res ==========>", res);
         if (validMediaType(res.mime)) {
-            console.log("@@@ handle file func res with valid type==========>", res);
             if (res.mime.includes("image")) {
                 if (res.height >= 512 && res.width >= 512) {
-                    console.log("@@@ handle file func res in image inside if==========>", res);
                     let setImageTList = ImageType.filter(v => v.name !== "GIF" && v.name !== "Movie" && v.name !== "Audio")
                     setImageTypeList(setImageTList)
                     setNftImageType(null);
                     setNftImage(res)
                     cropImage(res)
                 } else {
-                    console.log("@@@ handle file func res in image inside else==========>", res);
                     if (res.mime.includes("gif")) {
-                        console.log("@@@ handle file func res in image inside else gif==========>", res);
                         let setImageTList = ImageType.filter(v => v.name !== "Art" && v.name !== "Photo" && v.name !== "Movie" && v.name !== "Audio")
                         setNftImage(res)
                         setImageTypeList(setImageTList)

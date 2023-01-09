@@ -66,11 +66,9 @@ const SignupCrypto = ({ route }) => {
             email: email,
             password: password,
         }
-        // console.log(body, "Sign up body")
 
         axios.post(url, body)
             .then(response => {
-                // console.log(response, "Sign up success")
                 navigation.navigate("CryptoVerify", { email })
                 setError({});
                 setLoading(false);

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Events } from '../App';
 // import {eventService} from '../utils';
@@ -20,13 +20,12 @@ export default class SingleSocket extends Component {
     return this.myInstance;
   }
 
-  async create({...config}) {
+  async create({ ...config }) {
     this.connectSocket();
   }
 
-  async connectSocket(onOpen,onClose) {
-    return new Promise((resolve,reject) => {
-      console.log('webSocketBridge', this.webSocketBridge);
+  async connectSocket(onOpen, onClose) {
+    return new Promise((resolve, reject) => {
       this.webSocketBridge = new WebSocket(
         `ws://54.255.221.170:9898/`,
       );
@@ -68,7 +67,7 @@ export default class SingleSocket extends Component {
     }
   }
 
-  render(){
+  render() {
     return null;
   }
 }

@@ -172,7 +172,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       timer = setTimeout(() => {
         setMainLoader(false)
       }, 100);
-      // console.log(profile, "non_crypto", item.metaData.name)
       setOwnerData(profile?.data?.data)
       setOwner(id);
       setArtistRole('non_crypto')
@@ -186,9 +185,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       : `${BASE_URL}/user/get-public-profile?userId=${userId}`;
     // setOwnerId(userId);
     let profile = await axios.get(profileUrl);
-    // console.log(profile.data.success, "userIduserIduserIduserId")
     if (profile.data.success) {
-      // console.log(profile?.data?.data, "crypto")
       setOwnerData(profile.data.data);
       setArtistRole("crypto")
       timer = setTimeout(() => {
@@ -474,7 +471,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
           }
           let newData = await getNFTDetails(res.data[0]);
           setLike(newData.like)
-          // console.log(newData, "newDatanewDatanewData")
           let collection = newData.offchain
             ? newData.collectionOffChainId
             : newData.collectionAdd.toString().split("-")[1];

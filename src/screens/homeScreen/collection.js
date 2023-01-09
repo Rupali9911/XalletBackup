@@ -34,14 +34,11 @@ const Collection = () => {
 
   //===================== UseEffect Function =========================
   useEffect(() => {
-    timer = setTimeout(() => {
-      dispatch(collectionLoadStart());
-      dispatch(collectionListReset());
-      getCollection(1, isSelectTab);
-      dispatch(collectionPageChange(1));
-    }, 100);
 
-    return () => clearTimeout(timer)
+    dispatch(collectionLoadStart());
+    dispatch(collectionListReset());
+    getCollection(1, isSelectTab);
+    dispatch(collectionPageChange(1));
   }, [isSelectTab]);
 
   //===================== Dispatch Action to Fetch Collection NFT List =========================
@@ -114,7 +111,7 @@ const Collection = () => {
   }
   const handleRefresh = () => {
     dispatch(collectionListReset());
-    getCollection(1,isSelectTab);
+    getCollection(1, isSelectTab);
     dispatch(collectionPageChange(1));
   };
 
@@ -148,22 +145,22 @@ const Collection = () => {
   const renderItem = ({ item }) => {
     return (
       <CollectionItem
-      bannerImage={item.bannerImage}
-      creator={item.owner}
-      chainType={item.chainType}
-      items={item.items}
-      iconImage={item.iconImage}
-      collectionName={item.name}
-      creatorInfo={item.creatorInfo}
-      blind={item.blind}
-      isHotCollection={item.isHot}
-      count={item.totalNft}
-      verified={item.isOfficial}
-      network={item.network}
-      collectionTab = {isSelectTab}
-      colId={item._id}
+        bannerImage={item.bannerImage}
+        creator={item.owner}
+        chainType={item.chainType}
+        items={item.items}
+        iconImage={item.iconImage}
+        collectionName={item.name}
+        creatorInfo={item.creatorInfo}
+        blind={item.blind}
+        isHotCollection={item.isHot}
+        count={item.totalNft}
+        verified={item.isOfficial}
+        network={item.network}
+        collectionTab={isSelectTab}
+        colId={item._id}
         onPress={() => {
-          navigation.push('CollectionDetail', { networkName: item?.network?.networkName, contractAddress: item?.contractAddress, launchpadId: null});
+          navigation.push('CollectionDetail', { networkName: item?.network?.networkName, contractAddress: item?.contractAddress, launchpadId: null });
           // if (item.redirect === '/collection/underground_city') {
           //   navigation.push('CollectionDetail', {
           //     isBlind: true,
@@ -186,7 +183,7 @@ const Collection = () => {
           //   } else {
           //     navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
           //   }
-            //------------------------------------------
+          //------------------------------------------
           // if (!isSelectTab) {
           //   navigation.push('CollectionDetail',
           //   {

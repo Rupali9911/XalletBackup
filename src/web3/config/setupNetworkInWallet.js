@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 
 const selectedNetworkChain =
   blockChainConfig[
-    typeof window !== "undefined" && sessionStorage.getItem("selectedBlockChain")
-      ? sessionStorage.getItem("selectedBlockChain")
-      : 0
+  typeof window !== "undefined" && sessionStorage.getItem("selectedBlockChain")
+    ? sessionStorage.getItem("selectedBlockChain")
+    : 0
   ];
 
 export const setupNetwork = async (
@@ -151,7 +151,6 @@ export const checkAvailabilityOnChain = async (
         break;
       }
     }
-    console.log("chainIdNFT", chainIdNFT);
     if (ethereum.networkVersion.toString() !== chainIdNFT) {
       condition = true;
     }
@@ -160,19 +159,18 @@ export const checkAvailabilityOnChain = async (
       condition = true;
     }
   }
-  console.log(condition);
   if (condition && !localStorage.getItem("userAuth")) {
     // if (
     //   ethereum &&
     //   ethereum.networkVersion &&
     //   localStorage.getItem("connectedWith") === "metamask"
     // ) {
-      toast.info(formatMessage({ id: "NFTBlockchain." }), {
-        position: "bottom-right",
-        autoClose: 3000,
-        progress: undefined,
-      });
-      return false;
+    toast.info(formatMessage({ id: "NFTBlockchain." }), {
+      position: "bottom-right",
+      autoClose: 3000,
+      progress: undefined,
+    });
+    return false;
     // }
   }
   return true;

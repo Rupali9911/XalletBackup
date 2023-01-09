@@ -1,24 +1,24 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import React, {useState, useEffect, useRef} from 'react';
-import {Image, Keyboard, Linking, LogBox, StyleSheet, View} from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { useState, useEffect, useRef } from 'react';
+import { Image, Keyboard, Linking, LogBox, StyleSheet, View } from 'react-native';
 import 'react-native-gesture-handler';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
-import {Provider, useDispatch, useSelector} from 'react-redux';
-import {Subject} from 'rxjs';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Subject } from 'rxjs';
 import '../shim';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from './common/responsiveFunction';
-import {AppSplash} from './components';
+import { AppSplash } from './components';
 import Colors from './constants/Colors';
 import ImageSrc from './constants/Images';
-import {screenWidth} from './constants/responsiveFunct';
+import { screenWidth } from './constants/responsiveFunct';
 import AuthStack from './navigations/authStack';
-import {fonts, images} from './res';
+import { fonts, images } from './res';
 import ArtistDetail from './screens/ArtistDetail';
 import RecoveryPhrase from './screens/AuthScreens/recoveryPhrase';
 import VerifyPhrase from './screens/AuthScreens/verifyPhrase';
@@ -49,19 +49,20 @@ import transactionsDetail from './screens/wallet/transactionsDetail';
 import SellNFT from './screens/sellNft/index';
 import CollectionDetail from './screens/collectionDetail';
 import Store from './store';
-import {setRequestAppId} from './store/reducer/walletReducer';
-import {environment, translate} from './walletUtils';
+import { setRequestAppId } from './store/reducer/walletReducer';
+import { environment, translate } from './walletUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getWallet} from './helpers/AxiosApiRequest';
-import {setPasscodeAsync, updatePassStatus} from './store/reducer/userReducer';
-import {MenuProvider} from 'react-native-popup-menu';
-import {NativeBaseProvider} from 'native-base';
+import { getWallet } from './helpers/AxiosApiRequest';
+import { setPasscodeAsync, updatePassStatus } from './store/reducer/userReducer';
+import { MenuProvider } from 'react-native-popup-menu';
+import { NativeBaseProvider } from 'native-base';
 import Images from './constants/Images';
 import AiChat from './screens/AiChat';
 import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
-import {PortalProvider} from '@gorhom/portal';
+import { PortalProvider } from '@gorhom/portal';
+import AlertPopup from './components/AlertModal/AlertModal';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -72,9 +73,9 @@ const deepLinkData = {
 };
 
 const TabComponent = () => {
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  const {userData} = useSelector(state => state.UserReducer);
-  const {showSuccess, isCreate, connectModalState} = useSelector(
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { userData } = useSelector(state => state.UserReducer);
+  const { showSuccess, isCreate, connectModalState } = useSelector(
     state => state.UserReducer,
   );
   const [isBottomTabVisible, setIsBottomTabVisible] = useState(true);
@@ -87,7 +88,7 @@ const TabComponent = () => {
     }
   }, [showSuccess, isCreate, connectModalState]);
 
-  useEffect(() => {}, [selectedLanguageItem.language_name]);
+  useEffect(() => { }, [selectedLanguageItem.language_name]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -122,9 +123,9 @@ const TabComponent = () => {
         },
         activeTintColor: Colors.themeColor,
       }}
-      screenOptions={({route}) => ({
+      screenOptions={({ route }) => ({
         tabBarVisible: isBottomTabVisible,
-        tabBarIcon: ({focused, color}) => {
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -152,7 +153,7 @@ const TabComponent = () => {
             <Image
               source={iconName}
               resizeMode="contain"
-              style={{width: wp('6.5%'), height: wp('4.5%')}}
+              style={{ width: wp('6.5%'), height: wp('4.5%') }}
             />
           );
         },
@@ -160,17 +161,17 @@ const TabComponent = () => {
       <Tab.Screen
         name={'Home'}
         component={HomeScreen}
-        options={{tabBarLabel: translate('common.home')}}
+        options={{ tabBarLabel: translate('common.home') }}
       />
       <Tab.Screen
         name={'Discover'}
         component={Discover}
-        options={{tabBarLabel: translate('wallet.common.explore')}}
+        options={{ tabBarLabel: translate('wallet.common.explore') }}
       />
       {userData.isNonCrypto === 0 && (
         <Tab.Screen
           name={'Wallet'}
-          options={{tabBarLabel: translate('wallet.common.wallet')}}
+          options={{ tabBarLabel: translate('wallet.common.wallet') }}
           component={Wallet}
         />
       )}
@@ -183,10 +184,10 @@ const TabComponent = () => {
       <Tab.Screen
         name={'AiChat'}
         component={AiChat}
-        options={{tabBarLabel: translate('common.chat')}}
+        options={{ tabBarLabel: translate('common.chat') }}
       />
       <Tab.Screen
-        options={{tabBarLabel: translate('wallet.common.me')}}
+        options={{ tabBarLabel: translate('wallet.common.me') }}
         name={'Me'}
         component={ProfileScreen}
       />
@@ -195,7 +196,7 @@ const TabComponent = () => {
 };
 
 const AppRoutes = () => {
-  const {passcode, mainLoader, showSplash, userData} = useSelector(
+  const { passcode, mainLoader, showSplash, userData } = useSelector(
     state => state.UserReducer,
   );
   const dispatch = useDispatch();
@@ -206,13 +207,13 @@ const AppRoutes = () => {
 
   useEffect(async () => {
     LogBox.ignoreAllLogs();
-    Linking.addEventListener('url', async ({url}) => {
+    Linking.addEventListener('url', async ({ url }) => {
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
         let wallet = await getWallet();
         if (wallet) {
           setTimeout(() => {
-            navigatorRef.current?.navigate('Connect', {appId: id});
+            navigatorRef.current?.navigate('Connect', { appId: id });
           }, 500);
         } else {
           dispatch(setRequestAppId(id));
@@ -242,7 +243,6 @@ const AppRoutes = () => {
       },
     },
     getStateFromPath: (path, options) => {
-      console.log('path', path);
       let id = path.substring(path.lastIndexOf('/') + 1);
       dispatch(setRequestAppId(id));
       // Return a state object here
@@ -288,12 +288,12 @@ const AppRoutes = () => {
                 duration: 1000,
               },
             },
-            gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
+            gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
           <Stack.Screen
             name="PasscodeScreen"
-            initialParams={{screen: 'Auth'}}
+            initialParams={{ screen: 'Auth' }}
             component={PasscodeScreen}
           />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
@@ -348,6 +348,7 @@ const App = () => {
         <Provider store={Store}>
           <MenuProvider>
             <AppRoutes />
+            <AlertPopup />
             {<MagicLayer />}
           </MenuProvider>
         </Provider>

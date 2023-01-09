@@ -42,8 +42,6 @@ const LoginCrypto = () => {
 
   const collectWallet = async timeout => {
     try {
-      // console.log('🚀 ~ file: login.js ~ line 84 ~ collectWal ~ collectWallet');
-
       let token = await requestConnectToDApp(email);
       // console.log('🚀 ~ file: login.js ~ line 40 ~ collectWal ~ token', token);
       if (token) {
@@ -57,7 +55,6 @@ const LoginCrypto = () => {
         signature,
         email,
       };
-      // console.log('🚀 ~ file: login.js ~ line 71 ~  ~ account', account);
 
       dispatch(loginExternalWallet(account, false))
         .then(() => {

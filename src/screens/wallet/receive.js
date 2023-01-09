@@ -24,6 +24,7 @@ import ImagesSrc from '../../constants/Images';
 import { Button } from 'react-native-paper';
 import VerticalSeparator from '../../components/verticalSeparator';
 import Separator from '../../components/separator';
+import { Portal } from '@gorhom/portal';
 
 // import { PaymentField } from './screenComponents';
 // import { alertWithSingleBtn } from "./commonFunction";
@@ -137,58 +138,59 @@ const QRScreen = () => {
                 <AppButton label={translate("wallet.common.share")} containerStyle={[CommonStyles.button, styles.shareBtn]} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => onSharing()} />
             }
-            <Modal
-                visible={modalVisible}
-                transparent
-            >
-                <BlurView
-                    style={styles.absolute}
-                    blurType="light"
-                    blurAmount={10}
+            <Portal>
+                <Modal
+                    visible={modalVisible}
+                    transparent
                 >
-                    <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
-                        <View style={styles.setAmountContainer}>
-                            <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
-                            <TextInput
-                                style={styles.amountInput}
-                                onChangeText={(e) => {
-                                    const reg = /^\d+(\.\d{0,8})?$/
-                                    if (e.length > 0 && reg.test(e)) {
-                                        setPrice(e)
-                                    } else if (e.length == 1 && e === '.') {
-                                        setPrice('0.')
-                                    } else if (e.length == 0) {
-                                        setPrice(e)
-                                    }
-                                }}
-                                value={price}
-                                maxLength={10}
-                                keyboardType={'numeric'}
-                            />
-                            <Separator style={styles.separator} />
-                            <View style={styles.optionContainer}>
-                                <Button
-                                    color={Colors.headerIcon2}
-                                    style={styles.optionButton}
-                                    labelStyle={styles.optionLabel}
-                                    uppercase={false}
-                                    onPress={() => {
-                                        setModalVisible(false)
-                                        setPrice("")
-                                    }}>{translate("wallet.common.cancel")}</Button>
-                                <VerticalSeparator />
-                                <Button
-                                    color={Colors.headerIcon2}
-                                    style={styles.optionButton}
-                                    labelStyle={styles.optionLabel}
-                                    uppercase={false}
-                                    onPress={() => setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
+                    <BlurView
+                        style={styles.absolute}
+                        blurType="light"
+                        blurAmount={10}
+                    >
+                        <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
+                            <View style={styles.setAmountContainer}>
+                                <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
+                                <TextInput
+                                    style={styles.amountInput}
+                                    onChangeText={(e) => {
+                                        const reg = /^\d+(\.\d{0,8})?$/
+                                        if (e.length > 0 && reg.test(e)) {
+                                            setPrice(e)
+                                        } else if (e.length == 1 && e === '.') {
+                                            setPrice('0.')
+                                        } else if (e.length == 0) {
+                                            setPrice(e)
+                                        }
+                                    }}
+                                    value={price}
+                                    maxLength={10}
+                                    keyboardType={'numeric'}
+                                />
+                                <Separator style={styles.separator} />
+                                <View style={styles.optionContainer}>
+                                    <Button
+                                        color={Colors.headerIcon2}
+                                        style={styles.optionButton}
+                                        labelStyle={styles.optionLabel}
+                                        uppercase={false}
+                                        onPress={() => {
+                                            setModalVisible(false)
+                                            setPrice("")
+                                        }}>{translate("wallet.common.cancel")}</Button>
+                                    <VerticalSeparator />
+                                    <Button
+                                        color={Colors.headerIcon2}
+                                        style={styles.optionButton}
+                                        labelStyle={styles.optionLabel}
+                                        uppercase={false}
+                                        onPress={() => setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
+                                </View>
                             </View>
-                        </View>
-                    </KeyboardAwareScrollView>
-                </BlurView>
-            </Modal>
-
+                        </KeyboardAwareScrollView>
+                    </BlurView>
+                </Modal>
+            </Portal>
         </View>
     )
 };

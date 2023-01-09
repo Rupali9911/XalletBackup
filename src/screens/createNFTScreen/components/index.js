@@ -14,6 +14,7 @@ import {
 import { IMAGES } from '../../../constants';
 import { colors, fonts } from '../../../res';
 import { translate } from '../../../walletUtils';
+import { Portal } from '@gorhom/portal'
 
 export const CardCont = props => {
   return <View style={[styles.cardCont, props.style]}>{props.children}</View>;
@@ -87,57 +88,59 @@ export const CardButton = props => {
 export const TabModal = (props) => {
   const [clicked, setClicked] = React.useState(false)
   return (
-    <Modal
-      {
-      ...props.modalProps
-      }
-      backdropColor="#B4B3DB"
-      backdropOpacity={0.8}
-      animationIn="zoomInDown"
-      animationOut="zoomOutUp"
-      animationInTiming={600}
-      animationOutTiming={600}
-      backdropTransitionInTiming={600}
-      backdropTransitionOutTiming={600}>
-      <View style={styles.modalCont}>
+    <Portal>
+      <Modal
         {
-          props.title ?
-            <Text style={styles.modalTitle}>
-              {props.title}
-            </Text> : null
+        ...props.modalProps
         }
-        <ScrollView style={{ marginTop: hp('3%') }}>
-          {props && props?.data && props?.data?.data && props?.data?.data.map((v, i) => {
-            return (
-              <TouchableOpacity
-                key={i}
-                disabled={clicked}
-                onPress={() => {
-                  setClicked(true)
-                  props.itemPress(v)
-                  setTimeout(() => {
-                    setClicked(false)
-                  }, 100);
-                }
-                }
-                style={styles.modalItem}>
-                <Text style={styles.listLabel}>
-                  {
-                    props.data.hasOwnProperty("translate") ?
-                      (v.hasOwnProperty(props.data.translate) ?
-                        translate(v[props.data.translate]) :
-                        v[props.renderItemName]) :
-                      props.renderItemName ?
-                        v[props.renderItemName] :
-                        v
+        backdropColor="#B4B3DB"
+        backdropOpacity={0.8}
+        animationIn="zoomInDown"
+        animationOut="zoomOutUp"
+        animationInTiming={600}
+        animationOutTiming={600}
+        backdropTransitionInTiming={600}
+        backdropTransitionOutTiming={600}>
+        <View style={styles.modalCont}>
+          {
+            props.title ?
+              <Text style={styles.modalTitle}>
+                {props.title}
+              </Text> : null
+          }
+          <ScrollView style={{ marginTop: hp('3%') }}>
+            {props && props?.data && props?.data?.data && props?.data?.data.map((v, i) => {
+              return (
+                <TouchableOpacity
+                  key={i}
+                  disabled={clicked}
+                  onPress={() => {
+                    setClicked(true)
+                    props.itemPress(v)
+                    setTimeout(() => {
+                      setClicked(false)
+                    }, 100);
                   }
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
-    </Modal>
+                  }
+                  style={styles.modalItem}>
+                  <Text style={styles.listLabel}>
+                    {
+                      props.data.hasOwnProperty("translate") ?
+                        (v.hasOwnProperty(props.data.translate) ?
+                          translate(v[props.data.translate]) :
+                          v[props.renderItemName]) :
+                        props.renderItemName ?
+                          v[props.renderItemName] :
+                          v
+                    }
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </Modal>
+    </Portal>
   )
 }
 

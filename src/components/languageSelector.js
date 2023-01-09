@@ -33,6 +33,10 @@ function LanguageSel(props) {
           ? JapaneseLangTrans[item.language_name]
           : item.language_display,
       value: item.language_name,
+      icon: () =>
+        item?.icon ? (
+          <Image source={item.icon} style={styles.iconStyle} />
+        ) : null,
     });
   });
 
@@ -47,6 +51,7 @@ function LanguageSel(props) {
       value={value}
       items={items}
       closeAfterSelecting={true}
+      hideSelectedItemIcon={true}
       setOpen={setOpen}
       setValue={setValue}
       onChangeValue={value => {
@@ -55,12 +60,18 @@ function LanguageSel(props) {
           dispatch(setAppLanguage(item));
         }
       }}
+      itemSeparator={true}
+      itemSeparatorStyle={styles.itemSeparator}
+      selectedItemLabelStyle={styles.selectedTextStyle}
       style={styles.pickerStyle}
       dropDownContainerStyle={styles.dropDownContainer}
       textStyle={styles.title}
       labelStyle={styles.label}
       ArrowUpIconComponent={() => arrow}
       ArrowDownIconComponent={() => arrow}
+      TickIconComponent={({style}) => (
+        <Image style={styles.tickIcon} source={Images.tick} />
+      )}
     />
   );
 }
@@ -68,19 +79,24 @@ function LanguageSel(props) {
 const styles = StyleSheet.create({
   pickerStyle: {
     borderWidth: 0,
-    width: wp('55%'),
+    width: wp('33%'),
     alignSelf: 'center',
   },
   dropDownContainer: {
-    width: wp('55%'),
+    width: wp('57%'),
     alignSelf: 'center',
-    borderWidth: 0.5,
-    elevation: 10,
+    borderWidth: 0,
+    elevation: 20,
+    overflow: 'visible',
+    shadowOffset: {width: 2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    borderTopEndRadius: 8,
+    borderTopStartRadius: 8,
   },
   title: {
     ...CommonStyles.text(Fonts.ARIAL_BOLD, Colors.titleColor, RF(1.6)),
     fontWeight: '700',
-    marginHorizontal: wp('2%'),
   },
   label: {
     ...CommonStyles.text(Fonts.ARIAL_BOLD, Colors.titleColor, RF(1.6)),
@@ -90,6 +106,20 @@ const styles = StyleSheet.create({
   arrow: {
     height: wp('2%'),
     width: wp('3%'),
+  },
+  selectedTextStyle: {
+    color: Colors.themeColor,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  tickIcon: {
+    width: 15,
+    height: 15,
+  },
+  itemSeparator: {
+    backgroundColor: Colors.GREY11,
   },
 });
 const LanguageSelector = React.memo(LanguageSel);

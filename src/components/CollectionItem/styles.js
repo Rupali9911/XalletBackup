@@ -128,5 +128,13 @@ const styles = StyleSheet.create({
     color: '#a660d8',
     fontSize: SIZE(12),
   },
+  chainLoaderIcon: {
+    left: SIZE(2),
+    alignItems: 'flex-start',
+  },
+  chainUserIcon: {
+    width: SIZE(23),
+    height: SIZE(23),
+  },
 });
 export default styles;

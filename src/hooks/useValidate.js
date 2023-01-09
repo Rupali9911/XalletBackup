@@ -74,7 +74,6 @@ const useValidate = () => {
     const validateNumber = (value) => {
         if (value.length > 0) {
             if (!REGEX.NUMBER.test(value) || value.split('.').length >= 3) {
-                console.log(false)
                 return {
                     status: false,
                     message: `hong be oi`,

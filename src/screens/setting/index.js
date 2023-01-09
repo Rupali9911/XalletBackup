@@ -1,39 +1,42 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions} from '@react-navigation/native';
-import React, {useState, useEffect} from 'react';
+import { CommonActions } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import {useDispatch, useSelector} from 'react-redux';
-import {alertWithSingleBtn, confirmationAlert} from '../../common/function';
+import { useDispatch, useSelector } from 'react-redux';
+import { alertWithSingleBtn, confirmationAlert } from '../../common/function';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader} from '../../components';
+import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
-import {colors} from '../../res';
-import {setAppLanguage} from '../../store/reducer/languageReducer';
-import {getAllCards} from '../../store/reducer/paymentReducer';
+import { colors } from '../../res';
+import { setAppLanguage } from '../../store/reducer/languageReducer';
+import { getAllCards } from '../../store/reducer/paymentReducer';
 import {
   endMainLoading,
   _logout,
   deleteAccountApi,
 } from '../../store/reducer/userReducer';
-import {languageArray, translate} from '../../walletUtils';
-import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
+import { languageArray, translate } from '../../walletUtils';
+import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
-import {getWallet} from '../../helpers/AxiosApiRequest';
+import { getWallet } from '../../helpers/AxiosApiRequest';
+import { Portal } from '@gorhom/portal';
+import Images from '../../constants/Images';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -71,7 +74,7 @@ const ListItem = props => {
         {props.rightText ? (
           <Text style={styles.listLabel}>{props.rightText}</Text>
         ) : props.right ? (
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text style={styles.listLabel}>{props.right}</Text>
             <EntypoIcon
               size={RF(2.5)}
@@ -100,17 +103,17 @@ const JapaneseLangTrans = {
   ch: '中国語（簡体）',
 };
 
-function Setting({route, navigation}) {
+function Setting({ route, navigation }) {
   const dispatch = useDispatch();
   // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  const {myCards} = useSelector(state => state.PaymentReducer);
-  const {userData} = useSelector(state => state.UserReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { myCards } = useSelector(state => state.PaymentReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const [deletePopup, setDeletePopup] = useState(false);
   const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {deleteAccountLoading, isBackup} = useSelector(
+  const { deleteAccountLoading, isBackup } = useSelector(
     state => state.UserReducer,
   );
   const [isCheckService, setIsCheckService] = useState(false);
@@ -135,7 +138,7 @@ function Setting({route, navigation}) {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{name: 'Me'}],
+          routes: [{ name: 'Me' }],
         }),
       );
     } else {
@@ -202,71 +205,76 @@ function Setting({route, navigation}) {
 
   const languageModal = () => {
     return (
-      <Modal
-        isVisible={showLanguage}
-        backdropColor="#B4B3DB"
-        backdropOpacity={0.8}
-        onBackdropPress={() => setShowLanguage(false)}
-        animationIn="zoomInDown"
-        animationOut="zoomOutUp"
-        animationInTiming={600}
-        animationOutTiming={600}
-        backdropTransitionInTiming={600}
-        backdropTransitionOutTiming={600}
-        onRequestClose={() => {
-          setShowLanguage(false);
-        }}>
-        <View style={styles.modalCont}>
-          <Text style={styles.modalTitle}>
-            {translate('wallet.common.selectLanguage')}
-          </Text>
-          <View style={{marginTop: hp('3%')}}>
-            {languageArray.map((v, i) => {
-              return (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => {
-                    updateLanguage(v);
-                  }}
-                  style={{...styles.centerProfileCont, flex: null}}>
-                  <Text style={styles.listLabel}>
-                    {selectedLanguageItem.language_name === 'ja'
-                      ? JapaneseLangTrans[v.language_name]
-                        ? JapaneseLangTrans[v.language_name]
-                        : v.language_display
-                      : v.language_display}
-                  </Text>
-                  {selectedLanguageItem.language_name == v.language_name ? (
-                    <EntypoIcon
-                      size={RF(2.5)}
-                      color={colors.DFDFDF}
-                      name="check"
-                    />
-                  ) : null}
-                </TouchableOpacity>
-              );
-            })}
+      <Portal>
+        <Modal
+          isVisible={showLanguage}
+          backdropColor="#B4B3DB"
+          backdropOpacity={0.8}
+          onBackdropPress={() => setShowLanguage(false)}
+          animationIn="zoomInDown"
+          animationOut="zoomOutUp"
+          animationInTiming={600}
+          animationOutTiming={600}
+          backdropTransitionInTiming={600}
+          backdropTransitionOutTiming={600}
+          onRequestClose={() => {
+            setShowLanguage(false);
+          }}>
+          <View style={styles.modalCont}>
+            <Text style={styles.modalTitle}>
+              {translate('wallet.common.selectLanguage')}
+            </Text>
+            <View style={{ marginTop: hp('2%') }}>
+              {languageArray.map((v, i) => {
+                const selectedLanguage =
+                  selectedLanguageItem.language_name == v.language_name
+                    ? { color: Colors.themeColor }
+                    : {};
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => {
+                      updateLanguage(v);
+                    }}
+                    style={styles.selectLanguageView}>
+                    <View style={styles.titleView}>
+                      <Image style={styles.iconStyle} source={v.icon} />
+                      <Text style={{ ...styles.titleStyle, ...selectedLanguage }}>
+                        {selectedLanguageItem.language_name === 'ja'
+                          ? JapaneseLangTrans[v.language_name]
+                            ? JapaneseLangTrans[v.language_name]
+                            : v.language_display
+                          : v.language_display}
+                      </Text>
+                    </View>
+                    {selectedLanguageItem.language_name == v.language_name ? (
+                      <Image style={styles.tickIcon} source={Images.tick} />
+                    ) : null}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </Portal>
     );
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{width: '100%', backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ width: '100%', backgroundColor: '#fff' }}>
         <AppHeader
           title={translate('wallet.common.settingRight')}
           showBackButton
         />
       </View>
       <ScrollView>
-        <View style={[styles.section2, {marginTop: 0}]}>
+        <View style={[styles.section2, { marginTop: 0 }]}>
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
             label={translate('wallet.common.security')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() =>
               alertWithSingleBtn(
@@ -276,13 +284,13 @@ function Setting({route, navigation}) {
             }
             label={translate('wallet.common.notifications')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
 
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => null}
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(
@@ -291,14 +299,14 @@ function Setting({route, navigation}) {
             )}`}
             label={translate('wallet.common.version')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => handleDeletePopup(true)}
             rightText={``}
             noArrow={true}
             label={translate('common.deleteAccount')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={onLogout}
             rightText={``}
@@ -347,7 +355,7 @@ function Setting({route, navigation}) {
         onBackUpNowPress={() => {
           setBackupPhrasePopup(false);
           setTimeout(() => {
-            navigation.navigate('recoveryPhrase', {isSetting: true, wallet});
+            navigation.navigate('recoveryPhrase', { isSetting: true, wallet });
           }, 500);
         }}
         rightButtonTitle={translate('common.Logout')}

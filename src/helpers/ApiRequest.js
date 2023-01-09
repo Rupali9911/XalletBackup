@@ -23,14 +23,12 @@ export const ApiRequest = async (url, method, body, headers) => {
     }
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
-            // console.log("Connection type", state.type, state.isConnected);
             if (state.isConnected) {
                 isAlert = false;
                 fetch(url, requestOptions)
                     .then(response => {
                         const statusCode = response.status;
                         // return JSON.parse(JSON.stringify(response));
-                        // console.log('response from API', response);
                         if (statusCode == 200) {
                             return response.json();
                         } else {
@@ -119,17 +117,13 @@ export const StripeApiRequest = (url, body, method = "POST") => {
         formBody = formBody.join("&");
         requestOptions.body = formBody;
     }
-    // console.log('requestOptions', requestOptions);
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
-            // console.log("Connection type", state.type, state.isConnected);
             if (state.isConnected) {
                 isAlert = false;
-                // console.log('requestOptions',requestOptions);
                 fetch(`${STRIPE_API_URL}${url}`, requestOptions)
                     .then(response => {
                         const statusCode = response.status;
-                        // console.log('response from API', response);
                         try {
                             return response.json();
                         } catch (err) {
