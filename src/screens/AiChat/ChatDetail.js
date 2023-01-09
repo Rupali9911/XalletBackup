@@ -6,7 +6,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getAiChat,
@@ -34,7 +34,6 @@ const ChatDetail = ({route, navigation}) => {
   const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
 
   //================== Components State Declaration ===================
-  const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
   const [contentBottom, setContentBottom] = useState(0);
 
@@ -214,7 +213,6 @@ const ChatDetail = ({route, navigation}) => {
           console.log('Error Chat : ', err);
         });
     }
-    setMessage('');
   };
 
   //==================== On Scroll-to-Top ===========================
@@ -275,6 +273,12 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
+  const renderItem = ({item}) => {
+    return <ShowBubble item={item} />;
+  };
+
+  const memoizedItem = useMemo(() => renderItem, [chatBotData]);
+
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -324,7 +328,7 @@ const ChatDetail = ({route, navigation}) => {
             <FlatList
               ref={flatList}
               data={chatBotData}
-              renderItem={({item}) => <ShowBubble item={item} />}
+              renderItem={memoizedItem}
               keyExtractor={(item, index) => {
                 return `_${index}`;
               }}
@@ -336,10 +340,7 @@ const ChatDetail = ({route, navigation}) => {
             />
           </View>
           <MessageInput
-            placeholder={translate('common.enterMessage')}
-            value={message}
-            onChangeText={text => setMessage(text)}
-            onPress={() => {
+            onPress={message => {
               sendMessage(message, new Date());
               chatBotData.length > 0 &&
                 flatList.current.scrollToIndex({animated: true, index: 0});

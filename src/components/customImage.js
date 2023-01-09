@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ActivityIndicator, StyleSheet, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID} from '../constants';
@@ -11,14 +11,23 @@ import {getImageUri} from '../common/ImageConstant';
 const {PlayButtonIcon} = SVGS;
 
 const C_Image = props => {
-  let [loadImage, setLoadImage] = useState(true);
-  let [brokenUrl, setBrokenUrl] = useState(false);
-  let [isBroken, setIsBroken] = useState(false);
+  const [loadImage, setLoadImage] = useState(false);
+  const [brokenUrl, setBrokenUrl] = useState(false);
+  const [isBroken, setIsBroken] = useState(false);
 
   let fileType = getFileType(props?.uri);
   let imageUri = getImageUri(props?.uri, props?.size);
   // console.log('🚀 ~ file: customImage.js:20 ~ imageUri', props?.imageStyle);
   const checkVideoUrl = props?.category;
+
+  useEffect(() => {
+    if (
+      fileType?.toLowerCase() === 'svg' ||
+      fileType?.toLowerCase()?.includes('svg')
+    ) {
+      setLoadImage(true);
+    }
+  }, [fileType]);
 
   return (
     <>
