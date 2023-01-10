@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: Colors.white,
     padding: wp('4%'),
-    paddingBottom: hp('4%'),
+    paddingBottom: Platform.OS === 'ios' ? hp('4%') : 0,
   },
   listItem: {
     flexDirection: 'row',
