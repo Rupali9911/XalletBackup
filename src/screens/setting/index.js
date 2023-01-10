@@ -14,7 +14,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
-import { alertWithSingleBtn, confirmationAlert } from '../../common/function';
+import {confirmationAlert } from '../../common/function';
+import {alertWithSingleBtn} from '../../utils';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
