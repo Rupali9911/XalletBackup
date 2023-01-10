@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontStyle: 'italic',
     paddingTop: 5,
+    width:"55%"
   },
   sendBtnTxt: {
     color: '#fff',
