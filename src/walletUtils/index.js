@@ -71,14 +71,14 @@ export const webSocketLinkPolygon = 'wss://ws-matic-mainnet.chainstacklabs.com';
 
 ///===================== To check Transaction Success/Failure Details ===============================
 //========================= Urls (testnet) ================================
-export const test_BscScanURL = 'https://testnet.bscscan.com/tx/';
-export const test_PolygonScanURL = 'https://mumbai.polygonscan.com/tx/';
-export const test_EthereumScanURL = 'https://goerli.etherscan.io/tx/';
-export const test_XanaScanURL = 'https://xanachain-test.xana.net/tx/';
+export const test_BscScanURL = 'https://testnet.bscscan.com/';
+export const test_PolygonScanURL = 'https://mumbai.polygonscan.com/';
+export const test_EthereumScanURL = 'https://goerli.etherscan.io/';
+export const test_XanaScanURL = 'https://xanachain-test.xana.net/';
 //========================= Urls (mainnet) ================================
-export const BscScanURL = 'https://bscscan.com/tx/';
-export const PolygonScanURL = 'https://polygonscan.com/tx/';
-export const EthereumScanURL = 'https://etherscan.io/tx/';
+export const BscScanURL = 'https://bscscan.com/';
+export const PolygonScanURL = 'https://polygonscan.com/';
+export const EthereumScanURL = 'https://etherscan.io/';
 export const XanaScanURL = 'https://xanachain.xana.net/';
 
 //testnet

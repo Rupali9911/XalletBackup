@@ -86,7 +86,7 @@ import { alertWithSingleBtn, numberWithCommas } from '../../utils';
 import { collectionClick } from '../../utils/detailHelperFunctions';
 import { getTokenNameFromId } from '../../utils/nft';
 import { getDefaultToken, getERC20Tokens } from '../../utils/token';
-import { translate } from '../../walletUtils';
+import { translate, environment} from '../../walletUtils';
 import { toFixCustom } from '../createNFTScreen/helperFunction';
 import { handleLike } from '../discover/discoverItem';
 import {
@@ -3122,6 +3122,21 @@ const DetailScreen = ({ navigation, route }) => {
     return address?.substring(0, 6);
   };
 
+  const openURL = () => {
+    if (network?.networkName == 'BSC') {
+      Linking.openURL(`${environment.bscScanURL}address/${collectionAddress}`);
+    } else if (network?.networkName == 'Polygon') {
+      Linking.openURL(
+        `${environment.polygonScanURL}address/${collectionAddress}`,
+      );
+    } else if (network?.networkName == 'Ethereum') {
+      Linking.openURL(
+        `${environment.ethereumScanURL}address/${collectionAddress}`,
+      );
+    } else if (network?.networkName == 'XANACHAIN') {
+      Linking.openURL(`${environment.xanaScanURL}address/${collectionAddress}`);
+    }
+  };
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
     return (
@@ -3182,11 +3197,13 @@ const DetailScreen = ({ navigation, route }) => {
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
         icon={detailsImg}>
+          <TouchableOpacity onPress={openURL}>
         {renderDetail(
           'wallet.common.contractAddress',
           'address',
           showContractAddress(collectionAddress),
         )}
+        </TouchableOpacity>
         {renderDetail('common.TOKEN_ID', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
         {renderDetail(

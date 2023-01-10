@@ -40,13 +40,13 @@ export default function transactionsDetail({ route }) {
   };
   const openURL = () => {
     if (coin?.network == 'BSC') {
-      Linking.openURL(`${environment.bscScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.bscScanURL}tx/${transactionInfo?.hash}`);
     } else if (coin?.network == 'Polygon') {
-      Linking.openURL(`${environment.polygonScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.polygonScanURL}tx/${transactionInfo?.hash}`);
     } else if (coin?.network == 'Ethereum') {
-      Linking.openURL(`${environment.ethereumScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.ethereumScanURL}tx/${transactionInfo?.hash}`);
     } else if (coin?.network == 'XANACHAIN') {
-      Linking.openURL(`${environment.xanaScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.xanaScanURL}tx/${transactionInfo?.hash}`);
     }
   };
 
