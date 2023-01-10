@@ -25,12 +25,9 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
-import historyImg from '../../../assets/images/history.png';
-import tradingImg from '../../../assets/images/trading.png';
 import { NEW_BASE_URL } from '../../common/constants';
 import Fee from '../../common/fee';
 import { twitterLink } from '../../common/function';
@@ -60,7 +57,6 @@ import {
   SERVICE_FEE,
   SORT_TRADING_HISTORY,
 } from '../../constants';
-import { formatAddress } from '../../constants/addressFormat';
 import Colors from '../../constants/Colors';
 import { getDateString, getExpirationDate } from '../../constants/date';
 import Images from '../../constants/Images';
@@ -89,6 +85,9 @@ import {
 import ShowModal from './modal';
 import styles from './styles';
 import { validatePrice } from './supportiveFunctions';
+import TradingHistory from './TradingHistory';
+import BidHistory from './BidHistory';
+import OfferList from './OfferList';
 
 const Web3 = require('web3');
 
@@ -104,11 +103,9 @@ const {
 } = SVGS;
 
 const DetailScreen = ({ navigation, route }) => {
-  console.log("@@@ Detail screen rendering ======>")
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
-  const refVideo = useRef(null);
   const { validateNumber } = useValidate();
 
   // =============== Props Destructuring ========================
@@ -135,15 +132,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [artistDetail, setArtistData] = useState();
 
   //================== Video Player State ===================
-  const [showThumb, toggleThumb] = useState(true);
-  const [videoLoadErr, setVideoLoadErr] = useState(false);
-  const [playVideo, toggleVideoPlay] = useState(false);
-  const [isFullScreeen, setFullScreeen] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [videoError, setVideoError] = useState('');
-  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
-  const [videoKey, setVideoKey] = useState(1);
-
   const [tradingTableHead, setTradingTableHead] = useState([
     translate('common.event'),
     translate('common.price'),
@@ -229,11 +217,6 @@ const DetailScreen = ({ navigation, route }) => {
     price: '',
     priceError: '',
   });
-
-  //================== Unused State Declaration ===================
-  // const [artist, setArtist] = useState();
-  // const [videoLoad, setVideoLoad] = useState(false);
-  // const [playVideoLoad, setPlayVideoLoad] = useState(false);
 
   const categoryType = detailNFT?.category
     ? detailNFT?.category
@@ -348,24 +331,11 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [nftId]);
 
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {});
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, []);
-
   useEffect(() => {
     if (paymentObject) {
       setShowPaymentNow(true);
     }
   }, [paymentObject]);
-
-  // useEffect(() => {
-  //   if (!showVideoModal) {
-  //     refVideo?.current?.player?.ref?.seek(videoCurrentTime);
-  //   }
-  // }, [showVideoModal]);
 
   //===================== API Call Functions =========================
 
@@ -768,7 +738,6 @@ const DetailScreen = ({ navigation, route }) => {
                 getNFTDetails(true);
               })
               .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
                 handlePendingModal(false);
                 handleTransactionError(err, translate);
               });
@@ -815,7 +784,6 @@ const DetailScreen = ({ navigation, route }) => {
                 getNFTDetails(true);
               })
               .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
                 handlePendingModal(false);
                 handleTransactionError(err, translate);
               });
@@ -890,23 +858,17 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              // console.log('approve payByWallet 331', res);
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              // console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
         }
       }
     } catch (error) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 953 ~ editPriceApi ~ error',
-        error,
-      );
       handlePendingModal(false);
       handleTransactionError(error, t);
     }
@@ -984,10 +946,6 @@ const DetailScreen = ({ navigation, route }) => {
         method: 'POST',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 980 ~ .then ~ placeBidRes',
-        placeBidRes,
-      );
       setIsChecking(false);
       if (placeBidRes?.messageCode) {
         setErrorMessage(placeBidRes?.messageCode);
@@ -1013,10 +971,6 @@ const DetailScreen = ({ navigation, route }) => {
               walletAddress,
               nftTokenId,
               network?.networkName,
-            );
-            console.log(
-              '🚀 ~ file: detail.js ~ line 1005 ~ .then ~ txnResult',
-              txnResult,
             );
 
             if (txnResult) {
@@ -1055,7 +1009,6 @@ const DetailScreen = ({ navigation, route }) => {
                 getNFTDetails(true);
               })
               .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
                 handlePendingModal(false);
                 handleTransactionError(err, translate);
               });
@@ -1067,10 +1020,6 @@ const DetailScreen = ({ navigation, route }) => {
         }
       }
     } catch (error) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1074 ~ handlePlaceBidAuth ~ err',
-        err,
-      );
       closeBidModal();
       handleTransactionError(error, t);
       handlePendingModal(false);
@@ -1093,9 +1042,7 @@ const DetailScreen = ({ navigation, route }) => {
         'The new bid amount have to be grater than 5% the highest bid amount',
       );
       handlePendingModal(false);
-      console.log('1091 ???????');
     } else {
-      console.log('1093 <<<<<?>>>>>');
       setErrorMessage('');
       handlePlaceBidAuth();
     }
@@ -1177,7 +1124,6 @@ const DetailScreen = ({ navigation, route }) => {
 
   const handlePutOnsale = async () => {
     try {
-      console.log('🚀 ~ file: detail.js ~ line 1246 ~ ~ ~');
       // setIsLoading(true)
       setSellVisible(false);
       handlePendingModal(true);
@@ -1221,7 +1167,6 @@ const DetailScreen = ({ navigation, route }) => {
             // toast.success(t('APPROVE_NFT_SUCCESS'))
           }
         } catch (error) {
-          console.log('🚀 ~ file: detail.js ~ line 1300 ~ ~ error', error);
           approved = false;
           // setIsLoading(false)
           // toast.error(t('APPROVE_NFT_FAIL'))
@@ -1252,18 +1197,15 @@ const DetailScreen = ({ navigation, route }) => {
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
         } catch (error) {
-          console.log('🚀 ~ file: detail.js ~ line 1340 ~ ~ error', error);
           // setIsLoading(false)
           // toast.error(error.message)
         }
       }
     } catch (error) {
-      console.log('🚀 ~ file: detail.js ~ line 1345 ~  ~ error', error);
       // setIsLoading(false)
       // toast.error(error.message)
     }
@@ -1284,8 +1226,6 @@ const DetailScreen = ({ navigation, route }) => {
       setSellVisible(false);
       handlePendingModal(true);
       const url = `${NEW_BASE_URL}/auction-session`;
-      console.log('🚀 ~ file: detail.js ~ line 1266 ~ ~ ~', url);
-
       const data = {
         startPrice: Number(sellData.startPrice),
         receiveToken: getTokenName(sellData.basePrice),
@@ -1329,7 +1269,6 @@ const DetailScreen = ({ navigation, route }) => {
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
@@ -1339,7 +1278,6 @@ const DetailScreen = ({ navigation, route }) => {
         }
       }
     } catch (error) {
-      console.log('🚀 ~ file: detail.js ~ line 1345 ~  ~ error', error);
       // setIsLoading(false)
       // toast.error(error.message)
     }
@@ -1347,7 +1285,6 @@ const DetailScreen = ({ navigation, route }) => {
 
   const onSell = () => {
     if (!isValidate()) {
-      console.log('🚀 ~ file: detail.js ~ line 1391 ~ ~ INVALID_DATA');
       // toast.error(t('INVALID_DATA'))
     } else {
 
@@ -1701,7 +1638,6 @@ const DetailScreen = ({ navigation, route }) => {
             // toast.success(t('APPROVE_TOKEN_SUCCESS'));
           }
         } catch (error) {
-          console.log('🚀 ~ file: index.tsx ~ line 201 ~  ~ error', error);
           approved = false;
           // setOpen()
           // toast.error(t('APPROVE_TOKEN_FAIL'))
@@ -1731,12 +1667,10 @@ const DetailScreen = ({ navigation, route }) => {
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
         } catch (error) {
-          console.log('🚀 ~ file: index.tsx ~ line 230 ~  ~ error', error);
           // setOpen()
           handleTransactionError(error, translate);
           handlePendingModal(false);
@@ -1749,7 +1683,6 @@ const DetailScreen = ({ navigation, route }) => {
     const error = { ...offerData.error };
     let isSuccess = true;
     if (offerData.expried < Date.now()) {
-      console.log('VAOOVAOVOV VALIDATE');
       error.expried = 'TIME_EXPIRED_OFFER_ERROR';
       isSuccess = false;
     }
@@ -1780,7 +1713,6 @@ const DetailScreen = ({ navigation, route }) => {
   const onMakeOffer = () => {
     if (!isOfferValidate()) {
       // toast.error('INVALID_OFFER_DATA')
-      console.log('🚀 ~ file: detail.js ~ line 1779 ~ ~ INVALID_OFFER_DATA');
     } else if (!isCheckService) {
       setIsTopUpError(true);
       // setError('PLEASE_TICK_AGREE_SERVICE');
@@ -1821,12 +1753,7 @@ const DetailScreen = ({ navigation, route }) => {
             }, 500);
           }
         })
-        .catch(error => {
-          console.log(
-            '🚀 ~ file: detail.js ~ line 1850 ~ handleBuyNft ~ error',
-            error,
-          );
-        });
+        .catch(error => { });
 
       // if (buyNFTRes.messageCode) {
       //   setIsChecking(false);
@@ -1837,13 +1764,7 @@ const DetailScreen = ({ navigation, route }) => {
       //   const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
       //   const approveData = buyNFTRes?.dataReturn?.approveData;
       //   const signData = buyNFTRes?.dataReturn?.signData;
-      //   if (approveAllData) {
-      //     console.log(
-      //       '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
-      //       approveAllData,
-      //     );
-      //     // console.log(approveAllData)
-      //   }
+      //   if (approveAllData) {}
       //   // setOpen(false);
       //   setOpenTransactionPending(true);
       //   let approved = true;
@@ -1895,13 +1816,11 @@ const DetailScreen = ({ navigation, route }) => {
       //         network?.networkName,
       //       )
       //         .then(res => {
-      //           console.log('approve payByWallet 331', res);
       //           // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
       //           // setLoading(false);
       //           getNFTDetails(true);
       //         })
       //         .catch(err => {
-      //           console.log('payByWallet_err payByWallet 339', err);
       //           handlePendingModal(false);
       //           handleTransactionError(err, translate);
       //         });
@@ -1912,12 +1831,7 @@ const DetailScreen = ({ navigation, route }) => {
       //     }
       //   }
       // }
-    } catch (error) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1947 ~ handleBuyNft ~ error',
-        error,
-      );
-    }
+    } catch (error) { }
   };
 
   const ModalBody = () => {
@@ -2213,13 +2127,11 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
               // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
@@ -2577,198 +2489,43 @@ const DetailScreen = ({ navigation, route }) => {
   //   )
   // }
 
-  //===================== Render Bid History Function =======================
-  const noDataRender = history => {
+  //===================== Render Trading, Bid, Offer History Function ======================
+  const renderTradingHistory = () => {
     return (
-      <Cell
-        style={styles.emptyData(history)}
-        data={translate('common.noDataFound')}
-      />
-    );
-  };
-
-  const renderBidNTradingHistory = history => {
-    let listData =
-      history === 'bid'
-        ? sellDetails
-        : history === 'offers'
-          ? offerList
-          : tradingTableData;
-    return (
-      <NFTDetailDropdown
-        title={
-          history === 'bid'
-            ? translate('wallet.common.bidHistory')
-            : history === 'offers'
-              ? translate('common.offers')
-              : translate('common.tradingHistory')
-        }
-        containerChildStyles={{
-          height:
-            listData?.length === 0
-              ? history === 'trading'
-                ? hp(28)
-                : hp(19)
-              : listData?.length < 5
-                ? hp(16) +
-                hp(4) *
-                (history === 'trading' && listData.length <= 3
-                  ? 3.4
-                  : listData?.length)
-                : hp(35.7),
+      <TradingHistory
+        tradingHistory={{
+          tradingTableData: tradingTableData,
+          filterTableValue: filterTableValue,
+          filterTableList: filterTableList,
+          role: detailNFT?.creator?.role
         }}
-        icon={
-          history === 'bid'
-            ? historyImg
-            : history === 'offers'
-              ? tradingImg
-              : detailsImg
-        }>
-        {history === 'trading' && (
-          <Filters
-            value={filterTableValue}
-            setValue={setFilterTableValue}
-            setData={setFilterTableList}
-            data={filterTableList}
-          />
-        )}
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          // nestedScrollEnabled={true}
-          style={{ marginVertical: hp(2) }}>
-          <Table borderStyle={styles.cellBorderStyle}>
-            <Row
-              data={
-                history === 'trading' ? tradingTableHead : bidHistoryTableHead
-              }
-              style={styles.head}
-              textStyle={styles.text}
-              widthArr={
-                history === 'trading'
-                  ? [200, 130, 180, 180, 200]
-                  : [130, 180, 180, 200]
-              }
-            />
-            {history === 'bid'
-              ? sellDetails?.length > 0
-                ? sellDetails?.map((rowData, rowIndex) => {
-                  return (
-                    <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                      {rowData?.map((cellData, cellIndex) => {
-                        return renderCell(cellIndex, cellData, rowIndex);
-                      })}
-                    </TableWrapper>
-                  );
-                })
-                : noDataRender()
-              : history === 'offers'
-                ? offerList?.length > 0
-                  ? offerList?.map((rowData, rowIndex) => {
-                    let temprowData = rowData.slice(0, 4);
-                    let iconUri = rowData.find((e, i) => i === 4);
-                    return (
-                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                        {temprowData?.map((cellData, cellIndex) => {
-                          return renderCell(
-                            cellIndex,
-                            cellData,
-                            rowIndex,
-                            iconUri,
-                          );
-                        })}
-                      </TableWrapper>
-                    );
-                  })
-                  : noDataRender()
-                : tradingTableData.length > 0
-                  ? tradingTableData?.map((rowData, rowIndex) => {
-                    return (
-                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                        {rowData?.map((cellData, cellIndex) => {
-                          let wid;
-                          if (cellIndex === 0) {
-                            wid = 200;
-                          }
-                          if (cellIndex === 1) {
-                            wid = 130;
-                          }
-                          if (cellIndex === 2) {
-                            wid = 180;
-                          }
-                          if (cellIndex === 3) {
-                            wid = 180;
-                          }
-                          if (cellIndex === 4) {
-                            wid = 200;
-                          }
-                          return (
-                            <Cell
-                              key={cellIndex}
-                              data={
-                                (cellIndex == 2 || cellIndex == 3) &&
-                                  cellData !== 'Null Address'
-                                  ? renderAddress(cellData)
-                                  : cellData
-                              }
-                              textStyle={styles.text}
-                              width={wid}
-                            />
-                          );
-                        })}
-                      </TableWrapper>
-                    );
-                  })
-                  : noDataRender(history)}
-          </Table>
-        </ScrollView>
-      </NFTDetailDropdown>
-    );
-  };
-
-  const renderAddress = cellData => {
-    return (
-      <TouchableOpacity
-        disabled={!cellData}
-        onPress={() =>
-          navigation.push('Profile', {
-            id: cellData,
-            role: detailNFT?.creator?.role,
-          })
-        }>
-        <Text numberOfLines={1} style={[styles.text, styles.themeColor]}>
-          {formatAddress(cellData)}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderCell = (index, cellData, rowIndex, iconUri) => {
-    return (
-      <Cell
-        key={rowIndex}
-        data={
-          index === 0 && iconUri ? (
-            <View style={CommonStyles.rowAlign}>
-              <C_Image
-                uri={iconUri}
-                size={ImagekitType.AVATAR}
-                imageStyle={styles.networkIcon}
-              />
-              <Text>{cellData}</Text>
-            </View>
-          ) : index === 1 ? (
-            renderAddress(cellData)
-          ) : (
-            cellData
-          )
-        }
-        borderStyle={styles.cellBorderStyle}
-        textStyle={styles.text}
-        width={index === 0 ? 130 : index === 1 ? 180 : index === 2 ? 180 : 200}
+        setFilterTableValue={setFilterTableValue}
+        setFilterTableList={setFilterTableList}
       />
-    );
-  };
+    )
+  }
+
+  const renderBidHistory = () => {
+    return (
+      <BidHistory
+        bidHistory={{
+          sellDetails: sellDetails,
+          role: detailNFT?.creator?.role
+        }}
+      />
+    )
+  }
+
+  const renderOfferList = () => {
+    return (
+      <OfferList
+        offerHistory={{
+          offerList: offerList,
+          role: detailNFT?.creator?.role
+        }}
+      />
+    )
+  }
 
   const showContractAddress = address => {
     return address?.substring(0, 6);
@@ -3132,8 +2889,6 @@ const DetailScreen = ({ navigation, route }) => {
               tradingList.push(temp);
               filterList.push(getEventByValue(item?.action));
             });
-            // console.log('🚀 ~ file: detail.js ~ line 1680 ~  ~ ', tradingList);
-
             // setTradingList(res?.items);
             setTradingTableData(tradingList);
             // setTradingTableData1(tradingList)
@@ -3254,9 +3009,11 @@ const DetailScreen = ({ navigation, route }) => {
 
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
-            {renderBidNTradingHistory('bid')}
-            {renderBidNTradingHistory('offers')}
-            {renderBidNTradingHistory('trading')}
+
+            {renderTradingHistory()}
+            {renderBidHistory()}
+            {renderOfferList()}
+
             {renderMoreCollection()}
 
             {editPriceModal()}
