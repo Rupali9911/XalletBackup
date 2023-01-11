@@ -334,14 +334,14 @@ const HomeScreen = ({navigation}) => {
             data={artistList}
             renderItem={renderArtistItem}
             onScrollEnd={num => {
-              if (
-                num === artistList.length - 4 &&
-                artistList.length < artistTotalCount
-              ) {
-                let pageNum = artistPage + 1;
-                dispatch(getAllArtist(pageNum, artistLimit));
-                setArtistPage(pageNum);
-              }
+              // if (
+              //   num === artistList.length - 4 &&
+              //   artistList.length < artistTotalCount
+              // ) {
+              //   let pageNum = artistPage + 1;
+              //   dispatch(getAllArtist(pageNum, artistLimit));
+              //   setArtistPage(pageNum);
+              // }
             }}
             autoPlayInterval={0}
             withAnimation={{
