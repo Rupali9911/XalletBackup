@@ -69,6 +69,7 @@ function Profile({navigation, connector, route}) {
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
+  const ref = React.useRef();
 
   // =============== Getting data from reducer ========================
   const {
@@ -79,6 +80,7 @@ function Profile({navigation, connector, route}) {
     userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
+  const ComponentTypes = [<NFTCreated />, <NFTOwned />];
 
   //================== Components State Defination ===================
   const [userCopyAddress, setUserCopyAddress] = useState(false);
@@ -613,8 +615,16 @@ function Profile({navigation, connector, route}) {
           fontFamily: 'Arial',
           textTransform: 'none',
         }}
+        indicatorStyle={{
+          borderBottomColor: COLORS.BLUE4,
+          height: 1,
+          marginBottom: SIZE(39),
+          backgroundColor: COLORS.BLUE4,
+        }}
         index={currentTabIndex}
-        width={'100%'}
+        focusedTab={tabName}
+        navigate
+        // containerRef={ref.current.currentTabIndex}
       />
     ),
     [],

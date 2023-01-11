@@ -28,7 +28,10 @@ const NFTOwned = props => {
   useEffect(() => {
     // dispatch(myNftOwnedListingReset());
 
-    console.log('Useeffect Owned List Loading : ', MyNFTReducer.myNftOwnedListLoading)
+    console.log(
+      'Useeffect Owned List Loading : ',
+      MyNFTReducer.myNftOwnedListLoading,
+    );
 
     if (props.isFocused) {
       if (!MyNFTReducer?.myNftOwnedList?.length) {
@@ -89,7 +92,6 @@ const NFTOwned = props => {
     pressToggle();
   };
 
-
   return (
     <View style={styles.trendCont}>
       {MyNFTReducer.myNftOwnedListLoading &&
@@ -133,7 +135,6 @@ const NFTOwned = props => {
         </Tabs.ScrollView>
       )}
     </View>
-   
   );
 };
 
