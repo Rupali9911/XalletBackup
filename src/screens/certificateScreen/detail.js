@@ -89,8 +89,7 @@ import { validatePrice } from './supportiveFunctions';
 import TradingHistory from './TradingHistory';
 import BidHistory from './BidHistory';
 import OfferList from './OfferList';
-import FetchingIndicator from '../../components/fetchingIndicator';
-
+import DetailModal from './DetailModal';
 const Web3 = require('web3');
 
 // =============== SVGS Destructuring ========================
@@ -2992,55 +2991,34 @@ const DetailScreen = ({ navigation, route }) => {
             {renderCreatorAndNFTName()}
             {renderDescription()}
             {renderNFTPriceNToken()}
-
             {false && (
               <View style={styles.bottomView}>
                 {!load && renderContentAction()}
               </View>
             )}
-
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
-
             {renderTradingHistory()}
             {renderBidHistory()}
             {renderOfferList()}
-
             {renderMoreCollection()}
-
             {editPriceModal()}
             {ModalBody()}
             {placeABidModal()}
             {sellNftModal()}
-
-            <TransactionPending
-              isVisible={openTransactionPending}
-              setVisible={setOpenTransactionPending}
+            <DetailModal
+              openTransactionPending={openTransactionPending}
+              cancelAuctionModal={cancelAuctionModal}
+              reclaimModal={reclaimModal}
+              cancelResellModal={cancelResellModal}
+              setOpenTransactionPending={setOpenTransactionPending}
+              modalClose={modalClose}
+              cancelAuctionApi={cancelAuctionApi}
+              closeReclaimModal={closeReclaimModal}
+              reClaimApi={reClaimApi}
+              closeCancelModal={closeCancelModal}
+              handleCancelSell={handleCancelSell}
             />
-            <ShowModal
-              isVisible={cancelAuctionModal}
-              title={translate('common.cancelAuction')}
-              description={translate('common.areYouWantCancelAuction')}
-              closeModal={modalClose}
-              onRightPress={cancelAuctionApi}
-            />
-            <ShowModal
-              isVisible={reclaimModal}
-              title={translate('common.reclaimNFT')}
-              description={translate('common.areYouWantReclaimNFT')}
-              closeModal={closeReclaimModal}
-              onRightPress={reClaimApi}
-            />
-            <ShowModal
-              isVisible={cancelResellModal}
-              title={translate('common.cancelResell')}
-              description={translate(
-                'common.cancellingYourlistingWillUnPublish',
-              )}
-              closeModal={closeCancelModal}
-              onRightPress={handleCancelSell}
-            />
-
             <DatePicker
               modal
               open={handleDate.open}
