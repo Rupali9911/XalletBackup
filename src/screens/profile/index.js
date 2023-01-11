@@ -51,6 +51,7 @@ import {SocketHandler} from './socketHandler';
 import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
+import * as Tabs from 'react-native-collapsible-tab-view';
 
 const {
   ConnectSmIcon,
@@ -74,6 +75,7 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
+  const ref = React.useRef();
 
   // =============== Getting data from reducer ========================
   const {
@@ -84,6 +86,7 @@ function Profile({navigation, connector, route}) {
     userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
+  const ComponentTypes = [<NFTCreated />, <NFTOwned />];
 
   //================== Components State Defination ===================
   const [openDial1, setOpenDial1] = useState(false);
@@ -97,9 +100,19 @@ function Profile({navigation, connector, route}) {
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
   const [id, setId] = useState();
+  const [currentTabIndex, setCurrentTabIndex] = React.useState(0);
+  const [tabName, setTabName] = React.useState('');
   const [routes] = useState([
-    {key: 'profileCreated', title: translate('wallet.common.profileCreated')},
-    {key: 'nftOwned', title: translate('wallet.common.owned')},
+    {
+      key: 'profileCreated',
+      title: translate('wallet.common.profileCreated'),
+      component: ComponentTypes[0],
+    },
+    {
+      key: 'nftOwned',
+      title: translate('wallet.common.owned'),
+      component: ComponentTypes[1],
+    },
   ]);
 
   //================== Global Variables ===================
@@ -140,6 +153,7 @@ function Profile({navigation, connector, route}) {
   const handleUserData = () => {
     dispatch(startLoadingBanner());
     dispatch(startLoadingImage());
+    console.log('route?.params?.id : ', route?.params?.id);
     if (route?.params?.id) {
       setId(route?.params?.id);
       dispatch(getUserData(route?.params?.id, true));
@@ -480,15 +494,17 @@ function Profile({navigation, connector, route}) {
     );
   };
 
-  const renderHeader = () => {
+  const RenderHeader = () => {
     return (
       <View
+        pointerEvents="box-none"
         style={{
           // flex: socialSite ? 0.6 : 0.55,
           position: 'relative',
           paddingBottom: SIZE(10),
         }}
-        onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}>
+        // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
+      >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
@@ -609,9 +625,41 @@ function Profile({navigation, connector, route}) {
     );
   };
 
+  const TabBarComponent = React.useCallback(
+    props => (
+      <Tabs.MaterialTabBar
+        {...props}
+        scrollEnabled
+        tabStyle={{
+          width: wp('50%'),
+          paddingHorizontal: wp('1%'),
+          justifyContent: 'center',
+        }}
+        activeColor={COLORS.BLUE2}
+        inactiveColor={COLORS.BLACK5}
+        labelStyle={{
+          fontSize: RF(1.6),
+          fontFamily: 'Arial',
+          textTransform: 'none',
+        }}
+        indicatorStyle={{
+          borderBottomColor: COLORS.BLUE4,
+          height: 1,
+          marginBottom: SIZE(39),
+          backgroundColor: COLORS.BLUE4,
+        }}
+        index={currentTabIndex}
+        focusedTab={tabName}
+        navigate
+        // containerRef={ref.current.currentTabIndex}
+      />
+    ),
+    [],
+  );
+
   return (
     <AppBackground>
-      <ScrollView
+      {/* <ScrollView
         ref={scrollRef}
         // scrollEnabled={profileScroll}
         contentContainerStyle={styles.scrollViewContainer}
@@ -635,7 +683,36 @@ function Profile({navigation, connector, route}) {
           }}>
           {renderTabView(id)}
         </View>
-      </ScrollView>
+      </ScrollView> */}
+
+      <Tabs.Container
+        ref={ref}
+        renderHeader={RenderHeader}
+        lazy
+        cancelLazyFadeIn={false}
+        cancelTranslation={false}
+        onTabChange={e => {
+          setTabName(e.tabName);
+        }}
+        onIndexChange={index => {
+          setCurrentTabIndex(index);
+        }}
+        pagerProps={{hitSlop: {left: -10}}}
+        renderTabBar={TabBarComponent}>
+        {routes.map(tab => {
+          return (
+            <Tabs.Tab name={tab.title} key={tab.key}>
+              {tab.component}
+            </Tabs.Tab>
+          );
+        })}
+        {/* <Tabs.Tab name={'A'} label={'A'}>
+          <NFTCreated />
+        </Tabs.Tab>
+        <Tabs.Tab name={'B'} label={'B'}>
+          <NFTCreated />
+        </Tabs.Tab> */}
+      </Tabs.Container>
     </AppBackground>
   );
 }

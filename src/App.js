@@ -61,6 +61,7 @@ import AiChat from './screens/AiChat';
 import ChatDetail from './screens/AiChat/ChatDetail';
 import WebView from './components/WebView';
 import MagicLayer from './screens/AuthScreens/nonCryptoAuth/magicLayer';
+import DummyProfile from './screens/DummyProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -328,6 +329,7 @@ const AppRoutes = () => {
           {/* <Stack.Screen name="AiChat" component={AiChat} /> */}
           <Stack.Screen name="ChatDetail" component={ChatDetail} />
           <Stack.Screen name="WebView" component={WebView} />
+          <Stack.Screen name="DummyProfile" component={DummyProfile} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">
