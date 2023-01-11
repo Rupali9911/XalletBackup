@@ -45,7 +45,6 @@ import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import NFTItem from '../../components/NFTItem';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
-import TransactionPending from '../../components/Popup/transactionPending';
 import SuccessModalContent from '../../components/successModal';
 import TokenInput from '../../components/TextInput/tokenInput';
 import {
@@ -83,7 +82,6 @@ import {
   handleTransactionError,
   sendCustomTransaction,
 } from '../wallet/functions/transactionFunctions';
-import ShowModal from './modal';
 import styles from './styles';
 import { validatePrice } from './supportiveFunctions';
 import TradingHistory from './TradingHistory';
@@ -132,7 +130,7 @@ const DetailScreen = ({ navigation, route }) => {
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState();
 
-  //================== Video Player State ===================
+  //================== Trading, Bid, OfferList State ===================
   const [filterTableList, setFilterTableList] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
@@ -149,16 +147,13 @@ const DetailScreen = ({ navigation, route }) => {
   const [cancelAuctionModal, setCancelAuctionModal] = useState(false);
   const [editedPrice, setEditedPrice] = useState('');
   const [priceEditModal, setPriceEditModal] = useState(false);
-
   const [cancelResellModal, setCancelResellModal] = useState(false);
-
   const [placeABid, setPlaceABid] = useState(false);
   const [isCheckService, setCheckService] = useState(false);
   const [isTopUpError, setIsTopUpError] = useState(false);
   const [checkOut, setCheckOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isChecking, setIsChecking] = useState(false);
-
   const [openTransactionPending, setOpenTransactionPending] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
@@ -170,13 +165,10 @@ const DetailScreen = ({ navigation, route }) => {
     OfferList: false,
     MoreCollection: false
   })
-
   const [handleDate, setHandleDate] = useState({
     open: false,
     for: '',
   });
-
-  const DAY14 = 86400000 * 14;
   const [offerData, setOfferData] = useState({
     totalPrice: '',
     quantity: 1,
@@ -184,13 +176,11 @@ const DetailScreen = ({ navigation, route }) => {
     networkTokenId: 0,
     nftId: '',
     expried: new Date(),
-
     error: {
       totalPrice: '',
       expried: '',
     },
   });
-
   const [sellData, setSellData] = useState({
     saleType: saleType.FIXEDPRICE,
     fixedPrice: '',
@@ -206,12 +196,13 @@ const DetailScreen = ({ navigation, route }) => {
       startPrice: '',
     },
   });
-
   const [editPriceData, setEditPriceData] = useState({
     price: '',
     priceError: '',
   });
 
+  //================== Component's local variables =======================
+  const DAY14 = 86400000 * 14;
   const categoryType = detailNFT?.category
     ? detailNFT?.category
     : item?.category;
@@ -225,29 +216,31 @@ const DetailScreen = ({ navigation, route }) => {
   const network = detailNFT?.network ? detailNFT.network : item?.network;
   const userId = userData?.id;
   const walletAddress = userData?.userWallet?.address;
-
-  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
-
   const auctionId = detailNFT?.saleData?.auction?.auctionId;
   const saleId = detailNFT?.saleData?.fixPrice?.id;
   const price = detailNFT?.saleData?.fixPrice?.price;
 
-  useEffect(() => {
-    if (buyNFTRes && isCheckService) {
-      if (buyNFTRes?.messageCode) {
-        setErrorMessage(buyNFTRes?.messageCode);
-      }
-      if (checkOut && buyNFTRes?.dataReturn) {
-        setCheckOut(false);
-        setTimeout(() => {
-          setShowPaymentMethod(true);
-        }, 500);
-      }
-    }
-  }, [buyNFTRes]);
+  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
+
+  let ownerName = ownerDataN?.name?.trim()
+    ? ownerDataN.name
+    : ownerDataN?.address?.includes('0x')
+      ? ownerDataN.address.substring(0, 6)
+      : '---';
+
+  let creatorName = artistDetail?.name?.trim()
+    ? artistDetail.name
+    : artistDetail?.address?.includes('0x')
+      ? artistDetail.address.substring(0, 6)
+      : '---';
+
+  let collectionName = collectCreat?.name
+    ? collectCreat.name
+    : collectCreat?.address?.includes('0x')
+      ? collectCreat.address.substring(0, 6)
+      : '---';
 
   //===================== UseEffect Function =========================
-
   useEffect(() => {
     const backAction = () => {
       {
@@ -255,7 +248,6 @@ const DetailScreen = ({ navigation, route }) => {
         return true;
       }
     };
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
@@ -334,11 +326,23 @@ const DetailScreen = ({ navigation, route }) => {
     }
   }, [paymentObject]);
 
-  //===================== API Call Functions =========================
+  useEffect(() => {
+    if (buyNFTRes && isCheckService) {
+      if (buyNFTRes?.messageCode) {
+        setErrorMessage(buyNFTRes?.messageCode);
+      }
+      if (checkOut && buyNFTRes?.dataReturn) {
+        setCheckOut(false);
+        setTimeout(() => {
+          setShowPaymentMethod(true);
+        }, 500);
+      }
+    }
+  }, [buyNFTRes]);
 
+  //===================== Get Nft Detail API Call Functions =========================
   const getNFTDetails = async reload => {
     let url = `${NEW_BASE_URL}/nfts/details`;
-
     sendRequest({
       url,
       params: {
@@ -375,6 +379,141 @@ const DetailScreen = ({ navigation, route }) => {
       })
       .catch(err => {
         setLoad(false);
+      });
+  };
+
+  //===================== Trading, Bid History API Call Functions =========================
+  const getHistory = (history, sort) => {
+    let page = 1;
+    let limit = 5;
+    let bidSort = 3;
+    let payload =
+      history === 'bid'
+        ? {
+          url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+          method: 'GET',
+        }
+        : {
+          url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+          method: 'POST',
+          data: {
+            page: 1,
+            limit: 30,
+            nftId: nftId,
+            sort,
+          },
+        };
+    sendRequest(payload)
+      .then(res => {
+        if (res?.items?.length > 0) {
+          if (history === 'bid') {
+            let tempList = [];
+
+            res?.items?.map(item => {
+              let temp = [
+                `${Number(item?.price)} ${item?.receiveToken}`,
+                item?.fromUser?.userWallet?.address,
+                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
+                getExpirationDate(item?.expired),
+              ];
+              tempList.push(temp);
+            });
+
+            setSellDetails(tempList);
+          } else {
+            let tradingList = [];
+            let filterList = [];
+
+            res?.items?.map(item => {
+              let from = item?.fromUser?.userWallet?.address;
+              let to = item?.toUser?.userWallet?.address;
+
+              if (item.action === SORT_TRADING_HISTORY.BUY_NFT) {
+                from = item?.toUser?.userWallet?.address;
+                to = item?.fromUser?.userWallet?.address;
+              }
+              let temp = [
+                getEventByValue(item?.action),
+                item?.price && item?.receiveToken
+                  ? Number(item?.price) + ' ' + item?.receiveToken
+                  : '',
+                getFromAddress(from, item?.action),
+                getToAddress(to, item?.action),
+                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
+              ];
+              tradingList.push(temp);
+              filterList.push(getEventByValue(item?.action));
+            });
+            // setTradingList(res?.items);
+            setTradingTableData(tradingList);
+            // setTradingTableData1(tradingList)
+            // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
+          }
+        }
+        setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  //===================== Get More collection data API Call Functions =========================
+  const getRealtedNFT = async () => {
+    let page = 1;
+    let limit = 6;
+    let networkId = network?.networkId;
+    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
+    sendRequest({
+      url,
+      method: 'GET',
+      params: {
+        page,
+        limit,
+        collectionAddress,
+        currentNftId: nftId,
+        userId,
+        networkId,
+      },
+    })
+      .then(res => {
+        if (res?.list?.length > 0) {
+          setMoreData(res?.list);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  //===================== Offer List History API Call Functions =========================
+  const getOfferList = () => {
+    let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`;
+    sendRequest({
+      url,
+      method: 'GET',
+    })
+      .then(res => {
+        if (res?.length > 0) {
+          let tempList = [];
+
+          res?.map(item => {
+            let temp = [
+              `${Number(item?.price)} ${item?.receiveToken}`,
+              item.fromUser?.address,
+              getDateString(item.createdAt ? item.createdAt : Date.now()),
+              item.expired * 1000 > Date.now()
+                ? timeSince(new Date(item.expired * 1000))
+                : 'Expired',
+              item?.networkTokenIcon,
+            ];
+            tempList.push(temp);
+          });
+
+          setOfferList(tempList);
+        }
+      })
+      .catch(err => {
+        console.log(err);
       });
   };
 
@@ -2533,13 +2672,13 @@ const DetailScreen = ({ navigation, route }) => {
 
   const toggleDropDown = (v, t) => {
     if (v && t === 'Trading History')
-      setDropDownOpen({ ...isDropDownOpen, TradingHistory: true })
+      setDropDownOpen({ ...isDropDownOpen, TradingHistory: true, BidHistory: false, MoreCollection: false, OfferList: false })
     if (v && t === 'Bid History')
-      setDropDownOpen({ ...isDropDownOpen, BidHistory: true })
+      setDropDownOpen({ ...isDropDownOpen, BidHistory: true, TradingHistory: false, MoreCollection: false, OfferList: false })
     if (v && t === 'More NFTs')
-      setDropDownOpen({ ...isDropDownOpen, MoreCollection: true })
+      setDropDownOpen({ ...isDropDownOpen, MoreCollection: true, BidHistory: false, TradingHistory: false, OfferList: false })
     if (v && t === 'Offers')
-      setDropDownOpen({ ...isDropDownOpen, OfferList: true })
+      setDropDownOpen({ ...isDropDownOpen, OfferList: true, MoreCollection: false, BidHistory: false, TradingHistory: false })
   }
 
   //===================== Render Creator NFTDetailDropdown Function =======================
@@ -2757,163 +2896,6 @@ const DetailScreen = ({ navigation, route }) => {
         />
       </AppModal>
     );
-  };
-
-  //=================== Other Functions =====================
-  // let disableCreator = false;
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  let ownerName = ownerDataN?.name?.trim()
-    ? ownerDataN.name
-    : ownerDataN?.address?.includes('0x')
-      ? ownerDataN.address.substring(0, 6)
-      : '---';
-
-  let creatorName = artistDetail?.name?.trim()
-    ? artistDetail.name
-    : artistDetail?.address?.includes('0x')
-      ? artistDetail.address.substring(0, 6)
-      : '---';
-
-  let collectionName = collectCreat?.name
-    ? collectCreat.name
-    : collectCreat?.address?.includes('0x')
-      ? collectCreat.address.substring(0, 6)
-      : '---';
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  const getRealtedNFT = async () => {
-    let page = 1;
-    let limit = 6;
-    let networkId = network?.networkId;
-    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
-    sendRequest({
-      url,
-      method: 'GET',
-      params: {
-        page,
-        limit,
-        collectionAddress,
-        currentNftId: nftId,
-        userId,
-        networkId,
-      },
-    })
-      .then(res => {
-        if (res?.list?.length > 0) {
-          setMoreData(res?.list);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const getOfferList = () => {
-    let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`;
-    sendRequest({
-      url,
-      method: 'GET',
-    })
-      .then(res => {
-        if (res?.length > 0) {
-          let tempList = [];
-
-          res?.map(item => {
-            let temp = [
-              `${Number(item?.price)} ${item?.receiveToken}`,
-              item.fromUser?.address,
-              getDateString(item.createdAt ? item.createdAt : Date.now()),
-              item.expired * 1000 > Date.now()
-                ? timeSince(new Date(item.expired * 1000))
-                : 'Expired',
-              item?.networkTokenIcon,
-            ];
-            tempList.push(temp);
-          });
-
-          setOfferList(tempList);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const getHistory = (history, sort) => {
-    let page = 1;
-    let limit = 5;
-    let bidSort = 3;
-    let payload =
-      history === 'bid'
-        ? {
-          url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
-          method: 'GET',
-        }
-        : {
-          url: `${NEW_BASE_URL}/sale-nft/trading-history`,
-          method: 'POST',
-          data: {
-            page: 1,
-            limit: 30,
-            nftId: nftId,
-            sort,
-          },
-        };
-    sendRequest(payload)
-      .then(res => {
-        if (res?.items?.length > 0) {
-          if (history === 'bid') {
-            let tempList = [];
-
-            res?.items?.map(item => {
-              let temp = [
-                `${Number(item?.price)} ${item?.receiveToken}`,
-                item?.fromUser?.userWallet?.address,
-                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
-                getExpirationDate(item?.expired),
-              ];
-              tempList.push(temp);
-            });
-
-            setSellDetails(tempList);
-          } else {
-            let tradingList = [];
-            let filterList = [];
-
-            res?.items?.map(item => {
-              let from = item?.fromUser?.userWallet?.address;
-              let to = item?.toUser?.userWallet?.address;
-
-              if (item.action === SORT_TRADING_HISTORY.BUY_NFT) {
-                from = item?.toUser?.userWallet?.address;
-                to = item?.fromUser?.userWallet?.address;
-              }
-              let temp = [
-                getEventByValue(item?.action),
-                item?.price && item?.receiveToken
-                  ? Number(item?.price) + ' ' + item?.receiveToken
-                  : '',
-                getFromAddress(from, item?.action),
-                getToAddress(to, item?.action),
-                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
-              ];
-              tradingList.push(temp);
-              filterList.push(getEventByValue(item?.action));
-            });
-            // setTradingList(res?.items);
-            setTradingTableData(tradingList);
-            // setTradingTableData1(tradingList)
-            // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
-          }
-        }
-        setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
-      })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Creator Profile Navigtaion >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
