@@ -77,6 +77,7 @@ function Profile({navigation, connector, route}) {
     userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
+  const ComponentTypes = [<NFTCreated />, <NFTOwned />];
 
   //================== Components State Defination ===================
   const [userCopyAddress, setUserCopyAddress] = useState(false);
