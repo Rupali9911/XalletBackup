@@ -136,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default C_Image;
+export default React.memo(C_Image);

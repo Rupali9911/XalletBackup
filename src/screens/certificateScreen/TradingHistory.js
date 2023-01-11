@@ -38,7 +38,7 @@ const Filters = React.memo((props) => {
 });
 
 // ====================== Trading History Component =======================
-const TradingHistory = ({ tradingHistory, setFilterTableValue, setFilterTableList }) => {
+const TradingHistory = ({ tradingHistory, setFilterTableValue, setFilterTableList, isDropDownOpen }) => {
     console.log("@@@ Trading ======>");
     const { tradingTableData, filterTableList, filterTableValue, role } = tradingHistory;
 
@@ -93,7 +93,8 @@ const TradingHistory = ({ tradingHistory, setFilterTableValue, setFilterTableLis
                                 : tradingTableData?.length)
                             : hp(35.7),
             }}
-            icon={detailsImg}>
+            icon={detailsImg}
+            isDropDownOpen={isDropDownOpen}>
             <Filters
                 value={filterTableValue}
                 setValue={setFilterTableValue}

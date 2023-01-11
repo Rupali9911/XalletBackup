@@ -14,6 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
@@ -88,6 +89,7 @@ import { validatePrice } from './supportiveFunctions';
 import TradingHistory from './TradingHistory';
 import BidHistory from './BidHistory';
 import OfferList from './OfferList';
+import FetchingIndicator from '../../components/fetchingIndicator';
 
 const Web3 = require('web3');
 
@@ -132,19 +134,6 @@ const DetailScreen = ({ navigation, route }) => {
   const [artistDetail, setArtistData] = useState();
 
   //================== Video Player State ===================
-  const [tradingTableHead, setTradingTableHead] = useState([
-    translate('common.event'),
-    translate('common.price'),
-    translate('common.from'),
-    translate('common.to'),
-    translate('common.date') + ' (YYYY/MM/DD)',
-  ]);
-  const [bidHistoryTableHead, setBidHistoryTableHead] = useState([
-    translate('common.price'),
-    translate('common.from'),
-    translate('common.date'),
-    translate('common.expiration'),
-  ]);
   const [filterTableList, setFilterTableList] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
@@ -176,6 +165,12 @@ const DetailScreen = ({ navigation, route }) => {
   const [value, setValue] = useState('');
   const [tokenList, setTokenList] = useState([]);
   const [sellVisible, setSellVisible] = useState(false);
+  const [isDropDownOpen, setDropDownOpen] = useState({
+    TradingHistory: false,
+    BidHistory: false,
+    OfferList: false,
+    MoreCollection: false
+  })
 
   const [handleDate, setHandleDate] = useState({
     open: false,
@@ -282,16 +277,19 @@ const DetailScreen = ({ navigation, route }) => {
     if (filterTableValue?.length && nftId) {
       setTradingTableData([]);
       getHistory('trading', filterTableValue);
-    } else if (nftId) {
+    } else if (isDropDownOpen.TradingHistory) {
       getHistory('trading');
+    } else if (isDropDownOpen.BidHistory && sellDetails.length === 0) {
+      getHistory('bid');
+    } else if (isDropDownOpen.MoreCollection && moreData.length === 0) {
+      getRealtedNFT();
+    } else if (isDropDownOpen.OfferList && offerList.length === 0) {
+      getOfferList();
     }
-  }, [filterTableValue, nftId]);
+  }, [filterTableValue, isDropDownOpen]);
 
   useEffect(() => {
     if (nftId) {
-      getHistory('bid');
-      getOfferList();
-      getRealtedNFT();
       const selectedNetwork = networks?.filter(
         item => item?.name === network?.networkName,
       );
@@ -2501,6 +2499,7 @@ const DetailScreen = ({ navigation, route }) => {
         }}
         setFilterTableValue={setFilterTableValue}
         setFilterTableList={setFilterTableList}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
     )
   }
@@ -2512,6 +2511,7 @@ const DetailScreen = ({ navigation, route }) => {
           sellDetails: sellDetails,
           role: detailNFT?.creator?.role
         }}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
     )
   }
@@ -2523,6 +2523,7 @@ const DetailScreen = ({ navigation, route }) => {
           offerList: offerList,
           role: detailNFT?.creator?.role
         }}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
     )
   }
@@ -2530,6 +2531,17 @@ const DetailScreen = ({ navigation, route }) => {
   const showContractAddress = address => {
     return address?.substring(0, 6);
   };
+
+  const toggleDropDown = (v, t) => {
+    if (v && t === 'Trading History')
+      setDropDownOpen({ ...isDropDownOpen, TradingHistory: true })
+    if (v && t === 'Bid History')
+      setDropDownOpen({ ...isDropDownOpen, BidHistory: true })
+    if (v && t === 'More NFTs')
+      setDropDownOpen({ ...isDropDownOpen, MoreCollection: true })
+    if (v && t === 'Offers')
+      setDropDownOpen({ ...isDropDownOpen, OfferList: true })
+  }
 
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
@@ -2634,7 +2646,8 @@ const DetailScreen = ({ navigation, route }) => {
         title={translate('wallet.common.collectionHint')}
         icon={detailsImg}
         containerStyles={{ width: wp(100) }}
-        containerChildStyles={styles.containerChildStyles}>
+        containerChildStyles={styles.containerChildStyles}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}>
         {moreData.length !== 0 ? (
           <>
             <FlatList
@@ -2659,11 +2672,13 @@ const DetailScreen = ({ navigation, route }) => {
               rightHide
             />
           </>
-        ) : (
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        )}
+        ) : isDropDownOpen.MoreCollection && moreData.length === 0 ?
+          <ActivityIndicator size="large" color={Colors.themeColor} />
+          : (
+            <View style={styles.sorryMessageCont}>
+              <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+            </View>
+          )}
       </NFTDetailDropdown>
     );
   };
@@ -2917,29 +2932,6 @@ const DetailScreen = ({ navigation, route }) => {
     //     navigation.push('ArtistDetail', {id: artist});
     //   }
     // }
-  };
-
-  const Filters = props => {
-    const [open, setOpen] = useState(false);
-    return (
-      <DropDownPicker
-        open={open}
-        value={props.value}
-        items={props.data}
-        multiple={true}
-        min={0}
-        mode={'BADGE'}
-        setOpen={setOpen}
-        setValue={props.setValue}
-        setItems={props.setData}
-        closeAfterSelecting={true}
-        style={styles.tokenPicker}
-        dropDownContainerStyle={styles.dropDownContainer}
-        placeholder={translate('wallet.common.filter')}
-        maxHeight={hp(20)}
-        listMode="SCROLLVIEW"
-      />
-    );
   };
 
   const handleLikeMethod = async () => {

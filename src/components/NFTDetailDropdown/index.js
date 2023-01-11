@@ -24,15 +24,20 @@ export default function NFTDetailDropdown({
   containerStyles = {},
   containerChildStyles = {},
   containerDropStyles = {},
+  isDropDownOpen
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleToggle = () => {
     if (isExpanded) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setIsExpanded(!isExpanded);
+      if (isDropDownOpen)
+        isDropDownOpen(false, title);
     } else {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
       setIsExpanded(!isExpanded);
+      if (isDropDownOpen)
+        isDropDownOpen(true, title);
     }
   };
   return (

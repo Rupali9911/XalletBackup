@@ -11,7 +11,7 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 
 // ====================== Trading History Component =======================
-const BidHistory = ({ bidHistory }) => {
+const BidHistory = ({ bidHistory, isDropDownOpen }) => {
     console.log("@@@ Bid ======>");
     const { sellDetails, role } = bidHistory;
     const navigation = useNavigation();
@@ -79,7 +79,8 @@ const BidHistory = ({ bidHistory }) => {
                             hp(4) * sellDetails?.length
                             : hp(35.7),
             }}
-            icon={historyImg}>
+            icon={historyImg}
+            isDropDownOpen={isDropDownOpen}>
             <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}

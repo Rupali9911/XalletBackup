@@ -13,7 +13,7 @@ import { translate } from '../../walletUtils';
 import styles from './styles';
 
 // ====================== Trading History Component =======================
-const OfferList = ({ offerHistory }) => {
+const OfferList = ({ offerHistory, isDropDownOpen }) => {
     console.log("@@@ Offer ======>");
     const { offerList, role } = offerHistory;
     const navigation = useNavigation();
@@ -90,7 +90,8 @@ const OfferList = ({ offerHistory }) => {
                             hp(4) * offerList?.length
                             : hp(35.7),
             }}
-            icon={tradingImg}>
+            icon={tradingImg}
+            isDropDownOpen={isDropDownOpen}>
             <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
