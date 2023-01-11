@@ -70,6 +70,7 @@
     "react-native-awesome-alerts": "^1.5.2",
     "react-native-bip39": "^2.3.0",
     "react-native-camera": "^4.2.1",
+    "react-native-collapsible-tab-view": "^4.5.2",
     "react-native-config": "^1.4.2",
     "react-native-countdown-component": "^2.7.1",
     "react-native-create-thumbnail": "^1.5.1",

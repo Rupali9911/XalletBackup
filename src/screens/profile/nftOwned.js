@@ -14,9 +14,10 @@ import {
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
+import {Tabs} from 'react-native-collapsible-tab-view';
 
 const NFTOwned = props => {
-  const {route, id, setChildScroll, scrollEnabled} = props;
+  // const {route, id, setChildScroll, scrollEnabled} = props;
   const isFocusedHistory = useIsFocused();
 
   // const { id } = route?.params;
@@ -28,6 +29,7 @@ const NFTOwned = props => {
   let pageNum = 1;
   let limit = 10;
   let tab = 2;
+  const id = '0x3cc51779881e3723d5aa23a2adf0b215124a177d';
 
   useEffect(() => {
     dispatch(myNftOwnedListingReset());
@@ -54,19 +56,23 @@ const NFTOwned = props => {
 
   const renderItem = ({item}) => {
     return (
-      <NFTItem
-        screenName="movieNFT"
-        item={item}
-        // image={imageUri}
-        onPress={() => {
-          // dispatch(changeScreenName('movieNFT'));
-          navigation.push('CertificateDetail', {
-            networkName: item?.network?.networkName,
-            collectionAddress: item?.collection?.address,
-            nftTokenId: item?.tokenId,
-          });
-        }}
-      />
+      // <NFTItem
+      //   screenName="movieNFT"
+      //   item={item}
+      //   // image={imageUri}
+      //   onPress={() => {
+      //     // dispatch(changeScreenName('movieNFT'));
+      //     navigation.push('CertificateDetail', {
+      //       networkName: item?.network?.networkName,
+      //       collectionAddress: item?.collection?.address,
+      //       nftTokenId: item?.tokenId,
+      //     });
+      //   }}
+      // />
+      <View style={{padding: 50}}>
+        {/* <Text>{item.name}</Text> */}
+        <Text>{'OWNED'}</Text>
+      </View>
     );
   };
 
@@ -93,12 +99,12 @@ const NFTOwned = props => {
           <Loader />
         </View>
       ) : MyNFTReducer.myNftOwnedList?.length ? (
-        <FlatList
+        <Tabs.FlatList
           key={2}
-          scrollEnabled={scrollEnabled}
+          // scrollEnabled={scrollEnabled}
           data={MyNFTReducer?.myNftOwnedList}
           horizontal={false}
-          numColumns={2}
+          // numColumns={2}
           initialNumToRender={14}
           nestedScrollEnabled={true}
           onRefresh={handlePullRefresh}
@@ -118,15 +124,24 @@ const NFTOwned = props => {
               dispatch(myNftOwnedPageChange(num));
             }
           }}
-          onScrollBeginDrag={s => {
-            setChildScroll(s?.nativeEvent?.contentOffset?.y);
-          }}
-          onScroll={s => {
-            setChildScroll(s?.nativeEvent?.contentOffset?.y);
-          }}
-          onScrollEndDrag={s => {
-            setChildScroll(s?.nativeEvent?.contentOffset?.y);
-          }}
+          // onScrollBeginDrag={s => {
+          //   // console.log(
+          //   //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
+          //   //   s?.nativeEvent?.contentOffset,
+          //   // );
+          //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
+          // }}
+          // onScroll={s => {
+          //   // console.log('🚀 ~ o ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
+          //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
+          // }}
+          // onScrollEndDrag={s => {
+          //   // console.log(
+          //   //   '🚀 ~ ~ onScrollEndDrag ~ ~',
+          //   //   s?.nativeEvent?.contentOffset,
+          //   // );
+          //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
+          // }}
           ListFooterComponent={renderFooter}
           onEndReachedThreshold={1}
           keyExtractor={(v, i) => 'item_' + i}
