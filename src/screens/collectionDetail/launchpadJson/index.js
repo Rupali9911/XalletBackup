@@ -6,7 +6,7 @@ import {Deemo} from './Deemo';
 
 export const getCollectionData = key => {
   switch (key) {
-    case 'Astroboy : NFTDuel Genesis':
+    case 'NFTDuel - Astroboy x Japan':
       return Astroboy;
 
     case 'XANA: Genesis':

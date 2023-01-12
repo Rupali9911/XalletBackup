@@ -681,7 +681,14 @@ const SendScreen = React.memo(props => {
     navigation.popToTop();
   };
 
-  const invalidAmount = amount.replace(/[^.]/g, "").length > 1 ? true : false
+  const regx = /^[0-9\.][\.\d]*(,\d+)?$/;
+  const invalidAmount = amount
+    ? regx.test(amount)
+      ? amount.replace(/[^.]/g, '').length > 1
+        ? true
+        : false
+      : true
+    : false;
 
   const decimalDigitAlert =
     (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8 && (type !== 'USDT' && type !== 'USDC')
