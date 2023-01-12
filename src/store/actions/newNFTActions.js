@@ -1,7 +1,7 @@
 import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
 import {networkType} from '../../common/networkType';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import {alertWithSingleBtn} from '../../utils';
+import {modalAlert} from '../../common/function';
 import {translate} from '../../walletUtils';
 import {useSelector} from 'react-redux';
 import {
@@ -207,7 +207,7 @@ export const newNFTData = (category, sort, limit, pageNum) => {
 //       .catch(err => {
 //         dispatch(newNftLoadFail());
 //         dispatch(artNftLoadFail());
-//         alertWithSingleBtn(
+//         modalAlert(
 //           translate('common.error'),
 //           translate('wallet.common.error.networkFailed'),
 //         );
@@ -268,7 +268,7 @@ export const favoriteNFTList = (page, limit, sort) => {
       })
       .catch(err => {
         dispatch(newNftLoadFail());
-        alertWithSingleBtn(
+        modalAlert(
           translate('common.error'),
           translate('wallet.common.error.networkFailed'),
         );

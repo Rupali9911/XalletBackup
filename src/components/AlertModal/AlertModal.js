@@ -3,7 +3,6 @@ import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Modal from 'react-native-modal';
 import {COLORS, SIZE} from 'src/constants';
 import Colors from '../../constants/Colors';
-import {translate} from '../../walletUtils';
 import {useDispatch, useSelector} from 'react-redux';
 import {alertAction} from '../../store/actions/alertAction';
 
@@ -21,8 +20,12 @@ const AlertPopup = () => {
           <Text style={styles.description}>{state?.description}</Text>
           <TouchableOpacity
             style={styles.okButtonView}
-            onPress={() => dispatch(alertAction({status: false}))}>
-            <Text style={styles.okButtonTitle}>{translate('common.OK')}</Text>
+            onPress={() => {
+              state.onPress
+                ? state.onPress()
+                : dispatch(alertAction({status: false}));
+            }}>
+            <Text style={styles.okButtonTitle}>{state?.text}</Text>
           </TouchableOpacity>
         </View>
       </Modal>

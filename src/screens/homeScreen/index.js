@@ -49,7 +49,7 @@ import {
   updatePassStatus,
 } from '../../store/reducer/userReducer';
 import { updateNetworkType } from '../../store/reducer/walletReducer';
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import { translate } from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
@@ -155,7 +155,7 @@ const HomeScreen = ({ navigation }) => {
       const offline = !state.isConnected;
       if (state.isInternetReachable) {
         if (offline) {
-          alertWithSingleBtn(
+          modalAlert(
             translate('wallet.common.alert'),
             translate('wallet.common.error.networkError'),
           );
@@ -265,7 +265,7 @@ const HomeScreen = ({ navigation }) => {
     if (from == 'Certificate') navigation.navigate('Certificate');
     else if (from == 'Create') navigation.navigate('Create');
     else
-      alertWithSingleBtn(
+      modalAlert(
         translate('wallet.common.alert'),
         translate('common.comingSoon'),
       );

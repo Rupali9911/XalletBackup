@@ -34,7 +34,7 @@ import {
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
 import {translate} from '../../walletUtils';
-import {alertWithSingleBtn} from '../../common/function';
+import {modalAlert} from '../../common/function';
 import {setConnectedApps} from './walletReducer';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
 import {reject} from 'lodash';
@@ -519,7 +519,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     .catch(err => {
       dispatch(endLoading());
       if (err.response.status === 401) {
-        alertWithSingleBtn(
+        modalAlert(
           translate('wallet.common.alert'),
           translate('common.sessionexpired'),
           () => {
@@ -528,7 +528,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
         );
         dispatch(signOut());
       }
-      // alertWithSingleBtn(
+      // modalAlert(
       //   translate('wallet.common.alert'),
       //   translate('wallet.common.error.networkFailed'),
       //   () => {

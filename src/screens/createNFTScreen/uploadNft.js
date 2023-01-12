@@ -20,7 +20,7 @@ import axios from 'axios';
 import { NEW_BASE_URL } from '../../common/constants';
 import sendRequest from '../../helpers/AxiosApiRequest';
 
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import { translate } from '../../walletUtils';
 import { nftMakingMethods, setApprovalForAll } from '../wallet/functions';
 import { getUploadData, putNFTMedia } from '../../utils/uploadMediaS3';
@@ -208,13 +208,13 @@ const UploadNFT = ({
             .catch(e => {
                 changeLoadingState(false);
                 console.log(e.response, "nftlist collectionList error");
-                // alertWithSingleBtn(
+                // modalAlert(
                 //   translate("wallet.common.alert"),
                 //   translate("wallet.common.error.networkFailed")
                 // );
 
                 if (e?.response?.status === 401) {
-                    alertWithSingleBtn(
+                    modalAlert(
                         translate("wallet.common.alert"),
                         translate('common.sessionexpired')
                     )
@@ -508,7 +508,7 @@ const UploadNFT = ({
     //                                 return datares;
     //                             } else {
     //                                 changeLoadingState(false);
-    //                                 alertWithSingleBtn(
+    //                                 modalAlert(
     //                                     translate("wallet.common.alert"),
     //                                     translate(res.data.data)
     //                                 );
@@ -522,7 +522,7 @@ const UploadNFT = ({
     //                     return thumbRes;
     //                 } else {
     //                     changeLoadingState(false);
-    //                     alertWithSingleBtn(
+    //                     modalAlert(
     //                         translate("wallet.common.alert"),
     //                         translate(res.data.data)
     //                     );
@@ -622,7 +622,7 @@ const UploadNFT = ({
     //                                     }).catch((err) => {
     //                                         changeLoadingState(false);
 
-    //                                         alertWithSingleBtn(
+    //                                         modalAlert(
     //                                             translate("wallet.common.alert"),
     //                                             translate("wallet.common.insufficientFunds")
     //                                         );
@@ -776,7 +776,7 @@ const UploadNFT = ({
     //         }).catch((err) => {
     //             changeLoadingState(false);
 
-    //             alertWithSingleBtn(
+    //             modalAlert(
     //                 translate("wallet.common.alert"),
     //                 translate("wallet.common.insufficientFunds")
     //             );
@@ -967,12 +967,12 @@ const UploadNFT = ({
     const errorMethod = (err, v) => {
         changeLoadingState(false);
         if (err.response.status === 401) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("common.sessionexpired")
             );
         }
-        // alertWithSingleBtn(
+        // modalAlert(
         //   translate("wallet.common.alert"),
         //   translate("wallet.common.error.networkFailed")
         // );
@@ -996,7 +996,7 @@ const UploadNFT = ({
     )
 
     const handleCreateNFTSuccess = (data) => {
-        alertWithSingleBtn('', translate('common.tansactionSuccessFull'));
+        modalAlert('', translate('common.tansactionSuccessFull'));
     }
 
     useSocketGlobal(
@@ -1028,7 +1028,7 @@ const UploadNFT = ({
             console.log("@@@ payment done ==========>");
             setOpenTransactionPending(false);
             cleanAll();
-            alertWithSingleBtn('', translate('common.tansactionSuccessFull'));
+            modalAlert('', translate('common.tansactionSuccessFull'));
         } catch (error) {
             setOpenTransactionPending(false);
             console.log(error.code)

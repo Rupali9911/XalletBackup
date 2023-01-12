@@ -19,7 +19,7 @@ import {
   loginExternalWallet,
   setBackupStatus,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
+import {modalAlert} from '../../common/function';
 import { translate } from '../../walletUtils';
 
 const VerifyPhrase = ({ route, navigation }) => {
@@ -184,7 +184,7 @@ const VerifyPhrase = ({ route, navigation }) => {
                   })
                   .catch(err => {
                     setLoading(false);
-                    alertWithSingleBtn(
+                    modalAlert(
                       translate('wallet.common.alert'),
                       translate('wallet.common.tryAgain'),
                     );

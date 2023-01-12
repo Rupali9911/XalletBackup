@@ -13,7 +13,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../com
 import { IMAGES } from '../../constants';
 import { translate } from '../../walletUtils';
 import { NEW_BASE_URL } from '../../common/constants';
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import { getUploadData, putCollectionMedia } from '../../utils/uploadMediaS3';
 import { sendCustomTransaction } from '../wallet/functions/transactionFunctions';
@@ -228,7 +228,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       cleanCollection();
     } else {
       setOpenTransactionPending(false)
-      alertWithSingleBtn(translate('common.error'), '');
+      modalAlert(translate('common.error'), '');
     }
   }
 
@@ -341,19 +341,19 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       currentNetwork?.name,
     )
       .then(res => {
-        alertWithSingleBtn('', translate('common.tansactionSuccessFull'));
+        modalAlert('', translate('common.tansactionSuccessFull'));
         setOpenTransactionPending(false)
       })
       .catch(err => {
         console.log('payByWallet_err payByWallet 339', err);
         setOpenTransactionPending(false)
         if (typeof err === 'string' && err.includes('transaction underpriced')) {
-          alertWithSingleBtn(
+          modalAlert(
             translate('wallet.common.alert'),
             translate('common.blanceLow'),
           );
         } else {
-          alertWithSingleBtn(translate('common.error'), '');
+          modalAlert(translate('common.error'), '');
         }
       });
   }
@@ -375,7 +375,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         setTimeout(() => {
           cleanCollection();
           changeLoadingState(false);
-          alertWithSingleBtn(
+          modalAlert(
             "Success Message",
             screenStatus == "draft" ?
               "Collection Draft Edit Successfully" :
@@ -387,7 +387,7 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       }
     } catch (error) {
       changeLoadingState(false);
-      alertWithSingleBtn(
+      modalAlert(
         translate("wallet.common.alert"),
         translate("wallet.common.error.networkFailed")
       );

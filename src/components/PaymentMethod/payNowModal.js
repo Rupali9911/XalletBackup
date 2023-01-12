@@ -17,7 +17,7 @@ import { translate } from '../../walletUtils';
 import Separator from '../separator';
 import AppButton from '../appButton';
 import { useSelector } from 'react-redux';
-import { alertWithSingleBtn } from '../../common/function';
+import { alertWithSingleBtn } from '../../utils';
 import { BlurView } from '@react-native-community/blur';
 import { IconButton } from 'react-native-paper';
 import { numberWithCommas } from '../../utils';

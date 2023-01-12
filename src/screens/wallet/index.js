@@ -39,7 +39,7 @@ import Tokens from './components/Tokens';
 import {balance, currencyInDollar} from './functions';
 
 import NetInfo from '@react-native-community/netinfo';
-import {alertWithSingleBtn} from '../../common/function';
+import { modalAlert } from '../../common/function';
 
 const ethers = require('ethers');
 var Accounts = require('web3-eth-accounts');
@@ -601,8 +601,8 @@ const Wallet = ({route, navigation}) => {
     } else {
       setLoading(false);
       setFetching(false);
-      alertWithSingleBtn(
-        translate('wallet.common.alert'),
+      modalAlert(
+        translate('common.alertTitle'),
         translate('wallet.common.error.networkError'),
       );
     }
@@ -636,7 +636,7 @@ const Wallet = ({route, navigation}) => {
           .catch(err => {
             setLoading(false);
             setFetching(false);
-            // alertWithSingleBtn(
+            // modalAlert(
             //   translate('wallet.common.alert'),
             //   translate('wallet.common.error.networkError'),
             // );

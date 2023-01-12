@@ -1,6 +1,7 @@
 import Common from 'ethereumjs-common';
 import { getWallet } from '../../../helpers/AxiosApiRequest';
-import { alertWithSingleBtn } from '../../../utils';
+import {modalAlert} from '../../../common/function';
+
 import { translate, IsTestNet } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 
@@ -464,11 +465,11 @@ export const handleTransactionError = error => {
     (error.includes('transaction underpriced') ||
       error.includes('insufficient funds for gas * price + value'))
   ) {
-    alertWithSingleBtn(
+    modalAlert(
       translate('wallet.common.alert'),
       translate('common.blanceLow'),
     );
   } else {
-    alertWithSingleBtn(translate('common.error'), error?.message);
+    modalAlert(translate('common.error'), error?.message);
   }
 };

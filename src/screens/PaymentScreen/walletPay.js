@@ -37,7 +37,7 @@ import NetworkPicker from '../wallet/components/networkPicker';
 import Tokens from '../wallet/components/Tokens';
 import { balance, currencyInDollar } from '../wallet/functions';
 import { SIZE } from 'src/constants';
-import { alertWithSingleBtn } from '../../common/function';
+import { modalAlert } from '../../common/function';
 import { Loader } from '../../components';
 import { getWallet } from '../../helpers/AxiosApiRequest';
 
@@ -721,7 +721,7 @@ const WalletPay = ({ route, navigation }) => {
                 }),
               );
             } else {
-              alertWithSingleBtn(
+              modalAlert(
                 translate('wallet.common.alert'),
                 translate('common.blanceLow'),
               );
