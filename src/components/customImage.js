@@ -17,7 +17,6 @@ const C_Image = props => {
 
   let fileType = getFileType(props?.uri);
   let imageUri = getImageUri(props?.uri, props?.size);
-  // console.log('🚀 ~ file: customImage.js:20 ~ imageUri', props?.imageStyle);
   const checkVideoUrl = props?.category;
 
   useEffect(() => {
@@ -61,6 +60,7 @@ const C_Image = props => {
                 ? IMAGES.brokenIcon
                 : {
                     uri: imageUri,
+                    cache: 'only-if-cached',
                   }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE
@@ -85,6 +85,7 @@ const C_Image = props => {
               ? {
                   uri: imageUri,
                   priority: FastImage.priority.high,
+                  cache: 'cacheOnly',
                 }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE

@@ -1,59 +1,27 @@
-import React, {useState, useRef, useCallback} from 'react';
-import {
-  Avatar,
-  Box,
-  Divider,
-  Flex,
-  HStack,
-  Image,
-  Pressable,
-  Text,
-} from 'native-base';
-import {IMAGES, NFT_TYPE_TO_ID, SIZE, SVGS} from '../../constants';
-import {translate} from '../../walletUtils';
-import {colors, fonts} from '../../res';
+import React, {useRef, useState} from 'react';
+import {Box, Flex, HStack, Pressable, Text} from 'native-base';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
-import {TouchableOpacity, View, Dimensions, Text as RNText} from 'react-native';
-import {C_Image} from '../../components';
-//import Video from 'react-native-fast-video';
-import Video from 'react-native-video';
-import {styles} from './styled';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity, View} from 'react-native';
 import {
   Menu,
-  MenuOptions,
   MenuOption,
+  MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {numberWithCommas} from '../../utils';
-import { modalAlert } from '../../common/function';
-import {useNavigation} from '@react-navigation/native';
-import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
-import {useSelector} from 'react-redux';
-import {networkType} from '../../common/networkType';
-import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+import Video from 'react-native-video';
+import {C_Image} from '../../components';
+import {SIZE, SVGS} from '../../constants';
+import {fonts} from '../../res';
+import {translate} from '../../walletUtils';
+import {NEW_BASE_URL} from '../../common/constants';
 import {ImagekitType} from '../../common/ImageConstant';
-
-const {width} = Dimensions.get('window');
+import sendRequest from '../../helpers/AxiosApiRequest';
+import {alertWithSingleBtn, numberWithCommas} from '../../utils';
+import {styles} from './styled';
 
 const {PlayButtonIcon, ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} =
   SVGS;
-
-// const AvatarImage = ({imageSource}) => {
-//   return (
-//     <Box>
-//       {imageSource ? (
-//         <Avatar alignSelf="center" size="8" source={{uri: imageSource}} />
-//       ) : (
-//         <Image
-//           size="8"
-//           rounded="full"
-//           source={IMAGES.DEFAULTUSER}
-//           alt="Profile Picture"
-//         />
-//       )}
-//     </Box>
-//   );
-// };
 
 const Label = ({label}) => {
   return (
@@ -105,19 +73,12 @@ export const handleLike = async nftItem => {
 };
 
 function discoverItem({item}) {
-  const {wallet, userData} = useSelector(state => state.UserReducer);
   const navigation = useNavigation();
-  const [isPlay, setPlay] = useState(false);
   const refVideo = useRef(null);
   const refVideoPlay = useRef(null);
-  const [nftItem, setNftItem] = useState(item);
 
-  const creatorObj = Array.isArray(nftItem?.creatorObj)
-    ? nftItem.creatorObj[0]
-    : nftItem?.creatorObj;
-  const ownerObj = Array.isArray(nftItem?.buyerObj)
-    ? nftItem.buyerObj[0]
-    : nftItem?.buyerObj;
+  const [isPlay, setPlay] = useState(false);
+  const [nftItem, setNftItem] = useState(item);
 
   let creatorImage = nftItem?.creator?.avatar ? nftItem.creator.avatar : null;
   let creatorName = nftItem?.creator?.name
@@ -149,11 +110,9 @@ function discoverItem({item}) {
     }
   };
 
-  const videoUri = nftItem.mediaUrl;
-  const imageUri = nftItem.mediaUrl;
-
-  const image = nftItem.mediaUrl;
-  const fileType = image ? image?.split('.')[image?.split('.').length - 1] : '';
+  const fileType = nftItem?.mediaUrl
+    ? nftItem.mediaUrl?.split('.')[nftItem.mediaUrl?.split('.').length - 1]
+    : '';
 
   return (
     <Box>
@@ -223,7 +182,7 @@ function discoverItem({item}) {
             <View style={styles.modalImage}>
               <Video
                 ref={refVideo}
-                source={{uri: videoUri}}
+                source={{uri: nftItem.mediaUrl}}
                 playInBackground={false}
                 paused={!isPlay}
                 resizeMode={'cover'}
@@ -253,7 +212,7 @@ function discoverItem({item}) {
             </View>
           ) : (
             <C_Image
-              uri={imageUri}
+              uri={nftItem.mediaUrl}
               size={ImagekitType.FULLIMAGE}
               category={nftItem.category}
               imageStyle={styles.modalImage}
@@ -316,4 +275,4 @@ function discoverItem({item}) {
   );
 }
 
-export default discoverItem;
+export default React.memo(discoverItem);

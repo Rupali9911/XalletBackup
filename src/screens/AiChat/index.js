@@ -132,4 +132,4 @@ const AiChat = () => {
   );
 };
 
-export default AiChat;
+export default React.memo(AiChat);
