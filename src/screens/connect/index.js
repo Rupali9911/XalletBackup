@@ -31,7 +31,7 @@ import {Events} from '../../App';
 import {useDispatch, useSelector} from 'react-redux';
 import AppModal from '../../components/appModal';
 import ApproveModalContent from '../../components/approveAppModal';
-import {alertWithSingleBtn} from '../../utils';
+import {modalAlert} from '../../common/function';
 import {
   setConnectedApps,
   setConnectedAppsToLocal,
@@ -115,7 +115,7 @@ const Connect = ({route, navigation}) => {
   const [showConnectionSuccess, setConnectionSuccess] = useState(false);
 
   const onCheckPermission = async () => {
-    alertWithSingleBtn(
+    modalAlert(
       translate('wallet.common.alert'),
       translate('common.comingSoon'),
     );
@@ -202,7 +202,7 @@ const Connect = ({route, navigation}) => {
               setRequestedAppData(response.data);
               setApproveModal(true);
             } else if (response.type == 'remove') {
-              // alertWithSingleBtn('', response.data);
+              // modalAlert('', response.data);
               if (response.data.appId) {
                 setConnectedApps([]);
                 navigation.setParams({appId: null});
@@ -262,11 +262,11 @@ const Connect = ({route, navigation}) => {
                 setConnectedApps([]);
               }
             } else if (response.type == 'connection approved') {
-              // alertWithSingleBtn('', response.data);
+              // modalAlert('', response.data);
               let id = response.data.appId;
               if (id) {
                 if (connectedApps.includes(id)) {
-                  alertWithSingleBtn(
+                  modalAlert(
                     translate('wallet.common.alert'),
                     translate('wallet.common.error.appAlreadyConnected'),
                   );
@@ -287,15 +287,15 @@ const Connect = ({route, navigation}) => {
               };
               singleSocket.onSendMessage(_data);
             } else if (response.type == 'sig') {
-              // alertWithSingleBtn( translate("wallet.common.connectionEstablished"), translate("wallet.common.openApp"));
+              // modalAlert( translate("wallet.common.connectionEstablished"), translate("wallet.common.openApp"));
               setConnectionSuccess(true);
             } else if (response.type == 'connected') {
-              // alertWithSingleBtn('', '');
+              // modalAlert('', '');
             }
           } else if (response.status === 'error') {
             if (response.type == 'wallet') {
             } else if (response.type == 'approve') {
-              alertWithSingleBtn(
+              modalAlert(
                 '',
                 translate('wallet.common.error.appNotConnected'),
               );
@@ -311,9 +311,9 @@ const Connect = ({route, navigation}) => {
         //  else if (response.type == 'error' && !response.data.includes("walletId doesn't exists")) {
         //     console.log('error',response.data);
         //     if(response.data.includes(`walletID:${wallet.address}`)){
-        //         alertWithSingleBtn('', '');
+        //         modalAlert('', '');
         //     }else{
-        //         alertWithSingleBtn('', response.data);
+        //         modalAlert('', response.data);
         //     }
         // }
       },

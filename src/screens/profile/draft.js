@@ -16,7 +16,7 @@ import { translate } from '../../walletUtils';
 import { CardButton } from "../createNFTScreen/components";
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import axios from 'axios';
 
 const Draft = ({ route }) => {
@@ -111,7 +111,7 @@ const Draft = ({ route }) => {
                     }
 
                 } else {
-                    alertWithSingleBtn(
+                    modalAlert(
                         translate("wallet.common.alert"),
                         res.data.data
                     );
@@ -121,7 +121,7 @@ const Draft = ({ route }) => {
             .catch(e => {
                 setMainLoader(false);
                 setChildLoader(false)
-                alertWithSingleBtn(
+                modalAlert(
                     translate("wallet.common.alert"),
                     translate("wallet.common.error.networkFailed")
                 );

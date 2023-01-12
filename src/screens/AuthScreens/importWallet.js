@@ -33,7 +33,7 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
+import {modalAlert} from '../../common/function';
 import { translate } from '../../walletUtils';
 //================= =================
 import '@ethersproject/shims';
@@ -113,14 +113,14 @@ const ImportWallet = ({ route, navigation }) => {
               })
               .catch(err => {
                 if (err.data.messageCode === 'AUTH.DELETED') {
-                  alertWithSingleBtn(
+                  modalAlert(
                     translate('wallet.common.alert'),
                     translate('common.ACCOUNT_DELETED'),
                   );
                 }
               });
           } else {
-            alertWithSingleBtn(
+            modalAlert(
               translate('wallet.common.verification'),
               translate('wallet.common.error.invalidPhrase'),
             );
@@ -132,7 +132,7 @@ const ImportWallet = ({ route, navigation }) => {
             err.toString() == 'Error: invalid mnemonic' ||
             err.toString() == 'Error: invalid checksum'
           ) {
-            alertWithSingleBtn(
+            modalAlert(
               translate('wallet.common.verification'),
               translate('wallet.common.error.invalidPhrase'),
             );
@@ -140,7 +140,7 @@ const ImportWallet = ({ route, navigation }) => {
           dispatch(endLoader());
         });
     } else {
-      alertWithSingleBtn(
+      modalAlert(
         translate('common.error'),
         translate('wallet.common.requirePhrase'),
       );
@@ -172,7 +172,7 @@ const ImportWallet = ({ route, navigation }) => {
             })
             .catch(err => {
               if (err.data.messageCode === 'AUTH.DELETED') {
-                alertWithSingleBtn(
+                modalAlert(
                   translate('wallet.common.alert'),
                   translate('common.ACCOUNT_DELETED'),
                 );
@@ -180,14 +180,14 @@ const ImportWallet = ({ route, navigation }) => {
             });
         })
         .catch(err => {
-          alertWithSingleBtn(
+          modalAlert(
             translate('wallet.common.verification'),
             translate('wallet.common.error.invalidPrivateKey'),
           );
           dispatch(endLoader());
         });
     } else {
-      // alertWithSingleBtn(
+      // modalAlert(
       //   translate('common.error'),
       //   translate('wallet.common.requirePhrase'),
       // );

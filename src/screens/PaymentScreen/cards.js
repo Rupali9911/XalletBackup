@@ -20,7 +20,7 @@ import Fonts from '../../constants/Fonts';
 import { translate } from '../../walletUtils';
 import CardView from '../../components/cardView';
 import ImagesSrc from '../../constants/Images';
-import { confirmationAlert, alertWithSingleBtn } from '../../common/function';
+import { confirmationAlert, modalAlert } from '../../common/function';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -89,14 +89,14 @@ const Cards = ({ route, navigation }) => {
     dispatch(deleteCard(userData.access_token, params))
       .then(response => {
         if (response.success) {
-          alertWithSingleBtn(
+          modalAlert(
             translate('wallet.common.alert'),
             response.msg_key ? translate(response.msg_key) : response.msg,
           );
           getAllMyCards();
         } else {
           setLoading(false);
-          alertWithSingleBtn(
+          modalAlert(
             translate('wallet.common.alert'),
             response.msg_key ? translate(response.msg_key) : response.msg,
           );

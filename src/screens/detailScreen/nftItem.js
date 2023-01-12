@@ -33,7 +33,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import { alertWithSingleBtn } from "../../common/function";
+import { modalAlert } from "../../common/function";
 import { hp } from '../../constants/responsiveFunct';
 import Images from '../../constants/Images';
 
@@ -810,7 +810,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                     <BookMarkIcon />
                   </TouchableOpacity> */}
                   <Menu onSelect={value => {
-                    alertWithSingleBtn(
+                    modalAlert(
                       translate('common.Confirm'),
                       value === 1 ? translate('common.nftReported') : translate('common.userBlocked'))
                   }}>

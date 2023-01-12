@@ -34,8 +34,8 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
+import {modalAlert} from '../../common/function';
 //================= =================
 import '@ethersproject/shims';
 import { hdkey } from 'ethereumjs-wallet';
@@ -115,13 +115,13 @@ const RecoveryPhrase = ({ route, navigation }) => {
               })
               .catch(err => {
                 dispatch(endLoader());
-                // alertWithSingleBtn(
+                // modalAlert(
                 //   translate('wallet.common.alert'),
                 //   translate('wallet.common.tryAgain'),
                 // );
               });
           } else {
-            alertWithSingleBtn(
+            modalAlert(
               translate('wallet.common.verification'),
               translate('wallet.common.error.invalidPhrase'),
             );
@@ -133,7 +133,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
             err.toString() == 'Error: invalid mnemonic' ||
             err.toString() == 'Error: invalid checksum'
           ) {
-            alertWithSingleBtn(
+            modalAlert(
               translate('wallet.common.verification'),
               translate('wallet.common.error.invalidPhrase'),
             );
@@ -141,7 +141,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
           dispatch(endLoader());
         });
     } else {
-      alertWithSingleBtn(
+      modalAlert(
         translate('common.error'),
         translate('wallet.common.requirePhrase'),
       );
@@ -325,7 +325,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
                 if (/\s\s+/g.test(phrase.trim())) {
-                  alertWithSingleBtn(
+                  modalAlert(
                     translate('wallet.common.verification'),
                     translate('wallet.common.error.invalidPhrase'),
                   );

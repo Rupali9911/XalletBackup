@@ -16,7 +16,7 @@ import { translate } from '../../walletUtils';
 import { CardButton } from "../createNFTScreen/components";
 import { BASE_URL } from '../../common/constants';
 import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import axios from 'axios';
 
 const Collection = ({ route }) => {
@@ -105,7 +105,7 @@ const Collection = ({ route }) => {
                     }
 
                 } else {
-                    alertWithSingleBtn(
+                    modalAlert(
                         translate("wallet.common.alert"),
                         res.data.data
                     );
@@ -115,7 +115,7 @@ const Collection = ({ route }) => {
             .catch(e => {
                 setChildLoader(false);
                 setMainLoader(false);
-                // alertWithSingleBtn(
+                // modalAlert(
                 //     translate("wallet.common.alert"),
                 //     translate("wallet.common.error.networkFailed")
                 // );

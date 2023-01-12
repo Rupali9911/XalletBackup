@@ -24,7 +24,8 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {alertWithSingleBtn, numberWithCommas} from '../../utils';
+import {numberWithCommas} from '../../utils';
+import { modalAlert } from '../../common/function';
 import {useNavigation} from '@react-navigation/native';
 import {BASE_URL, NEW_BASE_URL} from '../../common/constants';
 import {useSelector} from 'react-redux';
@@ -269,7 +270,7 @@ function discoverItem({item}) {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Menu
               onSelect={value => {
-                alertWithSingleBtn(
+                modalAlert(
                   translate('common.Confirm'),
                   value === 1
                     ? translate('common.nftReported')

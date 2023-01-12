@@ -29,7 +29,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import {NEW_BASE_URL} from '../../common/constants';
-import {alertWithSingleBtn} from '../../common/function';
+import {modalAlert} from '../../common/function';
 import {wp} from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import ActivityTab from './activityTab';
@@ -444,7 +444,7 @@ function CollectionDetail(props) {
         <View style={styles.headerContent}>
           <Menu
             onSelect={value => {
-              alertWithSingleBtn(
+              modalAlert(
                 translate('common.Confirm'),
                 value === 1
                   ? translate('common.collectionReported')

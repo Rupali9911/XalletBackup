@@ -23,7 +23,7 @@ import {
   SCAN_WALLET,
   getConfigDetailsFromEnviorment,
 } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import { useDispatch, useSelector } from 'react-redux';
 import { transfer } from './functions';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -67,7 +67,7 @@ const verifyAddress = address => {
 };
 
 const showErrorAlert = msg => {
-  alertWithSingleBtn(translate('common.error'), msg);
+  modalAlert(translate('common.error'), msg);
 };
 
 export const AddressField = props => {
@@ -200,7 +200,7 @@ const ScanScreen = React.memo(props => {
               jumpTo('Send');
             })
             .catch(() => {
-              alertWithSingleBtn(
+              modalAlert(
                 translate('wallet.common.error.invalidCode'),
                 translate('wallet.common.error.scanCodeAlert'),
                 () => {
@@ -211,7 +211,7 @@ const ScanScreen = React.memo(props => {
         }
       })
       .catch(() => {
-        alertWithSingleBtn(
+        modalAlert(
           translate('wallet.common.error.invalidCode'),
           translate('wallet.common.error.scanCodeAlert'),
           () => {

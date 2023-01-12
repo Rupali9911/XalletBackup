@@ -14,8 +14,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
-import {confirmationAlert } from '../../common/function';
-import {alertWithSingleBtn} from '../../utils';
+import {confirmationAlert,modalAlert } from '../../common/function';
+ import {alertWithSingleBtn} from '../../utils';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
@@ -278,7 +278,7 @@ function Setting({ route, navigation }) {
           <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() =>
-              alertWithSingleBtn(
+              modalAlert(
                 translate('wallet.common.alert'),
                 translate('common.comingSoon'),
               )

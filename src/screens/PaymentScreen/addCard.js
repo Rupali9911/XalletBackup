@@ -14,7 +14,7 @@ import Checkbox from '../../components/checkbox';
 import { LabelInput, CityInput } from './screenComponents';
 import CountryPicker from '../../components/countryPicker';
 import StatePicker from '../../components/statePicker';
-import { alertWithSingleBtn } from '../../common/function';
+import { modalAlert } from '../../common/function';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -47,14 +47,14 @@ function AddCard({ route, navigation }) {
 
     const isValidCardNumber = () => {
         if (cardNumber.length == 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.reuiredCardNumber")
             );
             return false;
         }
         else if (cardNumber.length < 12) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.invalidCardNumber")
             );
@@ -65,7 +65,7 @@ function AddCard({ route, navigation }) {
 
     const isValidName = () => {
         if (cardHolderName.trim().length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.nameRequired")
             );
@@ -77,13 +77,13 @@ function AddCard({ route, navigation }) {
     const isValidDate = () => {
         const exp = expDate.split('/');
         if (exp.length != 2) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidExpiryDate")
             );
             return false;
         } else if (exp[1].length !== 2) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidExpiryDate")
             );
@@ -94,13 +94,13 @@ function AddCard({ route, navigation }) {
 
     const isValidCvv = () => {
         if (cvv.length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidCvv")
             );
             return false;
         } else if (cardType.code.size !== cvv.length) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.inValidCvv")
             );
@@ -112,13 +112,13 @@ function AddCard({ route, navigation }) {
     const isValidEmail = () => {
         var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (email.length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.emailRequired")
             );
             return false;
         } else if (!filter.test(email)) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.invalidEmail")
             );
@@ -129,7 +129,7 @@ function AddCard({ route, navigation }) {
 
     const isValidAddress = () => {
         if (address.trim().length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireAddress")
             );
@@ -140,7 +140,7 @@ function AddCard({ route, navigation }) {
 
     const isValidCountry = () => {
         if (!country) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireCountry")
             );
@@ -151,7 +151,7 @@ function AddCard({ route, navigation }) {
 
     const isValidState = () => {
         if (state === null || state.trim().length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireState")
             );
@@ -162,7 +162,7 @@ function AddCard({ route, navigation }) {
 
     const isValidCity = () => {
         if (city.trim().length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireCity")
             );
@@ -173,7 +173,7 @@ function AddCard({ route, navigation }) {
 
     const isValidZipcode = () => {
         if (zipcode.trim().length <= 0) {
-            alertWithSingleBtn(
+            modalAlert(
                 translate("wallet.common.alert"),
                 translate("wallet.common.error.requireZipcode")
             );
@@ -220,7 +220,7 @@ function AddCard({ route, navigation }) {
                 addCustomerCard(response.id);
             } else if (response.error) {
                 console.log("error_code", response.error.code)
-                alertWithSingleBtn(
+                modalAlert(
                     translate("wallet.common.alert"),
                     translate(`wallet.common.stripeError.${response.error.code}`)
                 )
@@ -251,7 +251,7 @@ function AddCard({ route, navigation }) {
         dispatch(addCard(userData.access_token, params)).then((response) => {
             setLoading(false);
             if (response.success) {
-                alertWithSingleBtn(
+                modalAlert(
                     translate("wallet.common.alert"),
                     response.msg_key ? translate(response.msg_key) : response.data.message === 'user card saved' ? translate("common.cardSaved") : response.data.message,
                     //response.msg_key?translate(response.msg_key):response.data.message ,
@@ -265,7 +265,7 @@ function AddCard({ route, navigation }) {
                     }
                 )
             } else {
-                alertWithSingleBtn(
+                modalAlert(
                     translate("wallet.common.alert"),
                     response.error_code ? translate(response.error_code) : response.msg
                 )
@@ -274,20 +274,20 @@ function AddCard({ route, navigation }) {
             console.log('err', err);
             setLoading(false);
             if (err.message === 'Unauthorized!') {
-                alertWithSingleBtn(
+                modalAlert(
                     translate("wallet.common.alert"),
                     translate('common.sessionexpired')
                 )
                 dispatch(signOut());
             } else {
-                alertWithSingleBtn(
+                modalAlert(
                     translate("wallet.common.alert"),
                     translate(`common.${err.error?.error_code ? err.error?.error_code
                         : err.error?.decline_code ?
                             err.error?.decline_code
                             : err.error?.code}`))
 
-                // alertWithSingleBtn(
+                // modalAlert(
                 //     translate("wallet.common.alert"),
                 //     err.error_code?translate(`common.${err.error_code}`):''
                 // )

@@ -15,7 +15,8 @@ import {
   startLoading,
   startMagicLoading,
 } from '../../../store/reducer/userReducer';
-import {alertWithSingleBtn, maxLength50, validateEmail} from '../../../utils';
+import {maxLength50, validateEmail} from '../../../utils';
+import {modalAlert} from '../../../common/function';
 import {translate} from '../../../walletUtils';
 import {InputFields} from './components';
 import {getAddress, requestConnectToDApp, signMessage} from './magic-link';
@@ -66,7 +67,7 @@ const LoginCrypto = () => {
           console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
           dispatch(endMagicLoading());
           setLoginBtnEnable(true);
-          alertWithSingleBtn(translate('wallet.common.tryAgain'));
+          modalAlert(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
       console.log('🚀 ~ file: login.js ~ line 62 ~  ~ error', error);

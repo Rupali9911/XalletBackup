@@ -82,7 +82,9 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
 import { buyNFTApi } from '../../store/actions/detailsNFTAction';
 import { setPaymentObject } from '../../store/reducer/paymentReducer';
-import { alertWithSingleBtn, numberWithCommas } from '../../utils';
+import {numberWithCommas } from '../../utils';
+import {modalAlert} from '../../common/function';
+
 import { collectionClick } from '../../utils/detailHelperFunctions';
 import { getTokenNameFromId } from '../../utils/nft';
 import { getDefaultToken, getERC20Tokens } from '../../utils/token';
@@ -547,7 +549,7 @@ const DetailScreen = ({ navigation, route }) => {
           <View style={{ paddingRight: 10 }}>
             <Menu
               onSelect={value => {
-                alertWithSingleBtn(
+                modalAlert(
                   translate('common.Confirm'),
                   value === 1
                     ? translate('common.nftReported')
@@ -1111,7 +1113,7 @@ const DetailScreen = ({ navigation, route }) => {
               network?.networkName,
             )
               .then(res => {
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // modalAlert('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
               })
@@ -1158,7 +1160,7 @@ const DetailScreen = ({ navigation, route }) => {
               network?.networkName,
             )
               .then(res => {
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // modalAlert('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
               })
@@ -1239,7 +1241,7 @@ const DetailScreen = ({ navigation, route }) => {
           )
             .then(res => {
               // console.log('approve payByWallet 331', res);
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
@@ -1398,7 +1400,7 @@ const DetailScreen = ({ navigation, route }) => {
               network?.networkName,
             )
               .then(res => {
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // modalAlert('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
               })
@@ -1595,7 +1597,7 @@ const DetailScreen = ({ navigation, route }) => {
           )
             .then(res => {
 
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
@@ -1672,7 +1674,7 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
@@ -2074,7 +2076,7 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
@@ -2244,7 +2246,7 @@ const DetailScreen = ({ navigation, route }) => {
       //       )
       //         .then(res => {
       //           console.log('approve payByWallet 331', res);
-      //           // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+      //           // modalAlert('',translate('common.tansactionSuccessFull'));
       //           // setLoading(false);
       //           getNFTDetails(true);
       //         })
@@ -2562,7 +2564,7 @@ const DetailScreen = ({ navigation, route }) => {
           )
             .then(res => {
               console.log('approve payByWallet 331', res);
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
@@ -2877,7 +2879,7 @@ const DetailScreen = ({ navigation, route }) => {
   //         // if(price && price > 0){
   //         if (setNFTStatus() === 'buy') {
   //           // if (payableIn === translate('common.allowedcurrency')) {
-  //           //   alertWithSingleBtn(
+  //           //   modalAlert(
   //           //     translate('wallet.common.alert'),
   //           //     translate('common.Selectcurrencypopup'),
   //           //   );

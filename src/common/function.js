@@ -22,13 +22,14 @@ const confirmationAlert = (
     },
   ]);
 };
-
-const alertWithSingleBtn = () => {
+const modalAlert = (title, description, onOkPress, btnTxt) => {
   store.dispatch(
     alertAction({
       status: true,
-      title: translate('common.alertTitle'),
-      description: translate('wallet.common.error.networkError'),
+      title,
+      description,
+      text: btnTxt ? btnTxt : 'OK',
+      onPress: onOkPress,
     }),
   );
 };
@@ -43,4 +44,4 @@ const getFileType = uri => {
   return type;
 };
 
-export {confirmationAlert, alertWithSingleBtn, twitterLink, getFileType};
+export {confirmationAlert, modalAlert, twitterLink, getFileType};
