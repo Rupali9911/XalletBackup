@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
   FlatList,
 } from 'react-native';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
@@ -290,15 +291,12 @@ const ChatDetail = ({route, navigation}) => {
         style={styles.backButtonWrap}>
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
-
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
+      <KeyboardAvoidingView
+        style={{
           flex: 1,
         }}
-        scrollEnabled={false}
-        extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
-        keyboardShouldPersistTaps={'always'}
-        keyboardOpeningTime={0}>
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 5 : 30}
+        behavior="padding">
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
@@ -347,7 +345,7 @@ const ChatDetail = ({route, navigation}) => {
             }}
           />
         </View>
-      </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
       <Toast
         position="bottom"
         visibilityTime={2000}
