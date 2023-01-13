@@ -1,6 +1,5 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Box, Flex, HStack, Pressable, Text} from 'native-base';
-import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity, View} from 'react-native';
 import {
@@ -9,9 +8,8 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import Video from 'react-native-video';
 import {C_Image} from '../../components';
-import {SIZE, SVGS} from '../../constants';
+import {SVGS} from '../../constants';
 import {fonts} from '../../res';
 import {translate} from '../../walletUtils';
 import {NEW_BASE_URL} from '../../common/constants';
@@ -20,28 +18,7 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import {alertWithSingleBtn, numberWithCommas} from '../../utils';
 import {styles} from './styled';
 
-const {PlayButtonIcon, ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} =
-  SVGS;
-
-const Label = ({label}) => {
-  return (
-    <Text color="black" fontFamily={fonts.SegoeUIRegular} fontSize="11">
-      {label}
-    </Text>
-  );
-};
-
-const Name = ({label}) => {
-  return (
-    <Text
-      color="black"
-      fontFamily={fonts.ARIAL}
-      fontSize="11"
-      fontWeight="bold">
-      {label}
-    </Text>
-  );
-};
+const {ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
 
 export const handleLike = async nftItem => {
   let getNftItem = {...nftItem};
@@ -73,20 +50,20 @@ export const handleLike = async nftItem => {
 };
 
 function discoverItem({item}) {
+  console.log('@@@ Discover Item =======>');
   const navigation = useNavigation();
-  const refVideo = useRef(null);
-  const refVideoPlay = useRef(null);
 
-  const [isPlay, setPlay] = useState(false);
   const [nftItem, setNftItem] = useState(item);
 
   let creatorImage = nftItem?.creator?.avatar ? nftItem.creator.avatar : null;
+  let ownerImage = nftItem?.owner?.avatar ? nftItem.owner.avatar : null;
+
   let creatorName = nftItem?.creator?.name
     ? nftItem.creator.name
     : nftItem?.creator?.address?.includes('0x')
     ? nftItem.creator.address.substring(0, 6)
     : '---';
-  let ownerImage = nftItem?.owner?.avatar ? nftItem.owner.avatar : null;
+
   let ownerName = nftItem?.owner?.name
     ? nftItem.owner.name
     : nftItem?.owner?.address?.includes('0x')
@@ -110,10 +87,6 @@ function discoverItem({item}) {
     }
   };
 
-  const fileType = nftItem?.mediaUrl
-    ? nftItem.mediaUrl?.split('.')[nftItem.mediaUrl?.split('.').length - 1]
-    : '';
-
   return (
     <Box>
       <HStack py={2} w="90%" alignSelf="center">
@@ -130,8 +103,19 @@ function discoverItem({item}) {
                 style={styles.avatarView}
               />
               <Box px="3">
-                <Label label={translate('common.creator')} />
-                <Name label={creatorName} />
+                <Text
+                  color="black"
+                  fontFamily={fonts.SegoeUIRegular}
+                  fontSize="11">
+                  {translate('common.creator')}
+                </Text>
+                <Text
+                  color="black"
+                  fontFamily={fonts.ARIAL}
+                  fontSize="11"
+                  fontWeight="bold">
+                  {creatorName}
+                </Text>
               </Box>
             </HStack>
           </Pressable>
@@ -149,78 +133,41 @@ function discoverItem({item}) {
                 style={styles.avatarView}
               />
               <Box px="3">
-                <Label label={translate('common.owner')} />
-                <Name label={ownerName} />
+                <Text
+                  color="black"
+                  fontFamily={fonts.SegoeUIRegular}
+                  fontSize="11">
+                  {translate('common.owner')}
+                </Text>
+                <Text
+                  color="black"
+                  fontFamily={fonts.ARIAL}
+                  fontSize="11"
+                  fontWeight="bold">
+                  {ownerName}
+                </Text>
               </Box>
             </HStack>
           </Pressable>
         </Flex>
       </HStack>
-      <InViewPort
-        onChange={isVisible => {
-          if (!isVisible) {
-            setPlay(false);
-          }
-        }}
-        disabled={true}>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            isPlay
-              ? setPlay(!isPlay)
-              : navigation.navigate('CertificateDetail', {
-                  networkName: item?.network?.networkName,
-                  collectionAddress: item?.collection?.address,
-                  nftTokenId: item?.tokenId,
-                  setNftItem,
-                });
-          }}>
-          {fileType === 'mp4' ||
-          fileType === 'MP4' ||
-          fileType === 'mov' ||
-          fileType === 'MOV' ? (
-            <View style={styles.modalImage}>
-              <Video
-                ref={refVideo}
-                source={{uri: nftItem.mediaUrl}}
-                playInBackground={false}
-                paused={!isPlay}
-                resizeMode={'cover'}
-                onLoad={() => refVideo.current.seek(0)}
-                onEnd={() => {
-                  setPlay(false);
-                  refVideoPlay.current = true;
-                }}
-                style={styles.videoContainer}
-              />
-              {!isPlay && (
-                <View style={styles.playBtnCont}>
-                  <View style={styles.playBtnChild}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (refVideoPlay.current) {
-                          refVideo.current.seek(0);
-                        }
-                        refVideoPlay.current = false;
-                        setPlay(true);
-                      }}>
-                      <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-            </View>
-          ) : (
-            <C_Image
-              uri={nftItem.mediaUrl}
-              size={ImagekitType.FULLIMAGE}
-              category={nftItem.category}
-              imageStyle={styles.modalImage}
-            />
-          )}
-        </TouchableOpacity>
-      </InViewPort>
-
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          navigation.navigate('CertificateDetail', {
+            networkName: item?.network?.networkName,
+            collectionAddress: item?.collection?.address,
+            nftTokenId: item?.tokenId,
+            setNftItem,
+          });
+        }}>
+        <C_Image
+          uri={nftItem.mediaUrl}
+          size={ImagekitType.FULLIMAGE}
+          category={nftItem.category}
+          imageStyle={styles.modalImage}
+        />
+      </TouchableOpacity>
       <Box px={4} py={3}>
         <HStack justifyContent="space-between">
           <TouchableOpacity onPress={handleLikeMethod}>

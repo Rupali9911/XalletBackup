@@ -60,7 +60,7 @@ const C_Image = props => {
                 ? IMAGES.brokenIcon
                 : {
                     uri: imageUri,
-                    cache: 'only-if-cached',
+                    // cache: 'only-if-cached',
                   }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE
@@ -85,7 +85,7 @@ const C_Image = props => {
               ? {
                   uri: imageUri,
                   priority: FastImage.priority.high,
-                  cache: 'cacheOnly',
+                  // cache: 'cacheOnly',
                 }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE
