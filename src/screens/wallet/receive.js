@@ -12,7 +12,6 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -45,6 +44,7 @@ const QRScreen = () => {
     const [showShare, setShowShare] = useState(false);
     const [qrData, setQrData] = useState(wallet?.address);
     const [modalVisible, setModalVisible] = useState(false);
+    const [copyAddress, setCopyAddress] = useState(false);
 
     useEffect(() => {
         setQrData(wallet?.address + ' ');
@@ -77,7 +77,10 @@ const QRScreen = () => {
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet?.address);
-        alertWithSingleBtn(translate("wallet.common.copied"))
+        setCopyAddress(true);
+        setTimeout(() => {
+            setCopyAddress(false);
+        }, 700);
     }
 
     return (
@@ -109,6 +112,7 @@ const QRScreen = () => {
                         bgColor={Colors.headerIconBg2}
                         labelStyle={styles.btnLabel}
                         onPress={() => copyToClipboard()}
+                        address={copyAddress}
                     />
                     <HeaderBtns
                         image={ImagesSrc.receive}

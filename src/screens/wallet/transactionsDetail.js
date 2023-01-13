@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
+import React, {useState} from 'react';
 import moment from 'moment';
-import React from 'react';
-import { Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, Linking,StyleSheet, TouchableOpacity, View,Text,} from 'react-native';
 import NumberFormat from 'react-number-format';
 import check from '../../assets/pngs/check.png';
 import copy from '../../assets/pngs/copy.png';
@@ -11,9 +11,14 @@ import TextView from '../../components/appText';
 import Colors from '../../constants/Colors';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { alertWithSingleBtn } from '../../utils';
 import { environment, translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
@@ -22,21 +27,53 @@ export default function transactionsDetail({ route }) {
   let datetime = new Date(transactionInfo?.timeStamp * 1000);
   let UTCTime = moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss');
   let localTime = moment.unix(transactionInfo?.timeStamp).format('YYYY-MM-DD HH:mm:ss');
-
   let displayTime =
     selectedLanguageItem.language_name !== regionLanguage ? UTCTime : localTime;
   const coin = route?.params?.coin;
+
+  const [transactionAddress, setTransactionAddress] = useState(false);
+  const [transactionId, setTransactionId] = useState(false);
+  
   const copyAddress = () => {
     Clipboard.setString(
       transactionInfo?.direction == 'in'
         ? transactionInfo?.from
         : transactionInfo?.to,
     );
-    alertWithSingleBtn(translate('wallet.common.copied'));
+    setTransactionAddress(true);
+    setTimeout(() => {
+      setTransactionAddress(false);
+    }, 700);
   };
+
   const copyTransactionHash = () => {
     Clipboard.setString(transactionInfo?.hash);
-    alertWithSingleBtn(translate('wallet.common.copied'));
+    setTransactionId(true);
+    setTimeout(() => {
+      setTransactionId(false);
+    }, 700);
+  };
+
+  const copyBoardAlert = id => {
+    return (
+      <>
+        <Menu opened={id}>
+          <MenuTrigger />
+          <MenuOptions
+            optionsContainerStyle={{
+              width: 'auto',
+              backgroundColor: Colors.BLACK1,
+            }}>
+            <MenuOption>
+              <Text style={{color: '#FFFFFF'}}>
+                {`${translate('wallet.common.copied')}!`}
+              </Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+        <Image style={styles.copyImage} source={copy} />
+      </>
+    );
   };
   const openURL = () => {
     if (coin?.network == 'BSC') {
@@ -49,8 +86,6 @@ export default function transactionsDetail({ route }) {
       Linking.openURL(`${environment.xanaScanURL}tx/${transactionInfo?.hash}`);
     }
   };
-
-
   return (
     <AppBackground>
       <AppHeader
@@ -112,9 +147,7 @@ export default function transactionsDetail({ route }) {
                 ? transactionInfo?.from
                 : transactionInfo?.to}
             </TextView>
-            <TouchableOpacity onPress={copyAddress}>
-              <Image style={styles.copyImage} source={copy} />
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => copyAddress()}>{copyBoardAlert(transactionAddress)}</TouchableOpacity>
           </View>
         </View>
         <View style={styles.rowContainer}>
@@ -129,7 +162,7 @@ export default function transactionsDetail({ route }) {
               {transactionInfo?.hash}
             </TextView>
             <TouchableOpacity onPress={copyTransactionHash}>
-              <Image style={styles.copyImage} source={copy} />
+              {copyBoardAlert(transactionId)}
             </TouchableOpacity>
           </View>
         </View>

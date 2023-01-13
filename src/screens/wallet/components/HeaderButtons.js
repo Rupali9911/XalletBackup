@@ -10,10 +10,32 @@ import CommonStyles from '../../../constants/styles';
 import Colors from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import { RF, hp, wp } from '../../../constants/responsiveFunct';
+import {
+    Menu,
+    MenuOption,
+    MenuOptions,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
+  import {translate} from '../../../walletUtils';
 
 export const HeaderBtns = (props) => {
     return (
         <TouchableOpacity onPress={props.onPress} style={styles.buttonContHeader} >
+            {props?.address && <Menu opened={props.address}>
+          <MenuTrigger />
+          <MenuOptions
+            optionsContainerStyle={{
+              width: 'auto',
+              backgroundColor: Colors.BLACK1,
+            }}>
+            <MenuOption>
+              <Text style={{color: '#FFFFFF'}}>
+                {`${translate('wallet.common.copied')}!`}
+              </Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+       }
             <View style={[styles.iconContainer,props.bgColor && {backgroundColor: props.bgColor}]}>
                 <Image source={props.image} style={[styles.headerBottomIcons,props.iconColor && {tintColor: props.iconColor}]} />
             </View>
@@ -21,7 +43,6 @@ export const HeaderBtns = (props) => {
         </TouchableOpacity>
     )
 }
-
 const styles = StyleSheet.create({
     headerBtns: {
         flexDirection: "row"
