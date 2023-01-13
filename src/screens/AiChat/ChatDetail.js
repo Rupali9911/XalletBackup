@@ -291,12 +291,14 @@ const ChatDetail = ({route, navigation}) => {
         style={styles.backButtonWrap}>
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
       </TouchableOpacity>
-      <KeyboardAvoidingView
-        style={{
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
           flex: 1,
         }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 5 : 30}
-        behavior="padding">
+        scrollEnabled={false}
+        extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
+        keyboardShouldPersistTaps={'always'}
+        keyboardOpeningTime={0}>
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
@@ -345,7 +347,7 @@ const ChatDetail = ({route, navigation}) => {
             }}
           />
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
       <Toast
         position="bottom"
         visibilityTime={2000}
