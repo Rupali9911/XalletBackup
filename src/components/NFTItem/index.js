@@ -22,7 +22,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import ProfileImg from '../../assets/pngs/default_profile_img.png';
 import Ethereum from '../../assets/pngs/ethereum.png';
-import {handleLike} from '../../screens/discover/discoverItem';
+import {handleLike} from '../../utils/handleLikeFunction';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {ImagekitType} from '../../common/ImageConstant';
 

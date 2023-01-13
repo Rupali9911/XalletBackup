@@ -12,49 +12,21 @@ import {C_Image} from '../../components';
 import {SVGS} from '../../constants';
 import {fonts} from '../../res';
 import {translate} from '../../walletUtils';
-import {NEW_BASE_URL} from '../../common/constants';
 import {ImagekitType} from '../../common/ImageConstant';
-import sendRequest from '../../helpers/AxiosApiRequest';
+import {handleLike} from '../../utils/handleLikeFunction';
 import {alertWithSingleBtn, numberWithCommas} from '../../utils';
 import {styles} from './styled';
 
 const {ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
-
-export const handleLike = async nftItem => {
-  let getNftItem = {...nftItem};
-  return new Promise(async (resolve, reject) => {
-    let data = {
-      nftId: nftItem.nftId,
-      status: Number(nftItem.isLike) === 1 ? 0 : 1,
-    };
-    sendRequest({
-      url: `${NEW_BASE_URL}/nfts/like`,
-      method: 'POST',
-      data,
-    })
-      .then(response => {
-        if (response.generatedMaps.length > 0 || response.affected) {
-          getNftItem.isLike = data.status;
-          getNftItem.totalLike = data.status
-            ? Number(getNftItem.totalLike) + 1
-            : Number(getNftItem.totalLike) - 1;
-          resolve(getNftItem);
-        } else {
-          reject(nftItem);
-        }
-      })
-      .catch(err => {
-        reject(nftItem);
-      });
-  });
-};
-
+//========================== Discover Item Component =============================
 function discoverItem({item}) {
   console.log('@@@ Discover Item =======>');
   const navigation = useNavigation();
 
+  //========================== Component's Level States =============================
   const [nftItem, setNftItem] = useState(item);
 
+  //========================== Component local variables =============================
   let creatorImage = nftItem?.creator?.avatar ? nftItem.creator.avatar : null;
   let ownerImage = nftItem?.owner?.avatar ? nftItem.owner.avatar : null;
 
@@ -70,25 +42,9 @@ function discoverItem({item}) {
     ? nftItem.owner.address.substring(0, 6)
     : '---';
 
-  const avatarpress = v => {
-    if (v === 'owner') {
-      if (nftItem?.owner?.address)
-        navigation.push('Profile', {id: nftItem?.owner?.address});
-    } else {
-      if (nftItem?.creator?.address)
-        navigation.push('Profile', {id: nftItem?.creator?.address});
-    }
-  };
-
-  const handleLikeMethod = async () => {
-    const nftData = await handleLike(nftItem);
-    if (nftData) {
-      setNftItem(nftData);
-    }
-  };
-
-  return (
-    <Box>
+  //========================== Render creater and owner avatar image =============================
+  const renderCreaterOwnerAvatar = () => {
+    return (
       <HStack py={2} w="90%" alignSelf="center">
         <Flex flex={1}>
           <Pressable
@@ -151,6 +107,12 @@ function discoverItem({item}) {
           </Pressable>
         </Flex>
       </HStack>
+    );
+  };
+
+  //========================== Render NFT image =============================
+  const renderNftImageItem = () => {
+    return (
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => {
@@ -168,37 +130,49 @@ function discoverItem({item}) {
           imageStyle={styles.modalImage}
         />
       </TouchableOpacity>
-      <Box px={4} py={3}>
-        <HStack justifyContent="space-between">
-          <TouchableOpacity onPress={handleLikeMethod}>
-            {Number(nftItem?.isLike) ? <HeartActiveIcon /> : <HeartWhiteIcon />}
-          </TouchableOpacity>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Menu
-              onSelect={value => {
-                modalAlert(
-                  translate('common.Confirm'),
-                  value === 1
-                    ? translate('common.nftReported')
-                    : translate('common.userBlocked'),
-                );
-              }}>
-              <MenuTrigger children={<ThreeDotsVerticalIcon />} />
-              <MenuOptions>
-                <MenuOption value={1}>
-                  <Text style={{marginVertical: 10}}>
-                    {translate('common.reportNft')}
-                  </Text>
-                </MenuOption>
-                <MenuOption value={2}>
-                  <Text style={{marginVertical: 10}}>
-                    {translate('common.blockUser')}
-                  </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
-          </View>
-        </HStack>
+    );
+  };
+
+  //========================== Render like and menu button =============================
+  const renderNftLikeMenuBotton = () => {
+    return (
+      <HStack justifyContent="space-between">
+        <TouchableOpacity onPress={handleLikeMethod}>
+          {Number(nftItem?.isLike) ? <HeartActiveIcon /> : <HeartWhiteIcon />}
+        </TouchableOpacity>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Menu
+            onSelect={value => {
+              alertWithSingleBtn(
+                translate('common.Confirm'),
+                value === 1
+                  ? translate('common.nftReported')
+                  : translate('common.userBlocked'),
+              );
+            }}>
+            <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+            <MenuOptions>
+              <MenuOption value={1}>
+                <Text style={{marginVertical: 10}}>
+                  {translate('common.reportNft')}
+                </Text>
+              </MenuOption>
+              <MenuOption value={2}>
+                <Text style={{marginVertical: 10}}>
+                  {translate('common.blockUser')}
+                </Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        </View>
+      </HStack>
+    );
+  };
+
+  //========================== Render nft like count and name =============================
+  const renderNftLikeCountName = () => {
+    return (
+      <>
         <Text
           mt={2}
           fontFamily={fonts.ARIAL_BOLD}
@@ -217,6 +191,35 @@ function discoverItem({item}) {
           fontSize={'lg'}>
           {nftItem.name}
         </Text>
+      </>
+    );
+  };
+
+  //========================== Other supportive function =============================
+  const avatarpress = v => {
+    if (v === 'owner') {
+      if (nftItem?.owner?.address)
+        navigation.push('Profile', {id: nftItem?.owner?.address});
+    } else {
+      if (nftItem?.creator?.address)
+        navigation.push('Profile', {id: nftItem?.creator?.address});
+    }
+  };
+
+  const handleLikeMethod = async () => {
+    const nftData = await handleLike(nftItem);
+    if (nftData) {
+      setNftItem(nftData);
+    }
+  };
+
+  return (
+    <Box>
+      {renderCreaterOwnerAvatar()}
+      {renderNftImageItem()}
+      <Box px={4} py={3}>
+        {renderNftLikeMenuBotton()}
+        {renderNftLikeCountName()}
       </Box>
     </Box>
   );
