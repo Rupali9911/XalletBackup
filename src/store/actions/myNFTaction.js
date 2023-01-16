@@ -17,10 +17,20 @@ import {
   MY_NFT_OWNED_PAGE_CHANGE,
   MY_NFT_CREATED_LIST_RESET,
   MY_NFT_OWNED_LIST_RESET,
+  MY_NFT_CREATED_LOAD_START,
+  MY_NFT_OWNED_LOAD_START,
 } from '../types';
 
 export const myNftLoadStart = () => ({
   type: MY_NFT_LOAD_START,
+});
+
+export const myNftCreatedLoadStart = () => ({
+  type: MY_NFT_CREATED_LOAD_START,
+});
+
+export const myNftOwnedLoadStart = () => ({
+  type: MY_NFT_OWNED_LOAD_START,
 });
 
 export const myNftLoadFail = () => ({
@@ -76,7 +86,12 @@ export const favoriteNftSuccess = data => ({
 
 export const myNFTList = (pageIndex, pageSize, address, category) => {
   return dispatch => {
-    dispatch(myNftLoadStart());
+    // dispatch(myNftLoadStart());
+    if (category == 1) {
+      dispatch(myNftCreatedLoadStart());
+    } else {
+      dispatch(myNftOwnedLoadStart());
+    }
 
     const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}`;
     fetch(url)

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Linking,
   StyleSheet,
@@ -47,6 +47,7 @@ import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import * as Tabs from 'react-native-collapsible-tab-view';
+import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -82,9 +83,9 @@ function Profile({navigation, connector, route}) {
     userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
-  const ComponentTypes = [<NFTCreated />, <NFTOwned />];
 
   //================== Components State Defination ===================
+
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
   const [childScroll, setChildScroll] = useState(0);
@@ -95,29 +96,34 @@ function Profile({navigation, connector, route}) {
   const [index, setIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
-  const [id, setId] = useState();
   const [currentTabIndex, setCurrentTabIndex] = React.useState(0);
-  const [tabName, setTabName] = React.useState('');
-  const [routes] = useState([
-    {
-      key: 'profileCreated',
-      title: translate('wallet.common.profileCreated'),
-      component: ComponentTypes[0],
-    },
-    {
-      key: 'nftOwned',
-      title: translate('wallet.common.owned'),
-      component: ComponentTypes[1],
-    },
-  ]);
+  // const [id, setId] = useState();
+  const id = route?.params?.id
+    ? route?.params?.id
+    : userData?.userWallet?.address;
+
+  // const ComponentTypes = [<NFTCreated id={id} />, <NFTOwned id={id} />];
+
+  // const [routes] = useState([
+  //   {
+  //     key: 'profileCreated',
+  //     title: translate('wallet.common.profileCreated'),
+  //     component: <NFTCreated id={id} />,
+  //   },
+  //   {
+  //     key: 'nftOwned',
+  //     title: translate('wallet.common.owned'),
+  //     component: <NFTOwned id={id} />,
+  //   },
+  // ]);
 
   //================== Global Variables ===================
-  const socialSite =
-    userDetails?.twitterSite ||
-    userDetails?.instagramSite ||
-    userDetails?.youtubeSite ||
-    userDetails?.discordSite ||
-    userDetails?.website;
+  // const socialSite =
+  //   userDetails?.twitterSite ||
+  //   userDetails?.instagramSite ||
+  //   userDetails?.youtubeSite ||
+  //   userDetails?.discordSite ||
+  //   userDetails?.website;
 
   //===================== UseEffect Function =========================
 
@@ -143,18 +149,21 @@ function Profile({navigation, connector, route}) {
     !loading && dispatch(endLoadingBanner());
   }, [userData, loading]);
 
-  const handleUserData = () => {
+  const handleUserData = useCallback(() => {
     dispatch(startLoadingBanner());
     dispatch(startLoadingImage());
-    console.log('route?.params?.id : ', route?.params?.id);
+    // console.log('route?.params?.id : ', route?.params?.id);
     if (route?.params?.id) {
-      setId(route?.params?.id);
+      // setId(route?.params?.id);
+      // id = route?.params?.id;
       dispatch(getUserData(route?.params?.id, true));
     } else {
-      setId(userData?.userWallet?.address);
+      // setId(userData?.userWallet?.address);
+      // id = userData?.userWallet?.address;
       dispatch(getUserData(userData?.userWallet?.address, false));
     }
-  };
+  }, []);
+
   const OPEN_CAMERA = 0;
   const OPEN_GALLERY = 1;
   const REMOVE_BANNER = 2;
@@ -506,12 +515,17 @@ function Profile({navigation, connector, route}) {
   const RenderHeader = () => {
     return (
       <View
-        pointerEvents="box-none"
-        style={{
-          // flex: socialSite ? 0.6 : 0.55,
-          position: 'relative',
-          paddingBottom: SIZE(10),
-        }}
+        style={
+          {
+            // flex: socialSite ? 0.6 : 0.55,
+            // position: 'relative',
+            // paddingBottom: SIZE(10),
+          }
+        }
+        // hitSlop={{top: 10, bottom: 10, left: 0, right: 0}}
+        // pointerEvents={'box-none'}
+        // pointerEvents={{}}
+        // onPointerCancelCapture
         // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
       >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
@@ -643,21 +657,14 @@ function Profile({navigation, connector, route}) {
           fontFamily: 'Arial',
           textTransform: 'none',
         }}
-        indicatorStyle={{
-          borderBottomColor: COLORS.BLUE4,
-          height: 1,
-          marginBottom: SIZE(39),
-          backgroundColor: COLORS.BLUE4,
-        }}
         index={currentTabIndex}
-        focusedTab={tabName}
-        navigate
-        // containerRef={ref.current.currentTabIndex}
+        width={'100%'}
       />
     ),
     [],
   );
 
+  // console.log('This is ID : ', id);
   return (
     <AppBackground>
       {/* <ScrollView
@@ -687,32 +694,21 @@ function Profile({navigation, connector, route}) {
       </ScrollView> */}
 
       <Tabs.Container
-        ref={ref}
         renderHeader={RenderHeader}
-        lazy
-        cancelLazyFadeIn={false}
-        cancelTranslation={false}
-        onTabChange={e => {
-          setTabName(e.tabName);
-        }}
+        lazy={true}
         onIndexChange={index => {
           setCurrentTabIndex(index);
         }}
-        pagerProps={{hitSlop: {left: -10}}}
         renderTabBar={TabBarComponent}>
-        {routes.map(tab => {
-          return (
-            <Tabs.Tab name={tab.title} key={tab.key}>
-              {tab.component}
-            </Tabs.Tab>
-          );
-        })}
-        {/* <Tabs.Tab name={'A'} label={'A'}>
-          <NFTCreated />
+        <Tabs.Tab
+          name={translate('wallet.common.profileCreated')}
+          key={'profileCreated'}>
+          <NFTCreated id={id} />
         </Tabs.Tab>
-        <Tabs.Tab name={'B'} label={'B'}>
-          <NFTCreated />
-        </Tabs.Tab> */}
+
+        <Tabs.Tab name={translate('wallet.common.owned')} key={'nftOwned'}>
+          <NFTOwned id={id} />
+        </Tabs.Tab>
       </Tabs.Container>
     </AppBackground>
   );
