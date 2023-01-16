@@ -47,6 +47,7 @@ import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import * as Tabs from 'react-native-collapsible-tab-view';
+import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -83,7 +84,6 @@ function Profile({navigation, connector, route}) {
     userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
-  const ComponentTypes = [<NFTCreated />, <NFTOwned />];
 
   //================== Components State Defination ===================
 
@@ -516,12 +516,17 @@ function Profile({navigation, connector, route}) {
   const RenderHeader = () => {
     return (
       <View
-        pointerEvents="box-none"
-        style={{
-          // flex: socialSite ? 0.6 : 0.55,
-          position: 'relative',
-          paddingBottom: SIZE(10),
-        }}
+        style={
+          {
+            // flex: socialSite ? 0.6 : 0.55,
+            // position: 'relative',
+            // paddingBottom: SIZE(10),
+          }
+        }
+        // hitSlop={{top: 10, bottom: 10, left: 0, right: 0}}
+        // pointerEvents={'box-none'}
+        // pointerEvents={{}}
+        // onPointerCancelCapture
         // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
       >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
@@ -653,21 +658,14 @@ function Profile({navigation, connector, route}) {
           fontFamily: 'Arial',
           textTransform: 'none',
         }}
-        indicatorStyle={{
-          borderBottomColor: COLORS.BLUE4,
-          height: 1,
-          marginBottom: SIZE(39),
-          backgroundColor: COLORS.BLUE4,
-        }}
         index={currentTabIndex}
-        focusedTab={tabName}
-        navigate
-        // containerRef={ref.current.currentTabIndex}
+        width={'100%'}
       />
     ),
     [],
   );
 
+  // console.log('This is ID : ', id);
   return (
     <AppBackground>
       {/* <ScrollView

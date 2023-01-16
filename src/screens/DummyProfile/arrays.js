@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  Dimensions,
 } from 'react-native';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
@@ -21,6 +22,7 @@ import {
   myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 import * as Tabs from 'react-native-collapsible-tab-view';
+const {height} = Dimensions.get('window');
 
 const Item = [
   {name: 'Marissa Castillo', number: 7766398169},
@@ -175,7 +177,10 @@ const Item = [
   {name: 'Vincent Sandoval', number: 2606111495},
 ];
 
-const Contacts = () => {
+const Contacts = props => {
+  const {id} = props;
+  console.log('check inside ID : ', id);
+
   const isFocusedHistory = useIsFocused();
 
   const {MyNFTReducer} = useSelector(state => state);
@@ -184,10 +189,10 @@ const Contacts = () => {
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   let pageNum = 1;
-  let limit = 100;
+  let limit = 10;
   let tab = 1;
 
-  const id = '0x3cc51779881e3723d5aa23a2adf0b215124a177d';
+  // const id = '0x3cc51779881e3723d5aa23a2adf0b215124a177d';
 
   // console.log('IDDDD : ', id);
 
@@ -244,42 +249,76 @@ const Contacts = () => {
   };
 
   const renderFooter = () => {
-    if (!MyNFTReducer.myNftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
+    if (MyNFTReducer.myNftListLoading && MyNFTReducer.myNftCreatedListPage > 1)
+      return <ActivityIndicator size="small" color={colors.themeR} />;
+    return null;
   };
 
-  console.log(
-    ' MyNFTReducer.myNftListLoading : ',
-    MyNFTReducer.myNftListLoading,
-  );
+  const RenderHeader = () => {
+    // console.log('isFirstRender ', isFirstRender);
+    // console.log(
+    //   'MyNFTReducer.myNftListLoading : ',
+    //   MyNFTReducer.myNftListLoading,
+    // );
+    // console.log(
+    //   'MyNFTReducer.myNftCreatedListPage : ',
+    //   MyNFTReducer.myNftCreatedListPage,
+    // );
 
-  return (
-    // <Tabs.FlatList
-    //   data={Item}
-    //   keyExtractor={(_, i) => String(i)}
-    //   renderItem={renderItem}
-    // />
-    <View style={styles.trendCont}>
-      {/* {isFirstRender ? (
-        isFirstRender
-      ) : MyNFTReducer.myNftCreatedListPage === 1 &&
-        MyNFTReducer.myNftListLoading ? (
-        <View style={styles.sorryMessageCont}>
-          <Loader />
-        </View>
-      ) : MyNFTReducer?.myNftCreatedList?.length ? (
-        <View> */}
+    return (
+      <View style={styles.trendCont}>
+        {isFirstRender ? (
+          isFirstRender
+        ) : MyNFTReducer.myNftListLoading &&
+          MyNFTReducer.myNftCreatedListPage === 1 ? (
+          <View style={styles.sorryMessageCont}>
+            <Loader />
+          </View>
+        ) : MyNFTReducer?.myNftCreatedList?.length == 0 ? (
+          <View style={styles.sorryMessageCont}>
+            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+          </View>
+        ) : null}
+
+        {/* {MyNFTReducer.myNftCreatedList
+          .length ? null : MyNFTReducer.myNftCreatedListPage === 1 &&
+          MyNFTReducer.myNftListLoading ? (
+          <View style={styles.sorryMessageCont}>
+            <Text>{'Header Loader ...'}</Text>
+          </View>
+        ) : (
+          <View style={styles.sorryMessageCont}>
+            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+          </View>
+        )} */}
+      </View>
+    );
+  };
+
+  const RenderFlatlist = () => {
+    console.log('isFirstRender ', isFirstRender);
+    console.log(
+      'MyNFTReducer.myNftListLoading : ',
+      MyNFTReducer.myNftListLoading,
+    );
+    console.log(
+      'MyNFTReducer.myNftCreatedListPage : ',
+      MyNFTReducer.myNftCreatedListPage,
+    );
+    return (
       <Tabs.FlatList
         data={MyNFTReducer?.myNftCreatedList}
         renderItem={renderItem}
         keyExtractor={(v, i) => 'item_' + i}
-        horizontal={false}
+        // horizontal={false}
         numColumns={2}
-        initialNumToRender={15}
+        initialNumToRender={10}
+        ListHeaderComponent={RenderHeader}
         onRefresh={handlePullRefresh}
         refreshing={
           MyNFTReducer.myNftCreatedListPage === 1 &&
-          MyNFTReducer.myNftListLoading
+          MyNFTReducer.myNftListLoading &&
+          isFirstRender
         }
         onEndReached={() => {
           if (
@@ -295,13 +334,27 @@ const Contacts = () => {
         ListFooterComponent={renderFooter}
         onEndReachedThreshold={0.4}
       />
-      {/* </View>
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )} */}
-    </View>
+    );
+  };
+
+  return (
+    // <View style={styles.trendCont}>
+    //   {isFirstRender ? (
+    //     isFirstRender
+    //   ) : MyNFTReducer.myNftCreatedListPage === 1 &&
+    //     MyNFTReducer.myNftListLoading ? (
+    //     <View style={styles.sorryMessageCont}>
+    //       <Loader />
+    //     </View>
+    //   ) : MyNFTReducer?.myNftCreatedList?.length ? (
+    <Text>{'Hello'}</Text>
+    // RenderFlatlist()
+    //   ) : (
+    //     <View style={styles.sorryMessageCont}>
+    //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+    //     </View>
+    //   )}
+    // </View>
   );
 };
 
@@ -355,7 +408,7 @@ const styles = StyleSheet.create({
   },
   sorryMessageCont: {
     // flex: 1,
-    // marginTop: height / 6.5,
+    marginTop: height / 6.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
