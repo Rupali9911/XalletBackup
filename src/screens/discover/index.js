@@ -12,7 +12,7 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import {colors} from '../../res';
 import DiscoverItem from './discoverItem';
 
-function ExploreScreen() {
+const ExploreScreen = () => {
   console.log('@@@ Discover screen (Tab) =======>');
   const isFocused = useIsFocused();
 
@@ -153,7 +153,7 @@ function ExploreScreen() {
       </View>
     </Container>
   );
-}
+};
 
 export default React.memo(ExploreScreen);
 
