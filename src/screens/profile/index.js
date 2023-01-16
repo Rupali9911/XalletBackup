@@ -47,6 +47,7 @@ import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import SocialMediaLinks from '../../components/SocialMediaLinks';
 import * as Tabs from 'react-native-collapsible-tab-view';
+import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -77,7 +78,6 @@ function Profile({navigation, connector, route}) {
     userData,
   } = useSelector(state => state.UserReducer);
   const {UserReducer} = useSelector(state => state);
-  const ComponentTypes = [<NFTCreated />, <NFTOwned />];
 
   //================== Components State Defination ===================
   const [userCopyAddress, setUserCopyAddress] = useState(false);
@@ -601,6 +601,7 @@ function Profile({navigation, connector, route}) {
     [],
   );
 
+  // console.log('This is ID : ', id);
   return (
     <AppBackground>
       {/* <ScrollView
