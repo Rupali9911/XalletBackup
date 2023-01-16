@@ -14,47 +14,76 @@ import {
 } from '../../store/actions/myNFTaction';
 import styles from './styles';
 import {Tabs} from 'react-native-collapsible-tab-view';
+import AppBackground from '../../components/appBackground';
 
 const NFTCreated = props => {
-  // const {route, id, setChildScroll, scrollEnabled} = props;
-  const isFocusedHistory = useIsFocused();
-
+  console.log('props Id : ', props.id);
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [isFirstRender, setIsFirstRender] = useState(true);
-
-  let pageNum = 1;
-  let limit = 10;
-  let tab = 1;
-
-  const id = '0x3cc51779881e3723d5aa23a2adf0b215124a177d';
-
-  // console.log('IDDDD : ', id);
 
   useEffect(() => {
-    dispatch(myNftCreatedListingReset());
-    if (isFocusedHistory) {
-      if (!MyNFTReducer?.myNftCreatedList?.length) {
-        pressToggle();
-      } else {
-        if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
-          dispatch(myNftLoadFail());
-        } else {
-          pressToggle();
-        }
-      }
-      setIsFirstRender(false);
-    }
-  }, [isFocusedHistory, id]);
+    pressToggle();
+  }, []);
 
-  const renderFooter = () => {
-    if (!MyNFTReducer.myNftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
+  const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
+    dispatch(myNFTList(pageIndex, pageSize, address, category));
+  }, []);
+
+  const pressToggle = () => {
+    getNFTlist(1, 10, props.id, 1);
   };
 
-  const renderItem = ({item}) => {
+  // console.log('Created MyNFTReducer : ', MyNFTReducer);
+  // console.log('Created Page : ', MyNFTReducer.myNftCreatedListPage);
+  // console.log('Created Loading : ', MyNFTReducer.myNftCreatedListLoading);
+  // console.log('Created Count : ', MyNFTReducer.myNftCreatedTotalCount);
+  // console.log('Created List : ', MyNFTReducer.myNftCreatedList);
+
+  const renderFooter = () => {
+    // console.log(
+    //   'Render Loading Status : ',
+    //   MyNFTReducer.myNftCreatedListLoading,
+    //   MyNFTReducer.myNftCreatedListPage,
+    // );
+    if (
+      MyNFTReducer.myNftCreatedListLoading &&
+      MyNFTReducer.myNftCreatedListPage > 1
+    )
+      return <ActivityIndicator size="small" color={colors.themeR} />;
+    return null;
+  };
+
+  const renderItem = ({item, index}) => {
     return (
+      // <View style={styles.trendCont}>
+      //   {MyNFTReducer.myNftCreatedListLoading &&
+      //   MyNFTReducer.myNftCreatedListPage == 1 ? (
+      //     <View style={styles.sorryMessageCont}>
+      //       <Loader />
+      //     </View>
+      //   ) : MyNFTReducer.myNftCreatedList.length ? (
+      //     <NFTItem
+      //       screenName="movieNFT"
+      //       item={item}
+      //       // image={imageUri}
+      //       profile={true}
+      //       onPress={() => {
+      //         // dispatch(changeScreenName('movieNFT'));
+      //         navigation.push('CertificateDetail', {
+      //           networkName: item?.network?.networkName,
+      //           collectionAddress: item?.collection?.address,
+      //           nftTokenId: item?.tokenId,
+      //         });
+      //       }}
+      //     />
+      //   ) : (
+      //     <View style={styles.sorryMessageCont}>
+      //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+      //     </View>
+      //   )}
+      // </View>
+
       <NFTItem
         screenName="movieNFT"
         item={item}
@@ -69,98 +98,114 @@ const NFTCreated = props => {
           });
         }}
       />
-      // <View style={{padding: 50}}>
-      //   <Text>{'CREATE'}</Text>
-      //   {/* <Text>{item.categoryName}</Text> */}
-      // </View>
     );
-  };
-
-  const memoizedValue = useMemo(
-    () => renderItem,
-    [MyNFTReducer.myNftCreatedList],
-  );
-
-  const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-    dispatch(myNFTList(pageIndex, pageSize, address, category));
-  }, []);
-
-  const pressToggle = () => {
-    getNFTlist(pageNum, limit, id, tab);
   };
 
   const handlePullRefresh = () => {
     dispatch(myNftCreatedListingReset());
     pressToggle();
   };
+
+  const renderHeader = () => {
+    console.log('C Loading : ', MyNFTReducer.myNftCreatedListLoading);
+    console.log('C Page : ', MyNFTReducer.myNftCreatedListPage);
+    console.log('C Length : ', MyNFTReducer.myNftCreatedList.length);
+
+    return (
+      <View style={styles.trendCont}>
+        {MyNFTReducer.myNftCreatedListLoading &&
+        MyNFTReducer.myNftCreatedListPage == 1 ? (
+          <View style={styles.sorryMessageCont}>
+            <Loader />
+          </View>
+        ) : MyNFTReducer.myNftCreatedList.length ? null : (
+          <View style={styles.sorryMessageCont}>
+            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  // console.log('Created Loading : ', MyNFTReducer.myNftCreatedListLoading);
+
+  const renderList = () => {
+    return (
+      <Tabs.FlatList
+        key={1}
+        data={MyNFTReducer?.myNftCreatedList}
+        renderItem={renderItem}
+        numColumns={2}
+        keyExtractor={(v, i) => 'item_' + i}
+        initialNumToRender={10}
+        onEndReached={() => {
+          if (
+            !MyNFTReducer.myNftCreatedListLoading &&
+            MyNFTReducer.myNftCreatedList.length !=
+              MyNFTReducer.myNftCreatedTotalCount
+          ) {
+            let num = MyNFTReducer.myNftCreatedListPage + 1;
+            getNFTlist(num, 10, props.id, 1);
+            dispatch(myNftCreatedPageChange(num));
+          }
+        }}
+        // ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        onEndReachedThreshold={0.4}
+        onRefresh={handlePullRefresh}
+        refreshing={
+          MyNFTReducer.myNftCreatedListPage === 1 &&
+          MyNFTReducer.myNftCreatedListLoading
+        }
+      />
+    );
+  };
+
   return (
-    <View style={styles.trendCont}>
-      {isFirstRender ? (
-        isFirstRender
-      ) : MyNFTReducer.myNftCreatedListPage === 1 &&
-        MyNFTReducer.myNftListLoading ? (
-        <View style={styles.sorryMessageCont}>
-          <Loader />
-        </View>
-      ) : MyNFTReducer?.myNftCreatedList?.length ? (
-        <View>
-          <Tabs.FlatList
-            key={1}
-            // scrollEnabled={scrollEnabled}
-            data={MyNFTReducer?.myNftCreatedList}
-            horizontal={false}
-            // numColumns={2}
-            initialNumToRender={15}
-            // nestedScrollEnabled={true}
-            onRefresh={handlePullRefresh}
-            refreshing={
-              MyNFTReducer.myNftCreatedListPage === 1 &&
-              MyNFTReducer.myNftListLoading
-            }
-            renderItem={memoizedValue}
-            onEndReached={() => {
-              if (
-                !MyNFTReducer.myNftListLoading &&
-                MyNFTReducer.myNftCreatedList.length !==
-                  MyNFTReducer.myNftTotalCount
-              ) {
-                let num = MyNFTReducer.myNftCreatedListPage + 1;
-                getNFTlist(num, limit, id, tab);
-                dispatch(myNftCreatedPageChange(num));
-              }
-            }}
-            // onScrollBeginDrag={s => {
-            //   // console.log(
-            //   //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
-            //   //   s?.nativeEvent?.contentOffset,
-            //   // );
-            //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-            // }}
-            // onScroll={s => {
-            //   // console.log(
-            //   //   '🚀 ~ c ~ onScroll ~ ~',
-            //   //   s?.nativeEvent?.contentOffset,
-            //   // );
-            //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-            // }}
-            // onScrollEndDrag={s => {
-            //   // console.log(
-            //   //   '🚀 ~ ~ onScrollEndDrag ~ ~',
-            //   //   s?.nativeEvent?.contentOffset,
-            //   // );
-            //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-            // }}
-            ListFooterComponent={renderFooter}
-            onEndReachedThreshold={0.4}
-            keyExtractor={(v, i) => 'item_' + i}
-          />
-        </View>
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
-    </View>
+    <AppBackground>
+      <Tabs.FlatList
+        key={1}
+        data={MyNFTReducer?.myNftCreatedList}
+        renderItem={renderItem}
+        numColumns={2}
+        keyExtractor={(v, i) => 'item_' + i}
+        initialNumToRender={10}
+        onEndReached={() => {
+          if (
+            !MyNFTReducer.myNftCreatedListLoading &&
+            MyNFTReducer.myNftCreatedList.length !=
+              MyNFTReducer.myNftCreatedTotalCount
+          ) {
+            let num = MyNFTReducer.myNftCreatedListPage + 1;
+            getNFTlist(num, 10, props.id, 1);
+            dispatch(myNftCreatedPageChange(num));
+          }
+        }}
+        // ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        onEndReachedThreshold={0.4}
+        onRefresh={handlePullRefresh}
+        refreshing={
+          MyNFTReducer.myNftCreatedListPage === 1 &&
+          MyNFTReducer.myNftCreatedListLoading
+        }
+      />
+    </AppBackground>
+
+    // <View style={styles.trendCont}>
+    //   {MyNFTReducer.myNftCreatedListLoading &&
+    //   MyNFTReducer.myNftCreatedListPage == 1 ? (
+    //     <View style={styles.sorryMessageCont}>
+    //       <Loader />
+    //     </View>
+    //   ) : MyNFTReducer.myNftCreatedList.length ? (
+    //     renderList()
+    //   ) : (
+    //     <View style={styles.sorryMessageCont}>
+    //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+    //     </View>
+    //   )}
+    // </View>
   );
 };
 
@@ -181,28 +226,26 @@ export default React.memo(NFTCreated);
 //   myNftLoadFail,
 // } from '../../store/actions/myNFTaction';
 // import styles from './styles';
-// import {
-//   Tabs,
-//   MaterialTabItem,
-//   CollapsibleTabView,
-// } from 'react-native-collapsible-tab-view';
+// import {Tabs} from 'react-native-collapsible-tab-view';
 
 // const NFTCreated = props => {
-//   const {route, id, setChildScroll, scrollEnabled} = props;
-//   console.log('ID : ', id);
+//   const {id} = props;
+
+//   console.log('****** ', id);
 //   const isFocusedHistory = useIsFocused();
 
-//   // const { id } = route?.params;
 //   const {MyNFTReducer} = useSelector(state => state);
 //   const dispatch = useDispatch();
 //   const navigation = useNavigation();
 //   const [isFirstRender, setIsFirstRender] = useState(true);
 
-//   // let pageNum = 1;
-//   // let limit = 10;
-//   // let tab = 1;
+//   // const id = '0x3cc51779881e3723d5aa23a2adf0b215124a177d';
 
-//   console.log('MyNFTReducer : ', MyNFTReducer);
+//   // console.log('ID : ', id);
+
+//   let pageNum = 1;
+//   let limit = 10;
+//   let tab = 1;
 
 //   useEffect(() => {
 //     dispatch(myNftCreatedListingReset());
@@ -220,12 +263,15 @@ export default React.memo(NFTCreated);
 //     }
 //   }, [isFocusedHistory, id]);
 
-//   // const renderFooter = () => {
-//   //   if (!MyNFTReducer.myNftListLoading) return null;
-//   //   return <ActivityIndicator size="small" color={colors.themeR} />;
-//   // };
+//   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
+//     dispatch(myNFTList(pageIndex, pageSize, address, category));
+//   }, []);
 
-//   const renderItem = ({item}) => {
+//   const pressToggle = () => {
+//     getNFTlist(pageNum, limit, id, tab);
+//   };
+
+//   const renderItem = ({item, index}) => {
 //     return (
 //       <NFTItem
 //         screenName="movieNFT"
@@ -244,177 +290,81 @@ export default React.memo(NFTCreated);
 //     );
 //   };
 
-//   const memoizedValue = useMemo(
-//     () => renderItem,
-//     [MyNFTReducer.myNftCreatedList],
-//   );
+//   const handlePullRefresh = () => {
+//     dispatch(myNftCreatedListingReset());
+//     pressToggle();
+//   };
 
-//   // const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-//   //   dispatch(myNFTList(pageIndex, pageSize, address, category));
-//   // }, []);
+//   const renderFooter = () => {
+//     if (MyNFTReducer.myNftListLoading && MyNFTReducer.myNftCreatedListPage > 1)
+//       return <ActivityIndicator size="small" color={colors.themeR} />;
+//     return null;
+//   };
 
-//   // const pressToggle = () => {
-//   //   getNFTlist(pageNum, limit, id, tab);
-//   // };
+//   const RenderHeader = () => {
+//     return (
+//       <View style={styles.trendCont}>
+//         {MyNFTReducer.myNftListLoading ? (
+//           <View style={styles.sorryMessageCont}>
+//             <Loader />
+//           </View>
+//         ) : MyNFTReducer?.myNftCreatedList?.length > 0 ? null : (
+//           <View style={styles.sorryMessageCont}>
+//             <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+//           </View>
+//         )}
 
-//   // const handlePullRefresh = () => {
-//   //   dispatch(myNftCreatedListingReset());
-//   //   pressToggle();
-//   // };
+//         {/* {(MyNFTReducer.myNftListLoading &&
+//           MyNFTReducer.myNftCreatedListPage === 1) ||
+//         (!MyNFTReducer.myNftListLoading &&
+//           MyNFTReducer.myNftCreatedList?.length == 0) ? (
+//           <View style={styles.sorryMessageCont}>
+//             <Loader />
+//           </View>
+//         ) : !MyNFTReducer.myNftListLoading &&
+//           MyNFTReducer?.myNftCreatedList?.length == 0 ? (
+//           <View style={styles.sorryMessageCont}>
+//             <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+//           </View>
+//         ) : null} */}
+//       </View>
+//     );
+//   };
 
-//   // const RenderNFTCreated = () => {
-//   //   return (
-//   //     <View style={styles.trendCont}>
-//   //       {isFirstRender ? (
-//   //         isFirstRender
-//   //       ) : MyNFTReducer.myNftCreatedListPage === 1 &&
-//   //         MyNFTReducer.myNftListLoading ? (
-//   //         <View style={styles.sorryMessageCont}>
-//   //           <Loader />
-//   //         </View>
-//   //       ) : MyNFTReducer?.myNftCreatedList?.length ? (
-//   //         <View>
-//   //           <FlatList
-//   //             key={1}
-//   //             scrollEnabled={scrollEnabled}
-//   //             data={MyNFTReducer?.myNftCreatedList}
-//   //             horizontal={false}
-//   //             numColumns={2}
-//   //             initialNumToRender={15}
-//   //             nestedScrollEnabled={true}
-//   //             onRefresh={handlePullRefresh}
-//   //             refreshing={
-//   //               MyNFTReducer.myNftCreatedListPage === 1 &&
-//   //               MyNFTReducer.myNftListLoading
-//   //             }
-//   //             renderItem={memoizedValue}
-//   //             onEndReached={() => {
-//   //               if (
-//   //                 !MyNFTReducer.myNftListLoading &&
-//   //                 MyNFTReducer.myNftCreatedList.length !==
-//   //                   MyNFTReducer.myNftTotalCount
-//   //               ) {
-//   //                 let num = MyNFTReducer.myNftCreatedListPage + 1;
-//   //                 getNFTlist(num, limit, id, tab);
-//   //                 dispatch(myNftCreatedPageChange(num));
-//   //               }
-//   //             }}
-//   //             // onScrollBeginDrag={s => {
-//   //             //   // console.log(
-//   //             //   //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
-//   //             //   //   s?.nativeEvent?.contentOffset,
-//   //             //   // );
-//   //             //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-//   //             // }}
-//   //             // onScroll={s => {
-//   //             //   // console.log(
-//   //             //   //   '🚀 ~ c ~ onScroll ~ ~',
-//   //             //   //   s?.nativeEvent?.contentOffset,
-//   //             //   // );
-//   //             //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-//   //             // }}
-//   //             // onScrollEndDrag={s => {
-//   //             //   // console.log(
-//   //             //   //   '🚀 ~ ~ onScrollEndDrag ~ ~',
-//   //             //   //   s?.nativeEvent?.contentOffset,
-//   //             //   // );
-//   //             //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-//   //             // }}
-//   //             ListFooterComponent={renderFooter}
-//   //             onEndReachedThreshold={0.4}
-//   //             keyExtractor={(v, i) => 'item_' + i}
-//   //           />
-//   //         </View>
-//   //       ) : (
-//   //         <View style={styles.sorryMessageCont}>
-//   //           <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-//   //         </View>
-//   //       )}
-//   //     </View>
-//   //   );
-//   // };
+//   const RenderFlatlist = () => {
+//     return (
+//       <Tabs.FlatList
+//         key={1}
+//         data={MyNFTReducer?.myNftCreatedList}
+//         renderItem={renderItem}
+//         keyExtractor={(v, i) => 'item_' + i}
+//         horizontal={false}
+//         numColumns={2}
+//         initialNumToRender={10}
+//         ListHeaderComponent={RenderHeader}
+//         onRefresh={handlePullRefresh}
+//         refreshing={
+//           MyNFTReducer.myNftCreatedListPage === 1 &&
+//           MyNFTReducer.myNftListLoading
+//         }
+//         onEndReached={() => {
+//           if (
+//             !MyNFTReducer.myNftListLoading &&
+//             MyNFTReducer.myNftCreatedList.length !==
+//               MyNFTReducer.myNftTotalCount
+//           ) {
+//             let num = MyNFTReducer.myNftCreatedListPage + 1;
+//             getNFTlist(num, limit, id, tab);
+//             dispatch(myNftCreatedPageChange(num));
+//           }
+//         }}
+//         ListFooterComponent={renderFooter}
+//         onEndReachedThreshold={0.4}
+//       />
+//     );
+//   };
 
-//   // console.log('FlatList Data : ', MyNFTReducer?.myNftCreatedList);
-//   return (
-//     // <Tabs.FlatList
-//     //   data={MyNFTReducer?.myNftCreatedList}
-//     //   // keyExtractor={(_, i) => String(i)}
-//     //   renderItem={renderItem}
-//     // />
-
-//     <Text>{'hello'}</Text>
-
-//     // <View style={styles.trendCont}>
-//     //   {isFirstRender ? (
-//     //     isFirstRender
-//     //   ) : MyNFTReducer.myNftCreatedListPage === 1 &&
-//     //     MyNFTReducer.myNftListLoading ? (
-//     //     <View style={styles.sorryMessageCont}>
-//     //       <Loader />
-//     //     </View>
-//     //   ) : MyNFTReducer?.myNftCreatedList?.length ? (
-//     //     <View>
-
-//     // <Tabs.FlatList
-//     //   key={1}
-//     //   // scrollEnabled={scrollEnabled}
-//     //   data={MyNFTReducer?.myNftCreatedList}
-//     //   // horizontal={false}
-//     //   // numColumns={2}
-//     //   // initialNumToRender={15}
-//     //   // nestedScrollEnabled={true}
-//     //   // onRefresh={handlePullRefresh}
-//     //   // refreshing={
-//     //   //   MyNFTReducer.myNftCreatedListPage === 1 && MyNFTReducer.myNftListLoading
-//     //   // }
-//     //   renderItem={memoizedValue}
-//     //   // onEndReached={() => {
-//     //   //   if (
-//     //   //     !MyNFTReducer.myNftListLoading &&
-//     //   //     MyNFTReducer.myNftCreatedList.length !== MyNFTReducer.myNftTotalCount
-//     //   //   ) {
-//     //   //     let num = MyNFTReducer.myNftCreatedListPage + 1;
-//     //   //     getNFTlist(num, limit, id, tab);
-//     //   //     dispatch(myNftCreatedPageChange(num));
-//     //   //   }
-//     //   // }}
-//     //   // onScrollBeginDrag={s => {
-//     //   //   // console.log(
-//     //   //   //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
-//     //   //   //   s?.nativeEvent?.contentOffset,
-//     //   //   // );
-//     //   //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-//     //   // }}
-//     //   // onScroll={s => {
-//     //   //   // console.log(
-//     //   //   //   '🚀 ~ c ~ onScroll ~ ~',
-//     //   //   //   s?.nativeEvent?.contentOffset,
-//     //   //   // );
-//     //   //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-//     //   // }}
-//     //   // onScrollEndDrag={s => {
-//     //   //   // console.log(
-//     //   //   //   '🚀 ~ ~ onScrollEndDrag ~ ~',
-//     //   //   //   s?.nativeEvent?.contentOffset,
-//     //   //   // );
-//     //   //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-//     //   // }}
-//     //   // ListFooterComponent={renderFooter}
-//     //   // onEndReachedThreshold={0.4}
-//     //   keyExtractor={(v, i) => 'item_' + i}
-//     // />
-//     //     </View>
-//     //   ) : (
-//     //     <View style={styles.sorryMessageCont}>
-//     //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-//     //     </View>
-//     //   )}
-//     // </View>
-
-//     // <Tabs.FlatList>
-//     //   <RenderNFTCreated />
-//     // </Tabs.FlatList>
-//   );
+//   return RenderFlatlist();
 // };
 
 // export default React.memo(NFTCreated);
