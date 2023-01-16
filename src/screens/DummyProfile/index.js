@@ -12,11 +12,8 @@ import {
   useWindowDimensions,
   SafeAreaView,
 } from 'react-native';
-import {
-  Tabs,
-  CollapsibleRef,
-  CollapsibleProps,
-} from 'react-native-collapsible-tab-view';
+import * as Tabs from 'react-native-collapsible-tab-view';
+
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
 import {AppHeader, C_Image} from '../../components';
 import colors from '../../res/colors';
@@ -36,6 +33,14 @@ import NftCreated from '../profile/nftCreated';
 const {SettingIcon, DefaultProfile} = SVGS;
 
 const DummyProfile = props => {
+  const ComponentTypes = [<Contacts />, <Contacts />];
+  const [currentTabIndex, setCurrentTabIndex] = React.useState(0);
+
+  const [tabs, setTabs] = React.useState([
+    {name: 'Created', component: ComponentTypes[0]},
+    {name: 'Owner', component: ComponentTypes[1]},
+  ]);
+
   const renderBannerImage = () => {
     const renderBanner = useCallback(() => {
       return (
@@ -92,21 +97,70 @@ const DummyProfile = props => {
     );
   };
 
+  const TabBarComponent = React.useCallback(
+    props => (
+      <Tabs.MaterialTabBar
+        {...props}
+        scrollEnabled
+        tabStyle={{
+          width: wp('50%'),
+          paddingHorizontal: wp('1%'),
+          justifyContent: 'center',
+        }}
+        activeColor={COLORS.BLUE2}
+        inactiveColor={COLORS.BLACK5}
+        labelStyle={{
+          fontSize: RF(1.6),
+          fontFamily: 'Arial',
+          textTransform: 'none',
+        }}
+        indicatorStyle={{
+          borderBottomColor: COLORS.BLUE4,
+          height: 1,
+          marginBottom: SIZE(39),
+          backgroundColor: COLORS.BLUE4,
+        }}
+        index={currentTabIndex}
+        width={'100%'}
+      />
+    ),
+    [],
+  );
+
   return (
+    // <AppBackground>
+    //   <Tabs.Container renderHeader={HeaderComponent} {...props} lazy>
+    //     <Tabs.Tab name="article" label="Article">
+    //       <Contacts />
+    //     </Tabs.Tab>
+    //     <Tabs.Tab name="albums" label="Albums">
+    //       <Contacts />
+    //     </Tabs.Tab>
+    //     <Tabs.Tab name="contacts" label="Contacts">
+    //       <NftCreated />
+    //     </Tabs.Tab>
+    //     <Tabs.Tab name="ordered" label="Ordered">
+    //       <NftCreated />
+    //     </Tabs.Tab>
+    //   </Tabs.Container>
+    // </AppBackground>
+
     <AppBackground>
-      <Tabs.Container renderHeader={HeaderComponent} {...props} lazy>
-        <Tabs.Tab name="article" label="Article">
-          <Contacts />
-        </Tabs.Tab>
-        <Tabs.Tab name="albums" label="Albums">
-          <Contacts />
-        </Tabs.Tab>
-        {/* <Tabs.Tab name="contacts" label="Contacts">
-          <NftCreated />
-        </Tabs.Tab>
-        <Tabs.Tab name="ordered" label="Ordered">
-          <NftCreated />
-        </Tabs.Tab> */}
+      <Tabs.Container
+        renderHeader={HeaderComponent}
+        lazy={true}
+        onIndexChange={index => {
+          setCurrentTabIndex(index);
+        }}
+        renderTabBar={TabBarComponent}
+        RefreshControl={false}>
+        {tabs.map(tab => {
+          return (
+            <Tabs.Tab name={tab.name} key={tab.name}>
+              {tab.component}
+            </Tabs.Tab>
+          );
+        })}
       </Tabs.Container>
     </AppBackground>
   );
