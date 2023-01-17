@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useIsFocused} from '@react-navigation/native';
 import {
   StyleSheet,
   Text,
@@ -68,6 +69,7 @@ function Profile({navigation, connector, route}) {
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
   const ref = React.useRef();
+  const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
   const {
@@ -601,7 +603,6 @@ function Profile({navigation, connector, route}) {
     [],
   );
 
-  // console.log('This is ID : ', id);
   return (
     <AppBackground>
       {/* <ScrollView
@@ -631,18 +632,18 @@ function Profile({navigation, connector, route}) {
       <Tabs.Container
         renderHeader={RenderHeader}
         lazy={true}
+        cancelLazyFadeIn={true}
+        renderTabBar={TabBarComponent}
         onIndexChange={index => {
           setCurrentTabIndex(index);
-        }}
-        renderTabBar={TabBarComponent}>
+        }}>
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>
-          <NFTCreated id={id} />
+          <NFTCreated id={id} isFocused={isFocused} />
         </Tabs.Tab>
-
         <Tabs.Tab name={translate('wallet.common.owned')} key={'nftOwned'}>
-          <NFTOwned id={id} />
+          <NFTOwned id={id} isFocused={isFocused} />
         </Tabs.Tab>
       </Tabs.Container>
     </AppBackground>

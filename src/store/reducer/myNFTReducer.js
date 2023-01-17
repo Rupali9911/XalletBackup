@@ -117,14 +117,16 @@ export default function MyNFTReducer(state = initialState, action) {
     case MY_NFT_CREATED_LIST_RESET:
       return (state = {
         ...state,
-        myNftCreatedListPage: 1,
+        myNftCreatedListLoading: true,
         myNftCreatedList: [],
+        myNftCreatedListPage: 1,
       });
     case MY_NFT_OWNED_LIST_RESET:
       return (state = {
         ...state,
-        myNftOwnedListPage: 1,
+        myNftOwnedListLoading: true,
         myNftOwnedList: [],
+        myNftOwnedListPage: 1,
       });
 
     default:

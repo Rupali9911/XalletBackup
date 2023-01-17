@@ -21,8 +21,20 @@ const NFTOwned = props => {
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
   useEffect(() => {
-    pressToggle();
+    // dispatch(myNftOwnedListingReset());
+
+    if (props.isFocused) {
+      if (!MyNFTReducer?.myNftOwnedList?.length) {
+        pressToggle();
+      } else if (
+        props.id &&
+        props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()
+      ) {
+        dispatch(myNftLoadFail());
+      }
+    }
   }, []);
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
@@ -33,18 +45,7 @@ const NFTOwned = props => {
     getNFTlist(1, 10, props.id, 2);
   };
 
-  // console.log('Owned MyNFTReducer : ', MyNFTReducer);
-  // console.log('Owned Page : ', MyNFTReducer.myNftOwnedListPage);
-  // console.log('Owned Loading : ', MyNFTReducer.myNftOwnedListLoading);
-  // console.log('Owned Count : ', MyNFTReducer.myNftOwnedTotalCount);
-  // console.log('Owned  List : ', MyNFTReducer.myNftOwnedList);
-
   const renderFooter = () => {
-    // console.log(
-    //   'Render Owned Footer : ',
-    //   MyNFTReducer.myNftOwnedListLoading,
-    //   MyNFTReducer.myNftOwnedListPage,
-    // );
     if (
       MyNFTReducer.myNftOwnedListLoading &&
       MyNFTReducer.myNftOwnedListPage > 1
@@ -58,10 +59,8 @@ const NFTOwned = props => {
       <NFTItem
         screenName="movieNFT"
         item={item}
-        // image={imageUri}
         profile={true}
         onPress={() => {
-          // dispatch(changeScreenName('movieNFT'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,
@@ -85,46 +84,49 @@ const NFTOwned = props => {
           <View style={styles.sorryMessageCont}>
             <Loader />
           </View>
-        ) : MyNFTReducer.myNftOwnedList.length ? null : (
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        )}
+        ) : null}
       </View>
     );
   };
 
-  // console.log('Created Loading : ', MyNFTReducer.myNftOwnedList);
+  const EmptyListMessage = () => {
+    return (
+      <View style={styles.trendCont}>
+        <View style={styles.sorryMessageCont}>
+          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        </View>
+      </View>
+    );
+  };
 
   return (
-    <AppBackground>
-      <Tabs.FlatList
-        key={2}
-        data={MyNFTReducer?.myNftCreatedList}
-        renderItem={renderItem}
-        numColumns={2}
-        keyExtractor={(v, i) => 'item_' + i}
-        onEndReached={() => {
-          if (
-            !MyNFTReducer.myNftOwnedListLoading &&
-            MyNFTReducer.myNftOwnedList.length !==
-              MyNFTReducer.myNftOwnedTotalCount
-          ) {
-            let num = MyNFTReducer.myNftOwnedListPage + 1;
-            getNFTlist(num, 10, props.id, 2);
-            dispatch(myNftOwnedPageChange(num));
-          }
-        }}
-        // ListHeaderComponent={renderHeader}
-        ListFooterComponent={renderFooter}
-        onEndReachedThreshold={0.4}
-        onRefresh={handlePullRefresh}
-        refreshing={
-          MyNFTReducer.myNftOwnedListPage === 1 &&
-          MyNFTReducer.myNftOwnedListLoading
+    <Tabs.FlatList
+      key={2}
+      data={MyNFTReducer?.myNftCreatedList}
+      renderItem={renderItem}
+      numColumns={2}
+      keyExtractor={(v, i) => 'item_' + i}
+      onEndReached={() => {
+        if (
+          !MyNFTReducer.myNftOwnedListLoading &&
+          MyNFTReducer.myNftOwnedList.length !==
+            MyNFTReducer.myNftOwnedTotalCount
+        ) {
+          let num = MyNFTReducer.myNftOwnedListPage + 1;
+          getNFTlist(num, 10, props.id, 2);
+          dispatch(myNftOwnedPageChange(num));
         }
-      />
-    </AppBackground>
+      }}
+      ListHeaderComponent={renderHeader}
+      ListFooterComponent={renderFooter}
+      ListEmptyComponent={EmptyListMessage}
+      onEndReachedThreshold={0.4}
+      onRefresh={handlePullRefresh}
+      refreshing={
+        MyNFTReducer.myNftOwnedListPage === 1 &&
+        MyNFTReducer.myNftOwnedListLoading
+      }
+    />
   );
 };
 

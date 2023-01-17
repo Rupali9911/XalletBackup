@@ -13,17 +13,32 @@ import {
   myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
+import {Tab, Tabs} from 'react-native-collapsible-tab-view';
 import AppBackground from '../../components/appBackground';
 
 const NFTCreated = props => {
-  console.log('props Id : ', props.id);
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   useEffect(() => {
-    pressToggle();
+    // dispatch(myNftCreatedListingReset());
+
+    console.log(
+      'UseEffect CheckLoading : ',
+      MyNFTReducer.myNftCreatedListLoading,
+    );
+
+    if (props.isFocused) {
+      if (!MyNFTReducer?.myNftCreatedList?.length) {
+        pressToggle();
+      } else if (
+        props.id &&
+        props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()
+      ) {
+        dispatch(myNftLoadFail());
+      }
+    }
   }, []);
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
@@ -34,18 +49,7 @@ const NFTCreated = props => {
     getNFTlist(1, 10, props.id, 1);
   };
 
-  // console.log('Created MyNFTReducer : ', MyNFTReducer);
-  // console.log('Created Page : ', MyNFTReducer.myNftCreatedListPage);
-  // console.log('Created Loading : ', MyNFTReducer.myNftCreatedListLoading);
-  // console.log('Created Count : ', MyNFTReducer.myNftCreatedTotalCount);
-  // console.log('Created List : ', MyNFTReducer.myNftCreatedList);
-
   const renderFooter = () => {
-    // console.log(
-    //   'Render Loading Status : ',
-    //   MyNFTReducer.myNftCreatedListLoading,
-    //   MyNFTReducer.myNftCreatedListPage,
-    // );
     if (
       MyNFTReducer.myNftCreatedListLoading &&
       MyNFTReducer.myNftCreatedListPage > 1
@@ -56,41 +60,11 @@ const NFTCreated = props => {
 
   const renderItem = ({item, index}) => {
     return (
-      // <View style={styles.trendCont}>
-      //   {MyNFTReducer.myNftCreatedListLoading &&
-      //   MyNFTReducer.myNftCreatedListPage == 1 ? (
-      //     <View style={styles.sorryMessageCont}>
-      //       <Loader />
-      //     </View>
-      //   ) : MyNFTReducer.myNftCreatedList.length ? (
-      //     <NFTItem
-      //       screenName="movieNFT"
-      //       item={item}
-      //       // image={imageUri}
-      //       profile={true}
-      //       onPress={() => {
-      //         // dispatch(changeScreenName('movieNFT'));
-      //         navigation.push('CertificateDetail', {
-      //           networkName: item?.network?.networkName,
-      //           collectionAddress: item?.collection?.address,
-      //           nftTokenId: item?.tokenId,
-      //         });
-      //       }}
-      //     />
-      //   ) : (
-      //     <View style={styles.sorryMessageCont}>
-      //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-      //     </View>
-      //   )}
-      // </View>
-
       <NFTItem
         screenName="movieNFT"
         item={item}
-        // image={imageUri}
         profile={true}
         onPress={() => {
-          // dispatch(changeScreenName('movieNFT'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,
@@ -103,109 +77,52 @@ const NFTCreated = props => {
 
   const handlePullRefresh = () => {
     dispatch(myNftCreatedListingReset());
-    pressToggle();
-  };
-
-  const renderHeader = () => {
-    console.log('C Loading : ', MyNFTReducer.myNftCreatedListLoading);
-    console.log('C Page : ', MyNFTReducer.myNftCreatedListPage);
-    console.log('C Length : ', MyNFTReducer.myNftCreatedList.length);
-
-    return (
-      <View style={styles.trendCont}>
-        {MyNFTReducer.myNftCreatedListLoading &&
-        MyNFTReducer.myNftCreatedListPage == 1 ? (
-          <View style={styles.sorryMessageCont}>
-            <Loader />
-          </View>
-        ) : MyNFTReducer.myNftCreatedList.length ? null : (
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  // console.log('Created Loading : ', MyNFTReducer.myNftCreatedListLoading);
-
-  const renderList = () => {
-    return (
-      <Tabs.FlatList
-        key={1}
-        data={MyNFTReducer?.myNftCreatedList}
-        renderItem={renderItem}
-        numColumns={2}
-        keyExtractor={(v, i) => 'item_' + i}
-        initialNumToRender={10}
-        onEndReached={() => {
-          if (
-            !MyNFTReducer.myNftCreatedListLoading &&
-            MyNFTReducer.myNftCreatedList.length !=
-              MyNFTReducer.myNftCreatedTotalCount
-          ) {
-            let num = MyNFTReducer.myNftCreatedListPage + 1;
-            getNFTlist(num, 10, props.id, 1);
-            dispatch(myNftCreatedPageChange(num));
-          }
-        }}
-        // ListHeaderComponent={renderHeader}
-        ListFooterComponent={renderFooter}
-        onEndReachedThreshold={0.4}
-        onRefresh={handlePullRefresh}
-        refreshing={
-          MyNFTReducer.myNftCreatedListPage === 1 &&
-          MyNFTReducer.myNftCreatedListLoading
-        }
-      />
-    );
+    getNFTlist(1, 10, props.id, 1);
   };
 
   return (
-    <AppBackground>
-      <Tabs.FlatList
-        key={1}
-        data={MyNFTReducer?.myNftCreatedList}
-        renderItem={renderItem}
-        numColumns={2}
-        keyExtractor={(v, i) => 'item_' + i}
-        initialNumToRender={10}
-        onEndReached={() => {
-          if (
-            !MyNFTReducer.myNftCreatedListLoading &&
-            MyNFTReducer.myNftCreatedList.length !=
-              MyNFTReducer.myNftCreatedTotalCount
-          ) {
-            let num = MyNFTReducer.myNftCreatedListPage + 1;
-            getNFTlist(num, 10, props.id, 1);
-            dispatch(myNftCreatedPageChange(num));
-          }
-        }}
-        // ListHeaderComponent={renderHeader}
-        ListFooterComponent={renderFooter}
-        onEndReachedThreshold={0.4}
-        onRefresh={handlePullRefresh}
-        refreshing={
-          MyNFTReducer.myNftCreatedListPage === 1 &&
-          MyNFTReducer.myNftCreatedListLoading
-        }
-      />
-    </AppBackground>
-
-    // <View style={styles.trendCont}>
-    //   {MyNFTReducer.myNftCreatedListLoading &&
-    //   MyNFTReducer.myNftCreatedListPage == 1 ? (
-    //     <View style={styles.sorryMessageCont}>
-    //       <Loader />
-    //     </View>
-    //   ) : MyNFTReducer.myNftCreatedList.length ? (
-    //     renderList()
-    //   ) : (
-    //     <View style={styles.sorryMessageCont}>
-    //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-    //     </View>
-    //   )}
-    // </View>
+    <View style={styles.trendCont}>
+      {MyNFTReducer.myNftCreatedListLoading &&
+      MyNFTReducer.myNftCreatedListPage == 1 ? (
+        <Tabs.ScrollView>
+          <View style={styles.sorryMessageCont}>
+            <Loader />
+          </View>
+        </Tabs.ScrollView>
+      ) : MyNFTReducer.myNftCreatedList.length > 0 ? (
+        <Tabs.FlatList
+          key={1}
+          data={MyNFTReducer?.myNftCreatedList}
+          renderItem={renderItem}
+          numColumns={2}
+          keyExtractor={(v, i) => 'item_' + i}
+          initialNumToRender={10}
+          onEndReached={() => {
+            if (
+              !MyNFTReducer.myNftCreatedListLoading &&
+              MyNFTReducer.myNftCreatedList.length !=
+                MyNFTReducer.myNftCreatedTotalCount
+            ) {
+              let num = MyNFTReducer.myNftCreatedListPage + 1;
+              getNFTlist(num, 10, props.id, 1);
+              dispatch(myNftCreatedPageChange(num));
+            }
+          }}
+          onEndReachedThreshold={0.4}
+          ListFooterComponent={renderFooter}
+          onRefresh={handlePullRefresh}
+          refreshing={
+            MyNFTReducer.myNftCreatedListPage === 1 &&
+            MyNFTReducer.myNftCreatedListLoading
+          }></Tabs.FlatList>
+      ) : (
+        <Tabs.ScrollView>
+          <View style={styles.sorryMessageCont}>
+            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+          </View>
+        </Tabs.ScrollView>
+      )}
+    </View>
   );
 };
 
