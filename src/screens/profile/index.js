@@ -70,6 +70,7 @@ function Profile({navigation, connector, route}) {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const ref = React.useRef();
+  const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
   const {
@@ -621,7 +622,6 @@ function Profile({navigation, connector, route}) {
     [],
   );
 
-  // console.log('This is ID : ', id);
   return (
     <AppBackground>
       {/* <ScrollView

@@ -14,7 +14,7 @@ import {
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
+import {Tab, Tabs} from 'react-native-collapsible-tab-view';
 import AppBackground from '../../components/appBackground';
 
 const NFTCreated = props => {
@@ -63,34 +63,6 @@ const NFTCreated = props => {
 
   const renderItem = ({item, index}) => {
     return (
-      // <View style={styles.trendCont}>
-      //   {MyNFTReducer.myNftCreatedListLoading &&
-      //   MyNFTReducer.myNftCreatedListPage == 1 ? (
-      //     <View style={styles.sorryMessageCont}>
-      //       <Loader />
-      //     </View>
-      //   ) : MyNFTReducer.myNftCreatedList.length ? (
-      //     <NFTItem
-      //       screenName="movieNFT"
-      //       item={item}
-      //       // image={imageUri}
-      //       profile={true}
-      //       onPress={() => {
-      //         // dispatch(changeScreenName('movieNFT'));
-      //         navigation.push('CertificateDetail', {
-      //           networkName: item?.network?.networkName,
-      //           collectionAddress: item?.collection?.address,
-      //           nftTokenId: item?.tokenId,
-      //         });
-      //       }}
-      //     />
-      //   ) : (
-      //     <View style={styles.sorryMessageCont}>
-      //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-      //     </View>
-      //   )}
-      // </View>
-
       <NFTItem
         screenName="movieNFT"
         item={item}
