@@ -31,7 +31,7 @@ import SellNFT from '../sellNft/index';
 import CollectionDetail from '../collectionDetail';
 import ChatDetail from '../AiChat/ChatDetail';
 import WebView from '../../components/WebView';
-import AuthStack from '../../navigations/authStack';
+import AuthStack from './AuthStack';
 
 const Stack = createStackNavigator();
 
